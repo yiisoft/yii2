@@ -345,7 +345,7 @@ The only difference between [[yii\db\Query::filterWhere()|filterWhere()]] and [[
 is that the former will ignore empty values provided in the condition in [hash format](#hash-format). So if `$email`
 is empty while `$username` is not, the above code will result in the SQL condition `WHERE username=:username`.
 
-> Info: A value is considered empty if it is null, an empty array, an empty string or a string consisting of whitespaces only.
+> Info: A value is considered empty if it is `null`, an empty array, an empty string or a string consisting of whitespaces only.
 
 Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhere()]], you can use
 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]

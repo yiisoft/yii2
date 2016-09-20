@@ -26,20 +26,20 @@ In the following, we will describe the main usage and properties of every core v
     // checks if "selected" is either 0 or 1, regardless of data type
     ['selected', 'boolean'],
 
-    // checks if "deleted" is of boolean type, either true or false
-    ['deleted', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
+    // checks if "deleted" is of boolean type, either `true` or `false`
+    ['deleted', 'boolean', '`true`Value' => `true`, '`false`Value' => `false`, 'strict' => `true`],
 ]
 ```
 
 This validator checks if the input value is a boolean.
 
-- `trueValue`: the value representing *true*. Defaults to `'1'`.
-- `falseValue`: the value representing *false*. Defaults to `'0'`.
-- `strict`: whether the type of the input value should match that of `trueValue` and `falseValue`. Defaults to `false`.
+- ``true`Value`: the value representing *`true`*. Defaults to `'1'`.
+- ``false`Value`: the value representing *`false`*. Defaults to `'0'`.
+- `strict`: whether the type of the input value should match that of ``true`Value` and ``false`Value`. Defaults to `false`.
 
 
 > Note: Because data input submitted via HTML forms are all strings, you normally should leave the
-  [[yii\validators\BooleanValidator::strict|strict]] property as false.
+  [[yii\validators\BooleanValidator::strict|strict]] property as `false`.
 
 
 ## [[yii\captcha\CaptchaValidator|captcha]] <span id="captcha"></span>
@@ -53,10 +53,10 @@ This validator checks if the input value is a boolean.
 This validator is usually used together with [[yii\captcha\CaptchaAction]] and [[yii\captcha\Captcha]]
 to make sure an input is the same as the verification code displayed by [[yii\captcha\Captcha|CAPTCHA]] widget.
 
-- `caseSensitive`: whether the comparison of the verification code is case sensitive. Defaults to false.
+- `caseSensitive`: whether the comparison of the verification code is case sensitive. Defaults to `false`.
 - `captchaAction`: the [route](structure-controllers.md#routes) corresponding to the
   [[yii\captcha\CaptchaAction|CAPTCHA action]] that renders the CAPTCHA image. Defaults to `'site/captcha'`.
-- `skipOnEmpty`: whether the validation can be skipped if the input is empty. Defaults to false,
+- `skipOnEmpty`: whether the validation can be skipped if the input is empty. Defaults to `false`,
   which means the input is required.
 
 
@@ -105,7 +105,7 @@ you can use a combination of compare and date validator like the following:
 ```php
 ['fromDate', 'date', 'timestampAttribute' => 'fromDate'],
 ['toDate', 'date', 'timestampAttribute' => 'toDate'],
-['fromDate', 'compare', 'compareAttribute' => 'toDate', 'operator' => '<', 'enableClientValidation' => false],
+['fromDate', 'compare', 'compareAttribute' => 'toDate', 'operator' => '<', 'enableClientValidation' => `false`],
 ```
 
 As validators are executed in the order they are specified this will first validate that the values entered in
@@ -153,7 +153,7 @@ or `1970-01-01` in the input field of a date picker.
 
 ```php
 [
-    [['from_date', 'to_date'], 'default', 'value' => null],
+    [['from_date', 'to_date'], 'default', 'value' => `null`],
     [['from_date', 'to_date'], 'date'],
 ],
 ```
@@ -162,8 +162,8 @@ or `1970-01-01` in the input field of a date picker.
 
 ```php
 [
-    // set "age" to be null if it is empty
-    ['age', 'default', 'value' => null],
+    // set "age" to be `null` if it is empty
+    ['age', 'default', 'value' => `null`],
 
     // set "country" to be "USA" if it is empty
     ['country', 'default', 'value' => 'USA'],
@@ -224,8 +224,8 @@ and each array element will be validated by the `integer` validation rule.
 
 - `rule`: an array specifying a validation rule. The first element in the array specifies the class name or
   the alias of the validator. The rest of the name-value pairs in the array are used to configure the validator object.
-- `allowMessageFromRule`: whether to use the error message returned by the embedded validation rule. Defaults to true.
-  If false, it will use `message` as the error message.
+- `allowMessageFromRule`: whether to use the error message returned by the embedded validation rule. Defaults to `true`.
+  If `false`, it will use `message` as the error message.
 
 > Note: If the attribute value is not an array, it is considered validation fails and the `message` will be returned
   as the error message.
@@ -242,12 +242,12 @@ and each array element will be validated by the `integer` validation rule.
 
 This validator checks if the input value is a valid email address.
 
-- `allowName`: whether to allow name in the email address (e.g. `John Smith <john.smith@example.com>`). Defaults to false.
+- `allowName`: whether to allow name in the email address (e.g. `John Smith <john.smith@example.com>`). Defaults to `false`.
 - `checkDNS`, whether to check whether the email's domain exists and has either an A or MX record.
   Be aware that this check may fail due to temporary DNS problems, even if the email address is actually valid.
-  Defaults to false.
+  Defaults to `false`.
 - `enableIDN`, whether the validation process should take into account IDN (internationalized domain names).
-  Defaults to false. Note that in order to use IDN validation you have to install and enable the `intl` PHP extension,
+  Defaults to `false`. Note that in order to use IDN validation you have to install and enable the `intl` PHP extension,
   or an exception would be thrown.
 
 
@@ -271,7 +271,7 @@ This validator checks if the input value is a valid email address.
     ['a1', 'exist', 'targetAttribute' => ['a2', 'a1' => 'a3']],
 
     // a1 needs to exist. If a1 is an array, then every element of it must exist.
-    ['a1', 'exist', 'allowArray' => true],
+    ['a1', 'exist', 'allowArray' => `true`],
 ]
 ```
 
@@ -294,9 +294,9 @@ multiple attribute values should exist).
   This can be a string or an array representing the additional query condition (refer to [[yii\db\Query::where()]]
   on the format of query condition), or an anonymous function with the signature `function ($query)`, where `$query`
   is the [[yii\db\Query|Query]] object that you can modify in the function.
-- `allowArray`: whether to allow the input value to be an array. Defaults to false. If this property is true
+- `allowArray`: whether to allow the input value to be an array. Defaults to `false`. If this property is `true`
   and the input is an array, then every element of the array must exist in the target column. Note that
-  this property cannot be set true if you are validating against multiple columns by setting `targetAttribute` as an array.
+  this property cannot be set `true` if you are validating against multiple columns by setting `targetAttribute` as an array.
 
 
 ## [[yii\validators\FileValidator|file]] <span id="file"></span>
@@ -327,7 +327,7 @@ This validator checks if the input is a valid uploaded file.
   the input must be a single uploaded file. If it is greater than 1, then the input must be an array
   consisting of at most `maxFiles` number of uploaded files.
 - `checkExtensionByMimeType`: whether to check the file extension by the file's MIME type. If the extension produced by
-  MIME type check differs from the uploaded file extension, the file will be considered as invalid. Defaults to true,
+  MIME type check differs from the uploaded file extension, the file will be considered as invalid. Defaults to `true`,
   meaning perform such check.
 
 `FileValidator` is used together with [[yii\web\UploadedFile]]. Please refer to the [Uploading Files](input-file-upload.md)
@@ -339,7 +339,7 @@ section for complete coverage about uploading files and performing validation ab
 ```php
 [
     // trim "username" and "email" inputs
-    [['username', 'email'], 'filter', 'filter' => 'trim', 'skipOnArray' => true],
+    [['username', 'email'], 'filter', 'filter' => 'trim', 'skipOnArray' => `true`],
 
     // normalize "phone" input
     ['phone', 'filter', 'filter' => function ($value) {
@@ -354,8 +354,8 @@ back to the attribute being validated.
 
 - `filter`: a PHP callback that defines a filter. This can be a global function name, an anonymous function, etc.
   The function signature must be `function ($value) { return $newValue; }`. This property must be set.
-- `skipOnArray`: whether to skip the filter if the input value is an array. Defaults to false.
-  Note that if the filter cannot handle array input, you should set this property to be true. Otherwise some
+- `skipOnArray`: whether to skip the filter if the input value is an array. Defaults to `false`.
+  Note that if the filter cannot handle array input, you should set this property to be `true`. Otherwise some
   PHP error might occur.
 
 > Tip: If you want to trim input values, you may directly use the [trim](#trim) validator.
@@ -400,11 +400,11 @@ validation purpose:
 
     // checks if "ip_address" is a valid IPv6 address or subnet,
     // value will be expanded to full IPv6 notation.
-    ['ip_address', 'ip', 'ipv4' => false, 'subnet' => null, 'expandIPv6' => true],
+    ['ip_address', 'ip', 'ipv4' => `false`, 'subnet' => `null`, 'expandIPv6' => `true`],
 
     // checks if "ip_address" is a valid IPv4 or IPv6 address,
     // allows negation character `!` at the beginning
-    ['ip_address', 'ip', 'negation' => true],
+    ['ip_address', 'ip', 'negation' => `true`],
 ]
 ```
 
@@ -413,23 +413,23 @@ It also may change attribute's value if normalization or IPv6 expansion is enabl
 
 The validator has such configuration options:
 
-- `ipv4`: whether the validating value can be an IPv4 address. Defaults to true.
-- `ipv6`: whether the validating value can be an IPv6 address. Defaults to true.
+- `ipv4`: whether the validating value can be an IPv4 address. Defaults to `true`.
+- `ipv6`: whether the validating value can be an IPv6 address. Defaults to `true`.
 - `subnet`: whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`
      * `true` - the subnet is required, addresses without CIDR will be rejected
      * `false` - the address can not have the CIDR
      * `null` - the CIDR is optional
 
-    Defaults to false.
+    Defaults to `false`.
 - `normalize`: whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
 address without it. Works only when `subnet` is not `false`. For example:
     * `10.0.1.5` will normalized to `10.0.1.5/32`
     * `2008:db0::1` will be normalized to `2008:db0::1/128`
 
-    Defaults to false.
-- `negation`: whether the validation address can have a negation character `!` at the beginning. Defaults to false.
+    Defaults to `false`.
+- `negation`: whether the validation address can have a negation character `!` at the beginning. Defaults to `false`.
 - `expandIPv6`: whether to expand an IPv6 address to the full notation format.
-For example, `2008:db0::1` will be expanded to `2008:0db0:0000:0000:0000:0000:0000:0001`. Defaults to false.
+For example, `2008:db0::1` will be expanded to `2008:0db0:0000:0000:0000:0000:0000:0001`. Defaults to `false`.
 - `ranges`: array of IPv4 or IPv6 ranges that are allowed or forbidden.
 
     When the array is empty, or the option is not set, all the IP addresses are allowed.
@@ -479,10 +479,10 @@ This validator checks if the input value can be found among the given list of va
 
 - `range`: a list of given values within which the input value should be looked for.
 - `strict`: whether the comparison between the input value and the given values should be strict
-  (both the type and value must be the same). Defaults to false.
-- `not`: whether the validation result should be inverted. Defaults to false. When this property is set true,
+  (both the type and value must be the same). Defaults to `false`.
+- `not`: whether the validation result should be inverted. Defaults to `false`. When this property is set `true`,
   the validator checks if the input value is NOT among the given list of values.
-- `allowArray`: whether to allow the input value to be an array. When this is true and the input value is an array,
+- `allowArray`: whether to allow the input value to be an array. When this is `true` and the input value is an array,
   every element in the array must be found in the given list of values, or the validation would fail.
 
 
@@ -514,8 +514,8 @@ This validator checks if the input value matches the specified regular expressio
 
 - `pattern`: the regular expression that the input value should match. This property must be set,
   or an exception will be thrown.
-- `not`: whether to invert the validation result. Defaults to false, meaning the validation succeeds
-   only if the input value matches the pattern. If this is set true, the validation is considered
+- `not`: whether to invert the validation result. Defaults to `false`, meaning the validation succeeds
+   only if the input value matches the pattern. If this is set `true`, the validation is considered
    successful only if the input value does NOT match the pattern.
 
 
@@ -546,11 +546,11 @@ This validator checks if the input value is a number. It is equivalent to the [d
 This validator checks if the input value is provided and not empty.
 
 - `requiredValue`: the desired value that the input should be. If not set, it means the input should not be empty.
-- `strict`: whether to check data types when validating a value. Defaults to false.
-  When `requiredValue` is not set, if this property is true, the validator will check if the input value is
-  not strictly `null`; If this property is false, the validator will use a loose rule to determine a value is empty or not.
+- `strict`: whether to check data types when validating a value. Defaults to `false`.
+  When `requiredValue` is not set, if this property is `true`, the validator will check if the input value is
+  not strictly `null`; If this property is `false`, the validator will use a loose rule to determine a value is empty or not.
   When `requiredValue` is set, the comparison between the input and `requiredValue` will also check data types
-  if this property is true.
+  if this property is `true`.
 
 > Info: How to determine if a value is empty or not is a separate topic covered
   in the [Empty Values](input-validation.md#handling-empty-inputs) section.
@@ -660,6 +660,6 @@ This validator checks if the input value is a valid URL.
 - `defaultScheme`: the default URI scheme to be prepended to the input if it does not have the scheme part.
   Defaults to `null`, meaning do not modify the input value.
 - `enableIDN`: whether the validator should take into account IDN (internationalized domain names).
-  Defaults to false. Note that in order to use IDN validation you have to install and enable the `intl` PHP
+  Defaults to `false`. Note that in order to use IDN validation you have to install and enable the `intl` PHP
   extension, otherwise an exception would be thrown.
 

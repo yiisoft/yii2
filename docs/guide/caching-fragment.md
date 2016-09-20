@@ -18,7 +18,7 @@ if ($this->beginCache($id)) {
 
 That is, enclose content generation logic in a pair of [[yii\base\View::beginCache()|beginCache()]] and
 [[yii\base\View::endCache()|endCache()]] calls. If the content is found in the cache, [[yii\base\View::beginCache()|beginCache()]]
-will render the cached content and return false, thus skip the content generation logic.
+will render the cached content and return `false`, thus skip the content generation logic.
 Otherwise, your content generation logic will be called, and when [[yii\base\View::endCache()|endCache()]]
 is called, the generated content will be captured and stored in the cache.
 

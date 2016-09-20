@@ -147,7 +147,7 @@ will be translated into the corresponding physical types. In the case of MySQL, 
 into `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, while `TYPE_STRING` becomes `varchar(255)`.
 
 You can append additional constraints when using abstract types. In the above example, ` NOT NULL` is appended
-to `Schema::TYPE_STRING` to specify that the column cannot be null.
+to `Schema::TYPE_STRING` to specify that the column cannot be `null`.
 
 > Info: The mapping between abstract types and physical types is specified by
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
@@ -817,9 +817,9 @@ There are several ways to customize the migration command.
 
 The migration command comes with a few command-line options that can be used to customize its behaviors:
 
-* `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode.
-  When this is true, the user will be prompted before the command performs certain actions.
-  You may want to set this to false if the command is being used in a background process.
+* `interactive`: boolean (defaults to `true`), specifies whether to perform migrations in an interactive mode.
+  When this is `true`, the user will be prompted before the command performs certain actions.
+  You may want to set this to `false` if the command is being used in a background process.
 
 * `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration
   class files. This can be specified as either a directory path or a path [alias](concept-aliases.md).
@@ -848,7 +848,7 @@ The migration command comes with a few command-line options that can be used to 
 
 * `fields`: array of column definition strings used for creating migration code. Defaults to `[]`. The format of each
   definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. For example, `--fields=name:string(12):notNull` produces
-  a string column of size 12 which is not null.
+  a string column of size 12 which is not `null`.
 
 The following example shows how you can use these options.
 

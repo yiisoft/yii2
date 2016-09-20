@@ -354,7 +354,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
     <?php
     /**
      * Returns the errors for all attributes or a single attribute.
-     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+     * @param string $attribute attribute name. Use `null` to retrieve errors for all attributes.
      * @property array An array of errors for all attributes. Empty array is returned if no error.
      * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.

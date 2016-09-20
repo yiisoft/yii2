@@ -60,7 +60,7 @@ of rules for validating the data. The validation rules declared above state that
 
 If you have an `EntryForm` object populated with the data entered by a user, you may call
 its [[yii\base\Model::validate()|validate()]] to trigger the data validation routines. A data validation
-failure will set the [[yii\base\Model::hasErrors|hasErrors]] property to true, and you may learn what validation
+failure will set the [[yii\base\Model::hasErrors|hasErrors]] property to `true`, and you may learn what validation
 errors occurred through [[yii\base\Model::getErrors|errors]].
 
 ```php

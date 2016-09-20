@@ -569,15 +569,15 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 следующий жизненный цикл имеет место:
 
 1. Вызывается [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: инициируется событие 
-   [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. Если метод возвращает false или свойство
-   события [[yii\base\ModelEvent::isValid]] равно false, оставшиеся шаги не выполняются.
+   [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. Если метод возвращает `false` или свойство
+   события [[yii\base\ModelEvent::isValid]] равно `false`, оставшиеся шаги не выполняются.
 2. Осуществляется валидация данных. Если валидация закончилась неудачей, после 3-го шага остальные шаги не выполняются.
 3. Вызывается [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: инициируется событие 
    [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]].
 4. Вызывается [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: инициируется событие 
    [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] или событие
-   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Если метод возвращает false или свойство события
-   [[yii\base\ModelEvent::isValid]] равно false, оставшиеся шаги не выполняются.
+   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Если метод возвращает `false` или свойство события
+   [[yii\base\ModelEvent::isValid]] равно `false`, оставшиеся шаги не выполняются.
 5. Осуществляется фактическая вставка или обновление данных в базу данных;
 6. Вызывается [[yii\db\ActiveRecord::afterSave()|afterSave()]]: инициируется событие
    [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] или событие
@@ -590,8 +590,8 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 жизненный цикл имеет место:
 
 1. Вызывается [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: инициируется событие
-   [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. Если метод возвращает false или свойство события
-   [[yii\base\ModelEvent::isValid]] равно false, остальные шаги не выполняются.
+   [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. Если метод возвращает `false` или свойство события
+   [[yii\base\ModelEvent::isValid]] равно `false`, остальные шаги не выполняются.
 2. Осуществляется фактическое удаление данных из базы данных.
 3. Вызывается [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: инициируется событие
    [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]].
@@ -1094,7 +1094,7 @@ $customers = Customer::find()
 
 Вызов метода [[yii\db\ActiveQuery::joinWith()|joinWith()]] будет [жадно загружать](#lazy-eager-loading) связные данные
 по умолчанию. Если вы не хотите получать связные данные, вы можете передать во втором параметре `$eagerLoading` значение
-false. 
+`false`. 
 
 Подобно методу [[yii\db\ActiveQuery::with()|with()]] вы можете объединять данные с одной или несколькими связями; вы 
 можете настроить запрос на получение связных данных "на лету"; вы можете объединять данные с вложенными связями; вы
@@ -1276,11 +1276,11 @@ $customer->unlink('orders', $customer->orders[0]);
 
 По умолчанию метод [[yii\db\ActiveRecord::unlink()|unlink()]] задаст вторичному ключу (или ключам), который определяет
 существующую связь, значение `null`. Однако вы можете запросить удаление строки таблицы, которая содержит значение
-вторичного ключа, передав значение true в параметре `$delete` для этого метода.
+вторичного ключа, передав значение `true` в параметре `$delete` для этого метода.
  
 Если связь построена на основе промежуточной таблицы, вызов метода [[yii\db\ActiveRecord::unlink()|unlink()]] инициирует
 очистку вторичных ключей в промежуточной таблице, или же удаление соответствующей строки данных в промежуточной таблице,
-если параметр `$delete` равен true.
+если параметр `$delete` равен `true`.
 
 
 ## Связывание объектов из разных баз данных <span id="cross-database-relations"></span> 

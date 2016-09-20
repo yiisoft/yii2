@@ -27,10 +27,10 @@ You may place the following line of code at the beginning of the [entry script](
 disable debug mode:
 
 ```php
-defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_DEBUG') or define('YII_DEBUG', `false`);
 ```
 
-> Info: The default value of `YII_DEBUG` is false. So if you are certain that you do not change its default
+> Info: The default value of `YII_DEBUG` is `false`. So if you are certain that you do not change its default
   value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
   
 
@@ -66,7 +66,7 @@ return [
             'dsn' => 'mysql:host=localhost;dbname=mydatabase',
             'username' => 'root',
             'password' => '',
-            'enableSchemaCache' => true,
+            'enableSchemaCache' => `true`,
 
             // Duration of schema cache.
             'schemaCacheDuration' => 3600,
@@ -121,7 +121,7 @@ component as the database connection and store the session data in the `session`
 
 ```sql
 CREATE TABLE session (
-    id CHAR(40) NOT NULL PRIMARY KEY,
+    id CHAR(40) NOT `NULL` PRIMARY KEY,
     expire INTEGER,
     data BLOB
 )

@@ -40,7 +40,7 @@ In case you need just an opening or closing tag, you can use the `Html::beginTag
 Options are used in many methods of the Html helper and various widgets. In all these cases there is some extra handling to
 know about:
 
-- If a value is null, the corresponding attribute will not be rendered.
+- If a value is `null`, the corresponding attribute will not be rendered.
 - Attributes whose values are of boolean type will be treated as
   [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
 - The values of attributes will be HTML-encoded using [[yii\helpers\Html::encode()|Html::encode()]].

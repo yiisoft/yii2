@@ -121,7 +121,7 @@ Cuando se utiliza [widgets](structure-widgets.md), a menudo es necesario utiliza
 use yii\widgets\Menu;
 
 echo Menu::widget([
-    'activateItems' => false,
+    'activateItems' => `false`,
     'items' => [
         ['label' => 'Home', 'url' => ['site/index']],
         ['label' => 'Products', 'url' => ['product/index']],

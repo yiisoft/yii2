@@ -1032,7 +1032,7 @@ In the code example above, we are modifying the relational query by appending an
 >
 > ```php
 > $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-> // $orders[0]->customer is always null. To fix the problem, you should do the following:
+> // $orders[0]->customer is always `null`. To fix the problem, you should do the following:
 > $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
 > ```
 
