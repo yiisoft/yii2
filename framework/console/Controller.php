@@ -260,7 +260,7 @@ class Controller extends \yii\base\Controller
      * ```php
      * $code = $this->prompt('Enter 4-Chars-Pin', ['required' => true, 'validator' => function($input, &$error) {
      *     if (strlen($input) !== 4) {
-     *         $error = 'The Pin must be at least 4 chars!';
+     *         $error = 'The Pin must be exactly 4 chars!';
      *         return false;
      *     }
      *     return true;
