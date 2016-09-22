@@ -104,21 +104,21 @@ class User extends ActiveRecord
     {
         return [
             // 匿名行为，只有行为类名
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // 命名行为，只有行为类名
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // 匿名行为，配置数组
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // 命名行为，配置数组
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -138,11 +138,11 @@ use app\components\MyBehavior;
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
 // 附加行为类
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // 附加配置数组
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -153,7 +153,7 @@ $component->attachBehavior('myBehavior3', [
 ```php
 $component->attachBehaviors([
     'myBehavior1' => new MyBehavior,  // 命名行为
-    MyBehavior::className(),          // 匿名行为
+    MyBehavior::class,          // 匿名行为
 ]);
 ```
 
@@ -161,10 +161,10 @@ $component->attachBehaviors([
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -248,7 +248,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],

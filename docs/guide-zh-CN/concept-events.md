@@ -181,7 +181,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -195,11 +195,11 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     echo $event->sender;  // 显示 "app\models\Foo"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 注意这种情况下 `$event->sender` 指向触发事件的类名而不是对象实例。
@@ -210,10 +210,10 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 ```php
 // 移除 $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // 移除 Foo::EVENT_HELLO 事件的全部处理器
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 

@@ -675,7 +675,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -683,7 +683,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -700,7 +700,7 @@ Deklarując relację powinno się zwrócić uwagę na następujące dane:
   klient może mieć wiele zamówień, podczas gdy zamówienie ma tylko jednego klienta.
 - nazwę powiązanej klasy Active Record: określoną jako pierwszy argument w [[yii\db\ActiveRecord::hasMany()|hasMany()]] lub 
   [[yii\db\ActiveRecord::hasOne()|hasOne()]].
-  Rekomendowany sposób uzyskania nazwy klasy to wywołanie `Xyz::className()`, dzięki czemu możemy posiłkować się wsparciem autouzupełniania IDE 
+  Rekomendowany sposób uzyskania nazwy klasy to wywołanie `Xyz::class`, dzięki czemu możemy posiłkować się wsparciem autouzupełniania IDE 
   i wykrywaniem błędów na poziomie kompilacji. 
 - powiązanie pomiędzy dwoma rodzajami danych: określone jako kolumna(y), poprzez którą dane nawiązują relację.
   Wartości tablicy są kolumnami głównych danych (reprezentowanymi przez klasę Active Record, w której deklaruje się relacje), a klucze tablicy są 
@@ -774,7 +774,7 @@ class Customer extends ActiveRecord
 {
     public function getBigOrders($threshold = 100)
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])
             ->where('subtotal > :threshold', [':threshold' => $threshold])
             ->orderBy('id');
     }
@@ -808,7 +808,7 @@ class Order extends ActiveRecord
 {
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 }
@@ -821,12 +821,12 @@ class Order extends ActiveRecord
 {
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
     }
 
     public function getItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->via('orderItems');
     }
 }
@@ -1069,7 +1069,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1077,7 +1077,7 @@ class Order extends ActiveRecord
 {
     public function getCustomer()
     {
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 ```
@@ -1109,7 +1109,7 @@ class Customer extends ActiveRecord
 {
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+        return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
     }
 }
 ```
@@ -1213,7 +1213,7 @@ class Customer extends \yii\db\ActiveRecord
     public function getComments()
     {
         // klient posiada wiele komentarzy
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Comment::class, ['customer_id' => 'id']);
     }
 }
 
@@ -1228,7 +1228,7 @@ class Comment extends \yii\mongodb\ActiveRecord
     public function getCustomer()
     {
         // komentarz jest przypisany do jednego klienta
-        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+        return $this->hasOne(Customer::class, ['id' => 'customer_id']);
     }
 }
 
@@ -1302,7 +1302,7 @@ class Customer extends \yii\db\ActiveRecord
 {
     public function getActiveComments()
     {
-        return $this->hasMany(Comment::className(), ['customer_id' => 'id'])->active();
+        return $this->hasMany(Comment::class, ['customer_id' => 'id'])->active();
     }
 }
 
@@ -1370,7 +1370,7 @@ class Customer extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
 ```

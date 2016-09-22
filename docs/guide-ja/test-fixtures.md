@@ -126,7 +126,7 @@ class UserProfileTest extends DbTestCase
     public function fixtures()
     {
         return [
-            'profiles' => UserProfileFixture::className(),
+            'profiles' => UserProfileFixture::class,
         ];
     }
 

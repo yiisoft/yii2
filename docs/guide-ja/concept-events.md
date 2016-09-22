@@ -208,7 +208,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' が挿入されました');
 });
 ```
@@ -226,11 +226,11 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     echo $event->sender;  // "app\models\Foo" を表示
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 この場合、`$event->sender` は、オブジェクトインスタンスではなく、イベントをトリガするクラスの名前を指すことに注意してください。
@@ -242,10 +242,10 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 ```php
 // $handler をデタッチ
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // Foo::EVENT_HELLO のすべてのハンドラをデタッチ
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 
@@ -297,7 +297,7 @@ Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($ev
 これらのクラスのイベントをトリガすることも出来ます。
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 ただし、このインタフェイスを実装する全クラスのイベントをトリガすることは出来ない、ということに注意して下さい。

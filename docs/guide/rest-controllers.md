@@ -98,7 +98,7 @@ public function behaviors()
     
     // add CORS filter
     $behaviors['corsFilter'] = [
-        'class' => \yii\filters\Cors::className(),
+        'class' => \yii\filters\Cors::class,
     ];
     
     // re-add authentication filter
