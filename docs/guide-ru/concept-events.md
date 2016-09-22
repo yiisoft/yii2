@@ -187,7 +187,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' добавлен');
 });
 ```
@@ -201,11 +201,11 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     echo $event->sender;  // выводит "app\models\Foo"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Обратите внимание, что в данном случае `$event->sender` ссылается на имя класса, который инициировал событие, а не на его экземпляр.
@@ -216,10 +216,10 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 ```php
 // отсоединение $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // отсоединяются все обработчики Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Обработчики событий на уровне интерфейсов <span id="interface-level-event-handlers"></span>
@@ -271,7 +271,7 @@ Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($ev
 Вы можете также инициализировать эти события:
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:

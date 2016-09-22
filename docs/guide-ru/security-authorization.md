@@ -25,7 +25,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -68,7 +68,7 @@ class SiteController extends Controller
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('У вас нет доступа к этой странице');
     }
@@ -122,7 +122,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [

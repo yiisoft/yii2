@@ -217,7 +217,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -236,11 +236,11 @@ invocación de los gestores de eventos a nivel de clase.
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     echo $event->sender;  // displays "app\models\Foo"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Tenga en cuenta que en este caso, el `$event->sender` hace referencia al nombre de la clase que lanza el evento en
@@ -254,10 +254,10 @@ Para desadjuntar un gestor de eventos a nivel de clase, se tiene que llamar a [[
 
 ```php
 // desadjunta $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // desadjunta todos los gestores de Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Eventos Globales <span id="global-events"></span>
