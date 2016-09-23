@@ -5,7 +5,6 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
-- Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
 - Bug #12428: Fixed `yii\db\mysql\QueryBuilder` causes warning when insert default rows into a table without primary key (DrmagicE)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)

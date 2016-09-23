@@ -401,28 +401,16 @@ class View extends \yii\base\View
 
         $depends = ArrayHelper::remove($options, 'depends', []);
 
-        $webAlias = Yii::getAlias('@web');
-        if ($webAlias !== '' && strpos($url, $webAlias) === 0) {
-            $url = substr($url, strlen($webAlias));
-        }
-
-        $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
-
-        /** @var AssetBundle $bundle */
-        $bundle = Yii::createObject([
-            'class' => AssetBundle::className(),
-            'baseUrl' => '@web',
-            'basePath' => '@webroot',
-            'css' => (array)$url,
-            'cssOptions' => $options,
-            'depends' => (array)$depends,
-        ]);
-
         if (empty($depends)) {
-            $url = $this->getAssetManager()->getAssetUrl($bundle, $url);
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = $bundle;
+            $this->getAssetManager()->bundles[$key] = Yii::createObject([
+                'class' => AssetBundle::className(),
+                'baseUrl' => '',
+                'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
+                'cssOptions' => $options,
+                'depends' => (array)$depends,
+            ]);
             $this->registerAssetBundle($key);
         }
     }
@@ -480,29 +468,17 @@ class View extends \yii\base\View
 
         $depends = ArrayHelper::remove($options, 'depends', []);
 
-        $webAlias = Yii::getAlias('@web');
-        if ($webAlias !== '' && strpos($url, $webAlias) === 0) {
-            $url = substr($url, strlen($webAlias));
-        }
-
-        $url = strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/');
-
-        /** @var AssetBundle $bundle */
-        $bundle = Yii::createObject([
-            'class' => AssetBundle::className(),
-            'baseUrl' => '@web',
-            'basePath' => '@webroot',
-            'js' => (array)$url,
-            'jsOptions' => $options,
-            'depends' => (array)$depends,
-        ]);
-
         if (empty($depends)) {
-            $url = $this->getAssetManager()->getAssetUrl($bundle, $url);
             $position = ArrayHelper::remove($options, 'position', self::POS_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = $bundle;
+            $this->getAssetManager()->bundles[$key] = Yii::createObject([
+                'class' => AssetBundle::className(),
+                'baseUrl' => '',
+                'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
+                'jsOptions' => $options,
+                'depends' => (array)$depends,
+            ]);
             $this->registerAssetBundle($key);
         }
     }
