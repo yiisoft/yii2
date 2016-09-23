@@ -302,6 +302,34 @@ class ReleaseController extends Controller
         return 0;
     }
 
+    /**
+     * Sorts CHANGELOG for framework or extension.
+     *
+     * @param array $what what do you want to resort changelog for? this can either be:
+     *
+     * - an extension name such as `redis` or `bootstrap`,
+     * - or `framework` if you want to release a new version of the framework itself.
+     */
+    public function actionSortChangelog(array $what)
+    {
+        if (count($what) > 1) {
+            $this->stdout("Currently only one simultaneous release is supported.\n");
+            return 1;
+        }
+        $this->validateWhat($what, ['framework', 'ext'], false);
+
+        $version = reset($this->getNextVersions($this->getCurrentVersions($what), self::PATCH));
+        $this->stdout('sorting CHANGELOG of ');
+        $this->stdout(reset($what), Console::BOLD);
+        $this->stdout(" for version ");
+        $this->stdout($version, Console::BOLD);
+        $this->stdout("...");
+
+        $this->resortChangelogs($what, $version);
+
+        $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
+    }
+
     protected function printWhat(array $what, $newVersions, $versions)
     {
         foreach($what as $ext) {
@@ -340,7 +368,7 @@ class ReleaseController extends Controller
      * @param array $limit list of things to allow, or empty to allow any, can be `app`, `framework`, `extension`
      * @throws \yii\base\Exception
      */
-    protected function validateWhat(array $what, $limit = [])
+    protected function validateWhat(array $what, $limit = [], $ensureGitClean = true)
     {
         foreach($what as $w) {
             if (strncmp('app-', $w, 4) === 0) {
@@ -350,7 +378,9 @@ class ReleaseController extends Controller
                 if (!is_dir($appPath = "{$this->basePath}/apps/" . substr($w, 4))) {
                     throw new Exception("Application path does not exist: \"{$appPath}\"\n");
                 }
-                $this->ensureGitClean($appPath);
+                if ($ensureGitClean) {
+                    $this->ensureGitClean($appPath);
+                }
             } elseif ($w === 'framework') {
                 if (!empty($limit) && !in_array('framework', $limit)) {
                     throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
@@ -358,7 +388,9 @@ class ReleaseController extends Controller
                 if (!is_dir($fwPath = "{$this->basePath}/framework")) {
                     throw new Exception("Framework path does not exist: \"{$this->basePath}/framework\"\n");
                 }
-                $this->ensureGitClean($fwPath);
+                if ($ensureGitClean) {
+                    $this->ensureGitClean($fwPath);
+                }
             } else {
                 if (!empty($limit) && !in_array('ext', $limit)) {
                     throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
@@ -366,7 +398,9 @@ class ReleaseController extends Controller
                 if (!is_dir($extPath = "{$this->basePath}/extensions/$w")) {
                     throw new Exception("Extension path for \"$w\" does not exist: \"{$this->basePath}/extensions/$w\"\n");
                 }
-                $this->ensureGitClean($extPath);
+                if ($ensureGitClean) {
+                    $this->ensureGitClean($extPath);
+                }
             }
         }
     }
@@ -966,6 +1000,7 @@ class ReleaseController extends Controller
             switch($type) {
                 case self::MINOR:
                     $parts[1]++;
+                    $parts[2] = 0;
                     break;
                 case self::PATCH:
                     $parts[2]++;
