@@ -746,7 +746,7 @@ La commande de migration possède quelques options en ligne de commande qui peuv
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`), spécifie les fichiers modèles pour générer le code de migration. Voir "[Génération des migrations](#generating-migrations)" pour plus de détails.
 
 * `fields`: array (tableau) de chaîne de caractères de définition de colonnes utilisées pour créer le code de migration. Valeur par défaut `[]`. Le format de chacune des définitions est `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Par exemple, `--fields=name:string(12):notNull` produit une colonne chaîne de caractères de taille 12 qui n'est pas nulle.

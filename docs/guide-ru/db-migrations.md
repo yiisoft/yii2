@@ -559,7 +559,7 @@ yii migrate/mark 1392853618                         # используя вре�
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
 ]`), в котором указаны файлы шаблонов для генерации миграций. Подробнее в разделе «[Генерация миграций](#generating-migrations)».
 
 * `fields`: массив конфигураций столбцов, который используется для генерации кода миграции. По умолчанию пуст. Формат

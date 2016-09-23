@@ -843,7 +843,7 @@ El comando de migración trae algunas opciones de línea de comandos que pueden 
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`), especifica los templates utilizados para generar las migraciones. Ver "[Generar Migraciones](#generating-migrations)"
   para más detalles.
 
