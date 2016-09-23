@@ -284,9 +284,9 @@
         // validate all applicable inputs in the form
         validate: function (forceValidate) {
             if (forceValidate) {
-                $(this).data('yiiActiveForm').submitting = true;    
+                $(this).data('yiiActiveForm').submitting = true;
             }
-            
+
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
                 needAjaxValidation = false,
@@ -557,7 +557,7 @@
      */
     var getFormOptions = function ($form) {
         var attributes = {};
-        for (var i in buttonOptions) {
+        for (var i = 0; i < buttonOptions.length; i++) {
             attributes[buttonOptions[i]] = $form.attr(buttonOptions[i]);
         }
         return attributes;
@@ -569,7 +569,7 @@
      * @param $button the button jQuery object
      */
     var applyButtonOptions = function ($form, $button) {
-        for (var i in buttonOptions) {
+        for (var i = 0; i < buttonOptions.length; i++) {
             var value = $button.attr('form' + buttonOptions[i]);
             if (value) {
                 $form.attr(buttonOptions[i], value);
@@ -584,7 +584,7 @@
     var restoreButtonOptions = function ($form) {
         var data = $form.data('yiiActiveForm');
 
-        for (var i in buttonOptions) {
+        for (var i = 0; i < buttonOptions.length; i++) {
             $form.attr(buttonOptions[i], data.options[buttonOptions[i]] || null);
         }
     };
