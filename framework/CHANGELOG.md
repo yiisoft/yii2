@@ -28,8 +28,6 @@ Yii Framework 2 Change Log
 - Bug #11922: Fixed `yii\log\FileTarget` does not apply `fileMode` for rotated via copy files (klimov-paul)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end()` generates close tag when it's `option['tag']` is `null` (egorio)
-- Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
-- Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
 - Bug #11977: Fixed `yii\rest\Serializer::serialize()` serializes DataProvider incorrectly, if models keys do not compose integer sequence (dcb9, klimov-paul)
 - Bug #11990: Fixed `yii\db\BaseActiveRecord::refresh()` may set incorrect `oldAttributes` values at some cases (only-victor)
 - Bug #12009: Do not render `for` field label attribute for active form `RadioList` and `CheckboxList` (shevchik87, samdark)
@@ -78,7 +76,6 @@ Yii Framework 2 Change Log
 - Enh #12382: Changed `yii\widgets\MaskedInput` to use `jQuery` instead of `$` to prevent conflicts (samdark)
 - Enh #12440: Added `yii\base\Event::offAll()` method allowing clear all registered class-level event handlers (klimov-paul)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
-
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
 
 2.0.9 July 11, 2016
