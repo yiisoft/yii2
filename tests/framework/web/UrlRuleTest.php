@@ -484,6 +484,20 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'optional params - example from guide',
+                [
+                    'pattern' => 'posts/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1, 'tag' => ''],
+                ],
+                [
+                    ['post/index', ['page' => 1, 'tag' => ''], 'posts'],
+                    ['post/index', ['page' => 2, 'tag' => ''], 'posts/2'],
+                    ['post/index', ['page' => 2, 'tag' => 'news'], 'posts/2/news'],
+                    ['post/index', ['page' => 1, 'tag' => 'news'], 'posts/news'],
+                ],
+            ],
+            [
                 'route has parameters',
                 [
                     'pattern' => '<controller>/<action>',
