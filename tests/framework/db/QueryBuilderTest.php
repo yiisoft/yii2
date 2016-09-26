@@ -135,7 +135,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'bytea',
                     'sqlite' => 'blob',
                     'oci' => 'BLOB',
-                    'sqlsrv' => 'varbinnary(max)',
+                    'sqlsrv' => 'varbinary(max)',
                     'cubrid' => 'blob',
                 ],
             ],
