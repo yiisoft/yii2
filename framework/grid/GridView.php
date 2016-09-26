@@ -463,7 +463,7 @@ class GridView extends BaseListView
         $rows = [];
         foreach ($models as $index => $model) {
             $key = $keys[$index];
-            if ($this->beforeRow !== null) {
+            if (is_callable($this->beforeRow)) {
                 $row = call_user_func($this->beforeRow, $model, $key, $index, $this);
                 if (!empty($row)) {
                     $rows[] = $row;
@@ -472,7 +472,7 @@ class GridView extends BaseListView
 
             $rows[] = $this->renderTableRow($model, $key, $index);
 
-            if ($this->afterRow !== null) {
+            if (is_callable($this->afterRow)) {
                 $row = call_user_func($this->afterRow, $model, $key, $index, $this);
                 if (!empty($row)) {
                     $rows[] = $row;
@@ -503,7 +503,7 @@ class GridView extends BaseListView
         foreach ($this->columns as $column) {
             $cells[] = $column->renderDataCell($model, $key, $index);
         }
-        if ($this->rowOptions instanceof Closure) {
+        if (is_callable($this->rowOptions)) {
             $options = call_user_func($this->rowOptions, $model, $key, $index, $this);
         } else {
             $options = $this->rowOptions;
