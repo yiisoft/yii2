@@ -738,7 +738,9 @@ class ActiveField extends Component
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
                 if ($validator->enableClientValidation && $js != '') {
                     if ($validator->whenClient !== null) {
-                        $js = "if (({$validator->whenClient})(attribute, value)) { $js }";
+                        $expression = is_callable($validator->whenClient) ?
+                            call_user_func($validator->whenClient, $this->model, $attribute) : $validator->whenClient;
+                        $js = "if (($expression)(attribute, value)) { $js }";
                     }
                     $validators[] = $js;
                 }

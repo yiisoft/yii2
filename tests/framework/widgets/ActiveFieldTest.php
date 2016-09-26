@@ -388,7 +388,7 @@ EOD;
         $this->assertTrue($expectedEnableAjaxValidation === $actualValue['enableAjaxValidation']);
     }
 
-    public function testGetClientOptionsValidatorWhenClientSet()
+    public function testGetClientOptionsValidatorWhenClientSetToString()
     {
         $this->activeField->setClientOptionsEmpty(false);
         $this->activeField->enableAjaxValidation = true;
@@ -401,6 +401,25 @@ EOD;
         $actualValue = $this->activeField->getClientOptions();
         $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {if ((function (attribute, value) "
             . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
+
+        $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
+    }
+
+    public function testGetClientOptionsValidatorWhenClientSetToCallback()
+    {
+        $this->activeField->setClientOptionsEmpty(false);
+        $this->activeField->enableAjaxValidation = true;
+        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
+
+        foreach($this->activeField->model->validators as $validator) {
+            $validator->whenClient = function($model, $attribute) {
+                return "function (attribute, value) { return '$attribute' == '$attribute'; }"; // js
+            };
+        }
+
+        $actualValue = $this->activeField->getClientOptions();
+        $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {if ((function (attribute, value) "
+            . "{ return '{$this->attributeName}' == '{$this->attributeName}'; })(attribute, value)) { return true; }}";
 
         $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
     }
