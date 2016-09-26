@@ -459,7 +459,8 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1, 'tag' => 'a'],
                 ],
                 [
-                    ['post/index', ['page' => 1], false],
+                    ['post/index', [], 'post'],
+                    ['post/index', ['page' => 1], 'post'],
                     ['post/index', ['page' => '1abc', 'tag' => 'a'], false],
                     ['post/index', ['page' => 1, 'tag' => 'a'], 'post'],
                     ['post/index', ['page' => 2, 'tag' => 'a'], 'post/2'],
@@ -475,7 +476,8 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1, 'tag' => 'a'],
                 ],
                 [
-                    ['post/index', ['page' => 1], false],
+                    ['post/index', [], 'post/-'],
+                    ['post/index', ['page' => 1], 'post/-'],
                     ['post/index', ['page' => '1abc', 'tag' => 'a'], false],
                     ['post/index', ['page' => 1, 'tag' => 'a'], 'post/-'],
                     ['post/index', ['page' => 1, 'tag' => 'b'], 'post/-b'],
@@ -495,6 +497,18 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => 2, 'tag' => ''], 'posts/2'],
                     ['post/index', ['page' => 2, 'tag' => 'news'], 'posts/2/news'],
                     ['post/index', ['page' => 1, 'tag' => 'news'], 'posts/news'],
+                ],
+            ],
+            [
+                'required params',
+                [
+                    'pattern' => 'about-me',
+                    'route' => 'site/page',
+                    'defaults' => ['id' => 1],
+                ],
+                [
+                    ['site/page', ['id' => 1], 'about-me'],
+                    ['site/page', ['id' => 2], false],
                 ],
             ],
             [

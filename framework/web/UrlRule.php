@@ -367,8 +367,14 @@ class UrlRule extends Object implements UrlRuleInterface
                 continue;
             }
             if (!isset($params[$name])) {
-                return false;
-            } elseif (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
+                // allow omit optional param and use default value
+                if (in_array($name, $this->placeholders)) {
+                    $params[$name] = $value;
+                } else {
+                    return false;
+                }
+            }
+            if (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
                 unset($params[$name]);
                 if (isset($this->_paramRules[$name])) {
                     $tr["<$name>"] = '';
