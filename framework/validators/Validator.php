@@ -156,10 +156,11 @@ class Validator extends Component
      */
     public $when;
     /**
-     * @var string a JavaScript function name whose return value determines whether this validator should be applied
+     * @var string|callable a JavaScript function name whose return value determines whether this validator should be applied
      * on the client-side. The signature of the function should be `function (attribute, value)`, where
      * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
-     * and `value` the current value of the attribute.
+     * and `value` the current value of the attribute. This can also be a PHP callback which must return such JavaScript
+     * function as string. The signature of the callable should be `function ($model, $attribute)`.
      *
      * This property is mainly provided to support conditional validation on the client-side.
      * If this property is not set, this validator will be always applied on the client-side.

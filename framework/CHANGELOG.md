@@ -78,6 +78,7 @@ Yii Framework 2 Change Log
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
 - Bug: #12599: Fixed casting of `binnary()` type for MSSQL (silverfire) 
+- Enh #12600: Make `yii\validators\Validator::whenClient` also accept a PHP callback (mikehaertl)
 
 2.0.9 July 11, 2016
 -------------------
