@@ -88,7 +88,7 @@ return [
     '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{een maand} other{# maanden}} geleden',
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{een seconde} other{# seconden}} geleden',
     '{delta, plural, =1{a year} other{# years}} ago' => '{delta, plural, =1{een jaar} other{# jaren}} geleden',
-    '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{een uur} other{# uren}} geleden',
+    '{delta, plural, =1{an hour} other{# hours}} ago' => '{delta, plural, =1{een uur} other{# uur}} geleden',
     '{nFormatted} B' => '{nFormatted} B',
     '{nFormatted} GB' => '{nFormatted} GB',
     '{nFormatted} GiB' => '{nFormatted} GiB',
