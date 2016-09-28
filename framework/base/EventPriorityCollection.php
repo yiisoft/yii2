@@ -1,8 +1,6 @@
 <?php
 namespace yii\base;
 
-use Traversable;
-
 /**
  * Short description for file
  *
@@ -12,12 +10,17 @@ use Traversable;
  *
  * @author Ioannis Bekiaris <info@ibekiaris.me>
  */
-class EventPriorityQueue implements \IteratorAggregate
+class EventPriorityCollection implements \IteratorAggregate, \Countable
 {
 	/**
 	 * @var int
 	 */
 	protected $priorityCounter = PHP_INT_MAX;
+
+	/**
+	 * @var int
+	 */
+	protected $maxPriority;
 
 	/**
 	 * @var \SplPriorityQueue
@@ -29,11 +32,13 @@ class EventPriorityQueue implements \IteratorAggregate
 	 */
 	protected $items = [];
 
-	public function insert($data, $priority)
+	public function insert($data, $priority = 1)
 	{
 		if (is_int($priority)) {
 			$priority = [$priority, $this->priorityCounter--];
 		}
+
+		$this->calculateMaxPriority($priority);
 
 		$this->items[] = [
 			'data' => $data,
@@ -44,13 +49,14 @@ class EventPriorityQueue implements \IteratorAggregate
 		$this->getInnerQueue()->insert($data, $priority);
 	}
 
-	public function remove($data)
+	public function remove($handler)
 	{
 		$removeStatus = false;
+
 		foreach ($this->items as $itemKey => $item) {
-			if ($data === $item['id']) {
+			if ($handler === $item['id']) {
 				unset($this->items[$itemKey]);
-				$removeStatus = false;
+				$removeStatus = true;
 				break;
 			}
 		}
@@ -67,6 +73,11 @@ class EventPriorityQueue implements \IteratorAggregate
 		return $removeStatus;
 	}
 
+	public function count()
+	{
+		return count($this->items);
+	}
+
 	public function getIterator()
 	{
 		return clone $this->getInnerQueue();
@@ -79,5 +90,19 @@ class EventPriorityQueue implements \IteratorAggregate
 		}
 
 		return $this->innerQueue;
+	}
+
+	public function getMaxPriority()
+	{
+		return $this->maxPriority;
+	}
+
+	protected function calculateMaxPriority($priority)
+	{
+		if(is_array($priority)) {
+			$priority = $priority[0];
+		}
+
+		$this->maxPriority = ($this->maxPriority < $priority) ? $priority : $this->maxPriority;
 	}
 }

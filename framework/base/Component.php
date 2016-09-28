@@ -106,7 +106,6 @@ class Component extends Object
      */
     private $_behaviors;
 
-
     /**
      * Returns the value of a component property.
      * This method will check in the following order and act accordingly:
@@ -475,14 +474,15 @@ class Component extends Object
      */
     public function on($name, $handler, $data = null, $append = true)
     {
+		$priority = (int) $append;
         $this->ensureBehaviors();
 
-		if (!$priority = $append) {
-			$priority = PHP_INT_MAX;
+		if (empty($this->_events[$name])) {
+			$this->_events[$name] = new EventPriorityCollection();
 		}
 
-		if (empty($this->_events[$name])) {
-			$this->_events[$name] = new EventPriorityQueue();
+		if (!$priority) {
+			$priority = $this->_events[$name]->getMaxPriority() + 5;
 		}
 
 		$this->_events[$name]->insert([$handler, $data], $priority);
@@ -505,12 +505,19 @@ class Component extends Object
             return false;
         }
 
+		$handlerRemoved = true;
+
+		// TODO I would change has handler function
         if ($handler === null) {
             unset($this->_events[$name]);
-            return true;
         } else {
-			$this->_events[$name]->remove($handler);
+			$handlerRemoved = $this->_events[$name]->remove($handler);
+			if (!count($this->_events[$name])) {
+				unset($this->_events[$name]);
+			}
         }
+
+        return $handlerRemoved;
     }
 
     /**
