@@ -367,7 +367,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 continue;
             }
             if (!isset($params[$name])) {
-                // allow omit optional param and use default value if it is empty
+                // allow omit empty optional params
                 // @see https://github.com/yiisoft/yii2/issues/10970
                 if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
                     $params[$name] = '';
