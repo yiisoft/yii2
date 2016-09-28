@@ -515,6 +515,32 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'required default param',
+                [
+                    'pattern' => '',
+                    'route' => 'site/home',
+                    'defaults' => ['lang' => 'en'],
+                ],
+                [
+                    ['site/home', ['lang' => 'en'], ''],
+                    ['site/home', ['lang' => ''], false],
+                    ['site/home', [], false],
+                ],
+            ],
+            [
+                'required default empty param',
+                [
+                    'pattern' => '',
+                    'route' => 'site/home',
+                    'defaults' => ['lang' => ''],
+                ],
+                [
+                    ['site/home', ['lang' => ''], ''],
+                    ['site/home', ['lang' => 'en'], false],
+                    ['site/home', [], false],
+                ],
+            ],
+            [
                 'route has parameters',
                 [
                     'pattern' => '<controller>/<action>',
