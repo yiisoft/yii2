@@ -31,7 +31,7 @@ class UrlRuleTest extends TestCase
             foreach ($tests as $j => $test) {
                 list ($route, $params, $expected) = $test;
                 $url = $rule->createUrl($manager, $route, $params);
-                $this->assertEquals($expected, $url, "Test#$i-$j: $name");
+                $this->assertSame($expected, $url, "Test#$i-$j: $name");
             }
         }
     }
@@ -51,8 +51,8 @@ class UrlRuleTest extends TestCase
                 $request->pathInfo = $test[0];
                 $expected = $test[1];
                 $result = $rule->parseRequest($manager, $request);
-                if ($expected === false) {
-                    $this->assertFalse($result, "Test#$i-$j: $name");
+                if (empty($expected)) {
+                    $this->assertSame($expected, $result, "Test#$i-$j: $name");
                 } else {
                     $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                 }
@@ -76,8 +76,8 @@ class UrlRuleTest extends TestCase
                 $expected = isset($test[2]) ? $test[2] : $test[1];
                 try {
                     $result = $rule->parseRequest($manager, $request);
-                    if ($expected === false) {
-                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    if (empty($expected)) {
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     } else {
                         $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                     }
@@ -107,8 +107,8 @@ class UrlRuleTest extends TestCase
                 $expected = isset($test[2]) ? $test[2] : $test[1];
                 try {
                     $result = $rule->parseRequest($manager, $request);
-                    if ($expected === false) {
-                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    if (empty($expected)) {
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     } else {
                         $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                     }
@@ -136,8 +136,8 @@ class UrlRuleTest extends TestCase
                 $expected = isset($test[2]) ? $test[2] : $test[1];
                 try {
                     $result = $rule->parseRequest($manager, $request);
-                    if ($expected === false) {
-                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    if (empty($expected)) {
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     } else {
                         $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                     }
@@ -165,8 +165,8 @@ class UrlRuleTest extends TestCase
                 $expected = $test[1];
                 try {
                     $result = $rule->parseRequest($manager, $request);
-                    if ($expected === false) {
-                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    if (empty($expected)) {
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     } else {
                         $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                     }
@@ -192,8 +192,8 @@ class UrlRuleTest extends TestCase
                 $request->pathInfo = $test[0];
                 $expected = isset($test[2]) ? $test[2] : $test[1];
                 $result = $rule->parseRequest($manager, $request);
-                if ($expected === false) {
-                    $this->assertFalse($result, "Test#$i-$j: $name");
+                if (empty($expected)) {
+                    $this->assertSame($expected, $result, "Test#$i-$j: $name");
                 } else {
                     $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                 }
@@ -221,8 +221,8 @@ class UrlRuleTest extends TestCase
                 $request->pathInfo = $test[0];
                 $expected = isset($test[2]) ? $normalizerAction($test[2]) : $test[1];
                 $result = $rule->parseRequest($manager, $request);
-                if ($expected === false) {
-                    $this->assertFalse($result, "Test#$i-$j: $name");
+                if (empty($expected)) {
+                    $this->assertSame($expected, $result, "Test#$i-$j: $name");
                 } else {
                     $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                 }
