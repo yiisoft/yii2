@@ -196,4 +196,11 @@ class Order extends ActiveRecord
             'total' => 'Invoice Total',
         ];
     }
+
+    public function activeAttributes()
+    {
+        return [
+            0 => 'customer_id'
+        ];
+    }
 }
