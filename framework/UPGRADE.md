@@ -34,6 +34,9 @@ Upgrade to Yii 2.1.0
   `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
   `yii\widgets\ActiveField::hint($content = null, $options = [])`
 
+* `yii\filters\AccessControl` has been optimized by only instantiating rules at the moment of use. 
+   This could lead to a potential BC-break if you are depending on $rules to be instantiated in init().
+
 Upgrade from Yii 2.0.8
 ----------------------
 
