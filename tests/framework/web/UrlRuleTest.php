@@ -459,8 +459,7 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1, 'tag' => 'a'],
                 ],
                 [
-                    ['post/index', [], 'post'],
-                    ['post/index', ['page' => 1], 'post'],
+                    ['post/index', ['page' => 1], false],
                     ['post/index', ['page' => '1abc', 'tag' => 'a'], false],
                     ['post/index', ['page' => 1, 'tag' => 'a'], 'post'],
                     ['post/index', ['page' => 2, 'tag' => 'a'], 'post/2'],
@@ -476,8 +475,7 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1, 'tag' => 'a'],
                 ],
                 [
-                    ['post/index', [], 'post/-'],
-                    ['post/index', ['page' => 1], 'post/-'],
+                    ['post/index', ['page' => 1], false],
                     ['post/index', ['page' => '1abc', 'tag' => 'a'], false],
                     ['post/index', ['page' => 1, 'tag' => 'a'], 'post/-'],
                     ['post/index', ['page' => 1, 'tag' => 'b'], 'post/-b'],
@@ -497,6 +495,11 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => 2, 'tag' => ''], 'posts/2'],
                     ['post/index', ['page' => 2, 'tag' => 'news'], 'posts/2/news'],
                     ['post/index', ['page' => 1, 'tag' => 'news'], 'posts/news'],
+                    // allow skip empty params on URL creation
+                    ['post/index', [], false],
+                    ['post/index', ['tag' => ''], false],
+                    ['post/index', ['page' => 1], 'posts'],
+                    ['post/index', ['page' => 2], 'posts/2'],
                 ],
             ],
             [
