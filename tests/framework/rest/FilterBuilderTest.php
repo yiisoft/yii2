@@ -4,7 +4,7 @@ namespace yiiunit\framework\rest;
 
 use yii\base\DynamicModel;
 use yii\rest\FilterBuilder;
-use yiiunit\data\base\SearchModel;
+use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
@@ -21,36 +21,59 @@ class FilterBuilderTest extends TestCase
 
     // Tests :
 
-    public function testSetupModel()
+    public function testSetupSearchModel()
     {
         $builder = new FilterBuilder();
 
-        $model = new SearchModel();
-        $builder->setModel($model);
-        $this->assertSame($model, $builder->getModel());
+        $model = new Singer();
+        $builder->setSearchModel($model);
+        $this->assertSame($model, $builder->getSearchModel());
 
-        $builder->setModel(SearchModel::className());
-        $model = $builder->getModel();
-        $this->assertTrue($model instanceof SearchModel);
+        $builder->setSearchModel(Singer::className());
+        $model = $builder->getSearchModel();
+        $this->assertTrue($model instanceof Singer);
 
-        $builder->setModel([
-            'class' => SearchModel::className(),
+        $builder->setSearchModel([
+            'class' => Singer::className(),
             'scenario' => 'search',
         ]);
-        $model = $builder->getModel();
-        $this->assertTrue($model instanceof SearchModel);
+        $model = $builder->getSearchModel();
+        $this->assertTrue($model instanceof Singer);
         $this->assertEquals('search', $model->getScenario());
 
-        $builder->setModel(function () {
+        $builder->setSearchModel(function () {
             return (new DynamicModel(['name' => null, 'price' => null]))
                 ->addRule(['name'], 'string', ['max' => 128])
                 ->addRule(['price'], 'number');
         });
-        $model = $builder->getModel();
+        $model = $builder->getSearchModel();
         $this->assertTrue($model instanceof DynamicModel);
 
         $this->setExpectedException('yii\base\InvalidConfigException');
-        $builder->setModel(new \stdClass());
+        $builder->setSearchModel(new \stdClass());
+    }
+
+    public function testLoad()
+    {
+        $filterValue = [
+            'name' => 'value'
+        ];
+
+        $builder = new FilterBuilder();
+
+        $this->assertTrue($builder->load(['filter' => $filterValue]));
+        $this->assertEquals($filterValue, $builder->getFilter());
+
+        $this->assertFalse($builder->load([]));
+
+        $builder = new FilterBuilder();
+        $builder->filterAttributeName = 'search';
+
+        $builder->load(['filter' => $filterValue]);
+        $this->assertNull($builder->getFilter());
+
+        $builder->load(['search' => $filterValue]);
+        $this->assertEquals($filterValue, $builder->getFilter());
     }
 
     /**
@@ -60,6 +83,23 @@ class FilterBuilderTest extends TestCase
     public function dataProviderValidate()
     {
         return [
+            [
+                [],
+                true,
+                []
+            ],
+            [
+                null,
+                true,
+                []
+            ],
+            [
+                '',
+                false,
+                [
+                    'The format of Filter is invalid.'
+                ]
+            ],
             [
                 [
                     'name' => 'foo',
@@ -119,7 +159,7 @@ class FilterBuilderTest extends TestCase
     }
 
     /**
-     * @depends testSetupModel
+     * @depends testSetupSearchModel
      *
      * @dataProvider dataProviderValidate
      *
@@ -130,11 +170,16 @@ class FilterBuilderTest extends TestCase
     public function testValidate($filter, $expectedResult, $expectedErrors)
     {
         $builder = new FilterBuilder();
+        $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))
+            ->addRule('name', 'string')
+            ->addRule('number', 'integer', ['min' => 0, 'max' => 100])
+            ->addRule('price', 'number')
+            ->addRule('tags', 'each', ['rule' => ['string']]);
 
-        $builder->setModel(new SearchModel());
+        $builder->setSearchModel($searchModel);
 
         $builder->filter = $filter;
         $this->assertEquals($expectedResult, $builder->validate());
-        $this->assertEquals($expectedErrors, $builder->errors);
+        $this->assertEquals($expectedErrors, $builder->getErrors('filter'));
     }
 }
