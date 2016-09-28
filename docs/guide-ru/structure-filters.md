@@ -340,7 +340,10 @@ public function behaviors()
 }
 ```
 
-Фильтрация Cors может быть настроена с помощью свойства `cors`.
+Если вам необходимо добавить CORS-фильтрацию к [[yii\rest\ActiveController]] в вашем API, обратитесь к разделу
+[Контроллеры](rest-controllers.md#cors).
+
+Фильтрация Cors может быть настроена с помощью свойства [[yii\filters\Cors::$cors|$cors]].
 
 * `cors['Origin']`: массив, используемый для определения источников. Может принимать значение `['*']` (все) или
   `['http://www.myserver.net', 'http://www.myotherserver.com']`. По умолчанию значение равно `['*']`.
