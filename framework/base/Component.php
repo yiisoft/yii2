@@ -476,6 +476,18 @@ class Component extends Object
     public function on($name, $handler, $data = null, $append = true)
     {
         $this->ensureBehaviors();
+
+		/*if (!$priority = $append) {
+			$priority = PHP_INT_MAX;
+		}
+
+		if (empty($this->_events[$name])) {
+			$this->_events[$name] = new PriorityQueue();
+		}
+
+		$this->_events[$name]->insert([$handler, $data], $priority);*/
+
+
         if ($append || empty($this->_events[$name])) {
             $this->_events[$name][] = [$handler, $data];
         } else {
