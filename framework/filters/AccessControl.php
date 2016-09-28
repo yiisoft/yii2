@@ -11,8 +11,8 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\di\Instance;
-use yii\web\User;
 use yii\web\ForbiddenHttpException;
+use yii\web\User;
 
 /**
  * AccessControl provides simple access control based on a set of rules.
@@ -88,21 +88,6 @@ class AccessControl extends ActionFilter
      */
     public $rules = [];
 
-
-    /**
-     * Initializes the [[rules]] array by instantiating rule objects from configurations.
-     */
-    public function init()
-    {
-        parent::init();
-        $this->user = Instance::ensure($this->user, User::class);
-        foreach ($this->rules as $i => $rule) {
-            if (is_array($rule)) {
-                $this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
-            }
-        }
-    }
-
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
@@ -111,10 +96,13 @@ class AccessControl extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $user = $this->user;
+        $user = $this->user = Instance::ensure($this->user, User::class);
         $request = Yii::$app->getRequest();
         /* @var $rule AccessRule */
-        foreach ($this->rules as $rule) {
+        foreach ($this->rules as $key => $rule) {
+            if (!is_object($rule)) {
+                $rule = $this->rules[$key] = Yii::createObject(array_merge($this->ruleConfig, $rule));
+            }
             if ($allow = $rule->allows($action, $user, $request)) {
                 return true;
             } elseif ($allow === false) {

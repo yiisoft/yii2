@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.1.0 under development
 -----------------------
-
+- Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
 - Removed methods marked as deprected in 2.0.x (samdark)
 - Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
 - Chg #11397: Minimum required version of PHP is 5.5.0 now (samdark)
