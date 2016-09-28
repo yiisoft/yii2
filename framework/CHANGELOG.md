@@ -11,7 +11,7 @@ Yii Framework 2 Change Log
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #12296: Added value validation to `yii\log\Target::setLevels()` (Mak-Di)
 - Enh #12193: Added the ability to suppress the generation of duplicate error messages in `Html::errorSummary`. Added the ability to display error messages beyond the first error for each model attribute (PowerGamer1)
-- Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
+- Enh #12073: Added the ability to suppress the generation of input hint when it is specified through `Model::attributeHints()` (PowerGamer1)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
 - Bug #9277: Fixed `yii\console\controllers\AssetController` looses custom options of 'target' bundles (petrabarus, klimov-paul)
@@ -49,10 +49,10 @@ Yii Framework 2 Change Log
 - Bug #12463: Fixed `yii\web\Request::getBodyParams()` does not pass full 'content-type' value to `yii\web\RequestParserInterface::parse()` (klimov-paul)
 - Bug #12537: Fixes issues with spaces in `StringHelper:truncateHtml` (Alex-Code)
 - Bug #12554: Fixed `yii\validators\UniqueValidator` error of getting first model indexed by field (DrDeath72)
-- Enh #384: Added ability to run migration from several locations via [[yii\console\controllers\BaseMigrateController::migrationNamespaces]] (klimov-paul)
+- Enh #384: Added ability to run migration from several locations via `yii\console\controllers\BaseMigrateController::migrationNamespaces` (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
-- Enh #9469: Added support for namespaced migrations via [[yii\console\controllers\BaseMigrateController::migrationNamespaces]] (klimov-paul)
+- Enh #9469: Added support for namespaced migrations via `yii\console\controllers\BaseMigrateController::migrationNamespaces` (klimov-paul)
 - Enh #9708: Added `yii\console\controllers\AssetController::deleteSource` option allowing deletion of the source asset files after compression (pana1990, klimov-paul)
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #10243: Added `yii\data\Sort::setAttributeOrders()` method allowing manual setup of current sort (klimov-paul)
@@ -66,7 +66,7 @@ Yii Framework 2 Change Log
 - Enh #12028: Add -h|--help option to console command to display help information (pana1990)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
 - Enh #12048: Improved message extraction command performance (samdark)
-- Enh #12073: Added the ability to suppress the generation of input hint when it is specified through  `Model::attributeHints()` (PowerGamer1)
+- Enh #12073: Added the ability to suppress the generation of input hint when it is specified through `Model::attributeHints()` (PowerGamer1)
 - Enh #12082: Used `jQuery.on(` instead of event method to ensure forwards compatibility (newerton)
 - Enh #12099: HttpCache no longer returns 304 HTTP code when callbacks return null (sergeymakinen)
 - Enh #12193: Added the ability to suppress the generation of duplicate error messages in `Html::errorSummary`. Added the ability to display error messages beyond the first error for each model attribute (PowerGamer1)
@@ -561,7 +561,7 @@ Yii Framework 2 Change Log
 - Bug #7425: `yii\widgets\ActiveField::radio()` should not generate the label twice (justinvoelker)
 - Enh #3168: Improved the performance of `yii\rbac\DbManager::checkAccess()` by caching mechanism (qiangxue)
 - Enh #3723: `yii\filters\PageCache` now supports caching response headers as well as non-HTML response content (qiangxue)
-- Enh #4710: Added `yii\web\AssetManager::appendTimestamp` to support cache busting for assets  (qiangxue)
+- Enh #4710: Added `yii\web\AssetManager::appendTimestamp` to support cache busting for assets (qiangxue)
 - Enh #5663: Added support for using `data-params` to specify additional form data to be submitted via the `data-method` approach (usualdesigner, qiangxue)
 - Enh #5681: Allow customization of Menu::submenuTemplate in menu items (RobertBoes, otsec)
 - Enh #6106: Added ability to specify `encode` for each item of `yii\widgets\Breadcrumbs` (samdark, aleksanderd)
@@ -1129,30 +1129,30 @@ Yii Framework 2 Change Log
 - Enh #3811: Now Gii model generator makes autocomplete for model class field (mitalcoi)
 - Enh #3926: `yii\widgets\Breadcrumbs::$links`. Allows individual link to have its own `template` (creocoder, umneeq)
 - Enh #3939: `\yii\Inflector::slug()` improvements (samdark)
-    - Added protected `\yii\Inflector::transliterate()` that could be replaced with custom translit implementation.
-    - Added proper tests for both intl-based slug and PHP fallback.
-    - Removed character maps for non-latin languages.
-    - Improved overall slug results.
-    - Added note about the fact that intl is required for non-latin languages to requirements checker.
+  - Added protected `\yii\Inflector::transliterate()` that could be replaced with custom translit implementation.
+  - Added proper tests for both intl-based slug and PHP fallback.
+  - Removed character maps for non-latin languages.
+  - Improved overall slug results.
+  - Added note about the fact that intl is required for non-latin languages to requirements checker.
 - Enh #3957: Added more straightforward configurable properties to `BlameableBehavior`, `SluggableBehavior` and `TimestampBehavior` (creocoder)
 - Enh #3992: In mail layouts you can now access the message object via `$message` variable (qiangxue)
 - Enh #4028: Added ability to `yii\widgets\Menu` to encode each item's label separately (creocoder, umneeq)
 - Enh #4048: Added `init` event to `ActiveQuery` classes (qiangxue)
 - Enh #4072: `\yii\rbac\PhpManager` adjustments (samdark)
-    - Data is now stored in three separate files for items, assignments and rules. File format is simpler.
-    - Removed `authFile`. Added `itemFile`, `assignmentFile` and `ruleFile`.
-    - `createdAt` and `updatedAt` are now properly filled with corresponding file modification time.
-    - `save()` and `load()` are now protected instead of public.
-    - Added unit test for saving and loading data.
+  - Data is now stored in three separate files for items, assignments and rules. File format is simpler.
+  - Removed `authFile`. Added `itemFile`, `assignmentFile` and `ruleFile`.
+  - `createdAt` and `updatedAt` are now properly filled with corresponding file modification time.
+  - `save()` and `load()` are now protected instead of public.
+  - Added unit test for saving and loading data.
 - Enh #4080: Added proper handling and support of the symlinked directories in `FileHelper`, added $options parameter in `FileHelper::removeDirectory()` (resurtm)
 - Enh #4086: changedAttributes of afterSave Event now contain old values (dizews)
 - Enh #4114: Added `Security::generateRandomBytes()`, improved tests (samdark)
 - Enh #4122: `Html::error()` and `Html::errorSummary()` are now accepting `encode` option. If set to false it prevents encoding of error messages (samdark)
 - Enh #4131: Security adjustments (tom--)
-     - Added HKDF to `yii\base\Security`.
-     - Reverted auto fallback to PHP PBKDF2.
-     - Fixed PBKDF2 key truncation.
-     - Adjusted API.
+  - Added HKDF to `yii\base\Security`.
+  - Reverted auto fallback to PHP PBKDF2.
+  - Fixed PBKDF2 key truncation.
+  - Adjusted API.
 - Enh #4209: Added `beforeCopy`, `afterCopy`, `forceCopy` properties to AssetManager (cebe)
 - Enh #4225: Added `ActiveForm::validateOnBlur` and `ActiveField::validateOnBlur` (qiangxue)
 - Enh #4297: Added check for DOM extension to requirements (samdark)
@@ -1198,8 +1198,8 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\web\Response::enableCsrfCookie` to support storing CSRF tokens in session (qiangxue)
 - Chg #2287: Split `yii\db\ColumnSchema::typecast()` into two methods `phpTypecast()` and `dbTypecast()` to allow specifying PDO type explicitly (cebe)
 - Chg #2359: Refactored formatter class. One class with or without intl extension and PHP format pattern as standard (Erik_r, cebe)
-   - `yii\base\Formatter` functionality has been merged into `yii\i18n\Formatter`
-   - removed the `yii\base\Formatter` class
+  - `yii\base\Formatter` functionality has been merged into `yii\i18n\Formatter`
+  - removed the `yii\base\Formatter` class
 - Chg #1551: Refactored DateValidator to support ICU date format and use the format defined in Formatter by default (cebe)
 - Chg #2898: `yii\console\controllers\AssetController` is now using hashes instead of timestamps (samdark)
 - Chg #2913: RBAC `DbManager` is now initialized via migration (samdark)
@@ -1212,10 +1212,10 @@ Yii Framework 2 Change Log
 - Chg #3531: \yii\grid\GridView now allows any character (except ":") in the attribute part of the shorthand syntax for columns (rawtaz)
 - Chg #3544: Added `$key` as a parameter to the callable specified via `yii\grid\DataColumn::value` (mdmunir)
 - Chg #3611: Query caching is refactored. (qiangxue)
-    - `yii\db\Connection::beginCache()` and `endCache()` are removed.
-    - Added `yii\db\Connection::cache()` and `noCache()`.
-    - Added `Command::cache()` and `noCache()`.
-    - `yii\db\Connection::queryCacheDuration` is now used as a default cache duration parameter.
+  - `yii\db\Connection::beginCache()` and `endCache()` are removed.
+  - Added `yii\db\Connection::cache()` and `noCache()`.
+  - Added `Command::cache()` and `noCache()`.
+  - `yii\db\Connection::queryCacheDuration` is now used as a default cache duration parameter.
 - Chg #3640: All cookies are now httpOnly by default in order to increase overall security (samdark)
 - Chg #3687: Default `sourceLanguage` and `language` are now `en-US` in order for i18n formatter to work correctly (samdark)
 - Chg #3804: Added `fileinfo` PHP extension to the basic requirement of Yii (Ragazzo)
@@ -1243,8 +1243,8 @@ Yii Framework 2 Change Log
 - Chg #4595: `yii\widgets\LinkPager`'s `nextPageLabel`, `prevPageLabel`, `firstPageLabel`, `lastPageLabel` are now taking `false` instead of `null` for "no label" (samdark)
 - Chg #4911: Changed callback signature used in `yii\base\ArrayableTrait::fields()` from `function ($field, $model) {` to `function ($model, $field) {` (samdark)
 - Chg #4955: Replaced callbacks with events for `ActiveForm` (qiangxue)
-    - Removed `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()` from `ActiveForm`.
-    - Added `beforeValidate`, `afterValidate`, `beforeValidateAttribute`, `afterValidateAttribute`, `beforeSubmit`, `ajaxBeforeSend` and `ajaxComplete` events to `yii.activeForm` jQuery plugin.
+  - Removed `beforeValidate()`, `beforeValidateAll()`, `afterValidate()`, `afterValidateAll()`, `ajaxBeforeSend()` and `ajaxComplete()` from `ActiveForm`.
+  - Added `beforeValidate`, `afterValidate`, `beforeValidateAttribute`, `afterValidateAttribute`, `beforeSubmit`, `ajaxBeforeSend` and `ajaxComplete` events to `yii.activeForm` jQuery plugin.
 - Chg #5176: `ActiveFixture` will reset table in its `load()` method instead of `unload()` (qiangxue)
 - Chg: Replaced `clearAll()` and `clearAllAssignments()` in `yii\rbac\ManagerInterface` with `removeAll()`, `removeAllRoles()`, `removeAllPermissions()`, `removeAllRules()` and `removeAllAssignments()` (qiangxue)
 - Chg: Added `$user` as the first parameter of `yii\rbac\Rule::execute()` (qiangxue)
@@ -1394,9 +1394,9 @@ Yii Framework 2 Change Log
 - Enh #2051: Do not save null data into database when using RBAC (qiangxue)
 - Enh #2054: Added support for using custom application configuration with the console command runner (qiangxue)
 - Enh #2079:
-    - i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
-    - View now falls back to `en` from `en-US` if file not found (samdark)
-    - Default `sourceLanguage` and `language` are now `en` (samdark)
+  - i18n now falls back to `en` from `en-US` if message translation isn't found (samdark)
+  - View now falls back to `en` from `en-US` if file not found (samdark)
+  - Default `sourceLanguage` and `language` are now `en` (samdark)
 - Enh #2101: Gii is now using model labels when generating search (thiagotalma)
 - Enh #2102: DetailView now allow use `category.name` as attribute name (creocoder)
 - Enh #2102: DetailView now allow use custom label in string format like `name:format:label` (creocoder)
@@ -1478,17 +1478,17 @@ Yii Framework 2 Change Log
 - Chg #1958: `beforeSubmit` in `yii.activeform` is now executed after validation and before form submission (6pblcb)
 - Chg #2025: Removed ability to declare scopes in ActiveRecord (samdark)
 - Chg #2043:
-    - Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
-    - Removed `yii\web\Request::getPost()`, `getPut()`, `getDelete()`, `getPatch()` in favor of `getBodyParam()` (cebe)
-    - Renamed `yii\web\Request::get()` to `getQueryParams()` and `getRestParams()` to `getBodyParams()` (cebe)
-    - Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
+  - Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
+  - Removed `yii\web\Request::getPost()`, `getPut()`, `getDelete()`, `getPatch()` in favor of `getBodyParam()` (cebe)
+  - Renamed `yii\web\Request::get()` to `getQueryParams()` and `getRestParams()` to `getBodyParams()` (cebe)
+  - Added `yii\web\Request::get($name = null, $defaultValue = null)` and `yii\web\Request::post($name = null, $defaultValue = null)` (samdark)
 - Chg #2059: Implemented git-flavored file excluding/filtering for `FileHelper` (nineinchnick)
 - Chg #2063: Removed `yii\web\Request::acceptTypes` and renamed `yii\web\Request::acceptedContentTypes` to `acceptableContentTypes` (qiangxue)
 - Chg #2103: Renamed AccessDeniedHttpException to ForbiddenHttpException (danschmidt5189)
 - Chg #2146: Removed `ActiveRelation` class and `ActiveRelationInterface`, moved the functionality to `ActiveQuery`.
-             All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
-             and also to declare arbitrary queries as relations.
-             Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
+  All relational queries are now directly served by `ActiveQuery` allowing to use custom scopes in relations
+  and also to declare arbitrary queries as relations.
+  Also removed `ActiveRecordInterface::createActiveRelation()` (cebe)
 - Chg #2157: The '*' category pattern will match all categories that do not match any other patterns listed in `I18N::translations` (qiangxue, Ragazzo)
 - Chg #2161: Added ability to use `return` in `Widget::run` (samdark)
 - Chg #2173: Removed `StringHelper::diff()`, Moved `phpspec/php-diff` dependency from `yiisoft/yii2` to `yiisoft/yii2-gii` (samdark)
@@ -1499,16 +1499,16 @@ Yii Framework 2 Change Log
 - Chg #2405: The CSS class of `MaskedInput` now defaults to `form-control` (qiangxue)
 - Chg #2426: Changed URL creation method signatures to be consistent (samdark)
 - Chg #2516: Moved error handling from application to ErrorHandler class and fixed problems with HTTP Exception response code (cebe)
-    - `Yii::$app->exception` has now moved to `Yii::$app->errorHandler->exception`
-    - `yii\base\ErrorHandler` was split into `yii\web\ErrorHandler` and `yii\console\ErrorHandler`
+  - `Yii::$app->exception` has now moved to `Yii::$app->errorHandler->exception`
+  - `yii\base\ErrorHandler` was split into `yii\web\ErrorHandler` and `yii\console\ErrorHandler`
 - Chg #2544: Changed `DetailView`'s `name:format:label` to `attribute:format:label` to match `GridView` (samdark)
 - Chg #2603: `yii\base\ErrorException` now extends `\ErrorException` (samdark)
 - Chg #2629: `Module::controllerPath` is now read only, and all controller classes must be namespaced under `Module::controllerNamespace`. (qiangxue)
 - Chg #2630: API changes for URLs generation (samdark, qiangxue, cebe)
-    - Added `yii\helpers\Url`.
-    - Removed `yii\helpers\Html::url`, use `yii\helpers\Url::to` instead.
-    - Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers\Url::toRoute` instead.
-    - Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
+  - Added `yii\helpers\Url`.
+  - Removed `yii\helpers\Html::url`, use `yii\helpers\Url::to` instead.
+  - Removed `yii\web\Controller::createUrl` and `yii\web\Controller::createAbsoluteUrl`, use `yii\helpers\Url::toRoute` instead.
+  - Removed `yii\web\Controller::getCanonicalUrl`, use `yii\helpers\Url::canonical` instead.
 - Chg #2691: Null parameters will not be included in the generated URLs by `UrlManager` (gonimar, qiangxue)
 - Chg #2734: `FileCache::keyPrefix` defaults to empty string now (qiangxue)
 - Chg #2796: Removed `Application::preload` in favor of `Application::bootstrap` (qiangxue)
@@ -1527,7 +1527,7 @@ Yii Framework 2 Change Log
 - Chg: Updated HTMLPurified dependency to `4.6.*`.
 - Chg: Changed Yii autoloader to support loading PSR-4 classes only (i.e. PEAR-styled classes not supported anymore) (qiangxue)
 - Chg: Changed the directory structure according to PSR-4. You have to update your application `index.php`,
-       `index-test.php` and `yii` files to point to the new location of `Yii.php` (qiangxue, cebe)
+  `index-test.php` and `yii` files to point to the new location of `Yii.php` (qiangxue, cebe)
 - Chg: Advanced app template: moved database connection DSN, login and password to `-local` config not to expose it to VCS (samdark)
 - Chg: Renamed `yii\web\Request::acceptedLanguages` to `acceptableLanguages` (qiangxue)
 - Chg: Removed implementation of `Arrayable` from `yii\Object` (qiangxue)
@@ -1535,16 +1535,16 @@ Yii Framework 2 Change Log
 - Chg: Renamed `csrf-var` to `csrf-param` for CSRF header name (Dilip)
 - Chg: The directory holding email templates is renamed from `mails` to `mail` (qiangxue)
 - Chg: Renamed properties `fooVar` to `fooParam` for various classes (qiangxue)
-    - Renamed `ActiveForm::ajaxVar` to `ajaxParam`
-    - Renamed `Pagination::pageVar` to `pageParam`
-    - Renamed `Sort::sortVar` to `sortParam`
-    - Renamed `yii\web\Request::csrfVar` to `csrfParam`
-    - Renamed `yii\web\Request::methodVar` to `methodParam`
-    - Renamed `UrlManager::routeVar` to `routeParam`
-    - Renamed `yii\web\Session::flashVar` to `flashParam`
-    - Renamed `yii\web\User::idVar` to `idParam`
-    - Renamed `yii\web\User::authTimeoutVar` to `authTimeoutParam`
-    - Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
+  - Renamed `ActiveForm::ajaxVar` to `ajaxParam`
+  - Renamed `Pagination::pageVar` to `pageParam`
+  - Renamed `Sort::sortVar` to `sortParam`
+  - Renamed `yii\web\Request::csrfVar` to `csrfParam`
+  - Renamed `yii\web\Request::methodVar` to `methodParam`
+  - Renamed `UrlManager::routeVar` to `routeParam`
+  - Renamed `yii\web\Session::flashVar` to `flashParam`
+  - Renamed `yii\web\User::idVar` to `idParam`
+  - Renamed `yii\web\User::authTimeoutVar` to `authTimeoutParam`
+  - Renamed `yii\web\User::returnUrlVar` to `returnUrlParam`
 - Chg: Added `View::viewFile` and removed `ViewEvent::viewFile` (qiangxue)
 - Chg: Changed `Controller::afterAction()`, `Module::afterAction()` and `ActionFilter::afterAction()` to pass `$result` by value instead of reference (qiangxue)
 - Chg: `yii\base\Extension::init()` is renamed to `bootstrap()` (qiangxue)
