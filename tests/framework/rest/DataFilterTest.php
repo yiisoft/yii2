@@ -3,14 +3,14 @@
 namespace yiiunit\framework\rest;
 
 use yii\base\DynamicModel;
-use yii\rest\FilterBuilder;
+use yii\rest\DataFilter;
 use yiiunit\data\base\Singer;
 use yiiunit\TestCase;
 
 /**
  * @group rest
  */
-class FilterBuilderTest extends TestCase
+class DataFilterTest extends TestCase
 {
     protected function setUp()
     {
@@ -23,7 +23,7 @@ class FilterBuilderTest extends TestCase
 
     public function testSetupSearchModel()
     {
-        $builder = new FilterBuilder();
+        $builder = new DataFilter();
 
         $model = new Singer();
         $builder->setSearchModel($model);
@@ -59,14 +59,14 @@ class FilterBuilderTest extends TestCase
             'name' => 'value'
         ];
 
-        $builder = new FilterBuilder();
+        $builder = new DataFilter();
 
         $this->assertTrue($builder->load(['filter' => $filterValue]));
         $this->assertEquals($filterValue, $builder->getFilter());
 
         $this->assertFalse($builder->load([]));
 
-        $builder = new FilterBuilder();
+        $builder = new DataFilter();
         $builder->filterAttributeName = 'search';
 
         $builder->load(['filter' => $filterValue]);
@@ -155,6 +155,16 @@ class FilterBuilderTest extends TestCase
                     'Name must be a string.'
                 ]
             ],
+            [
+                [
+                    'number' => [
+                        '$gt' => 10,
+                        '$lt' => 20,
+                    ],
+                ],
+                true,
+                []
+            ],
         ];
     }
 
@@ -169,7 +179,7 @@ class FilterBuilderTest extends TestCase
      */
     public function testValidate($filter, $expectedResult, $expectedErrors)
     {
-        $builder = new FilterBuilder();
+        $builder = new DataFilter();
         $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))
             ->addRule('name', 'string')
             ->addRule('number', 'integer', ['min' => 0, 'max' => 100])

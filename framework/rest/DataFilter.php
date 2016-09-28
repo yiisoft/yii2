@@ -12,7 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Model;
 
 /**
- * FilterBuilder
+ * DataFilter
  *
  * @property mixed $filter filter value.
  * @property Model $searchModel model to be used for filter attributes validation.
@@ -20,7 +20,7 @@ use yii\base\Model;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
-class FilterBuilder extends Model
+class DataFilter extends Model
 {
     /**
      * @var string name of the attribute, which should handle filter value.
@@ -189,11 +189,6 @@ class FilterBuilder extends Model
             if (is_array($value)) {
                 foreach ($this->operatorKeywords as $operatorKeyword) {
                     if (isset($value[$operatorKeyword])) {
-                        if (count($value) > 1) {
-                            $this->addError($this->filterAttributeName, Yii::t('yii', 'Condition for {attribute} is invalid.', ['attribute' => $attribute]));
-                            continue 2;
-                        }
-
                         $this->validateOperatorCondition($operatorKeyword, $attribute, $value[$operatorKeyword]);
                         continue 2;
                     }
@@ -255,10 +250,11 @@ class FilterBuilder extends Model
     // Build :
 
     /**
+     * Builds actual filter specification form [[filter]] value.
      * @param boolean $runValidation whether to perform validation (calling [[validate()]])
-     * before building the filter. Defaults to `true`. If the validation fails, the exception
-     * will be thrown.
-     * @return mixed built actual filter value.
+     * before building the filter. Defaults to `true`. If the validation fails, no filter will
+     * be built and this method will return `false`.
+     * @return mixed|false built actual filter value, or `false` if validation fails.
      */
     public function build($runValidation = true)
     {
