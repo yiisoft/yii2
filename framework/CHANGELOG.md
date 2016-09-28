@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #10243: Added `yii\data\Sort::setAttributeOrders()` method allowing manual setup of current sort (klimov-paul)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
+- Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #11096: Added support for PSR-2 style migration naming for namespaced migrations (klimov-paul)
 - Enh #11275: Added possibility of unset or force replace former value in `ArrayHelper::merge()` (mdmunir, rob006)
 - Enh #11658: Added argument to `yii\grid\ActionColumn::urlCreator` callback, which holds reference to the column instance (klimov-paul)
