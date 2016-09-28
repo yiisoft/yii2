@@ -477,22 +477,15 @@ class Component extends Object
     {
         $this->ensureBehaviors();
 
-		/*if (!$priority = $append) {
+		if (!$priority = $append) {
 			$priority = PHP_INT_MAX;
 		}
 
 		if (empty($this->_events[$name])) {
-			$this->_events[$name] = new PriorityQueue();
+			$this->_events[$name] = new EventPriorityQueue();
 		}
 
-		$this->_events[$name]->insert([$handler, $data], $priority);*/
-
-
-        if ($append || empty($this->_events[$name])) {
-            $this->_events[$name][] = [$handler, $data];
-        } else {
-            array_unshift($this->_events[$name], [$handler, $data]);
-        }
+		$this->_events[$name]->insert([$handler, $data], $priority);
     }
 
     /**
@@ -507,24 +500,16 @@ class Component extends Object
     public function off($name, $handler = null)
     {
         $this->ensureBehaviors();
-        if (empty($this->_events[$name])) {
+
+		if (empty($this->_events[$name])) {
             return false;
         }
+
         if ($handler === null) {
             unset($this->_events[$name]);
             return true;
         } else {
-            $removed = false;
-            foreach ($this->_events[$name] as $i => $event) {
-                if ($event[0] === $handler) {
-                    unset($this->_events[$name][$i]);
-                    $removed = true;
-                }
-            }
-            if ($removed) {
-                $this->_events[$name] = array_values($this->_events[$name]);
-            }
-            return $removed;
+			$this->_events[$name]->remove($handler);
         }
     }
 
