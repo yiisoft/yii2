@@ -24,6 +24,30 @@ class ActiveDataFilterTest extends TestCase
                 [],
                 [],
             ],
+            [
+                [
+                    'name' => 'some',
+                    'number' => '2',
+                ],
+                [
+                    'AND',
+                    ['name' => 'some'],
+                    ['number' => '2'],
+                ],
+            ],
+            [
+                [
+                    '$and' => [
+                        ['name' => 'some'],
+                        ['number' => '2'],
+                    ]
+                ],
+                [
+                    'AND',
+                    ['name' => 'some'],
+                    ['number' => '2'],
+                ]
+            ],
         ];
     }
 
