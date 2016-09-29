@@ -20,7 +20,7 @@ class EventPriorityQueue implements \IteratorAggregate, \Countable
 	/**
 	 * @var int
 	 */
-	protected $maxPriority;
+	protected $maxPriority = 0;
 
 	/**
 	 * @var \SplPriorityQueue
@@ -35,10 +35,10 @@ class EventPriorityQueue implements \IteratorAggregate, \Countable
 	/**
 	 * Insert data into queue with given priority
 	 *
-	 * @param $data
+	 * @param array $data
 	 * @param mixed $priority
 	 */
-	public function insert($data, $priority = 1)
+	public function insert(array $data, $priority = 1)
 	{
 		if (is_int($priority)) {
 			$priority = [$priority, $this->priorityCounter--];
@@ -81,11 +81,14 @@ class EventPriorityQueue implements \IteratorAggregate, \Countable
 		}
 
 		$this->innerQueue = null;
+		$this->maxPriority = 0;
 		$this->getInnerQueue();
 
 		if (count($this->items)) {
 			foreach ($this->items as $item) {
-				$this->innerQueue->insert($item['data'], $item['priority']);
+				$priority = $item['priority'];
+				$this->decideMaxPriority($priority);
+				$this->innerQueue->insert($item['data'], $priority);
 			}
 		}
 
