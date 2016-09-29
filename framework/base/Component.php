@@ -478,7 +478,7 @@ class Component extends Object
         $this->ensureBehaviors();
 
 		if (empty($this->_events[$name])) {
-			$this->_events[$name] = new EventPriorityCollection();
+			$this->_events[$name] = new EventPriorityQueue();
 		}
 
 		if (!$priority) {

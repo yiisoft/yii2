@@ -2,15 +2,15 @@
 namespace yii\base;
 
 /**
- * Short description for file
+ * A simple Priority Queue class that used for Events' Handlers
+ * and solves the two following problems regarding SplPriorityQueue:
  *
- * A simple Priority Queue Class that solves the two following problems:
- * a)
- * b)
+ * a) By default it does not work as a Queue
+ * b) You can't iterate this more than one Times
  *
  * @author Ioannis Bekiaris <info@ibekiaris.me>
  */
-class EventPriorityCollection implements \IteratorAggregate, \Countable
+class EventPriorityQueue implements \IteratorAggregate, \Countable
 {
 	/**
 	 * @var int
@@ -32,13 +32,19 @@ class EventPriorityCollection implements \IteratorAggregate, \Countable
 	 */
 	protected $items = [];
 
+	/**
+	 * Insert data into queue with given priority
+	 *
+	 * @param $data
+	 * @param mixed $priority
+	 */
 	public function insert($data, $priority = 1)
 	{
 		if (is_int($priority)) {
 			$priority = [$priority, $this->priorityCounter--];
 		}
 
-		$this->calculateMaxPriority($priority);
+		$this->decideMaxPriority($priority);
 
 		$this->items[] = [
 			'data' => $data,
@@ -49,6 +55,19 @@ class EventPriorityCollection implements \IteratorAggregate, \Countable
 		$this->getInnerQueue()->insert($data, $priority);
 	}
 
+	/**
+	 * Remove item from queue by given
+	 * handler. This method is the reason why we
+	 * use $items params because SplPriorityQueue
+	 * has not this functionality.
+	 *
+	 * So we remove the Item from $items and
+	 * we repopulate the queue.
+	 *
+	 * @param $handler
+	 *
+	 * @return bool
+	 */
 	public function remove($handler)
 	{
 		$removeStatus = false;
@@ -73,16 +92,25 @@ class EventPriorityCollection implements \IteratorAggregate, \Countable
 		return $removeStatus;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function count()
 	{
 		return count($this->items);
 	}
 
+	/**
+	 * @return \SplPriorityQueue
+	 */
 	public function getIterator()
 	{
 		return clone $this->getInnerQueue();
 	}
 
+	/**
+	 * @return \SplPriorityQueue
+	 */
 	public function getInnerQueue()
 	{
 		if (! $this->innerQueue) {
@@ -92,12 +120,27 @@ class EventPriorityCollection implements \IteratorAggregate, \Countable
 		return $this->innerQueue;
 	}
 
+	/**
+	 * Returns the max priority
+	 * of Items in the queue
+	 *
+	 * @return int
+	 */
 	public function getMaxPriority()
 	{
 		return $this->maxPriority;
 	}
 
-	protected function calculateMaxPriority($priority)
+	/**
+	 * Compares the given priority to the
+	 * current max priority and sets new
+	 * max priority if needed
+	 *
+	 * @param $priority
+	 *
+	 * @return void
+	 */
+	protected function decideMaxPriority($priority)
 	{
 		if(is_array($priority)) {
 			$priority = $priority[0];
