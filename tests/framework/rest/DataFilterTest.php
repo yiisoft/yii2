@@ -121,11 +121,11 @@ class DataFilterTest extends TestCase
             [
                 [
                     '$and' => [
-                        'name' => [
-                            '$eq' => 'foo',
+                        [
+                            'name' => ['$eq' => 'foo']
                         ],
-                        'number' => [
-                            '$in' => [1, 5, 8]
+                        [
+                            'number' => ['$in' => [1, 5, 8]],
                         ],
                     ],
                 ],
@@ -135,11 +135,30 @@ class DataFilterTest extends TestCase
             [
                 [
                     '$and' => [
-                        '$not' => [
-                            'name' => 'foo',
+                        'name' => ['$eq' => 'foo'],
+                        'number' => ['$in' => [1, 5, 8]],
+                    ],
+                ],
+                false,
+                [
+                    'Operator $and requires multiple operands.'
+                ]
+            ],
+            [
+                [
+                    '$not' => ['name' => 'foo']
+                ],
+                true,
+                []
+            ],
+            [
+                [
+                    '$and' => [
+                        [
+                            '$not' => ['name' => 'foo']
                         ],
-                        'number' => [
-                            '$in' => [1, 5, 8]
+                        [
+                            'number' => ['$in' => [1, 5, 8]],
                         ],
                     ],
                 ],
@@ -164,6 +183,15 @@ class DataFilterTest extends TestCase
                 ],
                 true,
                 []
+            ],
+            [
+                [
+                    '$gt' => 10,
+                ],
+                false,
+                [
+                    'Operator $gt must be used with search attribute.'
+                ]
             ],
         ];
     }

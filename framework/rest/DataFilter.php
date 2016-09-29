@@ -10,45 +10,69 @@ namespace yii\rest;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
+use yii\validators\BooleanValidator;
+use yii\validators\EachValidator;
+use yii\validators\NumberValidator;
+use yii\validators\StringValidator;
 
 /**
  * DataFilter
  *
  * @property mixed $filter filter value.
  * @property Model $searchModel model to be used for filter attributes validation.
+ * @property array $searchAttributeTypes search attribute type map.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
 class DataFilter extends Model
 {
+    const TYPE_INTEGER = 'integer';
+    const TYPE_FLOAT = 'float';
+    const TYPE_BOOLEAN = 'boolean';
+    const TYPE_STRING = 'string';
+    const TYPE_ARRAY = 'array';
+
     /**
      * @var string name of the attribute, which should handle filter value.
      */
     public $filterAttributeName = 'filter';
     /**
-     * @var array
+     * @var array map of filter condition keywords to validation methods.
+     * These methods are used by [[validateCondition]] to validate raw filter conditions.
      */
-    public $blockKeywords = [
-        '$and',
-        '$or',
-        '$not',
+    public $conditionValidators = [
+        '$and' => 'validateConjunctionCondition',
+        '$or' => 'validateConjunctionCondition',
+        '$not' => 'validateBlockCondition',
+        '$lt' => 'validateOperatorCondition',
+        '$gt' => 'validateOperatorCondition',
+        '$lte' => 'validateOperatorCondition',
+        '$gte' => 'validateOperatorCondition',
+        '$eq' => 'validateOperatorCondition',
+        '$neq' => 'validateOperatorCondition',
+        '$in' => 'validateOperatorCondition',
+        '$nin' => 'validateOperatorCondition',
     ];
     /**
-     * @var array
+     * @var array specifies the list of supported search attribute type per each operator.
+     * This field should be in format: 'operatorKeyword' => ['type1', 'type2' ...].
+     * Supported types list can be specified as `*`, which indicates operator supports all available types.
+     * Any keyword, which is not present in this specification will not be considered as valid operator.
      */
-    public $operatorKeywords = [
-        '$lt',
-        '$gt',
-        '$lte',
-        '$gte',
-        '$eq',
-        '$neq',
-        '$in',
-        '$nin',
+    public $operatorTypes = [
+        '$lt' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '$gt' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '$lte' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '$gte' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '$eq' => '*',
+        '$neq' => '*',
+        '$in' => '*',
+        '$nin' => '*',
     ];
     /**
-     * @var array list of operators name, which should accept multiple values.
+     * @var array list of operators keywords, which should accept multiple values.
      */
     public $multiValueOperators = [
         '$in',
@@ -63,6 +87,10 @@ class DataFilter extends Model
      * @var Model|array|string|callable model to be used for filter attributes validation.
      */
     private $_searchModel;
+    /**
+     * @var array
+     */
+    private $_searchAttributeTypes;
 
 
     /**
@@ -110,6 +138,61 @@ class DataFilter extends Model
         }
         $this->_searchModel = $model;
     }
+
+    /**
+     * @return array search attribute type map.
+     */
+    public function getSearchAttributeTypes()
+    {
+        if ($this->_searchAttributeTypes === null) {
+            $this->_searchAttributeTypes = $this->detectSearchAttributeTypes();
+        }
+        return $this->_searchAttributeTypes;
+    }
+
+    /**
+     * @param array|null $searchAttributeTypes search attribute type map.
+     */
+    public function setSearchAttributeTypes($searchAttributeTypes)
+    {
+        $this->_searchAttributeTypes = $searchAttributeTypes;
+    }
+
+    /**
+     * Composes default value for [[searchAttributeTypes]] from the [[searchModel]] validation rules.
+     * @return array attribute type map.
+     */
+    protected function detectSearchAttributeTypes()
+    {
+        $model = $this->getSearchModel();
+
+        $attributeTypes = [];
+        foreach ($model->activeAttributes() as $attribute) {
+            $attributeTypes[$attribute] = self::TYPE_STRING;
+        }
+
+        foreach ($model->getValidators() as $validator) {
+            $type = null;
+            if ($validator instanceof BooleanValidator) {
+                $type = self::TYPE_BOOLEAN;
+            } elseif ($validator instanceof NumberValidator) {
+                $type = $validator->integerOnly ? self::TYPE_INTEGER : self::TYPE_FLOAT;
+            } elseif ($validator instanceof StringValidator) {
+                $type = self::TYPE_STRING;
+            } elseif ($validator instanceof EachValidator) {
+                $type = self::TYPE_ARRAY;
+            }
+
+            if ($type !== null) {
+                foreach ((array)$validator->attributes as $attribute) {
+                    $attributeTypes[$attribute] = $type;
+                }
+            }
+        }
+        return $attributeTypes;
+    }
+
+    // Model specific :
 
     /**
      * @inheritdoc
@@ -169,33 +252,79 @@ class DataFilter extends Model
             return;
         }
 
-        foreach ($this->blockKeywords as $keyword) {
-            if (isset($condition[$keyword])) {
-                $this->validateCondition($condition[$keyword]);
-                return;
+        foreach ($condition as $key => $value) {
+            if (isset($this->conditionValidators[$key])) {
+                $method = $this->conditionValidators[$key];
+            } else {
+                $method = 'validateAttributeCondition';
             }
+            $this->$method($key, $value);
         }
-
-        $this->validateHashCondition($condition);
     }
 
     /**
-     * Validates 'hash' condition, e.g. `name => value`.
-     * @param array $condition condition
+     * Validates conjunction condition, which consist of multiple independent ones.
+     * This covers such operators like `$and` and `$or`.
+     * @param string $operator operator keyword.
+     * @param mixed $condition raw condition.
      */
-    public function validateHashCondition($condition)
+    protected function validateConjunctionCondition($operator, $condition)
     {
-        foreach ($condition as $attribute => $value) {
-            if (is_array($value)) {
-                foreach ($this->operatorKeywords as $operatorKeyword) {
-                    if (isset($value[$operatorKeyword])) {
-                        $this->validateOperatorCondition($operatorKeyword, $attribute, $value[$operatorKeyword]);
-                        continue 2;
-                    }
+        if (!is_array($condition) || !ArrayHelper::isIndexed($condition)) {
+            $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} requires multiple operands.', ['operator' => $operator]));
+            return;
+        }
+
+        foreach ($condition as $part) {
+            $this->validateCondition($part);
+        }
+    }
+
+    /**
+     * Validates block condition, which consist of single condition.
+     * This covers such operators like `$not`.
+     * @param string $operator operator keyword.
+     * @param mixed $condition raw condition.
+     */
+    protected function validateBlockCondition($operator, $condition)
+    {
+        $this->validateCondition($condition);
+    }
+
+    /**
+     * Validates search condition for particular attribute.
+     * @param string $attribute search attribute name.
+     * @param mixed $condition search condition.
+     */
+    protected function validateAttributeCondition($attribute, $condition)
+    {
+        $attributeTypes = $this->getSearchAttributeTypes();
+        if (!isset($attributeTypes[$attribute])) {
+            $this->addError($this->filterAttributeName, Yii::t('yii', 'Unknown filter attribute {attribute}', ['attribute' => $attribute]));
+            return;
+        }
+
+        if (is_array($condition)) {
+            $operatorCount = 0;
+            foreach ($condition as $operator => $value) {
+                if (isset($this->operatorTypes[$operator])) {
+                    $operatorCount++;
+                    $this->validateOperatorCondition($operator, $value, $attribute);
                 }
             }
 
-            if (($error = $this->validateAttributeValue($attribute, $value)) !== null) {
+            if ($operatorCount > 0) {
+                if ($operatorCount < count($condition)) {
+                    $this->addError($this->filterAttributeName, Yii::t('yii', 'Condition for {attribute} should be either a value or valid operators.', ['attribute' => $attribute]));
+                }
+            } else {
+                // attribute may allow array value :
+                if (($error = $this->validateAttributeValue($attribute, $condition)) !== null) {
+                    $this->addError($this->filterAttributeName, $error);
+                }
+            }
+        } else {
+            if (($error = $this->validateAttributeValue($attribute, $condition)) !== null) {
                 $this->addError($this->filterAttributeName, $error);
             }
         }
@@ -204,23 +333,42 @@ class DataFilter extends Model
     /**
      * Validates operator condition.
      * @param string $operator operator keyword.
+     * @param mixed $condition attribute condition.
      * @param string $attribute attribute name.
-     * @param mixed $value attribute value.
      */
-    protected function validateOperatorCondition($operator, $attribute, $value)
+    protected function validateOperatorCondition($operator, $condition, $attribute = null)
     {
-        if (in_array($operator, $this->multiValueOperators, true)) {
-            if (!is_array($value)) {
-                $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} requires multiple operands.', ['operator' => $operator]));
+        if ($attribute === null) {
+            // absence of attribute indicates operator has been placed in wrong position
+            $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} must be used with search attribute.', ['operator' => $operator]));
+            return;
+        }
+
+        // check operator type :
+        $operatorTypes = $this->operatorTypes[$operator];
+        if ($operatorTypes !== '*') {
+            $attributeTypes = $this->getSearchAttributeTypes();
+            $attributeType = $attributeTypes[$attribute];
+            if (!in_array($attributeType, $operatorTypes, true)) {
+                $this->addError($this->filterAttributeName, Yii::t('yii', '{attribute} does not support operator {operator}.', ['attribute' => $attribute, 'operator' => $operator]));
                 return;
             }
-            foreach ($value as $v) {
-                if (($error = $this->validateAttributeValue($attribute, $v)) !== null) {
-                    $this->addError($this->filterAttributeName, $error);
+        }
+
+        if (in_array($operator, $this->multiValueOperators, true)) {
+            // multi-value operator :
+            if (!is_array($condition)) {
+                $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} requires multiple operands.', ['operator' => $operator]));
+            } else {
+                foreach ($condition as $v) {
+                    if (($error = $this->validateAttributeValue($attribute, $v)) !== null) {
+                        $this->addError($this->filterAttributeName, $error);
+                    }
                 }
             }
         } else {
-            if (($error = $this->validateAttributeValue($attribute, $value)) !== null) {
+            // single-value operator :
+            if (($error = $this->validateAttributeValue($attribute, $condition)) !== null) {
                 $this->addError($this->filterAttributeName, $error);
             }
         }
