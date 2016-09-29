@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Bug #12629: Fixed `ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #12428: Fixed `yii\db\mysql\QueryBuilder` causes warning when insert default rows into a table without primary key (DrmagicE)
