@@ -87,6 +87,8 @@ class EventPriorityQueue implements \IteratorAggregate, \Countable
 		if (count($this->items)) {
 			foreach ($this->items as $item) {
 				$priority = $item['priority'];
+				// TODO We can avoid this calculation. Check removed item calculation.
+				// TODO But as it is is clear enough and performs well for small arrays
 				$this->decideMaxPriority($priority);
 				$this->innerQueue->insert($item['data'], $priority);
 			}
