@@ -507,11 +507,11 @@ class Component extends Object
 
 		$handlerRemoved = true;
 
-		// TODO I would change has handler function
         if ($handler === null) {
             unset($this->_events[$name]);
         } else {
 			$handlerRemoved = $this->_events[$name]->remove($handler);
+			// TODO maybe change self::hasEventHandlers to avoid that calculation
 			if (!count($this->_events[$name])) {
 				unset($this->_events[$name]);
 			}
