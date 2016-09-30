@@ -201,6 +201,6 @@ class EventPriorityQueueTest extends TestCase
      */
     protected function getQueue()
     {
-        return new EventPriorityQueue();
+        return \Yii::createObject('yii\base\EventPriorityQueue');
     }
 }

@@ -478,7 +478,7 @@ class Component extends Object
         $this->ensureBehaviors();
 
         if (empty($this->_events[$name])) {
-            $this->_events[$name] = new EventPriorityQueue();
+            $this->_events[$name] = \Yii::createObject('yii\base\EventPriorityQueue');
         }
 
         if (!$priority) {
