@@ -119,7 +119,7 @@ class ActiveDataProvider extends BaseDataProvider
                 $modelClass = null;
             }
             foreach ($filter->getConditions($modelClass) as $condition) {
-                $query->andWhere($condition);
+                $query->andFilterWhere($condition);
             }
         }
         

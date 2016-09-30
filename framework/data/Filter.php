@@ -10,11 +10,8 @@ namespace yii\data;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\base\Object;
-use yii\db\ActiveRecord;
 use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
-use yii\web\NotAcceptableHttpException;
-use yii\web\Request;
 
 /**
  * Filter represents information relevant to filtering.
@@ -27,19 +24,19 @@ use yii\web\Request;
  */
 class Filter extends Object
 {
-    /**
-     * @var array list of filter rules. The rules can be a little. Syntax:
-     * 
-     * - * — allowed filtering by all fields (by default),
-     * - <field> — allowed filtering by field with name <field>,
-     * - !<field> — not allowed filtering by field with name <field>.
-     */
-    public $fields = ['*'];
+    const FORMAT_ARRAY = 'array';
+    const FORMAT_JSON = 'json';
+    
     /**
      * @var string the name of the parameter that specifies which attributes to be sorted
      * in which direction. Defaults to 'filter'.
      */
     public $filterParam = 'filter';
+    /**
+     * @var string
+     */
+    public $format = self::FORMAT_ARRAY;
+    protected $queryParams;
     /**
      * @var array builders for operators from the requested filter. The key of array is operator or system name 
      * (for example, builder for like or simple conditions), the value — name of the method builder.
@@ -53,30 +50,20 @@ class Filter extends Object
         'simple' => 'buildSimpleCondition',
         'like' => 'buildLikeCondition'
     ];
-
+    
     /**
-     * @param string|null $modelClass
+     * @param bool $recalculate
      * @return array
-     * @throws NotAcceptableHttpException
      */
-    public function getConditions($modelClass = null)
+    public function getConditions()
     {
-        $filter = $this->getRequestFilter();
+        $filter = $this->getParams();
         $conditions = [];
 
         if (!empty($filter)) {
 
-            if(!is_null($modelClass)) {
-                /** @var ActiveRecord $model */
-                $model = Yii::createObject($modelClass);
-            }
-
             foreach ($filter as $field => $value) {
                 list($operator, $field) = $this->prepareField($field);
-
-                if (!$this->isAcceptableField($field) || (!empty($model) && $model->hasAttribute($field))) {
-                    throw new NotAcceptableHttpException('Filter by field "' . $field . '" unsupported.');
-                }
                 
                 $conditions[] = $this->buildCondition($operator, $field, $value);
             }
@@ -84,26 +71,32 @@ class Filter extends Object
         
         return $conditions;
     }
-
-    /**
-     * @return array
-     * @throws BadRequestHttpException
-     */
-    protected function getRequestFilter()
+    
+    public function getData()
     {
-        $request = Yii::$app->getRequest();
-        $params = $request instanceof Request ? $request->getQueryParams() : [];
-        $filter = [];
+        $filter = $this->getParams();
+        
+        // @todo clear from the operators
+        
+        return $filter;
+    }
 
-        if (isset($params[$this->filterParam])) {
-            try {
-                $filter = (array) Json::decode($params[$this->filterParam]);
-            } catch (InvalidParamException $e) {
-                throw new BadRequestHttpException('Syntax error in filter.', 0, $e);
+    protected function getParams($recalculate = false)
+    {
+        if ($this->queryParams === null || $recalculate) {
+            $this->queryParams = Yii::$app->request->getQueryParam($this->filterParam) ?: [];
+
+            // @todo create formatters
+            if (!empty($this->queryParams) && $this->format === static::FORMAT_JSON) {
+                try {
+                    $this->queryParams = (array) Json::decode($this->queryParams);
+                } catch (InvalidParamException $e) {
+                    throw new BadRequestHttpException('Syntax error in filter.', 0, $e);
+                }
             }
         }
 
-        return $filter;
+        return $this->queryParams;
     }
 
     /**
@@ -119,21 +112,6 @@ class Filter extends Object
         }
         
         return [null, $field];
-    }
-
-    /**
-     * @param string $field
-     * @return bool
-     */
-    protected function isAcceptableField($field)
-    {
-        if (in_array('!' . $field, $this->fields)) {
-            return false;
-        } elseif (!in_array('*', $this->fields) && !in_array($field, $this->fields)) {
-            return false;
-        }
-        
-        return true;
     }
 
     public function buildCondition($operator = null, $field, $value)

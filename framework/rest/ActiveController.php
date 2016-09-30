@@ -42,6 +42,10 @@ class ActiveController extends Controller
      */
     public $modelClass;
     /**
+     * @var string
+     */
+    public $searchModelClass;
+    /**
      * @var string the scenario used for updating a model.
      * @see \yii\base\Model::scenarios()
      */
@@ -72,7 +76,7 @@ class ActiveController extends Controller
         return [
             'index' => [
                 'class' => 'yii\rest\IndexAction',
-                'modelClass' => $this->modelClass,
+                'modelClass' => $this->searchModelClass ? $this->searchModelClass : $this->modelClass,
                 'checkAccess' => [$this, 'checkAccess'],
             ],
             'view' => [

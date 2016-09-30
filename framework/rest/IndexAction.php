@@ -9,6 +9,7 @@ namespace yii\rest;
 
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\Filter;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -31,9 +32,8 @@ class IndexAction extends Action
      */
     public $prepareDataProvider;
 
-
     /**
-     * @return ActiveDataProvider
+     * @return ActiveDataProvider|\yii\db\BaseActiveRecord
      */
     public function run()
     {
@@ -41,7 +41,18 @@ class IndexAction extends Action
             call_user_func($this->checkAccess, $this->id);
         }
 
-        return $this->prepareDataProvider();
+        $dataProvider = $this->prepareDataProvider();
+
+        if ($dataProvider->getFilter()->getData()) {
+            /* @var $model \yii\db\BaseActiveRecord */
+            $model = new $this->modelClass;
+
+            if (!$model->load($dataProvider->getFilter()->getData(), '') || !$model->validate()) {
+                return $model;
+            }
+        }
+        
+        return $dataProvider;
     }
 
     /**
@@ -53,12 +64,16 @@ class IndexAction extends Action
         if ($this->prepareDataProvider !== null) {
             return call_user_func($this->prepareDataProvider, $this);
         }
-
+        
         /* @var $modelClass \yii\db\BaseActiveRecord */
         $modelClass = $this->modelClass;
 
         return new ActiveDataProvider([
             'query' => $modelClass::find(),
+            'filter' => [
+                'format' => Filter::FORMAT_JSON,
+                'filterParam' => 'filter'
+            ]
         ]);
     }
 }
