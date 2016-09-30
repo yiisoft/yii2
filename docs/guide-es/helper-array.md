@@ -116,7 +116,7 @@ del objeto, o una función anónima que debe devolver el valor que será utiliza
 El atributo `$groups` es un array de claves, que será utilizado para agrupar el array de entrada en uno o más sub-arrays
 basado en la clave especificada.
 
-Si el atributo `$key` o su valor por el elemento en particular es null y `$groups` no está definido, dicho elemento del array
+Si el atributo `$key` o su valor por el elemento en particular es `null` y `$groups` no está definido, dicho elemento del array
 será descartado. De otro modo, si `$groups` es especificado, el elemento del array será agregado al array resultante
 sin una clave.
 

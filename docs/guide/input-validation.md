@@ -242,7 +242,7 @@ with a PHP callable. For example,
 ```
 
 > Note: Most validators do not handle empty inputs if their [[yii\validators\Validator::skipOnEmpty]] property takes
-  the default value true. They will simply be skipped during validation if their associated attributes receive empty
+  the default value `true`. They will simply be skipped during validation if their associated attributes receive empty
   inputs. Among the [core validators](tutorial-core-validators.md), only the `captcha`, `default`, `filter`,
   `required`, and `trim` validators will handle empty inputs.
 
@@ -375,7 +375,7 @@ class MyForm extends Model
 > Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
   or if they have already failed some validation rules. If you want to make sure a rule is always applied,
   you may configure the [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] and/or [[yii\validators\Validator::skipOnError|skipOnError]]
-  properties to be false in the rule declarations. For example:
+  properties to be `false` in the rule declarations. For example:
 >
 > ```php
 > [
@@ -512,7 +512,7 @@ and generate appropriate JavaScript code for validators that support client-side
 changes the value of an input field or submit the form, the client-side validation JavaScript will be triggered.
 
 If you want to turn off client-side validation completely, you may configure the
-[[yii\widgets\ActiveForm::enableClientValidation]] property to be false. You may also turn off client-side
+[[yii\widgets\ActiveForm::enableClientValidation]] property to be `false`. You may also turn off client-side
 validation of individual input fields by configuring their [[yii\widgets\ActiveField::enableClientValidation]]
 property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
 the former will take precedence.
@@ -666,7 +666,7 @@ You can use AJAX-based validation in this case. It will trigger an AJAX request 
 input while keeping the same user experience as the regular client-side validation.
 
 To enable AJAX validation for a single input field, configure the [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
-property of that field to be true and specify a unique form `id`:
+property of that field to be `true` and specify a unique form `id`:
 
 ```php
 use yii\widgets\ActiveForm;
@@ -683,7 +683,7 @@ ActiveForm::end();
 ```
 
 To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
-to be true at the form level:
+to be `true` at the form level:
 
 ```php
 $form = ActiveForm::begin([
@@ -711,5 +711,5 @@ this request by running the validation and returning the errors in JSON format.
 > Info: You can also use [Deferred Validation](#deferred-validation) to perform AJAX validation.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
-When both `enableClientValidation` and `enableAjaxValidation` are set to true, AJAX validation request will be triggered
+When both `enableClientValidation` and `enableAjaxValidation` are set to `true`, AJAX validation request will be triggered
 only after the successful client validation.

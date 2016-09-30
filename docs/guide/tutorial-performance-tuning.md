@@ -30,7 +30,7 @@ disable debug mode:
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info: The default value of `YII_DEBUG` is false. So if you are certain that you do not change its default
+> Info: The default value of `YII_DEBUG` is `false`. So if you are certain that you do not change its default
   value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
   
 

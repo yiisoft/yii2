@@ -631,7 +631,7 @@ Ci-dessous, nous présentons la liste de toutes les méthodes d'accès aux bases
 * [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: ajoute un commentaire à une table
 * [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: supprime un commentaire d'une table
 
-> Info: [[yii\db\Migration]] ne fournit pas une méthode de requête de base de données. C'est parce que, normalement, vous n'avez pas besoin d'afficher de messages supplémentaire à propos de la retrouvaille de données dans une base de données. C'est aussi parce que vous pouvez utiliser le puissant [constructeur de requêtes](db-query-builder.md) pour construire et exécuter des requêtes complexes. 
+> Info: [[yii\db\Migration]] ne fournit pas une méthode de requête de base de données. C'est parce que, normalement, vous n'avez pas besoin d'afficher de messages supplémentaire à propos de l'extraction de données dans une base de données. C'est aussi parce que vous pouvez utiliser le puissant [constructeur de requêtes](db-query-builder.md) pour construire et exécuter des requêtes complexes. 
 
 > Note: lors de la manipulation des données en utilisant une migration, vous pouvez trouver qu'utiliser vos classes d'[enregistrement actif](db-active-record.md) pour cela peut être utile parce qu'une partie de la logique y est déjà mise en œuvre. Soyez conscient cependant que, par contraste avec le code écrit dans les migrations, dont la nature est de rester constant à jamais, la logique d'application est sujette à des changements. Ainsi, en utilisant un enregistrement actif dans du code de migration, les changements apportés à la logique dans la couche enregistrement actif peuvent casser accidentellement des migrations existantes. Pour cette raison, le code doit être gardé indépendant de toute autre logique d'application telle que les classes d'enregistrement actif. 
 
@@ -746,7 +746,7 @@ La commande de migration possède quelques options en ligne de commande qui peuv
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`), spécifie les fichiers modèles pour générer le code de migration. Voir "[Génération des migrations](#generating-migrations)" pour plus de détails.
 
 * `fields`: array (tableau) de chaîne de caractères de définition de colonnes utilisées pour créer le code de migration. Valeur par défaut `[]`. Le format de chacune des définitions est `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Par exemple, `--fields=name:string(12):notNull` produit une colonne chaîne de caractères de taille 12 qui n'est pas nulle.

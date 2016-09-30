@@ -272,7 +272,7 @@ Available properties you can configure are:
   the callback should be the same as that of [[yii\grid\ActionColumn::createUrl()]]. If this property is not set,
   button URLs will be created using [[yii\grid\ActionColumn::createUrl()]].
 - [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] is an array of visibility conditions for each button.
-  The array keys are the button names (without curly brackets), and the values are the boolean true/false or the
+  The array keys are the button names (without curly brackets), and the values are the boolean `true`/`false` or the
   anonymous function. When the button name is not specified in this array it will be shown by default.
   The callbacks must use the following signature:
 
@@ -576,7 +576,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $query->andFilterWhere(['LIKE', 'au.name', $this->getAttribute('author.name')]);
 > ```
 >
-> The same is true for the sorting definition:
+> The same is `true` for the sorting definition:
 >
 > ```php
 > $dataProvider->sort->attributes['author.name'] = [

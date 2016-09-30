@@ -15,7 +15,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * BaseMigrateController is base class for migrate controllers.
+ * BaseMigrateController is the base class for migrate controllers.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -32,19 +32,19 @@ abstract class BaseMigrateController extends Controller
      */
     public $defaultAction = 'up';
     /**
-     * @var string the directory storing the migration classes. This can be either
-     * a path alias or a directory.
+     * @var string the directory containing the migration classes. This can be either
+     * a path alias or a directory path.
      *
-     * You may set this field to `null` in case you have set up [[migrationNamespaces]] in order
-     * to disable usage of migrations without namespace.
+     * If you have set up [[migrationNamespaces]], you may set this field to `null` in order
+     * to disable usage of migrations that are not namespaced.
      */
     public $migrationPath = '@app/migrations';
     /**
-     * @var array list of namespaces, which are holding migration classes.
+     * @var array list of namespaces containing the migration classes.
      *
-     * Migration namespace should be available to be resolved as path alias if prefixed with `@`, e.g. if you specify
-     * namespace `app\migrations` code `Yii::getAlias('@app/migrations')` should be able to return file path
-     * to the directory this namespace refers to.
+     * Migration namespaces should be resolvable as a path alias if prefixed with `@`, e.g. if you specify
+     * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return 
+     * the file path to the directory this namespace refers to.
      *
      * For example:
      *
@@ -532,22 +532,22 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/create create_user_table
      * ```
      *
-     * In order to generate namespaced migration you should specify namespace before migration's name.
-     * Note that backslash (`\`) usually is considered as a special char in console, so you need to escape argument
-     * properly to avoid shell error or incorrect behavior.
+     * In order to generate a namespaced migration, you should specify a namespace before the migration's name.
+     * Note that backslash (`\`) is usually considered a special character in the shell, so you need to escape it
+     * properly to avoid shell errors or incorrect behavior.
      * For example:
      *
      * ```
      * yii migrate/create 'app\\migrations\\createUserTable'
      * ```
      *
-     * In case [[migrationPath]] is not set and no namespace provided the first entry of [[migrationNamespaces]] will be used.
+     * In case [[migrationPath]] is not set and no namespace is provided, the first entry of [[migrationNamespaces]] will be used.
      *
      * @param string $name the name of the new migration. This should only contain
      * letters, digits, underscores and/or backslashes.
      *
      * Note: If the migration name is of a special form, for example create_xxx or
-     * drop_xxx then the generated migration file will contain extra code,
+     * drop_xxx, then the generated migration file will contain extra code,
      * in this case for creating/dropping tables.
      *
      * @throws Exception if the name argument is invalid.
@@ -617,7 +617,7 @@ abstract class BaseMigrateController extends Controller
         }
 
         if (!in_array($namespace, $this->migrationNamespaces, true)) {
-            throw new Exception("Namespace '{$namespace}' is not mentioned among `migrationNamespaces`");
+            throw new Exception("Namespace '{$namespace}' not found in `migrationNamespaces`");
         }
 
         return $this->getNamespacePath($namespace);

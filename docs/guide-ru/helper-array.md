@@ -41,7 +41,7 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 });
 ```
 
-Третий, необязательный, аргумент определяет значение по-умолчанию. Если не установлен – равен null. Используется так:
+Третий, необязательный, аргумент определяет значение по-умолчанию. Если не установлен – равен `null`. Используется так:
 
 ```php
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');

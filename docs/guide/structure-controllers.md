@@ -421,7 +421,7 @@ to fulfill the request:
    * Otherwise an [[yii\base\InvalidRouteException]] exception will be thrown.
 3. The controller sequentially calls the `beforeAction()` method of the application, the module (if the controller
    belongs to a module), and the controller.
-   * If one of the calls returns false, the rest of the uncalled `beforeAction()` methods will be skipped and the
+   * If one of the calls returns `false`, the rest of the uncalled `beforeAction()` methods will be skipped and the
      action execution will be cancelled.
    * By default, each `beforeAction()` method call will trigger a `beforeAction` event to which you can attach a handler.
 4. The controller runs the action.

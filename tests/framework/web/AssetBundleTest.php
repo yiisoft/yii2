@@ -348,10 +348,6 @@ EOF;
         return [
             // JS files registration
             [
-                'js', '@web/assetSources/js/jquery.js', true,
-                '123<script src="/assetSources/js/jquery.js\?v=\d{10}"></script>4',
-            ],
-            [
                 'js', '@web/assetSources/js/missing-file.js', true,
                 '123<script src="/assetSources/js/missing-file.js"></script>4',
             ],
@@ -369,7 +365,7 @@ EOF;
             ],
             [
                 'js', 'assetSources/js/jquery.js', false,
-                '123<script src="/assetSources/js/jquery.js"></script>4',
+                '123<script src="assetSources/js/jquery.js"></script>4',
             ],
             [
                 'js', '/assetSources/js/jquery.js', false,
@@ -377,10 +373,6 @@ EOF;
             ],
 
             // CSS file registration
-            [
-                'css', '@web/assetSources/css/stub.css', true,
-                '1<link href="/assetSources/css/stub.css\?v=\d{10}" rel="stylesheet">234',
-            ],
             [
                 'css', '@web/assetSources/css/missing-file.css', true,
                 '1<link href="/assetSources/css/missing-file.css" rel="stylesheet">234',
@@ -399,7 +391,7 @@ EOF;
             ],
             [
                 'css', 'assetSources/css/stub.css', false,
-                '1<link href="/assetSources/css/stub.css" rel="stylesheet">234',
+                '1<link href="assetSources/css/stub.css" rel="stylesheet">234',
             ],
             [
                 'css', '/assetSources/css/stub.css', false,
@@ -410,11 +402,6 @@ EOF;
             [
                 'js', '@web/assetSources/js/missing-file1.js', true,
                 '123<script src="/backend/assetSources/js/missing-file1.js"></script>4',
-                '/backend'
-            ],
-            [
-                'js', '@web/assetSources/js/jquery.js', true,
-                '123<script src="/backend/assetSources/js/jquery.js\?v=\d{10}"></script>4',
                 '/backend'
             ],
             [
@@ -432,6 +419,30 @@ EOF;
                 '1<link href="/en/blog/backend/assetSources/css/stub.css" rel="stylesheet">234',
                 '/en/blog/backend'
             ],
+
+            // UTF-8 chars
+            [
+                'css', '@web/assetSources/css/stub.css', false,
+                '1<link href="/рус/сайт/assetSources/css/stub.css" rel="stylesheet">234',
+                '/рус/сайт'
+            ],
+            [
+                'js', '@web/assetSources/js/jquery.js', false,
+                '123<script src="/汉语/漢語/assetSources/js/jquery.js"></script>4',
+                '/汉语/漢語'
+            ],
+
+            // Custom alias repeats in the asset URL
+            [
+                'css', '@web/assetSources/repeat/css/stub.css', false,
+                '1<link href="/repeat/assetSources/repeat/css/stub.css" rel="stylesheet">234',
+                '/repeat'
+            ],
+            [
+                'js', '@web/assetSources/repeat/js/jquery.js', false,
+                '123<script src="/repeat/assetSources/repeat/js/jquery.js"></script>4',
+                '/repeat'
+            ],
         ];
     }
 
@@ -440,9 +451,9 @@ EOF;
      * @param string $type either `js` or `css`
      * @param string $path
      * @param string bool $appendTimestamp
-     * @param string $expectedRegExp
+     * @param string $expected
      */
-    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expectedRegExp, $webAlias = null)
+    public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected, $webAlias = null)
     {
         $originalAlias = Yii::getAlias('@web');
         if ($webAlias === null) {
@@ -454,7 +465,7 @@ EOF;
         $view = $this->getView(['appendTimestamp' => $appendTimestamp]);
         $method = 'register' . ucfirst($type) . 'File';
         $view->$method($path);
-        $this->assertRegExp('#' . $expectedRegExp . '#', $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
 
         Yii::setAlias('@web', $originalAlias);
     }

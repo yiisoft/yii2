@@ -134,7 +134,7 @@ Avoiding CSRF
 -------------
 
 CSRF is an abbreviation for cross-site request forgery. The idea is that many applications assume that requests coming
-from a user browser are made by the user himself. It could be false.
+from a user browser are made by the user himself. It could be `false`.
 
 For example, `an.example.com` website has `/logout` URL that, when accessed using a simple GET, logs user out. As long
 as it's requested by the user itself everything is OK but one day bad guys are somehow posting
@@ -179,7 +179,7 @@ class SiteController extends Controller
     public function beforeAction($action)
     {
         // ...set `$this->enableCsrfValidation` here based on some conditions...
-        // call parent method that will check CSRF if such property is true.
+        // call parent method that will check CSRF if such property is `true`.
         return parent::beforeAction($action);
     }
 }

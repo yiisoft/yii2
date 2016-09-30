@@ -111,7 +111,7 @@ $posts = $db->createCommand('SELECT * FROM post')
             ->queryAll();
 
 // retorna una sola fila (la primera fila)
-// false es retornado si no hay resultados
+// `false` es retornado si no hay resultados
 $post = $db->createCommand('SELECT * FROM post WHERE id=1')
            ->queryOne();
 
@@ -121,7 +121,7 @@ $titles = $db->createCommand('SELECT title FROM post')
              ->queryColumn();
 
 // retorna un escalar
-// false es retornado si no hay resultados
+// `false` es retornado si no hay resultados
 $count = $db->createCommand('SELECT COUNT(*) FROM post')
              ->queryScalar();
 ```

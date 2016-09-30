@@ -267,7 +267,7 @@ The rest of the properties are optional. However, their configuration shown abov
 
 * [[yii\web\UrlManager::showScriptName|showScriptName]]: this property determines whether the entry script
   should be included in the created URLs. For example, instead of creating a URL `/index.php/post/100`,
-  by setting this property to be false, a URL `/post/100` will be generated.
+  by setting this property to be `false`, a URL `/post/100` will be generated.
 * [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: this property determines whether to enable
   strict request parsing. If strict parsing is enabled, the incoming requested URL must match at least one of
   the [[yii\web\UrlManager::rules|rules]] in order to be treated as a valid request, or a [[yii\web\NotFoundHttpException]]
@@ -278,7 +278,7 @@ The rest of the properties are optional. However, their configuration shown abov
   particular application requirement.
 
 > Note: In order to hide the entry script name in the created URLs, besides setting
-  [[yii\web\UrlManager::showScriptName|showScriptName]] to be false, you may also need to configure your Web server
+  [[yii\web\UrlManager::showScriptName|showScriptName]] to be `false`, you may also need to configure your Web server
   so that it can correctly identify which PHP script should be executed when a requested URL does not explicitly
   specify one. If you are using Apache Web server, you may refer to the recommended configuration as described in the
   [Installation](start-installation.md#recommended-apache-configuration) section.
