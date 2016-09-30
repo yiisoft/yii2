@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Bug #12463: Fixed `yii\web\Request::getBodyParams()` does not pass full 'content-type' value to `yii\web\RequestParserInterface::parse()` (klimov-paul)
 - Bug #12537: Fixes issues with spaces in `StringHelper:truncateHtml` (Alex-Code)
 - Bug #12554: Fixed `yii\validators\UniqueValidator` error of getting first model indexed by field (DrDeath72)
+- Bug #11352: Fixed `updateInputs()` method in `yii.activeForm.js` to prevent reading property of undefined (silverfire)
 - Enh #384: Added ability to run migration from several locations via [[yii\console\controllers\BaseMigrateController::migrationNamespaces]] (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
