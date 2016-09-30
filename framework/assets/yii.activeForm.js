@@ -598,6 +598,10 @@
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
 
+        if (data === undefined) {
+            return false;
+        }
+
         if (submitting) {
             var errorAttributes = [];
             $.each(data.attributes, function () {

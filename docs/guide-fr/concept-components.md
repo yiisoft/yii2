@@ -29,7 +29,7 @@ Lorsque votre classe étend la classe [[yii\base\Component]] ou [[yii\base\Objec
 
 - Si vous redéfinissez le constructeur, spécifiez un paramètre `$config` en tant que *dernier* paramètre du constructeur est passez le au constructeur du parent. 
 - Appelez toujours le constructeur du parent *à la fin* de votre constructeur redéfini.
-- Si vous redéfinissez la méthode [yii\base\Object::init()]], assurez-vous que vous appelez la méthode `init()` mise en œuvre par le parent *au début* de votre méthodes `init()`.
+- Si vous redéfinissez la méthode [[yii\base\Object::init()]], assurez-vous que vous appelez la méthode `init()` mise en œuvre par le parent *au début* de votre méthodes `init()`.
 
 Par exemple :
 

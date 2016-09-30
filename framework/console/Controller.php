@@ -254,6 +254,19 @@ class Controller extends \yii\base\Controller
      *  - validator: a callable function to validate input. The function must accept two parameters:
      *      - $input: the user input to validate
      *      - $error: the error value passed by reference if validation failed.
+     * 
+     * An example of how to use the prompt method with a validator function.
+     * 
+     * ```php
+     * $code = $this->prompt('Enter 4-Chars-Pin', ['required' => true, 'validator' => function($input, &$error) {
+     *     if (strlen($input) !== 4) {
+     *         $error = 'The Pin must be exactly 4 chars!';
+     *         return false;
+     *     }
+     *     return true;
+     * });
+     * ```
+     * 
      * @return string the user input
      */
     public function prompt($text, $options = [])

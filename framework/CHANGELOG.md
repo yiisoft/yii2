@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Bug #12629: Fixed `ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #12428: Fixed `yii\db\mysql\QueryBuilder` causes warning when insert default rows into a table without primary key (DrmagicE)
@@ -28,8 +29,6 @@ Yii Framework 2 Change Log
 - Bug #11922: Fixed `yii\log\FileTarget` does not apply `fileMode` for rotated via copy files (klimov-paul)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `ActiveField::end()` generates close tag when it's `option['tag']` is `null` (egorio)
-- Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
-- Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
 - Bug #11977: Fixed `yii\rest\Serializer::serialize()` serializes DataProvider incorrectly, if models keys do not compose integer sequence (dcb9, klimov-paul)
 - Bug #11990: Fixed `yii\db\BaseActiveRecord::refresh()` may set incorrect `oldAttributes` values at some cases (only-victor)
 - Bug #12009: Do not render `for` field label attribute for active form `RadioList` and `CheckboxList` (shevchik87, samdark)
@@ -51,6 +50,7 @@ Yii Framework 2 Change Log
 - Bug #12463: Fixed `yii\web\Request::getBodyParams()` does not pass full 'content-type' value to `yii\web\RequestParserInterface::parse()` (klimov-paul)
 - Bug #12537: Fixes issues with spaces in `StringHelper:truncateHtml` (Alex-Code)
 - Bug #12554: Fixed `yii\validators\UniqueValidator` error of getting first model indexed by field (DrDeath72)
+- Bug #11352: Fixed `updateInputs()` method in `yii.activeForm.js` to prevent reading property of undefined (silverfire)
 - Enh #384: Added ability to run migration from several locations via [[yii\console\controllers\BaseMigrateController::migrationNamespaces]] (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
@@ -78,7 +78,8 @@ Yii Framework 2 Change Log
 - Enh #12382: Changed `yii\widgets\MaskedInput` to use `jQuery` instead of `$` to prevent conflicts (samdark)
 - Enh #12440: Added `yii\base\Event::offAll()` method allowing clear all registered class-level event handlers (klimov-paul)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
-
+- Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
+- Bug: #12599: Fixed casting of `binary()` type for MSSQL (silverfire) 
 
 2.0.9 July 11, 2016
 -------------------

@@ -109,9 +109,11 @@ All Rights Reserved.
 Безопасность
 ------------
 
+* [Обзор](security-overview.md)
 * [Аутентификация](security-authentication.md)
 * [Авторизация](security-authorization.md)
 * [Работа с паролями](security-passwords.md)
+* [Криптография](security-cryptography.md)
 * [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ru/README.md)
 * [Лучшие практики](security-best-practices.md)
 

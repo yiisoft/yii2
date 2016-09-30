@@ -41,7 +41,7 @@
  *
  * You must call "yii.initModule()" once for the root module of all your modules.
  */
-yii = (function ($) {
+window.yii = (function ($) {
     var pub = {
         /**
          * List of JS or CSS URLs that can be loaded multiple times via AJAX requests. Each script can be represented
