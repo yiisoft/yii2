@@ -131,6 +131,11 @@ class DataFilter extends Model
      */
     public $filterAttributeName = 'filter';
     /**
+     * @var string label for the filter attribute specified via [[filterAttributeName]].
+     * It will be used during error messages composition.
+     */
+    public $filterAttributeLabel;
+    /**
      * @var array map of filter condition keywords to validation methods.
      * These methods are used by [[validateCondition]] to validate raw filter conditions.
      */
@@ -170,6 +175,19 @@ class DataFilter extends Model
         '$in',
         '$nin',
     ];
+    /**
+     * @var array list of error messages responding to invalid filter structure, in format: messageKey => messageContent.
+     * Message may contain placeholders, which will be populated depending on message context.
+     * For each message placeholder `{filter}` is available referring to the label for [[filterAttributeName]] attribute.
+     */
+    public $errorMessages = [
+        'invalidFilter' => 'The format of {filter} is invalid.',
+        'operatorRequireMultipleOperands' => 'Operator {operator} requires multiple operands.',
+        'unknownAttribute' => 'Unknown filter attribute {attribute}',
+        'invalidAttributeValueFormat' => 'Condition for {attribute} should be either a value or valid operator specification.',
+        'operatorRequireAttribute' => 'Operator {operator} must be used with search attribute.',
+        'unsupportedOperatorType' => '{attribute} does not support operator {operator}.',
+    ];
 
     /**
      * @var mixed raw filter specification.
@@ -180,7 +198,7 @@ class DataFilter extends Model
      */
     private $_searchModel;
     /**
-     * @var array
+     * @var array list of search attribute types in format: attributeName => type
      */
     private $_searchAttributeTypes;
 
@@ -284,6 +302,30 @@ class DataFilter extends Model
         return $attributeTypes;
     }
 
+    /**
+     * Parses content of the message from [[errorMessages]], specified by message key.
+     * @param string $messageKey message key.
+     * @param array $params params to be parsed into the message.
+     * @return string composed message string.
+     */
+    protected function parseErrorMessage($messageKey, $params = [])
+    {
+        if (isset($this->errorMessages[$messageKey])) {
+            $message = $this->errorMessages[$messageKey];
+        } else {
+            $message = 'The format of {filter} is invalid.';
+        }
+
+        $params = array_merge(
+            [
+                'filter' => $this->getAttributeLabel($this->filterAttributeName)
+            ],
+            $params
+        );
+
+        return Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+    }
+
     // Model specific :
 
     /**
@@ -314,16 +356,24 @@ class DataFilter extends Model
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        return [
+            $this->filterAttributeName => $this->filterAttributeLabel,
+        ];
+    }
+
     // Validation :
 
     /**
      * Validates filter attribute value to match filer condition specification.
-     * @param string $attribute filter attribute name.
-     * @param array $params validation parameters.
      */
-    public function validateFilter($attribute, $params)
+    public function validateFilter()
     {
-        $value = $this->{$attribute};
+        $value = $this->getFilter();
         if ($value !== null) {
             $this->validateCondition($value);
         }
@@ -336,7 +386,7 @@ class DataFilter extends Model
     protected function validateCondition($condition)
     {
         if (!is_array($condition)) {
-            $this->addError($this->filterAttributeName, Yii::t('yii', 'The format of {attribute} is invalid.', ['attribute' => $this->getAttributeLabel($this->filterAttributeName)]));
+            $this->addError($this->filterAttributeName, $this->parseErrorMessage('invalidFilter'));
             return;
         }
 
@@ -363,7 +413,7 @@ class DataFilter extends Model
     protected function validateConjunctionCondition($operator, $condition)
     {
         if (!is_array($condition) || !ArrayHelper::isIndexed($condition)) {
-            $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} requires multiple operands.', ['operator' => $operator]));
+            $this->addError($this->filterAttributeName, $this->parseErrorMessage('operatorRequireMultipleOperands', ['operator' => $operator]));
             return;
         }
 
@@ -392,7 +442,7 @@ class DataFilter extends Model
     {
         $attributeTypes = $this->getSearchAttributeTypes();
         if (!isset($attributeTypes[$attribute])) {
-            $this->addError($this->filterAttributeName, Yii::t('yii', 'Unknown filter attribute {attribute}', ['attribute' => $attribute]));
+            $this->addError($this->filterAttributeName, $this->parseErrorMessage('unknownAttribute', ['attribute' => $attribute]));
             return;
         }
 
@@ -407,7 +457,7 @@ class DataFilter extends Model
 
             if ($operatorCount > 0) {
                 if ($operatorCount < count($condition)) {
-                    $this->addError($this->filterAttributeName, Yii::t('yii', 'Condition for {attribute} should be either a value or valid operators.', ['attribute' => $attribute]));
+                    $this->addError($this->filterAttributeName, $this->parseErrorMessage('invalidAttributeValueFormat', ['attribute' => $attribute]));
                 }
             } else {
                 // attribute may allow array value :
@@ -428,7 +478,7 @@ class DataFilter extends Model
     {
         if ($attribute === null) {
             // absence of attribute indicates operator has been placed in wrong position
-            $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} must be used with search attribute.', ['operator' => $operator]));
+            $this->addError($this->filterAttributeName, $this->parseErrorMessage('operatorRequireAttribute', ['operator' => $operator]));
             return;
         }
 
@@ -438,7 +488,7 @@ class DataFilter extends Model
             $attributeTypes = $this->getSearchAttributeTypes();
             $attributeType = $attributeTypes[$attribute];
             if (!in_array($attributeType, $operatorTypes, true)) {
-                $this->addError($this->filterAttributeName, Yii::t('yii', '{attribute} does not support operator {operator}.', ['attribute' => $attribute, 'operator' => $operator]));
+                $this->addError($this->filterAttributeName, $this->parseErrorMessage('unsupportedOperatorType', ['attribute' => $attribute, 'operator' => $operator]));
                 return;
             }
         }
@@ -446,7 +496,7 @@ class DataFilter extends Model
         if (in_array($operator, $this->multiValueOperators, true)) {
             // multi-value operator :
             if (!is_array($condition)) {
-                $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} requires multiple operands.', ['operator' => $operator]));
+                $this->addError($this->filterAttributeName, $this->parseErrorMessage('operatorRequireMultipleOperands', ['operator' => $operator]));
             } else {
                 foreach ($condition as $v) {
                     $this->validateAttributeValue($attribute, $v);
@@ -467,7 +517,7 @@ class DataFilter extends Model
     {
         $model = $this->getSearchModel();
         if (!$model->isAttributeSafe($attribute)) {
-            $this->addError($this->filterAttributeName, Yii::t('yii', 'Unknown filter attribute {attribute}', ['attribute' => $attribute]));
+            $this->addError($this->filterAttributeName, $this->parseErrorMessage('unknownAttribute', ['attribute' => $attribute]));
             return;
         }
 
@@ -488,7 +538,7 @@ class DataFilter extends Model
     {
         $model = $this->getSearchModel();
         if (!$model->isAttributeSafe($attribute)) {
-            $this->addError($this->filterAttributeName, Yii::t('yii', 'Unknown filter attribute {attribute}', ['attribute' => $attribute]));
+            $this->addError($this->filterAttributeName, $this->parseErrorMessage('unknownAttribute', ['attribute' => $attribute]));
             return $value;
         }
         $model->{$attribute} = $value;
