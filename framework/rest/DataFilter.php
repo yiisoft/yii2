@@ -319,14 +319,10 @@ class DataFilter extends Model
                 }
             } else {
                 // attribute may allow array value :
-                if (($error = $this->validateAttributeValue($attribute, $condition)) !== null) {
-                    $this->addError($this->filterAttributeName, $error);
-                }
+                $this->validateAttributeValue($attribute, $condition);
             }
         } else {
-            if (($error = $this->validateAttributeValue($attribute, $condition)) !== null) {
-                $this->addError($this->filterAttributeName, $error);
-            }
+            $this->validateAttributeValue($attribute, $condition);
         }
     }
 
@@ -361,16 +357,12 @@ class DataFilter extends Model
                 $this->addError($this->filterAttributeName, Yii::t('yii', 'Operator {operator} requires multiple operands.', ['operator' => $operator]));
             } else {
                 foreach ($condition as $v) {
-                    if (($error = $this->validateAttributeValue($attribute, $v)) !== null) {
-                        $this->addError($this->filterAttributeName, $error);
-                    }
+                    $this->validateAttributeValue($attribute, $v);
                 }
             }
         } else {
             // single-value operator :
-            if (($error = $this->validateAttributeValue($attribute, $condition)) !== null) {
-                $this->addError($this->filterAttributeName, $error);
-            }
+            $this->validateAttributeValue($attribute, $condition);
         }
     }
 
@@ -378,21 +370,42 @@ class DataFilter extends Model
      * Validates attribute value in the scope of [[model]].
      * @param string $attribute attribute name.
      * @param mixed $value attribute value.
-     * @return null|string error message, `null` if no error.
      */
     protected function validateAttributeValue($attribute, $value)
     {
         $model = $this->getSearchModel();
         if (!$model->isAttributeSafe($attribute)) {
-            return Yii::t('yii', 'Unknown filter attribute {attribute}', ['attribute' => $attribute]);
+            $this->addError($this->filterAttributeName, Yii::t('yii', 'Unknown filter attribute {attribute}', ['attribute' => $attribute]));
+            return;
         }
 
         $model->{$attribute} = $value;
         if (!$model->validate([$attribute])) {
-            return $model->getFirstError($attribute);
+            $this->addError($this->filterAttributeName, $model->getFirstError($attribute));
+            return;
+        }
+    }
+
+    /**
+     * Validates attribute value in the scope of [[searchModel]], applying attribute value filters if any.
+     * @param string $attribute attribute name.
+     * @param mixed $value attribute value.
+     * @return mixed filtered attribute value.
+     */
+    protected function filterAttributeValue($attribute, $value)
+    {
+        $model = $this->getSearchModel();
+        if (!$model->isAttributeSafe($attribute)) {
+            $this->addError($this->filterAttributeName, Yii::t('yii', 'Unknown filter attribute {attribute}', ['attribute' => $attribute]));
+            return $value;
+        }
+        $model->{$attribute} = $value;
+        if (!$model->validate([$attribute])) {
+            $this->addError($this->filterAttributeName, $model->getFirstError($attribute));
+            return $value;
         }
 
-        return null;
+        return $model->{$attribute};
     }
 
     // Build :

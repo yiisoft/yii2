@@ -48,6 +48,74 @@ class ActiveDataFilterTest extends TestCase
                     ['number' => '2'],
                 ]
             ],
+            [
+                [
+                    'name' => '  to be trimmed  ',
+                ],
+                [
+                    'name' => 'to be trimmed',
+                ],
+            ],
+            [
+                [
+                    'number' => [
+                        '$in' => [1, 5, 8]
+                    ],
+                ],
+                ['IN', 'number', [1, 5, 8]],
+            ],
+            [
+                [
+                    '$not' => [
+                        'number' => 10
+                    ],
+                ],
+                ['NOT', ['number' => 10]],
+            ],
+            [
+                [
+                    '$or' => [
+                        [
+                            '$and' => [
+                                ['name' => 'some'],
+                                ['number' => '2'],
+                            ],
+                        ],
+                        [
+                            '$or' => [
+                                [
+                                    'price' => 100,
+                                ],
+                                [
+                                    'price' => [
+                                        '$gt' => 0,
+                                        '$lt' => 10,
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ]
+                ],
+                [
+                    'OR',
+                    [
+                        'AND',
+                        ['name' => 'some'],
+                        ['number' => '2'],
+                    ],
+                    [
+                        'OR',
+                        [
+                            'price' => 100,
+                        ],
+                        [
+                            'AND',
+                            ['>', 'price', 0],
+                            ['<', 'price', 10],
+                        ],
+                    ],
+                ]
+            ],
         ];
     }
 
@@ -61,6 +129,7 @@ class ActiveDataFilterTest extends TestCase
     {
         $builder = new ActiveDataFilter();
         $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))
+            ->addRule('name', 'trim')
             ->addRule('name', 'string')
             ->addRule('number', 'integer', ['min' => 0, 'max' => 100])
             ->addRule('price', 'number')

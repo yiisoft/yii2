@@ -136,16 +136,19 @@ class ActiveDataFilter extends DataFilter
             $parts = [];
             foreach ($condition as $operator => $value) {
                 if (isset($this->operatorTypes[$operator])) {
-                    $parts[] = $this->buildOperatorCondition($operator, $condition, $attribute);
+                    $parts[] = $this->buildOperatorCondition($operator, $value, $attribute);
                 }
             }
 
             if (!empty($parts)) {
-                return $parts;
+                if (count($parts) > 1) {
+                    return array_merge(['AND'], $parts);
+                }
+                return array_shift($parts);
             }
         }
 
-        return [$attribute => $condition];
+        return [$attribute => $this->filterAttributeValue($attribute, $condition)];
     }
 
     /**
@@ -157,6 +160,6 @@ class ActiveDataFilter extends DataFilter
      */
     protected function buildOperatorCondition($operator, $condition, $attribute)
     {
-        return [$this->operatorMap[$operator], $attribute, $condition];
+        return [$this->operatorMap[$operator], $attribute, $this->filterAttributeValue($attribute, $condition)];
     }
 }
