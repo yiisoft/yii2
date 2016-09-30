@@ -80,6 +80,11 @@ CSS класс и идентификатор ID будет прикреплён 
 Это правило именования будет учитываться на стороне сервера при получении массива результатов `$_POST['LoginForm']`
 для всех элементов формы входа (Login Form).
 
+> Tip: Если в форме только одна модель и вы хотите упростить имена полей ввода, то можете сделать это
+> перекрыв метод [[yii\base\Model::formName()|formName()]] модели так, чтобы он возвращал пустую строку.
+> Это может пригодиться для получения более красивых URL при филтьтрации моделей
+в [GridView](output-data-widgets.md#grid-view).
+
 Специфический атрибут модели может быть задан через более сложный способ. Например, при загрузке файлов или выборе
 нескольких значений из списка, в качестве значений атрибуту модели нужно передать массив, для этого к имени можно добавить
 `[]`:
@@ -120,7 +125,6 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 
 ```php
 use app\models\ProductCategory;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
@@ -133,6 +137,49 @@ echo $form->field($model, 'product_category')->dropdownList(
 ```
 
 Текущее значение поля модели будет автоматически выбрано в списке.
+
+Работа с Pjax <span id="working-with-pjax"></span>
+--------------
+
+Виджет [[yii\widgets\Pjax|Pjax]] позволяет обновлять определённую область страницы вместо
+перезагрузки всей страницы. Вы можете использовать его для обновления формы после её отсылки.
+
+Для того, чтобы задать, какая из форм будет работать через PJAX, можно воспользоваться
+опцией [[yii\widgets\Pjax::$formSelector|$formSelector]]. Если значение не задано, все формы
+с атрибутом `data-pjax` внутри PJAX-контента будут работать через PJAX.
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\ActiveForm;
+
+Pjax::begin([
+    // Pjax options
+]);
+    $form = ActiveForm::begin([
+        'options' => ['data' => ['pjax' => true]],
+        // остальные опции ActiveForm
+    ]);
+
+        // Содержимое ActiveForm
+
+    ActiveForm::end();
+Pjax::end();
+```
+> Tip: Будьте осторожны с ссылками внутри виджета [[yii\widgets\Pjax|Pjax]] так как ответ будет
+> также отображаться внутри виджета. Чтобы ссылка работала без PJAX, добавьте к ней HTML-атрибут
+> `data-pjax="0"`.
+
+#### Значения кнопок submit и загрузка файлов
+
+В `jQuery.serializeArray()` имеются определённые проблемы
+[при работе с файлами](https://github.com/jquery/jquery/issues/2321) и
+[значениями кнопом типа submit](https://github.com/jquery/jquery/issues/2321).
+Они не будут исправлены и признаны устаревшими в пользу класса`FormData` из HTML5.
+
+Это означет, что поддержка файлов и значений submit-кнопок через AJAX или виджет
+[[yii\widgets\Pjax|Pjax]] зависит от 
+[поддержки в браузере](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+класса `FormData`.
 
 
 Еще по теме <span id="further-reading"></span>
