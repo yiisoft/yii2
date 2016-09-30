@@ -22,12 +22,22 @@ class IndexAction extends Action
      * The signature of the callable should be:
      *
      * ```php
-     * function ($action) {
+     * function (IndexAction $action) {
      *     // $action is the action object currently running
      * }
      * ```
      *
      * The callable should return an instance of [[ActiveDataProvider]].
+     *
+     * If [[dataFilter]] is set - the result of [[DataFilter::build()]] will be passed to the callable as a second parameter.
+     * In this case the signature of the callable should be:
+     *
+     * ```php
+     * function (IndexAction $action, mixed $filter) {
+     *     // $action is the action object currently running
+     *     // $filter the built filter condition
+     * }
+     * ```
      */
     public $prepareDataProvider;
     /**
