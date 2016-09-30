@@ -17,7 +17,98 @@ use yii\validators\NumberValidator;
 use yii\validators\StringValidator;
 
 /**
- * DataFilter
+ * DataFilter is a special kind of [[Model]] dedicated to the processing of the query filter specification.
+ * It allows validation and building of the filter condition passed via request.
+ *
+ * The used filter format has been designed to be suitable for JSON request types.
+ *
+ * Filter example:
+ *
+ * ```json
+ * {
+ *     "$or": [
+ *         {
+ *             "$and": [
+ *                 {
+ *                     "name": "some name",
+ *                     "price": "25",
+ *                 }
+ *             ]
+ *         },
+ *         {
+ *             "id": {"$in": [2, 5, 9]},
+ *             "price": {
+ *                 "$gt": 10,
+ *                 "$lt": 50
+ *             }
+ *         }
+ *     ]
+ * }
+ * ```
+ *
+ * Filter should be specified in request by key equal to [[filterAttributeName]] value. Thus actual HTTP request body
+ * will look like following:
+ *
+ * ```json
+ * {
+ *     "filter": {"$or": {...}},
+ *     "page": 2,
+ *     ...
+ * }
+ * ```
+ *
+ * Raw filter value should be assigned to [[filter]] property, which is considered as this model attribute.
+ * Thus you may populate its from request data via [[load()]] method:
+ *
+ * ```php
+ * use yii\rest\DataFilter;
+ *
+ * $dataFilter = new DataFilter();
+ * $dataFilter->load(Yii::$app->request->getBodyParams());
+ * ```
+ *
+ * In order to function this class requires a 'slave' model specified via [[searchModel]]. This model should declare
+ * all available search attributes and their validation rules. For example:
+ *
+ * ```php
+ * class SearchModel extends \yii\base\Model
+ * {
+ *     public $id;
+ *     public $name;
+ *
+ *     public function rules()
+ *     {
+ *         return [
+ *             [['id', 'name'], 'trim'],
+ *             ['id', 'integer'],
+ *             ['name', 'string'],
+ *         ];
+ *     }
+ * }
+ * ```
+ *
+ * In order to reduce amount of classes, you may use [[\yii\base\DynamicModel]] instance as [[searchModel]].
+ * In this case you should specify [[searchModel]] using PHP callable:
+ *
+ * ```php
+ * function () {
+ *     return (new DynamicModel(['id' => null, 'name' => null]))
+ *         ->addRule(['id', 'name'], 'trim')
+ *         ->addRule('id', 'integer')
+ *         ->addRule('name', 'string');
+ * }
+ * ```
+ *
+ * You can use [[validate()]] method to check if filter value is valid or not. If validation fails you can use
+ * [[getErrors()]] to get actual error messages.
+ *
+ * In order to acquire actual filter value suitable for data fetching use [[build()]] method.
+ *
+ * > Note: this is a base class its implementation of [[build()]] simply returns [[filter]] value as it is.
+ * In order to convert filter in particular format you should use descendant of this class, which implements
+ * [[buildInternal()]] method accordingly.
+ *
+ * @see ActiveDataFilter
  *
  * @property mixed $filter filter value.
  * @property Model $searchModel model to be used for filter attributes validation.
@@ -36,6 +127,7 @@ class DataFilter extends Model
 
     /**
      * @var string name of the attribute, which should handle filter value.
+     * This field defines the filter attribute name, which will be used to load data via [[load()]] method.
      */
     public $filterAttributeName = 'filter';
     /**

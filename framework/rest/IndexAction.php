@@ -30,6 +30,27 @@ class IndexAction extends Action
      * The callable should return an instance of [[ActiveDataProvider]].
      */
     public $prepareDataProvider;
+    /**
+     * @var DataFilter|null data filter to be used for the search filter composition.
+     * You must setup this field explicitly in order to enable filter processing.
+     * For example:
+     *
+     * ```php
+     * [
+     *     'class' => 'yii\rest\ActiveDataFilter',
+     *     'searchModel' => function () {
+     *         return (new DynamicModel(['id' => null, 'name' => null, 'price' => null]))
+     *             ->addRule('id', 'integer')
+     *             ->addRule('name', 'trim')
+     *             ->addRule('name', 'string')
+     *             ->addRule('price', 'number');
+     *     },
+     * ]
+     * ```
+     *
+     * @see DataFilter
+     */
+    public $dataFilter;
 
 
     /**
@@ -50,15 +71,42 @@ class IndexAction extends Action
      */
     protected function prepareDataProvider()
     {
+        $requestParams = Yii::$app->getRequest()->getBodyParams();
+        if (empty($requestParams)) {
+            $requestParams = Yii::$app->getRequest()->getQueryParams();
+        }
+
+        $filter = null;
+        if ($this->dataFilter !== null) {
+            $this->dataFilter = Yii::createObject($this->dataFilter);
+            if ($this->dataFilter->load($requestParams)) {
+                $filter = $this->dataFilter->build();
+                if ($filter === false) {
+                    return $this->dataFilter;
+                }
+            }
+        }
+
         if ($this->prepareDataProvider !== null) {
-            return call_user_func($this->prepareDataProvider, $this);
+            return call_user_func($this->prepareDataProvider, $this, $filter);
         }
 
         /* @var $modelClass \yii\db\BaseActiveRecord */
         $modelClass = $this->modelClass;
 
+        $query = $modelClass::find();
+        if (!empty($filter)) {
+            $query->andWhere($filter);
+        }
+
         return new ActiveDataProvider([
-            'query' => $modelClass::find(),
+            'query' => $query,
+            'pagination' => [
+                'params' => $requestParams
+            ],
+            'sort' => [
+                'params' => $requestParams
+            ],
         ]);
     }
 }
