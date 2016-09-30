@@ -64,26 +64,30 @@ class EventPriorityQueueTest extends TestCase
     public function testPriority()
     {
         $eventPriorityQueue = $this->getQueue();
-        $data = ['foo', null];
-        $eventPriorityQueue->insert($data, 2);
-        $data = ['bar', null];
-        $eventPriorityQueue->insert($data, 1);
-        $data = ['me', null];
-        $eventPriorityQueue->insert($data, 3);
 
-        $counter = 0;
-        foreach ($eventPriorityQueue as $item) {
+        $restoredItems = [];
 
-            if (0 == $counter) {
-                $this->assertEquals(['me', null], $item);
-            } else if (1 == $counter) {
-                $this->assertEquals(['foo', null], $item);
-            } else {
-                $this->assertEquals(['bar', null], $item);
-            }
+        $items =  [
+            2 => ['foo', null],
+            3 => ['bar', null],
+            1 => ['me', null],
+        ];
 
-            $counter++;
+        $expectedData = [
+            ['bar', null],
+            ['foo', null],
+            ['me', null],
+        ];
+
+        foreach ($items as $priority => $item) {
+            $eventPriorityQueue->insert($item, $priority);
         }
+
+        foreach ($eventPriorityQueue as $item) {
+            $restoredItems[] = $item;
+        }
+
+        $this->assertEquals($expectedData, $restoredItems);
     }
 
     /**
@@ -92,26 +96,30 @@ class EventPriorityQueueTest extends TestCase
     public function testPriorityMixed()
     {
         $eventPriorityQueue = $this->getQueue();
-        $data = ['foo', 'fooData'];
-        $eventPriorityQueue->insert($data, [2, 2]);
-        $data = ['bar', 'barData'];
-        $eventPriorityQueue->insert($data, [2, 1]);
-        $data = ['me', 'meData'];
-        $eventPriorityQueue->insert($data, [2, 3]);
 
-        $counter = 0;
-        foreach ($eventPriorityQueue as $item) {
+        $restoredItems = [];
 
-            if (0 == $counter) {
-                $this->assertEquals(['me', 'meData'], $item);
-            } else if (1 == $counter) {
-                $this->assertEquals(['foo', 'fooData'], $item);
-            } else {
-                $this->assertEquals(['bar', 'barData'], $item);
-            }
+        $items =  [
+            ['data' => ['foo', 'fooData'], 'priority' => [2, 2]],
+            ['data' => ['bar', 'barData'], 'priority' => [2, 1]],
+            ['data' => ['me', 'meData'], 'priority' => [2, 3]],
+        ];
 
-            $counter++;
+        $expectedData = [
+            ['me', 'meData'],
+            ['foo', 'fooData'],
+            ['bar', 'barData'],
+        ];
+
+        foreach ($items as $item) {
+            $eventPriorityQueue->insert($item['data'], $item['priority']);
         }
+
+        foreach ($eventPriorityQueue as $item) {
+            $restoredItems[] = $item;
+        }
+
+        $this->assertEquals($expectedData, $restoredItems);
     }
 
     /**
@@ -120,12 +128,16 @@ class EventPriorityQueueTest extends TestCase
     public function testRemove()
     {
         $eventPriorityQueue = $this->getQueue();
-        $data = ['foo', null];
-        $eventPriorityQueue->insert($data, 2);
-        $data = ['bar', null];
-        $eventPriorityQueue->insert($data, 1);
-        $data = ['me', null];
-        $eventPriorityQueue->insert($data, 3);
+
+        $items =  [
+            2 => ['foo', null],
+            3 => ['bar', null],
+            1 => ['me', null],
+        ];
+
+        foreach ($items as $priority => $item) {
+            $eventPriorityQueue->insert($item, $priority);
+        }
 
         $eventPriorityQueue->remove('me');
 
@@ -142,12 +154,16 @@ class EventPriorityQueueTest extends TestCase
     public function testCount()
     {
         $eventPriorityQueue = $this->getQueue();
-        $data = ['foo', null];
-        $eventPriorityQueue->insert($data, 2);
-        $data = ['bar', null];
-        $eventPriorityQueue->insert($data, 1);
-        $data = ['me', null];
-        $eventPriorityQueue->insert($data, 3);
+
+        $items =  [
+            2 => ['foo', null],
+            3 => ['bar', null],
+            1 => ['me', null],
+        ];
+
+        foreach ($items as $priority => $item) {
+            $eventPriorityQueue->insert($item, $priority);
+        }
 
         $this->assertEquals(3, count($eventPriorityQueue));
     }
@@ -158,23 +174,25 @@ class EventPriorityQueueTest extends TestCase
     public function testMaxPriority()
     {
         $eventPriorityQueue = $this->getQueue();
-        $data = ['foo', null];
-        $eventPriorityQueue->insert($data, 1);
-        $data = ['bar', null];
-        $eventPriorityQueue->insert($data, 23);
-        $data = ['me', null];
-        $eventPriorityQueue->insert($data, 15);
+
+        $items =  [
+            1 => ['foo', null],
+            23 => ['bar', null],
+            15 => ['me', null],
+        ];
+        foreach ($items as $priority => $item) {
+            $eventPriorityQueue->insert($item, $priority);
+        }
 
         $this->assertEquals(23, $eventPriorityQueue->getMaxPriority());
+
         $eventPriorityQueue->remove('bar');
         $this->assertEquals(15, $eventPriorityQueue->getMaxPriority());
 
-        $data = ['bart', null];
-        $eventPriorityQueue->insert($data, 13);
+        $eventPriorityQueue->insert(['bar', null], 13);
         $this->assertEquals(15, $eventPriorityQueue->getMaxPriority());
 
-        $data = ['foot', null];
-        $eventPriorityQueue->insert($data, 103);
+        $eventPriorityQueue->insert(['foot', null], 103);
         $this->assertEquals(103, $eventPriorityQueue->getMaxPriority());
     }
 
