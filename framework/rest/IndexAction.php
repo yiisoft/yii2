@@ -39,7 +39,7 @@ class IndexAction extends Action
      * [
      *     'class' => 'yii\rest\ActiveDataFilter',
      *     'searchModel' => function () {
-     *         return (new DynamicModel(['id' => null, 'name' => null, 'price' => null]))
+     *         return (new \yii\base\DynamicModel(['id' => null, 'name' => null, 'price' => null]))
      *             ->addRule('id', 'integer')
      *             ->addRule('name', 'trim')
      *             ->addRule('name', 'string')
@@ -49,6 +49,8 @@ class IndexAction extends Action
      * ```
      *
      * @see DataFilter
+     *
+     * @since 2.0.10
      */
     public $dataFilter;
 

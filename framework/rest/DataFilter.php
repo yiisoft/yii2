@@ -92,7 +92,7 @@ use yii\validators\StringValidator;
  *
  * ```php
  * function () {
- *     return (new DynamicModel(['id' => null, 'name' => null]))
+ *     return (new \yii\base\DynamicModel(['id' => null, 'name' => null]))
  *         ->addRule(['id', 'name'], 'trim')
  *         ->addRule('id', 'integer')
  *         ->addRule('name', 'string');
