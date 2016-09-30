@@ -474,18 +474,18 @@ class Component extends Object
      */
     public function on($name, $handler, $data = null, $append = true)
     {
-		$priority = (int) $append;
+        $priority = (int)$append;
         $this->ensureBehaviors();
 
-		if (empty($this->_events[$name])) {
-			$this->_events[$name] = new EventPriorityQueue();
-		}
+        if (empty($this->_events[$name])) {
+            $this->_events[$name] = new EventPriorityQueue();
+        }
 
-		if (!$priority) {
-			$priority = $this->_events[$name]->getMaxPriority() + 5;
-		}
+        if (!$priority) {
+            $priority = $this->_events[$name]->getMaxPriority() + 5;
+        }
 
-		$this->_events[$name]->insert([$handler, $data], $priority);
+        $this->_events[$name]->insert([$handler, $data], $priority);
     }
 
     /**
@@ -501,20 +501,20 @@ class Component extends Object
     {
         $this->ensureBehaviors();
 
-		if (empty($this->_events[$name])) {
+        if (empty($this->_events[$name])) {
             return false;
         }
 
-		$handlerRemoved = true;
+        $handlerRemoved = true;
 
         if ($handler === null) {
             unset($this->_events[$name]);
         } else {
-			$handlerRemoved = $this->_events[$name]->remove($handler);
-			// TODO Change self::hasEventHandlers to avoid that calculation
-			if (!count($this->_events[$name])) {
-				unset($this->_events[$name]);
-			}
+            $handlerRemoved = $this->_events[$name]->remove($handler);
+            // TODO Change self::hasEventHandlers to avoid that calculation
+            if (!count($this->_events[$name])) {
+                unset($this->_events[$name]);
+            }
         }
 
         return $handlerRemoved;
