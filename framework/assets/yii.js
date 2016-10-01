@@ -423,7 +423,7 @@ window.yii = (function ($) {
         $(document).ajaxComplete(function (event, xhr, settings) {
             var styleSheets = [];
             $('link[rel=stylesheet]').each(function () {
-                if ($.inArray(this.href, pub.reloadableScripts) !== -1) {
+                if (isReloadable(this.href)) {
                     return;
                 }
                 if ($.inArray(this.href, styleSheets) == -1) {
