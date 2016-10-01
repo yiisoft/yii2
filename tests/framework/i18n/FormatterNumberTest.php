@@ -305,6 +305,15 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("0,00 €", $this->formatter->asCurrency(false));
         $this->assertSame("0,00 €", $this->formatter->asCurrency(""));
 
+        // decimal formatting
+        $this->formatter->locale = 'de-DE';
+        $this->assertSame("100 $", \Yii::$app->formatter->asCurrency(100, 'USD', [
+            NumberFormatter::MAX_FRACTION_DIGITS => 0,
+        ]));
+        $this->assertSame("100,00 $", $this->formatter->asCurrency(100, 'USD', [
+            NumberFormatter::MAX_FRACTION_DIGITS => 2
+        ]));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
     }
