@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Application;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
 
@@ -76,7 +77,7 @@ class HelpController extends Controller
     {
         $commands = $this->getModuleCommands(Yii::$app);
         sort($commands);
-        return array_unique($commands);
+        return ArrayHelper::unique($commands);
     }
 
     /**
@@ -119,7 +120,7 @@ class HelpController extends Controller
         }
         sort($actions);
 
-        return array_unique($actions);
+        return ArrayHelper::unique($actions);
     }
 
     /**
