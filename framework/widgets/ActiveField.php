@@ -145,6 +145,10 @@ class ActiveField extends Component
      * it is maintained by various methods of this class.
      */
     public $parts = [];
+    /**
+     * @var bool adds aria attributes aria-required and aria-invalid for inputs
+     */
+    public $addAriaAttributes = false;
 
     /**
      * @var string this property holds a custom input id if it was set using [[inputOptions]] or in one of the
@@ -221,6 +225,9 @@ class ActiveField extends Component
     public function begin()
     {
         if ($this->form->enableClientScript) {
+            if ($this->addAriaAttributes && ($this->getEnableClientValidation() || $this->getEnableAjaxValidation())) {
+                $this->form->ariaAttributes[] = $this->attribute;
+            }
             $clientOptions = $this->getClientOptions();
             if (!empty($clientOptions)) {
                 $this->form->attributes[] = $clientOptions;
@@ -357,6 +364,7 @@ class ActiveField extends Component
     public function input($type, $options = [])
     {
         $options = array_merge($this->inputOptions, $options);
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeInput($type, $this->model, $this->attribute, $options);
 
@@ -383,6 +391,7 @@ class ActiveField extends Component
     public function textInput($options = [])
     {
         $options = array_merge($this->inputOptions, $options);
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeTextInput($this->model, $this->attribute, $options);
 
@@ -428,6 +437,7 @@ class ActiveField extends Component
     public function passwordInput($options = [])
     {
         $options = array_merge($this->inputOptions, $options);
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activePasswordInput($this->model, $this->attribute, $options);
 
@@ -455,6 +465,7 @@ class ActiveField extends Component
         if (!isset($this->form->options['enctype'])) {
             $this->form->options['enctype'] = 'multipart/form-data';
         }
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeFileInput($this->model, $this->attribute, $options);
 
@@ -474,6 +485,7 @@ class ActiveField extends Component
     public function textarea($options = [])
     {
         $options = array_merge($this->inputOptions, $options);
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeTextarea($this->model, $this->attribute, $options);
 
@@ -521,6 +533,7 @@ class ActiveField extends Component
             $options['label'] = null;
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
         }
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
         return $this;
@@ -567,6 +580,7 @@ class ActiveField extends Component
             $options['label'] = null;
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
         }
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
 
         return $this;
@@ -594,6 +608,7 @@ class ActiveField extends Component
     public function dropDownList($items, $options = [])
     {
         $options = array_merge($this->inputOptions, $options);
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeDropDownList($this->model, $this->attribute, $items, $options);
 
@@ -622,6 +637,7 @@ class ActiveField extends Component
     public function listBox($items, $options = [])
     {
         $options = array_merge($this->inputOptions, $options);
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeListBox($this->model, $this->attribute, $items, $options);
 
@@ -641,6 +657,7 @@ class ActiveField extends Component
      */
     public function checkboxList($items, $options = [])
     {
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->_skipLabelFor = true;
         $this->parts['{input}'] = Html::activeCheckboxList($this->model, $this->attribute, $items, $options);
@@ -660,6 +677,7 @@ class ActiveField extends Component
      */
     public function radioList($items, $options = [])
     {
+        $this->addAriaAttributes($options);
         $this->adjustLabelFor($options);
         $this->_skipLabelFor = true;
         $this->parts['{input}'] = Html::activeRadioList($this->model, $this->attribute, $items, $options);
@@ -698,6 +716,7 @@ class ActiveField extends Component
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
         if (in_array('yii\widgets\InputWidget', class_parents($class)) && isset($config['options'])) {
+            $this->addAriaAttributes($config['options']);
             $this->adjustLabelFor($config['options']);
         }
         $this->parts['{input}'] = $class::widget($config);
@@ -731,8 +750,8 @@ class ActiveField extends Component
             return [];
         }
 
-        $enableClientValidation = $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
-        $enableAjaxValidation = $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
+        $enableClientValidation = $this->getEnableClientValidation();
+        $enableAjaxValidation = $this->getEnableAjaxValidation();
 
         if ($enableClientValidation) {
             $validators = [];
@@ -792,6 +811,24 @@ class ActiveField extends Component
     }
 
     /**
+     * Checks if client validation enabled for field
+     * @return bool
+     */
+    protected function getEnableClientValidation() {
+        return $this->enableClientValidation
+            || $this->enableClientValidation === null && $this->form->enableClientValidation;
+    }
+
+    /**
+     * Checks if ajax validation enabled for field
+     * @return bool
+     */
+    protected function getEnableAjaxValidation()
+    {
+        return $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
+    }
+
+    /**
      * Returns the HTML `id` of the input element of this form field.
      * @return string the input id.
      * @since 2.0.7
@@ -799,5 +836,23 @@ class ActiveField extends Component
     protected function getInputId()
     {
         return $this->_inputId ?: Html::getInputId($this->model, $this->attribute);
+    }
+
+    /**
+     * adds aria attributes to the input options
+     * @param $options array input options
+     */
+    protected function addAriaAttributes(&$options)
+    {
+        if ($this->addAriaAttributes) {
+
+            $options['aria-required'] =
+                (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute))
+                ? 'true' : 'false';
+
+            $options['aria-invalid'] =
+                (!isset($options['aria-valid']) && $this->model->hasErrors($this->attribute))
+                ? 'true' : 'false';
+        }
     }
 }
