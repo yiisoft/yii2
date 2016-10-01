@@ -254,6 +254,7 @@ SELECT
     kcu.referenced_table_name,
     kcu.referenced_column_name
 FROM information_schema.referential_constraints AS rc
+INNER JOIN (SELECT 1) AS tmp ON rc.constraint_schema = database() AND rc.table_name = :tableName
 JOIN information_schema.key_column_usage AS kcu ON
     (
         kcu.constraint_catalog = rc.constraint_catalog OR
@@ -261,8 +262,7 @@ JOIN information_schema.key_column_usage AS kcu ON
     ) AND
     kcu.constraint_schema = rc.constraint_schema AND
     kcu.constraint_name = rc.constraint_name
-WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
-AND rc.table_name = :tableName AND kcu.table_name = :tableName1
+WHERE kcu.table_schema = database() AND kcu.table_name = :tableName1
 SQL;
 
         try {
