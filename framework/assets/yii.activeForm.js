@@ -168,7 +168,9 @@
         // whether the validation is cancelled by beforeValidateAttribute event handler
         cancelled: false,
         // the value of the input
-        value: undefined
+        value: undefined,
+        // whether to toggle aria-invalid attribute after validation
+        ariaInvalidToggle: false
     };
 
 
@@ -707,6 +709,7 @@
             hasError = messages[attribute.id].length > 0;
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
+            toggleAriaInvalid($form, attribute, hasError);
             if (hasError) {
                 if (attribute.encodeError) {
                     $error.text(messages[attribute.id][0]);
@@ -775,4 +778,15 @@
         }
     };
 
+    var toggleAriaInvalid = function($form, attribute, hasError) {
+        var $input;
+        if (attribute.ariaInvalidToggle) {
+            $input = $form.find(attribute.input);
+            if (hasError) {
+                $input.attr('aria-invalid', 'true');
+            } else {
+                $input.attr('aria-invalid', 'false');
+            }
+        }
+    }
 })(window.jQuery);

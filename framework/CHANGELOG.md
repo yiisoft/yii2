@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Bug #7670: Added `yii\web\UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
+- Enh #12399 Added `ActiveField::addAriaAttributes` property for `aria-required` and `aria-invalid` attributes render 
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9277: Fixed `yii\console\controllers\AssetController` looses custom options of 'target' bundles (petrabarus, klimov-paul)

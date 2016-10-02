@@ -444,6 +444,59 @@ EOD;
         ], $actualValue);
     }
 
+    public function testAriaAttributes()
+    {
+        $this->activeField->addAriaAttributes = true;
+
+        $expectedValue = <<<EOD
+<div class="form-group field-activefieldtestmodel-attributename">
+<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="false" aria-invalid="false">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testAriaRequiredAttribute()
+    {
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addRule([$this->attributeName], 'required');
+
+        $expectedValue = <<<EOD
+<div class="form-group field-activefieldtestmodel-attributename required">
+<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true" aria-invalid="false">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testAriaInvalidAttribute()
+    {
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addError($this->attributeName, 'Some error');
+
+        $expectedValue = <<<EOD
+<div class="form-group field-activefieldtestmodel-attributename has-error">
+<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="false" aria-invalid="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block">Some error</div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
     /**
      * Helper methods
      */
