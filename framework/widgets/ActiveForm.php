@@ -164,11 +164,6 @@ class ActiveForm extends Widget
     public $attributes = [];
 
     /**
-     * @var array the list of model attributes that support aria-invalid and aria-required html attributes
-     */
-    public $ariaAttributes = [];
-
-    /**
      * @var ActiveField[] the ActiveField objects that are currently active
      */
     private $_fields = [];
@@ -209,7 +204,6 @@ class ActiveForm extends Widget
             $view = $this->getView();
             ActiveFormAsset::register($view);
             $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
-            $this->registerClientAriaToggle();
         }
 
         echo Html::endForm();
@@ -423,50 +417,5 @@ class ActiveForm extends Widget
         }
 
         return $result;
-    }
-
-    /**
-     * Registers javascript function that toggles 'aria-invalid' attribute
-     * depending on input validation state
-     */
-    protected function registerClientAriaToggle()
-    {
-        if ($this->ariaAttributes) {
-            $view = $this->getView();
-            $ariaAttributes = Json::htmlEncode($this->ariaAttributes);
-            $view->registerJs("
-            (function() {
-                var ariaAttributes = {$ariaAttributes};
-                var \$form = $('#{$this->id}');
-                
-                function clearAriaInvalid(attribute) {
-                    if ($.isArray(attribute)) {
-                        attribute.forEach(clearAriaInvalid)
-                    } else if (ariaAttributes.indexOf(attribute.name) !== -1) {
-                        $(attribute.input).attr('aria-invalid', 'false');
-                    }
-                }
-                function addAriaInvalid(attribute) {
-                    if ($.isArray(attribute)) {
-                        attribute.forEach(addAriaInvalid)
-                    } else if (ariaAttributes.indexOf(attribute.name) !== -1) {
-                        $(attribute.input).attr('aria-invalid', 'true');
-                    }
-                }
-                
-                \$form.on('afterValidateAttribute', function(event, attribute, messages) {
-                    clearAriaInvalid(attribute);
-                    if (messages.length) {
-                        addAriaInvalid(attribute);
-                    } 
-                });
-                \$form.on('afterValidate', function(event, messages, errorAttributes) {
-                    var attributes = $(this).data('yiiActiveForm').attributes;
-                    clearAriaInvalid(attributes);
-                    addAriaInvalid(errorAttributes);
-                });
-            })();
-            ");
-        }
     }
 }

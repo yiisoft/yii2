@@ -146,7 +146,7 @@ class ActiveField extends Component
      */
     public $parts = [];
     /**
-     * @var bool adds aria attributes aria-required and aria-invalid for inputs
+     * @var bool adds aria HTML attributes `aria-required` and `aria-invalid` for inputs
      */
     public $addAriaAttributes = false;
 
@@ -160,6 +160,11 @@ class ActiveField extends Component
      * @var bool if "for" field label attribute should be skipped.
      */
     private $_skipLabelFor = false;
+
+    /**
+     * @var bool whether `aria-invalid` HTML attribute should be toggled by validation on client
+     */
+    private $_skipClientAriaInvalid = true;
 
 
     /**
@@ -225,9 +230,6 @@ class ActiveField extends Component
     public function begin()
     {
         if ($this->form->enableClientScript) {
-            if ($this->addAriaAttributes && ($this->getEnableClientValidation() || $this->getEnableAjaxValidation())) {
-                $this->form->ariaAttributes[] = $this->attribute;
-            }
             $clientOptions = $this->getClientOptions();
             if (!empty($clientOptions)) {
                 $this->form->attributes[] = $clientOptions;
@@ -799,6 +801,10 @@ class ActiveField extends Component
             $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
         }
 
+        if ($this->addAriaAttributes && !$this->_skipClientAriaInvalid) {
+            $options['ariaInvalidToggle'] = true;
+        }
+
         // only get the options that are different from the default ones (set in yii.activeForm.js)
         return array_diff_assoc($options, [
             'validateOnChange' => true,
@@ -807,20 +813,22 @@ class ActiveField extends Component
             'validationDelay' => 500,
             'encodeError' => true,
             'error' => '.help-block',
+            'ariaInvalidToggle' => false,
         ]);
     }
 
     /**
-     * Checks if client validation enabled for field
+     * Checks if client validation enabled for the field
      * @return bool
      */
-    protected function getEnableClientValidation() {
+    protected function getEnableClientValidation()
+    {
         return $this->enableClientValidation
             || $this->enableClientValidation === null && $this->form->enableClientValidation;
     }
 
     /**
-     * Checks if ajax validation enabled for field
+     * Checks if ajax validation enabled for the field
      * @return bool
      */
     protected function getEnableAjaxValidation()
@@ -839,20 +847,19 @@ class ActiveField extends Component
     }
 
     /**
-     * adds aria attributes to the input options
+     * Adds aria attributes to the input options
      * @param $options array input options
      */
     protected function addAriaAttributes(&$options)
     {
         if ($this->addAriaAttributes) {
-
-            $options['aria-required'] =
-                (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute))
-                ? 'true' : 'false';
-
-            $options['aria-invalid'] =
-                (!isset($options['aria-valid']) && $this->model->hasErrors($this->attribute))
-                ? 'true' : 'false';
+            if (!isset($options['aria-required'])) {
+                $options['aria-required'] = $this->model->isAttributeRequired($this->attribute) ? 'true' : 'false';
+            }
+            if (!isset($options['aria-invalid'])) {
+                $options['aria-invalid'] = $this->model->hasErrors($this->attribute) ? 'true' : 'false';
+                $this->_skipClientAriaInvalid = false;
+            }
         }
     }
 }
