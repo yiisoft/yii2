@@ -5,6 +5,8 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #7670: Added `yii\web\UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
+- Bug #10358: Fixed race condition in `yii.js` AJAX prefilter (silverfire)
+- Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
 - Bug #9277: Fixed `yii\console\controllers\AssetController` looses custom options of 'target' bundles (petrabarus, klimov-paul)
