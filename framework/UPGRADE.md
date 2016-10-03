@@ -15,6 +15,12 @@ php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 ```
 
+Upgrade from Yii 2.0.9
+----------------------
+
+* RBAC: Interface `ManagerInterface` has been changed to added `getRolesByRole()` method. If you create your Manager via
+`\yii\rbac\BaseManager` or `\yii\rbac\ManagerInterface`, ensure to implement the method getRolesByRole().
+  
 Upgrade from Yii 2.0.8
 ----------------------
 
