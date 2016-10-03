@@ -427,6 +427,12 @@ window.yii = (function ($) {
                             xhr.abort();
                         }
                     });
+                    // Or about previous XHR if the current one is loaded faster
+                    xhr.done(function () {
+                        if (item && item.readyState !== 4) {
+                            item.abort();
+                        }
+                    });
                 } else if (!isReloadable(url)) {
                     xhr.abort();
                 }
