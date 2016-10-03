@@ -135,7 +135,7 @@ sobrescribiendo el método [[yii\rest\ActiveController::checkAccess()|checkAcces
  * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
  *
  * @param string $action the ID of the action to be executed
- * @param \yii\base\Model $model the model to be accessed. If null, it means no specific model is being accessed.
+ * @param \yii\base\Model $model the model to be accessed. If `null`, it means no specific model is being accessed.
  * @param array $params additional parameters
  * @throws ForbiddenHttpException if the user does not have access
  */

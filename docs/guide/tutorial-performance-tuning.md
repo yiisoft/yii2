@@ -30,7 +30,7 @@ disable debug mode:
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info: The default value of `YII_DEBUG` is false. So if you are certain that you do not change its default
+> Info: The default value of `YII_DEBUG` is `false`. So if you are certain that you do not change its default
   value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
   
 
@@ -217,4 +217,4 @@ The following profiling tools may be useful:
 
 ## Prepare application for scaling
 
-When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).
+When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).

@@ -236,7 +236,7 @@ Objets graphiques
 
 Yii 2.0 utilise la classe [[yii\base\Widget]] comme classe de base pour les objets graphiques, similaire à la classe `CWidget` de Yii 1.1.
 
-Pour avoir une meilleure prise en charge du framework dans les EDI, Yii2 introduit une nouvelle syntaxe pour utiliser les objets graphiques. Les méthodes statiques
+Pour avoir une meilleure prise en charge du framework dans les EDI, Yii 2 introduit une nouvelle syntaxe pour utiliser les objets graphiques. Les méthodes statiques
 [[yii\base\Widget::begin()|begin()]], [[yii\base\Widget::end()|end()]], et [[yii\base\Widget::widget()|widget()]]
 ont été créées et sont utilisables comme suit :
 

@@ -743,7 +743,7 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string $selection the selected value
+     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -792,7 +792,7 @@ class BaseHtml
     /**
      * Generates a list box.
      * @param string $name the input name
-     * @param string|array $selection the selected value(s)
+     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -858,7 +858,7 @@ class BaseHtml
      * A checkbox list allows multiple selection, like [[listBox()]].
      * As a result, the corresponding submitted value is an array.
      * @param string $name the name attribute of each checkbox.
-     * @param string|array $selection the selected value(s).
+     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the data item used to generate the checkboxes.
      * The array keys are the checkbox values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the checkbox list container tag.
@@ -938,7 +938,7 @@ class BaseHtml
      * Generates a list of radio buttons.
      * A radio button list is like a checkbox list, except that it only allows single selection.
      * @param string $name the name attribute of each radio button.
-     * @param string|array $selection the selected value(s).
+     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the data item used to generate the radio buttons.
      * The array keys are the radio button values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the radio button list container tag.
@@ -1148,15 +1148,18 @@ class BaseHtml
     /**
      * Generates a summary of the validation errors.
      * If there is no validation error, an empty error summary markup will still be generated, but it will be hidden.
-     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed
+     * @param Model|Model[] $models the model(s) whose validation errors are to be displayed.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - header: string, the header HTML for the error summary. If not set, a default prompt string will be used.
-     * - footer: string, the footer HTML for the error summary.
-     * - encode: boolean, if set to false then the error messages won't be encoded.
+     * - footer: string, the footer HTML for the error summary. Defaults to empty string.
+     * - encode: boolean, if set to false then the error messages won't be encoded. Defaults to `true`.
+     * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
+     * only the first error message for each attribute will be shown. Defaults to `false`.
+     * Option is available since 2.0.10.
      *
-     * The rest of the options will be rendered as the attributes of the container tag. The values will
-     * be HTML-encoded using [[encode()]]. If a value is null, the corresponding attribute will not be rendered.
+     * The rest of the options will be rendered as the attributes of the container tag.
+     *
      * @return string the generated error summary
      */
     public static function errorSummary($models, $options = [])
@@ -1164,6 +1167,7 @@ class BaseHtml
         $header = isset($options['header']) ? $options['header'] : '<p>' . Yii::t('yii', 'Please fix the following errors:') . '</p>';
         $footer = ArrayHelper::remove($options, 'footer', '');
         $encode = ArrayHelper::remove($options, 'encode', true);
+        $showAllErrors = ArrayHelper::remove($options, 'showAllErrors', false);
         unset($options['header']);
 
         $lines = [];
@@ -1172,8 +1176,16 @@ class BaseHtml
         }
         foreach ($models as $model) {
             /* @var $model Model */
-            foreach ($model->getFirstErrors() as $error) {
-                $lines[] = $encode ? Html::encode($error) : $error;
+            foreach ($model->getErrors() as $errors) {
+                foreach ($errors as $error) {
+                    $line = $encode ? Html::encode($error) : $error;
+                    if (array_search($line, $lines) === false) {
+                        $lines[] = $line;
+                    }
+                    if (!$showAllErrors) {
+                        break;
+                    }
+                }
             }
         }
 
@@ -1660,8 +1672,7 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
-     * @param string|array $selection the selected value(s). This can be either a string for single selection
-     * or an array for multiple selections.
+     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -2031,7 +2042,7 @@ class BaseHtml
         }
         $attribute = $matches[2];
         $value = $model->$attribute;
-        if ($matches[3] !== '' && $matches[3] !== '[]') {
+        if ($matches[3] !== '') {
             foreach (explode('][', trim($matches[3], '[]')) as $id) {
                 if ((is_array($value) || $value instanceof \ArrayAccess) && isset($value[$id])) {
                     $value = $value[$id];

@@ -398,16 +398,18 @@ class View extends \yii\base\View
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+
         $depends = ArrayHelper::remove($options, 'depends', []);
 
         if (empty($depends)) {
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = new AssetBundle([
+            $this->getAssetManager()->bundles[$key] = Yii::createObject([
+                'class' => AssetBundle::className(),
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
-                'depends' => (array) $depends,
+                'depends' => (array)$depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -463,17 +465,19 @@ class View extends \yii\base\View
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+
         $depends = ArrayHelper::remove($options, 'depends', []);
 
         if (empty($depends)) {
             $position = ArrayHelper::remove($options, 'position', self::POS_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = new AssetBundle([
+            $this->getAssetManager()->bundles[$key] = Yii::createObject([
+                'class' => AssetBundle::className(),
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
-                'depends' => (array) $depends,
+                'depends' => (array)$depends,
             ]);
             $this->registerAssetBundle($key);
         }

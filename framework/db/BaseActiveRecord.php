@@ -235,10 +235,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if ($this->hasAttribute($name)) {
+        if (parent::canGetProperty($name, $checkVars, $checkBehaviors)) {
             return true;
         }
-        return parent::canGetProperty($name, $checkVars, $checkBehaviors);
+
+        try {
+            return $this->hasAttribute($name);
+        } catch (\Exception $e) {
+            // `hasAttribute()` may fail on base/abstract classes in case automatic attribute list fetching used
+            return false;
+        }
     }
 
     /**
@@ -246,10 +252,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
     {
-        if ($this->hasAttribute($name)) {
+        if (parent::canSetProperty($name, $checkVars, $checkBehaviors)) {
             return true;
         }
-        return parent::canSetProperty($name, $checkVars, $checkBehaviors);
+
+        try {
+            return $this->hasAttribute($name);
+        } catch (\Exception $e) {
+            // `hasAttribute()` may fail on base/abstract classes in case automatic attribute list fetching used
+            return false;
+        }
     }
 
     /**
@@ -669,7 +681,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * will not be saved to the database and this method will return `false`.
      * @param array $attributeNames list of attribute names that need to be saved. Defaults to null,
      * meaning all attributes that are loaded from DB will be saved.
-     * @return integer|boolean the number of rows affected, or `false` if validation fails
+     * @return integer|false the number of rows affected, or `false` if validation fails
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
@@ -727,7 +739,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * @see update()
      * @param array $attributes attributes to update
-     * @return integer number of rows updated
+     * @return integer|false the number of rows affected, or false if [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException
      */
     protected function updateInternal($attributes = null)

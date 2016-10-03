@@ -64,6 +64,7 @@ class UrlRuleTest extends TestCase
     {
         $manager = new UrlManager([
             'cache' => null,
+            'normalizer' => UrlNormalizer::className(),
         ]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
@@ -81,7 +82,7 @@ class UrlRuleTest extends TestCase
                         $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
-                    $this->assertEquals($expected, [$exc->route, $exc->params], "Test#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -92,7 +93,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
         ]);
@@ -113,7 +114,7 @@ class UrlRuleTest extends TestCase
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
                     $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_PERMANENT, $exc->statusCode, "Test-statusCode#$i-$j: $name");
-                    $this->assertEquals($expected, [$exc->route, $exc->params], "Test#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -121,7 +122,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
             ],
         ]);
@@ -142,7 +143,7 @@ class UrlRuleTest extends TestCase
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
                     $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_TEMPORARY, $exc->statusCode, "Test-statusCode#$i-$j: $name");
-                    $this->assertEquals($expected, [$exc->route, $exc->params], "Test#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -150,7 +151,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => UrlNormalizer::ACTION_NOT_FOUND,
             ],
         ]);
@@ -178,7 +179,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => null,
             ],
         ]);
@@ -207,7 +208,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
+                'class' => UrlNormalizer::className(),
                 'action' => $normalizerAction,
             ],
         ]);

@@ -282,7 +282,11 @@
         },
 
         // validate all applicable inputs in the form
-        validate: function () {
+        validate: function (forceValidate) {
+            if (forceValidate) {
+                $(this).data('yiiActiveForm').submitting = true;
+            }
+
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
                 needAjaxValidation = false,
@@ -553,7 +557,7 @@
      */
     var getFormOptions = function ($form) {
         var attributes = {};
-        for (var i in buttonOptions) {
+        for (var i = 0; i < buttonOptions.length; i++) {
             attributes[buttonOptions[i]] = $form.attr(buttonOptions[i]);
         }
         return attributes;
@@ -565,7 +569,7 @@
      * @param $button the button jQuery object
      */
     var applyButtonOptions = function ($form, $button) {
-        for (var i in buttonOptions) {
+        for (var i = 0; i < buttonOptions.length; i++) {
             var value = $button.attr('form' + buttonOptions[i]);
             if (value) {
                 $form.attr(buttonOptions[i], value);
@@ -580,7 +584,7 @@
     var restoreButtonOptions = function ($form) {
         var data = $form.data('yiiActiveForm');
 
-        for (var i in buttonOptions) {
+        for (var i = 0; i < buttonOptions.length; i++) {
             $form.attr(buttonOptions[i], data.options[buttonOptions[i]] || null);
         }
     };
@@ -593,6 +597,10 @@
      */
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
+
+        if (data === undefined) {
+            return false;
+        }
 
         if (submitting) {
             var errorAttributes = [];
@@ -620,11 +628,9 @@
             } else {
                 data.validated = true;
                 if (data.submitObject) {
-                    applyButtonOptions($form, data.submitObject);
-                }
-                $form.submit();
-                if (data.submitObject) {
-                    restoreButtonOptions($form);
+                    data.submitObject.trigger("click");
+                } else {
+                    $form.submit();
                 }
             }
         } else {

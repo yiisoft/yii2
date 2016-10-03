@@ -60,7 +60,7 @@ of rules for validating the data. The validation rules declared above state that
 
 If you have an `EntryForm` object populated with the data entered by a user, you may call
 its [[yii\base\Model::validate()|validate()]] to trigger the data validation routines. A data validation
-failure will set the [[yii\base\Model::hasErrors|hasErrors]] property to true, and you may learn what validation
+failure will set the [[yii\base\Model::hasErrors|hasErrors]] property to `true`, and you may learn what validation
 errors occurred through [[yii\base\Model::getErrors|errors]].
 
 ```php
@@ -208,10 +208,10 @@ You may wonder how the HTML form works behind the scene, because it seems almost
 display a label for each input field and show error messages if you do not enter the data correctly
 without reloading the page.
 
-Yes, the data validation is initially done on the client side using JavaScript, and secondarily performed on the server side via PHP.
+Yes, the data validation is initially done on the client-side using JavaScript, and secondarily performed on the server-side via PHP.
 [[yii\widgets\ActiveForm]] is smart enough to extract the validation rules that you have declared in `EntryForm`,
 turn them into executable JavaScript code, and use the JavaScript to perform data validation. In case you have disabled
-JavaScript on your browser, the validation will still be performed on the server side, as shown in
+JavaScript on your browser, the validation will still be performed on the server-side, as shown in
 the `actionEntry()` method. This ensures data validity in all circumstances.
 
 > Warning: Client-side validation is a convenience that provides for a better user experience. Server-side validation

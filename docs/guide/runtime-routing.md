@@ -267,7 +267,7 @@ The rest of the properties are optional. However, their configuration shown abov
 
 * [[yii\web\UrlManager::showScriptName|showScriptName]]: this property determines whether the entry script
   should be included in the created URLs. For example, instead of creating a URL `/index.php/post/100`,
-  by setting this property to be false, a URL `/post/100` will be generated.
+  by setting this property to be `false`, a URL `/post/100` will be generated.
 * [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: this property determines whether to enable
   strict request parsing. If strict parsing is enabled, the incoming requested URL must match at least one of
   the [[yii\web\UrlManager::rules|rules]] in order to be treated as a valid request, or a [[yii\web\NotFoundHttpException]]
@@ -278,7 +278,7 @@ The rest of the properties are optional. However, their configuration shown abov
   particular application requirement.
 
 > Note: In order to hide the entry script name in the created URLs, besides setting
-  [[yii\web\UrlManager::showScriptName|showScriptName]] to be false, you may also need to configure your Web server
+  [[yii\web\UrlManager::showScriptName|showScriptName]] to be `false`, you may also need to configure your Web server
   so that it can correctly identify which PHP script should be executed when a requested URL does not explicitly
   specify one. If you are using Apache Web server, you may refer to the recommended configuration as described in the
   [Installation](start-installation.md#recommended-apache-configuration) section.
@@ -519,14 +519,16 @@ contains a customized URL rule which uses `.json` as its suffix instead of the g
 
 ### URL normalization <span id="url-normalization"></span>
 
-Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] uses [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
+Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] can be configured to use [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
 with variations of the same URL with and without trailing slash. Because technically `http://example.com/path`
 and `http://example.com/path/` are different URLs, serving the same content for both of them can degrade SEO.
 By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
-suffix has a trailing slash or not, and redirects to normalized version of URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
-Normalizer can be configured individually for URL manager and each rule - by default rule will use normalizer
-from URL manager. You can set [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] and
-[[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization in given context.
+suffix has a trailing slash or not, and redirects to the normalized version of the URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
+The normalizer can be configured globally for the URL manager or individually for each rule - by default each rule will use the normalizer
+from URL manager. You can set [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization
+for particular URL rule.
+
+The following shows an example configuration for the UrlNormalizer:
 
 ```php
 [
@@ -560,6 +562,9 @@ from URL manager. You can set [[yii\web\UrlManager::$normalizer|UrlManager::$nor
     ],
 ]
 ```
+
+> Note: by default [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] is disabled. You need to explicitly
+  configure it in order to enable URL normalization.
 
 
 ### HTTP Methods <span id="http-methods"></span>

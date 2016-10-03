@@ -17,7 +17,7 @@
 Как вы можете видеть на скриншоте, в Yii уже определён набор доступных по умолчанию команд:
 
 - [[yii\console\controllers\AssetController|AssetController]] - Позволяет вам объединять и сжимать ваши JavaScript и CSS файлы.
-  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#using-the-asset-command).
+  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#using-asset-bundles).
 - [[yii\console\controllers\CacheController|CacheController]] - Позволяет вам сбрасывать кеш приложения.
 - [[yii\console\controllers\FixtureController|FixtureController]] - Управляет загрузкой и выгрузкой данных фикстур для тестирования.
   Данная команда более подробно описана в [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
@@ -69,6 +69,7 @@ yii migrate/up 5 --migrationTable=migrations
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
@@ -141,6 +142,46 @@ exit($exitCode);
 
 Вы можете использовать указание типа `array`, чтобы указать, что аргумент должен рассматриваться как массив. Массив
 будет сгенерирован путём разделения входной строки по запятым.
+
+### Псевдонимы опций
+
+Начиная с версии 2.0.8 в классе консольной команды  доступен метод [[yii\console\Controller::optionAliases()]],
+позволяющий добавлять псевдонимы для опций.
+
+Для того, чтобы задать псевдоним, перекройте метод [[yii\console\Controller::optionAliases()]] в вашем контроллере:
+
+```php
+namespace app\commands;
+
+use yii\console\Controller;
+
+class HelloController extends Controller
+{
+    public $message;
+    
+    public function options()
+    {
+        return ['message'];
+    }
+    
+    public function optionAliases()
+    {
+        return ['m' => 'message'];
+    }
+    
+    public function actionIndex()
+    {
+        echo $this->message . "\n";
+    }
+}
+```
+
+Теперь для запуска команды можно использовать следующий синтаксис:
+
+```
+yii hello -m=hello
+```
+
 
 Следующий пример показывает как описывать аргументы:
 

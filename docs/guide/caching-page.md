@@ -1,7 +1,7 @@
 Page Caching
 ============
 
-Page caching refers to caching the content of a whole page on the server side. Later when the same page
+Page caching refers to caching the content of a whole page on the server-side. Later when the same page
 is requested again, its content will be served from the cache instead of regenerating it from scratch.
 
 Page caching is supported by [[yii\filters\PageCache]], an [action filter](structure-filters.md).

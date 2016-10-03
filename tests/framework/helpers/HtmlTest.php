@@ -3,6 +3,7 @@
 namespace yiiunit\framework\helpers;
 
 use Yii;
+use yii\base\DynamicModel;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -881,6 +882,82 @@ EOD;
         $this->assertEquals($expectedHtml, Html::activePasswordInput($model, 'name', $options));
     }
 
+    public function errorSummaryDataProvider()
+    {
+        return [
+            [
+                'ok',
+                [],
+                '<div style="display:none"><p>Please fix the following errors:</p><ul></ul></div>'
+            ],
+            [
+                'ok',
+                ['header' => 'Custom header', 'footer' => 'Custom footer', 'style' => 'color: red'],
+                '<div style="color: red; display:none">Custom header<ul></ul>Custom footer</div>',
+            ],
+            [
+                str_repeat('long_string', 60),
+                [],
+                '<div><p>Please fix the following errors:</p><ul><li>Name should contain at most 100 characters.</li></ul></div>'
+            ],
+            [
+                'not_an_integer',
+                [],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                }
+            ],
+            [
+                'not_an_integer',
+                ['encode' => false],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: < ></li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                }
+            ],
+            [
+                str_repeat('long_string', 60),
+                [],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                }
+            ],
+            [
+                'not_an_integer',
+                ['showAllErrors' => true],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li>
+<li>Error message. Here are even more chars: &quot;&quot;</li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                    $model->addError('name', 'Error message. Here are even more chars: ""');
+                }
+            ],
+
+        ];
+    }
+
+    /**
+     * @dataProvider errorSummaryDataProvider
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     * @param \Closure $beforeValidate
+     */
+    public function testErrorSummary($value, array $options, $expectedHtml, $beforeValidate = null)
+    {
+        $model = new HtmlTestModel();
+        $model->name = $value;
+        if ($beforeValidate !== null) {
+            call_user_func($beforeValidate, $model);
+        }
+        $model->validate(null, false);
+
+        $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
+    }
+
     /**
      * Data provider for [[testActiveTextArea()]]
      * @return array test data
@@ -928,7 +1005,7 @@ EOD;
     {
         $model = new HtmlTestModel();
         $model->description = $value;
-        $this->assertEquals($expectedHtml, Html::activeTextArea($model, 'description', $options));
+        $this->assertEquals($expectedHtml, Html::activeTextarea($model, 'description', $options));
     }
 
     /**
@@ -949,28 +1026,21 @@ EOD;
         $noCsrfForm = Html::beginForm('/index.php', 'post', ['csrf' => false, 'id' => 'myform']);
         $this->assertEquals('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
     }
-
-    public function testGetAttributeValue()
-    {
-        $model = new HtmlTestModel();
-        $model->types = ['type1', 'type2', ['sub-array', 'sub-array2']];
-
-        $this->assertEquals($model->types, Html::getAttributeValue($model, 'types'));
-        $this->assertEquals($model->types, Html::getAttributeValue($model, 'types[]'));
-        $this->assertEquals('type1', Html::getAttributeValue($model, 'types[0]'));
-        $this->assertEquals('type2', Html::getAttributeValue($model, 'types[1]'));
-        $this->assertEquals('type2', Html::getAttributeValue($model, 'types[1][]'));
-        $this->assertEquals(['sub-array', 'sub-array2'], Html::getAttributeValue($model, 'types[2][]'));
-        $this->assertEquals('sub-array2', Html::getAttributeValue($model, 'types[2][1]'));
-        $this->assertEquals(null, Html::getAttributeValue($model, 'types[3]'));
-    }
 }
 
-class HtmlTestModel extends Model
+/**
+ * @property string name
+ * @property array types
+ * @property string description
+ */
+class HtmlTestModel extends DynamicModel
 {
-    public $name;
-    public $types;
-    public $description;
+    public function init()
+    {
+        foreach (['name', 'types', 'description'] as $attribute) {
+            $this->defineAttribute($attribute);
+        }
+    }
 
     public function rules()
     {

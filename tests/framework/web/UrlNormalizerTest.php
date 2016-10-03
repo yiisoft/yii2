@@ -69,7 +69,7 @@ class UrlNormalizerTest extends TestCase
 
         // 301 redirect as default action
         $normalizer->action = UrlNormalizer::ACTION_REDIRECT_PERMANENT;
-        $expected = new UrlNormalizerRedirectException($route[0], $route[1], 301);
+        $expected = new UrlNormalizerRedirectException([$route[0]] + $route[1], 301);
         try {
             $result = $normalizer->normalizeRoute($route);
             $this->fail('Expected throwing UrlNormalizerRedirectException');
@@ -79,7 +79,7 @@ class UrlNormalizerTest extends TestCase
 
         // 302 redirect as default action
         $normalizer->action = UrlNormalizer::ACTION_REDIRECT_TEMPORARY;
-        $expected = new UrlNormalizerRedirectException($route[0], $route[1], 302);
+        $expected = new UrlNormalizerRedirectException([$route[0]] + $route[1], 302);
         try {
             $result = $normalizer->normalizeRoute($route);
             $this->fail('Expected throwing UrlNormalizerRedirectException');

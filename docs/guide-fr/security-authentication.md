@@ -142,6 +142,7 @@ $isGuest = Yii::$app->user->isGuest;
 ```
 
 Pour connecter un utilisateur, vous devez utiliser le code suivant :
+
 ```php
 // trouve une identité d'utilisateur à partir du nom d'utilisateur spécifié 
 // notez que vous pouvez vouloir vérifier le mot de passe si besoin. 

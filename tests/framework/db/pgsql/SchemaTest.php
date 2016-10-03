@@ -155,4 +155,29 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $actual = Type::find()->one();
         $this->assertEquals($bigint, $actual->bigint_col);
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/12483
+     */
+    public function testParenthesisDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_default_parenthesis') !== null) {
+            $db->createCommand()->dropTable('test_default_parenthesis')->execute();
+        }
+
+        $db->createCommand()->createTable('test_default_parenthesis', [
+            'id' => 'pk',
+            'user_timezone' => 'numeric(5,2) DEFAULT (0)::numeric NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_default_parenthesis');
+        $tableSchema = $db->schema->getTableSchema('test_default_parenthesis');
+        $this->assertNotNull($tableSchema);
+        $column = $tableSchema->getColumn('user_timezone');
+        $this->assertNotNull($column);
+        $this->assertFalse($column->allowNull);
+        $this->assertEquals('numeric', $column->dbType);
+        $this->assertEquals(0, $column->defaultValue);
+    }
 }

@@ -104,6 +104,9 @@ abstract class QueryTest extends DatabaseTestCase
 
         $query->andFilterWhere(['or not like', 'id', null]);
         $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or', ['eq', 'id', null], ['eq', 'id', []]]);
+        $this->assertEquals($condition, $query->where);
     }
 
     public function testFilterRecursively()
