@@ -88,6 +88,7 @@ Yii Framework 2 Change Log
 - Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options (timbeks)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
+- Enh #13268: Added logging of memory usage (bashkarev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 
