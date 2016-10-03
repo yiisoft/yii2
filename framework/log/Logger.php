@@ -85,6 +85,7 @@ class Logger extends Component
      *   [2] => category (string)
      *   [3] => timestamp (float, obtained by microtime(true))
      *   [4] => traces (array, debug backtrace, contains the application code call stacks)
+     *   [5] => memory usage in bytes (int, obtained by memory_get_usage(true))
      * ]
      * ~~~
      */
@@ -146,7 +147,7 @@ class Logger extends Component
                 }
             }
         }
-        $this->messages[] = [$message, $level, $category, $time, $traces];
+        $this->messages[] = [$message, $level, $category, $time, $traces, memory_get_usage(true)];
         if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
             $this->flush();
         }
@@ -259,19 +260,20 @@ class Logger extends Component
         $stack = [];
 
         foreach ($messages as $i => $log) {
-            list($token, $level, $category, $timestamp, $traces) = $log;
-            $log[5] = $i;
+            list($token, $level, $category, $timestamp, $traces, $memory) = $log;
+            $log[6] = $i;
             if ($level == Logger::LEVEL_PROFILE_BEGIN) {
                 $stack[] = $log;
             } elseif ($level == Logger::LEVEL_PROFILE_END) {
                 if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-                    $timings[$last[5]] = [
+                    $timings[$last[6]] = [
                         'info' => $last[0],
                         'category' => $last[2],
                         'timestamp' => $last[3],
                         'trace' => $last[4],
                         'level' => count($stack),
                         'duration' => $timestamp - $last[3],
+                        'memory' => $memory
                     ];
                 }
             }
