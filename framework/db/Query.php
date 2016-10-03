@@ -268,19 +268,22 @@ class Query extends Component implements QueryInterface
      */
     public function column($db = null)
     {
-        if (!is_string($this->indexBy)) {
+        if ($this->indexBy === null) {
             return $this->createCommand($db)->queryColumn();
         }
-        if (is_array($this->select) && count($this->select) === 1) {
+
+        if (is_string($this->indexBy) && is_array($this->select) && count($this->select) === 1) {
             $this->select[] = $this->indexBy;
         }
         $rows = $this->createCommand($db)->queryAll();
         $results = [];
         foreach ($rows as $row) {
-            if (array_key_exists($this->indexBy, $row)) {
-                $results[$row[$this->indexBy]] = reset($row);
+            $value = reset($row);
+
+            if ($this->indexBy instanceof \Closure) {
+                $results[call_user_func($this->indexBy, $row)] = $value;
             } else {
-                $results[] = reset($row);
+                $results[$row[$this->indexBy]] = $value;
             }
         }
         return $results;

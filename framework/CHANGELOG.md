@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
