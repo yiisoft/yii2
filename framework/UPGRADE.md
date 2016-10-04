@@ -18,6 +18,8 @@ php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 Upgrade from Yii 2.0.9
 ----------------------
 
+* RBAC: `getChildRoles()` method was added to `\yii\rbac\ManagerInterface`. If you've implemented your own RBAC manager
+  you need to implement new method.
 * NTEXT data type was marked as deprecated (https://msdn.microsoft.com/en-us/library/ms187993.aspx) so 
   `\yii\db\Schema::TYPE_TEXT` was changed from `'ntext'` to `'nvarchar'`. By default `nvarchar` defines a 
   string of length 4000. If you need `Schema::TYPE_TEXT = nvarchar(max)`, you can adjust it in your code. 

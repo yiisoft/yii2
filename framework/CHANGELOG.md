@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Enh #10243: Added `yii\data\Sort::setAttributeOrders()` method allowing manual setup of current sort (klimov-paul)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
 - Enh #11096: Added support for PSR-2 style migration naming for namespaced migrations (klimov-paul)
+- Enh #11245: Added `yii\rbac\ManagerInterface::getRolesByRole($roleName)` method. Implement to `DbManager` and `PhpManager`. (githubjeka)
 - Enh #11275: Added possibility of unset or force replace former value in `ArrayHelper::merge()` (mdmunir, rob006)
 - Enh #11494: `yii.reloadableScripts` now support wildcards with `*` character (silverfire)
 - Enh #11658: Added argument to `yii\grid\ActionColumn::urlCreator` callback, which holds reference to the column instance (klimov-paul)
