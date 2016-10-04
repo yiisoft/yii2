@@ -20,11 +20,9 @@ Upgrade from Yii 2.0.9
 
 * RBAC: `getChildRoles()` method was added to `\yii\rbac\ManagerInterface`. If you've implemented your own RBAC manager
   you need to implement new method.
-* NTEXT data type was marked as deprecated (https://msdn.microsoft.com/en-us/library/ms187993.aspx) so 
-  `\yii\db\Schema::TYPE_TEXT` was changed from `'ntext'` to `'nvarchar'`. By default `nvarchar` defines a 
-  string of length 4000. If you need `Schema::TYPE_TEXT = nvarchar(max)`, you can adjust it in your code. 
-  It's not like that by default because `MAX` keyword is new to SQL Server 2005.
-  
+* Microsoft SQL `NTEXT` data type [was marked as deprecated](https://msdn.microsoft.com/en-us/library/ms187993.aspx) so
+  `\yii\db\mssql\Schema::TYPE_TEXT` was changed from `'ntext'` to `'nvarchar(max)'
+
 Upgrade from Yii 2.0.8
 ----------------------
 
@@ -89,7 +87,7 @@ Upgrade from Yii 2.0.6
 
 * The context of `yii.confirm` JavaScript function was changed from `yii` object to the DOM element which triggered
   the event.
-  
+
   - If you overrode the `yii.confirm` function and accessed the `yii` object through `this`, you must access it
     with global variable `yii` instead.
 
@@ -135,7 +133,7 @@ Upgrade from Yii 2.0.3
 * Updated dependency to `cebe/markdown` to version `1.1.x`.
   If you need stick with 1.0.x, you can specify that in your `composer.json` by
   adding the following line in the `require` section:
-  
+
   ```json
   "cebe/markdown": "~1.0.0",
   ```
@@ -162,7 +160,7 @@ Upgrade from Yii 2.0.0
 * Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
   If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
   adding the following line in the `require` section:
-  
+
   ```json
   "bower-asset/bootstrap": "3.2.*",
   ```
@@ -177,13 +175,13 @@ Upgrade from Yii 2.0 RC
   This causes trouble because the formatter uses `Yii::$app->timeZone` as the default values for output so no timezone conversion
   was possible. If your timestamps are stored in the database without a timezone identifier you have to ensure they are in UTC or
   add a timezone identifier explicitly.
-  
+
 * `yii\bootstrap\Collapse` is now encoding labels by default. `encode` item option and global `encodeLabels` property were
  introduced to disable it. Keys are no longer used as labels. You need to remove keys and use `label` item option instead.
- 
+
 * The `yii\base\View::beforeRender()` and `yii\base\View::afterRender()` methods have two extra parameters `$viewFile`
   and `$params`. If you are overriding these methods, you should adjust the method signature accordingly.
-  
+
 * If you've used `asImage` formatter i.e. `Yii::$app->formatter->asImage($value, $alt);` you should change it
   to `Yii::$app->formatter->asImage($value, ['alt' => $alt]);`.
 
@@ -215,9 +213,9 @@ Upgrade from Yii 2.0 Beta
       }
   }
   ```
-  
+
   It is also a good idea to upgrade composer itself to the latest version if you see any problems:
-  
+
   ```
   php composer.phar self-update
   ```
@@ -309,7 +307,7 @@ Upgrade from Yii 2.0 Beta
   doesn't have `cookieValidationKey` property.
 
 * `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
-new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
+new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in:
 
   ```php
   <?php
@@ -317,16 +315,16 @@ new ones save the following code as `convert.php` that should be placed in the s
   $itemsFile = 'items.php';
   $assignmentsFile = 'assignments.php';
   $rulesFile = 'rules.php';
-  
+
   $oldData = include $oldFile;
-  
+
   function saveToFile($data, $fileName) {
       $out = var_export($data, true);
       $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
       file_put_contents($fileName, $out);
   }
-  
+
   $items = [];
   $assignments = [];
   if (isset($oldData['items'])) {
@@ -340,16 +338,16 @@ new ones save the following code as `convert.php` that should be placed in the s
           $items[$name] = $data;
       }
   }
-  
+
   $rules = [];
   if (isset($oldData['rules'])) {
       $rules = $oldData['rules'];
   }
-  
+
   saveToFile($items, $itemsFile);
   saveToFile($assignments, $assignmentsFile);
   saveToFile($rules, $rulesFile);
-  
+
   echo "Done!\n";
   ```
 
@@ -384,7 +382,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
   }, $duration, $dependency);
   ```
-  
+
 * Due to significant changes to security you need to upgrade your code to use `\yii\base\Security` component instead of
   helper. If you have any data encrypted it should be re-encrypted. In order to do so you can use old security helper
   [as explained by @docsolver at github](https://github.com/yiisoft/yii2/issues/4461#issuecomment-50237807).
@@ -481,6 +479,6 @@ new ones save the following code as `convert.php` that should be placed in the s
 
 * The signature of `View::registerJsFile()` and `View::registerCssFile()` has changed. The `$depends` and `$position`
   paramaters have been merged into `$options`. The new signatures are as follows:
-  
+
   - `registerJsFile($url, $options = [], $key = null)`
   - `registerCssFile($url, $options = [], $key = null)`
