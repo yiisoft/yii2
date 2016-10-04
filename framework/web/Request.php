@@ -231,15 +231,15 @@ class Request extends \yii\base\Request
         if (isset($_POST[$this->methodParam])) {
             return strtoupper($_POST[$this->methodParam]);
         }
-        
+
         if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
             return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
         }
-        
+
         if (isset($_SERVER['REQUEST_METHOD'])) {
             return strtoupper($_SERVER['REQUEST_METHOD']);
         }
-        
+
         return 'GET';
     }
 
@@ -520,6 +520,45 @@ class Request extends \yii\base\Request
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
 
+    private $_domain;
+
+    /**
+     * Returns host part of the current request URL.
+     * By default this is determined based on the user request information.
+     * You may explicitly specify it by setting the [[setDomain()|domain]] property.
+     * @return string hostname part of the request URL (e.g. `yiiframework.com`),
+     * null if can't be obtained from `$_SERVER` and wasn't set.
+     * @see setDomain()
+     */
+    public function getDomain()
+    {
+        if ($this->_domain === null) {
+            if (isset($_SERVER['HTTP_HOST'])) {
+                $this->_domain = $_SERVER['HTTP_HOST'];
+                if(strpos($this->_domain, ':') !== false) {
+                    $parts = explode(':', $this->_domain);
+                    array_pop($parts);
+                    $this->_domain = implode($parts);
+                }
+            } elseif (isset($_SERVER['SERVER_NAME'])) {
+                $this->_domain = $_SERVER['SERVER_NAME'];
+            }
+        }
+
+        return $this->_domain;
+    }
+
+    /**
+     * Sets the host part of the application URL.
+     * This setter is provided in case the hostname cannot be determined
+     * on certain Web servers.
+     * @param string $value the host part of the application URL.
+     */
+    public function setDomain($value)
+    {
+        $this->_domain = $value === null ? null : $value;
+    }
+
     private $_hostInfo;
 
     /**
@@ -535,15 +574,11 @@ class Request extends \yii\base\Request
     {
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
+            $domain = $this->getDomain();
             $http = $secure ? 'https' : 'http';
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
-            } elseif (isset($_SERVER['SERVER_NAME'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+            if($domain !== null) {
                 $port = $secure ? $this->getSecurePort() : $this->getPort();
-                if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
-                    $this->_hostInfo .= ':' . $port;
-                }
+                $this->_hostInfo = $http . '://' . $domain . ':' . $port;
             }
         }
 
