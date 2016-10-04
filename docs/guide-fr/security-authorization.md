@@ -311,7 +311,7 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user l'identifiant de l'utilisateur.
+     * @param string|int $user l'identifiant de l'utilisateur.
      * @param Item $item le rôle ou la permission avec laquelle cette règle est associée
      * @param array $params les paramètres passés à ManagerInterface::checkAccess().
      * @return bool une valeur indiquant si la règles autorise le rôle ou la permission qui lui est associé.

@@ -63,7 +63,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * 与えられた ID によってユーザ識別情報を探す
      *
-     * @param string|integer $id 探すための ID
+     * @param string|int $id 探すための ID
      * @return IdentityInterface|null 与えられた ID に合致する Identity オブジェクト
      */
     public static function findIdentity($id)

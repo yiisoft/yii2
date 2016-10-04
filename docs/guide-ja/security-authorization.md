@@ -363,7 +363,7 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user ユーザ ID
+     * @param string|int $user ユーザ ID
      * @param Item $item この規則が関連付けられているロールまたは許可
      * @param array $params ManagerInterface::checkAccess() に渡されたパラメータ
      * @return bool 関連付けられたロールまたは許可を認めるか否かを示す値

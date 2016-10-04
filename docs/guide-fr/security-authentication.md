@@ -55,7 +55,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Trouve une identité à partir de l'identifiant donné.
      *
-     * @param string|integer $id l'identifiant à rechercher
+     * @param string|int $id l'identifiant à rechercher
      * @return IdentityInterface|null l'objet identité qui correspond à l'identifiant donné
      */
     public static function findIdentity($id)
