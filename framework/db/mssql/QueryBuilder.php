@@ -28,7 +28,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
         Schema::TYPE_CHAR => 'nchar(1)',
         Schema::TYPE_STRING => 'nvarchar(255)',
-        Schema::TYPE_TEXT => 'ntext',
+        // If you need Schema::TYPE_TEXT = nvarchar(max), you can change in your code
+        // MAX keyword is new to SQL Server 2005 http://stackoverflow.com/questions/16472610/max-nvarchar-length
+        Schema::TYPE_TEXT => 'nvarchar(4000)',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
