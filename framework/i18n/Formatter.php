@@ -831,7 +831,7 @@ class Formatter extends Component
      * @param string $negativeSign will be prefixed to the formatted duration, when it is negative. Defaults to `-`.
      * @return string the formatted duration.
      * @since 2.0.7
-     * @deprecated Since version in 2.0.10. The signature will be changed in 2.1 to [[Formatter::asDurationTime()]]
+     * @deprecated Since version 2.0.10. The signature will be changed to [[Formatter::asDurationTime()]] in 2.1
      * @see asDurationTime()
      */
     public function asDuration($value, $implodeString = ', ', $negativeSign = '-')
