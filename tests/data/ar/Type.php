@@ -5,9 +5,9 @@ namespace yiiunit\data\ar;
 /**
  * Model representing type table
  *
- * @property integer $int_col
- * @property integer $int_col2 DEFAULT 1
- * @property integer $smallint_col DEFAULT 1
+ * @property int $int_col
+ * @property int $int_col2 DEFAULT 1
+ * @property int $smallint_col DEFAULT 1
  * @property string $char_col
  * @property string $char_col2 DEFAULT 'something'
  * @property string $char_col3
@@ -16,8 +16,8 @@ namespace yiiunit\data\ar;
  * @property string $blob_col
  * @property float $numeric_col DEFAULT '33.22'
  * @property string $time DEFAULT '2002-01-01 00:00:00'
- * @property boolean $bool_col
- * @property boolean $bool_col2 DEFAULT 1
+ * @property bool $bool_col
+ * @property bool $bool_col2 DEFAULT 1
  */
 class Type extends ActiveRecord
 {

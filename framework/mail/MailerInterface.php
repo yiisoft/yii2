@@ -48,7 +48,7 @@ interface MailerInterface
     /**
      * Sends the given email message.
      * @param MessageInterface $message email message instance to be sent
-     * @return boolean whether the message has been sent successfully
+     * @return bool whether the message has been sent successfully
      */
     public function send($message);
 
@@ -58,7 +58,7 @@ interface MailerInterface
      * This method may be implemented by some mailers which support more efficient way of sending multiple messages in the same batch.
      *
      * @param array $messages list of email messages, which should be sent.
-     * @return integer number of messages that are successfully sent.
+     * @return int number of messages that are successfully sent.
      */
     public function sendMultiple(array $messages);
 }

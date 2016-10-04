@@ -86,7 +86,7 @@ class InitDbFixture extends DbFixture
 
     /**
      * Toggles the DB integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      */
     public function checkIntegrity($check)
     {

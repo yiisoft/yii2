@@ -89,7 +89,7 @@ class DbSession extends MultiFieldSession
     /**
      * Updates the current session ID with a newly generated one .
      * Please refer to <http://php.net/session_regenerate_id> for more details.
-     * @param boolean $deleteOldSession Whether to delete the old associated session file or not.
+     * @param bool $deleteOldSession Whether to delete the old associated session file or not.
      */
     public function regenerateID($deleteOldSession = false)
     {
@@ -153,7 +153,7 @@ class DbSession extends MultiFieldSession
      * Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
-     * @return boolean whether session write is successful
+     * @return bool whether session write is successful
      */
     public function writeSession($id, $data)
     {
@@ -194,7 +194,7 @@ class DbSession extends MultiFieldSession
      * Session destroy handler.
      * Do not call this method directly.
      * @param string $id session ID
-     * @return boolean whether session is destroyed successfully
+     * @return bool whether session is destroyed successfully
      */
     public function destroySession($id)
     {
@@ -208,8 +208,8 @@ class DbSession extends MultiFieldSession
     /**
      * Session GC (garbage collection) handler.
      * Do not call this method directly.
-     * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-     * @return boolean whether session is GCed successfully
+     * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
+     * @return bool whether session is GCed successfully
      */
     public function gcSession($maxLifetime)
     {

@@ -64,7 +64,7 @@ class Breadcrumbs extends Widget
      */
     public $options = ['class' => 'breadcrumb'];
     /**
-     * @var boolean whether to HTML-encode the link labels.
+     * @var bool whether to HTML-encode the link labels.
      */
     public $encodeLabels = true;
     /**

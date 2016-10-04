@@ -3,10 +3,10 @@
 namespace yiiunit\data\ar;
 
 /**
- * @property integer $id
+ * @property int $id
  * @property string $title
  * @property string $content
- * @property integer $version
+ * @property int $version
  */
 class Document extends ActiveRecord
 {

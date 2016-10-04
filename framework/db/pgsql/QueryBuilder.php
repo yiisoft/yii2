@@ -101,7 +101,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
      * separate them with commas or use an array to represent them. Each column name will be properly quoted
      * by the method, unless a parenthesis is found in the name.
-     * @param boolean|string $unique whether to make this a UNIQUE index constraint. You can pass `true` or [[INDEX_UNIQUE]] to create
+     * @param bool|string $unique whether to make this a UNIQUE index constraint. You can pass `true` or [[INDEX_UNIQUE]] to create
      * a unique index, `false` to make a non-unique index using the default index type, or one of the following constants to specify
      * the index method to use: [[INDEX_B_TREE]], [[INDEX_HASH]], [[INDEX_GIST]], [[INDEX_GIN]].
      * @return string the SQL statement for creating a new index.
@@ -180,7 +180,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables.
      * @param string $table the table name.
      * @return string the SQL statement for checking integrity

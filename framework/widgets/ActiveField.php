@@ -95,33 +95,33 @@ class ActiveField extends Component
      */
     public $hintOptions = ['class' => 'hint-block'];
     /**
-     * @var boolean whether to enable client-side data validation.
+     * @var bool whether to enable client-side data validation.
      * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
      */
     public $enableClientValidation;
     /**
-     * @var boolean whether to enable AJAX-based data validation.
+     * @var bool whether to enable AJAX-based data validation.
      * If not set, it will take the value of [[ActiveForm::enableAjaxValidation]].
      */
     public $enableAjaxValidation;
     /**
-     * @var boolean whether to perform validation when the value of the input field is changed.
+     * @var bool whether to perform validation when the value of the input field is changed.
      * If not set, it will take the value of [[ActiveForm::validateOnChange]].
      */
     public $validateOnChange;
     /**
-     * @var boolean whether to perform validation when the input field loses focus.
+     * @var bool whether to perform validation when the input field loses focus.
      * If not set, it will take the value of [[ActiveForm::validateOnBlur]].
      */
     public $validateOnBlur;
     /**
-     * @var boolean whether to perform validation while the user is typing in the input field.
+     * @var bool whether to perform validation while the user is typing in the input field.
      * If not set, it will take the value of [[ActiveForm::validateOnType]].
      * @see validationDelay
      */
     public $validateOnType;
     /**
-     * @var integer number of milliseconds that the validation should be delayed when the user types in the field
+     * @var int number of milliseconds that the validation should be delayed when the user types in the field
      * and [[validateOnType]] is set `true`.
      * If not set, it will take the value of [[ActiveForm::validationDelay]].
      */
@@ -500,7 +500,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @param boolean $enclosedByLabel whether to enclose the radio within the label.
+     * @param bool $enclosedByLabel whether to enclose the radio within the label.
      * If `true`, the method will still use [[template]] to layout the radio button and the error message
      * except that the radio is enclosed by the label tag.
      * @return $this the field object itself.
@@ -546,7 +546,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
+     * @param bool $enclosedByLabel whether to enclose the checkbox within the label.
      * If `true`, the method will still use [[template]] to layout the checkbox and the error message
      * except that the checkbox is enclosed by the label tag.
      * @return $this the field object itself.

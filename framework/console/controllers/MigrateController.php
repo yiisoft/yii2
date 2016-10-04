@@ -101,7 +101,7 @@ class MigrateController extends BaseMigrateController
         'create_junction' => '@yii/views/createTableMigration.php',
     ];
     /**
-     * @var boolean indicates whether the table names generated should consider
+     * @var bool indicates whether the table names generated should consider
      * the `tablePrefix` setting of the DB connection. For example, if the table
      * name is `post` the generator wil return `{{%post}}`.
      * @since 2.0.8
@@ -161,7 +161,7 @@ class MigrateController extends BaseMigrateController
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {

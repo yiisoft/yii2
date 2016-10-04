@@ -62,22 +62,22 @@ class MessageController extends Controller
      */
     public $translator = 'Yii::t';
     /**
-     * @var boolean whether to sort messages by keys when merging new messages
+     * @var bool whether to sort messages by keys when merging new messages
      * with the existing ones. Defaults to false, which means the new (untranslated)
      * messages will be separated from the old (translated) ones.
      */
     public $sort = false;
     /**
-     * @var boolean whether the message file should be overwritten with the merged messages
+     * @var bool whether the message file should be overwritten with the merged messages
      */
     public $overwrite = true;
     /**
-     * @var boolean whether to remove messages that no longer appear in the source code.
+     * @var bool whether to remove messages that no longer appear in the source code.
      * Defaults to false, which means these messages will NOT be removed.
      */
     public $removeUnused = false;
     /**
-     * @var boolean whether to mark messages that no longer appear in the source code.
+     * @var bool whether to mark messages that no longer appear in the source code.
      * Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
      */
     public $markUnused = true;
@@ -188,7 +188,7 @@ class MessageController extends Controller
      * You may use this configuration file with the "extract" command.
      *
      * @param string $filePath output file name or alias.
-     * @return integer CLI exit code
+     * @return int CLI exit code
      * @throws Exception on failure.
      */
     public function actionConfig($filePath)
@@ -234,7 +234,7 @@ EOD;
      * you may use this configuration file with the "extract" command.
      *
      * @param string $filePath output file name or alias.
-     * @return integer CLI exit code
+     * @return int CLI exit code
      * @throws Exception on failure.
      */
     public function actionConfigTemplate($filePath)
@@ -353,9 +353,9 @@ EOD;
      * @param \yii\db\Connection $db
      * @param string $sourceMessageTable
      * @param string $messageTable
-     * @param boolean $removeUnused
+     * @param bool $removeUnused
      * @param array $languages
-     * @param boolean $markUnused
+     * @param bool $markUnused
      */
     protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)
     {
@@ -549,7 +549,7 @@ EOD;
      *
      * @param string $category category that is checked
      * @param array $ignoreCategories message categories to ignore.
-     * @return boolean
+     * @return bool
      * @since 2.0.7
      */
     protected function isCategoryIgnored($category, array $ignoreCategories)
@@ -577,7 +577,7 @@ EOD;
      *
      * @param array|string $a
      * @param array|string $b
-     * @return boolean
+     * @return bool
      * @since 2.0.1
      */
     protected function tokensEqual($a, $b)
@@ -594,7 +594,7 @@ EOD;
      * Finds out a line of the first non-char PHP token found
      *
      * @param array $tokens
-     * @return integer|string
+     * @return int|string
      * @since 2.0.1
      */
     protected function getLine($tokens)
@@ -612,10 +612,10 @@ EOD;
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to
-     * @param boolean $overwrite if existing file should be overwritten without backup
-     * @param boolean $removeUnused if obsolete translations should be removed
-     * @param boolean $sort if translations should be sorted
-     * @param boolean $markUnused if obsolete translations should be marked
+     * @param bool $overwrite if existing file should be overwritten without backup
+     * @param bool $removeUnused if obsolete translations should be removed
+     * @param bool $sort if translations should be sorted
+     * @param bool $markUnused if obsolete translations should be marked
      */
     protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)
     {
@@ -635,11 +635,11 @@ EOD;
      *
      * @param array $messages
      * @param string $fileName name of the file to write to
-     * @param boolean $overwrite if existing file should be overwritten without backup
-     * @param boolean $removeUnused if obsolete translations should be removed
-     * @param boolean $sort if translations should be sorted
+     * @param bool $overwrite if existing file should be overwritten without backup
+     * @param bool $removeUnused if obsolete translations should be removed
+     * @param bool $sort if translations should be sorted
      * @param string $category message category
-     * @param boolean $markUnused if obsolete translations should be marked
+     * @param bool $markUnused if obsolete translations should be marked
      * @return int exit code
      */
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)
@@ -734,11 +734,11 @@ EOD;
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to
-     * @param boolean $overwrite if existing file should be overwritten without backup
-     * @param boolean $removeUnused if obsolete translations should be removed
-     * @param boolean $sort if translations should be sorted
+     * @param bool $overwrite if existing file should be overwritten without backup
+     * @param bool $removeUnused if obsolete translations should be removed
+     * @param bool $sort if translations should be sorted
      * @param string $catalog message catalog
-     * @param boolean $markUnused if obsolete translations should be marked
+     * @param bool $markUnused if obsolete translations should be marked
      */
     protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)
     {

@@ -102,7 +102,7 @@ class HttpCache extends ActionFilter
      */
     public $sessionCacheLimiter = '';
     /**
-     * @var boolean a value indicating whether this filter should be enabled.
+     * @var bool a value indicating whether this filter should be enabled.
      */
     public $enabled = true;
 
@@ -111,7 +111,7 @@ class HttpCache extends ActionFilter
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
      * @param Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
@@ -158,10 +158,10 @@ class HttpCache extends ActionFilter
     /**
      * Validates if the HTTP cache contains valid content.
      * If both Last-Modified and ETag are null, returns false.
-     * @param integer $lastModified the calculated Last-Modified value in terms of a UNIX timestamp.
+     * @param int $lastModified the calculated Last-Modified value in terms of a UNIX timestamp.
      * If null, the Last-Modified header will not be validated.
      * @param string $etag the calculated ETag value. If null, the ETag header will not be validated.
-     * @return boolean whether the HTTP cache is still valid.
+     * @return bool whether the HTTP cache is still valid.
      */
     protected function validateCache($lastModified, $etag)
     {

@@ -389,7 +389,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      *
      * The alias syntax is available since version 2.0.7.
      *
-     * @param boolean|array $eagerLoading whether to eager load the relations specified in `$with`.
+     * @param bool|array $eagerLoading whether to eager load the relations specified in `$with`.
      * When this is a boolean, it applies to all relations specified in `$with`. Use an array
      * to explicitly list which relations in `$with` need to be eagerly loaded. Defaults to `true`.
      * @param string|array $joinType the join type of the relations specified in `$with`.
@@ -476,7 +476,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * This is a shortcut method to [[joinWith()]] with the join type set as "INNER JOIN".
      * Please refer to [[joinWith()]] for detailed usage of this method.
      * @param string|array $with the relations to be joined with.
-     * @param boolean|array $eagerLoading whether to eager loading the relations.
+     * @param bool|array $eagerLoading whether to eager loading the relations.
      * @return $this the query object itself
      * @see joinWith()
      */

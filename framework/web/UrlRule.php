@@ -78,7 +78,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $verb;
     /**
-     * @var integer a value indicating if this rule should be used for both request parsing and URL creation,
+     * @var int a value indicating if this rule should be used for both request parsing and URL creation,
      * parsing only, or creation only.
      * If not set or 0, it means the rule is both request parsing and URL creation.
      * If it is [[PARSING_ONLY]], the rule is for request parsing only.
@@ -86,7 +86,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $mode;
     /**
-     * @var boolean a value indicating if parameters should be url encoded.
+     * @var bool a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
     /**
@@ -245,7 +245,7 @@ class UrlRule extends Object implements UrlRuleInterface
 
     /**
      * @param UrlManager $manager the URL manager
-     * @return boolean
+     * @return bool
      * @since 2.0.10
      */
     protected function hasNormalizer($manager)
@@ -257,7 +257,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * Parses the given request and returns the corresponding route and parameters.
      * @param UrlManager $manager the URL manager
      * @param Request $request the request component
-     * @return array|boolean the parsing result. The route and the parameters are returned as an array.
+     * @return array|bool the parsing result. The route and the parameters are returned as an array.
      * If `false`, it means this rule cannot be used to parse this path info.
      */
     public function parseRequest($manager, $request)
@@ -334,7 +334,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param UrlManager $manager the URL manager
      * @param string $route the route. It should not have slashes at the beginning or the end.
      * @param array $params the parameters
-     * @return string|boolean the created URL, or `false` if this rule cannot be used for creating this URL.
+     * @return string|bool the created URL, or `false` if this rule cannot be used for creating this URL.
      */
     public function createUrl($manager, $route, $params)
     {

@@ -50,7 +50,7 @@ interface IdentityInterface
 {
     /**
      * Finds an identity by the given ID.
-     * @param string|integer $id the ID to be looked for
+     * @param string|int $id the ID to be looked for
      * @return IdentityInterface the identity object that matches the given ID.
      * Null should be returned if such an identity cannot be found
      * or the identity is not in an active state (disabled, deleted, etc.)
@@ -70,7 +70,7 @@ interface IdentityInterface
 
     /**
      * Returns an ID that can uniquely identify a user identity.
-     * @return string|integer an ID that uniquely identifies a user identity.
+     * @return string|int an ID that uniquely identifies a user identity.
      */
     public function getId();
 
@@ -93,7 +93,7 @@ interface IdentityInterface
      *
      * This is required if [[User::enableAutoLogin]] is enabled.
      * @param string $authKey the given auth key
-     * @return boolean whether the given auth key is valid.
+     * @return bool whether the given auth key is valid.
      * @see getAuthKey()
      */
     public function validateAuthKey($authKey);

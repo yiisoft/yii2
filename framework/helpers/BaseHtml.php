@@ -93,7 +93,7 @@ class BaseHtml
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
      * @param string $content the content to be encoded
-     * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
+     * @param bool $doubleEncode whether to encode HTML entities in `$content`. If false,
      * HTML entities in `$content` will not be further encoded.
      * @return string the encoded content
      * @see decode()
@@ -119,7 +119,7 @@ class BaseHtml
 
     /**
      * Generates a complete HTML tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
+     * @param string|bool|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
      * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
      * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
@@ -146,7 +146,7 @@ class BaseHtml
 
     /**
      * Generates a start tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
+     * @param string|bool|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -165,7 +165,7 @@ class BaseHtml
 
     /**
      * Generates an end tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
+     * @param string|bool|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @return string the generated end tag
      * @see beginTag()
      * @see tag()
@@ -671,7 +671,7 @@ class BaseHtml
     /**
      * Generates a radio button input.
      * @param string $name the name attribute.
-     * @param boolean $checked whether the radio button should be checked.
+     * @param bool $checked whether the radio button should be checked.
      * @param array $options the tag options in terms of name-value pairs.
      * See [[booleanInput()]] for details about accepted attributes.
      *
@@ -685,7 +685,7 @@ class BaseHtml
     /**
      * Generates a checkbox input.
      * @param string $name the name attribute.
-     * @param boolean $checked whether the checkbox should be checked.
+     * @param bool $checked whether the checkbox should be checked.
      * @param array $options the tag options in terms of name-value pairs.
      * See [[booleanInput()]] for details about accepted attributes.
      *
@@ -700,7 +700,7 @@ class BaseHtml
      * Generates a boolean input.
      * @param string $type the input type. This can be either `radio` or `checkbox`.
      * @param string $name the name attribute.
-     * @param boolean $checked whether the checkbox should be checked.
+     * @param bool $checked whether the checkbox should be checked.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - uncheck: string, the value associated with the uncheck state of the checkbox. When this attribute
@@ -1895,7 +1895,7 @@ class BaseHtml
      * @param array $options the HTML options to be modified.
      * @param string|array $style the new style string (e.g. `'width: 100px; height: 200px'`) or
      * array (e.g. `['width' => '100px', 'height' => '200px']`).
-     * @param boolean $overwrite whether to overwrite existing CSS properties if the new style
+     * @param bool $overwrite whether to overwrite existing CSS properties if the new style
      * contain them too.
      * @see removeCssStyle()
      * @see cssStyleFromArray()

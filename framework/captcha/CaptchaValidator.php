@@ -27,11 +27,11 @@ use yii\validators\Validator;
 class CaptchaValidator extends Validator
 {
     /**
-     * @var boolean whether to skip this validator if the input is empty.
+     * @var bool whether to skip this validator if the input is empty.
      */
     public $skipOnEmpty = false;
     /**
-     * @var boolean whether the comparison is case sensitive. Defaults to false.
+     * @var bool whether the comparison is case sensitive. Defaults to false.
      */
     public $caseSensitive = false;
     /**

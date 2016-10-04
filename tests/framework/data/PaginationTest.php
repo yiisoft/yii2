@@ -59,8 +59,8 @@ class PaginationTest extends TestCase
     /**
      * @dataProvider dataProviderCreateUrl
      *
-     * @param integer $page
-     * @param integer $pageSize
+     * @param int $page
+     * @param int $pageSize
      * @param string $expectedUrl
      */
     public function testCreateUrl($page, $pageSize, $expectedUrl, $params)

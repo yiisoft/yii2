@@ -5,9 +5,9 @@ namespace yiiunit\data\ar;
 /**
  * Class Item
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
- * @property integer $category_id
+ * @property int $category_id
  */
 class Item extends ActiveRecord
 {

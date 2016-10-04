@@ -12,7 +12,7 @@ use Yii;
 /**
  * Request represents a request that is handled by an [[Application]].
  *
- * @property boolean $isConsoleRequest The value indicating whether the current request is made via console.
+ * @property bool $isConsoleRequest The value indicating whether the current request is made via console.
  * @property string $scriptFile Entry script file path (processed w/ realpath()).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -32,7 +32,7 @@ abstract class Request extends Component
 
     /**
      * Returns a value indicating whether the current request is made via command line
-     * @return boolean the value indicating whether the current request is made via console
+     * @return bool the value indicating whether the current request is made via console
      */
     public function getIsConsoleRequest()
     {
@@ -41,7 +41,7 @@ abstract class Request extends Component
 
     /**
      * Sets the value indicating whether the current request is made via command line
-     * @param boolean $value the value indicating whether the current request is made via command line
+     * @param bool $value the value indicating whether the current request is made via command line
      */
     public function setIsConsoleRequest($value)
     {

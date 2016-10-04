@@ -27,11 +27,11 @@ trait QueryTrait
      */
     public $where;
     /**
-     * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
+     * @var int maximum number of records to be returned. If not set or less than 0, it means no limit.
      */
     public $limit;
     /**
-     * @var integer zero-based offset from where the records are to be returned. If not set or
+     * @var int zero-based offset from where the records are to be returned. If not set or
      * less than 0, it means starting from the beginning.
      */
     public $offset;
@@ -283,7 +283,7 @@ trait QueryTrait
      * - or an empty array.
      *
      * @param mixed $value
-     * @return boolean if the value is empty
+     * @return bool if the value is empty
      */
     protected function isEmpty($value)
     {
@@ -369,7 +369,7 @@ trait QueryTrait
 
     /**
      * Sets the LIMIT part of the query.
-     * @param integer $limit the limit. Use null or negative value to disable limit.
+     * @param int $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit)
@@ -380,7 +380,7 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     * @param integer $offset the offset. Use null or negative value to disable offset.
+     * @param int $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset)

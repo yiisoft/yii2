@@ -24,7 +24,7 @@ use yii\base\InvalidParamException;
 trait ActiveRelationTrait
 {
     /**
-     * @var boolean whether this query represents a relation to more than one record.
+     * @var bool whether this query represents a relation to more than one record.
      * This property is only used in relational context. If true, this relation will
      * populate all query results into AR instances using [[Query::all()|all()]].
      * If false, only the first row of the results will be retrieved using [[Query::one()|one()]].
@@ -347,7 +347,7 @@ trait ActiveRelationTrait
      * @param array $link
      * @param array $viaModels
      * @param array $viaLink
-     * @param boolean $checkMultiple
+     * @param bool $checkMultiple
      * @return array
      */
     private function buildBuckets($models, $link, $viaModels = null, $viaLink = null, $checkMultiple = true)

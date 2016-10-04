@@ -112,7 +112,7 @@ class FileHelperTest extends TestCase
 
     /**
      * Asserts that file has specific permission mode.
-     * @param integer $expectedMode expected file permission mode.
+     * @param int $expectedMode expected file permission mode.
      * @param string  $fileName     file name.
      * @param string  $message      error message
      */

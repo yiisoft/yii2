@@ -91,8 +91,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     }
 
     /**
-     * @param integer $masterCount
-     * @param integer $slaveCount
+     * @param int $masterCount
+     * @param int $slaveCount
      * @return Connection
      */
     protected function prepareMasterSlave($masterCount, $slaveCount)

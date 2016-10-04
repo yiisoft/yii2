@@ -245,7 +245,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      * Returns a value indicating whether the requested language matches the supported language.
      * @param string $requested the requested language code
      * @param string $supported the supported language code
-     * @return boolean whether the requested language is supported
+     * @return bool whether the requested language is supported
      */
     protected function isLanguageSupported($requested, $supported)
     {

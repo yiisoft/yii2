@@ -34,7 +34,7 @@ use yiiunit\TestCase;
 class UserTest extends TestCase
 {
     /**
-     * @var integer virtual time to be returned by mocked time() function.
+     * @var int virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;

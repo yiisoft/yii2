@@ -11,7 +11,7 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
 {
     /**
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @return ColumnSchemaBuilder
      */
     public function getColumnSchemaBuilder($type, $length = null)
@@ -54,7 +54,7 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
     /**
      * @param string $expected
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @param array $calls
      */
     public function checkBuildString($expected, $type, $length, $calls)

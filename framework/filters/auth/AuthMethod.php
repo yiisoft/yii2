@@ -94,7 +94,7 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * Checks, whether authentication is optional for the given action.
      *
      * @param Action $action
-     * @return boolean
+     * @return bool
      * @see optional
      * @since 2.0.7
      */

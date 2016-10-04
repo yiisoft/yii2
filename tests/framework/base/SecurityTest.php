@@ -1117,8 +1117,8 @@ TEXT;
      * @param string $hash
      * @param string $password
      * @param string $salt
-     * @param integer $iterations
-     * @param integer $length
+     * @param int $iterations
+     * @param int $length
      * @param string $okm
      */
     public function testPbkdf2($hash, $password, $salt, $iterations, $length, $okm)
@@ -1205,7 +1205,7 @@ TEXT;
      * @param string $ikm
      * @param string $salt
      * @param string $info
-     * @param integer $l
+     * @param int $l
      * @param string $prk
      * @param string $okm
      */

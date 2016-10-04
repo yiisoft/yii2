@@ -44,45 +44,45 @@ class CaptchaAction extends Action
     const REFRESH_GET_VAR = 'refresh';
 
     /**
-     * @var integer how many times should the same CAPTCHA be displayed. Defaults to 3.
+     * @var int how many times should the same CAPTCHA be displayed. Defaults to 3.
      * A value less than or equal to 0 means the test is unlimited (available since version 1.1.2).
      */
     public $testLimit = 3;
     /**
-     * @var integer the width of the generated CAPTCHA image. Defaults to 120.
+     * @var int the width of the generated CAPTCHA image. Defaults to 120.
      */
     public $width = 120;
     /**
-     * @var integer the height of the generated CAPTCHA image. Defaults to 50.
+     * @var int the height of the generated CAPTCHA image. Defaults to 50.
      */
     public $height = 50;
     /**
-     * @var integer padding around the text. Defaults to 2.
+     * @var int padding around the text. Defaults to 2.
      */
     public $padding = 2;
     /**
-     * @var integer the background color. For example, 0x55FF00.
+     * @var int the background color. For example, 0x55FF00.
      * Defaults to 0xFFFFFF, meaning white color.
      */
     public $backColor = 0xFFFFFF;
     /**
-     * @var integer the font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
+     * @var int the font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
      */
     public $foreColor = 0x2040A0;
     /**
-     * @var boolean whether to use transparent background. Defaults to false.
+     * @var bool whether to use transparent background. Defaults to false.
      */
     public $transparent = false;
     /**
-     * @var integer the minimum length for randomly generated word. Defaults to 6.
+     * @var int the minimum length for randomly generated word. Defaults to 6.
      */
     public $minLength = 6;
     /**
-     * @var integer the maximum length for randomly generated word. Defaults to 7.
+     * @var int the maximum length for randomly generated word. Defaults to 7.
      */
     public $maxLength = 7;
     /**
-     * @var integer the offset between characters. Defaults to -2. You can adjust this property
+     * @var int the offset between characters. Defaults to -2. You can adjust this property
      * in order to decrease or increase the readability of the captcha.
      */
     public $offset = -2;
@@ -157,7 +157,7 @@ class CaptchaAction extends Action
 
     /**
      * Gets the verification code.
-     * @param boolean $regenerate whether the verification code should be regenerated.
+     * @param bool $regenerate whether the verification code should be regenerated.
      * @return string the verification code.
      */
     public function getVerifyCode($regenerate = false)
@@ -180,8 +180,8 @@ class CaptchaAction extends Action
     /**
      * Validates the input to see if it matches the generated code.
      * @param string $input user input
-     * @param boolean $caseSensitive whether the comparison should be case-sensitive
-     * @return boolean whether the input is valid
+     * @param bool $caseSensitive whether the comparison should be case-sensitive
+     * @return bool whether the input is valid
      */
     public function validate($input, $caseSensitive)
     {

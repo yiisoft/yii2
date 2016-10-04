@@ -19,7 +19,7 @@ use yii\helpers\FileHelper;
  *
  * Note that you should enable `fileinfo` PHP extension.
  *
- * @property integer $sizeLimit The size limit for uploaded files. This property is read-only.
+ * @property int $sizeLimit The size limit for uploaded files. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -36,7 +36,7 @@ class FileValidator extends Validator
      */
     public $extensions;
     /**
-     * @var boolean whether to check file type (extension) with mime-type. If extension produced by
+     * @var bool whether to check file type (extension) with mime-type. If extension produced by
      * file mime-type check differs from uploaded file extension, the file will be considered as invalid.
      */
     public $checkExtensionByMimeType = true;
@@ -51,13 +51,13 @@ class FileValidator extends Validator
      */
     public $mimeTypes;
     /**
-     * @var integer the minimum number of bytes required for the uploaded file.
+     * @var int the minimum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
      * @see tooSmall for the customized message for a file that is too small.
      */
     public $minSize;
     /**
-     * @var integer the maximum number of bytes required for the uploaded file.
+     * @var int the maximum number of bytes required for the uploaded file.
      * Defaults to null, meaning no limit.
      * Note, the size limit is also affected by `upload_max_filesize` and `post_max_size` INI setting
      * and the 'MAX_FILE_SIZE' hidden field value. See [[getSizeLimit()]] for details.
@@ -68,7 +68,7 @@ class FileValidator extends Validator
      */
     public $maxSize;
     /**
-     * @var integer the maximum file count the given attribute can hold.
+     * @var int the maximum file count the given attribute can hold.
      * Defaults to 1, meaning single file upload. By defining a higher number,
      * multiple uploads become possible. Setting it to `0` means there is no limit on
      * the number of files that can be uploaded simultaneously.
@@ -289,7 +289,7 @@ class FileValidator extends Validator
      * - 'MAX_FILE_SIZE' hidden field
      * - [[maxSize]]
      *
-     * @return integer the size limit for uploaded files.
+     * @return int the size limit for uploaded files.
      */
     public function getSizeLimit()
     {
@@ -323,7 +323,7 @@ class FileValidator extends Validator
      * Converts php.ini style size to bytes
      *
      * @param string $sizeStr $sizeStr
-     * @return integer
+     * @return int
      */
     private function sizeToBytes($sizeStr)
     {
@@ -345,7 +345,7 @@ class FileValidator extends Validator
     /**
      * Checks if given uploaded file have correct type (extension) according current validator settings.
      * @param UploadedFile $file
-     * @return boolean
+     * @return bool
      */
     protected function validateExtension($file)
     {
@@ -472,7 +472,7 @@ class FileValidator extends Validator
      * Checks the mimeType of the $file against the list in the [[mimeTypes]] property
      *
      * @param UploadedFile $file
-     * @return boolean whether the $file mimeType is allowed
+     * @return bool whether the $file mimeType is allowed
      * @throws \yii\base\InvalidConfigException
      * @see mimeTypes
      * @since 2.0.8
