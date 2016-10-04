@@ -697,7 +697,7 @@ class ActiveField extends Component
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
-        if (in_array('yii\widgets\InputWidget', class_parents($class)) && isset($config['options'])) {
+        if (isset($config['options']) && isset(class_parents($class)['yii\widgets\InputWidget'])) {
             $this->adjustLabelFor($config['options']);
         }
         $this->parts['{input}'] = $class::widget($config);
