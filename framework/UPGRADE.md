@@ -15,6 +15,14 @@ php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 ```
 
+Upgrade from Yii 2.0.9
+----------------------
+
+* MSSQL: NTEXT data type marked as deprecated. (https://msdn.microsoft.com/en-us/library/ms187993.aspx) 
+  Because `\yii\db\Schema::TYPE_TEXT` changed to `nvarchar` from `ntext`. By default nvarchar defines 4000 string length.
+  If you need `Schema::TYPE_TEXT = nvarchar(max)`, you can change in your code. Have not done it by default, because
+  MAX keyword is new to SQL Server 2005.
+  
 Upgrade from Yii 2.0.8
 ----------------------
 
