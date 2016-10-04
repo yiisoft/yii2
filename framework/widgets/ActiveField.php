@@ -372,7 +372,7 @@ class ActiveField extends Component
      *
      * The following special options are recognized:
      *
-     * - `maxlength`: integer|boolean, when `maxlength` is set `true` and the model attribute is validated
+     * - `maxlength`: int|bool, when `maxlength` is set `true` and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
      *

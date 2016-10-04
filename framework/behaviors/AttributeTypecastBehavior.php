@@ -245,13 +245,13 @@ class AttributeTypecastBehavior extends Behavior
 
             switch ($type) {
                 case self::TYPE_INTEGER:
-                    return (int)$value;
+                    return (int) $value;
                 case self::TYPE_FLOAT:
-                    return (float)$value;
+                    return (float) $value;
                 case self::TYPE_BOOLEAN:
-                    return (boolean)$value;
+                    return (bool) $value;
                 case self::TYPE_STRING:
-                    return (string)$value;
+                    return (string) $value;
                 default:
                     throw new InvalidParamException("Unsupported type '{$type}'");
             }

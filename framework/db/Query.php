@@ -364,7 +364,7 @@ class Query extends Component implements QueryInterface
         $params = $command->params;
         $command->setSql($command->db->getQueryBuilder()->selectExists($command->getSql()));
         $command->bindValues($params);
-        return (boolean)$command->queryScalar();
+        return (bool) $command->queryScalar();
     }
 
     /**

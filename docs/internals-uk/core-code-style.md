@@ -134,7 +134,7 @@ class Foo
 
 ### 4.4 Блоки документації PHPDoc (Doc-блоки)
 
-`@param`, `@var`, `@property` та `@return` повинні оголошувати типи як `boolean`, `integer`, `string`, `array` чи `null`. Також можна використовувати імена класів, як наприклад: `Model` або `ActiveRecord`. Для типізованих масивів використовуйте `ClassName[]`.
+`@param`, `@var`, `@property` та `@return` повинні оголошувати типи як `bool`, `int`, `string`, `array` чи `null`. Також можна використовувати імена класів, як наприклад: `Model` або `ActiveRecord`. Для типізованих масивів використовуйте `ClassName[]`.
 
 ### 4.5 Конструктори
 

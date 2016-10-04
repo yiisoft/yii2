@@ -451,7 +451,7 @@ class IpValidator extends Validator
      * Parses IP address/range for the negation with [[NEGATION_CHAR]].
      *
      * @param $string
-     * @return array `[0 => boolean, 1 => string]`
+     * @return array `[0 => bool, 1 => string]`
      *  - boolean: whether the string is negated
      *  - string: the string without negation (when the negation were present)
      */
@@ -605,8 +605,8 @@ class IpValidator extends Validator
             'ipv4Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv4Pattern)),
             'ipv6Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv6Pattern)),
             'messages' => $messages,
-            'ipv4' => (boolean)$this->ipv4,
-            'ipv6' => (boolean)$this->ipv6,
+            'ipv4' => (bool) $this->ipv4,
+            'ipv6' => (bool) $this->ipv6,
             'ipParsePattern' => new JsExpression(Html::escapeJsRegularExpression($this->getIpParsePattern())),
             'negation' => $this->negation,
             'subnet' => $this->subnet,

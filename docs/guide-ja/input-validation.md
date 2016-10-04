@@ -162,7 +162,7 @@ public function rules()
 /**
  * @param Model $model 検証されるモデル
  * @param string $attribute 検証される属性
- * @return boolean 規則が適用されるか否か
+ * @return bool 規則が適用されるか否か
  */
 function ($model, $attribute)
 ```

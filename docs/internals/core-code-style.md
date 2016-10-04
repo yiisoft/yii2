@@ -144,7 +144,7 @@ class Foo
 
 ### 4.4 Doc blocks
 
-`@param`, `@var`, `@property` and `@return` must declare types as `boolean`, `integer`, `string`, `array` or `null`. You can use a class names as well such as `Model` or `ActiveRecord`. For a typed arrays use `ClassName[]`.
+`@param`, `@var`, `@property` and `@return` must declare types as `bool`, `int`, `string`, `array` or `null`. You can use a class names as well such as `Model` or `ActiveRecord`. For a typed arrays use `ClassName[]`.
 
 ### 4.5 Constructors
 

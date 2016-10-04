@@ -191,7 +191,7 @@ return [
 ];
 ```
 
-`DbManager` usa quatro tabelas de banco de dados para armazenar seus dados: 
+`DbManager` usa quatro tabelas de banco de dados para armazenar seus dados:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: tabela para armazenar itens de autorização. O padrão é "auth_item".
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: tabela para armazenar hierarquia de itens de autorização. O padrão é "auth_item_child".
@@ -317,7 +317,7 @@ class AuthorRule extends Rule
     * @param string|integer $user the user ID.
     * @param Item $item the role or permission that this rule is associated with
     * @param array $params parameters passed to ManagerInterface::checkAccess().
-    * @return boolean a value indicating whether the rule permits the role or permission it is associated with.
+    * @return bool a value indicating whether the rule permits the role or permission it is associated with.
     */
    public function execute($user, $item, $params)
    {

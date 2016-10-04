@@ -634,7 +634,7 @@ class BaseFileHelper
      * @param string $pattern
      * @param bool $caseSensitive
      * @throws \yii\base\InvalidParamException
-     * @return array with keys: (string) pattern, (int) flags, (int|boolean) firstWildcard
+     * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {

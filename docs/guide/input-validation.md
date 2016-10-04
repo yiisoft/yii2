@@ -176,7 +176,7 @@ The [[yii\validators\Validator::when|when]] property takes a PHP callable with t
 /**
  * @param Model $model the model being validated
  * @param string $attribute the attribute being validated
- * @return boolean whether the rule should be applied
+ * @return bool whether the rule should be applied
  */
 function ($model, $attribute)
 ```
