@@ -818,7 +818,6 @@ class Formatter extends Component
 
     /**
      * Represents the value as duration in human readable format.
-     *
      * @param DateInterval|string|integer $value the value to be formatted. Acceptable formats:
      *  - [DateInterval object](http://php.net/manual/ru/class.dateinterval.php)
      *  - integer - number of seconds. For example: value `131` represents `2 minutes, 11 seconds`
@@ -828,14 +827,66 @@ class Formatter extends Component
      *    `P1D2H30M/2015-01-02T13:30:00Z` - time interval before datetime value
      *    `P1D2H30M` - simply a date interval
      *    `P-1D2H30M` - a negative date interval (`-1 day, 2 hours, 30 minutes`)
-     *
      * @param string $implodeString will be used to concatenate duration parts. Defaults to `, `.
      * @param string $negativeSign will be prefixed to the formatted duration, when it is negative. Defaults to `-`.
      * @return string the formatted duration.
      * @since 2.0.7
+     * @deprecated Since version in 2.0.10. The signature will be changed in 2.1 to [[Formatter::asDurationTime()]]
+     * @see asDurationTime()
      */
     public function asDuration($value, $implodeString = ', ', $negativeSign = '-')
     {
+        return $this->asDurationTime($value, ['implodeString' => $implodeString, 'negativeSign' => $negativeSign]);
+    }
+
+    /**
+     * Represents the value as duration in human readable format.
+     * @param DateInterval|string|integer $value the value to be formatted. Acceptable formats:
+     *  - [DateInterval object](http://php.net/manual/ru/class.dateinterval.php)
+     *  - integer - number of seconds. For example: value `131` represents `2 minutes, 11 seconds`
+     *  - ISO8601 duration format. For example, all of these values represent `1 day, 2 hours, 30 minutes` duration:
+     *    `2015-01-01T13:00:00Z/2015-01-02T13:30:00Z` - between two datetime values
+     *    `2015-01-01T13:00:00Z/P1D2H30M` - time interval after datetime value
+     *    `P1D2H30M/2015-01-02T13:30:00Z` - time interval before datetime value
+     *    `P1D2H30M` - simply a date interval
+     *    `P-1D2H30M` - a negative date interval (`-1 day, 2 hours, 30 minutes`)
+     * @param array $options The parameter of human readable format string. Includes:
+     *    - string `implodeString` will be used to concatenate duration parts. Defaults to `, `.
+     *    - string `negativeSign` will be prefixed to the formatted duration, when it is negative. Defaults to `-`.
+     *    - boolean `showSeconds` will be displayed for seconds data. Default seconds data is displayed.
+     *    - boolean `showMinutes` will be displayed for minutes data. Default minutes data is displayed.
+     *      If `false` - seconds data isn't displayed also.
+     *    - boolean `showHours` will be displayed for hourly data. Default hourly data is displayed.
+     *      If `false` - minutes and seconds data isn't displayed also.
+     * @return string the formatted duration.
+     * @since 2.0.10
+     */
+    public function asDurationTime($value, $options = [])
+    {
+        if (!isset($options['implodeString'])) {
+            $options['implodeString'] = ', ';
+        }
+
+        if (!isset($options['negativeSign'])) {
+            $options['negativeSign'] = '-';
+        }
+
+        if (!isset($options['showHours'])) {
+            $options['showHours'] = true;
+        } elseif (!$options['showHours']) {
+            $options['showMinutes'] = false;
+        }
+
+        if (!isset($options['showMinutes'])) {
+            $options['showMinutes'] = true;
+        } elseif (!$options['showMinutes']) {
+            $options['showSeconds'] = false;
+        }
+
+        if (!isset($options['showSeconds'])) {
+            $options['showSeconds'] = true;
+        }
+
         if ($value === null) {
             return $this->nullDisplay;
         }
@@ -849,7 +900,7 @@ class Formatter extends Component
             $valueDateTime = (new DateTime())->setTimestamp(abs($value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strpos($value, 'P-') === 0) {
-            $interval = new DateInterval('P'.substr($value, 2));
+            $interval = new DateInterval('P' . substr($value, 2));
             $isNegative = true;
         } else {
             $interval = new DateInterval($value);
@@ -857,29 +908,45 @@ class Formatter extends Component
         }
 
         if ($interval->y > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y],
+                $this->locale);
         }
         if ($interval->m > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 month} other{# months}}', ['delta' => $interval->m], $this->locale);
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 month} other{# months}}', ['delta' => $interval->m],
+                $this->locale);
         }
         if ($interval->d > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 day} other{# days}}', ['delta' => $interval->d], $this->locale);
-        }
-        if ($interval->h > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
-        }
-        if ($interval->i > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
-        }
-        if ($interval->s > 0) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
-        }
-        if ($interval->s === 0 && empty($parts)) {
-            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
-            $isNegative = false;
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 day} other{# days}}', ['delta' => $interval->d],
+                $this->locale);
         }
 
-        return empty($parts) ? $this->nullDisplay : (($isNegative ? $negativeSign : '') . implode($implodeString, $parts));
+        if ($options['showHours'] && $interval->h > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $interval->h],
+                $this->locale);
+        }
+
+        if ($options['showMinutes'] && $interval->i > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i],
+                $this->locale);
+        }
+
+        if ($options['showSeconds']) {
+            if ($interval->s > 0) {
+                $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s],
+                    $this->locale);
+            }
+            if ($interval->s === 0 && empty($parts)) {
+                $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $interval->s],
+                    $this->locale);
+                $isNegative = false;
+            }
+        }
+
+        if (empty($parts)) {
+            return $this->nullDisplay;
+        } else {
+            return ($isNegative ? $options['negativeSign'] : '') . implode($options['implodeString'], $parts);
+        }
     }
 
 

@@ -437,7 +437,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('5 months', $this->formatter->asDuration($interval_5_months));
         $this->assertSame('1 year', $this->formatter->asDuration($interval_1_year));
         $this->assertSame('12 years', $this->formatter->asDuration($interval_12_years));
-        
+
         // Pass a numeric value
         $this->assertSame('0 seconds', $this->formatter->asDuration(0));
         $this->assertSame('1 second', $this->formatter->asDuration(1));
@@ -456,6 +456,12 @@ class FormatterDateTest extends TestCase
         $this->assertSame('-1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDuration('P-1Y2M10DT2H30M'));
         $this->assertSame('94 months', $this->formatter->asDuration('P94M'));
         $this->assertSame('-94 months', $this->formatter->asDuration('P-94M'));
+
+        // Pass a options
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes, 30 seconds', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2008-05-11T15:30:30Z'));
+        $this->assertSame('1 year, 2 months, 10 days', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z', ['showHours' => false]));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z', ['showMinutes' => false]));
+        $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2008-05-11T15:30:30Z', ['showSeconds' => false]));
 
         // Invert all the DateIntervals
         $interval_0_seconds->invert = true;
