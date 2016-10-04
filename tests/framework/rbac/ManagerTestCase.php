@@ -288,21 +288,21 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals($roles['reader']->name, 'reader');
     }
 
-    public function testGetRolesByRoles()
+    public function testGetChildRoles()
     {
         $this->prepareData();
 
-        $roles = $this->auth->getRolesByRole('reader');
+        $roles = $this->auth->getChildRoles('reader');
         $this->assertCount(1, $roles);
         $this->assertInstanceOf(Role::className(), reset($roles));
         $this->assertTrue(reset($roles)->name === 'reader');
 
-        $roles = $this->auth->getRolesByRole('author');
+        $roles = $this->auth->getChildRoles('author');
         $this->assertCount(2, $roles);
         $this->assertArrayHasKey('author', $roles);
         $this->assertArrayHasKey('reader', $roles);
 
-        $roles = $this->auth->getRolesByRole('admin');
+        $roles = $this->auth->getChildRoles('admin');
         $this->assertCount(3, $roles);
         $this->assertArrayHasKey('admin', $roles);
         $this->assertArrayHasKey('author', $roles);

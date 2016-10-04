@@ -473,12 +473,12 @@ class DbManager extends BaseManager
     /**
      * @inheritdoc
      */
-    public function getRolesByRole($roleName)
+    public function getChildRoles($roleName)
     {
         $role = $this->getRole($roleName);
 
         if (is_null($role)) {
-            throw new InvalidParamException("Role '$roleName' not found.");
+            throw new InvalidParamException("Role \"$roleName\" not found.");
         }
 
         /** @var $result Item[] */

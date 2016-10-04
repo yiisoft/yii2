@@ -83,7 +83,7 @@ interface ManagerInterface extends CheckAccessInterface
      * First element is a Role item that are getting by $roleName.
      * @throws \yii\base\InvalidParamException if Role was not found that are getting by $roleName
      */
-    public function getRolesByRole($roleName);
+    public function getChildRoles($roleName);
 
     /**
      * Returns the named permission.
