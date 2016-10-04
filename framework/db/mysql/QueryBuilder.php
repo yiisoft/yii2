@@ -209,7 +209,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
         if (empty($names) && $tableSchema !== null) {
-            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
+            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
             foreach ($columns as $name) {
                 $names[] = $schema->quoteColumnName($name);
                 $placeholders[] = 'DEFAULT';

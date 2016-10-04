@@ -14,18 +14,18 @@ use yii\base\InvalidValueException;
 use yii\rbac\CheckAccessInterface;
 
 /**
- * User is the class for the "user" application component that manages the user authentication status.
+ * User is the class for the `user` application component that manages the user authentication status.
  *
  * You may use [[isGuest]] to determine whether the current user is a guest or not.
- * If the user is a guest, the [[identity]] property would return null. Otherwise, it would
+ * If the user is a guest, the [[identity]] property would return `null`. Otherwise, it would
  * be an instance of [[IdentityInterface]].
  *
  * You may call various methods to change the user authentication status:
  *
- * - [[login()]]: sets the specified identity and remembers the authentication status in session and cookie.
- * - [[logout()]]: marks the user as a guest and clears the relevant information from session and cookie.
- * - [[setIdentity()]]: changes the user identity without touching session or cookie.
- *   This is best used in stateless RESTful API implementation.
+ * - [[login()]]: sets the specified identity and remembers the authentication status in session and cookie;
+ * - [[logout()]]: marks the user as a guest and clears the relevant information from session and cookie;
+ * - [[setIdentity()]]: changes the user identity without touching session or cookie
+ *   (this is best used in stateless RESTful API implementation).
  *
  * Note that User only maintains the user authentication status. It does NOT handle how to authenticate
  * a user. The logic of how to authenticate a user should be done in the class implementing [[IdentityInterface]].
@@ -69,13 +69,13 @@ class User extends Component
      */
     public $identityClass;
     /**
-     * @var boolean whether to enable cookie-based login. Defaults to false.
-     * Note that this property will be ignored if [[enableSession]] is false.
+     * @var boolean whether to enable cookie-based login. Defaults to `false`.
+     * Note that this property will be ignored if [[enableSession]] is `false`.
      */
     public $enableAutoLogin = false;
     /**
      * @var boolean whether to use session to persist authentication status across multiple requests.
-     * You set this property to be false if your application is stateless, which is often the case
+     * You set this property to be `false` if your application is stateless, which is often the case
      * for RESTful APIs.
      */
     public $enableSession = true;
@@ -89,11 +89,11 @@ class User extends Component
      * ['site/login', 'ref' => 1]
      * ```
      *
-     * If this property is null, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
+     * If this property is `null`, a 403 HTTP exception will be raised when [[loginRequired()]] is called.
      */
     public $loginUrl = ['site/login'];
     /**
-     * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is true.
+     * @var array the configuration of the identity cookie. This property is used only when [[enableAutoLogin]] is `true`.
      * @see Cookie
      */
     public $identityCookie = ['name' => '_identity', 'httpOnly' => true];
@@ -101,7 +101,7 @@ class User extends Component
      * @var integer the number of seconds in which the user will be logged out automatically if he
      * remains inactive. If this property is not set, the user will be logged out after
      * the current session expires (c.f. [[Session::timeout]]).
-     * Note that this will not work if [[enableAutoLogin]] is true.
+     * Note that this will not work if [[enableAutoLogin]] is `true`.
      */
     public $authTimeout;
     /**
@@ -113,14 +113,14 @@ class User extends Component
     /**
      * @var integer the number of seconds in which the user will be logged out automatically
      * regardless of activity.
-     * Note that this will not work if [[enableAutoLogin]] is true.
+     * Note that this will not work if [[enableAutoLogin]] is `true`.
      */
     public $absoluteAuthTimeout;
     /**
      * @var boolean whether to automatically renew the identity cookie each time a page is requested.
-     * This property is effective only when [[enableAutoLogin]] is true.
-     * When this is false, the identity cookie will expire after the specified duration since the user
-     * is initially logged in. When this is true, the identity cookie will expire after the specified duration
+     * This property is effective only when [[enableAutoLogin]] is `true`.
+     * When this is `false`, the identity cookie will expire after the specified duration since the user
+     * is initially logged in. When this is `true`, the identity cookie will expire after the specified duration
      * since the user visits the site the last time.
      * @see enableAutoLogin
      */
@@ -342,7 +342,7 @@ class User extends Component
 
     /**
      * Returns a value that uniquely represents the user.
-     * @return string|integer the unique identifier for the user. If null, it means the user is a guest.
+     * @return string|integer the unique identifier for the user. If `null`, it means the user is a guest.
      * @see getIdentity()
      */
     public function getId()
@@ -699,7 +699,7 @@ class User extends Component
      * When this parameter is true (default), if the access check of an operation was performed
      * before, its result will be directly returned when calling this method to check the same
      * operation. If this parameter is false, this method will always call
-     * [[\yii\rbac\CheckAcessInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
+     * [[\yii\rbac\CheckAccessInterface::checkAccess()]] to obtain the up-to-date access result. Note that this
      * caching is effective only within the same request and only works when `$params = []`.
      * @return boolean whether the user can perform the operation as specified by the given permission.
      */

@@ -89,6 +89,13 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var boolean a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
+    /**
+     * @var UrlNormalizer|array|false|null the configuration for [[UrlNormalizer]] used by this rule.
+     * If `null`, [[UrlManager::normalizer]] will be used, if `false`, normalization will be skipped
+     * for this rule.
+     * @since 2.0.10
+     */
+    public $normalizer;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
@@ -130,6 +137,13 @@ class UrlRule extends Object implements UrlRuleInterface
         }
         if ($this->route === null) {
             throw new InvalidConfigException('UrlRule::route must be set.');
+        }
+        if (is_array($this->normalizer)) {
+            $normalizerConfig = array_merge(['class' => UrlNormalizer::className()], $this->normalizer);
+            $this->normalizer = Yii::createObject($normalizerConfig);
+        }
+        if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {
+            throw new InvalidConfigException('Invalid config for UrlRule::normalizer.');
         }
         if ($this->verb !== null) {
             if (is_array($this->verb)) {
@@ -216,11 +230,35 @@ class UrlRule extends Object implements UrlRuleInterface
     }
 
     /**
+     * @param UrlManager $manager the URL manager
+     * @return UrlNormalizer|null
+     * @since 2.0.10
+     */
+    protected function getNormalizer($manager)
+    {
+        if ($this->normalizer === null) {
+            return $manager->normalizer;
+        } else {
+            return $this->normalizer;
+        }
+    }
+
+    /**
+     * @param UrlManager $manager the URL manager
+     * @return boolean
+     * @since 2.0.10
+     */
+    protected function hasNormalizer($manager)
+    {
+        return $this->getNormalizer($manager) instanceof UrlNormalizer;
+    }
+
+    /**
      * Parses the given request and returns the corresponding route and parameters.
      * @param UrlManager $manager the URL manager
      * @param Request $request the request component
      * @return array|boolean the parsing result. The route and the parameters are returned as an array.
-     * If false, it means this rule cannot be used to parse this path info.
+     * If `false`, it means this rule cannot be used to parse this path info.
      */
     public function parseRequest($manager, $request)
     {
@@ -232,8 +270,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $pathInfo = $request->getPathInfo();
         $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $pathInfo = $request->getPathInfo();
+        $normalized = false;
+        if ($this->hasNormalizer($manager)) {
+            $pathInfo = $this->getNormalizer($manager)->normalizePathInfo($pathInfo, $suffix, $normalized);
+        }
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
             if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
@@ -279,7 +321,12 @@ class UrlRule extends Object implements UrlRuleInterface
 
         Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
 
-        return [$route, $params];
+        if ($normalized) {
+            // pathInfo was changed by normalizer - we need also normalize route
+            return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
+        } else {
+            return [$route, $params];
+        }
     }
 
     /**
@@ -287,7 +334,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param UrlManager $manager the URL manager
      * @param string $route the route. It should not have slashes at the beginning or the end.
      * @param array $params the parameters
-     * @return string|boolean the created URL, or false if this rule cannot be used for creating this URL.
+     * @return string|boolean the created URL, or `false` if this rule cannot be used for creating this URL.
      */
     public function createUrl($manager, $route, $params)
     {

@@ -11,12 +11,15 @@ Guidelines to go by when writing or editing any Yii documentation.
 * Demonstrate ideas using code as much as possible.
 * Never use "we". It's the Yii development team or the Yii core team. Better yet to put things in terms of the framework or the guide.
 * Use the Oxford comma (e.g., "this, that, and the other" not "this, that and the other").
-* Numeric lists should be complete sentences that end with periods (or other punctuation).
-* Bullet lists should be fragments that don't end with periods.
 
 ## Formatting
 
 * Use *italics* for emphasis, never capitalization, bold, or underlines.
+
+## Lists
+
+* Numeric lists should be complete sentences that end with periods.
+* Bullet lists should be fragments that end with semicolon except the last item, which should end with a period.
 
 ## Blocks
 
@@ -53,7 +56,7 @@ containing the translations. The following shows an example for German:
 * Web, not web
 * the guide or this guide, not the Guide
 
-## validating the docs
+## Validating the docs
 
 The following are some scripts that help find broken links and other issues in the guide:
 

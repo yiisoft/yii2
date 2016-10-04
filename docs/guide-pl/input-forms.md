@@ -130,6 +130,50 @@ echo $form->field($model, 'product_category')->dropdownList(
 
 Wartość z Twojego modelu będzie automatycznie wybrana po wyświetleniu formularza.
 
+Praca z Pjaxem <span id="working-with-pjax"></span>
+-----------------------
+
+Widżet [[yii\widgets\Pjax|Pjax]] pozwala na aktualizację określonej sekcji strony, 
+zamiast przeładowywania jej całkowicie. Możesz użyć go do odświeżenia formularza 
+i podmienić jego zawartość po wysłaniu danych.
+
+Możesz skonfigurować [[yii\widgets\Pjax::$formSelector|$formSelector]], aby wskazać, 
+które formularze powinny wyzwalać użycie pjaxa. Jeśli nie zostanie to ustawione inaczej, 
+wszystkie formularze z atrybutem `data-pjax` objęte widżetem Pjax będą wyzwalały jego użycie.
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\ActiveForm;
+
+Pjax::begin([
+    // opcje Pjaxa
+]);
+    $form = ActiveForm::begin([
+        'options' => ['data' => ['pjax' => true]],
+        // więcej opcji ActiveForm
+    ]);
+
+        // zawartość ActiveForm
+
+    ActiveForm::end();
+Pjax::end();
+```
+> Tip: Należy być ostrożnym z użyciem linków wewnątrz widżetu [[yii\widgets\Pjax|Pjax]], ponieważ
+> ich cel również zostanie wyrenderowany wewnątrz widżetu. Aby temu zapobiec, należy użyć atrybutu HTML `data-pjax="0"`.
+
+#### Wartości w przyciskach submit i przesyłanie plików
+
+Znane są problemy z użyciem `jQuery.serializeArray()` podczas obsługi 
+[[https://github.com/jquery/jquery/issues/2321|plików]] i 
+[[https://github.com/jquery/jquery/issues/2321|wartości przycisku submit]], które nie 
+będą jednak rozwiązane i zamiast tego zostały porzucone na rzecz klasy `FormData` 
+wprowadzonej w HTML5.
+
+Oznacza to, że oficjalne wsparcie dla plików i wartości przycisku submit używanych w połączeniu 
+z ajaxem lub widżetem [[yii\widgets\Pjax|Pjax]] zależy od 
+[[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|wsparcia przeglądarki]]
+dla klasy `FormData`.
+
 Dalsza lektura <span id="further-reading"></span>
 ---------------
 

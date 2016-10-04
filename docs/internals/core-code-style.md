@@ -1,5 +1,5 @@
-Yii2 Core Framework Code Style
-==============================
+Yii 2 Core Framework Code Style
+===============================
 
 The following code style is used for Yii 2.x core and official extensions development. If you want to pull-request code
 into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose
@@ -432,10 +432,10 @@ As you can see in the examples above we use markdown to format the phpDoc commen
 
 There is additional syntax for cross linking between classes, methods and properties in the documentation:
 
-- `'[[canSetProperty]] ` will create a link to the `canSetProperty` method or property of the same class.
-- `'[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
-- `'[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
-- `'[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
+- `[[canSetProperty]]` will create a link to the `canSetProperty` method or property of the same class.
+- `[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
+- `[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
+- `[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
 
 To give one of the above mentioned links another label than the class or method name you can use the syntax shown in the following example:
 

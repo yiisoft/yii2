@@ -4,11 +4,13 @@ php:
   - 5.5
   - 5.6
   - 7.0
-  - hhvm
+  - 7.1
   - nightly
+  - hhvm
 
 matrix:
   allow_failures:
+    - php: 7.1
     - php: nightly
 
 env:
@@ -32,11 +34,16 @@ addons:
   postgresql: "9.3"
 
 install:
+  - |
+    if [ $TRAVIS_PHP_VERSION != '5.6' ]; then
+        # disable xdebug for performance reasons when code coverage is not needed
+        phpenv config-rm xdebug.ini || echo "xdebug is not installed"
+    fi
   - travis_retry composer self-update && composer --version
   - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - travis_retry composer install --prefer-dist --no-interaction
+  - travis_retry composer update --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
 #  - tests/data/travis/cubrid-setup.sh
@@ -59,7 +66,11 @@ before_script:
 
 
 script:
-  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,cubrid
+  # validate composer.json
+  - composer validate --no-check-lock
+  - cd framework && composer validate --no-check-lock && cd ..
+  # run PHPUnit
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
 
 after_script:
   - |

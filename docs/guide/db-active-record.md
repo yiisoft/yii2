@@ -244,7 +244,7 @@ $email = $customer->email;
 Because Active Record attributes are named after table columns, you may find you are writing PHP code like
 `$customer->first_name`, which uses underscores to separate words in attribute names if your table columns are
 named in this way. If you are concerned about code style consistency, you should rename your table columns accordingly
-(to use camelCase, for example.)
+(to use camelCase, for example).
 
 
 ### Data Transformation <span id="data-transformation"></span>
@@ -378,7 +378,7 @@ You can declare validation rules by overriding the [[yii\db\ActiveRecord::rules(
 data validation by calling the [[yii\db\ActiveRecord::validate()|validate()]] method.
 
 When you call [[yii\db\ActiveRecord::save()|save()]], by default it will call [[yii\db\ActiveRecord::validate()|validate()]]
-automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return false,
+automatically. Only when the validation passes, will it actually save the data; otherwise it will simply return `false`,
 and you can check the [[yii\db\ActiveRecord::errors|errors]] property to retrieve the validation error messages.  
 
 > Tip: If you are certain that your data do not need validation (e.g., the data comes from trustable sources),
@@ -458,6 +458,28 @@ $customer->loadDefaultValues();
 ```
 
 
+### Attributes Typecasting <span id="attributes-typecasting"></span>
+
+Being populated by query results [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
+information from [database table schema](db-dao.md#database-schema). This allows data retrieved from table column
+declared as integer to be populated in ActiveRecord instance with PHP integer, boolean with boolean and so on.
+However, typecasting mechanism has several limitations:
+
+* Float values are not be converted and will be represented as strings, otherwise they may loose precision.
+* Conversion of the integer values depends on the integer capacity of the operation system you use. In particular:
+  values of column declared as 'unsigned integer' or 'big integer' will be converted to PHP integer only at 64-bit
+  operation system, while on 32-bit ones - they will be represented as strings.
+
+Note that attribute typecast is performed only during populating ActiveRecord instance from query result. There is no
+automatic conversion for the values loaded from HTTP request or set directly via property access.
+The table schema will also be used while preparing SQL statements for the ActiveRecord data saving, ensuring
+values are bound to the query with correct type. However, ActiveRecord instance attribute values will not be
+converted during saving process.
+
+> Tip: you may use [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute values typecasting
+  on ActiveRecord validation or saving.
+
+
 ### Updating Multiple Rows <span id="updating-multiple-rows"></span>
 
 The methods described above all work on individual Active Record instances, causing inserting or updating of individual
@@ -534,15 +556,15 @@ When calling [[yii\db\ActiveRecord::save()|save()]] to insert or update an Activ
 life cycle will happen:
 
 1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: triggers 
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 2. Performs data validation. If data validation fails, the steps after Step 3 will be skipped. 
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: triggers 
    an [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] event.
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: triggers 
    an [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] 
-   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   or [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 5. Performs the actual data insertion or updating.
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] 
@@ -555,8 +577,8 @@ When calling [[yii\db\ActiveRecord::delete()|delete()]] to delete an Active Reco
 life cycle will happen:
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: triggers
-   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns false
-   or [[yii\base\ModelEvent::isValid]] is false, the rest of the steps will be skipped.
+   an [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] event. If the method returns `false`
+   or [[yii\base\ModelEvent::isValid]] is `false`, the rest of the steps will be skipped.
 2. Performs the actual data deletion.
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: triggers
    an [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] event.
@@ -778,7 +800,7 @@ $orders = $customer->orders;
 If a relation is declared with [[yii\db\ActiveRecord::hasMany()|hasMany()]], accessing this relation property
 will return an array of the related Active Record instances; if a relation is declared with 
 [[yii\db\ActiveRecord::hasOne()|hasOne()]], accessing the relation property will return the related
-Active Record instance or null if no related data is found.
+Active Record instance or `null` if no related data is found.
 
 When you access a relation property for the first time, a SQL statement will be executed, like shown in the
 above example. If the same property is accessed again, the previous result will be returned without re-executing
@@ -1011,7 +1033,7 @@ In the code example above, we are modifying the relational query by appending an
 >
 > ```php
 > $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-> // $orders[0]->customer is always null. To fix the problem, you should do the following:
+> // $orders[0]->customer is always `null`. To fix the problem, you should do the following:
 > $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
 > ```
 
@@ -1059,7 +1081,7 @@ related table. You can specify a different join type (e.g. `RIGHT JOIN`) via its
 the join type you want is `INNER JOIN`, you can simply call [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]], instead.
 
 Calling [[yii\db\ActiveQuery::joinWith()|joinWith()]] will [eagerly load](#lazy-eager-loading) the related data by default.
-If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as false. 
+If you do not want to bring in the related data, you can specify its second parameter `$eagerLoading` as `false`. 
 
 Like [[yii\db\ActiveQuery::with()|with()]], you can join with one or multiple relations; you may customize the relation
 queries on-the-fly; you may join with nested relations; and you may mix the use of [[yii\db\ActiveQuery::with()|with()]]
@@ -1255,12 +1277,12 @@ $customer->unlink('orders', $customer->orders[0]);
 ```
 
 By default, the [[yii\db\ActiveRecord::unlink()|unlink()]] method will set the foreign key value(s) that specify
-the existing relationship to be null. You may, however, choose to delete the table row that contains the foreign key value
-by passing the `$delete` parameter as true to the method.
+the existing relationship to be `null`. You may, however, choose to delete the table row that contains the foreign key value
+by passing the `$delete` parameter as `true` to the method.
  
 When a junction table is involved in a relation, calling [[yii\db\ActiveRecord::unlink()|unlink()]] will cause
 the foreign keys in the junction table to be cleared, or the deletion of the corresponding row in the junction table
-if `$delete` is true.
+if `$delete` is `true`.
 
 
 ## Cross-Database Relations <span id="cross-database-relations"></span> 
@@ -1314,12 +1336,12 @@ You can use most of the relational query features that have been described in th
 By default, all Active Record queries are supported by [[yii\db\ActiveQuery]]. To use a customized query class
 in an Active Record class, you should override the [[yii\db\ActiveRecord::find()]] method and return an instance
 of your customized query class. For example,
- 
+
 ```php
+// file Comment.php
 namespace app\models;
 
 use yii\db\ActiveRecord;
-use yii\db\ActiveQuery;
 
 class Comment extends ActiveRecord
 {
@@ -1328,42 +1350,49 @@ class Comment extends ActiveRecord
         return new CommentQuery(get_called_class());
     }
 }
-
-class CommentQuery extends ActiveQuery
-{
-    // ...
-}
 ```
 
-Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`) 
-with `Comment`, you will be working with an instance of `CommentQuery` instead of `ActiveQuery`.
+Now whenever you are performing a query (e.g. `find()`, `findOne()`) or defining a relation (e.g. `hasOne()`)
+with `Comment`, you will be calling an instance of `CommentQuery` instead of `ActiveQuery`.
 
-> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
-  so that the Active Record classes can be kept clean.
-
-You can customize a query class in many creative ways to improve your query building experience. For example,
-you can define new query building methods in a customized query class: 
+You now have to define the `CommentQuery` class, which can be customized in many creative ways to improve your query building experience. For example,
 
 ```php
+// file CommentQuery.php
+namespace app\models;
+
+use yii\db\ActiveQuery;
+
 class CommentQuery extends ActiveQuery
 {
+    // conditions appended by default (can be skipped)
+    public function init()
+    {
+        $this->andOnCondition(['deleted' => false]);
+        parent::init();
+    }
+
+    // ... add customized query methods here ...
+
     public function active($state = true)
     {
-        return $this->andWhere(['active' => $state]);
+        return $this->andOnCondition(['active' => $state]);
     }
 }
 ```
 
-> Note: Instead of calling [[yii\db\ActiveQuery::where()|where()]], you usually should call
-  [[yii\db\ActiveQuery::andWhere()|andWhere()]] or [[yii\db\ActiveQuery::orWhere()|orWhere()]] to append additional
-  conditions when defining new query building methods so that any existing conditions are not overwritten.
+> Note: Instead of calling [[yii\db\ActiveQuery::onCondition()|onCondition()]], you usually should call
+  [[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] or [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]] to append additional conditions when defining new query building methods so that any existing conditions are not overwritten.
 
 This allows you to write query building code like the following:
- 
+
 ```php
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
+
+> Tip: In big projects, it is recommended that you use customized query classes to hold most query-related code
+  so that the Active Record classes can be kept clean.
 
 You can also use the new query building methods when defining relations about `Comment` or performing relational query:
 
@@ -1376,11 +1405,18 @@ class Customer extends \yii\db\ActiveRecord
     }
 }
 
-$customers = Customer::find()->with('activeComments')->all();
+$customers = Customer::find()->joinWith('activeComments')->all();
 
 // or alternatively
- 
-$customers = Customer::find()->with([
+class Customer extends \yii\db\ActiveRecord
+{
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+    }
+}
+
+$customers = Customer::find()->joinWith([
     'comments' => function($q) {
         $q->active();
     }
@@ -1397,12 +1433,12 @@ When Active Record instance is populated from query results, its attributes are 
 values from received data set.
 
 You are able to fetch additional columns or values from query and store it inside the Active Record.
-For example, assume we have a table named 'room', which contains information about rooms available in the hotel.
-Each room stores information about its geometrical size using fields 'length', 'width', 'height'.
+For example, assume we have a table named `room`, which contains information about rooms available in the hotel.
+Each room stores information about its geometrical size using fields `length`, `width`, `height`.
 Imagine we need to retrieve list of all available rooms with their volume in descendant order.
-So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want 'volume'
+So you can not calculate volume using PHP, because we need to sort the records by its value, but you also want `volume`
 to be displayed in the list.
-To achieve the goal, you need to declare an extra field in your 'Room' Active Record class, which will store 'volume' value:
+To achieve the goal, you need to declare an extra field in your `Room` Active Record class, which will store `volume` value:
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1419,7 +1455,7 @@ Then you need to compose a query, which calculates volume of the room and perfor
 $rooms = Room::find()
     ->select([
         '{{room}}.*', // select all columns
-        '([[length]] * [[width]].* [[height]]) AS volume', // calculate a volume
+        '([[length]] * [[width]] * [[height]]) AS volume', // calculate a volume
     ])
     ->orderBy('volume DESC') // apply sort
     ->all();
@@ -1431,7 +1467,7 @@ foreach ($rooms as $room) {
 
 Ability to select extra fields can be exceptionally useful for aggregation queries.
 Assume you need to display a list of customers with the count of orders they have made.
-First of all, you need to declare a `Customer` class with 'orders' relation and extra field for count storage:
+First of all, you need to declare a `Customer` class with `orders` relation and extra field for count storage:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1460,8 +1496,9 @@ $customers = Customer::find()
     ->all();
 ```
 
-A disadvantage of using this method would be that if the information isn't loaded on the SQL query it has to be calculated
-separately, which also means that newly saved records won't contain the information from any extra field.
+A disadvantage of using this method would be that, if the information isn't loaded on the SQL query - it has to be calculated
+separately. Thus, if you have found particular record via regular query without extra select statements, it
+will be unable to return actual value for the extra field. Same will happen for the newly saved record.
 
 ```php
 $room = new Room();
@@ -1469,11 +1506,11 @@ $room->length = 100;
 $room->width = 50;
 $room->height = 2;
 
-$room->volume; // this value will be null since it was not declared yet.
+$room->volume; // this value will be `null`, since it was not declared yet
 ```
 
 Using the [[yii\db\BaseActiveRecord::__get()|__get()]] and [[yii\db\BaseActiveRecord::__set()|__set()]] magic methods
-we can emulate the behavior of a property
+we can emulate the behavior of a property:
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1507,26 +1544,26 @@ class Room extends \yii\db\ActiveRecord
 When the select query doesn't provide the volume, the model will be able to calculate it automatically using
 the attributes of the model.
 
-Similary it can be used on extra fields depending on relational data
+You can calculate the aggregation fields as well using defined relations:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
     private $_ordersCount;
-    
+
     public function setOrdersCount($count)
     {
         $this->_ordersCount = (int) $count;
     }
-    
+
     public function getOrdersCount()
     {
         if ($this->isNewRecord) {
-            return null; // This avoid calling a query searching for null primary keys.
+            return null; // this avoid calling a query searching for null primary keys
         }
-        
+
         if ($this->_ordersCount === null) {
-            $this->setOrdersCount(count($this->orders));
+            $this->setOrdersCount($this->getOrders()->count()); // calculate aggregation on demand from relation
         }
 
         return $this->_ordersCount;
@@ -1539,4 +1576,55 @@ class Customer extends \yii\db\ActiveRecord
         return $this->hasMany(Order::class, ['customer_id' => 'id']);
     }
 }
+```
+
+With this code, in case 'ordersCount' is present in 'select' statement - `Customer::ordersCount` will be populated
+by query results, otherwise it will be calculated on demand using `Customer::orders` relation.
+
+This approach can be as well used for creation of the shortcuts for the some relational data, especially for the aggregation.
+For example:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    /**
+     * Defines read-only virtual property for aggregation data.
+     */
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // this avoid calling a query searching for null primary keys
+        }
+        
+        return $this->ordersAggregation[0]['counted'];
+    }
+
+    /**
+     * Declares normal 'orders' relation.
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+
+    /**
+     * Declares new relation based on 'orders', which provides aggregation.
+     */
+    public function getOrdersAggregation()
+    {
+        return $this->getOrders()
+            ->select(['customer_id', 'counted' => 'count(*)'])
+            ->groupBy('customer_id')
+            ->asArray(true);
+    }
+
+    // ...
+}
+
+foreach (Customer::find()->with('ordersAggregation')->all() as $customer) {
+    echo $customer->ordersCount; // outputs aggregation data from relation without extra query due to eager loading
+}
+
+$customer = Customer::findOne($pk);
+$customer->ordersCount; // output aggregation data from lazy loaded relation
 ```

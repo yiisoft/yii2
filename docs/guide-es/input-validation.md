@@ -97,6 +97,7 @@ es un atributo activo declarado en `scenarios()` y está asociado a una o varias
 declaradas en `rules()`.
 
 > Note: Es práctico darle nombre a las reglas, por ej:
+>
 > ```php
 > public function rules()
 > {
@@ -198,7 +199,7 @@ cuyo valor de retorno determina si debe aplicarse la regla o no. Por ejemplo,
 La entrada del usuario a menudo debe ser filtrada o pre procesada. Por ejemplo, podrías querer eliminar los espacions alrededor
 de la entrada `username`. Puedes utilizar reglas de validación para lograrlo.
 
-Los siguientes ejemplos muestran cómo eliminar esos espacios en la entrada y cómo transformar entradas vacías en null utilizando
+Los siguientes ejemplos muestran cómo eliminar esos espacios en la entrada y cómo transformar entradas vacías en `null` utilizando
 los validadores del framework [trim](tutorial-core-validators.md#trim) y [default](tutorial-core-validators.md#default):
 
 ```php
@@ -222,7 +223,7 @@ si estas están vacías. Puedes hacerlo utilizando el validador [default](tutori
 
 ```php
 return [
-    // convierte "username" y "email" en null si estos están vacíos
+    // convierte "username" y "email" en `null` si estos están vacíos
     [['username', 'email'], 'default'],
 
     // convierte "level" a 1 si está vacío
@@ -230,7 +231,7 @@ return [
 ];
 ```
 
-Por defecto, una entrada se considera vacía si su valor es un string vacío, un array vacío o null.
+Por defecto, una entrada se considera vacía si su valor es un string vacío, un array vacío o `null`.
 Puedes personalizar la lógica de detección de valores vacíos configurando la propiedad [[yii\validators\Validator::isEmpty]]
 con una función PHP invocable. Por ejemplo,
 
@@ -241,7 +242,7 @@ con una función PHP invocable. Por ejemplo,
 ```
 
 > Note: La mayoría de los validadores no manejan entradas vacías si su propiedad [[yii\validators\Validator::skipOnEmpty]] toma
-  el valor por defecto true. Estas serán simplemente salteadas durante la validación si sus atributos asociados reciben una entrada vacía.
+  el valor por defecto `true`. Estas serán simplemente salteadas durante la validación si sus atributos asociados reciben una entrada vacía.
   Entre los [validadores del framework](tutorial-core-validators.md), sólo `captcha`, `default`, `filter`,
   `required`, y `trim` manejarán entradas vacías.
 
@@ -374,7 +375,7 @@ class MyForm extends Model
 > Note: Por defecto, los validadores en línea no serán aplicados si sus atributos asociados reciben entradas vacías
   o si alguna de sus reglas de validación ya falló. Si quieres asegurarte de que una regla siempre sea aplicada,
   puedes configurar las reglas [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] y/o [[yii\validators\Validator::skipOnError|skipOnError]]
-  como false en las declaraciones de las reglas. Por ejemplo:
+  como `false` en las declaraciones de las reglas. Por ejemplo:
 >
 > ```php
 > [
@@ -511,9 +512,9 @@ y generará el código JavaScript apropiado para los validadores que soportan va
 cambia el valor de un campo o envia el formulario, se lanzará la validación JavaScript del lado del cliente.
 
 Si quieres deshabilitar la validación del lado del cliente completamente, puedes configurar
-la propiedad [[yii\widgets\ActiveForm::enableClientValidation]] como false. También puedes deshabilitar la validación
+la propiedad [[yii\widgets\ActiveForm::enableClientValidation]] como `false`. También puedes deshabilitar la validación
 del lado del cliente de campos individuales configurando su propiedad [[yii\widgets\ActiveField::enableClientValidation]]
-como false. Cuando `enableClientValidation` es configurado tanto a nivel de campo como a nivel de formulario,
+como `false`. Cuando `enableClientValidation` es configurado tanto a nivel de campo como a nivel de formulario,
 tendrá prioridad la primera.
 
 ### Implementar Validación del Lado del Cliente <span id="implementing-client-side-validation"></span>
@@ -665,7 +666,7 @@ Puedes utilizar validación basada en AJAX en este caso. Esta lanzará una petic
 la entrada mientras se mantiene la misma experiencia de usuario como en una validación del lado del cliente regular.
 
 Para habilitar la validación AJAX individualmente un campo de entrada, configura la propiedad [[yii\widgets\ActiveField::enableAjaxValidation|enableAjaxValidation]]
-de ese campo como true y especifica un único `id` de formulario:
+de ese campo como `true` y especifica un único `id` de formulario:
 
 ```php
 use yii\widgets\ActiveForm;
@@ -682,7 +683,7 @@ ActiveForm::end();
 ```
 
 Para habiliar la validación AJAX en el formulario entero, configura [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
-como true a nivel del formulario:
+como `true` a nivel del formulario:
 
 ```php
 $form = ActiveForm::begin([
@@ -710,5 +711,5 @@ esta petición ejecutando la validación y devolviendo los errores en formato JS
 > Info: Puedes también utilizar [Validación Diferida](#deferred-validation) para realizar validación AJAX.
   De todos modos, la característica de validación AJAX descrita aquí es más sistemática y requiere menos esfuerzo de escritura de código.
 
-Cuando tanto `enableClientValidation` como `enableAjaxValidation` son definidas como true, la petición de validación AJAX será lanzada
+Cuando tanto `enableClientValidation` como `enableAjaxValidation` son definidas como `true`, la petición de validación AJAX será lanzada
 sólo después de una validación del lado del cliente exitosa.

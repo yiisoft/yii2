@@ -63,7 +63,7 @@ php build/build dev/ext <extension-name>
 
 gde je `<extension-name>` ime ekstenzije, na primer `redis`.
 
-Ako želite da testirate ekstenziju u jednom od aplikacijskih šablona, samo dodajte repozitorijum u `composer.json` aplikacije kao što bi to radili normalno, na primer dodali bi `"yiisoft/yii2-redis": "*"` unutar`require` sekcije za "basic" aplikaciju.
+Ako želite da testirate ekstenziju u jednom od aplikacijskih šablona, samo dodajte repozitorijum u `composer.json` aplikacije kao što bi to radili normalno, na primer dodali bi `"yiisoft/yii2-redis": "~2.0.0"` unutar`require` sekcije za "basic" aplikaciju.
 Pokretanjem `php build/build dev/app basic` ćete instalirati ekstenziju i njene neophodne pakete i ulinkovaće se `extensions/redis` direktorijum kako ne bi radili u vendor direktorijumu nego u yii2 repozitorijumu direktno.
 
 

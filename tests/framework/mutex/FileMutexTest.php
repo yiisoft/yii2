@@ -9,13 +9,13 @@ use yiiunit\TestCase;
  * Class FileMutexTest
  *
  * @group mutex
- * 
+ *
  * @package yii\tests\unit\framework\mutex
  */
 class FileMutexTest extends TestCase
 {
     use MutexTestTrait;
-    
+
     protected function setUp() {
         parent::setUp();
         if (DIRECTORY_SEPARATOR === '\\') {
@@ -34,4 +34,15 @@ class FileMutexTest extends TestCase
         ]);
     }
 
+    public function testDeleteLockFile()
+    {
+        $mutex = $this->createMutex();
+        $fileName = $mutex->mutexPath . '/' . md5(self::$mutexName) . '.lock';
+
+        $mutex->acquire(self::$mutexName);
+        $this->assertFileExists($fileName);
+
+        $mutex->release(self::$mutexName);
+        $this->assertFileNotExists($fileName);
+    }
 }

@@ -1,4 +1,4 @@
-Yii2 コアフレームワークコードスタイル
+Yii 2 コアフレームワークコードスタイル
 =====================================
 
 下記のコードスタイルが Yii 2.x コアと公式エクステンションの開発に用いられています。
@@ -431,10 +431,10 @@ public function getEventHandlers($name)
 
 ドキュメントの中でクラス、メソッド、プロパティをクロスリンクするために使える追加の文法があります。
 
-- `'[[canSetProperty]] ` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
-- `'[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
+- `[[canSetProperty]]` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
+- `[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
 
 上記のリンクにクラス名やメソッド名以外のラベルを付けるためには、次の例で示されている文法を使うことが出来ます。
 

@@ -168,7 +168,7 @@ abstract class Target extends Component
      * ```
      *
      * @param array|integer $levels message levels that this target is interested in.
-     * @throws InvalidConfigException if an unknown level name is given
+     * @throws InvalidConfigException if $levels value is not correct.
      */
     public function setLevels($levels)
     {
@@ -189,6 +189,12 @@ abstract class Target extends Component
                 }
             }
         } else {
+            $bitmapValues = array_reduce($levelMap, function ($carry, $item) {
+                return $carry | $item;
+            });
+            if (!($bitmapValues & $levels) && $levels !== 0) {
+                throw new InvalidConfigException("Incorrect $levels value");
+            }
             $this->_levels = $levels;
         }
     }

@@ -297,6 +297,9 @@ class RbacController extends Controller
 }
 ```
 
+> Note: Если вы используете шаблон проекта advanced, `RbacController` необходимо создать в директории `console/controllers`
+  и сменить пространство имён на `console/controllers`.
+
 После выполнения команды `yii rbac/init` мы получим следующую иерархию:
 
 ![Простая иерархия RBAC](images/rbac-hierarchy-1.png "Простая иерархия RBAC")
@@ -430,6 +433,51 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 В случае Jane это немного проще, потому что она admin:
 
 ![Проверка доступа](images/rbac-access-check-3.png "Проверка доступа")
+
+Есть несколько способов реализовать авторизацию в контроллере. Если вам необходимы отдельные права на
+добавление и удаление, то проверку стоит делать в каждом действии. Вы можете либо использовать условие выше в каждом
+методе действия, либо использовать [[yii\filters\AccessControl]]:
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => AccessControl::className(),
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['index'],
+                    'roles' => ['managePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['view'],
+                    'roles' => ['viewPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['create'],
+                    'roles' => ['createPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['update'],
+                    'roles' => ['updatePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['delete'],
+                    'roles' => ['deletePost'],
+                ],
+            ],
+        ],
+    ];
+}
+```
+
+Если права на все CRUD операции выдаются вместе, то лучшее решение в этом случае — завести одно разрешение
+вроде `managePost` и проверять его в [[yii\web\Controller::beforeAction()]].
 
 ### Использование роли по умолчанию
 

@@ -1,5 +1,5 @@
-Стиль кодирования Yii2 framework
-==============================
+Стиль кодирования Yii 2 framework
+=================================
 
 Описанный ниже стиль кодирования используется при разработке ядра Yii 2.x и его официальных расширений. Если вы хотите участвовать в разработке фреймворка, постарайтесь придерживаться данного стиля. Мы не принуждаем вас использовать этот стиль при разработке ваших приложений с использованием Yii 2. В данном случае можете использовать тот стиль, который вам больше подходит.
 
@@ -353,7 +353,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 <?php
 /**
  * Returns the errors for all attribute or a single attribute.
- * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+ * @param string $attribute attribute name. Use `null` to retrieve errors for all attributes.
  * @property array An array of errors for all attributes. Empty array is returned if no error.
  * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
  * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
@@ -421,10 +421,10 @@ public function getEventHandlers($name)
 
 Ниже описан дополнительный синтаксис для описания связей между классами, методами и свойствами в документации:
 
-- `'[[canSetProperty]] ` создаст ссылку на метод или свойство `canSetProperty` этого класса;
-- `'[[Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` того же пространства имен;
-- `'[[yii\base\Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` в пространстве имен `yii\base`;
-- `'[[Component]]` создаст ссылку на класс `Component` в том же пространстве имен. Здесь так же возможно явное указание пространства имен.
+- `[[canSetProperty]]` создаст ссылку на метод или свойство `canSetProperty` этого класса;
+- `[[Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` того же пространства имен;
+- `[[yii\base\Component::canSetProperty]]` создаст ссылку на метод `canSetProperty` класса `Component` в пространстве имен `yii\base`;
+- `[[Component]]` создаст ссылку на класс `Component` в том же пространстве имен. Здесь так же возможно явное указание пространства имен.
 
 Для явного указания текста ссылки возможно использование следующего синтаксиса:
 

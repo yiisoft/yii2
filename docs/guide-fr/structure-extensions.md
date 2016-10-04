@@ -28,7 +28,7 @@ Par exemple, pour installer l'extension `yiisoft/yii2-imagine`, modifier votre f
     "require": {
         // ... autres dépendances
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -115,7 +115,7 @@ L'exemple suivant montre le fichier `composer.json` de l'extension `yiisoft/yii2
 
     // dépendances du paquet
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -309,6 +309,7 @@ Yii fournit les extensions du noyau suivantes qui sont développées et maintenu
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch) : fournit la prise en charge d'[Elasticsearch](http://www.elasticsearch.org/). Elle inclut un moteur de requêtes/recherches de base et met en œuvre le motif [Active Record](db-active-record.md) qui permet de stocker des enregistrement actifs dans Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker) : fournit la prise en charge de [Faker](https://github.com/fzaninotto/Faker) pour générer des données factices pour vous.
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii) : fournit un générateur de code basé sur le Web qui est hautement extensible et peut être utilisé pour générer rapidement des modèles, des formulaires, des modules, des requêtes CRUD, etc. 
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient): provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine) : fournit des fonctionnalités couramment utilisées de manipulation d'images basées sur [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsulent les interactions et les objets graphiques de [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb) : fournit la prise en charge de [MongoDB](http://www.mongodb.org/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, les migrations, la mise en cache, la génération de code, etc.

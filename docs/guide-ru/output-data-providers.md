@@ -204,7 +204,7 @@ $ids = $provider->getKeys();
 имя колонки или функцию вычисления значений ключа. Например:
 
 ```php
-// в качетсве ключа используется столбец "slug"
+// в качестве ключа используется столбец "slug"
 $provider = new ActiveDataProvider([
     'query' => Post::find(),
     'key' => 'slug',

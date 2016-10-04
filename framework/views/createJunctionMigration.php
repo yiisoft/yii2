@@ -5,12 +5,16 @@
  * @since 2.0.7
  * @deprecated since 2.0.8
  */
-/* @var $className string the new migration class name */
+/* @var $className string the new migration class name without namespace */
+/* @var $namespace string the new migration class namespace */
 /* @var $table string the name table */
 /* @var $field_first string the name field first */
 /* @var $field_second string the name field second */
 
 echo "<?php\n";
+if (!empty($namespace)) {
+    echo "\nnamespace {$namespace};\n";
+}
 ?>
 
 use yii\db\Migration;

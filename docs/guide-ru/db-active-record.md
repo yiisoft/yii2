@@ -466,6 +466,30 @@ $customer->loadDefaultValues();
 ```
 
 
+### Приведение типов атрибутов <span id="attributes-typecasting"></span>
+
+При заполнении результатами запроса [[yii\db\ActiveRecord]] производит автоматическое приведение типов для значений
+атрибутов на основе информации из [схемы базы данны](db-dao.md#database-schema). Это позволяет данным, полученным из
+колонки таблицы объявленной как целое, заноситься в экземпляр ActiveRecord как значение целого типа PHP, булево как
+булево и т.д.
+Однако, механизм приведения типов имеет несколько ограничений:
+
+* Числа с плавающей точкой не будут обработаны, а будут представленны как строки, в противном случае они могут потерять точность.
+* Ковертация целх чисел завист от разрядности используемой операциооной системы. В частности: значения колонок, объявленных
+  как 'unsigned integer' или 'big integer' будут приведены к целому типу PHP только на 64-х разрядных системах, в то время
+  как на 32-х разрядных - они будут представленны как строки.
+
+Имейте в виду, что преобразование типов производиться только в момент заполнения экземпляра ActiveRecord данными из результата
+запроса. При заполнении данных из HTTP запроса или непосредственно через механизм доступа к полям - автоматическая конвертация
+не производтся.
+Схема таблицы базы данных также используется при построении SQL запроса для сохранения данных ActiveRecord, обеспечивая
+соответсвие типов связываемых параметров в запросе. Однако, над атрибутами объекта ActiveRecord не будет производиться
+приведение типов в процессе сохранения.
+
+> Совет: вы можете использовать поведение [[yii\behaviors\AttributeTypecastBehavior]] для того, чтобы производить
+  приведение типов для ActiveRecord во время валидации или сохранения.
+
+
 ### Обновление нескольких строк данных <span id="updating-multiple-rows"></span>
 
 Методы, представленные выше, работают с отдельными Active Record объектами, инициируя вставку или обновление данных для
@@ -545,15 +569,15 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 следующий жизненный цикл имеет место:
 
 1. Вызывается [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: инициируется событие 
-   [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. Если метод возвращает false или свойство
-   события [[yii\base\ModelEvent::isValid]] равно false, оставшиеся шаги не выполняются.
+   [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. Если метод возвращает `false` или свойство
+   события [[yii\base\ModelEvent::isValid]] равно `false`, оставшиеся шаги не выполняются.
 2. Осуществляется валидация данных. Если валидация закончилась неудачей, после 3-го шага остальные шаги не выполняются.
 3. Вызывается [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: инициируется событие 
    [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]].
 4. Вызывается [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: инициируется событие 
    [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] или событие
-   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Если метод возвращает false или свойство события
-   [[yii\base\ModelEvent::isValid]] равно false, оставшиеся шаги не выполняются.
+   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Если метод возвращает `false` или свойство события
+   [[yii\base\ModelEvent::isValid]] равно `false`, оставшиеся шаги не выполняются.
 5. Осуществляется фактическая вставка или обновление данных в базу данных;
 6. Вызывается [[yii\db\ActiveRecord::afterSave()|afterSave()]]: инициируется событие
    [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] или событие
@@ -566,8 +590,8 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 жизненный цикл имеет место:
 
 1. Вызывается [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: инициируется событие
-   [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. Если метод возвращает false или свойство события
-   [[yii\base\ModelEvent::isValid]] равно false, остальные шаги не выполняются.
+   [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. Если метод возвращает `false` или свойство события
+   [[yii\base\ModelEvent::isValid]] равно `false`, остальные шаги не выполняются.
 2. Осуществляется фактическое удаление данных из базы данных.
 3. Вызывается [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: инициируется событие
    [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]].
@@ -784,7 +808,7 @@ $orders = $customer->orders;
   
 Если связь объявлена с помощью метода [[yii\db\ActiveRecord::hasMany()|hasMany()]], доступ к свойству связи вернёт
 массив связных объектов Active Record; если связь объявлена с помощью метода [[yii\db\ActiveRecord::hasOne()|hasOne()]],
-доступ к свойству связи вернёт связный Active Record объект или null, если связные данные не найдены.
+доступ к свойству связи вернёт связный Active Record объект или `null`, если связные данные не найдены.
 
 Когда вы запрашиваете свойство связи в первый раз, выполняется SQL-выражение как показано в примере выше. Если то же
 самое свойство запрашивается вновь, будет возвращён результат предыдущего SQL-запроса без повторного выполнения
@@ -794,7 +818,7 @@ SQL-выражения. Для принудительного повторног
 > Note: Несмотря на то, что эта концепция выглядит похожей на концепцию [свойств объектов](concept-properties.md),
   между ними есть важное различие. Для обычных свойств объектов значения свойств имеют тот же тип, который возвращает
   геттер. Однако метод получения связных данных возвращает объект [[yii\db\ActiveQuery]], в то время как доступ к
-  свойству связи будет возвращает объект [[yii\db\ActiveRecord]] или массив таких объектов.
+  свойству связи возвращает объект [[yii\db\ActiveRecord]] или массив таких объектов.
   ```php
   $customer->orders; // массив объектов `Order`
   $customer->getOrders(); // объект ActiveQuery
@@ -1070,7 +1094,7 @@ $customers = Customer::find()
 
 Вызов метода [[yii\db\ActiveQuery::joinWith()|joinWith()]] будет [жадно загружать](#lazy-eager-loading) связные данные
 по умолчанию. Если вы не хотите получать связные данные, вы можете передать во втором параметре `$eagerLoading` значение
-false. 
+`false`. 
 
 Подобно методу [[yii\db\ActiveQuery::with()|with()]] вы можете объединять данные с одной или несколькими связями; вы 
 можете настроить запрос на получение связных данных "на лету"; вы можете объединять данные с вложенными связями; вы
@@ -1251,12 +1275,12 @@ $customer->unlink('orders', $customer->orders[0]);
 ```
 
 По умолчанию метод [[yii\db\ActiveRecord::unlink()|unlink()]] задаст вторичному ключу (или ключам), который определяет
-существующую связь, значение null. Однако вы можете запросить удаление строки таблицы, которая содержит значение
-вторичного ключа, передав значение true в параметре `$delete` для этого метода.
+существующую связь, значение `null`. Однако вы можете запросить удаление строки таблицы, которая содержит значение
+вторичного ключа, передав значение `true` в параметре `$delete` для этого метода.
  
 Если связь построена на основе промежуточной таблицы, вызов метода [[yii\db\ActiveRecord::unlink()|unlink()]] инициирует
 очистку вторичных ключей в промежуточной таблице, или же удаление соответствующей строки данных в промежуточной таблице,
-если параметр `$delete` равен true.
+если параметр `$delete` равен `true`.
 
 
 ## Связывание объектов из разных баз данных <span id="cross-database-relations"></span> 
@@ -1459,4 +1483,138 @@ $customers = Customer::find()
     ->joinWith('orders') // обеспечить построение промежуточной таблицы
     ->groupBy('{{customer}}.id') // сгруппировать результаты, чтобы заставить агрегацию работать
     ->all();
+```
+
+Недостаток этого подхода заключается в том, что если данные для поля не загружены по результатам SQL запроса, то они
+должны быть вычисленны отдельно. Это означает, что запись, полученная посредством обычного запроса без дополнительных полей в
+разделе 'select', не может вернуть реальное значения для дополнительного поля. Это же касается и только что сохранненой
+записи.
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // значение будет равно `null`, т.к. поле не было заполнено
+```
+
+Использование магических методов [[yii\db\BaseActiveRecord::__get()|__get()]] и [[yii\db\BaseActiveRecord::__set()|__set()]]
+позволяет эмулировать поведение обычного поля:
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+Если результат запроса на выборку данных не содержит поле 'volume', то модель сможет расчитать его автоматически
+используя имеющиеся атрибуты.
+
+Вы также можете вычислять агрегируемые поля используя объявленные отношения:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // нет смысла выполнять запрос на поиск по пустым ключам
+        }
+
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount($this->getOrders()->count()); // вычисляем агрегацию по требованию из отношения
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
+```
+
+При такой реализации, в случае когда 'ordersCount' присутсвует в разделе 'select' - значение 'Customer::ordersCount' будет
+заполнено из результатов запроса, в противном случае - оно булет вычислено по превому требованию на основании отношения `Customer::orders`.
+
+Этот подход также можно использовать для быстрого доступа к некоторым данным отношений, в особенности для агрегации.
+Например:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    /**
+     * Объявляет виртуальное свойство для агрегируемых данных, доступное только на чтение.
+     */
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // нет смысла выполнять запрос на поиск по пустым ключам
+        }
+
+        return $this->ordersAggregation[0]['counted'];
+    }
+
+    /**
+     * Объявляет обычное отношение 'orders'.
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+
+    /**
+     * Объявляет новое отношение, основанное на 'orders', которое предоставляет агрегацию.
+     */
+    public function getOrdersAggregation()
+    {
+        return $this->getOrders()
+            ->select(['customer_id', 'counted' => 'count(*)'])
+            ->groupBy('customer_id')
+            ->asArray(true);
+    }
+
+    // ...
+}
+
+foreach (Customer::find()->with('ordersAggregation')->all() as $customer) {
+    echo $customer->ordersCount; // выводит агрегируемые данные из отношения без дополнительного запроса благодаря жадной загрузке
+}
+
+$customer = Customer::findOne($pk);
+$customer->ordersCount; // выводит агрегируемые данные отношения через ленивую загрузку
 ```

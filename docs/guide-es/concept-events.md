@@ -96,7 +96,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 De forma predeterminada, cada nuevo gestor añadido se pone a la cola de la lista de gestores del evento. Por lo tanto,
 el gestor se ejecutará en el último lugar cuando se lance el evento. Para insertar un nuevo gestor al principio de la
 cola de gestores para que sea ejecutado primero, se debe llamar a [[yii\base\Component::on()]], pasando al cuarto
-parámetro `$append` el valor false:
+parámetro `$append` el valor `false`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -237,7 +237,7 @@ invocación de los gestores de eventos a nivel de clase.
 use yii\base\Event;
 
 Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // displays "app\models\Foo"
+    var_dump($event->sender);  // displays "null"
 });
 
 Event::trigger(Foo::class, Foo::EVENT_HELLO);

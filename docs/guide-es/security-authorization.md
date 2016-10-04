@@ -503,7 +503,7 @@ $auth->addChild($admin, $author);
 
 Tenga en cuenta que en el ejemplo anterior, dado que "author" es agregado como hijo de "admin", cuando implementes el método `execute()`
 de la clase de la regla, necesitas respetar esta jerarquía. Esto se debe a que cuando el nombre del rol es "author",
-el método `execute()` devolverá true si el grupo de usuario es tanto 1 como 2 (lo que significa que el usuario se encuentra en
+el método `execute()` devolverá `true` si el grupo de usuario es tanto 1 como 2 (lo que significa que el usuario se encuentra en
 cualquiera de los dos grupos, "admin" o "author").
 
 Luego, configura `authManager` enumerando los dos roles en [[yii\rbac\BaseManager::$defaultRoles]]:
@@ -522,6 +522,6 @@ return [
 ```
 
 Ahora si realizas una comprobación de acceso, tanto el rol `admin` y como el rol `author` serán comprobados evaluando
-las reglas asociadas con ellos. Si la regla devuelve true, significa que la regla aplica al usuario actual.
+las reglas asociadas con ellos. Si la regla devuelve `true`, significa que la regla aplica al usuario actual.
 Basado en la implementación de la regla anterior, esto significa que si el valor `group` en un usuario es 1, el rol `admin`
 se aplicaría al usuario; y si el valor de `group` es 2, se le aplicaría el rol `author`.

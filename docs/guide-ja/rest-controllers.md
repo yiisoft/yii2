@@ -78,7 +78,7 @@ public function behaviors()
 と言うのは、CORS フィルタは認証メソッドより前に適用されなければならないため、他のフィルタとは少し異なるアプローチが必要だからです。
 また、ブラウザが認証クレデンシャルを送信する必要なく、リクエストが出来るかどうかを前もって安全に判断できるように、
 [CORS プリフライトリクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests) の認証を無効にする必要もあります。
-下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに [yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
+下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに [[yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
 
 ```php
 use yii\filters\auth\HttpBasicAuth;

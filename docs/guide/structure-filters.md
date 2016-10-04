@@ -67,7 +67,7 @@ To create a new action filter, extend from [[yii\base\ActionFilter]] and overrid
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] and/or [[yii\base\ActionFilter::afterAction()|afterAction()]]
 methods. The former will be executed before an action runs while the latter after an action runs.
 The return value of [[yii\base\ActionFilter::beforeAction()|beforeAction()]] determines whether an action should
-be executed or not. If it is false, the filters after this one will be skipped and the action will not be executed.
+be executed or not. If it is `false`, the filters after this one will be skipped and the action will not be executed.
 
 The following example shows a filter that logs the action execution time:
 

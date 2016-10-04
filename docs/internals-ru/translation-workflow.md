@@ -13,7 +13,7 @@ Yii переводится на множество языков, в том чи�
 
 1. Открываем в консоли директорию `framework`, запускаем `yii message/extract messages/config.php`.
 3. Переводим сообщения в `framework/messages/ru/yii.php`. Важно чтобы файлы были в кодировке UTF-8.
-4. [Делаем pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md) с переводом из `ru`,
+4. [Делаем pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/git-workflow.md) с переводом из `ru`,
 остальные языки не трогаем.
 
 В файле перевода находится массив. Его ключи — исходные строки, значения — перевод. Если значение пусто, сообщение
@@ -40,7 +40,7 @@ php build translation "../docs/guide" "../docs/guide-ru" "Russian guide translat
 Перед тем, как начать перевод, убедитесь, что никто им ещё не занимается и запишите себя в
 [список всех переводимых документов](https://docs.google.com/spreadsheets/d/1uxV0LwmR-8XXqlT8C6VqWllZjuoyIj-UkYpAQPWyUzE/edit?usp=sharing).
 
-Все изменения оформляем в виде [pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md).
+Все изменения оформляем в виде [pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals-ru/git-workflow.md).
 
 
 ### Общие правила

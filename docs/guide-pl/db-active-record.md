@@ -366,7 +366,7 @@ Możesz definiować zasady walidacji nadpisując metodę [[yii\db\ActiveRecord::
 [[yii\db\ActiveRecord::validate()|validate()]].
 
 Wywołanie [[yii\db\ActiveRecord::save()|save()]] automatycznie wywołuje również metodę [[yii\db\ActiveRecord::validate()|validate()]]. 
-Dopiero po pomyślnym przejściu walidacji rozpocznie się proces zapisywania danych; w przeciwnym wypadku zostanie zwrócona flaga false - komunikaty z 
+Dopiero po pomyślnym przejściu walidacji rozpocznie się proces zapisywania danych; w przeciwnym wypadku zostanie zwrócona flaga `false` - komunikaty z 
 błędami walidacji można odczytać sprawdzając właściwość [[yii\db\ActiveRecord::errors|errors]]. 
 
 > Tip: Jeśli masz pewność, że dane nie potrzebują przechodzić procesu walidacji (np. pochodzą z zaufanych źródeł), możesz wywołać `save(false)`, 
@@ -514,12 +514,12 @@ Podczas pobierania danych za pomocą jednej z [metod kwerendy](#querying-data), 
 Podczas wywołania [[yii\db\ActiveRecord::save()|save()]], w celu dodania lub uaktualnienia danych instancji Active Record, zachodzi następujący cykl:
 
 1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]]. 
-   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma wartość false, kolejne kroki są pomijane.
+   Jeśli metoda zwróci `false` lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma wartość `false`, kolejne kroki są pomijane.
 2. Proces walidacji danych. Jeśli proces zakończy się niepowodzeniem, kolejne kroki po kroku 3. są pomijane. 
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]].
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] lub 
-   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma 
-   wartość false, kolejne kroki są pomijane.
+   [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]]. Jeśli metoda zwróci `false` lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma 
+   wartość `false`, kolejne kroki są pomijane.
 5. Proces właściwego dodawania lub aktulizowania danych.
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] lub 
    [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]].
@@ -530,7 +530,7 @@ Podczas wywołania [[yii\db\ActiveRecord::save()|save()]], w celu dodania lub ua
 Podczas wywołania [[yii\db\ActiveRecord::delete()|delete()]], w celu usunięcia danych instancji Active Record, zachodzi następujący cykl:
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]]. 
-   Jeśli metoda zwróci false lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma wartość false, kolejne kroki są pomijane.
+   Jeśli metoda zwróci `false` lub właściwość [[yii\base\ModelEvent::isValid|isValid]] ma wartość `false`, kolejne kroki są pomijane.
 2. Proces właściwego usuwania danych.
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: uruchamia event [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]].
 
@@ -541,6 +541,12 @@ Podczas wywołania [[yii\db\ActiveRecord::delete()|delete()]], w celu usunięcia
 > - [[yii\db\ActiveRecord::deleteAll()|deleteAll()]]
 > - [[yii\db\ActiveRecord::updateCounters()|updateCounters()]] 
 > - [[yii\db\ActiveRecord::updateAllCounters()|updateAllCounters()]] 
+
+
+### Odświeżanie cyklu życia danych <span id="refreshing-data-life-cycle"></span>
+
+Wywołanie [[yii\db\ActiveRecord::refresh()|refresh()]] w celu odświeżenia instancji Active Record, uruchamia event 
+[[yii\db\ActiveRecord::EVENT_AFTER_REFRESH|EVENT_AFTER_REFRESH]], o ile odświeżenie się powiedzie i metoda zwróci `true`.
 
 
 ## Praca z transakcjami <span id="transactional-operations"></span>
@@ -729,7 +735,7 @@ $orders = $customer->orders;
 > Zwróć uwagę na to, że nazwa uwzględnia wielkość liter.
   
 Jeśli relacja jest zadeklarowana poprzez [[yii\db\ActiveRecord::hasMany()|hasMany()]], zwraca tablicę powiązanych instancji Active Record; 
-jeśli deklaracja odbywa się poprzez [[yii\db\ActiveRecord::hasOne()|hasOne()]], zwraca pojedynczą powiązaną instancję Active Record lub wartość null, 
+jeśli deklaracja odbywa się poprzez [[yii\db\ActiveRecord::hasOne()|hasOne()]], zwraca pojedynczą powiązaną instancję Active Record lub wartość `null`, 
 w przypadku, gdy nie znaleziono powiązanych danych.
 
 Podczas pierwszego odwołania się do właściwości relacji wykonywana jest kwerenda SQL, tak jak pokazano to w przykładzie powyżej. 
@@ -1001,7 +1007,7 @@ Możesz określić inny typ przyłączenia (np. `RIGHT JOIN`) podając trzeci pa
 możesz bezpośrednio wywołać metodę [[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]].
 
 Wywołanie [[yii\db\ActiveQuery::joinWith()|joinWith()]] domyślnie [pobierze gorliwie](#lazy-eager-loading) dane relacyjne.
-Jeśli nie chcesz pobierać danych w ten sposób, możesz ustawić drugi parametr `$eagerLoading` na false. 
+Jeśli nie chcesz pobierać danych w ten sposób, możesz ustawić drugi parametr `$eagerLoading` na `false`. 
 
 Tak jak w przypadku [[yii\db\ActiveQuery::with()|with()]], możesz przyłączyć jedną lub wiele relacji na raz, dodać do nich dodatkowe warunki, 
 przyłączyć zagnieżdżone relacje i korzystać z zarówno [[yii\db\ActiveQuery::with()|with()]] jak i [[yii\db\ActiveQuery::joinWith()|joinWith()]]. Przykładowo:
@@ -1188,11 +1194,11 @@ $customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
-Domyślnie metoda [[yii\db\ActiveRecord::unlink()|unlink()]] ustawia wartość klucza(y) obcego, który definiuje istniejącą relację, na null. 
-Można jednak zamiast tego wybrać opcję usuwania wiersza tabeli, który zawiera klucz obcy, ustawiając w metodzie parametr `$delete` na true.
+Domyślnie metoda [[yii\db\ActiveRecord::unlink()|unlink()]] ustawia wartość klucza obcego (lub wielu kluczy obcych), który definiuje istniejącą relację, na `null`. 
+Można jednak zamiast tego wybrać opcję usuwania wiersza tabeli, który zawiera klucz obcy, ustawiając w metodzie parametr `$delete` na `true`.
  
 Jeśli w relacji użyty jest węzeł, wywołanie [[yii\db\ActiveRecord::unlink()|unlink()]] spowoduje wyczyszczenie kluczy obcych w tabeli węzła lub też 
-usunięcie odpowiadających im wierszy, jeśli `$delete` jest ustawione na true.
+usunięcie odpowiadających im wierszy, jeśli `$delete` jest ustawione na `true`.
 
 
 ## Relacje międzybazowe <span id="cross-database-relations"></span> 
@@ -1326,11 +1332,11 @@ $customers = Customer::find()->with([
 W momencie, gdy instancja Active Record pobiera dane z wyniku kwerendy, wartości kolumn przypisywane są do odpowiadających im atrybutów.
 
 Możliwe jest pobranie dodatkowych kolumn lub wartości za pomocą kwerendy i przypisanie ich w Active Record.
-Przykładowo załóżmy, że mamy tabelę 'room', która zawiera informacje o pokojach dostępnych w hotelu. Każdy pokój przechowuje informacje na temat swojej 
-wielkości za pomocą pól 'length', 'width' i 'height'.
+Przykładowo załóżmy, że mamy tabelę `room`, która zawiera informacje o pokojach dostępnych w hotelu. Każdy pokój przechowuje informacje na temat swojej 
+wielkości za pomocą pól `length`, `width` i `height`.
 Teraz wyobraźmy sobie, że potrzebujemy pobrać listę wszystkich pokojów posortowaną po ich kubaturze w malejącej kolejności.
-Nie możemy obliczyć kubatury korzystając z PHP, ponieważ zależy nam na szybkim posortowaniu rekordów i dodatkowo chcemy wyświetlić pole 'volume' na liście.
-Aby osiągnąć ten cel, musimy zadeklarować dodatkowe pole w klasie 'Room' rozszerzającej Active Record, które przechowa wartość 'volume':
+Nie możemy obliczyć kubatury korzystając z PHP, ponieważ zależy nam na szybkim posortowaniu rekordów i dodatkowo chcemy wyświetlić pole `volume` na liście.
+Aby osiągnąć ten cel, musimy zadeklarować dodatkowe pole w klasie `Room` rozszerzającej Active Record, które przechowa wartość `volume`:
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1347,7 +1353,7 @@ Następnie należy skonstruować kwerendę, która obliczy kubaturę i wykona so
 $rooms = Room::find()
     ->select([
         '{{room}}.*', // pobierz wszystkie kolumny
-        '([[length]] * [[width]].* [[height]]) AS volume', // oblicz kubaturę
+        '([[length]] * [[width]] * [[height]]) AS volume', // oblicz kubaturę
     ])
     ->orderBy('volume DESC') // posortuj
     ->all();
@@ -1359,7 +1365,7 @@ foreach ($rooms as $room) {
 
 Możliwość pobrania dodatkowych pól jest szczególnie pomocna przy kwerendach agregujących.
 Załóżmy, że potrzebujesz wyświetlić listę klientów wraz z liczbą zamówień, których dokonali.
-Najpierw musisz zadeklarować klasę `Customer` wraz z relacją 'orders' i dodatkowym polem przechowującym liczbę zamówień:
+Najpierw musisz zadeklarować klasę `Customer` wraz z relacją `orders` i dodatkowym polem przechowującym liczbę zamówień:
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1386,4 +1392,84 @@ $customers = Customer::find()
     ->joinWith('orders') // przyłącz tabelę węzła
     ->groupBy('{{customer}}.id') // pogrupuj wyniki dla funkcji agregacyjnej
     ->all();
+```
+
+Wadą tej metody jest to, że jeśli informacja nie może zostać pobrana za pomocą kwerendy SQL, musi ona być obliczona oddzielnie, 
+co oznacza rónież, że świeżo zapisane rekordy nie będą zawierały informacji z dodatkowych pól:
+
+```php
+$room = new Room();
+$room->length = 100;
+$room->width = 50;
+$room->height = 2;
+
+$room->volume; // ta wartość będzie wynosić null ponieważ nie została jeszcze zadeklarowana
+```
+
+Używając magicznych metod [[yii\db\BaseActiveRecord::__get()|__get()]] i [[yii\db\BaseActiveRecord::__set()|__set()]], możemy emulować 
+zachowania właściwości:
+
+```php
+class Room extends \yii\db\ActiveRecord
+{
+    private $_volume;
+    
+    public function setVolume($volume)
+    {
+        $this->_volume = (float) $volume;
+    }
+    
+    public function getVolume()
+    {
+        if (empty($this->length) || empty($this->width) || empty($this->height)) {
+            return null;
+        }
+        
+        if ($this->_volume === null) {
+            $this->setVolume(
+                $this->length * $this->width * $this->height
+            );
+        }
+        
+        return $this->_volume;
+    }
+
+    // ...
+}
+```
+
+Kiedy kwerenda nie zapewnii wartości kubatury, model będzie w stanie automatycznie ją obliczyć, używając swoich atrybutów.
+
+Podobnego sposobu można użyć na dodatkowych polach zależnych od danych tabel relacji:
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    private $_ordersCount;
+    
+    public function setOrdersCount($count)
+    {
+        $this->_ordersCount = (int) $count;
+    }
+    
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // dzięki temu unikamy wywołania kwerendy szukającej głównych kluczy o wartości null
+        }
+        
+        if ($this->_ordersCount === null) {
+            $this->setOrdersCount(count($this->orders));
+        }
+
+        return $this->_ordersCount;
+    }
+
+    // ...
+
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+}
 ```

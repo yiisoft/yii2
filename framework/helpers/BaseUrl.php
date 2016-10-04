@@ -282,7 +282,7 @@ class BaseUrl
      *
      * @param string $name the named associated with the URL that was remembered previously.
      * If not set, it will use [[\yii\web\User::returnUrlParam]].
-     * @return string the URL previously remembered. Null is returned if no URL was remembered with the given name.
+     * @return string|null the URL previously remembered. Null is returned if no URL was remembered with the given name.
      * @see remember()
      */
     public static function previous($name = null)
@@ -369,6 +369,17 @@ class BaseUrl
      *
      * // /index.php?r=post%2Fview&id=100&src=google
      * echo Url::current(['id' => 100]);
+     * ```
+     *
+     * Note that if you're replacing array parameters with `[]` at the end you should specify `$params` as nested arrays.
+     * For a `PostSearchForm` model where parameter names are `PostSearchForm[id]` and `PostSearchForm[src]` the syntax
+     * would be the following:
+     *
+     * ```php
+     * // index.php?r=post%2Findex&PostSearchForm%5Bid%5D=100&PostSearchForm%5Bsrc%5D=google
+     * echo Url::current([
+     *     $postSearch->formName() => ['id' => 100, 'src' => 'google'],
+     * ]);
      * ```
      *
      * @param array $params an associative array of parameters that will be merged with the current GET parameters.
