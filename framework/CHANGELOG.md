@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
@@ -59,6 +60,7 @@ Yii Framework 2 Change Log
 - Enh #11494: `yii.reloadableScripts` now support wildcards with `*` character (silverfire)
 - Enh #11658: Added argument to `yii\grid\ActionColumn::urlCreator` callback, which holds reference to the column instance (klimov-paul)
 - Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
+- Enh #11835: Fixed NTEXT in `\yii\db\mssql\QueryBuilder::$typeMap` that is being deprecated in MSSQL (githubjeka)
 - Enh #11950: Improve `yii\helpers\BaseArrayHelper::keyExists()` speed (egorio)
 - Enh #11979: Added `yii\mutex\OracleMutex` which implements mutex "lock" mechanism via Oracle locks (zlakomanoff)
 - Enh #12028: Add -h|--help option to console command to display help information (pana1990)

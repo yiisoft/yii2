@@ -19,7 +19,11 @@ Upgrade from Yii 2.0.9
 ----------------------
 
 * RBAC: Interface `ManagerInterface` has been changed to added `getRolesByRole()` method. If you create your Manager via
-`\yii\rbac\BaseManager` or `\yii\rbac\ManagerInterface`, ensure to implement the method getRolesByRole().
+  `\yii\rbac\BaseManager` or `\yii\rbac\ManagerInterface`, ensure to implement the method getRolesByRole().
+* NTEXT data type was marked as deprecated (https://msdn.microsoft.com/en-us/library/ms187993.aspx) so 
+  `\yii\db\Schema::TYPE_TEXT` was changed from `'ntext'` to `'nvarchar'`. By default `nvarchar` defines a 
+  string of length 4000. If you need `Schema::TYPE_TEXT = nvarchar(max)`, you can adjust it in your code. 
+  It's not like that by default because `MAX` keyword is new to SQL Server 2005.
   
 Upgrade from Yii 2.0.8
 ----------------------
