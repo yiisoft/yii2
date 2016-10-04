@@ -870,7 +870,7 @@ class Formatter extends Component
      */
     public function asDurationTime($value, $options = [])
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return $this->nullDisplay;
         }
 
@@ -913,19 +913,19 @@ class Formatter extends Component
             $isNegative = $interval->invert;
         }
 
-        if ($showYears || (is_null($showYears) &&$interval->y > 0)) {
+        if ($showYears || ($showYears === null && $interval->y > 0)) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 year} other{# years}}', ['delta' => $interval->y], $this->locale);
         }
-        if ($showMonths || (is_null($showMonths) &&$interval->m > 0)) {
+        if ($showMonths || ($showMonths === null && $interval->m > 0)) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 month} other{# months}}', ['delta' => $interval->m], $this->locale);
         }
-        if ($showDays || (is_null($showDays) &&$interval->d > 0)) {
+        if ($showDays || ($showDays === null && $interval->d > 0)) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 day} other{# days}}', ['delta' => $interval->d], $this->locale);
         }
-        if ($showHours || (is_null($showHours) && $interval->h > 0)) {
+        if ($showHours || ($showHours === null && $interval->h > 0)) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $interval->h], $this->locale);
         }
-        if ($showMinutes || (is_null($showMinutes) && $interval->i > 0)) {
+        if ($showMinutes || ($showMinutes === null && $interval->i > 0)) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $interval->i], $this->locale);
         }
         if ($showSeconds !== false) {
