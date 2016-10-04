@@ -9,6 +9,7 @@ namespace yii\console;
 
 use Yii;
 use yii\base\InvalidRouteException;
+use yii\helpers\Inflector;
 
 // define STDIN, STDOUT and STDERR if the PHP SAPI did not define them (e.g. creating console application in web env)
 // http://php.net/manual/en/features.commandline.io-streams.php
@@ -180,8 +181,156 @@ class Application extends \yii\base\Application
             $res = parent::runAction($route, $params);
             return is_object($res) ? $res : (int)$res;
         } catch (InvalidRouteException $e) {
-            throw new Exception("Unknown command \"$route\".", 0, $e);
+            $message = "Unknown command \"$route\"";
+            if($alternatives = $this->findAlternatives($route)){
+                $message .= count($alternatives) > 1 ?  "\nDid you mean one of these?" : "\nDid you mean this?";
+                $message .= "\n    " . implode("\n    ", $alternatives);
+            }
+            throw new Exception($message, 0, $e);
         }
+    }
+
+    /**
+     *
+     * @param string $route
+     * @return array
+     */
+    public function findAlternatives($route)
+    {
+        $commands = $this->getCommands();
+        $threshold = 1e3;
+        $alternatives = [];
+
+        $commandParts = [];
+        foreach ($commands as $command) {
+            $commandParts[$command] = explode('/', $command);
+        }
+
+        foreach (explode('/', $route) as $i => $subname) {
+            foreach ($commandParts as $command => $parts) {
+                $exists = isset($alternatives[$command]);
+                if (!isset($parts[$i]) && $exists) {
+                    $alternatives[$command] += $threshold;
+                    continue;
+                } elseif (!isset($parts[$i])) {
+                    continue;
+                }
+
+                $lev = levenshtein($subname, $parts[$i]);
+                if ($lev <= strlen($subname) / 3 || '' !== $subname && false !== strpos($parts[$i], $subname)) {
+                    $alternatives[$command] = $exists ? $alternatives[$command] + $lev : $lev;
+                } elseif ($exists) {
+                    $alternatives[$command] += $threshold;
+                }
+            }
+        }
+
+        foreach ($commands as $command) {
+            $lev = levenshtein($route, $command);
+            if ($lev <= strlen($route) / 3 || strpos($command, $route) !== false) {
+                $alternatives[$command] = isset($alternatives[$command]) ? $alternatives[$command] - $lev : $lev;
+            }
+        }
+        
+        $alternatives = array_filter($alternatives, function ($lev) use ($threshold) { 
+            return $lev < 2 * $threshold;
+        });
+        asort($alternatives);
+
+        return array_keys($alternatives);
+    }
+    
+    /**
+     * Returns all available command names.
+     * @return array all available command names
+     */
+    public function getCommands()
+    {
+        $commands = $this->getModuleCommands($this);
+        sort($commands);
+        return array_unique($commands);
+    }
+
+    /**
+     * Returns available commands of a specified module.
+     * @param \yii\base\Module $module the module instance
+     * @return array the available command names
+     */
+    protected function getModuleCommands($module)
+    {
+        $prefix = $module instanceof static ? '' : $module->getUniqueId() . '/';
+
+        $commands = [];
+        foreach (array_keys($module->controllerMap) as $id) {
+            $commands[] = $prefix . $id;
+            $controller = Yii::createObject($module->controllerMap[$id], [$id, $module]);
+            foreach ($this->getActions($controller) as $actionId) {
+                $commands[] = $prefix . $id . '/' . $actionId;
+            }
+        }
+
+        foreach ($module->getModules() as $id => $child) {
+            if (($child = $module->getModule($id)) === null) {
+                continue;
+            }
+            foreach ($this->getModuleCommands($child) as $command) {
+                $commands[] = $command;
+            }
+        }
+
+        $controllerPath = $module->getControllerPath();
+        if (is_dir($controllerPath)) {
+            $files = scandir($controllerPath);
+            foreach ($files as $file) {
+                if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
+                    $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
+                    if ($this->validateControllerClass($controllerClass)) {
+                        $id = Inflector::camel2id(substr(basename($file), 0, -14));
+                        $commands[] = $prefix . $id;
+                        $controller = Yii::createObject($controllerClass, [$id, $module]);
+                        foreach ($this->getActions($controller) as $actionId) {
+                            $commands[] = $prefix . $id . '/' . $actionId;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $commands;
+    }
+
+    /**
+     * Validates if the given class is a valid console controller class.
+     * @param string $controllerClass
+     * @return boolean
+     */
+    protected function validateControllerClass($controllerClass)
+    {
+        if (class_exists($controllerClass)) {
+            $class = new \ReflectionClass($controllerClass);
+            return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns all available actions of the specified controller.
+     * @param Controller $controller the controller instance
+     * @return array all available action IDs.
+     */
+    public function getActions($controller)
+    {
+        $actions = array_keys($controller->actions());
+        $class = new \ReflectionClass($controller);
+        foreach ($class->getMethods() as $method) {
+            $name = $method->getName();
+            if ($name !== 'actions' && $method->isPublic() && !$method->isStatic() && strpos($name, 'action') === 0) {
+                $actions[] = Inflector::camel2id(substr($name, 6), '-', true);
+            }
+        }
+
+        return array_unique($actions);
     }
 
     /**
