@@ -64,7 +64,7 @@ class UrlRuleTest extends TestCase
     {
         $manager = new UrlManager([
             'cache' => null,
-            'normalizer' => UrlNormalizer::className(),
+            'normalizer' => UrlNormalizer::class,
         ]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
@@ -93,7 +93,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
             ],
         ]);
@@ -122,7 +122,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
             ],
         ]);
@@ -151,7 +151,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => UrlNormalizer::ACTION_NOT_FOUND,
             ],
         ]);
@@ -179,7 +179,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => null,
             ],
         ]);
@@ -208,7 +208,7 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager([
             'cache' => null,
             'normalizer' => [
-                'class' => UrlNormalizer::className(),
+                'class' => UrlNormalizer::class,
                 'action' => $normalizerAction,
             ],
         ]);
