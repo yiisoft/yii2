@@ -468,6 +468,8 @@ class FormatterDateTest extends TestCase
         $this->assertSame('1 year, 2 months, 10 days, 2 hours', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z', ['showMinutes' => false]));
         $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2008-05-11T15:30:30Z', ['showSeconds' => false]));
         $this->assertSame('1 year, 2 months, 10 days, 2 hours, 30 minutes, 0 seconds', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2008-05-11T15:30:00Z', ['showSeconds' => true]));
+        $this->assertSame('1 year 11 months 3 seconds', $this->formatter->asDurationTime('2007-03-01T13:00:00Z/2009-02-01T13:00:03Z', ['implodeString' => ' ']));
+        $this->assertSame('less than 2 years 1 second', $this->formatter->asDurationTime('2009-03-01T13:00:01Z/2007-03-01T13:00:00Z', ['implodeString' => ' ' , 'negativeSign' => 'less than ']));
         $this->assertSame('0 seconds', $this->formatter->asDurationTime($interval_0_seconds, ['showSeconds' => true]));
         $interval_0_seconds->invert = true;
         $this->assertSame('0 seconds', $this->formatter->asDurationTime($interval_0_seconds, ['showSeconds' => true]));
