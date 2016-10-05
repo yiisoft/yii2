@@ -152,9 +152,7 @@ window.yii = (function ($) {
             var $form = $e.attr('data-form') ? $('#' + $e.attr('data-form')) : $e.closest('form'),
                 method = !$e.data('method') && $form ? $form.attr('method') : $e.data('method'),
                 action = $e.attr('href'),
-                params = $e.data('params'),git checkout -b githubjeka-issue-11844-detail-view master
-git pull https://github.com/githubjeka/yii2.git issue-11844-detail-view
-
+                params = $e.data('params'),
                 pjax = $e.data('pjax'),
                 pjaxPushState = !!$e.data('pjax-push-state'),
                 pjaxReplaceState = !!$e.data('pjax-replace-state'),
