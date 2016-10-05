@@ -1111,43 +1111,91 @@ class QueryBuilder extends \yii\base\Object
     /**
      * Creates an SQL expressions with the `BETWEEN` operator.
      * @param string $operator the operator to use (e.g. `BETWEEN` or `NOT BETWEEN`)
-     * @param array $operands the first operand is the column name. The second and third operands
-     * describe the interval that column value should be in.
+     * @param array $operands support two variants of represent:
+     * - first: ['id', 1, 10] the first operand the column name. The second and third operands describe the interval
+     *   that column value should be in.
+     * - second: [['from', 'to'], 999] the first operand describe the interval that value should be in by columns.
+     *   The second operand describe the value that should be in interval by columns. For example SQL condition will be is:
+     *   ```sql
+     *   SELECT `id` FROM `table` WHERE 999 BETWEEN `from` AND `to`
+     *   ```
      * @param array $params the binding parameters to be populated
      * @return string the generated SQL expression
      * @throws InvalidParamException if wrong number of operands have been given.
      */
     public function buildBetweenCondition($operator, $operands, &$params)
     {
-        if (!isset($operands[0], $operands[1], $operands[2])) {
+        // as [between , [column1, column2], value]
+        if (isset($operands[0], $operands[1]) && is_array($operands[0])) {
+            if (!isset($operands[0][0], $operands[0][1])) {
+                throw new InvalidParamException("Operator '$operator' requires two elements of array for first element of operands.");
+            }
+
+            $expression1 = $operands[1];
+            $expression2 = $operands[0][0];
+            $expression3 = $operands[0][1];
+
+            if ($expression1 instanceof Expression) {
+                foreach ($expression1->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $expression1 = $expression1->expression;
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = $expression1;
+                $expression1 = $phName;
+            }
+
+            if ($expression2 instanceof Expression) {
+                foreach ($expression2->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $expression2 = $expression2->expression;
+            } elseif (strpos($expression2, '(') === false) {
+                $expression2 = $this->db->quoteColumnName($expression2);
+            }
+
+            if ($expression3 instanceof Expression) {
+                foreach ($expression3->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $expression3 = $expression3->expression;
+            } elseif (strpos($expression3, '(') === false) {
+                $expression3 = $this->db->quoteColumnName($expression3);
+            }
+
+        } elseif (!isset($operands[0], $operands[1], $operands[2])) {
             throw new InvalidParamException("Operator '$operator' requires three operands.");
-        }
+        } else { // as [between , column, value1, value2]
+            list($expression1, $expression2, $expression3) = $operands;
 
-        list($column, $value1, $value2) = $operands;
-
-        if (strpos($column, '(') === false) {
-            $column = $this->db->quoteColumnName($column);
-        }
-        if ($value1 instanceof Expression) {
-            foreach ($value1->params as $n => $v) {
-                $params[$n] = $v;
+            if (strpos($expression1, '(') === false) {
+                $expression1 = $this->db->quoteColumnName($expression1);
             }
-            $phName1 = $value1->expression;
-        } else {
-            $phName1 = self::PARAM_PREFIX . count($params);
-            $params[$phName1] = $value1;
-        }
-        if ($value2 instanceof Expression) {
-            foreach ($value2->params as $n => $v) {
-                $params[$n] = $v;
+
+            if ($expression2 instanceof Expression) {
+                foreach ($expression2->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $expression2 = $expression2->expression;
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = $expression2;
+                $expression2 = $phName;
             }
-            $phName2 = $value2->expression;
-        } else {
-            $phName2 = self::PARAM_PREFIX . count($params);
-            $params[$phName2] = $value2;
+            if ($expression3 instanceof Expression) {
+                foreach ($expression3->params as $n => $v) {
+                    $params[$n] = $v;
+                }
+                $expression3 = $expression3->expression;
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $params[$phName] = $expression3;
+                $expression3 = $phName;
+            }
         }
 
-        return "$column $operator $phName1 AND $phName2";
+        return "$expression1 $operator $expression2 AND $expression3";
     }
 
     /**
