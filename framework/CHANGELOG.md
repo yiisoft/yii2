@@ -4,7 +4,6 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
-- Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
 - Bug #7670: Added `yii\web\UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
@@ -46,10 +45,11 @@ Yii Framework 2 Change Log
 - Bug #12554: Fixed `yii\validators\UniqueValidator` error of getting first model indexed by field (DrDeath72)
 - Bug #12599: Fixed casting of `binary()` type for MSSQL (silverfire)
 - Bug #12629: Fixed `yii\widgets\ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
+- Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
 - Enh #384: Added ability to run migration from several locations via `yii\console\controllers\BaseMigrateController::migrationNamespaces` (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
-- Enh #9469: Added support for namespaced migrations via [[yii\console\controllers\BaseMigrateController::migrationNamespaces]] (klimov-paul)
+- Enh #9469: Added support for namespaced migrations via `yii\console\controllers\BaseMigrateController::migrationNamespaces` (klimov-paul)
 - Enh #9708: Added `yii\console\controllers\AssetController::deleteSource` option allowing deletion of the source asset files after compression (pana1990, klimov-paul)
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #10243: Added `yii\data\Sort::setAttributeOrders()` method allowing manual setup of current sort (klimov-paul)
@@ -61,9 +61,6 @@ Yii Framework 2 Change Log
 - Enh #11658: Added argument to `yii\grid\ActionColumn::urlCreator` callback, which holds reference to the column instance (klimov-paul)
 - Enh #11804: Added `yii\behaviors\AttributeTypecastBehavior` for maintaining of strict ActiveRecord attribute types (klimov-paul)
 - Enh #11835: Fixed NTEXT in `yii\db\mssql\QueryBuilder::$typeMap` that is being deprecated in MSSQL (githubjeka)
-- Enh #11835: Fixed `\yii\db\mssql\QueryBuilder::$typeMap[TYPE_TEXT]` - `NTEXT` data type was deprecated in MSSQL (githubjeka)
-- Enh #11835: Fixed NTEXT in `\yii\db\mssql\QueryBuilder::$typeMap` that is being deprecated in MSSQL (githubjeka)
-- Enh #11844: Added the ability to customize html attributes of label and value tags in `\yii\widgets\DetailView` (githubjeka)
 - Enh #11835: Fixed `\yii\db\mssql\QueryBuilder::$typeMap[TYPE_TEXT]` - `NTEXT` data type was deprecated in MSSQL (githubjeka)
 - Enh #11844: Added the ability to customize HTML attributes of label and value tags in `\yii\widgets\DetailView` (githubjeka)
 - Enh #11950: Improve `yii\helpers\BaseArrayHelper::keyExists()` speed (egorio)
