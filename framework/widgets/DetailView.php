@@ -75,6 +75,10 @@ class DetailView extends Widget
      * - format: the type of the value that determines how the value would be formatted into a displayable text.
      *   Please refer to [[Formatter]] for supported types.
      * - visible: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
+     * - contentOptions: the HTML attributes to customize value tag. For example: `['class' => 'bg-red']`.
+     *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
+     * - captionOptions: the HTML attributes to customize label tag. For example: `['class' => 'bg-red']`.
+     *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
      */
     public $attributes;
     /**
@@ -89,7 +93,7 @@ class DetailView extends Widget
      * where `$attribute` refer to the specification of the attribute being rendered, `$index` is the zero-based
      * index of the attribute in the [[attributes]] array, and `$widget` refers to this widget instance.
      */
-    public $template = '<tr><th>{label}</th><td>{value}</td></tr>';
+    public $template = '<tr><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>';
     /**
      * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
      * what container tag should be used. It defaults to "table" if not set.
@@ -154,9 +158,13 @@ class DetailView extends Widget
     protected function renderAttribute($attribute, $index)
     {
         if (is_string($this->template)) {
+            $captionOptions = Html::renderTagAttributes(ArrayHelper::getValue($attribute, 'captionOptions', []));
+            $contentOptions = Html::renderTagAttributes(ArrayHelper::getValue($attribute, 'contentOptions', []));
             return strtr($this->template, [
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
+                '{captionOptions}' => $captionOptions,
+                '{contentOptions}' =>  $contentOptions,
             ]);
         } else {
             return call_user_func($this->template, $attribute, $index, $this);
