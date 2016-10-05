@@ -109,6 +109,15 @@ class Serializer extends Component
      * @var Response the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
+    /**
+     * @var bool whether to preserve array keys when serializing collection data.
+     * Set this to `true` to allow serialization of a collection as a JSON object where array keys are
+     * used to index the model objects. The default is to serialize all collections as array, regardless
+     * of how the array is indexed.
+     * @see serializeDataProvider()
+     * @since 2.0.10
+     */
+    public $preserveKeys = false;
 
 
     /**
@@ -171,7 +180,12 @@ class Serializer extends Component
      */
     protected function serializeDataProvider($dataProvider)
     {
-        $models = $this->serializeModels(array_values($dataProvider->getModels()));
+        if ($this->preserveKeys) {
+            $models = $dataProvider->getModels();
+        } else {
+            $models = array_values($dataProvider->getModels());
+        }
+        $models = $this->serializeModels($models);
 
         if (($pagination = $dataProvider->getPagination()) !== false) {
             $this->addPaginationHeaders($pagination);

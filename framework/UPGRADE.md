@@ -34,6 +34,11 @@ Upgrade from Yii 2.0.9
   argument of `yii\web\RequestParserInterface::parse()`. If you create your own custom parser, which relies on `$contentType`
   argument, ensure to process it correctly as it may content additional data.
 
+* `yii\rest\Serializer` has been changed to return a JSON array for collection data in all cases to be consistent among pages
+  for data that is not indexed starting by 0. If your API relies on the Serializer to return data as JSON objects indexed by
+  PHP array keys, you should set `yii\rest\Serializer::$preserveKeys` to `true`.
+
+
 Upgrade from Yii 2.0.8
 ----------------------
 
