@@ -75,9 +75,9 @@ class DetailView extends Widget
      * - format: the type of the value that determines how the value would be formatted into a displayable text.
      *   Please refer to [[Formatter]] for supported types.
      * - visible: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
-     * - contentOptions: the html attributes to customize value tag. For example: ['class' => 'bg-red'] .
+     * - contentOptions: the HTML attributes to customize value tag. For example: ['class' => 'bg-red'] .
      *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax. It's optional.
-     * - captionOptions: the html attributes to customize label tag. It's used like the `contentOptions`.
+     * - captionOptions: the HTML attributes to customize label tag. It's used like the `contentOptions`.
      */
     public $attributes;
     /**

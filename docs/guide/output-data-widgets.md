@@ -29,8 +29,8 @@ echo DetailView::widget([
         [                                                  // the owner name of the model
             'label' => 'Owner',
             'value' => $model->owner->name,            
-            'contentOptions' => ['class' => 'bg-red'],     // to html customize attributes of value tag
-            'captionOptions' => ['tooltip' => 'Tooltip'],  // to html customize attributes of label tag
+            'contentOptions' => ['class' => 'bg-red'],     // to HTML customize attributes of value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // to HTML customize attributes of label tag
         ],
         'created_at:datetime',                             // creation date formatted as datetime
     ],
