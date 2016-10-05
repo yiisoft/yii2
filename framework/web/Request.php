@@ -41,6 +41,8 @@ use yii\helpers\StringHelper;
  * if no such header is sent. This property is read-only.
  * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
+ * @property string $domain Hostname part of the request URL (e.g. `yiiframework.com`), null if
+ * can't be obtained from `$_SERVER` and wasn't set.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -557,6 +559,9 @@ class Request extends \yii\base\Request
     public function setDomain($value)
     {
         $this->_domain = $value === null ? null : $value;
+        if ($this->_hostInfo !== null) {
+            $this->_hostInfo = null;
+        }
     }
 
     private $_hostInfo;
@@ -594,6 +599,13 @@ class Request extends \yii\base\Request
     public function setHostInfo($value)
     {
         $this->_hostInfo = $value === null ? null : rtrim($value, '/');
+        if ($this->_hostInfo !== null) {
+            $parts = explode(':', $this->_hostInfo);
+            array_pop($parts);
+            array_unshift($parts);
+            str_replace('//', '', $parts[0]);
+            $this->_domain = $parts[0];
+        }
     }
 
     private $_baseUrl;
