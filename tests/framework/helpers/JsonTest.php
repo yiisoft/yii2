@@ -151,7 +151,7 @@ class JsonTest extends TestCase
         Json::decode($json);
     }
 
-    public function testHandleJsonError()
+    public function testHandleJsonErrorOnDecode()
     {
         // Basic syntax error
         try {
@@ -160,7 +160,15 @@ class JsonTest extends TestCase
         } catch (\yii\base\InvalidParamException $e) {
             $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
         }
+    }
 
+    public function testHandleJsonErrorOnEncode()
+    {
+        if (PHP_VERSION_ID >= 70100) {
+            // skip this test for PHP 7.1 to avoid JSON formatting PHP bug in future run on `Json::encode()`
+            // @see https://github.com/yiisoft/yii2/issues/12489
+            $this->markTestSkipped();
+        }
         // Unsupported type since PHP 5.5
         try {
             $fp = fopen('php://stdin', 'r');
