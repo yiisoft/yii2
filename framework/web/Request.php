@@ -796,6 +796,8 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER['HTTP_X_REWRITE_URL'])) { // IIS
             $requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+        }elseif(isset($_SERVER['REDIRECT_URL'])){
+            $requestUri = $_SERVER['REDIRECT_URL'];
         } elseif (isset($_SERVER['REQUEST_URI'])) {
             $requestUri = $_SERVER['REQUEST_URI'];
             if ($requestUri !== '' && $requestUri[0] !== '/') {
