@@ -93,7 +93,7 @@ class Query extends Component implements QueryInterface
      */
     public $join;
     /**
-     * @var string|array the condition to be applied in the GROUP BY clause.
+     * @var string|array|Expression the condition to be applied in the GROUP BY clause.
      * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
      */
     public $having;
