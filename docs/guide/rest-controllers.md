@@ -178,9 +178,9 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // check if the user can access $action and $model
     // throw ForbiddenHttpException if access should be denied
-    if ($action === 'update' or $action === 'delete') {
+    if ($action === 'update' || $action === 'delete') {
         if ($model->author_id !== \Yii::$app->user->id)
-            throw new \yii\web\ForbiddenHttpException('You can only '.$action.' articles that you\'ve created.');
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
     }
 }
 ```
