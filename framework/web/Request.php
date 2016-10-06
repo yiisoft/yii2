@@ -41,6 +41,8 @@ use yii\helpers\StringHelper;
  * if no such header is sent. This property is read-only.
  * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
+ * @property string $domain Hostname part of the request URL (e.g. `yiiframework.com`), null if
+ * can't be obtained from `$_SERVER` and wasn't set.
  * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
  * `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
@@ -520,6 +522,48 @@ class Request extends \yii\base\Request
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
 
+    private $_domain;
+
+    /**
+     * Returns host part of the current request URL.
+     * By default this is determined based on the user request information.
+     * You may explicitly specify it by setting the [[setDomain()|domain]] property.
+     * @return string hostname part of the request URL (e.g. `yiiframework.com`),
+     * null if can't be obtained from `$_SERVER` and wasn't set.
+     * @see setDomain()
+     */
+    public function getDomain()
+    {
+        if ($this->_domain === null) {
+            if (isset($_SERVER['HTTP_HOST'])) {
+                $this->_domain = $_SERVER['HTTP_HOST'];
+                if(strpos($this->_domain, ':') !== false) {
+                    $parts = explode(':', $this->_domain);
+                    array_pop($parts);
+                    $this->_domain = implode($parts);
+                }
+            } elseif (isset($_SERVER['SERVER_NAME'])) {
+                $this->_domain = $_SERVER['SERVER_NAME'];
+            }
+        }
+
+        return $this->_domain;
+    }
+
+    /**
+     * Sets the host part of the application URL.
+     * This setter is provided in case the hostname cannot be determined
+     * on certain Web servers.
+     * @param string $value the host part of the application URL.
+     */
+    public function setDomain($value)
+    {
+        $this->_domain = $value === null ? null : $value;
+        if ($this->_hostInfo !== null) {
+            $this->_hostInfo = null;
+        }
+    }
+
     private $_hostInfo;
     private $_hostName;
 
@@ -536,15 +580,11 @@ class Request extends \yii\base\Request
     {
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
+            $domain = $this->getDomain();
             $http = $secure ? 'https' : 'http';
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
-            } elseif (isset($_SERVER['SERVER_NAME'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+            if($domain !== null) {
                 $port = $secure ? $this->getSecurePort() : $this->getPort();
-                if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
-                    $this->_hostInfo .= ':' . $port;
-                }
+                $this->_hostInfo = $http . '://' . $domain . ':' . $port;
             }
         }
 
@@ -561,6 +601,13 @@ class Request extends \yii\base\Request
     {
         $this->_hostName = null;
         $this->_hostInfo = $value === null ? null : rtrim($value, '/');
+        if ($this->_hostInfo !== null) {
+            $parts = explode(':', $this->_hostInfo);
+            array_pop($parts);
+            array_unshift($parts);
+            str_replace('//', '', $parts[0]);
+            $this->_domain = $parts[0];
+        }
     }
 
     /**
