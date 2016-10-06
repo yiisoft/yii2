@@ -568,6 +568,7 @@ class Request extends \yii\base\Request
      * Value is calculated from current [[getHostInfo()|hostInfo]] property.
      * @return string|null hostname part of the request URL (e.g. `www.yiiframework.com`)
      * @see getHostInfo()
+     * @since 2.0.10
      */
     public function getHostName()
     {
