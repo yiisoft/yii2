@@ -2,7 +2,7 @@ Autoładowanie klas
 ==================
 
 Yii opiera się na [mechanizmie automatycznego ładowania klas](http://www.php.net/manual/pl/language.oop5.autoload.php) służącym do 
-zlokalizowania i dołączenia kodu wszystkich wymaganych plików. Wbudowany wysoce wydajny autoloader klas, zgodny ze 
+zlokalizowania i dołączenia wszystkich wymaganych plików klas. Wbudowany wysoce wydajny autoloader klas, zgodny ze 
 [standardem PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md), jest instalowany po załączeniu 
 pliku `Yii.php`.
 
@@ -62,7 +62,7 @@ Korzystanie z innych autoloaderów <span id="using-other-autoloaders"></span>
 Ponieważ Yii opiera się głównie na composerze, jako menedżerze pakietów zależności, zalecane jest również zainstalowanie autoloadera 
 composera. Jeśli używasz zewnętrznych bibliotek, korzystających z własnych autoloaderów, powinieneś również je zainstalować.
 
-Używając autoloadera Yii razem z innymi, powinieneś dołączyć plik `Yii.php` *po* wszystkich pozostałych autoloaderach. Dzięki temu 
+Używając autoloadera Yii razem z innymi autoloaderami, powinieneś dołączyć plik `Yii.php` *po* wszystkich pozostałych autoloaderach. Dzięki temu 
 autoloader Yii jako pierwszy odpowie na żądanie autoładowania klasy. Dla przykładu, poniższy kod znajduje się 
 w [skrypcie wejściowym](structure-entry-scripts.md) [podstawowego szablonu projektu](start-installation.md). Pierwsza linia jest 
 instrukcją instalacji autoloadera composera, a druga instaluje autoloader Yii:
