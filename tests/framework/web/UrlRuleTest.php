@@ -970,6 +970,31 @@ class UrlRuleTest extends TestCase
                     ['2', ['post/index', ['page' => 2]]],
                 ],
             ],
+            [
+                'with relative host info', // https://github.com/yiisoft/yii2/issues/12691
+                [
+                    'pattern' => 'post/<page:\d+>',
+                    'route' => 'post/index',
+                    'host' => '//<lang:en|fr>.example.com',
+                ],
+                [
+                    ['post/1', ['post/index', ['page' => '1', 'lang' => 'en']]],
+                    ['post/a', false],
+                    ['post/1/a', false],
+                ],
+            ],
+            [
+                'with relative host info in pattern', // https://github.com/yiisoft/yii2/issues/12691
+                [
+                    'pattern' => '//<lang:en|fr>.example.com/post/<page:\d+>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/1', ['post/index', ['page' => '1', 'lang' => 'en']]],
+                    ['post/a', false],
+                    ['post/1/a', false],
+                ],
+            ],
         ];
     }
 }
