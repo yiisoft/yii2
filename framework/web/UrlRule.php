@@ -159,7 +159,7 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         // don't trim left slashes if more then one slash at the beginning of pattern
-        $this->pattern = preg_replace('/(^(\/)(?!\/)|(\/$))/', '', $this->pattern);
+        $this->pattern = preg_replace('/(^(?:\/|\/{3,})(?!\/)|\/+$)/', '', $this->pattern);
         $this->route = trim($this->route, '/');
 
         if ($this->host !== null) {
