@@ -9,6 +9,7 @@ namespace yii\console;
 
 use Yii;
 use yii\base\InvalidRouteException;
+use yii\helpers\RouteHelper;
 
 // define STDIN, STDOUT and STDERR if the PHP SAPI did not define them (e.g. creating console application in web env)
 // http://php.net/manual/en/features.commandline.io-streams.php
@@ -180,7 +181,20 @@ class Application extends \yii\base\Application
             $res = parent::runAction($route, $params);
             return is_object($res) ? $res : (int)$res;
         } catch (InvalidRouteException $e) {
-            throw new Exception("Unknown command \"$route\".", 0, $e);
+            $message = "Unknown command \"$route\"";
+            try {
+                $commands = RouteHelper::getRoutes(true);
+                if ($alternatives = RouteHelper::find($route, $commands)) {
+                    if (count($alternatives) == 1) {
+                        $message .= sprintf("\nDid you mean \"%s\"?", reset($alternatives));
+                    } else {
+                        $message .= "\nDid you mean one of these?\n    " . implode("\n    ", $alternatives);
+                    }
+                }
+            } catch (\Exception $exc) {
+                
+            }
+            throw new Exception($message, 0, $e);
         }
     }
 

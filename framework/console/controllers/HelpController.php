@@ -13,6 +13,7 @@ use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\Inflector;
+use yii\helpers\RouteHelper;
 
 /**
  * Provides help information about console commands.
@@ -52,7 +53,21 @@ class HelpController extends Controller
             $result = Yii::$app->createController($command);
             if ($result === false) {
                 $name = $this->ansiFormat($command, Console::FG_YELLOW);
-                throw new Exception("No help for unknown command \"$name\".");
+                $message = "No help for unknown command \"$name\".";
+                try {
+                    $commands = RouteHelper::getRoutes(true);
+                    if ($alternatives = RouteHelper::find($command, $commands)) {
+                        if (count($alternatives) == 1) {
+                            $message .= sprintf("\nDid you mean \"%s\"?", reset($alternatives));
+                        } else {
+                            $message .= "\nDid you mean one of these?\n    " . implode("\n    ", $alternatives);
+                        }
+                    }
+                } catch (\Exception $exc) {
+
+                }
+
+                throw new Exception($message);
             }
 
             list($controller, $actionID) = $result;
@@ -69,24 +84,13 @@ class HelpController extends Controller
     }
 
     /**
-     * Returns all available command names.
-     * @return array all available command names
-     */
-    public function getCommands()
-    {
-        $commands = $this->getModuleCommands(Yii::$app);
-        sort($commands);
-        return array_unique($commands);
-    }
-
-    /**
      * Returns an array of commands an their descriptions.
      * @return array all available commands as keys and their description as values.
      */
     protected function getCommandDescriptions()
     {
         $descriptions = [];
-        foreach ($this->getCommands() as $command) {
+        foreach (RouteHelper::getRoutes() as $command) {
             $description = '';
 
             $result = Yii::$app->createController($command);
@@ -120,60 +124,6 @@ class HelpController extends Controller
         sort($actions);
 
         return array_unique($actions);
-    }
-
-    /**
-     * Returns available commands of a specified module.
-     * @param \yii\base\Module $module the module instance
-     * @return array the available command names
-     */
-    protected function getModuleCommands($module)
-    {
-        $prefix = $module instanceof Application ? '' : $module->getUniqueId() . '/';
-
-        $commands = [];
-        foreach (array_keys($module->controllerMap) as $id) {
-            $commands[] = $prefix . $id;
-        }
-
-        foreach ($module->getModules() as $id => $child) {
-            if (($child = $module->getModule($id)) === null) {
-                continue;
-            }
-            foreach ($this->getModuleCommands($child) as $command) {
-                $commands[] = $command;
-            }
-        }
-
-        $controllerPath = $module->getControllerPath();
-        if (is_dir($controllerPath)) {
-            $files = scandir($controllerPath);
-            foreach ($files as $file) {
-                if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
-                    $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
-                    if ($this->validateControllerClass($controllerClass)) {
-                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
-                    }
-                }
-            }
-        }
-
-        return $commands;
-    }
-
-    /**
-     * Validates if the given class is a valid console controller class.
-     * @param string $controllerClass
-     * @return boolean
-     */
-    protected function validateControllerClass($controllerClass)
-    {
-        if (class_exists($controllerClass)) {
-            $class = new \ReflectionClass($controllerClass);
-            return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
-        } else {
-            return false;
-        }
     }
 
     /**
