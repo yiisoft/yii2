@@ -273,6 +273,34 @@ class UrlManagerTest extends TestCase
         $this->assertEquals('http://app.example.com/login/', $url);
     }
 
+    public function testCreateAbsoluteUrlWithRelativeHostRule()
+    {
+        $manager = new UrlManager([
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+            'hostInfo' => 'http://example.com',
+            'cache' => null,
+
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'rules' => [
+                '//example.com/login' => 'site/login',
+            ],
+        ]);
+        $url = $manager->createAbsoluteUrl(['site/login']);
+        $this->assertEquals('http://example.com/login', $url);
+        $url = $manager->createUrl(['site/login']);
+        $this->assertEquals('//example.com/login', $url);
+
+        $manager->hostInfo = 'https://example.com';
+        $url = $manager->createAbsoluteUrl(['site/login']);
+        $this->assertEquals('https://example.com/login', $url);
+        $url = $manager->createUrl(['site/login']);
+        $this->assertEquals('//example.com/login', $url);
+        $url = $manager->createAbsoluteUrl(['site/login'], 'http');
+        $this->assertEquals('http://example.com/login', $url);
+    }
+
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);

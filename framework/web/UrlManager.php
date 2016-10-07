@@ -382,6 +382,12 @@ class UrlManager extends Component
                     } else {
                         return $url . $baseUrl . $anchor;
                     }
+                } elseif (substr($url, 0, 2) === '//') {
+                    if ($baseUrl !== '' && ($pos = strpos($url, '/', 2)) !== false) {
+                        return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
+                    } else {
+                        return $url . $baseUrl . $anchor;
+                    }
                 } else {
                     return "$baseUrl/{$url}{$anchor}";
                 }
@@ -460,7 +466,12 @@ class UrlManager extends Component
         $params = (array) $params;
         $url = $this->createUrl($params);
         if (strpos($url, '://') === false) {
-            $url = $this->getHostInfo() . $url;
+            $hostInfo = $this->getHostInfo();
+            if (substr($url, 0, 2) === '//') {
+                $url = substr($hostInfo, 0, strpos($hostInfo, '://')) . ':' . $url;
+            } else {
+                $url = $hostInfo . $url;
+            }
         }
         if (is_string($scheme) && ($pos = strpos($url, '://')) !== false) {
             $url = $scheme . substr($url, $pos);
