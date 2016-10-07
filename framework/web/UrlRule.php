@@ -178,7 +178,7 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->name = $this->pattern;
         }
 
-        $this->pattern = trim($this->pattern, '/');
+        $this->pattern = $this->trimSlashes($this->pattern);
         $this->route = trim($this->route, '/');
 
         if ($this->host !== null) {
@@ -191,6 +191,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return;
         } elseif (($pos = strpos($this->pattern, '://')) !== false) {
             if (($pos2 = strpos($this->pattern, '/', $pos + 3)) !== false) {
+                $this->host = substr($this->pattern, 0, $pos2);
+            } else {
+                $this->host = $this->pattern;
+            }
+        } elseif (substr($this->pattern, 0, 2) === '//') {
+            if (($pos2 = strpos($this->pattern, '/', $pos + 2)) !== false) {
                 $this->host = substr($this->pattern, 0, $pos2);
             } else {
                 $this->host = $this->pattern;
@@ -243,6 +249,11 @@ class UrlRule extends Object implements UrlRuleInterface
 
         $this->_template = preg_replace('/<([\w._-]+):?([^>]+)?>/', '<$1>', $this->pattern);
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
+
+        // if host starts with relative scheme, then insert pattern to match any
+        if (substr($this->host, 0, 2) === '//') {
+            $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
+        }
 
         if (!empty($this->_routeParams)) {
             $this->_routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
@@ -415,7 +426,7 @@ class UrlRule extends Object implements UrlRuleInterface
             }
         }
 
-        $url = trim(strtr($this->_template, $tr), '/');
+        $url = $this->trimSlashes(strtr($this->_template, $tr));
         if ($this->host !== null) {
             $pos = strpos($url, '/', 8);
             if ($pos !== false) {
@@ -466,5 +477,17 @@ class UrlRule extends Object implements UrlRuleInterface
             }
         }
         return $matches;
+    }
+
+    /**
+     * Trim slashes in passed string. Slashes at beginning of string will be saved if string begins with '//'
+     * and then should be any character other than a slash
+     * Regex playground: https://regex101.com/r/X9f3gK/2
+     *
+     * @param string $string
+     * @return string
+     */
+    private function trimSlashes($string) {
+        return preg_replace('/(^(?:\/|\/{3,})(?!\/)|\/+$)/', '', $string);
     }
 }
