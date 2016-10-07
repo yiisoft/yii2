@@ -604,6 +604,31 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'with relative host info',
+                [
+                    'pattern' => 'post/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                    'host' => '//<lang:en|fr>.example.com',
+                ],
+                [
+                    ['post/index', ['page' => 1, 'tag' => 'a'], false],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], '//en.example.com/post/a'],
+                ],
+            ],
+            [
+                'with relative host info in pattern',
+                [
+                    'pattern' => '//<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1],
+                ],
+                [
+                    ['post/index', ['page' => 1, 'tag' => 'a'], false],
+                    ['post/index', ['page' => 1, 'tag' => 'a', 'lang' => 'en'], '//en.example.com/post/a'],
+                ],
+            ],
+            [
                 'with unicode',
                 [
                     'pattern' => '/blog/search/<tag:[a-zA-Zа-яА-Я0-9\_\+\-]{1,255}>',
@@ -971,7 +996,7 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
-                'with relative host info', // https://github.com/yiisoft/yii2/issues/12691
+                'with relative host info',
                 [
                     'pattern' => 'post/<page:\d+>',
                     'route' => 'post/index',
@@ -984,7 +1009,7 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
-                'with relative host info in pattern', // https://github.com/yiisoft/yii2/issues/12691
+                'with relative host info in pattern',
                 [
                     'pattern' => '//<lang:en|fr>.example.com/post/<page:\d+>',
                     'route' => 'post/index',

@@ -158,8 +158,7 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->name = $this->pattern;
         }
 
-        // don't trim left slashes if more then one slash at the beginning of pattern
-        $this->pattern = preg_replace('/(^(?:\/|\/{3,})(?!\/)|\/+$)/', '', $this->pattern);
+        $this->pattern = $this->trimSlashes($this->pattern);
         $this->route = trim($this->route, '/');
 
         if ($this->host !== null) {
@@ -400,7 +399,7 @@ class UrlRule extends Object implements UrlRuleInterface
             }
         }
 
-        $url = trim(strtr($this->_template, $tr), '/');
+        $url = $this->trimSlashes(strtr($this->_template, $tr));
         if ($this->host !== null) {
             $pos = strpos($url, '/', 8);
             if ($pos !== false) {
@@ -451,5 +450,17 @@ class UrlRule extends Object implements UrlRuleInterface
             }
         }
         return $matches;
+    }
+
+    /**
+     * Trim slashes in passed string. Slashes at beginning of string will be saved if string begins with '//'
+     * and then should be any character other than a slash
+     * Regex playground: https://regex101.com/r/X9f3gK/2
+     *
+     * @param string $string
+     * @return string
+     */
+    private function trimSlashes($string) {
+        return preg_replace('/(^(?:\/|\/{3,})(?!\/)|\/+$)/', '', $string);
     }
 }
