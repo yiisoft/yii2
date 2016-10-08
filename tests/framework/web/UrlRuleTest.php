@@ -64,7 +64,6 @@ class UrlRuleTest extends TestCase
     {
         $manager = new UrlManager([
             'cache' => null,
-            'normalizer' => UrlNormalizer::class,
         ]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
