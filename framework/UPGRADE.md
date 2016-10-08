@@ -42,8 +42,8 @@ Upgrade to Yii 2.1.0
   argument, ensure to process it correctly as it may content additional data.
 
 * `yii\web\UrlNormalizer` is now enabled by default in `yii\web\UrlManager`.
-  If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly,
-  make sure all potential exceptions are handled correctly.
+  If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly, make sure that
+  all potential exceptions are handled correctly or set `yii\web\UrlNormalizer::$normalizer` to `false` to disable normalizer.
 
 
 Upgrade from Yii 2.0.8
