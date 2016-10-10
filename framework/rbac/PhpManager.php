@@ -399,6 +399,29 @@ class PhpManager extends BaseManager
     /**
      * @inheritdoc
      */
+    public function getChildRoles($roleName)
+    {
+        $role = $this->getRole($roleName);
+
+        if (is_null($role)) {
+            throw new InvalidParamException("Role \"$roleName\" not found.");
+        }
+
+        /** @var $result Item[] */
+        $this->getChildrenRecursive($roleName, $result);
+
+        $roles = [$roleName => $role];
+
+        $roles += array_filter($this->getRoles(), function (Role $roleItem) use ($result) {
+            return array_key_exists($roleItem->name, $result);
+        });
+
+        return $roles;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getPermissionsByRole($roleName)
     {
         $result = [];
