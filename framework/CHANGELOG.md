@@ -79,6 +79,7 @@ Yii Framework 2 Change Log
 - Enh #12382: Changed `yii\widgets\MaskedInput` to use `jQuery` instead of `$` to prevent conflicts (samdark)
 - Enh #12440: Added `yii\base\Event::offAll()` method allowing clear all registered class-level event handlers (klimov-paul)
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
+- Enh #12664: Added support for wildcards for `optional` at `yii\filters\auth\AuthMethod` (mg-code)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 
 
