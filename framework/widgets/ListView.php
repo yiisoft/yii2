@@ -75,6 +75,30 @@ class ListView extends BaseListView
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'list-view'];
+    /**
+     * @var Closure an anonymous function that is called once BEFORE rendering each data model.
+     * It should have the following signature:
+     *
+     * ```php
+     * function ($model, $key, $index, $widget)
+     * ```
+     *
+     * - `$model`: the current data model being rendered
+     * - `$key`: the key value associated with the current data model
+     * - `$index`: the zero-based index of the data model in the model array returned by [[dataProvider]]
+     * - `$widget`: the ListView object
+     *
+     * The return result of the function will be rendered directly.
+     * @since 2.0.10
+     */
+    public $beforeItem;
+    /**
+     * @var Closure an anonymous function that is called once AFTER rendering each data model.
+     * It should have the similar signature as [[beforeItem]]. The return result of the function
+     * will be rendered directly.
+     * @since 2.0.10
+     */
+    public $afterItem;
 
 
     /**
@@ -87,7 +111,22 @@ class ListView extends BaseListView
         $keys = $this->dataProvider->getKeys();
         $rows = [];
         foreach (array_values($models) as $index => $model) {
-            $rows[] = $this->renderItem($model, $keys[$index], $index);
+            $key = $keys[$index];
+            if ($this->beforeItem !== null) {
+                $row = call_user_func($this->beforeItem, $model, $key, $index, $this);
+                if ($row !== null && $row !== false) {
+                    $rows[] = $row;
+                }
+            }
+
+            $rows[] = $this->renderItem($model, $key, $index);
+
+            if ($this->afterItem !== null) {
+                $row = call_user_func($this->afterItem, $model, $key, $index, $this);
+                if ($row !== null && $row !== false) {
+                    $rows[] = $row;
+                }
+            }
         }
 
         return implode($this->separator, $rows);
