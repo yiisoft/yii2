@@ -127,22 +127,11 @@ class UrlManager extends Component
      */
     public $ruleConfig = ['class' => UrlRule::class];
     /**
-     * @var UrlNormalizer|array|string|false the configuration for [[UrlNormalizer]] used by this UrlManager.
-     * The default value is `false`, which means normalization will be skipped.
-     * If you wish to enable URL normalization, you should configure this property manually.
-     * For example:
-     *
-     * ```php
-     * [
-     *     'class' => 'yii\web\UrlNormalizer',
-     *     'collapseSlashes' => true,
-     *     'normalizeTrailingSlash' => true,
-     * ]
-     * ```
-     *
+     * @var UrlNormalizer|array|false the configuration for [[UrlNormalizer]] used by this UrlManager.
+     * If `false` normalization will be skipped.
      * @since 2.0.10
      */
-    public $normalizer = false;
+    public $normalizer = ['class' => UrlNormalizer::class];
 
     /**
      * @var string the cache key for cached rules
@@ -164,7 +153,7 @@ class UrlManager extends Component
         parent::init();
 
         if ($this->normalizer !== false) {
-            $this->normalizer = Instance::ensure($this->normalizer, UrlNormalizer::className());
+            $this->normalizer = Instance::ensure($this->normalizer, UrlNormalizer::class);
         }
 
         if (!$this->enablePrettyUrl || empty($this->rules)) {
