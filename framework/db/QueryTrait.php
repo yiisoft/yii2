@@ -50,6 +50,12 @@ trait QueryTrait
      * row data. For more details, see [[indexBy()]]. This property is only used by [[QueryInterface::all()|all()]].
      */
     public $indexBy;
+    /**
+     * @var boolean whether actual execution of the query is canceled.
+     * @see cancel()
+     * @since 2.0.11
+     */
+    public $canceled = false;
 
 
     /**
@@ -386,6 +392,21 @@ trait QueryTrait
     public function offset($offset)
     {
         $this->offset = $offset;
+        return $this;
+    }
+
+    /**
+     * Cancels the query actual execution, prevention interaction with data storage.
+     * After this method is triggered, methods, returning query results like [[one()]], [[all()]], [[exists()]]
+     * and so on will return empty or false values.
+     * You should use this method in case your program logic indicates query should not return any results, like
+     * in case you set false where condition like `0=1`.
+     * @return $this the query object itself
+     * @since 2.0.11
+     */
+    public function cancel()
+    {
+        $this->canceled = true;
         return $this;
     }
 }

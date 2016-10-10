@@ -317,4 +317,71 @@ abstract class QueryTest extends DatabaseTestCase
         $count = (new Query)->from('customer')->having(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
     }
+
+    public function testCancel()
+    {
+        $db = $this->getConnection();
+
+        $rows = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->all($db);
+        $this->assertSame([], $rows);
+
+        $row = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->one($db);
+        $this->assertSame(false, $row);
+
+        $exists = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->exists($db);
+        $this->assertSame(false, $exists);
+
+        $count = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->count($db);
+        $this->assertSame(0, $count);
+
+        $sum = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->sum('id', $db);
+        $this->assertSame(0, $sum);
+
+        $sum = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->average('id', $db);
+        $this->assertSame(0, $sum);
+
+        $max = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->max('id', $db);
+        $this->assertSame(null, $max);
+
+        $min = (new Query())
+            ->from('customer')
+            ->cancel()
+            ->min('id', $db);
+        $this->assertSame(null, $min);
+
+        $scalar = (new Query())
+            ->select(['id'])
+            ->from('customer')
+            ->cancel()
+            ->scalar($db);
+        $this->assertSame(null, $scalar);
+
+        $column = (new Query())
+            ->select(['id'])
+            ->from('customer')
+            ->cancel()
+            ->column($db);
+        $this->assertSame([], $column);
+    }
 }

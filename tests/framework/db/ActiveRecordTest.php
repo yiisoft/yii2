@@ -1312,4 +1312,69 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $baseModel = new ActiveRecord();
         $this->assertFalse($baseModel->hasProperty('unExistingColumn'));
     }
+
+    public function testCancelQuery()
+    {
+        $rows = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->all();
+        $this->assertSame([], $rows);
+
+        $row = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->one();
+        $this->assertSame(null, $row);
+
+        $exists = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->exists();
+        $this->assertSame(false, $exists);
+
+        $count = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->count();
+        $this->assertSame(0, $count);
+
+        $sum = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->sum('id');
+        $this->assertSame(0, $sum);
+
+        $sum = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->average('id');
+        $this->assertSame(0, $sum);
+
+        $max = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->max('id');
+        $this->assertSame(null, $max);
+
+        $min = Customer::find()
+            ->from('customer')
+            ->cancel()
+            ->min('id');
+        $this->assertSame(null, $min);
+
+        $scalar = Customer::find()
+            ->select(['id'])
+            ->from('customer')
+            ->cancel()
+            ->scalar();
+        $this->assertSame(null, $scalar);
+
+        $column = Customer::find()
+            ->select(['id'])
+            ->from('customer')
+            ->cancel()
+            ->column();
+        $this->assertSame([], $column);
+    }
 }

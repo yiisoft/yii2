@@ -252,4 +252,15 @@ interface QueryInterface
      * @return $this the query object itself
      */
     public function offset($offset);
+
+    /**
+     * Cancels the query actual execution, prevention interaction with data storage.
+     * After this method is triggered, methods, returning query results like [[one()]], [[all()]], [[exists()]]
+     * and so on will return empty or false values.
+     * You should use this method in case your program logic indicates query should not return any results, like
+     * in case you set false where condition like `0=1`.
+     * @return $this the query object itself
+     * @since 2.0.11
+     */
+    public function cancel();
 }

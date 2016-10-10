@@ -207,6 +207,9 @@ class Query extends Component implements QueryInterface
      */
     public function all($db = null)
     {
+        if ($this->canceled) {
+            return [];
+        }
         $rows = $this->createCommand($db)->queryAll();
         return $this->populate($rows);
     }
@@ -244,6 +247,9 @@ class Query extends Component implements QueryInterface
      */
     public function one($db = null)
     {
+        if ($this->canceled) {
+            return false;
+        }
         return $this->createCommand($db)->queryOne();
     }
 
@@ -257,6 +263,9 @@ class Query extends Component implements QueryInterface
      */
     public function scalar($db = null)
     {
+        if ($this->canceled) {
+            return null;
+        }
         return $this->createCommand($db)->queryScalar();
     }
 
@@ -268,6 +277,10 @@ class Query extends Component implements QueryInterface
      */
     public function column($db = null)
     {
+        if ($this->canceled) {
+            return [];
+        }
+
         if ($this->indexBy === null) {
             return $this->createCommand($db)->queryColumn();
         }
@@ -300,6 +313,9 @@ class Query extends Component implements QueryInterface
      */
     public function count($q = '*', $db = null)
     {
+        if ($this->canceled) {
+            return 0;
+        }
         return $this->queryScalar("COUNT($q)", $db);
     }
 
@@ -313,6 +329,9 @@ class Query extends Component implements QueryInterface
      */
     public function sum($q, $db = null)
     {
+        if ($this->canceled) {
+            return 0;
+        }
         return $this->queryScalar("SUM($q)", $db);
     }
 
@@ -326,6 +345,9 @@ class Query extends Component implements QueryInterface
      */
     public function average($q, $db = null)
     {
+        if ($this->canceled) {
+            return 0;
+        }
         return $this->queryScalar("AVG($q)", $db);
     }
 
@@ -363,6 +385,9 @@ class Query extends Component implements QueryInterface
      */
     public function exists($db = null)
     {
+        if ($this->canceled) {
+            return false;
+        }
         $command = $this->createCommand($db);
         $params = $command->params;
         $command->setSql($command->db->getQueryBuilder()->selectExists($command->getSql()));
@@ -379,6 +404,10 @@ class Query extends Component implements QueryInterface
      */
     protected function queryScalar($selectExpression, $db)
     {
+        if ($this->canceled) {
+            return null;
+        }
+
         $select = $this->select;
         $limit = $this->limit;
         $offset = $this->offset;
