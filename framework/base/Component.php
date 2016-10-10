@@ -481,6 +481,11 @@ class Component extends Object
             $this->_events[$name] = \Yii::createObject('yii\base\EventPriorityQueue');
         }
 
+        /**
+         *  5 is has no special meaning. It is a random number used in order to keep
+         *  prepend handlers functionality until we define priorities on base events' handlers.
+         *  Then we can totally remove that and deprecate EventPriorityQueue::getMaxPriority method
+         */
         if (!$priority) {
             $priority = $this->_events[$name]->getMaxPriority() + 5;
         }

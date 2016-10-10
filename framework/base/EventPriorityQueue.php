@@ -24,16 +24,30 @@ class EventPriorityQueue implements \IteratorAggregate, \Countable
     protected $priorityCounter = PHP_INT_MAX;
 
     /**
+     * The highest priority among
+     * Event's Handlers.
+     *
+     * The Handler with the highest priority
+     * is the one invoked first
+     *
      * @var int
      */
     protected $maxPriority = 0;
 
     /**
+     * An SplPriorityQueue used as the main data structure
+     * in order to store handlers with priority given
+     *
      * @var \SplPriorityQueue
      */
     protected $innerQueue;
 
     /**
+     * Although we use SplPriorityQueue as the main data structure
+     * we use also this simple array in order to remove items from Queue
+     *
+     * @see EventPriorityQueue::remove()
+     *
      * @var array
      */
     protected $items = [];
@@ -98,8 +112,6 @@ class EventPriorityQueue implements \IteratorAggregate, \Countable
         if (count($this->items)) {
             foreach ($this->items as $item) {
                 $priority = $item['priority'];
-                // TODO We can avoid this calculation. Check removed item calculation.
-                // TODO But as it is is clear enough and performs well for small arrays
                 $this->decideMaxPriority($priority);
                 $this->innerQueue->insert($item['data'], $priority);
             }
