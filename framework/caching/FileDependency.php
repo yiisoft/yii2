@@ -41,6 +41,7 @@ class FileDependency extends Dependency
             throw new InvalidConfigException('FileDependency::fileName must be set');
         }
 
+        clearstatcache(false, Yii::getAlias($this->fileName));
         return @filemtime(Yii::getAlias($this->fileName));
     }
 }
