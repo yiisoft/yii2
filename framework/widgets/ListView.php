@@ -76,14 +76,16 @@ class ListView extends BaseListView
      * - `$widget`: the ListView object
      *
      * The return result of the function will be rendered directly.
+     * @since 2.0.10
      */
-    public $beforeRow;
+    public $beforeItem;
     /**
      * @var Closure an anonymous function that is called once AFTER rendering each data model.
-     * It should have the similar signature as [[beforeRow]]. The return result of the function
+     * It should have the similar signature as [[beforeItem]]. The return result of the function
      * will be rendered directly.
+     * @since 2.0.10
      */
-    public $afterRow;
+    public $afterItem;
 
 
     /**
@@ -97,18 +99,18 @@ class ListView extends BaseListView
         $rows = [];
         foreach (array_values($models) as $index => $model) {
             $key = $keys[$index];
-            if ($this->beforeRow !== null) {
-                $row = call_user_func($this->beforeRow, $model, $key, $index, $this);
-                if (!empty($row)) {
+            if ($this->beforeItem !== null) {
+                $row = call_user_func($this->beforeItem, $model, $key, $index, $this);
+                if ($row !== null && $row !== false) {
                     $rows[] = $row;
                 }
             }
 
             $rows[] = $this->renderItem($model, $key, $index);
 
-            if ($this->afterRow !== null) {
-                $row = call_user_func($this->afterRow, $model, $key, $index, $this);
-                if (!empty($row)) {
+            if ($this->afterItem !== null) {
+                $row = call_user_func($this->afterItem, $model, $key, $index, $this);
+                if ($row !== null && $row !== false) {
                     $rows[] = $row;
                 }
             }
