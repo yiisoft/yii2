@@ -822,24 +822,6 @@ class Query extends Component implements QueryInterface
         return $this;
     }
 
-    public function andFilterHaving(array $condition)
-    {
-        $condition = $this->filterCondition($condition);
-        if ($condition !== []) {
-            $this->andHaving($condition);
-        }
-        return $this;
-    }
-
-    public function orFilterHaving(array $condition)
-    {
-        $condition = $this->filterCondition($condition);
-        if ($condition !== []) {
-            $this->orHaving($condition);
-        }
-        return $this;
-    }
-
     /**
      * Adds an additional HAVING condition to the existing one.
      * The new condition and the existing one will be joined using the 'OR' operator.
