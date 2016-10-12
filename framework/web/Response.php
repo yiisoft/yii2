@@ -722,15 +722,15 @@ class Response extends \yii\base\Response
      * Fallback name:
      *
      * - Causes issues if contains non-ASCII characters with codes less than 32 or more than 126.
-     * - Causes issues if contains urlencoded characters (starting with %) or % character. Some browsers interpret
-     *   filename="X" as urlencoded name, some aren't.
-     * - Causes issues if contains path separator characters such as \ or /.
-     * - Since value is wrapped with ", it should be escaped as \".
+     * - Causes issues if contains urlencoded characters (starting with `%`) or `%` character. Some browsers interpret
+     *   `filename="X"` as urlencoded name, some don't.
+     * - Causes issues if contains path separator characters such as `\` or `/`.
+     * - Since value is wrapped with `"`, it should be escaped as `\"`.
      * - Since input could contain non-ASCII characters, fallback is obtained by transliteration.
      *
      * UTF name:
      *
-     * - Causes issues if contains path separator characters such as \ or /.
+     * - Causes issues if contains path separator characters such as `\` or `/`.
      * - Should be urlencoded since headers are ASCII-only.
      * - Could be omitted if it exactly matches fallback name.
      *
