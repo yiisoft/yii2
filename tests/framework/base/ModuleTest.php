@@ -45,7 +45,7 @@ class ModuleTest extends TestCase
         $module = new TestModule('test');
 
         $version = $module->getVersion();
-        $this->assertRegExp('/^[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}\\.[0-9]{6}$/is', $version);
+        $this->assertEquals('1.0', $version);
     }
 }
 

@@ -31,7 +31,7 @@ use yii\di\ServiceLocator;
  * @property array $modules The modules (indexed by their IDs).
  * @property string $uniqueId The unique ID of the module. This property is read-only.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
- * @property string|integer|callable $version The current module version.
+ * @property string|callable $version The version of this module.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -125,7 +125,7 @@ class Module extends ServiceLocator
      */
     private $_modules = [];
     /**
-     * @var string|integer|callable module version.
+     * @var string|callable the version of this module.
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
@@ -302,7 +302,7 @@ class Module extends ServiceLocator
     /**
      * Returns current module version.
      * If version is not explicitly set, [[defaultVersion()]] method will be used to determine its value.
-     * @return integer|string current module version.
+     * @return string the version of this module.
      * @since 2.0.11
      */
     public function getVersion()
@@ -319,13 +319,13 @@ class Module extends ServiceLocator
 
     /**
      * Sets current module version.
-     * @param integer|string|callable $version version specification.
+     * @param string|callable $version the version of this module.
      * Version can be specified as a PHP callback, which can accept module instance as an argument and should
      * return the actual version. For example:
      *
      * ```php
      * function (Module $module) {
-     *     //return string|integer
+     *     //return string
      * }
      * ```
      *
@@ -337,31 +337,14 @@ class Module extends ServiceLocator
     }
 
     /**
-     * Returns default module [[version]] based last modification time of the [[basePath]].
+     * Returns default module version.
      * Child class may override this method to provide more specific version detection.
-     * @return string|integer module version.
+     * @return string the version of this module.
      * @since 2.0.11
      */
     protected function defaultVersion()
     {
-        $basePath = $this->getBasePath();
-
-        foreach (['.git', '.hg'] as $vcsFileName) {
-            $fileName = $basePath . DIRECTORY_SEPARATOR . $vcsFileName;
-            if (file_exists($fileName)) {
-                $versionTimestamp = @filemtime($fileName);
-                break;
-            }
-        }
-
-        if (!isset($versionTimestamp)) {
-            $versionTimestamp = @filemtime($basePath);
-        }
-
-        if ($versionTimestamp === false) {
-            return 'unknown';
-        }
-        return date('Y.m.d.His', $versionTimestamp);
+        return '1.0';
     }
 
     /**
