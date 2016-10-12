@@ -344,7 +344,10 @@ class Module extends ServiceLocator
      */
     protected function defaultVersion()
     {
-        return '1.0';
+        if ($this->module === null) {
+            return '1.0';
+        }
+        return $this->module->getVersion();
     }
 
     /**
