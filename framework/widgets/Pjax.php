@@ -49,6 +49,7 @@ class Pjax extends Widget
      *
      * - `tag`: string, the tag name for the container. Defaults to `div`
      *   This option is available since version 2.0.7.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -67,6 +68,11 @@ class Pjax extends Widget
      * Note that if the response to the pjax request is a full page, a normal request will be sent again.
      */
     public $formSelector;
+    /**
+     * @var string The jQuery event that will trigger form handler. Defaults to "submit".
+     * @since 2.0.9
+     */
+    public $submitEvent = 'submit';
     /**
      * @var boolean whether to enable push state.
      */
@@ -168,7 +174,7 @@ class Pjax extends Widget
     {
         $headers = Yii::$app->getRequest()->getHeaders();
 
-        return $headers->get('X-Pjax') && $headers->get('X-Pjax-Container') === '#' . $this->options['id'];
+        return $headers->get('X-Pjax') && explode(' ', $headers->get('X-Pjax-Container'))[0] === '#' . $this->options['id'];
     }
 
     /**
@@ -181,15 +187,19 @@ class Pjax extends Widget
         $this->clientOptions['replace'] = $this->enableReplaceState;
         $this->clientOptions['timeout'] = $this->timeout;
         $this->clientOptions['scrollTo'] = $this->scrollTo;
+        if (!isset($this->clientOptions['container'])) {
+            $this->clientOptions['container'] = "#$id";
+        }
         $options = Json::htmlEncode($this->clientOptions);
         $js = '';
         if ($this->linkSelector !== false) {
             $linkSelector = Json::htmlEncode($this->linkSelector !== null ? $this->linkSelector : '#' . $id . ' a');
-            $js .= "jQuery(document).pjax($linkSelector, \"#$id\", $options);";
+            $js .= "jQuery(document).pjax($linkSelector, $options);";
         }
         if ($this->formSelector !== false) {
             $formSelector = Json::htmlEncode($this->formSelector !== null ? $this->formSelector : '#' . $id . ' form[data-pjax]');
-            $js .= "\njQuery(document).on('submit', $formSelector, function (event) {jQuery.pjax.submit(event, '#$id', $options);});";
+            $submitEvent = Json::htmlEncode($this->submitEvent);
+            $js .= "\njQuery(document).on($submitEvent, $formSelector, function (event) {jQuery.pjax.submit(event, $options);});";
         }
         $view = $this->getView();
         PjaxAsset::register($view);

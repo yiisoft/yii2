@@ -1,5 +1,5 @@
-Yii2 コアフレームワークのコードスタイル
-=======================================
+Yii 2 コアフレームワークコードスタイル
+=====================================
 
 下記のコードスタイルが Yii 2.x コアと公式エクステンションの開発に用いられています。
 コアに対してコードをプルリクエストをしたいときは、これを使用することを考慮してください。
@@ -90,8 +90,10 @@ class Foo
 - Public および protected な変数はクラスの冒頭で、すべてのメソッドの宣言に先立って宣言されるべきです。
   Private な変数もまたクラスの冒頭で宣言されるべきですが、
   変数がクラスのメソッドのごく一部分にのみ関係する場合は、変数を扱う一群のメソッドの直前に追加しても構いません。
-- クラスにおけるプロパティの宣言の順序は public から始まり、protected、private と続くべきです。
+- クラスにおけるプロパティの宣言の順序は、その可視性に基づいて、 public から始まり、protected、private と続くべきです。
+- 同じ可視性を持つプロパティの順序については、厳格な規則はありません。
 - より読みやすいように、プロパティの宣言は空行を挟まずに続け、プロパティ宣言とメソッド宣言のブロック間には2行の空行を挟むべきです。
+  また、異なる可視性のグループの間に、1行の空行を追加するべきです。
 - Private 変数は `$_varName` のように名付けるべきです。
 - Public なクラスメンバとスタンドアロンな変数は、先頭を小文字にした `$camelCase` で名付けるべきです。
 - 説明的な名前を使うこと。`$i` や `$j` のような変数は使わないようにしましょう。
@@ -102,9 +104,18 @@ class Foo
 <?php
 class Foo
 {
-    public $publicProp;
+    public $publicProp1;
+    public $publicProp2;
+
     protected $protectedProp;
+
     private $_privateProp;
+
+
+    public function someMethod()
+    {
+        // ...
+    }
 }
 ```
 
@@ -115,7 +126,7 @@ class Foo
 - クラスのメソッドは常に修飾子 `private`、`protected` または `public` を使って、可視性を宣言すべきです。`var` は許可されません。
 - 関数の開始の中括弧は関数宣言の次の行に置くべきです。
 
-```
+```php
 /**
  * ドキュメント
  */
@@ -228,7 +239,7 @@ $arr = [
 
 ```php
 $config = [
-    'name'  => 'Yii',
+    'name' => 'Yii',
     'options' => ['usePHP' => true],
 ];
 ```
@@ -262,9 +273,9 @@ if (!$model && null === $event)
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // $result を処理
+    // $result を処理
 }
 ```
 
@@ -273,7 +284,7 @@ if (empty($result)) {
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 }
 
 // $result を処理
@@ -420,10 +431,10 @@ public function getEventHandlers($name)
 
 ドキュメントの中でクラス、メソッド、プロパティをクロスリンクするために使える追加の文法があります。
 
-- `'[[canSetProperty]] ` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
-- `'[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
+- `[[canSetProperty]]` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
+- `[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
 
 上記のリンクにクラス名やメソッド名以外のラベルを付けるためには、次の例で示されている文法を使うことが出来ます。
 
@@ -463,7 +474,7 @@ public function getEventHandlers($name)
 
 - 定数へのアクセスには `self` を使わなければなりません: `self::MY_CONSTANT`
 - private な静的プロパティへのアクセスには `self` を使わなければなりません: `self::$_events`
-- 再帰呼出しにおいて、拡張クラスの実装ではなく、現在のクラスの実装を再び呼び出したいときには、`self` を使うことが許可されます。
+- 再帰呼出しにおいて、拡張クラスの実装ではなく、現在のクラスの実装を再び呼び出したいときなど、合理的な理由がある場合には、`self` を使うことが許可されます。
 
 ### 「何かをするな」を示す値
 
@@ -473,5 +484,7 @@ public function getEventHandlers($name)
 ### ディレクトリ/名前空間の名前
 
 - 小文字を使います。
-- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)
-- 機能や特徴を表す名前には単数形を使います (例えば、web)
+- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)。
+- 機能や特徴を表す名前には単数形を使います (例えば、web)。
+- 出来れば単一の語の名前空間にします。
+- 単一の語が適切でない場合は、camelCase を使います。

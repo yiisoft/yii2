@@ -125,7 +125,7 @@ Your module may also declare commands, that will be available through the [Conso
 In order for the command line utility to see your commands, you will need to change the [[yii\base\Module::controllerNamespace]]
 property, when Yii is executed in the console mode, and point it to your commands namespace.
 
-One way to achieve that is to test the instance type of the Yii application in the module's `init` method:
+One way to achieve that is to test the instance type of the Yii application in the module's `init()` method:
 
 ```php
 public function init()
@@ -188,7 +188,7 @@ $module = MyModuleClass::getInstance();
 
 where `MyModuleClass` refers to the name of the module class that you are interested in. The `getInstance()` method
 will return the currently requested instance of the module class. If the module is not requested, the method will
-return null. Note that you do not want to manually create a new instance of the module class because it will be
+return `null`. Note that you do not want to manually create a new instance of the module class because it will be
 different from the one created by Yii in response to a request.
 
 > Info: When developing a module, you should not assume the module will use a fixed ID. This is because a module

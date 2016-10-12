@@ -18,7 +18,7 @@ use yii\base\NotSupportedException;
  * logic of performing data validation. Child classes may also override [[clientValidateAttribute()]]
  * to provide client-side validation support.
  *
- * Validator declares a set of [[builtInValidators|built-in validators] which can
+ * Validator declares a set of [[builtInValidators|built-in validators]] which can
  * be referenced using short names. They are listed as follows:
  *
  * - `boolean`: [[BooleanValidator]]
@@ -141,8 +141,8 @@ class Validator extends Component
      * The signature of the callable should be `function ($model, $attribute)`, where `$model` and `$attribute`
      * refer to the model and the attribute currently being validated. The callable should return a boolean value.
      *
-     * This property is mainly provided to support conditional validation on the server side.
-     * If this property is not set, this validator will be always applied on the server side.
+     * This property is mainly provided to support conditional validation on the server-side.
+     * If this property is not set, this validator will be always applied on the server-side.
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
@@ -157,16 +157,16 @@ class Validator extends Component
     public $when;
     /**
      * @var string a JavaScript function name whose return value determines whether this validator should be applied
-     * on the client side. The signature of the function should be `function (attribute, value)`, where
+     * on the client-side. The signature of the function should be `function (attribute, value)`, where
      * `attribute` is an object describing the attribute being validated (see [[clientValidateAttribute()]])
      * and `value` the current value of the attribute.
      *
-     * This property is mainly provided to support conditional validation on the client side.
-     * If this property is not set, this validator will be always applied on the client side.
+     * This property is mainly provided to support conditional validation on the client-side.
+     * If this property is not set, this validator will be always applied on the client-side.
      *
      * The following example will enable the validator only when the country currently selected is USA:
      *
-     * ```php
+     * ```javascript
      * function (attribute, value) {
      *     return $('#country').val() === 'USA';
      * }
@@ -179,12 +179,15 @@ class Validator extends Component
 
     /**
      * Creates a validator object.
-     * @param mixed $type the validator type. This can be a built-in validator name,
-     * a method name of the model class, an anonymous function, or a validator class name.
+     * @param string|\Closure $type the validator type. This can be either:
+     *  * a built-in validator name listed in [[builtInValidators]];
+     *  * a method name of the model class;
+     *  * an anonymous function;
+     *  * a validator class name.
      * @param \yii\base\Model $model the data model to be validated.
      * @param array|string $attributes list of attributes to be validated. This can be either an array of
      * the attribute names or a string of comma-separated attribute names.
-     * @param array $params initial values to be applied to the validator properties
+     * @param array $params initial values to be applied to the validator properties.
      * @return Validator the validator
      */
     public static function createValidator($type, $model, $attributes, $params = [])
@@ -224,17 +227,26 @@ class Validator extends Component
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
      * @param array|null $attributes the list of attributes to be validated.
-     * Note that if an attribute is not associated with the validator,
-     * it will be ignored.
-     * If this parameter is null, every attribute listed in [[attributes]] will be validated.
+     * Note that if an attribute is not associated with the validator, or is is prefixed with `!` char - it will be
+     * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
      */
     public function validateAttributes($model, $attributes = null)
     {
         if (is_array($attributes)) {
-            $attributes = array_intersect($this->attributes, $attributes);
+            $newAttributes = [];
+            foreach ($attributes as $attribute) {
+                if (in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)) {
+                    $newAttributes[] = $attribute;
+                }
+            }
+            $attributes = $newAttributes;
         } else {
-            $attributes = $this->attributes;
+            $attributes = [];
+            foreach ($this->attributes as $attribute) {
+                $attributes[] = $attribute[0] === '!' ? substr($attribute, 1) : $attribute;
+            }
         }
+
         foreach ($attributes as $attribute) {
             $skip = $this->skipOnError && $model->hasErrors($attribute)
                 || $this->skipOnEmpty && $this->isEmpty($model->$attribute);
@@ -276,7 +288,13 @@ class Validator extends Component
 
         list($message, $params) = $result;
         $params['attribute'] = Yii::t('yii', 'the input value');
-        $params['value'] = is_array($value) ? 'array()' : $value;
+        if (is_array($value)) {
+            $params['value'] = 'array()';
+        } elseif (is_object($value)) {
+            $params['value'] = 'object';
+        } else {
+            $params['value'] = $value;
+        }
         $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
 
         return false;
@@ -356,9 +374,17 @@ class Validator extends Component
      */
     public function addError($model, $attribute, $message, $params = [])
     {
-        $value = $model->$attribute;
         $params['attribute'] = $model->getAttributeLabel($attribute);
-        $params['value'] = is_array($value) ? 'array()' : $value;
+        if (!isset($params['value'])) {
+            $value = $model->$attribute;
+            if (is_array($value)) {
+                $params['value'] = 'array()';
+            } elseif (is_object($value) && !method_exists($value, '__toString')) {
+                $params['value'] = '(object)';
+            } else {
+                $params['value'] = $value;
+            }
+        }
         $model->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
     }
 

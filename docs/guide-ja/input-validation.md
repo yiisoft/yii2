@@ -90,6 +90,28 @@ public function rules()
 
 属性は、上記の検証のステップに従って、`scenarios()` でアクティブな属性であると宣言されており、かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、また、その場合に限って、検証されます。
 
+> Note: 規則に名前を付けると便利です。すなわち、
+>
+> ```php
+> public function rules()
+> {
+>     return [
+>         // ...
+>         'password' => [['password'], 'string', 'max' => 60],
+>     ];
+> }
+> ```
+>
+> これを子のモデルで使うことが出来ます。
+>
+> ```php
+> public function rules()
+> {
+>     $rules = parent::rules();
+>     unset($rules['password']);
+>     return $rules;
+> }
+
 
 ### エラーメッセージをカスタマイズする <span id="customizing-error-messages"></span>
 
@@ -526,6 +548,9 @@ JS;
 > ]
 > ```
 
+> Tip: クライアント側の検証を手動で操作する必要がある場合、すなわち、動的にフィールドを追加したり、何か特殊な UI ロジックを実装する場合は、
+> Yii 2.0 Cookbook の [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md) を参照してください。
+
 ### Deferred 検証 <span id="deferred-validation"></span>
 
 非同期のクライアント側の検証をサポートする必要がある場合は、[Defered オブジェクト](http://api.jquery.com/category/deferred-object/) を作成することが出来ます。
@@ -651,3 +676,5 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 
 > Info: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
   しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。
+
+`enableClientValidation` と `enableAjaxValidation` が両方とも真に設定されているときは、クライアント検証が成功した後でだけ AJAX 検証が起動されます。

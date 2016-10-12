@@ -1,5 +1,5 @@
-Yii2 Core framework code style
-==============================
+Yii 2 Core Framework Code Style
+===============================
 
 The following code style is used for Yii 2.x core and official extensions development. If you want to pull-request code
 into the core, consider using it. We aren't forcing you to use this code style for your application. Feel free to choose
@@ -125,7 +125,7 @@ class Foo
   `public` modifiers. `var` is not allowed.
 - Opening brace of a function should be on the line after the function declaration.
 
-```
+```php
 /**
  * Documentation
  */
@@ -236,7 +236,7 @@ Use the following format for associative arrays:
 
 ```php
 $config = [
-    'name'  => 'Yii',
+    'name' => 'Yii',
     'options' => ['usePHP' => true],
 ];
 ```
@@ -270,9 +270,9 @@ Use [guard conditions](http://refactoring.com/catalog/replaceNestedConditionalWi
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // process result
+    // process result
 }
 ```
 
@@ -281,7 +281,7 @@ is better as
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+   return true;
 }
 
 // process result
@@ -432,10 +432,10 @@ As you can see in the examples above we use markdown to format the phpDoc commen
 
 There is additional syntax for cross linking between classes, methods and properties in the documentation:
 
-- `'[[canSetProperty]] ` will create a link to the `canSetProperty` method or property of the same class.
-- `'[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
-- `'[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
-- `'[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
+- `[[canSetProperty]]` will create a link to the `canSetProperty` method or property of the same class.
+- `[[Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in the same namespace.
+- `[[yii\base\Component::canSetProperty]]` will create a link to `canSetProperty` method of the class `Component` in namespace `yii\base`.
+- `[[Component]]` will create a link to the `Component` class in the same namespace. Adding namespace to the class name is also possible here.
 
 To give one of the above mentioned links another label than the class or method name you can use the syntax shown in the following example:
 
@@ -475,7 +475,7 @@ Always use `static` except the following cases:
 
 - accessing constants MUST be done via `self`: `self::MY_CONSTANT`
 - accessing private static properties MUST be done via `self`: `self::$_events`
-- It is allowed to use `self` for recursion to call current implementation again instead of extending classes implementation.
+- It is allowed to use `self` for method calls where it makes sense such as recursive call to current implementation instead of extending classes implementation.
 
 ### value for "don't do something"
 
@@ -486,3 +486,6 @@ Properties allowing to configure component not to do something should accept val
 - use lower case
 - use plural form for nouns which represent objects (e.g. validators)
 - use singular form for names representing relevant functionality/features (e.g. web)
+- prefer single word namespaces
+- if single word isn't suitable, use camelCase
+

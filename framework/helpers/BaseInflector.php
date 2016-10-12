@@ -95,6 +95,7 @@ class BaseInflector
         '/(m)en$/i' => '\1an',
         '/(c)hildren$/i' => '\1\2hild',
         '/(n)ews$/i' => '\1\2ews',
+        '/(n)etherlands$/i' => '\1\2etherlands',
         '/eaus$/' => 'eau',
         '/^(.*us)$/' => '\\1',
         '/s$/i' => '',
@@ -361,7 +362,7 @@ class BaseInflector
         $label = trim(strtolower(str_replace([
             '-',
             '_',
-            '.'
+            '.',
         ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
 
         return $ucwords ? ucwords($label) : $label;
@@ -493,7 +494,7 @@ class BaseInflector
 
             return transliterator_transliterate($transliterator, $string);
         } else {
-            return str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
+            return strtr($string, static::$transliteration);
         }
     }
 
@@ -522,7 +523,7 @@ class BaseInflector
      */
     public static function ordinalize($number)
     {
-        if (in_array(($number % 100), range(11, 13))) {
+        if (in_array($number % 100, range(11, 13))) {
             return $number . 'th';
         }
         switch ($number % 10) {

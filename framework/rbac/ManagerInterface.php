@@ -11,20 +11,8 @@ namespace yii\rbac;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-interface ManagerInterface
+interface ManagerInterface extends CheckAccessInterface
 {
-    /**
-     * Checks if the user has the specified permission.
-     * @param string|integer $userId the user ID. This should be either an integer or a string representing
-     * the unique identifier of a user. See [[\yii\web\User::id]].
-     * @param string $permissionName the name of the permission to be checked against
-     * @param array $params name-value pairs that will be passed to the rules associated
-     * with the roles and permissions assigned to the user.
-     * @return boolean whether the user has the specified permission.
-     * @throws \yii\base\InvalidParamException if $permissionName does not refer to an existing permission
-     */
-    public function checkAccess($userId, $permissionName, $params = []);
-
     /**
      * Creates a new Role object.
      * Note that the newly created role is not added to the RBAC system yet.
@@ -89,6 +77,15 @@ interface ManagerInterface
     public function getRolesByUser($userId);
 
     /**
+     * Returns the roles that are adding to the role via [[addChild()]] by recursive.
+     * @param string $roleName name of parent Role.
+     * @return Role[] all roles directly adding to the role. The array is indexed by the role names.
+     * First element is a Role item that are getting by $roleName.
+     * @throws \yii\base\InvalidParamException if Role was not found that are getting by $roleName
+     */
+    public function getChildRoles($roleName);
+
+    /**
      * Returns the named permission.
      * @param string $name the permission name.
      * @return null|Permission the permission corresponding to the specified name. Null is returned if no such permission.
@@ -127,6 +124,16 @@ interface ManagerInterface
      * @return Rule[] the rules indexed by the rule names
      */
     public function getRules();
+
+    /**
+     * Checks the possibility of adding a child to parent
+     * @param Item $parent the parent item
+     * @param Item $child the child item to be added to the hierarchy
+     * @return boolean possibility of adding
+     *
+     * @since 2.0.8
+     */
+    public function canAddChild($parent, $child);
 
     /**
      * Adds an item as a child of another item.

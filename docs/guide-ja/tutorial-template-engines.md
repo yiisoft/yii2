@@ -37,8 +37,8 @@
 しかし、これらのエクステンションをプロジェクトで使うためには、`composer.json` ファイルも修正して、これらのエクステンションを含める必要があります。
 
 ```
-"yiisoft/yii2-smarty": "*",
-"yiisoft/yii2-twig": "*",
+"yiisoft/yii2-smarty": "~2.0.0",
+"yiisoft/yii2-twig": "~2.0.0",
 ```
 
 上のコードを `composer.json` の `require` セクションに追加します。

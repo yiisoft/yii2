@@ -13,18 +13,20 @@ DROP TABLE IF EXISTS `category` CASCADE;
 DROP TABLE IF EXISTS `customer` CASCADE;
 DROP TABLE IF EXISTS `profile` CASCADE;
 DROP TABLE IF EXISTS `null_values` CASCADE;
+DROP TABLE IF EXISTS `negative_default_values` CASCADE;
 DROP TABLE IF EXISTS `type` CASCADE;
 DROP TABLE IF EXISTS `constraints` CASCADE;
 DROP TABLE IF EXISTS `animal` CASCADE;
 DROP TABLE IF EXISTS `default_pk` CASCADE;
 DROP TABLE IF EXISTS `document` CASCADE;
+DROP TABLE IF EXISTS `comment` CASCADE;
 DROP VIEW IF EXISTS `animal_view`;
 
 CREATE TABLE `constraints`
 (
   `id` integer not null,
   `field1` varchar(255)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `profile` (
@@ -100,7 +102,7 @@ CREATE TABLE `composite_fk` (
   `item_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   CONSTRAINT `FK_composite_fk_order_item` FOREIGN KEY (`order_id`,`item_id`) REFERENCES `order_item` (`order_id`,`item_id`) ON DELETE CASCADE
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE null_values (
   `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -109,7 +111,15 @@ CREATE TABLE null_values (
   `var3` INT DEFAULT NULL,
   `stringcol` VARCHAR (32) DEFAULT NULL,
   PRIMARY KEY (id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `negative_default_values` (
+  `smallint_col` smallint default '-123',
+  `int_col` integer default '-123',
+  `bigint_col` bigint default '-123',
+  `float_col` double default '-12345.6789',
+  `numeric_col` decimal(5,2) default '-33.22'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `type` (
   `int_col` integer NOT NULL,
@@ -147,6 +157,14 @@ CREATE TABLE `document` (
   `title` VARCHAR(255) NOT NULL,
   `content` TEXT,
   `version` INT(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `comment` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `add_comment` VARCHAR(255) NOT NULL,
+  `replace_comment` VARCHAR(255) COMMENT 'comment',
+  `delete_comment` VARCHAR(128) NOT NULL COMMENT 'comment',
   PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

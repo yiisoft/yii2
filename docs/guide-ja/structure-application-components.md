@@ -98,7 +98,7 @@ Yii のアプリケーションがユーザリクエストを処理出来るの�
   詳細は [国際化](tutorial-i18n.md) の節を参照してください。
 * [[yii\log\Dispatcher|log]]: ログターゲットを管理します。
   詳細は [ロギング](runtime-logging.md) の節を参照してください。
-* [[yii\swiftmailer\Mailer|mail]]: メールの作成と送信をサポートします。
+* [[yii\swiftmailer\Mailer|mailer]]: メールの作成と送信をサポートします。
   詳細は [メール](tutorial-mailing.md) の節を参照してください。
 * [[yii\base\Application::response|response]]: エンドユーザに送信されるレスポンスを表現します。
   詳細は [レスポンス](runtime-responses.md) の節を参照してください。

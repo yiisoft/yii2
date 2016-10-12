@@ -3,6 +3,7 @@
 namespace yiiunit\framework\helpers;
 
 use Yii;
+use yii\base\DynamicModel;
 use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -50,18 +51,24 @@ class HtmlTest extends TestCase
         $this->assertEquals('<div>content</div>', Html::tag('div', 'content'));
         $this->assertEquals('<input type="text" name="test" value="&lt;&gt;">', Html::tag('input', '', ['type' => 'text', 'name' => 'test', 'value' => '<>']));
         $this->assertEquals('<span disabled></span>', Html::tag('span', '', ['disabled' => true]));
+        $this->assertEquals('test', Html::tag(false, 'test'));
+        $this->assertEquals('test', Html::tag(null, 'test'));
     }
 
     public function testBeginTag()
     {
         $this->assertEquals('<br>', Html::beginTag('br'));
         $this->assertEquals('<span id="test" class="title">', Html::beginTag('span', ['id' => 'test', 'class' => 'title']));
+        $this->assertEquals('', Html::beginTag(null));
+        $this->assertEquals('', Html::beginTag(false));
     }
 
     public function testEndTag()
     {
         $this->assertEquals('</br>', Html::endTag('br'));
         $this->assertEquals('</span>', Html::endTag('span'));
+        $this->assertEquals('', Html::endTag(null));
+        $this->assertEquals('', Html::endTag(false));
     }
 
     public function testStyle()
@@ -274,6 +281,18 @@ EOD;
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
+
+        $expected = <<<EOD
+<select name="test">
+<option value="value1">text1</option>
+<option value="value2" selected>text2</option>
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems(), [
+            'options' => [
+                'value2' => ['selected' => true]
+            ],
+        ]));
     }
 
     public function testListBox()
@@ -348,6 +367,14 @@ EOD;
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', '', [], ['unselect' => '0']));
+
+        $expected = <<<EOD
+<select name="test" size="4">
+<option value="value1" selected>text1</option>
+<option value="value2" selected>text2</option>
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::listBox('test', new \ArrayObject(['value1', 'value2']), $this->getDataItems()));
     }
 
     public function testCheckboxList()
@@ -396,6 +423,15 @@ EOD;
             },
             'tag' => false
         ]));
+
+
+        $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', new \ArrayObject(['value2']), $this->getDataItems(), [
+            'item' => function ($index, $label, $name, $checked, $value) {
+                return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, ['value' => $value]));
+            },
+            'tag' => false
+        ]));
+
     }
 
     public function testRadioList()
@@ -438,6 +474,13 @@ EOD;
 1<label>text2 <input type="radio" name="test" value="value2" checked></label>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['value2'], $this->getDataItems(), [
+            'item' => function ($index, $label, $name, $checked, $value) {
+                return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
+            },
+            'tag' => false
+        ]));
+
+        $this->assertEqualsWithoutLE($expected, Html::radioList('test', new \ArrayObject(['value2']), $this->getDataItems(), [
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
             },
@@ -839,6 +882,82 @@ EOD;
         $this->assertEquals($expectedHtml, Html::activePasswordInput($model, 'name', $options));
     }
 
+    public function errorSummaryDataProvider()
+    {
+        return [
+            [
+                'ok',
+                [],
+                '<div style="display:none"><p>Please fix the following errors:</p><ul></ul></div>'
+            ],
+            [
+                'ok',
+                ['header' => 'Custom header', 'footer' => 'Custom footer', 'style' => 'color: red'],
+                '<div style="color: red; display:none">Custom header<ul></ul>Custom footer</div>',
+            ],
+            [
+                str_repeat('long_string', 60),
+                [],
+                '<div><p>Please fix the following errors:</p><ul><li>Name should contain at most 100 characters.</li></ul></div>'
+            ],
+            [
+                'not_an_integer',
+                [],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                }
+            ],
+            [
+                'not_an_integer',
+                ['encode' => false],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: < ></li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                }
+            ],
+            [
+                str_repeat('long_string', 60),
+                [],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                }
+            ],
+            [
+                'not_an_integer',
+                ['showAllErrors' => true],
+                '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li>
+<li>Error message. Here are even more chars: &quot;&quot;</li></ul></div>',
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                    $model->addError('name', 'Error message. Here are even more chars: ""');
+                }
+            ],
+
+        ];
+    }
+
+    /**
+     * @dataProvider errorSummaryDataProvider
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     * @param \Closure $beforeValidate
+     */
+    public function testErrorSummary($value, array $options, $expectedHtml, $beforeValidate = null)
+    {
+        $model = new HtmlTestModel();
+        $model->name = $value;
+        if ($beforeValidate !== null) {
+            call_user_func($beforeValidate, $model);
+        }
+        $model->validate(null, false);
+
+        $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
+    }
+
     /**
      * Data provider for [[testActiveTextArea()]]
      * @return array test data
@@ -886,7 +1005,7 @@ EOD;
     {
         $model = new HtmlTestModel();
         $model->description = $value;
-        $this->assertEquals($expectedHtml, Html::activeTextArea($model, 'description', $options));
+        $this->assertEquals($expectedHtml, Html::activeTextarea($model, 'description', $options));
     }
 
     /**
@@ -909,10 +1028,19 @@ EOD;
     }
 }
 
-class HtmlTestModel extends Model
+/**
+ * @property string name
+ * @property array types
+ * @property string description
+ */
+class HtmlTestModel extends DynamicModel
 {
-    public $name;
-    public $description;
+    public function init()
+    {
+        foreach (['name', 'types', 'description'] as $attribute) {
+            $this->defineAttribute($attribute);
+        }
+    }
 
     public function rules()
     {

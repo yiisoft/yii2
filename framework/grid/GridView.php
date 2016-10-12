@@ -356,7 +356,7 @@ class GridView extends BaseListView
 
     /**
      * Renders the caption element.
-     * @return bool|string the rendered caption element or `false` if no caption element should be rendered.
+     * @return boolean|string the rendered caption element or `false` if no caption element should be rendered.
      */
     public function renderCaption()
     {
@@ -369,7 +369,7 @@ class GridView extends BaseListView
 
     /**
      * Renders the column group HTML.
-     * @return bool|string the column group HTML or `false` if no column group should be rendered.
+     * @return boolean|string the column group HTML or `false` if no column group should be rendered.
      */
     public function renderColumnGroup()
     {

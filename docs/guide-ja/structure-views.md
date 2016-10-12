@@ -385,8 +385,8 @@ class PostController extends Controller
 
 最初のステップで、Yii はレイアウトの値とコンテキストモジュールを決定します。
 
-- コントローラの [[yii\base\Controller::layout]] プロパティが null でないときは、それをレイアウトの値として使い、コントローラの [[yii\base\Controller::module|モジュール]] をコンテキストモジュールとして使う。
-- [[yii\base\Controller::layout|layout]] が null のときは、コントローラの祖先となっている全てのモジュール (アプリケーション自体も含む) を探して、[[yii\base\Module::layout|layout]] プロパティが null でない最初のモジュールを見つける。
+- コントローラの [[yii\base\Controller::layout]] プロパティが `null` でないときは、それをレイアウトの値として使い、コントローラの [[yii\base\Controller::module|モジュール]] をコンテキストモジュールとして使う。
+- [[yii\base\Controller::layout|layout]] が `null` のときは、コントローラの祖先となっている全てのモジュール (アプリケーション自体も含む) を探して、[[yii\base\Module::layout|layout]] プロパティが `null` でない最初のモジュールを見つける。
   見つかったモジュールとその [[yii\base\Module::layout|layout]] の値をコンテキストモジュールと選ばれたレイアウトの値とする。
   そのようなモジュールが見つからなかったときは、レイアウトは適用されないということを意味する。
 
@@ -587,7 +587,7 @@ $this->registerLinkTag([
 <link title="Yii ライブニューズ" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-[[yii\web\View::registerMetaTag()|registerMetaTags()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
+[[yii\web\View::registerMetaTag()|registerMetaTag()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
 
 
 ## ビューのイベント <span id="view-events"></span>
@@ -651,7 +651,7 @@ class SiteController extends Controller
 このようにすると、ディレクトリ `@app/views/site/pages` の下に `about` という名前のビューを作成したときに、次の URL によってこのビューを表示することが出来るようになります。
 
 ```
-http://localhost/index.php?r=site/page&view=about
+http://localhost/index.php?r=site%2Fpage&view=about
 ```
 
 `view` という `GET` パラメータが、どのビューがリクエストされているかを [[yii\web\ViewAction]] に教えます。

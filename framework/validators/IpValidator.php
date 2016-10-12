@@ -11,7 +11,6 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Json;
-use yii\helpers\StringHelper;
 use yii\web\JsExpression;
 
 /**
@@ -31,6 +30,9 @@ use yii\web\JsExpression;
  * ['ip_address', 'ip', 'ranges' => ['!192.168.0.0/24', 'any']], // any IP is allowed except IP in the specified subnet
  * ['ip_address', 'ip', 'expandIPv6' => true], // expands IPv6 address to a full notation format
  * ```
+ *
+ * @property array $ranges The IPv4 or IPv6 ranges that are allowed or forbidden. See [[setRanges()]] for
+ * detailed description.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
@@ -453,9 +455,10 @@ class IpValidator extends Validator
      *  - boolean: whether the string is negated
      *  - string: the string without negation (when the negation were present)
      */
-    private function parseNegatedRange ($string) {
+    private function parseNegatedRange($string)
+    {
         $isNegated = strpos($string, static::NEGATION_CHAR) === 0;
-        return [$isNegated, ($isNegated ? substr($string, strlen(static::NEGATION_CHAR)) : $string)];
+        return [$isNegated, $isNegated ? substr($string, strlen(static::NEGATION_CHAR)) : $string];
     }
 
     /**
@@ -468,7 +471,8 @@ class IpValidator extends Validator
      * @return array
      * @see networks
      */
-    private function prepareRanges($ranges) {
+    private function prepareRanges($ranges)
+    {
         $result = [];
         foreach ($ranges as $string) {
             list($isRangeNegated, $range) = $this->parseNegatedRange($string);
@@ -533,7 +537,7 @@ class IpValidator extends Validator
      * @param string $ip an IPv4 or IPv6 address
      * @param integer $cidr
      * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
-     * @return bool
+     * @return boolean
      */
     private function inRange($ip, $cidr, $range)
     {
@@ -554,10 +558,7 @@ class IpValidator extends Validator
         }
 
         $binNet = $this->ip2bin($net);
-        if (substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr) {
-            return true;
-        }
-        return false;
+        return substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr;
     }
 
     /**
@@ -608,7 +609,7 @@ class IpValidator extends Validator
             'ipv6' => (boolean)$this->ipv6,
             'ipParsePattern' => new JsExpression(Html::escapeJsRegularExpression($this->getIpParsePattern())),
             'negation' => $this->negation,
-            'subnet' => $this->subnet
+            'subnet' => $this->subnet,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;

@@ -32,6 +32,12 @@ use yii\console\Exception;
  * configured are different from web application, web application cache won't be cleared. In order to fix it please
  * duplicate web application cache components in console config. You can use any component names.
  *
+ * Both APC and OpCache aren't shared between PHP processes so flushing cache from command line has no effect on web.
+ * Flushing web cache could be either done by:
+ *
+ * - Putting a php file under web root and calling it via HTTP
+ * - Using [Cachetool](http://gordalina.github.io/cachetool/)
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -93,7 +99,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' =>  Yii::$app->get($name)->flush(),
+                'is_flushed' => Yii::$app->get($name)->flush(),
             ];
         }
 
@@ -117,7 +123,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' =>  Yii::$app->get($name)->flush(),
+                'is_flushed' => Yii::$app->get($name)->flush(),
             ];
         }
 
@@ -133,7 +139,7 @@ class CacheController extends Controller
      * ```
      *
      * @param string $db id connection component
-     * @return int exit code
+     * @return integer exit code
      * @throws Exception
      * @throws \yii\base\InvalidConfigException
      *

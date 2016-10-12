@@ -37,8 +37,8 @@ W powyższym przykładzie zarówno Smarty jak i Twig są gotowe do użycia w pli
 dodatkowo plik `composer.json` poprzez dopisanie w wymaganiach (`require`):
 
 ```
-"yiisoft/yii2-smarty": "*",
-"yiisoft/yii2-twig": "*",
+"yiisoft/yii2-smarty": "~2.0.0",
+"yiisoft/yii2-twig": "~2.0.0",
 ```
 Po zapisaniu pliku można zainstalować rozszerzenia uruchamiając komendę `composer update --prefer-dist` z konsoli.
 

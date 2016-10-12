@@ -176,20 +176,28 @@ class m150101_185401_create_news_table extends Migration
 
 バージョン 2.0.7 以降では、マイグレーション・コンソールがマイグレーションを生成する便利な方法を提供しています。
 
-マイグレーションの名前が `create_xxx` や `drop_xxx` などの特別な形式である場合は、
-生成されるマイグレーション・ファイルに追加のコードが書き込まれるのです。
+マイグレーションの名前が特別な形式である場合は、生成されるマイグレーション・ファイルに追加のコードが書き込まれます。
+例えば、`create_xxx_table` や `drop_xxx_table` であれば、テーブルの作成や削除をするコードが追加されます。
+以下で、この機能の全ての変種を説明します。
+
 
 ### テーブルの作成
 
 ```php
-yii migrate/create create_post
+yii migrate/create create_post_table
 ``` 
 
 上記のコマンドは、次のコードを生成します。
 
 ```php
-class m150811_220037_create_post extends Migration
+/**
+ * Handles the creation for table `post`.
+ */
+class m150811_220037_create_post_table extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post', [
@@ -197,6 +205,9 @@ class m150811_220037_create_post extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('post');
@@ -207,41 +218,57 @@ class m150811_220037_create_post extends Migration
 テーブルのフィールドも直接に生成したい場合は、`--fields` オプションでフィールドを指定します。
  
 ```php
-yii migrate/create create_post --fields=title:string,body:text
+yii migrate/create create_post_table --fields="title:string,body:text"
 ``` 
 
 これは、次のコードを生成します。
 
 ```php
-class m150811_220037_create_post extends Migration
+/**
+ * Handles the creation for table `post`.
+ */
+class m150811_220037_create_post_table extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post', [
             'id' => $this->primaryKey(),
             'title' => $this->string(),
-            'body' => $this->text()
+            'body' => $this->text(),
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('post');
     }
 }
+
 ```
 
 さらに多くのフィールド・パラメータを指定することも出来ます。
 
 ```php
-yii migrate/create create_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 これは、次のコードを生成します。
 
 ```php
-class m150811_220037_create_post extends Migration
+/**
+ * Handles the creation for table `post`.
+ */
+class m150811_220037_create_post_table extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post', [
@@ -251,6 +278,9 @@ class m150811_220037_create_post extends Migration
         ]);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
         $this->dropTable('post');
@@ -259,19 +289,137 @@ class m150811_220037_create_post extends Migration
 ```
 
 > Note: プライマリ・キーが自動的に追加されて、デフォルトでは `id` と名付けられます。
-> 別の名前を使いたい場合は、`--fields=name:primaryKey` のように、明示的に指定してください。
+> 別の名前を使いたい場合は、`--fields="name:primaryKey"` のように、明示的に指定してください。
+
+
+#### 外部キー
+
+バージョン 2.0.8 からは、`foreignKey` キーワードを使って外部キーを生成することができます。
+
+```php
+yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
+```
+
+これは、次のコードを生成します。
+
+```php
+/**
+ * Handles the creation for table `post`.
+ * Has foreign keys to the tables:
+ *
+ * - `user`
+ * - `category`
+ */
+class m160328_040430_create_post_table extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'author_id' => $this->integer()->notNull(),
+            'category_id' => $this->integer()->defaultValue(1),
+            'title' => $this->string(),
+            'body' => $this->text(),
+        ]);
+
+        // creates index for column `author_id`
+        $this->createIndex(
+            'idx-post-author_id',
+            'post',
+            'author_id'
+        );
+
+        // add foreign key for table `user`
+        $this->addForeignKey(
+            'fk-post-author_id',
+            'post',
+            'author_id',
+            'user',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `category_id`
+        $this->createIndex(
+            'idx-post-category_id',
+            'post',
+            'category_id'
+        );
+
+        // add foreign key for table `category`
+        $this->addForeignKey(
+            'fk-post-category_id',
+            'post',
+            'category_id',
+            'category',
+            'id',
+            'CASCADE'
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function down()
+    {
+        // drops foreign key for table `user`
+        $this->dropForeignKey(
+            'fk-post-author_id',
+            'post'
+        );
+
+        // drops index for column `author_id`
+        $this->dropIndex(
+            'idx-post-author_id',
+            'post'
+        );
+
+        // drops foreign key for table `category`
+        $this->dropForeignKey(
+            'fk-post-category_id',
+            'post'
+        );
+
+        // drops index for column `category_id`
+        $this->dropIndex(
+            'idx-post-category_id',
+            'post'
+        );
+
+        $this->dropTable('post');
+    }
+}
+```
+
+カラムの記述における `foreignKey` キーワードの位置によって、生成されるコードが変ることはありません。
+つまり、
+
+- `author_id:integer:notNull:foreignKey(user)`
+- `author_id:integer:foreignKey(user):notNull`
+- `author_id:foreignKey(user):integer:notNull`
+
+これらはすべて同じコードを生成します。
+
+`foreignKey` キーワードは括弧の中にパラメータを取ることが出来て、これが生成される外部キーの関連テーブルの名前になります。
+パラメータが渡されなかった場合は、テーブル名はカラム名から推測されます。
+
+上記の例で `author_id:integer:notNull:foreignKey(user)` は、`user` テーブルへの外部キーを持つ `author_id` という名前のカラムを生成します。
+一方、`category_id:integer:defaultValue(1):foreignKey` は、`category` テーブルへの外部キーを持つ `category_id` というカラムを生成します。
 
 
 ### テーブルを削除する
 
 ```php
-yii migrate/create drop_post --fields=title:string(12):notNull:unique,body:text
+yii migrate/create drop_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
 これは、次のコードを生成します。
 
 ```php
-class m150811_220037_drop_post extends Migration
+class m150811_220037_drop_post_table extends Migration
 {
     public function up()
     {
@@ -291,18 +439,18 @@ class m150811_220037_drop_post extends Migration
 
 ### カラムを追加する
 
-マイグレーションの名前が `add_xxx_to_yyy` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
+マイグレーションの名前が `add_xxx_column_to_yyy_table` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
 
 カラムを追加するためには、次のようにします。
 
 ```php
-yii migrate/create add_position_to_post --fields=position:integer
+yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ```
 
 これが次のコードを生成します。
 
 ```php
-class m150811_220037_add_position_to_post extends Migration
+class m150811_220037_add_position_column_to_post_table extends Migration
 {
     public function up()
     {
@@ -318,16 +466,16 @@ class m150811_220037_add_position_to_post extends Migration
 
 ### カラムを削除する
 
-マイグレーションの名前が `drop_xxx_from_yyy` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
+マイグレーションの名前が `drop_xxx_column_from_yyy_table` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
 
 ```php
-yii migrate/create drop_position_from_post --fields=position:integer
+yii migrate/create drop_position_column_from_post_table --fields="position:integer"
 ```
 
 これは、次のコードを生成します。
 
 ```php
-class m150811_220037_drop_position_from_post extends Migration
+class m150811_220037_drop_position_column_from_post_table extends Migration
 {
     public function up()
     {
@@ -343,34 +491,100 @@ class m150811_220037_drop_position_from_post extends Migration
 
 ### 中間テーブルを追加する
 
-マイグレーションの名前が `create_junction_xxx_and_yyy` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
+マイグレーションの名前が `create_junction_table_for_xxx_and_yyy_tables` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
 
 ```php
-yii create/migration create_junction_post_and_tag
+yii migrate/create create_junction_table_for_post_and_tag_tables --fields="created_at:dateTime"
 ```
 
 これは、次のコードを生成します。
 
 ```php
-class m150811_220037_create_junction_post_and_tag extends Migration
+/**
+ * Handles the creation for table `post_tag`.
+ * Has foreign keys to the tables:
+ *
+ * - `post`
+ * - `tag`
+ */
+class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post_tag', [
             'post_id' => $this->integer(),
             'tag_id' => $this->integer(),
-            'PRIMARY KEY(post_id, tag_id)'
+            'created_at' => $this->dateTime(),
+            'PRIMARY KEY(post_id, tag_id)',
         ]);
 
-        $this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
-        $this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+        // creates index for column `post_id`
+        $this->createIndex(
+            'idx-post_tag-post_id',
+            'post_tag',
+            'post_id'
+        );
 
-        $this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
-        $this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+        // add foreign key for table `post`
+        $this->addForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag',
+            'post_id',
+            'post',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `tag_id`
+        $this->createIndex(
+            'idx-post_tag-tag_id',
+            'post_tag',
+            'tag_id'
+        );
+
+        // add foreign key for table `tag`
+        $this->addForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag',
+            'tag_id',
+            'tag',
+            'id',
+            'CASCADE'
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
+        // drops foreign key for table `post`
+        $this->dropForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops index for column `post_id`
+        $this->dropIndex(
+            'idx-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops foreign key for table `tag`
+        $this->dropForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag'
+        );
+
+        // drops index for column `tag_id`
+        $this->dropIndex(
+            'idx-post_tag-tag_id',
+            'post_tag'
+        );
+
         $this->dropTable('post_tag');
     }
 }
@@ -454,6 +668,10 @@ class m150101_185401_create_news_table extends Migration
 * [[yii\db\Migration::dropForeignKey()|dropForeignKey()]]: 外部キーを削除
 * [[yii\db\Migration::createIndex()|createIndex()]]: インデックスを作成
 * [[yii\db\Migration::dropIndex()|dropIndex()]]: インデックスを削除
+* [[yii\db\Migration::addCommentOnColumn()|addCommentOnColumn()]]: カラムにコメントを追加
+* [[yii\db\Migration::dropCommentFromColumn()|dropCommentFromColumn()]]: カラムからコメントを削除
+* [[yii\db\Migration::addCommentOnTable()|addCommentOnTable()]]: テーブルにコメントを追加
+* [[yii\db\Migration::dropCommentFromTable()|dropCommentFromTable()]]: テーブルからコメントを削除
 
 > Info: [[yii\db\Migration]] は、データベースクエリメソッドを提供しません。
   これは、通常、データベースからのデータ取得については、メッセージを追加して表示する必要がないからです。
@@ -477,6 +695,9 @@ yii migrate
 コマンドを実行すると、まだ適用されていない全てのマイグレーションが一覧表示されます。
 リストされたマイグレーションを適用することをあなたが確認すると、タイムスタンプの値の順に、一つずつ、すべての新しいマイグレーションクラスの `up()` または `safeUp()` メソッドが実行されます。
 マイグレーションのどれかが失敗した場合は、コマンドは残りのマイグレーションを適用せずに終了します。
+
+> Tip: あなたのサーバでコマンドラインを使用できない場合は
+> [web shell](https://github.com/samdark/yii2-webshell) エクステンションを使ってみてください。
 
 適用が成功したマイグレーションの一つ一つについて、`migration` という名前のデータベーステーブルに行が挿入されて、マイグレーションの成功が記録されます。
 この記録によって、マイグレーションツールは、どのマイグレーションが適用され、どのマイグレーションが適用されていないかを特定することが出来ます。
@@ -603,7 +824,7 @@ yii migrate/mark 1392853618                         # UNIX タイムスタンプ
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`)。
   マイグレーション・コードを生成するためのテンプレート・ファイルを指定します。
   詳細は "[マイグレーションを生成する](#generating-migrations)" を参照してください。

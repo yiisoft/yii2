@@ -69,6 +69,7 @@ class Migration extends Component implements MigrationInterface
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
         $this->db->getSchema()->refresh();
+        $this->db->enableSlaves = false;
     }
 
     /**
@@ -152,7 +153,7 @@ class Migration extends Component implements MigrationInterface
      * This method contains the logic to be executed when removing this migration.
      * This method differs from [[down()]] in that the DB logic implemented here will
      * be enclosed within a DB transaction.
-     * Child classes may implement this method instead of [[up()]] if the DB logic
+     * Child classes may implement this method instead of [[down()]] if the DB logic
      * needs to be within a transaction.
      * @return boolean return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
@@ -258,6 +259,11 @@ class Migration extends Component implements MigrationInterface
         echo "    > create table $table ...";
         $time = microtime(true);
         $this->db->createCommand()->createTable($table, $columns, $options)->execute();
+        foreach ($columns as $column => $type) {
+            if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
+                $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+            }
+        }
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -311,6 +317,9 @@ class Migration extends Component implements MigrationInterface
         echo "    > add column $column $type to table $table ...";
         $time = microtime(true);
         $this->db->createCommand()->addColumn($table, $column, $type)->execute();
+        if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
+            $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+        }
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -354,6 +363,9 @@ class Migration extends Component implements MigrationInterface
         echo "    > alter column $column in table $table to $type ...";
         $time = microtime(true);
         $this->db->createCommand()->alterColumn($table, $column, $type)->execute();
+        if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
+            $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
+        }
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 
@@ -441,9 +453,69 @@ class Migration extends Component implements MigrationInterface
      */
     public function dropIndex($name, $table)
     {
-        echo "    > drop index $name ...";
+        echo "    > drop index $name on $table ...";
         $time = microtime(true);
         $this->db->createCommand()->dropIndex($name, $table)->execute();
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+
+    /**
+     * Builds and execute a SQL statement for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        echo "    > add comment on column $column ...";
+        $time = microtime(true);
+        $this->db->createCommand()->addCommentOnColumn($table, $column, $comment)->execute();
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+
+    /**
+     * Builds a SQL statement for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        echo "    > add comment on table $table ...";
+        $time = microtime(true);
+        $this->db->createCommand()->addCommentOnTable($table, $comment)->execute();
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+
+    /**
+     * Builds and execute a SQL statement for dropping comment from column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        echo "    > drop comment from column $column ...";
+        $time = microtime(true);
+        $this->db->createCommand()->dropCommentFromColumn($table, $column)->execute();
+        echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
+    }
+
+    /**
+     * Builds a SQL statement for dropping comment from table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        echo "    > drop comment from table $table ...";
+        $time = microtime(true);
+        $this->db->createCommand()->dropCommentFromTable($table)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
 }

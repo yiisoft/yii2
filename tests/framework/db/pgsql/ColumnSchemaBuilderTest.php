@@ -1,15 +1,18 @@
 <?php
+
 namespace yiiunit\framework\db\pgsql;
 
-use yii\db\pgsql\ColumnSchemaBuilder;
-use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
+use yii\db\ColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for PostgreSQL
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
+ * @group db
+ * @group pgsql
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    public $driverName = 'pgsql';
+
     /**
      * @param string $type
      * @param integer $length
@@ -17,21 +20,6 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
-    }
-
-    /**
-     * @return array
-     */
-    public function unsignedProvider()
-    {
-        return [
-            ['integer', Schema::TYPE_INTEGER, null, [
-                ['unsigned'],
-            ]],
-            ['integer(10)', Schema::TYPE_INTEGER, 10, [
-                ['unsigned'],
-            ]],
-        ];
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 }

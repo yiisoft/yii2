@@ -13,6 +13,7 @@ use yii\di\Instance;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
+use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
 use yii\validators\NumberValidator;
 
@@ -20,6 +21,7 @@ use yii\validators\NumberValidator;
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @group di
  */
 class ContainerTest extends TestCase
 {
@@ -167,6 +169,58 @@ class ContainerTest extends TestCase
         list($request, $response) = Yii::$container->invoke($myFunc);
         $this->assertEquals($request, Yii::$app->request);
         $this->assertEquals($response, Yii::$app->response);
+    }
 
+    public function testAssociativeInvoke()
+    {
+        $this->mockApplication([
+            'components' => [
+                'qux' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongApp',
+                ],
+                'qux2' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongAppQux2',
+                ],
+            ]
+        ]);
+        $closure = function($a, $x = 5, $b) {
+            return $a > $b;
+        };
+        $this->assertFalse(Yii::$container->invoke($closure, ['b' => 5, 'a' => 1]));
+        $this->assertTrue(Yii::$container->invoke($closure, ['b' => 1, 'a' => 5]));
+    }
+
+    public function testResolveCallableDependencies()
+    {
+        $this->mockApplication([
+            'components' => [
+                'qux' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongApp',
+                ],
+                'qux2' => [
+                    'class' => 'yiiunit\framework\di\stubs\Qux',
+                    'a' => 'belongAppQux2',
+                ],
+            ]
+        ]);
+        $closure = function($a, $b) {
+            return $a > $b;
+        };
+        $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['b' => 5, 'a' => 1]));
+        $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['a' => 1, 'b' => 5]));
+        $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, [1, 5]));
+    }
+
+    public function testOptionalDependencies()
+    {
+        $container = new Container();
+        // Test optional unresolvable dependency.
+        $closure = function(QuxInterface $test = null) {
+            return $test;
+        };
+        $this->assertNull($container->invoke($closure));
     }
 }

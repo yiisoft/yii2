@@ -453,7 +453,7 @@ class DbManager extends BaseManager
      */
     public function getRolesByUser($userId)
     {
-        if (empty($userId)) {
+        if (!isset($userId) || $userId === '') {
             return [];
         }
 
@@ -467,6 +467,29 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
+        return $roles;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getChildRoles($roleName)
+    {
+        $role = $this->getRole($roleName);
+
+        if (is_null($role)) {
+            throw new InvalidParamException("Role \"$roleName\" not found.");
+        }
+
+        /** @var $result Item[] */
+        $this->getChildrenRecursive($roleName, $this->getChildrenList(), $result);
+
+        $roles = [$roleName => $role];
+
+        $roles += array_filter($this->getRoles(), function (Role $roleItem) use ($result) {
+            return array_key_exists($roleItem->name, $result);
+        });
+
         return $roles;
     }
 
@@ -674,6 +697,15 @@ class DbManager extends BaseManager
         }
 
         return $assignments;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function canAddChild($parent, $child)
+    {
+        return !$this->detectLoop($parent, $child);
     }
 
     /**
@@ -892,7 +924,7 @@ class DbManager extends BaseManager
     {
         if (!$this->supportsCascadeUpdate()) {
             $this->db->createCommand()
-                ->update($this->itemTable, ['ruleName' => null])
+                ->update($this->itemTable, ['rule_name' => null])
                 ->execute();
         }
 

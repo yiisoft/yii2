@@ -43,7 +43,7 @@ a continuación:
     "require": {
         // ... otras dependencias
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -149,7 +149,7 @@ muestra el archivo `composer.json` para la extensión `yiisoft/yii2-imagine`:
 
     // dependencias del paquete
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -420,6 +420,8 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   [Faker](https://github.com/fzaninotto/Faker) y generar datos automáticamente.
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii): proporciona un generador de código basado den Web altamente
   extensible y que puede usarse para generar modelos, formularios, módulos, CRUD, etc. rápidamente.
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine): proporciona funciones comunes de manipulación de
   imágenes basadas en [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui): proporciona un conjunto de widgets que encapsulan las

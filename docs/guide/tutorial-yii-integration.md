@@ -82,13 +82,29 @@ take two steps: install Yii, and bootstrap Yii.
 If the third-party system uses Composer to manage its dependencies, you can simply run the following commands
 to install Yii:
 
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
+    composer global require "fxp/composer-asset-plugin:^1.2.0"
     composer require yiisoft/yii2
     composer install
 
 The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 which allows managing bower and npm package dependencies through Composer. Even if you only want to use the database
 layer or other non-asset related features of Yii, this is required to install the Yii composer package.
+
+If you want to use the [Asset publishing feature of Yii](structure-assets.md) you should also add the following configuration
+to the `extra` section in your `composer.json`:
+
+```json
+{
+    ...
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+```
+
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
 
@@ -137,7 +153,7 @@ require(__DIR__ . '/../components/Yii.php');
 
 // configuration for Yii 2 application
 $yii2Config = require(__DIR__ . '/../config/yii2/web.php');
-new yii\web\Application($yii2Config); // Do NOT call run()
+new yii\web\Application($yii2Config); // Do NOT call run(), yii2 app is only used as service locator
 
 // configuration for Yii 1 application
 $yii1Config = require(__DIR__ . '/../config/yii1/main.php');
@@ -161,7 +177,7 @@ class Yii extends \yii\BaseYii
 
 Yii::$classMap = include($yii2path . '/classes.php');
 // register Yii 2 autoloader via Yii 1
-Yii::registerAutoloader(['Yii', 'autoload']);
+Yii::registerAutoloader(['yii\BaseYii', 'autoload']);
 // create the dependency injection container
 Yii::$container = new yii\di\Container;
 ```

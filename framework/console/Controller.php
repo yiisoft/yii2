@@ -29,6 +29,10 @@ use yii\helpers\Console;
  *
  * @property string $help This property is read-only.
  * @property string $helpSummary This property is read-only.
+ * @property array $passedOptionValues The properties corresponding to the passed options. This property is
+ * read-only.
+ * @property array $passedOptions The names of the options passed during execution. This property is
+ * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -47,7 +51,11 @@ class Controller extends \yii\base\Controller
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
-
+    /**
+     * @var boolean whether to display help information about current command.
+     * @since 2.0.10
+     */
+    public $help;
     /**
      * @var array the options passed during execution.
      */
@@ -83,11 +91,22 @@ class Controller extends \yii\base\Controller
         if (!empty($params)) {
             // populate options here so that they are available in beforeAction().
             $options = $this->options($id === '' ? $this->defaultAction : $id);
+            if (isset($params['_aliases'])) {
+                $optionAliases = $this->optionAliases();
+                foreach ($params['_aliases'] as $name => $value) {
+                    if (array_key_exists($name, $optionAliases)) {
+                        $params[$optionAliases[$name]] = $value;
+                    } else {
+                        throw new Exception(Yii::t('yii', 'Unknown alias: -{name}', ['name' => $name]));
+                    }
+                }
+                unset($params['_aliases']);
+            }
             foreach ($params as $name => $value) {
                 if (in_array($name, $options, true)) {
                     $default = $this->$name;
                     if (is_array($default)) {
-                        $this->$name = preg_split('/\s*,\s*/', $value);
+                        $this->$name = preg_split('/\s*,\s*(?![^()]*\))/', $value);
                     } elseif ($default !== null) {
                         settype($value, gettype($default));
                         $this->$name = $value;
@@ -100,6 +119,10 @@ class Controller extends \yii\base\Controller
                     throw new Exception(Yii::t('yii', 'Unknown option: --{name}', ['name' => $name]));
                 }
             }
+        }
+        if ($this->help) {
+            $route = $this->id . '/' . $id;
+            return Yii::$app->runAction('help', [$route]);
         }
         return parent::runAction($id, $params);
     }
@@ -182,7 +205,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public function stdout($string)
     {
@@ -207,7 +230,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public function stderr($string)
     {
@@ -231,6 +254,19 @@ class Controller extends \yii\base\Controller
      *  - validator: a callable function to validate input. The function must accept two parameters:
      *      - $input: the user input to validate
      *      - $error: the error value passed by reference if validation failed.
+     * 
+     * An example of how to use the prompt method with a validator function.
+     * 
+     * ```php
+     * $code = $this->prompt('Enter 4-Chars-Pin', ['required' => true, 'validator' => function($input, &$error) {
+     *     if (strlen($input) !== 4) {
+     *         $error = 'The Pin must be exactly 4 chars!';
+     *         return false;
+     *     }
+     *     return true;
+     * });
+     * ```
+     * 
      * @return string the user input
      */
     public function prompt($text, $options = [])
@@ -288,7 +324,24 @@ class Controller extends \yii\base\Controller
     public function options($actionID)
     {
         // $actionId might be used in subclasses to provide options specific to action id
-        return ['color', 'interactive'];
+        return ['color', 'interactive', 'help'];
+    }
+
+    /**
+     * Returns option alias names.
+     * Child classes may override this method to specify alias options.
+     *
+     * @return array the options alias names valid for the action
+     * where the keys is alias name for option and value is option name.
+     *
+     * @since 2.0.8
+     * @see options($actionID)
+     */
+    public function optionAliases()
+    {
+        return [
+            'h' => 'help'
+        ];
     }
 
     /**

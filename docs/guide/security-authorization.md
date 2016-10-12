@@ -178,7 +178,7 @@ During access checking, if the user is NOT the post creator, he/she will be cons
 
 Both roles and permissions can be organized in a hierarchy. In particular, a role may consist of other roles or permissions;
 and a permission may consist of other permissions. Yii implements a *partial order* hierarchy which includes the
-more special *tree* hierarchy. While a role can contain a permission, it is not true vice versa.
+more special *tree* hierarchy. While a role can contain a permission, it is not `true` vice versa.
 
 
 ### Configuring RBAC <span id="configuring-rbac"></span>
@@ -227,6 +227,9 @@ return [
     ],
 ];
 ```
+> Note: If you are using yii2-basic-app template, there is a `config/console.php` configuration file where the
+  `authManager` needs to be declared additionally to `config/web.php`.
+> In case of yii2-advanced-app the `authManager` should be declared only once in `common/config/main.php`.
 
 `DbManager` uses four database tables to store its data: 
 
@@ -299,6 +302,9 @@ class RbacController extends Controller
     }
 }
 ```
+
+> Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
+  and change namespace to `console/controllers`.
 
 After executing the command with `yii rbac/init` we'll get the following hierarchy:
 
@@ -433,6 +439,50 @@ In case of Jane it is a bit simpler since she is an admin:
 
 ![Access check](images/rbac-access-check-3.png "Access check")
 
+Inside your controller there are a few ways to implement authorization. If you want granular permissions that
+separate access to adding and deleting, then you need to check access for each action. You can either use the
+above condition in each action method, or use [[yii\filters\AccessControl]]:
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => AccessControl::className(),
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['index'],
+                    'roles' => ['managePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['view'],
+                    'roles' => ['viewPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['create'],
+                    'roles' => ['createPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['update'],
+                    'roles' => ['updatePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['delete'],
+                    'roles' => ['deletePost'],
+                ],
+            ],
+        ],
+    ];
+}
+```
+
+If all the CRUD operations are managed together then it's a good idea to use a single permission, like `managePost`, and
+check it in [[yii\web\Controller::beforeAction()]].
 
 ### Using Default Roles <span id="using-default-roles"></span>
 
@@ -443,8 +493,8 @@ A default role is usually associated with a rule which determines if the role ap
 
 Default roles are often used in applications which already have some sort of role assignment. For example, an application
 may have a "group" column in its user table to represent which privilege group each user belongs to.
-If each privilege group can be mapped to a RBAC role, you can use the default role feature to automatically
-assign each user to a RBAC role. Let's use an example to show how this can be done.
+If each privilege group can be mapped to an RBAC role, you can use the default role feature to automatically
+assign each user to an RBAC role. Let's use an example to show how this can be done.
 
 Assume in the user table, you have a `group` column which uses 1 to represent the administrator group and 2 the author group.
 You plan to have two RBAC roles `admin` and `author` to represent the permissions for these two groups, respectively.
@@ -497,7 +547,7 @@ $auth->addChild($admin, $author);
 
 Note that in the above, because "author" is added as a child of "admin", when you implement the `execute()` method
 of the rule class, you need to respect this hierarchy as well. That is why when the role name is "author",
-the `execute()` method will return true if the user group is either 1 or 2 (meaning the user is in either "admin"
+the `execute()` method will return `true` if the user group is either 1 or 2 (meaning the user is in either "admin"
 group or "author" group).
 
 Next, configure `authManager` by listing the two roles in [[yii\rbac\BaseManager::$defaultRoles]]:
@@ -516,6 +566,6 @@ return [
 ```
 
 Now if you perform an access check, both of the `admin` and `author` roles will be checked by evaluating
-the rules associated with them. If the rule returns true, it means the role applies to the current user.
+the rules associated with them. If the rule returns `true`, it means the role applies to the current user.
 Based on the above rule implementation, this means if the `group` value of a user is 1, the `admin` role
 would apply to the user; and if the `group` value is 2, the `author` role would apply.

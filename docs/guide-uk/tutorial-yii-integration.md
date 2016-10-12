@@ -84,7 +84,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 Якщо стороння система використовує управління залежностями Composer, ви можете встановити Yii за допомогою наступних команд:
 
 ```bash
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
+    composer global require "fxp/composer-asset-plugin:^1.2.0"
     composer require yiisoft/yii2
     composer install
 ```
@@ -92,6 +92,22 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 Перша команда встановлює [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/),
 який дозволяє керувати залежностями пакунків Bower і NPM через Composer. Навіть якщо ви захочете використовувати тільки
 прошарки бази даних або інші, не повʼязані ресурсами, можливості Yii, вам все-одно необхідно встановити даний пакунок composer.
+
+Якщо ви бажаєте використовувати [можливість публікації ресурсів Yii](structure-assets.md),
+вам також слід додати наступну конфігурацію до розділу `extra` вашого файлу `composer.json`:
+
+```json
+{
+    ...
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+```
+
 Дивіться також загальний [розділ про встановлення Yii](start-installation.md#installing-via-composer), для отримання додаткової
 інформації про Composer та проблеми, які можуть виникнути під час встановлення.
 
@@ -163,7 +179,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// реєстрація автозавантажувача Yii2 через Yii1
+// реєстрація автозавантажувача Yii 2 через Yii 1
 Yii::registerAutoloader(['Yii', 'autoload']);
 // створення контейнера впровадження залежностей
 Yii::$container = new yii\di\Container;

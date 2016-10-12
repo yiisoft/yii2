@@ -47,11 +47,11 @@ class Schema extends \yii\db\Schema
         'datetime' => self::TYPE_DATETIME,
         'time' => self::TYPE_TIME,
         // character strings
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
         // unicode character strings
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nvarchar' => self::TYPE_STRING,
         'ntext' => self::TYPE_TEXT,
         // binary strings
@@ -152,7 +152,13 @@ class Schema extends \yii\db\Schema
     {
         $parts = explode('.', str_replace(['[', ']'], '', $name));
         $partCount = count($parts);
-        if ($partCount === 3) {
+        if ($partCount === 4) {
+            // server name, catalog name, schema name and table name passed
+            $table->catalogName = $parts[1];
+            $table->schemaName = $parts[2];
+            $table->name = $parts[3];
+            $table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
+        } elseif ($partCount === 3) {
             // catalog name, schema name and table name passed
             $table->catalogName = $parts[0];
             $table->schemaName = $parts[1];
@@ -425,13 +431,5 @@ SQL;
             $result[$row['index_name']][] = $row['field_name'];
         }
         return $result;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function createColumnSchemaBuilder($type, $length = null)
-    {
-        return new ColumnSchemaBuilder($type, $length);
     }
 }

@@ -21,6 +21,9 @@ Yii DAO из коробки поддерживает следующие базы
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): версии 2008 или выше.
 
 
+> Note: Новая версия pdo_oci для PHP 7 на данный момент существует только в форме исходного кода. Используйте
+  [инструкции сообщества по компиляции](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268).
+
 ## Создание подключения к базе данных <span id="creating-db-connections"></span>
 
 Для доступа к базе данных, вы сначала должны подключится к ней, создав экземпляр класса [[yii\db\Connection]]:
@@ -155,7 +158,7 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
 
 * [[yii\db\Command::bindValue()|bindValue()]]: привязка одного параметра по значению 
 * [[yii\db\Command::bindValues()|bindValues()]]: привязка нескольких параметров в одном вызове
-* [[yii\db\Command::bindParam()|bindParam()]]: похоже на [[yii\db\Command::bindValue()|bindValue()]] но привязка
+* [[yii\db\Command::bindParam()|bindParam()]]: похоже на [[yii\db\Command::bindValue()|bindValue()]], но привязка
   происходит по ссылке.
 
 Следующий пример показывает альтернативный путь привязки параметров:
@@ -313,7 +316,7 @@ Yii::$app->db->transaction(function($db) {
 });
 ```
 
-Код выше эквивалентен приведённму ниже. Разница в том, что в данном случае мы получаем больше контроля над обработкой
+Код выше эквивалентен приведённому ниже. Разница в том, что в данном случае мы получаем больше контроля над обработкой
 ошибок:
 
 ```php

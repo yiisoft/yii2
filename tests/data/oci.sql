@@ -1,7 +1,5 @@
 /**
- * This is the database schema for testing PostgreSQL support of yii Active Record.
- * To test this feature, you need to create a database named 'yiitest' on 'localhost'
- * and create an account 'postgres/postgres' which owns this test database.
+ * This is the database schema for testing Oracle support of Yii Active Record.
  */
 
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "composite_fk"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
@@ -15,6 +13,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE "customer"'; EXCEPTION WHEN OTHERS THEN IF S
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "profile"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "type"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "null_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "negative_default_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "constraints"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bool_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "animal"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
@@ -131,6 +130,14 @@ CREATE TABLE "null_values" (
   CONSTRAINT "null_values_PK" PRIMARY KEY ("id") ENABLE
 );
 CREATE SEQUENCE "null_values_SEQ";
+
+CREATE TABLE "negative_default_values" (
+    "smallint_col" smallint default -123,
+    "int_col" integer default -123,
+    "bigint_col" integer default -123,
+    "float_col" double precision default -12345.6789,
+    "numeric_col" decimal(5,2) default -33.22
+);
 
 CREATE TABLE "type" (
   "int_col" integer NOT NULL,

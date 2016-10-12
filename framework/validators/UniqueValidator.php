@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\db\ActiveRecordInterface;
+use yii\helpers\Inflector;
 
 /**
  * UniqueValidator validates that the attribute value is unique in the specified database table.
@@ -58,6 +59,27 @@ class UniqueValidator extends Validator
      * is the [[\yii\db\Query|Query]] object that you can modify in the function.
      */
     public $filter;
+    /**
+     * @var string the user-defined error message. When validating single attribute, it may contain
+     * the following placeholders which will be replaced accordingly by the validator:
+     *
+     * - `{attribute}`: the label of the attribute being validated
+     * - `{value}`: the value of the attribute being validated
+     *
+     * When validating mutliple attributes, it may contain the following placeholders:
+     *
+     * - `{attributes}`: the labels of the attributes being validated.
+     * - `{values}`: the values of the attributes being validated.
+     *
+     */
+    public $message;
+    /**
+     * @var string
+     * @since 2.0.9
+     * @deprecated Deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
+     * to setup custom message for multiple target attributes.
+     */
+    public $comboNotUnique;
 
 
     /**
@@ -66,7 +88,17 @@ class UniqueValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
+        if ($this->message !== null) {
+            return;
+        }
+        if (is_array($this->targetAttribute) && count($this->targetAttribute) > 1) {
+            // fallback for deprecated `comboNotUnique` property - use it as message if is set
+            if ($this->comboNotUnique === null) {
+                $this->message = Yii::t('yii', 'The combination {values} of {attributes} has already been taken.');
+            } else {
+                $this->message = $this->comboNotUnique;
+            }
+        } else {
             $this->message = Yii::t('yii', '{attribute} "{value}" has already been taken.');
         }
     }
@@ -125,7 +157,7 @@ class UniqueValidator extends Validator
                     $exists = $model->getOldPrimaryKey() != $model->getPrimaryKey();
                 } else {
                     // non-primary key, need to exclude the current record based on PK
-                    $exists = $models[0]->getPrimaryKey() != $model->getOldPrimaryKey();
+                    $exists = reset($models)->getPrimaryKey() != $model->getOldPrimaryKey();
                 }
             } else {
                 $exists = $n > 1;
@@ -133,7 +165,35 @@ class UniqueValidator extends Validator
         }
 
         if ($exists) {
-            $this->addError($model, $attribute, $this->message);
+            if (count($targetAttribute) > 1) {
+                $this->addComboNotUniqueError($model, $attribute);
+            } else {
+                $this->addError($model, $attribute, $this->message);
+            }
         }
+    }
+
+    /**
+     * Builds and adds [[comboNotUnique]] error message to the specified model attribute.
+     * @param \yii\base\Model $model the data model.
+     * @param string $attribute the name of the attribute.
+     */
+    private function addComboNotUniqueError($model, $attribute)
+    {
+        $attributeCombo = [];
+        $valueCombo = [];
+        foreach ($this->targetAttribute as $key => $value) {
+            if(is_int($key)) {
+                $attributeCombo[] = $model->getAttributeLabel($value);
+                $valueCombo[] = '"' . $model->$value . '"';
+            } else {
+                $attributeCombo[] = $model->getAttributeLabel($key);
+                $valueCombo[] = '"' . $model->$key . '"';
+            }
+        }
+        $this->addError($model, $attribute, $this->message, [
+            'attributes' => Inflector::sentence($attributeCombo),
+            'values' => implode('-', $valueCombo)
+        ]);
     }
 }

@@ -190,6 +190,7 @@ Yii は二種類の権限付与マネージャを提供しています。すな�
 前者は権限付与データを保存するのに PHP スクリプトファイルを使いますが、後者は権限付与データをデータベースに保存します。
 あなたのアプリケーションが非常に動的なロールと許可の管理を必要とするのでなければ、前者を使うことを考慮するのが良いでしょう。
 
+
 #### `PhpManager` を使用する <span id="using-php-manager"></span>
 
 次のコードは、アプリケーションの構成情報で [[yii\rbac\PhpManager]] クラスを使って `authManager` を構成する方法を示すものです。
@@ -211,6 +212,7 @@ return [
 デフォルトでは、[[yii\rbac\PhpManager]] は RBAC データを `@app/rbac/` ディレクトリの下のファイルに保存します。
 権限の階層をオンラインで変更する必要がある場合は、必ず、ウェブサーバのプロセスがこのディレクトリとその中の全てのファイルに対する書き込み権限を有するようにしてください。
 
+
 #### `DbManager` を使用する <span id="using-db-manager"></span>
 
 次のコードは、アプリケーションの構成情報で [[yii\rbac\DbManager]] クラスを使って `authManager` を構成する方法を示すものです。
@@ -227,6 +229,9 @@ return [
     ],
 ];
 ```
+
+> Note: yii2-basic-app テンプレートを使おうとする場合は、`config/web.php` に加えて、`config/console.php` 構成ファイルにおいても `uathManager` を宣言する必要があります。
+> yii2-advanced-app の場合は、`authManager` は `common/config/main.php` で一度だけ宣言されなければなりません。
 
 `DbManager` は四つのデータベーステーブルを使ってデータを保存します。
 
@@ -299,6 +304,9 @@ class RbacController extends Controller
     }
 }
 ```
+
+> Note: アドバンストテンプレートを使おうとするときは、`RbacController` を `console/controllers`
+ディレクトリの中に置いて、名前空間を `console/controllers` に変更する必要があります。
 
 `yii rbac/init` によってコマンドを実行した後には、次の権限階層が得られます。
 
@@ -430,6 +438,51 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 Jane の場合は、彼女が管理者であるため、少し簡単になります。
 
 ![アクセスチェック](images/rbac-access-check-3.png "アクセスチェック")
+
+コントローラ内で権限付与を実装するのには、いくつかの方法があります。
+追加と削除に対するアクセス権を分離する細分化された許可が必要な場合は、それぞれのアクションに対してアクセス権をチェックする必要があります。
+各アクションメソッドの中で上記の条件を使用するか、または [[yii\filters\AccessControl]] を使います。
+
+```php
+public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => AccessControl::className(),
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['index'],
+                    'roles' => ['managePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['view'],
+                    'roles' => ['viewPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['create'],
+                    'roles' => ['createPost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['update'],
+                    'roles' => ['updatePost'],
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['delete'],
+                    'roles' => ['deletePost'],
+                ],
+            ],
+        ],
+    ];
+}
+```
+
+全ての CRUD 操作がまとめて管理される場合は、`managePost` のような単一の許可を使い、
+[[yii\web\Controller::beforeAction()]] の中でそれをチェックするのが良いアイデアです。
 
 ### デフォルトロールを使う <span id="using-default-roles"></span>
 

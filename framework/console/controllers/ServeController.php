@@ -47,7 +47,7 @@ class ServeController extends Controller
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *
-     * @return int
+     * @return integer
      */
     public function actionIndex($address = 'localhost')
     {
@@ -91,6 +91,19 @@ class ServeController extends Controller
             'docroot',
             'router',
             'port',
+        ]);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            't' => 'docroot',
+            'p' => 'port',
+            'r' => 'router',
         ]);
     }
 

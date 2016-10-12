@@ -367,7 +367,7 @@ class Command extends Component
      * This method is best used when only the first row of result is needed for a query.
      * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
-     * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+     * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
      * @throws Exception execution failed
      */
@@ -379,7 +379,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|null|boolean the value of the first column in the first row of the query result.
+     * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */
@@ -752,6 +752,66 @@ class Command extends Component
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
         $sql = $this->db->getQueryBuilder()->checkIntegrity($check, $schema, $table);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        $sql = $this->db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        $sql = $this->db->getQueryBuilder()->addCommentOnTable($table, $comment);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for dropping comment from column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCommentFromColumn($table, $column);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for dropping comment from table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCommentFromTable($table);
 
         return $this->setSql($sql);
     }

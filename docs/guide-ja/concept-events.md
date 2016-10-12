@@ -11,7 +11,7 @@ Yiiはイベントをサポートするために、 [[yii\base\Component]] と�
 
 
 イベントハンドラ <span id="event-handlers"></span>
---------------
+----------------
 
 イベントハンドラとは、関連するイベントがトリガされたときに実行される、 [PHP コールバック](http://www.php.net/manual/ja/language.types.callable.php)
 です。次のコールバックのいずれも使用可能です:
@@ -37,7 +37,7 @@ function ($event) {
 
 
 イベントハンドラのアタッチ <span id="attaching-event-handlers"></span>
-------------------------
+--------------------------
 
 イベントハンドラは [[yii\base\Component::on()]] を呼び出すことでアタッチできます。たとえば:
 
@@ -76,11 +76,11 @@ function function_name($event) {
 ```
 
 イベントハンドラの順序
--------------------
+----------------------
 
 ひとつのイベントには、ひとつだけでなく複数のハンドラをアタッチすることができます。イベントがトリガされると、アタッチされたハンドラは、
 それらがイベントにアタッチされた順序どおりに呼び出されます。あるハンドラがその後に続くハンドラの呼び出しを停止する必要がある場合は、
-`$event` パラメータの [[yii\base\Event::handled]] プロパティを true に設定します:
+`$event` パラメータの [[yii\base\Event::handled]] プロパティを `true` に設定します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -90,7 +90,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 デフォルトでは、新たに接続されたハンドラは、イベントの既存のハンドラのキューに追加されます。その結果、
 イベントがトリガされたとき、そのハンドラは一番最後に呼び出されます。もし、そのハンドラが最初に呼び出されるよう、
-ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に false を渡します:
+ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に `false` を渡します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -99,7 +99,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 ```
 
 イベントのトリガ <span id="triggering-events"></span>
------------------
+----------------
 
 イベントは、 [[yii\base\Component::trigger()]] メソッドを呼び出すことでトリガされます。このメソッドには **イベント名** が必須で、
 オプションで、イベントハンドラに渡されるパラメータを記述したイベントオブジェクトを渡すこともできます。たとえば:
@@ -163,7 +163,7 @@ class Mailer extends Component
 
 
 イベントハンドラのデタッチ <span id="detaching-event-handlers"></span>
-------------------------
+--------------------------
 
 イベントからハンドラを取り外すには、 [[yii\base\Component::off()]] メソッドを呼び出します。たとえば:
 
@@ -184,7 +184,7 @@ $foo->off(Foo::EVENT_HELLO, $anonymousFunction);
 一般的には、イベントにアタッチされたときどこかに保存してある場合を除き、無名関数を取り外そうとはしないでください。
 上記の例は、無名関数は変数 `$anonymousFunction` として保存されていたものとしています。
 
-イベントからすべてのハンドラを取り外すには、単純に、第 2 パラメータを指定せずに [[yii\base\Component::off()]] を呼び出します。
+イベントから *すべて* のハンドラを取り外すには、単純に、第 2 パラメータを指定せずに [[yii\base\Component::off()]] を呼び出します。
 
 ```php
 $foo->off(Foo::EVENT_HELLO);
@@ -192,7 +192,7 @@ $foo->off(Foo::EVENT_HELLO);
 
 
 クラスレベル・イベントハンドラ <span id="class-level-event-handlers"></span>
---------------------------
+------------------------------
 
 ここまでの項では、 *インスタンスレベル* でのイベントにハンドラをアタッチする方法を説明してきました。
 場合によっては、特定のインスタンスだけではなく、クラスのすべてのインスタンスがトリガした
@@ -227,7 +227,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // "app\models\Foo" を表示
+    var_dump($event->sender);  // "null" を表示
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
@@ -320,7 +320,7 @@ Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 
 
 グローバル・イベント <span id="global-events"></span>
--------------
+--------------------
 
 Yiiは、実際に上記のイベントメカニズムに基づいたトリックである、いわゆる *グローバル・イベント* をサポートしています。
 グローバル・イベントは、 [アプリケーション](structure-applications.md) インスタンス自身などの、グローバルにアクセス可能なシングルトンを必要とします。

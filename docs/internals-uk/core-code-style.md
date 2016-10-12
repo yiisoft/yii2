@@ -354,7 +354,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
     <?php
     /**
      * Returns the errors for all attributes or a single attribute.
-     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+     * @param string $attribute attribute name. Use `null` to retrieve errors for all attributes.
      * @property array An array of errors for all attributes. Empty array is returned if no error.
      * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
@@ -422,10 +422,10 @@ public function getEventHandlers($name)
 
 Існує додатковий синтаксис для створення перехресних посилань між класами, методами та властивостями у документації:
 
-- `'[[canSetProperty]] ` створить посилання на метод або властивість `canSetProperty` того ж самого класу.
-- `'[[Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` в тому ж самому просторі імен.
-- `'[[yii\base\Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` з простору імен `yii\base`.
-- `'[[Component]]` створить посилання на клас `Component` в тому ж самому просторі імен. Додавання простору імен до імені класу тут також можливе.
+- `[[canSetProperty]]` створить посилання на метод або властивість `canSetProperty` того ж самого класу.
+- `[[Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` в тому ж самому просторі імен.
+- `[[yii\base\Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` з простору імен `yii\base`.
+- `[[Component]]` створить посилання на клас `Component` в тому ж самому просторі імен. Додавання простору імен до імені класу тут також можливе.
 
 Щоб для одного з вище зазначених посилань вказати мітку відмінну від імені класу чи методу, ви можете використовувати синтаксис, показаний в нижченаведеному прикладі:
 

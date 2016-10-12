@@ -1,15 +1,19 @@
 <?php
+
 namespace yiiunit\framework\db\mssql;
 
-use yii\db\mssql\ColumnSchemaBuilder;
+use yii\db\ColumnSchemaBuilder;
 use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MSSQL
+ * @group db
+ * @group mssql
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    public $driverName = 'sqlsrv';
+
     /**
      * @param string $type
      * @param integer $length
@@ -17,21 +21,6 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
-    }
-
-    /**
-     * @return array
-     */
-    public function unsignedProvider()
-    {
-        return [
-            ['integer', Schema::TYPE_INTEGER, null, [
-                ['unsigned'],
-            ]],
-            ['integer(10)', Schema::TYPE_INTEGER, 10, [
-                ['unsigned'],
-            ]],
-        ];
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 }

@@ -754,7 +754,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         }
         $attributes = [];
         foreach ($scenarios[$scenario] as $attribute) {
-            if ($attribute[0] !== '!') {
+            if ($attribute[0] !== '!' && !in_array('!' . $attribute, $scenarios[$scenario])) {
                 $attributes[] = $attribute;
             }
         }
@@ -964,12 +964,12 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Returns whether there is an element at the specified offset.
      * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `isset($model[$offset])`.
-     * @param mixed $offset the offset to check on
-     * @return boolean
+     * @param mixed $offset the offset to check on.
+     * @return boolean whether or not an offset exists.
      */
     public function offsetExists($offset)
     {
-        return $this->$offset !== null;
+        return isset($this->$offset);
     }
 
     /**

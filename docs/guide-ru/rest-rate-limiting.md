@@ -65,5 +65,5 @@ public function behaviors()
 * `X-Rate-Limit-Reset`: количество секунд, которое нужно подождать до получения максимального количества разрешённых
   запросов.
 
-Вы можете отключить эти заголовки, установив свойство [[yii\filters\RateLimiter::enableRateLimitHeaders]] в false,
+Вы можете отключить эти заголовки, установив свойство [[yii\filters\RateLimiter::enableRateLimitHeaders]] в `false`,
 как показано в примере кода выше.

@@ -38,7 +38,9 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     /**
      * @var array list of action IDs that this filter will be applied to, but auth failure will not lead to error.
      * It may be used for actions, that are allowed for public, but return some additional data for authenticated users.
-     * @see isOptional
+     * Defaults to empty, meaning authentication is not optional for any action.
+     * Since version 2.0.10 action IDs can be specified as wildcards, e.g. `site/*`.
+     * @see isOptional()
      * @since 2.0.7
      */
     public $optional = [];
@@ -86,27 +88,25 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      */
     public function handleFailure($response)
     {
-        throw new UnauthorizedHttpException('You are requesting with an invalid credential.');
+        throw new UnauthorizedHttpException('Your request was made with invalid credentials.');
     }
 
     /**
-     * Checks, whether the $action is optional
+     * Checks, whether authentication is optional for the given action.
      *
-     * @param Action $action
-     * @return boolean
+     * @param Action $action action to be checked.
+     * @return boolean whether authentication is optional or not.
      * @see optional
      * @since 2.0.7
      */
-    protected function isOptional($action) {
-        $id = $this->getActionId($action);
-        return in_array($id, $this->optional, true);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function isActive($action)
+    protected function isOptional($action)
     {
-        return parent::isActive($action) || $this->isOptional($action);
+        $id = $this->getActionId($action);
+        foreach ($this->optional as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

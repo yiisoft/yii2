@@ -75,7 +75,7 @@ For example, to support a new action `search` by the endpoint `GET /users/search
 
 You may have noticed that the controller ID `user` appears in plural form as `users` in the endpoint URLs.
 This is because [[yii\rest\UrlRule]] automatically pluralizes controller IDs when creating child URL rules.
-You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be false. 
+You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be `false`. 
 
 > Info: The pluralization of controller IDs is done by [[yii\helpers\Inflector::pluralize()]]. The method respects
   special pluralization rules. For example, the word `box` will be pluralized as `boxes` instead of `boxs`.

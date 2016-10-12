@@ -11,6 +11,7 @@ use Yii;
 use Closure;
 use yii\base\Behavior;
 use yii\base\Event;
+use yii\db\ActiveRecord;
 
 /**
  * AttributeBehavior automatically assigns a specified value to one or multiple attributes of an ActiveRecord
@@ -41,6 +42,9 @@ use yii\base\Event;
  * }
  * ```
  *
+ * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
+ * not be validated, i.e. they should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -63,8 +67,9 @@ class AttributeBehavior extends Behavior
     public $attributes = [];
     /**
      * @var mixed the value that will be assigned to the current attributes. This can be an anonymous function,
-     * an [[Expression]] object representing a DB expression (e.g. `new Expression('NOW()')`), scalar, string
-     * or an arbitrary value. If the former, the return value of the function will be assigned to the attributes.
+     * callable in array format (e.g. `[$this, 'methodName']`), an [[Expression]] object representing a DB expression
+     * (e.g. `new Expression('NOW()')`), scalar, string or an arbitrary value. If the former, the return value of the
+     * function will be assigned to the attributes.
      * The signature of the function should be as follows,
      *
      * ```php
@@ -75,6 +80,12 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $value;
+    /**
+     * @var boolean whether to skip this behavior when the `$owner` has not been
+     * modified
+     * @since 2.0.8
+     */
+    public $skipUpdateOnClean = true;
 
 
     /**
@@ -82,7 +93,10 @@ class AttributeBehavior extends Behavior
      */
     public function events()
     {
-        return array_fill_keys(array_keys($this->attributes), 'evaluateAttributes');
+        return array_fill_keys(
+            array_keys($this->attributes),
+            'evaluateAttributes'
+        );
     }
 
     /**
@@ -91,6 +105,13 @@ class AttributeBehavior extends Behavior
      */
     public function evaluateAttributes($event)
     {
+        if ($this->skipUpdateOnClean
+            && $event->name == ActiveRecord::EVENT_BEFORE_UPDATE
+            && empty($this->owner->dirtyAttributes)
+        ) {
+            return;
+        }
+
         if (!empty($this->attributes[$event->name])) {
             $attributes = (array) $this->attributes[$event->name];
             $value = $this->getValue($event);
@@ -112,6 +133,10 @@ class AttributeBehavior extends Behavior
      */
     protected function getValue($event)
     {
-        return $this->value instanceof Closure ? call_user_func($this->value, $event) : $this->value;
+        if ($this->value instanceof Closure || is_array($this->value) && is_callable($this->value)) {
+            return call_user_func($this->value, $event);
+        }
+
+        return $this->value;
     }
 }

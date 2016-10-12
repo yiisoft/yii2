@@ -23,3 +23,4 @@ the core developers.
    Also although unsigned int doubles the size, if you have a table that needs such big number space,
    then it's safer to use bigint or mediumint rather than relying on unsigned.
    <https://github.com/yiisoft/yii/pull/1923#issuecomment-11881967>
+6. [Helpers vs separate non-static classes](https://github.com/yiisoft/yii2/pull/12661#issuecomment-251599463)

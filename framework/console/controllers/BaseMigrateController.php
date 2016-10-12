@@ -8,13 +8,14 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\console\Exception;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * BaseMigrateController is base class for migrate controllers.
+ * BaseMigrateController is the base class for migrate controllers.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -31,36 +32,38 @@ abstract class BaseMigrateController extends Controller
      */
     public $defaultAction = 'up';
     /**
-     * @var string the directory storing the migration classes. This can be either
-     * a path alias or a directory.
+     * @var string the directory containing the migration classes. This can be either
+     * a path alias or a directory path.
+     *
+     * If you have set up [[migrationNamespaces]], you may set this field to `null` in order
+     * to disable usage of migrations that are not namespaced.
      */
     public $migrationPath = '@app/migrations';
+    /**
+     * @var array list of namespaces containing the migration classes.
+     *
+     * Migration namespaces should be resolvable as a path alias if prefixed with `@`, e.g. if you specify
+     * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return 
+     * the file path to the directory this namespace refers to.
+     *
+     * For example:
+     *
+     * ```php
+     * [
+     *     'app\migrations',
+     *     'some\extension\migrations',
+     * ]
+     * ```
+     *
+     * @since 2.0.10
+     */
+    public $migrationNamespaces = [];
     /**
      * @var string the template file for generating new migrations.
      * This can be either a path alias (e.g. "@app/migrations/template.php")
      * or a file path.
      */
     public $templateFile;
-    /**
-     * @var array a set of template paths for generating migration code automatically.
-     *
-     * The key is the template type, the value is a path or the alias. Supported types are:
-     * - `create_table`: table creating template
-     * - `drop_table`: table dropping template
-     * - `add_column`: adding new column template
-     * - `drop_column`: dropping column template
-     * - `create_junction`: create junction template
-     *
-     * @since 2.0.7
-     */
-    public $generatorTemplateFiles;
-    /**
-     * @var array column definition strings used for creating migration code.
-     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`.
-     * For example, `--fields=name:string(12):notNull` produces a string column of size 12 which is not null.
-     * @since 2.0.7
-     */
-    public $fields = [];
 
 
     /**
@@ -71,7 +74,7 @@ abstract class BaseMigrateController extends Controller
         return array_merge(
             parent::options($actionID),
             ['migrationPath'], // global for all actions
-            $actionID === 'create' ? ['templateFile', 'fields'] : [] // action create
+            $actionID === 'create' ? ['templateFile'] : [] // action create
         );
     }
 
@@ -79,21 +82,30 @@ abstract class BaseMigrateController extends Controller
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
-     * @throws Exception if directory specified in migrationPath doesn't exist and action isn't "create".
+     * @throws InvalidConfigException if directory specified in migrationPath doesn't exist and action isn't "create".
      * @return boolean whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            $path = Yii::getAlias($this->migrationPath);
-            if (!is_dir($path)) {
-                if ($action->id !== 'create') {
-                    throw new Exception("Migration failed. Directory specified in migrationPath doesn't exist: {$this->migrationPath}");
-                }
-                FileHelper::createDirectory($path);
+            if (empty($this->migrationNamespaces) && empty($this->migrationPath)) {
+                throw new InvalidConfigException('At least one of `migrationPath` or `migrationNamespaces` should be specified.');
             }
-            $this->migrationPath = $path;
-            $this->parseFields();
+
+            foreach ($this->migrationNamespaces as $key => $value) {
+                $this->migrationNamespaces[$key] = trim($value, '\\');
+            }
+
+            if ($this->migrationPath !== null) {
+                $path = Yii::getAlias($this->migrationPath);
+                if (!is_dir($path)) {
+                    if ($action->id !== 'create') {
+                        throw new InvalidConfigException("Migration failed. Directory specified in migrationPath doesn't exist: {$this->migrationPath}");
+                    }
+                    FileHelper::createDirectory($path);
+                }
+                $this->migrationPath = $path;
+            }
 
             $version = Yii::getVersion();
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
@@ -278,7 +290,7 @@ abstract class BaseMigrateController extends Controller
             }
             foreach (array_reverse($migrations) as $migration) {
                 if (!$this->migrateUp($migration)) {
-                    $this->stdout("\nMigration failed. The rest of the migrations migrations are canceled.\n", Console::FG_RED);
+                    $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
                     return self::EXIT_CODE_ERROR;
                 }
@@ -299,10 +311,11 @@ abstract class BaseMigrateController extends Controller
      * them again. For example,
      *
      * ```
-     * yii migrate/to 101129_185401                      # using timestamp
-     * yii migrate/to m101129_185401_create_user_table   # using full name
-     * yii migrate/to 1392853618                         # using UNIX timestamp
-     * yii migrate/to "2014-02-15 13:00:50"              # using strtotime() parseable string
+     * yii migrate/to 101129_185401                          # using timestamp
+     * yii migrate/to m101129_185401_create_user_table       # using full name
+     * yii migrate/to 1392853618                             # using UNIX timestamp
+     * yii migrate/to "2014-02-15 13:00:50"                  # using strtotime() parseable string
+     * yii migrate/to app\migrations\M101129185401CreateUser # using full namespace name
      * ```
      *
      * @param string $version either the version name or the certain time value in the past
@@ -313,14 +326,16 @@ abstract class BaseMigrateController extends Controller
      */
     public function actionTo($version)
     {
-        if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
-            $this->migrateToVersion('m' . $matches[1]);
+        if (($namespaceVersion = $this->extractNamespaceMigrationVersion($version)) !== false) {
+            $this->migrateToVersion($namespaceVersion);
+        } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
+            $this->migrateToVersion($migrationName);
         } elseif ((string) (int) $version == $version) {
             $this->migrateToTime($version);
         } elseif (($time = strtotime($version)) !== false) {
             $this->migrateToTime($time);
         } else {
-            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
+            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n the full namespaced name of a migration (e.g. app\\migrations\\M101129185401CreateUserTable),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
         }
     }
 
@@ -330,8 +345,9 @@ abstract class BaseMigrateController extends Controller
      * No actual migration will be performed.
      *
      * ```
-     * yii migrate/mark 101129_185401                      # using timestamp
-     * yii migrate/mark m101129_185401_create_user_table   # using full name
+     * yii migrate/mark 101129_185401                        # using timestamp
+     * yii migrate/mark m101129_185401_create_user_table     # using full name
+     * yii migrate/to app\migrations\M101129185401CreateUser # using full namespace name
      * ```
      *
      * @param string $version the version at which the migration history should be marked.
@@ -342,16 +358,18 @@ abstract class BaseMigrateController extends Controller
     public function actionMark($version)
     {
         $originalVersion = $version;
-        if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
-            $version = 'm' . $matches[1];
+        if (($namespaceVersion = $this->extractNamespaceMigrationVersion($version)) !== false) {
+            $version = $namespaceVersion;
+        } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
+            $version = $migrationName;
         } else {
-            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
+            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table)\nor the full name of a namespaced migration (e.g. app\\migrations\\M101129185401CreateUserTable).");
         }
 
         // try mark up
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 if ($this->confirm("Set migration history at $originalVersion?")) {
                     for ($j = 0; $j <= $i; ++$j) {
                         $this->addMigrationHistory($migrations[$j]);
@@ -366,7 +384,7 @@ abstract class BaseMigrateController extends Controller
         // try mark down
         $migrations = array_keys($this->getMigrationHistory(null));
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
                 } else {
@@ -383,6 +401,34 @@ abstract class BaseMigrateController extends Controller
         }
 
         throw new Exception("Unable to find the version '$originalVersion'.");
+    }
+
+    /**
+     * Checks if given migration version specification matches namespaced migration name.
+     * @param string $rawVersion raw version specification received from user input.
+     * @return string|false actual migration version, `false` - if not match.
+     * @since 2.0.10
+     */
+    private function extractNamespaceMigrationVersion($rawVersion)
+    {
+        if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*)?$/is', $rawVersion, $matches)) {
+            return trim($rawVersion, '\\');
+        }
+        return false;
+    }
+
+    /**
+     * Checks if given migration version specification matches migration base name.
+     * @param string $rawVersion raw version specification received from user input.
+     * @return string|false actual migration version, `false` - if not match.
+     * @since 2.0.10
+     */
+    private function extractMigrationVersion($rawVersion)
+    {
+        if (preg_match('/^m?(\d{6}_?\d{6})(\D.*)?$/is', $rawVersion, $matches)) {
+            return 'm' . $matches[1];
+        }
+        return false;
     }
 
     /**
@@ -486,63 +532,106 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/create create_user_table
      * ```
      *
+     * In order to generate a namespaced migration, you should specify a namespace before the migration's name.
+     * Note that backslash (`\`) is usually considered a special character in the shell, so you need to escape it
+     * properly to avoid shell errors or incorrect behavior.
+     * For example:
+     *
+     * ```
+     * yii migrate/create 'app\\migrations\\createUserTable'
+     * ```
+     *
+     * In case [[migrationPath]] is not set and no namespace is provided, the first entry of [[migrationNamespaces]] will be used.
+     *
      * @param string $name the name of the new migration. This should only contain
-     * letters, digits and/or underscores.
+     * letters, digits, underscores and/or backslashes.
+     *
+     * Note: If the migration name is of a special form, for example create_xxx or
+     * drop_xxx, then the generated migration file will contain extra code,
+     * in this case for creating/dropping tables.
+     *
      * @throws Exception if the name argument is invalid.
      */
     public function actionCreate($name)
     {
-        if (!preg_match('/^\w+$/', $name)) {
-            throw new Exception('The migration name should contain letters, digits and/or underscore characters only.');
+        if (!preg_match('/^[\w\\\\]+$/', $name)) {
+            throw new Exception('The migration name should contain letters, digits, underscore and/or backslash characters only.');
         }
 
-        $className = 'm' . gmdate('ymd_His') . '_' . $name;
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
+        list($namespace, $className) = $this->generateClassName($name);
+        $migrationPath = $this->findMigrationPath($namespace);
 
+        $file = $migrationPath . DIRECTORY_SEPARATOR . $className . '.php';
         if ($this->confirm("Create new migration '$file'?")) {
-            if (preg_match('/^create_junction_(.+)_and_(.+)$/', $name, $matches)) {
-                $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
-                $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
-
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_junction']), [
-                    'className' => $className,
-                    'table' => $firstTable . '_' . $secondTable,
-                    'field_first' => $firstTable,
-                    'field_second' => $secondTable,
-                ]);
-            } elseif (preg_match('/^add_(.+)_to_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['add_column']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
-            } elseif (preg_match('/^drop_(.+)_from_(.+)$/', $name, $matches)) {
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_column']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[2], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
-            } elseif (preg_match('/^create_(.+)$/', $name, $matches)) {
-                $this->addDefaultPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['create_table']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
-            } elseif (preg_match('/^drop_(.+)$/', $name, $matches)) {
-                $this->addDefaultPrimaryKey();
-                $content = $this->renderFile(Yii::getAlias($this->generatorTemplateFiles['drop_table']), [
-                    'className' => $className,
-                    'table' => mb_strtolower($matches[1], Yii::$app->charset),
-                    'fields' => $this->fields
-                ]);
-            } else {
-                $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $className]);
-            }
-
+            $content = $this->generateMigrationSourceCode([
+                'name' => $name,
+                'className' => $className,
+                'namespace' => $namespace,
+            ]);
+            FileHelper::createDirectory($migrationPath);
             file_put_contents($file, $content);
             $this->stdout("New migration created successfully.\n", Console::FG_GREEN);
         }
+    }
+
+    /**
+     * Generates class base name and namespace from migration name from user input.
+     * @param string $name migration name from user input.
+     * @return array list of 2 elements: 'namespace' and 'class base name'
+     * @since 2.0.10
+     */
+    private function generateClassName($name)
+    {
+        $namespace = null;
+        $name = trim($name, '\\');
+        if (strpos($name, '\\') !== false) {
+            $namespace = substr($name, 0, strrpos($name, '\\'));
+            $name = substr($name, strrpos($name, '\\') + 1);
+        } else {
+            if ($this->migrationPath === null) {
+                $migrationNamespaces = $this->migrationNamespaces;
+                $namespace = array_shift($migrationNamespaces);
+            }
+        }
+
+        if ($namespace === null) {
+            $class = 'm' . gmdate('ymd_His') . '_' . $name;
+        } else {
+            $class = 'M' . gmdate('ymdHis') . ucfirst($name);
+        }
+
+        return [$namespace, $class];
+    }
+
+    /**
+     * Finds the file path for the specified migration namespace.
+     * @param string|null $namespace migration namespace.
+     * @return string migration file path.
+     * @throws Exception on failure.
+     * @since 2.0.10
+     */
+    private function findMigrationPath($namespace)
+    {
+        if (empty($namespace)) {
+            return $this->migrationPath;
+        }
+
+        if (!in_array($namespace, $this->migrationNamespaces, true)) {
+            throw new Exception("Namespace '{$namespace}' not found in `migrationNamespaces`");
+        }
+
+        return $this->getNamespacePath($namespace);
+    }
+
+    /**
+     * Returns the file path matching the give namespace.
+     * @param string $namespace namespace.
+     * @return string file path.
+     * @since 2.0.10
+     */
+    private function getNamespacePath($namespace)
+    {
+        return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
     }
 
     /**
@@ -592,7 +681,6 @@ abstract class BaseMigrateController extends Controller
             $time = microtime(true) - $start;
             $this->stdout("*** reverted $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
 
-
             return true;
         } else {
             $time = microtime(true) - $start;
@@ -609,8 +697,11 @@ abstract class BaseMigrateController extends Controller
      */
     protected function createMigration($class)
     {
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-        require_once($file);
+        $class = trim($class, '\\');
+        if (strpos($class, '\\') === false) {
+            $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
+            require_once($file);
+        }
 
         return new $class();
     }
@@ -646,7 +737,7 @@ abstract class BaseMigrateController extends Controller
         // try migrate up
         $migrations = $this->getNewMigrations();
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 $this->actionUp($i + 1);
 
                 return self::EXIT_CODE_NORMAL;
@@ -656,7 +747,7 @@ abstract class BaseMigrateController extends Controller
         // try migrate down
         $migrations = array_keys($this->getMigrationHistory(null));
         foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
+            if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
                     $this->stdout("Already at '$originalVersion'. Nothing needs to be done.\n", Console::FG_YELLOW);
                 } else {
@@ -677,58 +768,61 @@ abstract class BaseMigrateController extends Controller
     protected function getNewMigrations()
     {
         $applied = [];
-        foreach ($this->getMigrationHistory(null) as $version => $time) {
-            $applied[substr($version, 1, 13)] = true;
+        foreach ($this->getMigrationHistory(null) as $class => $time) {
+            $applied[trim($class, '\\')] = true;
+        }
+
+        $migrationPaths = [];
+        if (!empty($this->migrationPath)) {
+            $migrationPaths[''] = $this->migrationPath;
+        }
+        foreach ($this->migrationNamespaces as $namespace) {
+            $migrationPaths[$namespace] = $this->getNamespacePath($namespace);
         }
 
         $migrations = [];
-        $handle = opendir($this->migrationPath);
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..') {
+        foreach ($migrationPaths as $namespace => $migrationPath) {
+            if (!file_exists($migrationPath)) {
                 continue;
             }
-            $path = $this->migrationPath . DIRECTORY_SEPARATOR . $file;
-            if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && !isset($applied[$matches[2]]) && is_file($path)) {
-                $migrations[] = $matches[1];
-            }
-        }
-        closedir($handle);
-        sort($migrations);
-
-        return $migrations;
-    }
-
-    /**
-     * Parse the command line migration fields
-     * @since 2.0.7
-     */
-    protected function parseFields()
-    {
-        foreach ($this->fields as $index => $field) {
-            $chunks = preg_split('/\s?:\s?/', $field, null);
-            $property = array_shift($chunks);
-
-            foreach ($chunks as &$chunk) {
-                if (!preg_match('/^(.+?)\(([^)]+)\)$/', $chunk)) {
-                    $chunk .= '()';
+            $handle = opendir($migrationPath);
+            while (($file = readdir($handle)) !== false) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+                $path = $migrationPath . DIRECTORY_SEPARATOR . $file;
+                if (preg_match('/^(m(\d{6}_?\d{6})\D.*?)\.php$/is', $file, $matches) && is_file($path)) {
+                    $class = $matches[1];
+                    if (!empty($namespace)) {
+                        $class = $namespace . '\\' . $class;
+                    }
+                    $time = str_replace('_', '', $matches[2]);
+                    if (!isset($applied[$class])) {
+                        $migrations[$time . '\\' . $class] = $class;
+                    }
                 }
             }
-            $this->fields[$index] = ['property' => $property, 'decorators' => implode('->', $chunks)];
+            closedir($handle);
         }
+        ksort($migrations);
+
+        return array_values($migrations);
     }
 
     /**
-     * Adds default primary key to fields list if there's no primary key specified
-     * @since 2.0.7
+     * Generates new migration source PHP code.
+     * Child class may override this method, adding extra logic or variation to the process.
+     * @param array $params generation parameters, usually following parameters are present:
+     *
+     *  - name: string migration base name
+     *  - className: string migration class name
+     *
+     * @return string generated PHP code.
+     * @since 2.0.8
      */
-    protected function addDefaultPrimaryKey()
+    protected function generateMigrationSourceCode($params)
     {
-        foreach ($this->fields as $field) {
-            if ($field['decorators'] === 'primaryKey()') {
-                return;
-            }
-        }
-        array_unshift($this->fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
+        return $this->renderFile(Yii::getAlias($this->templateFile), $params);
     }
 
     /**

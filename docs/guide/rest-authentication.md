@@ -33,7 +33,7 @@ To enable authentication for your APIs, do the following steps:
 3. Implement [[yii\web\IdentityInterface::findIdentityByAccessToken()]] in your [[yii\web\User::identityClass|user identity class]].
 
 Step 1 is not required but is recommended for RESTful APIs which should be stateless. When [[yii\web\User::enableSession|enableSession]]
-is false, the user authentication status will NOT be persisted across requests using sessions. Instead, authentication
+is `false`, the user authentication status will NOT be persisted across requests using sessions. Instead, authentication
 will be performed for every request, which is accomplished by Step 2 and 3.
 
 > Tip: You may configure [[yii\web\User::enableSession|enableSession]] of the `user` application component
@@ -123,5 +123,5 @@ action for the requested resource. This process is called *authorization* which 
 the [Authorization section](security-authorization.md).
 
 If your controllers extend from [[yii\rest\ActiveController]], you may override
-the [[yii\rest\Controller::checkAccess()|checkAccess()]] method to perform authorization check. The method
+the [[yii\rest\ActiveController::checkAccess()|checkAccess()]] method to perform authorization check. The method
 will be called by the built-in actions provided by [[yii\rest\ActiveController]].

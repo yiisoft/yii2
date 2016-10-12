@@ -5,8 +5,8 @@ The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. Thi
 the form is based upon a model. Additionally, there are some useful methods in [[yii\helpers\Html]] that are typically
 used for adding buttons and help text to any form.
 
-A form, that is displayed on the client side, will in most cases have a corresponding [model](structure-models.md) which is used
-to validate its input on the server side (Check the [Validating Input](input-validation.md) section for more details on validation).
+A form, that is displayed on the client-side, will in most cases have a corresponding [model](structure-models.md) which is used
+to validate its input on the server-side (Check the [Validating Input](input-validation.md) section for more details on validation).
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon
 an [Active Record](db-active-record.md) class, representing some data from the database, or a generic Model class
 (extending from [[yii\base\Model]]) to capture arbitrary input, for example a login form.
@@ -76,7 +76,11 @@ To customize the output, you can chain additional methods of [[yii\widgets\Activ
 This will create all the `<label>`, `<input>` and other tags according to the [[yii\widgets\ActiveField::$template|template]] defined by the form field.
 The name of the input field is determined automatically from the model's [[yii\base\Model::formName()|form name]] and the attribute name.
 For example, the name for the input field for the `username` attribute in the above example will be `LoginForm[username]`. This naming rule will result in an array
-of all attributes for the login form to be available in `$_POST['LoginForm']` on the server side.
+of all attributes for the login form to be available in `$_POST['LoginForm']` on the server-side.
+
+> Tip: If you have only one model in a form and want to simplify the input names you may skip the array part by
+> overriding the [[yii\base\Model::formName()|formName()]] method of the model to return an empty string.
+> This can be useful for filter models used in the [GridView](output-data-widgets.md#grid-view) to create nicer URLs.
 
 Specifying the attribute of the model can be done in more sophisticated ways. For example when an attribute may
 take an array value when uploading multiple files or selecting multiple items you may specify it by appending `[]`
@@ -95,7 +99,7 @@ are some reserved names that can cause conflicts:
 
 > Forms and their child elements should not use input names or ids that conflict with properties of a form,
 > such as `submit`, `length`, or `method`. Name conflicts can cause confusing failures.
-> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/). 
+> For a complete list of rules and to check your markup for these problems, see [DOMLint](http://kangax.github.io/domlint/).
 
 Additional HTML tags can be added to the form using plain HTML or using the methods from the [[yii\helpers\Html|Html]]-helper
 class like it is done in the above example with [[yii\helpers\Html::submitButton()|Html::submitButton()]].
@@ -115,15 +119,14 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > }
 > ```
 
-Creating Dropdown list <span id="creating-activeform-dropdownlist"></span>
----------------------
+Creating Drop-down List <span id="creating-activeform-dropdownlist"></span>
+-----------------------
 
 We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-method to create a Dropwown list: 
+method to create a drop-down list:
 
 ```php
 use app\models\ProductCategory;
-use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
@@ -137,11 +140,55 @@ echo $form->field($model, 'product_category')->dropdownList(
 
 The value of your model field will be automatically pre-selected.
 
+Working with Pjax <span id="working-with-pjax"></span>
+-----------------------
+
+The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
+page instead of reloading the entire page. You can use it to update only the form
+and replace its contents after the submission.
+
+You can configure [[yii\widgets\Pjax::$formSelector|$formSelector]] to specify
+which form submission may trigger pjax. If not set, all forms with `data-pjax`
+attribute within the enclosed content of Pjax will trigger pjax requests.
+
+```php
+use yii\widgets\Pjax;
+use yii\widgets\ActiveForm;
+
+Pjax::begin([
+    // Pjax options
+]);
+    $form = ActiveForm::begin([
+        'options' => ['data' => ['pjax' => true]],
+        // more ActiveForm options
+    ]);
+
+        // ActiveForm content
+
+    ActiveForm::end();
+Pjax::end();
+```
+> Tip: Be careful with the links inside the [[yii\widgets\Pjax|Pjax]] widget since
+> the response  will also be rendered inside the widget. To prevent this, use the
+> `data-pjax="0"` HTML attribute.
+
+#### Values in Submit Buttons and File Upload
+
+There are known issues using `jQuery.serializeArray()` when dealing with
+[files](https://github.com/jquery/jquery/issues/2321) and
+[submit button values](https://github.com/jquery/jquery/issues/2321) which
+won't be solved and are instead deprecated in favor of the `FormData` class
+introduced in HTML5.
+
+That means the only official support for files and submit button values with
+ajax or using the [[yii\widgets\Pjax|Pjax]] widget depends on the
+[browser support](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility)
+for the `FormData` class.
+
 Further Reading <span id="further-reading"></span>
 ---------------
 
-The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server
-side as well as ajax- and client side validation.
+The next section [Validating Input](input-validation.md) handles the validation of the submitted form data on the server-side as well as ajax and client-side validation.
 
 To read about more complex usage of forms, you may want to check out the following sections:
 

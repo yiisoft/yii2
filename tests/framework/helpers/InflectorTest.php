@@ -30,6 +30,7 @@ class InflectorTest extends TestCase
             'bus' => 'buses',
             'test' => 'tests',
             'car' => 'cars',
+            'netherlands' => 'netherlands',
         ];
 
         foreach ($testData as $testIn => $testOut) {
@@ -57,6 +58,7 @@ class InflectorTest extends TestCase
             'buses' => 'bus',
             'tests' => 'test',
             'cars' => 'car',
+            'Netherlands' => 'Netherlands',
         ];
         foreach ($testData as $testIn => $testOut) {
             $this->assertEquals($testOut, Inflector::singularize($testIn));
@@ -176,6 +178,10 @@ class InflectorTest extends TestCase
             // Russian
             'недвижимость' => 'nedvizimost',
             'Контакты' => 'kontakty',
+            // Chinese
+            '美国' => 'mei-guo',
+            // Estonian
+            'Jääär' => 'jaaar',
         ];
 
         foreach ($data as $source => $expected) {
@@ -217,6 +223,8 @@ class InflectorTest extends TestCase
 
             // Spanish
             '¿Español?' => '¿Español?',
+            // Chinese
+            '美国' => 'měi guó',
         ];
 
         foreach ($data as $source => $expected) {
@@ -242,7 +250,7 @@ class InflectorTest extends TestCase
             'العربي' => 'alʿrby',
             'عرب' => 'ʿrb',
             // Hebrew
-            'עִבְרִית' => 'ʻiberiyt',
+            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'ʻiberiyt',
             // Turkish
             'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
 
@@ -257,7 +265,9 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => 'Srpska: d, n, d!',
 
             // Spanish
-            '¿Español?' => '¿Espanol?'
+            '¿Español?' => '¿Espanol?',
+            // Chinese
+            '美国' => 'mei guo',
         ];
 
         foreach ($data as $source => $expected) {
@@ -283,7 +293,7 @@ class InflectorTest extends TestCase
             'العربي' => 'alrby',
             'عرب' => 'rb',
             // Hebrew
-            'עִבְרִית' => 'iberiyt',
+            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'iberiyt',
             // Turkish
             'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
 
@@ -298,7 +308,9 @@ class InflectorTest extends TestCase
             'Српска: ђ, њ, џ!' => 'Srpska: d, n, d!',
 
             // Spanish
-            '¿Español?' => 'Espanol?'
+            '¿Español?' => 'Espanol?',
+            // Chinese
+            '美国' => 'mei guo',
         ];
 
         foreach ($data as $source => $expected) {

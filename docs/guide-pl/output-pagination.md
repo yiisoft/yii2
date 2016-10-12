@@ -57,10 +57,10 @@ Metoda ta wymaga podania parametru page i zwraca poprawnie sformatowany adres UR
 // Jeśli nie będzie podana, użyta zostanie aktualna trasa
 $pagination->route = 'article/index';
 
-// wyświetla: /index.php?r=article/index&page=100
+// wyświetla: /index.php?r=article%2Findex&page=100
 echo $pagination->createUrl(100);
 
-// wyświetla: /index.php?r=article/index&page=101
+// wyświetla: /index.php?r=article%2Findex&page=101
 echo $pagination->createUrl(101);
 ```
 

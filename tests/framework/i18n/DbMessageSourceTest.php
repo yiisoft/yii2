@@ -29,11 +29,17 @@ class DbMessageSourceTest extends I18NTest
     {
         $this->i18n = new I18N([
             'translations' => [
-                'test' => new DbMessageSource([
+                'test' => [
+                    'class' => $this->getMessageSourceClass(),
                     'db' => static::$db,
-                ])
+                ]
             ]
         ]);
+    }
+
+    private function getMessageSourceClass()
+    {
+        return DbMessageSource::className();
     }
 
     protected static function runConsoleAction($route, $params = [])
@@ -152,5 +158,11 @@ class DbMessageSourceTest extends I18NTest
         $this->assertEquals('TRANSLATION MISSING HERE!', $this->i18n->translate('test', 'New missing translation message.', [], 'de-DE'));
         $this->assertEquals('Hallo Welt!', $this->i18n->translate('test', 'Hello world!', [], 'de-DE'));
         Event::off(DbMessageSource::className(), DbMessageSource::EVENT_MISSING_TRANSLATION);
+    }
+
+
+    public function testIssue11429($sourceLanguage = null)
+    {
+        $this->markTestSkipped('DbMessageSource does not produce any errors when messages file is missing.');
     }
 }

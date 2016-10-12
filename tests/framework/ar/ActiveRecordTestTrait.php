@@ -141,6 +141,26 @@ trait ActiveRecordTestTrait
         $this->assertArrayHasKey('status', $customers[2]);
     }
 
+    public function testHasAttribute()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+
+        $customer = new $customerClass;
+        $this->assertTrue($customer->hasAttribute('id'));
+        $this->assertTrue($customer->hasAttribute('email'));
+        $this->assertFalse($customer->hasAttribute(0));
+        $this->assertFalse($customer->hasAttribute(null));
+        $this->assertFalse($customer->hasAttribute(42));
+
+        $customer = $customerClass::findOne(1);
+        $this->assertTrue($customer->hasAttribute('id'));
+        $this->assertTrue($customer->hasAttribute('email'));
+        $this->assertFalse($customer->hasAttribute(0));
+        $this->assertFalse($customer->hasAttribute(null));
+        $this->assertFalse($customer->hasAttribute(42));
+    }
+
     public function testFindScalar()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */
@@ -523,6 +543,15 @@ trait ActiveRecordTestTrait
         $this->assertEquals(2, count($customers[1]->orders[0]->items));
         $this->assertEquals(3, count($customers[2]->orders[0]->items));
         $this->assertEquals(1, count($customers[2]->orders[1]->items));
+
+        $customers = $customerClass::find()->where(['id' => 1])->with('ordersWithItems')->one();
+        $this->assertTrue($customers->isRelationPopulated('ordersWithItems'));
+        $this->assertCount(1, $customers->ordersWithItems);
+
+        /** @var Order $order */
+        $order = $customers->ordersWithItems[0];
+        $this->assertTrue($order->isRelationPopulated('orderItems'));
+        $this->assertCount(2, $order->orderItems);
     }
 
     /**
@@ -1115,6 +1144,27 @@ trait ActiveRecordTestTrait
         $afterFindCalls = [];
 
         Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_FIND);
+    }
+
+    public function testAfterRefresh()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+        /* @var $this TestCase|ActiveRecordTestTrait */
+
+        $afterRefreshCalls = [];
+        Event::on(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
+    	    /* @var $ar BaseActiveRecord */
+    	    $ar = $event->sender;
+    	    $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+        });
+
+        $customer = $customerClass::findOne(1);
+        $this->assertNotNull($customer);
+        $customer->refresh();
+        $this->assertEquals([[$customerClass, false, 1, false]], $afterRefreshCalls);
+        $afterRefreshCalls = [];
+        Event::off(BaseActiveRecord::className(), BaseActiveRecord::EVENT_AFTER_REFRESH);
     }
 
     public function testFindEmptyInCondition()

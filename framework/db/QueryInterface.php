@@ -100,7 +100,7 @@ interface QueryInterface
      *   The method will *not* do any quoting or escaping.
      *
      * - **or**: similar to the `and` operator except that the operands are concatenated using `OR`. For example,
-     *   `['or', ['type' => [7, 8, 9]], ['id' => [1, 2, 3]]` will generate `(type IN (7, 8, 9) OR (id IN (1, 2, 3)))`.
+     *   `['or', ['type' => [7, 8, 9]], ['id' => [1, 2, 3]]]` will generate `(type IN (7, 8, 9) OR (id IN (1, 2, 3)))`.
      *
      * - **not**: this will take only one operand and build the negation of it by prefixing the query string with `NOT`.
      *   For example `['not', ['attribute' => null]]` will result in the condition `NOT (attribute IS NULL)`.

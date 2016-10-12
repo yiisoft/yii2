@@ -136,7 +136,7 @@ echo Menu::widget([
 ]);
 ```
 
-O código acima cria um  widget `Menu` e inicializa suas propriedades `activateItems` com false. A propriedade `items` também é configurada com os itens do menu para serem exibidos.
+O código acima cria um  widget `Menu` e inicializa suas propriedades `activateItems` com `false`. A propriedade `items` também é configurada com os itens do menu para serem exibidos.
 
 Observe que, como o nome da classe já está dado, o array de configuração não precisa da chave `class`.
 

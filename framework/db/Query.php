@@ -93,7 +93,7 @@ class Query extends Component implements QueryInterface
      */
     public $join;
     /**
-     * @var string|array the condition to be applied in the GROUP BY clause.
+     * @var string|array|Expression the condition to be applied in the GROUP BY clause.
      * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
      */
     public $having;
@@ -152,7 +152,7 @@ class Query extends Component implements QueryInterface
      * ```php
      * $query = (new Query)->from('user');
      * foreach ($query->batch() as $rows) {
-     *     // $rows is an array of 10 or fewer rows from user table
+     *     // $rows is an array of 100 or fewer rows from user table
      * }
      * ```
      *
@@ -252,7 +252,7 @@ class Query extends Component implements QueryInterface
      * The value returned will be the first column in the first row of the query results.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return string|boolean the value of the first column in the first row of the query result.
+     * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
      */
     public function scalar($db = null)
@@ -268,19 +268,22 @@ class Query extends Component implements QueryInterface
      */
     public function column($db = null)
     {
-        if (!is_string($this->indexBy)) {
+        if ($this->indexBy === null) {
             return $this->createCommand($db)->queryColumn();
         }
-        if (is_array($this->select) && count($this->select) === 1) {
+
+        if (is_string($this->indexBy) && is_array($this->select) && count($this->select) === 1) {
             $this->select[] = $this->indexBy;
         }
         $rows = $this->createCommand($db)->queryAll();
         $results = [];
         foreach ($rows as $row) {
-            if (array_key_exists($this->indexBy, $row)) {
-                $results[$row[$this->indexBy]] = reset($row);
+            $value = reset($row);
+
+            if ($this->indexBy instanceof \Closure) {
+                $results[call_user_func($this->indexBy, $row)] = $value;
             } else {
-                $results[] = reset($row);
+                $results[$row[$this->indexBy]] = $value;
             }
         }
         return $results;
@@ -360,11 +363,11 @@ class Query extends Component implements QueryInterface
      */
     public function exists($db = null)
     {
-        $select = $this->select;
-        $this->select = [new Expression('1')];
         $command = $this->createCommand($db);
-        $this->select = $select;
-        return $command->queryScalar() !== false;
+        $params = $command->params;
+        $command->setSql($command->db->getQueryBuilder()->selectExists($command->getSql()));
+        $command->bindValues($params);
+        return (boolean)$command->queryScalar();
     }
 
     /**
@@ -372,7 +375,7 @@ class Query extends Component implements QueryInterface
      * Restores the value of select to make this query reusable.
      * @param string|Expression $selectExpression
      * @param Connection|null $db
-     * @return bool|string
+     * @return boolean|string
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -582,6 +585,43 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Adds a filtering condition for a specific column and allow the user to choose a filter operator.
+     *
+     * It adds an additional WHERE condition for the given field and determines the comparison operator
+     * based on the first few characters of the given value.
+     * The condition is added in the same way as in [[andFilterWhere]] so [[isEmpty()|empty values]] are ignored.
+     * The new condition and the existing one will be joined using the 'AND' operator.
+     *
+     * The comparison operator is intelligently determined based on the first few characters in the given value.
+     * In particular, it recognizes the following operators if they appear as the leading characters in the given value:
+     *
+     * - `<`: the column must be less than the given value.
+     * - `>`: the column must be greater than the given value.
+     * - `<=`: the column must be less than or equal to the given value.
+     * - `>=`: the column must be greater than or equal to the given value.
+     * - `<>`: the column must not be the same as the given value.
+     * - `=`: the column must be equal to the given value.
+     * - If none of the above operators is detected, the `$defaultOperator` will be used.
+     *
+     * @param string $name the column name.
+     * @param string $value the column value optionally prepended with the comparison operator.
+     * @param string $defaultOperator The operator to use, when no operator is given in `$value`.
+     * Defaults to `=`, performing an exact match.
+     * @return $this The query object itself
+     * @since 2.0.8
+     */
+    public function andFilterCompare($name, $value, $defaultOperator = '=')
+    {
+        if (preg_match('/^(<>|>=|>|<=|<|=)/', $value, $matches)) {
+            $operator = $matches[1];
+            $value = substr($value, strlen($operator));
+        } else {
+            $operator = $defaultOperator;
+        }
+        return $this->andFilterWhere([$operator, $name, $value]);
+    }
+
+    /**
      * Appends a JOIN part to the query.
      * The first parameter specifies what type of join it is.
      * @param string $type the type of join, such as INNER JOIN, LEFT JOIN.
@@ -598,6 +638,16 @@ class Query extends Component implements QueryInterface
      *
      * @param string|array $on the join condition that should appear in the ON part.
      * Please refer to [[where()]] on how to specify this parameter.
+     *
+     * Note that the array format of [[where()]] is designed to match columns to values instead of columns to columns, so
+     * the following would **not** work as expected: `['post.author_id' => 'user.id']`, it would
+     * match the `post.author_id` column value against the string `'user.id'`.
+     * It is recommended to use the string syntax here which is more suited for a join:
+     *
+     * ```php
+     * 'post.author_id = user.id'
+     * ```
+     *
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      */
@@ -621,7 +671,7 @@ class Query extends Component implements QueryInterface
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
-     * Please refer to [[where()]] on how to specify this parameter.
+     * Please refer to [[join()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      */
@@ -645,7 +695,7 @@ class Query extends Component implements QueryInterface
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
-     * Please refer to [[where()]] on how to specify this parameter.
+     * Please refer to [[join()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
      * @return $this the query object itself
      */
@@ -669,7 +719,7 @@ class Query extends Component implements QueryInterface
      * represents the alias for the sub-query.
      *
      * @param string|array $on the join condition that should appear in the ON part.
-     * Please refer to [[where()]] on how to specify this parameter.
+     * Please refer to [[join()]] on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query
      * @return $this the query object itself
      */

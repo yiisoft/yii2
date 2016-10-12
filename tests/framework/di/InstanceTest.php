@@ -17,6 +17,7 @@ use yiiunit\TestCase;
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @group di
  */
 class InstanceTest extends TestCase
 {
@@ -114,5 +115,25 @@ class InstanceTest extends TestCase
         $this->assertTrue($container->get() instanceof Connection);
 
         $this->destroyApplication();
+    }
+
+    /**
+     * This tests the usage example given in yii\di\Instance class PHPdoc
+     */
+    public function testLazyInitializationExample()
+    {
+        Yii::$container = new Container;
+        Yii::$container->set('cache', [
+            'class' => 'yii\caching\DbCache',
+            'db' => Instance::of('db')
+        ]);
+        Yii::$container->set('db', [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'sqlite:path/to/file.db',
+        ]);
+
+        $this->assertInstanceOf('yii\caching\DbCache', $cache = Yii::$container->get('cache'));
+        $this->assertInstanceOf('yii\db\Connection', $db = $cache->db);
+        $this->assertEquals('sqlite:path/to/file.db', $db->dsn);
     }
 }

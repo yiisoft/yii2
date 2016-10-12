@@ -55,7 +55,12 @@
             return this.each(function () {
                 var $e = $(this);
                 var settings = $.extend({}, defaults, options || {});
-                gridData[$e.attr('id')] = {settings: settings};
+                var id = $e.attr('id');
+                if (gridData[id] === undefined) {
+                    gridData[id] = {};
+                }
+
+                gridData[id] = $.extend(gridData[id], {settings: settings});
 
                 var enterPressed = false;
                 $(document).off('change.yiiGridView keydown.yiiGridView', settings.filterSelector)
@@ -118,7 +123,7 @@
             var $form = $('<form/>', {
                 action: url,
                 method: 'get',
-                class: 'gridview-filter-form',
+                'class': 'gridview-filter-form',
                 style: 'display:none',
                 'data-pjax': ''
             }).appendTo($grid);
@@ -142,17 +147,21 @@
         setSelectionColumn: function (options) {
             var $grid = $(this);
             var id = $(this).attr('id');
+            if (gridData[id] === undefined) {
+                gridData[id] = {};
+            }
             gridData[id].selectionColumn = options.name;
-            if (!options.multiple) {
+            if (!options.multiple || !options.checkAll) {
                 return;
             }
             var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
-            var inputs = "#" + id + " input[name='" + options.name + "']";
+            var inputs = options.class ? "input." + options.class : "input[name='" + options.name + "']";
+            var inputsEnabled = "#" + id + " " + inputs + ":enabled";
             $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
-                $grid.find("input[name='" + options.name + "']:enabled").prop('checked', this.checked);
+                $grid.find(inputs + ":enabled").prop('checked', this.checked);
             });
-            $(document).off('click.yiiGridView', inputs + ":enabled").on('click.yiiGridView', inputs + ":enabled", function () {
-                var all = $grid.find("input[name='" + options.name + "']").length == $grid.find("input[name='" + options.name + "']:checked").length;
+            $(document).off('click.yiiGridView', inputsEnabled).on('click.yiiGridView', inputsEnabled, function () {
+                var all = $grid.find(inputs).length == $grid.find(inputs + ":checked").length;
                 $grid.find("input[name='" + options.checkAll + "']").prop('checked', all);
             });
         },

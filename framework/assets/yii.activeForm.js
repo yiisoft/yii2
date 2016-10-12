@@ -201,7 +201,8 @@
                     settings: settings,
                     attributes: attributes,
                     submitting: false,
-                    validated: false
+                    validated: false,
+                    options: getFormOptions($form)
                 });
 
                 /**
@@ -281,7 +282,11 @@
         },
 
         // validate all applicable inputs in the form
-        validate: function () {
+        validate: function (forceValidate) {
+            if (forceValidate) {
+                $(this).data('yiiActiveForm').submitting = true;
+            }
+
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
                 needAjaxValidation = false,
@@ -292,6 +297,7 @@
             if (submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
+
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
@@ -301,6 +307,7 @@
 
             // client-side validation
             $.each(data.attributes, function () {
+                this.$form = $form;
                 if (!$(this.input).is(":disabled")) {
                     this.cancelled = false;
                     // perform validation only if the form is being submitted or if an attribute is pending validation
@@ -334,7 +341,7 @@
                         delete messages[i];
                     }
                 }
-                if (needAjaxValidation) {
+                if ($.isEmptyObject(messages) && needAjaxValidation) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
                     if ($button && $button.length && $button.attr('name')) {
@@ -541,6 +548,47 @@
         return array;
     };
 
+    var buttonOptions = ['action', 'target', 'method', 'enctype'];
+
+    /**
+     * Returns current form options
+     * @param $form
+     * @returns object Object with button of form options
+     */
+    var getFormOptions = function ($form) {
+        var attributes = {};
+        for (var i = 0; i < buttonOptions.length; i++) {
+            attributes[buttonOptions[i]] = $form.attr(buttonOptions[i]);
+        }
+        return attributes;
+    };
+
+    /**
+     * Applies temporary form options related to submit button
+     * @param $form the form jQuery object
+     * @param $button the button jQuery object
+     */
+    var applyButtonOptions = function ($form, $button) {
+        for (var i = 0; i < buttonOptions.length; i++) {
+            var value = $button.attr('form' + buttonOptions[i]);
+            if (value) {
+                $form.attr(buttonOptions[i], value);
+            }
+        }
+    };
+
+    /**
+     * Restores original form options
+     * @param $form the form jQuery object
+     */
+    var restoreButtonOptions = function ($form) {
+        var data = $form.data('yiiActiveForm');
+
+        for (var i = 0; i < buttonOptions.length; i++) {
+            $form.attr(buttonOptions[i], data.options[buttonOptions[i]] || null);
+        }
+    };
+
     /**
      * Updates the error messages and the input containers for all applicable attributes
      * @param $form the form jQuery object
@@ -549,6 +597,10 @@
      */
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
+
+        if (data === undefined) {
+            return false;
+        }
 
         if (submitting) {
             var errorAttributes = [];
@@ -575,7 +627,11 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                $form.submit();
+                if (data.submitObject) {
+                    data.submitObject.trigger("click");
+                } else {
+                    $form.submit();
+                }
             }
         } else {
             $.each(data.attributes, function () {

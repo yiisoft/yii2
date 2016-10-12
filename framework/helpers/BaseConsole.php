@@ -7,7 +7,7 @@
 
 namespace yii\helpers;
 
-use yii\console\Markdown;
+use yii\console\Markdown as ConsoleMarkdown;
 
 /**
  * BaseConsole provides concrete implementation for [[Console]].
@@ -19,6 +19,7 @@ use yii\console\Markdown;
  */
 class BaseConsole
 {
+    // foreground color control codes
     const FG_BLACK  = 30;
     const FG_RED    = 31;
     const FG_GREEN  = 32;
@@ -27,7 +28,7 @@ class BaseConsole
     const FG_PURPLE = 35;
     const FG_CYAN   = 36;
     const FG_GREY   = 37;
-
+    // background color control codes
     const BG_BLACK  = 40;
     const BG_RED    = 41;
     const BG_GREEN  = 42;
@@ -36,7 +37,7 @@ class BaseConsole
     const BG_PURPLE = 45;
     const BG_CYAN   = 46;
     const BG_GREY   = 47;
-
+    // fonts style control codes
     const RESET       = 0;
     const NORMAL      = 0;
     const BOLD        = 1;
@@ -237,7 +238,7 @@ class BaseConsole
      * Returns the ANSI format code.
      *
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string The ANSI format code according to the given formatting constants.
      */
@@ -250,7 +251,7 @@ class BaseConsole
      * Echoes an ANSI format code that affects the formatting of any text that is printed afterwards.
      *
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @see ansiFormatCode()
      * @see endAnsiFormat()
@@ -279,7 +280,7 @@ class BaseConsole
      *
      * @param string $string the string to be formatted
      * @param array $format An array containing formatting values.
-     * You can pass any of the FG_*, BG_* and TEXT_* constants
+     * You can pass any of the `FG_*`, `BG_*` and `TEXT_*` constants
      * and also [[xtermFgColor]] and [[xtermBgColor]] to specify a format.
      * @return string
      */
@@ -346,7 +347,7 @@ class BaseConsole
      *
      * @param string $string the string to convert.
      * @param array $styleMap an optional mapping of ANSI control codes such as
-     * [[FG_COLOR]] or [[BOLD]] to a set of css style definitions.
+     * FG\_*COLOR* or [[BOLD]] to a set of css style definitions.
      * The CSS style definitions are represented as an array where the array keys correspond
      * to the css style attribute names and the values are the css values.
      * values may be arrays that will be merged and imploded with `' '` when rendered.
@@ -454,12 +455,12 @@ class BaseConsole
 
     /**
      * Converts Markdown to be better readable in console environments by applying some ANSI format
-     * @param string $markdown
-     * @return string
+     * @param string $markdown the markdown string.
+     * @return string the parsed result as ANSI formatted string.
      */
     public static function markdownToAnsi($markdown)
     {
-        $parser = new Markdown();
+        $parser = new ConsoleMarkdown();
         return $parser->parse($markdown);
     }
 
@@ -587,7 +588,7 @@ class BaseConsole
 
     /**
      * Returns true if the console is running on windows
-     * @return bool
+     * @return boolean
      */
     public static function isRunningOnWindows()
     {
@@ -613,13 +614,13 @@ class BaseConsole
             $output = [];
             exec('mode con', $output);
             if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
-                return $size = [(int) preg_replace('~\D~', '', $output[3]), (int) preg_replace('~\D~', '', $output[4])];
+                return $size = [(int) preg_replace('~\D~', '', $output[4]), (int) preg_replace('~\D~', '', $output[3])];
             }
         } else {
             // try stty if available
             $stty = [];
             if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {
-                return $size = [$matches[2], $matches[1]];
+                return $size = [(int)$matches[2], (int)$matches[1]];
             }
 
             // fallback to tput, which may not be updated on terminal resize
@@ -691,7 +692,7 @@ class BaseConsole
      * Prints a string to STDOUT.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stdout($string)
     {
@@ -702,7 +703,7 @@ class BaseConsole
      * Prints a string to STDERR.
      *
      * @param string $string the string to print
-     * @return int|boolean Number of bytes printed or false on error
+     * @return integer|boolean Number of bytes printed or false on error
      */
     public static function stderr($string)
     {

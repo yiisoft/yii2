@@ -5,11 +5,7 @@ namespace yiiunit\framework\db;
 use yii\db\Connection;
 use yii\db\Transaction;
 
-/**
- * @group db
- * @group mysql
- */
-class ConnectionTest extends DatabaseTestCase
+abstract class ConnectionTest extends DatabaseTestCase
 {
 
     public function testConstruct()
@@ -70,25 +66,49 @@ class ConnectionTest extends DatabaseTestCase
 
     public function testQuoteTableName()
     {
-        $connection = $this->getConnection(false);
+        $connection = $this->getConnection(false, false);
         $this->assertEquals('`table`', $connection->quoteTableName('table'));
         $this->assertEquals('`table`', $connection->quoteTableName('`table`'));
         $this->assertEquals('`schema`.`table`', $connection->quoteTableName('schema.table'));
         $this->assertEquals('`schema`.`table`', $connection->quoteTableName('schema.`table`'));
+        $this->assertEquals('`schema`.`table`', $connection->quoteTableName('`schema`.`table`'));
         $this->assertEquals('{{table}}', $connection->quoteTableName('{{table}}'));
         $this->assertEquals('(table)', $connection->quoteTableName('(table)'));
     }
 
     public function testQuoteColumnName()
     {
-        $connection = $this->getConnection(false);
+        $connection = $this->getConnection(false, false);
         $this->assertEquals('`column`', $connection->quoteColumnName('column'));
         $this->assertEquals('`column`', $connection->quoteColumnName('`column`'));
-        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.column'));
-        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.`column`'));
         $this->assertEquals('[[column]]', $connection->quoteColumnName('[[column]]'));
         $this->assertEquals('{{column}}', $connection->quoteColumnName('{{column}}'));
         $this->assertEquals('(column)', $connection->quoteColumnName('(column)'));
+
+        $this->assertEquals('`column`', $connection->quoteSql('[[column]]'));
+        $this->assertEquals('`column`', $connection->quoteSql('{{column}}'));
+    }
+
+    public function testQuoteFullColumnName()
+    {
+        $connection = $this->getConnection(false, false);
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.column'));
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('table.`column`'));
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('`table`.column'));
+        $this->assertEquals('`table`.`column`', $connection->quoteColumnName('`table`.`column`'));
+
+        $this->assertEquals('[[table.column]]', $connection->quoteColumnName('[[table.column]]'));
+        $this->assertEquals('{{table}}.`column`', $connection->quoteColumnName('{{table}}.column'));
+        $this->assertEquals('{{table}}.`column`', $connection->quoteColumnName('{{table}}.`column`'));
+        $this->assertEquals('{{table}}.[[column]]', $connection->quoteColumnName('{{table}}.[[column]]'));
+        $this->assertEquals('{{%table}}.`column`', $connection->quoteColumnName('{{%table}}.column'));
+        $this->assertEquals('{{%table}}.`column`', $connection->quoteColumnName('{{%table}}.`column`'));
+
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('[[table.column]]'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{table}}.[[column]]'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{table}}.`column`'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{%table}}.[[column]]'));
+        $this->assertEquals('`table`.`column`', $connection->quoteSql('{{%table}}.`column`'));
     }
 
     public function testTransaction()
@@ -178,4 +198,21 @@ class ConnectionTest extends DatabaseTestCase
         $this->assertEquals(1, $profilesCount, 'profile should be inserted in transaction shortcut');
     }
 
+    /**
+     * Tests nested transactions with partial rollback.
+     * @see https://github.com/yiisoft/yii2/issues/9851
+     */
+    public function testNestedTransaction()
+    {
+        /** @var Connection $connection */
+        $connection = $this->getConnection(true);
+        $connection->transaction(function(Connection $db) {
+            $this->assertNotNull($db->transaction);
+            $db->transaction(function(Connection $db) {
+                $this->assertNotNull($db->transaction);
+                $db->transaction->rollBack();
+            });
+            $this->assertNotNull($db->transaction);
+        });
+    }
 }

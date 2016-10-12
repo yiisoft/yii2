@@ -291,6 +291,8 @@ The behavior configuration above specifies that when the record is being:
   the `created_at` and `updated_at` attributes
 * updated, the behavior should assign the current UNIX timestamp to the `updated_at` attribute
 
+> Note: For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
+
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
 filled with the current UNIX timestamp:
 

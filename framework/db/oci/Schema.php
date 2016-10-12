@@ -8,10 +8,10 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
+use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database
@@ -73,7 +73,7 @@ class Schema extends \yii\db\Schema
      */
     public function createColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 
     /**
@@ -123,13 +123,6 @@ class Schema extends \yii\db\Schema
         $sql = <<<SQL
 SELECT a.column_name, a.data_type, a.data_precision, a.data_scale, a.data_length,
     a.nullable, a.data_default,
-    (   SELECT D.constraint_type
-        FROM ALL_CONS_COLUMNS C
-        inner join ALL_constraints D on D.OWNER = C.OWNER and D.constraint_name = C.constraint_name
-        WHERE C.OWNER = B.OWNER
-           and C.table_name = B.object_name
-           and C.column_name = A.column_name
-           and D.constraint_type = 'P') as Key,
     com.comments as column_comment
 FROM ALL_TAB_COLUMNS A
 inner join ALL_OBJECTS B ON b.owner = a.owner and ltrim(B.OBJECT_NAME) = ltrim(A.TABLE_NAME)
@@ -160,10 +153,6 @@ SQL;
             }
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
-            if ($c->isPrimaryKey) {
-                $table->primaryKey[] = $c->name;
-                $table->sequenceName = $this->getTableSequenceName($table->name);
-            }
         }
         return true;
     }
@@ -223,9 +212,8 @@ SQL;
         $c = $this->createColumnSchema();
         $c->name = $column['COLUMN_NAME'];
         $c->allowNull = $column['NULLABLE'] === 'Y';
-        $c->isPrimaryKey = strpos($column['KEY'], 'P') !== false;
         $c->comment = $column['COLUMN_COMMENT'] === null ? '' : $column['COLUMN_COMMENT'];
-
+        $c->isPrimaryKey = false;
         $this->extractColumnType($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
         $this->extractColumnSize($c, $column['DATA_TYPE'], $column['DATA_PRECISION'], $column['DATA_SCALE'], $column['DATA_LENGTH']);
 
@@ -283,11 +271,21 @@ SQL;
             if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
                 $row = array_change_key_case($row, CASE_UPPER);
             }
+
+            if ($row['CONSTRAINT_TYPE'] === 'P') {
+                $table->columns[$row['COLUMN_NAME']]->isPrimaryKey = true;
+                $table->primaryKey[] = $row['COLUMN_NAME'];
+                if (empty($table->sequenceName)) {
+                    $table->sequenceName = $this->getTableSequenceName($table->name);
+                }
+            }
+
             if ($row['CONSTRAINT_TYPE'] !== 'R') {
                 // this condition is not checked in SQL WHERE because of an Oracle Bug:
                 // see https://github.com/yiisoft/yii2/pull/8844
                 continue;
             }
+
             $name = $row['CONSTRAINT_NAME'];
             if (!isset($constraints[$name])) {
                 $constraints[$name] = [
@@ -441,9 +439,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) === '' ? null : (int) $length;
-        $column->precision = trim($precision) === '' ? null : (int) $precision;
-        $column->scale = trim($scale) === '' ? null : (int) $scale;
+        $column->size = trim($length) === '' ? null : (int)$length;
+        $column->precision = trim($precision) === '' ? null : (int)$precision;
+        $column->scale = trim($scale) === '' ? null : (int)$scale;
     }
 
     /**
@@ -459,7 +457,7 @@ SQL;
         if (!empty($returnColumns)) {
             $columnSchemas = $tableSchema->columns;
             $returning = [];
-            foreach ((array) $returnColumns as $name) {
+            foreach ((array)$returnColumns as $name) {
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'column' => $name,

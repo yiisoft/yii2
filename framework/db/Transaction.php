@@ -37,6 +37,7 @@ use yii\base\InvalidConfigException;
  * one of [[READ_UNCOMMITTED]], [[READ_COMMITTED]], [[REPEATABLE_READ]] and [[SERIALIZABLE]] but also a string
  * containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is
  * write-only.
+ * @property integer $level The current nesting level of the transaction. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -210,5 +211,14 @@ class Transaction extends \yii\base\Object
         }
         Yii::trace('Setting transaction isolation level to ' . $level, __METHOD__);
         $this->db->getSchema()->setTransactionIsolationLevel($level);
+    }
+
+    /**
+     * @return integer The current nesting level of the transaction.
+     * @since 2.0.8
+     */
+    public function getLevel()
+    {
+        return $this->_level;
     }
 }
