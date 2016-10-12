@@ -1313,67 +1313,67 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertFalse($baseModel->hasProperty('unExistingColumn'));
     }
 
-    public function testCancelQuery()
+    public function testEmulateExecution()
     {
         $rows = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->all();
         $this->assertSame([], $rows);
 
         $row = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->one();
         $this->assertSame(null, $row);
 
         $exists = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->exists();
         $this->assertSame(false, $exists);
 
         $count = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->count();
         $this->assertSame(0, $count);
 
         $sum = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->sum('id');
         $this->assertSame(0, $sum);
 
         $sum = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->average('id');
         $this->assertSame(0, $sum);
 
         $max = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->max('id');
         $this->assertSame(null, $max);
 
         $min = Customer::find()
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->min('id');
         $this->assertSame(null, $min);
 
         $scalar = Customer::find()
             ->select(['id'])
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->scalar();
         $this->assertSame(null, $scalar);
 
         $column = Customer::find()
             ->select(['id'])
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->column();
         $this->assertSame([], $column);
     }

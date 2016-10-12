@@ -254,14 +254,14 @@ interface QueryInterface
     public function offset($offset);
 
     /**
-     * Cancels the query actual execution, preventing interaction with data storage.
-     * After this method is triggered, methods, returning query results like [[one()]], [[all()]], [[exists()]]
+     * Sets whether to emulate query execution, preventing any interaction with data storage.
+     * After this mode is enabled, methods, returning query results like [[one()]], [[all()]], [[exists()]]
      * and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
      * @param boolean $value whether to prevent query execution.
-     * @return $this the query object itself
+     * @return $this the query object itself.
      * @since 2.0.11
      */
-    public function preventExecution($value = true);
+    public function emulateExecution($value = true);
 }

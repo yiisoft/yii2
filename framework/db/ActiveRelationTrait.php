@@ -464,7 +464,7 @@ trait ActiveRelationTrait
                 }
             }
             if (empty($values)) {
-                $this->preventExecution();
+                $this->emulateExecution();
             }
         } else {
             // composite keys
@@ -481,7 +481,7 @@ trait ActiveRelationTrait
                 }
                 $values[] = $v;
                 if (empty($v)) {
-                    $this->preventExecution();
+                    $this->emulateExecution();
                 }
             }
         }

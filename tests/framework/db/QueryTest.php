@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -318,69 +319,69 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(1, $count);
     }
 
-    public function testPreventExecution()
+    public function testEmulateExecution()
     {
         $db = $this->getConnection();
 
         $rows = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->all($db);
         $this->assertSame([], $rows);
 
         $row = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->one($db);
         $this->assertSame(false, $row);
 
         $exists = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->exists($db);
         $this->assertSame(false, $exists);
 
         $count = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->count($db);
         $this->assertSame(0, $count);
 
         $sum = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->sum('id', $db);
         $this->assertSame(0, $sum);
 
         $sum = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->average('id', $db);
         $this->assertSame(0, $sum);
 
         $max = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->max('id', $db);
         $this->assertSame(null, $max);
 
         $min = (new Query())
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->min('id', $db);
         $this->assertSame(null, $min);
 
         $scalar = (new Query())
             ->select(['id'])
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->scalar($db);
         $this->assertSame(null, $scalar);
 
         $column = (new Query())
             ->select(['id'])
             ->from('customer')
-            ->preventExecution()
+            ->emulateExecution()
             ->column($db);
         $this->assertSame([], $column);
     }
