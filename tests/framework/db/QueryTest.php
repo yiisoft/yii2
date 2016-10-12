@@ -318,7 +318,7 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(1, $count);
     }
 
-    public function testCancel()
+    public function testPreventExecution()
     {
         $db = $this->getConnection();
 
