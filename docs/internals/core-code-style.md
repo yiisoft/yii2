@@ -142,9 +142,23 @@ class Foo
 }
 ```
 
-### 4.4 Doc blocks
+### 4.4 PHPDoc blocks
 
-`@param`, `@var`, `@property` and `@return` must declare types as `boolean`, `integer`, `string`, `array` or `null`. You can use a class names as well such as `Model` or `ActiveRecord`. For a typed arrays use `ClassName[]`.
+ - `@param`, `@var`, `@property` and `@return` must declare types as `boolean`, `integer`, `string`, `array` or `null`. 
+   You can use a class names as well such as `Model` or `ActiveRecord`. 
+ - For a typed arrays use `ClassName[]`.
+ - `@return` should explicitly describe what exactly will be returned
+  
+```php
+/**
+ * Returns a boolean whether the IP is in subnet range
+ * 
+ * @param string $ip an IPv4 or IPv6 address
+ * @param integer $cidr the CIDR lendth
+ * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
+ * @return boolean whether the IP is in subnet range
+ */
+```
 
 ### 4.5 Constructors
 
