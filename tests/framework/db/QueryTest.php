@@ -324,63 +324,63 @@ abstract class QueryTest extends DatabaseTestCase
 
         $rows = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->all($db);
         $this->assertSame([], $rows);
 
         $row = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->one($db);
         $this->assertSame(false, $row);
 
         $exists = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->exists($db);
         $this->assertSame(false, $exists);
 
         $count = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->count($db);
         $this->assertSame(0, $count);
 
         $sum = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->sum('id', $db);
         $this->assertSame(0, $sum);
 
         $sum = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->average('id', $db);
         $this->assertSame(0, $sum);
 
         $max = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->max('id', $db);
         $this->assertSame(null, $max);
 
         $min = (new Query())
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->min('id', $db);
         $this->assertSame(null, $min);
 
         $scalar = (new Query())
             ->select(['id'])
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->scalar($db);
         $this->assertSame(null, $scalar);
 
         $column = (new Query())
             ->select(['id'])
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->column($db);
         $this->assertSame([], $column);
     }

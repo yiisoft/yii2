@@ -207,7 +207,7 @@ class Query extends Component implements QueryInterface
      */
     public function all($db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return [];
         }
         $rows = $this->createCommand($db)->queryAll();
@@ -247,7 +247,7 @@ class Query extends Component implements QueryInterface
      */
     public function one($db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return false;
         }
         return $this->createCommand($db)->queryOne();
@@ -263,7 +263,7 @@ class Query extends Component implements QueryInterface
      */
     public function scalar($db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return null;
         }
         return $this->createCommand($db)->queryScalar();
@@ -277,7 +277,7 @@ class Query extends Component implements QueryInterface
      */
     public function column($db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return [];
         }
 
@@ -313,7 +313,7 @@ class Query extends Component implements QueryInterface
      */
     public function count($q = '*', $db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return 0;
         }
         return $this->queryScalar("COUNT($q)", $db);
@@ -329,7 +329,7 @@ class Query extends Component implements QueryInterface
      */
     public function sum($q, $db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return 0;
         }
         return $this->queryScalar("SUM($q)", $db);
@@ -345,7 +345,7 @@ class Query extends Component implements QueryInterface
      */
     public function average($q, $db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return 0;
         }
         return $this->queryScalar("AVG($q)", $db);
@@ -385,7 +385,7 @@ class Query extends Component implements QueryInterface
      */
     public function exists($db = null)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return false;
         }
         $command = $this->createCommand($db);
@@ -404,7 +404,7 @@ class Query extends Component implements QueryInterface
      */
     protected function queryScalar($selectExpression, $db)
     {
-        if ($this->canceled) {
+        if ($this->preventExecution) {
             return null;
         }
 

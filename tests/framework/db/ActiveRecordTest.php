@@ -1317,63 +1317,63 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         $rows = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->all();
         $this->assertSame([], $rows);
 
         $row = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->one();
         $this->assertSame(null, $row);
 
         $exists = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->exists();
         $this->assertSame(false, $exists);
 
         $count = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->count();
         $this->assertSame(0, $count);
 
         $sum = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->sum('id');
         $this->assertSame(0, $sum);
 
         $sum = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->average('id');
         $this->assertSame(0, $sum);
 
         $max = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->max('id');
         $this->assertSame(null, $max);
 
         $min = Customer::find()
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->min('id');
         $this->assertSame(null, $min);
 
         $scalar = Customer::find()
             ->select(['id'])
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->scalar();
         $this->assertSame(null, $scalar);
 
         $column = Customer::find()
             ->select(['id'])
             ->from('customer')
-            ->cancel()
+            ->preventExecution()
             ->column();
         $this->assertSame([], $column);
     }
