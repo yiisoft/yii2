@@ -1312,4 +1312,69 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $baseModel = new ActiveRecord();
         $this->assertFalse($baseModel->hasProperty('unExistingColumn'));
     }
+
+    public function testEmulateExecution()
+    {
+        $rows = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->all();
+        $this->assertSame([], $rows);
+
+        $row = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->one();
+        $this->assertSame(null, $row);
+
+        $exists = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->exists();
+        $this->assertSame(false, $exists);
+
+        $count = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->count();
+        $this->assertSame(0, $count);
+
+        $sum = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->sum('id');
+        $this->assertSame(0, $sum);
+
+        $sum = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->average('id');
+        $this->assertSame(0, $sum);
+
+        $max = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->max('id');
+        $this->assertSame(null, $max);
+
+        $min = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->min('id');
+        $this->assertSame(null, $min);
+
+        $scalar = Customer::find()
+            ->select(['id'])
+            ->from('customer')
+            ->emulateExecution()
+            ->scalar();
+        $this->assertSame(null, $scalar);
+
+        $column = Customer::find()
+            ->select(['id'])
+            ->from('customer')
+            ->emulateExecution()
+            ->column();
+        $this->assertSame([], $column);
+    }
 }

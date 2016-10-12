@@ -463,6 +463,9 @@ trait ActiveRelationTrait
                     }
                 }
             }
+            if (empty($values)) {
+                $this->emulateExecution();
+            }
         } else {
             // composite keys
 
@@ -477,6 +480,9 @@ trait ActiveRelationTrait
                     $v[$attribute] = $model[$link];
                 }
                 $values[] = $v;
+                if (empty($v)) {
+                    $this->emulateExecution();
+                }
             }
         }
         $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);
