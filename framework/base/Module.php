@@ -344,7 +344,20 @@ class Module extends ServiceLocator
      */
     protected function defaultVersion()
     {
-        $versionTimestamp = @filemtime($this->getBasePath());
+        $basePath = $this->getBasePath();
+
+        foreach (['.git', '.hg'] as $vcsFileName) {
+            $fileName = $basePath . DIRECTORY_SEPARATOR . $vcsFileName;
+            if (file_exists($fileName)) {
+                $versionTimestamp = @filemtime($fileName);
+                break;
+            }
+        }
+
+        if (!isset($versionTimestamp)) {
+            $versionTimestamp = @filemtime($basePath);
+        }
+
         if ($versionTimestamp === false) {
             return 'unknown';
         }
