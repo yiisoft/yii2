@@ -118,9 +118,14 @@ is set to `false` on the compare validator too.
 
 ## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
+The [[yii\validators\DateValidator|date]] validator comes with three different
+shortcuts:
+
 ```php
 [
     [['from_date', 'to_date'], 'date'],
+    [['from_datetime', 'to_datetime'], 'datetime'],
+    [['some_time'], 'time'],
 ]
 ```
 
