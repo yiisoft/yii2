@@ -69,7 +69,9 @@ abstract class BaseListView extends Widget
      */
     public $summaryOptions = ['class' => 'summary'];
     /**
-     * @var boolean whether to show the list view if [[dataProvider]] returns no data.
+     * @var boolean whether to show an empty list view if [[dataProvider]] returns no data.
+     * The default value is false which displays an element according to the `emptyText`
+     * and `emptyTextOptions` properties.
      */
     public $showOnEmpty = false;
     /**
