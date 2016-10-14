@@ -1228,7 +1228,7 @@ trait ActiveRecordTestTrait
         $this->assertNull($model->name);
 
         // @see https://github.com/yiisoft/yii2-gii/issues/190
-        $baseModel = new ActiveRecord();
+        $baseModel = new $customerClass();
         $this->assertFalse($baseModel->hasProperty('unExistingColumn'));
 
 
@@ -1257,9 +1257,10 @@ trait ActiveRecordTestTrait
 
         try {
 
-            $customer->orderItems = [new Item()];
-            // setter call above MUST throw Exception
-            $this->assertTrue(false);
+            /* @var $itemClass \yii\db\ActiveRecordInterface */
+            $itemClass = $this->getItemClass();
+            $customer->orderItems = [new $itemClass()];
+            $this->fail('setter call above MUST throw Exception');
 
         } catch (\Exception $e) {
             // catch exception "Setting read-only property"
