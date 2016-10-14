@@ -9,9 +9,11 @@ namespace yiiunit\framework\ar;
 
 use yii\base\Event;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Item;
 use yiiunit\data\ar\Order;
 
 /**
