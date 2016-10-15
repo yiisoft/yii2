@@ -86,6 +86,7 @@ Yii Framework 2 Change Log
 - Enh #12744: Added `afterInit` event to `yii.activeForm.js` (werew01f)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 - Enh #12198: Added `time` and `datetime` validator short names (nkovacs)
+- Enh: Allow `itemOptions` in `yii\widgets\ListView` to be a closure (webdevsega)
 
 
 2.0.9 July 11, 2016
