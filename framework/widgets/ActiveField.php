@@ -146,7 +146,7 @@ class ActiveField extends Component
      */
     public $parts = [];
     /**
-     * @var bool adds aria HTML attributes `aria-required` and `aria-invalid` for inputs
+     * @var bool adds ARIA HTML attributes `aria-required` and `aria-invalid` for inputs
      */
     public $addAriaAttributes = false;
 
@@ -717,7 +717,7 @@ class ActiveField extends Component
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
-        if (in_array('yii\widgets\InputWidget', class_parents($class)) && isset($config['options'])) {
+        if (isset($config['options']) && isset(class_parents($class)['yii\widgets\InputWidget'])) {
             $this->addAriaAttributes($config['options']);
             $this->adjustLabelFor($config['options']);
         }
@@ -847,7 +847,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Adds aria attributes to the input options
+     * Adds ARIA attributes to the input options
      * @param $options array input options
      */
     protected function addAriaAttributes(&$options)
