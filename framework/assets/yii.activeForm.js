@@ -100,7 +100,15 @@
          *  - jqXHR: a jqXHR object
          *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
-        ajaxComplete: 'ajaxComplete'
+        ajaxComplete: 'ajaxComplete',
+        /**
+         * afterInit event is triggered after yii activeForm init.
+         * The signature of the event handler should be:
+         *     function (event)
+         * where
+         *  - event: an Event object.
+         */        
+        afterInit: 'afterInit'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveForm::getClientOptions() as well
@@ -217,6 +225,8 @@
                     });
                     $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
+                var event = $.Event(events.afterInit);
+                $form.trigger(event);
             });
         },
 

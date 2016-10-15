@@ -28,7 +28,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
         Schema::TYPE_CHAR => 'nchar(1)',
         Schema::TYPE_STRING => 'nvarchar(255)',
-        Schema::TYPE_TEXT => 'ntext',
+        Schema::TYPE_TEXT => 'nvarchar(max)',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',

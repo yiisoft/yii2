@@ -120,6 +120,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
    // verifica se o usuário pode acessar $action and $model
    // lança a ForbiddenHttpException se o acesso for negado
+   if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

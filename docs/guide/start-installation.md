@@ -53,7 +53,7 @@ by running `composer self-update`.
 > Please refer to the [Composer documentation about Github API tokens](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > for instructions on how to do this.
 
-### Installing Yii
+### Installing Yii <span id="installing-from-composer"></span>
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 

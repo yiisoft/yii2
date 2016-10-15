@@ -50,6 +50,11 @@ containing the translations. The following shows an example for German:
 
 * Yii 2.0 or Yii 2 (not Yii2 or Yii2.0)
 * Each "page" of the guide is referred to as a "section".
+* References to Code objects:
+  - Refer to classes using the full namespace: `yii\base\Model`
+  - Refer to class properties using the static syntax even if they are not static: `yii\base\Model::$validators`
+  - Refer to class methods using the static syntax even if they are not static and include parenthesis to make it clear, that it is a method: `yii\base\Model::validate()`
+  - references to code objects should be writting in `[[]]` to generate links to the API documentation. E.g. `[[yii\base\Model]]`, `[[yii\base\Model::$validators]]`, or `[[yii\base\Model::validate()]]`.
 
 ## Capitalizations
 

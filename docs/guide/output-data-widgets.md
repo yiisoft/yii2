@@ -24,13 +24,15 @@ A typical usage of DetailView is as follows:
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title attribute (in plain text)
-        'description:html',    // description attribute formatted as HTML
-        [                      // the owner name of the model
+        'title',                                           // title attribute (in plain text)
+        'description:html',                                // description attribute formatted as HTML
+        [                                                  // the owner name of the model
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // to HTML customize attributes of value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // to HTML customize attributes of label tag
         ],
-        'created_at:datetime', // creation date formatted as datetime
+        'created_at:datetime',                             // creation date formatted as datetime
     ],
 ]);
 ```
