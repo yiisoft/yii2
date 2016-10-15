@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
-- Bug #12345 Fixed `Formatter::asCurrency()` for proper decimal formatting (Oxyaction)
+- Bug #12345: Fixed `Formatter::asCurrency()` for proper decimal formatting (Oxyaction)
 - Bug #7670: Added `yii\web\UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #10358: Fixed race condition in `yii.js` AJAX prefilter (silverfire)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
