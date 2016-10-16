@@ -289,8 +289,8 @@ window.yii = (function ($) {
 
             for (i = 0; i < pairs.length; i++) {
                 pair = pairs[i].split('=');
-                var name = decodeURIComponent(pair[0]);
-                var value = decodeURIComponent(pair[1]);
+                var name = decodeURIComponent(pair[0].replace(/\+/g, '%20'));
+                var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
                 if (name.length) {
                     if (params[name] !== undefined) {
                         if (!$.isArray(params[name])) {
