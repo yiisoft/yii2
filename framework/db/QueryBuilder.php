@@ -164,7 +164,7 @@ class QueryBuilder extends \yii\base\Object
                 }
             } elseif ($value instanceof \yii\db\Query) {
                 list($sql, $params) = $this->build($value, $params);
-                $placeholders[] = "($sql)";
+                $placeholders[] = "($sql)";
             } else {
                 $phName = self::PARAM_PREFIX . count($params);
                 $placeholders[] = $phName;
