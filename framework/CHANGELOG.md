@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.10 under development
 ------------------------
 
+- Enh #12758: Added the ability to use instances of `\yii\db\Query` class as values in the `\yii\db\QueryBuilder::insert()` method (PowerGamer1)
 - Bug #7670: Added `yii\web\UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #10358: Fixed race condition in `yii.js` AJAX prefilter (silverfire)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
