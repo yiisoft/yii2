@@ -15,6 +15,12 @@ php composer.phar self-update
 php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 ```
 
+Then run:
+
+```
+php composer.php require "yiisoft/yii2:~2.0.9"
+```
+
 Upgrade from Yii 2.0.9
 ----------------------
 
