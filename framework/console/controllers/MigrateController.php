@@ -8,7 +8,6 @@
 namespace yii\console\controllers;
 
 use Yii;
-use yii\console\Exception;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
