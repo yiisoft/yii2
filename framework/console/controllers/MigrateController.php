@@ -8,6 +8,7 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\console\Exception;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -166,9 +167,7 @@ class MigrateController extends BaseMigrateController
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($action->id !== 'create') {
-                $this->db = Instance::ensure($this->db, Connection::className());
-            }
+            $this->db = Instance::ensure($this->db, Connection::className());
             return true;
         } else {
             return false;
@@ -293,8 +292,8 @@ class MigrateController extends BaseMigrateController
                 ]
             );
 
-            $foreignKeys[$firstTable . '_id'] = $firstTable;
-            $foreignKeys[$secondTable . '_id'] = $secondTable;
+            $foreignKeys[$firstTable . '_id']['table'] = $firstTable;
+            $foreignKeys[$secondTable . '_id']['table'] = $secondTable;
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
@@ -312,11 +311,28 @@ class MigrateController extends BaseMigrateController
             $table = mb_strtolower($matches[1], Yii::$app->charset);
         }
 
-        foreach ($foreignKeys as $column => $relatedTable) {
+        foreach ($foreignKeys as $column => $foreignKey) {
+            $relatedColumn = $foreignKey['column'];
+            $relatedTable = $foreignKey['table'];
+            if (empty($relatedColumn)) {
+                $relatedColumn = 'id';
+                $relatedTableSchema = $this->db->getTableSchema($relatedTable);
+                if ($relatedTableSchema !== null) {
+                    $primaryKeyCount = count($relatedTableSchema->primaryKey);
+                    if ($primaryKeyCount > 1) {
+                        $this->stdout("Related table for field {$column} already exist, but primary key is a composite. Default name will be used for related field\n", Console::FG_YELLOW);
+                    } elseif ($primaryKeyCount < 1) {
+                        $this->stdout("Related table for field {$column} already exist, but do not have primary key. Default name will be used for related field.\n", Console::FG_YELLOW);
+                    } else {
+                        $relatedColumn = $relatedTableSchema->primaryKey[0];
+                    }
+                }
+            }
             $foreignKeys[$column] = [
                 'idx' => $this->generateTableName("idx-$table-$column"),
                 'fk' => $this->generateTableName("fk-$table-$column"),
                 'relatedTable' => $this->generateTableName($relatedTable),
+                'relatedColumn' => $relatedColumn,
             ];
         }
 
@@ -363,10 +379,15 @@ class MigrateController extends BaseMigrateController
 
             foreach ($chunks as $i => &$chunk) {
                 if (strpos($chunk, 'foreignKey') === 0) {
-                    preg_match('/foreignKey\((\w*)\)/', $chunk, $matches);
-                    $foreignKeys[$property] = isset($matches[1])
-                        ? $matches[1]
-                        : preg_replace('/_id$/', '', $property);
+                    preg_match('/foreignKey\((\w*)\s?(\w*)\)/', $chunk, $matches);
+                    $foreignKeys[$property] = [
+                        'table' => isset($matches[1])
+                            ? $matches[1]
+                            : preg_replace('/_id$/', '', $property),
+                        'column' => isset($matches[2])
+                            ? $matches[2]
+                            : '',
+                    ];
 
                     unset($chunks[$i]);
                     continue;
