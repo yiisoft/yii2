@@ -293,6 +293,8 @@ class MigrateController extends BaseMigrateController
 
             $foreignKeys[$firstTable . '_id']['table'] = $firstTable;
             $foreignKeys[$secondTable . '_id']['table'] = $secondTable;
+            $foreignKeys[$firstTable . '_id']['column'] = 'id';
+            $foreignKeys[$secondTable . '_id']['column'] = 'id';
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
