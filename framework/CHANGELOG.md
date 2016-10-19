@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #9561: Fixed `canGetProperty()` and `canSetProperty()` returns `false` for `yii\db\BaseActiveRecord` attributes (klimov-paul, Ni-san)
 - Bug #10567: Fixed `yii\console\controllers\AssetController` looses bundle override configuration, which makes it external one (klimov-paul)
 - Bug #10563: Fixed forming `Content-Disposition` header for file downloads (samdark)
+- Bug #10587: Latest used controller instance was not available in `Response::EVENT_AFTER_SEND` handler (samdark, andrewnester)
 - Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
 - Bug #11347: Fixed `yii\widgets\Pjax::registerClientScript()` to pass custom `container` to the PJAX JS plugin (silverfire)
 - Bug #11352: Fixed `updateInputs()` method in `yii.activeForm.js` to prevent reading property of undefined (silverfire)
