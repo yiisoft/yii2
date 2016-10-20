@@ -77,10 +77,11 @@ $object->label = 'abc';
   然后给 `$object->label = 'abc'` 赋值，将赋给成员变量而不是 setter `setLabel()` 方法。
 * 这类属性不支持可见性（访问限制）。定义属性的 getter 和 setter 方法是 public、protected 还是 private 对属性的可见性没有任何影响。
 * 这类属性的 getter 和 setter 方法只能定义为**非静态**的，若定义为静态方法（static）则不会以相同方式处理。
-* A normal call to `property_exists()` does not work to determine magic properties. You should call [[yii\base\Object::canGetProperty()|canGetProperty()]]
-  or [[yii\base\Object::canSetProperty()|canSetProperty()]] respectively.
+* 对 `property_exists()` 不能确定魔术属性的正常调用。你应该调用 [[yii\base\Object::canGetProperty()|canGetProperty()]]
+  或 [[yii\base\Object::canSetProperty()|canSetProperty()]]。
 
 回到开头提到的问题，与其处处要调用 `trim()` 函数，
 现在我们只需在 setter `setLabel()` 方法内调用一次。
 如果 label 首字母变成大写的新要求来了，我们只需要修改`setLabel()` 方法，
 而无须接触任何其它代码。
+
