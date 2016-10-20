@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.11 under development
 ------------------------
 
-- no changes in this release.
+- Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 
 
 2.0.10 October 20, 2016
