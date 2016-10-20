@@ -158,7 +158,7 @@ class ActiveForm extends Widget
     public $scrollToError = true;
     /**
      * @var int offset in pixels that should be added when scrolling to the first error.
-     * @since 2.0.10
+     * @since 2.0.11
      */
     public $scrollToErrorOffset = 0;
     /**
