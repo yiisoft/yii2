@@ -350,8 +350,8 @@ class PhpDocController extends Controller
             $types = explode('|', $matches[2]);
             foreach($types as $i => $type) {
                 switch($type){
-                    case 'int': $types[$i] = 'integer'; break;
-                    case 'bool': $types[$i] = 'boolean'; break;
+                    case 'integer': $types[$i] = 'int'; break;
+                    case 'boolean': $types[$i] = 'bool'; break;
                 }
             }
             return '@' . $matches[1] . ' ' . implode('|', $types);
