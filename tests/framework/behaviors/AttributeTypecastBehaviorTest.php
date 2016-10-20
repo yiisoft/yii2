@@ -71,6 +71,23 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('callback: foo', $model->callback);
     }
 
+    public function testAutoTypecast()
+    {
+        $model = new ActiveRecordAutoAttributeTypecast();
+
+        $model->name = 123;
+        $model->amount = '58';
+        $model->price = '100.8';
+        $model->isActive = 1;
+
+        $model->getAttributeTypecastBehavior()->typecastAttributes();
+
+        $this->assertSame('123', $model->name);
+        $this->assertSame(58, $model->amount);
+        $this->assertSame(100.8, $model->price);
+        $this->assertSame(true, $model->isActive);
+    }
+
     /**
      * @depends testTypecast
      */
@@ -132,7 +149,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model = new ActiveRecordAttributeTypecast();
 
         $model->getAttributeTypecastBehavior()->attributeTypes = null;
-        $model->getAttributeTypecastBehavior()->init();
+        $model->getAttributeTypecastBehavior()->reinitTypecastAttributes();
 
         $expectedAttributeTypes = [
             'name' => AttributeTypecastBehavior::TYPE_STRING,
@@ -200,5 +217,28 @@ class ActiveRecordAttributeTypecast extends ActiveRecord
     public function getAttributeTypecastBehavior()
     {
         return $this->getBehavior('attributeTypecast');
+    }
+}
+
+
+/**
+ * Test Active Record class with [[AttributeTypecastBehavior]] behavior attached.
+ *
+ * @property integer $id
+ * @property string $name
+ * @property integer $amount
+ * @property float $price
+ * @property boolean $isActive
+ * @property string $callback
+ *
+ * @property AttributeTypecastBehavior $attributeTypecastBehavior
+ */
+class ActiveRecordAutoAttributeTypecast extends ActiveRecordAttributeTypecast
+{
+    public function behaviors()
+    {
+        return [
+            'attributeTypecast' => AttributeTypecastBehavior::className(),
+        ];
     }
 }
