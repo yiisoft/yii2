@@ -634,6 +634,9 @@
                     if(top < 0) {
                         top = 0;
                     }
+                    if(top > $(document).height()) {
+                        top = $(document).height();
+                    }
                     var wtop = $(window).scrollTop();
                     if (top < wtop || top > wtop + $(window).height()) {
                         $(window).scrollTop(top);
