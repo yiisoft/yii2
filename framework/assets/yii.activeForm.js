@@ -631,6 +631,9 @@
                     var top = $form.find($.map(errorAttributes, function(attribute) {
                         return attribute.input;
                     }).join(',')).first().closest(':visible').offset().top - data.settings.scrollToErrorOffset;
+                    if(top < 0) {
+                        top = 0;
+                    }
                     var wtop = $(window).scrollTop();
                     if (top < wtop || top > wtop + $(window).height()) {
                         $(window).scrollTop(top);
