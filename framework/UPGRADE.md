@@ -18,7 +18,7 @@ php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 Then run:
 
 ```
-php composer.php require "yiisoft/yii2:~2.0.9"
+php composer.phar require "yiisoft/yii2:~2.0.9"
 ```
 
 Upgrade from Yii 2.0.9
@@ -26,11 +26,9 @@ Upgrade from Yii 2.0.9
 
 * RBAC: `getChildRoles()` method was added to `\yii\rbac\ManagerInterface`. If you've implemented your own RBAC manager
   you need to implement new method.
-* Microsoft SQL `NTEXT` data type [was marked as deprecated](https://msdn.microsoft.com/en-us/library/ms187993.aspx) so
-  `\yii\db\mssql\Schema::TYPE_TEXT` was changed from `'ntext'` to `'nvarchar(max)'
 
-Upgrade from Yii 2.0.8
-----------------------
+* Microsoft SQL `NTEXT` data type [was marked as deprecated](https://msdn.microsoft.com/en-us/library/ms187993.aspx) in MSSQL so
+  `\yii\db\mssql\Schema::TYPE_TEXT` was changed from `'ntext'` to `'nvarchar(max)'
 
 * Method `yii\web\Request::getBodyParams()` has been changed to pass full value of 'content-type' header to the second
   argument of `yii\web\RequestParserInterface::parse()`. If you create your own custom parser, which relies on `$contentType`
@@ -41,6 +39,7 @@ Upgrade from Yii 2.0.8
 
 * Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()`
   and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
+
 * Fixture console command syntax was changed from `yii fixture "*" -User` to `yii fixture "*, -User"`. Upgrade your
   scripts if necessary.
 
