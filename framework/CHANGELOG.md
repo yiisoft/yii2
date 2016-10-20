@@ -6,6 +6,8 @@ Yii Framework 2 Change Log
 
 - no changes in this release.
 
+- Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
+- Enh #11464: ForeignKey name is not provided (joaoppereira)
 
 2.0.10 October 20, 2016
 -----------------------

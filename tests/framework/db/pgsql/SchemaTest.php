@@ -81,6 +81,20 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
+    public function testCompositeFk()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('composite_fk');
+
+        $this->assertCount(1, $table->foreignKeys);
+        $this->assertTrue(isset($table->foreignKeys['fk_composite_fk_order_item']));
+        $this->assertEquals('order_item', $table->foreignKeys['fk_composite_fk_order_item'][0]);
+        $this->assertEquals('order_id', $table->foreignKeys['fk_composite_fk_order_item']['order_id']);
+        $this->assertEquals('item_id', $table->foreignKeys['fk_composite_fk_order_item']['item_id']);
+    }
+
     public function testGetPDOType()
     {
         $values = [
