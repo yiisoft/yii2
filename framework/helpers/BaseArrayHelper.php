@@ -768,7 +768,7 @@ class BaseArrayHelper
      * Filters array according to rules specified.
      *
      * For example:
-     * 
+     *
      * ```php
      * $array = [
      *     'A' => [1, 2],

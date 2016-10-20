@@ -105,8 +105,6 @@ use yii\validators\StringValidator;
  * $model->typecastAttributes();
  * ```
  *
- * @property Model|BaseActiveRecord $owner the owner of this behavior.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
@@ -117,6 +115,10 @@ class AttributeTypecastBehavior extends Behavior
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_STRING = 'string';
 
+    /**
+     * @var Model|BaseActiveRecord the owner of this behavior.
+     */
+    public $owner;
     /**
      * @var array attribute typecast map in format: attributeName => type.
      * Type can be set via PHP callable, which accept raw value as an argument and should return

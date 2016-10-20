@@ -135,7 +135,8 @@ class FileMutex extends Mutex
      * @return string
      * @since 2.0.10
      */
-	protected function getLockFilePath($name) {
-		return $this->mutexPath . '/' . md5($name) . '.lock';
-	}
+    protected function getLockFilePath($name)
+    {
+        return $this->mutexPath . '/' . md5($name) . '.lock';
+    }
 }

@@ -151,7 +151,6 @@ class ActiveField extends Component
      * `$options` parameters of the `input*` methods.
      */
     private $_inputId;
-
     /**
      * @var bool if "for" field label attribute should be skipped.
      */
