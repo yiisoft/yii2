@@ -1038,18 +1038,16 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
-            $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY, null, $options, $textOptions);
-            if ($currency === null) {
-                if ($this->currencyCode === null) {
-                    if (($result = $formatter->format($value)) === false) {
-                        throw new InvalidParamException('Formatting currency value failed: ' . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
-                    }
-                    return $result;
-                }
-                $currency = $this->currencyCode;
+            $currency = $currency ?: $this->currencyCode;
+            if ($currency && !isset($textOptions[NumberFormatter::CURRENCY_CODE])) {
+                $textOptions[NumberFormatter::CURRENCY_CODE] = $currency;
             }
-            if (($result = $formatter->formatCurrency($value, $currency)) === false) {
-                throw new InvalidParamException('Formatting currency value failed: ' . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
+            $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY, null, $options, $textOptions);
+            $result = $currency === null ? $formatter->format($value)
+                : $formatter->formatCurrency($value, $currency);
+            if ($result === false) {
+                throw new InvalidParamException('Formatting currency value failed: ' . $formatter->getErrorCode()
+                    . ' ' . $formatter->getErrorMessage());
             }
             return $result;
         } else {
