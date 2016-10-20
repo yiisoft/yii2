@@ -89,6 +89,7 @@ Yii Framework 2 Change Log
 - Enh #12499: When AJAX validation in enabled, `yii.activeForm.js` will run it forcefully on form submit to display all possible errors (silverfire)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 - Enh #12198: Added `time` and `datetime` validator short names (nkovacs)
+- Enh: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 
 
 2.0.9 July 11, 2016
