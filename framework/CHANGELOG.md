@@ -1,18 +1,18 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.10 under development
-------------------------
+2.0.10 October 20, 2016
+-----------------------
 
 - Bug #7670: Added `yii\web\UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
-- Bug #10358: Fixed race condition in `yii.js` AJAX prefilter (silverfire)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9101: Fixed `yii\web\View` to respect `yii\web\AssetManager::appendTimstamp` property (githubjeka, silverfire)
 - Bug #9277: Fixed `yii\console\controllers\AssetController` looses custom options of 'target' bundles (petrabarus, klimov-paul)
 - Bug #9561: Fixed `canGetProperty()` and `canSetProperty()` returns `false` for `yii\db\BaseActiveRecord` attributes (klimov-paul, Ni-san)
-- Bug #10567: Fixed `yii\console\controllers\AssetController` looses bundle override configuration, which makes it external one (klimov-paul)
+- Bug #10358: Fixed race condition in `yii.js` AJAX prefilter (silverfire)
 - Bug #10563: Fixed forming `Content-Disposition` header for file downloads (samdark)
+- Bug #10567: Fixed `yii\console\controllers\AssetController` looses bundle override configuration, which makes it external one (klimov-paul)
 - Bug #10587: Latest used controller instance was not available in `Response::EVENT_AFTER_SEND` handler (samdark, andrewnester)
 - Bug #10681: Reverted fix of beforeValidate event calling in `yii.activeForm.js` (silverfire)
 - Bug #11347: Fixed `yii\widgets\Pjax::registerClientScript()` to pass custom `container` to the PJAX JS plugin (silverfire)
@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #11726: `yii\web\DbSession` was echoing database errors in production mode (samdark, pastuhov, deadkrolik)
 - Bug #11907: Fixed `yii\helpers\Console::getScreenSize()` on Windows was giving out width and height swapped (Spell6inder, samdark, cebe)
 - Bug #11912: Fixed PostgreSQL Schema to support negative default values for integer/float/decimal columns (nsknewbie)
+- Bug #11921: Fixed URL decoding in `yii.getQueryParams()` to handle `+` (plus) character properly (silverfire)
 - Bug #11922: Fixed `yii\log\FileTarget` does not apply `fileMode` for rotated via copy files (klimov-paul)
 - Bug #11947: Fixed `gridData` initialization in `yii.gridView.js` (pavlm)
 - Bug #11949: Fixed `yii\widgets\ActiveField::end()` generates close tag when it's `option['tag']` is `null` (egorio)
@@ -51,7 +52,6 @@ Yii Framework 2 Change Log
 - Bug #12605: Make 'safe' validator work on write-only properties (arthibald, CeBe)
 - Bug #12629: Fixed `yii\widgets\ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
 - Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
-- Bug #11921: Fixed URL decoding in `yii.getQueryParams()` to handle `+` (plus) character properly (silverfire)
 - Enh #384: Added ability to run migration from several locations via `yii\console\controllers\BaseMigrateController::$migrationNamespaces` (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
@@ -78,17 +78,17 @@ Yii Framework 2 Change Log
 - Enh #12082: Used `jQuery.on(` instead of event method to ensure forwards compatibility (newerton)
 - Enh #12099: `yii\filters\HttpCache` no longer returns 304 HTTP code when callbacks return null (sergeymakinen)
 - Enh #12193: Added the ability to suppress the generation of duplicate error messages in `yii\helpers\Html::errorSummary()`. Added the ability to display error messages beyond the first error for each model attribute (PowerGamer1)
+- Enh #12198: Added `time` and `datetime` validator short names (nkovacs)
 - Enh #12230: Allows BaseHtml::activeListInput to override the field value (RangelReale)
 - Enh #12296: Added value validation to `yii\log\Target::setLevels()` (Mak-Di)
 - Enh #12376: Added parameter to `yii.activeForm.js` `validate()` method to be able to force validation (DrDeath72)
 - Enh #12382: Changed `yii\widgets\MaskedInput` to use `jQuery` instead of `$` to prevent conflicts (samdark)
 - Enh #12440: Added `yii\base\Event::offAll()` method allowing clear all registered class-level event handlers (klimov-paul)
+- Enh #12499: When AJAX validation in enabled, `yii.activeForm.js` will run it forcefully on form submit to display all possible errors (silverfire)
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
 - Enh #12664: Added support for wildcards for `optional` at `yii\filters\auth\AuthMethod` (mg-code)
 - Enh #12744: Added `afterInit` event to `yii.activeForm.js` (werew01f)
-- Enh #12499: When AJAX validation in enabled, `yii.activeForm.js` will run it forcefully on form submit to display all possible errors (silverfire)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
-- Enh #12198: Added `time` and `datetime` validator short names (nkovacs)
 
 
 2.0.9 July 11, 2016
