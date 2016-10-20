@@ -166,7 +166,9 @@ class MigrateController extends BaseMigrateController
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            $this->db = Instance::ensure($this->db, Connection::className());
+            if ($action->id !== 'create') {
+                $this->db = Instance::ensure($this->db, Connection::className());
+            }
             return true;
         } else {
             return false;
@@ -293,8 +295,8 @@ class MigrateController extends BaseMigrateController
 
             $foreignKeys[$firstTable . '_id']['table'] = $firstTable;
             $foreignKeys[$secondTable . '_id']['table'] = $secondTable;
-            $foreignKeys[$firstTable . '_id']['column'] = 'id';
-            $foreignKeys[$secondTable . '_id']['column'] = 'id';
+            $foreignKeys[$firstTable . '_id']['column'] = '';
+            $foreignKeys[$secondTable . '_id']['column'] = '';
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
@@ -317,16 +319,21 @@ class MigrateController extends BaseMigrateController
             $relatedTable = $foreignKey['table'];
             if (empty($relatedColumn)) {
                 $relatedColumn = 'id';
-                $relatedTableSchema = $this->db->getTableSchema($relatedTable);
-                if ($relatedTableSchema !== null) {
-                    $primaryKeyCount = count($relatedTableSchema->primaryKey);
-                    if ($primaryKeyCount > 1) {
-                        $this->stdout("Related table for field {$column} already exist, but primary key is a composite. Default name will be used for related field\n", Console::FG_YELLOW);
-                    } elseif ($primaryKeyCount < 1) {
-                        $this->stdout("Related table for field {$column} already exist, but do not have primary key. Default name will be used for related field.\n", Console::FG_YELLOW);
-                    } else {
-                        $relatedColumn = $relatedTableSchema->primaryKey[0];
+                try {
+                    $this->db = Instance::ensure($this->db, Connection::className());
+                    $relatedTableSchema = $this->db->getTableSchema($relatedTable);
+                    if ($relatedTableSchema !== null) {
+                        $primaryKeyCount = count($relatedTableSchema->primaryKey);
+                        if ($primaryKeyCount > 1) {
+                            $this->stdout("Related table for field \"{$column}\" exists, but primary key is composite. Default name \"id\" will be generated for related field\n", Console::FG_YELLOW);
+                        } elseif ($primaryKeyCount < 1) {
+                            $this->stdout("Related table for field \"{$column}\" exists, but does not have a primary key. Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
+                        } else {
+                            $relatedColumn = $relatedTableSchema->primaryKey[0];
+                        }
                     }
+                } catch (\ReflectionException $e) {
+                    $this->stdout("Cannot initialize database component to try read referenced table schema for field \"{$column}\". Default name \"id\" will be generated for related field.\n", Console::FG_YELLOW);
                 }
             }
             $foreignKeys[$column] = [
