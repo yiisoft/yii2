@@ -109,6 +109,10 @@ class Serializer extends Component
      * @var Response the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
+    /**
+     * @var bool keep the key elements in a serialization data. Used in `serializeDataProvider`.
+     */
+    public $saveKeys = true;
 
 
     /**
@@ -171,7 +175,11 @@ class Serializer extends Component
      */
     protected function serializeDataProvider($dataProvider)
     {
-        $models = $this->serializeModels(array_values($dataProvider->getModels()));
+        $models = $dataProvider->getModels();
+        if ($this->saveKeys !== true) {
+            $models = array_values($models);
+        }
+        $models = $this->serializeModels($models);
 
         if (($pagination = $dataProvider->getPagination()) !== false) {
             $this->addPaginationHeaders($pagination);
