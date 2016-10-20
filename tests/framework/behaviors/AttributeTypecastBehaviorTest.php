@@ -149,7 +149,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model = new ActiveRecordAttributeTypecast();
 
         $model->getAttributeTypecastBehavior()->attributeTypes = null;
-        $model->getAttributeTypecastBehavior()->reinitTypecastAttributes();
+        $model->getAttributeTypecastBehavior()->reinitAutoDetectedAttributeTypes();
 
         $expectedAttributeTypes = [
             'name' => AttributeTypecastBehavior::TYPE_STRING,
