@@ -86,9 +86,9 @@ return [
 ];
 ```
 
-In the above, there is an alternative way to configure the "search" component. Instead of directly writing a PHP
-callback which builds a `SolrService` instance, you can use a static class method to return such a callback, like
-shown as below:
+在上面的代码中，有一个替代方法来配置“搜索”组件。
+而不是直接写一个 PHP 回调建立 `SolrService`实例，你可以使用一个静态类方法来返回这样的回调，
+如下所示：
 
 ```php
 class SolrServiceBuilder
@@ -112,6 +112,7 @@ return [
 ];
 ```
 
-This alternative approach is most preferable when you are releasing a Yii component which encapsulates some non-Yii
-3rd-party library. You use the static method like shown above to represent the complex logic of building the
-3rd-party object, and the user of your component only needs to call the static method to configure the component.
+当你发布一个 Yii 组件封装一些非 Yii 第三方库时，这种替代方法是最好的。
+当您使用如上所示的静态方法来表示构建复杂逻辑的第三方对象时，
+您的组件用户只需要调用静态方法来配置组件。
+
