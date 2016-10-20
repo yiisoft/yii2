@@ -92,6 +92,9 @@ class DetailView extends Widget
      *
      * where `$attribute` refer to the specification of the attribute being rendered, `$index` is the zero-based
      * index of the attribute in the [[attributes]] array, and `$widget` refers to this widget instance.
+     *
+     * Since Version 2.0.10, the tokens `{captionOptions}` and `{contentOptions}` are available, which will represent
+     * HTML attributes of HTML container elements for the label and value.
      */
     public $template = '<tr><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>';
     /**
