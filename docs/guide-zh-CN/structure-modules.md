@@ -118,14 +118,14 @@ class PostController extends Controller
 如果没有配置 `layout` 属性名，默认会使用应用的布局。
 
 
-### Console commands in Modules <span id="console-commands-in-modules"></span>
+### 模块中的控制台命令 <span id="console-commands-in-modules"></span>
 
-Your module may also declare commands, that will be available through the [Console](tutorial-console.md) mode.
+您的模块也可以声明命令，这将通过 [控制台](tutorial-console.md) 模式可用。
 
-In order for the command line utility to see your commands, you will need to change the [[yii\base\Module::controllerNamespace]]
-property, when Yii is executed in the console mode, and point it to your commands namespace.
+当 Yii 在控制台模式下执行，并指向你的命令的命名空间，为了让命令行实用程序看到您的命令，您需要更改 [[yii\base\Module::controllerNamespace]]
+属性。
 
-One way to achieve that is to test the instance type of the Yii application in the module's `init` method:
+一种实现方法是在模块的 `init` 方法中测试Yii应用程序的实例类型:
 
 ```php
 public function init()
@@ -137,7 +137,7 @@ public function init()
 }
 ```
 
-Your commands will then be available from the command line using the following route:
+然后可以使用以下路由从命令行使用您的命令：
 
 ```
 yii <module_id>/<command>/<sub_command>
@@ -265,9 +265,9 @@ class Module extends \yii\base\Module
 例如`forum/admin/dashboard/index` 代表
 在模块`forum`中子模块`admin`中`dashboard`控制器的`index`操作。
 
-> Info: The [[yii\base\Module::getModule()|getModule()]] method only returns the child module directly belonging
-to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
-direct children and nested ones, indexed by their class names.
+> 注意：[[yii\base\Module::getModule()|getModule()]] 方法只返回属直接归属于其父级的子模块。
+[[yii\base\Application::loadedModules]] 属性保存加载模块的列表，
+通过它们的类名索引，包含直接的子节点和嵌套节点。
 
 
 ## 最佳实践 <span id="best-practices"></span>
