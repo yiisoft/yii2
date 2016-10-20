@@ -35,17 +35,17 @@ throw new \yii\web\NotFoundHttpException;
 对于上述的 [[yii\web\NotFoundHttpException]] 对应HTTP 404状态码，
 以下为Yii预定义的HTTP异常：
 
-* [[yii\web\BadRequestHttpException]]: status code 400.
-* [[yii\web\ConflictHttpException]]: status code 409.
-* [[yii\web\ForbiddenHttpException]]: status code 403.
-* [[yii\web\GoneHttpException]]: status code 410.
-* [[yii\web\MethodNotAllowedHttpException]]: status code 405.
-* [[yii\web\NotAcceptableHttpException]]: status code 406.
-* [[yii\web\NotFoundHttpException]]: status code 404.
-* [[yii\web\ServerErrorHttpException]]: status code 500.
-* [[yii\web\TooManyRequestsHttpException]]: status code 429.
-* [[yii\web\UnauthorizedHttpException]]: status code 401.
-* [[yii\web\UnsupportedMediaTypeHttpException]]: status code 415.
+* [[yii\web\BadRequestHttpException]]：状态码 400。
+* [[yii\web\ConflictHttpException]]：状态码 409。
+* [[yii\web\ForbiddenHttpException]]：状态码 403。
+* [[yii\web\GoneHttpException]]：状态码 410。
+* [[yii\web\MethodNotAllowedHttpException]]：状态码 405。
+* [[yii\web\NotAcceptableHttpException]]：状态码 406。
+* [[yii\web\NotFoundHttpException]]：状态码 404。
+* [[yii\web\ServerErrorHttpException]]：状态码 500。
+* [[yii\web\TooManyRequestsHttpException]]：状态码 429。
+* [[yii\web\UnauthorizedHttpException]]：状态码 401。
+* [[yii\web\UnsupportedMediaTypeHttpException]]：状态码 415。
 
 如果想抛出的异常不在如上列表中，可创建一个[[yii\web\HttpException]]异常，
 带上状态码抛出，如下：
@@ -258,3 +258,4 @@ Web应用可在服务器发送文件前结束，为使用该功能，
 
 如你所见[[yii\web\Response::send()]] 触发了几个实用的事件，
 通过响应这些事件可调整或包装响应。
+
