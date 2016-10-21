@@ -189,17 +189,25 @@ class AttributeTypecastBehavior extends Behavior
     /**
      * @inheritdoc
      */
-    public function init()
+    public function attach($owner)
     {
-        parent::init();
+        parent::attach($owner);
 
         if ($this->attributeTypes === null) {
-            $ownerClass = get_class($this->owner);
-            if (!isset(self::$autoDetectedAttributeTypes[$ownerClass])) {
-                self::$autoDetectedAttributeTypes[$ownerClass] = $this->detectAttributeTypes();
-            }
-            $this->attributeTypes = self::$autoDetectedAttributeTypes[$ownerClass];
+            $this->reinitAutoDetectedAttributeTypes();
         }
+    }
+
+    /**
+     * Reinitialization attribute types for model
+     */
+    private function reinitAutoDetectedAttributeTypes()
+    {
+        $ownerClass = get_class($this->owner);
+        if (!isset(self::$autoDetectedAttributeTypes[$ownerClass])) {
+            self::$autoDetectedAttributeTypes[$ownerClass] = $this->detectAttributeTypes();
+        }
+        $this->attributeTypes = self::$autoDetectedAttributeTypes[$ownerClass];
     }
 
     /**
