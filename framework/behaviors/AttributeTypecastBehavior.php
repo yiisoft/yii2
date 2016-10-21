@@ -199,9 +199,9 @@ class AttributeTypecastBehavior extends Behavior
     }
 
     /**
-     * Reinitialization typecast attributes for model
+     * Reinitialization attribute types for model
      */
-    public function reinitAutoDetectedAttributeTypes()
+    private function reinitAutoDetectedAttributeTypes()
     {
         $ownerClass = get_class($this->owner);
         if (!isset(self::$autoDetectedAttributeTypes[$ownerClass])) {
