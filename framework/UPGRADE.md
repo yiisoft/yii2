@@ -18,7 +18,7 @@ php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
 Then run:
 
 ```
-php composer.phar require "yiisoft/yii2:~2.0.9"
+php composer.phar require "yiisoft/yii2:~2.0.10"
 ```
 
 Upgrade from Yii 2.0.9
