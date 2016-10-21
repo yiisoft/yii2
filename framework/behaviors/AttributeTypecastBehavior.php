@@ -189,9 +189,9 @@ class AttributeTypecastBehavior extends Behavior
     /**
      * @inheritdoc
      */
-    public function init()
+    public function attach($owner)
     {
-        parent::init();
+        parent::attach($owner);
 
         if ($this->attributeTypes === null) {
             $ownerClass = get_class($this->owner);

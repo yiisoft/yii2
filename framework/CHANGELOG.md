@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.11 under development
 ------------------------
 
+- Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 
 
