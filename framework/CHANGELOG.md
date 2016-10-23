@@ -1,6 +1,8 @@
 Yii Framework 2 Change Log
 ==========================
 
+-- Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
+
 2.0.10 under development
 ------------------------
 

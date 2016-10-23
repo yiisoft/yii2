@@ -419,6 +419,12 @@ column named `author_id` with a foreign key to the `user` table while
 `category_id:integer:defaultValue(1):foreignKey` will generate a column
 `category_id` with a foreign key to the `category` table.
 
+Since 2.0.11, `foreignKey` keyword accepts a second parameter, separated by whitespace.
+And this parameter will be the name of the related column for the generated foreign key.
+If no second parameter was passed, the column name will be fetched from table schema.
+However, this key will be used only if table schema exists, primary key is set and it’s not composite.
+In other cases default name `id` will be generated.
+
 ### Drop Table
 
 ```php
@@ -601,6 +607,10 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 }
 ```
+
+Since 2.0.11 for junction tables foreign keys column names will be fetched from table schema.
+However, this key will be used only if table schema exists, primary key is set and it’s not composite.
+In other cases default name `id` will be generated.
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
 

@@ -295,8 +295,8 @@ class MigrateController extends BaseMigrateController
 
             $foreignKeys[$firstTable . '_id']['table'] = $firstTable;
             $foreignKeys[$secondTable . '_id']['table'] = $secondTable;
-            $foreignKeys[$firstTable . '_id']['column'] = '';
-            $foreignKeys[$secondTable . '_id']['column'] = '';
+            $foreignKeys[$firstTable . '_id']['column'] = null;
+            $foreignKeys[$secondTable . '_id']['column'] = null;
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
@@ -317,7 +317,9 @@ class MigrateController extends BaseMigrateController
         foreach ($foreignKeys as $column => $foreignKey) {
             $relatedColumn = $foreignKey['column'];
             $relatedTable = $foreignKey['table'];
-            if (empty($relatedColumn)) {
+            // Since 2.0.11 if related column not set, the column name will be try fetch from table schema
+            // @see https://github.com/yiisoft/yii2/issues/12748
+            if ($relatedColumn === null) {
                 $relatedColumn = 'id';
                 try {
                     $this->db = Instance::ensure($this->db, Connection::className());
@@ -392,9 +394,9 @@ class MigrateController extends BaseMigrateController
                         'table' => isset($matches[1])
                             ? $matches[1]
                             : preg_replace('/_id$/', '', $property),
-                        'column' => isset($matches[2])
+                        'column' => !empty($matches[2])
                             ? $matches[2]
-                            : '',
+                            : null,
                     ];
 
                     unset($chunks[$i]);
