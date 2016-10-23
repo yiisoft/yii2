@@ -324,12 +324,12 @@ class MigrateController extends BaseMigrateController
                     $relatedTableSchema = $this->db->getTableSchema($relatedTable);
                     if ($relatedTableSchema !== null) {
                         $primaryKeyCount = count($relatedTableSchema->primaryKey);
-                        if ($primaryKeyCount > 1) {
-                            $this->stdout("Related table for field \"{$column}\" exists, but primary key is composite. Default name \"id\" will be generated for related field\n", Console::FG_YELLOW);
-                        } elseif ($primaryKeyCount < 1) {
-                            $this->stdout("Related table for field \"{$column}\" exists, but does not have a primary key. Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
-                        } else {
+                        if ($primaryKeyCount === 1) {
                             $relatedColumn = $relatedTableSchema->primaryKey[0];
+                        } elseif ($primaryKeyCount > 1){
+                            $this->stdout("Related table for field \"{$column}\" exists, but primary key is composite. Default name \"id\" will be generated for related field\n", Console::FG_YELLOW);
+                        } elseif ($primaryKeyCount === 0) {
+                            $this->stdout("Related table for field \"{$column}\" exists, but does not have a primary key. Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
                         }
                     }
                 } catch (\ReflectionException $e) {
