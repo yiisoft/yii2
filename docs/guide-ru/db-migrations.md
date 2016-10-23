@@ -86,7 +86,7 @@ class m150101_185401_create_news_table extends Migration
 * `<YYMMDD_HHMMSS>` относится к UTC дате-времени при котором команда создания миграции была выполнена.
 * `<Name>` это тоже самое значение аргумента `name` которое вы прописываете в команду.
 
-В классе миграции, Вы должны прописать код в методе `up()` когда делаете изменения в структуре базы данных. 
+В классе миграции, Вы должны прописать код в методе `up()` когда делаете изменения в структуре базы данных.
 Вы также можете написать код в методе `down()`, чтобы отменить сделанные `up()` изменения. Метод `up` вызывается для обновления базы данных с помощью данной миграции, а метод `down()` вызывается для отката изменений базы данных.
 Следующий код показывает как можно реализовать класс миграции, чтобы создать таблицу `news`:
 
@@ -167,7 +167,7 @@ class m150101_185401_create_news_table extends Migration
 
 ```php
 yii migrate/create create_post_table
-``` 
+```
 
 сгенерирует
 
@@ -189,10 +189,10 @@ class m150811_220037_create_post_table extends Migration
 ```
 
 Чтобы сразу создать поля таблицы, укажите их через опцию `--fields`.
- 
+
 ```php
 yii migrate/create create_post_table --fields=title:string,body:text
-``` 
+```
 
 сгенерирует
 
@@ -219,7 +219,7 @@ class m150811_220037_create_post_table extends Migration
 
 ```php
 yii migrate/create create_post_table --fields=title:string(12):notNull:unique,body:text
-``` 
+```
 
 сгенерирует
 
@@ -245,12 +245,131 @@ class m150811_220037_create_post_table extends Migration
 > Note: первичный ключ добавляется автоматически и по умолчанию называется `id`. Если вам необходимо другое имя,
 > указать его можно через опцию `--fields=name:primaryKey`.
 
+### Внешние ключи
+
+Начиная с версии 2.0.8, генератор поддерживает создание внешних ключей используя ключевое слово `foreignKey`.
+
+```php
+yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
+```
+
+сгенерирует
+
+```php
+/**
+ * Handles the creation for table `post`.
+ * Has foreign keys to the tables:
+ *
+ * - `user`
+ * - `category`
+ */
+class m160328_040430_create_post_table extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function up()
+    {
+        $this->createTable('post', [
+            'id' => $this->primaryKey(),
+            'author_id' => $this->integer()->notNull(),
+            'category_id' => $this->integer()->defaultValue(1),
+            'title' => $this->string(),
+            'body' => $this->text(),
+        ]);
+
+        // creates index for column `author_id`
+        $this->createIndex(
+            'idx-post-author_id',
+            'post',
+            'author_id'
+        );
+
+        // add foreign key for table `user`
+        $this->addForeignKey(
+            'fk-post-author_id',
+            'post',
+            'author_id',
+            'user',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `category_id`
+        $this->createIndex(
+            'idx-post-category_id',
+            'post',
+            'category_id'
+        );
+
+        // add foreign key for table `category`
+        $this->addForeignKey(
+            'fk-post-category_id',
+            'post',
+            'category_id',
+            'category',
+            'id',
+            'CASCADE'
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function down()
+    {
+        // drops foreign key for table `user`
+        $this->dropForeignKey(
+            'fk-post-author_id',
+            'post'
+        );
+
+        // drops index for column `author_id`
+        $this->dropIndex(
+            'idx-post-author_id',
+            'post'
+        );
+
+        // drops foreign key for table `category`
+        $this->dropForeignKey(
+            'fk-post-category_id',
+            'post'
+        );
+
+        // drops index for column `category_id`
+        $this->dropIndex(
+            'idx-post-category_id',
+            'post'
+        );
+
+        $this->dropTable('post');
+    }
+}
+```
+
+Положение ключевого слова `foreignKey` в описании поля не изменяет сгенерированный код. Это значит, что:
+
+- `author_id:integer:notNull:foreignKey(user)`
+- `author_id:integer:foreignKey(user):notNull`
+- `author_id:foreignKey(user):integer:notNull`
+
+Генерируют один и тот же код.
+
+Ключевое слово `foreignKey` может принимать в скобках параметр, который будет использован в качестве имени таблицы для внешнего ключа. Если параметр не был передан, то имя таблицы будет извлечено из названия поля.
+
+В приведенном выше примере `author_id:integer:notNull:foreignKey(user)` будет генерировать поле `author_id` с внешним ключом на таблицу `user`, а `category_id:integer:defaultValue(1):foreignKey` сгенерирует поле `author_id` с внешним ключом на таблицу `category`.
+
+Начиная с версии 2.0.11, ключевое слово `foreignKey` может принимать второй параметр, который следует указывать через пробел.
+Этот параметр будет использован в качестве имени поля внешнего ключа.
+В случае, если второй параметр не будет передан, то поле для внешнего ключа будет извлечено из схемы таблицы.
+Тем не менее, это справедливо только в тех случаях, когда таблица имеется в базе данных, первичный ключ задан и не является составным.
+В других иных случаях для поля будет сгенерировано значение по умолчанию `id`.
 
 ### Удаление таблицы
 
 ```php
 yii migrate/create drop_post_table --fields=title:string(12):notNull:unique,body:text
-``` 
+```
 
 сгенерирует
 
@@ -336,30 +455,99 @@ yii migrate/create create_junction_table_for_post_and_tag_tables
 сгенерирует
 
 ```php
-class m150811_220037_create_junction_post_and_tag extends Migration
+/**
+ * Handles the creation for table `post_tag`.
+ * Has foreign keys to the tables:
+ *
+ * - `post`
+ * - `tag`
+ */
+class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function up()
     {
         $this->createTable('post_tag', [
             'post_id' => $this->integer(),
             'tag_id' => $this->integer(),
-            'PRIMARY KEY(post_id, tag_id)'
+            'created_at' => $this->dateTime(),
+            'PRIMARY KEY(post_id, tag_id)',
         ]);
 
-        $this->createIndex('idx-post_tag-post_id', 'post_tag', 'post_id');
-        $this->createIndex('idx-post_tag-tag_id', 'post_tag', 'tag_id');
+        // creates index for column `post_id`
+        $this->createIndex(
+            'idx-post_tag-post_id',
+            'post_tag',
+            'post_id'
+        );
 
-        $this->addForeignKey('fk-post_tag-post_id', 'post_tag', 'post_id', 'post', 'id', 'CASCADE');
-        $this->addForeignKey('fk-post_tag-tag_id', 'post_tag', 'tag_id', 'tag', 'id', 'CASCADE');
+        // add foreign key for table `post`
+        $this->addForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag',
+            'post_id',
+            'post',
+            'id',
+            'CASCADE'
+        );
+
+        // creates index for column `tag_id`
+        $this->createIndex(
+            'idx-post_tag-tag_id',
+            'post_tag',
+            'tag_id'
+        );
+
+        // add foreign key for table `tag`
+        $this->addForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag',
+            'tag_id',
+            'tag',
+            'id',
+            'CASCADE'
+        );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function down()
     {
+        // drops foreign key for table `post`
+        $this->dropForeignKey(
+            'fk-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops index for column `post_id`
+        $this->dropIndex(
+            'idx-post_tag-post_id',
+            'post_tag'
+        );
+
+        // drops foreign key for table `tag`
+        $this->dropForeignKey(
+            'fk-post_tag-tag_id',
+            'post_tag'
+        );
+
+        // drops index for column `tag_id`
+        $this->dropIndex(
+            'idx-post_tag-tag_id',
+            'post_tag'
+        );
+
         $this->dropTable('post_tag');
     }
 }
 ```
 
+Начиная с версии 2.0.11, имена полей для внешних ключей промежуточной таблицы будут извлечены из объединяемых таблиц.
+Тем не менее, это справедливо только в тех случаях, когда таблица имеется в базе данных, первичный ключ задан и не является составным.
+В других иных случаях для поля будет сгенерировано значение по умолчанию `id`.
 
 ### Транзакции Миграций <span id="transactional-migrations"></span>
 
@@ -565,7 +753,7 @@ yii migrate/mark 1392853618                         # используя вре�
 * `fields`: массив конфигураций столбцов, который используется для генерации кода миграции. По умолчанию пуст. Формат
   каждой конфигурации `ИМЯ_СТОЛБЦА:ТИП_СТОЛБЦА:ДЕКОРАТОР_СТОЛБЦА`. Например, `--fields=name:string(12):notNull` даст нам
   столбец типа строка размера 12 с ограничением `not null`.
-  
+
 
 В следующем примере показано, как можно использовать эти параметры.
 
