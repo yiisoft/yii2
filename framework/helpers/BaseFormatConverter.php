@@ -103,7 +103,7 @@ class BaseFormatConverter
     public static function convertDateIcuToPhp($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
-            $convertPattern = self::_getConvertDatePattern($pattern, $type, $locale);
+            $convertPattern = self::getConvertDatePattern($pattern, $type, $locale);
             if (false !== $convertPattern) {
                 $pattern = $convertPattern;
             } else {
@@ -306,7 +306,7 @@ class BaseFormatConverter
     public static function convertDateIcuToJui($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
-            $convertPattern = self::_getConvertDatePattern($pattern, $type, $locale);
+            $convertPattern = self::getConvertDatePattern($pattern, $type, $locale);
             if (false !== $convertPattern) {
                 $pattern = $convertPattern;
             } else {
