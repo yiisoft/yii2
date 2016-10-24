@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
+use yii\base\InvalidParamException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Model;
@@ -506,23 +507,7 @@ class ActiveField extends Component
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
-        if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
-            $this->parts['{label}'] = '';
-        } else {
-            if (isset($options['label']) && !isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = $options['label'];
-                if (!empty($options['labelOptions'])) {
-                    $this->labelOptions = $options['labelOptions'];
-                }
-            }
-            unset($options['labelOptions']);
-            $options['label'] = null;
-            $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
-        }
-        $this->adjustLabelFor($options);
-
-        return $this;
+        return $this->checkableInput($options, $enclosedByLabel, 'activeRadio');
     }
 
     /**
@@ -552,23 +537,7 @@ class ActiveField extends Component
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
-        if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-            $this->parts['{label}'] = '';
-        } else {
-            if (isset($options['label']) && !isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = $options['label'];
-                if (!empty($options['labelOptions'])) {
-                    $this->labelOptions = $options['labelOptions'];
-                }
-            }
-            unset($options['labelOptions']);
-            $options['label'] = null;
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-        }
-        $this->adjustLabelFor($options);
-
-        return $this;
+        return $this->checkableInput($options, $enclosedByLabel, 'activeCheckbox');
     }
 
     /**
@@ -701,6 +670,37 @@ class ActiveField extends Component
         }
         $this->parts['{input}'] = $class::widget($config);
 
+        return $this;
+    }
+
+    /**
+     * Renders a checkable input.
+     * @param $options
+     * @param $enclosedByLabel
+     * @param $type
+     * @return $this
+     */
+    protected function checkableInput($options, $enclosedByLabel, $type)
+    {
+        if (!method_exists(Html::class, $type)) {
+            throw new InvalidParamException(Html::class . " doesn't have method $type()");
+        }
+
+        if ($enclosedByLabel) {
+            $this->parts['{input}'] = Html::$type($this->model, $this->attribute, $options);
+            $this->parts['{label}'] = '';
+        } else {
+            if (isset($options['label']) && !isset($this->parts['{label}'])) {
+                $this->parts['{label}'] = $options['label'];
+                if (!empty($options['labelOptions'])) {
+                    $this->labelOptions = $options['labelOptions'];
+                }
+            }
+            unset($options['labelOptions']);
+            $options['label'] = null;
+            $this->parts['{input}'] = Html::$type($this->model, $this->attribute, $options);
+        }
+        $this->adjustLabelFor($options);
         return $this;
     }
 
