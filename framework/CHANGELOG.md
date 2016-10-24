@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
 - Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
+- Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
@@ -69,7 +70,6 @@ Yii Framework 2 Change Log
 - Enh #9989: ActiveForm now respects formtarget, formmethod and formenctype attributes of submit button (AnatolyRugalev)
 - Enh #10243: Added `yii\data\Sort::setAttributeOrders()` method allowing manual setup of current sort (klimov-paul)
 - Enh #10583: Do not silence session errors in debug mode (samdark)
-- Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #11096: Added support for PSR-2 style migration naming for namespaced migrations (klimov-paul)
 - Enh #11245: Added `yii\rbac\ManagerInterface::getChildRoles()` method, allowing finding child roles for the given one (githubjeka)
 - Enh #11275: Added possibility of unset or force replace former value in `yii\helpers\ArrayHelper::merge()` (mdmunir, rob006)
