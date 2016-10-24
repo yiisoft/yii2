@@ -3,6 +3,7 @@ namespace yiiunit\framework\validators;
 
 use yii\base\InvalidConfigException;
 use yii\validators\CompareValidator;
+use yii\validators\CompareValidatorold;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -216,5 +217,17 @@ class CompareValidatorTest extends TestCase
             return;
         }
         $this->fail('InvalidConfigException expected none received');
+    }
+    
+    public function testZeroStrValidate() {
+        $value = '00';
+        $val = new CompareValidator(['type'=>'string','compareValue' => $value]);
+        $this->assertTrue($val->validate($value));
+        $this->assertFalse($val->validate('000'));
+        
+        $value = '001';
+        $val = new CompareValidator(['type'=>'string','compareValue' => $value]);
+        $this->assertTrue($val->validate($value));
+        $this->assertFalse($val->validate('01'));
     }
 }
