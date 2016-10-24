@@ -407,7 +407,7 @@ class PhpManager extends BaseManager
             throw new InvalidParamException("Role \"$roleName\" not found.");
         }
 
-        /** @var $result Item[] */
+        $result = [];
         $this->getChildrenRecursive($roleName, $result);
 
         $roles = [$roleName => $role];
