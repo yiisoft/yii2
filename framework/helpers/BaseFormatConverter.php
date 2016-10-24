@@ -103,18 +103,9 @@ class BaseFormatConverter
     public static function convertDateIcuToPhp($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
-            if (extension_loaded('intl')) {
-                if ($locale === null) {
-                    $locale = Yii::$app->language;
-                }
-                if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
-                } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
-                } else {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
-                }
-                $pattern = $formatter->getPattern();
+            $convertPattern = self::_getConvertDatePattern($pattern, $type, $locale);
+            if (false !== $convertPattern) {
+                $pattern = $convertPattern;
             } else {
                 return static::$phpFallbackDatePatterns[$pattern][$type];
             }
@@ -315,18 +306,9 @@ class BaseFormatConverter
     public static function convertDateIcuToJui($pattern, $type = 'date', $locale = null)
     {
         if (isset(self::$_icuShortFormats[$pattern])) {
-            if (extension_loaded('intl')) {
-                if ($locale === null) {
-                    $locale = Yii::$app->language;
-                }
-                if ($type === 'date') {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
-                } elseif ($type === 'time') {
-                    $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
-                } else {
-                    $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
-                }
-                $pattern = $formatter->getPattern();
+            $convertPattern = self::_getConvertDatePattern($pattern, $type, $locale);
+            if (false !== $convertPattern) {
+                $pattern = $convertPattern;
             } else {
                 return static::$juiFallbackDatePatterns[$pattern][$type];
             }
@@ -506,5 +488,30 @@ class BaseFormatConverter
             'r' => 'D, d M yy', // RFC 2822 formatted date, Example: Thu, 21 Dec 2000 16:01:07 +0200, skipping the time here because it is not supported
             'U' => '@',     // Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
         ]);
+    }
+
+    /**
+     * @param $pattern
+     * @param $type
+     * @param $locale
+     * @return bool|string
+     */
+    protected static function getConvertDatePattern($pattern, $type, $locale)
+    {
+        if (extension_loaded('intl')) {
+            if ($locale === null) {
+                $locale = Yii::$app->language;
+            }
+            if ($type === 'date') {
+                $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], IntlDateFormatter::NONE);
+            } elseif ($type === 'time') {
+                $formatter = new IntlDateFormatter($locale, IntlDateFormatter::NONE, self::$_icuShortFormats[$pattern]);
+            } else {
+                $formatter = new IntlDateFormatter($locale, self::$_icuShortFormats[$pattern], self::$_icuShortFormats[$pattern]);
+            }
+            return $formatter->getPattern();
+        } else {
+            return false;
+        }
     }
 }
