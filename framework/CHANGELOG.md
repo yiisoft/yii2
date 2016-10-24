@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
-- Eng #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
+- Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
 
 
 2.0.10 October 20, 2016
