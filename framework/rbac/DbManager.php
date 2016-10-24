@@ -481,7 +481,7 @@ class DbManager extends BaseManager
             throw new InvalidParamException("Role \"$roleName\" not found.");
         }
 
-        /** @var $result Item[] */
+        $result = [];
         $this->getChildrenRecursive($roleName, $this->getChildrenList(), $result);
 
         $roles = [$roleName => $role];

@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
+- Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 
