@@ -254,22 +254,7 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function multiSet($items, $duration = 0, $dependency = null)
     {
-        if ($dependency !== null && $this->serializer !== false) {
-            $dependency->evaluateDependency($this);
-        }
-
-        $data = [];
-        foreach ($items as $key => $value) {
-            if ($this->serializer === null) {
-                $value = serialize([$value, $dependency]);
-            } elseif ($this->serializer !== false) {
-                $value = call_user_func($this->serializer[0], [$value, $dependency]);
-            }
-
-            $key = $this->buildKey($key);
-            $data[$key] = $value;
-        }
-
+        $data = $this->modifyItemsForCache($items, $dependency);
         return $this->setValues($data, $duration);
     }
 
@@ -304,22 +289,7 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function multiAdd($items, $duration = 0, $dependency = null)
     {
-        if ($dependency !== null && $this->serializer !== false) {
-            $dependency->evaluateDependency($this);
-        }
-
-        $data = [];
-        foreach ($items as $key => $value) {
-            if ($this->serializer === null) {
-                $value = serialize([$value, $dependency]);
-            } elseif ($this->serializer !== false) {
-                $value = call_user_func($this->serializer[0], [$value, $dependency]);
-            }
-
-            $key = $this->buildKey($key);
-            $data[$key] = $value;
-        }
-
+        $data = $this->modifyItemsForCache($items, $dependency);
         return $this->addValues($data, $duration);
     }
 
@@ -478,6 +448,32 @@ abstract class Cache extends Component implements \ArrayAccess
         }
 
         return $failedKeys;
+    }
+
+    /**
+     * @param array $items the items to be cached, as key-value pairs.
+     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @return array
+     */
+    protected function modifyItemsForCache($items, $dependency)
+    {
+        if ($dependency !== null && $this->serializer !== false) {
+            $dependency->evaluateDependency($this);
+        }
+
+        $data = [];
+        foreach ($items as $key => $value) {
+            if ($this->serializer === null) {
+                $value = serialize([$value, $dependency]);
+            } elseif ($this->serializer !== false) {
+                $value = call_user_func($this->serializer[0], [$value, $dependency]);
+            }
+
+            $key = $this->buildKey($key);
+            $data[$key] = $value;
+        }
+
+        return $data;
     }
 
     /**
