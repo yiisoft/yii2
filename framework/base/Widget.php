@@ -106,6 +106,12 @@ class Widget extends Component implements ViewContextInterface
                 ob_end_clean();
             }
             throw $e;
+        } catch (\Throwable $e) {
+            // close the output buffer opened above if it has not been closed already
+            if (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            throw $e;
         }
 
         return ob_get_clean() . $out;
