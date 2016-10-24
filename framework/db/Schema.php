@@ -76,7 +76,8 @@ abstract class Schema extends Object
     ];
 
     /**
-     * @var string
+     * @var string column schema class
+     * @since 2.0.11
      */
     public $columnSchemaClass = 'yii\db\ColumnSchema';
 
