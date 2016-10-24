@@ -76,6 +76,11 @@ abstract class Schema extends Object
     ];
 
     /**
+     * @var string
+     */
+    public $columnSchemaClass = 'yii\db\ColumnSchema';
+
+    /**
      * @var array list of ALL schema names in the database, except system schemas
      */
     private $_schemaNames;
@@ -99,7 +104,7 @@ abstract class Schema extends Object
      */
     protected function createColumnSchema()
     {
-        return Yii::createObject('yii\db\ColumnSchema');
+        return Yii::createObject($this->columnSchemaClass);
     }
 
     /**
