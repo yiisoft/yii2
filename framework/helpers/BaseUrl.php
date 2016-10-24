@@ -282,7 +282,7 @@ class BaseUrl
      *
      * @param string $name the named associated with the URL that was remembered previously.
      * If not set, it will use [[\yii\web\User::returnUrlParam]].
-     * @return string the URL previously remembered. Null is returned if no URL was remembered with the given name.
+     * @return string|null the URL previously remembered. Null is returned if no URL was remembered with the given name.
      * @see remember()
      */
     public static function previous($name = null)

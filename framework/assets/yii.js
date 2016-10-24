@@ -44,8 +44,13 @@
 window.yii = (function ($) {
     var pub = {
         /**
-         * List of JS or CSS URLs that can be loaded multiple times via AJAX requests. Each script can be represented
-         * as either an absolute URL or a relative one.
+         * List of JS or CSS URLs that can be loaded multiple times via AJAX requests.
+         * Each item may be represented as either an absolute URL or a relative one.
+         * Each item may contain a wildcart matching character `*`, that means one or more
+         * any characters on the position. For example:
+         *  - `/css/*.js` will match any file ending with `.js` in the `css` directory of the current web site
+         *  - `http*://cdn.example.com/*` will match any files on domain `cdn.example.com`, loaded with HTTP or HTTPS
+         *  - `/js/myCustomScript.js?realm=*` will match file `/js/myCustomScript.js` with defined `realm` parameter
          */
         reloadableScripts: [],
         /**
@@ -284,8 +289,8 @@ window.yii = (function ($) {
 
             for (i = 0; i < pairs.length; i++) {
                 pair = pairs[i].split('=');
-                var name = decodeURIComponent(pair[0]);
-                var value = decodeURIComponent(pair[1]);
+                var name = decodeURIComponent(pair[0].replace(/\+/g, '%20'));
+                var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
                 if (name.length) {
                     if (params[name] !== undefined) {
                         if (!$.isArray(params[name])) {
@@ -368,12 +373,41 @@ window.yii = (function ($) {
             .on('change.yii', pub.changeableSelector, handler);
     }
 
-    function initScriptFilter() {
-        var hostInfo = location.protocol + '//' + location.host;
+    function isReloadable(url) {
+        var hostInfo = getHostInfo();
 
-        var loadedScripts = $('script[src]').map(function () {
+        for (var i = 0; i < pub.reloadableScripts.length; i++) {
+            var rule = pub.reloadableScripts[i];
+            rule = rule.charAt(0) === '/' ? hostInfo + rule : rule;
+
+            var match = new RegExp("^" + escapeRegExp(rule).split('\\*').join('.*') + "$").test(url);
+            if (match === true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // http://stackoverflow.com/questions/3446170/escape-string-for-use-in-javascript-regex
+    function escapeRegExp(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    }
+
+    function getHostInfo() {
+        return location.protocol + '//' + location.host;
+    }
+
+    function initScriptFilter() {
+        var hostInfo = getHostInfo();
+        var loadedScripts = {};
+
+        var scripts = $('script[src]').map(function () {
             return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
         }).toArray();
+        for (var i = 0, len = scripts.length; i < len; i++) {
+            loadedScripts[scripts[i]] = true;
+        }
 
         $.ajaxPrefilter('script', function (options, originalOptions, xhr) {
             if (options.dataType == 'jsonp') {
@@ -381,22 +415,40 @@ window.yii = (function ($) {
             }
 
             var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
-            if ($.inArray(url, loadedScripts) === -1) {
-                loadedScripts.push(url);
-            } else {
-                var isReloadable = $.inArray(url, $.map(pub.reloadableScripts, function (script) {
-                        return script.charAt(0) === '/' ? hostInfo + script : script;
-                    })) !== -1;
-                if (!isReloadable) {
+
+            if (url in loadedScripts) {
+                var item = loadedScripts[url];
+
+                // If the concurrent XHR request is running and URL is not reloadable
+                if (item !== true && !isReloadable(url)) {
+                    // Abort the current XHR request when previous finished successfully
+                    item.done(function () {
+                        if (xhr && xhr.readyState !== 4) {
+                            xhr.abort();
+                        }
+                    });
+                    // Or abort previous XHR if the current one is loaded faster
+                    xhr.done(function () {
+                        if (item && item.readyState !== 4) {
+                            item.abort();
+                        }
+                    });
+                } else if (!isReloadable(url)) {
                     xhr.abort();
                 }
+            } else {
+                loadedScripts[url] = xhr.done(function () {
+                    loadedScripts[url] = true;
+                }).fail(function () {
+                    delete loadedScripts[url];
+                });
             }
         });
 
         $(document).ajaxComplete(function (event, xhr, settings) {
             var styleSheets = [];
             $('link[rel=stylesheet]').each(function () {
-                if ($.inArray(this.href, pub.reloadableScripts) !== -1) {
+                if (isReloadable(this.href)) {
                     return;
                 }
                 if ($.inArray(this.href, styleSheets) == -1) {

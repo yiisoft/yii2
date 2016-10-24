@@ -144,6 +144,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // проверить, имеет ли пользователь доступ к $action и $model
     // выбросить ForbiddenHttpException, если доступ следует запретить
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 
