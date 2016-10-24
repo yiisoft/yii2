@@ -8,6 +8,7 @@ Yii Framework 2 Change Log
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
 
+- Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 
 2.0.10 October 20, 2016
 -----------------------
