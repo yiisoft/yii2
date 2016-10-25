@@ -27,7 +27,7 @@ use yii\web\Request;
  * Controller action:
  *
  * ```php
- * function actionIndex()
+ * public function actionIndex()
  * {
  *     $query = Article::find()->where(['status' => 1]);
  *     $countQuery = clone $query;

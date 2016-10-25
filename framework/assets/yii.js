@@ -289,8 +289,8 @@ window.yii = (function ($) {
 
             for (i = 0; i < pairs.length; i++) {
                 pair = pairs[i].split('=');
-                var name = decodeURIComponent(pair[0]);
-                var value = decodeURIComponent(pair[1]);
+                var name = decodeURIComponent(pair[0].replace(/\+/g, '%20'));
+                var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
                 if (name.length) {
                     if (params[name] !== undefined) {
                         if (!$.isArray(params[name])) {
@@ -400,10 +400,14 @@ window.yii = (function ($) {
 
     function initScriptFilter() {
         var hostInfo = getHostInfo();
+        var loadedScripts = {};
 
-        var loadedScripts = $('script[src]').map(function () {
+        var scripts = $('script[src]').map(function () {
             return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
         }).toArray();
+        for (var i = 0, len = scripts.length; i < len; i++) {
+            loadedScripts[scripts[i]] = true;
+        }
 
         $.ajaxPrefilter('script', function (options, originalOptions, xhr) {
             if (options.dataType == 'jsonp') {
@@ -411,12 +415,33 @@ window.yii = (function ($) {
             }
 
             var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
-            if ($.inArray(url, loadedScripts) === -1) {
-                loadedScripts.push(url);
-            } else {
-                if (!isReloadable(url)) {
+
+            if (url in loadedScripts) {
+                var item = loadedScripts[url];
+
+                // If the concurrent XHR request is running and URL is not reloadable
+                if (item !== true && !isReloadable(url)) {
+                    // Abort the current XHR request when previous finished successfully
+                    item.done(function () {
+                        if (xhr && xhr.readyState !== 4) {
+                            xhr.abort();
+                        }
+                    });
+                    // Or abort previous XHR if the current one is loaded faster
+                    xhr.done(function () {
+                        if (item && item.readyState !== 4) {
+                            item.abort();
+                        }
+                    });
+                } else if (!isReloadable(url)) {
                     xhr.abort();
                 }
+            } else {
+                loadedScripts[url] = xhr.done(function () {
+                    loadedScripts[url] = true;
+                }).fail(function () {
+                    delete loadedScripts[url];
+                });
             }
         });
 
