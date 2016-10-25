@@ -29,7 +29,7 @@ class FakedValidationModel extends Model
 
     public function attributes()
     {
-        return array_merge(parent::attributes(), $this->attr);
+        return array_merge(parent::attributes(), array_keys($this->attr));
     }
 
     public function rules()
