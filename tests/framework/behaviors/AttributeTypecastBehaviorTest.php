@@ -3,6 +3,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
+use yii\base\DynamicModel;
 use yiiunit\TestCase;
 use yii\db\ActiveRecord;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -129,10 +130,15 @@ class AttributeTypecastBehaviorTest extends TestCase
 
     public function testAutoDetectAttributeTypes()
     {
-        $model = new ActiveRecordAttributeTypecast();
+        $model = (new DynamicModel(['name' => null, 'amount' => null, 'price' => null, 'isActive' => null]))
+            ->addRule('name', 'string')
+            ->addRule('amount', 'integer')
+            ->addRule('price', 'number')
+            ->addRule('isActive', 'boolean');
 
-        $model->getAttributeTypecastBehavior()->attributeTypes = null;
-        $model->getAttributeTypecastBehavior()->init();
+        $behavior = new AttributeTypecastBehavior();
+
+        $behavior->attach($model);
 
         $expectedAttributeTypes = [
             'name' => AttributeTypecastBehavior::TYPE_STRING,
@@ -140,7 +146,7 @@ class AttributeTypecastBehaviorTest extends TestCase
             'price' => AttributeTypecastBehavior::TYPE_FLOAT,
             'isActive' => AttributeTypecastBehavior::TYPE_BOOLEAN,
         ];
-        $this->assertEquals($expectedAttributeTypes, $model->getAttributeTypecastBehavior()->attributeTypes);
+        $this->assertEquals($expectedAttributeTypes, $behavior->attributeTypes);
     }
 }
 
