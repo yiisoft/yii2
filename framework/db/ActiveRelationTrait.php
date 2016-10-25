@@ -62,6 +62,15 @@ trait ActiveRelationTrait
      */
     public $inverseOf;
 
+    /**
+     * @see BaseActiveRecord::link()
+     * @param ActiveRecordInterface $model
+     * @param array $extraColumns
+     */
+    public function link(ActiveRecordInterface $model, $extraColumns = [])
+    {
+        return $this->primaryModel->link($this, $model, $extraColumns);
+    }
 
     /**
      * Clones internal objects.

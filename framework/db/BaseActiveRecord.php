@@ -1221,7 +1221,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Note that this method requires that the primary key value is not null.
      *
-     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
+     * @param string|ActiveQuery $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param ActiveRecordInterface $model the model to be linked with the current one.
      * @param array $extraColumns additional column values to be saved into the junction table.
      * This parameter is only meaningful for a relationship involving a junction table
@@ -1230,7 +1230,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function link($name, $model, $extraColumns = [])
     {
-        $relation = $this->getRelation($name);
+        if ($name instanceof ActiveQuery) {
+            $relation = $name;
+        } else {
+            $relation = $this->getRelation($name);
+        }
 
         if ($relation->via !== null) {
             if ($this->getIsNewRecord() || $model->getIsNewRecord()) {
