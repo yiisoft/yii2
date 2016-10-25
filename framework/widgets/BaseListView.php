@@ -181,17 +181,6 @@ abstract class BaseListView extends Widget
         }
         $summaryOptions = $this->summaryOptions;
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
-
-        $begin = $end = $totalCount = $page = $pageCount = null;
-        $params = [
-            'begin' => &$begin,
-            'end' => &$end,
-            'count' => $count,
-            'totalCount' => &$totalCount,
-            'page' => &$page,
-            'pageCount' => &$pageCount,
-        ];
-
         if (($pagination = $this->dataProvider->getPagination()) !== false) {
             $totalCount = $this->dataProvider->getTotalCount();
             $begin = $pagination->getPage() * $pagination->pageSize + 1;
@@ -201,13 +190,24 @@ abstract class BaseListView extends Widget
             }
             $page = $pagination->getPage() + 1;
             $pageCount = $pagination->pageCount;
-            if (($summaryContent = $this->summary) === null) {
-                return Html::tag($tag, Yii::t('yii', 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', $params), $summaryOptions);
-            }
         } else {
             $begin = $page = $pageCount = 1;
             $end = $totalCount = $count;
-            if (($summaryContent = $this->summary) === null) {
+        }
+
+        $params = [
+            'begin' => $begin,
+            'end' => $end,
+            'count' => $count,
+            'totalCount' => $totalCount,
+            'page' => $page,
+            'pageCount' => $pageCount,
+        ];
+
+        if (($summaryContent = $this->summary) === null) {
+            if ($pagination !== false) {
+                return Html::tag($tag, Yii::t('yii', 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.', $params), $summaryOptions);
+            } else {
                 return Html::tag($tag, Yii::t('yii', 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.', $params), $summaryOptions);
             }
         }
