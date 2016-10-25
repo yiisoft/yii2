@@ -682,8 +682,8 @@ class ActiveField extends Component
      */
     protected function checkableInput($options, $enclosedByLabel, $type)
     {
-        if (!method_exists(Html::class, $type)) {
-            throw new InvalidParamException(Html::class . " doesn't have method $type()");
+        if ($type !== 'activeRadio' && $type !== 'activeCheckbox') {
+            throw new InvalidParamException("Html helper doesn't have method $type()");
         }
 
         if ($enclosedByLabel) {
