@@ -31,6 +31,7 @@ use yii\di\ServiceLocator;
  * @property array $modules The modules (indexed by their IDs).
  * @property string $uniqueId The unique ID of the module. This property is read-only.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
+ * @property string|callable $version The version of this module.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -123,6 +124,22 @@ class Module extends ServiceLocator
      * @var array child modules of this module
      */
     private $_modules = [];
+    /**
+     * @var string|callable the version of this module.
+     * Version can be specified as a PHP callback, which can accept module instance as an argument and should
+     * return the actual version. For example:
+     *
+     * ```php
+     * function (Module $module) {
+     *     //return string|integer
+     * }
+     * ```
+     *
+     * If not set, [[defaultVersion()]] will be used to determine actual value.
+     *
+     * @since 2.0.11
+     */
+    private $_version;
 
 
     /**
@@ -280,6 +297,57 @@ class Module extends ServiceLocator
     public function setLayoutPath($path)
     {
         $this->_layoutPath = Yii::getAlias($path);
+    }
+
+    /**
+     * Returns current module version.
+     * If version is not explicitly set, [[defaultVersion()]] method will be used to determine its value.
+     * @return string the version of this module.
+     * @since 2.0.11
+     */
+    public function getVersion()
+    {
+        if ($this->_version === null) {
+            $this->_version = $this->defaultVersion();
+        } else {
+            if (!is_scalar($this->_version)) {
+                $this->_version = call_user_func($this->_version, $this);
+            }
+        }
+        return $this->_version;
+    }
+
+    /**
+     * Sets current module version.
+     * @param string|callable $version the version of this module.
+     * Version can be specified as a PHP callback, which can accept module instance as an argument and should
+     * return the actual version. For example:
+     *
+     * ```php
+     * function (Module $module) {
+     *     //return string
+     * }
+     * ```
+     *
+     * @since 2.0.11
+     */
+    public function setVersion($version)
+    {
+        $this->_version = $version;
+    }
+
+    /**
+     * Returns default module version.
+     * Child class may override this method to provide more specific version detection.
+     * @return string the version of this module.
+     * @since 2.0.11
+     */
+    protected function defaultVersion()
+    {
+        if ($this->module === null) {
+            return '1.0';
+        }
+        return $this->module->getVersion();
     }
 
     /**
