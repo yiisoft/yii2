@@ -73,6 +73,16 @@ class ValidatorTest extends TestCase
         $this->assertFalse($val->isAttributeValidated('attr_skip'));
     }
 
+    public function testValidateCommon()
+    {
+        $model = $this->getTestModel();
+        $model->scenario = 'validateCommonWithValidator';
+        $this->assertFalse($model->validate());
+
+        $model->scenario = 'validateCommonWithMethod';
+        $this->assertFalse($model->validate());
+    }
+
     public function testValidateWithAttributeIntersect()
     {
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);

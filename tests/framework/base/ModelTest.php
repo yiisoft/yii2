@@ -230,6 +230,8 @@ class ModelTest extends TestCase
 
         $this->assertEmpty($speaker->getErrors());
         $this->assertEmpty($speaker->getErrors('firstName'));
+        $this->assertEmpty($speaker->getAttributeErrors());
+        $this->assertEmpty($speaker->getCommonErrors());
         $this->assertEmpty($speaker->getFirstErrors());
 
         $this->assertFalse($speaker->hasErrors());
@@ -265,9 +267,41 @@ class ModelTest extends TestCase
             'lastName' => ['Another one!'],
         ], $speaker->getErrors());
 
+        $speaker->addError(null, 'Common error!');
+        $this->assertEquals([
+            'lastName' => ['Another one!'],
+            Model::COMMON_ERRORS_KEY => ['Common error!'],
+        ], $speaker->getErrors());
+        $this->assertEquals([
+            'lastName' => ['Another one!'],
+        ], $speaker->getAttributeErrors());
+        $this->assertEquals(['Common error!'], $speaker->getCommonErrors());
+
+        $speaker->addError(null, 'Another common error!');
+        $this->assertEquals([
+            'lastName' => ['Another one!'],
+            Model::COMMON_ERRORS_KEY => ['Common error!', 'Another common error!'],
+        ], $speaker->getErrors());
+        $this->assertEquals([
+            'lastName' => ['Another one!'],
+        ], $speaker->getAttributeErrors());
+        $this->assertEquals(['Common error!', 'Another common error!'], $speaker->getCommonErrors());
+
         $speaker->clearErrors();
         $this->assertEmpty($speaker->getErrors());
+        $this->assertEmpty($speaker->getAttributeErrors());
+        $this->assertEmpty($speaker->getCommonErrors());
         $this->assertFalse($speaker->hasErrors());
+    }
+
+    public function testAddErrorToNotExistingAttribute()
+    {
+        $speaker = new Speaker();
+        $attribute = 'notExistingAttribute';
+        $className = Speaker::className();
+        $this->setExpectedException('yii\base\InvalidParamException',
+            "Attribute '$attribute' does not exist in '$className'.");
+        $speaker->addError($attribute, 'Something is wrong!');
     }
 
     public function testAddErrors()
@@ -310,6 +344,35 @@ class ModelTest extends TestCase
         ];
         $singer->addErrors($errors);
         $this->assertEquals($singer->getErrors(), $errors);
+
+        $singer->clearErrors();
+        $errors = [
+            null => 'Common error!',
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals([
+            Model::COMMON_ERRORS_KEY => ['Common error!'],
+        ], $singer->getErrors());
+        $this->assertEmpty($singer->getAttributeErrors());
+        $this->assertEquals($singer->getCommonErrors(), ['Common error!']);
+
+        $singer->clearErrors();
+        $errors = [
+            'firstName' => ['Something is wrong!', 'Totally wrong!'],
+            'lastName' => ['Another one!', 'Totally wrong!'],
+            null => ['Common error!', 'Another common error!'],
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals([
+            'firstName' => ['Something is wrong!', 'Totally wrong!'],
+            'lastName' => ['Another one!', 'Totally wrong!'],
+            Model::COMMON_ERRORS_KEY => ['Common error!', 'Another common error!'],
+        ], $singer->getErrors());
+        $this->assertEquals([
+            'firstName' => ['Something is wrong!', 'Totally wrong!'],
+            'lastName' => ['Another one!', 'Totally wrong!'],
+        ], $singer->getAttributeErrors());
+        $this->assertEquals($singer->getCommonErrors(), ['Common error!', 'Another common error!']);
     }
 
     public function testArraySyntax()

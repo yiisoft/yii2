@@ -910,6 +910,15 @@ EOD;
             ],
             [
                 'not_an_integer',
+                [],
+                "<div><p>Please fix the following errors:</p><ul><li>Common error!</li>\n<li>Error message. Here are some chars: &lt; &gt;</li></ul></div>",
+                function ($model) { /** @var $model DynamicModel */
+                    $model->addError('name', 'Error message. Here are some chars: < >');
+                    $model->addError(null, 'Common error!');
+                }
+            ],
+            [
+                'not_an_integer',
                 ['encode' => false],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: < ></li></ul></div>',
                 function ($model) { /** @var $model DynamicModel */

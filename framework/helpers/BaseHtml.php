@@ -1176,12 +1176,12 @@ class BaseHtml
         }
         foreach ($models as $model) {
             /* @var $model Model */
-            foreach ($model->getErrors() as $errors) {
+            foreach ($model->getCommonErrors() as $error) {
+                self::addError($lines, $error, $encode);
+            }
+            foreach ($model->getAttributeErrors() as $errors) {
                 foreach ($errors as $error) {
-                    $line = $encode ? Html::encode($error) : $error;
-                    if (array_search($line, $lines) === false) {
-                        $lines[] = $line;
-                    }
+                    self::addError($lines, $error, $encode);
                     if (!$showAllErrors) {
                         break;
                     }
@@ -1197,6 +1197,23 @@ class BaseHtml
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
         return Html::tag('div', $header . $content . $footer, $options);
+    }
+
+    /**
+     * Adds single error to error summary.
+     * @param array $lines existing error messages for extending.
+     * @param string $error error message.
+     * @param boolean $encode value of `encode` option in `errorSummary()`.
+     * @sse errorSummary()
+     * @since 2.0.11
+     */
+    private static function addError(&$lines, $error, $encode)
+    {
+        $line = $encode ? Html::encode($error) : $error;
+        $lines[] = $line;
+        if (array_search($line, $lines) === false) {
+            $lines[] = $line;
+        }
     }
 
     /**

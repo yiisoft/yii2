@@ -69,9 +69,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @event Event an event raised at the end of [[validate()]]
      */
     const EVENT_AFTER_VALIDATE = 'afterValidate';
+    /**
+     * Array key for storing common validation errors (not related with particular attribute)
+     * @since 2.0.11
+     */
+    const COMMON_ERRORS_KEY = '*';
 
     /**
-     * @var array validation errors (attribute name => array of errors)
+     * @var array validation errors. Attribute related errors are indexed by according attribute names (attribute name
+     * => array of errors). Common errors are stored under the special key declared in `COMMON_ERRORS_KEY` constant.
      */
     private $_errors;
     /**
@@ -353,7 +359,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         }
 
         foreach ($this->getActiveValidators() as $validator) {
-            $validator->validateAttributes($this, $attributeNames);
+            $validator->delegateValidation($this, $attributeNames);
         }
         $this->afterValidate();
 
@@ -441,7 +447,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         foreach ($this->rules() as $rule) {
             if ($rule instanceof Validator) {
                 $validators->append($rule);
-            } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
+            } elseif (is_array($rule) && array_key_exists(0, $rule) && isset($rule[1])) { // attributes, validator type
                 $validator = Validator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
                 $validators->append($validator);
             } else {
@@ -525,7 +531,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns a value indicating whether there is any validation error.
-     * @param string|null $attribute attribute name. Use null to check all attributes.
+     * @param string|null $attribute attribute name. Use null to check all attributes and common errors.
      * @return boolean whether there is any error.
      */
     public function hasErrors($attribute = null)
@@ -534,12 +540,13 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
-     * Returns the errors for all attribute or a single attribute.
-     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
-     * @property array An array of errors for all attributes. Empty array is returned if no error.
+     * Returns the errors for all attribute or a single attribute. Common errors are included too unless specific
+     * attribute is specified.
+     * @param string $attribute attribute name. Use null to retrieve all errors.
+     * @property array An array of errors. Empty array is returned if no error.
      * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
-     * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
-     * Note that when returning errors for all attributes, the result is a two-dimensional array, like the following:
+     * @return array all errors or errors for the specified attribute. Empty array is returned if no error.
+     * Note that when returning all errors, the result is a two-dimensional array, like the following:
      *
      * ```php
      * [
@@ -549,6 +556,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      *     ],
      *     'email' => [
      *         'Email address is invalid.',
+     *     ],
+     *     // Common errors (not related with particular attribute)
+     *     '*' => [
+     *         'Please select at least one of the following fields: "Username", "Email".',
      *     ]
      * ]
      * ```
@@ -563,6 +574,29 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         } else {
             return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
         }
+    }
+
+    /**
+     * Returns specific attribute related errors only (without common errors).
+     * @return array errors for all attributes
+     * @see getErrors()
+     * @since 2.0.11
+     */
+    public function getAttributeErrors()
+    {
+        $errors = $this->getErrors();
+        unset($errors[self::COMMON_ERRORS_KEY]);
+        return $errors;
+    }
+
+    /**
+     * Returns the common errors only
+     * @return array array of common error messages
+     * @see getErrors()
+     */
+    public function getCommonErrors()
+    {
+        return $this->getErrors(self::COMMON_ERRORS_KEY);
     }
 
     /**
@@ -601,26 +635,32 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
-     * Adds a new error to the specified attribute.
-     * @param string $attribute attribute name
+     * Adds a new error to the specified attribute or common error.
+     * @param string $attribute attribute name. Leave `null` for common errors (not related with particular attribute).
      * @param string $error new error message
+     * @throws InvalidParamException in case of attribute not exist
      */
-    public function addError($attribute, $error = '')
+    public function addError($attribute = null, $error = '')
     {
+        if ($attribute === null) {
+            $attribute = self::COMMON_ERRORS_KEY;
+        } elseif (!in_array($attribute, $this->attributes())) {
+            throw new InvalidParamException("Attribute '$attribute' does not exist in '" . get_class($this) . "'.");
+        }
         $this->_errors[$attribute][] = $error;
     }
 
     /**
      * Adds a list of errors.
-     * @param array $items a list of errors. The array keys must be attribute names.
-     * The array values should be error messages. If an attribute has multiple errors,
-     * these errors must be given in terms of an array.
+     * @param array $items a list of errors. The array keys must be attribute names. Use `null` key for adding common
+     * errors. The array values should be error messages. Pass array in case of multiple errors.
      * You may use the result of [[getErrors()]] as the value for this parameter.
      * @since 2.0.2
      */
     public function addErrors(array $items)
     {
         foreach ($items as $attribute => $errors) {
+            $attribute = ($attribute === '') ? null : $attribute;
             if (is_array($errors)) {
                 foreach ($errors as $error) {
                     $this->addError($attribute, $error);
@@ -633,7 +673,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Removes errors for all attributes or a single attribute.
-     * @param string $attribute attribute name. Use null to remove errors for all attribute.
+     * @param string $attribute attribute name. Use null to remove all errors.
      */
     public function clearErrors($attribute = null)
     {

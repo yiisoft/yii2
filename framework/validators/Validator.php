@@ -234,6 +234,32 @@ class Validator extends Component
     }
 
     /**
+     * Delegates validation to appropriate method depending on attributes.
+     * @param \yii\base\Model $model the data model being validated.
+     * @param array|null $attributes the list of attributes to be validated.
+     */
+    public function delegateValidation($model, $attributes)
+    {
+        if ($this->attributes !== []) {
+            $this->validateAttributes($model, $attributes);
+            return;
+        }
+        if ($this->when === null || call_user_func($this->when, $model)) {
+            $this->validateModel($model);
+        }
+    }
+
+    /**
+     * Validates model in common. Used for adding common errors (not related with particular attribute).
+     * @param \yii\base\Model $model the data model being validated.
+     * @throws NotSupportedException if the validator does not support common validation of a model.
+     */
+    public function validateModel($model)
+    {
+        throw new NotSupportedException(get_class($this) . ' does not support validateModel().');
+    }
+
+    /**
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
      * @param array|null $attributes the list of attributes to be validated.
@@ -384,15 +410,17 @@ class Validator extends Component
      */
     public function addError($model, $attribute, $message, $params = [])
     {
-        $params['attribute'] = $model->getAttributeLabel($attribute);
-        if (!isset($params['value'])) {
-            $value = $model->$attribute;
-            if (is_array($value)) {
-                $params['value'] = 'array()';
-            } elseif (is_object($value) && !method_exists($value, '__toString')) {
-                $params['value'] = '(object)';
-            } else {
-                $params['value'] = $value;
+        if ($attribute !== null) {
+            $params['attribute'] = $model->getAttributeLabel($attribute);
+            if (!isset($params['value'])) {
+                $value = $model->$attribute;
+                if (is_array($value)) {
+                    $params['value'] = 'array()';
+                } elseif (is_object($value) && !method_exists($value, '__toString')) {
+                    $params['value'] = '(object)';
+                } else {
+                    $params['value'] = $value;
+                }
             }
         }
         $model->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));

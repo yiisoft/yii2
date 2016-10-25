@@ -3,6 +3,7 @@
 namespace yiiunit\data\validators\models;
 
 use yii\base\Model;
+use yiiunit\data\validators\CommonErrorsValidator;
 
 class FakedValidationModel extends Model
 {
@@ -26,19 +27,32 @@ class FakedValidationModel extends Model
         return $m;
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), $this->attr);
+    }
+
     public function rules()
     {
         return [
             [['val_attr_a', 'val_attr_b'], 'required', 'on' => 'reqTest'],
             ['val_attr_c', 'integer'],
             ['attr_images', 'file', 'maxFiles' => 3, 'extensions' => ['png'], 'on' => 'validateMultipleFiles', 'checkExtensionByMimeType' => false],
-            ['attr_image', 'file', 'extensions' => ['png'], 'on' => 'validateFile', 'checkExtensionByMimeType' => false]
+            ['attr_image', 'file', 'extensions' => ['png'], 'on' => 'validateFile', 'checkExtensionByMimeType' => false],
+            [null, CommonErrorsValidator::className(), 'on' => 'validateCommonWithValidator'],
+            [null, 'validateCommon', 'on' => 'validateCommonWithMethod'],
         ];
     }
 
     public function inlineVal($attribute, $params = [])
     {
         return true;
+    }
+
+    public function validateCommon($model)
+    {
+        $this->addError(null, 'Common error!');
+        $this->addError(null, 'Another common error!');
     }
 
     public function __get($name)
