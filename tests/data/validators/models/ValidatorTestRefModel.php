@@ -22,7 +22,7 @@ class ValidatorTestRefModel extends ActiveRecord
 
     public function attributes()
     {
-        return array_merge(parent::attributes(), ['test_val_fail']);
+        return array_merge(parent::attributes(), ['test_val', 'test_val_fail']);
     }
 
     public function getMain()
