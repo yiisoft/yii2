@@ -13,6 +13,11 @@ class ValidatorTestMainModel extends ActiveRecord
         return 'validator_main';
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['testMainVal']);
+    }
+
     public function getReferences()
     {
         return $this->hasMany(ValidatorTestRefModel::className(), ['ref' => 'id']);

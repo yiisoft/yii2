@@ -20,6 +20,11 @@ class ValidatorTestRefModel extends ActiveRecord
         return 'validator_ref';
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['test_val_fail']);
+    }
+
     public function getMain()
     {
         return $this->hasOne(ValidatorTestMainModel::className(), ['id' => 'ref']);
