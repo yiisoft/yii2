@@ -237,6 +237,7 @@ class Validator extends Component
      * Delegates validation to appropriate method depending on attributes.
      * @param \yii\base\Model $model the data model being validated.
      * @param array|null $attributes the list of attributes to be validated.
+     * @since 2.0.11
      */
     public function delegateValidation($model, $attributes)
     {
@@ -253,6 +254,7 @@ class Validator extends Component
      * Validates model in common. Used for adding common errors (not related with particular attribute).
      * @param \yii\base\Model $model the data model being validated.
      * @throws NotSupportedException if the validator does not support common validation of a model.
+     * @since 2.0.11
      */
     public function validateModel($model)
     {

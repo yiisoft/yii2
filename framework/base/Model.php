@@ -593,6 +593,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * Returns the common errors only
      * @return array array of common error messages
      * @see getErrors()
+     * @since 2.0.11
      */
     public function getCommonErrors()
     {
