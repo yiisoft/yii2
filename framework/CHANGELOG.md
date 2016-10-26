@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 - Bug #12824: Enabled usage of `yii\mutex\FileMutex` on Windows systems (davidsonalencar)
+- Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
 
 2.0.10 October 20, 2016
 -----------------------
