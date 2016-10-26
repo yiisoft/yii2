@@ -138,7 +138,7 @@ class ValidatorTest extends TestCase
             ],
             'skipOnEmpty' => true,
         ]);
-        $model = $this->getTestModel(['attr_empty1' => '', 'attr_empty2' => ' ']);
+        $model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
         $val->validateAttributes($model);
         $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
         $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
@@ -157,7 +157,7 @@ class ValidatorTest extends TestCase
             ],
             'skipOnEmpty' => false,
         ]);
-        $model = $this->getTestModel(['attr_empty1' => '', 'attr_empty2' => ' ']);
+        $model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
         $val->validateAttributes($model);
         $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
         $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
