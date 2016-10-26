@@ -43,7 +43,7 @@ abstract class BaseMigrateController extends Controller
      * @var array list of namespaces containing the migration classes.
      *
      * Migration namespaces should be resolvable as a path alias if prefixed with `@`, e.g. if you specify
-     * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return 
+     * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return
      * the file path to the directory this namespace refers to.
      *
      * For example:

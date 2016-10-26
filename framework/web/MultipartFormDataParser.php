@@ -57,8 +57,8 @@ use yii\helpers\StringHelper;
  * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
  * means [[UploadedFile::saveAs()]] will fail as well.
  *
- * @property integer $uploadFileMaxSize upload file max size in bytes.
- * @property integer $uploadFileMaxCount maximum upload files count.
+ * @property integer $uploadFileMaxCount Maximum upload files count.
+ * @property integer $uploadFileMaxSize Upload file max size in bytes.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10

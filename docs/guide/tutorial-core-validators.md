@@ -118,9 +118,14 @@ is set to `false` on the compare validator too.
 
 ## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
+The [[yii\validators\DateValidator|date]] validator comes with three different
+shortcuts:
+
 ```php
 [
     [['from_date', 'to_date'], 'date'],
+    [['from_datetime', 'to_datetime'], 'datetime'],
+    [['some_time'], 'time'],
 ]
 ```
 
@@ -143,6 +148,9 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
   Since version 2.0.4, a format and timezone can be specified for this attribute using
   [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] and
   [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]].
+  
+  Note, that when using `timestampAttribute`, the input value will be converted to a unix timestamp, which by definition is in UTC, so
+  a conversion from the [[yii\validators\DateValidator::timeZone|input time zone]] to UTC will be performed.
 
 - Since version 2.0.4 it is also possible to specify a [[yii\validators\DateValidator::$min|minimum]] or
   [[yii\validators\DateValidator::$max|maximum]] timestamp.

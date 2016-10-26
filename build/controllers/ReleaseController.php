@@ -318,7 +318,7 @@ class ReleaseController extends Controller
         }
         $this->validateWhat($what, ['framework', 'ext'], false);
 
-        $version = reset($this->getNextVersions($this->getCurrentVersions($what), self::PATCH));
+        $version = array_values($this->getNextVersions($this->getCurrentVersions($what), self::PATCH))[0];
         $this->stdout('sorting CHANGELOG of ');
         $this->stdout(reset($what), Console::BOLD);
         $this->stdout(" for version ");
