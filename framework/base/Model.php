@@ -637,11 +637,11 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Adds a new error to the specified attribute or common error.
-     * @param string $attribute attribute name. Leave `null` for common errors (not related with particular attribute).
+     * @param string $attribute attribute name. Pass `null` for common errors (not related with particular attribute).
      * @param string $error new error message
      * @throws InvalidParamException in case of attribute not exist
      */
-    public function addError($attribute = null, $error = '')
+    public function addError($attribute, $error = '')
     {
         if ($attribute === null) {
             $attribute = self::COMMON_ERRORS_KEY;
