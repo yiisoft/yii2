@@ -661,7 +661,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function addErrors(array $items)
     {
         foreach ($items as $attribute => $errors) {
-            $attribute = ($attribute === '') ? null : $attribute;
+            $attribute = ($attribute === '' || $attribute === self::COMMON_ERRORS_KEY) ? null : $attribute;
             if (is_array($errors)) {
                 foreach ($errors as $error) {
                     $this->addError($attribute, $error);

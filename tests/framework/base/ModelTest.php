@@ -358,6 +358,17 @@ class ModelTest extends TestCase
 
         $singer->clearErrors();
         $errors = [
+            Model::COMMON_ERRORS_KEY => 'Common error!',
+        ];
+        $singer->addErrors($errors);
+        $this->assertEquals([
+            Model::COMMON_ERRORS_KEY => ['Common error!'],
+        ], $singer->getErrors());
+        $this->assertEmpty($singer->getAttributeErrors());
+        $this->assertEquals($singer->getCommonErrors(), ['Common error!']);
+
+        $singer->clearErrors();
+        $errors = [
             'firstName' => ['Something is wrong!', 'Totally wrong!'],
             'lastName' => ['Another one!', 'Totally wrong!'],
             null => ['Common error!', 'Another common error!'],
