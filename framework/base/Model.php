@@ -540,7 +540,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
-     * Returns the errors for all attribute or a single attribute. Common errors are included too unless specific
+     * Returns the errors for all attributes or a single attribute. Common errors are included too unless specific
      * attribute is specified.
      * @param string $attribute attribute name. Use null to retrieve all errors.
      * @property array An array of errors. Empty array is returned if no error.
