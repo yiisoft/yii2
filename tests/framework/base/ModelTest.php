@@ -135,7 +135,7 @@ class ModelTest extends TestCase
         $model->scenario = Model::SCENARIO_DEFAULT;
         $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
         $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
-        $model->scenario = 'update'; // not exsisting scenario
+        $model->scenario = 'update'; // not existing scenario
         $this->assertEquals([], $model->safeAttributes());
         $this->assertEquals([], $model->activeAttributes());
 
