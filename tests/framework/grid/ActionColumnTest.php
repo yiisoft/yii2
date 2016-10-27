@@ -24,6 +24,12 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         $column = new ActionColumn(['template' => '{show} {edit} {remove}']);
         $this->assertEmpty($column->buttons);
+
+        $column = new ActionColumn(['template' => '{view-items} {update-items} {delete-items}']);
+        $this->assertEmpty($column->buttons);
+
+        $column = new ActionColumn(['template' => '{view} {view-items}']);
+        $this->assertEquals(['view'], array_keys($column->buttons));
     }
 
     public function testRenderDataCell()
