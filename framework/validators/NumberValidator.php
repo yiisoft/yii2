@@ -85,7 +85,8 @@ class NumberValidator extends Validator
             return;
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, "$value")) {
+
+        if (!preg_match($pattern, $this->getStringValue($value))) {
             $this->addError($model, $attribute, $this->message);
         }
         if ($this->min !== null && $value < $this->min) {
@@ -105,7 +106,7 @@ class NumberValidator extends Validator
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, "$value")) {
+        if (!preg_match($pattern, $this->getStringValue($value))) {
             return [$this->message, []];
         } elseif ($this->min !== null && $value < $this->min) {
             return [$this->tooSmall, ['min' => $this->min]];
@@ -115,6 +116,38 @@ class NumberValidator extends Validator
             return null;
         }
     }
+
+    /**
+     * Returns string represenation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma
+     * @param $value
+     * @return string
+     */
+    private function getStringValue($value)
+    {
+        $value = (string)$value;
+        $locale = localeconv();
+        
+        $thousandsSeparatorFix = false;
+
+        $thousandsSeparator = isset($locale['thousands_sep']) ? $locale['thousands_sep'] : null;
+        if ($thousandsSeparator !== null && $thousandsSeparator !== ',') {
+            $value = str_replace($thousandsSeparator, '|', $value);
+            $thousandsSeparatorFix = true;
+        }
+
+        $decimalPointSeparator = isset($locale['decimal_point']) ? $locale['decimal_point'] : null;
+        if ($decimalPointSeparator !== null && $decimalPointSeparator !== '.') {
+            $value = str_replace($decimalPointSeparator, '.', $value);
+        }
+
+        if ($thousandsSeparatorFix === true) {
+            $value = str_replace('|', ',', $value);
+        }
+
+        return $value;
+    }
+
 
     /**
      * @inheritdoc
