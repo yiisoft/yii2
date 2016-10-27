@@ -153,6 +153,7 @@ class ActionColumn extends Column
      * @param string $name Button name as it's written in template
      * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
      * @param array $additionalOptions Array of additional options
+     * @since 2.0.11
      */
     protected function initDefaultButton($name, $iconName, $additionalOptions = [])
     {
