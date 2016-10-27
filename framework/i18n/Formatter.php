@@ -672,7 +672,7 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                $timestamp = new DateTime('@' . $value, new DateTimeZone('UTC'));
+                $timestamp = new DateTime('@' . (int)$value, new DateTimeZone('UTC'));
                 return $checkTimeInfo ? [$timestamp, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkTimeInfo ? [$timestamp, false] : $timestamp;
