@@ -262,7 +262,7 @@ class Pagination extends Object implements Linkable
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
-        if ($page > 0 || $page >= 0 && $this->forcePageParam) {
+        if ($page > 0 || $page == 0 && $this->forcePageParam) {
             $params[$this->pageParam] = $page + 1;
         } else {
             unset($params[$this->pageParam]);
