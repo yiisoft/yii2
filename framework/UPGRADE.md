@@ -1,25 +1,55 @@
-Upgrading Instructions for Yii Framework v2
-===========================================
+Upgrading Instructions for Yii Framework 2.0
+============================================
 
-!!!IMPORTANT!!!
+This file contains the upgrade notes for Yii 2.0. These notes highlight changes that
+could break your application when you upgrade Yii from one version to another.
+Even though we try to ensure backwards compabitilty (BC) as much as possible, sometimes
+it is not possible or very complicated to avoid it and still create a good solution to
+a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md) for further details.
 
-The following upgrading instructions are cumulative. That is,
+Upgrading in general is as simple as updating your dependency in your composer.json and
+running `composer update`. In a big application however there may be more things to consider,
+which are explained in the following.
+
+> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer) so that you can run the `composer` command. If you have a `composer.phar` file
+inside of your project you need to replace `composer` with `php composer.phar` in the following.
+
+> Tip: Upgrading dependencies of a complex software project always comes at the risk of breaking something, so make sure
+you have a backup (you should be doing this anyway ;) ).
+
+Before upgrading, make sure you have a global installation of the latest version of the
+[composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
+as well as a stable version of Composer:
+
+    composer self-update
+    composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+
+The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
+
+    composer require "yiisoft/yii2:~2.0.10"
+
+This however may fail due to changes in the dependencies of yiisoft/yii2, which may change due to security updates
+in other libraries or by adding support for newer versions. `composer require` will not update any other packages 
+as a safety feature.
+
+The better way to upgrade is to change the `composer.json` file to require the new Yii version and then
+run `composer update` by specifying all packages that are allowed to be updated.
+
+    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
+    
+The above command will only update the specified packages and leave the versions of all other dependencies intact.
+This helps to update packages step by step without causing a lot of package version changes that might break in some way.
+If you feel lucky you can of course update everything to the latest version by running `composer update` without
+any restrictions.
+
+After upgrading you should check whether your application still works as expected and no tests are broken.
+See the following notes on which changes to consider when upgrading from one version to another.
+
+> Note: The following upgrading instructions are cumulative. That is,
 if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
-Make sure you have global install of latest version of composer asset plugin as well as a stable version of composer:
-
-```
-php composer.phar self-update
-php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
-```
-
-Then run:
-
-```
-php composer.phar require "yiisoft/yii2:~2.0.10"
-```
 
 Upgrade from Yii 2.0.9
 ----------------------
@@ -227,7 +257,7 @@ Upgrade from Yii 2.0 Beta
   It is also a good idea to upgrade composer itself to the latest version if you see any problems:
 
   ```
-  php composer.phar self-update
+  composer self-update
   ```
 
 * If you used `clearAll()` or `clearAllAssignments()` of `yii\rbac\DbManager`, you should replace
