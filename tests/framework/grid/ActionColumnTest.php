@@ -17,13 +17,13 @@ class ActionColumnTest extends \yiiunit\TestCase
     public function testInit()
     {
         $column = new ActionColumn();
-        $this->assertCount(3, $column->buttons);
+        $this->assertEquals(['view', 'update', 'delete'], array_keys($column->buttons));
 
         $column = new ActionColumn(['template' => '{show} {edit} {delete}']);
-        $this->assertCount(1, $column->buttons);
+        $this->assertEquals(['delete'], array_keys($column->buttons));
 
         $column = new ActionColumn(['template' => '{show} {edit} {remove}']);
-        $this->assertCount(0, $column->buttons);
+        $this->assertEmpty($column->buttons);
     }
 
     public function testRenderDataCell()
