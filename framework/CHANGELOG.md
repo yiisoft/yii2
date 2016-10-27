@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
 - Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
+- Bug #12836: Fixed `GridView::$filterUrl` to not ignore `#` part of filter URL (cebe)
 - Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
@@ -13,6 +14,7 @@ Yii Framework 2 Change Log
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 - Bug #12824: Enabled usage of `yii\mutex\FileMutex` on Windows systems (davidsonalencar)
+- Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
 
 2.0.10 October 20, 2016
 -----------------------
@@ -64,6 +66,7 @@ Yii Framework 2 Change Log
 - Bug #12605: Make 'safe' validator work on write-only properties (arthibald, CeBe)
 - Bug #12629: Fixed `yii\widgets\ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
 - Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
+- Bug #12828: Fixed handling of nested arrays, objects in `\yii\grid\GridView::guessColumns` (githubjeka)
 - Enh #384: Added ability to run migration from several locations via `yii\console\controllers\BaseMigrateController::$migrationNamespaces` (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)

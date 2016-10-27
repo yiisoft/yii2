@@ -17,7 +17,10 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    '{attribute} contains wrong subnet mask.' => '{attribute} obsahuje neplatnú masku podsiete.',
+    'Powered by {yii}' => 'Powered by {yii}',
+    'The combination {values} of {attributes} has already been taken.' => 'Kombinácia {values} pre {attributes} je už použitá.',
+    'Unknown alias: -{name}' => 'Neznámy alias: -{name}',
+    'Yii Framework' => 'Yii Framework',
     '(not set)' => '(nie je nastavené)',
     'An internal server error occurred.' => 'Vyskytla sa interná chyba servera.',
     'Are you sure you want to delete this item?' => 'Skutočne chcete odstrániť tento záznam?',
@@ -65,6 +68,7 @@ return [
     'the input value' => 'vstupná hodnota',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" je už použité.',
     '{attribute} cannot be blank.' => 'Pole {attribute} nesmie byť prázdne.',
+    '{attribute} contains wrong subnet mask.' => '{attribute} obsahuje neplatnú masku podsiete.',
     '{attribute} is invalid.' => 'Pole {attribute} je neplatné.',
     '{attribute} is not a valid URL.' => '{attribute} nie je platná URL.',
     '{attribute} is not a valid email address.' => '{attribute} nie je platná emailová adresa.',
