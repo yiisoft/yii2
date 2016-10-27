@@ -121,6 +121,16 @@ class ActionColumn extends Column
     public $urlCreator;
     /**
      * @var array html options to be applied to the [[initDefaultButtons()|default buttons]].
+     * Html options for each button. The array keys are the button names without curly brackets.
+     * If the button name is not specified it wouldn't work.
+     *
+     * ```php
+     * [
+     *     'view' => [
+     *          'class' => 'btn btn-primary',
+     *     ]         
+     * ],
+     * ```
      * @since 2.0.4
      */
     public $buttonOptions = [];
@@ -142,33 +152,45 @@ class ActionColumn extends Column
     {
         if (!isset($this->buttons['view'])) {
             $this->buttons['view'] = function ($url, $model, $key) {
-                $options = array_merge([
+                $options = [
                     'title' => Yii::t('yii', 'View'),
                     'aria-label' => Yii::t('yii', 'View'),
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
+                ];
+
+                if (isset($this->buttonOptions['view']))
+                    $options = array_merge($options, $this->buttonOptions['view']);
+
                 return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, $options);
             };
         }
         if (!isset($this->buttons['update'])) {
             $this->buttons['update'] = function ($url, $model, $key) {
-                $options = array_merge([
+                $options = [
                     'title' => Yii::t('yii', 'Update'),
                     'aria-label' => Yii::t('yii', 'Update'),
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
+                ];
+
+                if (isset($this->buttonOptions['update']))
+                    $options = array_merge($options, $this->buttonOptions['update']);
+
                 return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options);
             };
         }
         if (!isset($this->buttons['delete'])) {
             $this->buttons['delete'] = function ($url, $model, $key) {
-                $options = array_merge([
+                $options = [
                     'title' => Yii::t('yii', 'Delete'),
                     'aria-label' => Yii::t('yii', 'Delete'),
                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                     'data-method' => 'post',
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
+                ];
+
+                if (isset($this->buttonOptions['delete']))
+                    $options = array_merge($options, $this->buttonOptions['delete']);
+                
                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
             };
         }
