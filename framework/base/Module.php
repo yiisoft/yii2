@@ -131,7 +131,7 @@ class Module extends ServiceLocator
      *
      * ```php
      * function (Module $module) {
-     *     //return string|integer
+     *     //return string|int
      * }
      * ```
      *

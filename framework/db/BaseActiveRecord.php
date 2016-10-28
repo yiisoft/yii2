@@ -436,7 +436,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Check whether the named relation has been populated with records.
      * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
-     * @return boolean whether relation has been populated with records.
+     * @return bool whether relation has been populated with records.
      * @see getRelation()
      */
     public function isRelationPopulated($name)
@@ -1167,7 +1167,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * A relation is defined by a getter method which returns an [[ActiveQueryInterface]] object.
      * It can be declared in either the Active Record class itself or one of its behaviors.
      * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
-     * @param boolean $throwException whether to throw exception if the relation does not exist.
+     * @param bool $throwException whether to throw exception if the relation does not exist.
      * @return ActiveQueryInterface|ActiveQuery the relational query object. If the relation does not exist
      * and `$throwException` is `false`, `null` will be returned.
      * @throws InvalidParamException if the named relation does not exist.
@@ -1414,7 +1414,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Note that to destroy the relationship without removing records make sure your keys can be set to null
      *
      * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
-     * @param boolean $delete whether to delete the model that contains the foreign key.
+     * @param bool $delete whether to delete the model that contains the foreign key.
      */
     public function unlinkAll($name, $delete = false)
     {

@@ -45,9 +45,9 @@ use yii\helpers\StringHelper;
  * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
  * @property string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`). This
  * property is read-only.
- * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
- * @property boolean $isDelete Whether this is a DELETE request. This property is read-only.
- * @property boolean $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
+ * @property bool $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
+ * @property bool $isDelete Whether this is a DELETE request. This property is read-only.
+ * @property bool $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
  * read-only.
  * @property bool $isGet Whether this is a GET request. This property is read-only.
  * @property bool $isHead Whether this is a HEAD request. This property is read-only.
