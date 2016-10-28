@@ -1855,23 +1855,19 @@ class BaseHtml
      */
     public static function removeCssClass(&$options, $class)
     {
-        if (isset($options['class'])) {
-            if (is_array($options['class'])) {
-                $classes = array_diff($options['class'], (array) $class);
-                if (empty($classes)) {
-                    unset($options['class']);
-                } else {
-                    $options['class'] = $classes;
-                }
-            } else {
-                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $classes = array_diff($classes, (array) $class);
-                if (empty($classes)) {
-                    unset($options['class']);
-                } else {
-                    $options['class'] = implode(' ', $classes);
-                }
-            }
+        if (!isset($options['class'])) {
+            return;
+        }
+        $classes = $options['class'];
+        $options['class'] = array_diff(
+            is_array($classes)
+                ? $classes
+                : preg_split('/\s+/', $classes, -1, PREG_SPLIT_NO_EMPTY),
+            (array) $class
+        );
+
+        if (empty($options['class'])) {
+            unset($options['class']);
         }
     }
 

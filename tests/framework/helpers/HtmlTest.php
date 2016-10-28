@@ -670,11 +670,11 @@ EOD;
     {
         $options = ['class' => 'test test2 test3'];
         Html::removeCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test3'], $options);
+        $this->assertEquals(['class' => ['test', 2 => 'test3']], $options);
         Html::removeCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test3'], $options);
+        $this->assertEquals(['class' => ['test', 2 => 'test3']], $options);
         Html::removeCssClass($options, 'test');
-        $this->assertEquals(['class' => 'test3'], $options);
+        $this->assertEquals(['class' => [2 => 'test3']], $options);
         Html::removeCssClass($options, 'test3');
         $this->assertEquals([], $options);
 
@@ -685,11 +685,9 @@ EOD;
         Html::removeCssClass($options, 'test3');
         $this->assertEquals([], $options);
 
-        $options = [
-            'class' => 'test test1 test2'
-        ];
+        $options = ['class' => 'test test1 test2'];
         Html::removeCssClass($options, ['test1', 'test2']);
-        $this->assertEquals(['class' => 'test'], $options);
+        $this->assertEquals(['class' => ['test']], $options);
     }
 
     public function testCssStyleFromArray()
