@@ -224,7 +224,7 @@ class BaseHtml
      */
     public static function cssFile($url, $options = [])
     {
-        $options = array_merge(['rel' => 'stylesheet'], $options);
+        $options['rel'] = ArrayHelper::getValue($options, 'rel', 'stylesheet');
         $noscript = ArrayHelper::remove($options, 'noscript');
         $condition = ArrayHelper::remove($options, 'condition');
         $options['href'] = Url::to($url);
@@ -1446,7 +1446,7 @@ class BaseHtml
         $options['uncheck'] = ArrayHelper::getValue(
             $options,
             'uncheck',
-            '1'
+            '0'
         );
 
         if (!array_key_exists('label', $options)) {
