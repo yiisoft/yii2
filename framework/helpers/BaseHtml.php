@@ -1719,7 +1719,8 @@ class BaseHtml
         );
         $options['encode'] = ArrayHelper::getValue($options, 'encode', $encode);
 
-        if (null !== ($prompt = ArrayHelper::remove($tagOptions, 'prompt'))) {
+        $prompt = ArrayHelper::remove($tagOptions, 'prompt');
+        if (null !== $prompt) {
             $lines[] = static::tag(
                 'option',
                 self::applyEncode($prompt, $encode, $encodeSpaces),
