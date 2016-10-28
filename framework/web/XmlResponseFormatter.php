@@ -91,6 +91,12 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 } else {
                     $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
                     $element->appendChild($child);
+                    // https://github.com/yiisoft/yii2/issues/12856
+                    if ($value === true) {
+                        $value = 'true';
+                    } elseif ($value === false) {
+                        $value = 'false';
+                    }
                     $child->appendChild(new DOMText((string) $value));
                 }
             }
