@@ -67,8 +67,11 @@ to make sure an input is the same as the verification code displayed by [[yii\ca
     // validates if the value of "password" attribute equals to that of "password_repeat"
     ['password', 'compare'],
 
+    // same as above but with explicitly specifying the attribute to compare with
+    ['password', 'compare', 'compareAttribute' => 'password_repeat'],
+
     // validates if age is greater than or equal to 30
-    ['age', 'compare', 'compareValue' => 30, 'operator' => '>='],
+    ['age', 'compare', 'compareValue' => 30, 'operator' => '>=', 'type' => 'number'],
 ]
 ```
 
@@ -91,7 +94,9 @@ is as specified by the `operator` property.
      * `>=`: check if value being validated is greater than or equal to the value being compared with.
      * `<`: check if value being validated is less than the value being compared with.
      * `<=`: check if value being validated is less than or equal to the value being compared with.
-
+- `type`: The default comparison type is '[[yii\validators\CompareValidator::TYPE_STRING|string]]', which means the values are
+  compared byte by byte. When comparing numbers, make sure to set the [[yii\validators\CompareValidator::$type|$type]]
+  to '[[yii\validators\CompareValidator::TYPE_NUMBER|number]]' to enable numeric comparison.
 
 ### Comparing date values
 
