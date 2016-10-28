@@ -684,6 +684,8 @@ EOD;
         Html::removeCssClass($options, 'test');
         Html::removeCssClass($options, 'test3');
         $this->assertEquals([], $options);
+        Html::removeCssClass($options, 'test3');
+        $this->assertEquals([], $options);
 
         $options = ['class' => 'test test1 test2'];
         Html::removeCssClass($options, ['test1', 'test2']);
