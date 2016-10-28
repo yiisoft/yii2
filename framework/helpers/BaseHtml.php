@@ -1423,11 +1423,13 @@ class BaseHtml
 
     /**
      * Generates a boolean input
-     * This method is mainly called by [[activeCheckbox()]] and [[activeRadio()]].
-     * @param string $type the input type. This can be either `radio` or `checkbox`.
+     * This method is mainly called by [[activeCheckbox()]] and
+     * [[activeRadio()]].
+     * @param string $type the input type. This can be either `radio` or
+     * `checkbox`.
      * @param Model $model the model object
-     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
-     * about attribute expression.
+     * @param string $attribute the attribute name or expression. See
+     * [[getAttributeName()]] for the format about attribute expression.
      * @param array $options the tag options in terms of name-value pairs.
      * See [[booleanInput()]] for details about accepted attributes.
      * @return string the generated input element
@@ -1435,17 +1437,22 @@ class BaseHtml
      */
     protected static function activeBooleanInput($type, $model, $attribute, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
+        $name = isset($options['name'])
+            ? $options['name']
+            : static::getInputName($model, $attribute);
         $value = static::getAttributeValue($model, $attribute);
 
-        if (!array_key_exists('value', $options)) {
-            $options['value'] = '1';
-        }
-        if (!array_key_exists('uncheck', $options)) {
-            $options['uncheck'] = '0';
-        }
+        $options['value'] = ArrayHelper::getValue($options, 'value', '1');
+        $options['uncheck'] = ArrayHelper::getValue(
+            $options,
+            'uncheck',
+            '1'
+        );
+
         if (!array_key_exists('label', $options)) {
-            $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
+            $options['label'] = static::encode($model->getAttributeLabel(
+                static::getAttributeName($attribute)
+            ));
         }
 
         $checked = "$value" === "{$options['value']}";
