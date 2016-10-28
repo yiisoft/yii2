@@ -431,7 +431,6 @@ EOD;
             },
             'tag' => false
         ]));
-
     }
 
     public function testRadioList()
@@ -715,15 +714,27 @@ EOD;
     {
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, 'width: 110px; color: red;');
-        $this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+        $this->assertEquals([
+            'width' => '110px',
+            'height' => '200px',
+            'color' => 'red',
+        ], $options['style']);
 
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, ['width' => '110px', 'color' => 'red']);
-        $this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+        $this->assertEquals([
+            'width' => '110px',
+            'height' => '200px',
+            'color' => 'red',
+        ], $options['style']);
 
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, 'width: 110px; color: red;', false);
-        $this->assertEquals('width: 100px; height: 200px; color: red;', $options['style']);
+        $this->assertEquals([
+            'width' => '100px',
+            'height' => '200px',
+            'color' => 'red',
+        ], $options['style']);
 
         $options = [];
         Html::addCssStyle($options, 'width: 110px; color: red;');
@@ -733,13 +744,12 @@ EOD;
         Html::addCssStyle($options, 'width: 110px; color: red;', false);
         $this->assertEquals('width: 110px; color: red;', $options['style']);
 
-        $options = [
-            'style' => [
-                'width' => '100px'
-            ],
-        ];
+        $options = ['style' => ['width' => '100px']];
         Html::addCssStyle($options, ['color' => 'red'], false);
-        $this->assertEquals('width: 100px; color: red;', $options['style']);
+        $this->assertEquals(
+            ['width' => '100px', 'color' => 'red'],
+            $options['style']
+        );
     }
 
     public function testRemoveCssStyle()

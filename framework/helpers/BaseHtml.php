@@ -233,7 +233,7 @@ class BaseHtml
         if ($condition) {
             return self::wrapIntoCondition($link, $condition);
         }
-        
+
         return $noscript === true ? static::tag('noscript', $link) : $link;
     }
 
@@ -1878,9 +1878,10 @@ class BaseHtml
     /**
      * Adds the specified CSS style to the HTML options.
      *
-     * If the options already contain a `style` element, the new style will be merged
-     * with the existing one. If a CSS property exists in both the new and the old styles,
-     * the old one may be overwritten if `$overwrite` is true.
+     * If the options already contain a `style` element, the new style will be
+     * merged with the existing one. If a CSS property exists in both the new
+     * and the old styles, the old one may be overwritten if `$overwrite` is
+     * true.
      *
      * For example,
      *
@@ -1889,10 +1890,11 @@ class BaseHtml
      * ```
      *
      * @param array $options the HTML options to be modified.
-     * @param string|array $style the new style string (e.g. `'width: 100px; height: 200px'`) or
-     * array (e.g. `['width' => '100px', 'height' => '200px']`).
-     * @param boolean $overwrite whether to overwrite existing CSS properties if the new style
-     * contain them too.
+     * @param string|array $style the new style string
+     * (e.g. `'width: 100px; height: 200px'`) or array
+     * (e.g. `['width' => '100px', 'height' => '200px']`).
+     * @param boolean $overwrite whether to overwrite existing CSS properties if
+     * the new style contain them too.
      * @see removeCssStyle()
      * @see cssStyleFromArray()
      * @see cssStyleToArray()
@@ -1900,18 +1902,17 @@ class BaseHtml
     public static function addCssStyle(&$options, $style, $overwrite = true)
     {
         if (!empty($options['style'])) {
-            $oldStyle = is_array($options['style']) ? $options['style'] : static::cssStyleToArray($options['style']);
-            $newStyle = is_array($style) ? $style : static::cssStyleToArray($style);
-            if (!$overwrite) {
-                foreach ($newStyle as $property => $value) {
-                    if (isset($oldStyle[$property])) {
-                        unset($newStyle[$property]);
-                    }
-                }
-            }
-            $style = array_merge($oldStyle, $newStyle);
+            $oldStyle = is_array($options['style'])
+                ? $options['style']
+                : static::cssStyleToArray($options['style']);
+            $newStyle = is_array($style)
+                ? $style
+                : static::cssStyleToArray($style);
+            $style = $overwrite
+                ? array_merge($oldStyle, $newStyle)
+                : array_merge($newStyle, $oldStyle);
         }
-        $options['style'] = is_array($style) ? static::cssStyleFromArray($style) : $style;
+        $options['style'] = $style;
     }
 
     /**
