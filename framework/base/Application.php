@@ -95,10 +95,6 @@ abstract class Application extends Module
      */
     public $name = 'My Application';
     /**
-     * @var string the version of this application.
-     */
-    public $version = '1.0';
-    /**
      * @var string the charset currently used for the application.
      */
     public $charset = 'UTF-8';

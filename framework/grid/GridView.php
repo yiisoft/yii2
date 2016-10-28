@@ -569,7 +569,9 @@ class GridView extends BaseListView
         $model = reset($models);
         if (is_array($model) || is_object($model)) {
             foreach ($model as $name => $value) {
-                $this->columns[] = (string) $name;
+                if ($value === null || is_scalar($value) || is_callable([$value, '__toString'])) {
+                    $this->columns[] = (string) $name;
+                }
             }
         }
     }

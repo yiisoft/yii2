@@ -60,6 +60,9 @@ Then, modify the configuration of the `urlManager` component in your application
 The above configuration mainly adds a URL rule for the `user` controller so that the user data
 can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 
+> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
+> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
+
 
 ## Enabling JSON Input <span id="enabling-json-input"></span>
 
@@ -92,9 +95,6 @@ for accessing the user data. The APIs you have created include:
 * `DELETE /users/123`: delete the user 123;
 * `OPTIONS /users`: show the supported verbs regarding endpoint `/users`;
 * `OPTIONS /users/123`: show the supported verbs regarding endpoint `/users/123`.
-
-> Info: Yii will automatically pluralize controller names for use in endpoints.
-> You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
 
 You may access your APIs with the `curl` command like the following,
 

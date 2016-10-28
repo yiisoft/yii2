@@ -350,8 +350,8 @@ class PhpDocController extends Controller
             $types = explode('|', $matches[2]);
             foreach($types as $i => $type) {
                 switch($type){
-                    case 'int': $types[$i] = 'integer'; break;
-                    case 'bool': $types[$i] = 'boolean'; break;
+                    case 'integer': $types[$i] = 'int'; break;
+                    case 'boolean': $types[$i] = 'bool'; break;
                 }
             }
             return '@' . $matches[1] . ' ' . implode('|', $types);
@@ -479,9 +479,15 @@ class PhpDocController extends Controller
 
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)
     {
-        $ref = new \ReflectionClass($className);
+        try {
+            $ref = new \ReflectionClass($className);
+        } catch (\Exception $e) {
+            $this->stderr("[ERR] Unable to create ReflectionClass for class '$className': " . $e->getMessage() . "\n", Console::FG_RED);
+            return false;
+        }
         if ($ref->getFileName() != $file) {
             $this->stderr("[ERR] Unable to create ReflectionClass for class: $className loaded class is not from file: $file\n", Console::FG_RED);
+            return false;
         }
 
         if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object') {

@@ -534,7 +534,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     }
 
     /**
-     * Returns the errors for all attribute or a single attribute.
+     * Returns the errors for all attributes or a single attribute.
      * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
      * @property array An array of errors for all attributes. Empty array is returned if no error.
      * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
@@ -633,7 +633,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Removes errors for all attributes or a single attribute.
-     * @param string $attribute attribute name. Use null to remove errors for all attribute.
+     * @param string $attribute attribute name. Use null to remove errors for all attributes.
      */
     public function clearErrors($attribute = null)
     {

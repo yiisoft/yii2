@@ -116,28 +116,41 @@ abstract class ErrorHandler extends Component
             }
         } catch (\Exception $e) {
             // an other exception could be thrown while displaying the exception
-            $msg = "An Error occurred while handling another error:\n";
-            $msg .= (string) $e;
-            $msg .= "\nPrevious exception:\n";
-            $msg .= (string) $exception;
-            if (YII_DEBUG) {
-                if (PHP_SAPI === 'cli') {
-                    echo $msg . "\n";
-                } else {
-                    echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
-                }
-            } else {
-                echo 'An internal server error occurred.';
-            }
-            $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
-            error_log($msg);
-            if (defined('HHVM_VERSION')) {
-                flush();
-            }
-            exit(1);
+            $this->handleFallbackExceptionMessage($e, $exception);
+        } catch (\Throwable $e) {
+            // additional check for \Throwable introduced in PHP 7
+            $this->handleFallbackExceptionMessage($e, $exception);
         }
 
         $this->exception = null;
+    }
+
+    /**
+     * Handles exception thrown during exception processing in [[handleException()]].
+     * @param \Exception|\Throwable $exception Exception that was thrown during main exception processing.
+     * @param \Exception $previousException Main exception processed in [[handleException()]].
+     * @since 2.0.11
+     */
+    protected function handleFallbackExceptionMessage($exception, $previousException) {
+        $msg = "An Error occurred while handling another error:\n";
+        $msg .= (string) $exception;
+        $msg .= "\nPrevious exception:\n";
+        $msg .= (string) $previousException;
+        if (YII_DEBUG) {
+            if (PHP_SAPI === 'cli') {
+                echo $msg . "\n";
+            } else {
+                echo '<pre>' . htmlspecialchars($msg, ENT_QUOTES, Yii::$app->charset) . '</pre>';
+            }
+        } else {
+            echo 'An internal server error occurred.';
+        }
+        $msg .= "\n\$_SERVER = " . VarDumper::export($_SERVER);
+        error_log($msg);
+        if (defined('HHVM_VERSION')) {
+            flush();
+        }
+        exit(1);
     }
 
     /**

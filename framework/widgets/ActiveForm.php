@@ -157,6 +157,11 @@ class ActiveForm extends Widget
      */
     public $scrollToError = true;
     /**
+     * @var int offset in pixels that should be added when scrolling to the first error.
+     * @since 2.0.11
+     */
+    public $scrollToErrorOffset = 0;
+    /**
      * @var array the client validation options for individual attributes. Each element of the array
      * represents the validation options for a particular attribute.
      * @internal
@@ -225,6 +230,7 @@ class ActiveForm extends Widget
             'ajaxParam' => $this->ajaxParam,
             'ajaxDataType' => $this->ajaxDataType,
             'scrollToError' => $this->scrollToError,
+            'scrollToErrorOffset' => $this->scrollToErrorOffset,
         ];
         if ($this->validationUrl !== null) {
             $options['validationUrl'] = Url::to($this->validationUrl);
@@ -241,6 +247,7 @@ class ActiveForm extends Widget
             'ajaxParam' => 'ajax',
             'ajaxDataType' => 'json',
             'scrollToError' => true,
+            'scrollToErrorOffset' => 0,
         ]);
     }
 

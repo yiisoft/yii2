@@ -398,6 +398,20 @@ class ModelTest extends TestCase
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
     }
+
+    /**
+     * Ensure 'safe' validator works for write-only properties.
+     * Normal validator can not work here though.
+     */
+    public function testValidateWriteOnly()
+    {
+        $model = new WriteOnlyModel();
+
+        $model->setAttributes(['password' => 'test'], true);
+        $this->assertEquals('test', $model->passwordHash);
+
+        $this->assertTrue($model->validate());
+    }
 }
 
 class ComplexModel1 extends Model
@@ -421,5 +435,22 @@ class ComplexModel2 extends Model
             [['name', 'description'], 'filter', 'filter' => 'trim'],
             [['is_disabled'], 'boolean', 'on' => 'administration'],
         ];
+    }
+}
+
+class WriteOnlyModel extends Model
+{
+    public $passwordHash;
+
+    public function rules()
+    {
+        return [
+            [['password'],'safe'],
+        ];
+    }
+
+    public function setPassword($pw)
+    {
+        $this->passwordHash = $pw;
     }
 }

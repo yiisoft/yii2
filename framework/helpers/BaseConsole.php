@@ -613,8 +613,8 @@ class BaseConsole
         if (static::isRunningOnWindows()) {
             $output = [];
             exec('mode con', $output);
-            if (isset($output, $output[1]) && preg_match('/con:.*lines:\s+(\d+)\s+columns:\s+(\d+)/mi', implode(' ', $output), $matches)) {
-                return $size = [(int)$matches[2], (int)$matches[1]];
+            if (isset($output, $output[1]) && strpos($output[1], 'CON') !== false) {
+                return $size = [(int) preg_replace('~\D~', '', $output[4]), (int) preg_replace('~\D~', '', $output[3])];
             }
         } else {
             // try stty if available

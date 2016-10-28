@@ -59,22 +59,26 @@ class DetailView extends Widget
      * @var array a list of attributes to be displayed in the detail view. Each array element
      * represents the specification for displaying one particular attribute.
      *
-     * An attribute can be specified as a string in the format of "attribute", "attribute:format" or "attribute:format:label",
-     * where "attribute" refers to the attribute name, and "format" represents the format of the attribute. The "format"
+     * An attribute can be specified as a string in the format of `attribute`, `attribute:format` or `attribute:format:label`,
+     * where `attribute` refers to the attribute name, and `format` represents the format of the attribute. The `format`
      * is passed to the [[Formatter::format()]] method to format an attribute value into a displayable text.
-     * Please refer to [[Formatter]] for the supported types. Both "format" and "label" are optional.
+     * Please refer to [[Formatter]] for the supported types. Both `format` and `label` are optional.
      * They will take default values if absent.
      *
      * An attribute can also be specified in terms of an array with the following elements:
      *
-     * - attribute: the attribute name. This is required if either "label" or "value" is not specified.
-     * - label: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
-     * - value: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
+     * - `attribute`: the attribute name. This is required if either `label` or `value` is not specified.
+     * - `label`: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
+     * - `value`: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
      *   by calling [[ArrayHelper::getValue()]]. Note that this value will be formatted into a displayable text
-     *   according to the "format" option.
-     * - format: the type of the value that determines how the value would be formatted into a displayable text.
+     *   according to the `format` option.
+     * - `format`: the type of the value that determines how the value would be formatted into a displayable text.
      *   Please refer to [[Formatter]] for supported types.
-     * - visible: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
+     * - `visible`: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
+     * - `contentOptions`: the HTML attributes to customize value tag. For example: `['class' => 'bg-red']`.
+     *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
+     * - `captionOptions`: the HTML attributes to customize label tag. For example: `['class' => 'bg-red']`.
+     *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
      */
     public $attributes;
     /**
@@ -88,18 +92,21 @@ class DetailView extends Widget
      *
      * where `$attribute` refer to the specification of the attribute being rendered, `$index` is the zero-based
      * index of the attribute in the [[attributes]] array, and `$widget` refers to this widget instance.
+     *
+     * Since Version 2.0.10, the tokens `{captionOptions}` and `{contentOptions}` are available, which will represent
+     * HTML attributes of HTML container elements for the label and value.
      */
-    public $template = '<tr><th>{label}</th><td>{value}</td></tr>';
+    public $template = '<tr><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>';
     /**
-     * @var array the HTML attributes for the container tag of this widget. The "tag" option specifies
-     * what container tag should be used. It defaults to "table" if not set.
+     * @var array the HTML attributes for the container tag of this widget. The `tag` option specifies
+     * what container tag should be used. It defaults to `table` if not set.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'table table-striped table-bordered detail-view'];
     /**
      * @var array|Formatter the formatter used to format model attribute values into displayable texts.
      * This can be either an instance of [[Formatter]] or an configuration array for creating the [[Formatter]]
-     * instance. If this property is not set, the "formatter" application component will be used.
+     * instance. If this property is not set, the `formatter` application component will be used.
      */
     public $formatter;
 
@@ -154,9 +161,13 @@ class DetailView extends Widget
     protected function renderAttribute($attribute, $index)
     {
         if (is_string($this->template)) {
+            $captionOptions = Html::renderTagAttributes(ArrayHelper::getValue($attribute, 'captionOptions', []));
+            $contentOptions = Html::renderTagAttributes(ArrayHelper::getValue($attribute, 'contentOptions', []));
             return strtr($this->template, [
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
+                '{captionOptions}' => $captionOptions,
+                '{contentOptions}' =>  $contentOptions,
             ]);
         } else {
             return call_user_func($this->template, $attribute, $index, $this);
