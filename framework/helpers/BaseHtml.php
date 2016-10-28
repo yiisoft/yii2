@@ -1719,13 +1719,12 @@ class BaseHtml
         );
         $options['encode'] = ArrayHelper::getValue($options, 'encode', $encode);
 
-        if (isset($tagOptions['prompt'])) {
-            $prompt = ArrayHelper::remove($tagOptions, 'prompt');
-            $prompt = $encode ? static::encode($prompt) : $prompt;
-            $prompt = $encodeSpaces
-                ? str_replace(' ', '&nbsp;', $prompt)
-                : $prompt;
-            $lines[] = static::tag('option', $prompt, ['value' => '']);
+        if ($prompt = ArrayHelper::remove($tagOptions, 'prompt')) {
+            $lines[] = static::tag(
+                'option',
+                self::applyEncode($prompt, $encode, $encodeSpaces),
+                ['value' => '']
+            );
         }
 
         foreach ($items as $key => $value) {
@@ -1761,11 +1760,12 @@ class BaseHtml
                             ? ArrayHelper::isIn($key, $selection)
                             : !strcmp($key, $selection);
                 }
-                $text = $encode ? static::encode($value) : $value;
-                $text = $encodeSpaces
-                    ? str_replace(' ', '&nbsp;', $text)
-                    : $text;
-                $lines[] = static::tag('option', $text, $attrs);
+
+                $lines[] = static::tag(
+                    'option',
+                    self::applyEncode($value, $encode, $encodeSpaces),
+                    $attrs
+                );
             }
         }
 
@@ -2175,5 +2175,20 @@ class BaseHtml
         }
 
         return $pattern;
+    }
+
+    /**
+     * Applies encoding to a text.
+     *
+     * @param string $text the text to be encoded.
+     * @param boolean $encode if [[encode()]] method will be called.
+     * @param boolean $encodeSpaces if all the spaces must be changed for
+     * `&nbsp;`
+     * @return string the encoded text.
+     */
+    private static function applyEncode($text, $encode, $encodeSpaces = false)
+    {
+        $text = $encode ? static::encode($text) : $text;
+        return $encodeSpaces ? str_replace(' ', '&nbsp;', $text) : $text;
     }
 }
