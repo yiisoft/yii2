@@ -224,21 +224,17 @@ class BaseHtml
      */
     public static function cssFile($url, $options = [])
     {
-        if (!isset($options['rel'])) {
-            $options['rel'] = 'stylesheet';
-        }
+        $options = array_merge(['rel' => 'stylesheet'], $options);
+        $noscript = ArrayHelper::remove($options, 'noscript');
+        $condition = ArrayHelper::remove($options, 'condition');
         $options['href'] = Url::to($url);
+        $link = static::tag('link', '', $options);
 
-        if (isset($options['condition'])) {
-            $condition = $options['condition'];
-            unset($options['condition']);
-            return self::wrapIntoCondition(static::tag('link', '', $options), $condition);
-        } elseif (isset($options['noscript']) && $options['noscript'] === true) {
-            unset($options['noscript']);
-            return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
-        } else {
-            return static::tag('link', '', $options);
+        if ($condition) {
+            return self::wrapIntoCondition($link, $condition);
         }
+        
+        return $noscript === true ? static::tag('noscript', $link) : $link;
     }
 
     /**
