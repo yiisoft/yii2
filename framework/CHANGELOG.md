@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
+
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 - Bug #12824: Enabled usage of `yii\mutex\FileMutex` on Windows systems (davidsonalencar)
 - Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
