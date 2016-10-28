@@ -1641,25 +1641,36 @@ class BaseHtml
 
     /**
      * Generates a list of input fields.
-     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckBoxList()]].
-     * @param string $type the input type. This can be 'listBox', 'radioList', or 'checkBoxList'.
+     * This method is mainly called by [[activeListBox()]],
+     * [[activeRadioList()]] and [[activeCheckBoxList()]].
+     * @param string $type the input type. This can be 'listBox',
+     * 'radioList', or 'checkBoxList'.
      * @param Model $model the model object
-     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * @param string $attribute the attribute name or expression. See
+     * [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $items the data item used to generate the input fields.
-     * The array keys are the input values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
-     * @param array $options options (name => config) for the input list. The supported special options
-     * depend on the input type specified by `$type`.
+     * The array keys are the input values, and the array values are the
+     * corresponding labels. Note that the labels will NOT be HTML-encoded,
+     * while the values will.
+     * @param array $options options (name => config) for the input list.
+     * The supported special options depend on the input type specified by
+     * `$type`.
      * @return string the generated input list
      */
     protected static function activeListInput($type, $model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('unselect', $options)) {
-            $options['unselect'] = '';
-        }
+        $name = isset($options['name'])
+            ? $options['name']
+            : static::getInputName($model, $attribute);
+        $selection = isset($options['value'])
+            ? $options['value']
+            : static::getAttributeValue($model, $attribute);
+        $options['unselect'] = ArrayHelper::getValue(
+            $options,
+            'unselect',
+            ''
+        );
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
