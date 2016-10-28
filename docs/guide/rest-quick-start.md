@@ -60,7 +60,7 @@ Then, modify the configuration of the `urlManager` component in your application
 The above configuration mainly adds a URL rule for the `user` controller so that the user data
 can be accessed and manipulated with pretty URLs and meaningful HTTP verbs.
 
-> Note: Yii will automatically pluralize controller names for use in endpoints (see Trying it Out section).
+> Note: Yii will automatically pluralize controller names for use in endpoints (see [Trying it Out](#trying-it-out) section below).
 > You can configure this using the [[yii\rest\UrlRule::$pluralize]] property.
 
 
