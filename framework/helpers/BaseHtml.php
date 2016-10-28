@@ -1704,43 +1704,67 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         $lines = [];
-        $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
+        $encodeSpaces = ArrayHelper::remove(
+            $tagOptions,
+            'encodeSpaces',
+            false
+        );
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
+        $options = ArrayHelper::remove($tagOptions, 'options', []);
+        $groups = ArrayHelper::remove($tagOptions, 'groups', []);
+        $options['encodeSpaces'] = ArrayHelper::getValue(
+            $options,
+            'encodeSpaces',
+            $encodeSpaces
+        );
+        $options['encode'] = ArrayHelper::getValue($options, 'encode', $encode);
+
         if (isset($tagOptions['prompt'])) {
-            $prompt = $encode ? static::encode($tagOptions['prompt']) : $tagOptions['prompt'];
-            if ($encodeSpaces) {
-                $prompt = str_replace(' ', '&nbsp;', $prompt);
-            }
+            $prompt = ArrayHelper::remove($tagOptions, 'prompt');
+            $prompt = $encode ? static::encode($prompt) : $prompt;
+            $prompt = $encodeSpaces
+                ? str_replace(' ', '&nbsp;', $prompt)
+                : $prompt;
             $lines[] = static::tag('option', $prompt, ['value' => '']);
         }
 
-        $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];
-        $groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : [];
-        unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
-        $options['encodeSpaces'] = ArrayHelper::getValue($options, 'encodeSpaces', $encodeSpaces);
-        $options['encode'] = ArrayHelper::getValue($options, 'encode', $encode);
-
         foreach ($items as $key => $value) {
             if (is_array($value)) {
-                $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
-                if (!isset($groupAttrs['label'])) {
-                    $groupAttrs['label'] = $key;
-                }
-                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
-                $content = static::renderSelectOptions($selection, $value, $attrs);
-                $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
+                $groupAttrs = array_merge(
+                    ['label' => $key],
+                    ArrayHelper::getValue($groups, $key, [])
+                );
+                $attrs = [
+                    'options' => $options,
+                    'groups' => $groups,
+                    'encodeSpaces' => $encodeSpaces,
+                    'encode' => $encode,
+                ];
+                $content = static::renderSelectOptions(
+                    $selection,
+                    $value,
+                    $attrs
+                );
+                $lines[] = static::tag(
+                    'optgroup',
+                    "\n" . $content . "\n",
+                    $groupAttrs
+                );
             } else {
-                $attrs = isset($options[$key]) ? $options[$key] : [];
-                $attrs['value'] = (string) $key;
+                $attrs = array_merge(
+                    ['value' => (string) $key],
+                    ArrayHelper::getValue($options, $key, [])
+                );
                 if (!array_key_exists('selected', $attrs)) {
-                    $attrs['selected'] = $selection !== null &&
-                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection));
+                    $attrs['selected'] = null !== $selection &&
+                        ArrayHelper::isTraversable($selection)
+                            ? ArrayHelper::isIn($key, $selection)
+                            : !strcmp($key, $selection);
                 }
                 $text = $encode ? static::encode($value) : $value;
-                if ($encodeSpaces) {
-                    $text = str_replace(' ', '&nbsp;', $text);
-                }
+                $text = $encodeSpaces
+                    ? str_replace(' ', '&nbsp;', $text)
+                    : $text;
                 $lines[] = static::tag('option', $text, $attrs);
             }
         }
