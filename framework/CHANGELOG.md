@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 - Bug #12824: Enabled usage of `yii\mutex\FileMutex` on Windows systems (davidsonalencar)
 - Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
+- Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 
 2.0.10 October 20, 2016
 -----------------------
@@ -66,6 +67,7 @@ Yii Framework 2 Change Log
 - Bug #12605: Make 'safe' validator work on write-only properties (arthibald, CeBe)
 - Bug #12629: Fixed `yii\widgets\ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
 - Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
+- Bug #12828: Fixed handling of nested arrays, objects in `\yii\grid\GridView::guessColumns` (githubjeka)
 - Enh #384: Added ability to run migration from several locations via `yii\console\controllers\BaseMigrateController::$migrationNamespaces` (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
