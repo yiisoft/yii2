@@ -78,6 +78,20 @@ class CompareValidator extends Validator
      */
     public $message;
 
+    /**
+     * @var array pairs of `operator` => `message`. When [[$message]] is not set
+     * the translated `message will be used.
+     */
+    private $operatorMessages = [
+        '==' => '{attribute} must be equal to "{compareValueOrAttribute}".',
+        '===' => '{attribute} must be equal to "{compareValueOrAttribute}".',
+        '!=' => '{attribute} must not be equal to "{compareValueOrAttribute}".',
+        '!==' => '{attribute} must not be equal to "{compareValueOrAttribute}".',
+        '>' =>  '{attribute} must be greater than "{compareValueOrAttribute}".',
+        '>=' => '{attribute} must be greater than or equal to "{compareValueOrAttribute}".',
+        '<' =>  '{attribute} must be less than "{compareValueOrAttribute}".',
+        '<=' => '{attribute} must be less than or equal to "{compareValueOrAttribute}".',
+    ];
 
     /**
      * @inheritdoc
@@ -85,36 +99,12 @@ class CompareValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
-            switch ($this->operator) {
-                case '==':
-                    $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValueOrAttribute}".');
-                    break;
-                case '===':
-                    $this->message = Yii::t('yii', '{attribute} must be equal to "{compareValueOrAttribute}".');
-                    break;
-                case '!=':
-                    $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValueOrAttribute}".');
-                    break;
-                case '!==':
-                    $this->message = Yii::t('yii', '{attribute} must not be equal to "{compareValueOrAttribute}".');
-                    break;
-                case '>':
-                    $this->message = Yii::t('yii', '{attribute} must be greater than "{compareValueOrAttribute}".');
-                    break;
-                case '>=':
-                    $this->message = Yii::t('yii', '{attribute} must be greater than or equal to "{compareValueOrAttribute}".');
-                    break;
-                case '<':
-                    $this->message = Yii::t('yii', '{attribute} must be less than "{compareValueOrAttribute}".');
-                    break;
-                case '<=':
-                    $this->message = Yii::t('yii', '{attribute} must be less than or equal to "{compareValueOrAttribute}".');
-                    break;
-                default:
-                    throw new InvalidConfigException("Unknown operator: {$this->operator}");
-            }
+        if (empty($this->operatorMessages[$this->operator])) {
+            throw new InvalidConfigException("Unknown operator: {$this->operator}");
         }
+        $this->initMessages([
+            'message' => $this->operatorMessages[$this->operator]
+        ]);
     }
 
     /**

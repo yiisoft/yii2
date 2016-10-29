@@ -73,9 +73,7 @@ class EachValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', '{attribute} is invalid.');
-        }
+        $this->initMessages(['message' => '{attribute} is invalid.']);
     }
 
     /**

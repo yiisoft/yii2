@@ -42,9 +42,9 @@ class BooleanValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', '{attribute} must be either "{true}" or "{false}".');
-        }
+        $this->initMessages([
+            'message' => '{attribute} must be either "{true}" or "{false}".',
+        ]);
     }
 
     /**
@@ -52,10 +52,11 @@ class BooleanValidator extends Validator
      */
     protected function validateValue($value)
     {
-        $valid = !$this->strict && ($value == $this->trueValue || $value == $this->falseValue)
-                 || $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
-
-        if (!$valid) {
+        if (!in_array(
+            $value,
+            [$this->trueValue, $this->falseValue],
+            $this->strict
+        )) {
             return [$this->message, [
                 'true' => $this->trueValue === true ? 'true' : $this->trueValue,
                 'false' => $this->falseValue === false ? 'false' : $this->falseValue,

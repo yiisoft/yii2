@@ -8,8 +8,10 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\StringHelper;
 use yii\web\JsExpression;
 use yii\web\UploadedFile;
 use yii\helpers\FileHelper;
@@ -147,37 +149,21 @@ class FileValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', 'File upload failed.');
-        }
-        if ($this->uploadRequired === null) {
-            $this->uploadRequired = Yii::t('yii', 'Please upload a file.');
-        }
-        if ($this->tooMany === null) {
-            $this->tooMany = Yii::t('yii', 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.');
-        }
-        if ($this->wrongExtension === null) {
-            $this->wrongExtension = Yii::t('yii', 'Only files with these extensions are allowed: {extensions}.');
-        }
-        if ($this->tooBig === null) {
-            $this->tooBig = Yii::t('yii', 'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.');
-        }
-        if ($this->tooSmall === null) {
-            $this->tooSmall = Yii::t('yii', 'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.');
-        }
-        if (!is_array($this->extensions)) {
-            $this->extensions = preg_split('/[\s,]+/', strtolower($this->extensions), -1, PREG_SPLIT_NO_EMPTY);
-        } else {
-            $this->extensions = array_map('strtolower', $this->extensions);
-        }
-        if ($this->wrongMimeType === null) {
-            $this->wrongMimeType = Yii::t('yii', 'Only files with these MIME types are allowed: {mimeTypes}.');
-        }
-        if (!is_array($this->mimeTypes)) {
-            $this->mimeTypes = preg_split('/[\s,]+/', strtolower($this->mimeTypes), -1, PREG_SPLIT_NO_EMPTY);
-        } else {
-            $this->mimeTypes = array_map('strtolower', $this->mimeTypes);
-        }
+        $this->initMessages([
+            'message' => 'File upload failed.',
+            'uploadRequired' => 'Please upload a file.',
+            'tooMany' => 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.',
+            'wrongExtension' => 'Only files with these extensions are allowed: {extensions}.',
+            'tooBig' => 'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.',
+            'tooSmall' => 'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.',
+            'wrongMimeType' => 'Only files with these MIME types are allowed: {mimeTypes}.',
+        ]);
+        $this->extensions = is_array($this->extensions)
+            ? array_map('strtolower', $this->extensions)
+            : StringHelper::separateByComma(strtolower($this->extensions));
+        $this->mimeTypes = is_array($this->mimeTypes)
+            ? array_map('strtolower', $this->mimeTypes)
+            : StringHelper::separateByComma(strtolower($this->mimeTypes));
     }
 
     /**
@@ -193,7 +179,7 @@ class FileValidator extends Validator
                 return;
             }
             foreach ($files as $i => $file) {
-                if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
+                if ($this->isEmpty($file)) {
                     unset($files[$i]);
                 }
             }
@@ -327,19 +313,16 @@ class FileValidator extends Validator
      */
     private function sizeToBytes($sizeStr)
     {
-        switch (substr($sizeStr, -1)) {
-            case 'M':
-            case 'm':
-                return (int) $sizeStr * 1048576;
-            case 'K':
-            case 'k':
-                return (int) $sizeStr * 1024;
-            case 'G':
-            case 'g':
-                return (int) $sizeStr * 1073741824;
-            default:
-                return (int) $sizeStr;
-        }
+        static $sizes = [
+            'K' => 1024,
+            'M' => 1048576,
+            'G' => 1073741824,
+        ];
+        return (int) $sizeStr * ArrayHelper::getValue(
+            $sizes,
+            strtoupper(substr($sizeStr, -1)),
+            1
+        );
     }
 
     /**
@@ -352,7 +335,6 @@ class FileValidator extends Validator
         $extension = mb_strtolower($file->extension, 'UTF-8');
 
         if ($this->checkExtensionByMimeType) {
-
             $mimeType = FileHelper::getMimeType($file->tempName, null, false);
             if ($mimeType === null) {
                 return false;
