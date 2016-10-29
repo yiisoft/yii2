@@ -41,7 +41,8 @@ class XmlResponseFormatterTest extends FormatterTest
         return $this->addXmlHead([
             [1, "<response>1</response>\n"],
             ['abc', "<response>abc</response>\n"],
-            [true, "<response>1</response>\n"],
+            [true, "<response>true</response>\n"],
+            [false, "<response>false</response>\n"],
             ["<>", "<response>&lt;&gt;</response>\n"],
         ]);
     }
@@ -60,13 +61,13 @@ class XmlResponseFormatterTest extends FormatterTest
                 'abc',
                 [2, 'def'],
                 true,
-            ], "<response><item>1</item><item>abc</item><item><item>2</item><item>def</item></item><item>1</item></response>\n"],
+            ], "<response><item>1</item><item>abc</item><item><item>2</item><item>def</item></item><item>true</item></response>\n"],
             [[
                 'a' => 1,
                 'b' => 'abc',
                 'c' => [2, '<>'],
-                true,
-            ], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>1</item></response>\n"],
+                false,
+            ], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>false</item></response>\n"],
         ]);
     }
 

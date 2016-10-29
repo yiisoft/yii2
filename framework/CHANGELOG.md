@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `\yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
 - Bug #12824: Enabled usage of `yii\mutex\FileMutex` on Windows systems (davidsonalencar)
+- Bug #12856: Fixed `yii\web\XmlResponseFormatter` to use `true` and `false` to represent booleans (samdark)
 - Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
