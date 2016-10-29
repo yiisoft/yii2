@@ -217,13 +217,16 @@ class IpValidator extends Validator
     public function init()
     {
         parent::init();
-
-        if (!$this->ipv4 && !$this->ipv6) {
-            throw new InvalidConfigException('Both IPv4 and IPv6 checks can not be disabled at the same time');
-        }
-
-        if (!defined('AF_INET6') && $this->ipv6) {
-            throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
+        if ($this->ipv6) {
+            if (!defined('AF_INET6')) {
+                throw new InvalidConfigException(
+                    'IPv6 validation can not be used. PHP is compiled without IPv6'
+                );
+            }
+        } elseif (!$this->ipv4) {
+            throw new InvalidConfigException(
+                'Both IPv4 and IPv6 checks can not be disabled at the same time'
+            );
         }
 
         $this->initMessages([
