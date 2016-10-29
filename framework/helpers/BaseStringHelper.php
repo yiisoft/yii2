@@ -270,6 +270,19 @@ class BaseStringHelper
     }
 
     /**
+     * Separates an string into words based on a regular expression.
+     *
+     * @param string $string the variable to be separated.
+     * @param sring $delimiter regular expression used to separate the words.
+     * @return string[]
+     * @since 2.0.11
+     */
+    public static function separateWords($string, $delimiter = '/\s+/u')
+    {
+        return preg_split($delimiter, $string, -1, PREG_SPLIT_NO_EMPTY);
+    }
+
+    /**
      * Counts words in a string
      * @since 2.0.8
      *
@@ -278,6 +291,18 @@ class BaseStringHelper
      */
     public static function countWords($string)
     {
-        return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
+        return count(static::separateWords($string));
+    }
+
+    /**
+     * Separates an string into words by a comma separation
+     *
+     * @param string $string the variable to be separated.
+     * @return string[]
+     * @since 2.0.11
+     */
+    public static function separateByComma($string)
+    {
+        return static::separateWords($string, '/[\s,]+/');
     }
 }
