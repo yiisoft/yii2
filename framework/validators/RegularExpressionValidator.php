@@ -43,9 +43,7 @@ class RegularExpressionValidator extends Validator
         if ($this->pattern === null) {
             throw new InvalidConfigException('The "pattern" property must be set.');
         }
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', '{attribute} is invalid.');
-        }
+        $this->initMessages(['message' => '{attribute} is invalid.']);
     }
 
     /**
@@ -53,9 +51,8 @@ class RegularExpressionValidator extends Validator
      */
     protected function validateValue($value)
     {
-        $valid = !is_array($value) &&
-            (!$this->not && preg_match($this->pattern, $value)
-            || $this->not && !preg_match($this->pattern, $value));
+        $valid = !is_array($value)
+            && $this->not != preg_match($this->pattern, $value);
 
         return $valid ? null : [$this->message, []];
     }

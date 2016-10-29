@@ -62,9 +62,7 @@ class RangeValidator extends Validator
         ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', '{attribute} is invalid.');
-        }
+        $this->initMessages(['message' => '{attribute} is invalid.']);
     }
 
     /**

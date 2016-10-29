@@ -58,9 +58,7 @@ class UrlValidator extends Validator
         if ($this->enableIDN && !function_exists('idn_to_ascii')) {
             throw new InvalidConfigException('In order to use IDN validation intl extension must be installed and enabled.');
         }
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', '{attribute} is not a valid URL.');
-        }
+        $this->initMessages(['message' => '{attribute} is not a valid URL.']);
     }
 
     /**

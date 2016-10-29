@@ -226,27 +226,15 @@ class IpValidator extends Validator
             throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
         }
 
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', '{attribute} must be a valid IP address.');
-        }
-        if ($this->ipv6NotAllowed === null) {
-            $this->ipv6NotAllowed = Yii::t('yii', '{attribute} must not be an IPv6 address.');
-        }
-        if ($this->ipv4NotAllowed === null) {
-            $this->ipv4NotAllowed = Yii::t('yii', '{attribute} must not be an IPv4 address.');
-        }
-        if ($this->wrongCidr === null) {
-            $this->wrongCidr = Yii::t('yii', '{attribute} contains wrong subnet mask.');
-        }
-        if ($this->noSubnet === null) {
-            $this->noSubnet = Yii::t('yii', '{attribute} must be an IP address with specified subnet.');
-        }
-        if ($this->hasSubnet === null) {
-            $this->hasSubnet = Yii::t('yii', '{attribute} must not be a subnet.');
-        }
-        if ($this->notInRange === null) {
-            $this->notInRange = Yii::t('yii', '{attribute} is not in the allowed range.');
-        }
+        $this->initMessages([
+            'message' => '{attribute} must be a valid IP address.',
+            'ipv6NotAllowed' => '{attribute} must not be an IPv6 address.',
+            'ipv4NotAllowed' => '{attribute} must not be an IPv4 address.',
+            'wrongCidr' => '{attribute} contains wrong subnet mask.',
+            'noSubnet' => '{attribute} must be an IP address with specified subnet.',
+            'hasSubnet' => '{attribute} must not be a subnet.',
+            'notInRange' => '{attribute} is not in the allowed range.',
+        ]);
     }
 
     /**
