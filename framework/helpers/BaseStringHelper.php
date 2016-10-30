@@ -90,7 +90,7 @@ class BaseStringHelper
             return '';
         }
     }
-    
+
     /**
      * Truncates a string to the number of characters specified.
      *
@@ -107,14 +107,14 @@ class BaseStringHelper
         if ($asHtml) {
             return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
         }
-        
+
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
             return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
     }
-    
+
     /**
      * Truncates a string to the number of words specified.
      *
@@ -138,7 +138,7 @@ class BaseStringHelper
             return $string;
         }
     }
-    
+
     /**
      * Truncate a string while preserving the HTML.
      *
@@ -270,16 +270,39 @@ class BaseStringHelper
     }
 
     /**
-     * Separates an string into words based on a regular expression.
+     * Split a string into based on a regular expression.
      *
-     * @param string $string the variable to be separated.
-     * @param sring $delimiter regular expression used to separate the words.
+     * @param string $string the string to be split.
+     * @param sring $delimiter regular expression used to separate the string.
      * @return string[]
      * @since 2.0.11
      */
-    public static function separateWords($string, $delimiter = '/\s+/u')
+    public static function split($string, $delimiter)
     {
         return preg_split($delimiter, $string, -1, PREG_SPLIT_NO_EMPTY);
+    }
+
+    /**
+     * [splitWords description]
+     * @param $string $string the string to be split
+     * @return string[]
+     * @since 2.0.11
+     */
+    public static function splitWords($string)
+    {
+        return static::split($string,  '/\s+/u');
+    }
+
+    /**
+     * Separates an string into words by a comma separation
+     *
+     * @param string $string the variable to be separated.
+     * @return string[]
+     * @since 2.0.11
+     */
+    public static function splitByComma($string)
+    {
+        return static::split($string, '/[\s,]+/');
     }
 
     /**
@@ -291,18 +314,6 @@ class BaseStringHelper
      */
     public static function countWords($string)
     {
-        return count(static::separateWords($string));
-    }
-
-    /**
-     * Separates an string into words by a comma separation
-     *
-     * @param string $string the variable to be separated.
-     * @return string[]
-     * @since 2.0.11
-     */
-    public static function separateByComma($string)
-    {
-        return static::separateWords($string, '/[\s,]+/');
+        return count(static::splitWords($string));
     }
 }
