@@ -127,22 +127,15 @@ class NumberValidator extends Validator
     {
         $value = (string)$value;
         $locale = localeconv();
-        
-        $thousandsSeparatorFix = false;
 
         $thousandsSeparator = isset($locale['thousands_sep']) ? $locale['thousands_sep'] : null;
-        if ($thousandsSeparator !== null && $thousandsSeparator !== ',') {
-            $value = str_replace($thousandsSeparator, '|', $value);
-            $thousandsSeparatorFix = true;
+        if ($thousandsSeparator) {
+            $value = str_replace($thousandsSeparator, '', $value);
         }
 
         $decimalPointSeparator = isset($locale['decimal_point']) ? $locale['decimal_point'] : null;
         if ($decimalPointSeparator !== null && $decimalPointSeparator !== '.') {
             $value = str_replace($decimalPointSeparator, '.', $value);
-        }
-
-        if ($thousandsSeparatorFix === true) {
-            $value = str_replace('|', ',', $value);
         }
 
         return $value;

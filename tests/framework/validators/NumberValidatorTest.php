@@ -39,10 +39,18 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(25.45));
 
         $oldLocale = setlocale(LC_ALL, "0");
-        setlocale(LC_ALL, 'en_US.UTF-8', 'English_United States.1252');
+
+        setlocale(LC_ALL, 'US', 'em_US', 'en_US.UTF-8', 'English_United States.1252');
         $this->assertFalse($val->validate('25,45'));
+        $this->assertTrue($val->validate('25.45'));
+        $this->assertFalse($val->validate('12,34.56'));
+        $this->assertFalse($val->validate('1,234.56'));
+
         setlocale(LC_ALL, "pt_BR", "pt_BR.iso-8859-1", "pt_BR.utf-8", "portuguese"); //decimal point is comma
+        $this->assertFalse($val->validate('25.45'));
         $this->assertTrue($val->validate('25,45'));
+        $this->assertFalse($val->validate('12,34.56'));
+        $this->assertFalse($val->validate('1.234,56'));
         setlocale(LC_ALL, $oldLocale);
 
         $this->assertFalse($val->validate('12:45'));
@@ -83,7 +91,7 @@ class NumberValidatorTest extends TestCase
 
         $oldLocale = setlocale(LC_ALL, "0");
 
-        setlocale(LC_ALL, 'en_US.UTF-8', 'English_United States.1252');
+        setlocale(LC_ALL, 'US', 'em_US', 'en_US.UTF-8', 'English_United States.1252');
         $this->assertTrue($val->validate(.5));
 
         setlocale(LC_ALL, "pt_BR", "pt_BR.iso-8859-1", "pt_BR.utf-8", "portuguese"); //decimal point is comma
