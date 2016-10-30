@@ -39,12 +39,11 @@ class BooleanValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function init()
+    public function initDefaultMessages()
     {
-        parent::init();
-        $this->initMessages([
+        return [
             'message' => '{attribute} must be either "{true}" or "{false}".',
-        ]);
+        ];
     }
 
     /**

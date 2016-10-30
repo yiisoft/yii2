@@ -210,6 +210,21 @@ class IpValidator extends Validator
      */
     private $_ranges = [];
 
+    /**
+     * @inheritdoc
+     */
+    public function initDefaultMessages()
+    {
+        return [
+            'message' => '{attribute} must be a valid IP address.',
+            'ipv6NotAllowed' => '{attribute} must not be an IPv6 address.',
+            'ipv4NotAllowed' => '{attribute} must not be an IPv4 address.',
+            'wrongCidr' => '{attribute} contains wrong subnet mask.',
+            'noSubnet' => '{attribute} must be an IP address with specified subnet.',
+            'hasSubnet' => '{attribute} must not be a subnet.',
+            'notInRange' => '{attribute} is not in the allowed range.',
+        ];
+    }
 
     /**
      * @inheritdoc
@@ -228,16 +243,6 @@ class IpValidator extends Validator
                 'Both IPv4 and IPv6 checks can not be disabled at the same time'
             );
         }
-
-        $this->initMessages([
-            'message' => '{attribute} must be a valid IP address.',
-            'ipv6NotAllowed' => '{attribute} must not be an IPv6 address.',
-            'ipv4NotAllowed' => '{attribute} must not be an IPv4 address.',
-            'wrongCidr' => '{attribute} contains wrong subnet mask.',
-            'noSubnet' => '{attribute} must be an IP address with specified subnet.',
-            'hasSubnet' => '{attribute} must not be a subnet.',
-            'notInRange' => '{attribute} is not in the allowed range.',
-        ]);
     }
 
     /**

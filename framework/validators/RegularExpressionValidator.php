@@ -43,7 +43,6 @@ class RegularExpressionValidator extends Validator
         if ($this->pattern === null) {
             throw new InvalidConfigException('The "pattern" property must be set.');
         }
-        $this->initMessages(['message' => '{attribute} is invalid.']);
     }
 
     /**

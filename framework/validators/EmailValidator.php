@@ -50,6 +50,13 @@ class EmailValidator extends Validator
      */
     public $enableIDN = false;
 
+    /**
+     * @inheritdoc
+     */
+    public function initDefaultMessages()
+    {
+        return ['message' => '{attribute} is not a valid email address.'];
+    }
 
     /**
      * @inheritdoc
@@ -60,9 +67,6 @@ class EmailValidator extends Validator
         if ($this->enableIDN && !function_exists('idn_to_ascii')) {
             throw new InvalidConfigException('In order to use IDN validation intl extension must be installed and enabled.');
         }
-        $this->initMessages([
-            'message' => '{attribute} is not a valid email address.'
-        ]);
     }
 
     /**

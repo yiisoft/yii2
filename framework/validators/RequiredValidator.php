@@ -53,13 +53,13 @@ class RequiredValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function init()
+    public function initDefaultMessages()
     {
-        parent::init();
-        if ($this->message === null) {
-            $this->message = $this->requiredValue === null ? Yii::t('yii', '{attribute} cannot be blank.')
-                : Yii::t('yii', '{attribute} must be "{requiredValue}".');
-        }
+        return [
+            'message' => $this->requiredValue === null
+                ? '{attribute} cannot be blank.'
+                : '{attribute} must be "{requiredValue}".'
+        ];
     }
 
     /**
@@ -68,19 +68,25 @@ class RequiredValidator extends Validator
     protected function validateValue($value)
     {
         if ($this->requiredValue === null) {
-            if ($this->strict && $value !== null || !$this->strict && !$this->isEmpty(is_string($value) ? trim($value) : $value)) {
+            if ($this->strict
+                ? $value !== null
+                : !$this->isEmpty(is_string($value) ? trim($value) : $value)
+            ) {
                 return null;
             }
-        } elseif (!$this->strict && $value == $this->requiredValue || $this->strict && $value === $this->requiredValue) {
+        } elseif ($this->strict
+            ? $value === $this->requiredValue
+            : $value == $this->requiredValue
+        ) {
             return null;
         }
-        if ($this->requiredValue === null) {
-            return [$this->message, []];
-        } else {
-            return [$this->message, [
-                'requiredValue' => $this->requiredValue,
-            ]];
-        }
+
+        return [
+            $this->message,
+            $this->requiredValue === null
+                ? []
+                : ['requiredValue' => $this->requiredValue]
+        ];
     }
 
     /**

@@ -231,6 +231,18 @@ class Validator extends Component
         $this->attributes = (array) $this->attributes;
         $this->on = (array) $this->on;
         $this->except = (array) $this->except;
+
+        foreach (array_filter($this->initDefaultMessages())
+            as $property => $message
+        ) {
+            if (null === $this->$property) {
+                /**
+                 *  @todo think on how to support custon categories for each
+                 *  message
+                 */
+                $this->$property = Yii::t('yii', $message);
+            }
+        }
     }
 
     /**
@@ -415,19 +427,14 @@ class Validator extends Component
     }
 
     /**
-     * Inititializes validation messages.
-     * @param  string[] $messages `property` => `message` pairs. If the
-     * `property` is not set, then the `message` will be translated and set as
-     * the value of said `property`.
-     * @param  string $category translation to be used
+     * Pairs of `property` => `message` If the `property` is not set, then the
+     * `message` will be translated and set as the value of said `property`.
+     *
+     * @return string[]
      * @since 2.0.11
      */
-    protected function initMessages(array $messages, $category = 'yii')
+    protected function initDefaultMessages()
     {
-        foreach (array_filter($messages) as $property => $message) {
-            if (null === $this->$property) {
-                $this->$property = Yii::t($category, $message);
-            }
-        }
+        return ['message' => '{attribute} is invalid.'];
     }
 }

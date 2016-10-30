@@ -9,6 +9,7 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\db\ActiveQueryInterface;
 
 /**
  * ExistValidator validates that the attribute value exists in a table.
@@ -66,22 +67,12 @@ class ExistValidator extends Validator
      */
     public $allowArray = false;
 
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        $this->initMessages(['message' => '{attribute} is invalid.']);
-    }
-
     /**
      * @inheritdoc
      */
     public function validateAttribute($model, $attribute)
     {
-        $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
+        $targetAttribute = $this->targetAttribute ?: $attribute;
 
         if (is_array($targetAttribute)) {
             if ($this->allowArray) {
@@ -105,15 +96,16 @@ class ExistValidator extends Validator
             }
         }
 
-        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
-        $query = $this->createQuery($targetClass, $params);
+        $message = $this->validateQuery(
+            $this->createQuery(
+                $this->targetClass ?: get_class($model),
+                $params
+            ),
+            $value
+        );
 
-        if (is_array($model->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]") != count($model->$attribute)) {
-                $this->addError($model, $attribute, $this->message);
-            }
-        } elseif (!$query->exists()) {
-            $this->addError($model, $attribute, $this->message);
+        if (null !== $message) {
+            $this->addError($model, $attribute, $message[0]);
         }
     }
 
@@ -129,23 +121,39 @@ class ExistValidator extends Validator
             throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
         }
 
-        $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
+        return $this->validateQuery(
+            $this->createQuery(
+                $this->targetClass,
+                [$this->targetAttribute => $value]
+            ),
+            $value
+        );
+    }
 
+    /**
+     * Validates a value based on a query.
+     * @param  ActiveQueryInterface $query the query to be executed.
+     * @param  mixed $value the value to be compared.
+     * @return string[]|null the error message or null if its valid.
+     */
+    protected function validateQuery(ActiveQueryInterface $query, $value)
+    {
         if (is_array($value)) {
             if (!$this->allowArray) {
                 return [$this->message, []];
             }
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        } else {
-            return $query->exists() ? null : [$this->message, []];
+            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value)
+                ? null
+                : [$this->message, []];
         }
+        return $query->exists() ? null : [$this->message, []];
     }
 
     /**
      * Creates a query instance with the given condition.
      * @param string $targetClass the target AR class
      * @param mixed $condition query condition
-     * @return \yii\db\ActiveQueryInterface the query instance
+     * @return ActiveQueryInterface the query instance
      */
     protected function createQuery($targetClass, $condition)
     {

@@ -66,16 +66,6 @@ class EachValidator extends Validator
      */
     private $_validator;
 
-
-    /**
-     * @inheritdoc
-     */
-    public function init()
-    {
-        parent::init();
-        $this->initMessages(['message' => '{attribute} is invalid.']);
-    }
-
     /**
      * Returns the validator declared in [[rule]].
      * @param Model|null $model model in which context validator should be created.
@@ -100,14 +90,16 @@ class EachValidator extends Validator
         $rule = $this->rule;
         if ($rule instanceof Validator) {
             return $rule;
-        } elseif (is_array($rule) && isset($rule[0])) { // validator type
-            if (!is_object($model)) {
-                $model = new Model(); // mock up context model
-            }
-            return Validator::createValidator($rule[0], $model, $this->attributes, array_slice($rule, 1));
-        } else {
-            throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
         }
+        if (is_array($rule) && isset($rule[0])) { // validator type
+            return Validator::createValidator(
+                $rule[0],
+                is_object($model) ? $model : new Model(),
+                $this->attributes,
+                array_slice($rule, 1)
+            );
+        }
+        throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
     }
 
     /**

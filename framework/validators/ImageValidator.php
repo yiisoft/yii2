@@ -91,16 +91,17 @@ class ImageValidator extends FileValidator
     /**
      * @inheritdoc
      */
-    public function init()
+    public function initDefaultMessages()
     {
-        parent::init();
-        $this->initMessages([
+        $imageIsToo = 'The image "{file}" is too';
+        $limit = '{limit, number} {limit, plural, one{pixel} other{pixels}}';
+        return [
             'notImage' => 'The file "{file}" is not an image.',
-            'underWidth' => 'The image "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.',
-            'underHeight' => 'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.',
-            'overWidth' => 'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.',
-            'overHeight' => 'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.',
-        ]);
+            'underWidth' => "$imageIsToo small. The width cannot be smaller than $limit.",
+            'underHeight' => "$imageIsToo small. The height cannot be smaller than $limit.",
+            'overWidth' => "$imageIsToo large. The width cannot be larger than $limit.",
+            'overHeight' => "$imageIsToo large. The height cannot be larger than $limit.",
+        ];
     }
 
     /**

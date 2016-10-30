@@ -81,8 +81,9 @@ class CompareValidator extends Validator
     /**
      * @var array pairs of `operator` => `message`. When [[$message]] is not set
      * the translated `message will be used.
+     * @since 2.0.11
      */
-    private $operatorMessages = [
+    public $operatorMessages = [
         '==' => '{attribute} must be equal to "{compareValueOrAttribute}".',
         '===' => '{attribute} must be equal to "{compareValueOrAttribute}".',
         '!=' => '{attribute} must not be equal to "{compareValueOrAttribute}".',
@@ -96,15 +97,14 @@ class CompareValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function init()
+    public function initDefaultMessages()
     {
-        parent::init();
         if (empty($this->operatorMessages[$this->operator])) {
-            throw new InvalidConfigException("Unknown operator: {$this->operator}");
+            throw new InvalidConfigException(
+                "Unknown operator: {$this->operator}"
+            );
         }
-        $this->initMessages([
-            'message' => $this->operatorMessages[$this->operator]
-        ]);
+        return ['message' => $this->operatorMessages[$this->operator]];
     }
 
     /**

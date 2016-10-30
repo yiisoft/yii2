@@ -65,13 +65,29 @@ class StringValidator extends Validator
      */
     public $encoding;
 
+    /**
+     * @inheritdoc
+     */
+    public function initDefaultMessages()
+    {
+        $messages = ['message' => '{attribute} must be a string.'];
+        if ($this->min !== null) {
+            $messages['tooShort'] = '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.';
+        }
+        if ($this->max !== null) {
+            $messages['tooLong'] = '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.';
+        }
+        if ($this->length !== null) {
+            $messages['notEqual'] = '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.';
+        }
+        return $messages;
+    }
 
     /**
      * @inheritdoc
      */
     public function init()
     {
-        parent::init();
         if (is_array($this->length)) {
             if (isset($this->length[0])) {
                 $this->min = $this->length[0];
@@ -81,20 +97,9 @@ class StringValidator extends Validator
             }
             $this->length = null;
         }
+        parent::init();
         if ($this->encoding === null) {
             $this->encoding = Yii::$app->charset;
-        }
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', '{attribute} must be a string.');
-        }
-        if ($this->min !== null && $this->tooShort === null) {
-            $this->tooShort = Yii::t('yii', '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.');
-        }
-        if ($this->max !== null && $this->tooLong === null) {
-            $this->tooLong = Yii::t('yii', '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.');
-        }
-        if ($this->length !== null && $this->notEqual === null) {
-            $this->notEqual = Yii::t('yii', '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.');
         }
     }
 

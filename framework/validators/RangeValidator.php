@@ -62,7 +62,6 @@ class RangeValidator extends Validator
         ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
-        $this->initMessages(['message' => '{attribute} is invalid.']);
     }
 
     /**

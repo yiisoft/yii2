@@ -205,6 +205,21 @@ class DateValidator extends Validator
         'full'   => 0, // IntlDateFormatter::FULL,
     ];
 
+    /**
+     * @inheritdoc
+     */
+    public function initDefaultMessages()
+    {
+        $messages = ['message' => 'The format of {attribute} is invalid.'];
+
+        if ($this->min !== null) {
+            $messages['tooSmall'] = '{attribute} must be no less than {min}.';
+        }
+        if ($this->max !== null) {
+            $messages['tooBig'] = '{attribute} must be no greater than {max}.';
+        }
+        return $messages;
+    }
 
     /**
      * @inheritdoc
@@ -212,9 +227,6 @@ class DateValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->message === null) {
-            $this->message = Yii::t('yii', 'The format of {attribute} is invalid.');
-        }
         if ($this->format === null) {
             if ($this->type === self::TYPE_DATE) {
                 $this->format = Yii::$app->formatter->dateFormat;
@@ -231,12 +243,6 @@ class DateValidator extends Validator
         }
         if ($this->timeZone === null) {
             $this->timeZone = Yii::$app->timeZone;
-        }
-        if ($this->min !== null && $this->tooSmall === null) {
-            $this->tooSmall = Yii::t('yii', '{attribute} must be no less than {min}.');
-        }
-        if ($this->max !== null && $this->tooBig === null) {
-            $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
         if ($this->maxString === null) {
             $this->maxString = (string) $this->max;

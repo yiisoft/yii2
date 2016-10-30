@@ -142,14 +142,12 @@ class FileValidator extends Validator
      */
     public $wrongMimeType;
 
-
     /**
      * @inheritdoc
      */
-    public function init()
+    public function initDefaultMessages()
     {
-        parent::init();
-        $this->initMessages([
+        return [
             'message' => 'File upload failed.',
             'uploadRequired' => 'Please upload a file.',
             'tooMany' => 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.',
@@ -157,13 +155,21 @@ class FileValidator extends Validator
             'tooBig' => 'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.',
             'tooSmall' => 'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.',
             'wrongMimeType' => 'Only files with these MIME types are allowed: {mimeTypes}.',
-        ]);
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
         $this->extensions = is_array($this->extensions)
             ? array_map('strtolower', $this->extensions)
-            : StringHelper::separateByComma(strtolower($this->extensions));
+            : StringHelper::splitByComma(strtolower($this->extensions));
         $this->mimeTypes = is_array($this->mimeTypes)
             ? array_map('strtolower', $this->mimeTypes)
-            : StringHelper::separateByComma(strtolower($this->mimeTypes));
+            : StringHelper::splitByComma(strtolower($this->mimeTypes));
     }
 
     /**
@@ -178,11 +184,9 @@ class FileValidator extends Validator
 
                 return;
             }
-            foreach ($files as $i => $file) {
-                if ($this->isEmpty($file)) {
-                    unset($files[$i]);
-                }
-            }
+            $files = array_filter($files, function ($file) {
+                return !$this->isEmpty($file);
+            });
             $model->$attribute = array_values($files);
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
@@ -313,16 +317,16 @@ class FileValidator extends Validator
      */
     private function sizeToBytes($sizeStr)
     {
-        static $sizes = [
-            'K' => 1024,
-            'M' => 1048576,
-            'G' => 1073741824,
-        ];
-        return (int) $sizeStr * ArrayHelper::getValue(
-            $sizes,
-            strtoupper(substr($sizeStr, -1)),
-            1
-        );
+        switch (strtoupper(substr($sizeStr, -1))) {
+            case 'K':
+                return (int) $sizeStr * 1024;
+            case 'M':
+                return (int) $sizeStr * 1048576;
+            case 'G':
+                return (int) $sizeStr * 1073741824;
+            default:
+                return (int) $sizeStr;
+        }
     }
 
     /**
@@ -347,11 +351,7 @@ class FileValidator extends Validator
             }
         }
 
-        if (!in_array($extension, $this->extensions, true)) {
-            return false;
-        }
-
-        return true;
+        return in_array($extension, $this->extensions, true);
     }
 
     /**
@@ -464,15 +464,29 @@ class FileValidator extends Validator
         $fileMimeType = FileHelper::getMimeType($file->tempName);
 
         foreach ($this->mimeTypes as $mimeType) {
-            if ($mimeType === $fileMimeType) {
-                return true;
-            }
-
-            if (strpos($mimeType, '*') !== false && preg_match($this->buildMimeTypeRegexp($mimeType), $fileMimeType)) {
+            if ($this->allowedMimeType($mimeType, $fileMimeType)) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Checks if the provided `fileMimeType` is allowed by `mimeType`.
+     *
+     * @param string $mimeType the mime-type to be compared against.
+     * @param string $fileMimeType the file mime-type which will be compared.
+     * @return boolean
+     */
+    protected function allowedMimeType($mimeType, $fileMimeType)
+    {
+        return $mimeType === $fileMimeType
+            || (strpos($mimeType, '*') !== false
+                && preg_match(
+                    $this->buildMimeTypeRegexp($mimeType),
+                    $fileMimeType
+                )
+            );
     }
 }
