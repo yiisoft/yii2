@@ -106,32 +106,6 @@ class StringValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($model, $attribute)
-    {
-        $value = $model->$attribute;
-
-        if (!is_string($value)) {
-            $this->addError($model, $attribute, $this->message);
-
-            return;
-        }
-
-        $length = mb_strlen($value, $this->encoding);
-
-        if ($this->min !== null && $length < $this->min) {
-            $this->addError($model, $attribute, $this->tooShort, ['min' => $this->min]);
-        }
-        if ($this->max !== null && $length > $this->max) {
-            $this->addError($model, $attribute, $this->tooLong, ['max' => $this->max]);
-        }
-        if ($this->length !== null && $length !== $this->length) {
-            $this->addError($model, $attribute, $this->notEqual, ['length' => $this->length]);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function validateValue($value)
     {
         if (!is_string($value)) {

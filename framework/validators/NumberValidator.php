@@ -78,28 +78,6 @@ class NumberValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function validateAttribute($model, $attribute)
-    {
-        $value = $model->$attribute;
-        if (is_array($value) || (is_object($value) && !method_exists($value, '__toString'))) {
-            $this->addError($model, $attribute, $this->message);
-            return;
-        }
-        $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, "$value")) {
-            $this->addError($model, $attribute, $this->message);
-        }
-        if ($this->min !== null && $value < $this->min) {
-            $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->min]);
-        }
-        if ($this->max !== null && $value > $this->max) {
-            $this->addError($model, $attribute, $this->tooBig, ['max' => $this->max]);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
     protected function validateValue($value)
     {
         if (is_array($value) || is_object($value)) {
@@ -112,9 +90,8 @@ class NumberValidator extends Validator
             return [$this->tooSmall, ['min' => $this->min]];
         } elseif ($this->max !== null && $value > $this->max) {
             return [$this->tooBig, ['max' => $this->max]];
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
