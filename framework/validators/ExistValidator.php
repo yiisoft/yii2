@@ -101,7 +101,7 @@ class ExistValidator extends Validator
                 $this->targetClass ?: get_class($model),
                 $params
             ),
-            $this->$attribute
+            $model->$attribute
         );
 
         if (null !== $message) {
