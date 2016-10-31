@@ -279,43 +279,72 @@ abstract class Application extends Module
             $this->extensions = is_file($file) ? include($file) : [];
         }
         foreach ($this->extensions as $extension) {
-            if (!empty($extension['alias'])) {
-                foreach ($extension['alias'] as $name => $path) {
-                    Yii::setAlias($name, $path);
-                }
-            }
-            if (isset($extension['bootstrap'])) {
-                $component = Yii::createObject($extension['bootstrap']);
-                if ($component instanceof BootstrapInterface) {
-                    Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
-                    $component->bootstrap($this);
-                } else {
-                    Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
-                }
-            }
+            $this->bootstrapExtension($extension);
         }
 
         foreach ($this->bootstrap as $class) {
-            $component = null;
-            if (is_string($class)) {
-                if ($this->has($class)) {
-                    $component = $this->get($class);
-                } elseif ($this->hasModule($class)) {
-                    $component = $this->getModule($class);
-                } elseif (strpos($class, '\\') === false) {
-                    throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
-                }
-            }
-            if (!isset($component)) {
-                $component = Yii::createObject($class);
-            }
+            $this->bootstrapComponent($this->getComponent($class));
+        }
+    }
 
-            if ($component instanceof BootstrapInterface) {
-                Yii::trace('Bootstrap with ' . get_class($component) . '::bootstrap()', __METHOD__);
-                $component->bootstrap($this);
-            } else {
-                Yii::trace('Bootstrap with ' . get_class($component), __METHOD__);
+    /**
+     * Initializes the alias and bootstrap of an extension.
+     *
+     * @param aray $ext the extension configuration.
+     * @since 2.0.11
+     */
+    protected function bootstrapExtension(array $ext)
+    {
+        if (!empty($ext['alias'])) {
+            foreach ($ext['alias'] as $name => $path) {
+                Yii::setAlias($name, $path);
             }
+        }
+        if (isset($ext['bootstrap'])) {
+            $this->bootstrapComponent(Yii::createObject($ext['bootstrap']));
+        }
+    }
+
+    /**
+     * Gets a component by class name or array configuration for an object.
+     *
+     * @param string|array $class
+     * @return Object
+     * @since 2.0.11
+     * @throws InvalidConfigException the component was not found nor created.
+     */
+    protected function getComponent($class)
+    {
+        if (!is_string($class)) {
+            return Yii::createObject($class);
+        }
+        if ($this->has($class)) {
+            return $this->get($class);
+        }
+        if ($this->hasModule($class)) {
+            return  $this->getModule($class);
+        }
+        if (strpos($class, '\\') !== false) {
+            return Yii::createObject($class);
+        }
+        throw new InvalidConfigException(
+            "Unknown bootstrapping component ID: $class"
+        );
+    }
+
+    /**
+     * Bootstrap and traces a component.
+     * @param Object $component the component doing the bootstrap process.
+     * @since 2.0.11
+     */
+    protected function bootstrapComponent($component)
+    {
+        $class = get_class($component);
+        if ($component instanceof BootstrapInterface) {
+            Yii::trace("Bootstrap with $class::bootstrap()", __METHOD__);
+            $component->bootstrap($this);
+        } else {
+            Yii::trace('Bootstrap with ' . $class, __METHOD__);
         }
     }
 
@@ -367,7 +396,6 @@ abstract class Application extends Module
     public function run()
     {
         try {
-
             $this->state = self::STATE_BEFORE_REQUEST;
             $this->trigger(self::EVENT_BEFORE_REQUEST);
 
@@ -383,12 +411,9 @@ abstract class Application extends Module
             $this->state = self::STATE_END;
 
             return $response->exitStatus;
-
         } catch (ExitException $e) {
-
             $this->end($e->statusCode, isset($response) ? $response : null);
             return $e->statusCode;
-
         }
     }
 
