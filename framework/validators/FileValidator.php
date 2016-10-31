@@ -187,7 +187,6 @@ class FileValidator extends Validator
             $files = array_filter($files, function ($file) {
                 return !$this->isEmpty($file);
             });
-            $model->$attribute = array_values($files);
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
             }
@@ -195,17 +194,13 @@ class FileValidator extends Validator
                 $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
             } else {
                 foreach ($files as $file) {
-                    $result = $this->validateValue($file);
-                    if (!empty($result)) {
-                        $this->addError($model, $attribute, $result[0], $result[1]);
-                    }
+                    $model->$attribute = $file;
+                    parent::validateAttribute($model, $attribute);
                 }
             }
+            $model->$attribute = array_values($files);
         } else {
-            $result = $this->validateValue($model->$attribute);
-            if (!empty($result)) {
-                $this->addError($model, $attribute, $result[0], $result[1]);
-            }
+            parent::validateAttribute($model, $attribute);
         }
     }
 
@@ -214,7 +209,7 @@ class FileValidator extends Validator
      */
     protected function validateValue($file)
     {
-        if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
+        if ($this->isEmpty($file)) {
             return [$this->uploadRequired, []];
         }
 
