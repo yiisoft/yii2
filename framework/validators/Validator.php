@@ -444,6 +444,7 @@ class Validator extends Component
      * @param integer $value the value to be validated.
      * @param  string $min property name with the configured minimum value.
      * @return boolean
+     * @since 2.0.11
      */
     protected function validateMin($value, $min = 'min')
     {
@@ -456,6 +457,7 @@ class Validator extends Component
      * @param integer $value the value to be validated.
      * @param  string $max property name with the configured maximum value.
      * @return boolean
+     * @since 2.0.11
      */
     protected function validateMax($value, $max = 'max')
     {
