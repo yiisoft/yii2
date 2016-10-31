@@ -227,43 +227,58 @@ class DateValidator extends Validator
     public function init()
     {
         parent::init();
-        if ($this->format === null) {
-            if ($this->type === self::TYPE_DATE) {
-                $this->format = Yii::$app->formatter->dateFormat;
-            } elseif ($this->type === self::TYPE_DATETIME) {
-                $this->format = Yii::$app->formatter->datetimeFormat;
-            } elseif ($this->type === self::TYPE_TIME) {
-                $this->format = Yii::$app->formatter->timeFormat;
-            } else {
-                throw new InvalidConfigException('Unknown validation type set for DateValidator::$type: ' . $this->type);
-            }
+        $this->format = $this->format ?: static::getFormatFromType($this->type);
+        $this->locale = $this->locale ?: Yii::$app->language;
+        $this->timeZone = $this->timeZone ?: Yii::$app->timeZone;
+        $this->maxString = $this->maxString ?: (string) $this->max;
+        $this->minString = $this->minString ?: (string) $this->min;
+
+        $this->max = is_string($this->max) // this cover the null case too.
+            ? $this->ensureTimestamp($this->max)
+            : $this->max;
+        $this->min = is_string($this->min) // this cover the null case too.
+            ? $this->ensureTimestamp($this->min)
+            : $this->min;
+    }
+
+    /**
+     * Gets the format configured in `Yii::$app->formatter` for each valid type.
+     *
+     * @param string $type the type of format to validate.
+     * @return string the date format configured for the given type.
+     * @throws InvalidConfigException if the $type is not recognized.
+     */
+    protected static function getFormatFromType($type)
+    {
+        static $formatTypes = [
+            self::TYPE_DATE => 'dateFormat',
+            self::TYPE_DATETIME => 'datetimeFormat',
+            self::TYPE_TIME => 'timeFormat',
+        ];
+
+        if (isset($formatTypes[$type])) {
+            return Yii::$app->formatter->{$formatTypes[$type]};
         }
-        if ($this->locale === null) {
-            $this->locale = Yii::$app->language;
+        throw new InvalidConfigException(
+            'Unknown validation type set for DateValidator::$type: ' . $type
+        );
+    }
+
+    /**
+     * Receives a string date and returns a timestamp or throws exception when
+     * thats not possible.
+     *
+     * @param string $date the date to format as timestamp.
+     * @return integer the timestamp calculated from the date.
+     * @throws InvalidConfigException the date is not valid.
+     */
+    protected function ensureTimestamp($date)
+    {
+        $timestamp = $this->parseDateValue($date);
+        if ($timestamp === false) {
+            throw new InvalidConfigException("Invalid date value: {$value}");
         }
-        if ($this->timeZone === null) {
-            $this->timeZone = Yii::$app->timeZone;
-        }
-        if ($this->maxString === null) {
-            $this->maxString = (string) $this->max;
-        }
-        if ($this->minString === null) {
-            $this->minString = (string) $this->min;
-        }
-        if ($this->max !== null && is_string($this->max)) {
-            $timestamp = $this->parseDateValue($this->max);
-            if ($timestamp === false) {
-                throw new InvalidConfigException("Invalid max date value: {$this->max}");
-            }
-            $this->max = $timestamp;
-        }
-        if ($this->min !== null && is_string($this->min)) {
-            $timestamp = $this->parseDateValue($this->min);
-            if ($timestamp === false) {
-                throw new InvalidConfigException("Invalid min date value: {$this->min}");
-            }
-            $this->min = $timestamp;
-        }
+        return $timestamp;
     }
 
     /**
@@ -271,25 +286,52 @@ class DateValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
+        $value = $model->$attribute;
         // skip validation if the `timestampAttribute` equals `attribute` and
         // the `$value` follows the `timestampAttributeFormat` format.
-        $value = $model->$attribute;
-        if ($this->timestampAttribute === $attribute) {
-            if ($this->timestampAttributeFormat === null
+        if ($this->canSkipValidation($attribute, $value)) {
+            return;
+        }
+        parent::validateAttribute($model, $attribute);
+        // change the format of the `$model->$timestampAttribute` when possible.
+        $this->fillTimestampAttribute($model, $attribute);
+    }
+
+    /**
+     * Checks if the validation can be skipped.
+     *
+     * @param string $attribute name of the attribute being validated.
+     * @param mixed $value the value being validated
+     * @return boolean if the `$attribute` parameter is equal to the property
+     * `$timestampAttribute` and `$value` is valid by `timestampAttributeFormat`
+     */
+    protected function canSkipValidation($attribute, $value)
+    {
+        return $this->timestampAttribute === $attribute
+            && ($this->timestampAttributeFormat === null
                 ? is_int($value)
                 : false !== $this->parseDateValueFormat(
                     $value,
                     $this->timestampAttributeFormat
                 )
-            ) {
-                return;
-            }
-        }
-        parent::validateAttribute($model, $attribute);
-        // change the format of the `$model->$timestampAttribute` when possible.
+            );
+    }
+
+    /**
+     * Fills the value for `$timestampAttribute` into the `$model`.
+     *
+     * If there are no validation errors, the value from `$model->$attribute`
+     * gets reformatted to the `$timestampAttributeFormat` and assigned to the
+     * `$timestampAttribute` property into the `$model`
+     *
+     * @param \yii\base\Model $model the validated model.
+     * @param string $attribute the validated attribute.
+     */
+    protected function fillTimestampAttribute($model, $attribute)
+    {
         if (!$model->hasErrors($attribute)
             && $this->timestampAttribute !== null
-            && false !== ($timestamp = $this->parseDateValue($value))
+            && false !== ($timestamp = $this->parseDateValue($model->$attribute))
         ) {
             $model->{$this->timestampAttribute} = $this->timestampAttributeFormat === null
                 ? $timestamp
