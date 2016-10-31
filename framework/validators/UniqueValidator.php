@@ -87,8 +87,8 @@ class UniqueValidator extends Validator
      */
     public function init()
     {
-        parent::init();
         if ($this->message !== null) {
+            parent::init();
             return;
         }
         if (is_array($this->targetAttribute) && count($this->targetAttribute) > 1) {
@@ -101,6 +101,7 @@ class UniqueValidator extends Validator
         } else {
             $this->message = Yii::t('yii', '{attribute} "{value}" has already been taken.');
         }
+        parent::init();
     }
 
     /**
@@ -183,7 +184,7 @@ class UniqueValidator extends Validator
         $attributeCombo = [];
         $valueCombo = [];
         foreach ($this->targetAttribute as $key => $value) {
-            if(is_int($key)) {
+            if (is_int($key)) {
                 $attributeCombo[] = $model->getAttributeLabel($value);
                 $valueCombo[] = '"' . $model->$value . '"';
             } else {
