@@ -86,9 +86,9 @@ class NumberValidator extends Validator
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
         if (!preg_match($pattern, "$value")) {
             return [$this->message, []];
-        } elseif ($this->min !== null && $value < $this->min) {
+        } elseif ($this->validateMin($value)) {
             return [$this->tooSmall, ['min' => $this->min]];
-        } elseif ($this->max !== null && $value > $this->max) {
+        } elseif ($this->validateMax($value)) {
             return [$this->tooBig, ['max' => $this->max]];
         }
         return null;

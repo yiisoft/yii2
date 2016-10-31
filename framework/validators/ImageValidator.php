@@ -130,19 +130,19 @@ class ImageValidator extends FileValidator
             return [$this->notImage, ['file' => $image->name]];
         }
 
-        if ($this->minWidth !== null && $width < $this->minWidth) {
+        if ($this->validateMin($width, 'minWidth')) {
             return [$this->underWidth, ['file' => $image->name, 'limit' => $this->minWidth]];
         }
 
-        if ($this->minHeight !== null && $height < $this->minHeight) {
+        if ($this->validateMin($height, 'minHeight')) {
             return [$this->underHeight, ['file' => $image->name, 'limit' => $this->minHeight]];
         }
 
-        if ($this->maxWidth !== null && $width > $this->maxWidth) {
+        if ($this->validateMax($width, 'maxWidth')) {
             return [$this->overWidth, ['file' => $image->name, 'limit' => $this->maxWidth]];
         }
 
-        if ($this->maxHeight !== null && $height > $this->maxHeight) {
+        if ($this->validateMax($height, 'maxHeight')) {
             return [$this->overHeight, ['file' => $image->name, 'limit' => $this->maxHeight]];
         }
 

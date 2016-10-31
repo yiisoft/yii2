@@ -286,9 +286,9 @@ class DateValidator extends Validator
                 }
             }
             $this->addError($model, $attribute, $this->message, []);
-        } elseif ($this->min !== null && $timestamp < $this->min) {
+        } elseif ($this->validateMin($timestamp)) {
             $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->minString]);
-        } elseif ($this->max !== null && $timestamp > $this->max) {
+        } elseif ($this->validateMax($timestamp)) {
             $this->addError($model, $attribute, $this->tooBig, ['max' => $this->maxString]);
         } elseif ($this->timestampAttribute !== null) {
             if ($this->timestampAttributeFormat === null) {
@@ -307,13 +307,12 @@ class DateValidator extends Validator
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
             return [$this->message, []];
-        } elseif ($this->min !== null && $timestamp < $this->min) {
+        } elseif ($this->validateMin($timestamp)) {
             return [$this->tooSmall, ['min' => $this->minString]];
-        } elseif ($this->max !== null && $timestamp > $this->max) {
+        } elseif ($this->validateMax($timestamp)) {
             return [$this->tooBig, ['max' => $this->maxString]];
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

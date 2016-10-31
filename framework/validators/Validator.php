@@ -437,4 +437,28 @@ class Validator extends Component
     {
         return ['message' => '{attribute} is invalid.'];
     }
+
+    /**
+     * Validates that a value is not smaller than the configured minimum value.
+     *
+     * @param integer $value the value to be validated.
+     * @param  string $min property name with the configured minimum value.
+     * @return boolean
+     */
+    protected function validateMin($value, $min = 'min')
+    {
+        return null !== $this->$min && $value < $this->$min;
+    }
+
+    /**
+     * Validates that a value is not bigger than the configured maximum value.
+     *
+     * @param integer $value the value to be validated.
+     * @param  string $max property name with the configured maximum value.
+     * @return boolean
+     */
+    protected function validateMax($value, $max = 'max')
+    {
+        return null !== $this->$max && $value > $this->$max;
+    }
 }

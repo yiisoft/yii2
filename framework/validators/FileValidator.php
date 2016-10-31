@@ -224,7 +224,7 @@ class FileValidator extends Validator
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                         ],
                     ];
-                } elseif ($this->minSize !== null && $file->size < $this->minSize) {
+                } elseif ($this->validateMin($file->size, 'minSize')) {
                     return [
                         $this->tooSmall,
                         [
@@ -285,7 +285,7 @@ class FileValidator extends Validator
             Yii::warning('PHP.ini\'s \'post_max_size\' is less than \'upload_max_filesize\'.', __METHOD__);
             $limit = $postLimit;
         }
-        if ($this->maxSize !== null && $limit > 0 && $this->maxSize < $limit) {
+        if ($limit > 0 && $this->validateMax($limit, 'maxSize')) {
             $limit = $this->maxSize;
         }
         if (isset($_POST['MAX_FILE_SIZE']) && $_POST['MAX_FILE_SIZE'] > 0 && $_POST['MAX_FILE_SIZE'] < $limit) {
