@@ -109,9 +109,7 @@ class ImageValidator extends FileValidator
      */
     protected function validateValue($file)
     {
-        $result = parent::validateValue($file);
-
-        return empty($result) ? $this->validateImage($file) : $result;
+        return parent::validateValue($file) ?: $this->validateImage($file);
     }
 
     /**
