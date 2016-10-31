@@ -74,19 +74,16 @@ class RequiredValidator extends Validator
             ) {
                 return null;
             }
-        } elseif ($this->strict
+            return [$this->message, []];
+        }
+        if ($this->strict
             ? $value === $this->requiredValue
             : $value == $this->requiredValue
         ) {
             return null;
         }
 
-        return [
-            $this->message,
-            $this->requiredValue === null
-                ? []
-                : ['requiredValue' => $this->requiredValue]
-        ];
+        return [$this->message, ['requiredValue' => $this->requiredValue]];
     }
 
     /**
