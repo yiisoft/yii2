@@ -271,31 +271,32 @@ class DateValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
+        // skip validation if the `timestampAttribute` equals `attribute` and
+        // the `$value` follows the `timestampAttributeFormat` format.
         $value = $model->$attribute;
-        $timestamp = $this->parseDateValue($value);
-        if ($timestamp === false) {
-            if ($this->timestampAttribute === $attribute) {
-                if ($this->timestampAttributeFormat === null) {
-                    if (is_int($value)) {
-                        return;
-                    }
-                } else {
-                    if ($this->parseDateValueFormat($value, $this->timestampAttributeFormat) !== false) {
-                        return;
-                    }
-                }
+        if ($this->timestampAttribute === $attribute) {
+            if ($this->timestampAttributeFormat === null
+                ? is_int($value)
+                : false !== $this->parseDateValueFormat(
+                    $value,
+                    $this->timestampAttributeFormat
+                )
+            ) {
+                return;
             }
-            $this->addError($model, $attribute, $this->message, []);
-        } elseif ($this->validateMin($timestamp)) {
-            $this->addError($model, $attribute, $this->tooSmall, ['min' => $this->minString]);
-        } elseif ($this->validateMax($timestamp)) {
-            $this->addError($model, $attribute, $this->tooBig, ['max' => $this->maxString]);
-        } elseif ($this->timestampAttribute !== null) {
-            if ($this->timestampAttributeFormat === null) {
-                $model->{$this->timestampAttribute} = $timestamp;
-            } else {
-                $model->{$this->timestampAttribute} = $this->formatTimestamp($timestamp, $this->timestampAttributeFormat);
-            }
+        }
+        parent::validateAttribute($model, $attribute);
+        // change the format of the `$model->$timestampAttribute` when possible.
+        if (!$model->hasErrors($attribute)
+            && $this->timestampAttribute !== null
+            && false !== ($timestamp = $this->parseDateValue($value))
+        ) {
+            $model->{$this->timestampAttribute} = $this->timestampAttributeFormat === null
+                ? $timestamp
+                : $model->{$this->timestampAttribute} = $this->formatTimestamp(
+                    $timestamp,
+                    $this->timestampAttributeFormat
+                );
         }
     }
 
