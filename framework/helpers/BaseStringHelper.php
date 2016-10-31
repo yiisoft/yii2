@@ -270,10 +270,10 @@ class BaseStringHelper
     }
 
     /**
-     * Split a string into based on a regular expression.
+     * Split a string based on a regular expression.
      *
      * @param string $string the string to be split.
-     * @param sring $delimiter regular expression used to separate the string.
+     * @param string $delimiter regular expression used to separate the string.
      * @return string[]
      * @since 2.0.11
      */
@@ -283,8 +283,9 @@ class BaseStringHelper
     }
 
     /**
-     * [splitWords description]
-     * @param $string $string the string to be split
+     * Split a string into words.
+     *
+     * @param string $string the string to be split
      * @return string[]
      * @since 2.0.11
      */
