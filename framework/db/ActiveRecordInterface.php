@@ -357,7 +357,7 @@ interface ActiveRecordInterface
      * A relation is defined by a getter method which returns an object implementing the [[ActiveQueryInterface]]
      * (normally this would be a relational [[ActiveQuery]] object).
      * It can be declared in either the ActiveRecord class itself or one of its behaviors.
-     * @param string $name the relation name
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @param boolean $throwException whether to throw exception if the relation does not exist.
      * @return ActiveQueryInterface the relational query object
      */
@@ -366,7 +366,7 @@ interface ActiveRecordInterface
     /**
      * Populates the named relation with the related records.
      * Note that this method does not check if the relation exists or not.
-     * @param string $name the relation name (case-sensitive)
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
      * @since 2.0.8
      */
@@ -384,7 +384,7 @@ interface ActiveRecordInterface
      *
      * This method requires that the primary key value is not `null`.
      *
-     * @param string $name the case sensitive name of the relationship.
+     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param static $model the record to be linked with the current one.
      * @param array $extraColumns additional column values to be saved into the junction table.
      * This parameter is only meaningful for a relationship involving a junction table
@@ -398,7 +398,7 @@ interface ActiveRecordInterface
      * The record with the foreign key of the relationship will be deleted if `$delete` is true.
      * Otherwise, the foreign key will be set `null` and the record will be saved without validation.
      *
-     * @param string $name the case sensitive name of the relationship.
+     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param static $model the model to be unlinked from the current one.
      * @param boolean $delete whether to delete the model that contains the foreign key.
      * If false, the model's foreign key will be set `null` and saved.
