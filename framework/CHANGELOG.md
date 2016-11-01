@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 -- Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
+- Enh #12878: Changed visibility `yii\db\ActiveQuery::getQueryTableName()` from private to public + refactorings (Alex-Code , dynasource)
 
 2.0.10 October 20, 2016
 -----------------------
