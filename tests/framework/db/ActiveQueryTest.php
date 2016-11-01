@@ -39,10 +39,10 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $callback = function (\yii\base\Event $event) use ($where) {
             $event->sender->where = $where;
         };
-        Event::on(ActiveQuery::class, ActiveQuery::EVENT_INIT, $callback);
+        Event::on(ActiveQuery::className(), ActiveQuery::EVENT_INIT, $callback);
         $result = new ActiveQuery(Customer::className());
         $this->assertEquals($where, $result->where);
-        Event::off(ActiveQuery::class, ActiveQuery::EVENT_INIT, $callback);
+        Event::off(ActiveQuery::className(), ActiveQuery::EVENT_INIT, $callback);
     }
 
     /**
