@@ -155,7 +155,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            list(, $alias) = $this->getQueryTableName($this);
+            list(, $alias) = $this->getQueryTableName();
             $this->select = ["$alias.*"];
         }
 
@@ -551,18 +551,17 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Returns the table name and the table alias for [[modelClass]].
-     * @param ActiveQuery $query
      * @return array the table name and the table alias.
      */
-    private function getQueryTableName($query)
+    private function getQueryTableName()
     {
-        if (empty($query->from)) {
+        if (empty($this->from)) {
             /* @var $modelClass ActiveRecord */
-            $modelClass = $query->modelClass;
+            $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
         } else {
             $tableName = '';
-            foreach ($query->from as $alias => $tableName) {
+            foreach ($this->from as $alias => $tableName) {
                 if (is_string($alias)) {
                     return [$tableName, $alias];
                 } else {
@@ -603,8 +602,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        list ($parentTable, $parentAlias) = $this->getQueryTableName($parent);
-        list ($childTable, $childAlias) = $this->getQueryTableName($child);
+        list ($parentTable, $parentAlias) = $parent->getQueryTableName();
+        list ($childTable, $childAlias) = $child->getQueryTableName();
 
         if (!empty($child->link)) {
 
@@ -778,7 +777,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName, ) = $this->getQueryTableName($this);
+            list($tableName, ) = $this->getQueryTableName();
             $this->from = [$alias => $tableName];
         } else {
             /* @var $modelClass ActiveRecord */
