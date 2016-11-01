@@ -553,7 +553,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * Returns the table name and the table alias for [[modelClass]].
      * @return array the table name and the table alias.
      */
-    private function getQueryTableName()
+    public function getQueryTableName()
     {
         if (empty($this->from)) {
             /* @var $modelClass ActiveRecord */
