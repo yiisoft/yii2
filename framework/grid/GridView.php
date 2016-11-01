@@ -200,7 +200,8 @@ class GridView extends BaseListView
      * at the top that users can fill in to filter the data.
      *
      * Note that in order to show an input field for filtering, a column must have its [[DataColumn::attribute]]
-     * property set or have [[DataColumn::filter]] set as the HTML code for the input field.
+     * property set and the attribute should be active in the current scenario of $filterModel or have
+     * [[DataColumn::filter]] set as the HTML code for the input field.
      *
      * When this property is not set (null) the filtering feature is disabled.
      */
