@@ -8,5 +8,5 @@ namespace yiiunit\framework\db\mssql;
  */
 class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
 {
-    public $driverName = 'mssql';
+    public $driverName = 'sqlsrv';
 }
