@@ -92,6 +92,7 @@ Yii Framework 2 Change Log
 - Enh #11844: Added the ability to customize HTML attributes of label and value tags in `\yii\widgets\DetailView` (githubjeka)
 - Enh #11950: Improve `yii\helpers\BaseArrayHelper::keyExists()` speed (egorio)
 - Enh #11979: Added `yii\mutex\OracleMutex` which implements mutex "lock" mechanism via Oracle locks (zlakomanoff)
+- Enh #12022: Added `\yii\i18n\Formatter::asDurationTime()` as alias to `\yii\i18n\Formatter::asDuration`. The latter is marked `deprecated` (githubjeka)
 - Enh #12028: Add -h|--help option to console command to display help information (pana1990)
 - Enh #12038: Introduced `yii\base\ViewNotFoundException` which is thrown when views file doesn't exists, used it in `ViewAction` (samdark)
 - Enh #12048: Improved message extraction command performance (samdark)
