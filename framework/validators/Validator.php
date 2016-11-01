@@ -236,11 +236,7 @@ class Validator extends Component
             as $property => $message
         ) {
             if (null === $this->$property) {
-                /**
-                 *  @todo think on how to support custon categories for each
-                 *  message
-                 */
-                $this->$property = Yii::t('yii', $message);
+                $this->$property = $message;
             }
         }
     }

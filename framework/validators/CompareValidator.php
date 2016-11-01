@@ -83,28 +83,56 @@ class CompareValidator extends Validator
      * the translated `message will be used.
      * @since 2.0.11
      */
-    public $operatorMessages = [
-        '==' => '{attribute} must be equal to "{compareValueOrAttribute}".',
-        '===' => '{attribute} must be equal to "{compareValueOrAttribute}".',
-        '!=' => '{attribute} must not be equal to "{compareValueOrAttribute}".',
-        '!==' => '{attribute} must not be equal to "{compareValueOrAttribute}".',
-        '>' =>  '{attribute} must be greater than "{compareValueOrAttribute}".',
-        '>=' => '{attribute} must be greater than or equal to "{compareValueOrAttribute}".',
-        '<' =>  '{attribute} must be less than "{compareValueOrAttribute}".',
-        '<=' => '{attribute} must be less than or equal to "{compareValueOrAttribute}".',
-    ];
+    public function operatorMessages()
+    {
+        return [
+            '==' => Yii::t(
+                'yii',
+                '{attribute} must be equal to "{compareValueOrAttribute}".'
+            ),
+            '===' => Yii::t(
+                'yii',
+                '{attribute} must be equal to "{compareValueOrAttribute}".'
+            ),
+            '!=' => Yii::t(
+                'yii',
+                '{attribute} must not be equal to "{compareValueOrAttribute}".'
+            ),
+            '!==' => Yii::t(
+                'yii',
+                '{attribute} must not be equal to "{compareValueOrAttribute}".'
+            ),
+            '>' => Yii::t(
+                'yii',
+                '{attribute} must be greater than "{compareValueOrAttribute}".'
+            ),
+            '>=' => Yii::t(
+                'yii',
+                '{attribute} must be greater than or equal to "{compareValueOrAttribute}".'
+            ),
+            '<' => Yii::t(
+                'yii',
+                '{attribute} must be less than "{compareValueOrAttribute}".'
+            ),
+            '<=' => Yii::t(
+                'yii',
+                '{attribute} must be less than or equal to "{compareValueOrAttribute}".'
+            ),
+        ];
+    }
 
     /**
      * @inheritdoc
      */
     public function initDefaultMessages()
     {
-        if (empty($this->operatorMessages[$this->operator])) {
+        $messages = $this->operatorMessages();
+        if (empty($messages[$this->operator])) {
             throw new InvalidConfigException(
                 "Unknown operator: {$this->operator}"
             );
         }
-        return ['message' => $this->operatorMessages[$this->operator]];
+        return ['message' => $messages[$this->operator]];
     }
 
     /**

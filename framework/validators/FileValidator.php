@@ -148,13 +148,28 @@ class FileValidator extends Validator
     public function initDefaultMessages()
     {
         return [
-            'message' => 'File upload failed.',
-            'uploadRequired' => 'Please upload a file.',
-            'tooMany' => 'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.',
-            'wrongExtension' => 'Only files with these extensions are allowed: {extensions}.',
-            'tooBig' => 'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.',
-            'tooSmall' => 'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.',
-            'wrongMimeType' => 'Only files with these MIME types are allowed: {mimeTypes}.',
+            'message' => Yii::t('yii', 'File upload failed.'),
+            'uploadRequired' => Yii::t('yii', 'Please upload a file.'),
+            'tooMany' => Yii::t(
+                'yii',
+                'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.'
+            ),
+            'wrongExtension' => Yii::t(
+                'yii',
+                'Only files with these extensions are allowed: {extensions}.'
+            ),
+            'tooBig' => Yii::t(
+                'yii',
+                'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.'
+            ),
+            'tooSmall' => Yii::t(
+                'yii',
+                'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.'
+            ),
+            'wrongMimeType' => Yii::t(
+                'yii',
+                'Only files with these MIME types are allowed: {mimeTypes}.'
+            ),
         ];
     }
 

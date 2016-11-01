@@ -55,10 +55,9 @@ class RequiredValidator extends Validator
      */
     public function initDefaultMessages()
     {
-        return [
-            'message' => $this->requiredValue === null
-                ? '{attribute} cannot be blank.'
-                : '{attribute} must be "{requiredValue}".'
+        return ['message' => $this->requiredValue === null
+            ? Yii::t('yii', '{attribute} cannot be blank.')
+            : Yii::t('yii', '{attribute} must be "{requiredValue}".')
         ];
     }
 

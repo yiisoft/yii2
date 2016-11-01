@@ -216,13 +216,31 @@ class IpValidator extends Validator
     public function initDefaultMessages()
     {
         return [
-            'message' => '{attribute} must be a valid IP address.',
-            'ipv6NotAllowed' => '{attribute} must not be an IPv6 address.',
-            'ipv4NotAllowed' => '{attribute} must not be an IPv4 address.',
-            'wrongCidr' => '{attribute} contains wrong subnet mask.',
-            'noSubnet' => '{attribute} must be an IP address with specified subnet.',
-            'hasSubnet' => '{attribute} must not be a subnet.',
-            'notInRange' => '{attribute} is not in the allowed range.',
+            'message' => Yii::t(
+                'yii',
+                '{attribute} must be a valid IP address.'
+            ),
+            'ipv6NotAllowed' => Yii::t(
+                'yii',
+                '{attribute} must not be an IPv6 address.'
+            ),
+            'ipv4NotAllowed' => Yii::t(
+                'yii',
+                '{attribute} must not be an IPv4 address.'
+            ),
+            'wrongCidr' => Yii::t(
+                'yii',
+                '{attribute} contains wrong subnet mask.'
+            ),
+            'noSubnet' => Yii::t(
+                'yii',
+                '{attribute} must be an IP address with specified subnet.'
+            ),
+            'notInRange' => Yii::t(
+                'yii',
+                '{attribute} is not in the allowed range.'
+            ),
+            'hasSubnet' => Yii::t('yii', '{attribute} must not be a subnet.'),
         ];
     }
 

@@ -104,7 +104,7 @@ class ExistValidator extends Validator
             $model->$attribute
         );
 
-        if (null !== $message) {
+        if ($message !== null) {
             $this->addError($model, $attribute, $message[0]);
         }
     }
@@ -132,8 +132,8 @@ class ExistValidator extends Validator
 
     /**
      * Validates a value based on a query.
-     * @param  ActiveQueryInterface $query the query to be executed.
-     * @param  mixed $value the value to be compared.
+     * @param ActiveQueryInterface $query the query to be executed.
+     * @param mixed $value the value to be compared.
      * @return string[]|null the error message or null if its valid.
      */
     protected function validateQuery(ActiveQueryInterface $query, $value)

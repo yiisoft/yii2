@@ -295,7 +295,7 @@ class BaseStringHelper
     }
 
     /**
-     * Separates an string into words by a comma separation
+     * Separates a string into words by a comma separation
      *
      * @param string $string the variable to be separated.
      * @return string[]

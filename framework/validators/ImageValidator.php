@@ -93,14 +93,24 @@ class ImageValidator extends FileValidator
      */
     public function initDefaultMessages()
     {
-        $imageIsToo = 'The image "{file}" is too';
-        $limit = '{limit, number} {limit, plural, one{pixel} other{pixels}}';
         return [
-            'notImage' => 'The file "{file}" is not an image.',
-            'underWidth' => "$imageIsToo small. The width cannot be smaller than $limit.",
-            'underHeight' => "$imageIsToo small. The height cannot be smaller than $limit.",
-            'overWidth' => "$imageIsToo large. The width cannot be larger than $limit.",
-            'overHeight' => "$imageIsToo large. The height cannot be larger than $limit.",
+            'notImage' => Yii::t('yii', 'The file "{file}" is not an image.'),
+            'underWidth' => Yii::t(
+                'yii',
+                'The image "{file}" is too small. The width cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.'
+            ),
+            'underHeight' => Yii::t(
+                'yii',
+                'The image "{file}" is too small. The height cannot be smaller than {limit, number} {limit, plural, one{pixel} other{pixels}}.'
+            ),
+            'overWidth' => Yii::t(
+                'yii',
+                'The image "{file}" is too large. The width cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.'
+            ),
+            'overHeight' => Yii::t(
+                'yii',
+                'The image "{file}" is too large. The height cannot be larger than {limit, number} {limit, plural, one{pixel} other{pixels}}.'
+            ),
         ];
     }
 

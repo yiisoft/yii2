@@ -55,7 +55,10 @@ class EmailValidator extends Validator
      */
     public function initDefaultMessages()
     {
-        return ['message' => '{attribute} is not a valid email address.'];
+        return ['message' => Yii::t(
+            'yii',
+            '{attribute} is not a valid email address.'
+        )];
     }
 
     /**

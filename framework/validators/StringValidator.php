@@ -70,15 +70,26 @@ class StringValidator extends Validator
      */
     public function initDefaultMessages()
     {
-        $messages = ['message' => '{attribute} must be a string.'];
+        $messages = [
+            'message' => Yii::t('yii', '{attribute} must be a string.')
+        ];
         if ($this->min !== null) {
-            $messages['tooShort'] = '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.';
+            $messages['tooShort'] = Yii::t(
+                'yii',
+                '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.'
+            );
         }
         if ($this->max !== null) {
-            $messages['tooLong'] = '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.';
+            $messages['tooLong'] = Yii::t(
+                'yii',
+                '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.'
+            );
         }
         if ($this->length !== null) {
-            $messages['notEqual'] = '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.';
+            $messages['notEqual'] = Yii::t(
+                'yii',
+                '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.'
+            );
         }
         return $messages;
     }

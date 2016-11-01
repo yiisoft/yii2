@@ -42,7 +42,10 @@ class BooleanValidator extends Validator
     public function initDefaultMessages()
     {
         return [
-            'message' => '{attribute} must be either "{true}" or "{false}".',
+            'message' => Yii::t(
+                'yii',
+                '{attribute} must be either "{true}" or "{false}".'
+            ),
         ];
     }
 

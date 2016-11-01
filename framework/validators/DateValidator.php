@@ -210,13 +210,22 @@ class DateValidator extends Validator
      */
     public function initDefaultMessages()
     {
-        $messages = ['message' => 'The format of {attribute} is invalid.'];
+        $messages = ['message' => Yii::t(
+            'yii',
+            'The format of {attribute} is invalid.'
+        )];
 
         if ($this->min !== null) {
-            $messages['tooSmall'] = '{attribute} must be no less than {min}.';
+            $messages['tooSmall'] = Yii::t(
+                'yii',
+                '{attribute} must be no less than {min}.'
+            );
         }
         if ($this->max !== null) {
-            $messages['tooBig'] = '{attribute} must be no greater than {max}.';
+            $messages['tooBig'] = Yii::t(
+                'yii',
+                '{attribute} must be no greater than {max}.'
+            );
         }
         return $messages;
     }
