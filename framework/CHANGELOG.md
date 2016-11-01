@@ -1,12 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
--- Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
-
-2.0.10 under development
+2.0.11 under development
 ------------------------
 
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
+- Bug #12880: Fixed `yii\behaviors\AttributeTypecastBehavior` marks attributes with `null` value as 'dirty' (klimov-paul)
 - Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
 - Bug #12836: Fixed `GridView::$filterUrl` to not ignore `#` part of filter URL (cebe)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
@@ -19,7 +18,7 @@ Yii Framework 2 Change Log
 - Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
-
+-- Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
 

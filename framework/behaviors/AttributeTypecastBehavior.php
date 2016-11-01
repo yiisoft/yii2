@@ -224,7 +224,11 @@ class AttributeTypecastBehavior extends Behavior
         }
 
         foreach ($attributeTypes as $attribute => $type) {
-            $this->owner->{$attribute} = $this->typecastValue($this->owner->{$attribute}, $type);
+            $value = $this->owner->{$attribute};
+            if ($this->skipOnNull && $value === null) {
+                continue;
+            }
+            $this->owner->{$attribute} = $this->typecastValue($value, $type);
         }
     }
 
@@ -236,10 +240,6 @@ class AttributeTypecastBehavior extends Behavior
      */
     protected function typecastValue($value, $type)
     {
-        if ($this->skipOnNull && $value === null) {
-            return $value;
-        }
-
         if (is_scalar($type)) {
             if (is_object($value) && method_exists($value, '__toString')) {
                 $value = $value->__toString();

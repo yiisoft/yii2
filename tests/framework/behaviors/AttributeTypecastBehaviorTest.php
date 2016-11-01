@@ -148,6 +148,34 @@ class AttributeTypecastBehaviorTest extends TestCase
         ];
         $this->assertEquals($expectedAttributeTypes, $behavior->attributeTypes);
     }
+
+    /**
+     * @depends testSkipNull
+     *
+     * @see https://github.com/yiisoft/yii2/issues/12880
+     */
+    public function testSkipNotSelectedAttribute()
+    {
+        $model = new ActiveRecordAttributeTypecast();
+        $model->name = 'skip-not-selected';
+        $model->amount = '58';
+        $model->price = '100.8';
+        $model->isActive = 1;
+        $model->callback = 'foo';
+        $model->save(false);
+
+        /* @var $model ActiveRecordAttributeTypecast */
+        $model = ActiveRecordAttributeTypecast::find()
+            ->select(['id', 'name'])
+            ->limit(1)
+            ->one();
+
+        $model->getAttributeTypecastBehavior()->typecastAttributes();
+        $model->save(false);
+
+        $model->refresh();
+        $this->assertEquals('58', $model->amount);
+    }
 }
 
 /**
