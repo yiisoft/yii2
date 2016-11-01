@@ -19,7 +19,7 @@ Yii Framework 2 Change Log
 - Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
-
+- Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
 - Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
 
