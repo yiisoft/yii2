@@ -53,7 +53,7 @@ return [
     'View' => 'תצוגה',
     'Yes' => 'כן',
     'You are not allowed to perform this action.' => 'אינך מורשה לבצע את הפעולה הזו.',
-    'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'אתה יכול להעלות לכל היותר {limit, number} {limit, plural, one{קובץ} few{קבצים} many{קבצים} other{קבצים}}.',
+    'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'אתה יכול להעלות לכל היותר {limit, number} {limit, plural, one{קובץ} other{קבצים}}.',
     'the input value' => 'הערך המוכנס',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" כבר בשימוש',
     '{attribute} cannot be blank.' => '{attribute} לא יכול להיות ריק.',
@@ -73,7 +73,7 @@ return [
     '{attribute} must be no less than {min}.' => '{attribute} חייב להיות לא פחות מ "{min}".',
     '{attribute} must be repeated exactly.' => '{attribute} חייב להיות מוחזר בדיוק.',
     '{attribute} must not be equal to "{compareValue}".' => '{attribute} חייב להיות שווה ל "{compareValue}"',
-    '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} אמור לכלול לפחות {min, number} {min, plural, one{תו} few{תוים} many{תוים}}.',
+    '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => '{attribute} אמור לכלול לפחות {min, number} {min, plural, one{תו} other{תוים}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '{attribute} אמור לא לכלול יותר מ{max, number} {max, plural, one{תו} other{תוים}}.',
-    '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  אמור לכלול {length, number} {length, plural, one{תו} few{תוים} many{תוים}}.',
+    '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '{attribute}  אמור לכלול {length, number} {length, plural, one{תו} other{תוים}}.',
 ];
