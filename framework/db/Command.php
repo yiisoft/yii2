@@ -816,11 +816,6 @@ class Command extends Component
         return $this->setSql($sql);
     }
 
-    private function throwEx()
-    {
-        throw new Exception('test');
-    }
-
     /**
      * Executes the SQL statement.
      * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
@@ -831,7 +826,6 @@ class Command extends Component
     public function execute()
     {
         $sql = $this->getSql();
-        $this->throwEx();
 
         $rawSql = $this->getRawSql();
 
