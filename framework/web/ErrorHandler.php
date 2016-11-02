@@ -192,7 +192,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         $url = null;
 
-        private function throwEx
         $shouldGenerateLink = true;
         if ($method !== null) {
             $reflection = new \ReflectionMethod($class, $method);
