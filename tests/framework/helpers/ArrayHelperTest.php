@@ -142,6 +142,18 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals('defaultValue', $default);
     }
 
+    public function testRemoveValue()
+    {
+        $array = ['value1', 'value2', 'value3', 'value2'];
+        $keys = ArrayHelper::removeValue($array, 'value2');
+
+        $this->assertEquals($keys, [1,3]);
+        $this->assertEquals($array, [0=>'value1', 2=>'value3']);
+
+        $default = ArrayHelper::removeValue($array, 'nonExisting', 'defaultValue');
+        $this->assertEquals('defaultValue', $default);
+    }
+
     public function testMultisort()
     {
         // single key
