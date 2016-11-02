@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.1.0 under development
 -----------------------
-
+- Bug #12895: Use custom error action when provided, regardless of the response format.
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
 - Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)

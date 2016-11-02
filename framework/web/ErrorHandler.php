@@ -89,9 +89,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response = new Response();
         }
 
-        $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
+        $useCustomErrorAction = $this->errorAction !== null && (!YII_DEBUG || $exception instanceof UserException);
 
-        if ($useErrorView && $this->errorAction !== null) {
+        if ($useCustomErrorAction) {
             $result = Yii::$app->runAction($this->errorAction);
             if ($result instanceof Response) {
                 $response = $result;
@@ -108,6 +108,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 if (YII_DEBUG) {
                     ini_set('display_errors', 1);
                 }
+                $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
                 $file = $useErrorView ? $this->errorView : $this->exceptionView;
                 $response->data = $this->renderFile($file, [
                     'exception' => $exception,
