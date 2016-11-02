@@ -190,9 +190,19 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $text = $this->htmlEncode($class);
         }
 
-        $url = $this->getTypeUrl($class, $method);
+        $url = null;
 
-        if (!$url) {
+        $shouldGenerateLink = true;
+        if ($method !== null) {
+            $reflection = new \ReflectionMethod($class, $method);
+            $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
+        }
+
+        if ($shouldGenerateLink) {
+            $url = $this->getTypeUrl($class, $method);
+        }
+
+        if ($url === null) {
             return $text;
         }
 
