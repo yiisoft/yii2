@@ -111,7 +111,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals('<span>This is a test</span>...', StringHelper::truncate('<span>This is a test </span>sentance', 14, '...', null, true));
         $this->assertEquals('<span>This is a test </span><strong>for</strong>...', StringHelper::truncate('<span>This is a test </span><strong>for a sentance</strong>', 18, '...', null, true));
         $this->assertEquals('<span>This is a test</span><strong> for</strong>...', StringHelper::truncate('<span>This is a test</span><strong> for a sentance</strong>', 18, '...', null, true));
-        
+
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncate('<span><img src="image.png" />This is a test sentance</span>', 14, '...', null, true));
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncate('<span><img src="image.png" />This is a test </span>sentance', 14, '...', null, true));
         $this->assertEquals('<span><img src="image.png" />This is a test </span><strong>for</strong>...', StringHelper::truncate('<span><img src="image.png" />This is a test </span><strong>for a sentance</strong>', 18, '...', null, true));
@@ -134,7 +134,7 @@ class StringHelperTest extends TestCase
 
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
         $this->assertEquals('<span><img src="image.png" />This is a test </span><strong>for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test </span><strong>for a sentance</strong>', 5, '...', true));
-        $this->assertEquals('<span><img src="image.png" />This is a test</span><strong> for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test</span><strong> for a sentance</strong>', 5, '...', true));        
+        $this->assertEquals('<span><img src="image.png" />This is a test</span><strong> for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test</span><strong> for a sentance</strong>', 5, '...', true));
     }
 
     /**
@@ -251,8 +251,57 @@ class StringHelperTest extends TestCase
         $this->assertEquals(['Здесь', 'multibyte', 'строка'], StringHelper::explode("Здесь我 multibyte我 строка", '我'));
         $this->assertEquals(['Disable', '  trim  ', 'here but ignore empty'], StringHelper::explode("Disable,  trim  ,,,here but ignore empty", ',', false, true));
         $this->assertEquals(['It/', ' is?', ' a', ' test with rtrim'], StringHelper::explode("It/, is?, a , test with rtrim", ',', 'rtrim'));
-        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode("It/, is?, a , test with closure", ',', function ($value) { return trim($value, '/?'); }));
+        $this->assertEquals(['It', ' is', ' a ', ' test with closure'], StringHelper::explode("It/, is?, a , test with closure", ',', function ($value) {
+            return trim($value, '/?');
+        }));
     }
+
+    public function testSplit()
+    {
+        $string = '12a345b678c9';
+        $letters = ['a', 'b', 'c'];
+        $numbers = ['12', '345', '678', '9'];
+
+        $this->assertEquals($letters, StringHelper::split($string, '/\d/'));
+        $this->assertEquals($letters, StringHelper::split($string, '/\d+/'));
+        $this->assertEquals($numbers, StringHelper::split($string, '/[a-z]/'));
+        $this->assertEquals($numbers, StringHelper::split($string, '/[a-z]+/'));
+        $this->assertEmpty(StringHelper::split($string, '/\w/'));
+    }
+
+    public function testSplitWords()
+    {
+        $this->assertEquals(
+            ['china', '中国', 'ㄍㄐㄋㄎㄌ'],
+            StringHelper::splitWords('china 中国 ㄍㄐㄋㄎㄌ')
+        );
+        $this->assertEquals(
+            ['и', 'много', 'тут', 'слов?'],
+            StringHelper::splitWords('и много тут слов?')
+        );
+        $this->assertEquals(
+            ['и', 'много', 'тут', 'слов?'],
+            StringHelper::splitWords("и\rмного\r\nтут\nслов?")
+        );
+        $this->assertEquals(
+            ['крем-брюле'],
+            StringHelper::splitWords('крем-брюле')
+        );
+        $this->assertEquals(
+            ['слово'],
+            StringHelper::splitWords(' слово ')
+        );
+    }
+
+    public function testSplitByComma()
+    {
+        $this->assertEquals(
+            ['1', '2', '3', '4'],
+            StringHelper::splitByComma('1, 2,  3,4')
+        );
+        $this->assertEmpty(StringHelper::splitByComma(' , ,, ,  '));
+    }
+
 
     public function testWordCount()
     {
