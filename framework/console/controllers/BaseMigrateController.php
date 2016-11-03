@@ -793,11 +793,12 @@ abstract class BaseMigrateController extends Controller
                 $path = $migrationPath . DIRECTORY_SEPARATOR . $file;
                 if (preg_match('/^(m(\d{6}_?\d{6})\D.*?)\.php$/is', $file, $matches) && is_file($path)) {
                     $class = $matches[1];
+                    $pastClass = $class;
                     if (!empty($namespace)) {
                         $class = $namespace . '\\' . $class;
                     }
                     $time = str_replace('_', '', $matches[2]);
-                    if (!isset($applied[$class])) {
+                    if (!isset($applied[$class]) && !isset($applied[$pastClass])) {
                         $migrations[$time . '\\' . $class] = $class;
                     }
                 }
