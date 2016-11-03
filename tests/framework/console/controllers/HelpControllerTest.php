@@ -49,97 +49,34 @@ class HelpControllerTest extends TestCase
         $this->assertContains('This is Yii version ', $result);
         $this->assertContains('The following commands are available:', $result);
         $this->assertContains('To see the help of each command, enter:', $result);
-        $this->assertContains('bootstrap.php help <command-name>', $result);
+        $this->assertContains('bootstrap.php help', $result);
     }
 
     public function testActionIndexWithHelpCommand()
     {
-        $out = $this->runControllerAction('index', ['command' => 'help']);
-        $this->assertEqualsWithoutLE(<<<EOF
-
-DESCRIPTION
-
-Displays available commands or the detailed information
-about a particular command.
-
-
-USAGE
-
-bootstrap.php help [command] [...options...]
-
-- command: string
-  The name of the command to show help about.
-  If not provided, all available commands will be displayed.
-
-
-OPTIONS
-
---appconfig: string
-  custom application configuration file path.
-  If not set, default application configuration is used.
-
---color: boolean, 0 or 1
-  whether to enable ANSI color in the output.
-  If not set, ANSI color will only be enabled for terminals that support it.
-
---help, -h: boolean, 0 or 1
-  whether to display help information about current command.
-
---interactive: boolean, 0 or 1 (defaults to 1)
-  whether to run the command interactively.
-
-
-EOF
-            , $out);
+        $result = $this->runControllerAction('index', ['command' => 'help']);
+        $this->assertContains('Displays available commands or the detailed information', $result);
+        $this->assertContains('bootstrap.php help [command] [...options...]', $result);
+        $this->assertContains('--appconfig: string', $result);
+        $this->assertContains('- command: string', $result);
+        $this->assertContains('--color: boolean, 0 or 1', $result);
+        $this->assertContains('--help, -h: boolean, 0 or 1', $result);
+        $this->assertContains('--interactive: boolean, 0 or 1 (defaults to 1)', $result);
     }
 
     public function testActionIndexWithServeCommand()
     {
-        $out = $this->runControllerAction('index', ['command' => 'serve']);
-        $this->assertEqualsWithoutLE(<<<EOF
-
-DESCRIPTION
-
-Runs PHP built-in web server
-
-
-USAGE
-
-bootstrap.php serve [address] [...options...]
-
-- address: string (defaults to 'localhost')
-  address to serve on. Either "host" or "host:port".
-
-
-OPTIONS
-
---appconfig: string
-  custom application configuration file path.
-  If not set, default application configuration is used.
-
---color: boolean, 0 or 1
-  whether to enable ANSI color in the output.
-  If not set, ANSI color will only be enabled for terminals that support it.
-
---docroot, -t: string (defaults to '@app/web')
-  path or path alias to directory to serve
-
---help, -h: boolean, 0 or 1
-  whether to display help information about current command.
-
---interactive: boolean, 0 or 1 (defaults to 1)
-  whether to run the command interactively.
-
---port, -p: int (defaults to 8080)
-  port to serve on.
-
---router, -r: string
-  path to router script.
-  See https://secure.php.net/manual/en/features.commandline.webserver.php
-
-
-EOF
-            , $out);
+        $result = $this->runControllerAction('index', ['command' => 'serve']);
+        $this->assertContains('Runs PHP built-in web server', $result);
+        $this->assertContains('bootstrap.php serve [address] [...options...]', $result);
+        $this->assertContains('- address: string (defaults to \'localhost\')', $result);
+        $this->assertContains('--appconfig: string', $result);
+        $this->assertContains('--color: boolean, 0 or 1', $result);
+        $this->assertContains('--docroot, -t: string (defaults to \'@app/web\')', $result);
+        $this->assertContains('--help, -h: boolean, 0 or 1', $result);
+        $this->assertContains('--interactive: boolean, 0 or 1 (defaults to 1)', $result);
+        $this->assertContains('--port, -p: int (defaults to 8080)', $result);
+        $this->assertContains('--router, -r: string', $result);
     }
 
 }
