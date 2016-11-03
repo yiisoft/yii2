@@ -182,7 +182,7 @@ class HelpController extends Controller
     protected function getDefaultHelp()
     {
         $commands = $this->getCommandDescriptions();
-        $this->stdout("\nThis is Yii version " . \Yii::getVersion() . ".\n");
+        $this->stdout($this->getDefaultHelpHeader());
         if (!empty($commands)) {
             $this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
             $len = 0;
@@ -436,5 +436,14 @@ class HelpController extends Controller
     protected function getScriptName()
     {
         return basename(Yii::$app->request->scriptFile);
+    }
+
+    /**
+     * Display a default help header.
+     * @return string default help header.
+     */
+    protected function getDefaultHelpHeader()
+    {
+        return "\nThis is Yii version " . \Yii::getVersion() . ".\n";
     }
 }
