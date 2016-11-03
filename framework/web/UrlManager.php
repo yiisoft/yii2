@@ -183,12 +183,12 @@ class UrlManager extends Component
             $this->rules = $this->buildRules($this->rules);
         }
     }
-    
+
     /**
      * return class name suffixed with 
      **/
-    protected function $getCacheKey() {
-        return __CLASS__.'.'. Yii::getAlias('@app');
+    protected function getCacheKey() {
+        return __CLASS__.'.'.Yii::getAlias('@app');
     }
 
 
