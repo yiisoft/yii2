@@ -1,6 +1,8 @@
 <?php
 namespace yiiunit\framework\console\controllers;
 
+use yii\helpers\Console;
+use yiiunit\framework\console\controllers\TestTrait;
 use yii\console\controllers\HelpController;
 use yiiunit\TestCase;
 
@@ -45,7 +47,7 @@ class HelpControllerTest extends TestCase
 
     public function testActionIndex()
     {
-        $result = $this->runControllerAction('index');
+        $result = Console::stripAnsiFormat($this->runControllerAction('index'));
         $this->assertContains('This is Yii version ', $result);
         $this->assertContains('The following commands are available:', $result);
         $this->assertContains('To see the help of each command, enter:', $result);
@@ -54,7 +56,7 @@ class HelpControllerTest extends TestCase
 
     public function testActionIndexWithHelpCommand()
     {
-        $result = $this->runControllerAction('index', ['command' => 'help']);
+        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help']));
         $this->assertContains('Displays available commands or the detailed information', $result);
         $this->assertContains('bootstrap.php help [command] [...options...]', $result);
         $this->assertContains('--appconfig: string', $result);
@@ -66,7 +68,7 @@ class HelpControllerTest extends TestCase
 
     public function testActionIndexWithServeCommand()
     {
-        $result = $this->runControllerAction('index', ['command' => 'serve']);
+        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'serve']));
         $this->assertContains('Runs PHP built-in web server', $result);
         $this->assertContains('bootstrap.php serve [address] [...options...]', $result);
         $this->assertContains('- address: string (defaults to \'localhost\')', $result);
@@ -78,6 +80,7 @@ class HelpControllerTest extends TestCase
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
         $this->assertContains('--router, -r: string', $result);
     }
+
 
 }
 
