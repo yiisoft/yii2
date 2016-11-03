@@ -46,7 +46,7 @@ use yii\rbac\CheckAccessInterface;
  * ]
  * ```
  *
- * @property string|integer $id The unique identifier for the user. If null, it means the user is a guest.
+ * @property string|integer $id The unique identifier for the user. If `null`, it means the user is a guest.
  * This property is read-only.
  * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
  * user. `null` is returned if the user is not logged in (not authenticated).

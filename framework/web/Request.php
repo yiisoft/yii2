@@ -41,8 +41,10 @@ use yii\helpers\StringHelper;
  * if no such header is sent. This property is read-only.
  * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
- * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
- * `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+ * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
+ * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+ * @property string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`). This
+ * property is read-only.
  * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
  * @property boolean $isDelete Whether this is a DELETE request. This property is read-only.
  * @property boolean $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
@@ -231,15 +233,15 @@ class Request extends \yii\base\Request
         if (isset($_POST[$this->methodParam])) {
             return strtoupper($_POST[$this->methodParam]);
         }
-        
+
         if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
             return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
         }
-        
+
         if (isset($_SERVER['REQUEST_METHOD'])) {
             return strtoupper($_SERVER['REQUEST_METHOD']);
         }
-        
+
         return 'GET';
     }
 
@@ -521,14 +523,15 @@ class Request extends \yii\base\Request
     }
 
     private $_hostInfo;
+    private $_hostName;
 
     /**
      * Returns the schema and host part of the current request URL.
      * The returned URL does not have an ending slash.
      * By default this is determined based on the user request information.
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
-     * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`),
-     * null if can't be obtained from `$_SERVER` and wasn't set.
+     * @return string|null schema and hostname part (with port number if needed) of the request URL
+     * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * @see setHostInfo()
      */
     public function getHostInfo()
@@ -554,11 +557,28 @@ class Request extends \yii\base\Request
      * Sets the schema and host part of the application URL.
      * This setter is provided in case the schema and hostname cannot be determined
      * on certain Web servers.
-     * @param string $value the schema and host part of the application URL. The trailing slashes will be removed.
+     * @param string|null $value the schema and host part of the application URL. The trailing slashes will be removed.
      */
     public function setHostInfo($value)
     {
+        $this->_hostName = null;
         $this->_hostInfo = $value === null ? null : rtrim($value, '/');
+    }
+
+    /**
+     * Returns the host part of the current request URL.
+     * Value is calculated from current [[getHostInfo()|hostInfo]] property.
+     * @return string|null hostname part of the request URL (e.g. `www.yiiframework.com`)
+     * @see getHostInfo()
+     * @since 2.0.10
+     */
+    public function getHostName()
+    {
+        if ($this->_hostName === null) {
+            $this->_hostName = parse_url($this->getHostInfo(), PHP_URL_HOST);
+        }
+
+        return $this->_hostName;
     }
 
     private $_baseUrl;

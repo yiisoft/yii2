@@ -11,7 +11,6 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
-use yii\di\Instance;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
@@ -164,7 +163,10 @@ class UrlManager extends Component
         parent::init();
 
         if ($this->normalizer !== false) {
-            $this->normalizer = Instance::ensure($this->normalizer, UrlNormalizer::className());
+            $this->normalizer = Yii::createObject($this->normalizer);
+            if (!$this->normalizer instanceof UrlNormalizer) {
+                throw new InvalidConfigException('`' . get_class($this) . '::normalizer` should be an instance of `' . UrlNormalizer::className() . '` or its DI compatible configuration.');
+            }
         }
 
         if (!$this->enablePrettyUrl || empty($this->rules)) {

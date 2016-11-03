@@ -1294,22 +1294,4 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals($newTotal, $newOrder->total);
     }
 
-    public function testAttributeAccess()
-    {
-        $model = new Customer();
-
-        $this->assertTrue($model->canSetProperty('name'));
-        $this->assertTrue($model->canGetProperty('name'));
-        $this->assertFalse($model->canSetProperty('unExistingColumn'));
-        $this->assertFalse(isset($model->name));
-
-        $model->name = 'foo';
-        $this->assertTrue(isset($model->name));
-        unset($model->name);
-        $this->assertNull($model->name);
-
-        // @see https://github.com/yiisoft/yii2-gii/issues/190
-        $baseModel = new ActiveRecord();
-        $this->assertFalse($baseModel->hasProperty('unExistingColumn'));
-    }
 }

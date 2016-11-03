@@ -105,8 +105,6 @@ use yii\validators\StringValidator;
  * $model->typecastAttributes();
  * ```
  *
- * @property Model|BaseActiveRecord $owner the owner of this behavior.
- *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
@@ -117,6 +115,10 @@ class AttributeTypecastBehavior extends Behavior
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_STRING = 'string';
 
+    /**
+     * @var Model|BaseActiveRecord the owner of this behavior.
+     */
+    public $owner;
     /**
      * @var array attribute typecast map in format: attributeName => type.
      * Type can be set via PHP callable, which accept raw value as an argument and should return
@@ -187,9 +189,9 @@ class AttributeTypecastBehavior extends Behavior
     /**
      * @inheritdoc
      */
-    public function init()
+    public function attach($owner)
     {
-        parent::init();
+        parent::attach($owner);
 
         if ($this->attributeTypes === null) {
             $ownerClass = get_class($this->owner);
@@ -222,7 +224,11 @@ class AttributeTypecastBehavior extends Behavior
         }
 
         foreach ($attributeTypes as $attribute => $type) {
-            $this->owner->{$attribute} = $this->typecastValue($this->owner->{$attribute}, $type);
+            $value = $this->owner->{$attribute};
+            if ($this->skipOnNull && $value === null) {
+                continue;
+            }
+            $this->owner->{$attribute} = $this->typecastValue($value, $type);
         }
     }
 
@@ -234,10 +240,6 @@ class AttributeTypecastBehavior extends Behavior
      */
     protected function typecastValue($value, $type)
     {
-        if ($this->skipOnNull && $value === null) {
-            return $value;
-        }
-
         if (is_scalar($type)) {
             if (is_object($value) && method_exists($value, '__toString')) {
                 $value = $value->__toString();

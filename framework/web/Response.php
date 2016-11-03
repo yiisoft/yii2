@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\helpers\Inflector;
 use yii\helpers\Url;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
@@ -584,7 +585,7 @@ class Response extends \yii\base\Response
             ->setDefault('Accept-Ranges', 'bytes')
             ->setDefault('Expires', '0')
             ->setDefault('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->setDefault('Content-Disposition', "$disposition; filename=\"$attachmentName\"");
+            ->setDefault('Content-Disposition', $this->getDispositionHeaderValue($disposition, $attachmentName));
 
         if ($mimeType !== null) {
             $headers->setDefault('Content-Type', $mimeType);
@@ -708,11 +709,47 @@ class Response extends \yii\base\Response
         $this->getHeaders()
             ->setDefault($xHeader, $filePath)
             ->setDefault('Content-Type', $mimeType)
-            ->setDefault('Content-Disposition', "{$disposition}; filename=\"{$attachmentName}\"");
+            ->setDefault('Content-Disposition', $this->getDispositionHeaderValue($disposition, $attachmentName));
 
         $this->format = self::FORMAT_RAW;
 
         return $this;
+    }
+
+    /**
+     * Returns Content-Disposition header value that is safe to use with both old and new browsers
+     *
+     * Fallback name:
+     *
+     * - Causes issues if contains non-ASCII characters with codes less than 32 or more than 126.
+     * - Causes issues if contains urlencoded characters (starting with `%`) or `%` character. Some browsers interpret
+     *   `filename="X"` as urlencoded name, some don't.
+     * - Causes issues if contains path separator characters such as `\` or `/`.
+     * - Since value is wrapped with `"`, it should be escaped as `\"`.
+     * - Since input could contain non-ASCII characters, fallback is obtained by transliteration.
+     *
+     * UTF name:
+     *
+     * - Causes issues if contains path separator characters such as `\` or `/`.
+     * - Should be urlencoded since headers are ASCII-only.
+     * - Could be omitted if it exactly matches fallback name.
+     *
+     * @param string $disposition
+     * @param string $attachmentName
+     * @return string
+     *
+     * @since 2.0.10
+     */
+    protected function getDispositionHeaderValue($disposition, $attachmentName)
+    {
+        $fallbackName = str_replace('"', '\\"', str_replace(['%', '/', '\\'], '_', Inflector::transliterate($attachmentName, Inflector::TRANSLITERATE_LOOSE)));
+        $utfName = rawurlencode(str_replace(['%', '/', '\\'], '', $attachmentName));
+
+        $dispositionHeader = "{$disposition}; filename=\"{$fallbackName}\"";
+        if ($utfName !== $fallbackName) {
+            $dispositionHeader .= "; filename*=utf-8''{$utfName}";
+        }
+        return $dispositionHeader;
     }
 
     /**

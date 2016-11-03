@@ -67,6 +67,8 @@ class UrlTest extends TestCase
 
         // If the route is an empty string, the current route will be used;
         $this->assertEquals('/base/index.php?r=page%2Fview', Url::toRoute(''));
+        // a slash will be an absolute route representing the default route
+        $this->assertEquals('/base/index.php?r=', Url::toRoute('/'));
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', Url::toRoute('', true));
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', Url::toRoute('', 'https'));
 

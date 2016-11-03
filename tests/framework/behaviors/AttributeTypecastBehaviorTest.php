@@ -3,6 +3,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
+use yii\base\DynamicModel;
 use yiiunit\TestCase;
 use yii\db\ActiveRecord;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -129,10 +130,15 @@ class AttributeTypecastBehaviorTest extends TestCase
 
     public function testAutoDetectAttributeTypes()
     {
-        $model = new ActiveRecordAttributeTypecast();
+        $model = (new DynamicModel(['name' => null, 'amount' => null, 'price' => null, 'isActive' => null]))
+            ->addRule('name', 'string')
+            ->addRule('amount', 'integer')
+            ->addRule('price', 'number')
+            ->addRule('isActive', 'boolean');
 
-        $model->getAttributeTypecastBehavior()->attributeTypes = null;
-        $model->getAttributeTypecastBehavior()->init();
+        $behavior = new AttributeTypecastBehavior();
+
+        $behavior->attach($model);
 
         $expectedAttributeTypes = [
             'name' => AttributeTypecastBehavior::TYPE_STRING,
@@ -140,7 +146,35 @@ class AttributeTypecastBehaviorTest extends TestCase
             'price' => AttributeTypecastBehavior::TYPE_FLOAT,
             'isActive' => AttributeTypecastBehavior::TYPE_BOOLEAN,
         ];
-        $this->assertEquals($expectedAttributeTypes, $model->getAttributeTypecastBehavior()->attributeTypes);
+        $this->assertEquals($expectedAttributeTypes, $behavior->attributeTypes);
+    }
+
+    /**
+     * @depends testSkipNull
+     *
+     * @see https://github.com/yiisoft/yii2/issues/12880
+     */
+    public function testSkipNotSelectedAttribute()
+    {
+        $model = new ActiveRecordAttributeTypecast();
+        $model->name = 'skip-not-selected';
+        $model->amount = '58';
+        $model->price = '100.8';
+        $model->isActive = 1;
+        $model->callback = 'foo';
+        $model->save(false);
+
+        /* @var $model ActiveRecordAttributeTypecast */
+        $model = ActiveRecordAttributeTypecast::find()
+            ->select(['id', 'name'])
+            ->limit(1)
+            ->one();
+
+        $model->getAttributeTypecastBehavior()->typecastAttributes();
+        $model->save(false);
+
+        $model->refresh();
+        $this->assertEquals('58', $model->amount);
     }
 }
 

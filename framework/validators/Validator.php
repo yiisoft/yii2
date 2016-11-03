@@ -25,6 +25,8 @@ use yii\base\NotSupportedException;
  * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
  * - `date`: [[DateValidator]]
+ * - `datetime`: [[DateValidator]]
+ * - `time`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `double`: [[NumberValidator]]
  * - `each`: [[EachValidator]]
@@ -57,6 +59,14 @@ class Validator extends Component
         'captcha' => 'yii\captcha\CaptchaValidator',
         'compare' => 'yii\validators\CompareValidator',
         'date' => 'yii\validators\DateValidator',
+        'datetime' => [
+            'class' => 'yii\validators\DateValidator',
+            'type' => DateValidator::TYPE_DATETIME,
+        ],
+        'time' => [
+            'class' => 'yii\validators\DateValidator',
+            'type' => DateValidator::TYPE_TIME,
+        ],
         'default' => 'yii\validators\DefaultValueValidator',
         'double' => 'yii\validators\NumberValidator',
         'each' => 'yii\validators\EachValidator',

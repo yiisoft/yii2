@@ -743,7 +743,7 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -792,7 +792,7 @@ class BaseHtml
     /**
      * Generates a list box.
      * @param string $name the input name
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -858,7 +858,7 @@ class BaseHtml
      * A checkbox list allows multiple selection, like [[listBox()]].
      * As a result, the corresponding submitted value is an array.
      * @param string $name the name attribute of each checkbox.
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the data item used to generate the checkboxes.
      * The array keys are the checkbox values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the checkbox list container tag.
@@ -938,7 +938,7 @@ class BaseHtml
      * Generates a list of radio buttons.
      * A radio button list is like a checkbox list, except that it only allows single selection.
      * @param string $name the name attribute of each radio button.
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the data item used to generate the radio buttons.
      * The array keys are the radio button values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the radio button list container tag.
@@ -1155,8 +1155,8 @@ class BaseHtml
      * - footer: string, the footer HTML for the error summary. Defaults to empty string.
      * - encode: boolean, if set to false then the error messages won't be encoded. Defaults to `true`.
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
-     * only the first error message for each attribute will be shown. Defaults to `false`.
-     * Option is available since 2.0.10.
+     *   only the first error message for each attribute will be shown. Defaults to `false`.
+     *   Option is available since 2.0.10.
      *
      * The rest of the options will be rendered as the attributes of the container tag.
      *
@@ -1672,7 +1672,7 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.

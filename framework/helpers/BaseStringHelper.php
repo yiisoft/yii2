@@ -193,8 +193,8 @@ class BaseStringHelper
      * Binary and multibyte safe.
      *
      * @param string $string Input string
-     * @param string $with Part to search
-     * @param boolean $caseSensitive Case sensitive search. Default is true.
+     * @param string $with Part to search inside the $string
+     * @param boolean $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value. 
      * @return boolean Returns true if first input starts with second input, false otherwise
      */
     public static function startsWith($string, $with, $caseSensitive = true)
@@ -213,9 +213,9 @@ class BaseStringHelper
      * Check if given string ends with specified substring.
      * Binary and multibyte safe.
      *
-     * @param string $string
-     * @param string $with
-     * @param boolean $caseSensitive Case sensitive search. Default is true.
+     * @param string $string Input string to check
+     * @param string $with Part to search inside of the $string.
+     * @param boolean $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the ending of the string in order to get a true value.
      * @return boolean Returns true if first input ends with second input, false otherwise
      */
     public static function endsWith($string, $with, $caseSensitive = true)

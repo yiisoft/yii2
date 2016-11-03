@@ -424,8 +424,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Populates the named relation with the related records.
      * Note that this method does not check if the relation exists or not.
-     * @param string $name the relation name (case-sensitive)
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
+     * @see getRelation()
      */
     public function populateRelation($name, $records)
     {
@@ -434,8 +435,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
     /**
      * Check whether the named relation has been populated with records.
-     * @param string $name the relation name (case-sensitive)
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @return boolean whether relation has been populated with records.
+     * @see getRelation()
      */
     public function isRelationPopulated($name)
     {
@@ -445,6 +447,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Returns all populated related records.
      * @return array an array of related records indexed by relation names.
+     * @see getRelation()
      */
     public function getRelatedRecords()
     {
@@ -1163,7 +1166,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Returns the relation object with the specified name.
      * A relation is defined by a getter method which returns an [[ActiveQueryInterface]] object.
      * It can be declared in either the Active Record class itself or one of its behaviors.
-     * @param string $name the relation name
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
      * @param boolean $throwException whether to throw exception if the relation does not exist.
      * @return ActiveQueryInterface|ActiveQuery the relational query object. If the relation does not exist
      * and `$throwException` is `false`, `null` will be returned.
@@ -1218,7 +1221,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Note that this method requires that the primary key value is not null.
      *
-     * @param string $name the case sensitive name of the relationship.
+     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param ActiveRecordInterface $model the model to be linked with the current one.
      * @param array $extraColumns additional column values to be saved into the junction table.
      * This parameter is only meaningful for a relationship involving a junction table
@@ -1309,7 +1312,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * The model with the foreign key of the relationship will be deleted if `$delete` is `true`.
      * Otherwise, the foreign key will be set `null` and the model will be saved without validation.
      *
-     * @param string $name the case sensitive name of the relationship.
+     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param ActiveRecordInterface $model the model to be unlinked from the current one.
      * You have to make sure that the model is really related with the current model as this method
      * does not check this.
@@ -1410,7 +1413,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * Note that to destroy the relationship without removing records make sure your keys can be set to null
      *
-     * @param string $name the case sensitive name of the relationship.
+     * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param boolean $delete whether to delete the model that contains the foreign key.
      */
     public function unlinkAll($name, $delete = false)

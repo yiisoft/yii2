@@ -90,7 +90,7 @@ class HelpController extends Controller
             $description = '';
 
             $result = Yii::$app->createController($command);
-            if ($result !== false) {
+            if ($result !== false && $result[0] instanceof Controller) {
                 list($controller, $actionID) = $result;
                 /** @var Controller $controller */
                 $description = $controller->getHelpSummary();
@@ -188,7 +188,7 @@ class HelpController extends Controller
             $len = 0;
             foreach ($commands as $command => $description) {
                 $result = Yii::$app->createController($command);
-                if ($result !== false) {
+                if ($result !== false && $result[0] instanceof Controller) {
                     /** @var $controller Controller */
                     list($controller, $actionID) = $result;
                     $actions = $this->getActions($controller);
@@ -215,7 +215,7 @@ class HelpController extends Controller
                 $this->stdout("\n");
 
                 $result = Yii::$app->createController($command);
-                if ($result !== false) {
+                if ($result !== false && $result[0] instanceof Controller) {
                     list($controller, $actionID) = $result;
                     $actions = $this->getActions($controller);
                     if (!empty($actions)) {

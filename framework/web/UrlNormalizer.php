@@ -51,9 +51,9 @@ class UrlNormalizer extends Object
      * Available options are:
      * - `null` - no special action will be performed
      * - `301` - the request should be redirected to the normalized URL using
-     * permanent redirection
+     *   permanent redirection
      * - `302` - the request should be redirected to the normalized URL using
-     * temporary redirection
+     *   temporary redirection
      * - `404` - [[NotFoundHttpException]] will be thrown
      * - `callable` - custom user callback, for example:
      *

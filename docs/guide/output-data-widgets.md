@@ -24,13 +24,15 @@ A typical usage of DetailView is as follows:
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title attribute (in plain text)
-        'description:html',    // description attribute formatted as HTML
-        [                      // the owner name of the model
+        'title',                                           // title attribute (in plain text)
+        'description:html',                                // description attribute formatted as HTML
+        [                                                  // the owner name of the model
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // to HTML customize attributes of value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // to HTML customize attributes of label tag
         ],
-        'created_at:datetime', // creation date formatted as datetime
+        'created_at:datetime',                             // creation date formatted as datetime
     ],
 ]);
 ```
@@ -343,8 +345,8 @@ For filtering data, the GridView needs a [model](structure-models.md) that repre
 usually taken from the filter fields in the GridView table.
 A common practice when using [active records](db-active-record.md) is to create a search Model class
 that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation
-rules for the search and provides a `search()` method that will return the data provider with an
-adjusted query that respects the search criteria.
+rules to show filter controls on the GridView table and to provide a `search()` method that will return the data 
+provider with an adjusted query that processes the search criteria.
 
 To add the search capability for the `Post` model, we can create a `PostSearch` model like the following example:
 
@@ -360,7 +362,7 @@ use yii\data\ActiveDataProvider;
 class PostSearch extends Post
 {
     public function rules()
-    {
+    { 
         // only fields in rules() are searchable
         return [
             [['id'], 'integer'],
