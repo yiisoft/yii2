@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\Object;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\helpers\ArrayHelper;
 use yii\web\Request;
 
 /**
@@ -133,6 +134,12 @@ class Sort extends Object
      * @see params
      */
     public $sortParam = 'sort';
+    /**
+     * @var string the name of the parameter that specifies the page number in
+     * the url. This will be used to unset said value on the sort link.
+     * @since 2.0.11
+     */
+    public $pageParam = 'page';
     /**
      * @var array the order that should be used when the current request does not specify any order.
      * The array keys are attribute names and the array values are the corresponding sort directions. For example,
@@ -301,9 +308,7 @@ class Sort extends Object
      */
     public function getAttributeOrder($attribute)
     {
-        $orders = $this->getAttributeOrders();
-
-        return isset($orders[$attribute]) ? $orders[$attribute] : null;
+        return ArrayHelper::getValue($this->getAttributeOrders(), $attribute);
     }
 
     /**
@@ -322,29 +327,22 @@ class Sort extends Object
     public function link($attribute, $options = [])
     {
         if (($direction = $this->getAttributeOrder($attribute)) !== null) {
-            $class = $direction === SORT_DESC ? 'desc' : 'asc';
-            if (isset($options['class'])) {
-                $options['class'] .= ' ' . $class;
-            } else {
-                $options['class'] = $class;
-            }
+            Html::addCssClass(
+                $options,
+                $direction === SORT_DESC ? 'desc' : 'asc'
+            );
         }
 
-        $url = $this->createUrl($attribute);
         $options['data-sort'] = $this->createSortParam($attribute);
-
-        if (isset($options['label'])) {
-            $label = $options['label'];
-            unset($options['label']);
-        } else {
-            if (isset($this->attributes[$attribute]['label'])) {
-                $label = $this->attributes[$attribute]['label'];
-            } else {
-                $label = Inflector::camel2words($attribute);
-            }
-        }
-
-        return Html::a($label, $url, $options);
+        return Html::a(
+            // Getting label from options, attribute configuration or generating
+            // the label from attribute name
+            ArrayHelper::remove($options, 'label')
+                ?: ArrayHelper::getValue($this->attributes[$attribute], 'label')
+                ?: Inflector::camel2words($attribute),
+            $this->createUrl($attribute),
+            $options
+        );
     }
 
     /**
@@ -365,14 +363,13 @@ class Sort extends Object
             $request = Yii::$app->getRequest();
             $params = $request instanceof Request ? $request->getQueryParams() : [];
         }
+        unset($params[$this->pageParam]);
         $params[$this->sortParam] = $this->createSortParam($attribute);
         $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
-        $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
-        if ($absolute) {
-            return $urlManager->createAbsoluteUrl($params);
-        } else {
-            return $urlManager->createUrl($params);
-        }
+        $urlManager = $this->urlManager ?: Yii::$app->getUrlManager();
+        return $absolute
+            ? $urlManager->createAbsoluteUrl($params)
+            : $urlManager->createUrl($params);
     }
 
     /**
@@ -394,14 +391,16 @@ class Sort extends Object
             $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
             unset($directions[$attribute]);
         } else {
-            $direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
+            $direction = ArrayHelper::getValue(
+                $definition,
+                'default',
+                SORT_ASC
+            );
         }
 
-        if ($this->enableMultiSort) {
-            $directions = array_merge([$attribute => $direction], $directions);
-        } else {
-            $directions = [$attribute => $direction];
-        }
+        $directions = $this->enableMultiSort
+            ? array_merge([$attribute => $direction], $directions)
+            : [$attribute => $direction];
 
         $sorts = [];
         foreach ($directions as $attribute => $direction) {

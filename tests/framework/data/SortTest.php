@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\data;
 
+use Yii;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
 use yii\data\Sort;
@@ -223,6 +224,9 @@ class SortTest extends TestCase
             'route' => 'site/index',
         ]);
 
-        $this->assertEquals('<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>', $sort->link('age'));
+        $expected = '<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>';
+        $this->assertEquals($expected, $sort->link('age'));
+        $sort->params['page'] = 3;
+        $this->assertEquals($expected, $sort->link('age'));
     }
 }
