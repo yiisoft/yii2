@@ -21,6 +21,8 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 If you have trouble setting up Git with GitHub in Linux, or are getting errors like "Permission Denied (publickey)",
 then you must [setup your Git installation to work with GitHub](http://help.github.com/linux-set-up-git/)
 
+> Tip: if you're not fluent with Git, we recommend reading excellent free [Pro Git book](https://git-scm.com/book/en/v2).
+
 ### 2. Add the main Yii repository as an additional git remote called "upstream"
 
 Change to the directory where you cloned Yii, normally, "yii2". Then enter the following command:
