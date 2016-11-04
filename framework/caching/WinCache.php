@@ -15,6 +15,8 @@ namespace yii\caching;
  *
  * See [[Cache]] manual for common cache operations that are supported by WinCache.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

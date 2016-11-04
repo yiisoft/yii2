@@ -35,6 +35,8 @@ use yii\helpers\StringHelper;
  * ]
  * ```
  *
+ * For more details and usage information on Response, see the [guide article on responses](guide:runtime-responses).
+ *
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $downloadHeaders The attachment file name. This property is write-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.

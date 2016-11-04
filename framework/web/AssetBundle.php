@@ -22,6 +22,8 @@ use Yii;
  * An asset bundle can depend on other asset bundles. When registering an asset bundle
  * with a view, all its dependent asset bundles will be automatically registered.
  *
+ * For more details and usage information on AssetBundle, see the [guide article on assets](guide:structure-assets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

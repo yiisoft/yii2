@@ -10,6 +10,8 @@ namespace yii\web;
 /**
  * Cookie represents information related with a cookie, such as [[name]], [[value]], [[domain]], etc.
  *
+ * For more details and usage information on Cookie, see the [guide article on handling cookies](guide:runtime-sessions-cookies).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

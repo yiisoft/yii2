@@ -18,6 +18,8 @@ use yii\widgets\FragmentCache;
  *
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
+ * For more details and usage information on View, see the [guide article on views](guide:structure-views).
+ *
  * @property string|boolean $viewFile The view file currently being rendered. False if no view file is being
  * rendered. This property is read-only.
  *

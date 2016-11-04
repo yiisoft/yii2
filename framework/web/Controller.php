@@ -14,6 +14,8 @@ use yii\helpers\Url;
 /**
  * Controller is the base class of web controllers.
  *
+ * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

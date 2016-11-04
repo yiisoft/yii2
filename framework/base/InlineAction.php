@@ -15,6 +15,8 @@ use Yii;
  * The name of the controller method is available via [[actionMethod]] which
  * is set by the [[controller]] who creates this action.
  *
+ * For more details and usage information on InlineAction, see the [guide article on actions](guide:structure-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

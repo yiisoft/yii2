@@ -26,6 +26,8 @@ use yii\helpers\Url;
  * ]
  * ```
  *
+ * For more details and usage information on ActionColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

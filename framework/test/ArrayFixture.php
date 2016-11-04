@@ -14,6 +14,8 @@ use yii\base\InvalidConfigException;
 /**
  * ArrayFixture represents arbitrary fixture that can be loaded from PHP files.
  *
+ * For more details and usage information on ArrayFixture, see the [guide article on fixtures](guide:test-fixtures).
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */

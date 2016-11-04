@@ -16,6 +16,8 @@ use yii\helpers\Html;
  * provider. Each data model is rendered using the view
  * specified.
  *
+ * For more details and usage information on ListView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

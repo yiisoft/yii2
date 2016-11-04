@@ -13,6 +13,8 @@ namespace yii\caching;
  * See [PHP manual](http://www.php.net/manual/en/function.Memcache-addServer.php) for detailed explanation
  * of each configuration property.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
