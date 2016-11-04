@@ -14,6 +14,8 @@ namespace yii\caching;
  * considered changed; When [[dependOnAll]] is false, if one of the dependencies has NOT changed,
  * this dependency is considered NOT changed.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

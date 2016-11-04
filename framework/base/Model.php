@@ -35,6 +35,8 @@ use yii\validators\Validator;
  *
  * You may directly use Model to store model data, or extend it with customization.
  *
+ * For more details and usage information on Model, see the [guide article on models](guide:structure-models).
+ *
  * @property \yii\validators\Validator[] $activeValidators The validators applicable to the current
  * [[scenario]]. This property is read-only.
  * @property array $attributes Attribute values (name => value).

@@ -56,6 +56,8 @@ use yii\web\Request;
  * ]);
  * ```
  *
+ * For more details and usage information on Pagination, see the [guide article on pagination](guide:output-pagination).
+ *
  * @property integer $limit The limit of the data. This may be used to set the LIMIT value for a SQL statement
  * for fetching the current page of data. Note that if the page size is infinite, a value -1 will be returned.
  * This property is read-only.

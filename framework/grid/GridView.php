@@ -41,6 +41,8 @@ use yii\base\Model;
  *
  * The look and feel of a grid view can be customized using the large amount of properties.
  *
+ * For more details and usage information on GridView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

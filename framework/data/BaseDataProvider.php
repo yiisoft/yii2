@@ -14,6 +14,8 @@ use yii\base\InvalidParamException;
 /**
  * BaseDataProvider provides a base class that implements the [[DataProviderInterface]].
  *
+ * For more details and usage information on BaseDataProvider, see the [guide article on data providers](guide:output-data-providers).
+ *
  * @property integer $count The number of data models in the current page. This property is read-only.
  * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
  * uniquely identified by the corresponding key value in this array.

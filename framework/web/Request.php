@@ -21,6 +21,8 @@ use yii\helpers\StringHelper;
  * Request is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->request`.
  *
+ * For more details and usage information on Request, see the [guide article on requests](guide:runtime-requests).
+ *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
  * @property array $acceptableContentTypes The content types ordered by the quality score. Types with the
  * highest scores will be returned first. The array keys are the content types, while the array values are the

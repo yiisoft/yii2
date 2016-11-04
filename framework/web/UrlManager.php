@@ -31,6 +31,8 @@ use yii\caching\Cache;
  * ]
  * ```
  *
+ * For more details and usage information on UrlManager, see the [guide article on routing](guide:runtime-routing).
+ *
  * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend to created URLs.
  * @property string $hostInfo The host info (e.g. "http://www.example.com") that is used by
  * [[createAbsoluteUrl()]] to prepend to created URLs.

@@ -18,6 +18,8 @@ use yii\helpers\Html;
  * You may also query other information about the file, including [[name]],
  * [[tempName]], [[type]], [[size]] and [[error]].
  *
+ * For more details and usage information on UploadedFile, see the [guide article on handling uploads](guide:input-file-upload).
+ *
  * @property string $baseName Original file base name. This property is read-only.
  * @property string $extension File extension. This property is read-only.
  * @property boolean $hasError Whether there is an error with the uploaded file. Check [[error]] for detailed

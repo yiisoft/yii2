@@ -33,6 +33,8 @@ use yii\base\InvalidConfigException;
  * ]
  * ```
  *
+ * For more details and usage information on View, see the [guide article on views](guide:structure-views).
+ *
  * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
  * component.
  *

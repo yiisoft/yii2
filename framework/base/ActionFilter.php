@@ -15,6 +15,8 @@ namespace yii\base;
  *
  * Check implementation of [[\yii\filters\AccessControl]], [[\yii\filters\PageCache]] and [[\yii\filters\HttpCache]] as examples on how to use it.
  *
+ * For more details and usage information on ActionFilter, see the [guide article on filters](guide:structure-filters).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

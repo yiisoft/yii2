@@ -18,6 +18,8 @@ use yii\web\JsExpression;
 /**
  * ActiveField represents a form input field within an [[ActiveForm]].
  *
+ * For more details and usage information on ActiveField, see the [guide article on forms](guide:input-forms).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
