@@ -23,6 +23,8 @@ Yii Framework 2 Change Log
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #12879: Console progress bar was not working properly in Windows terminals (samdark, kids-return)
+- Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
+
 
 2.0.10 October 20, 2016
 -----------------------
