@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
 
 
 2.0.10 October 20, 2016

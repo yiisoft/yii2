@@ -247,6 +247,38 @@ class BaseArrayHelper
     }
 
     /**
+     * Removes items with matching values from the array and returns the removed items.
+     *
+     * Example,
+     *
+     * ```php
+     * $array = ['Bob' => 'Dylan', 'Michael' => 'Jackson', 'Mick' => 'Jagger', 'Janet' => 'Jackson'];
+     * $removed = \yii\helpers\ArrayHelper::removeValue($array, 'Jackson');
+     * // result:
+     * // $array = ['Bob' => 'Dylan', 'Mick' => 'Jagger'];
+     * // $removed = ['Michael' => 'Jackson', 'Janet' => 'Jackson'];
+     * ```
+     *
+     * @param array $array the array where to look the value from
+     * @param string $value the value to remove from the array
+     * @return array the items that were removed from the array
+     * @since 2.0.11
+     */
+    public static function removeValue(&$array, $value)
+    {
+        $result = [];
+        if (is_array($array)) {
+            foreach ($array as $key => $val) {
+                if ($val === $value) {
+                    $result[$key] = $val;
+                    unset($array[$key]);
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Indexes and/or groups the array according to a specified key.
      * The input should be either multidimensional array or an array of objects.
      *
