@@ -60,6 +60,18 @@ class InlineValidator extends Validator
     /**
      * @inheritdoc
      */
+    public function validateModel($model)
+    {
+        $method = $this->method;
+        if (is_string($method)) {
+            $method = [$model, $method];
+        }
+        call_user_func($method, $this->params);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function validateAttribute($model, $attribute)
     {
         $method = $this->method;
