@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #12879: Console progress bar was not working properly in Windows terminals (samdark, kids-return)
 - Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
+- Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
 
 
 2.0.10 October 20, 2016
