@@ -97,6 +97,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @var array a list of relations that this query should be joined with
      */
     public $joinWith;
+    /**
+     * @var array
+     */
+    public $relationParams = [];
 
 
     /**
@@ -429,6 +433,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         return $this;
     }
 
+    public function bindRelationParams($params)
+    {
+        $this->relationParams = $params;
+        return $this;
+    }
+
     private function buildJoinWith()
     {
         $join = $this->join;
@@ -509,7 +519,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $name = substr($name, 0, $pos);
                 $fullName = $prefix === '' ? $name : "$prefix.$name";
                 if (!isset($relations[$fullName])) {
-                    $relations[$fullName] = $relation = $primaryModel->getRelation($name);
+                    $relations[$fullName] = $relation = $primaryModel->getRelation($name, true, $this->relationParams);
                     $this->joinWithRelation($parent, $relation, $this->getJoinType($joinType, $fullName));
                 } else {
                     $relation = $relations[$fullName];
@@ -522,7 +532,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
             $fullName = $prefix === '' ? $name : "$prefix.$name";
             if (!isset($relations[$fullName])) {
-                $relations[$fullName] = $relation = $primaryModel->getRelation($name);
+                $relations[$fullName] = $relation = $primaryModel->getRelation($name, true, $this->relationParams);
                 if ($callback !== null) {
                     call_user_func($callback, $relation);
                 }
