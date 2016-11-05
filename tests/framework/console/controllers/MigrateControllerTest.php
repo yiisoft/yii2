@@ -202,4 +202,17 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('junction_test', $migrationName);
         }
     }
+
+    public function testMigrateFromDifferentPath()
+    {
+        \Yii::$app->set('cache',['class' => 'yii\caching\DbCache']);
+        $paths = [
+            '@yii/web/migrations',
+            '@yii/caching/migrations',
+        ];
+        foreach ($paths as $path) {
+            $this->runMigrateControllerAction('up', ['migrationPath' => $path]);
+        }
+        $this->runMigrateControllerAction('down', ['all']);
+    }
 }
