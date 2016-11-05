@@ -58,11 +58,9 @@ class TagDependency extends Dependency
     }
 
     /**
-     * Performs the actual dependency checking.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
-     * @return bool whether the dependency is changed or not.
+     * @inheritdoc
      */
-    public function getHasChanged($cache)
+    public function isChanged($cache)
     {
         $timestamps = $this->getTimestamps($cache, (array) $this->tags);
         return $timestamps !== $this->data;

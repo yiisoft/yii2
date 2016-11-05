@@ -112,7 +112,7 @@ abstract class Cache extends Component implements \ArrayAccess
         } else {
             $value = call_user_func($this->serializer[1], $value);
         }
-        if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged($this))) {
+        if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
         } else {
             return false;
@@ -184,7 +184,7 @@ abstract class Cache extends Component implements \ArrayAccess
                     $value = $this->serializer === null ? unserialize($values[$newKey])
                         : call_user_func($this->serializer[1], $values[$newKey]);
 
-                    if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged($this))) {
+                    if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
                         $results[$key] = $value[0];
                     }
                 }

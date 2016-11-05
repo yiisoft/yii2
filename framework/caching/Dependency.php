@@ -58,11 +58,19 @@ abstract class Dependency extends \yii\base\Object
     }
 
     /**
-     * Returns a value indicating whether the dependency has changed.
+     * @deprecated since version 2.0.11. Will be removed in version 2.1
+     */
+    public function getHasChanged($cache)
+    {
+        return $this->isChanged($cache);
+    }
+
+    /**
+     * Checks whether the dependency is changed
      * @param Cache $cache the cache component that is currently evaluating this dependency
      * @return bool whether the dependency has changed.
      */
-    public function getHasChanged($cache)
+    public function isChanged($cache)
     {
         if ($this->reusable) {
             $hash = $this->generateReusableHash();
@@ -99,7 +107,7 @@ abstract class Dependency extends \yii\base\Object
     }
 
     /**
-     * Generates the data needed to determine if dependency has been changed.
+     * Generates the data needed to determine if dependency is changed.
      * Derived classes should override this method to generate the actual dependency data.
      * @param Cache $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
