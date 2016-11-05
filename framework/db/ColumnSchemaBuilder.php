@@ -161,6 +161,7 @@ class ColumnSchemaBuilder extends Object
     /**
      * Adds a `PRIMARY KEY` constraint to the column.
      * @return $this
+     * @since 2.0.11
      */
     public function primaryKey()
     {
@@ -338,7 +339,13 @@ class ColumnSchemaBuilder extends Object
      */
     protected function buildUniqueString()
     {
-        return $this->isPrimary ? ' PRIMARY KEY' : ($this->isUnique ? ' UNIQUE' : '');
+        if ($this->isPrimary) {
+            return ' PRIMARY KEY';
+        } elseif ($this->isUnique) {
+            return ' UNIQUE';
+        } else {
+            return '';
+        }
     }
 
     /**

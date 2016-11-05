@@ -18,7 +18,7 @@ namespace yii\db;
  *
  * ```php
  * $this->createTable('example_table', [
- *   'id' => $this->serial(),
+ *   'id' => $this->autoIncrement(),
  *   'name' => $this->string(64)->notNull(),
  *   'type' => $this->integer()->notNull()->defaultValue(10),
  *   'description' => $this->text(),
@@ -46,7 +46,7 @@ trait SchemaBuilderTrait
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.11
      */
-    public function serial($length = null)
+    public function autoIncrement($length = null)
     {
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_PK, $length);
     }
@@ -58,7 +58,7 @@ trait SchemaBuilderTrait
      * @return ColumnSchemaBuilder the column instance which can be further customized.
      * @since 2.0.11
      */
-    public function bigSerial($length = null)
+    public function bigAutoIncrement($length = null)
     {
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BIGPK, $length);
     }
@@ -273,19 +273,21 @@ trait SchemaBuilderTrait
 
     /**
      * @deprecated since version 2.0.11
-     * @see [[serial()]]
+     * @see [[autoIncrement()]]
+     * @since 2.0.6
      */
     public function primaryKey($length = null)
     {
-        return $this->serial($length);
+        return $this->autoIncrement($length);
     }
 
     /**
      * @deprecated since version 2.0.11
-     * @see [[bigSerial()]]
+     * @see [[bigAutoIncrement()]]
+     * @since 2.0.6
      */
     public function bigPrimaryKey($length = null)
     {
-        return $this->bigSerial($length);
+        return $this->bigAutoIncrement($length);
     }
 }
