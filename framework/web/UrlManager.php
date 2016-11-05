@@ -147,7 +147,7 @@ class UrlManager extends Component
      * @var string the cache key for cached rules, this will be expanded using `Yii::getAlias`
      * @since 2.0.8
      */
-    public $cacheKey = '@app/'.__CLASS__;
+    public $cacheKey = '@app/UrlManager';
 
     private $_baseUrl;
     private $_scriptUrl;
