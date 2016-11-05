@@ -14,6 +14,8 @@ use yii\base\InvalidParamException;
 /**
  * BaseManager is a base class implementing [[ManagerInterface]] for RBAC management.
  *
+ * For more details and usage information on DbManager, see the [guide article on security authorization](guide:security-authorization).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

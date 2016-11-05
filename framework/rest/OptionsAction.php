@@ -12,6 +12,8 @@ use Yii;
 /**
  * OptionsAction responds to the OPTIONS request by sending back an `Allow` header.
  *
+ * For more details and usage information on OptionsAction, see the [guide article on rest controllers](guide:rest-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

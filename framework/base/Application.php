@@ -12,6 +12,8 @@ use Yii;
 /**
  * Application is the base class for all application classes.
  *
+ * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
+ *
  * @property \yii\web\AssetManager $assetManager The asset manager application component. This property is
  * read-only.
  * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned

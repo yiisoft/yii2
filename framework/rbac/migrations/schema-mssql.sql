@@ -26,7 +26,7 @@ create table [auth_rule]
 create table [auth_item]
 (
    [name]                 varchar(64) not null,
-   [type]                 integer not null,
+   [type]                 smallint not null,
    [description]          text,
    [rule_name]            varchar(64),
    [data]                 text,

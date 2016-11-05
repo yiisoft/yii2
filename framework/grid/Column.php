@@ -14,6 +14,8 @@ use yii\helpers\Html;
 /**
  * Column is the base class of all [[GridView]] column classes.
  *
+ * For more details and usage information on Column, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

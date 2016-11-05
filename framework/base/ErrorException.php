@@ -12,6 +12,8 @@ use Yii;
 /**
  * ErrorException represents a PHP error.
  *
+ * For more details and usage information on ErrorException, see the [guide article on handling errors](guide:runtime-handling-errors).
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */

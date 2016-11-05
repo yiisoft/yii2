@@ -21,6 +21,8 @@ use yii\di\ServiceLocator;
  * [[components|Components]] may be registered with the module so that they are globally
  * accessible within the module.
  *
+ * For more details and usage information on Module, see the [guide article on modules](guide:structure-modules).
+ *
  * @property array $aliases List of path aliases to be defined. The array keys are alias names (must start
  * with `@`) and the array values are the corresponding paths or aliases. See [[setAliases()]] for an example.
  * This property is write-only.

@@ -45,6 +45,8 @@ use yii\helpers\StringHelper;
  * - [[deleteValue()]]: delete the value with the specified key from cache
  * - [[flushValues()]]: delete all values from cache
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

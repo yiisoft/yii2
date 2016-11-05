@@ -15,6 +15,8 @@ namespace yii\caching;
  * By replacing DummyCache with some other cache component, one can quickly switch from
  * non-caching mode to caching mode.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

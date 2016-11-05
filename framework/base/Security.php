@@ -23,6 +23,8 @@ use Yii;
  * > Note: this class requires 'OpenSSL' PHP extension for random key/string generation on Windows and
  * for encryption/decryption on all platforms. For the highest security level PHP version >= 5.5.0 is recommended.
  *
+ * For more details and usage information on Security, see the [guide article on security](guide:security-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Tom Worster <fsb@thefsb.org>
  * @author Klimov Paul <klimov.paul@gmail.com>

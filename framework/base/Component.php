@@ -90,6 +90,8 @@ use Yii;
  * where `as tree` stands for attaching a behavior named `tree`, and the array will be passed to [[\Yii::createObject()]]
  * to create the behavior object.
  *
+ * For more details and usage information on Component, see the [guide article on components](guide:concept-components).
+ *
  * @property Behavior[] $behaviors List of behaviors attached to this component. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

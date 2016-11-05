@@ -208,8 +208,7 @@ window.yii = (function ($) {
 
             var newForm = !$form.length;
             if (newForm) {
-                var regexp = /(^\/|:\/\/)/;
-                if (!action || !regexp.test(action)) {
+                if (!action || !/(^\/|:\/\/)/.test(action)) {
                     action = window.location.href;
                 }
                 $form = $('<form/>', {method: method, action: action});
@@ -217,13 +216,11 @@ window.yii = (function ($) {
                 if (target) {
                     $form.attr('target', target);
                 }
-                regexp = /(get|post)/i;
-                if (!regexp.test(method)) {
+                if (!/(get|post)/i.test(method)) {
                     $form.append($('<input/>', {name: '_method', value: method, type: 'hidden'}));
                     method = 'POST';
                 }
-                regexp = /(get|head|options)/i;
-                if (!regexp.test(method)) {
+                if (!/(get|head|options)/i.test(method)) {
                     var csrfParam = pub.getCsrfParam();
                     if (csrfParam) {
                         $form.append($('<input/>', {name: csrfParam, value: pub.getCsrfToken(), type: 'hidden'}));

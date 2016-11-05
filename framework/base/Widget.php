@@ -13,6 +13,8 @@ use ReflectionClass;
 /**
  * Widget is the base class for widgets.
  *
+ * For more details and usage information on Widget, see the [guide article on widgets](guide:structure-widgets).
+ *
  * @property string $id ID of the widget.
  * @property \yii\web\View $view The view object that can be used to render views or view files. Note that the
  * type of this property differs in getter and setter. See [[getView()]] and [[setView()]] for details.

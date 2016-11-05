@@ -61,7 +61,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
 
         $this->createTable($authManager->itemTable, [
             'name' => $this->string(64)->notNull(),
-            'type' => $this->integer()->notNull(),
+            'type' => $this->smallInteger()->notNull(),
             'description' => $this->text(),
             'rule_name' => $this->string(64),
             'data' => $this->text(),

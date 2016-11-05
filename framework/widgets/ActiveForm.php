@@ -19,6 +19,8 @@ use yii\helpers\Json;
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
  *
+ * For more details and usage information on ActiveForm, see the [guide article on forms](guide:input-forms).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
