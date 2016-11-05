@@ -54,7 +54,7 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
-#### Wrapping with begin() and end() 
+### Wrapping with begin() and end() <span id="wrapping-with-begin-and-end"></span>
 In the above code, [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] not only creates a form instance, but also marks the beginning of the form.
 All of the content placed between [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] and
 [[yii\widgets\ActiveForm::end()|ActiveForm::end()]] will be wrapped within the HTML `<form>` tag.
@@ -62,7 +62,7 @@ As with any widget, you can specify some options as to how the widget should be 
 the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
 For all available options, please refer to the API documentation of [[yii\widgets\ActiveForm]].
 
-#### ActiveField
+### ActiveField <span id="activefield"></span>.
 In order to create a form element in the form, along with the element's label, and any applicable JavaScript validation,
 the [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] method is called, which returns an instance of [[yii\widgets\ActiveField]].
 When the result of this method is echoed directly, the result is a regular (text) input.
@@ -154,8 +154,7 @@ by the current value of the $model's attribute.
 
 #### Creating a drop-down list <span id="creating-activeform-dropdownlist"></span>
 
-We can use ActiveField [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-method to create a drop-down list:
+We can use ActiveField [[\yii\widgets\ActiveField::dropDownList()]] method to create a drop-down list:
 
 ```php
 /* @var $form yii\widgets\ActiveForm */
@@ -168,10 +167,9 @@ echo $form->field($model, 'category')->dropdownList([
 );
 ```
 
-#### Creating a radio list <span id="creating-activeform-dropdownlist"></span>
+#### Creating a radio list <span id="creating-activeform-radioList"></span>
 
-We can use ActiveField [radioList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#radioList()-detail)
-method to create a radio list:
+We can use ActiveField [[\yii\widgets\ActiveField::radioList()]] method to create a radio list:
 
 ```php
 /* @var $form yii\widgets\ActiveForm */
@@ -182,10 +180,9 @@ echo $form->field($model, 'category')->radioList([
 ]);
 ```
 
-#### Creating a checkbox List <span id="creating-activeform-dropdownlist"></span>
+#### Creating a checkbox List <span id="creating-activeform-checkboxList"></span>
 
-We can use ActiveField [checkboxList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#checkboxList()-detail)
-method to create a checkbox list:
+We can use ActiveField [[\yii\widgets\ActiveField::checkboxList()]] method to create a checkbox list:
 
 ```php
 /* @var $form yii\widgets\ActiveForm */
