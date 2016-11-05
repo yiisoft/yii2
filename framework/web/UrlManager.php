@@ -144,10 +144,10 @@ class UrlManager extends Component
     public $normalizer = false;
 
     /**
-     * @var string the cache key for cached rules
+     * @var string the cache key for cached rules, this will be expanded using `Yii::getAlias`
      * @since 2.0.8
      */
-    protected $cacheKey = __CLASS__;
+    public $cacheKey = '@app/'.__CLASS__;
 
     private $_baseUrl;
     private $_scriptUrl;
@@ -176,7 +176,7 @@ class UrlManager extends Component
             $this->cache = Yii::$app->get($this->cache, false);
         }
         if ($this->cache instanceof Cache) {
-            $cacheKey = $this->cacheKey;
+            $cacheKey = Yii::getAlias($this->cacheKey);
             $hash = md5(json_encode($this->rules));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
