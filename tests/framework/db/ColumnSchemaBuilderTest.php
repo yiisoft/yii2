@@ -40,6 +40,9 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
             ['integer(10)', Schema::TYPE_INTEGER, 10, [
                 ['comment', 'test']
             ]],
+            ['integer(10) PRIMARY KEY', Schema::TYPE_INTEGER, 10, [
+                ['primaryKey']
+            ]],
         ];
     }
 

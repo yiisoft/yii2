@@ -36,6 +36,9 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
             ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
             ]],
+            ['integer(10) PRIMARY KEY', Schema::TYPE_INTEGER, 10, [
+                ['primary']
+            ]],
         ];
     }
 }

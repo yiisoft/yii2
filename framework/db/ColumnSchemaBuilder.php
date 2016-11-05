@@ -45,6 +45,11 @@ class ColumnSchemaBuilder extends Object
      */
     protected $isNotNull;
     /**
+     * @var boolean whether the column values should be primary. If this is `true`, a `PRIMARY KEY` constraint will be added.
+     * @since 2.0.11
+     */
+    protected $isPrimary = false;
+    /**
      * @var boolean whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
      */
     protected $isUnique = false;
@@ -150,6 +155,16 @@ class ColumnSchemaBuilder extends Object
     public function null()
     {
         $this->isNotNull = false;
+        return $this;
+    }
+
+    /**
+     * Adds a `PRIMARY KEY` constraint to the column.
+     * @return $this
+     */
+    public function primaryKey()
+    {
+        $this->isPrimary = true;
         return $this;
     }
 
@@ -317,12 +332,13 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Builds the unique constraint for the column.
-     * @return string returns string 'UNIQUE' if [[isUnique]] is true, otherwise it returns an empty string.
+     * Builds the unique or primary constraint for the column.
+     * @return string returns string 'PRIMARY KEY' if [[isPrimary]] is true, else
+     * returns string 'UNIQUE' if [[isUnique]] is true, otherwise it returns an empty string.
      */
     protected function buildUniqueString()
     {
-        return $this->isUnique ? ' UNIQUE' : '';
+        return $this->isPrimary ? ' PRIMARY KEY' : ($this->isUnique ? ' UNIQUE' : '');
     }
 
     /**

@@ -18,7 +18,7 @@ namespace yii\db;
  *
  * ```php
  * $this->createTable('example_table', [
- *   'id' => $this->primaryKey(),
+ *   'id' => $this->serial(),
  *   'name' => $this->string(64)->notNull(),
  *   'type' => $this->integer()->notNull()->defaultValue(10),
  *   'description' => $this->text(),
@@ -44,9 +44,9 @@ trait SchemaBuilderTrait
      * @param integer $length column size or precision definition.
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
-     * @since 2.0.6
+     * @since 2.0.11
      */
-    public function primaryKey($length = null)
+    public function serial($length = null)
     {
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_PK, $length);
     }
@@ -56,9 +56,9 @@ trait SchemaBuilderTrait
      * @param integer $length column size or precision definition.
      * This parameter will be ignored if not supported by the DBMS.
      * @return ColumnSchemaBuilder the column instance which can be further customized.
-     * @since 2.0.6
+     * @since 2.0.11
      */
-    public function bigPrimaryKey($length = null)
+    public function bigSerial($length = null)
     {
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_BIGPK, $length);
     }
@@ -269,5 +269,23 @@ trait SchemaBuilderTrait
             $length[] = $scale;
         }
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MONEY, $length);
+    }
+
+    /**
+     * @deprecated since version 2.0.11
+     * @see [[serial()]]
+     */
+    public function primaryKey($length = null)
+    {
+        return $this->serial($length);
+    }
+
+    /**
+     * @deprecated since version 2.0.11
+     * @see [[bigSerial()]]
+     */
+    public function bigPrimaryKey($length = null)
+    {
+        return $this->bigSerial($length);
     }
 }
