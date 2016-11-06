@@ -66,7 +66,7 @@ use yii\base\InvalidConfigException;
 class MemCache extends Cache
 {
     /**
-     * @var boolean whether to use memcached or memcache as the underlying caching extension.
+     * @var bool whether to use memcached or memcache as the underlying caching extension.
      * If true, [memcached](http://pecl.php.net/package/memcached) will be used.
      * If false, [memcache](http://pecl.php.net/package/memcache) will be used.
      * Defaults to false.
@@ -287,8 +287,8 @@ class MemCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached.
      * @see \MemcachePool::set()
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)
     {
@@ -303,7 +303,7 @@ class MemCache extends Cache
     /**
      * Stores multiple key-value pairs in cache.
      * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys. Always empty in case of using memcached.
      */
     protected function setValues($data, $duration)
@@ -328,8 +328,8 @@ class MemCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached
      * @see \MemcachePool::set()
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function addValue($key, $value, $duration)
     {
@@ -345,7 +345,7 @@ class MemCache extends Cache
      * Deletes a value with the specified key from cache
      * This is the implementation of the method declared in the parent class.
      * @param string $key the key of the value to be deleted
-     * @return boolean if no error happens during deletion
+     * @return bool if no error happens during deletion
      */
     protected function deleteValue($key)
     {
@@ -355,7 +355,7 @@ class MemCache extends Cache
     /**
      * Deletes all values from cache.
      * This is the implementation of the method declared in the parent class.
-     * @return boolean whether the flush operation was successful.
+     * @return bool whether the flush operation was successful.
      */
     protected function flushValues()
     {

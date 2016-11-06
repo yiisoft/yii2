@@ -86,7 +86,7 @@ class ListView extends BaseListView
      * Renders a single data model.
      * @param mixed $model the data model to be rendered
      * @param mixed $key the key value associated with the data model
-     * @param integer $index the zero-based index of the data model in the model array returned by [[dataProvider]].
+     * @param int $index the zero-based index of the data model in the model array returned by [[dataProvider]].
      * @return string the rendering result
      */
     public function renderItem($model, $key, $index)

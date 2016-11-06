@@ -43,7 +43,7 @@ class HelpController extends Controller
      *
      * @param string $command The name of the command to show help about.
      * If not provided, all available commands will be displayed.
-     * @return integer the exit status
+     * @return int the exit status
      * @throws Exception if the command for help is unknown
      */
     public function actionIndex($command = null)
@@ -164,7 +164,7 @@ class HelpController extends Controller
     /**
      * Validates if the given class is a valid console controller class.
      * @param string $controllerClass
-     * @return boolean
+     * @return bool
      */
     protected function validateControllerClass($controllerClass)
     {
@@ -370,7 +370,7 @@ class HelpController extends Controller
     /**
      * Generates a well-formed string for an argument or option.
      * @param string $name the name of the argument or option
-     * @param boolean $required whether the argument is required
+     * @param bool $required whether the argument is required
      * @param string $type the type of the option or argument
      * @param mixed $defaultValue the default value of the option or argument
      * @param string $comment comment about the option or argument

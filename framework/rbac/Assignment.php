@@ -22,7 +22,7 @@ use yii\base\Object;
 class Assignment extends Object
 {
     /**
-     * @var string|integer user ID (see [[\yii\web\User::id]])
+     * @var string|int user ID (see [[\yii\web\User::id]])
      */
     public $userId;
     /**
@@ -30,7 +30,7 @@ class Assignment extends Object
      */
     public $roleName;
     /**
-     * @var integer UNIX timestamp representing the assignment creation time
+     * @var int UNIX timestamp representing the assignment creation time
      */
     public $createdAt;
 }

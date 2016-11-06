@@ -144,23 +144,23 @@ class Foo
 
 ### 4.4 PHPDoc blocks
 
- - `@param`, `@var`, `@property` and `@return` must declare types as `boolean`, `integer`, `string`, `array` or `null`. 
-   You can use a class names as well such as `Model` or `ActiveRecord`. 
+ - `@param`, `@var`, `@property` and `@return` must declare types as `bool`, `int`, `string`, `array` or `null`.
+   You can use a class names as well such as `Model` or `ActiveRecord`.
  - For a typed arrays use `ClassName[]`.
  - The first line of the PHPDoc must describe the purpose of the method.
  - If method checks something (`isActive`, `hasClass`, etc) the first line should start with `Checks whether`.
  - `@return` should explicitly describe what exactly will be returned.
-  
+
 ```php
 /**
  * Checkes whether the IP is in subnet range
- * 
+ *
  * @param string $ip an IPv4 or IPv6 address
- * @param integer $cidr the CIDR lendth
+ * @param int $cidr the CIDR lendth
  * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
- * @return boolean whether the IP is in subnet range
+ * @return bool whether the IP is in subnet range
  */
- private function inRange($ip, $cidr, $range) 
+ private function inRange($ip, $cidr, $range)
  {
    // ...
  }

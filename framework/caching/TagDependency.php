@@ -60,7 +60,7 @@ class TagDependency extends Dependency
     /**
      * Performs the actual dependency checking.
      * @param Cache $cache the cache component that is currently evaluating this dependency
-     * @return boolean whether the dependency is changed or not.
+     * @return bool whether the dependency is changed or not.
      */
     public function getHasChanged($cache)
     {

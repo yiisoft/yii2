@@ -53,7 +53,7 @@ class DataColumn extends Column
      */
     public $label;
     /**
-     * @var boolean whether the header label should be HTML-encoded.
+     * @var bool whether the header label should be HTML-encoded.
      * @see label
      * @since 2.0.1
      */
@@ -81,7 +81,7 @@ class DataColumn extends Column
      */
     public $format = 'text';
     /**
-     * @var boolean whether to allow sorting by this column. If true and [[attribute]] is found in
+     * @var bool whether to allow sorting by this column. If true and [[attribute]] is found in
      * the sort definition of [[GridView::dataProvider]], then the header cell of this column
      * will contain a link that may trigger the sorting when being clicked.
      */
@@ -201,7 +201,7 @@ class DataColumn extends Column
      * Returns the data cell value.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
      * @return string the data cell value
      */
     public function getDataCellValue($model, $key, $index)

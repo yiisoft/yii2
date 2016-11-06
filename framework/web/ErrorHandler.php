@@ -31,11 +31,11 @@ use yii\helpers\VarDumper;
 class ErrorHandler extends \yii\base\ErrorHandler
 {
     /**
-     * @var integer maximum number of source code lines to be displayed. Defaults to 19.
+     * @var int maximum number of source code lines to be displayed. Defaults to 19.
      */
     public $maxSourceLines = 19;
     /**
-     * @var integer maximum number of trace source code lines to be displayed. Defaults to 13.
+     * @var int maximum number of trace source code lines to be displayed. Defaults to 13.
      */
     public $maxTraceSourceLines = 13;
     /**
@@ -272,11 +272,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
     /**
      * Renders a single call stack element.
      * @param string|null $file name where call has happened.
-     * @param integer|null $line number on which call has happened.
+     * @param int|null $line number on which call has happened.
      * @param string|null $class called class name.
      * @param string|null $method called function/method name.
      * @param array $args array of method arguments.
-     * @param integer $index number of the call stack element.
+     * @param int $index number of the call stack element.
      * @return string HTML content of the rendered call stack element.
      */
     public function renderCallStackItem($file, $line, $class, $method, $args, $index)
@@ -329,7 +329,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     /**
      * Determines whether given name of the file belongs to the framework.
      * @param string $file name to be checked.
-     * @return boolean whether given name of the file belongs to the framework.
+     * @return bool whether given name of the file belongs to the framework.
      */
     public function isCoreFile($file)
     {
@@ -338,7 +338,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Creates HTML containing link to the page with the information on given HTTP status code.
-     * @param integer $statusCode to be used to generate information link.
+     * @param int $statusCode to be used to generate information link.
      * @param string $statusDescription Description to display after the the status code.
      * @return string generated HTML with HTTP status code information.
      */

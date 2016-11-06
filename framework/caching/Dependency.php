@@ -26,7 +26,7 @@ abstract class Dependency extends \yii\base\Object
      */
     public $data;
     /**
-     * @var boolean whether this dependency is reusable or not. True value means that dependent
+     * @var bool whether this dependency is reusable or not. True value means that dependent
      * data for this cache dependency will be generated only once per request. This allows you
      * to use the same cache dependency for multiple separate cache calls while generating the same
      * page without an overhead of re-evaluating dependency data each time. Defaults to false.
@@ -60,7 +60,7 @@ abstract class Dependency extends \yii\base\Object
     /**
      * Returns a value indicating whether the dependency has changed.
      * @param Cache $cache the cache component that is currently evaluating this dependency
-     * @return boolean whether the dependency has changed.
+     * @return bool whether the dependency has changed.
      */
     public function getHasChanged($cache)
     {

@@ -55,7 +55,7 @@ class EachValidator extends Validator
      */
     public $rule;
     /**
-     * @var boolean whether to use error message composed by validator declared via [[rule]] if its validation fails.
+     * @var bool whether to use error message composed by validator declared via [[rule]] if its validation fails.
      * If enabled, error message specified for this validator itself will appear only if attribute value is not an array.
      * If disabled, own error message value will be used always.
      */

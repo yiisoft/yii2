@@ -1,7 +1,7 @@
 Autorisation
 =============
 
-L'autorisation est le processus qui vérifie si un utilisateur dispose des permissions suffisantes pour faire quelque chose. Yii fournit deux méthodes d'autorisation : le filtre de contrôle d'accès (ACF — Access Control Filter) et le contrôle d'accès basé sur les rôles (RBAC — Role-Based Access Control). 
+L'autorisation est le processus qui vérifie si un utilisateur dispose des permissions suffisantes pour faire quelque chose. Yii fournit deux méthodes d'autorisation : le filtre de contrôle d'accès (ACF — Access Control Filter) et le contrôle d'accès basé sur les rôles (RBAC — Role-Based Access Control).
 
 
 ## Filtre de contrôle d'accès <span id="access-control-filter"></span>
@@ -43,8 +43,8 @@ class SiteController extends Controller
 
 Dans le code précédent, le filtre de contrôle d'accès est attaché au contrôleur `site` en tant que comportement (*behavior*). C'est la manière typique d'utiliser un filtre d'action. L'option `only` spécifie que le filtre de contrôle d'accès doit seulement être appliqué aux actions `login`, `logout` et `signup`. Toutes les autres actions dans le contrôleur `site`ne sont pas sujettes au contrôle d'accès. L'option `rules` liste les [[yii\filters\AccessRule|règles d'accès]], qui se lisent comme suit :
 
-- Autorise tous les visiteurs (non encore authentifiés) à accéder aux actions `login` et `signup`. l'option `roles` contient un point d'interrogation `?` qui est un signe particulier représentant les « visiteurs non authentifiés ». 
-- Autorise les utilisateurs authentifiés à accéder à l'action `logout`. L'arobase `@` est un autre signe particulier représentant les « utilisateurs authentifiés ». 
+- Autorise tous les visiteurs (non encore authentifiés) à accéder aux actions `login` et `signup`. l'option `roles` contient un point d'interrogation `?` qui est un signe particulier représentant les « visiteurs non authentifiés ».
+- Autorise les utilisateurs authentifiés à accéder à l'action `logout`. L'arobase `@` est un autre signe particulier représentant les « utilisateurs authentifiés ».
 
 Le filtre de contrôle d'accès effectue les vérifications d'autorisation en examinant les règles d'accès une par une en commençant par le haut, jusqu'à ce qu'il trouve une règle qui correspond au contexte d'exécution courant. La valeur `allow` de la règle correspondante est utilisée ensuite pour juger si l'utilisateur est autorisé ou pas. Si aucune des règles ne correspond, cela signifie que l'utilisateur n'est PAS autorisé, et  le filtre de contrôle d'accès arrête la suite de l'exécution de l'action.
 
@@ -69,24 +69,24 @@ Les [[yii\filters\AccessRule|règles d'accès]] acceptent beaucoup d'options. Ci
 
  * [[yii\filters\AccessRule::allow|allow]]: spécifie s'il s'agit d'une règle "allow" (autorise) ou "deny" (refuse).
 
- * [[yii\filters\AccessRule::actions|actions]]: spécifie à  quelles actions cette règle correspond. Ce doit être un tableau d'identifiants d'action. La comparaison est sensible à la casse. Si cette option est vide ou non définie, cela signifie que la règle s'applique à toutes les actions. 
+ * [[yii\filters\AccessRule::actions|actions]]: spécifie à  quelles actions cette règle correspond. Ce doit être un tableau d'identifiants d'action. La comparaison est sensible à la casse. Si cette option est vide ou non définie, cela signifie que la règle s'applique à toutes les actions.
 
- * [[yii\filters\AccessRule::controllers|controllers]]: spécifie à quels contrôleurs cette règle correspond. Ce doit être un tableau d'identifiants de contrôleurs. Si cette option est vide ou non définie, la règle s'applique à tous les contrôleurs. 
+ * [[yii\filters\AccessRule::controllers|controllers]]: spécifie à quels contrôleurs cette règle correspond. Ce doit être un tableau d'identifiants de contrôleurs. Si cette option est vide ou non définie, la règle s'applique à tous les contrôleurs.
 
  * [[yii\filters\AccessRule::roles|roles]]: spécifie à quels rôles utilisateur cette règle correspond. Deux rôles spéciaux sont reconnus, et ils sont vérifiés via [[yii\web\User::isGuest]]:
 
      - `?`: correspond à un visiteur non authentifié.
      - `@`: correspond à un visiteur authentifié.
 
-   L'utilisation d'autres noms de rôle déclenche l'appel de [[yii\web\User::can()]], qui requiert l'activation du contrôle d'accès basé sur les rôles qui sera décrit dans la prochaine sous-section. Si cette option est vide ou non définie, cela signifie que la règle s'applique à tous les rôles. 
+   L'utilisation d'autres noms de rôle déclenche l'appel de [[yii\web\User::can()]], qui requiert l'activation du contrôle d'accès basé sur les rôles qui sera décrit dans la prochaine sous-section. Si cette option est vide ou non définie, cela signifie que la règle s'applique à tous les rôles.
 
  * [[yii\filters\AccessRule::ips|ips]]: spécifie à quelles [[yii\web\Request::userIP|adresses IP de client]] cette règle correspond. Une adresse IP peut contenir le caractère générique `*` à la fin pour indiquer que la règle correspond à des adresses IP ayant le même préfixe. Par exemple, '192.168.*' correspond à toutes les adresse IP dans le segment '192.168.'. Si cette option est vide ou non définie, cela signifie que la règle s'applique à toutes les adresses IP.
 
- * [[yii\filters\AccessRule::verbs|verbs]]: spécifie à quelles méthodes de requête (p. ex. `GET`, `POST`) cette règle correspond. La comparaison est insensible à la casse. 
+ * [[yii\filters\AccessRule::verbs|verbs]]: spécifie à quelles méthodes de requête (p. ex. `GET`, `POST`) cette règle correspond. La comparaison est insensible à la casse.
 
- * [[yii\filters\AccessRule::matchCallback|matchCallback]]: spécifie une fonction de rappel PHP qui peut être appelée pour déterminer si cette règle s'applique. 
+ * [[yii\filters\AccessRule::matchCallback|matchCallback]]: spécifie une fonction de rappel PHP qui peut être appelée pour déterminer si cette règle s'applique.
 
- * [[yii\filters\AccessRule::denyCallback|denyCallback]]: spécifie une fonction de rappel PHP qui peut être appelée lorsqu'une règle refuse l'accès. 
+ * [[yii\filters\AccessRule::denyCallback|denyCallback]]: spécifie une fonction de rappel PHP qui peut être appelée lorsqu'une règle refuse l'accès.
 
 Ci-dessous nous présentons un exemple qui montre comment utiliser l'option `matchCallback`, qui vous permet d'écrire une logique d'accès arbitraire :
 
@@ -125,26 +125,26 @@ class SiteController extends Controller
 
 ## Contrôle d'accès basé sur les rôles <span id="rbac"></span>
 
-Le contrôle d'accès basé sur les rôles (Role-Based Access Control – RBAC) fournit un contrôle d'accès centralisé simple mais puissant. Reportez-vous à [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) pour des détails comparatifs entre le contrôle d'accès basé sur les rôles et d'autres schéma de contrôle d'accès plus traditionnels. 
+Le contrôle d'accès basé sur les rôles (Role-Based Access Control – RBAC) fournit un contrôle d'accès centralisé simple mais puissant. Reportez-vous à [Wikipedia](http://en.wikipedia.org/wiki/Role-based_access_control) pour des détails comparatifs entre le contrôle d'accès basé sur les rôles et d'autres schéma de contrôle d'accès plus traditionnels.
 
 Yii met en œuvre un contrôle d'accès basé sur les rôles général hiérarchisé, qui suit le  [modèle NIST RBAC](http://csrc.nist.gov/rbac/sandhu-ferraiolo-kuhn-00.pdf). Il fournit la fonctionnalité de contrôle d'accès basé sur les rôles via le [composant d'application](structure-application-components.md)[[yii\RBAC\ManagerInterface|authManager]].
 
-L'utilisation du contrôle d'accès basé sur les rôles implique deux partie de travail. La première partie est de construire les données d'autorisation du contrôle d'accès basé sur les rôles, et la seconde partie est d'utiliser les données d'autorisation pour effectuer les vérifications d'autorisation d'accès là où elles sont nécessaires. 
+L'utilisation du contrôle d'accès basé sur les rôles implique deux partie de travail. La première partie est de construire les données d'autorisation du contrôle d'accès basé sur les rôles, et la seconde partie est d'utiliser les données d'autorisation pour effectuer les vérifications d'autorisation d'accès là où elles sont nécessaires.
 
-Pour faciliter la description qui suit, nous allons d'abord introduire quelques concepts sur le contrôle d'accès basé sur les rôles. 
+Pour faciliter la description qui suit, nous allons d'abord introduire quelques concepts sur le contrôle d'accès basé sur les rôles.
 
 
 ### Concepts de base <span id="basic-concepts"></span>
 
-Un rôle représente une collection de  *permissions* (p. ex. créer des articles, mettre des articles à jour). Un rôle peut être assigné à un ou plusieurs utilisateurs. Pour vérifier qu'un utilisateur dispose d'une permission spécifiée, nous pouvons vérifier si un rôle contenant cette permission a été assigné à l'utilisateur. 
+Un rôle représente une collection de  *permissions* (p. ex. créer des articles, mettre des articles à jour). Un rôle peut être assigné à un ou plusieurs utilisateurs. Pour vérifier qu'un utilisateur dispose d'une permission spécifiée, nous pouvons vérifier si un rôle contenant cette permission a été assigné à l'utilisateur.
 
-Associée à chacun des rôles, il peut y avoir une *règle*. Une règle représente un morceau de code à exécuter lors de l'accès pour vérifier si le rôle correspondant, ou la permission correspondante, s'applique à l'utilisateur courant. Par exemple, la permission « mettre un article à jour » peut disposer d'une règle qui  vérifie si l'utilisateur courant est celui qui a créé l'article. Durant la vérification de l'accès, si l'utilisateur n'est PAS le créateur de l'article, il est considéré comme ne disposant pas la permission « mettre un article à jour ». 
+Associée à chacun des rôles, il peut y avoir une *règle*. Une règle représente un morceau de code à exécuter lors de l'accès pour vérifier si le rôle correspondant, ou la permission correspondante, s'applique à l'utilisateur courant. Par exemple, la permission « mettre un article à jour » peut disposer d'une règle qui  vérifie si l'utilisateur courant est celui qui a créé l'article. Durant la vérification de l'accès, si l'utilisateur n'est PAS le créateur de l'article, il est considéré comme ne disposant pas la permission « mettre un article à jour ».
 
-À la fois les rôles et les permissions peuvent être organisés en une hiérarchie. En particulier, un rôle peut être constitué d'autres rôles ou permissions ; Yii met en œuvre une hiérarchie *d'ordre partiel* qui inclut la hiérarchie plus spécifique dite *en arbre*. Tandis qu'un rôle peut contenir une permission, l'inverse n'est pas vrai. 
+À la fois les rôles et les permissions peuvent être organisés en une hiérarchie. En particulier, un rôle peut être constitué d'autres rôles ou permissions ; Yii met en œuvre une hiérarchie *d'ordre partiel* qui inclut la hiérarchie plus spécifique dite *en arbre*. Tandis qu'un rôle peut contenir une permission, l'inverse n'est pas vrai.
 
 ### Configuration du contrôle d'accès basé sur les rôles <span id="configuring-rbac"></span>
 
-Avant que nous ne nous lancions dans la définition des données d'autorisation et effectuions la vérification d'autorisation d'accès, nous devons configurer le composant d'application [[yii\base\Application::authManager|gestionnaire d'autorisations (*authManager*)]]. Yii fournit deux types de gestionnaires d'autorisations : [[yii\rbac\PhpManager]] et  [[yii\rbac\DbManager]]. Le premier utilise un script PHP pour stocker les données d'autorisation, tandis que le second stocke les données d'autorisation dans une base de données. Vous pouvez envisager d'utiliser le premier si votre application n'a pas besoin d'une gestion des rôles et des permissions très dynamique. 
+Avant que nous ne nous lancions dans la définition des données d'autorisation et effectuions la vérification d'autorisation d'accès, nous devons configurer le composant d'application [[yii\base\Application::authManager|gestionnaire d'autorisations (*authManager*)]]. Yii fournit deux types de gestionnaires d'autorisations : [[yii\rbac\PhpManager]] et  [[yii\rbac\DbManager]]. Le premier utilise un script PHP pour stocker les données d'autorisation, tandis que le second stocke les données d'autorisation dans une base de données. Vous pouvez envisager d'utiliser le premier si votre application n'a pas besoin d'une gestion des rôles et des permissions très dynamique.
 
 
 #### Utilisation de `PhpManager` <span id="using-php-manager"></span>
@@ -165,7 +165,7 @@ return [
 
 Le gestionnaire  `authManager` peut désormais être obtenu via `\Yii::$app->authManager`.
 
-Par défaut, [[yii\rbac\PhpManager]] stocke les données du contrôle d'accès basé sur les rôles dans des fichiers du dossier `@app/rbac`. Assurez-vous que le dossier et tous les fichiers qui sont dedans sont accessibles en écriture par le processus du serveur Web si la hiérarchie des permissions a besoin d'être changée en ligne. 
+Par défaut, [[yii\rbac\PhpManager]] stocke les données du contrôle d'accès basé sur les rôles dans des fichiers du dossier `@app/rbac`. Assurez-vous que le dossier et tous les fichiers qui sont dedans sont accessibles en écriture par le processus du serveur Web si la hiérarchie des permissions a besoin d'être changée en ligne.
 
 
 #### Utilisation de  `DbManager` <span id="using-db-manager"></span>
@@ -187,7 +187,7 @@ return [
 
 > Dans le cas du modèle  yii2-advanced-app, la propriété `authManager` doit être déclarée seulement une fois dans `common/config/main.php`.
 
-`DbManager` utilise quatre tables de base de données pour stocker ses données : 
+`DbManager` utilise quatre tables de base de données pour stocker ses données :
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: la table pour stocker les items d'autorisation. Valeur par défaut « auth_item ».
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: la table pour stocker la hiérarchie des items d'autorisation. Valeur par défaut « auth_item_child ».
@@ -228,7 +228,7 @@ class RbacController extends Controller
     {
         $auth = Yii::$app->authManager;
 
-        // ajoute une permission  "createPost" 
+        // ajoute une permission  "createPost"
         $createPost = $auth->createPermission('createPost');
         $createPost->description = 'Créer un article';
         $auth->add($createPost);
@@ -264,7 +264,7 @@ Après avoir exécuté la commande `yii rbac/init` vous vous retrouverez avec la
 
 ![Hiérarchie simple du contrôle d'accès basé sur les rôles](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
 
-Le rôle *Author* peut créer des articles, le rôle *admin* peut mettre les articles à jour et faire tout ce que le rôle *author* peut faire. 
+Le rôle *Author* peut créer des articles, le rôle *admin* peut mettre les articles à jour et faire tout ce que le rôle *author* peut faire.
 
 Si votre application autorise l'enregistrement des utilisateurs, vous devez assigner des rôles à ces nouveaux utilisateurs une fois. Par exemple, afin que tous les utilisateurs enregistrés deviennent des auteurs (rôle *author*) dans votre modèle de projet avancé, vous devez modifier la méthode `frontend\models\SignupForm::signup()` comme indiqué ci-dessous :
 
@@ -311,10 +311,10 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user l'identifiant de l'utilisateur.
-     * @param Item $item le rôle ou la permission avec laquelle cette règle est associée 
+     * @param string|int $user l'identifiant de l'utilisateur.
+     * @param Item $item le rôle ou la permission avec laquelle cette règle est associée
      * @param array $params les paramètres passés à ManagerInterface::checkAccess().
-     * @return boolean une valeur indiquant si la règles autorise le rôle ou la permission qui lui est associé. 
+     * @return bool une valeur indiquant si la règles autorise le rôle ou la permission qui lui est associé.
      */
     public function execute($user, $item, $params)
     {
@@ -377,7 +377,7 @@ Ici que se passe-t-il si l'utilisateur courant est John:
 
 ![Vérification d'autorisation d'accès](images/rbac-access-check-2.png "Access check")
 
-Nous commençons à  `updatePost` et passons par `updateOwnPost`. Afin d'obtenir l'autorisation,  la méthode `execute()` de `AuthorRule` doit retourner  `true` (vrai). La méthode reçoit ses paramètres `$params` de l'appel à la  méthode `can()` et sa valeur est ainsi `['post' => $post]`. Si tout est bon, nous arrivons à `author` auquel John est assigné. 
+Nous commençons à  `updatePost` et passons par `updateOwnPost`. Afin d'obtenir l'autorisation,  la méthode `execute()` de `AuthorRule` doit retourner  `true` (vrai). La méthode reçoit ses paramètres `$params` de l'appel à la  méthode `can()` et sa valeur est ainsi `['post' => $post]`. Si tout est bon, nous arrivons à `author` auquel John est assigné.
 
 Dans le cas de Jane, c'est un peu plus simple puisqu'elle a le rôle admin:
 
@@ -427,11 +427,11 @@ Si toutes les opérations CRUD sont gérées ensemble, alors c'est une bonne id�
 
 ### Utilisation des rôles par défaut <span id="using-default-roles"></span>
 
-Un rôle par défaut est un rôle qui est assigné *implicitement* à tous les *utilisateurs*. L'appel de la méthode [[yii\rbac\ManagerInterface::assign()]] n'est pas nécessaire, et les données d'autorisations ne contiennent pas ses informations d'assignation. 
+Un rôle par défaut est un rôle qui est assigné *implicitement* à tous les *utilisateurs*. L'appel de la méthode [[yii\rbac\ManagerInterface::assign()]] n'est pas nécessaire, et les données d'autorisations ne contiennent pas ses informations d'assignation.
 
 Un rôle par défaut est ordinairement associé à une règle qui détermine si le rôle s'applique à l'utilisateur en cours de vérification.
 
-Les rôles par défaut sont souvent utilisés dans des applications qui ont déjà une sorte d'assignation de rôles. Par  exemple, un application peut avoir une colonne « group » dans sa table des utilisateurs pour représenter à quel groupe de privilèges chacun des utilisateurs appartient. Si chaque groupe de privilèges peut être mis en correspondance avec un rôle du contrôle d'accès basé sur les rôles, vous pouvez utiliser la fonctionnalité de rôle par défaut pour assigner automatiquement un rôle du contrôle d'accès basé sur les rôles à chacun des utilisateurs. Prenons un exemple pour montrer comment cela se fait. 
+Les rôles par défaut sont souvent utilisés dans des applications qui ont déjà une sorte d'assignation de rôles. Par  exemple, un application peut avoir une colonne « group » dans sa table des utilisateurs pour représenter à quel groupe de privilèges chacun des utilisateurs appartient. Si chaque groupe de privilèges peut être mis en correspondance avec un rôle du contrôle d'accès basé sur les rôles, vous pouvez utiliser la fonctionnalité de rôle par défaut pour assigner automatiquement un rôle du contrôle d'accès basé sur les rôles à chacun des utilisateurs. Prenons un exemple pour montrer comment cela se fait.
 
 Supposons que dans la table des utilisateurs, il existe en colonne `group` qui utilise la valeur 1 pour représenter le groupe des administrateurs et la valeur 2 pour représenter le groupe des auteurs. Vous envisagez d'avoir deux rôles dans le contrôle d'accès basé sur les rôles `admin` et`author` pour représenter les permissions de ces deux groupes respectivement. Vous pouvez configurer le contrôle d'accès basé sur les rôles comme suit :
 
@@ -443,7 +443,7 @@ use Yii;
 use yii\rbac\Rule;
 
 /**
- * Vérifie si le groupe utilisateurs correspond 
+ * Vérifie si le groupe utilisateurs correspond
  */
 class UserGroupRule extends Rule
 {
@@ -497,4 +497,4 @@ return [
 ];
 ```
 
-Désormais, si vous effectuez une vérification d'autorisation d'accès, les deux rôles `admin` et `author` seront vérifiés en évaluant les règles qui leur sont associées. Si les règles retournent `true` (vrai), cela signifie que le rôle s'applique à l'utilisateur courant. En se basant sur la mise en œuvre des règles ci-dessus, cela signifie que si la valeur du `group` d'un utilisateur est 1, le rôle `admin` s'applique à l'utilisateur, si la valeur du `group` est  2, le rôle `author` s'applique. 
+Désormais, si vous effectuez une vérification d'autorisation d'accès, les deux rôles `admin` et `author` seront vérifiés en évaluant les règles qui leur sont associées. Si les règles retournent `true` (vrai), cela signifie que le rôle s'applique à l'utilisateur courant. En se basant sur la mise en œuvre des règles ci-dessus, cela signifie que si la valeur du `group` d'un utilisateur est 1, le rôle `admin` s'applique à l'utilisateur, si la valeur du `group` est  2, le rôle `author` s'applique.

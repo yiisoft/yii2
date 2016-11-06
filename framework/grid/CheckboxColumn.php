@@ -66,7 +66,7 @@ class CheckboxColumn extends Column
      */
     public $checkboxOptions = [];
     /**
-     * @var boolean whether it is possible to select multiple rows. Defaults to `true`.
+     * @var bool whether it is possible to select multiple rows. Defaults to `true`.
      */
     public $multiple = true;
     /**

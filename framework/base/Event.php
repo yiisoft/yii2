@@ -39,7 +39,7 @@ class Event extends Object
      */
     public $sender;
     /**
-     * @var boolean whether the event is handled. Defaults to `false`.
+     * @var bool whether the event is handled. Defaults to `false`.
      * When a handler sets this to be `true`, the event processing will stop and
      * ignore the rest of the uninvoked event handlers.
      */
@@ -80,7 +80,7 @@ class Event extends Object
      * @param callable $handler the event handler.
      * @param mixed $data the data to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
-     * @param boolean $append whether to append new event handler to the end of the existing
+     * @param bool $append whether to append new event handler to the end of the existing
      * handler list. If `false`, the new handler will be inserted at the beginning of the existing
      * handler list.
      * @see off()
@@ -104,7 +104,7 @@ class Event extends Object
      * @param string $name the event name.
      * @param callable $handler the event handler to be removed.
      * If it is `null`, all handlers attached to the named event will be removed.
-     * @return boolean whether a handler is found and detached.
+     * @return bool whether a handler is found and detached.
      * @see on()
      */
     public static function off($class, $name, $handler = null)
@@ -149,7 +149,7 @@ class Event extends Object
      * to the named event.
      * @param string|object $class the object or the fully qualified class name specifying the class-level event.
      * @param string $name the event name.
-     * @return boolean whether there is any handler attached to the event.
+     * @return bool whether there is any handler attached to the event.
      */
     public static function hasHandlers($class, $name)
     {

@@ -27,11 +27,11 @@ use yii\web\HttpException;
 abstract class ErrorHandler extends Component
 {
     /**
-     * @var boolean whether to discard any existing page output before error display. Defaults to true.
+     * @var bool whether to discard any existing page output before error display. Defaults to true.
      */
     public $discardExistingOutput = true;
     /**
-     * @var integer the size of the reserved memory. A portion of memory is pre-allocated so that
+     * @var int the size of the reserved memory. A portion of memory is pre-allocated so that
      * when an out-of-memory issue occurs, the error handler is able to handle the error with
      * the help of this reserved memory. If you set this value to be 0, no memory will be reserved.
      * Defaults to 256KB.
@@ -161,13 +161,13 @@ abstract class ErrorHandler extends Component
      * This method is used as a HHVM error handler. It will store exception that will
      * be used in fatal error handler
      *
-     * @param integer $code the level of the error raised.
+     * @param int $code the level of the error raised.
      * @param string $message the error message.
      * @param string $file the filename that the error was raised in.
-     * @param integer $line the line number the error was raised at.
+     * @param int $line the line number the error was raised at.
      * @param mixed $context
      * @param mixed $backtrace trace of error
-     * @return boolean whether the normal error handler continues.
+     * @return bool whether the normal error handler continues.
      *
      * @throws ErrorException
      * @since 2.0.6
@@ -192,11 +192,11 @@ abstract class ErrorHandler extends Component
      *
      * This method is used as a PHP error handler. It will simply raise an [[ErrorException]].
      *
-     * @param integer $code the level of the error raised.
+     * @param int $code the level of the error raised.
      * @param string $message the error message.
      * @param string $file the filename that the error was raised in.
-     * @param integer $line the line number the error was raised at.
-     * @return boolean whether the normal error handler continues.
+     * @param int $line the line number the error was raised at.
+     * @return bool whether the normal error handler continues.
      *
      * @throws ErrorException
      */

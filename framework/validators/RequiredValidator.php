@@ -18,7 +18,7 @@ use Yii;
 class RequiredValidator extends Validator
 {
     /**
-     * @var boolean whether to skip this validator if the value being validated is empty.
+     * @var bool whether to skip this validator if the value being validated is empty.
      */
     public $skipOnEmpty = false;
     /**
@@ -31,7 +31,7 @@ class RequiredValidator extends Validator
      */
     public $requiredValue;
     /**
-     * @var boolean whether the comparison between the attribute value and [[requiredValue]] is strict.
+     * @var bool whether the comparison between the attribute value and [[requiredValue]] is strict.
      * When this is true, both the values and types must match.
      * Defaults to false, meaning only the values need to match.
      * Note that when [[requiredValue]] is null, if this property is true, the validator will check

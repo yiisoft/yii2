@@ -45,14 +45,14 @@ use yii\caching\Cache;
 class UrlManager extends Component
 {
     /**
-     * @var boolean whether to enable pretty URLs. Instead of putting all parameters in the query
+     * @var bool whether to enable pretty URLs. Instead of putting all parameters in the query
      * string part of a URL, pretty URLs allow using path info to represent some of the parameters
      * and can thus produce more user-friendly URLs, such as "/news/Yii-is-released", instead of
      * "/index.php?r=news%2Fview&id=100".
      */
     public $enablePrettyUrl = false;
     /**
-     * @var boolean whether to enable strict parsing. If strict parsing is enabled, the incoming
+     * @var bool whether to enable strict parsing. If strict parsing is enabled, the incoming
      * requested URL must match at least one of the [[rules]] in order to be treated as a valid request.
      * Otherwise, the path info part of the request will be treated as the requested route.
      * This property is used only when [[enablePrettyUrl]] is `true`.
@@ -105,7 +105,7 @@ class UrlManager extends Component
      */
     public $suffix;
     /**
-     * @var boolean whether to show entry script name in the constructed URL. Defaults to `true`.
+     * @var bool whether to show entry script name in the constructed URL. Defaults to `true`.
      * This property is used only if [[enablePrettyUrl]] is `true`.
      */
     public $showScriptName = true;
@@ -201,7 +201,7 @@ class UrlManager extends Component
      *
      * @param array $rules the new rules to be added. Each array element represents a single rule declaration.
      * Please refer to [[rules]] for the acceptable rule format.
-     * @param boolean $append whether to add the new rules by appending them to the end of the existing rules.
+     * @param bool $append whether to add the new rules by appending them to the end of the existing rules.
      */
     public function addRules($rules, $append = true)
     {
@@ -254,7 +254,7 @@ class UrlManager extends Component
     /**
      * Parses the user request.
      * @param Request $request the request component
-     * @return array|boolean the route and the associated parameters. The latter is always empty
+     * @return array|bool the route and the associated parameters. The latter is always empty
      * if [[enablePrettyUrl]] is `false`. `false` is returned if the current request cannot be successfully parsed.
      */
     public function parseRequest($request)
@@ -412,7 +412,7 @@ class UrlManager extends Component
      * @param string $cacheKey generated cache key to store data.
      * @param string $route the route (e.g. `site/index`).
      * @param array $params rule params.
-     * @return boolean|string the created URL
+     * @return bool|string the created URL
      * @see createUrl()
      * @since 2.0.8
      */

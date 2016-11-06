@@ -92,7 +92,7 @@ class Logger extends Component
      */
     public $messages = [];
     /**
-     * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
+     * @var int how many messages should be logged before they are flushed from memory and sent to targets.
      * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
      * Set this property to be 0 if you don't want to flush messages until the application terminates.
      * This property mainly affects how much memory will be taken by the logged messages.
@@ -100,7 +100,7 @@ class Logger extends Component
      */
     public $flushInterval = 1000;
     /**
-     * @var integer how much call stack information (file name and line number) should be logged for each message.
+     * @var int how much call stack information (file name and line number) should be logged for each message.
      * If it is greater than 0, at most that number of call stacks will be logged. Note that only application
      * call stacks are counted.
      */
@@ -132,7 +132,7 @@ class Logger extends Component
      * the application code will be logged as well.
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure that will be handled by a [[Target|log target]].
-     * @param integer $level the level of the message. This must be one of the following:
+     * @param int $level the level of the message. This must be one of the following:
      * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
      * `Logger::LEVEL_PROFILE_BEGIN`, `Logger::LEVEL_PROFILE_END`.
      * @param string $category the category of the message.
@@ -163,7 +163,7 @@ class Logger extends Component
 
     /**
      * Flushes log messages from memory to targets.
-     * @param boolean $final whether this is a final call during a request.
+     * @param bool $final whether this is a final call during a request.
      */
     public function flush($final = false)
     {
@@ -297,7 +297,7 @@ class Logger extends Component
 
     /**
      * Returns the text display of the specified level.
-     * @param integer $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
+     * @param int $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
      * @return string the text display of the level
      */
     public static function getLevelName($level)

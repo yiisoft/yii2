@@ -132,14 +132,14 @@ class DbManager extends BaseManager
     /**
      * Performs access check for the specified user based on the data loaded from cache.
      * This method is internally called by [[checkAccess()]] when [[cache]] is enabled.
-     * @param string|integer $user the user ID. This should can be either an integer or a string representing
+     * @param string|int $user the user ID. This should can be either an integer or a string representing
      * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param string $itemName the name of the operation that need access check
      * @param array $params name-value pairs that would be passed to rules associated
      * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
      * which holds the value of `$userId`.
      * @param Assignment[] $assignments the assignments to the specified user
-     * @return boolean whether the operations can be performed by the user.
+     * @return bool whether the operations can be performed by the user.
      * @since 2.0.3
      */
     protected function checkAccessFromCache($user, $itemName, $params, $assignments)
@@ -174,14 +174,14 @@ class DbManager extends BaseManager
     /**
      * Performs access check for the specified user.
      * This method is internally called by [[checkAccess()]].
-     * @param string|integer $user the user ID. This should can be either an integer or a string representing
+     * @param string|int $user the user ID. This should can be either an integer or a string representing
      * the unique identifier of a user. See [[\yii\web\User::id]].
      * @param string $itemName the name of the operation that need access check
      * @param array $params name-value pairs that would be passed to rules associated
      * with the tasks and roles assigned to the user. A param with name 'user' is added to this array,
      * which holds the value of `$userId`.
      * @param Assignment[] $assignments the assignments to the specified user
-     * @return boolean whether the operations can be performed by the user.
+     * @return bool whether the operations can be performed by the user.
      */
     protected function checkAccessRecursive($user, $itemName, $params, $assignments)
     {
@@ -244,7 +244,7 @@ class DbManager extends BaseManager
     /**
      * Returns a value indicating whether the database supports cascading update and delete.
      * The default implementation will return false for SQLite database and true for all other databases.
-     * @return boolean whether the database supports cascading update and delete.
+     * @return bool whether the database supports cascading update and delete.
      */
     protected function supportsCascadeUpdate()
     {
@@ -534,7 +534,7 @@ class DbManager extends BaseManager
 
     /**
      * Returns all permissions that are directly assigned to user.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all direct permissions that the user has. The array is indexed by the permission names.
      * @since 2.0.7
      */
@@ -555,7 +555,7 @@ class DbManager extends BaseManager
 
     /**
      * Returns all permissions that the user inherits from the roles assigned to him.
-     * @param string|integer $userId the user ID (see [[\yii\web\User::id]])
+     * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return Permission[] all inherited permissions that the user has. The array is indexed by the permission names.
      * @since 2.0.7
      */
@@ -797,7 +797,7 @@ class DbManager extends BaseManager
      * Checks whether there is a loop in the authorization item hierarchy.
      * @param Item $parent the parent item
      * @param Item $child the child item to be added to the hierarchy
-     * @return boolean whether a loop exists
+     * @return bool whether a loop exists
      */
     protected function detectLoop($parent, $child)
     {
@@ -891,7 +891,7 @@ class DbManager extends BaseManager
 
     /**
      * Removes all auth items of the specified type.
-     * @param integer $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
+     * @param int $type the auth item type (either Item::TYPE_PERMISSION or Item::TYPE_ROLE)
      */
     protected function removeAllItems($type)
     {
