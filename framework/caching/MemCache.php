@@ -53,6 +53,8 @@ use yii\base\InvalidConfigException;
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * 
  * @property \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache component.
  * This property is read-only.
  * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this

@@ -18,6 +18,8 @@ use yii\helpers\ArrayHelper;
  *
  * QueryBuilder is also used by [[Command]] to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE.
  *
+ * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -29,6 +29,8 @@ use yii\helpers\Html;
  * ]) ?>
  * ```
  *
+ * For more details and usage information on InputWidget, see the [guide article on forms](guide:input-forms).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

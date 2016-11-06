@@ -12,6 +12,8 @@ use Yii;
 /**
  * Controller is the base class for classes containing controller logic.
  *
+ * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
  * @property Module[] $modules All ancestor modules that this controller is located within. This property is
  * read-only.
  * @property string $route The route (module ID, controller ID and action ID) of the current request. This

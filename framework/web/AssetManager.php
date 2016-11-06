@@ -30,6 +30,8 @@ use yii\helpers\Url;
  *     ],
  * ]
  * ```
+ * 
+ * For more details and usage information on AssetManager, see the [guide article on assets](guide:structure-assets).
  *
  * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
  * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.

@@ -12,6 +12,8 @@ use yii\base\Object;
 /**
  * Rule represents a business constraint that may be associated with a role, permission or assignment.
  *
+ * For more details and usage information on Rule, see the [guide article on security authorization](guide:security-authorization).
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */

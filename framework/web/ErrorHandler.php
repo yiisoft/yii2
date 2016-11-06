@@ -22,6 +22,8 @@ use yii\helpers\VarDumper;
  * ErrorHandler is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->errorHandler`.
  *
+ * For more details and usage information on ErrorHandler, see the [guide article on handling errors](guide:runtime-handling-errors).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -190,9 +192,19 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $text = $this->htmlEncode($class);
         }
 
-        $url = $this->getTypeUrl($class, $method);
+        $url = null;
 
-        if (!$url) {
+        $shouldGenerateLink = true;
+        if ($method !== null) {
+            $reflection = new \ReflectionMethod($class, $method);
+            $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
+        }
+
+        if ($shouldGenerateLink) {
+            $url = $this->getTypeUrl($class, $method);
+        }
+
+        if ($url === null) {
             return $text;
         }
 

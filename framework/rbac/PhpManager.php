@@ -26,6 +26,8 @@ use yii\helpers\VarDumper;
  * Note that PhpManager is not compatible with facebooks [HHVM](http://hhvm.com/) because
  * it relies on writing php files and including them afterwards which is not supported by HHVM.
  *
+ * For more details and usage information on PhpManager, see the [guide article on security authorization](guide:security-authorization).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @author Christophe Boulain <christophe.boulain@gmail.com>

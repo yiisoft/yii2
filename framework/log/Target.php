@@ -29,6 +29,8 @@ use yii\web\Request;
  * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
  * and setter. See [[getLevels()]] and [[setLevels()]] for details.
  *
+ * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

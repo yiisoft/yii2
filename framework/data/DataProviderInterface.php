@@ -13,6 +13,8 @@ namespace yii\data;
  * Data providers are components that sort and paginate data, and provide them to widgets
  * such as [[\yii\grid\GridView]], [[\yii\widgets\ListView]].
  *
+ * For more details and usage information on DataProviderInterface, see the [guide article on data providers](guide:output-data-providers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

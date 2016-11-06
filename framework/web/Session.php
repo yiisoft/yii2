@@ -43,6 +43,8 @@ use yii\base\InvalidParamException;
  * useful for displaying confirmation messages. To use flash messages, simply
  * call methods such as [[setFlash()]], [[getFlash()]].
  *
+ * For more details and usage information on Session, see the [guide article on sessions](guide:runtime-sessions-cookies).
+ *
  * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
  * is read-only.
  * @property array $cookieParams The session cookie parameters. This property is read-only.

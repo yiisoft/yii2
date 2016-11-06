@@ -28,6 +28,8 @@ use Yii;
  * And the parameters provided for the action are: `['id' => 1]`.
  * Then the `run()` method will be invoked as `run(1)` automatically.
  *
+ * For more details and usage information on Action, see the [guide article on actions](guide:structure-controllers).
+ *
  * @property string $uniqueId The unique ID of this action among the whole application. This property is
  * read-only.
  *

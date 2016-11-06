@@ -33,6 +33,8 @@ use yii\di\Instance;
  * information showing the method parameters and execution time, which may be useful when
  * applying migrations.
  *
+ * For more details and usage information on Migration, see the [guide article on Migration](guide:db-migrations).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

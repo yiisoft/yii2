@@ -179,7 +179,6 @@ class BaseArrayHelper
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
      * @return mixed the value of the element if found, default value otherwise
-     * @throws InvalidParamException if $array is neither an array nor an object.
      */
     public static function getValue($array, $key, $default = null)
     {
@@ -244,6 +243,38 @@ class BaseArrayHelper
         }
 
         return $default;
+    }
+
+    /**
+     * Removes items with matching values from the array and returns the removed items.
+     *
+     * Example,
+     *
+     * ```php
+     * $array = ['Bob' => 'Dylan', 'Michael' => 'Jackson', 'Mick' => 'Jagger', 'Janet' => 'Jackson'];
+     * $removed = \yii\helpers\ArrayHelper::removeValue($array, 'Jackson');
+     * // result:
+     * // $array = ['Bob' => 'Dylan', 'Mick' => 'Jagger'];
+     * // $removed = ['Michael' => 'Jackson', 'Janet' => 'Jackson'];
+     * ```
+     *
+     * @param array $array the array where to look the value from
+     * @param string $value the value to remove from the array
+     * @return array the items that were removed from the array
+     * @since 2.0.11
+     */
+    public static function removeValue(&$array, $value)
+    {
+        $result = [];
+        if (is_array($array)) {
+            foreach ($array as $key => $val) {
+                if ($val === $value) {
+                    $result[$key] = $val;
+                    unset($array[$key]);
+                }
+            }
+        }
+        return $result;
     }
 
     /**

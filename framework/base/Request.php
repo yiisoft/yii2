@@ -12,7 +12,9 @@ use Yii;
 /**
  * Request represents a request that is handled by an [[Application]].
  *
- * @property bool $isConsoleRequest The value indicating whether the current request is made via console.
+ * For more details and usage information on Request, see the [guide article on requests](guide:runtime-requests).
+ *
+ * @property boolean $isConsoleRequest The value indicating whether the current request is made via console.
  * @property string $scriptFile Entry script file path (processed w/ realpath()).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

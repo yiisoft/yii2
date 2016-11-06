@@ -23,6 +23,8 @@ use yii\data\Pagination;
  * to look like a real pager, you should provide some CSS styles for it.
  * With the default configuration, LinkPager should look good using Twitter Bootstrap CSS framework.
  *
+ * For more details and usage information on LinkPager, see the [guide article on pagination](guide:output-pagination).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -19,6 +19,8 @@ use yii\helpers\Html;
  *
  * It provides features like sorting, paging and also filtering the data.
  *
+ * For more details and usage information on BaseListView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -41,6 +41,8 @@ use yii\base\InvalidConfigException;
  *
  * Because [[\yii\base\Module]] extends from ServiceLocator, modules and the application are all service locators.
  *
+ * For more details and usage information on ServiceLocator, see the [guide article on service locators](guide:concept-service-locator).
+ *
  * @property array $components The list of the component definitions or the loaded component instances (ID =>
  * definition or instance).
  *

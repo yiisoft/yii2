@@ -968,7 +968,10 @@ class BaseConsole
             $info .= sprintf(' ETA: %d sec.', self::$_progressEta);
         }
 
-        $width -= 3 + static::ansiStrlen($info);
+        // Number extra characters outputted. These are opening [, closing ], and space before info
+        // Since Windows uses \r\n\ for line endings, there's one more in the case
+        $extraChars = static::isRunningOnWindows() ? 4 : 3;
+        $width -= $extraChars + static::ansiStrlen($info);
         // skipping progress bar on very small display or if forced to skip
         if ($width < 5) {
             static::stdout("\r$prefix$info   ");

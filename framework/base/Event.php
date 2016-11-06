@@ -19,6 +19,8 @@ namespace yii\base;
  * Additionally, when attaching an event handler, extra data may be passed
  * and be available via the [[data]] property when the event handler is invoked.
  *
+ * For more details and usage information on Event, see the [guide article on events](guide:concept-events).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -41,6 +41,8 @@ use yii\base\Model;
  *
  * The look and feel of a grid view can be customized using the large amount of properties.
  *
+ * For more details and usage information on GridView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -200,7 +202,8 @@ class GridView extends BaseListView
      * at the top that users can fill in to filter the data.
      *
      * Note that in order to show an input field for filtering, a column must have its [[DataColumn::attribute]]
-     * property set or have [[DataColumn::filter]] set as the HTML code for the input field.
+     * property set and the attribute should be active in the current scenario of $filterModel or have
+     * [[DataColumn::filter]] set as the HTML code for the input field.
      *
      * When this property is not set (null) the filtering feature is disabled.
      */

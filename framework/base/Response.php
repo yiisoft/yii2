@@ -10,6 +10,8 @@ namespace yii\base;
 /**
  * Response represents the response of an [[Application]] to a [[Request]].
  *
+ * For more details and usage information on Response, see the [guide article on responses](guide:runtime-responses).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

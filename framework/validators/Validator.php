@@ -46,6 +46,8 @@ use yii\base\NotSupportedException;
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
  *
+ * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -14,6 +14,8 @@ use yii\base\InvalidConfigException;
 /**
  * BaseActiveFixture is the base class for fixture classes that support accessing fixture data as ActiveRecord objects.
  *
+ * For more details and usage information on BaseActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

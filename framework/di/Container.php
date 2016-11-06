@@ -89,6 +89,8 @@ use yii\helpers\ArrayHelper;
  * $lister = new UserLister($finder);
  * ```
  *
+ * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
+ *
  * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
  * definition or instance). This property is read-only.
  *
