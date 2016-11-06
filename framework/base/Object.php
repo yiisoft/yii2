@@ -76,6 +76,9 @@ use Yii;
  */
 class Object implements Configurable
 {
+
+    use ConfigurableTrait;
+
     /**
      * Returns the fully qualified name of this class.
      * @return string the fully qualified name of this class.
@@ -83,28 +86,6 @@ class Object implements Configurable
     public static function className()
     {
         return get_called_class();
-    }
-
-    /**
-     * Constructor.
-     * The default implementation does two things:
-     *
-     * - Initializes the object with the given configuration `$config`.
-     * - Call [[init()]].
-     *
-     * If this method is overridden in a child class, it is recommended that
-     *
-     * - the last parameter of the constructor is a configuration array, like `$config` here.
-     * - call the parent implementation at the end of the constructor.
-     *
-     * @param array $config name-value pairs that will be used to initialize the object properties
-     */
-    public function __construct($config = [])
-    {
-        if (!empty($config)) {
-            Yii::configure($this, $config);
-        }
-        $this->init();
     }
 
     /**
