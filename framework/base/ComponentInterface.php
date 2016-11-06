@@ -124,7 +124,7 @@ interface ComponentInterface extends MutatorsInterface
      *
      *  - a [[Behavior]] object
      *  - a string specifying the behavior class
-     *  - an object configuration array that will be passed to [[Yii::createObject()]] to create the behavior object.
+     *  - an object configuration array that will be passed to [[\Yii::createObject()]] to create the behavior object.
      *
      * @return Behavior the behavior object
      * @see detachBehavior()
