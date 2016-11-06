@@ -224,21 +224,17 @@ class BaseHtml
      */
     public static function cssFile($url, $options = [])
     {
-        if (!isset($options['rel'])) {
-            $options['rel'] = 'stylesheet';
-        }
+        $options['rel'] = ArrayHelper::getValue($options, 'rel', 'stylesheet');
+        $noscript = ArrayHelper::remove($options, 'noscript');
+        $condition = ArrayHelper::remove($options, 'condition');
         $options['href'] = Url::to($url);
+        $link = static::tag('link', '', $options);
 
-        if (isset($options['condition'])) {
-            $condition = $options['condition'];
-            unset($options['condition']);
-            return self::wrapIntoCondition(static::tag('link', '', $options), $condition);
-        } elseif (isset($options['noscript']) && $options['noscript'] === true) {
-            unset($options['noscript']);
-            return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
-        } else {
-            return static::tag('link', '', $options);
+        if ($condition) {
+            return self::wrapIntoCondition($link, $condition);
         }
+
+        return $noscript === true ? static::tag('noscript', $link) : $link;
     }
 
     /**
@@ -1427,11 +1423,13 @@ class BaseHtml
 
     /**
      * Generates a boolean input
-     * This method is mainly called by [[activeCheckbox()]] and [[activeRadio()]].
-     * @param string $type the input type. This can be either `radio` or `checkbox`.
+     * This method is mainly called by [[activeCheckbox()]] and
+     * [[activeRadio()]].
+     * @param string $type the input type. This can be either `radio` or
+     * `checkbox`.
      * @param Model $model the model object
-     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
-     * about attribute expression.
+     * @param string $attribute the attribute name or expression. See
+     * [[getAttributeName()]] for the format about attribute expression.
      * @param array $options the tag options in terms of name-value pairs.
      * See [[booleanInput()]] for details about accepted attributes.
      * @return string the generated input element
@@ -1439,17 +1437,22 @@ class BaseHtml
      */
     protected static function activeBooleanInput($type, $model, $attribute, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
+        $name = isset($options['name'])
+            ? $options['name']
+            : static::getInputName($model, $attribute);
         $value = static::getAttributeValue($model, $attribute);
 
-        if (!array_key_exists('value', $options)) {
-            $options['value'] = '1';
-        }
-        if (!array_key_exists('uncheck', $options)) {
-            $options['uncheck'] = '0';
-        }
+        $options['value'] = ArrayHelper::getValue($options, 'value', '1');
+        $options['uncheck'] = ArrayHelper::getValue(
+            $options,
+            'uncheck',
+            '0'
+        );
+
         if (!array_key_exists('label', $options)) {
-            $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
+            $options['label'] = static::encode($model->getAttributeLabel(
+                static::getAttributeName($attribute)
+            ));
         }
 
         $checked = "$value" === "{$options['value']}";
@@ -1645,25 +1648,36 @@ class BaseHtml
 
     /**
      * Generates a list of input fields.
-     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckBoxList()]].
-     * @param string $type the input type. This can be 'listBox', 'radioList', or 'checkBoxList'.
+     * This method is mainly called by [[activeListBox()]],
+     * [[activeRadioList()]] and [[activeCheckBoxList()]].
+     * @param string $type the input type. This can be 'listBox',
+     * 'radioList', or 'checkBoxList'.
      * @param Model $model the model object
-     * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
+     * @param string $attribute the attribute name or expression. See
+     * [[getAttributeName()]] for the format
      * about attribute expression.
      * @param array $items the data item used to generate the input fields.
-     * The array keys are the input values, and the array values are the corresponding labels.
-     * Note that the labels will NOT be HTML-encoded, while the values will.
-     * @param array $options options (name => config) for the input list. The supported special options
-     * depend on the input type specified by `$type`.
+     * The array keys are the input values, and the array values are the
+     * corresponding labels. Note that the labels will NOT be HTML-encoded,
+     * while the values will.
+     * @param array $options options (name => config) for the input list.
+     * The supported special options depend on the input type specified by
+     * `$type`.
      * @return string the generated input list
      */
     protected static function activeListInput($type, $model, $attribute, $items, $options = [])
     {
-        $name = isset($options['name']) ? $options['name'] : static::getInputName($model, $attribute);
-        $selection = isset($options['value']) ? $options['value'] : static::getAttributeValue($model, $attribute);
-        if (!array_key_exists('unselect', $options)) {
-            $options['unselect'] = '';
-        }
+        $name = isset($options['name'])
+            ? $options['name']
+            : static::getInputName($model, $attribute);
+        $selection = isset($options['value'])
+            ? $options['value']
+            : static::getAttributeValue($model, $attribute);
+        $options['unselect'] = ArrayHelper::getValue(
+            $options,
+            'unselect',
+            ''
+        );
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
@@ -1690,44 +1704,69 @@ class BaseHtml
     public static function renderSelectOptions($selection, $items, &$tagOptions = [])
     {
         $lines = [];
-        $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
+        $encodeSpaces = ArrayHelper::remove(
+            $tagOptions,
+            'encodeSpaces',
+            false
+        );
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
-        if (isset($tagOptions['prompt'])) {
-            $prompt = $encode ? static::encode($tagOptions['prompt']) : $tagOptions['prompt'];
-            if ($encodeSpaces) {
-                $prompt = str_replace(' ', '&nbsp;', $prompt);
-            }
-            $lines[] = static::tag('option', $prompt, ['value' => '']);
-        }
-
-        $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];
-        $groups = isset($tagOptions['groups']) ? $tagOptions['groups'] : [];
-        unset($tagOptions['prompt'], $tagOptions['options'], $tagOptions['groups']);
-        $options['encodeSpaces'] = ArrayHelper::getValue($options, 'encodeSpaces', $encodeSpaces);
+        $options = ArrayHelper::remove($tagOptions, 'options', []);
+        $groups = ArrayHelper::remove($tagOptions, 'groups', []);
+        $options['encodeSpaces'] = ArrayHelper::getValue(
+            $options,
+            'encodeSpaces',
+            $encodeSpaces
+        );
         $options['encode'] = ArrayHelper::getValue($options, 'encode', $encode);
+
+        $prompt = ArrayHelper::remove($tagOptions, 'prompt');
+        if (null !== $prompt) {
+            $lines[] = static::tag(
+                'option',
+                self::applyEncode($prompt, $encode, $encodeSpaces),
+                ['value' => '']
+            );
+        }
 
         foreach ($items as $key => $value) {
             if (is_array($value)) {
-                $groupAttrs = isset($groups[$key]) ? $groups[$key] : [];
-                if (!isset($groupAttrs['label'])) {
-                    $groupAttrs['label'] = $key;
-                }
-                $attrs = ['options' => $options, 'groups' => $groups, 'encodeSpaces' => $encodeSpaces, 'encode' => $encode];
-                $content = static::renderSelectOptions($selection, $value, $attrs);
-                $lines[] = static::tag('optgroup', "\n" . $content . "\n", $groupAttrs);
+                $groupAttrs = array_merge(
+                    ['label' => $key],
+                    ArrayHelper::getValue($groups, $key, [])
+                );
+                $attrs = [
+                    'options' => $options,
+                    'groups' => $groups,
+                    'encodeSpaces' => $encodeSpaces,
+                    'encode' => $encode,
+                ];
+                $content = static::renderSelectOptions(
+                    $selection,
+                    $value,
+                    $attrs
+                );
+                $lines[] = static::tag(
+                    'optgroup',
+                    "\n" . $content . "\n",
+                    $groupAttrs
+                );
             } else {
-                $attrs = isset($options[$key]) ? $options[$key] : [];
-                $attrs['value'] = (string) $key;
+                $attrs = array_merge(
+                    ['value' => (string) $key],
+                    ArrayHelper::getValue($options, $key, [])
+                );
                 if (!array_key_exists('selected', $attrs)) {
-                    $attrs['selected'] = $selection !== null &&
-                        (!ArrayHelper::isTraversable($selection) && !strcmp($key, $selection)
-                        || ArrayHelper::isTraversable($selection) && ArrayHelper::isIn($key, $selection));
+                    $attrs['selected'] = null !== $selection &&
+                        ArrayHelper::isTraversable($selection)
+                            ? ArrayHelper::isIn($key, $selection)
+                            : !strcmp($key, $selection);
                 }
-                $text = $encode ? static::encode($value) : $value;
-                if ($encodeSpaces) {
-                    $text = str_replace(' ', '&nbsp;', $text);
-                }
-                $lines[] = static::tag('option', $text, $attrs);
+
+                $lines[] = static::tag(
+                    'option',
+                    self::applyEncode($value, $encode, $encodeSpaces),
+                    $attrs
+                );
             }
         }
 
@@ -1859,32 +1898,29 @@ class BaseHtml
      */
     public static function removeCssClass(&$options, $class)
     {
-        if (isset($options['class'])) {
-            if (is_array($options['class'])) {
-                $classes = array_diff($options['class'], (array) $class);
-                if (empty($classes)) {
-                    unset($options['class']);
-                } else {
-                    $options['class'] = $classes;
-                }
-            } else {
-                $classes = preg_split('/\s+/', $options['class'], -1, PREG_SPLIT_NO_EMPTY);
-                $classes = array_diff($classes, (array) $class);
-                if (empty($classes)) {
-                    unset($options['class']);
-                } else {
-                    $options['class'] = implode(' ', $classes);
-                }
-            }
+        if (!isset($options['class'])) {
+            return;
+        }
+        $classes = $options['class'];
+        $options['class'] = array_diff(
+            is_array($classes)
+                ? $classes
+                : preg_split('/\s+/', $classes, -1, PREG_SPLIT_NO_EMPTY),
+            (array) $class
+        );
+
+        if (empty($options['class'])) {
+            unset($options['class']);
         }
     }
 
     /**
      * Adds the specified CSS style to the HTML options.
      *
-     * If the options already contain a `style` element, the new style will be merged
-     * with the existing one. If a CSS property exists in both the new and the old styles,
-     * the old one may be overwritten if `$overwrite` is true.
+     * If the options already contain a `style` element, the new style will be
+     * merged with the existing one. If a CSS property exists in both the new
+     * and the old styles, the old one may be overwritten if `$overwrite` is
+     * true.
      *
      * For example,
      *
@@ -1893,10 +1929,11 @@ class BaseHtml
      * ```
      *
      * @param array $options the HTML options to be modified.
-     * @param string|array $style the new style string (e.g. `'width: 100px; height: 200px'`) or
-     * array (e.g. `['width' => '100px', 'height' => '200px']`).
-     * @param boolean $overwrite whether to overwrite existing CSS properties if the new style
-     * contain them too.
+     * @param string|array $style the new style string
+     * (e.g. `'width: 100px; height: 200px'`) or array
+     * (e.g. `['width' => '100px', 'height' => '200px']`).
+     * @param boolean $overwrite whether to overwrite existing CSS properties if
+     * the new style contain them too.
      * @see removeCssStyle()
      * @see cssStyleFromArray()
      * @see cssStyleToArray()
@@ -1904,18 +1941,17 @@ class BaseHtml
     public static function addCssStyle(&$options, $style, $overwrite = true)
     {
         if (!empty($options['style'])) {
-            $oldStyle = is_array($options['style']) ? $options['style'] : static::cssStyleToArray($options['style']);
-            $newStyle = is_array($style) ? $style : static::cssStyleToArray($style);
-            if (!$overwrite) {
-                foreach ($newStyle as $property => $value) {
-                    if (isset($oldStyle[$property])) {
-                        unset($newStyle[$property]);
-                    }
-                }
-            }
-            $style = array_merge($oldStyle, $newStyle);
+            $oldStyle = is_array($options['style'])
+                ? $options['style']
+                : static::cssStyleToArray($options['style']);
+            $newStyle = is_array($style)
+                ? $style
+                : static::cssStyleToArray($style);
+            $style = $overwrite
+                ? array_merge($oldStyle, $newStyle)
+                : array_merge($newStyle, $oldStyle);
         }
-        $options['style'] = is_array($style) ? static::cssStyleFromArray($style) : $style;
+        $options['style'] = $style;
     }
 
     /**
@@ -2140,5 +2176,20 @@ class BaseHtml
         }
 
         return $pattern;
+    }
+
+    /**
+     * Applies encoding to a text.
+     *
+     * @param string $text the text to be encoded.
+     * @param boolean $encode if [[encode()]] method will be called.
+     * @param boolean $encodeSpaces if all the spaces must be changed for
+     * `&nbsp;`
+     * @return string the encoded text.
+     */
+    private static function applyEncode($text, $encode, $encodeSpaces = false)
+    {
+        $text = $encode ? static::encode($text) : $text;
+        return $encodeSpaces ? str_replace(' ', '&nbsp;', $text) : $text;
     }
 }

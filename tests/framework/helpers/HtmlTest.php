@@ -431,7 +431,6 @@ EOD;
             },
             'tag' => false
         ]));
-
     }
 
     public function testRadioList()
@@ -671,11 +670,11 @@ EOD;
     {
         $options = ['class' => 'test test2 test3'];
         Html::removeCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test3'], $options);
+        $this->assertEquals(['class' => ['test', 2 => 'test3']], $options);
         Html::removeCssClass($options, 'test2');
-        $this->assertEquals(['class' => 'test test3'], $options);
+        $this->assertEquals(['class' => ['test', 2 => 'test3']], $options);
         Html::removeCssClass($options, 'test');
-        $this->assertEquals(['class' => 'test3'], $options);
+        $this->assertEquals(['class' => [2 => 'test3']], $options);
         Html::removeCssClass($options, 'test3');
         $this->assertEquals([], $options);
 
@@ -685,12 +684,12 @@ EOD;
         Html::removeCssClass($options, 'test');
         Html::removeCssClass($options, 'test3');
         $this->assertEquals([], $options);
+        Html::removeCssClass($options, 'test3');
+        $this->assertEquals([], $options);
 
-        $options = [
-            'class' => 'test test1 test2'
-        ];
+        $options = ['class' => 'test test1 test2'];
         Html::removeCssClass($options, ['test1', 'test2']);
-        $this->assertEquals(['class' => 'test'], $options);
+        $this->assertEquals(['class' => ['test']], $options);
     }
 
     public function testCssStyleFromArray()
@@ -715,15 +714,27 @@ EOD;
     {
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, 'width: 110px; color: red;');
-        $this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+        $this->assertEquals([
+            'width' => '110px',
+            'height' => '200px',
+            'color' => 'red',
+        ], $options['style']);
 
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, ['width' => '110px', 'color' => 'red']);
-        $this->assertEquals('width: 110px; height: 200px; color: red;', $options['style']);
+        $this->assertEquals([
+            'width' => '110px',
+            'height' => '200px',
+            'color' => 'red',
+        ], $options['style']);
 
         $options = ['style' => 'width: 100px; height: 200px;'];
         Html::addCssStyle($options, 'width: 110px; color: red;', false);
-        $this->assertEquals('width: 100px; height: 200px; color: red;', $options['style']);
+        $this->assertEquals([
+            'width' => '100px',
+            'height' => '200px',
+            'color' => 'red',
+        ], $options['style']);
 
         $options = [];
         Html::addCssStyle($options, 'width: 110px; color: red;');
@@ -733,13 +744,12 @@ EOD;
         Html::addCssStyle($options, 'width: 110px; color: red;', false);
         $this->assertEquals('width: 110px; color: red;', $options['style']);
 
-        $options = [
-            'style' => [
-                'width' => '100px'
-            ],
-        ];
+        $options = ['style' => ['width' => '100px']];
         Html::addCssStyle($options, ['color' => 'red'], false);
-        $this->assertEquals('width: 100px; color: red;', $options['style']);
+        $this->assertEquals(
+            ['width' => '100px', 'color' => 'red'],
+            $options['style']
+        );
     }
 
     public function testRemoveCssStyle()
