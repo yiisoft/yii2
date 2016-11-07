@@ -1645,7 +1645,7 @@ class BaseHtml
 
     /**
      * Generates a list of input fields.
-     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckBoxList()]].
+     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckboxList()]].
      * @param string $type the input type. This can be 'listBox', 'radioList', or 'checkBoxList'.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
