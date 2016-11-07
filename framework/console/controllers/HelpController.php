@@ -439,8 +439,9 @@ class HelpController extends Controller
     }
 
     /**
-     * Display a default help header.
+     * Return a default help header.
      * @return string default help header.
+     * @since 2.0.11
      */
     protected function getDefaultHelpHeader()
     {
