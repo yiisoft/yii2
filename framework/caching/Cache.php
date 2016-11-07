@@ -101,13 +101,13 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function get($key)
     {
-        $buildedKey = $this->buildKey($key);
+        $builtKey = $this->buildKey($key);
         if (YII_DEBUG) {
-            \Yii::beginProfile($buildedKey, __METHOD__);
+            \Yii::beginProfile($builtKey, __METHOD__);
         }
-        $value = $this->getValue($buildedKey);
+        $value = $this->getValue($builtKey);
         if (YII_DEBUG) {
-            \Yii::endProfile($buildedKey, __METHOD__);
+            \Yii::endProfile($builtKey, __METHOD__);
         }
 
         if ($value === false || $this->serializer === false) {
