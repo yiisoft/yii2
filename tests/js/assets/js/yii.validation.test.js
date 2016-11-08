@@ -1,6 +1,6 @@
 describe('yii.validation', function () {
     var VALIDATOR_SUCCESS_MESSAGE = 'should leave messages as is';
-    var VALIDATOR_ERROR_MESSAGE = 'should extend messages with according error(s)';
+    var VALIDATOR_ERROR_MESSAGE = 'should add appropriate errors(s) to messages';
     var yiiInitStub;
     var initialJQueryTriggerHandler;
 
