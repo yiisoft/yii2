@@ -155,7 +155,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            list(, $alias) = $this->getQueryTableName();
+            list(, $alias) = $this->getTableNameAndAlias();
             $this->select = ["$alias.*"];
         }
 
@@ -552,8 +552,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     /**
      * Returns the table name and the table alias for [[modelClass]].
      * @return array the table name and the table alias.
+     * @internal
      */
-    public function getQueryTableName()
+    private function getTableNameAndAlias()
     {
         if (empty($this->from)) {
             /* @var $modelClass ActiveRecord */
@@ -602,8 +603,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        list ($parentTable, $parentAlias) = $parent->getQueryTableName();
-        list ($childTable, $childAlias) = $child->getQueryTableName();
+        list ($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
+        list ($childTable, $childAlias) = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
 
@@ -777,7 +778,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName, ) = $this->getQueryTableName();
+            list($tableName, ) = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
             /* @var $modelClass ActiveRecord */
