@@ -38,3 +38,6 @@ phpunit.phar
 # ignore sub directory for dev installed apps and extensions
 /apps
 /extensions
+
+# NPM packages
+/node_modules
