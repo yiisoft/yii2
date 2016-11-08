@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
 - Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)
 - Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
+- Enh #12750: `yii\widgets\ListView::itemOptions` can be a closure now (webdevsega, silverfire)
 
 2.0.10 October 20, 2016
 -----------------------
@@ -118,7 +119,6 @@ Yii Framework 2 Change Log
 - Enh #12499: When AJAX validation in enabled, `yii.activeForm.js` will run it forcefully on form submit to display all possible errors (silverfire)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 - Enh #12198: Added `time` and `datetime` validator short names (nkovacs)
-- Enh: Allow `itemOptions` in `yii\widgets\ListView` to be a closure (webdevsega)
 
 
 2.0.9 July 11, 2016
