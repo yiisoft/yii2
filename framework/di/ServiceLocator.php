@@ -107,7 +107,13 @@ class ServiceLocator extends Component
      */
     public function has($id, $checkInstance = false)
     {
-        return $checkInstance ? isset($this->_components[$id]) : isset($this->_definitions[$id]);
+        if($checkInstance){
+            if(!isset($this->_components[$id]) && isset($this->_definitions[$id])){
+                $this->get($id);
+            }
+            return isset($this->_components[$id]);
+        }
+        return isset($this->_definitions[$id]);
     }
 
     /**
