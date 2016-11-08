@@ -271,7 +271,7 @@ Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($ev
 Вы можете также инициализировать эти события:
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
