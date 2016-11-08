@@ -25,13 +25,9 @@ Yii Framework 2 Change Log
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
-
--- Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
-- Enh #12790: Added `scrollToErrorOffset` option for `ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
-- Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
-- Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
+- Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)
 
 2.0.10 October 20, 2016
 -----------------------
