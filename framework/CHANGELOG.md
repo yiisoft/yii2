@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
 - Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)
+- Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
 
 2.0.10 October 20, 2016
 -----------------------
