@@ -434,8 +434,6 @@ describe('yii.validation', function () {
         describe('with FileReader API is not available', function () {
             var initialFileReader = FileReader;
 
-            // TODO Sometimes it takes a long time to load and gives warning with time written inside of a red label
-
             beforeEach(function () {
                 FileReader = undefined;
             });
