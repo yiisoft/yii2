@@ -36,7 +36,8 @@ yii.validation = (function ($) {
             }
         },
 
-        boolean: function (value, messages, options) {
+        // "boolean" is a reserved keyword in older versions of ES so it's quoted for IE < 9 support
+        'boolean': function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
