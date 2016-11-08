@@ -191,4 +191,23 @@ class FormatterTest extends TestCase
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asBoolean(null));
     }
+
+    public function testAsTimestamp()
+    {
+        $this->assertSame('1451606400', $this->formatter->asTimestamp(1451606400));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp(1451606400.1234));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp(1451606400.0000));
+
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400'));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400.1234'));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400.0000'));
+        
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('2016-01-01 00:00:00'));
+
+        $dateTime = new \DateTime('2016-01-01 00:00:00.000');
+        $this->assertSame('1451606400', $this->formatter->asTimestamp($dateTime));
+
+        $dateTime = new \DateTime('2016-01-01 00:00:00.000', new \DateTimeZone('Europe/Berlin'));
+        $this->assertSame('1451602800', $this->formatter->asTimestamp($dateTime));
+    }
 }
