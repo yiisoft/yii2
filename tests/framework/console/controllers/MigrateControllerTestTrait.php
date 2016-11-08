@@ -42,25 +42,23 @@ trait MigrateControllerTestTrait
         FileHelper::removeDirectory($this->migrationPath);
     }
 
-    public function assertFileContent($expectedFile, $class)
+    public function assertFileContent($expectedFile, $class, $table)
     {
-        $this->assertEqualsWithoutLE(
-            include Yii::getAlias(
-                "@yiiunit/data/console/migrate_create/$expectedFile.php"
-            ),
-            $this->parseNameClassMigration($class)
-        );
+        $expected = include Yii::getAlias("@yiiunit/data/console/migrate_create/$expectedFile.php");
+        $expected = str_replace('{table}', $table, $expected);
+        $this->assertEqualsWithoutLE($expected, $this->parseNameClassMigration($class, $table));
     }
 
     public function assertCommandCreatedFile(
         $expectedFile,
         $migrationName,
+        $table,
         $params = []
     ) {
         $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
         $params[0] = $migrationName;
         $this->runMigrateControllerAction('create', $params);
-        $this->assertFileContent($expectedFile, $class);
+        $this->assertFileContent($expectedFile, $class, $table);
     }
 
     /**
@@ -189,42 +187,46 @@ CODE;
 
     public function testGenerateDefaultMigration()
     {
-        $this->assertCommandCreatedFile('default', 'DefaultTest');
+        $this->assertCommandCreatedFile('default', 'DefaultTest', 'default');
     }
 
     public function testGenerateCreateMigration()
     {
-        $migrationNames = [
-            'create_test_table',
+        $tables = [
+            'test',
+            'TEST',
         ];
-        foreach ($migrationNames as $migrationName) {
-            $this->assertCommandCreatedFile('create_test', $migrationName);
 
-            $this->assertCommandCreatedFile('create_fields', $migrationName, [
+        foreach ($tables as $table) {
+            $migrationName = 'create_' . $table . '_table';
+
+            $this->assertCommandCreatedFile('create_test', $migrationName, $table);
+
+            $this->assertCommandCreatedFile('create_fields', $migrationName, $table, [
                 'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
                     body:text:notNull,
                     price:money(11,2):notNull'
             ]);
 
-            $this->assertCommandCreatedFile('create_title_pk', $migrationName, [
+            $this->assertCommandCreatedFile('create_title_pk', $migrationName, $table, [
                 'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
             ]);
 
-            $this->assertCommandCreatedFile('create_id_pk', $migrationName, [
+            $this->assertCommandCreatedFile('create_id_pk', $migrationName, $table, [
                 'fields' => 'id:primaryKey,
                     address:string,
                     address2:string,
                     email:string',
             ]);
 
-            $this->assertCommandCreatedFile('create_foreign_key', $migrationName, [
+            $this->assertCommandCreatedFile('create_foreign_key', $migrationName, $table, [
                 'fields' => 'user_id:integer:foreignKey,
                     product_id:foreignKey:integer:unsigned:notNull,
                     order_id:integer:foreignKey(user_order):notNull,
                     created_at:dateTime:notNull',
             ]);
 
-            $this->assertCommandCreatedFile('create_prefix', $migrationName, [
+            $this->assertCommandCreatedFile('create_prefix', $migrationName, $table, [
                 'useTablePrefix' => true,
                 'fields' => 'user_id:integer:foreignKey,
                     product_id:foreignKey:integer:unsigned:notNull,
@@ -234,48 +236,60 @@ CODE;
         }
 
 		// @see https://github.com/yiisoft/yii2/issues/10876
-		$this->assertCommandCreatedFile('create_products_from_store_table', 'create_products_from_store_table');
+        foreach (['products_from_store', 'products_FROM_store'] as $table) {
+            $this->assertCommandCreatedFile('drop_products_from_store_table', 'create_' . $table . '_table', $table);
+        }
     }
 
     public function testGenerateDropMigration()
     {
-        $migrationNames = [
-            'drop_test_table',
+        $tables = [
+            'test',
+            'TEST',
         ];
-        foreach ($migrationNames as $migrationName) {
-            $this->assertCommandCreatedFile('drop_test', $migrationName);
 
-            $this->assertCommandCreatedFile('drop_fields', $migrationName, [
+        foreach ($tables as $table) {
+
+            $migrationName = 'drop_' . $table . '_table';
+
+            $this->assertCommandCreatedFile('drop_test', $migrationName, $table);
+
+            $this->assertCommandCreatedFile('drop_fields', $migrationName, $table, [
                 'fields' => 'body:text:notNull,price:money(11,2)'
             ]);
         }
 		
 		// @see https://github.com/yiisoft/yii2/issues/10876
-		$this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_products_from_store_table');
+        foreach (['products_from_store', 'products_FROM_store'] as $table) {
+            $this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_' . $table . '_table', $table);
+        }
     }
 
     public function testGenerateAddColumnMigration()
     {
-        $migrationNames = [
-            'add_columns_column_to_test_table',
-            'add_columns_columns_to_test_table',
+        $tables = [
+            'test',
+            'TEST',
         ];
-        foreach ($migrationNames as $migrationName) {
-            $this->assertCommandCreatedFile('add_columns_test', $migrationName, [
+
+        foreach ($tables as $table) {
+            $migrationName = 'add_columns_column_to_' . $table . '_table';
+
+            $this->assertCommandCreatedFile('add_columns_test', $migrationName, $table, [
                 'fields' => 'title:string(10):notNull,
                     body:text:notNull,
                     price:money(11,2):notNull,
                     created_at:dateTime'
             ]);
 
-            $this->assertCommandCreatedFile('add_columns_fk', $migrationName, [
+            $this->assertCommandCreatedFile('add_columns_fk', $migrationName, $table, [
                 'fields' => 'user_id:integer:foreignKey,
                     product_id:foreignKey:integer:unsigned:notNull,
                     order_id:integer:foreignKey(user_order):notNull,
                     created_at:dateTime:notNull',
             ]);
 
-            $this->assertCommandCreatedFile('add_columns_prefix', $migrationName, [
+            $this->assertCommandCreatedFile('add_columns_prefix', $migrationName, $table, [
                 'useTablePrefix' => true,
                 'fields' => 'user_id:integer:foreignKey,
                     product_id:foreignKey:integer:unsigned:notNull,
@@ -287,12 +301,15 @@ CODE;
 
     public function testGenerateDropColumnMigration()
     {
-        $migrationNames = [
-            'drop_columns_column_from_test_table',
-            'drop_columns_columns_from_test_table',
+        $tables = [
+            'test',
+            'TEST',
         ];
-        foreach ($migrationNames as $migrationName) {
-            $this->assertCommandCreatedFile('drop_columns_test', $migrationName, [
+
+        foreach ($tables as $table) {
+            $migrationName = 'drop_columns_column_from_' . $table . '_table';
+
+            $this->assertCommandCreatedFile('drop_columns_test', $migrationName, $table, [
                 'fields' => 'title:string(10):notNull,body:text:notNull,
                     price:money(11,2):notNull,
                     created_at:dateTime'
@@ -308,8 +325,11 @@ CODE;
             'create_junction_table_for_post_and_tag_tables',
             'create_junction_table_for_post_and_tag_table',
         ];
-        foreach ($migrationNames as $migrationName) {
-            $this->assertCommandCreatedFile('junction_test', $migrationName);
+        $table = 'post_tag';
+        foreach ([] as $table) {
+            foreach ($migrationNames as $migrationName) {
+                $this->assertCommandCreatedFile('junction_test', $migrationName, $table);
+            }
         }
     }
 
