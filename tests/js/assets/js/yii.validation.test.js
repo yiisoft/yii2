@@ -175,7 +175,11 @@ describe('yii.validation', function () {
             // is
             'string equals exact length': ['Equal', {is: 5}, []],
             'string does not equal exact length': ['Does not equal', {is: 5}, ['Not equal.']],
-            'string does not equal exact length and less than min': ['Word', {is: 5, min: 5}, ['Not equal.']]
+            'string does not equal exact length and less than min': ['Word', {is: 5, min: 5}, ['Not equal.']],
+            // min and max
+            'string less than min, both min and max are set': ['Word', {min: 5, max: 10}, ['Too short.']],
+            'string in between of min and max, both min and max are set': ['Between', {min: 5, max: 10}, []],
+            'string more than max, both min and max are set': ['Some string', {min: 5, max: 10}, ['Too long.']]
         }, function (value, customOptions, expectedMessages) {
             it(getValidatorMessage(expectedMessages), function () {
                 var options = $.extend({}, defaultOptions, customOptions);
