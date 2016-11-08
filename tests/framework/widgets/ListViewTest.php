@@ -143,7 +143,7 @@ HTML
     /**
      * @dataProvider itemOptions
      */
-    public function testItmOptions($itemOptions, $expected)
+    public function testItemOptions($itemOptions, $expected)
     {
         $listView = $this->getListView(['itemOptions' => $itemOptions]);
         $this->expectOutputString($expected);
