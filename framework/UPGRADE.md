@@ -31,8 +31,12 @@ Upgrade to Yii 2.1.0
 * The following method signature have changed. If you override any of them in your code, you have to adjust these places:
 
   `yii\db\QueryBuilderbuild::buildGroupBy($columns)` -> `buildGroupBy($columns, &$params)`
+  
   `yii\db\QueryBuilderbuild::buildOrderByAndLimit($sql, $orderBy, $limit, $offset)` -> `buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)`
+  
   `yii\widgets\ActiveField::hint($content = null, $options = [])`
+  
+  `yii\base\View::renderDynamic($statements)` -> `yii\base\View::renderDynamic($statements, array $params = [])`
 
 * `yii\filters\AccessControl` has been optimized by only instantiating rules at the moment of use.
    This could lead to a potential BC-break if you are depending on $rules to be instantiated in init().
@@ -44,7 +48,6 @@ Upgrade to Yii 2.1.0
 * `yii\web\UrlNormalizer` is now enabled by default in `yii\web\UrlManager`.
   If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly, make sure that
   all potential exceptions are handled correctly or set `yii\web\UrlNormalizer::$normalizer` to `false` to disable normalizer.
-
 
 Upgrade from Yii 2.0.8
 ----------------------

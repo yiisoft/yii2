@@ -332,13 +332,27 @@ class View extends Component
      * Renders dynamic content returned by the given PHP statements.
      * This method is mainly used together with content caching (fragment caching and page caching)
      * when some portions of the content (called *dynamic content*) should not be cached.
-     * The dynamic content must be returned by some PHP statements.
+     * The dynamic content must be returned by some PHP statements. You can optionally pass
+     * additional parameters that will be available as variables in the PHP statement:
+     *
+     * ```php
+     * <?= $this->renderDynamic('return foo($myVar);', [
+     *     'myVar' => $model->getMyComplexVar(),
+     * ]) ?>
+     * ```
      * @param string $statements the PHP statements for generating the dynamic content.
+     * @param array $params the parameters (name-value pairs) that will be extracted and made
+     * available in the $statement context. The parameters will be stored in the cache and be reused
+     * each time $statement is executed. You should make sure, that these are safely serializable.
+     * @throws \yii\base\ErrorException if the statement throws an exception in eval()
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
      * active content cache currently.
      */
-    public function renderDynamic($statements)
+    public function renderDynamic($statements, array $params = [])
     {
+        if (!empty($params)) {
+            $statements = 'extract(unserialize(\'' . serialize($params) . '\'));' . $statements;
+        }
         if (!empty($this->cacheStack)) {
             $n = count($this->dynamicPlaceholders);
             $placeholder = "<![CDATA[YII-DYNAMIC-$n]]>";

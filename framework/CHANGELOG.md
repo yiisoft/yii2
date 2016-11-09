@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
+- Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)
 - Removed methods marked as deprected in 2.0.x (samdark)
 - Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
 - Chg #11397: Minimum required version of PHP is 5.5.0 now (samdark)
