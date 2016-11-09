@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
+- Enh #12798: Changed `yii\cache\Dependency::getHasChanged()` (deprecated, to be removed in 2.1) to `yii\cache\Dependency::isChanged()` (dynasource)
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
 - Bug #12803, #12921: Fixed BC break in `yii.activeForm.js` introduced in #11999. Reverted commit 3ba72da (silverfire)
 - Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
