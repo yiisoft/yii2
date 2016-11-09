@@ -69,6 +69,32 @@ class HelpController extends Controller
     }
 
     /**
+     * List all available controllers and actions in machine readable format.
+     * This is used for bash completion.
+     * @since 2.0.11
+     */
+    public function actionList()
+    {
+        $commands = $this->getCommandDescriptions();
+        foreach ($commands as $command => $description) {
+            $result = Yii::$app->createController($command);
+            if ($result === false || !($result[0] instanceof Controller)) {
+                continue;
+            }
+            /** @var $controller Controller */
+            list($controller, $actionID) = $result;
+            $actions = $this->getActions($controller);
+            if (!empty($actions)) {
+                $prefix = $controller->getUniqueId();
+                $this->stdout("$prefix\n");
+                foreach ($actions as $action) {
+                    $this->stdout("$prefix/$action\n");
+                }
+            }
+        }
+    }
+
+    /**
      * Returns all available command names.
      * @return array all available command names
      */
