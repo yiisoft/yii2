@@ -54,7 +54,7 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
-### Wrapping with begin() and end() <span id="wrapping-with-begin-and-end"></span>
+### Wrapping with `begin()` and `end()` <span id="wrapping-with-begin-and-end"></span>
 In the above code, [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] not only creates a form instance, but also marks the beginning of the form.
 All of the content placed between [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] and
 [[yii\widgets\ActiveForm::end()|ActiveForm::end()]] will be wrapped within the HTML `<form>` tag.
@@ -123,7 +123,7 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > }
 > ```
 
-Creating Lists <span id="creating-activeform-dropdownlist"></span>
+Creating Lists <span id="creating-activeform-lists"></span>
 -----------------------
 
 There are 3 types of lists:
@@ -148,9 +148,9 @@ $items = Category::find()
         ->column();
 ```
 
-These $items have to be processed by the different list widgets.
+These `$items` have to be processed by the different list widgets.
 The value of the form field (and the current active item) will be automatically set 
-by the current value of the $model's attribute. 
+by the current value of the `$model's` attribute. 
 
 #### Creating a drop-down list <span id="creating-activeform-dropdownlist"></span>
 
