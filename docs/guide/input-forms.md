@@ -150,7 +150,7 @@ $items = Category::find()
 
 These `$items` have to be processed by the different list widgets.
 The value of the form field (and the current active item) will be automatically set 
-by the current value of the `$model's` attribute. 
+by the current value of the `$model`'s attribute. 
 
 #### Creating a drop-down list <span id="creating-activeform-dropdownlist"></span>
 
