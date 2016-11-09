@@ -103,10 +103,10 @@ class m140506_102106_rbac_init extends \yii\db\Migration
                 BEGIN
                     IF @old_name <> @new_name
                     BEGIN
-                        ALTER TABLE auth_item_child NOCHECK CONSTRAINT FK__auth_item__child;
-                        UPDATE auth_item_child SET child = @new_name WHERE child = @old_name;
+                        ALTER TABLE {$authManager->itemChildTable} NOCHECK CONSTRAINT FK__auth_item__child;
+                        UPDATE {$authManager->itemChildTable} SET child = @new_name WHERE child = @old_name;
                     END
-                UPDATE auth_item
+                UPDATE {$authManager->itemTable}
                 SET name = (SELECT name FROM inserted),
                 type = (SELECT type FROM inserted),
                 description = (SELECT description FROM inserted),
@@ -117,7 +117,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
                 WHERE name IN (SELECT name FROM deleted)
                 IF @old_name <> @new_name
                     BEGIN
-                        ALTER TABLE auth_item_child CHECK CONSTRAINT FK__auth_item__child;
+                        ALTER TABLE {$authManager->itemChildTable} CHECK CONSTRAINT FK__auth_item__child;
                     END
                 END
                 ELSE

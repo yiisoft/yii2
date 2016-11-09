@@ -107,8 +107,9 @@ trait ActiveQueryTrait
      * Converts found rows into model instances
      * @param array $rows
      * @return array|ActiveRecord[]
+     * @since 2.0.11
      */
-    private function createModels($rows)
+    protected function createModels($rows)
     {
         $models = [];
         if ($this->asArray) {
