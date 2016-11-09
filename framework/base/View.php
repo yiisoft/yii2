@@ -344,12 +344,13 @@ class View extends Component
      * @param array $params the parameters (name-value pairs) that will be extracted and made
      * available in the $statement context. The parameters will be stored in the cache and be reused
      * each time $statement is executed. You should make sure, that these are safely serializable.
+     * @throws \yii\base\ErrorException if the statement throws an exception in eval()
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
      * active content cache currently.
      */
-    public function renderDynamic($statements, $params = null)
+    public function renderDynamic($statements, array $params = [])
     {
-        if ($params !== null) {
+        if (!empty($params)) {
             $statements = 'extract(unserialize(\'' . serialize($params) . '\'));' . $statements;
         }
         if (!empty($this->cacheStack)) {
