@@ -47,6 +47,8 @@ install:
   - travis_retry composer update --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
+# NPM packages
+- travis_retry npm install
 #  - tests/data/travis/cubrid-setup.sh
 
 before_script:
@@ -55,6 +57,8 @@ before_script:
   - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
   - mysql --version
   - psql --version
+  - node --version
+  - npm --version
 
   # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
@@ -72,6 +76,8 @@ script:
   - cd framework && composer validate --no-check-lock && cd ..
   # run PHPUnit
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+  # run Mocha
+  - npm test
 
 after_script:
   - |
