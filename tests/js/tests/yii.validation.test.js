@@ -22,7 +22,7 @@ var StringUtils = {
 };
 
 var jsdom = require('mocha-jsdom');
-var punycode = require('../../../../vendor/bower/punycode/punycode');
+var punycode = require('../../../vendor/bower/punycode/punycode');
 
 var fs = require('fs');
 var vm = require('vm');

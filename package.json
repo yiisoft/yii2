@@ -5,7 +5,7 @@
   "main": "index.js",
   "directories": {
     "doc": "docs",
-    "test": "tests/js/assets/js"
+    "test": "tests/js/tests"
   },
   "dependencies": {},
   "devDependencies": {
@@ -17,7 +17,7 @@
     "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha tests/js/assets/js/*.test.js"
+    "test": "./node_modules/mocha/bin/mocha tests/js/tests/*.test.js"
   },
   "repository": {
     "type": "git",
