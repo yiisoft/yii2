@@ -29,7 +29,7 @@ class DependencyTest extends TestCase
 
     public function testGenerateReusableHash()
     {
-        $dependency = $this->getMockForAbstractClass(Dependency::className());
+        $dependency = $this->getMockForAbstractClass(Dependency::class);
         $dependency->data = 'dummy';
 
         $result = $this->invokeMethod($dependency, 'generateReusableHash');
@@ -39,8 +39,8 @@ class DependencyTest extends TestCase
 
     public function testisChanged()
     {
-        $dependency = $this->getMockForAbstractClass(Dependency::className());
-        $cache = $this->getMockForAbstractClass(Cache::className());
+        $dependency = $this->getMockForAbstractClass(Dependency::class);
+        $cache = $this->getMockForAbstractClass(Cache::class);
 
         $result = $dependency->isChanged($cache);
         $this->assertFalse($result);

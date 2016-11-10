@@ -297,12 +297,12 @@ abstract class ManagerTestCase extends TestCase
 
         $roles = $this->auth->getChildRoles('withoutChildren');
         $this->assertCount(1, $roles);
-        $this->assertInstanceOf(Role::className(), reset($roles));
+        $this->assertInstanceOf(Role::class, reset($roles));
         $this->assertTrue(reset($roles)->name === 'withoutChildren');
 
         $roles = $this->auth->getChildRoles('reader');
         $this->assertCount(1, $roles);
-        $this->assertInstanceOf(Role::className(), reset($roles));
+        $this->assertInstanceOf(Role::class, reset($roles));
         $this->assertTrue(reset($roles)->name === 'reader');
 
         $roles = $this->auth->getChildRoles('author');
