@@ -48,7 +48,7 @@ install:
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
 # NPM packages
-- travis_retry npm install
+  - travis_retry npm install
 #  - tests/data/travis/cubrid-setup.sh
 
 before_script:
