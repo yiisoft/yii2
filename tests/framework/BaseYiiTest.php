@@ -57,7 +57,7 @@ class BaseYiiTest extends TestCase
 
     public function testGetVersion()
     {
-        $this->assertTrue((boolean) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', \Yii::getVersion()));
+        $this->assertTrue((bool) preg_match('~\d+\.\d+(?:\.\d+)?(?:-\w+)?~', \Yii::getVersion()));
     }
 
     public function testPowered()
@@ -145,7 +145,7 @@ class BaseYiiTest extends TestCase
         BaseYii::error('error message', 'error category');
         BaseYii::beginProfile('beginProfile message', 'beginProfile category');
         BaseYii::endProfile('endProfile message', 'endProfile category');
-        
+
         BaseYii::setLogger(null);
     }
 }

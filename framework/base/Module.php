@@ -63,7 +63,7 @@ class Module extends ServiceLocator
      */
     public $module;
     /**
-     * @var string|boolean the layout that should be applied for views within this module. This refers to a view name
+     * @var string|bool the layout that should be applied for views within this module. This refers to a view name
      * relative to [[layoutPath]]. If this is not set, it means the layout value of the [[module|parent module]]
      * will be taken. If this is `false`, layout will be disabled within this module.
      */
@@ -133,7 +133,7 @@ class Module extends ServiceLocator
      *
      * ```php
      * function (Module $module) {
-     *     //return string|integer
+     *     //return string|int
      * }
      * ```
      *
@@ -381,7 +381,7 @@ class Module extends ServiceLocator
      * Checks whether the child module of the specified ID exists.
      * This method supports checking the existence of both child and grand child modules.
      * @param string $id module ID. For grand child modules, use ID path relative to this module (e.g. `admin/content`).
-     * @return boolean whether the named module exists. Both loaded and unloaded modules
+     * @return bool whether the named module exists. Both loaded and unloaded modules
      * are considered.
      */
     public function hasModule($id)
@@ -401,7 +401,7 @@ class Module extends ServiceLocator
      * This method supports retrieving both child modules and grand child modules.
      * @param string $id module ID (case-sensitive). To retrieve grand child modules,
      * use ID path relative to this module (e.g. `admin/content`).
-     * @param boolean $load whether to load the module if it is not yet loaded.
+     * @param bool $load whether to load the module if it is not yet loaded.
      * @return Module|null the module instance, `null` if the module does not exist.
      * @see hasModule()
      */
@@ -451,7 +451,7 @@ class Module extends ServiceLocator
 
     /**
      * Returns the sub-modules in this module.
-     * @param boolean $loadedOnly whether to return the loaded sub-modules only. If this is set `false`,
+     * @param bool $loadedOnly whether to return the loaded sub-modules only. If this is set `false`,
      * then all sub-modules registered in this module will be returned, whether they are loaded or not.
      * Loaded modules will be returned as objects, while unloaded modules as configuration arrays.
      * @return array the modules (indexed by their IDs).
@@ -551,7 +551,7 @@ class Module extends ServiceLocator
      * part of the route which will be treated as the action ID. Otherwise, `false` will be returned.
      *
      * @param string $route the route consisting of module, controller and action IDs.
-     * @return array|boolean If the controller is created successfully, it will be returned together
+     * @return array|bool If the controller is created successfully, it will be returned together
      * with the requested action ID. Otherwise `false` will be returned.
      * @throws InvalidConfigException if the controller class and its file do not match.
      */
@@ -670,7 +670,7 @@ class Module extends ServiceLocator
      * ```
      *
      * @param Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {

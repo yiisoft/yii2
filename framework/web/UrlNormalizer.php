@@ -37,17 +37,17 @@ class UrlNormalizer extends Object
     const ACTION_NOT_FOUND = 404;
 
     /**
-     * @var boolean whether slashes should be collapsed, for example `site///index` will be
+     * @var bool whether slashes should be collapsed, for example `site///index` will be
      * converted into `site/index`
      */
     public $collapseSlashes = true;
     /**
-     * @var boolean whether trailing slash should be normalized according to the suffix settings
+     * @var bool whether trailing slash should be normalized according to the suffix settings
      * of the rule
      */
     public $normalizeTrailingSlash = true;
     /**
-     * @var integer|callable|null action to perform during route normalization.
+     * @var int|callable|null action to perform during route normalization.
      * Available options are:
      * - `null` - no special action will be performed
      * - `301` - the request should be redirected to the normalized URL using
@@ -96,7 +96,7 @@ class UrlNormalizer extends Object
      * Normalizes specified pathInfo.
      * @param string $pathInfo pathInfo for normalization
      * @param string $suffix current rule suffix
-     * @param boolean $normalized if specified, this variable will be set to `true` if $pathInfo
+     * @param bool $normalized if specified, this variable will be set to `true` if $pathInfo
      * was changed during normalization
      * @return string normalized pathInfo
      */

@@ -326,7 +326,7 @@ class BaseInflector
      * Converts an underscored or CamelCase word into a English
      * sentence.
      * @param string $words
-     * @param boolean $ucAll whether to set all words to uppercase
+     * @param bool $ucAll whether to set all words to uppercase
      * @return string
      */
     public static function titleize($words, $ucAll = false)
@@ -354,7 +354,7 @@ class BaseInflector
      * Converts a CamelCase name into space-separated words.
      * For example, 'PostTag' will be converted to 'Post Tag'.
      * @param string $name the string to be converted
-     * @param boolean $ucwords whether to capitalize the first letter in each word
+     * @param bool $ucwords whether to capitalize the first letter in each word
      * @return string the resulting words
      */
     public static function camel2words($name, $ucwords = true)
@@ -374,7 +374,7 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'post-tag'.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
-     * @param boolean|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
+     * @param bool|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
      * @return string the resulting ID
      */
     public static function camel2id($name, $separator = '-', $strict = false)
@@ -413,7 +413,7 @@ class BaseInflector
     /**
      * Returns a human-readable string from $word
      * @param string $word the string to humanize
-     * @param boolean $ucAll whether to set all words to uppercase or not
+     * @param bool $ucAll whether to set all words to uppercase or not
      * @return string
      */
     public static function humanize($word, $ucAll = false)
@@ -459,7 +459,7 @@ class BaseInflector
      *
      * @param string $string An arbitrary string to convert
      * @param string $replacement The replacement to use for spaces
-     * @param boolean $lowercase whether to return the string in lowercase or not. Defaults to `true`.
+     * @param bool $lowercase whether to return the string in lowercase or not. Defaults to `true`.
      * @return string The converted string.
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
@@ -499,7 +499,7 @@ class BaseInflector
     }
 
     /**
-     * @return boolean if intl extension is loaded
+     * @return bool if intl extension is loaded
      */
     protected static function hasIntl()
     {
@@ -518,7 +518,7 @@ class BaseInflector
 
     /**
      * Converts number to its ordinal English form. For example, converts 13 to 13th, 2 to 2nd ...
-     * @param integer $number the number to get its ordinal value
+     * @param int $number the number to get its ordinal value
      * @return string
      */
     public static function ordinalize($number)

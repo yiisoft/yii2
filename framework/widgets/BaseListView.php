@@ -71,7 +71,7 @@ abstract class BaseListView extends Widget
      */
     public $summaryOptions = ['class' => 'summary'];
     /**
-     * @var boolean whether to show the list view if [[dataProvider]] returns no data.
+     * @var bool whether to show the list view if [[dataProvider]] returns no data.
      */
     public $showOnEmpty = false;
     /**
@@ -142,7 +142,7 @@ abstract class BaseListView extends Widget
      * Renders a section of the specified name.
      * If the named section is not supported, false will be returned.
      * @param string $name the section name, e.g., `{summary}`, `{items}`.
-     * @return string|boolean the rendering result of the section, or false if the named section is not supported.
+     * @return string|bool the rendering result of the section, or false if the named section is not supported.
      */
     public function renderSection($name)
     {

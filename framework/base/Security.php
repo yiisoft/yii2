@@ -69,7 +69,7 @@ class Security extends Component
      */
     public $authKeyInfo = 'AuthorizationKey';
     /**
-     * @var integer derivation iterations count.
+     * @var int derivation iterations count.
      * Set as high as possible to hinder dictionary password attacks.
      */
     public $derivationIterations = 100000;
@@ -84,7 +84,7 @@ class Security extends Component
      */
     public $passwordHashStrategy;
     /**
-     * @var integer Default cost used for password hashing.
+     * @var int Default cost used for password hashing.
      * Allowed value is between 4 and 31.
      * @see generatePasswordHash()
      * @since 2.0.6
@@ -136,7 +136,7 @@ class Security extends Component
      * Verifies and decrypts data encrypted with [[encryptByPassword()]].
      * @param string $data the encrypted data to decrypt
      * @param string $password the password to use for decryption
-     * @return boolean|string the decrypted data or false on authentication failure
+     * @return bool|string the decrypted data or false on authentication failure
      * @see encryptByPassword()
      */
     public function decryptByPassword($data, $password)
@@ -149,7 +149,7 @@ class Security extends Component
      * @param string $data the encrypted data to decrypt
      * @param string $inputKey the input to use for encryption and authentication
      * @param string $info optional context and application specific information, see [[hkdf()]]
-     * @return boolean|string the decrypted data or false on authentication failure
+     * @return bool|string the decrypted data or false on authentication failure
      * @see encryptByKey()
      */
     public function decryptByKey($data, $inputKey, $info = null)
@@ -161,7 +161,7 @@ class Security extends Component
      * Encrypts data.
      *
      * @param string $data data to be encrypted
-     * @param boolean $passwordBased set true to use password-based key derivation
+     * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
      * @param string $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
@@ -212,11 +212,11 @@ class Security extends Component
      * Decrypts data.
      *
      * @param string $data encrypted data to be decrypted.
-     * @param boolean $passwordBased set true to use password-based key derivation
+     * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the decryption password or key
      * @param string $info context/application specific information, @see encrypt()
      *
-     * @return boolean|string the decrypted data or false on authentication failure
+     * @return bool|string the decrypted data or false on authentication failure
      * @throws InvalidConfigException on OpenSSL not loaded
      * @throws Exception on OpenSSL error
      * @see encrypt()
@@ -266,7 +266,7 @@ class Security extends Component
      * @param string $info optional info to bind the derived key material to application-
      * and context-specific information, e.g. a user ID or API version, see
      * [RFC 5869](https://tools.ietf.org/html/rfc5869)
-     * @param integer $length length of the output key in bytes. If 0, the output key is
+     * @param int $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
      * @throws InvalidParamException when HMAC generation fails.
      * @return string the derived key
@@ -311,9 +311,9 @@ class Security extends Component
      * @param string $algo a hash algorithm supported by `hash_hmac()`, e.g. 'SHA-256'
      * @param string $password the source password
      * @param string $salt the random salt
-     * @param integer $iterations the number of iterations of the hash algorithm. Set as high as
+     * @param int $iterations the number of iterations of the hash algorithm. Set as high as
      * possible to hinder dictionary password attacks.
-     * @param integer $length length of the output key in bytes. If 0, the output key is
+     * @param int $length length of the output key in bytes. If 0, the output key is
      * the length of the hash algorithm output.
      * @return string the derived key
      * @throws InvalidParamException when hash generation fails due to invalid params given.
@@ -372,7 +372,7 @@ class Security extends Component
      * @param string $data the data to be protected
      * @param string $key the secret key to be used for generating hash. Should be a secure
      * cryptographic key.
-     * @param boolean $rawHash whether the generated hash value is in raw binary format. If false, lowercase
+     * @param bool $rawHash whether the generated hash value is in raw binary format. If false, lowercase
      * hex digits will be generated.
      * @return string the data prefixed with the keyed hash
      * @throws InvalidConfigException when HMAC generation fails.
@@ -397,7 +397,7 @@ class Security extends Component
      * @param string $key the secret key that was previously used to generate the hash for the data in [[hashData()]].
      * function to see the supported hashing algorithms on your system. This must be the same
      * as the value passed to [[hashData()]] when generating the hash for the data.
-     * @param boolean $rawHash this should take the same value as when you generate the data using [[hashData()]].
+     * @param bool $rawHash this should take the same value as when you generate the data using [[hashData()]].
      * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
      * of lowercase hex digits only.
      * hex digits will be generated.
@@ -433,7 +433,7 @@ class Security extends Component
      * Note that output may not be ASCII.
      * @see generateRandomString() if you need a string.
      *
-     * @param integer $length the number of bytes to generate
+     * @param int $length the number of bytes to generate
      * @return string the generated random bytes
      * @throws InvalidParamException if wrong length is specified
      * @throws Exception on failure.
@@ -544,7 +544,7 @@ class Security extends Component
      * Generates a random string of specified length.
      * The string generated matches [A-Za-z0-9_-]+ and is transparent to URL-encoding.
      *
-     * @param integer $length the length of the key in characters
+     * @param int $length the length of the key in characters
      * @return string the generated random key
      * @throws Exception on failure.
      */
@@ -585,7 +585,7 @@ class Security extends Component
      * ```
      *
      * @param string $password The password to be hashed.
-     * @param integer $cost Cost parameter used by the Blowfish hash algorithm.
+     * @param int $cost Cost parameter used by the Blowfish hash algorithm.
      * The higher the value of cost,
      * the longer it takes to generate the hash and to verify a password against it. Higher cost
      * therefore slows down a brute-force attack. For best protection against brute-force attacks,
@@ -622,7 +622,7 @@ class Security extends Component
      * Verifies a password against a hash.
      * @param string $password The password to verify.
      * @param string $hash The hash to verify the password against.
-     * @return boolean whether the password is correct.
+     * @return bool whether the password is correct.
      * @throws InvalidParamException on bad password/hash parameters or if crypt() with Blowfish hash is not available.
      * @see generatePasswordHash()
      */
@@ -660,7 +660,7 @@ class Security extends Component
      * "$2a$", "$2x$" or "$2y$", a two digit cost parameter, "$", and 22 characters
      * from the alphabet "./0-9A-Za-z".
      *
-     * @param integer $cost the cost parameter
+     * @param int $cost the cost parameter
      * @return string the random salt value.
      * @throws InvalidParamException if the cost parameter is out of the range of 4 to 31.
      */
@@ -686,7 +686,7 @@ class Security extends Component
      * @see http://codereview.stackexchange.com/questions/13512
      * @param string $expected string to compare.
      * @param string $actual user-supplied string.
-     * @return boolean whether strings are equal.
+     * @return bool whether strings are equal.
      */
     public function compareString($expected, $actual)
     {

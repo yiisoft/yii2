@@ -42,7 +42,7 @@ use yii\helpers\Url;
 class AssetManager extends Component
 {
     /**
-     * @var array|boolean list of asset bundle configurations. This property is provided to customize asset bundles.
+     * @var array|bool list of asset bundle configurations. This property is provided to customize asset bundles.
      * When a bundle is being loaded by [[getBundle()]], if it has a corresponding configuration specified here,
      * the configuration will be applied to the bundle.
      *
@@ -105,7 +105,7 @@ class AssetManager extends Component
      */
     public $assetMap = [];
     /**
-     * @var boolean whether to use symbolic link to publish asset files. Defaults to false, meaning
+     * @var bool whether to use symbolic link to publish asset files. Defaults to false, meaning
      * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
      * assets will always be consistent with the source assets and there is no copy operation required.
      * This is especially useful during development.
@@ -123,13 +123,13 @@ class AssetManager extends Component
      */
     public $linkAssets = false;
     /**
-     * @var integer the permission to be set for newly published asset files.
+     * @var int the permission to be set for newly published asset files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
     public $fileMode;
     /**
-     * @var integer the permission to be set for newly generated asset directories.
+     * @var int the permission to be set for newly generated asset directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
@@ -154,7 +154,7 @@ class AssetManager extends Component
      */
     public $afterCopy;
     /**
-     * @var boolean whether the directory being published should be copied even if
+     * @var bool whether the directory being published should be copied even if
      * it is found in the target directory. This option is used only when publishing a directory.
      * You may want to set this to be `true` during the development stage to make sure the published
      * directory is always up-to-date. Do not set this to true on production servers as it will
@@ -162,7 +162,7 @@ class AssetManager extends Component
      */
     public $forceCopy = false;
     /**
-     * @var boolean whether to append a timestamp to the URL of every published asset. When this is true,
+     * @var bool whether to append a timestamp to the URL of every published asset. When this is true,
      * the URL of a published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the
      * last modification time of the published asset file.
      * You normally would want to set this property to true when you have enabled HTTP caching for assets,
@@ -226,7 +226,7 @@ class AssetManager extends Component
      * it will treat `$name` as the class of the asset bundle and create a new instance of it.
      *
      * @param string $name the class name of the asset bundle (without the leading backslash)
-     * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
+     * @param bool $publish whether to publish the asset files in the asset bundle before it is returned.
      * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
      * @return AssetBundle the asset bundle instance
      * @throws InvalidConfigException if $name does not refer to a valid asset bundle
@@ -253,7 +253,7 @@ class AssetManager extends Component
      *
      * @param string $name bundle name
      * @param array $config bundle object configuration
-     * @param boolean $publish if bundle should be published
+     * @param bool $publish if bundle should be published
      * @return AssetBundle
      * @throws InvalidConfigException if configuration isn't valid
      */
@@ -328,7 +328,7 @@ class AssetManager extends Component
      * Returns the actual file path for the specified asset.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
-     * @return string|boolean the actual file path, or false if the asset is specified as an absolute URL
+     * @return string|bool the actual file path, or false if the asset is specified as an absolute URL
      */
     public function getAssetPath($bundle, $asset)
     {
@@ -342,7 +342,7 @@ class AssetManager extends Component
     /**
      * @param AssetBundle $bundle
      * @param string $asset
-     * @return string|boolean
+     * @return string|bool
      */
     protected function resolveAsset($bundle, $asset)
     {
