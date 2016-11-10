@@ -1,27 +1,91 @@
+var assert = require('chai').assert;
+
+assert.arraysAreEqual = function (array, expectedArray) {
+    expectedArray.length === 0 ? assert.equal(array.length, 0) : assert.deepEqual(array, expectedArray);
+};
+
+assert.isDeferred = function (object) {
+    if (typeof object.resolve !== 'function') {
+        return false;
+    }
+
+    return String(object.resolve) === String($.Deferred().resolve);
+};
+
+var sinon = require('sinon');
+var withData = require('leche').withData;
+
+var StringUtils = {
+    repeatString: function (value, times) {
+        return (new Array(times + 1)).join(value);
+    }
+};
+
+var jsdom = require('mocha-jsdom');
+var punycode = require('../../../../vendor/bower/punycode/punycode');
+
+var fs = require('fs');
+var vm = require('vm');
+var yii;
+
 describe('yii.validation', function () {
+    this.timeout(15000);
+
     var VALIDATOR_SUCCESS_MESSAGE = 'should leave messages as is';
     var VALIDATOR_ERROR_MESSAGE = 'should add appropriate errors(s) to messages';
-    var yiiInitStub;
-    var initialJQueryTriggerHandler;
 
     function getValidatorMessage(expectedResult) {
         var isTrueBoolean = typeof expectedResult === 'boolean' && expectedResult === true;
-        var isEmptyArray = $.isArray(expectedResult) && expectedResult.length === 0;
+        var isEmptyArray = Array.isArray(expectedResult) && expectedResult.length === 0;
 
         return isTrueBoolean || isEmptyArray ? VALIDATOR_SUCCESS_MESSAGE : VALIDATOR_ERROR_MESSAGE;
     }
 
-    before(function () {
-        // To prevent TypeError: $(...).attr is not a function
-        yiiInitStub = sinon.stub(yii, 'init');
-        // To prevent TypeError: jQuery(...).triggerHandler is not a function
-        initialJQueryTriggerHandler = $.fn.triggerHandler;
-        $.fn.triggerHandler = undefined;
-    });
+    var $;
+    var code;
+    var script;
 
-    after(function () {
-        yiiInitStub.restore();
-        $.fn.triggerHandler = initialJQueryTriggerHandler;
+    function FileReader() {
+        this.readAsDataURL = function() {
+        };
+    }
+
+    function Image() {
+    }
+
+    function registerTestableCode(customSandbox) {
+        if (customSandbox === undefined) {
+            customSandbox = {
+                File: {},
+                FileReader: FileReader,
+                Image: Image,
+                punycode: punycode
+            };
+        }
+
+        var path = 'framework/assets/yii.validation.js';
+
+        if (code === undefined) {
+            code = fs.readFileSync(path);
+        }
+
+        if (script === undefined) {
+            script = new vm.Script(code);
+        }
+
+        var defaultSandbox = {yii: {}, jQuery: $};
+        var sandbox = $.extend({}, defaultSandbox, customSandbox);
+        var context = new vm.createContext(sandbox);
+
+        script.runInContext(context);
+        yii = sandbox.yii;
+    }
+
+    jsdom({src: fs.readFileSync('vendor/bower/jquery/dist/jquery.js', 'utf-8')});
+
+    before(function () {
+        $ = window.$;
+        registerTestableCode();
     });
 
     it('should exist', function () {
@@ -192,6 +256,15 @@ describe('yii.validation', function () {
     });
 
     describe('file validator', function () {
+        var defaultOptions = {
+            message: 'Unable to upload a file.',
+            uploadRequired: 'Upload is required.',
+            tooMany: 'Too many files.',
+            wrongExtension: 'File {file} has wrong extension.',
+            wrongMimeType: 'File {file} has wrong mime type.',
+            tooSmall: 'File {file} is too small.',
+            tooBig: 'File {file} is too big.'
+        };
         var attribute = {
             input: '#input-id',
             $form: 'jQuery form object'
@@ -225,20 +298,18 @@ describe('yii.validation', function () {
         });
 
         describe('with File API is not available', function () {
-            var initialFile = File;
-
             beforeEach(function () {
-                File = undefined;
+                registerTestableCode({File: undefined});
             });
 
             afterEach(function () {
-                File = initialFile;
+                registerTestableCode();
             });
 
             it(VALIDATOR_SUCCESS_MESSAGE, function () {
                 var messages = [];
 
-                yii.validation.file(attribute, messages, {});
+                yii.validation.file(attribute, messages, defaultOptions);
                 assert.arraysAreEqual(messages, []);
 
                 assert.isFalse(jQueryInitStub.called);
@@ -370,15 +441,6 @@ describe('yii.validation', function () {
             }, function (uploadedFiles, customOptions, expectedMessages) {
                 it(getValidatorMessage(expectedMessages), function () {
                     files = uploadedFiles;
-                    var defaultOptions = {
-                        message: 'Unable to upload a file.',
-                        uploadRequired: 'Upload is required.',
-                        tooMany: 'Too many files.',
-                        wrongExtension: 'File {file} has wrong extension.',
-                        wrongMimeType: 'File {file} has wrong mime type.',
-                        tooSmall: 'File {file} is too small.',
-                        tooBig: 'File {file} is too big.'
-                    };
                     var options = $.extend({}, defaultOptions, customOptions);
                     var messages = [];
 
@@ -411,7 +473,7 @@ describe('yii.validation', function () {
                 return value === 0 ? {files: filesService.getFiles()} : undefined;
             }
         };
-        var deferred = $.Deferred();
+        var deferred;
         var jQueryInitStub;
         var inputGetSpy;
         var filesServiceSpy;
@@ -424,6 +486,7 @@ describe('yii.validation', function () {
             inputGetSpy = sinon.spy($input, 'get');
             filesServiceSpy = sinon.spy(filesService, 'getFiles');
             validateImageStub = sinon.stub(yii.validation, 'validateImage');
+            deferred = $.Deferred();
             deferredStub = sinon.stub(deferred, 'resolve');
         });
 
@@ -436,14 +499,12 @@ describe('yii.validation', function () {
         });
 
         describe('with FileReader API is not available', function () {
-            var initialFileReader = FileReader;
-
             beforeEach(function () {
-                FileReader = undefined;
+                registerTestableCode({FileReader: undefined});
             });
 
             afterEach(function () {
-                FileReader = initialFileReader;
+                registerTestableCode();
             });
 
             it(VALIDATOR_SUCCESS_MESSAGE, function () {
@@ -505,12 +566,13 @@ describe('yii.validation', function () {
     describe('validateImage method', function () {
         var file = {name: 'file.jpg', type: 'image/jpeg', size: 100 * 1024};
         var image = new Image();
-        var deferred = $.Deferred();
+        var deferred;
         var fileReader = new FileReader();
         var deferredStub;
         var fileReaderStub;
 
         beforeEach(function () {
+            deferred = $.Deferred();
             deferredStub = sinon.stub(deferred, 'resolve');
         });
 

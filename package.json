@@ -1,18 +1,23 @@
 {
   "name": "yii2",
-  "version": "1.0.0",
+  "version": "2.0.10",
   "description": "a modern PHP framework designed for professional Web development",
   "main": "index.js",
   "directories": {
     "doc": "docs",
-    "test": "tests"
+    "test": "tests/js/assets/js"
   },
   "dependencies": {},
   "devDependencies": {
+    "chai": "^3.5.0",
+    "jsdom": "^9.8.3",
+    "leche": "^2.1.2",
+    "mocha": "^3.1.2",
+    "mocha-jsdom": "^1.1.0",
     "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/mocha/bin/mocha tests/js/assets/js/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -27,5 +32,5 @@
   "bugs": {
     "url": "https://github.com/yiisoft/yii2/issues"
   },
-  "homepage": "https://github.com/yiisoft/yii2#readme"
+  "homepage": "https://github.com/yiisoft/yii2"
 }
