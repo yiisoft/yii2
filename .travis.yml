@@ -36,6 +36,7 @@ cache:
 addons:
   apt:
     packages:
+      - php-apc
       - mysql-server-5.6
       - mysql-client-core-5.6
       - mysql-client-5.6
@@ -72,7 +73,6 @@ before_script:
   - psql --version
   - node --version
   - npm --version
-  - ls -la /home/travis/.phpenv/versions/5.4.45/lib/php/extensions/no-debug-zts-20100525/
 
   # initialize databases
   - mysql -u root -e 'CREATE DATABASE yiitest;';
