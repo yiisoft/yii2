@@ -77,6 +77,10 @@ Upgrade to Yii 2.1.0
 * `yii\filters\AccessControl` has been optimized by only instantiating rules at the moment of use.
    This could lead to a potential BC-break if you are depending on $rules to be instantiated in init().
 
+* `yii\widgets\BaseListView::run()` and `yii\widgets\GridView::run()` now return content, instead of echoing it.
+  Normally we call `BaseListView::widget()` and for this case behavior is NOT changed.
+  In case you call `::run()` method, ensure that its return is processed correctly. 
+
 * Method `yii\web\Request::getBodyParams()` has been changed to pass full value of 'content-type' header to the second
   argument of `yii\web\RequestParserInterface::parse()`. If you create your own custom parser, which relies on `$contentType`
   argument, ensure to process it correctly as it may content additional data.
