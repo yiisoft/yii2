@@ -1,9 +1,5 @@
 var assert = require('chai').assert;
 
-assert.arraysAreEqual = function (array, expectedArray) {
-    expectedArray.length === 0 ? assert.equal(array.length, 0) : assert.deepEqual(array, expectedArray);
-};
-
 assert.isDeferred = function (object) {
     if (typeof object.resolve !== 'function') {
         return false;
@@ -119,7 +115,7 @@ describe('yii.validation', function () {
         }, function (messages, message, value, expectedMessages) {
             it('should extend messages and replace value in template', function () {
                 yii.validation.addMessage(messages, message, value);
-                assert.arraysAreEqual(messages, expectedMessages);
+                assert.deepEqual(messages, expectedMessages);
             });
         });
     });
@@ -153,7 +149,7 @@ describe('yii.validation', function () {
                 var expectedMessages = expectValid ? [] : ['This field is required.'];
 
                 yii.validation.required(value, messages, options);
-                assert.arraysAreEqual(messages, expectedMessages);
+                assert.deepEqual(messages, expectedMessages);
             });
         });
     });
@@ -210,7 +206,7 @@ describe('yii.validation', function () {
                 var expectedMessages = expectValid ? [] : ['The value must have a boolean type.'];
 
                 yii.validation.boolean(value, messages, options);
-                assert.arraysAreEqual(messages, expectedMessages);
+                assert.deepEqual(messages, expectedMessages);
             });
         });
     });
@@ -250,7 +246,7 @@ describe('yii.validation', function () {
                 var messages = [];
 
                 yii.validation.string(value, messages, options);
-                assert.arraysAreEqual(messages, expectedMessages);
+                assert.deepEqual(messages, expectedMessages);
             });
         });
     });
@@ -310,7 +306,7 @@ describe('yii.validation', function () {
                 var messages = [];
 
                 yii.validation.file(attribute, messages, defaultOptions);
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
 
                 assert.isFalse(jQueryInitStub.called);
                 assert.isFalse(inputGetSpy.called);
@@ -445,12 +441,12 @@ describe('yii.validation', function () {
                     var messages = [];
 
                     yii.validation.file(attribute, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
 
                     assert.isTrue(jQueryInitStub.calledOnce);
-                    assert.arraysAreEqual(jQueryInitStub.getCall(0).args, [attribute.input, attribute.$form]);
+                    assert.deepEqual(jQueryInitStub.getCall(0).args, [attribute.input, attribute.$form]);
                     assert.isTrue(inputGetSpy.calledOnce);
-                    assert.arraysAreEqual(inputGetSpy.getCall(0).args, [0]);
+                    assert.deepEqual(inputGetSpy.getCall(0).args, [0]);
                     assert.isTrue(filesServiceSpy.calledOnce);
                 });
             });
@@ -516,11 +512,11 @@ describe('yii.validation', function () {
                 var deferredList = [];
 
                 yii.validation.image(attribute, messages, {}, deferredList);
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
 
                 assert.isFalse(validateImageStub.called);
                 assert.isFalse(deferredStub.called);
-                assert.arraysAreEqual(deferredList, []);
+                assert.deepEqual(deferredList, []);
             });
         });
 
@@ -540,7 +536,7 @@ describe('yii.validation', function () {
                 var deferredList = [];
 
                 yii.validation.image(attribute, messages, options, deferredList);
-                assert.arraysAreEqual(messages, ['File file.bmp has wrong extension.']);
+                assert.deepEqual(messages, ['File file.bmp has wrong extension.']);
 
                 assert.equal(validateImageStub.callCount, files.length);
 
@@ -597,7 +593,7 @@ describe('yii.validation', function () {
                 var messages = [];
 
                 yii.validation.validateImage(file, messages, {}, deferred, fileReader, image);
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
 
                 verifyStubs();
             });
@@ -619,7 +615,7 @@ describe('yii.validation', function () {
                 var options = {notImage: 'File {file} is not an image.'};
 
                 yii.validation.validateImage(file, messages, options, deferred, fileReader, image);
-                assert.arraysAreEqual(messages, ['File file.jpg is not an image.']);
+                assert.deepEqual(messages, ['File file.jpg is not an image.']);
 
                 verifyStubs();
             });
@@ -690,7 +686,7 @@ describe('yii.validation', function () {
                     var messages = [];
 
                     yii.validation.validateImage(file, messages, options, deferred, fileReader, image);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
 
                     verifyStubs();
                 });
@@ -724,7 +720,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Not a number.'];
 
                     yii.validation.number(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -749,7 +745,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Not a number.'];
 
                     yii.validation.number(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -777,7 +773,7 @@ describe('yii.validation', function () {
                     var messages = [];
 
                     yii.validation.number(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -809,7 +805,7 @@ describe('yii.validation', function () {
                 var messages = [];
 
                 yii.validation.range(value, messages, options);
-                assert.arraysAreEqual(messages, expectedMessages);
+                assert.deepEqual(messages, expectedMessages);
             });
         });
     });
@@ -831,7 +827,7 @@ describe('yii.validation', function () {
                     var messages = [];
 
                     yii.validation.regularExpression(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -856,7 +852,7 @@ describe('yii.validation', function () {
                 var options = $.extend({}, defaultOptions, {skipOnEmpty: true});
 
                 yii.validation.email('', messages, options);
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
             });
         });
 
@@ -907,7 +903,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Invalid value.'];
 
                     yii.validation.email(value, messages, defaultOptions);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -960,7 +956,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Invalid value.'];
 
                     yii.validation.email(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -1013,7 +1009,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Invalid value.'];
 
                     yii.validation.email(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -1066,7 +1062,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Invalid value.'];
 
                     yii.validation.email(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -1095,7 +1091,7 @@ describe('yii.validation', function () {
                 var options = $.extend({}, defaultOptions, {skipOnEmpty: true});
 
                 yii.validation.url('', messages, options);
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
             });
         });
 
@@ -1138,7 +1134,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Invalid value.'];
 
                     yii.validation.url(value, messages, defaultOptions);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -1154,7 +1150,7 @@ describe('yii.validation', function () {
                     var options = $.extend({}, defaultOptions, {defaultScheme: 'https'});
 
                     yii.validation.url(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -1167,7 +1163,7 @@ describe('yii.validation', function () {
                 });
 
                 yii.validation.url('yiiframework.com', messages, options);
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
             });
         });
 
@@ -1189,7 +1185,7 @@ describe('yii.validation', function () {
                     });
 
                     yii.validation.url(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -1206,7 +1202,7 @@ describe('yii.validation', function () {
                     var options = $.extend({}, defaultOptions, {enableIDN: true});
 
                     yii.validation.url(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
                 });
             });
         });
@@ -1321,7 +1317,7 @@ describe('yii.validation', function () {
                 var options = $.extend({}, defaultOptions, {skipOnEmpty: true});
 
                 yii.validation.captcha('', messages, options);
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
 
                 assert.isFalse(jQueryDataStub.called);
             });
@@ -1334,7 +1330,7 @@ describe('yii.validation', function () {
                     var expectedMessages = expectValid ? [] : ['Invalid value.'];
 
                     yii.validation.captcha(value, messages, defaultOptions);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
 
                     verifyJQueryDataStub();
                 });
@@ -1349,7 +1345,7 @@ describe('yii.validation', function () {
                     var options = $.extend({}, defaultOptions, {caseSensitive: true});
 
                     yii.validation.captcha(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
 
                     verifyJQueryDataStub();
                 });
@@ -1365,7 +1361,7 @@ describe('yii.validation', function () {
                     var options = $.extend({}, defaultOptions, {hash: hashes['code']});
 
                     yii.validation.captcha(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
 
                     verifyJQueryDataStub();
                 });
@@ -1381,7 +1377,7 @@ describe('yii.validation', function () {
                     var options = $.extend({}, defaultOptions, {hash: hashes['Code'], caseSensitive: true});
 
                     yii.validation.captcha(value, messages, options);
-                    assert.arraysAreEqual(messages, expectedMessages);
+                    assert.deepEqual(messages, expectedMessages);
 
                     verifyJQueryDataStub();
                 });
@@ -1500,7 +1496,7 @@ describe('yii.validation', function () {
                 var expectedMessages = expectValid ? [] : ['Invalid value.'];
 
                 yii.validation.compare(value, messages, options);
-                assert.arraysAreEqual(messages, expectedMessages);
+                assert.deepEqual(messages, expectedMessages);
 
                 assert.isFalse(jQueryInitStub.called);
                 assert.isFalse(inputSpy.called);
@@ -1512,7 +1508,7 @@ describe('yii.validation', function () {
                 var messages = [];
 
                 yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'});
-                assert.arraysAreEqual(messages, []);
+                assert.deepEqual(messages, []);
 
                 assert.isTrue(jQueryInitStub.calledOnce);
                 assert.equal(jQueryInitStub.getCall(0).args[0], '#input-id');
@@ -1653,7 +1649,7 @@ describe('yii.validation', function () {
                 var options = $.extend({}, defaultOptions, customOptions);
 
                 yii.validation.ip(value, messages, options);
-                assert.arraysAreEqual(messages, expectedMessages);
+                assert.deepEqual(messages, expectedMessages);
             })
         });
     });
