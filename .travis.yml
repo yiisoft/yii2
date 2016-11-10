@@ -36,7 +36,6 @@ cache:
 addons:
   apt:
     packages:
-      - php-apc
       - mysql-server-5.6
       - mysql-client-core-5.6
       - mysql-client-5.6
@@ -59,6 +58,7 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer update --prefer-dist --no-interaction
+  - sudo pecl install apc
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
 # NPM packages
