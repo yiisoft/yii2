@@ -193,9 +193,9 @@ class TimestampBehaviorTest extends TestCase
 /**
  * Test Active Record class with [[TimestampBehavior]] behavior attached.
  *
- * @property integer $id
- * @property integer $created_at
- * @property integer $updated_at
+ * @property int $id
+ * @property int $created_at
+ * @property int $updated_at
  */
 class ActiveRecordTimestamp extends ActiveRecord
 {

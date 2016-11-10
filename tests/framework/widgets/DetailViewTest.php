@@ -144,6 +144,30 @@ class DetailViewTest extends \yiiunit\TestCase
 
         $this->assertEquals($expectedValue, $this->detailView->attributes);
     }
+
+    public function testOptionsTags()
+    {
+        $expectedValue = '<tr><th tooltip="Tooltip">Text</th><td class="bg-red">I`m an array</td></tr>';
+
+        $this->detailView = new PublicDetailView([
+            'model' => [
+                'text' => 'I`m an array',
+            ],
+            'attributes' => [
+                [
+                    'attribute' => 'text',
+                    'label' => 'Text',
+                    'contentOptions' => ['class' => 'bg-red'],
+                    'captionOptions' => ['tooltip' => 'Tooltip'],
+                ],
+            ],
+        ]);
+
+        foreach ($this->detailView->attributes as $index=>$attribute) {
+            $a = $this->detailView->renderAttribute($attribute, $index);
+            $this->assertEquals($expectedValue, $a);
+        }
+    }
 }
 
 /**

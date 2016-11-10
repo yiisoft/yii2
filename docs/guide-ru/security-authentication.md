@@ -1,13 +1,13 @@
 Аутентификация
 ==============
 
-Аутентификация — это процесс проверки подлинности пользователя. Обычно используется идентификатор 
+Аутентификация — это процесс проверки подлинности пользователя. Обычно используется идентификатор
 (например, `username` или адрес электронной почты) и секретный токен (например, пароль или ключ доступа), чтобы судить о
 том, что пользователь именно тот, за кого себя выдаёт. Аутентификация является основной функцией формы входа.
 
 Yii предоставляет фреймворк авторизации с различными компонентами, обеспечивающими процесс входа.
 Для использования этого фреймворка вам нужно проделать следующее:
- 
+
 * Настроить компонент приложения [[yii\web\User|user]];
 * Создать класс, реализующий интерфейс [[yii\web\IdentityInterface]].
 
@@ -15,10 +15,10 @@ Yii предоставляет фреймворк авторизации с ра
 ## Настройка [[yii\web\User]] <span id="configuring-user"></span>
 
 Компонент [[yii\web\User|user]] управляет статусом аутентификации пользователя.
-Он требует, чтобы вы указали [[yii\web\User::identityClass|identity class]], который будет содержать 
+Он требует, чтобы вы указали [[yii\web\User::identityClass|identity class]], который будет содержать
 текущую логику аутентификации. В следующей конфигурации приложения, [[yii\web\User::identityClass|identity class]] для
 [[yii\web\User|user]] задан как `app\models\User`, реализация которого будет объяснена в следующем разделе:
-  
+
 ```php
 return [
     'components' => [
@@ -38,7 +38,7 @@ return [
 * [[yii\web\IdentityInterface::findIdentity()|findIdentity()]]: Этот метод находит экземпляр `identity class`,
   используя ID пользователя. Этот метод используется, когда необходимо поддерживать состояние аутентификации через сессии.
 * [[yii\web\IdentityInterface::findIdentityByAccessToken()|findIdentityByAccessToken()]]: Этот метод находит экземпляр `identity class`,
-  используя токен доступа. Метод используется, когда требуется аутентифицировать пользователя 
+  используя токен доступа. Метод используется, когда требуется аутентифицировать пользователя
   только по секретному токену (например в RESTful приложениях, не сохраняющих состояние между запросами).
 * [[yii\web\IdentityInterface::getId()|getId()]]: Этот метод возвращает ID пользователя, представленного данным экземпляром `identity`.
 * [[yii\web\IdentityInterface::getAuthKey()|getAuthKey()]]: Этот метод возвращает ключ, используемый для основанной на `cookie` аутентификации.
@@ -71,7 +71,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Finds an identity by the given ID.
      *
-     * @param string|integer $id the ID to be looked for
+     * @param string|int $id the ID to be looked for
      * @return IdentityInterface|null the identity object that matches the given ID.
      */
     public static function findIdentity($id)
@@ -108,7 +108,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $authKey
-     * @return boolean if auth key is valid for current user
+     * @return bool if auth key is valid for current user
      */
     public function validateAuthKey($authKey)
     {
@@ -125,7 +125,7 @@ class User extends ActiveRecord implements IdentityInterface
 class User extends ActiveRecord implements IdentityInterface
 {
     ......
-    
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
@@ -176,7 +176,7 @@ $identity = User::findOne(['username' => $username]);
 Yii::$app->user->login($identity);
 ```
 
-Метод [[yii\web\User::login()]] устанавливает `identity` текущего пользователя в [[yii\web\User]]. Если сессии 
+Метод [[yii\web\User::login()]] устанавливает `identity` текущего пользователя в [[yii\web\User]]. Если сессии
 [[yii\web\User::enableSession|включены]], то `identity` будет сохраняться в сессии, так что состояние
 статуса аутентификации будет поддерживаться на всём протяжении сессии. Если [[yii\web\User::enableAutoLogin|включен]] вход, основанный на cookie (так называемый "запомни меня" вход), то `identity` также будет сохранена
 в `cookie` так, чтобы статус аутентификации пользователя мог быть восстановлен на протяжении всего времени жизни `cookie`.
@@ -205,7 +205,7 @@ Yii::$app->user->logout();
 * [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]]: вызывается после успешного входа.
 * [[yii\web\User::EVENT_BEFORE_LOGOUT|EVENT_BEFORE_LOGOUT]]: вызывается перед вызовом [[yii\web\User::logout()]].
   Если обработчик устанавливает свойство [[yii\web\UserEvent::isValid|isValid]] объекта в `false`,
-  процесс выхода будет прерван. 
+  процесс выхода будет прерван.
 * [[yii\web\User::EVENT_AFTER_LOGOUT|EVENT_AFTER_LOGOUT]]: вызывается после успешного выхода.
 
 Вы можете использовать эти события для реализации функции аудита входа, сбора статистики онлайн пользователей. Например,

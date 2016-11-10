@@ -26,6 +26,13 @@ class SafeValidator extends Validator
     /**
      * @inheritdoc
      */
+    public function validateAttributes($model, $attributes = null)
+    {
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function validateAttribute($model, $attribute)
     {
     }

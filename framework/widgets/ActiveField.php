@@ -18,6 +18,8 @@ use yii\web\JsExpression;
 /**
  * ActiveField represents a form input field within an [[ActiveForm]].
  *
+ * For more details and usage information on ActiveField, see the [guide article on forms](guide:input-forms).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -95,33 +97,33 @@ class ActiveField extends Component
      */
     public $hintOptions = ['class' => 'hint-block'];
     /**
-     * @var boolean whether to enable client-side data validation.
+     * @var bool whether to enable client-side data validation.
      * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
      */
     public $enableClientValidation;
     /**
-     * @var boolean whether to enable AJAX-based data validation.
+     * @var bool whether to enable AJAX-based data validation.
      * If not set, it will take the value of [[ActiveForm::enableAjaxValidation]].
      */
     public $enableAjaxValidation;
     /**
-     * @var boolean whether to perform validation when the value of the input field is changed.
+     * @var bool whether to perform validation when the value of the input field is changed.
      * If not set, it will take the value of [[ActiveForm::validateOnChange]].
      */
     public $validateOnChange;
     /**
-     * @var boolean whether to perform validation when the input field loses focus.
+     * @var bool whether to perform validation when the input field loses focus.
      * If not set, it will take the value of [[ActiveForm::validateOnBlur]].
      */
     public $validateOnBlur;
     /**
-     * @var boolean whether to perform validation while the user is typing in the input field.
+     * @var bool whether to perform validation while the user is typing in the input field.
      * If not set, it will take the value of [[ActiveForm::validateOnType]].
      * @see validationDelay
      */
     public $validateOnType;
     /**
-     * @var integer number of milliseconds that the validation should be delayed when the user types in the field
+     * @var int number of milliseconds that the validation should be delayed when the user types in the field
      * and [[validateOnType]] is set `true`.
      * If not set, it will take the value of [[ActiveForm::validationDelay]].
      */
@@ -151,7 +153,6 @@ class ActiveField extends Component
      * `$options` parameters of the `input*` methods.
      */
     private $_inputId;
-
     /**
      * @var bool if "for" field label attribute should be skipped.
      */
@@ -372,7 +373,7 @@ class ActiveField extends Component
      *
      * The following special options are recognized:
      *
-     * - `maxlength`: integer|boolean, when `maxlength` is set `true` and the model attribute is validated
+     * - `maxlength`: int|bool, when `maxlength` is set `true` and the model attribute is validated
      *   by a string validator, the `maxlength` option will take the value of [[\yii\validators\StringValidator::max]].
      *   This is available since version 2.0.3.
      *
@@ -500,7 +501,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @param boolean $enclosedByLabel whether to enclose the radio within the label.
+     * @param bool $enclosedByLabel whether to enclose the radio within the label.
      * If `true`, the method will still use [[template]] to layout the radio button and the error message
      * except that the radio is enclosed by the label tag.
      * @return $this the field object itself.
@@ -546,7 +547,7 @@ class ActiveField extends Component
      *
      * If you set a custom `id` for the input element, you may need to adjust the [[$selectors]] accordingly.
      *
-     * @param boolean $enclosedByLabel whether to enclose the checkbox within the label.
+     * @param bool $enclosedByLabel whether to enclose the checkbox within the label.
      * If `true`, the method will still use [[template]] to layout the checkbox and the error message
      * except that the checkbox is enclosed by the label tag.
      * @return $this the field object itself.
@@ -697,7 +698,7 @@ class ActiveField extends Component
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
-        if (in_array('yii\widgets\InputWidget', class_parents($class)) && isset($config['options'])) {
+        if (isset($config['options']) && isset(class_parents($class)['yii\widgets\InputWidget'])) {
             $this->adjustLabelFor($config['options']);
         }
         $this->parts['{input}'] = $class::widget($config);

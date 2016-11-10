@@ -72,8 +72,8 @@ body { background: #f00; }
 </style>
 ```
 
-If you want to specify additional properties of the style tag, pass an array of name-values to the third argument.
-If you need to make sure there's only a single style tag use fourth argument as was mentioned in meta tags description.
+If you want to specify additional properties of the style tag, pass an array of name-values to the second argument.
+If you need to make sure there's only a single style tag use third argument as was mentioned in meta tags description.
 
 ```php
 $this->registerCssFile("http://example.com/css/themes/black-and-white.css", [

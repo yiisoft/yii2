@@ -82,7 +82,7 @@ class VerbFilter extends Behavior
 
     /**
      * @param ActionEvent $event
-     * @return boolean
+     * @return bool
      * @throws MethodNotAllowedHttpException when the request method is not allowed.
      */
     public function beforeAction($event)

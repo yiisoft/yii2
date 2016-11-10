@@ -16,7 +16,7 @@ use yii\di\Instance;
 /**
  * FragmentCache is used by [[\yii\base\View]] to provide caching of page fragments.
  *
- * @property string|boolean $cachedContent The cached content. False is returned if valid content is not found
+ * @property string|false $cachedContent The cached content. False is returned if valid content is not found
  * in the cache. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -32,7 +32,7 @@ class FragmentCache extends Widget
      */
     public $cache = 'cache';
     /**
-     * @var integer number of seconds that the data can remain valid in cache.
+     * @var int number of seconds that the data can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      */
     public $duration = 60;
@@ -66,7 +66,7 @@ class FragmentCache extends Widget
      */
     public $variations;
     /**
-     * @var boolean whether to enable the fragment cache. You may use this property to turn on and off
+     * @var bool whether to enable the fragment cache. You may use this property to turn on and off
      * the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
      */
     public $enabled = true;
@@ -126,7 +126,7 @@ class FragmentCache extends Widget
     }
 
     /**
-     * @var string|boolean the cached content. False if the content is not cached.
+     * @var string|bool the cached content. False if the content is not cached.
      */
     private $_content;
 

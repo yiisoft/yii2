@@ -58,6 +58,8 @@ use yii\di\Instance;
  * to be the total number of rows (without pagination). And if you want to use the sorting feature,
  * you must configure the [[sort]] property so that the provider knows which columns can be sorted.
  *
+ * For more details and usage information on SqlDataProvider, see the [guide article on data providers](guide:output-data-providers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

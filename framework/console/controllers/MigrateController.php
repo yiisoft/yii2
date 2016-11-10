@@ -101,7 +101,7 @@ class MigrateController extends BaseMigrateController
         'create_junction' => '@yii/views/createTableMigration.php',
     ];
     /**
-     * @var boolean indicates whether the table names generated should consider
+     * @var bool indicates whether the table names generated should consider
      * the `tablePrefix` setting of the DB connection. For example, if the table
      * name is `post` the generator wil return `{{%post}}`.
      * @since 2.0.8
@@ -161,7 +161,7 @@ class MigrateController extends BaseMigrateController
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
@@ -269,8 +269,8 @@ class MigrateController extends BaseMigrateController
         $table = null;
         if (preg_match('/^create_junction(?:_table_for_|_for_|_)(.+)_and_(.+)_tables?$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['create_junction'];
-            $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
-            $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
+            $firstTable = $matches[1];
+            $secondTable = $matches[2];
 
             $fields = array_merge(
                 [
@@ -293,30 +293,57 @@ class MigrateController extends BaseMigrateController
                 ]
             );
 
-            $foreignKeys[$firstTable . '_id'] = $firstTable;
-            $foreignKeys[$secondTable . '_id'] = $secondTable;
+            $foreignKeys[$firstTable . '_id']['table'] = $firstTable;
+            $foreignKeys[$secondTable . '_id']['table'] = $secondTable;
+            $foreignKeys[$firstTable . '_id']['column'] = null;
+            $foreignKeys[$secondTable . '_id']['column'] = null;
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
-            $table = mb_strtolower($matches[2], Yii::$app->charset);
+            $table = $matches[2];
         } elseif (preg_match('/^drop_(.+)_columns?_from_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['drop_column'];
-            $table = mb_strtolower($matches[2], Yii::$app->charset);
+            $table = $matches[2];
         } elseif (preg_match('/^create_(.+)_table$/', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['create_table'];
-            $table = mb_strtolower($matches[1], Yii::$app->charset);
+            $table = $matches[1];
         } elseif (preg_match('/^drop_(.+)_table$/', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['drop_table'];
-            $table = mb_strtolower($matches[1], Yii::$app->charset);
+            $table = $matches[1];
         }
 
-        foreach ($foreignKeys as $column => $relatedTable) {
+        foreach ($foreignKeys as $column => $foreignKey) {
+            $relatedColumn = $foreignKey['column'];
+            $relatedTable = $foreignKey['table'];
+            // Since 2.0.11 if related column name is not specified,
+            // we're trying to get it from table schema
+            // @see https://github.com/yiisoft/yii2/issues/12748
+            if ($relatedColumn === null) {
+                $relatedColumn = 'id';
+                try {
+                    $this->db = Instance::ensure($this->db, Connection::className());
+                    $relatedTableSchema = $this->db->getTableSchema($relatedTable);
+                    if ($relatedTableSchema !== null) {
+                        $primaryKeyCount = count($relatedTableSchema->primaryKey);
+                        if ($primaryKeyCount === 1) {
+                            $relatedColumn = $relatedTableSchema->primaryKey[0];
+                        } elseif ($primaryKeyCount > 1) {
+                            $this->stdout("Related table for field \"{$column}\" exists, but primary key is composite. Default name \"id\" will be used for related field\n", Console::FG_YELLOW);
+                        } elseif ($primaryKeyCount === 0) {
+                            $this->stdout("Related table for field \"{$column}\" exists, but does not have a primary key. Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
+                        }
+                    }
+                } catch (\ReflectionException $e) {
+                    $this->stdout("Cannot initialize database component to try reading referenced table schema for field \"{$column}\". Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
+                }
+            }
             $foreignKeys[$column] = [
                 'idx' => $this->generateTableName("idx-$table-$column"),
                 'fk' => $this->generateTableName("fk-$table-$column"),
                 'relatedTable' => $this->generateTableName($relatedTable),
+                'relatedColumn' => $relatedColumn,
             ];
         }
 
@@ -363,10 +390,15 @@ class MigrateController extends BaseMigrateController
 
             foreach ($chunks as $i => &$chunk) {
                 if (strpos($chunk, 'foreignKey') === 0) {
-                    preg_match('/foreignKey\((\w*)\)/', $chunk, $matches);
-                    $foreignKeys[$property] = isset($matches[1])
-                        ? $matches[1]
-                        : preg_replace('/_id$/', '', $property);
+                    preg_match('/foreignKey\((\w*)\s?(\w*)\)/', $chunk, $matches);
+                    $foreignKeys[$property] = [
+                        'table' => isset($matches[1])
+                            ? $matches[1]
+                            : preg_replace('/_id$/', '', $property),
+                        'column' => !empty($matches[2])
+                            ? $matches[2]
+                            : null,
+                    ];
 
                     unset($chunks[$i]);
                     continue;

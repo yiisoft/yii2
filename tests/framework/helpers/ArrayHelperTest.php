@@ -142,6 +142,47 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals('defaultValue', $default);
     }
 
+    public function testRemoveValueMultiple()
+    {
+        $array = [
+            'Bob' => 'Dylan',
+            'Michael' => 'Jackson',
+            'Mick' => 'Jagger',
+            'Janet' => 'Jackson'
+        ];
+
+        $removed = ArrayHelper::removeValue($array, 'Jackson');
+
+        $this->assertEquals([
+            'Bob' => 'Dylan',
+            'Mick' => 'Jagger'
+        ], $array);
+        $this->assertEquals([
+            'Michael' => 'Jackson',
+            'Janet' => 'Jackson'
+        ], $removed);
+    }
+
+    public function testRemoveValueNotExisting()
+    {
+        $array = [
+            'Bob' => 'Dylan',
+            'Michael' => 'Jackson',
+            'Mick' => 'Jagger',
+            'Janet' => 'Jackson'
+        ];
+
+        $removed = ArrayHelper::removeValue($array, 'Marley');
+
+        $this->assertEquals([
+            'Bob' => 'Dylan',
+            'Michael' => 'Jackson',
+            'Mick' => 'Jagger',
+            'Janet' => 'Jackson'
+        ], $array);
+        $this->assertEquals([], $removed);
+    }
+
     public function testMultisort()
     {
         // single key

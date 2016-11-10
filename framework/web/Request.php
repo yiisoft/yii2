@@ -21,6 +21,8 @@ use yii\helpers\StringHelper;
  * Request is configured as an application component in [[\yii\web\Application]] by default.
  * You can access that instance via `Yii::$app->request`.
  *
+ * For more details and usage information on Request, see the [guide article on requests](guide:runtime-requests).
+ *
  * @property string $absoluteUrl The currently requested absolute URL. This property is read-only.
  * @property array $acceptableContentTypes The content types ordered by the quality score. Types with the
  * highest scores will be returned first. The array keys are the content types, while the array values are the
@@ -41,26 +43,28 @@ use yii\helpers\StringHelper;
  * if no such header is sent. This property is read-only.
  * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
- * @property string $hostInfo Schema and hostname part (with port number if needed) of the request URL (e.g.
- * `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
- * @property boolean $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
- * @property boolean $isDelete Whether this is a DELETE request. This property is read-only.
- * @property boolean $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
+ * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
+ * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+ * @property string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`). This
+ * property is read-only.
+ * @property bool $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
+ * @property bool $isDelete Whether this is a DELETE request. This property is read-only.
+ * @property bool $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
  * read-only.
- * @property boolean $isGet Whether this is a GET request. This property is read-only.
- * @property boolean $isHead Whether this is a HEAD request. This property is read-only.
- * @property boolean $isOptions Whether this is a OPTIONS request. This property is read-only.
- * @property boolean $isPatch Whether this is a PATCH request. This property is read-only.
- * @property boolean $isPjax Whether this is a PJAX request. This property is read-only.
- * @property boolean $isPost Whether this is a POST request. This property is read-only.
- * @property boolean $isPut Whether this is a PUT request. This property is read-only.
- * @property boolean $isSecureConnection If the request is sent via secure channel (https). This property is
+ * @property bool $isGet Whether this is a GET request. This property is read-only.
+ * @property bool $isHead Whether this is a HEAD request. This property is read-only.
+ * @property bool $isOptions Whether this is a OPTIONS request. This property is read-only.
+ * @property bool $isPatch Whether this is a PATCH request. This property is read-only.
+ * @property bool $isPjax Whether this is a PJAX request. This property is read-only.
+ * @property bool $isPost Whether this is a POST request. This property is read-only.
+ * @property bool $isPut Whether this is a PUT request. This property is read-only.
+ * @property bool $isSecureConnection If the request is sent via secure channel (https). This property is
  * read-only.
  * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
  * turned into upper case. This property is read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
- * @property integer $port Port number for insecure requests.
+ * @property int $port Port number for insecure requests.
  * @property array $queryParams The request GET parameter values.
  * @property string $queryString Part of the request URL that is after the question mark. This property is
  * read-only.
@@ -68,9 +72,9 @@ use yii\helpers\StringHelper;
  * @property string|null $referrer URL referrer, null if not available. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
- * @property integer $securePort Port number for secure requests.
+ * @property int $securePort Port number for secure requests.
  * @property string $serverName Server name, null if not available. This property is read-only.
- * @property integer|null $serverPort Server port number, null if not available. This property is read-only.
+ * @property int|null $serverPort Server port number, null if not available. This property is read-only.
  * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
  * @property string|null $userAgent User agent, null if not available. This property is read-only.
  * @property string|null $userHost User host name, null if not available. This property is read-only.
@@ -91,7 +95,7 @@ class Request extends \yii\base\Request
     const CSRF_MASK_LENGTH = 8;
 
     /**
-     * @var boolean whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
+     * @var bool whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
      * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
      * from the same application. If not, a 400 HTTP exception will be raised.
      *
@@ -118,13 +122,13 @@ class Request extends \yii\base\Request
      */
     public $csrfCookie = ['httpOnly' => true];
     /**
-     * @var boolean whether to use cookie to persist CSRF token. If false, CSRF token will be stored
+     * @var bool whether to use cookie to persist CSRF token. If false, CSRF token will be stored
      * in session under the name of [[csrfParam]]. Note that while storing CSRF tokens in session increases
      * security, it requires starting a session for every page, which will degrade your site performance.
      */
     public $enableCsrfCookie = true;
     /**
-     * @var boolean whether cookies should be validated to ensure they are not tampered. Defaults to true.
+     * @var bool whether cookies should be validated to ensure they are not tampered. Defaults to true.
      */
     public $enableCookieValidation = true;
     /**
@@ -245,7 +249,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is a GET request.
-     * @return boolean whether this is a GET request.
+     * @return bool whether this is a GET request.
      */
     public function getIsGet()
     {
@@ -254,7 +258,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is an OPTIONS request.
-     * @return boolean whether this is a OPTIONS request.
+     * @return bool whether this is a OPTIONS request.
      */
     public function getIsOptions()
     {
@@ -263,7 +267,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is a HEAD request.
-     * @return boolean whether this is a HEAD request.
+     * @return bool whether this is a HEAD request.
      */
     public function getIsHead()
     {
@@ -272,7 +276,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is a POST request.
-     * @return boolean whether this is a POST request.
+     * @return bool whether this is a POST request.
      */
     public function getIsPost()
     {
@@ -281,7 +285,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is a DELETE request.
-     * @return boolean whether this is a DELETE request.
+     * @return bool whether this is a DELETE request.
      */
     public function getIsDelete()
     {
@@ -290,7 +294,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is a PUT request.
-     * @return boolean whether this is a PUT request.
+     * @return bool whether this is a PUT request.
      */
     public function getIsPut()
     {
@@ -299,7 +303,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is a PATCH request.
-     * @return boolean whether this is a PATCH request.
+     * @return bool whether this is a PATCH request.
      */
     public function getIsPatch()
     {
@@ -312,7 +316,7 @@ class Request extends \yii\base\Request
      * Note that jQuery doesn't set the header in case of cross domain
      * requests: https://stackoverflow.com/questions/8163703/cross-domain-ajax-doesnt-send-x-requested-with-header
      *
-     * @return boolean whether this is an AJAX (XMLHttpRequest) request.
+     * @return bool whether this is an AJAX (XMLHttpRequest) request.
      */
     public function getIsAjax()
     {
@@ -321,7 +325,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is a PJAX request
-     * @return boolean whether this is a PJAX request
+     * @return bool whether this is a PJAX request
      */
     public function getIsPjax()
     {
@@ -330,7 +334,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns whether this is an Adobe Flash or Flex request.
-     * @return boolean whether this is an Adobe Flash or Adobe Flex request.
+     * @return bool whether this is an Adobe Flash or Adobe Flex request.
      */
     public function getIsFlash()
     {
@@ -521,14 +525,15 @@ class Request extends \yii\base\Request
     }
 
     private $_hostInfo;
+    private $_hostName;
 
     /**
      * Returns the schema and host part of the current request URL.
      * The returned URL does not have an ending slash.
      * By default this is determined based on the user request information.
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
-     * @return string schema and hostname part (with port number if needed) of the request URL (e.g. `http://www.yiiframework.com`),
-     * null if can't be obtained from `$_SERVER` and wasn't set.
+     * @return string|null schema and hostname part (with port number if needed) of the request URL
+     * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * @see setHostInfo()
      */
     public function getHostInfo()
@@ -554,11 +559,28 @@ class Request extends \yii\base\Request
      * Sets the schema and host part of the application URL.
      * This setter is provided in case the schema and hostname cannot be determined
      * on certain Web servers.
-     * @param string $value the schema and host part of the application URL. The trailing slashes will be removed.
+     * @param string|null $value the schema and host part of the application URL. The trailing slashes will be removed.
      */
     public function setHostInfo($value)
     {
+        $this->_hostName = null;
         $this->_hostInfo = $value === null ? null : rtrim($value, '/');
+    }
+
+    /**
+     * Returns the host part of the current request URL.
+     * Value is calculated from current [[getHostInfo()|hostInfo]] property.
+     * @return string|null hostname part of the request URL (e.g. `www.yiiframework.com`)
+     * @see getHostInfo()
+     * @since 2.0.10
+     */
+    public function getHostName()
+    {
+        if ($this->_hostName === null) {
+            $this->_hostName = parse_url($this->getHostInfo(), PHP_URL_HOST);
+        }
+
+        return $this->_hostName;
     }
 
     private $_baseUrl;
@@ -788,7 +810,7 @@ class Request extends \yii\base\Request
      * Resolves the request URI portion for the currently requested URL.
      * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
      * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
-     * @return string|boolean the request URI portion for the currently requested URL.
+     * @return string|bool the request URI portion for the currently requested URL.
      * Note that the URI returned is URL-encoded.
      * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
      */
@@ -824,7 +846,7 @@ class Request extends \yii\base\Request
 
     /**
      * Return if the request is sent via secure channel (https).
-     * @return boolean if the request is sent via secure channel (https)
+     * @return bool if the request is sent via secure channel (https)
      */
     public function getIsSecureConnection()
     {
@@ -843,7 +865,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the server port number.
-     * @return integer|null server port number, null if not available
+     * @return int|null server port number, null if not available
      */
     public function getServerPort()
     {
@@ -908,7 +930,7 @@ class Request extends \yii\base\Request
      * Returns the port to use for insecure requests.
      * Defaults to 80, or the port specified by the server if the current
      * request is insecure.
-     * @return integer port number for insecure requests.
+     * @return int port number for insecure requests.
      * @see setPort()
      */
     public function getPort()
@@ -924,7 +946,7 @@ class Request extends \yii\base\Request
      * Sets the port to use for insecure requests.
      * This setter is provided in case a custom port is necessary for certain
      * server configurations.
-     * @param integer $value port number.
+     * @param int $value port number.
      */
     public function setPort($value)
     {
@@ -940,7 +962,7 @@ class Request extends \yii\base\Request
      * Returns the port to use for secure requests.
      * Defaults to 443, or the port specified by the server if the current
      * request is secure.
-     * @return integer port number for secure requests.
+     * @return int port number for secure requests.
      * @see setSecurePort()
      */
     public function getSecurePort()
@@ -956,7 +978,7 @@ class Request extends \yii\base\Request
      * Sets the port to use for secure requests.
      * This setter is provided in case a custom port is necessary for certain
      * server configurations.
-     * @param integer $value port number.
+     * @param int $value port number.
      */
     public function setSecurePort($value)
     {
@@ -1270,7 +1292,7 @@ class Request extends \yii\base\Request
      *
      * This token is generated in a way to prevent [BREACH attacks](http://breachattack.com/). It may be passed
      * along via a hidden field of an HTML form or an HTTP header value to support CSRF validation.
-     * @param boolean $regenerate whether to regenerate CSRF token. When this parameter is true, each time
+     * @param bool $regenerate whether to regenerate CSRF token. When this parameter is true, each time
      * this method is called, a new CSRF token will be generated and persisted (in session or cookie).
      * @return string the token used to perform CSRF validation.
      */
@@ -1376,7 +1398,7 @@ class Request extends \yii\base\Request
      * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.
      * This parameter is available since version 2.0.4.
-     * @return boolean whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
+     * @return bool whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
     public function validateCsrfToken($token = null)
     {
@@ -1401,7 +1423,7 @@ class Request extends \yii\base\Request
      *
      * @param string $token
      * @param string $trueToken
-     * @return boolean
+     * @return bool
      */
     private function validateCsrfTokenInternal($token, $trueToken)
     {

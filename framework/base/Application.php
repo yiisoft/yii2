@@ -12,6 +12,8 @@ use Yii;
 /**
  * Application is the base class for all application classes.
  *
+ * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
+ *
  * @property \yii\web\AssetManager $assetManager The asset manager application component. This property is
  * read-only.
  * @property \yii\rbac\ManagerInterface $authManager The auth manager application component. Null is returned
@@ -95,10 +97,6 @@ abstract class Application extends Module
      */
     public $name = 'My Application';
     /**
-     * @var string the version of this application.
-     */
-    public $version = '1.0';
-    /**
      * @var string the charset currently used for the application.
      */
     public $charset = 'UTF-8';
@@ -120,7 +118,7 @@ abstract class Application extends Module
      */
     public $controller;
     /**
-     * @var string|boolean the layout that should be applied for views in this application. Defaults to 'main'.
+     * @var string|bool the layout that should be applied for views in this application. Defaults to 'main'.
      * If this is false, layout will be disabled.
      */
     public $layout = 'main';
@@ -176,7 +174,7 @@ abstract class Application extends Module
      */
     public $bootstrap = [];
     /**
-     * @var integer the current application state during a request handling life cycle.
+     * @var int the current application state during a request handling life cycle.
      * This property is managed by the application. Do not modify this property.
      */
     public $state;
@@ -362,7 +360,7 @@ abstract class Application extends Module
     /**
      * Runs the application.
      * This is the main entrance of an application.
-     * @return integer the exit status (0 means normal, non-zero values mean abnormal)
+     * @return int the exit status (0 means normal, non-zero values mean abnormal)
      */
     public function run()
     {
@@ -627,7 +625,7 @@ abstract class Application extends Module
      * Terminates the application.
      * This method replaces the `exit()` function by ensuring the application life cycle is completed
      * before terminating the application.
-     * @param integer $status the exit status (value 0 means normal exit while other values mean abnormal exit).
+     * @param int $status the exit status (value 0 means normal exit while other values mean abnormal exit).
      * @param Response $response the response to be sent. If not set, the default application [[response]] component will be used.
      * @throws ExitException if the application is in testing mode
      */

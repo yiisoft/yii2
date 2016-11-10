@@ -15,7 +15,12 @@ use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
 
 /**
- * This trait provides unit tests shared by the different AR implementations
+ * This trait provides unit tests shared by the different AR implementations.
+ *
+ * It is used directly in the unit tests for database active records in `tests/framework/db/ActiveRecordTest.php`
+ * but also used in the test suites of `redis`, `mongodb`, `elasticsearch` and `sphinx` AR implementations
+ * in the extensions.
+ * @see https://github.com/yiisoft/yii2-redis/blob/a920547708c4a7091896923abc2499bc8c1c0a3b/tests/bootstrap.php#L17-L26
  */
 trait ActiveRecordTestTrait
 {
@@ -1210,4 +1215,68 @@ trait ActiveRecordTestTrait
         $this->assertTrue(isset($items[4]));
         $this->assertTrue(isset($items[5]));
     }
+
+    public function testAttributeAccess()
+    {
+        /* @var $customerClass \yii\db\ActiveRecordInterface */
+        $customerClass = $this->getCustomerClass();
+        $model = new $customerClass();
+
+        $this->assertTrue($model->canSetProperty('name'));
+        $this->assertTrue($model->canGetProperty('name'));
+        $this->assertFalse($model->canSetProperty('unExistingColumn'));
+        $this->assertFalse(isset($model->name));
+
+        $model->name = 'foo';
+        $this->assertTrue(isset($model->name));
+        unset($model->name);
+        $this->assertNull($model->name);
+
+        // @see https://github.com/yiisoft/yii2-gii/issues/190
+        $baseModel = new $customerClass();
+        $this->assertFalse($baseModel->hasProperty('unExistingColumn'));
+
+
+        /* @var $customer ActiveRecord */
+        $customer = new $customerClass();
+        $this->assertTrue($customer instanceof $customerClass);
+
+        $this->assertTrue($customer->canGetProperty('id'));
+        $this->assertTrue($customer->canSetProperty('id'));
+
+        // tests that we really can get and set this property
+        $this->assertNull($customer->id);
+        $customer->id = 10;
+        $this->assertNotNull($customer->id);
+
+        // Let's test relations
+        $this->assertTrue($customer->canGetProperty('orderItems'));
+        $this->assertFalse($customer->canSetProperty('orderItems'));
+
+        // Newly created model must have empty relation
+        $this->assertSame([], $customer->orderItems);
+
+        // does it still work after accessing the relation?
+        $this->assertTrue($customer->canGetProperty('orderItems'));
+        $this->assertFalse($customer->canSetProperty('orderItems'));
+
+        try {
+
+            /* @var $itemClass \yii\db\ActiveRecordInterface */
+            $itemClass = $this->getItemClass();
+            $customer->orderItems = [new $itemClass()];
+            $this->fail('setter call above MUST throw Exception');
+
+        } catch (\Exception $e) {
+            // catch exception "Setting read-only property"
+            $this->assertInstanceOf('yii\base\InvalidCallException', $e);
+        }
+
+        // related attribute $customer->orderItems didn't change cause it's read-only
+        $this->assertSame([], $customer->orderItems);
+
+        $this->assertFalse($customer->canGetProperty('non_existing_property'));
+        $this->assertFalse($customer->canSetProperty('non_existing_property'));
+    }
+
 }

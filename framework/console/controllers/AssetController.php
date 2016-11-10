@@ -123,7 +123,7 @@ class AssetController extends Controller
      */
     public $cssCompressor = 'java -jar yuicompressor.jar --type css {from} -o {to}';
     /**
-     * @var boolean whether to delete asset source files after compression.
+     * @var bool whether to delete asset source files after compression.
      * This option affects only those bundles, which have [[\yii\web\AssetBundle::sourcePath]] is set.
      * @since 2.0.10
      */
@@ -678,7 +678,7 @@ EOD;
     /**
      * Creates template of configuration file for [[actionCompress]].
      * @param string $configFile output file name.
-     * @return integer CLI exit code
+     * @return int CLI exit code
      * @throws \yii\console\Exception on failure.
      */
     public function actionTemplate($configFile)
@@ -763,7 +763,7 @@ EOD;
 
     /**
      * @param AssetBundle $bundle
-     * @return boolean whether asset bundle external or not.
+     * @return bool whether asset bundle external or not.
      */
     private function isBundleExternal($bundle)
     {

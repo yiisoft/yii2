@@ -90,6 +90,8 @@ use yii\helpers\ArrayHelper;
  * $lister = new UserLister($finder);
  * ```
  *
+ * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
+ *
  * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
  * definition or instance). This property is read-only.
  *
@@ -280,7 +282,7 @@ class Container extends Component
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
      * @param string $class class name, interface name or alias name
-     * @return boolean whether the container has the definition of the specified name..
+     * @return bool whether the container has the definition of the specified name..
      * @see set()
      */
     public function has($class)
@@ -291,8 +293,8 @@ class Container extends Component
     /**
      * Returns a value indicating whether the given name corresponds to a registered singleton.
      * @param string $class class name, interface name or alias name
-     * @param boolean $checkInstance whether to check if the singleton has been instantiated.
-     * @return boolean whether the given name corresponds to a registered singleton. If `$checkInstance` is true,
+     * @param bool $checkInstance whether to check if the singleton has been instantiated.
+     * @return bool whether the given name corresponds to a registered singleton. If `$checkInstance` is true,
      * the method should return a value indicating whether the singleton has been instantiated.
      */
     public function hasSingleton($class, $checkInstance = false)

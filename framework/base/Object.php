@@ -161,7 +161,7 @@ class Object implements Configurable
      *
      * Note that if the property is not defined, false will be returned.
      * @param string $name the property name or the event name
-     * @return boolean whether the named property is set (not null).
+     * @return bool whether the named property is set (not null).
      * @see http://php.net/manual/en/function.isset.php
      */
     public function __isset($name)
@@ -220,8 +220,8 @@ class Object implements Configurable
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      *
      * @param string $name the property name
-     * @param boolean $checkVars whether to treat member variables as properties
-     * @return boolean whether the property is defined
+     * @param bool $checkVars whether to treat member variables as properties
+     * @return bool whether the property is defined
      * @see canGetProperty()
      * @see canSetProperty()
      */
@@ -239,8 +239,8 @@ class Object implements Configurable
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      *
      * @param string $name the property name
-     * @param boolean $checkVars whether to treat member variables as properties
-     * @return boolean whether the property can be read
+     * @param bool $checkVars whether to treat member variables as properties
+     * @return bool whether the property can be read
      * @see canSetProperty()
      */
     public function canGetProperty($name, $checkVars = true)
@@ -257,8 +257,8 @@ class Object implements Configurable
      * - the class has a member variable with the specified name (when `$checkVars` is true);
      *
      * @param string $name the property name
-     * @param boolean $checkVars whether to treat member variables as properties
-     * @return boolean whether the property can be written
+     * @param bool $checkVars whether to treat member variables as properties
+     * @return bool whether the property can be written
      * @see canGetProperty()
      */
     public function canSetProperty($name, $checkVars = true)
@@ -272,7 +272,7 @@ class Object implements Configurable
      * The default implementation is a call to php function `method_exists()`.
      * You may override this method when you implemented the php magic method `__call()`.
      * @param string $name the method name
-     * @return boolean whether the method is defined
+     * @return bool whether the method is defined
      */
     public function hasMethod($name)
     {

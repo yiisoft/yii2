@@ -258,7 +258,7 @@ class Schema extends \yii\db\Schema
     /**
      * Determines the PDO type for the given PHP data value.
      * @param mixed $data the data whose PDO type is to be determined
-     * @return integer the PDO type
+     * @return int the PDO type
      * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)

@@ -47,8 +47,8 @@ abstract class DatabaseTestCase extends TestCase
     }
 
     /**
-     * @param  boolean $reset whether to clean up the test database
-     * @param  boolean $open  whether to open and populate test database
+     * @param  bool $reset whether to clean up the test database
+     * @param  bool $open  whether to open and populate test database
      * @return \yii\db\Connection
      */
     public function getConnection($reset = true, $open = true)

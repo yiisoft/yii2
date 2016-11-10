@@ -18,6 +18,8 @@ use yii\helpers\ArrayHelper;
  *
  * QueryBuilder is also used by [[Command]] to build SQL statements such as INSERT, UPDATE, DELETE, CREATE TABLE.
  *
+ * For more details and usage information on QueryBuilder, see the [guide article on query builders](guide:db-query-builder).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -508,7 +510,7 @@ class QueryBuilder extends \yii\base\Object
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns,
      * separate them with commas or use an array to represent them. Each column name will be properly quoted
      * by the method, unless a parenthesis is found in the name.
-     * @param boolean $unique whether to add UNIQUE constraint on the created index.
+     * @param bool $unique whether to add UNIQUE constraint on the created index.
      * @return string the SQL statement for creating a new index.
      */
     public function createIndex($name, $table, $columns, $unique = false)
@@ -547,7 +549,7 @@ class QueryBuilder extends \yii\base\Object
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
      * @return string the SQL statement for checking integrity
@@ -674,7 +676,7 @@ class QueryBuilder extends \yii\base\Object
     /**
      * @param array $columns
      * @param array $params the binding parameters to be populated
-     * @param boolean $distinct
+     * @param bool $distinct
      * @param string $selectOption
      * @return string the SELECT clause built from [[Query::$select]].
      */
@@ -843,8 +845,8 @@ class QueryBuilder extends \yii\base\Object
      * Builds the ORDER BY and LIMIT/OFFSET clauses and appends them to the given SQL.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
      * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param int $limit the limit number. See [[Query::limit]] for more details.
+     * @param int $offset the offset number. See [[Query::offset]] for more details.
      * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
@@ -885,8 +887,8 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * @param integer $limit
-     * @param integer $offset
+     * @param int $limit
+     * @param int $offset
      * @return string the LIMIT and OFFSET clauses
      */
     public function buildLimit($limit, $offset)
@@ -905,7 +907,7 @@ class QueryBuilder extends \yii\base\Object
     /**
      * Checks to see if the given limit is effective.
      * @param mixed $limit the given limit
-     * @return boolean whether the limit is effective
+     * @return bool whether the limit is effective
      */
     protected function hasLimit($limit)
     {
@@ -915,7 +917,7 @@ class QueryBuilder extends \yii\base\Object
     /**
      * Checks to see if the given offset is effective.
      * @param mixed $offset the given offset
-     * @return boolean whether the offset is effective
+     * @return bool whether the offset is effective
      */
     protected function hasOffset($offset)
     {

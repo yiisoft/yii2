@@ -28,7 +28,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
         Schema::TYPE_CHAR => 'nchar(1)',
         Schema::TYPE_STRING => 'nvarchar(255)',
-        Schema::TYPE_TEXT => 'ntext',
+        Schema::TYPE_TEXT => 'nvarchar(max)',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
@@ -66,8 +66,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
      * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param int $limit the limit number. See [[Query::limit]] for more details.
+     * @param int $offset the offset number. See [[Query::offset]] for more details.
      * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
@@ -94,8 +94,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
      * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param int $limit the limit number. See [[Query::limit]] for more details.
+     * @param int $offset the offset number. See [[Query::offset]] for more details.
      * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
@@ -168,7 +168,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
      * @return string the SQL statement for checking integrity
@@ -242,12 +242,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @var boolean whether MSSQL used is old.
+     * @var bool whether MSSQL used is old.
      */
     private $_oldMssql;
 
     /**
-     * @return boolean whether the version of the MSSQL being used is older than 2012.
+     * @return bool whether the version of the MSSQL being used is older than 2012.
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */

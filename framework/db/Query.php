@@ -59,7 +59,7 @@ class Query extends Component implements QueryInterface
      */
     public $selectOption;
     /**
-     * @var boolean whether to select distinct rows of data only. If this is set true,
+     * @var bool whether to select distinct rows of data only. If this is set true,
      * the SELECT clause would be changed to SELECT DISTINCT.
      */
     public $distinct;
@@ -93,7 +93,7 @@ class Query extends Component implements QueryInterface
      */
     public $join;
     /**
-     * @var string|array the condition to be applied in the GROUP BY clause.
+     * @var string|array|Expression the condition to be applied in the GROUP BY clause.
      * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
      */
     public $having;
@@ -156,7 +156,7 @@ class Query extends Component implements QueryInterface
      * }
      * ```
      *
-     * @param integer $batchSize the number of records to be fetched in each batch.
+     * @param int $batchSize the number of records to be fetched in each batch.
      * @param Connection $db the database connection. If not set, the "db" application component will be used.
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
@@ -183,7 +183,7 @@ class Query extends Component implements QueryInterface
      * }
      * ```
      *
-     * @param integer $batchSize the number of records to be fetched in each batch.
+     * @param int $batchSize the number of records to be fetched in each batch.
      * @param Connection $db the database connection. If not set, the "db" application component will be used.
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
@@ -239,7 +239,7 @@ class Query extends Component implements QueryInterface
      * Executes the query and returns a single row of result.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+     * @return array|bool the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
      */
     public function one($db = null)
@@ -295,7 +295,7 @@ class Query extends Component implements QueryInterface
      * Make sure you properly [quote](guide:db-dao#quoting-table-and-column-names) column names in the expression.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given (or null), the `db` application component will be used.
-     * @return integer|string number of records. The result may be a string depending on the
+     * @return int|string number of records. The result may be a string depending on the
      * underlying database engine and to support integer values higher than a 32bit PHP integer can handle.
      */
     public function count($q = '*', $db = null)
@@ -359,7 +359,7 @@ class Query extends Component implements QueryInterface
      * Returns a value indicating whether the query result contains any row of data.
      * @param Connection $db the database connection used to generate the SQL statement.
      * If this parameter is not given, the `db` application component will be used.
-     * @return boolean whether the query result contains any row of data.
+     * @return bool whether the query result contains any row of data.
      */
     public function exists($db = null)
     {
@@ -367,7 +367,7 @@ class Query extends Component implements QueryInterface
         $params = $command->params;
         $command->setSql($command->db->getQueryBuilder()->selectExists($command->getSql()));
         $command->bindValues($params);
-        return (boolean)$command->queryScalar();
+        return (bool) $command->queryScalar();
     }
 
     /**
@@ -375,7 +375,7 @@ class Query extends Component implements QueryInterface
      * Restores the value of select to make this query reusable.
      * @param string|Expression $selectExpression
      * @param Connection|null $db
-     * @return boolean|string
+     * @return bool|string
      */
     protected function queryScalar($selectExpression, $db)
     {
@@ -468,7 +468,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the value indicating whether to SELECT DISTINCT or not.
-     * @param boolean $value whether to SELECT DISTINCT or not.
+     * @param bool $value whether to SELECT DISTINCT or not.
      * @return $this the query object itself
      */
     public function distinct($value = true)
@@ -846,7 +846,7 @@ class Query extends Component implements QueryInterface
     /**
      * Appends a SQL statement using UNION operator.
      * @param string|Query $sql the SQL statement to be appended using UNION
-     * @param boolean $all TRUE if using UNION ALL and FALSE if using UNION
+     * @param bool $all TRUE if using UNION ALL and FALSE if using UNION
      * @return $this the query object itself
      */
     public function union($sql, $all = false)

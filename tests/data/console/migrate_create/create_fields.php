@@ -6,7 +6,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `test`.
+ * Handles the creation of table `{table}`.
  */
 class {$class} extends Migration
 {
@@ -15,7 +15,7 @@ class {$class} extends Migration
      */
     public function up()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{table}', [
             'id' => \$this->primaryKey(),
             'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
             'body' => \$this->text()->notNull(),
@@ -29,7 +29,7 @@ class {$class} extends Migration
      */
     public function down()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{table}');
     }
 }
 

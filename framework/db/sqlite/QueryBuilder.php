@@ -153,7 +153,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Enables or disables integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Meaningless for SQLite.
      * @param string $table the table name. Meaningless for SQLite.
      * @return string the SQL statement for checking integrity

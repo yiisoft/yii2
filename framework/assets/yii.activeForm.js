@@ -100,7 +100,15 @@
          *  - jqXHR: a jqXHR object
          *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
-        ajaxComplete: 'ajaxComplete'
+        ajaxComplete: 'ajaxComplete',
+        /**
+         * afterInit event is triggered after yii activeForm init.
+         * The signature of the event handler should be:
+         *     function (event)
+         * where
+         *  - event: an Event object.
+         */        
+        afterInit: 'afterInit'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveForm::getClientOptions() as well
@@ -124,7 +132,9 @@
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
         validationUrl: undefined,
         // whether to scroll to first visible error after validation.
-        scrollToError: true
+        scrollToError: true,
+        // offset in pixels that should be added when scrolling to the first error.
+        scrollToErrorOffset: 0
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -217,6 +227,8 @@
                     });
                     $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
+                var event = $.Event(events.afterInit);
+                $form.trigger(event);
             });
         },
 
@@ -341,7 +353,7 @@
                         delete messages[i];
                     }
                 }
-                if ($.isEmptyObject(messages) && needAjaxValidation) {
+                if (needAjaxValidation && ($.isEmptyObject(messages) || data.submitting)) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
                     if ($button && $button.length && $button.attr('name')) {
@@ -618,7 +630,12 @@
                 if (data.settings.scrollToError) {
                     var top = $form.find($.map(errorAttributes, function(attribute) {
                         return attribute.input;
-                    }).join(',')).first().closest(':visible').offset().top;
+                    }).join(',')).first().closest(':visible').offset().top - data.settings.scrollToErrorOffset;
+                    if (top < 0) {
+                        top = 0;
+                    } else if (top > $(document).height()) {
+                        top = $(document).height();
+                    }
                     var wtop = $(window).scrollTop();
                     if (top < wtop || top > wtop + $(window).height()) {
                         $(window).scrollTop(top);
@@ -628,9 +645,11 @@
             } else {
                 data.validated = true;
                 if (data.submitObject) {
-                    data.submitObject.trigger("click");
-                } else {
-                    $form.submit();
+                    applyButtonOptions($form, data.submitObject);
+                }
+                $form.submit();
+                if (data.submitObject) {
+                    restoreButtonOptions($form);
                 }
             }
         } else {

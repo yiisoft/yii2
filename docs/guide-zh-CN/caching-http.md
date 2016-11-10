@@ -20,7 +20,7 @@ HTTP 缓存
 /**
  * @param Action $action 当前处理的操作对象
  * @param array $params “params” 属性的值
- * @return integer 页面修改时的 Unix 时间戳
+ * @return int 页面修改时的 Unix 时间戳
  */
 function ($action, $params)
 ```

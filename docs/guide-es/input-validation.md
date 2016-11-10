@@ -176,7 +176,7 @@ La propiedad [[yii\validators\Validator::when|when]] toma un método invocable P
 /**
  * @param Model $model el modelo siendo validado
  * @param string $attribute al atributo siendo validado
- * @return boolean si la regla debe ser aplicada o no
+ * @return bool si la regla debe ser aplicada o no
  */
 function ($model, $attribute)
 ```
@@ -410,7 +410,7 @@ class CountryValidator extends Validator
 }
 ```
 
-Si quieres que tu validador soporte la validación de un valor sin modelo, deberías también sobrescribir 
+Si quieres que tu validador soporte la validación de un valor sin modelo, deberías también sobrescribir
 el método[[yii\validators\Validator::validate()]]. Puedes también sobrescribir [[yii\validators\Validator::validateValue()]]
 en vez de `validateAttribute()` y `validate()` porque por defecto los últimos dos métodos son implementados
 llamando a `validateValue()`.

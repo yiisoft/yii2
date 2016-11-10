@@ -8,9 +8,9 @@ dos métodos de autorización: Filtro de Control de Acceso y Control Basado en R
 ## Filtro de Control de Acceso <span id="access-control-filter"></span>
 
 Filtro de Control de Acceso (ACF) es un único método de autorización implementado como [[yii\filters\AccessControl]], el cual
-es mejor utilizado por aplicaciones que sólo requieran un control de acceso simple. Como su nombre lo indica, ACF es 
+es mejor utilizado por aplicaciones que sólo requieran un control de acceso simple. Como su nombre lo indica, ACF es
 un [filtro](structure-filters.md) de acción que puede ser utilizado en un controlador o en un módulo. Cuando un usuario solicita
-la ejecución de una acción, ACF comprobará una lista de [[yii\filters\AccessControl::rules|reglas de acceso]] 
+la ejecución de una acción, ACF comprobará una lista de [[yii\filters\AccessControl::rules|reglas de acceso]]
 para determinar si el usuario tiene permitido acceder a dicha acción.
 
 El siguiente código muestra cómo utilizar ACF en el controlador `site`:
@@ -48,7 +48,7 @@ class SiteController extends Controller
 
 En el código anterior, ACF es adjuntado al controlador `site` en forma de behavior (comportamiento). Esta es la forma típica de utilizar
 un filtro de acción. La opción `only` especifica que el ACF debe ser aplicado solamente a las acciones `login`, `logout` y `signup`.
-Las acciones restantes en el controlador `site` no están sujetas al control de acceso. La opción `rules` lista 
+Las acciones restantes en el controlador `site` no están sujetas al control de acceso. La opción `rules` lista
 las [[yii\filters\AccessRule|reglas de acceso]], y se lee como a continuación:
 
 - Permite a todos los usuarios invitados (sin autenticar) acceder a las acciones `login` y `signup`. La opción `roles`
@@ -57,7 +57,7 @@ las [[yii\filters\AccessRule|reglas de acceso]], y se lee como a continuación:
   a los "usuarios autenticados".
 
 ACF ejecuta la comprobación de autorización examinando las reglas de acceso una a una desde arriba hacia abajo hasta que encuentra
-una regla que aplique al contexto de ejecución actual. El valor `allow` de la regla que coincida será entonces utilizado 
+una regla que aplique al contexto de ejecución actual. El valor `allow` de la regla que coincida será entonces utilizado
 para juzgar si el usuario está autorizado o no. Si ninguna de las reglas coincide, significa que el usuario NO está autorizado,
 y el ACF detendrá la ejecución de la acción.
 
@@ -97,7 +97,7 @@ La comparación es sensible a mayúsculas. Si la opción está vacía o no defin
      - `?`: coincide con el usuario invitado (sin autenticar)
      - `@`: coincide con el usuario autenticado
 
-   El utilizar otro nombre de rol invocará una llamada a [[yii\web\User::can()]], que requiere habilitar RBAC 
+   El utilizar otro nombre de rol invocará una llamada a [[yii\web\User::can()]], que requiere habilitar RBAC
    (a ser descrito en la próxima subsección). Si la opción está vacía o no definida, significa que la regla se aplica a todos los roles.
 
  * [[yii\filters\AccessRule::ips|ips]]: especifica con qué [[yii\web\Request::userIP|dirección IP del cliente]] coincide esta regla.
@@ -231,7 +231,7 @@ return [
   necesita declararse `authManager` adicionalmente a `config/web.php`.
 > En el caso de yii2-advanced-app, `authManager` sólo debe declararse en `common/config/main.php`.
 
-`DbManager` utiliza cuatro tablas de la BD para almacenar los datos: 
+`DbManager` utiliza cuatro tablas de la BD para almacenar los datos:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: la tabla para almacenar los ítems de autorización. Por defecto "auth_item".
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: la tabla para almacentar la jerarquía de los ítems de autorización. Por defecto "auth_item_child".
@@ -362,10 +362,10 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user el ID de usuario.
+     * @param string|int $user el ID de usuario.
      * @param Item $item el rol o permiso asociado a la regla
      * @param array $params parámetros pasados a ManagerInterface::checkAccess().
-     * @return boolean un valor indicando si la regla permite al rol o permiso con el que está asociado.
+     * @return bool un valor indicando si la regla permite al rol o permiso con el que está asociado.
      */
     public function execute($user, $item, $params)
     {

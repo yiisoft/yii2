@@ -8,9 +8,9 @@ methods: Access Control Filter (ACF) and Role-Based Access Control (RBAC).
 ## Access Control Filter <span id="access-control-filter"></span>
 
 Access Control Filter (ACF) is a simple authorization method implemented as [[yii\filters\AccessControl]] which
-is best used by applications that only need some simple access control. As its name indicates, ACF is 
+is best used by applications that only need some simple access control. As its name indicates, ACF is
 an action [filter](structure-filters.md) that can be used in a controller or a module. While a user is requesting
-to execute an action, ACF will check a list of [[yii\filters\AccessControl::rules|access rules]] 
+to execute an action, ACF will check a list of [[yii\filters\AccessControl::rules|access rules]]
 to determine if the user is allowed to access the requested action.
 
 The code below shows how to use ACF in the `site` controller:
@@ -48,7 +48,7 @@ class SiteController extends Controller
 
 In the code above ACF is attached to the `site` controller as a behavior. This is the typical way of using an action
 filter. The `only` option specifies that the ACF should only be applied to the `login`, `logout` and `signup` actions.
-All other actions in the `site` controller are not subject to the access control. The `rules` option lists 
+All other actions in the `site` controller are not subject to the access control. The `rules` option lists
 the [[yii\filters\AccessRule|access rules]], which reads as follows:
 
 - Allow all guest (not yet authenticated) users to access the `login` and `signup` actions. The `roles` option
@@ -57,7 +57,7 @@ the [[yii\filters\AccessRule|access rules]], which reads as follows:
   "authenticated users".
 
 ACF performs the authorization check by examining the access rules one by one from top to bottom until it finds
-a rule that matches the current execution context. The `allow` value of the matching rule will then be used to 
+a rule that matches the current execution context. The `allow` value of the matching rule will then be used to
 judge if the user is authorized or not. If none of the rules matches, it means the user is NOT authorized,
 and ACF will stop further action execution.
 
@@ -97,7 +97,7 @@ The comparison is case-sensitive. If this option is empty or not set, it means t
      - `?`: matches a guest user (not authenticated yet)
      - `@`: matches an authenticated user
 
-   Using other role names will trigger the invocation of [[yii\web\User::can()]], which requires enabling RBAC 
+   Using other role names will trigger the invocation of [[yii\web\User::can()]], which requires enabling RBAC
    (to be described in the next subsection). If this option is empty or not set, it means this rule applies to all roles.
 
  * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::userIP|client IP addresses]] this rule matches.
@@ -231,7 +231,7 @@ return [
   `authManager` needs to be declared additionally to `config/web.php`.
 > In case of yii2-advanced-app the `authManager` should be declared only once in `common/config/main.php`.
 
-`DbManager` uses four database tables to store its data: 
+`DbManager` uses four database tables to store its data:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: the table for storing authorization items. Defaults to "auth_item".
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: the table for storing authorization item hierarchy. Defaults to "auth_item_child".
@@ -362,10 +362,10 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user the user ID.
+     * @param string|int $user the user ID.
      * @param Item $item the role or permission that this rule is associated with
      * @param array $params parameters passed to ManagerInterface::checkAccess().
-     * @return boolean a value indicating whether the rule permits the role or permission it is associated with.
+     * @return bool a value indicating whether the rule permits the role or permission it is associated with.
      */
     public function execute($user, $item, $params)
     {
@@ -431,7 +431,7 @@ Here is what happens if the current user is John:
 
 ![Access check](images/rbac-access-check-2.png "Access check")
 
-We are starting with the `updatePost` and going through `updateOwnPost`. In order to pass the access check, `AuthorRule` 
+We are starting with the `updatePost` and going through `updateOwnPost`. In order to pass the access check, `AuthorRule`
 should return `true` from its `execute()` method. The method receives its `$params` from the `can()` method call so the value is
 `['post' => $post]`. If everything is fine, we will get to `author` which is assigned to John.
 

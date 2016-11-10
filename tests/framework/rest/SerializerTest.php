@@ -185,6 +185,56 @@ class SerializerTest extends TestCase
                     ['id' => 2, 'username' => 'Tom']
                 ]
             ],
+            [
+                new ArrayDataProvider([
+                    'allModels' => [
+                        'Bob' => ['id' => 1, 'username' => 'Bob'],
+                        'Tom' => ['id' => 2, 'username' => 'Tom']
+                    ],
+                    'pagination' => [
+                        'route' => '/',
+                        'pageSize' => 1,
+                        'page' => 1
+                    ],
+                ]),
+                [
+                    ['id' => 2, 'username' => 'Tom']
+                ]
+            ],
+            [
+                new ArrayDataProvider([
+                    'allModels' => [
+                        ['id' => 1, 'username' => 'Bob'],
+                        ['id' => 2, 'username' => 'Tom']
+                    ],
+                    'pagination' => [
+                        'route' => '/',
+                        'pageSize' => 1,
+                        'page' => 1
+                    ],
+                ]),
+                [
+                    1 => ['id' => 2, 'username' => 'Tom']
+                ],
+                true,
+            ],
+            [
+                new ArrayDataProvider([
+                    'allModels' => [
+                        'Bob' => ['id' => 1, 'username' => 'Bob'],
+                        'Tom' => ['id' => 2, 'username' => 'Tom'],
+                    ],
+                    'pagination' => [
+                        'route' => '/',
+                        'pageSize' => 1,
+                        'page' => 1
+                    ],
+                ]),
+                [
+                    'Tom' => ['id' => 2, 'username' => 'Tom']
+                ],
+                true,
+            ],
             /*[
                 new ArrayDataProvider([
                     'allModels' => [
@@ -210,10 +260,12 @@ class SerializerTest extends TestCase
      *
      * @param \yii\data\DataProviderInterface $dataProvider
      * @param array $expectedResult
+     * @param bool $saveKeys
      */
-    public function testSerializeDataProvider($dataProvider, $expectedResult)
+    public function testSerializeDataProvider($dataProvider, $expectedResult, $saveKeys = false)
     {
         $serializer = new Serializer();
+        $serializer->preserveKeys = $saveKeys;
 
         $this->assertEquals($expectedResult, $serializer->serialize($dataProvider));
     }

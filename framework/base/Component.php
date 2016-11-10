@@ -90,6 +90,8 @@ use Yii;
  * where `as tree` stands for attaching a behavior named `tree`, and the array will be passed to [[\Yii::createObject()]]
  * to create the behavior object.
  *
+ * For more details and usage information on Component, see the [guide article on components](guide:concept-components).
+ *
  * @property Behavior[] $behaviors List of behaviors attached to this component. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -209,7 +211,7 @@ class Component extends Object
      * Do not call this method directly as it is a PHP magic method that
      * will be implicitly called when executing `isset($component->property)`.
      * @param string $name the property name or the event name
-     * @return boolean whether the named property is set
+     * @return bool whether the named property is set
      * @see http://php.net/manual/en/function.isset.php
      */
     public function __isset($name)
@@ -305,9 +307,9 @@ class Component extends Object
      * - an attached behavior has a property of the given name (when `$checkBehaviors` is true).
      *
      * @param string $name the property name
-     * @param boolean $checkVars whether to treat member variables as properties
-     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
-     * @return boolean whether the property is defined
+     * @param bool $checkVars whether to treat member variables as properties
+     * @param bool $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @return bool whether the property is defined
      * @see canGetProperty()
      * @see canSetProperty()
      */
@@ -326,9 +328,9 @@ class Component extends Object
      * - an attached behavior has a readable property of the given name (when `$checkBehaviors` is true).
      *
      * @param string $name the property name
-     * @param boolean $checkVars whether to treat member variables as properties
-     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
-     * @return boolean whether the property can be read
+     * @param bool $checkVars whether to treat member variables as properties
+     * @param bool $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @return bool whether the property can be read
      * @see canSetProperty()
      */
     public function canGetProperty($name, $checkVars = true, $checkBehaviors = true)
@@ -356,9 +358,9 @@ class Component extends Object
      * - an attached behavior has a writable property of the given name (when `$checkBehaviors` is true).
      *
      * @param string $name the property name
-     * @param boolean $checkVars whether to treat member variables as properties
-     * @param boolean $checkBehaviors whether to treat behaviors' properties as properties of this component
-     * @return boolean whether the property can be written
+     * @param bool $checkVars whether to treat member variables as properties
+     * @param bool $checkBehaviors whether to treat behaviors' properties as properties of this component
+     * @return bool whether the property can be written
      * @see canGetProperty()
      */
     public function canSetProperty($name, $checkVars = true, $checkBehaviors = true)
@@ -384,8 +386,8 @@ class Component extends Object
      * - an attached behavior has a method with the given name (when `$checkBehaviors` is true).
      *
      * @param string $name the property name
-     * @param boolean $checkBehaviors whether to treat behaviors' methods as methods of this component
-     * @return boolean whether the property is defined
+     * @param bool $checkBehaviors whether to treat behaviors' methods as methods of this component
+     * @return bool whether the property is defined
      */
     public function hasMethod($name, $checkBehaviors = true)
     {
@@ -435,7 +437,7 @@ class Component extends Object
     /**
      * Returns a value indicating whether there is any handler attached to the named event.
      * @param string $name the event name
-     * @return boolean whether there is any handler attached to the event.
+     * @return bool whether there is any handler attached to the event.
      */
     public function hasEventHandlers($name)
     {
@@ -468,7 +470,7 @@ class Component extends Object
      * @param callable $handler the event handler
      * @param mixed $data the data to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
-     * @param boolean $append whether to append new event handler to the end of the existing
+     * @param bool $append whether to append new event handler to the end of the existing
      * handler list. If false, the new handler will be inserted at the beginning of the existing
      * handler list.
      * @see off()
@@ -489,7 +491,7 @@ class Component extends Object
      * @param string $name event name
      * @param callable $handler the event handler to be removed.
      * If it is null, all handlers attached to the named event will be removed.
-     * @return boolean if a handler is found and detached
+     * @return bool if a handler is found and detached
      * @see on()
      */
     public function off($name, $handler = null)
@@ -650,7 +652,7 @@ class Component extends Object
 
     /**
      * Attaches a behavior to this component.
-     * @param string|integer $name the name of the behavior. If this is an integer, it means the behavior
+     * @param string|int $name the name of the behavior. If this is an integer, it means the behavior
      * is an anonymous one. Otherwise, the behavior is a named one and any existing behavior with the same name
      * will be detached first.
      * @param string|array|Behavior $behavior the behavior to be attached

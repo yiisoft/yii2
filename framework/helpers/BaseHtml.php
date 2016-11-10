@@ -93,7 +93,7 @@ class BaseHtml
      * Encodes special characters into HTML entities.
      * The [[\yii\base\Application::charset|application charset]] will be used for encoding.
      * @param string $content the content to be encoded
-     * @param boolean $doubleEncode whether to encode HTML entities in `$content`. If false,
+     * @param bool $doubleEncode whether to encode HTML entities in `$content`. If false,
      * HTML entities in `$content` will not be further encoded.
      * @return string the encoded content
      * @see decode()
@@ -119,7 +119,7 @@ class BaseHtml
 
     /**
      * Generates a complete HTML tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
+     * @param string|bool|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param string $content the content to be enclosed between the start and end tags. It will not be HTML-encoded.
      * If this is coming from end users, you should consider [[encode()]] it to prevent XSS attacks.
      * @param array $options the HTML tag attributes (HTML options) in terms of name-value pairs.
@@ -146,7 +146,7 @@ class BaseHtml
 
     /**
      * Generates a start tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
+     * @param string|bool|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @param array $options the tag options in terms of name-value pairs. These will be rendered as
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
@@ -165,7 +165,7 @@ class BaseHtml
 
     /**
      * Generates an end tag.
-     * @param string|boolean|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
+     * @param string|bool|null $name the tag name. If $name is `null` or `false`, the corresponding content will be rendered without any tag.
      * @return string the generated end tag
      * @see beginTag()
      * @see tag()
@@ -671,7 +671,7 @@ class BaseHtml
     /**
      * Generates a radio button input.
      * @param string $name the name attribute.
-     * @param boolean $checked whether the radio button should be checked.
+     * @param bool $checked whether the radio button should be checked.
      * @param array $options the tag options in terms of name-value pairs.
      * See [[booleanInput()]] for details about accepted attributes.
      *
@@ -685,7 +685,7 @@ class BaseHtml
     /**
      * Generates a checkbox input.
      * @param string $name the name attribute.
-     * @param boolean $checked whether the checkbox should be checked.
+     * @param bool $checked whether the checkbox should be checked.
      * @param array $options the tag options in terms of name-value pairs.
      * See [[booleanInput()]] for details about accepted attributes.
      *
@@ -700,7 +700,7 @@ class BaseHtml
      * Generates a boolean input.
      * @param string $type the input type. This can be either `radio` or `checkbox`.
      * @param string $name the name attribute.
-     * @param boolean $checked whether the checkbox should be checked.
+     * @param bool $checked whether the checkbox should be checked.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - uncheck: string, the value associated with the uncheck state of the checkbox. When this attribute
@@ -743,7 +743,7 @@ class BaseHtml
     /**
      * Generates a drop-down list.
      * @param string $name the input name
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -792,7 +792,7 @@ class BaseHtml
     /**
      * Generates a list box.
      * @param string $name the input name
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -858,7 +858,7 @@ class BaseHtml
      * A checkbox list allows multiple selection, like [[listBox()]].
      * As a result, the corresponding submitted value is an array.
      * @param string $name the name attribute of each checkbox.
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the data item used to generate the checkboxes.
      * The array keys are the checkbox values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the checkbox list container tag.
@@ -938,7 +938,7 @@ class BaseHtml
      * Generates a list of radio buttons.
      * A radio button list is like a checkbox list, except that it only allows single selection.
      * @param string $name the name attribute of each radio button.
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the data item used to generate the radio buttons.
      * The array keys are the radio button values, while the array values are the corresponding labels.
      * @param array $options options (name => config) for the radio button list container tag.
@@ -1155,8 +1155,8 @@ class BaseHtml
      * - footer: string, the footer HTML for the error summary. Defaults to empty string.
      * - encode: boolean, if set to false then the error messages won't be encoded. Defaults to `true`.
      * - showAllErrors: boolean, if set to true every error message for each attribute will be shown otherwise
-     * only the first error message for each attribute will be shown. Defaults to `false`.
-     * Option is available since 2.0.10.
+     *   only the first error message for each attribute will be shown. Defaults to `false`.
+     *   Option is available since 2.0.10.
      *
      * The rest of the options will be rendered as the attributes of the container tag.
      *
@@ -1645,7 +1645,7 @@ class BaseHtml
 
     /**
      * Generates a list of input fields.
-     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckBoxList()]].
+     * This method is mainly called by [[activeListBox()]], [[activeRadioList()]] and [[activeCheckboxList()]].
      * @param string $type the input type. This can be 'listBox', 'radioList', or 'checkBoxList'.
      * @param Model $model the model object
      * @param string $attribute the attribute name or expression. See [[getAttributeName()]] for the format
@@ -1672,7 +1672,7 @@ class BaseHtml
 
     /**
      * Renders the option tags that can be used by [[dropDownList()]] and [[listBox()]].
-     * @param string|array $selection the selected value(s). String for single or array for multiple selection(s).
+     * @param string|array|null $selection the selected value(s). String for single or array for multiple selection(s).
      * @param array $items the option data items. The array keys are option values, and the array values
      * are the corresponding option labels. The array can also be nested (i.e. some array values are arrays too).
      * For each sub-array, an option group will be generated whose label is the key associated with the sub-array.
@@ -1895,7 +1895,7 @@ class BaseHtml
      * @param array $options the HTML options to be modified.
      * @param string|array $style the new style string (e.g. `'width: 100px; height: 200px'`) or
      * array (e.g. `['width' => '100px', 'height' => '200px']`).
-     * @param boolean $overwrite whether to overwrite existing CSS properties if the new style
+     * @param bool $overwrite whether to overwrite existing CSS properties if the new style
      * contain them too.
      * @see removeCssStyle()
      * @see cssStyleFromArray()

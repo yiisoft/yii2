@@ -57,6 +57,7 @@
         "source": "https://github.com/yiisoft/yii2"
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "replace": {
         "yiisoft/yii2": "self.version"
     },
@@ -75,7 +76,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~4.4",
-        "cebe/indent": "*"
+        "cebe/indent": "~1.0.2"
     },
     "suggest": {
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
@@ -84,6 +85,9 @@
         "psr-4": {
             "yii\\": "framework/"
         }
+    },
+    "config": {
+        "platform": {"php": "5.4"}
     },
     "bin": [
         "framework/yii"

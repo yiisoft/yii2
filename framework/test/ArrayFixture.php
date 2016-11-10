@@ -14,6 +14,8 @@ use yii\base\InvalidConfigException;
 /**
  * ArrayFixture represents arbitrary fixture that can be loaded from PHP files.
  *
+ * For more details and usage information on ArrayFixture, see the [guide article on fixtures](guide:test-fixtures).
+ *
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
  */
@@ -26,7 +28,7 @@ class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, 
      */
     public $data = [];
     /**
-     * @var string|boolean the file path or path alias of the data file that contains the fixture data
+     * @var string|bool the file path or path alias of the data file that contains the fixture data
      * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
