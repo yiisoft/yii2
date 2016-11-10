@@ -1,3 +1,5 @@
+dist: trusty
+
 language: php
 
 php:
@@ -32,6 +34,11 @@ cache:
 
 # try running against postgres 9.3
 addons:
+  apt:
+    packages:
+      - mysql-server-5.6
+      - mysql-client-core-5.6
+      - mysql-client-5.6
   postgresql: "9.3"
 
 # do this even before the actual installation process of the project to be built
