@@ -87,7 +87,7 @@
         }
     },
     "config": {
-        "platform": {"php": "5.4"}
+        "platform": {"php": "5.5"}
     },
     "bin": [
         "framework/yii"
