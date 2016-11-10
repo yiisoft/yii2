@@ -20,6 +20,7 @@ env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
 
 services:
+  - mysql
   - memcached
 
 # faster builds on new travis setup not using sudo
