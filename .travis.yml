@@ -1,3 +1,5 @@
+dist: trusty
+
 language: php
 
 php:
@@ -21,7 +23,7 @@ services:
   - memcached
 
 # faster builds on new travis setup not using sudo
-sudo: false
+sudo: required
 
 # cache vendor dirs
 cache:
@@ -33,6 +35,12 @@ cache:
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
+
+# do this even before the actual installation process of the project to be built
+before_install:
+  - sudo rm -rf ~/.nvm
+  - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+  - sudo apt-get install -y nodejs
 
 install:
   - |
