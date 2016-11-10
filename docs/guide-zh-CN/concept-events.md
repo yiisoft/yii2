@@ -197,7 +197,7 @@ use yii\base\Event;
 
 Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     var_dump($event->sender);  // 显示 "null"
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
 });
 
 Event::trigger(Foo::class, Foo::EVENT_HELLO);

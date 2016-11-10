@@ -78,7 +78,7 @@ HTML
             ],
             [
                 function ($model, $key, $index, $widget) {
-                    return "Item #{$index}: {$model['login']} - Widget: " . $widget->className();
+                    return "Item #{$index}: {$model['login']} - Widget: " . get_class($widget);
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>

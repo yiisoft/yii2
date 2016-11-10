@@ -10,7 +10,7 @@ Yii Framework 2 Change Log
 - Removed methods marked as deprected in 2.0.x (samdark)
 - Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
 - Chg #11397: Minimum required version of PHP is 5.5.0 now (samdark)
-- Chg: Removed `yii\base\Object::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
+- Chg: Removed `yii\base\Object::class` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
 - Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
 - Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
 
