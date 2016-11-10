@@ -39,30 +39,26 @@ class ListViewTest extends TestCase
     {
         $listView = $this->getListView();
 
-        $this->expectOutputString(<<<HTML
+        $this->assertEquals(<<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
 </div>
 HTML
-        );
-
-        $listView->run();
+        , $listView->run());
     }
 
     public function testWidgetOptions()
     {
         $listView = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => '']);
 
-        $this->expectOutputString(<<<HTML
+        $this->assertEquals(<<<HTML
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
 HTML
-        );
-
-        $listView->run();
+        , $listView->run());
     }
 
     public function itemViewOptions()
@@ -103,8 +99,7 @@ HTML
     public function testItemViewOptions($itemView, $expected)
     {
         $listView = $this->getListView(['itemView' => $itemView]);
-        $this->expectOutputString($expected);
-        $listView->run();
+        $this->assertEquals($expected, $listView->run());
     }
 
     public function itemOptions()
@@ -146,7 +141,6 @@ HTML
     public function testItemOptions($itemOptions, $expected)
     {
         $listView = $this->getListView(['itemOptions' => $itemOptions]);
-        $this->expectOutputString($expected);
-        $listView->run();
+        $this->assertEquals($expected, $listView->run());
     }
 }
