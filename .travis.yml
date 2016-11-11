@@ -4,17 +4,6 @@ language: php
 
 php:
   - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
-  - nightly
-  - hhvm
-
-matrix:
-  allow_failures:
-    - php: 7.1
-    - php: nightly
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
@@ -34,12 +23,6 @@ cache:
 
 # try running against postgres 9.3
 addons:
-  apt:
-    packages:
-      - php-pear
-      - mysql-server-5.6
-      - mysql-client-core-5.6
-      - mysql-client-5.6
   postgresql: "9.3"
 
 # do this even before the actual installation process of the project to be built
@@ -47,7 +30,7 @@ before_install:
   - sudo rm -rf ~/.nvm
   - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
   - sudo apt-get install -y nodejs
-  - if [[ $TRAVIS_PHP_VERSION = "5.4" ]]; then echo yes | pecl install apcu-4.0.11; fi
+  - alias mysql='mysql --socket=/run/mysql-5.5/mysqld.sock'
 
 install:
   - |
