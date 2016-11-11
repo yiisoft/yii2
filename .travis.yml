@@ -53,7 +53,7 @@ addons:
 install:
   - |
     if [[ $TRAVIS_PHP_VERSION != '5.6' || $TRAVIS_PHP_VERSION != hhv* ]]; then
-        # disable xdebug for performance reasons when code coverage is not needed
+        # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
   - travis_retry composer self-update && composer --version
@@ -61,14 +61,8 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer update --prefer-dist --no-interaction
-  - |
-    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
-      tests/data/travis/apc-setup.sh
-    fi
-  - |
-    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
-      tests/data/travis/memcache-setup.sh
-    fi
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
 #  - tests/data/travis/cubrid-setup.sh
 
 before_script:
@@ -79,7 +73,16 @@ before_script:
   - psql --version
 
   # initialize databases
-  - mysql -u root -e 'CREATE DATABASE yiitest;';
+  - |
+    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
+      mysql -e 'CREATE DATABASE `yiitest`;'
+    fi
+  - |
+    if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
+      mysql -u root -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;"
+      mysql -u root -e "GRANT ALL ON travis.* TO 'travis'@'%';"
+      mysql -u root -e 'CREATE DATABASE yiitest;';
+    fi
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
   - |
