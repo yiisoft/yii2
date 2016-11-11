@@ -35,8 +35,8 @@ before_install:
   - sudo apt-get install -y nodejs
   - |
     if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
-      sudo pear config-set php_ini /etc/php.ini
-      sudo pecl config-set bin_dir /usr/bin/
+      pear config-set php_ini /etc/php.ini
+      pecl config-set bin_dir /usr/bin/
       yes '' | pecl install apcu-4.0.11
     fi
 
