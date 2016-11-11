@@ -1,3 +1,5 @@
+# faster builds on new travis setup not using sudo
+sudo: false
 language: php
 
 php:
@@ -7,10 +9,27 @@ php:
   - 7.0
   - 7.1
   - nightly
-  - hhvm
 
 matrix:
+  fast_finish: true
+  include:
+    - php: hhvm
+      sudo: true
+      dist: trusty
+      group: edge # Use edge image until the next travis CI image update
+      addons:
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+        - postgresql
+        - redis-server
+      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
   allow_failures:
+    - php: hhvm
     - php: 7.1
     - php: nightly
 
@@ -19,9 +38,6 @@ env:
 
 services:
   - memcached
-
-# faster builds on new travis setup not using sudo
-sudo: false
 
 # cache vendor dirs
 cache:
@@ -36,7 +52,7 @@ addons:
 
 install:
   - |
-    if [ $TRAVIS_PHP_VERSION != '5.6' ]; then
+    if [[ $TRAVIS_PHP_VERSION != '5.6' || $TRAVIS_PHP_VERSION != hhv* ]]; then
         # disable xdebug for performance reasons when code coverage is not needed
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
@@ -45,8 +61,14 @@ install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer update --prefer-dist --no-interaction
-  - tests/data/travis/apc-setup.sh
-  - tests/data/travis/memcache-setup.sh
+  - |
+    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
+      tests/data/travis/apc-setup.sh
+    fi
+  - |
+    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
+      tests/data/travis/memcache-setup.sh
+    fi
 #  - tests/data/travis/cubrid-setup.sh
 
 before_script:
@@ -57,7 +79,7 @@ before_script:
   - psql --version
 
   # initialize databases
-  - mysql -e 'CREATE DATABASE yiitest;';
+  - mysql -u root -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
   - |
