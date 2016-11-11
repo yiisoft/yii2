@@ -12,7 +12,7 @@ namespace yii\base;
  * @author Robert Korulczyk <robert@korulczyk.pl>
  * @since 2.0.11
  */
-trait MutatorsTrait
+trait VirtualPropertiesTrait
 {
 
     /**

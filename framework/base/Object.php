@@ -72,11 +72,11 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Object implements Configurable, MutatorsInterface
+class Object implements Configurable, VirtualPropertiesInterface
 {
 
     use ConfigurableTrait;
-    use MutatorsTrait;
+    use VirtualPropertiesTrait;
 
     /**
      * Returns the fully qualified name of this class.

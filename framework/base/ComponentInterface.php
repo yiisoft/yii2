@@ -13,7 +13,7 @@ namespace yii\base;
  * @author Robert Korulczyk <robert@korulczyk.pl>
  * @since 2.0.11
  */
-interface ComponentInterface extends MutatorsInterface
+interface ComponentInterface extends VirtualPropertiesInterface
 {
     /**
      * Returns a list of behaviors that this component should behave as.
