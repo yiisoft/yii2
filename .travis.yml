@@ -30,7 +30,7 @@ before_install:
   - sudo rm -rf ~/.nvm
   - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
   - sudo apt-get install -y nodejs
-  - ls -la /run/
+  - ls -la /var/run/
   - alias mysql='mysql --socket=/run/mysql-5.5/mysqld.sock'
 
 install:
