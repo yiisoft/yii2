@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -97,7 +98,8 @@ use Yii;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends Object implements ComponentInterface
+class Component extends Object implements BehaviorsInterface
 {
-    use ComponentTrait;
+
+    use BehaviorsTrait;
 }
