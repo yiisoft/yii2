@@ -209,7 +209,7 @@ class MigrateController extends BaseMigrateController
         foreach ($rows as $row) {
             if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
                 $time = str_replace('_', '', $matches[1]);
-                $history['m' . $time] = $row;
+                $history['m' . $time . $matches[2]] = $row;
             }
         }
         ksort($history);
