@@ -196,17 +196,25 @@ class MigrateController extends BaseMigrateController
      */
     protected function getMigrationHistory($limit)
     {
-        if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
+       if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
             $this->createMigrationHistoryTable();
         }
         $query = new Query;
         $rows = $query->select(['version', 'apply_time'])
             ->from($this->migrationTable)
-            ->orderBy('apply_time DESC, version DESC')
             ->limit($limit)
             ->createCommand($this->db)
             ->queryAll();
-        $history = ArrayHelper::map($rows, 'version', 'apply_time');
+        $history = [];
+        foreach ($rows as $row) {
+            if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
+                $time = str_replace('_', '', $matches[1]);
+                $history['m' . $time] = $row;
+            }
+        }
+        ksort($history);
+        $history = array_reverse($history);
+        $history = ArrayHelper::map($history, 'version', 'apply_time');
         unset($history[self::BASE_MIGRATION]);
 
         return $history;
