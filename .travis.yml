@@ -33,6 +33,10 @@ before_install:
   - sudo rm -rf ~/.nvm
   - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
   - sudo apt-get install -y nodejs
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
+      'yes' 'no' | pecl install apcu-4.0.11
+    fi
 
 install:
   - |
@@ -59,7 +63,6 @@ before_script:
   - psql --version
   - node --version
   - npm --version
-  - pear --version
 
   # initialize databases
   - mysql -u root -e 'CREATE DATABASE yiitest;';
