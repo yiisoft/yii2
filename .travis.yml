@@ -59,6 +59,7 @@ before_script:
   - psql --version
   - node --version
   - npm --version
+  - pear --version
 
   # initialize databases
   - mysql -u root -e 'CREATE DATABASE yiitest;';
