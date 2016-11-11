@@ -23,6 +23,11 @@ cache:
 
 # try running against postgres 9.3
 addons:
+  apt:
+    packages:
+      - mysql-server-5.5
+      - mysql-client-core-5.5
+      - mysql-client-5.5
   postgresql: "9.3"
 
 # do this even before the actual installation process of the project to be built
@@ -30,8 +35,6 @@ before_install:
   - sudo rm -rf ~/.nvm
   - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
   - sudo apt-get install -y nodejs
-  - ls -la /var/run/
-  - alias mysql='mysql --socket=/run/mysql-5.5/mysqld.sock'
 
 install:
   - |
