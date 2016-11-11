@@ -79,7 +79,7 @@ before_script:
     fi
   - |
     if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
-      mysql -u root -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;"
+      mysql -u root -e "CREATE USER 'travis'@'127.0.0.1' IDENTIFIED WITH mysql_native_password;"
       mysql -u root -e "GRANT ALL ON *.* TO 'travis'@'%';"
       mysql -u root -e 'CREATE DATABASE yiitest;';
     fi
