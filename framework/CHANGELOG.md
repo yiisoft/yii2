@@ -26,6 +26,7 @@ Yii Framework 2 Change Log
 - Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
 - Enh #12750: `yii\widgets\ListView::itemOptions` can be a closure now (webdevsega, silverfire)
+- Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
 - Enh #12790: Added `scrollToErrorOffset` option for `yii\widgets\ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12798: Changed `yii\cache\Dependency::getHasChanged()` (deprecated, to be removed in 2.1) to `yii\cache\Dependency::isChanged()` (dynasource)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
