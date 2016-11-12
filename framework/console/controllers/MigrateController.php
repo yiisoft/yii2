@@ -206,8 +206,21 @@ class MigrateController extends BaseMigrateController
             ->limit($limit)
             ->createCommand($this->db)
             ->queryAll();
-        $history = ArrayHelper::map($rows, 'version', 'apply_time');
-        unset($history[self::BASE_MIGRATION]);
+        $history = [];
+        foreach ($rows as $row) {
+            if ($row['version'] === self::BASE_MIGRATION) {
+                continue;
+            }
+            if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
+                $time = str_replace('_', '', $matches[1]);
+                $history['m' . $time . $matches[2]] = $row;
+            }
+        }
+        // sort history in desc order
+        uksort($history, function ($a, $b) {
+            return strcasecmp($b, $a);
+        });
+        $history = ArrayHelper::map($history, 'version', 'apply_time');
 
         return $history;
     }
