@@ -18,7 +18,7 @@ namespace yii\base;
 class Response extends Component
 {
     /**
-     * @var integer the exit status. Exit statuses should be in the range 0 to 254.
+     * @var int the exit status. Exit statuses should be in the range 0 to 254.
      * The status 0 means the program terminates successfully.
      */
     public $exitStatus = 0;

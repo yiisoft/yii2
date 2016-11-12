@@ -100,6 +100,14 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
+    /**
+     * Invokes a inaccessible method
+     * @param $object
+     * @param $method
+     * @param array $args
+     * @return mixed
+     * @since 2.0.11
+     */
     protected function invokeMethod($object, $method, $args = [])
     {
         $reflection = new \ReflectionClass($object->className());
@@ -107,6 +115,49 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $method->setAccessible(true);
         return $method->invokeArgs($object, $args);
     }
+
+    /**
+     * Sets an inaccessible object property to a designated value
+     * @param $object
+     * @param $propertyName
+     * @param $value
+     * @param bool $revoke
+     * @since 2.0.11
+     */
+    protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true)
+    {
+        $class = new \ReflectionClass($object);
+        while (!$class->hasProperty($propertyName)) {
+            $class = $class->getParentClass();
+        }
+        $property = $class->getProperty($propertyName);
+        $property->setAccessible(true);
+        $property->setValue($value);
+        if($revoke){
+            $property->setAccessible(false);
+        }
+    }
+
+    /**
+     * Gets an inaccessible object property
+     * @param $object
+     * @param $propertyName
+     * @return mixed
+     */
+    protected function getInaccessibleProperty($object, $propertyName)
+    {
+        $class = new \ReflectionClass($object);
+        while (!$class->hasProperty($propertyName)) {
+            $class = $class->getParentClass();
+        }
+        $property = $class->getProperty($propertyName);
+        $property->setAccessible(true);
+        return $property->getValue($object);
+    }
+
+
+
+
 
 
 }

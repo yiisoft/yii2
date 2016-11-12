@@ -72,7 +72,7 @@ class ActiveForm extends Widget
      */
     public $fieldConfig = [];
     /**
-     * @var boolean whether to perform encoding on the error summary.
+     * @var bool whether to perform encoding on the error summary.
      */
     public $encodeErrorSummary = true;
     /**
@@ -97,17 +97,17 @@ class ActiveForm extends Widget
      */
     public $validatingCssClass = 'validating';
     /**
-     * @var boolean whether to enable client-side data validation.
+     * @var bool whether to enable client-side data validation.
      * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
      */
     public $enableClientValidation = true;
     /**
-     * @var boolean whether to enable AJAX-based data validation.
+     * @var bool whether to enable AJAX-based data validation.
      * If [[ActiveField::enableAjaxValidation]] is set, its value will take precedence for that input field.
      */
     public $enableAjaxValidation = false;
     /**
-     * @var boolean whether to hook up `yii.activeForm` JavaScript plugin.
+     * @var bool whether to hook up `yii.activeForm` JavaScript plugin.
      * This property must be set `true` if you want to support client validation and/or AJAX validation, or if you
      * want to take advantage of the `yii.activeForm` plugin. When this is `false`, the form will not generate
      * any JavaScript.
@@ -120,27 +120,27 @@ class ActiveForm extends Widget
      */
     public $validationUrl;
     /**
-     * @var boolean whether to perform validation when the form is submitted.
+     * @var bool whether to perform validation when the form is submitted.
      */
     public $validateOnSubmit = true;
     /**
-     * @var boolean whether to perform validation when the value of an input field is changed.
+     * @var bool whether to perform validation when the value of an input field is changed.
      * If [[ActiveField::validateOnChange]] is set, its value will take precedence for that input field.
      */
     public $validateOnChange = true;
     /**
-     * @var boolean whether to perform validation when an input field loses focus.
+     * @var bool whether to perform validation when an input field loses focus.
      * If [[ActiveField::$validateOnBlur]] is set, its value will take precedence for that input field.
      */
     public $validateOnBlur = true;
     /**
-     * @var boolean whether to perform validation while the user is typing in an input field.
+     * @var bool whether to perform validation while the user is typing in an input field.
      * If [[ActiveField::validateOnType]] is set, its value will take precedence for that input field.
      * @see validationDelay
      */
     public $validateOnType = false;
     /**
-     * @var integer number of milliseconds that the validation should be delayed when the user types in the field
+     * @var int number of milliseconds that the validation should be delayed when the user types in the field
      * and [[validateOnType]] is set `true`.
      * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
      */
@@ -154,7 +154,7 @@ class ActiveForm extends Widget
      */
     public $ajaxDataType = 'json';
     /**
-     * @var boolean whether to scroll to the first error after validation.
+     * @var bool whether to scroll to the first error after validation.
      * @since 2.0.6
      */
     public $scrollToError = true;

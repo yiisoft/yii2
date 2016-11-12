@@ -57,8 +57,8 @@ use yii\helpers\StringHelper;
  * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
  * means [[UploadedFile::saveAs()]] will fail as well.
  *
- * @property integer $uploadFileMaxCount Maximum upload files count.
- * @property integer $uploadFileMaxSize Upload file max size in bytes.
+ * @property int $uploadFileMaxCount Maximum upload files count.
+ * @property int $uploadFileMaxSize Upload file max size in bytes.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
@@ -66,17 +66,17 @@ use yii\helpers\StringHelper;
 class MultipartFormDataParser extends Object implements RequestParserInterface
 {
     /**
-     * @var integer upload file max size in bytes.
+     * @var int upload file max size in bytes.
      */
     private $_uploadFileMaxSize;
     /**
-     * @var integer maximum upload files count.
+     * @var int maximum upload files count.
      */
     private $_uploadFileMaxCount;
 
 
     /**
-     * @return integer upload file max size in bytes.
+     * @return int upload file max size in bytes.
      */
     public function getUploadFileMaxSize()
     {
@@ -87,7 +87,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     }
 
     /**
-     * @param integer $uploadFileMaxSize upload file max size in bytes.
+     * @param int $uploadFileMaxSize upload file max size in bytes.
      */
     public function setUploadFileMaxSize($uploadFileMaxSize)
     {
@@ -95,7 +95,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     }
 
     /**
-     * @return integer maximum upload files count.
+     * @return int maximum upload files count.
      */
     public function getUploadFileMaxCount()
     {
@@ -106,7 +106,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     }
 
     /**
-     * @param integer $uploadFileMaxCount maximum upload files count.
+     * @param int $uploadFileMaxCount maximum upload files count.
      */
     public function setUploadFileMaxCount($uploadFileMaxCount)
     {
@@ -321,7 +321,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
      * Gets the size in bytes from verbose size representation.
      * For example: '5K' => 5*1024
      * @param string $verboseSize verbose size representation.
-     * @return integer actual size in bytes.
+     * @return int actual size in bytes.
      */
     private function getByteSize($verboseSize)
     {

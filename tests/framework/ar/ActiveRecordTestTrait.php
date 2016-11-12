@@ -15,7 +15,12 @@ use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
 
 /**
- * This trait provides unit tests shared by the different AR implementations
+ * This trait provides unit tests shared by the different AR implementations.
+ *
+ * It is used directly in the unit tests for database active records in `tests/framework/db/ActiveRecordTest.php`
+ * but also used in the test suites of `redis`, `mongodb`, `elasticsearch` and `sphinx` AR implementations
+ * in the extensions.
+ * @see https://github.com/yiisoft/yii2-redis/blob/a920547708c4a7091896923abc2499bc8c1c0a3b/tests/bootstrap.php#L17-L26
  */
 trait ActiveRecordTestTrait
 {

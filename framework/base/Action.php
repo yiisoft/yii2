@@ -105,7 +105,7 @@ class Action extends Component
      * You may override this method to do preparation work for the action run.
      * If the method returns false, it will cancel the action.
      *
-     * @return boolean whether to run the action.
+     * @return bool whether to run the action.
      */
     protected function beforeRun()
     {

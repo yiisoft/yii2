@@ -4,7 +4,7 @@
 namespace yiiunit\framework\log;
 
 
-class SQliteTargetTest extends DbTargetTest
+class SqliteTargetTest extends DbTargetTest
 {
     protected static $driverName = 'sqlite';
 }

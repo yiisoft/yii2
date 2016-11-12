@@ -130,7 +130,7 @@ class UrlRule extends CompositeUrlRule
         'class' => 'yii\web\UrlRule',
     ];
     /**
-     * @var boolean whether to automatically pluralize the URL names for controllers.
+     * @var bool whether to automatically pluralize the URL names for controllers.
      * If true, a controller ID will appear in plural form in URLs. For example, `user` controller
      * will appear as `users` in URLs.
      * @see controller

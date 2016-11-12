@@ -140,20 +140,20 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $attributeTypes;
     /**
-     * @var boolean whether to skip typecasting of `null` values.
+     * @var bool whether to skip typecasting of `null` values.
      * If enabled attribute value which equals to `null` will not be type-casted (e.g. `null` remains `null`),
      * otherwise it will be converted according to the type configured at [[attributeTypes]].
      */
     public $skipOnNull = true;
     /**
-     * @var boolean whether to perform typecasting after owner model validation.
+     * @var bool whether to perform typecasting after owner model validation.
      * Note that typecasting will be performed only if validation was successful, e.g.
      * owner model has no errors.
      * Note that changing this option value will have no effect after this behavior has been attached to the model.
      */
     public $typecastAfterValidate = true;
     /**
-     * @var boolean whether to perform typecasting before saving owner model (insert or update).
+     * @var bool whether to perform typecasting before saving owner model (insert or update).
      * This option may be disabled in order to achieve better performance.
      * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting before save
      * will grant no benefit an thus can be disabled.
@@ -161,7 +161,7 @@ class AttributeTypecastBehavior extends Behavior
      */
     public $typecastBeforeSave = false;
     /**
-     * @var boolean whether to perform typecasting after retrieving owner model data from
+     * @var bool whether to perform typecasting after retrieving owner model data from
      * the database (after find or refresh).
      * This option may be disabled in order to achieve better performance.
      * For example, in case of [[\yii\db\ActiveRecord]] usage, typecasting after find
@@ -247,13 +247,13 @@ class AttributeTypecastBehavior extends Behavior
 
             switch ($type) {
                 case self::TYPE_INTEGER:
-                    return (int)$value;
+                    return (int) $value;
                 case self::TYPE_FLOAT:
-                    return (float)$value;
+                    return (float) $value;
                 case self::TYPE_BOOLEAN:
-                    return (boolean)$value;
+                    return (bool) $value;
                 case self::TYPE_STRING:
-                    return (string)$value;
+                    return (string) $value;
                 default:
                     throw new InvalidParamException("Unsupported type '{$type}'");
             }

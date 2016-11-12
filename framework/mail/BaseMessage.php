@@ -36,7 +36,7 @@ abstract class BaseMessage extends Object implements MessageInterface
      * @param MailerInterface $mailer the mailer that should be used to send this message.
      * If no mailer is given it will first check if [[mailer]] is set and if not,
      * the "mail" application component will be used instead.
-     * @return boolean whether this message is sent successfully.
+     * @return bool whether this message is sent successfully.
      */
     public function send(MailerInterface $mailer = null)
     {

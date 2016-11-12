@@ -11,7 +11,6 @@ php:
 
 matrix:
   allow_failures:
-    - php: 7.1
     - php: nightly
 
 env:

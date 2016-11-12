@@ -35,7 +35,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 The following steps are not necessary if you want to work only on translations or documentation.
 
-- run `composer update` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
+- run `composer install` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
 > Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.2.0"`
 

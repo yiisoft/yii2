@@ -22,7 +22,7 @@ use yii\helpers\Url;
 class Controller extends \yii\base\Controller
 {
     /**
-     * @var boolean whether to enable CSRF validation for the actions in this controller.
+     * @var bool whether to enable CSRF validation for the actions in this controller.
      * CSRF validation is enabled only when both this property and [[\yii\web\Request::enableCsrfValidation]] are true.
      */
     public $enableCsrfValidation = true;
@@ -138,7 +138,7 @@ class Controller extends \yii\base\Controller
      * Any relative URL will be converted into an absolute one by prepending it with the host info
      * of the current request.
      *
-     * @param integer $statusCode the HTTP status code. Defaults to 302.
+     * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
      * for details about HTTP status code
      * @return Response the current response object

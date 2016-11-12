@@ -81,7 +81,7 @@ class AttributeBehavior extends Behavior
      */
     public $value;
     /**
-     * @var boolean whether to skip this behavior when the `$owner` has not been
+     * @var bool whether to skip this behavior when the `$owner` has not been
      * modified
      * @since 2.0.8
      */

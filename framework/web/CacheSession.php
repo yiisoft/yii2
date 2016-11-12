@@ -31,7 +31,7 @@ use yii\di\Instance;
  * ]
  * ```
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -62,7 +62,7 @@ class CacheSession extends Session
     /**
      * Returns a value indicating whether to use custom session storage.
      * This method overrides the parent implementation and always returns true.
-     * @return boolean whether to use custom storage.
+     * @return bool whether to use custom storage.
      */
     public function getUseCustomStorage()
     {
@@ -87,7 +87,7 @@ class CacheSession extends Session
      * Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
-     * @return boolean whether session write is successful
+     * @return bool whether session write is successful
      */
     public function writeSession($id, $data)
     {
@@ -98,7 +98,7 @@ class CacheSession extends Session
      * Session destroy handler.
      * Do not call this method directly.
      * @param string $id session ID
-     * @return boolean whether session is destroyed successfully
+     * @return bool whether session is destroyed successfully
      */
     public function destroySession($id)
     {

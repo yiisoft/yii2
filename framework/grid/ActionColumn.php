@@ -179,7 +179,7 @@ class ActionColumn extends Column
      * @param string $action the button name (or action ID)
      * @param \yii\db\ActiveRecord $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the current row index
+     * @param int $index the current row index
      * @return string the created URL
      */
     public function createUrl($action, $model, $key, $index)

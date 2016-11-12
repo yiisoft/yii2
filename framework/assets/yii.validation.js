@@ -225,16 +225,14 @@ yii.validation = (function ($) {
                 return;
             }
 
-            var regexp = /:\/\//;
-            if (options.defaultScheme && !regexp.test(value)) {
+            if (options.defaultScheme && !/:\/\//.test(value)) {
                 value = options.defaultScheme + '://' + value;
             }
 
             var valid = true;
 
             if (options.enableIDN) {
-                regexp = /^([^:]+):\/\/([^\/]+)(.*)$/;
-                matches = regexp.exec(value);
+                var matches = /^([^:]+):\/\/([^\/]+)(.*)$/.exec(value);
                 if (matches === null) {
                     valid = false;
                 } else {

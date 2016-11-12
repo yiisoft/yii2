@@ -40,21 +40,21 @@ use yii\helpers\StringHelper;
  * @property CookieCollection $cookies The cookie collection. This property is read-only.
  * @property string $downloadHeaders The attachment file name. This property is write-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
- * @property boolean $isClientError Whether this response indicates a client error. This property is
+ * @property bool $isClientError Whether this response indicates a client error. This property is
  * read-only.
- * @property boolean $isEmpty Whether this response is empty. This property is read-only.
- * @property boolean $isForbidden Whether this response indicates the current request is forbidden. This
+ * @property bool $isEmpty Whether this response is empty. This property is read-only.
+ * @property bool $isForbidden Whether this response indicates the current request is forbidden. This
  * property is read-only.
- * @property boolean $isInformational Whether this response is informational. This property is read-only.
- * @property boolean $isInvalid Whether this response has a valid [[statusCode]]. This property is read-only.
- * @property boolean $isNotFound Whether this response indicates the currently requested resource is not
+ * @property bool $isInformational Whether this response is informational. This property is read-only.
+ * @property bool $isInvalid Whether this response has a valid [[statusCode]]. This property is read-only.
+ * @property bool $isNotFound Whether this response indicates the currently requested resource is not
  * found. This property is read-only.
- * @property boolean $isOk Whether this response is OK. This property is read-only.
- * @property boolean $isRedirection Whether this response is a redirection. This property is read-only.
- * @property boolean $isServerError Whether this response indicates a server error. This property is
+ * @property bool $isOk Whether this response is OK. This property is read-only.
+ * @property bool $isRedirection Whether this response is a redirection. This property is read-only.
+ * @property bool $isServerError Whether this response indicates a server error. This property is
  * read-only.
- * @property boolean $isSuccessful Whether this response is successful. This property is read-only.
- * @property integer $statusCode The HTTP status code to send with the response.
+ * @property bool $isSuccessful Whether this response is successful. This property is read-only.
+ * @property int $statusCode The HTTP status code to send with the response.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -156,7 +156,7 @@ class Response extends \yii\base\Response
      */
     public $version;
     /**
-     * @var boolean whether the response has been sent. If this is true, calling [[send()]] will do nothing.
+     * @var bool whether the response has been sent. If this is true, calling [[send()]] will do nothing.
      */
     public $isSent = false;
     /**
@@ -232,7 +232,7 @@ class Response extends \yii\base\Response
     ];
 
     /**
-     * @var integer the HTTP status code to send with the response.
+     * @var int the HTTP status code to send with the response.
      */
     private $_statusCode = 200;
     /**
@@ -260,7 +260,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return integer the HTTP status code to send with the response.
+     * @return int the HTTP status code to send with the response.
      */
     public function getStatusCode()
     {
@@ -270,7 +270,7 @@ class Response extends \yii\base\Response
     /**
      * Sets the response status code.
      * This method will set the corresponding status text if `$text` is null.
-     * @param integer $value the status code
+     * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidParamException if the status code is invalid.
      */
@@ -573,9 +573,9 @@ class Response extends \yii\base\Response
      * Sets a default set of HTTP headers for file downloading purpose.
      * @param string $attachmentName the attachment file name
      * @param string $mimeType the MIME type for the response. If null, `Content-Type` header will NOT be set.
-     * @param boolean $inline whether the browser should open the file within the browser window. Defaults to false,
+     * @param bool $inline whether the browser should open the file within the browser window. Defaults to false,
      * meaning a download dialog will pop up.
-     * @param integer $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
+     * @param int $contentLength the byte length of the file being downloaded. If null, `Content-Length` header will NOT be set.
      * @return $this the response object itself
      */
     public function setDownloadHeaders($attachmentName, $mimeType = null, $inline = false, $contentLength = null)
@@ -602,8 +602,8 @@ class Response extends \yii\base\Response
 
     /**
      * Determines the HTTP range given in the request.
-     * @param integer $fileSize the size of the file that will be used to validate the requested HTTP range.
-     * @return array|boolean the range (begin, end), or false if the range request is invalid.
+     * @param int $fileSize the size of the file that will be used to validate the requested HTTP range.
+     * @return array|bool the range (begin, end), or false if the range request is invalid.
      */
     protected function getHttpRange($fileSize)
     {
@@ -800,10 +800,10 @@ class Response extends \yii\base\Response
      * Any relative URL will be converted into an absolute one by prepending it with the host info
      * of the current request.
      *
-     * @param integer $statusCode the HTTP status code. Defaults to 302.
+     * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
      * for details about HTTP status code
-     * @param boolean $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
+     * @param bool $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
      * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
      * to redirect to the given URL. If this is false, a `Location` header will be sent, which when received as
      * an AJAX/PJAX response, may NOT cause browser redirection.
@@ -894,7 +894,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response has a valid [[statusCode]].
+     * @return bool whether this response has a valid [[statusCode]].
      */
     public function getIsInvalid()
     {
@@ -902,7 +902,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response is informational
+     * @return bool whether this response is informational
      */
     public function getIsInformational()
     {
@@ -910,7 +910,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response is successful
+     * @return bool whether this response is successful
      */
     public function getIsSuccessful()
     {
@@ -918,7 +918,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response is a redirection
+     * @return bool whether this response is a redirection
      */
     public function getIsRedirection()
     {
@@ -926,7 +926,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response indicates a client error
+     * @return bool whether this response indicates a client error
      */
     public function getIsClientError()
     {
@@ -934,7 +934,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response indicates a server error
+     * @return bool whether this response indicates a server error
      */
     public function getIsServerError()
     {
@@ -942,7 +942,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response is OK
+     * @return bool whether this response is OK
      */
     public function getIsOk()
     {
@@ -950,7 +950,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response indicates the current request is forbidden
+     * @return bool whether this response indicates the current request is forbidden
      */
     public function getIsForbidden()
     {
@@ -958,7 +958,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response indicates the currently requested resource is not found
+     * @return bool whether this response indicates the currently requested resource is not found
      */
     public function getIsNotFound()
     {
@@ -966,7 +966,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * @return boolean whether this response is empty
+     * @return bool whether this response is empty
      */
     public function getIsEmpty()
     {

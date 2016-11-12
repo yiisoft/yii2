@@ -120,15 +120,15 @@ class GridView extends BaseListView
      */
     public $afterRow;
     /**
-     * @var boolean whether to show the header section of the grid table.
+     * @var bool whether to show the header section of the grid table.
      */
     public $showHeader = true;
     /**
-     * @var boolean whether to show the footer section of the grid table.
+     * @var bool whether to show the footer section of the grid table.
      */
     public $showFooter = false;
     /**
-     * @var boolean whether to show the grid view if [[dataProvider]] returns no data.
+     * @var bool whether to show the grid view if [[dataProvider]] returns no data.
      */
     public $showOnEmpty = true;
     /**
@@ -359,7 +359,7 @@ class GridView extends BaseListView
 
     /**
      * Renders the caption element.
-     * @return boolean|string the rendered caption element or `false` if no caption element should be rendered.
+     * @return bool|string the rendered caption element or `false` if no caption element should be rendered.
      */
     public function renderCaption()
     {
@@ -372,7 +372,7 @@ class GridView extends BaseListView
 
     /**
      * Renders the column group HTML.
-     * @return boolean|string the column group HTML or `false` if no column group should be rendered.
+     * @return bool|string the column group HTML or `false` if no column group should be rendered.
      */
     public function renderColumnGroup()
     {
@@ -496,7 +496,7 @@ class GridView extends BaseListView
      * Renders a table row with the given data model and key.
      * @param mixed $model the data model to be rendered
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data model among the model array returned by [[dataProvider]].
+     * @param int $index the zero-based index of the data model among the model array returned by [[dataProvider]].
      * @return string the rendering result
      */
     public function renderTableRow($model, $key, $index)
