@@ -141,11 +141,6 @@ Yii Framework 2 Change Log
 
 - Bug #6347: `inverseOf()` not working for dynamic relational queries (laszlovl)
 - Bug #8644: Fixed trying to ENABLE/DISABLE TRIGGER ALL on a view in PostgreSQL (ricpelo)
-- Enh #8795: Refactored `yii\web\User::loginByCookie()` in order to make it easier to override (maine-mike, silverfire)
-- Enh #9948: `yii\rbac\PhpManager` now invalidates script file cache performed by 'OPCache' or 'APC' on file saving (klimov-paul)
-- Enh #11195: Added ability to append custom string to schema builder column definition (df2, samdark)
-- Enh #11490: Added `yii\data\ArrayDataProvider::$modelClass` property to specify a model used to provide column labels even when data array is empty (PowerGamer1)
-- Enh #11591: Added support for wildcards for `only` and `except` at `yii\base\ActionFilter` (klimov-paul)
 - Bug #9950: Updated `yii\grid\DataColumn::getHeaderCellLabel()` to extract attribute label from the `filterModel` of Grid (silverfire)
 - Bug #10613: Fixed PostgreSQL Schema to return correct column names for unique indexes that have mixed case column names (cebe)
 - Bug #10681: Fixed active form `beforeValidate` wasn't triggered in some cases (lynicidn)
