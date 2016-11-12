@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
+- Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
 - Bug #12803, #12921: Fixed BC break in `yii.activeForm.js` introduced in #11999. Reverted commit 3ba72da (silverfire)
 - Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
@@ -84,8 +85,6 @@ Yii Framework 2 Change Log
 - Bug #12605: Make 'safe' validator work on write-only properties (arthibald, CeBe)
 - Bug #12629: Fixed `yii\widgets\ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
 - Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
-- Bug #11921: Fixed URL decoding in `yii.getQueryParams()` to handle `+` (plus) character properly (silverfire)
-- Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
 - Enh #384: Added ability to run migration from several locations via `yii\console\controllers\BaseMigrateController::$migrationNamespaces` (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
