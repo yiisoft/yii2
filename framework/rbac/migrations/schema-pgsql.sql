@@ -17,7 +17,7 @@ drop table if exists "auth_rule";
 create table "auth_rule"
 (
     "name"  varchar(64) not null,
-    "data"  text,
+    "data"  bytea,
     "created_at"           integer,
     "updated_at"           integer,
     primary key ("name")
@@ -29,7 +29,7 @@ create table "auth_item"
    "type"                 smallint not null,
    "description"          text,
    "rule_name"            varchar(64),
-   "data"                 text,
+   "data"                 bytea,
    "created_at"           integer,
    "updated_at"           integer,
    primary key ("name"),

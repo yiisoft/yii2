@@ -30,7 +30,6 @@ matrix:
       env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
   allow_failures:
     - php: hhvm
-    - php: 7.1
     - php: nightly
 
 env:

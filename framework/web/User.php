@@ -219,27 +219,20 @@ class User extends Component
     /**
      * Logs in a user.
      *
-     * After logging in a user, you may obtain the user's identity information from the [[identity]] property.
-     * If [[enableSession]] is true, you may even get the identity information in the next requests without
-     * calling this method again.
+     * After logging in a user:
+     * - the user's identity information is obtainable from the [[identity]] property
      *
-     * The login status is maintained according to the `$duration` parameter:
+     * If [[enableSession]] is `true`:
+     * - the identity information will be stored in session and be available in the next requests
+     * - in case of `$duration == 0`: as long as the session remains active or till the user closes the browser
+     * - in case of `$duration > 0`: as long as the session remains active or as long as the cookie
+     *  remains valid by it's `$duration` in seconds when [[enableAutoLogin]] is set `true`.
      *
-     * - `$duration == 0`: the identity information will be stored in session and will be available
-     *   via [[identity]] as long as the session remains active.
-     * - `$duration > 0`: the identity information will be stored in session. If [[enableAutoLogin]] is true,
-     *   it will also be stored in a cookie which will expire in `$duration` seconds. As long as
-     *   the cookie remains valid or the session is active, you may obtain the user identity information
-     *   via [[identity]].
-     *
-     * Note that if [[enableSession]] is false, the `$duration` parameter will be ignored as it is meaningless
-     * in this case.
+     * If [[enableSession]] is `false`:
+     * - the `$duration` parameter will be ignored
      *
      * @param IdentityInterface $identity the user identity (which should already be authenticated)
-     * @param int $duration number of seconds that the user can remain in logged-in status.
-     * Defaults to 0, meaning login till the user closes the browser or the session is manually destroyed.
-     * If greater than 0 and [[enableAutoLogin]] is true, cookie-based login will be supported.
-     * Note that if [[enableSession]] is false, this parameter will be ignored.
+     * @param int $duration number of seconds that the user can remain in logged-in status, defaults to `0`
      * @return bool whether the user is logged in
      */
     public function login(IdentityInterface $identity, $duration = 0)
