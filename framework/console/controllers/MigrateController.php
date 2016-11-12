@@ -210,7 +210,8 @@ class MigrateController extends BaseMigrateController
         foreach ($rows as $row) {
             if ($row['version'] === self::BASE_MIGRATION) {
                 continue;
-            } elseif (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
+            }
+            if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
                 $time = str_replace('_', '', $matches[1]);
                 $history['m' . $time . $matches[2]] = $row;
             }
