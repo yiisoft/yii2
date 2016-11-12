@@ -61,6 +61,8 @@ before_script:
 
   # initialize databases
   - mysql -e 'CREATE DATABASE yiitest;';
+  - mysql -e "CREATE USER 'yiitest'@'localhost' IDENTIFIED BY 'yiitest'";
+  - mysql -e "GRANT ALL ON yiitest.* TO 'yiitest'@'localhost'";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
   - |
