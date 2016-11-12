@@ -945,6 +945,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * when the password had changed or implement audit trail that tracks all the changes.
      * `$changedAttributes` gives you the old attribute values while the active record (`$this`) has
      * already the new, updated values.
+     *
+     * Note that no automatic type conversion performed by default. You may use
+     * [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute typecasting.
+     * See http://www.yiiframework.com/doc-2.0/guide-db-active-record.html#attributes-typecasting.
      */
     public function afterSave($insert, $changedAttributes)
     {

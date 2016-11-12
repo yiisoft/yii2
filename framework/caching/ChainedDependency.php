@@ -58,22 +58,17 @@ class ChainedDependency extends Dependency
     }
 
     /**
-     * Performs the actual dependency checking.
-     * This method returns true if any of the dependency objects
-     * reports a dependency change.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
-     * @return bool whether the dependency is changed or not.
+     * @inheritdoc
      */
-    public function getHasChanged($cache)
+    public function isChanged($cache)
     {
         foreach ($this->dependencies as $dependency) {
-            if ($this->dependOnAll && $dependency->getHasChanged($cache)) {
+            if ($this->dependOnAll && $dependency->isChanged($cache)) {
                 return true;
-            } elseif (!$this->dependOnAll && !$dependency->getHasChanged($cache)) {
+            } elseif (!$this->dependOnAll && !$dependency->isChanged($cache)) {
                 return false;
             }
         }
-
         return !$this->dependOnAll;
     }
 }

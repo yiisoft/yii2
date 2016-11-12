@@ -234,10 +234,6 @@ class DbManager extends BaseManager
             return null;
         }
 
-        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
-            $row['data'] = null;
-        }
-
         return $this->populateItem($row);
     }
 
