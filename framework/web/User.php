@@ -222,17 +222,17 @@ class User extends Component
      * After logging in a user:
      * - the user's identity information is obtainable from the [[identity]] property
      *
-     * If [[enableSession]] is true:
+     * If [[enableSession]] is `true`:
      * - the identity information will be stored in session and be available in the next requests
      * - in case of `$duration == 0`: as long as the session remains active or till the user closes the browser
      * - in case of `$duration > 0`: as long as the session remains active or as long as the cookie
      *  remains valid by it's `$duration` in seconds when [[enableAutoLogin]] is set `true`.
      *
-     * If [[enableSession]] is false:
+     * If [[enableSession]] is `false`:
      * - the `$duration` parameter will be ignored
      *
      * @param IdentityInterface $identity the user identity (which should already be authenticated)
-     * @param int $duration number of seconds that the user can remain in logged-in status, defaults to 0
+     * @param int $duration number of seconds that the user can remain in logged-in status, defaults to `0`
      * @return bool whether the user is logged in
      */
     public function login(IdentityInterface $identity, $duration = 0)
