@@ -43,7 +43,7 @@ install:
   - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - composer config -- global github-protocols '["https"]'
+  - composer config --global github-protocols '["https"]'
   - travis_retry composer update --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
