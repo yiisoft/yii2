@@ -3,7 +3,7 @@ dist: trusty
 language: php
 
 php:
-  - 5.4
+  - hhvm
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
