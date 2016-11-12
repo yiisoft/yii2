@@ -107,8 +107,14 @@ class StringHelperTest extends TestCase
         $this->assertEquals('исполь!!!', StringHelper::truncate('используем восклицательные знаки', 6, '!!!'));
 
         // With Html
-        $this->assertEquals('<span>This is a test </span>...', StringHelper::truncate('<span>This is a test sentance</span>', 14, '...', null, true));
-        $this->assertEquals('<span><img src="image.png" />This is a test </span>...', StringHelper::truncate('<span><img src="image.png" />This is a test sentance</span>', 14, '...', null, true));
+        $this->assertEquals('<span>This is a test</span>...', StringHelper::truncate('<span>This is a test sentance</span>', 14, '...', null, true));
+        $this->assertEquals('<span>This is a test</span>...', StringHelper::truncate('<span>This is a test </span>sentance', 14, '...', null, true));
+        $this->assertEquals('<span>This is a test </span><strong>for</strong>...', StringHelper::truncate('<span>This is a test </span><strong>for a sentance</strong>', 18, '...', null, true));
+        $this->assertEquals('<span>This is a test</span><strong> for</strong>...', StringHelper::truncate('<span>This is a test</span><strong> for a sentance</strong>', 18, '...', null, true));
+        
+        $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncate('<span><img src="image.png" />This is a test sentance</span>', 14, '...', null, true));
+        $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncate('<span><img src="image.png" />This is a test </span>sentance', 14, '...', null, true));
+        $this->assertEquals('<span><img src="image.png" />This is a test </span><strong>for</strong>...', StringHelper::truncate('<span><img src="image.png" />This is a test </span><strong>for a sentance</strong>', 18, '...', null, true));
     }
 
     public function testTruncateWords()
@@ -119,10 +125,16 @@ class StringHelperTest extends TestCase
         $this->assertEquals('это строка с          неожиданными...', StringHelper::truncateWords('это строка с          неожиданными пробелами', 4));
 
         $this->assertEquals('lorem ipsum', StringHelper::truncateWords('lorem ipsum', 3, '...', true));
+        $this->assertEquals(' lorem ipsum', StringHelper::truncateWords(' lorem ipsum', 3, '...', true));
         // With Html
         $this->assertEquals('<span>This is a test</span>...', StringHelper::truncateWords('<span>This is a test sentance</span>', 4, '...', true));
-        $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
+        $this->assertEquals('<span>This is a test </span><strong>for</strong>...', StringHelper::truncateWords('<span>This is a test </span><strong>for a sentance</strong>', 5, '...', true));
+        $this->assertEquals('<span>This is a test</span><strong> for</strong>...', StringHelper::truncateWords('<span>This is a test</span><strong> for a sentance</strong>', 5, '...', true));
         $this->assertEquals('<p> раз два три четыре пять </p> <p> шесть</p>...', StringHelper::truncateWords('<p> раз два три четыре пять </p> <p> шесть семь восемь девять десять</p>', 6, '...', true));
+
+        $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
+        $this->assertEquals('<span><img src="image.png" />This is a test </span><strong>for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test </span><strong>for a sentance</strong>', 5, '...', true));
+        $this->assertEquals('<span><img src="image.png" />This is a test</span><strong> for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test</span><strong> for a sentance</strong>', 5, '...', true));        
     }
 
     /**

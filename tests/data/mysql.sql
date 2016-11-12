@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS `category` CASCADE;
 DROP TABLE IF EXISTS `customer` CASCADE;
 DROP TABLE IF EXISTS `profile` CASCADE;
 DROP TABLE IF EXISTS `null_values` CASCADE;
+DROP TABLE IF EXISTS `negative_default_values` CASCADE;
 DROP TABLE IF EXISTS `type` CASCADE;
 DROP TABLE IF EXISTS `constraints` CASCADE;
 DROP TABLE IF EXISTS `animal` CASCADE;
@@ -110,6 +111,14 @@ CREATE TABLE null_values (
   `var3` INT DEFAULT NULL,
   `stringcol` VARCHAR (32) DEFAULT NULL,
   PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `negative_default_values` (
+  `smallint_col` smallint default '-123',
+  `int_col` integer default '-123',
+  `bigint_col` bigint default '-123',
+  `float_col` double default '-12345.6789',
+  `numeric_col` decimal(5,2) default '-33.22'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `type` (

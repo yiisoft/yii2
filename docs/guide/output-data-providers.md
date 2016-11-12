@@ -39,7 +39,7 @@ $totalCount = $provider->getTotalCount();
 You specify the pagination and sorting behaviors of a data provider by configuring its 
 [[yii\data\BaseDataProvider::pagination|pagination]] and [[yii\data\BaseDataProvider::sort|sort]] properties
 which correspond to the configurations for [[yii\data\Pagination]] and [[yii\data\Sort]], respectively.
-You may also configure them to be false to disable pagination and/or sorting features.
+You may also configure them to be `false` to disable pagination and/or sorting features.
 
 [Data widgets](output-data-widgets.md), such as [[yii\grid\GridView]], have a property named `dataProvider` which
 can take a data provider instance and display the data it provides. For example,

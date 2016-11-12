@@ -83,7 +83,7 @@ class BaseUrl
      *
      * @param string|array $route use a string to represent a route (e.g. `index`, `site/index`),
      * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
-     * @param boolean|string $scheme the URI scheme to use in the generated URL:
+     * @param bool|string $scheme the URI scheme to use in the generated URL:
      *
      * - `false` (default): generating a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
@@ -194,7 +194,7 @@ class BaseUrl
      *
      *
      * @param array|string $url the parameter to be used to generate a valid URL
-     * @param boolean|string $scheme the URI scheme to use in the generated URL:
+     * @param bool|string $scheme the URI scheme to use in the generated URL:
      *
      * - `false` (default): generating a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
@@ -238,7 +238,7 @@ class BaseUrl
 
     /**
      * Returns the base URL of the current request.
-     * @param boolean|string $scheme the URI scheme to use in the returned base URL:
+     * @param bool|string $scheme the URI scheme to use in the returned base URL:
      *
      * - `false` (default): returning the base URL without host info.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
@@ -282,7 +282,7 @@ class BaseUrl
      *
      * @param string $name the named associated with the URL that was remembered previously.
      * If not set, it will use [[\yii\web\User::returnUrlParam]].
-     * @return string the URL previously remembered. Null is returned if no URL was remembered with the given name.
+     * @return string|null the URL previously remembered. Null is returned if no URL was remembered with the given name.
      * @see remember()
      */
     public static function previous($name = null)
@@ -317,7 +317,7 @@ class BaseUrl
     /**
      * Returns the home URL.
      *
-     * @param boolean|string $scheme the URI scheme to use for the returned URL:
+     * @param bool|string $scheme the URI scheme to use for the returned URL:
      *
      * - `false` (default): returning a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].
@@ -343,7 +343,7 @@ class BaseUrl
      * Returns a value indicating whether a URL is relative.
      * A relative URL does not have host info part.
      * @param string $url the URL to be checked
-     * @return boolean whether the URL is relative
+     * @return bool whether the URL is relative
      */
     public static function isRelative($url)
     {
@@ -371,9 +371,20 @@ class BaseUrl
      * echo Url::current(['id' => 100]);
      * ```
      *
+     * Note that if you're replacing array parameters with `[]` at the end you should specify `$params` as nested arrays.
+     * For a `PostSearchForm` model where parameter names are `PostSearchForm[id]` and `PostSearchForm[src]` the syntax
+     * would be the following:
+     *
+     * ```php
+     * // index.php?r=post%2Findex&PostSearchForm%5Bid%5D=100&PostSearchForm%5Bsrc%5D=google
+     * echo Url::current([
+     *     $postSearch->formName() => ['id' => 100, 'src' => 'google'],
+     * ]);
+     * ```
+     *
      * @param array $params an associative array of parameters that will be merged with the current GET parameters.
      * If a parameter value is null, the corresponding GET parameter will be removed.
-     * @param boolean|string $scheme the URI scheme to use in the generated URL:
+     * @param bool|string $scheme the URI scheme to use in the generated URL:
      *
      * - `false` (default): generating a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::hostInfo]].

@@ -23,7 +23,7 @@ class SyslogTarget extends Target
      */
     public $identity;
     /**
-     * @var integer syslog facility.
+     * @var int syslog facility.
      */
     public $facility = LOG_USER;
 
@@ -34,6 +34,7 @@ class SyslogTarget extends Target
         Logger::LEVEL_TRACE => LOG_DEBUG,
         Logger::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
         Logger::LEVEL_PROFILE_END => LOG_DEBUG,
+        Logger::LEVEL_PROFILE => LOG_DEBUG,
         Logger::LEVEL_INFO => LOG_INFO,
         Logger::LEVEL_WARNING => LOG_WARNING,
         Logger::LEVEL_ERROR => LOG_ERR,

@@ -26,13 +26,15 @@ DetailView использует свойство [[yii\widgets\DetailView::$attr
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title свойство (обычный текст)
-        'description:html',    // description свойство, как HTML
-        [                      // name свойство зависимой модели owner
+        'title',                                           // title свойство (обычный текст)
+        'description:html',                                // description свойство, как HTML
+        [                                                  // name свойство зависимой модели owner
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // настройка HTML атрибутов для тега, соответсвующего value
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // настройка HTML атрибутов для тега, соответсвующего label
         ],
-        'created_at:datetime', // дата создания в формате datetime
+        'created_at:datetime',                             // дата создания в формате datetime
     ],
 ]);
 ```
@@ -653,7 +655,7 @@ class UserView extends ActiveRecord
 }
 ```
 
-Полсе этого вы можете использовать UserView в модели поиска, без каких либо дополнительных условий по сортировки и фильтрации.
+После этого вы можете использовать UserView в модели поиска, без каких-либо дополнительных условий по сортировке и фильтрации.
 Все атрибуты будут работать из коробки. Но такая реализация имеет свои плюсы и минусы:
 
 - вам не надо определять условия сортировок и фильтраций. Всё работает из коробки;

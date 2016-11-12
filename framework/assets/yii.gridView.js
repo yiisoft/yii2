@@ -104,7 +104,7 @@
         setSelectionColumn: function (options) {
             var $grid = $(this);
             var id = $(this).attr('id');
-            if (gridData.id === undefined) {
+            if (gridData[id] === undefined) {
                 gridData[id] = {};
             }
             gridData[id].selectionColumn = options.name;

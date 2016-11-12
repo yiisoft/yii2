@@ -98,7 +98,7 @@ public function fields()
 
 ### Overriding `extraFields()` <span id="overriding-extra-fields"></span>
 
-By default, [[yii\base\Model::extraFields()]] returns nothing, while [[yii\db\ActiveRecord::extraFields()]]
+By default, [[yii\base\Model::extraFields()]] returns an empty array, while [[yii\db\ActiveRecord::extraFields()]]
 returns the names of the relations that have been populated from DB.
 
 The return data format of `extraFields()` is the same as that of `fields()`. Usually, `extraFields()`
@@ -137,7 +137,7 @@ the request with `http://localhost/users?fields=id,email&expand=profile` may ret
 ## Links <span id="links"></span>
 
 [HATEOAS](http://en.wikipedia.org/wiki/HATEOAS), an abbreviation for Hypermedia as the Engine of Application State,
-promotes that RESTful APIs should return information that allow clients to discover actions supported for the returned
+promotes that RESTful APIs should return information that allows clients to discover actions supported for the returned
 resources. The key of HATEOAS is to return a set of hyperlinks with relation information when resource data are served
 by the APIs.
 

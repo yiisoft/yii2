@@ -9,5 +9,5 @@ namespace yiiunit\framework\db\mysql;
  */
 class ExistValidatorTest extends \yiiunit\framework\validators\ExistValidatorTest
 {
-    public $driverName = 'sqlsrv';
+    public $driverName = 'mysql';
 }

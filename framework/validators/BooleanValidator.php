@@ -29,7 +29,7 @@ class BooleanValidator extends Validator
      */
     public $falseValue = '0';
     /**
-     * @var boolean whether the comparison to [[trueValue]] and [[falseValue]] is strict.
+     * @var bool whether the comparison to [[trueValue]] and [[falseValue]] is strict.
      * When this is true, the attribute value and type must both match those of [[trueValue]] or [[falseValue]].
      * Defaults to false, meaning only the value needs to be matched.
      */

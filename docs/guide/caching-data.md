@@ -89,7 +89,7 @@ Yii supports a wide range of cache storage. The following is a summary:
   the corresponding cache component. In both cases, you may use the same code
   `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
   `Yii::$app->cache` might be `null`.
-* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
+* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
 * [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
   and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
@@ -227,7 +227,7 @@ $cache->set($key, $data, 30, $dependency);
 
 // The cache will check if the data has expired.
 // It will also check if the associated dependency was changed.
-// It will return false if any of these conditions is met.
+// It will return false if any of these conditions are met.
 $data = $cache->get($key);
 ```
 
@@ -272,7 +272,7 @@ $result = Customer::getDb()->cache(function ($db) {
 ```
 
 > Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  also support query caching on the DB server side. You may choose to use either query caching mechanism.
+  also support query caching on the DB server-side. You may choose to use either query caching mechanism.
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
@@ -296,7 +296,7 @@ components in your web and console application configs to reach the proper effec
 Query caching has three global configurable options through [[yii\db\Connection]]:
 
 * [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
-  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
+  It defaults to `true`. Note that to effectively turn on query caching, you also need to have a valid
   cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
   that a query result can remain valid in the cache. You can use 0 to indicate a query result should

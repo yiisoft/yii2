@@ -21,6 +21,8 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 If you have trouble setting up Git with GitHub in Linux, or are getting errors like "Permission Denied (publickey)",
 then you must [setup your Git installation to work with GitHub](http://help.github.com/linux-set-up-git/)
 
+> Tip: if you're not fluent with Git, we recommend reading excellent free [Pro Git book](https://git-scm.com/book/en/v2).
+
 ### 2. Add the main Yii repository as an additional git remote called "upstream"
 
 Change to the directory where you cloned Yii, normally, "yii2". Then enter the following command:
@@ -33,9 +35,9 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 The following steps are not necessary if you want to work only on translations or documentation.
 
-- run `composer update` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
+- run `composer install` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:~1.1.1"`
+> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.2.0"`
 
 - run `php build/build dev/app basic` to clone the basic app and install composer dependencies for the basic app.
   This command will install foreign composer packages as normal but will link the yii2 repo to
@@ -74,8 +76,8 @@ php build/build dev/ext <extension-name>
 where `<extension-name>` is the name of the extension, e.g. `redis`.
 
 If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
-normally do e.g. add `"yiisoft/yii2-redis": "*"` to the `require` section of the basic app.
-Running `php build/build dev/app basic` will install the extension and its dependecies and create
+normally do e.g. add `"yiisoft/yii2-redis": "~2.0.0"` to the `require` section of the basic app.
+Running `php build/build dev/app basic` will install the extension and its dependencies and create
 a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
 
 > Note: The default git repository Urls clone from github via SSH, you may add the `--useHttp` flag to the `build` command

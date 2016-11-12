@@ -24,7 +24,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        Schema::TYPE_UPK => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UPK => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_UBIGPK => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_CHAR => 'char(1)',
@@ -151,7 +151,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Meaningless for MySQL.
      * @param string $table the table name. Meaningless for MySQL.
      * @return string the SQL statement for checking integrity
@@ -209,7 +209,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
         }
         if (empty($names) && $tableSchema !== null) {
-            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
+            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
             foreach ($columns as $name) {
                 $names[] = $schema->quoteColumnName($name);
                 $placeholders[] = 'DEFAULT';

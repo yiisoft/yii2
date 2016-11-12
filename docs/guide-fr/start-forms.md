@@ -64,7 +64,7 @@ pour valider les données. Les règles de validation déclarées ci-dessus énon
 
 Si vous avez un objet `EntryForm` peuplé par les données saisies par un utilisateur, vous pouvez appeler sa méthode
 [[yii\base\Model::validate()|validate()]] pour déclencher les routines de validation de données. Un échec de validation
-de données affectera la valeur true à la propriété [[yii\base\Model::hasErrors|hasErrors]], et vous pourrez connaître
+de données affectera la valeur `true` à la propriété [[yii\base\Model::hasErrors|hasErrors]], et vous pourrez connaître
 quelles erreurs de validations sont apparues via [[yii\base\Model::getErrors|errors]].
 
 ```php

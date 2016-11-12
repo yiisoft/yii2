@@ -50,6 +50,7 @@ class Schema extends \yii\db\Schema
         'time' => self::TYPE_TIME,
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
+        'varbinary' => self::TYPE_BINARY,
     ];
 
 
@@ -188,7 +189,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      * @throws \Exception if DB query fails
      */
     protected function findColumns($table)
@@ -243,6 +244,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the foreign key column details for the given table.
      * @param TableSchema $table the table metadata
+     * @throws \Exception
      */
     protected function findConstraints($table)
     {

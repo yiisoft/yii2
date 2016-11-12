@@ -200,7 +200,7 @@ $session->setFlash('postDeleted', 'You have successfully deleted your post.');
 echo $session->getFlash('postDeleted');
 
 // Request #3
-// $result will be false since the flash message was automatically deleted
+// $result will be `false` since the flash message was automatically deleted
 $result = $session->hasFlash('postDeleted');
 ```
 
@@ -302,8 +302,8 @@ examples, the [[yii\web\Cookie]] class also defines other properties to fully re
 information, such as [[yii\web\Cookie::domain|domain]], [[yii\web\Cookie::expire|expire]]. You may configure these
 properties as needed to prepare a cookie and then add it to the response's cookie collection.
 
-> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set to true. This helps mitigate
-the risk of a client side script accessing the protected cookie (if the browser supports it). You may read
+> Note: For better security, the default value of [[yii\web\Cookie::httpOnly]] is set to `true`. This helps mitigate
+the risk of a client-side script accessing the protected cookie (if the browser supports it). You may read
 the [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more details.
 
 
@@ -311,8 +311,8 @@ the [httpOnly wiki article](https://www.owasp.org/index.php/HttpOnly) for more d
 
 When you are reading and sending cookies through the `request` and `response` components as shown in the last
 two subsections, you enjoy the added security of cookie validation which protects cookies from being modified
-on the client side. This is achieved by signing each cookie with a hash string, which allows the application to
-tell if a cookie has been modified on the client side. If so, the cookie will NOT be accessible through the
+on the client-side. This is achieved by signing each cookie with a hash string, which allows the application to
+tell if a cookie has been modified on the client-side. If so, the cookie will NOT be accessible through the
 [[yii\web\Request::cookies|cookie collection]] of the `request` component.
 
 > Note: Cookie validation only protects cookie values from being modified. If a cookie fails the validation, 
@@ -320,7 +320,7 @@ you may still access it through `$_COOKIE`. This is because third-party librarie
 in their own way, which does not involve cookie validation.
 
 Cookie validation is enabled by default. You can disable it by setting the [[yii\web\Request::enableCookieValidation]]
-property to be false, although we strongly recommend you do not do so.
+property to be `false`, although we strongly recommend you do not do so.
 
 > Note: Cookies that are directly read/sent via `$_COOKIE` and `setcookie()` will NOT be validated.
 

@@ -116,7 +116,7 @@ del objeto, o una función anónima que debe devolver el valor que será utiliza
 El atributo `$groups` es un array de claves, que será utilizado para agrupar el array de entrada en uno o más sub-arrays
 basado en la clave especificada.
 
-Si el atributo `$key` o su valor por el elemento en particular es null y `$groups` no está definido, dicho elemento del array
+Si el atributo `$key` o su valor por el elemento en particular es `null` y `$groups` no está definido, dicho elemento del array
 será descartado. De otro modo, si `$groups` es especificado, el elemento del array será agregado al array resultante
 sin una clave.
 
@@ -371,8 +371,9 @@ mediante la implementación de la interfaz [[yii\base\Arrayable|Arrayable]] en e
 A menudo necesitarás comprobar está en un array o un grupo de elementos es un sub-grupo de otro.
 A pesar de que PHP ofrece `in_array()`, este no soporta sub-grupos u objetos de tipo `\Traversable`.
 
-Para ayudar en este tipo de pruebas, [[yii\base\ArrayHelper]] provee [[yii\base\ArrayHelper::isIn()|isIn()]]
-y [[yii\base\ArrayHelper::isSubset()|isSubset()]] con la misma firma del método [[in_array()]].
+Para ayudar en este tipo de pruebas, [[yii\helpers\ArrayHelper]] provee [[yii\helpers\ArrayHelper::isIn()|isIn()]]
+y [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] con la misma firma del método
+[in_array()](http://php.net/manual/en/function.in-array.php).
 
 ```php
 // true

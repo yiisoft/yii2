@@ -12,14 +12,16 @@ use yii\db\Schema;
  */
 class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    public $driverName = 'sqlite';
+
     /**
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @return ColumnSchemaBuilder
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 
     /**
@@ -33,6 +35,10 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
             ]],
             ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
+            ]],
+            // comments are ignored
+            ['integer(10)', Schema::TYPE_INTEGER, 10, [
+                ['comment', 'test']
             ]],
         ];
     }

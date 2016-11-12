@@ -46,7 +46,7 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 
 ## URL 規則を構成する <span id="configuring-url-rules"></span>
 
-次に、アプリケーションの構成情報において、`urlManager` コンポーネントに関する構成情報を修正します。
+次に、アプリケーションの構成情報において、`urlManager` コンポーネントの構成情報を修正します。
 
 ```php
 'urlManager' => [

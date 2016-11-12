@@ -13,6 +13,7 @@ Yii provides the DI container feature through the class [[yii\di\Container]]. It
 dependency injection:
 
 * Constructor injection;
+* Method injection;
 * Setter and property injection;
 * PHP callable injection;
 
@@ -38,6 +39,36 @@ $bar = new Bar;
 $foo = new Foo($bar);
 ```
 
+
+### Method Injection <span id="method-injection"></span>
+
+Usually the dependencies of a class are passed to the constructor and are available inside of the class during the whole lifecycle.
+With Method Injection it is possible to provide a dependency that is only needed by a single method of the class
+and passing it to the constructor may not be possible or may cause too much overhead in the majority of use cases.
+
+A class method can be defined like the `doSomething()` method in the following example:
+
+```php
+class MyClass extends \yii\base\Component
+{
+    public function __construct(/*Some lightweight dependencies here*/, $config = [])
+    {
+        // ...
+    }
+
+    public function doSomething($param1, \my\heavy\Dependency $something)
+    {
+        // do something with $something
+    }
+}
+```
+
+You may call that method either by passing an instance of `\my\heavy\Dependency` yourself or using [[yii\di\Container::invoke()]] like the following:
+
+```php
+$obj = new MyClass(/*...*/);
+Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something will be provided by the DI container
+```
 
 ### Setter and Property Injection <span id="setter-and-property-injection"></span>
 

@@ -1,5 +1,5 @@
 ページキャッシュ
-============
+================
 
 ページキャッシュはサーバサイドでページ全体のコンテントをキャッシュすることを言います。あとで、同じページに再度リクエストがあった場合、その内容を一から再び生成させるのではなく、キャッシュから提供するようにします。
 
@@ -29,4 +29,4 @@ public function behaviors()
 
 見てわかるように、ページキャッシュは [フラグメントキャッシュ](caching-fragment.md) ととてもよく似ています。それらは両方とも `duration`、`dependencies`、`variations`、そして `enabled` などのオプションをサポートしています。主な違いとしては、ページキャッシュは [アクションフィルタ](structure-filters.md) として、フラグメントキャッシュは [ウィジェット](structure-widgets.md) として実装されているということです。
 
-また、ページキャッシュと一緒に [フラグメントキャッシュ](caching-fragment.md) だけでなく [ダイナミックコンテント](caching-fragment.md#dynamic-content) も使用することができます。
+[フラグメントキャッシュ](caching-fragment.md) も、[ダイナミックコンテント](caching-fragment.md#dynamic-content) も、ページキャッシュと併用することができます。

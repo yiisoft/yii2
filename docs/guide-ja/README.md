@@ -114,7 +114,6 @@ All Rights Reserved.
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
 * [暗号化](security-cryptography.md)
-* [ビューのセキュリティ](structure-views.md#security)
 * [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
 * [ベストプラクティス](security-best-practices.md)
 

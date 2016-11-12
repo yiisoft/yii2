@@ -204,4 +204,4 @@ composer dumpautoload -o
 
 ## Prepare application for scaling
 
-何をやっても助けにならないときは、あなたのアプリケーションをスケーラブルにすることを試みましょう。良い導入記事が [Configuring a Yii2 Application for an Autoscaling Stack (Yii2 アプリケーションを自動スケール環境のために構成する)](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) の中で提供されています。更に詳しく知りたい場合は [Web apps performance and scaling (ウェブアプリのパフォーマンスとスケーリング)](http://thehighload.com/) を参照して下さい。
+何をやっても助けにならないときは、あなたのアプリケーションをスケーラブルにすることを試みましょう。良い導入記事が [Configuring a Yii 2 Application for an Autoscaling Stack (Yii 2 アプリケーションを自動スケール環境のために構成する)](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) の中で提供されています。更に詳しく知りたい場合は [Web apps performance and scaling (ウェブアプリのパフォーマンスとスケーリング)](http://thehighload.com/) を参照して下さい。

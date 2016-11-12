@@ -13,6 +13,8 @@ use ReflectionClass;
 /**
  * Widget is the base class for widgets.
  *
+ * For more details and usage information on Widget, see the [guide article on widgets](guide:structure-widgets).
+ *
  * @property string $id ID of the widget.
  * @property \yii\web\View $view The view object that can be used to render views or view files. Note that the
  * type of this property differs in getter and setter. See [[getView()]] and [[setView()]] for details.
@@ -25,7 +27,7 @@ use ReflectionClass;
 class Widget extends Component implements ViewContextInterface
 {
     /**
-     * @var integer a counter used to generate [[id]] for widgets.
+     * @var int a counter used to generate [[id]] for widgets.
      * @internal
      */
     public static $counter = 0;
@@ -46,8 +48,11 @@ class Widget extends Component implements ViewContextInterface
      * Begins a widget.
      * This method creates an instance of the calling class. It will apply the configuration
      * to the created instance. A matching [[end()]] call should be called later.
+     * As some widgets may use output buffering, the [[end()]] call should be made in the same view
+     * to avoid breaking the nesting of output buffers.
      * @param array $config name-value pairs that will be used to initialize the object properties
      * @return static the newly created widget instance
+     * @see end()
      */
     public static function begin($config = [])
     {
@@ -64,6 +69,7 @@ class Widget extends Component implements ViewContextInterface
      * Note that the rendering result of the widget is directly echoed out.
      * @return static the widget instance that is ended.
      * @throws InvalidCallException if [[begin()]] and [[end()]] calls are not properly nested
+     * @see begin()
      */
     public static function end()
     {
@@ -111,7 +117,7 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Returns the ID of the widget.
-     * @param boolean $autoGenerate whether to generate an ID if it is not set previously
+     * @param bool $autoGenerate whether to generate an ID if it is not set previously
      * @return string ID of the widget.
      */
     public function getId($autoGenerate = true)

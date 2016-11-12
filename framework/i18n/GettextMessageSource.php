@@ -40,11 +40,11 @@ class GettextMessageSource extends MessageSource
      */
     public $catalog = 'messages';
     /**
-     * @var boolean
+     * @var bool
      */
     public $useMoFile = true;
     /**
-     * @var boolean
+     * @var bool
      */
     public $useBigEndian = false;
 
@@ -73,7 +73,7 @@ class GettextMessageSource extends MessageSource
         $fallbackSourceLanguage = substr($this->sourceLanguage, 0, 2);
 
         if ($fallbackLanguage !== $language) {
-            $this->loadFallbackMessages($category, $fallbackLanguage, $messages, $messageFile);
+            $messages = $this->loadFallbackMessages($category, $fallbackLanguage, $messages, $messageFile);
         } elseif ($language === $fallbackSourceLanguage) {
             $messages = $this->loadFallbackMessages($category, $this->sourceLanguage, $messages, $messageFile);
         } else {

@@ -28,7 +28,18 @@ the framework:
 The release command depends on the development environment introduced in
 the [Git Workflow Document](git-workflow.md#extensions), i.e. the application 
 templates must be located under `/apps/` and extensions must be located under `/extensions/`.
-This structure is preferably created using the `dev/app` command.
+This structure is preferably created using the `dev/app` and `dev/ext` commands.
+
+e.g. install an extension:
+
+    ./build/build dev/ext authclient
+
+or an application:
+
+    ./build/build dev/app basic
+
+This installation will ensure that the extension will use the same framework code that is in the current
+repositories state.
 
 ### Version overview
 
@@ -51,7 +62,7 @@ Making an extension release includes only one command (e.g. for redis):
     ./build release redis
 
 The default release command will release a new minor version from the currently checked out branch.
-To release another version thatn the default, you have to specify it using the `--version` option, e.g.
+To release another version than the default, you have to specify it using the `--version` option, e.g.
 `--version=2.1.0`, or `--version=2.1.0-beta`.
 
 

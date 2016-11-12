@@ -5,9 +5,9 @@ namespace yiiunit\data\ar;
 /**
  * Class Order
  *
- * @property integer $id
- * @property integer $customer_id
- * @property integer $created_at
+ * @property int $id
+ * @property int $customer_id
+ * @property int $created_at
  * @property string $total
  */
 class Order extends ActiveRecord
@@ -194,6 +194,13 @@ class Order extends ActiveRecord
         return [
             'customer_id' => 'Customer',
             'total' => 'Invoice Total',
+        ];
+    }
+
+    public function activeAttributes()
+    {
+        return [
+            0 => 'customer_id'
         ];
     }
 }

@@ -19,13 +19,16 @@ class EventTest extends TestCase
 {
     public $counter;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->counter = 0;
-        Event::off(ActiveRecord::className(), 'save');
-        Event::off(Post::className(), 'save');
-        Event::off(User::className(), 'save');
-        Event::off('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT);
+        Event::offAll();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        Event::offAll();
     }
 
     public function testOn()

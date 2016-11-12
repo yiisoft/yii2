@@ -117,7 +117,7 @@ class PostController extends Controller
 あなたのコマンドがコマンドラインユーティリティから見えるようにするためには、Yii がコンソールモードで実行されたときに
 [[yii\base\Module::controllerNamespace]] を変更して、コマンドの名前空間を指し示すようにする必要があります。
 
-それを達成する一つの方法は、モジュールの `init` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
+それを達成する一つの方法は、モジュールの `init()` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
 
 ```php
 public function init()

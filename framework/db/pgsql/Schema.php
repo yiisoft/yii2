@@ -15,6 +15,8 @@ use yii\db\ColumnSchema;
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
+ * @property string[] $viewNames All view names in the database. This property is read-only.
+ *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
@@ -107,6 +109,7 @@ class Schema extends \yii\db\Schema
         'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING,
     ];
+
     /**
      * @var array list of ALL view names in the database
      */
@@ -248,7 +251,7 @@ SQL;
      * Returns all view names in the database.
      * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
      * If not empty, the returned view names will be prefixed with the schema name.
-     * @param boolean $refresh whether to fetch the latest available view names. If this is false,
+     * @param bool $refresh whether to fetch the latest available view names. If this is false,
      * view names fetched previously (if available) will be returned.
      * @return string[] all view names in the database.
      * @since 2.0.9
@@ -370,7 +373,13 @@ SQL;
 
         $rows = $this->getUniqueIndexInformation($table);
         foreach ($rows as $row) {
-            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
+            $column = $row['columnname'];
+            if (!empty($column) && $column[0] === '"') {
+                // postgres will quote names that are not lowercase-only
+                // https://github.com/yiisoft/yii2/issues/10613
+                $column = substr($column, 1, -1);
+            }
+            $uniqueIndexes[$row['indexname']][] = $column;
         }
 
         return $uniqueIndexes;
@@ -379,7 +388,7 @@ SQL;
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -462,7 +471,7 @@ SQL;
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
-                } elseif (preg_match('/^(.*?)::/', $column->defaultValue, $matches)) {
+                } elseif (preg_match('/^(?:\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
                     if ($matches[1] === 'NULL') {
                         $column->defaultValue = null;
                     } else {

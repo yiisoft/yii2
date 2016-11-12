@@ -91,6 +91,7 @@ public function rules()
 属性は、上記の検証のステップに従って、`scenarios()` でアクティブな属性であると宣言されており、かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、また、その場合に限って、検証されます。
 
 > Note: 規則に名前を付けると便利です。すなわち、
+>
 > ```php
 > public function rules()
 > {
@@ -161,7 +162,7 @@ public function rules()
 /**
  * @param Model $model 検証されるモデル
  * @param string $attribute 検証される属性
- * @return boolean 規則が適用されるか否か
+ * @return bool 規則が適用されるか否か
  */
 function ($model, $attribute)
 ```
