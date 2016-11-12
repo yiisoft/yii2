@@ -4,6 +4,16 @@ language: php
 
 php:
   - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - nightly
+  - hhvm-3.6
+
+matrix:
+  allow_failures:
+    - php: nightly
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
@@ -41,7 +51,6 @@ install:
   - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - composer config -g github-oauth.github.com 1cfce87d43cdef633f435ab98ba051359fdd678a
   - travis_retry composer update --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
