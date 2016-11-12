@@ -27,7 +27,6 @@ addons:
 
 # do this even before the actual installation process of the project to be built
 before_install:
-  - sudo rm -rf ~/.nvm
   - curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
   - sudo apt-get install -y nodejs
   - |
