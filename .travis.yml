@@ -3,7 +3,7 @@ dist: trusty
 language: php
 
 php:
-  - hhvm-3.6
+  - 5.4
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
@@ -24,14 +24,6 @@ cache:
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
-
-before_install:
-  - |
-    if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
-      pear config-set php_ini /etc/php.ini
-      pecl config-set bin_dir /usr/bin/
-      yes '' | pecl install apcu-4.0.11
-    fi
 
 install:
   - |
