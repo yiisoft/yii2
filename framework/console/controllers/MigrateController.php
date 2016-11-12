@@ -212,8 +212,14 @@ class MigrateController extends BaseMigrateController
                 $history['m' . $time . $matches[2]] = $row;
             }
         }
-        ksort($history);
-        $history = array_reverse($history);
+        // sort history in desc order
+        uksort($history, function ($a, $b) {
+            if ($a == $b) {
+                return 0;
+            } else {
+                return ($a > $b) ? -1 : 1;
+            }
+        });
         $history = ArrayHelper::map($history, 'version', 'apply_time');
         unset($history[self::BASE_MIGRATION]);
 
