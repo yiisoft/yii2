@@ -101,6 +101,18 @@ class Pjax extends Widget
 
     /**
      * @inheritdoc
+     * @since 2.0.11
+     */
+    public static function begin($config = [])
+    {
+        if (!isset($config['id'])) {
+            $config['id'] = md5(serialize(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2))); //fixes #12969
+        }
+        return parent::begin($config);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function init()
     {
