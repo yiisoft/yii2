@@ -25,7 +25,6 @@ cache:
 addons:
   postgresql: "9.3"
 
-# do this even before the actual installation process of the project to be built
 before_install:
   - |
     if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
