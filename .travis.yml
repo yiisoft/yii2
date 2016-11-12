@@ -18,6 +18,7 @@ matrix:
       dist: trusty
       group: edge # Use edge image until the next travis CI image update
       addons:
+        - postgresql: "9.3"
         apt:
           packages:
             - mysql-server-5.6
