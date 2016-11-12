@@ -60,7 +60,7 @@ before_script:
   - npm --version
 
   # initialize databases
-  - mysql -u root -e 'CREATE DATABASE yiitest;';
+  - mysql -e 'CREATE DATABASE yiitest;';
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
   - |
