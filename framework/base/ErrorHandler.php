@@ -196,7 +196,7 @@ abstract class ErrorHandler extends Component
      * @param string $message the error message.
      * @param string $file the filename that the error was raised in.
      * @param int $line the line number the error was raised at.
-     * @return bool whether the normal error handler continues.
+     * @return false whether the normal error handler continues.
      *
      * @throws ErrorException
      */
