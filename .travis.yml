@@ -28,7 +28,7 @@ addons:
 before_install:
   - |
     if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
-      yes '' | pecl install apcu-4.0.11
+      yes '' | pecl install apc
     fi
 
 install:
