@@ -196,7 +196,7 @@ class MigrateController extends BaseMigrateController
      */
     protected function getMigrationHistory($limit)
     {
-       if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
+        if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
             $this->createMigrationHistoryTable();
         }
         $query = new Query;
@@ -207,21 +207,18 @@ class MigrateController extends BaseMigrateController
             ->queryAll();
         $history = [];
         foreach ($rows as $row) {
-            if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
+            if ($row['version'] === self::BASE_MIGRATION) {
+                continue;
+            } elseif (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
                 $time = str_replace('_', '', $matches[1]);
                 $history['m' . $time . $matches[2]] = $row;
             }
         }
         // sort history in desc order
         uksort($history, function ($a, $b) {
-            if ($a == $b) {
-                return 0;
-            } else {
-                return ($a > $b) ? -1 : 1;
-            }
+            return strcasecmp($b, $a);
         });
         $history = ArrayHelper::map($history, 'version', 'apply_time');
-        unset($history[self::BASE_MIGRATION]);
 
         return $history;
     }
