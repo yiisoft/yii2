@@ -408,6 +408,7 @@ class ActiveField extends Component
      */
     public function hiddenInput($options = [])
     {
+        $this->label(false);
         $options = array_merge($this->inputOptions, $options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeHiddenInput($this->model, $this->attribute, $options);
