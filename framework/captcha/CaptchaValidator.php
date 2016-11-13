@@ -84,7 +84,7 @@ class CaptchaValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
     {
         $captcha = $this->createCaptchaAction();
         $code = $captcha->getVerifyCode(false);
@@ -94,7 +94,7 @@ class CaptchaValidator extends Validator
             'hashKey' => 'yiiCaptcha/' . $captcha->getUniqueId(),
             'caseSensitive' => $this->caseSensitive,
             'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
+                'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
         ];
         if ($this->skipOnEmpty) {

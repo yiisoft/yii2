@@ -1131,7 +1131,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see sizeFormat
+     * @see sizeFormatBase
      * @see asSize
      */
     public function asShortSize($value, $decimals = null, $options = [], $textOptions = [])
@@ -1187,7 +1187,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see sizeFormat
+     * @see sizeFormatBase
      * @see asShortSize
      */
     public function asSize($value, $decimals = null, $options = [], $textOptions = [])

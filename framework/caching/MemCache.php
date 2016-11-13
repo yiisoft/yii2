@@ -54,7 +54,7 @@ use yii\base\InvalidConfigException;
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
- * 
+ *
  * @property \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache component.
  * This property is read-only.
  * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this
@@ -286,7 +286,7 @@ class MemCache extends Cache
      *
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached.
-     * @see \MemcachePool::set()
+     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
@@ -327,7 +327,7 @@ class MemCache extends Cache
      *
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached
-     * @see \MemcachePool::set()
+     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
      * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @return bool true if the value is successfully stored into cache, false otherwise
      */

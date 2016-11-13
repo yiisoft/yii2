@@ -55,12 +55,12 @@ class Security extends Component
     ];
     /**
      * @var string Hash algorithm for key derivation. Recommend sha256, sha384 or sha512.
-     * @see hash_algos()
+     * @see [hash_algos()](http://php.net/manual/en/function.hash-algos.php)
      */
     public $kdfHash = 'sha256';
     /**
      * @var string Hash algorithm for message authentication. Recommend sha256, sha384 or sha512.
-     * @see hash_algos()
+     * @see [hash_algos()](http://php.net/manual/en/function.hash-algos.php)
      */
     public $macHash = 'sha256';
     /**
