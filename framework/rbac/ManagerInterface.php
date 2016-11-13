@@ -79,7 +79,7 @@ interface ManagerInterface extends CheckAccessInterface
     public function getRolesByUser($userId);
 
     /**
-     * Returns child roles of the role spcified. Depth isn't limited.
+     * Returns child roles of the role specified. Depth isn't limited.
      * @param string $roleName name of the role to file child roles for
      * @return Role[] Child roles. The array is indexed by the role names.
      * First element is an instance of the parent Role itself.
