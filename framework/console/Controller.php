@@ -336,7 +336,7 @@ class Controller extends \yii\base\Controller
      * where the keys is alias name for option and value is option name.
      *
      * @since 2.0.8
-     * @see options($actionID)
+     * @see options()
      */
     public function optionAliases()
     {

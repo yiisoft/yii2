@@ -291,9 +291,9 @@ class AssetManager extends Component
 
     /**
      * Returns the actual URL for the specified asset.
-     * The actual URL is obtained by prepending either [[baseUrl]] or [[AssetManager::baseUrl]] to the given asset path.
+     * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
+     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
      * @return string the actual URL for the specified asset.
      */
     public function getAssetUrl($bundle, $asset)
@@ -327,7 +327,7 @@ class AssetManager extends Component
     /**
      * Returns the actual file path for the specified asset.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
+     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
      * @return string|false the actual file path, or `false` if the asset is specified as an absolute URL
      */
     public function getAssetPath($bundle, $asset)
