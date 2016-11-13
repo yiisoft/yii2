@@ -72,10 +72,7 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $serializer;
     /**
-     * @var integer default ttl of cached value (the number of seconds in which the cached value will expire) -
-     * if it was not defined explicitly in [[set()]].
-     * Default value is 0, depending on implementation which means never expire or maximum ttl supported by cache engine
-     * (e.g. it is 1 year for [[\yii\caching\FileCache]]).
+     * @var integer default duration in seconds before the cache will expire. Default value is 0, meaning infinity.
      * @since 2.0.11
      */
     public $ttl = 0;
@@ -210,16 +207,17 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param int $duration the number of seconds in which the cached value will expire. If not set - the value of [[ttl]] is used,
-     * which defaults to 0 (never expire).
+     * @param int $duration default duration in seconds before the cache will expire. Default value is 0, meaning infinity.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
      */
-    public function set($key, $value, $duration = null, $dependency = null)
+    public function set($key, $value, $duration = 0, $dependency = null)
     {
-        if ($duration === null) {
+        $args = func_get_args();
+        if (!isset($args[2])) {
+            // https://github.com/yiisoft/yii2/pull/12990#discussion_r87715643
             $duration = $this->ttl;
         }
 

@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
 - Enh #6809: Added `\yii\caching\Cache::$ttl` property, allowing to set custom default cache duration (sdkiller)
+- Enh #6809: Added `\yii\caching\Cache::$ttl` property, allowing to set custom default cache duration (sdkiller, dynasource)
 - Bug #12974: Changed order of migrations history in `yii\console\controllers\MigrateController::getMigrationHistory()` (evgen-d)
 
 
