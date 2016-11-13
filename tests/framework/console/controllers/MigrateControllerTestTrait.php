@@ -179,7 +179,7 @@ CODE;
         $appliedMigrations = $migrationHistory;
         foreach ($expectedMigrations as $expectedMigrationName) {
             $appliedMigration = array_shift($appliedMigrations);
-            if (!fnmatch(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
+            if (!fnmatch(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['namespace'], ['\\' => DIRECTORY_SEPARATOR]))) {
                 $success = false;
                 break;
             }
@@ -190,7 +190,7 @@ CODE;
 
             $actualMigrations = [];
             foreach ($migrationHistory as $row) {
-                $actualMigrations[] = $row['version'];
+                $actualMigrations[] = $row['namespace'];
             }
             $message .= "Actual: " . var_export($actualMigrations, true) . "\n";
         }
