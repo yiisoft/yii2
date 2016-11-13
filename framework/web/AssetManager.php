@@ -328,7 +328,7 @@ class AssetManager extends Component
      * Returns the actual file path for the specified asset.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
      * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
-     * @return string|bool the actual file path, or false if the asset is specified as an absolute URL
+     * @return string|false the actual file path, or `false` if the asset is specified as an absolute URL
      */
     public function getAssetPath($bundle, $asset)
     {
@@ -464,7 +464,7 @@ class AssetManager extends Component
     /**
      * Publishes a file.
      * @param string $src the asset file to be published
-     * @return array the path and the URL that the asset is published as.
+     * @return string[] the path and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
      */
     protected function publishFile($src)
@@ -509,7 +509,7 @@ class AssetManager extends Component
      *   it is found in the target directory. This option is used only when publishing a directory.
      *   This overrides [[forceCopy]] if set.
      *
-     * @return array the path directory and the URL that the asset is published as.
+     * @return string[] the path directory and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
      */
     protected function publishDirectory($src, $options)

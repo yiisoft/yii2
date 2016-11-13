@@ -274,9 +274,9 @@ class Controller extends \yii\base\Controller
     {
         if ($this->interactive) {
             return Console::prompt($text, $options);
-        } else {
-            return isset($options['default']) ? $options['default'] : '';
         }
+
+        return isset($options['default']) ? $options['default'] : '';
     }
 
     /**
@@ -291,9 +291,9 @@ class Controller extends \yii\base\Controller
     {
         if ($this->interactive) {
             return Console::confirm($message, $default);
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     /**
@@ -320,7 +320,7 @@ class Controller extends \yii\base\Controller
      * until [[beforeAction()]] is being called.
      *
      * @param string $actionID the action id of the current request
-     * @return array the names of the options valid for the action
+     * @return string[] the names of the options valid for the action
      */
     public function options($actionID)
     {
