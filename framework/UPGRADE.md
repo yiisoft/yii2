@@ -50,7 +50,15 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.10
+-----------------------
 
+* The `serializer` property for `yii\caching\ArrayCache` has been changed form `null` to `false`, this disables serialization
+  by default for increased performance. However, this also means that the `dependency` parameter for `yii\caching\Cache::set()`
+  and `yii\caching\Cache::multiSet()` will be ignored by default. If you are using `yii\caching\ArrayCache` in combination with
+  dependencies you should set `yii\caching\ArrayCache::$serializer` to `null`.
+  
+  
 Upgrade from Yii 2.0.9
 ----------------------
 

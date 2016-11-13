@@ -37,7 +37,7 @@ Yii Framework 2 Change Log
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Bug #12974: Changed order of migrations history in `yii\console\controllers\MigrateController::getMigrationHistory()` (evgen-d)
-
+- Enh #12984: Disabled serialization by default for `yii\caching\ArrayCache` for increased performance (rhertogh)
 
 2.0.10 October 20, 2016
 -----------------------

@@ -22,6 +22,13 @@ namespace yii\caching;
  */
 class ArrayCache extends Cache
 {
+    /**
+     * Serialization is disabled by default for [[ArrayCache]] for increased performance
+     *
+     * @inheritdoc
+     */
+    public $serializer = false;
+    
     private $_cache;
 
 
