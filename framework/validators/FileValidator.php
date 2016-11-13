@@ -222,56 +222,56 @@ class FileValidator extends Validator
     /**
      * @inheritdoc
      */
-    protected function validateValue($file)
+    protected function validateValue($value)
     {
-        if (!$file instanceof UploadedFile || $file->error == UPLOAD_ERR_NO_FILE) {
+        if (!$value instanceof UploadedFile || $value->error == UPLOAD_ERR_NO_FILE) {
             return [$this->uploadRequired, []];
         }
 
-        switch ($file->error) {
+        switch ($value->error) {
             case UPLOAD_ERR_OK:
-                if ($this->maxSize !== null && $file->size > $this->getSizeLimit()) {
+                if ($this->maxSize !== null && $value->size > $this->getSizeLimit()) {
                     return [
                         $this->tooBig,
                         [
-                            'file' => $file->name,
+                            'file' => $value->name,
                             'limit' => $this->getSizeLimit(),
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                         ],
                     ];
-                } elseif ($this->minSize !== null && $file->size < $this->minSize) {
+                } elseif ($this->minSize !== null && $value->size < $this->minSize) {
                     return [
                         $this->tooSmall,
                         [
-                            'file' => $file->name,
+                            'file' => $value->name,
                             'limit' => $this->minSize,
                             'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
                         ],
                     ];
-                } elseif (!empty($this->extensions) && !$this->validateExtension($file)) {
-                    return [$this->wrongExtension, ['file' => $file->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($file)) {
-                    return [$this->wrongMimeType, ['file' => $file->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
+                } elseif (!empty($this->extensions) && !$this->validateExtension($value)) {
+                    return [$this->wrongExtension, ['file' => $value->name, 'extensions' => implode(', ', $this->extensions)]];
+                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($value)) {
+                    return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 }
                 return null;
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
                 return [$this->tooBig, [
-                    'file' => $file->name,
+                    'file' => $value->name,
                     'limit' => $this->getSizeLimit(),
                     'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
                 ]];
             case UPLOAD_ERR_PARTIAL:
-                Yii::warning('File was only partially uploaded: ' . $file->name, __METHOD__);
+                Yii::warning('File was only partially uploaded: ' . $value->name, __METHOD__);
                 break;
             case UPLOAD_ERR_NO_TMP_DIR:
-                Yii::warning('Missing the temporary folder to store the uploaded file: ' . $file->name, __METHOD__);
+                Yii::warning('Missing the temporary folder to store the uploaded file: ' . $value->name, __METHOD__);
                 break;
             case UPLOAD_ERR_CANT_WRITE:
-                Yii::warning('Failed to write the uploaded file to disk: ' . $file->name, __METHOD__);
+                Yii::warning('Failed to write the uploaded file to disk: ' . $value->name, __METHOD__);
                 break;
             case UPLOAD_ERR_EXTENSION:
-                Yii::warning('File upload was stopped by some PHP extension: ' . $file->name, __METHOD__);
+                Yii::warning('File upload was stopped by some PHP extension: ' . $value->name, __METHOD__);
                 break;
             default:
                 break;
@@ -312,6 +312,7 @@ class FileValidator extends Validator
 
     /**
      * @inheritdoc
+     * @param bool $trim
      */
     public function isEmpty($value, $trim = false)
     {

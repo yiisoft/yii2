@@ -406,7 +406,6 @@ class User extends Component
      * @return Response the redirection response if [[loginUrl]] is set
      * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
      * not applicable.
-     * @see checkAcceptHeader
      */
     public function loginRequired($checkAjax = true, $checkAcceptHeader = true)
     {
@@ -576,7 +575,7 @@ class User extends Component
         $this->removeIdentityCookie();
         return null;
     }
-     
+
     /**
      * Removes the identity cookie.
      * This method is used when [[enableAutoLogin]] is true.
