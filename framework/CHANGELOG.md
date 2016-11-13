@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #12836: Fixed `yii\widgets\GridView::filterUrl` to not ignore `#` part of filter URL (cebe)
 - Bug #12856: Fixed `yii\web\XmlResponseFormatter` to use `true` and `false` to represent booleans (samdark)
 - Bug #12879: Console progress bar was not working properly in Windows terminals (samdark, kids-return)
+- Bug #12822: Fixed `yii\i18n\Formatter::asTimestamp()` to process timestamp with miliseconds correctly (h311ion)
 - Bug #12880: Fixed `yii\behaviors\AttributeTypecastBehavior` marks attributes with `null` value as 'dirty' (klimov-paul)
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
 - Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)

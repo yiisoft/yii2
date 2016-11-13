@@ -201,7 +201,7 @@ class FormatterTest extends TestCase
         $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400'));
         $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400.1234'));
         $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400.0000'));
-        
+
         $this->assertSame('1451606400', $this->formatter->asTimestamp('2016-01-01 00:00:00'));
 
         $dateTime = new \DateTime('2016-01-01 00:00:00.000');
