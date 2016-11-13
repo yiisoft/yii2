@@ -79,10 +79,10 @@ interface ManagerInterface extends CheckAccessInterface
     public function getRolesByUser($userId);
 
     /**
-     * Returns the roles that are adding to the role via [[addChild()]] by recursive.
-     * @param string $roleName name of parent Role.
-     * @return Role[] all roles directly adding to the role. The array is indexed by the role names.
-     * First element is a Role item that are getting by $roleName.
+     * Returns child roles of the role spcified. Depth isn't limited.
+     * @param string $roleName name of the role to file child roles for
+     * @return Role[] Child roles. The array is indexed by the role names.
+     * First element is an instance of the parent Role itself.
      * @throws \yii\base\InvalidParamException if Role was not found that are getting by $roleName
      * @since 2.0.10
      */
