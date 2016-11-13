@@ -115,7 +115,7 @@ class DbSessionTest extends TestCase
 
         return array_map(function($version){
             return substr($version, 15);
-        }, (new Query())->select(['version'])->from('migration')->column());
+        }, (new Query())->select(['namespace'])->from('migration')->column());
     }
     
     public function testMigration()

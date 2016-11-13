@@ -200,27 +200,14 @@ class MigrateController extends BaseMigrateController
             $this->createMigrationHistoryTable();
         }
         $query = new Query;
-        $rows = $query->select(['version', 'apply_time'])
+        $rows = $query->select(['namespace', 'apply_time'])
             ->from($this->migrationTable)
-            ->orderBy('apply_time DESC, version DESC')
+            ->orderBy('[[apply_time]] DESC, [[version]] DESC, [[namespace]] DESC')
             ->limit($limit)
             ->createCommand($this->db)
             ->queryAll();
-        $history = [];
-        foreach ($rows as $row) {
-            if ($row['version'] === self::BASE_MIGRATION) {
-                continue;
-            }
-            if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
-                $time = str_replace('_', '', $matches[1]);
-                $history['m' . $time . $matches[2]] = $row;
-            }
-        }
-        // sort history in desc order
-        uksort($history, function ($a, $b) {
-            return strcasecmp($b, $a);
-        });
-        $history = ArrayHelper::map($history, 'version', 'apply_time');
+        $history = ArrayHelper::map($rows, 'namespace', 'apply_time');
+        unset($history[self::BASE_MIGRATION]);
 
         return $history;
     }
@@ -233,36 +220,46 @@ class MigrateController extends BaseMigrateController
         $tableName = $this->db->schema->getRawTableName($this->migrationTable);
         $this->stdout("Creating migration history table \"$tableName\"...", Console::FG_YELLOW);
         $this->db->createCommand()->createTable($this->migrationTable, [
-            'version' => 'varchar(180) NOT NULL PRIMARY KEY',
+            'version' => 'varchar(180) NOT NULL',
+            'namespace' => 'varchar(180) NOT NULL',
             'apply_time' => 'integer',
+            'PRIMARY KEY ([[version]], [[namespace]])',
         ])->execute();
-        $this->db->createCommand()->insert($this->migrationTable, [
-            'version' => self::BASE_MIGRATION,
-            'apply_time' => time(),
-        ])->execute();
-        $this->stdout("Done.\n", Console::FG_GREEN);
+        if ($this->addMigrationHistory(self::BASE_MIGRATION)) {
+            $this->stdout("Done.\n", Console::FG_GREEN);
+        } else {
+            $this->stderr("Error.\n", Console::FG_RED);
+        }
     }
 
     /**
      * @inheritdoc
      */
-    protected function addMigrationHistory($version)
+    protected function addMigrationHistory($namespace)
     {
-        $command = $this->db->createCommand();
-        $command->insert($this->migrationTable, [
-            'version' => $version,
-            'apply_time' => time(),
-        ])->execute();
+        if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $namespace, $matches)) {
+            $version = 'M' . str_replace('_', '', $matches[1]) . $matches[2];
+            $command = $this->db->createCommand();
+            $command->insert($this->migrationTable, [
+                'version' => $version,
+                'namespace' => $namespace,
+                'apply_time' => time(),
+            ])->execute();
+
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
      * @inheritdoc
      */
-    protected function removeMigrationHistory($version)
+    protected function removeMigrationHistory($namespace)
     {
         $command = $this->db->createCommand();
         $command->delete($this->migrationTable, [
-            'version' => $version,
+            'namespace' => $namespace,
         ])->execute();
     }
 
