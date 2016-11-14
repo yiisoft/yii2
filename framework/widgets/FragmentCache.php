@@ -71,10 +71,18 @@ class FragmentCache extends Widget
      */
     public $enabled = true;
     /**
-     * @var array a list of placeholders for embedding dynamic contents. This property
-     * is used internally to implement the content caching feature. Do not modify it.
+     * @var callable[]|string[] a list of placeholders for embedding dynamic contents via [[\yii\base\View::renderDynamic()]] method:
+     *
+     * ```php
+     * [
+     *     'commentsCount' => $model->getCommentsCount,
+     *     'username' => function () {
+     *         return Yii::$app->user->identity->name;
+     *     }
+     * ]
+     * ```
      */
-    public $dynamicPlaceholders;
+    public $placeholders;
 
 
     /**
@@ -101,26 +109,36 @@ class FragmentCache extends Widget
      */
     public function run()
     {
-        if (($content = $this->getCachedContent()) !== false) {
-            echo $content;
-        } elseif ($this->cache instanceof Cache) {
-            array_pop($this->getView()->cacheStack);
-            
-            $content = ob_get_clean();
-            if ($content === false || $content === '') {
-                return;
+        if (($content = $this->getCachedContent()) === false) {
+            if ($this->cache instanceof Cache) {
+                array_pop($this->getView()->cacheStack);
+                $content = ob_get_clean();
+                if ($content === false || $content === '') {
+                    return;
+                }
+                if (is_array($this->dependency)) {
+                    $this->dependency = Yii::createObject($this->dependency);
+                }
+                $this->cache->set($this->calculateKey(), $content, $this->duration, $this->dependency);
             }
-            if (is_array($this->dependency)) {
-                $this->dependency = Yii::createObject($this->dependency);
-            }
-            $data = [$content, $this->dynamicPlaceholders];
-            $this->cache->set($this->calculateKey(), $data, $this->duration, $this->dependency);
+        }
 
-            if (empty($this->getView()->cacheStack) && !empty($this->dynamicPlaceholders)) {
-                $content = $this->updateDynamicContent($content, $this->dynamicPlaceholders);
+        if (!empty($content)) {
+            if (!empty($this->placeholders)) {
+                $content = $this->updateDynamicContent($content);
             }
             echo $content;
         }
+    }
+
+    public static function placeholderMarker($name)
+    {
+        return "<![CDATA[YII-DYNAMIC-$name]]>";
+    }
+
+    public function hasPlaceholder($name)
+    {
+        return array_key_exists($name, $this->placeholders);
     }
 
     /**
@@ -137,19 +155,7 @@ class FragmentCache extends Widget
         if ($this->_content === null) {
             $this->_content = false;
             if ($this->cache instanceof Cache) {
-                $key = $this->calculateKey();
-                $data = $this->cache->get($key);
-                if (is_array($data) && count($data) === 2) {
-                    list ($content, $placeholders) = $data;
-                    if (is_array($placeholders) && count($placeholders) > 0) {
-                        if (empty($this->getView()->cacheStack)) {
-                            // outermost cache: replace placeholder with dynamic content
-                            $content = $this->updateDynamicContent($content, $placeholders);
-                        }
-                        foreach ($placeholders as $name => $statements) {
-                            $this->getView()->addDynamicPlaceholder($name, $statements);
-                        }
-                    }
+                if ($content = $this->cache->get($this->calculateKey())) {
                     $this->_content = $content;
                 }
             }
@@ -162,16 +168,33 @@ class FragmentCache extends Widget
      * Replaces placeholders in content by results of evaluated dynamic statements.
      *
      * @param string $content
-     * @param array $placeholders
      * @return string final content
      */
-    protected function updateDynamicContent($content, $placeholders)
+    protected function updateDynamicContent($content)
     {
-        foreach ($placeholders as $name => $statements) {
-            $placeholders[$name] = $this->getView()->evaluateDynamicContent($statements);
+        $replace = [];
+        foreach ($this->placeholders as $name => $value) {
+            $replace[self::placeholderMarker($name)] = $this->evaluateDynamicContent($value);
         }
+        return strtr($content, $replace);
+    }
 
-        return strtr($content, $placeholders);
+    /**
+     * Evaluates dynamic statement.
+     *
+     * @param $value
+     * @return string
+     */
+    protected function evaluateDynamicContent($value)
+    {
+        ob_start();
+        ob_implicit_flush(false);
+        if (is_object($value) && $value instanceof \Closure) {
+            echo call_user_func($value);
+        } else {
+            echo $value;
+        }
+        return ob_get_clean();
     }
 
     /**

@@ -91,12 +91,6 @@ class View extends Component
      * @internal
      */
     public $cacheStack = [];
-    /**
-     * @var array a list of placeholders for embedding dynamic contents. This property
-     * is used internally to implement the content caching feature. Do not modify it directly.
-     * @internal
-     */
-    public $dynamicPlaceholders = [];
 
     /**
      * @var array the view files currently being rendered. There may be multiple view files being
@@ -331,50 +325,45 @@ class View extends Component
     }
 
     /**
-     * Renders dynamic content returned by the given PHP statements.
-     * This method is mainly used together with content caching (fragment caching and page caching)
+     * Renders dynamic content.
+     * This method is mainly used together with content caching (fragment caching)
      * when some portions of the content (called *dynamic content*) should not be cached.
-     * The dynamic content must be returned by some PHP statements.
-     * @param string $statements the PHP statements for generating the dynamic content.
+     * The dynamic content must be specified as a simple value:
+     *
+     * ```php
+     * if ($this->beginCache($id, ['placeholders' => ['name' => $name]])) {
+     *     echo $this->renderDynamic('name');
+     *     $this->endCache();
+     * }
+     * ```
+     *
+     * or as a closure:
+     *
+     * ```php
+     * if ($this->beginCache($id, ['placeholders' => [
+     *     'name' => function () {
+     *         return Yii::$app->user->identity->name;
+     *     }
+     * ]])) {
+     *     echo $this->renderDynamic('name');
+     *     $this->endCache();
+     * }
+     * ```
+     *
+     * @param string $placeholder the dynamic content placeholder.
+     * @throws \yii\base\ErrorException if the statement throws an exception in eval()
      * @return string the placeholder of the dynamic content, or the dynamic content if there is no
      * active content cache currently.
      */
-    public function renderDynamic($statements)
+    public function renderDynamic($placeholder)
     {
         if (!empty($this->cacheStack)) {
-            $n = count($this->dynamicPlaceholders);
-            $placeholder = "<![CDATA[YII-DYNAMIC-$n]]>";
-            $this->addDynamicPlaceholder($placeholder, $statements);
-
-            return $placeholder;
-        } else {
-            return $this->evaluateDynamicContent($statements);
+            $cache = $this->getInnerCache();
+            if ($cache->hasPlaceholder($placeholder)) {
+                return FragmentCache::placeholderMarker($placeholder);
+            }
         }
-    }
-
-    /**
-     * Adds a placeholder for dynamic content.
-     * This method is internally used.
-     * @param string $placeholder the placeholder name
-     * @param string $statements the PHP statements for generating the dynamic content
-     */
-    public function addDynamicPlaceholder($placeholder, $statements)
-    {
-        foreach ($this->cacheStack as $cache) {
-            $cache->dynamicPlaceholders[$placeholder] = $statements;
-        }
-        $this->dynamicPlaceholders[$placeholder] = $statements;
-    }
-
-    /**
-     * Evaluates the given PHP statements.
-     * This method is mainly used internally to implement dynamic content feature.
-     * @param string $statements the PHP statements to be evaluated.
-     * @return mixed the return value of the PHP statements.
-     */
-    public function evaluateDynamicContent($statements)
-    {
-        return eval($statements);
+        throw new InvalidCallException("Undefined dynamic placeholder '$placeholder'.");
     }
 
     /**
@@ -496,5 +485,16 @@ class View extends Component
     {
         $this->trigger(self::EVENT_END_PAGE);
         ob_end_flush();
+    }
+
+    /**
+     * @return FragmentCache
+     */
+    public function getInnerCache()
+    {
+        /** @var FragmentCache $cache */
+        $cache = end($this->cacheStack);
+        reset($this->cacheStack);
+        return $cache;
     }
 }

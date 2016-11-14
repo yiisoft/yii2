@@ -131,11 +131,13 @@ if ($this->beginCache($id1)) {
 в нужное место, как в примере ниже:
 
 ```php
-if ($this->beginCache($id1)) {
+if ($this->beginCache($id1, ['placeholders' => [
+    'username' => Yii::$app->user->identity->name
+]])) {
 
     // ...логика создания контента...
 
-    echo $this->renderDynamic('return Yii::$app->user->identity->name;');
+    echo $this->renderDynamic('username');
 
     // ...логика создания контента...
 
@@ -143,5 +145,18 @@ if ($this->beginCache($id1)) {
 }
 ```
 
-Метод [[yii\base\View::renderDynamic()|renderDynamic()]] принимает некоторую часть PHP кода как параметр.
+или с использованием анонимной функции:
+
+```php
+if ($this->beginCache($id1, ['placeholders' => [
+    'username' => function () {
+        return Yii::$app->user->identity->name;
+    }
+]])) {
+    echo $this->renderDynamic('username');
+    $this->endCache();
+}
+```
+
+Метод [[yii\base\View::renderDynamic()|renderDynamic()]] принимает ключ как параметр.
 Возвращаемое значение этого кода будет вставлено в динамическое содержимое. Этот PHP код будет выполняться для каждого запроса, независимо от того находится ли он внутри кэширования фрагмента или нет.

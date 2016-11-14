@@ -159,11 +159,13 @@ You may call [[yii\base\View::renderDynamic()]] within a cached fragment to inse
 at the desired place, like the following,
 
 ```php
-if ($this->beginCache($id1)) {
+if ($this->beginCache($id1, ['placeholders' => [
+    'username' => Yii::$app->user->identity->name
+]])) {
 
     // ...content generation logic...
 
-    echo $this->renderDynamic('return Yii::$app->user->identity->name;');
+    echo $this->renderDynamic('username');
 
     // ...content generation logic...
 
@@ -171,6 +173,19 @@ if ($this->beginCache($id1)) {
 }
 ```
 
-The [[yii\base\View::renderDynamic()|renderDynamic()]] method takes a piece of PHP code as its parameter.
+or with closures:
+
+```php
+if ($this->beginCache($id1, ['placeholders' => [
+    'username' => function () {
+        return Yii::$app->user->identity->name;
+    }
+]])) {
+    echo $this->renderDynamic('username');
+    $this->endCache();
+}
+```
+
+The [[yii\base\View::renderDynamic()|renderDynamic()]] method takes a placeholder as its parameter.
 The return value of the PHP code is treated as the dynamic content. The same PHP code will be executed
 for every request, no matter the enclosing fragment is being served from cached or not.

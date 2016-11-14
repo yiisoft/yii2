@@ -51,6 +51,27 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 
+Upgrade to Yii 2.1.0
+--------------------
+
+* `yii\base\View::beginCache()` and `yii\base\View::renderDynamic()` work with closures instead of `eval()` for dynamic content.
+  Move all PHP statements into values or closures and overwrite all `renderDynamic` calls to using placeholders:
+
+  ```php
+  if ($this->beginCache($id1, ['placeholders' => [
+      'username' => Yii::$app->user->identity->name;
+      'closure' => function () {
+          return Yii::$app->user->identity->name;
+      }
+  ])) {
+      // ...content generation logic...
+      echo $this->renderDynamic('username');
+      echo $this->renderDynamic('closure');
+      // ...content generation logic...
+      $this->endCache();
+  }
+  ```
+
 Upgrade from Yii 2.0.9
 ----------------------
 

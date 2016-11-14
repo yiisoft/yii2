@@ -6,6 +6,7 @@ use Yii;
 use yii\caching\ArrayCache;
 use yii\base\View;
 use yii\widgets\Breadcrumbs;
+use yii\widgets\FragmentCache;
 
 /**
  * @group widgets
@@ -86,6 +87,67 @@ class FragmentCacheTest extends \yiiunit\TestCase
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
     }
 
+    public function testDynamicContentScalar()
+    {
+        $expectedLevel = ob_get_level();
+        $view = new View();
+        $placeholders = [
+            'place' => 'dynamic'
+        ];
 
-    // TODO test dynamic replacements
+        ob_start();
+        ob_implicit_flush(false);
+        $this->assertTrue($view->beginCache('test', ['placeholders' => $placeholders]));
+
+        ob_start();
+        ob_implicit_flush(false);
+        echo "cached ";
+        echo $view->renderDynamic('place');
+        echo " fragment";
+        $this->assertEquals("cached " . FragmentCache::placeholderMarker('place') . " fragment", $rawContent = ob_get_clean());
+
+        echo $rawContent;
+        $view->endCache();
+        $this->assertEquals("cached dynamic fragment", ob_get_clean());
+
+        ob_start();
+        ob_implicit_flush(false);
+        $this->assertFalse($view->beginCache('test', ['placeholders' => $placeholders]));
+        $this->assertEquals("cached dynamic fragment", ob_get_clean());
+
+        $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
+    }
+
+    public function testDynamicContentClosure()
+    {
+        $expectedLevel = ob_get_level();
+        $view = new View();
+        $placeholders = [
+            'place' => function () {
+                    return 'dynamic';
+                }
+        ];
+
+        ob_start();
+        ob_implicit_flush(false);
+        $this->assertTrue($view->beginCache('test', ['placeholders' => $placeholders]));
+
+        ob_start();
+        ob_implicit_flush(false);
+        echo "cached ";
+        echo $view->renderDynamic('place');
+        echo " fragment";
+        $this->assertEquals("cached " . FragmentCache::placeholderMarker('place') . " fragment", $rawContent = ob_get_clean());
+
+        echo $rawContent;
+        $view->endCache();
+        $this->assertEquals("cached dynamic fragment", ob_get_clean());
+
+        ob_start();
+        ob_implicit_flush(false);
+        $this->assertFalse($view->beginCache('test', ['placeholders' => $placeholders]));
+        $this->assertEquals("cached dynamic fragment", ob_get_clean());
+
+        $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
+    }
 }
