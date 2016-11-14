@@ -660,12 +660,21 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * The following special options are recognized:
+     *
+     * - `doubleEncode`: whether to encode HTML entities in `$value`. If false, HTML entities in `$value` will not
+     * be further encoded.
+     *
      * @return string the generated text area tag
      */
     public static function textarea($name, $value = '', $options = [])
     {
         $options['name'] = $name;
-        return static::tag('textarea', static::encode($value), $options);
+        $doubleEncode = (isset($options['doubleEncode'])) ? $options['doubleEncode'] : true;
+        // Remove special `doubleEncode` option as it is not needed for `renderTagAttributes` method
+        // that is called inside the `tag` method
+        unset($options['doubleEncode']);
+        return static::tag('textarea', static::encode($value, $doubleEncode), $options);
     }
 
     /**
