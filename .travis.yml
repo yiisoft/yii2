@@ -19,7 +19,7 @@ env:
   global:
     - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206
     - CUBRID_PDO_VERSION=9.3.0.0001
-    - secure: W5faw3NKFSODoalFj5WXqWmHGIkOnd+CE9mcwjz68R9g9v2K21fDgCIMR5BA3HMD0CWq87UBXMXubZZv8B58j5e4HNEDTP3s4rMjPMgRASYVVaNd4PeDB7gVAS96cpnXd9m69xmVrNmfJGpQK5yrfsaPxho1CqsGGYDi+JjGElQ=
+    - secure: Q3dD9eL9yGDbMbdnNeLPSruRmZH515tLOTBam5rnsqX8spE+/HLqskLwUKIX78ansVdhu/OLGO72rBHvUotrQPLjqp6GnOSXw15gaz1LcxzfqbiZSbNvYw+7nl0hUjysLEMfZFEGWqrrk8BMuRAWyxABCrdR/91CyTFJhhcTnpg=
 
 services:
   - memcached
@@ -50,6 +50,7 @@ install:
         # disable xdebug for performance reasons when code coverage is not needed
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
+  - printenv
   - composer config -g github-oauth.github.com "$GITHUB_TOKEN"
   - travis_retry composer self-update && composer --version
   - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
