@@ -199,27 +199,48 @@ class MigrateController extends BaseMigrateController
         if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
             $this->createMigrationHistoryTable();
         }
-        $query = new Query;
-        $rows = $query->select(['version', 'apply_time'])
+        $query = (new Query())
+            ->select(['version', 'apply_time'])
             ->from($this->migrationTable)
-            ->orderBy('apply_time DESC, version DESC')
-            ->limit($limit)
-            ->createCommand($this->db)
-            ->queryAll();
+            ->orderBy(['apply_time' => SORT_DESC, 'version' => SORT_DESC]);
+
+        if (empty($this->migrationNamespaces)) {
+            $query->limit($limit);
+            $rows = $query->all($this->db);
+            $history = ArrayHelper::map($rows, 'version', 'apply_time');
+            unset($history[self::BASE_MIGRATION]);
+            return $history;
+        }
+
+        $rows = $query->all($this->db);
+
         $history = [];
-        foreach ($rows as $row) {
+        foreach ($rows as $key => $row) {
             if ($row['version'] === self::BASE_MIGRATION) {
                 continue;
             }
             if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
                 $time = str_replace('_', '', $matches[1]);
-                $history['m' . $time . $matches[2]] = $row;
+                $row['canonicalVersion'] = $time;
+            } else {
+                $row['canonicalVersion'] = $row['version'];
             }
+            $row['apply_time'] = (int)$row['apply_time'];
+            $history[] = $row;
         }
-        // sort history in desc order
-        uksort($history, function ($a, $b) {
-            return strcasecmp($b, $a);
+
+        usort($history, function ($a, $b) {
+            if ($a['apply_time'] === $b['apply_time']) {
+                if (($compareResult = strcasecmp($b['canonicalVersion'], $a['canonicalVersion'])) !== 0) {
+                    return $compareResult;
+                }
+                return strcasecmp($b['version'], $a['version']);
+            }
+            return ($a['apply_time'] > $b['apply_time']) ? -1 : +1;
         });
+
+        $history = array_slice($history, 0, $limit);
+
         $history = ArrayHelper::map($history, 'version', 'apply_time');
 
         return $history;
