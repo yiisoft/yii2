@@ -17,6 +17,8 @@ matrix:
 
 env:
   - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
+  global:
+    secure: W5faw3NKFSODoalFj5WXqWmHGIkOnd+CE9mcwjz68R9g9v2K21fDgCIMR5BA3HMD0CWq87UBXMXubZZv8B58j5e4HNEDTP3s4rMjPMgRASYVVaNd4PeDB7gVAS96cpnXd9m69xmVrNmfJGpQK5yrfsaPxho1CqsGGYDi+JjGElQ=
 
 services:
   - memcached
@@ -40,6 +42,7 @@ before_install:
     if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
       yes '' | pecl install apc
     fi
+  - composer config --global github-oauth.github.com "$GITHUB_TOKEN"
 
 install:
   - |
