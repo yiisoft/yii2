@@ -177,6 +177,13 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->mget(['number_test', 'non_existent_key']));
     }
 
+    public function testDefaultTtl()
+    {
+        $cache = $this->getCacheInstance();
+
+        $this->assertSame(0, $cache->ttl);
+    }
+
     public function testExpire()
     {
         $cache = $this->getCacheInstance();
