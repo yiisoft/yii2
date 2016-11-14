@@ -92,6 +92,8 @@ class Action extends \yii\base\Action
             $values = explode(',', $id);
             if (count($keys) === count($values)) {
                 $model = $modelClass::findOne(array_combine($keys, $values));
+            }else{
+                $model = $modelClass::findOne($id);
             }
         } elseif ($id !== null) {
             $model = $modelClass::findOne($id);
