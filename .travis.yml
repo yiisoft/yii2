@@ -43,7 +43,6 @@ before_install:
     if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
       yes '' | pecl install apc
     fi
-  - composer config -g github-oauth.github.com $GITHUB_TOKEN
 
 install:
   - |
@@ -51,6 +50,7 @@ install:
         # disable xdebug for performance reasons when code coverage is not needed
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
+  - composer config -g github-oauth.github.com $GITHUB_TOKEN
   - travis_retry composer self-update && composer --version
   - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
