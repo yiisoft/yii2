@@ -43,7 +43,7 @@ before_install:
     if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
       yes '' | pecl install apc
     fi
-  - composer config --global github-oauth.github.com "$GITHUB_TOKEN"
+  - composer config --global github-oauth.github.com $GITHUB_TOKEN
 
 install:
   - |
