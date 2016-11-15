@@ -442,6 +442,106 @@ class EntryForm extends Model
 ```
 
 
+## Multiple Attributes Validation <span id="multiple-attributes-validation"></span>
+
+Sometimes validators involve multiple attributes. Consider the following form:
+
+``` php
+class MigrationForm extends \yii\base\Model
+{
+    /*
+     * Minimal funds amount for one adult person
+     */
+    const MIN_ADULT_FUNDS = 3000;
+    /*
+     * Minimal funds amount for one child
+     */
+    const MIN_CHILD_FUNDS = 1500;
+
+    public $personalSalary;
+    public $spouseSalary;
+    public $childrenCount;
+    public $description;
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return [
+            [['personalSalary', 'description'], 'required'],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => 0],
+            ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
+            [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
+            ['description', 'string'],
+        ];
+    }
+}
+```
+
+Let's say we need to check if salary is enough for children. We can create inline validator `validateChildrenFunds` for
+that which will run only when `childrenCount` is more than 0.
+
+Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`` when attaching
+validator. This is because the same validator will run for all attributes and we only need to run check once.
+
+You can use any of these attributes instead (or use what you think is the most relevant):
+
+```php
+['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
+    return $model->childrenCount;
+}],
+```
+
+Implementation of `validateChildrenFunds` can be like this:
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // Double the minimal adult funds if spouse salary is specified
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', 'Your salary is not enough for children.');
+    }
+}
+```
+
+You can ignore `$attribute` parameter because validation is not related to just one attribute.
+
+Adding error in case of multiple attributes can vary depending on desired form design:
+
+- Select the most important relevant field in your opinion and add error to it:
+
+```php
+$this->addError('childrenCount', 'Your salary is not enough for children.');
+```
+
+- Select multiple important relevant attributes or all attributes and add the same error message to them. We can store
+message in separate variable before passing it to `addError` to keep code DRY.
+
+```php
+$message = 'Your salary is not enough for children.';
+$this->addError('personalSalary', $message);
+$this->addError('wifeSalary', $message);
+$this->addError('childrenCount', $message);
+```
+
+- Add common error (not related to particular attribute). We can use not existing attribute name for adding error, for
+example `*`, because attribute existence is not checked at that point.
+
+```php
+$this->addError('*', 'Your salary is not enough for children.');
+```
+
+As a result, we will not see error message near form fields. To display it, we can include error summary in view:
+
+```php
+<?= $form->errorSummary($model) ?>
+```
+
+
 ## Client-Side Validation <span id="client-side-validation"></span>
 
 Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
