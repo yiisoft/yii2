@@ -71,6 +71,11 @@ abstract class Cache extends Component implements \ArrayAccess
      * implementations of the cache can not correctly save and retrieve data different from a string type.
      */
     public $serializer;
+    /**
+     * @var integer default duration in seconds before the cache will expire. Default value is 0, meaning infinity.
+     * @since 2.0.11
+     */
+    public $ttl = 0;
 
 
     /**
@@ -202,14 +207,19 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[ttl]] value is used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
      */
-    public function set($key, $value, $duration = 0, $dependency = null)
+    public function set($key, $value, $duration = null, $dependency = null)
     {
+        if ($duration === null) {
+            $duration = $this->ttl;
+        }
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -233,7 +243,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
      */
     public function mset($items, $duration = 0, $dependency = null)
@@ -251,7 +261,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @since 2.0.7
      */
     public function multiSet($items, $duration = 0, $dependency = null)
@@ -284,7 +294,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @deprecated This method is an alias for [[multiAdd()]] and will be removed in 2.1.0.
      */
     public function madd($items, $duration = 0, $dependency = null)
@@ -301,7 +311,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @since 2.0.7
      */
     public function multiAdd($items, $duration = 0, $dependency = null)

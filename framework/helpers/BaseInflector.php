@@ -480,8 +480,8 @@ class BaseInflector
      * of the helper.
      *
      * @param string $string input string
-     * @param string|\Transliterator $transliterator either a [[Transliterator]] or a string
-     * from which a [[Transliterator]] can be built.
+     * @param string|\Transliterator $transliterator either a [[\Transliterator]] or a string
+     * from which a [[\Transliterator]] can be built.
      * @return string
      * @since 2.0.7 this method is public.
      */
