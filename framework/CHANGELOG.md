@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
 - Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
 - Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
+- Bug: Added a `/` to the `yii\captcha\Captcha::$captchaAction` string to work correctly in a module also. 
 
 2.0.11 under development
 ------------------------
