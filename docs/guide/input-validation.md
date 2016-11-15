@@ -481,7 +481,7 @@ class MigrationForm extends \yii\base\Model
 
 ### Creating validator <span id="multiple-attributes-validator"></span>
 
-Let's say we need to check if salary is enough for children. We can create inline validator `validateChildrenFunds` for
+Let's say we need to check if family income is enough for children. We can create inline validator `validateChildrenFunds` for
 that which will run only when `childrenCount` is more than 0.
 
 Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`) when attaching
