@@ -1,3 +1,5 @@
+# faster builds on new travis setup not using sudo
+sudo: false
 language: php
 
 php:
@@ -7,9 +9,28 @@ php:
   - 7.0
   - 7.1
   - nightly
+  # test against the HHVM version provided by travis by default
   - hhvm
 
 matrix:
+  fast_finish: true
+  include:
+    # test against the latest HHVM version by using a newer image
+    - php: hhvm
+      sudo: true
+      dist: trusty
+      group: edge # Use edge image until the next travis CI image update
+      addons:
+        postgresql: "9.3"
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+        - postgresql
+      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
   allow_failures:
     - php: nightly
 
@@ -18,9 +39,6 @@ env:
 
 services:
   - memcached
-
-# faster builds on new travis setup not using sudo
-sudo: false
 
 # cache vendor dirs
 cache:
@@ -35,8 +53,8 @@ addons:
 
 install:
   - |
-    if [ $TRAVIS_PHP_VERSION != '5.6' ]; then
-        # disable xdebug for performance reasons when code coverage is not needed
+    if [[ $TRAVIS_PHP_VERSION != '5.6' && $TRAVIS_PHP_VERSION != hhv* ]]; then
+        # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
   - travis_retry composer self-update && composer --version
@@ -56,7 +74,16 @@ before_script:
   - psql --version
 
   # initialize databases
-  - mysql -e 'CREATE DATABASE yiitest;';
+  - |
+    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
+      mysql -e 'CREATE DATABASE `yiitest`;'
+    fi
+  - |
+    if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
+      mysql -u root -e 'CREATE DATABASE yiitest;';
+      mysql -u root -e 'CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;'
+      mysql -u root -e 'GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;'
+    fi
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
   - |
