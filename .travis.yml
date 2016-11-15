@@ -9,10 +9,13 @@ php:
   - 7.0
   - 7.1
   - nightly
+  # test against the HHVM version provided by travis by default
+  - hhvm
 
 matrix:
   fast_finish: true
   include:
+    # test against the latest HHVM version by using a newer image
     - php: hhvm
       sudo: true
       dist: trusty
@@ -29,7 +32,6 @@ matrix:
         - postgresql
       env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
   allow_failures:
-    - php: hhvm
     - php: nightly
 
 env:
