@@ -243,7 +243,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
      */
     public function mset($items, $duration = 0, $dependency = null)
@@ -261,7 +261,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @since 2.0.7
      */
     public function multiSet($items, $duration = 0, $dependency = null)
@@ -294,7 +294,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @deprecated This method is an alias for [[multiAdd()]] and will be removed in 2.1.0.
      */
     public function madd($items, $duration = 0, $dependency = null)
@@ -311,7 +311,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return bool whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @since 2.0.7
      */
     public function multiAdd($items, $duration = 0, $dependency = null)
