@@ -479,6 +479,8 @@ class MigrationForm extends \yii\base\Model
 }
 ```
 
+### Creating validator <span id="multiple-attributes-validator"></span>
+
 Let's say we need to check if salary is enough for children. We can create inline validator `validateChildrenFunds` for
 that which will run only when `childrenCount` is more than 0.
 
@@ -490,7 +492,7 @@ You can use any of these attributes instead (or use what you think is the most r
 
 ```php
 ['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
-    return $model->childrenCount;
+    return $model->childrenCount > 0;
 }],
 ```
 
@@ -511,6 +513,9 @@ public function validateChildrenFunds($attribute, $params)
 
 You can ignore `$attribute` parameter because validation is not related to just one attribute.
 
+
+### Adding errors <span id="multiple-attributes-errors"></span>
+
 Adding error in case of multiple attributes can vary depending on desired form design:
 
 - Select the most important relevant field in your opinion and add error to it:
@@ -527,6 +532,15 @@ $message = 'Your salary is not enough for children.';
 $this->addError('personalSalary', $message);
 $this->addError('wifeSalary', $message);
 $this->addError('childrenCount', $message);
+```
+
+Or use a loop:
+
+```php
+$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+foreach ($attributes as $attribute) {
+    $this->addError($attribute, 'Your salary is not enough for children.');
+}
 ```
 
 - Add common error (not related to particular attribute). We can use not existing attribute name for adding error, for
