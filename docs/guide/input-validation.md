@@ -470,7 +470,7 @@ class MigrationForm extends \yii\base\Model
     {
         return [
             [['personalSalary', 'description'], 'required'],
-            [['personalSalary', 'spouseSalary'], 'integer', 'min' => 0],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => self::MIN_ADULT_FUNDS],
             ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
             [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
             ['description', 'string'],
