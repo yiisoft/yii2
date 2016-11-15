@@ -193,8 +193,10 @@ SQL;
         $this->assertEquals($intCol, $row['int_col']);
         $this->assertEquals($charCol, $row['char_col']);
         $this->assertEquals($floatCol, $row['float_col']);
-        if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci' || (defined('HHVM_VERSION') && $this->driverName === 'pgsql')) {
+        if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
+        } elseif (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
+            // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
             $this->assertTrue(is_resource($row['blob_col']));
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
