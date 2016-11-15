@@ -483,7 +483,8 @@ Let's say we need to check if salary is enough for children. We can create inlin
 that which will run only when `childrenCount` is more than 0.
 
 Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`) when attaching
-validator. This is because the same validator will run for all attributes and we only need to run check once.
+validator. This is because the same validator will run for each attribute (3 times total) and we only need to run it
+once for whole attribute set.
 
 You can use any of these attributes instead (or use what you think is the most relevant):
 
