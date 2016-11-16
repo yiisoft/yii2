@@ -70,7 +70,7 @@ echo DetailView::widget([
             'attribute' => 'owner',
             'value' => function ($model) {
                 return $model->owner->name;
-            }
+            },
             'visible' => \Yii::$app->user->can('posts.owner.view'),
         ],
     ],
