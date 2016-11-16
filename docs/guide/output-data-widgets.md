@@ -77,6 +77,48 @@ echo DetailView::widget([
 ]);
 ```
 
+Closure can be also useful in case when calculation logic of displayed value can't be written in one single line:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                if ( ... ) {
+                    // Some calculations
+                    return ...;
+                } elseif ( ... ) {
+                    // Some calculations
+                    return ...;
+                } else {
+                    // Some calculations
+                    return ...;
+                }
+            },
+        ],
+    ],
+]);
+```
+
+Without closure it would be less readable or additional variables would be required. However remember that in case of
+complex presentation logic sometimes it's better to use decorators or at least additional helpers. Putting it in models
+is not always a good idea because it's more related with display (view layer). And additional benefit of that is when
+you have common attributes and values in both `GridView` and `DetailView` you can avoid copy paste:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => // Call helper or decorator here instead
+        ],
+    ],
+]);
+```
+
 > Note: Closures in `value` for attributes is available only since 2.0.11.
 
 
