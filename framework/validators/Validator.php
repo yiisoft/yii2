@@ -328,6 +328,8 @@ class Validator extends Component
     /**
      * Returns the JavaScript needed for performing client-side validation.
      *
+     * Calls [[getClientOptions()]] to generate options array for client-side validation.
+     *
      * You may override this method to return the JavaScript validation code if
      * the validator can support client-side validation.
      *
@@ -353,11 +355,26 @@ class Validator extends Component
      * containing a model form with this validator applied.
      * @return string the client-side validation script. Null if the validator does not support
      * client-side validation.
+     * @see getClientOptions()
      * @see \yii\widgets\ActiveForm::enableClientValidation
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
         return null;
+    }
+
+    /**
+     * Returns the client-side validation options.
+     * This method is usually called from [[clientValidateAttribute()]]. You may override this method to modify options
+     * that will be passed to the client-side validation.
+     * @param \yii\base\Model $model the model being validated
+     * @param string $attribute the attribute name being validated
+     * @return array the client-side validation options
+     * @since 2.0.11
+     */
+    protected function getClientOptions($model, $attribute)
+    {
+        return [];
     }
 
     /**
