@@ -72,10 +72,11 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $serializer;
     /**
-     * @var integer default duration in seconds before the cache will expire. Default value is 0, meaning infinity.
+     * @var integer default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
+     * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
      */
-    public $ttl = 0;
+    public $defaultDuration = 0;
 
 
     /**
@@ -217,7 +218,7 @@ abstract class Cache extends Component implements \ArrayAccess
     public function set($key, $value, $duration = null, $dependency = null)
     {
         if ($duration === null) {
-            $duration = $this->ttl;
+            $duration = $this->defaultDuration;
         }
 
         if ($dependency !== null && $this->serializer !== false) {
