@@ -115,6 +115,26 @@ class ColumnSchemaBuilder extends Object
      * @since 2.0.8
      */
     public $comment;
+    /**
+     * @var string the name of the foreign key constraint.
+     */
+    public $foreignKeyName;
+    /**
+     * @var string the table that the foreign key references to.
+     */
+    public $refTable;
+    /**
+     * @var string the name of the column that the foreign key references to.
+     */
+    public $refColumn;
+    /**
+     * @var string the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION,
+     */
+    public $delete;
+    /**
+     * @var string the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION,
+     */
+    public $update;
 
     /**
      * Create a column schema builder instance giving the type and value precision.
@@ -266,6 +286,25 @@ class ColumnSchemaBuilder extends Object
     public function append($sql)
     {
         $this->append = $sql;
+        return $this;
+    }
+
+    /**
+     * Sets a foreign key for the column
+     * @param string $foreignKeyName the name of the foreign key constraint.
+     * @param string $refTable the table that the foreign key references to.
+     * @param string $refColumn the name of the column that the foreign key references to.
+     * @param string $delete the ON DELETE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @param string $update the ON UPDATE option. Most DBMS support these options: RESTRICT, CASCADE, NO ACTION, SET DEFAULT, SET NULL
+     * @return $this
+     */
+    public function foreignKey($foreignKeyName, $refTable, $refColumn, $delete=null, $update=null)
+    {
+        $this->refTable = $refTable;
+        $this->foreignKeyName = $foreignKeyName;
+        $this->refColumn = $refColumn;
+        $this->delete = $delete;
+        $this->update = $update;
         return $this;
     }
 

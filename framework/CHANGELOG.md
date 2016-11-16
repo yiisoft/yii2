@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #13016: Added `foreignKey` method for `yii\db\ColumnSchemaBuilder` (kfreiman)
 
 
 2.0.10 October 20, 2016

@@ -265,6 +265,18 @@ class Migration extends Component implements MigrationInterface
             if ($type instanceof ColumnSchemaBuilder && $type->comment !== null) {
                 $this->db->createCommand()->addCommentOnColumn($table, $column, $type->comment)->execute();
             }
+
+            if ($type instanceof ColumnSchemaBuilder && $type->foreignKeyName !== null) {
+                $this->db->createCommand()->addForeignKey(
+                    $type->foreignKeyName,
+                    $table,
+                    $column,
+                    $type->refTable,
+                    $type->refColumn,
+                    $type->delete,
+                    $type->update
+                )->execute();
+            }
         }
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
     }
