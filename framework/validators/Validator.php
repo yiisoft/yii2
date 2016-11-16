@@ -361,6 +361,18 @@ class Validator extends Component
     }
 
     /**
+     * Returns the client-side validation options.
+     * @param \yii\base\Model $model the model being validated
+     * @param string $attribute the attribute name being validated
+     * @return array the client-side validation options
+     * @since 2.0.11
+     */
+    public function getClientOptions($model, $attribute)
+    {
+        return [];
+    }
+
+    /**
      * Returns a value indicating whether the validator is active for the given scenario and attribute.
      *
      * A validator is active if

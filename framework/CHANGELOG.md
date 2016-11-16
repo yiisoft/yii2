@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
 - Enh #6809: Added `\yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
+- Enh #11163: Added separate method for client-side validation options in `yii\validators\Validator` (arogachev)
 - Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
 - Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
 - Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
