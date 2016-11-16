@@ -74,6 +74,12 @@ class LinkPager extends Widget
      * @var string the CSS class for the disabled page buttons.
      */
     public $disabledPageCssClass = 'disabled';
+    
+    /**
+     * @var array An array with options to pass to the span tag which is generated inside the disabled list element.
+     */
+    public $disabledSpanOptions = [];
+    
     /**
      * @var int maximum number of page buttons that can be displayed. Defaults to 10.
      */
@@ -218,7 +224,7 @@ class LinkPager extends Widget
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
 
-            return Html::tag('li', Html::tag('span', $label), $options);
+            return Html::tag('li', Html::tag('span', $label, $this->disabledSpanOptions), $options);
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;
