@@ -37,6 +37,49 @@ echo DetailView::widget([
 ]);
 ```
 
+Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of models,
+[[yii\widgets\DetailView|DetailView]] processes just one. So most of the times there is no need for using closure since
+`$model` is the only one model for display and available in view as variable.
+
+However some cases can make using of closure useful, for example:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => $model->owner->name,
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
+    ],
+]);
+```
+
+In this example regardless of `visible` value, including case when user does not have permission to view owner
+(`visible` evaluates to `false`), the `value` will be always calculated by accessing relation and its property
+(`$model->owner->name`). Here it can cause additional SQL query to execute because lazy loading is used by default.
+The `value` can contain other calculations which are undesired and useless if as a result this attribute won't be
+displayed at all. To prevent that, use closure:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            }
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
+    ],
+]);
+```
+
+> Note: Closures in `value` for attributes is available only since 2.0.11.
+
+
 ListView <a name="list-view"></a>
 --------
 

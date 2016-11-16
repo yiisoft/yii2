@@ -231,6 +231,10 @@ class DetailView extends Widget
                 throw new InvalidConfigException('The attribute configuration requires the "attribute" element to determine the value and display label.');
             }
 
+            if (is_callable($attribute['value'])) {
+                $attribute['value'] = call_user_func($attribute['value'], $this->model);
+            }
+
             $this->attributes[$i] = $attribute;
         }
     }
