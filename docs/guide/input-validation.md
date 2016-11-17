@@ -463,9 +463,6 @@ class MigrationForm extends \yii\base\Model
     public $childrenCount;
     public $description;
 
-    /**
-     * @inheritdoc
-     */
     public function rules()
     {
         return [
@@ -572,7 +569,7 @@ namespace app\components;
 
 trait BatchValidationTrait
 {
-    /*
+    /**
      * @var bool whether to validate multiple attributes at once
      */
     public $batch = false;
@@ -662,7 +659,7 @@ class CustomInlineValidator extends InlineValidator
 Couple more changes are needed.
 
 First to use our `CustomInlineValidator` instead of default `InlineValidator` we need to override
-[[yii\validators\Validator::createValidator()]] method in `CustomValidator`:
+[[\yii\validators\Validator::createValidator()]] method in `CustomValidator`:
 
 ```php
 public static function createValidator($type, $model, $attributes, $params = [])
@@ -690,7 +687,7 @@ public static function createValidator($type, $model, $attributes, $params = [])
 ```
 
 And finally to support our custom validator in model we can create the trait and override
-[[yii\base\Model::createValidators()]] like this:
+[[\yii\base\Model::createValidators()]] like this:
 
 ```php
 <?php
@@ -804,9 +801,9 @@ public function validateChildrenFunds($attribute, $params)
 
 The advantages of this approach:
 
-- It better reflects all attributes participating in validation (the rules become more readable);
-- It correctly considers [[yii\validators\Validator::skipOnError]] and [[yii\validators\Validator::skipOnEmpty]]
-options for **each** used attribute (not only for that you decided to choose as more relevant).
+- It better reflects all attributes that participate in validation (the rules become more readable);
+- It respects the options [[yii\validators\Validator::skipOnError]] and [[yii\validators\Validator::skipOnEmpty]] for
+**each** used attribute (not only for that you decided to choose as more relevant).
 
 If you have problems with implementing client validation, you can:
 
