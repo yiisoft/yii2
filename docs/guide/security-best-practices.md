@@ -185,6 +185,30 @@ class SiteController extends Controller
 }
 ```
 
+Disabling CSRF validation in [standalone actions](structure-controllers.md#standalone-actions) must be done in `init()`
+method. Do not place this code into `beforeRun()` method because it won't have effect.
+
+```php
+<?php
+
+namespace app\components;
+
+use yii\base\Action;
+
+class HelloWorldAction extends Action
+{
+    public function init()
+    {
+        parent::init();
+        \Yii::$app->controller->enableCsrfValidation = false;
+    }
+
+    public function run()
+    {
+        return "Hello World";
+    }
+}
+```
 
 Avoiding file exposure
 ----------------------
