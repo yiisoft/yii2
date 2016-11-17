@@ -603,6 +603,24 @@ EOD;
             ],
         ];
         $this->assertEqualsWithoutLE(str_replace('&nbsp;', ' ', $expected), Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
+
+        // Attributes for prompt (https://github.com/yiisoft/yii2/issues/7420)
+
+        $data = [
+            'value1' => 'label1',
+            'value2' => 'label2',
+        ];
+        $expected = <<<EOD
+<option class="prompt" value="-1" label="None">Please select</option>
+<option value="value1" selected>label1</option>
+<option value="value2">label2</option>
+EOD;
+        $attributes = [
+            'prompt' => [
+                'text' => 'Please select', 'options' => ['class' => 'prompt', 'value' => '-1', 'label' => 'None'],
+            ],
+        ];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value1'], $data, $attributes));
     }
 
     public function testRenderAttributes()
