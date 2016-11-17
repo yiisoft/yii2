@@ -41,26 +41,8 @@ Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of 
 [[yii\widgets\DetailView|DetailView]] processes just one. So most of the times there is no need for using closure since
 `$model` is the only one model for display and available in view as variable.
 
-However some cases can make using of closure useful, for example:
-
-```php
-echo DetailView::widget([
-    'model' => $model,
-    'attributes' => [
-        [
-            'attribute' => 'owner',
-            'value' => $model->owner->name,
-            'visible' => \Yii::$app->user->can('posts.owner.view'),
-        ],
-    ],
-]);
-```
-
-In this example regardless of `visible` value, including case when user does not have permission to view owner
-(`visible` evaluates to `false`), the `value` will be always calculated by accessing relation and its property
-(`$model->owner->name`). Here it can cause additional SQL query to execute because lazy loading is used by default.
-The `value` can contain other calculations which are undesired and useless if as a result this attribute won't be
-displayed at all. To prevent that, use closure:
+However some cases can make using of closure useful. For example when `visible` is specified and you want to prevent
+`value` calculations in case it evaluates to `false`:
 
 ```php
 echo DetailView::widget([
@@ -72,48 +54,6 @@ echo DetailView::widget([
                 return $model->owner->name;
             },
             'visible' => \Yii::$app->user->can('posts.owner.view'),
-        ],
-    ],
-]);
-```
-
-Closure can be also useful in case when calculation logic of displayed value can't be written in one single line:
-
-```php
-echo DetailView::widget([
-    'model' => $model,
-    'attributes' => [
-        [
-            'attribute' => 'owner',
-            'value' => function ($model) {
-                if ( ... ) {
-                    // Some calculations
-                    return ...;
-                } elseif ( ... ) {
-                    // Some calculations
-                    return ...;
-                } else {
-                    // Some calculations
-                    return ...;
-                }
-            },
-        ],
-    ],
-]);
-```
-
-Without closure it would be less readable or additional variables would be required. However remember that in case of
-complex presentation logic sometimes it's better to use decorators or at least additional helpers. Putting it in models
-is not always a good idea because it's more related with display (view layer). And additional benefit of that is when
-you have common attributes and values in both `GridView` and `DetailView` you can avoid copy paste:
-
-```php
-echo DetailView::widget([
-    'model' => $model,
-    'attributes' => [
-        [
-            'attribute' => 'owner',
-            'value' => // Call helper or decorator here instead
         ],
     ],
 ]);
