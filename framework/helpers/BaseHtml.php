@@ -754,12 +754,12 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use array to
-     * override value and set other tag attributes:
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
      *
-     * ```php
-     * ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
-     * ```
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
@@ -809,12 +809,12 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use array to
-     * override value and set other tag attributes:
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
      *
-     * ```php
-     * ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
-     * ```
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
@@ -1489,12 +1489,12 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use array to
-     * override value and set other tag attributes:
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
      *
-     * ```php
-     * ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
-     * ```
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
@@ -1544,12 +1544,12 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use array to
-     * override value and set other tag attributes:
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
      *
-     * ```php
-     * ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
-     * ```
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
      *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
