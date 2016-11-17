@@ -41,7 +41,7 @@ echo $model['name'];
 
 // Модель является обходимой(traversable) с использованием foreach.
 foreach ($model as $name => $value) {
-echo "$name: $value\n";
+    echo "$name: $value\n";
 }
 ```
 
