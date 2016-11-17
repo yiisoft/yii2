@@ -449,11 +449,11 @@ Sometimes validators involve multiple attributes. Consider the following form:
 ``` php
 class MigrationForm extends \yii\base\Model
 {
-    /*
+    /**
      * Minimal funds amount for one adult person
      */
     const MIN_ADULT_FUNDS = 3000;
-    /*
+    /**
      * Minimal funds amount for one child
      */
     const MIN_CHILD_FUNDS = 1500;
@@ -481,12 +481,12 @@ class MigrationForm extends \yii\base\Model
 
 ### Creating validator <span id="multiple-attributes-validator"></span>
 
-Let's say we need to check if family income is enough for children. We can create inline validator `validateChildrenFunds` for
-that which will run only when `childrenCount` is more than 0.
+Let's say we need to check if the family income is enough for children. We can create inline validator
+`validateChildrenFunds` for that which will run only when `childrenCount` is more than 0.
 
 Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`) when attaching
-validator. This is because the same validator will run for each attribute (3 times total) and we only need to run it
-once for whole attribute set.
+validator. This is because the same validator will run for each attribute (3 times in total) and we only need to run it
+once for the whole attribute set.
 
 You can use any of these attributes instead (or use what you think is the most relevant):
 
@@ -518,7 +518,7 @@ You can ignore `$attribute` parameter because validation is not related to just 
 
 Adding error in case of multiple attributes can vary depending on desired form design:
 
-- Select the most important relevant field in your opinion and add error to it:
+- Select the most relevant field in your opinion and add error to it's attribute:
 
 ```php
 $this->addError('childrenCount', 'Your salary is not enough for children.');
@@ -543,14 +543,14 @@ foreach ($attributes as $attribute) {
 }
 ```
 
-- Add common error (not related to particular attribute). We can use not existing attribute name for adding error, for
-example `*`, because attribute existence is not checked at that point.
+- Add a common error (not related to particular attribute). We can use the not existing attribute name for adding
+error, for example `*`, because attribute existence is not checked at that point.
 
 ```php
 $this->addError('*', 'Your salary is not enough for children.');
 ```
 
-As a result, we will not see error message near form fields. To display it, we can include error summary in view:
+As a result, we will not see error message near form fields. To display it, we can include the error summary in view:
 
 ```php
 <?= $form->errorSummary($model) ?>
