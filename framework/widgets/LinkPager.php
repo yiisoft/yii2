@@ -83,6 +83,7 @@ class LinkPager extends Widget
      * ```php
      * $disabledPageElementOptions = ['tag' => 'div', 'class' => 'disabled-div'];
      * ```
+     * @since 2.0.11
      */
     public $disabledPageElementOptions = [];
     
