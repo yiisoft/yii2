@@ -442,6 +442,378 @@ class EntryForm extends Model
 ```
 
 
+## Multiple Attributes Validation <span id="multiple-attributes-validation"></span>
+
+Sometimes validators involve multiple attributes. Consider the following form:
+
+``` php
+class MigrationForm extends \yii\base\Model
+{
+    /**
+     * Minimal funds amount for one adult person
+     */
+    const MIN_ADULT_FUNDS = 3000;
+    /**
+     * Minimal funds amount for one child
+     */
+    const MIN_CHILD_FUNDS = 1500;
+
+    public $personalSalary;
+    public $spouseSalary;
+    public $childrenCount;
+    public $description;
+
+    public function rules()
+    {
+        return [
+            [['personalSalary', 'description'], 'required'],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => self::MIN_ADULT_FUNDS],
+            ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
+            [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
+            ['description', 'string'],
+        ];
+    }
+}
+```
+
+### Creating validator <span id="multiple-attributes-validator"></span>
+
+Let's say we need to check if the family income is enough for children. We can create inline validator
+`validateChildrenFunds` for that which will run only when `childrenCount` is more than 0.
+
+Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`) when attaching
+validator. This is because the same validator will run for each attribute (3 times in total) and we only need to run it
+once for the whole attribute set.
+
+You can use any of these attributes instead (or use what you think is the most relevant):
+
+```php
+['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
+    return $model->childrenCount > 0;
+}],
+```
+
+Implementation of `validateChildrenFunds` can be like this:
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // Double the minimal adult funds if spouse salary is specified
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', 'Your salary is not enough for children.');
+    }
+}
+```
+
+You can ignore `$attribute` parameter because validation is not related to just one attribute.
+
+
+### Adding errors <span id="multiple-attributes-errors"></span>
+
+Adding error in case of multiple attributes can vary depending on desired form design:
+
+- Select the most relevant field in your opinion and add error to it's attribute:
+
+```php
+$this->addError('childrenCount', 'Your salary is not enough for children.');
+```
+
+- Select multiple important relevant attributes or all attributes and add the same error message to them. We can store
+message in separate variable before passing it to `addError` to keep code DRY.
+
+```php
+$message = 'Your salary is not enough for children.';
+$this->addError('personalSalary', $message);
+$this->addError('wifeSalary', $message);
+$this->addError('childrenCount', $message);
+```
+
+Or use a loop:
+
+```php
+$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+foreach ($attributes as $attribute) {
+    $this->addError($attribute, 'Your salary is not enough for children.');
+}
+```
+
+- Add a common error (not related to particular attribute). We can use the not existing attribute name for adding
+error, for example `*`, because attribute existence is not checked at that point.
+
+```php
+$this->addError('*', 'Your salary is not enough for children.');
+```
+
+As a result, we will not see error message near form fields. To display it, we can include the error summary in view:
+
+```php
+<?= $form->errorSummary($model) ?>
+```
+
+### Custom validator <span id="multiple-attributes-custom-validator"></span>
+
+If passing one attribute is not acceptable for you (for example it can be hard to choose which one is more relevant or
+you consider it misleading in rules), the more advanced solution is to implement `CustomValidator` with support for
+validating multiple attributes at once.
+
+By default if multiple attributes are used for validation, the loop will be used to apply the same validation to each
+of them. Let's use a separate trait and override [[yii\base\Validator:validateAttributes()]]:
+
+```php
+<?php
+
+namespace app\components;
+
+trait BatchValidationTrait
+{
+    /**
+     * @var bool whether to validate multiple attributes at once
+     */
+    public $batch = false;
+
+    /**
+     * Validates the specified object.
+     * @param \yii\base\Model $model the data model being validated.
+     * @param array|null $attributes the list of attributes to be validated.
+     * Note that if an attribute is not associated with the validator, or is is prefixed with `!` char - it will be
+     * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
+     */
+    public function validateAttributes($model, $attributes = null)
+    {
+        if (is_array($attributes)) {
+            $newAttributes = [];
+            foreach ($attributes as $attribute) {
+                if (in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)) {
+                    $newAttributes[] = $attribute;
+                }
+            }
+            $attributes = $newAttributes;
+        } else {
+            $attributes = [];
+            foreach ($this->attributes as $attribute) {
+                $attributes[] = $attribute[0] === '!' ? substr($attribute, 1) : $attribute;
+            }
+        }
+
+        foreach ($attributes as $attribute) {
+            $skip = $this->skipOnError && $model->hasErrors($attribute)
+                || $this->skipOnEmpty && $this->isEmpty($model->$attribute);
+            if ($skip) {
+                // Skip validation if at least one attribute is empty or already has error
+                // (according skipOnError and skipOnEmpty options must be set to true
+                return;
+            }
+        }
+
+        if ($this->batch) {
+            // Validate all attributes at once
+            if ($this->when === null || call_user_func($this->when, $model, $attribute)) {
+                // Pass array with all attributes instead of one attribute
+                $this->validateAttribute($model, $attributes);
+            }
+        } else {
+            // Validate each attribute separately using the same validation logic
+            foreach ($attributes as $attribute) {
+                if ($this->when === null || call_user_func($this->when, $model, $attribute)) {
+                    $this->validateAttribute($model, $attribute);
+                }
+            }
+        }
+    }
+}
+```
+
+Then we need to create custom validator and use the created trait:
+
+```php
+<?php
+
+namespace app\components;
+
+use yii\validators\Validator;
+
+class CustomValidator extends Validator
+{
+    use BatchValidationTrait;
+}
+```
+
+To support inline validation as well we can extend default inline validator and also use this trait:
+
+```php
+<?php
+
+namespace app\components;
+
+use yii\validators\InlineValidator;
+
+class CustomInlineValidator extends InlineValidator
+{
+    use BatchValidationTrait;
+}
+```
+
+Couple more changes are needed.
+
+First to use our `CustomInlineValidator` instead of default `InlineValidator` we need to override
+[[\yii\validators\Validator::createValidator()]] method in `CustomValidator`:
+
+```php
+public static function createValidator($type, $model, $attributes, $params = [])
+{
+    $params['attributes'] = $attributes;
+
+    if ($type instanceof \Closure || $model->hasMethod($type)) {
+        // method-based validator
+        // The following line is changed to use our CustomInlineValidator
+        $params['class'] = __NAMESPACE__ . '\CustomInlineValidator';
+        $params['method'] = $type;
+    } else {
+        if (isset(static::$builtInValidators[$type])) {
+            $type = static::$builtInValidators[$type];
+        }
+        if (is_array($type)) {
+            $params = array_merge($type, $params);
+        } else {
+            $params['class'] = $type;
+        }
+    }
+
+    return Yii::createObject($params);
+}
+```
+
+And finally to support our custom validator in model we can create the trait and override
+[[\yii\base\Model::createValidators()]] like this:
+
+```php
+<?php
+
+namespace app\components;
+
+use yii\base\InvalidConfigException;
+
+trait CustomValidationTrait
+{
+    /**
+     * Creates validator objects based on the validation rules specified in [[rules()]].
+     * Unlike [[getValidators()]], each time this method is called, a new list of validators will be returned.
+     * @return ArrayObject validators
+     * @throws InvalidConfigException if any validation rule configuration is invalid
+     */
+    public function createValidators()
+    {
+        $validators = new ArrayObject;
+        foreach ($this->rules() as $rule) {
+            if ($rule instanceof Validator) {
+                $validators->append($rule);
+            } elseif (is_array($rule) && isset($rule[0], $rule[1])) { // attributes, validator type
+                // The following line is changed in order to use our CustomValidator
+                $validator = CustomValidator::createValidator($rule[1], $this, (array) $rule[0], array_slice($rule, 2));
+                $validators->append($validator);
+            } else {
+                throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
+            }
+        }
+        return $validators;
+    }
+}
+```
+
+Now we can implement custom validator by extending from `CustomValidator`:
+
+```php
+<?php
+
+namespace app\validators;
+
+use app\components\CustomValidator;
+
+class ChildrenFundsValidator extends CustomValidator
+{
+    public function validateAttribute($model, $attribute)
+    {
+        // $attribute here is not a single attribute, it's an array containing all related attributes
+        $totalSalary = $this->personalSalary + $this->spouseSalary;
+        // Double the minimal adult funds if spouse salary is specified
+        $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+        $childFunds = $totalSalary - $minAdultFunds;
+        if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+            $this->addError('*', 'Your salary is not enough for children.');
+        }
+    }
+}
+```
+
+Because `$attribute` contains the list of all related attributes, we can use loop in case of adding errors for all
+attributes is needed:
+
+```php
+foreach ($attribute as $singleAttribute) {
+    $this->addError($attribute, 'Your salary is not enough for children.');
+}
+```
+
+Now it's possible to specify all related attributes in according validation rule:
+
+```php
+[
+    ['personalSalary', 'spouseSalary', 'childrenCount'],
+    \app\validators\ChildrenFundsValidator::className(),
+    'batch' => `true`,
+    'when' => function ($model) {
+        return $model->childrenCount > 0;
+    }
+],
+```
+
+For inline validation the rule will be:
+
+```php
+[
+    ['personalSalary', 'spouseSalary', 'childrenCount'],
+    'validateChildrenFunds',
+    'batch' => `true`,
+    'when' => function ($model) {
+        return $model->childrenCount > 0;
+    }
+],
+```
+
+And here is according validation method:
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    // $attribute here is not a single attribute, it's an array containing all related attributes
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // Double the minimal adult funds if spouse salary is specified
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', 'Your salary is not enough for children.');
+    }
+}
+```
+
+The advantages of this approach:
+
+- It better reflects all attributes that participate in validation (the rules become more readable);
+- It respects the options [[yii\validators\Validator::skipOnError]] and [[yii\validators\Validator::skipOnEmpty]] for
+**each** used attribute (not only for that you decided to choose as more relevant).
+
+If you have problems with implementing client validation, you can:
+
+- combine [[yii\widgets\ActiveForm::enableAjaxValidation|enableClientValidation]] and
+[[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]] options, so multiple attributes will be validated
+with AJAX without page reload;
+- implement validation outside of [[yii\validators\Validator::clientValidateAttribute]] because it's designed to work
+with single attribute.
+
+
 ## Client-Side Validation <span id="client-side-validation"></span>
 
 Client-side validation based on JavaScript is desirable when end users provide inputs via HTML forms, because
