@@ -1719,16 +1719,16 @@ class BaseHtml
         if (isset($tagOptions['prompt'])) {
             $promptOptions = ['value' => ''];
             if (is_string($tagOptions['prompt'])) {
-                $text = $tagOptions['prompt'];
+                $promptText = $tagOptions['prompt'];
             } else {
-                $text = $tagOptions['prompt']['text'];
+                $promptText = $tagOptions['prompt']['text'];
                 $promptOptions = array_merge($promptOptions, $tagOptions['prompt']['options']);
             }
-            $text = $encode ? static::encode($text) : $text;
+            $promptText = $encode ? static::encode($promptText) : $promptText;
             if ($encodeSpaces) {
-                $text = str_replace(' ', '&nbsp;', $text);
+                $promptText = str_replace(' ', '&nbsp;', $promptText);
             }
-            $lines[] = static::tag('option', $text, $promptOptions);
+            $lines[] = static::tag('option', $promptText, $promptOptions);
         }
 
         $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];
