@@ -78,6 +78,11 @@ class LinkPager extends Widget
     
     /**
      * @var array An array with options to pass to the disabled tag which is generated inside the disabled list element.
+     * In order to to customize the tag name itself use the array key `tag` and value for its tag name value.
+     * 
+     * ```php
+     * $disabledPageElementOptions = ['tag' => 'div', 'class' => 'disabled-div'];
+     * ```
      */
     public $disabledPageElementOptions = [];
     
@@ -225,6 +230,7 @@ class LinkPager extends Widget
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
             $tag = ArrayHelper::remove($this->disabledPageElementOptions, 'tag', 'span');
+            
             return Html::tag('li', Html::tag($tag, $label, $this->disabledPageElementOptions), $options);
         }
         $linkOptions = $this->linkOptions;

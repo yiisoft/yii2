@@ -59,31 +59,31 @@ class LinkPagerTest extends \yiiunit\TestCase
     
     public function testDisabledPageElementOptions()
     {
-    	$pagination = new Pagination();
+        $pagination = new Pagination();
         $pagination->setPage(0);
         $pagination->totalCount = 50;
         $pagination->route = 'test';
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
-        	'disabledPageElementOptions' => ['class' => 'foo-bar'],
+            'disabledPageElementOptions' => ['class' => 'foo-bar'],
         ]);
         
-		static::assertContains('<span class="foo-bar">&laquo;</span>', $output);
+        static::assertContains('<span class="foo-bar">&laquo;</span>', $output);
     }
     
 	public function testDisabledPageElementOptionsWithTagOption()
     {
-    	$pagination = new Pagination();
+        $pagination = new Pagination();
         $pagination->setPage(0);
         $pagination->totalCount = 50;
         $pagination->route = 'test';
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
-        	'disabledPageElementOptions' => ['class' => 'foo-bar', 'tag' => 'div'],
+            'disabledPageElementOptions' => ['class' => 'foo-bar', 'tag' => 'div'],
         ]);
         
-		static::assertContains('<div class="foo-bar">&laquo;</div>', $output);
+        static::assertContains('<div class="foo-bar">&laquo;</div>', $output);
     }
 }
