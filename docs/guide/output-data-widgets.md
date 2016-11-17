@@ -59,8 +59,6 @@ echo DetailView::widget([
 ]);
 ```
 
-> Note: Closures in `value` for attributes are available only since 2.0.11.
-
 ListView <a name="list-view"></a>
 --------
 
