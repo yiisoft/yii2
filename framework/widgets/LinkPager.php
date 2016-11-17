@@ -77,8 +77,8 @@ class LinkPager extends Widget
     public $disabledPageCssClass = 'disabled';
     
     /**
-     * @var array An array with options to pass to the disabled tag which is generated inside the disabled list element.
-     * In order to to customize the tag name itself use the array key `tag` and value for its tag name value.
+     * @var array the options for the disabled tag to be generated inside the disabled list element.
+     * In order to customize the html tag, please use the tag key.
      * 
      * ```php
      * $disabledPageElementOptions = ['tag' => 'div', 'class' => 'disabled-div'];
