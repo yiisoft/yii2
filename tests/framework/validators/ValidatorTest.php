@@ -63,6 +63,28 @@ class ValidatorTest extends TestCase
         $this->assertSame(['foo' => 'bar'], $val->params);
     }
 
+    public function testInlineValidateAttribute()
+    {
+        // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
+
+        $model = new FakedValidationModel();
+        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+
+        $val->validateAttribute($model, 'val_attr_a');
+        $args = $model->getInlineValArgs();
+        $this->assertCount(3, $args);
+        $this->assertEquals('val_attr_a', $args[0]);
+        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+
+        $val->clientValidate = 'clientInlineVal';
+        $args = $val->clientValidateAttribute($model, 'val_attr_a', null);
+        $this->assertCount(3, $args);
+        $this->assertEquals('val_attr_a', $args[0]);
+        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+    }
+
     public function testValidate()
     {
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2']]);

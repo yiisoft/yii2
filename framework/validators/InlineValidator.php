@@ -19,6 +19,15 @@ namespace yii\validators;
  * where `$attribute` refers to the name of the attribute being validated, while `$params`
  * is an array representing the additional parameters supplied in the validation rule.
  *
+ * In version 2.0.11 additional argument `$validator` containing reference to related `InlineValidator` was added.
+ * You can use it as follows:
+ *
+ *```php
+ * function foo($attribute, $params, $validator) {
+ *     $validator->addError($this, 'attributeName', 'Error message text');
+ * }
+ * ```
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -27,11 +36,12 @@ class InlineValidator extends Validator
     /**
      * @var string|\Closure an anonymous function or the name of a model class method that will be
      * called to perform the actual validation. The signature of the method should be like the following,
-     * where `$attribute` is the name of the attribute to be validated, and `$params` contains the value
-     * of [[params]] that you specify when declaring the inline validation rule:
+     * where `$attribute` is the name of the attribute to be validated, `$params` contains the value
+     * of [[params]] that you specify when declaring the inline validation rule and `$validator` is a reference to
+     * related `InlineValidator`.
      *
      * ```php
-     * function foo($attribute, $params)
+     * function foo($attribute, $params, $validator)
      * ```
      */
     public $method;
@@ -44,7 +54,7 @@ class InlineValidator extends Validator
      * The signature of the method should be like the following:
      *
      * ```php
-     * function foo($attribute, $params)
+     * function foo($attribute, $params, $validator)
      * {
      *     return "javascript";
      * }
@@ -66,7 +76,7 @@ class InlineValidator extends Validator
         if (is_string($method)) {
             $method = [$model, $method];
         }
-        call_user_func($method, $attribute, $this->params);
+        call_user_func($method, $attribute, $this->params, $this);
     }
 
     /**
@@ -80,7 +90,7 @@ class InlineValidator extends Validator
                 $method = [$model, $method];
             }
 
-            return call_user_func($method, $attribute, $this->params);
+            return call_user_func($method, $attribute, $this->params, $this);
         } else {
             return null;
         }
