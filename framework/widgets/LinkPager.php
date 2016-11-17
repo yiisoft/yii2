@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\base\Widget;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -76,9 +77,9 @@ class LinkPager extends Widget
     public $disabledPageCssClass = 'disabled';
     
     /**
-     * @var array An array with options to pass to the span tag which is generated inside the disabled list element.
+     * @var array An array with options to pass to the disabled tag which is generated inside the disabled list element.
      */
-    public $disabledSpanOptions = [];
+    public $disabledPageElementOptions = [];
     
     /**
      * @var int maximum number of page buttons that can be displayed. Defaults to 10.
@@ -223,8 +224,8 @@ class LinkPager extends Widget
         }
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
-
-            return Html::tag('li', Html::tag('span', $label, $this->disabledSpanOptions), $options);
+            $tag = ArrayHelper::remove($this->disabledPageElementOptions, 'tag', 'span');
+            return Html::tag('li', Html::tag($tag, $label, $this->disabledPageElementOptions), $options);
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;
