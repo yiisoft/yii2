@@ -664,7 +664,7 @@ Couple more changes are needed.
 First to use our `CustomInlineValidator` instead of default `InlineValidator` we need to override
 [[yii\validators\Validator::createValidator()]] method in `CustomValidator`:
 
-```
+```php
 public static function createValidator($type, $model, $attributes, $params = [])
 {
     $params['attributes'] = $attributes;
