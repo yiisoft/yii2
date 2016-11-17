@@ -13,20 +13,12 @@ namespace yii\validators;
  * The validation method must have the following signature:
  *
  * ```php
- * function foo($attribute, $params)
+ * function foo($attribute, $params, $validator)
  * ```
  *
- * where `$attribute` refers to the name of the attribute being validated, while `$params`
- * is an array representing the additional parameters supplied in the validation rule.
- *
- * In version 2.0.11 additional argument `$validator` containing reference to related `InlineValidator` was added.
- * You can use it as follows:
- *
- *```php
- * function foo($attribute, $params, $validator) {
- *     $validator->addError($this, 'attributeName', 'Error message text');
- * }
- * ```
+ * where `$attribute` refers to the name of the attribute being validated, while `$params` is an array representing the
+ * additional parameters supplied in the validation rule. Parameter `$validator` refers to the related
+ * [[InlineValidator]] object and is available since version 2.0.11.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
