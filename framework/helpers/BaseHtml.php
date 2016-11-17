@@ -1693,18 +1693,18 @@ class BaseHtml
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
         if (isset($tagOptions['prompt'])) {
-            $attrs = ['value' => ''];
+            $promptOptions = ['value' => ''];
             if (is_string($tagOptions['prompt'])) {
                 $text = $tagOptions['prompt'];
             } else {
                 $text = $tagOptions['prompt']['text'];
-                $attrs = array_merge($attrs, $tagOptions['prompt']['options']);
+                $promptOptions = array_merge($promptOptions, $tagOptions['prompt']['options']);
             }
             $text = $encode ? static::encode($text) : $text;
             if ($encodeSpaces) {
                 $text = str_replace(' ', '&nbsp;', $text);
             }
-            $lines[] = static::tag('option', $text, $attrs);
+            $lines[] = static::tag('option', $text, $promptOptions);
         }
 
         $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];
