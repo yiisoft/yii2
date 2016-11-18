@@ -114,7 +114,11 @@ class ColumnSchema extends Object
     protected function typecast($value)
     {
         if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY && $this->type !== Schema::TYPE_CHAR) {
-            return null;
+            if($this->allowNull){
+                return null;
+            }else{
+                return '';
+            }
         }
         if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
             return $value;
