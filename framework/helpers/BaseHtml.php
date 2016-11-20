@@ -662,7 +662,7 @@ class BaseHtml
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
      * The following special options are recognized:
      *
-     * - `doubleEncode`: whether to encode HTML entities in `$value`. If false, HTML entities in `$value` will not
+     * - `doubleEncode`: whether to encode HTML entities in `$value`. If `false`, HTML entities in `$value` will not
      * be further encoded.
      *
      * @return string the generated text area tag
@@ -670,10 +670,9 @@ class BaseHtml
     public static function textarea($name, $value = '', $options = [])
     {
         $options['name'] = $name;
-        $doubleEncode = (isset($options['doubleEncode'])) ? $options['doubleEncode'] : true;
-        // Remove special `doubleEncode` option as it is not needed for `renderTagAttributes` method
-        // that is called inside the `tag` method
-        unset($options['doubleEncode']);
+        // Get value of `doubleEncode` option and then remove it from the array as it is not
+        // needed for `renderTagAttributes` method that is called inside the `tag` method
+        $doubleEncode = ArrayHelper::remove($options, 'doubleEncode', true);
         return static::tag('textarea', static::encode($value, $doubleEncode), $options);
     }
 
