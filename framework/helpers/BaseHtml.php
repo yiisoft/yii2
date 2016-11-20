@@ -670,8 +670,7 @@ class BaseHtml
     public static function textarea($name, $value = '', $options = [])
     {
         $options['name'] = $name;
-        // Get value of `doubleEncode` option and then remove it from the array as it is not
-        // needed for `renderTagAttributes` method that is called inside the `tag` method
+        // Get value, then remove from array - not needed for `renderTagAttributes` called inside the `tag` method
         $doubleEncode = ArrayHelper::remove($options, 'doubleEncode', true);
         return static::tag('textarea', static::encode($value, $doubleEncode), $options);
     }
