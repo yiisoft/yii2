@@ -209,7 +209,7 @@ class BaseHtml
     /**
      * Generates a link tag that refers to an external CSS file.
      * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::to()]].
-     * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
+     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
      *   the generated `link` tag will be enclosed within the conditional comments. This is mainly useful
