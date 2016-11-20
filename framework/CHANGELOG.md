@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
+- Enh #12988: Changed `textarea` method within the `yii\helpers\BaseHtml` class to allow users to control whether html entities found within `$value` will be double-encoded or not (cyphix333)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Bug #12974: Changed order of migrations history in `yii\console\controllers\MigrateController::getMigrationHistory()` (evgen-d)
 
