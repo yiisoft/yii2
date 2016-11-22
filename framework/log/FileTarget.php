@@ -70,7 +70,7 @@ class FileTarget extends Target
      * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this problem.
      */
-    public $rotateByCopy = true;
+    public $rotateByCopy = null;
 
 
     /**
@@ -94,6 +94,9 @@ class FileTarget extends Target
         }
         if ($this->maxFileSize < 1) {
             $this->maxFileSize = 1;
+        }
+        if (is_null($this->rotateByCopy)) {
+            $this->rotateByCopy = stristr(PHP_OS, 'WIN') !== false;
         }
     }
 
