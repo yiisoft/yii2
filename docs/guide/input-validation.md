@@ -446,7 +446,7 @@ class EntryForm extends Model
 
 Sometimes validators involve multiple attributes. Consider the following form:
 
-``` php
+```php
 class MigrationForm extends \yii\base\Model
 {
     /**
