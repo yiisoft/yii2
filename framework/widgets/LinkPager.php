@@ -81,11 +81,11 @@ class LinkPager extends Widget
      * In order to customize the html tag, please use the tag key.
      * 
      * ```php
-     * $disabledPageElementOptions = ['tag' => 'div', 'class' => 'disabled-div'];
+     * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
      * ```
      * @since 2.0.11
      */
-    public $disabledPageElementOptions = [];
+    public $disabledListItemSubTagOptions = [];
     
     /**
      * @var int maximum number of page buttons that can be displayed. Defaults to 10.
@@ -230,9 +230,9 @@ class LinkPager extends Widget
         }
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
-            $tag = ArrayHelper::remove($this->disabledPageElementOptions, 'tag', 'span');
+            $tag = ArrayHelper::remove($this->disabledListItemSubTagOptions, 'tag', 'span');
             
-            return Html::tag('li', Html::tag($tag, $label, $this->disabledPageElementOptions), $options);
+            return Html::tag('li', Html::tag($tag, $label, $this->disabledListItemSubTagOptions), $options);
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;

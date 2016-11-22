@@ -66,7 +66,7 @@ class LinkPagerTest extends \yiiunit\TestCase
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
-            'disabledPageElementOptions' => ['class' => 'foo-bar'],
+            'disabledListItemSubTagOptions' => ['class' => 'foo-bar'],
         ]);
         
         static::assertContains('<span class="foo-bar">&laquo;</span>', $output);
@@ -81,7 +81,7 @@ class LinkPagerTest extends \yiiunit\TestCase
 
         $output = LinkPager::widget([
             'pagination' => $pagination,
-            'disabledPageElementOptions' => ['class' => 'foo-bar', 'tag' => 'div'],
+            'disabledListItemSubTagOptions' => ['class' => 'foo-bar', 'tag' => 'div'],
         ]);
         
         static::assertContains('<div class="foo-bar">&laquo;</div>', $output);
