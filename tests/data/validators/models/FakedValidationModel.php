@@ -73,7 +73,7 @@ class FakedValidationModel extends Model
     }
 
     /**
-     * Get arguments of inlineVal method in the last call.
+     * Returns the arguments of the inlineVal method in the last call.
      * @return array|null an array of arguments in the last call or null if method never been called.
      * @see inlineVal
      */

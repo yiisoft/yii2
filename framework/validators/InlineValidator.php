@@ -27,14 +27,15 @@ class InlineValidator extends Validator
 {
     /**
      * @var string|\Closure an anonymous function or the name of a model class method that will be
-     * called to perform the actual validation. The signature of the method should be like the following,
-     * where `$attribute` is the name of the attribute to be validated, `$params` contains the value
-     * of [[params]] that you specify when declaring the inline validation rule and `$validator` is a reference to
-     * related [[InlineValidator]] object.
+     * called to perform the actual validation. The signature of the method should be like the following:
      *
      * ```php
      * function foo($attribute, $params, $validator)
      * ```
+     *
+     * - `$attribute` is the name of the attribute to be validated;
+     * - `$params` contains the value of [[params]] that you specify when declaring the inline validation rule;
+     * - `$validator` is a reference to related [[InlineValidator]] object.
      */
     public $method;
     /**
