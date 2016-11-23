@@ -9,12 +9,24 @@ php:
   - 7.0
   - 7.1
   - nightly
-  # test against the HHVM version provided by travis by default
-  - hhvm
 
 matrix:
   fast_finish: true
   include:
+    # Test against HHVM 3.12 LTS version by using trusty
+    - php: hhvm-3.12
+      sudo: true
+      dist: trusty
+      group: edge # Use edge image until the next travis CI image update
+      addons:
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
     # test against the latest HHVM version by using a newer image
     - php: hhvm
       sudo: true

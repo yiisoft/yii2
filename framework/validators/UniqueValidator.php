@@ -76,7 +76,7 @@ class UniqueValidator extends Validator
     /**
      * @var string
      * @since 2.0.9
-     * @deprecated Deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
+     * @deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
      * to setup custom message for multiple target attributes.
      */
     public $comboNotUnique;

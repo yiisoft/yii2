@@ -23,6 +23,9 @@ Yii Framework 2 Change Log
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6809: Added `\yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
+- Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
+- Enh #7420: Attributes for prompt generated with `renderSelectOptions` of `\yii\helpers\Html` helper (arogachev)
+- Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
 - Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
 - Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
@@ -38,6 +41,8 @@ Yii Framework 2 Change Log
 - Enh #12816: Added `columnSchemaClass` option for `yii\db\Schema` which adds ability to specify custom `yii\db\ColumnSchema` class (nanodesu88)
 - Enh #12881: Added `removeValue` method to `yii\helpers\BaseArrayHelper` (nilsburg)
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
+- Enh #13035: Use ArrayHelper::getValue() in SluggableBehavior::getValue() (thyseus)
+- Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 
 
