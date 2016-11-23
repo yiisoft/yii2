@@ -42,6 +42,7 @@ Yii Framework 2 Change Log
 - Enh #12901: Added `getDefaultHelpHeader` method to the `yii\console\controllers\HelpController` class to be able to override default help header in a class heir (diezztsk)
 - Enh #13035: Use ArrayHelper::getValue() in SluggableBehavior::getValue() (thyseus)
 - Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
+- Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 
 
