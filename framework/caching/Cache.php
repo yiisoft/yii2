@@ -69,6 +69,10 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $serializer;
 
+    /**
+     * @var bool whether to hash the cache key. Defaults to true.
+     */
+    public $enableKeyHash = true;
 
     /**
      * Builds a normalized cache key from a given key.
@@ -82,10 +86,12 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function buildKey($key)
     {
-        if (is_string($key)) {
-            $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
-        } else {
-            $key = md5(json_encode($key));
+        if ($this->enableKeyHash) {
+            if (is_string($key)) {
+                $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
+            } else {
+                $key = md5(json_encode($key));
+            }
         }
 
         return $this->keyPrefix . $key;
