@@ -50,6 +50,7 @@ Yii Framework 2 Change Log
 - Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
 - Enh #12988: Changed `textarea` method within the `yii\helpers\BaseHtml` class to allow users to control whether html entities found within `$value` will be double-encoded or not (cyphix333)
 - Enh #13074: Improved `\yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options. (timbeks)
+- Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 
 
