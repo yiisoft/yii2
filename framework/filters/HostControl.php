@@ -28,6 +28,9 @@ use yii\web\NotFoundHttpException;
  *             'example.com',
  *             '*.example.com',
  *         ],
+ *         'except' => [
+ *             'site/error' // allow error action
+ *         ],
  *     ],
  *     // ...
  * ];
