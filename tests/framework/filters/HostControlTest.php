@@ -4,6 +4,7 @@ namespace yiiunit\framework\filters;
 
 use Yii;
 use yii\base\Action;
+use yii\base\ExitException;
 use yii\filters\HostControl;
 use yii\web\Controller;
 use yiiunit\TestCase;
@@ -83,8 +84,21 @@ class HostControlTest extends TestCase
         if ($allowed) {
             $this->assertTrue($filter->beforeAction($action));
         } else {
-            $this->setExpectedException('yii\web\NotFoundHttpException');
-            $filter->beforeAction($action);
+            ob_start();
+            ob_implicit_flush(false);
+
+            $isExit = false;
+
+            try {
+                $filter->beforeAction($action);
+            } catch (ExitException $e) {
+                $isExit = true;
+            }
+
+            ob_get_clean();
+
+            $this->assertTrue($isExit);
+            $this->assertEquals(404, Yii::$app->response->getStatusCode());
         }
     }
 }

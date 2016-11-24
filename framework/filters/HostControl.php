@@ -28,9 +28,6 @@ use yii\web\NotFoundHttpException;
  *             'example.com',
  *             '*.example.com',
  *         ],
- *         'except' => [
- *             'site/error' // allow error action
- *         ],
  *     ],
  *     // ...
  * ];
@@ -104,6 +101,9 @@ class HostControl extends ActionFilter
      * ```
      *
      * where `$action` is the current [[Action|action]] object.
+     *
+     * > Note: while implementing your own host deny processing, make sure you avoid usage of the current requested
+     * host name, do not create absolute URL links, cache page parts and so on.
      */
     public $denyCallback;
 
@@ -147,12 +147,20 @@ class HostControl extends ActionFilter
 
     /**
      * Denies the access.
-     * The default implementation throws a 404 HTTP exception.
+     * The default implementation will display 404 page right away, terminating the program execution.
      * @param Action $action the action to be executed.
-     * @throws NotFoundHttpException
      */
     protected function denyAccess($action)
     {
-        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+        $response = Yii::$app->getResponse();
+        $errorHandler = Yii::$app->getErrorHandler();
+
+        $exception = new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+
+        $response->setStatusCode($exception->statusCode, $exception->getMessage());
+        $response->data = $errorHandler->renderFile($errorHandler->errorView, ['exception' => $exception]);
+        $response->send();
+
+        Yii::$app->end();
     }
 }
