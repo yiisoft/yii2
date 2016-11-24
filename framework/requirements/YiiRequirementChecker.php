@@ -395,6 +395,6 @@ class YiiRequirementChecker
      */
     function getNowDate()
     {
-        return @strftime('%Y-%m-%d %H:%M', time());;
+        return @strftime('%Y-%m-%d %H:%M', time());
     }
 }

@@ -672,7 +672,7 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                $timestamp = new DateTime('@' . $value, new DateTimeZone('UTC'));
+                $timestamp = new DateTime('@' . (int)$value, new DateTimeZone('UTC'));
                 return $checkTimeInfo ? [$timestamp, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkTimeInfo ? [$timestamp, false] : $timestamp;
@@ -1131,7 +1131,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see sizeFormat
+     * @see sizeFormatBase
      * @see asSize
      */
     public function asShortSize($value, $decimals = null, $options = [], $textOptions = [])
@@ -1187,7 +1187,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see sizeFormat
+     * @see sizeFormatBase
      * @see asShortSize
      */
     public function asSize($value, $decimals = null, $options = [], $textOptions = [])

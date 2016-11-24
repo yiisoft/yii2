@@ -24,3 +24,5 @@ the core developers.
    then it's safer to use bigint or mediumint rather than relying on unsigned.
    <https://github.com/yiisoft/yii/pull/1923#issuecomment-11881967>
 6. [Helpers vs separate non-static classes](https://github.com/yiisoft/yii2/pull/12661#issuecomment-251599463)
+7. **Setters method chaining** should be avoided if there are methods in the classs returning meaningful values. Chaining could be
+   supported if a class is a builder where all setters are modifying internal state: https://github.com/yiisoft/yii2/issues/13026

@@ -115,11 +115,11 @@ class ImageValidator extends FileValidator
     /**
      * @inheritdoc
      */
-    protected function validateValue($file)
+    protected function validateValue($value)
     {
-        $result = parent::validateValue($file);
+        $result = parent::validateValue($value);
 
-        return empty($result) ? $this->validateImage($file) : $result;
+        return empty($result) ? $this->validateImage($value) : $result;
     }
 
     /**

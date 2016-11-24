@@ -83,15 +83,16 @@ trait ActiveRelationTrait
      * Use this method to specify a pivot record/table when declaring a relation in the [[ActiveRecord]] class:
      *
      * ```php
-     * public function getOrders()
+     * class Order extends ActiveRecord
      * {
-     *     return $this->hasOne(Order::className(), ['id' => 'order_id']);
-     * }
-     *
-     * public function getOrderItems()
-     * {
-     *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-     *                 ->via('orders');
+     *    public function getOrderItems() {
+     *        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+     *    }
+     * 
+     *    public function getItems() {
+     *        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *                    ->via('orderItems');
+     *    }
      * }
      * ```
      *
