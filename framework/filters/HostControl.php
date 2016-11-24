@@ -59,7 +59,7 @@ use yii\web\NotFoundHttpException;
  * ```
  *
  * > Note: the best way to restrict allowed host names is usage of the web server 'virtual hosts' configuration.
- * This filter should be used only, if this configuration is not available or compromised.
+ * This filter should be used only if this configuration is not available or compromised.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.11
@@ -103,7 +103,7 @@ class HostControl extends ActionFilter
      * where `$action` is the current [[Action|action]] object.
      *
      * > Note: while implementing your own host deny processing, make sure you avoid usage of the current requested
-     * host name, do not create absolute URL links, cache page parts and so on.
+     * host name, creation of absolute URL links, caching page parts and so on.
      */
     public $denyCallback;
 
