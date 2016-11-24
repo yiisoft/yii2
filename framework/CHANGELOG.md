@@ -35,6 +35,7 @@ Yii Framework 2 Change Log
 - Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
+- Enh #12738: Added support for creating protocol-relative URLs in `UrlManager::createAbsoluteUrl()` and `Url` helper methods (rob006)
 - Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
 - Enh #12750: `yii\widgets\ListView::itemOptions` can be a closure now (webdevsega, silverfire)
