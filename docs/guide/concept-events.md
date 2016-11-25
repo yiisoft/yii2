@@ -296,11 +296,6 @@ pass the interface name as the first argument:
 Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
     Yii::trace($event->sender->className . ' just danced'); // Will log that Dog or Developer danced
 });
-
-// or with fully qualified interface name
-Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace($event->sender->className . ' just danced'); // Will log that Dog or Developer danced
-});
 ```
 
 You can trigger the event of those classes:
