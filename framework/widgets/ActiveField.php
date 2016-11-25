@@ -10,7 +10,6 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
-use yii\base\InvalidParamException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\base\Model;
@@ -507,7 +506,10 @@ class ActiveField extends Component
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
-        return $this->checkableInput($options, $enclosedByLabel, 'activeRadio');
+        $options = $this->adjustCheckableOptions($options, $enclosedByLabel);
+        $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
+        $this->adjustLabelFor($options);
+        return $this;
     }
 
     /**
@@ -537,7 +539,10 @@ class ActiveField extends Component
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
-        return $this->checkableInput($options, $enclosedByLabel, 'activeCheckbox');
+        $options = $this->adjustCheckableOptions($options, $enclosedByLabel);
+        $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
+        $this->adjustLabelFor($options);
+        return $this;
     }
 
     /**
@@ -674,20 +679,14 @@ class ActiveField extends Component
     }
 
     /**
-     * Renders a checkable input.
+     * Adjusts options for radio and checkbox
      * @param $options
      * @param $enclosedByLabel
-     * @param $type
-     * @return $this
+     * @return array
      */
-    protected function checkableInput($options, $enclosedByLabel, $type)
+    protected function adjustCheckableOptions($options, $enclosedByLabel)
     {
-        if ($type !== 'activeRadio' && $type !== 'activeCheckbox') {
-            throw new InvalidParamException("Html helper doesn't have method $type()");
-        }
-
         if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::$type($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
         } else {
             if (isset($options['label']) && !isset($this->parts['{label}'])) {
@@ -698,10 +697,8 @@ class ActiveField extends Component
             }
             unset($options['labelOptions']);
             $options['label'] = null;
-            $this->parts['{input}'] = Html::$type($this->model, $this->attribute, $options);
         }
-        $this->adjustLabelFor($options);
-        return $this;
+        return $options;
     }
 
     /**
