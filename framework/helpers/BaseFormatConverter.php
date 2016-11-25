@@ -491,6 +491,7 @@ class BaseFormatConverter
     }
 
     /**
+     * Get patter for ICU date converter
      * @param $pattern
      * @param $type
      * @param $locale

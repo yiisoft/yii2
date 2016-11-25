@@ -451,8 +451,11 @@ abstract class Cache extends Component implements \ArrayAccess
     }
 
     /**
+     * Modify data to store in cache
      * @param array $items the items to be cached, as key-value pairs.
-     * @param Dependency $dependency dependency of the cached items. If the dependency changes,
+     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
+     * This parameter is ignored if [[serializer]] is false.
      * @return array
      */
     protected function modifyItemsForCache($items, $dependency)
