@@ -26,6 +26,10 @@ class SyslogTarget extends Target
      * @var int syslog facility.
      */
     public $facility = LOG_USER;
+    /**
+     * @var int openlog option
+     */
+    public $option = LOG_ODELAY | LOG_PID;
 
     /**
      * @var array syslog levels
@@ -40,13 +44,12 @@ class SyslogTarget extends Target
         Logger::LEVEL_ERROR => LOG_ERR,
     ];
 
-
     /**
      * Writes log messages to syslog
      */
     public function export()
     {
-        openlog($this->identity, LOG_ODELAY | LOG_PID, $this->facility);
+        openlog($this->identity, $this->option, $this->facility);
         foreach ($this->messages as $message) {
             syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message));
         }
