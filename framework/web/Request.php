@@ -532,7 +532,7 @@ class Request extends \yii\base\Request
      *
      * The returned URL does not have an ending slash.
      *
-     * By default this is determined based on the user request information. This method will
+     * By default this value is based on the user request information. This method will
      * return the value of `$_SERVER['HTTP_HOST']` if it is available or `$_SERVER['SERVER_NAME']` if not.
      * You may want to check out the [PHP documentation](http://php.net/manual/en/reserved.variables.server.php)
      * for more information on these variables.
