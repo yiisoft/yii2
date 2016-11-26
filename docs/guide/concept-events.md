@@ -295,13 +295,17 @@ pass the interface name as the first argument:
 ```php
 Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
     Yii::trace($event->sender->className . ' just danced'); // Will log that Dog or Developer danced
-})
+});
 ```
 
 You can trigger the event of those classes:
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+// trigger event for Dog class
+Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+
+// trigger event for Developer class
+Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
 But please notice, that you can not trigger all the classes, that implement the interface:
