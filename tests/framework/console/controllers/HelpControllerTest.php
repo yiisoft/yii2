@@ -47,6 +47,39 @@ class HelpControllerTest extends TestCase
 
     public function testActionIndex()
     {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerMap' => [
+                'migrate' => 'yii\console\controllers\MigrateController',
+                'cache' => 'yii\console\controllers\CacheController',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertEquals(<<<STRING
+cache
+cache/flush
+cache/flush-all
+cache/flush-schema
+cache/index
+help
+help/index
+help/list
+migrate
+migrate/create
+migrate/down
+migrate/history
+migrate/mark
+migrate/new
+migrate/redo
+migrate/to
+migrate/up
+
+STRING
+        , $result);
+    }
+
+    public function testActionList()
+    {
         $result = Console::stripAnsiFormat($this->runControllerAction('index'));
         $this->assertContains('This is Yii version ', $result);
         $this->assertContains('The following commands are available:', $result);
@@ -56,7 +89,7 @@ class HelpControllerTest extends TestCase
 
     public function testActionIndexWithHelpCommand()
     {
-        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help']));
+        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help/index']));
         $this->assertContains('Displays available commands or the detailed information', $result);
         $this->assertContains('bootstrap.php help [command] [...options...]', $result);
         $this->assertContains('--appconfig: string', $result);
