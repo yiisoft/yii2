@@ -430,7 +430,7 @@ class Container extends Component
                     $dependencies[] = $param->getDefaultValue();
                 } else {
                     $c = $param->getClass();
-                    $dependencies[] = Instance::of($c === null ? null : $c->getName());
+                    $dependencies[] = $c === null ? null : Instance::of($c->getName());
                 }
             }
         }

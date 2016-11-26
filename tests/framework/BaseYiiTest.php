@@ -65,6 +65,19 @@ class BaseYiiTest extends TestCase
         $this->assertTrue(is_string(Yii::powered()));
     }
 
+    public function testCreateObjectSetConstructorParams()
+    {
+        $object = Yii::createObject([
+            'class' => '\yii\db\Expression',
+            'expression' => '[[quantity]]+:bp0',
+            'params' => [
+                ':bp0' => -1
+            ]
+        ]);
+
+        $this->assertTrue($object instanceof \yii\db\Expression);
+    }
+
     public function testCreateObjectCallable()
     {
         Yii::$container = new Container();
