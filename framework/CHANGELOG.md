@@ -14,6 +14,7 @@ Yii Framework 2 Change Log
 - Chg: Removed `yii\base\Object::class` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
 - Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
 - Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
+- Chg #7770: Updated the fallback date formats used when no `intl` extension is installed to match the defaults of the latest ICU version (cebe)
 - Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 
 2.0.11 under development
