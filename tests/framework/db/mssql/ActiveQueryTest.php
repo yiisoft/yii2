@@ -4,7 +4,7 @@ namespace yiiunit\framework\db\mssql;
 
 /**
  * @group db
- * @group mysql
+ * @group mssql
  */
 class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
 {

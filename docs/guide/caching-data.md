@@ -200,6 +200,10 @@ if ($data === false) {
 }
 ```
 
+Since 2.0.11 you may set [[yii\caching\Cache::$ttl|ttl]] value in your cache component configuration if you prefer a custom cache duration
+over the default unlimited duration.
+This will allow you not to pass custom `duration` parameter to [[yii\caching\Cache::set()|set()]] each time.
+
 
 ### Cache Dependencies <span id="cache-dependencies"></span>
 

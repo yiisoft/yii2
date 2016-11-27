@@ -131,7 +131,7 @@ $array = [
 $result = ArrayHelper::index($array, 'id');
 ```
 
-The result will be an associative array, where the key is the value of `id` attribute
+The result will be an associative array, where the key is the value of `id` attribute:
 
 ```php
 [
@@ -141,7 +141,7 @@ The result will be an associative array, where the key is the value of `id` attr
 ]
 ```
 
-Anonymous function, passed as a `$key`, gives the same result.
+Anonymous function, passed as a `$key`, gives the same result:
 
 ```php
 $result = ArrayHelper::index($array, function ($element) {

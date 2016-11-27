@@ -141,7 +141,7 @@ as it's requested by the user itself everything is OK but one day bad guys are s
 `<img src="http://an.example.com/logout">` on a forum user visits frequently. Browser doesn't make any difference between
 requesting an image or requesting a page so when user opens a page with such `img` tag, the browser will send the GET request to that URL, and the user will be logged out from `an.example.com`. 
 
-That's the basic idea. One can say that logging user out is nothing serious, but bad guys can do much more, using this idea. Imagine that some website has an URL `http://an.example.com/purse/transfer?to=anotherUser&amout=2000`. Accessing it using GET request, causes transfer of $2000 from authorized user account to user `anotherUser`. We know, that browser will always send GET request to load an image, so we can modify code to accept only POST requests on that URL. Unfortunately, this will not save us, because an attacker can put some JavaScript code instead of `<img>` tag, which allows to send POST requests on that URL.
+That's the basic idea. One can say that logging user out is nothing serious, but bad guys can do much more, using this idea. Imagine that some website has an URL `http://an.example.com/purse/transfer?to=anotherUser&amount=2000`. Accessing it using GET request, causes transfer of $2000 from authorized user account to user `anotherUser`. We know, that browser will always send GET request to load an image, so we can modify code to accept only POST requests on that URL. Unfortunately, this will not save us, because an attacker can put some JavaScript code instead of `<img>` tag, which allows to send POST requests on that URL.
 
 In order to avoid CSRF you should always:
 
@@ -221,3 +221,25 @@ provided by H5BP project:
 - [Apache](https://github.com/h5bp/server-configs-apache).
 - [IIS](https://github.com/h5bp/server-configs-iis).
 - [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
+
+Secure Server configuration
+---------------------------
+
+The purpose of this section is to highlight risks that need to be considered when creating a
+server configuration for serving a Yii based website. Besides the points covered here there may
+be other security related configuration options to be considered, so do not consider this section to
+be complete.
+
+### Avoiding `Host`-header attacks
+
+Classes like [[yii\web\UrlManager]] and [[yii\helpers\Url]] may use the [[yii\web\Request::getHostInfo()|currently requested host name]]
+for generating links.
+If the webserver is configured to serve the same site independent of the value of the `Host` header, this information may not be reliable
+and [may be faked by the user sending the HTTP request](https://www.acunetix.com/vulnerabilities/web/host-header-attack).
+In such situations you should either fix your webserver configuration to serve the site only for specified host names
+or explicitly set or filter the value by setting the [[yii\web\Request::setHostInfo()|hostInfo]] property of the `request` application component.
+
+For more information about the server configuration, please refer to the documentation of your webserver:
+
+- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>

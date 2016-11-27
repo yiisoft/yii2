@@ -53,7 +53,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
 
         $this->createTable($authManager->ruleTable, [
             'name' => $this->string(64)->notNull(),
-            'data' => $this->text(),
+            'data' => $this->binary(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'PRIMARY KEY (name)',
@@ -64,7 +64,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'type' => $this->smallInteger()->notNull(),
             'description' => $this->text(),
             'rule_name' => $this->string(64),
-            'data' => $this->text(),
+            'data' => $this->binary(),
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'PRIMARY KEY (name)',

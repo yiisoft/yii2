@@ -480,4 +480,22 @@ abstract class ManagerTestCase extends TestCase
         $auth->update('Reader', $role);
         $this->assertTrue($auth->checkAccess($userId, 'AdminPost', ['action' => 'print']));
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/10176
+     * https://github.com/yiisoft/yii2/issues/12681
+     */
+    public function testRuleWithPrivateFields()
+    {
+        $auth = $this->auth;
+
+        $auth->removeAll();
+
+        $rule = new ActionRule();
+        $auth->add($rule);
+
+        /** @var ActionRule $rule */
+        $rule = $this->auth->getRule('action_rule');
+        $this->assertTrue($rule instanceof ActionRule);
+    }
 }

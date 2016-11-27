@@ -129,40 +129,29 @@ class ValidatorTest extends TestCase
 
     public function testValidateWithEmpty()
     {
-        $val = new TestValidator([
-            'attributes' => [
-                'attr_runMe1',
-                'attr_runMe2',
-                'attr_empty1',
-                'attr_empty2'
-            ],
-            'skipOnEmpty' => true,
-        ]);
-        $model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
-        $val->validateAttributes($model);
-        $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
-        $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
-        $this->assertFalse($val->isAttributeValidated('attr_empty1'));
-        $this->assertFalse($val->isAttributeValidated('attr_empty2'));
+        $model = $this->getTestModel(['attr_empty1' => '', 'attr_empty2' => ' ']);
+        $attributes = ['attr_runMe1', 'attr_runMe2', 'attr_empty1', 'attr_empty2'];
+
+        $validator = new TestValidator(['attributes' => $attributes, 'skipOnEmpty' => false]);
+        $validator->validateAttributes($model);
+
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe2'));
+        $this->assertTrue($validator->isAttributeValidated('attr_empty1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_empty2'));
+
+
+        $validator = new TestValidator(['attributes' => $attributes, 'skipOnEmpty' => true]);
+        $validator->validateAttributes($model);
+
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe2'));
+        $this->assertFalse($validator->isAttributeValidated('attr_empty1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_empty2'));
+
         $model->attr_empty1 = 'not empty anymore';
-        $val->validateAttributes($model);
-        $this->assertTrue($val->isAttributeValidated('attr_empty1'));
-        $this->assertFalse($val->isAttributeValidated('attr_empty2'));
-        $val = new TestValidator([
-            'attributes' => [
-                'attr_runMe1',
-                'attr_runMe2',
-                'attr_empty1',
-                'attr_empty2'
-            ],
-            'skipOnEmpty' => false,
-        ]);
-        $model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
-        $val->validateAttributes($model);
-        $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
-        $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
-        $this->assertTrue($val->isAttributeValidated('attr_empty1'));
-        $this->assertTrue($val->isAttributeValidated('attr_empty2'));
+        $validator->validateAttributes($model);
+        $this->assertTrue($validator->isAttributeValidated('attr_empty1'));
     }
 
     public function testIsEmpty()

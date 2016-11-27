@@ -9,5 +9,5 @@ namespace yiiunit\framework\db\mssql;
  */
 class ExistValidatorTest extends \yiiunit\framework\validators\ExistValidatorTest
 {
-    public $driverName = 'mssql';
+    public $driverName = 'sqlsrv';
 }
