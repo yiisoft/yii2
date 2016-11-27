@@ -502,7 +502,7 @@ class FormatterDateTest extends TestCase
     {
         return [
             ['2015-01-01 00:00:00', '2014-13-01 00:00:00'],
-            [false, 'asdfg', 'yii\base\InvalidARgumentException'],
+            [false, 'asdfg', 'yii\base\InvalidArgumentException'],
 //            [(string)strtotime('now'), 'now'], // fails randomly
         ];
     }
