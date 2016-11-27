@@ -147,7 +147,7 @@ class Schema extends \yii\db\Schema
             }
             if (!empty($matches[2])) {
                 if ($type === 'enum') {
-                    preg_match_all('/\'[^\']*\'/', $matches[2], $values);
+                    preg_match_all("/'[^']*'/", $matches[2], $values);
                     foreach ($values[0] as $i => $value) {
                         $values[$i] = trim($value, "'");
                     }
