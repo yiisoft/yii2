@@ -267,4 +267,40 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));
     }
+
+    public function testValidateEmptyAttributeInStringField()
+    {
+        ValidatorTestMainModel::deleteAll();
+
+        $val = new UniqueValidator();
+
+        $m = new ValidatorTestMainModel(['field1' => '']);
+        $m->id = 1;
+        $val->validateAttribute($m, 'field1');
+        $this->assertFalse($m->hasErrors('field1'));
+        $m->save(false);
+
+        $m = new ValidatorTestMainModel(['field1' => '']);
+        $m->id = 2;
+        $val->validateAttribute($m, 'field1');
+        $this->assertTrue($m->hasErrors('field1'));
+    }
+
+    public function testValidateEmptyAttributeInIntField()
+    {
+        ValidatorTestRefModel::deleteAll();
+
+        $val = new UniqueValidator();
+
+        $m = new ValidatorTestRefModel(['ref' => 0]);
+        $m->id = 1;
+        $val->validateAttribute($m, 'ref');
+        $this->assertFalse($m->hasErrors('ref'));
+        $m->save(false);
+
+        $m = new ValidatorTestRefModel(['ref' => 0]);
+        $m->id = 2;
+        $val->validateAttribute($m, 'ref');
+        $this->assertTrue($m->hasErrors('ref'));
+    }
 }
