@@ -84,7 +84,7 @@ class FormatConverterTest extends TestCase
                 $pattern = $fmt->getPattern();
 
                 if (defined('HHVM_VERSION') && $format === 'short') {
-                    $pattern = str_replace(',', ' ', $pattern); // Remove comma between date and time ('M/d/yy, h:mm a')
+                    $pattern = str_replace(',', '', $pattern); // Remove comma between date and time ('M/d/yy, h:mm a')
                 }
 
                 $this->assertEquals($expected, $pattern, "Format for $format $name does not match.");
