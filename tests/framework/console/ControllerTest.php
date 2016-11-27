@@ -22,6 +22,10 @@ class ControllerTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
+        Yii::$app->controllerMap = [
+            'fake' => 'yiiunit\framework\console\FakeController',
+            'help' => 'yiiunit\framework\console\FakeHelpController',
+        ];
     }
 
     public function testBindActionParams()
@@ -76,9 +80,6 @@ class ControllerTest extends TestCase
 
     public function testResponse()
     {
-        Yii::$app->controllerMap = [
-            'fake' => 'yiiunit\framework\console\FakeController',
-        ];
         $status = 123;
 
         $response = $this->runRequest('fake/status');
@@ -97,51 +98,38 @@ class ControllerTest extends TestCase
     /**
      * @see https://github.com/yiisoft/yii2/issues/12028
      */
-    public function testHelpOption()
+    public function testHelpOptionNotSet()
     {
-        Yii::$app->controllerMap = [
-            'fake' => 'yiiunit\framework\console\FakeController',
-            'help' => 'yiiunit\framework\console\FakeHelpController',
-        ];
-
         $controller = new FakeController('posts', Yii::$app);
         $controller->runAction('index');
 
         $this->assertTrue(FakeController::getWasActionIndexCalled());
         $this->assertNull(FakeHelpController::getActionIndexLastCallParams());
+    }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/12028
+     */
+    public function testHelpOption()
+    {
         $controller = new FakeController('posts', Yii::$app);
         $controller->help = true;
         $controller->runAction('index');
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
+    }
 
-        // @see https://github.com/yiisoft/yii2/issues/13071
-
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13071
+     */
+    public function testHelpOptionWithModule()
+    {
         $controller = new FakeController('posts', new Module('news'));
         $controller->help = true;
         $controller->runAction('index');
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
-    }
-}
-
-class FakeHelpController extends HelpController
-{
-    private static $_actionIndexLastCallParams;
-
-    public function actionIndex($command = null)
-    {
-        self::$_actionIndexLastCallParams = func_get_args();
-    }
-
-    public static function getActionIndexLastCallParams()
-    {
-        $params = self::$_actionIndexLastCallParams;
-        self::$_actionIndexLastCallParams = null;
-
-        return $params;
     }
 }
