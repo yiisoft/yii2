@@ -5,6 +5,7 @@ namespace yiiunit\framework\helpers;
 use DateTime;
 use IntlDateFormatter;
 use Yii;
+use yii\base\Exception;
 use yii\helpers\FormatConverter;
 use yii\i18n\Formatter;
 use yiiunit\framework\i18n\IntlTestHelper;
@@ -39,9 +40,8 @@ class FormatConverterTest extends TestCase
      */
     public function testPHPDefaultFormat()
     {
-        foreach(FormatConverter::$phpFallbackDatePatterns as $format => $formats) {
-            foreach($formats as $name => $expected) {
-
+        foreach (FormatConverter::$phpFallbackDatePatterns as $format => $formats) {
+            foreach ($formats as $name => $expected) {
                 $expected = FormatConverter::convertDatePhpToIcu($expected);
                 $expected = str_replace('e', 'E', $expected); // seems to be equal
                 $expected = str_replace('yyyy', 'y', $expected); // this is equal
@@ -51,8 +51,7 @@ class FormatConverterTest extends TestCase
                     $expected = str_replace('zzz', 'z', $expected); // this is equal
                 }
 
-                switch($name)
-                {
+                switch ($name) {
                     case 'date':
                         $fmt = new IntlDateFormatter(
                             'en_US',
@@ -77,17 +76,19 @@ class FormatConverterTest extends TestCase
                             'UTC'
                         );
                         break;
+                    default:
+                        throw new Exception("Format \"$name\" is not supported");
+                        break;
                 }
-                $this->assertEquals($expected, $fmt->getPattern(), "Format for $format $name does not match.");
 
+                $this->assertEquals($expected, $fmt->getPattern(), "Format for $format $name does not match.");
             }
         }
     }
 
     private function convertFormat($format)
     {
-        switch($format)
-        {
+        switch ($format) {
             case 'short':
                 return IntlDateFormatter::SHORT;
             case 'medium':
@@ -97,6 +98,8 @@ class FormatConverterTest extends TestCase
             case 'full':
                 return IntlDateFormatter::FULL;
         }
+
+        return null;
     }
 
     public function testIntlIcuToPhpShortForm()
