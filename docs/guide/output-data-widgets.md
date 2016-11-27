@@ -37,6 +37,28 @@ echo DetailView::widget([
 ]);
 ```
 
+Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of models,
+[[yii\widgets\DetailView|DetailView]] processes just one. So most of the times there is no need for using closure since
+`$model` is the only one model for display and available in view as variable.
+
+However some cases can make using of closure useful. For example when `visible` is specified and you want to prevent
+`value` calculations in case it evaluates to `false`:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            },
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
+    ],
+]);
+```
+
 ListView <a name="list-view"></a>
 --------
 

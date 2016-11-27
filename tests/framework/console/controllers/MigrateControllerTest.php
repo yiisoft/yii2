@@ -218,4 +218,60 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('junction_test', $migrationName, 'post_tag');
         }
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/12980
+     */
+    public function testGetMigrationHistory()
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+        $this->runMigrateControllerAction('history', [], $controllerConfig);
+
+        $controller = $this->createMigrateController($controllerConfig);
+        $controller->db = Yii::$app->db;
+
+        Yii::$app->db->createCommand()
+            ->batchInsert(
+                'migration',
+                ['version', 'apply_time'],
+                [
+                    ['app\migrations\M140506102106One', 10],
+                    ['app\migrations\M160909083544Two', 10],
+                    ['app\modules\foo\migrations\M161018124749Three', 10],
+                    ['app\migrations\M160930135248Four', 20],
+                    ['app\modules\foo\migrations\M161025123028Five', 20],
+                    ['app\migrations\M161110133341Six', 20],
+                ]
+            )
+            ->execute();
+
+        $rows = $this->invokeMethod($controller, 'getMigrationHistory', [10]);
+
+        $this->assertSame(
+            [
+                'app\migrations\M161110133341Six',
+                'app\modules\foo\migrations\M161025123028Five',
+                'app\migrations\M160930135248Four',
+                'app\modules\foo\migrations\M161018124749Three',
+                'app\migrations\M160909083544Two',
+                'app\migrations\M140506102106One',
+            ],
+            array_keys($rows)
+        );
+
+        $rows = $this->invokeMethod($controller, 'getMigrationHistory', [4]);
+
+        $this->assertSame(
+            [
+                'app\migrations\M161110133341Six',
+                'app\modules\foo\migrations\M161025123028Five',
+                'app\migrations\M160930135248Four',
+                'app\modules\foo\migrations\M161018124749Three',
+            ],
+            array_keys($rows)
+        );
+    }
 }

@@ -79,7 +79,7 @@ class Security extends Component
      * - 'password_hash' - use of PHP `password_hash()` function with PASSWORD_DEFAULT algorithm.
      *   This option is recommended, but it requires PHP version >= 5.5.0
      * - 'crypt' - use PHP `crypt()` function.
-     * @deprecated Since version 2.0.7, [[generatePasswordHash()]] ignores [[passwordHashStrategy]] and
+     * @deprecated since version 2.0.7, [[generatePasswordHash()]] ignores [[passwordHashStrategy]] and
      * uses `password_hash()` when available or `crypt()` when not.
      */
     public $passwordHashStrategy;
