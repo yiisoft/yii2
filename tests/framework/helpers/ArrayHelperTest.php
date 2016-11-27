@@ -852,7 +852,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
      */
     public function testInException()
@@ -873,7 +873,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
      */
     public function testIsSubsetException()

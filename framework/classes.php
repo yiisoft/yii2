@@ -32,7 +32,7 @@ return [
   'yii\base\InlineAction' => YII2_PATH . '/base/InlineAction.php',
   'yii\base\InvalidCallException' => YII2_PATH . '/base/InvalidCallException.php',
   'yii\base\InvalidConfigException' => YII2_PATH . '/base/InvalidConfigException.php',
-  'yii\base\InvalidParamException' => YII2_PATH . '/base/InvalidParamException.php',
+  'yii\base\InvalidArgumentException' => YII2_PATH . '/base/InvalidArgumentException.php',
   'yii\base\InvalidRouteException' => YII2_PATH . '/base/InvalidRouteException.php',
   'yii\base\InvalidValueException' => YII2_PATH . '/base/InvalidValueException.php',
   'yii\base\Model' => YII2_PATH . '/base/Model.php',

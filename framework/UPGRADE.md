@@ -89,6 +89,7 @@ Upgrade to Yii 2.1.0
   If you are using `yii\web\Request::resolve()` or `yii\web\UrlManager::parseRequest()` directly, make sure that
   all potential exceptions are handled correctly or set `yii\web\UrlNormalizer::$normalizer` to `false` to disable normalizer.
 
+* `yii\base\InvalidParamException` was renamed to `yii\base\InvalidArgumentException`.
 
 Upgrade from Yii 2.0.9
 ----------------------

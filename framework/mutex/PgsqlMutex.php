@@ -9,7 +9,7 @@ namespace yii\mutex;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * PgsqlMutex implements mutex "lock" mechanism via PgSQL locks.
@@ -69,7 +69,7 @@ class PgsqlMutex extends DbMutex
     protected function acquireLock($name, $timeout = 0)
     {
         if ($timeout !== 0) {
-            throw new InvalidParamException('PgsqlMutex does not support timeout.');
+            throw new InvalidArgumentException('PgsqlMutex does not support timeout.');
         }
         list($key1, $key2) = $this->getKeysFromName($name);
         return (bool) $this->db

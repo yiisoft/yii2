@@ -231,7 +231,7 @@ class Module extends ServiceLocator
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the module. This can be either a directory name or a path alias.
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -240,7 +240,7 @@ class Module extends ServiceLocator
         if ($p !== false && is_dir($p)) {
             $this->_basePath = $p;
         } else {
-            throw new InvalidParamException("The directory does not exist: $path");
+            throw new InvalidArgumentException("The directory does not exist: $path");
         }
     }
 
@@ -249,7 +249,7 @@ class Module extends ServiceLocator
      * Note that in order for this method to return a value, you must define
      * an alias for the root namespace of [[controllerNamespace]].
      * @return string the directory that contains the controller classes.
-     * @throws InvalidParamException if there is no alias defined for the root namespace of [[controllerNamespace]].
+     * @throws InvalidArgumentException if there is no alias defined for the root namespace of [[controllerNamespace]].
      */
     public function getControllerPath()
     {
@@ -271,7 +271,7 @@ class Module extends ServiceLocator
     /**
      * Sets the directory that contains the view files.
      * @param string $path the root directory of view files.
-     * @throws InvalidParamException if the directory is invalid.
+     * @throws InvalidArgumentException if the directory is invalid.
      */
     public function setViewPath($path)
     {
@@ -294,7 +294,7 @@ class Module extends ServiceLocator
     /**
      * Sets the directory that contains the layout files.
      * @param string $path the root directory or path alias of layout files.
-     * @throws InvalidParamException if the directory is invalid
+     * @throws InvalidArgumentException if the directory is invalid
      */
     public function setLayoutPath($path)
     {
