@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #9305: Fixed MSSQL `Schema::TYPE_TIMESTAMP` to be 'datetime' instead of 'timestamp', which is just an incremental number (nkovacs)
+- Bug #9616: Fixed mysql\Schema::loadColumnSchema to set enumValues attribute correctly if enum definition contains commas (fphammerle)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
 - Bug #12714: Fixed `yii\validation\EmailValidator` to prevent false-positives checks when property `checkDns` is set to `true` (silverfire)
