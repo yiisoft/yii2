@@ -22,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
 - Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
+- Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
 - Enh #6809: Added `\yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
 - Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
 - Enh #7420: Attributes for prompt generated with `renderSelectOptions` of `\yii\helpers\Html` helper (arogachev)
