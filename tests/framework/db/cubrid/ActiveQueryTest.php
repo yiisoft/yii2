@@ -4,7 +4,7 @@ namespace yiiunit\framework\db\cubrid;
 
 /**
  * @group db
- * @group mysql
+ * @group cubrid
  */
 class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
 {

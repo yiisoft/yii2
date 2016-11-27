@@ -231,6 +231,8 @@ Event::off(Foo::class, Foo::EVENT_HELLO);
 Например, создадим следующий интерфейс:
 
 ```php
+namespace app\interfaces;
+
 interface DanceEventInterface
 {
     const EVENT_DANCE = 'dance';
@@ -263,32 +265,36 @@ class Developer extends Component implements DanceEventInterface
 вызовите [[yii\base\Event::on()|Event:on()]], передав ему в качестве первого параметра имя интерфейса.
 
 ```php
-Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace($event->sender->className . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
+Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
 });
 ```
 
 Вы можете также инициализировать эти события:
 
 ```php
-Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
+// trigger event for Dog class
+Event::trigger(Dog::class), DanceEventInterface::EVENT_DANCE);
+
+// trigger event for Developer class
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
 
 ```php
 // НЕ БУДЕТ РАБОТАТЬ
-Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // ошибка
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE); // ошибка
 ```
 
 Отсоединить обработчик события можно с помощью метода [[yii\base\Event::off()|Event::off()]]. Например:
 
 ```php
 // отсоединяет $handler
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, $handler);
 
 // отсоединяются все обработчики DanceEventInterface::EVENT_DANCE
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 Глобальные события <span id="global-events"></span>

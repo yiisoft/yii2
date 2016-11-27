@@ -9,6 +9,7 @@ namespace yii\behaviors;
 
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\UniqueValidator;
 use Yii;
@@ -139,7 +140,7 @@ class SluggableBehavior extends AttributeBehavior
             if ($this->isNewSlugNeeded()) {
                 $slugParts = [];
                 foreach ((array) $this->attribute as $attribute) {
-                    $slugParts[] = $this->owner->{$attribute};
+                    $slugParts[] = ArrayHelper::getValue($this->owner, $attribute);
                 }
 
                 $slug = $this->generateSlug($slugParts);

@@ -209,7 +209,7 @@ class BaseHtml
     /**
      * Generates a link tag that refers to an external CSS file.
      * @param array|string $url the URL of the external CSS file. This parameter will be processed by [[Url::to()]].
-     * @param array $options the tag options in terms of name-value pairs. The following option is specially handled:
+     * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
      * - condition: specifies the conditional comments for IE, e.g., `lt IE 9`. When this is specified,
      *   the generated `link` tag will be enclosed within the conditional comments. This is mainly useful
@@ -754,7 +754,13 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option;
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
+     *
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
+     *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
@@ -803,7 +809,13 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option;
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
+     *
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
+     *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
@@ -1477,7 +1489,13 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option;
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
+     *
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
+     *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
@@ -1526,7 +1544,13 @@ class BaseHtml
      * the labels will also be HTML-encoded.
      * @param array $options the tag options in terms of name-value pairs. The following options are specially handled:
      *
-     * - prompt: string, a prompt text to be displayed as the first option;
+     * - prompt: string, a prompt text to be displayed as the first option. Since version 2.0.11 you can use an array
+     *   to override the value and to set other tag attributes:
+     *
+     *   ```php
+     *   ['text' => 'Please select', 'options' => ['value' => 'none', 'class' => 'prompt', 'label' => 'Select']],
+     *   ```
+     *
      * - options: array, the attributes for the select option tags. The array keys must be valid option values,
      *   and the array values are the extra attributes for the corresponding option tags. For example,
      *
@@ -1693,11 +1717,18 @@ class BaseHtml
         $encodeSpaces = ArrayHelper::remove($tagOptions, 'encodeSpaces', false);
         $encode = ArrayHelper::remove($tagOptions, 'encode', true);
         if (isset($tagOptions['prompt'])) {
-            $prompt = $encode ? static::encode($tagOptions['prompt']) : $tagOptions['prompt'];
-            if ($encodeSpaces) {
-                $prompt = str_replace(' ', '&nbsp;', $prompt);
+            $promptOptions = ['value' => ''];
+            if (is_string($tagOptions['prompt'])) {
+                $promptText = $tagOptions['prompt'];
+            } else {
+                $promptText = $tagOptions['prompt']['text'];
+                $promptOptions = array_merge($promptOptions, $tagOptions['prompt']['options']);
             }
-            $lines[] = static::tag('option', $prompt, ['value' => '']);
+            $promptText = $encode ? static::encode($promptText) : $promptText;
+            if ($encodeSpaces) {
+                $promptText = str_replace(' ', '&nbsp;', $promptText);
+            }
+            $lines[] = static::tag('option', $promptText, $promptOptions);
         }
 
         $options = isset($tagOptions['options']) ? $tagOptions['options'] : [];

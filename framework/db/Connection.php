@@ -283,7 +283,7 @@ class Connection extends Component
         'cubrid' => cubrid\Schema::class, // CUBRID
     ];
     /**
-     * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[yii\db\mssql\PDO]] when MSSQL is used.
+     * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
      * @see pdo
      */
     public $pdoClass;

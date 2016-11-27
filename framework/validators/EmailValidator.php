@@ -96,7 +96,7 @@ class EmailValidator extends Validator
             } else {
                 $valid = preg_match($this->pattern, $value) || $this->allowName && preg_match($this->fullPattern, $value);
                 if ($valid && $this->checkDNS) {
-                    $valid = checkdnsrr($matches['domain'], 'MX') || checkdnsrr($matches['domain'], 'A');
+                    $valid = checkdnsrr($matches['domain'] . '.', 'MX') || checkdnsrr($matches['domain'] . '.', 'A');
                 }
             }
         }

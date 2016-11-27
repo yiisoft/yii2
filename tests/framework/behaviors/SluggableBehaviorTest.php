@@ -44,8 +44,15 @@ class SluggableBehaviorTest extends TestCase
             'name' => 'string',
             'slug' => 'string',
             'category_id' => 'integer',
+            'belongs_to_id' => 'integer',
         ];
         Yii::$app->getDb()->createCommand()->createTable('test_slug', $columns)->execute();
+
+        $columns = [
+            'id' => 'pk',
+            'name' => 'string',
+        ];
+        Yii::$app->getDb()->createCommand()->createTable('test_slug_related', $columns)->execute();
     }
 
     public function tearDown()
@@ -78,6 +85,25 @@ class SluggableBehaviorTest extends TestCase
 
         $model->validate();
         $this->assertEquals('test-10', $model->slug);
+    }
+
+    /**
+     * @depends testSlug
+     */
+    public function testSlugRelatedAttribute()
+    {
+        $model = new ActiveRecordSluggable();
+        $model->getBehavior('sluggable')->attribute = 'related.name';
+
+        $relatedmodel = new ActiveRecordRelated();
+        $relatedmodel->name = 'I am an value inside an related activerecord model';
+        $relatedmodel->save(false);
+
+        $model->belongs_to_id = $relatedmodel->id;
+
+        $model->validate();
+
+        $this->assertEquals('i-am-an-value-inside-an-related-activerecord-model', $model->slug);
     }
 
     /**
@@ -175,6 +201,19 @@ class ActiveRecordSluggable extends ActiveRecord
     public function getSluggable()
     {
         return $this->getBehavior('sluggable');
+    }
+
+    public function getRelated()
+    {
+        return $this->hasOne(ActiveRecordRelated::class, ['id' => 'belongs_to_id']);
+    }
+}
+
+class ActiveRecordRelated extends ActiveRecord
+{
+    public static function tableName()
+    {
+        return 'test_slug_related';
     }
 }
 

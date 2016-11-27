@@ -1,12 +1,12 @@
 <?php
 
-namespace yiiunit\framework\db\pgsql;
+namespace yiiunit\framework\db\oci;
 
 /**
  * @group db
- * @group pgsql
+ * @group oci
  */
 class ActiveQueryTest extends \yiiunit\framework\db\ActiveQueryTest
 {
-    public $driverName = 'pgsql';
+    public $driverName = 'oci';
 }

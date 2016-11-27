@@ -71,7 +71,7 @@ class CacheController extends Controller
     public function actionFlush()
     {
         $cachesInput = func_get_args();
-        
+
         if (empty($cachesInput)) {
             throw new Exception('You should specify cache components names');
         }

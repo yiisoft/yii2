@@ -947,7 +947,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * already the new, updated values.
      *
      * Note that no automatic type conversion performed by default. You may use
-     * [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute typecasting.
+     * [[\yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute typecasting.
      * See http://www.yiiframework.com/doc-2.0/guide-db-active-record.html#attributes-typecasting.
      */
     public function afterSave($insert, $changedAttributes)

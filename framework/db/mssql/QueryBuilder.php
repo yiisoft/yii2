@@ -36,7 +36,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_DOUBLE => 'float',
         Schema::TYPE_DECIMAL => 'decimal',
         Schema::TYPE_DATETIME => 'datetime',
-        Schema::TYPE_TIMESTAMP => 'timestamp',
+        Schema::TYPE_TIMESTAMP => 'datetime',
         Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
         Schema::TYPE_BINARY => 'varbinary(max)',
@@ -65,9 +65,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[Query::limit]] for more details.
-     * @param int $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
@@ -93,9 +93,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param int $limit the limit number. See [[Query::limit]] for more details.
-     * @param int $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
