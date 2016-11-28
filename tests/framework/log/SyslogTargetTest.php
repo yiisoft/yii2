@@ -59,6 +59,7 @@ namespace yiiunit\framework\log {
         public function testExport()
         {
             $identity = 'identity string';
+            $options = LOG_ODELAY | LOG_PID;
             $facility = 'facility string';
             $messages = [
                 ['info message', Logger::LEVEL_INFO],
@@ -73,6 +74,7 @@ namespace yiiunit\framework\log {
                 ->getMock('yii\\log\\SyslogTarget', ['openlog', 'syslog', 'formatMessage', 'closelog']);
 
             $syslogTarget->identity = $identity;
+            $syslogTarget->options = $options;
             $syslogTarget->facility = $facility;
             $syslogTarget->messages = $messages;
 
@@ -80,7 +82,7 @@ namespace yiiunit\framework\log {
                 ->method('openlog')
                 ->with(
                     $this->equalTo($identity),
-                    $this->equalTo(LOG_ODELAY | LOG_PID),
+                    $this->equalTo($options),
                     $this->equalTo($facility)
                 );
 
