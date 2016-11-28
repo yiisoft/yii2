@@ -49,7 +49,8 @@ class SyslogTarget extends Target
     /**
      * @inheritdoc
      */
-    public function init() {
+    public function init()
+    {
          $this->options = LOG_ODELAY | LOG_PID;
     }
 
