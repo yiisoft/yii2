@@ -161,14 +161,7 @@ class QueryBuilder extends \yii\base\Object
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list ($values, $params) = $this->build($columns);
-            foreach ($columns->select as $field) {
-                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
-                    $names[] = $schema->quoteColumnName($matches[2]);
-                } else {
-                    $names[] = $schema->quoteColumnName($field);
-                }
-            }
+            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -188,6 +181,34 @@ class QueryBuilder extends \yii\base\Object
         return 'INSERT INTO ' . $schema->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
             . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
+    }
+
+    /**
+     * Prepare select-subquery and field names for INSERT INTO ... SELECT SQL statement.
+     *
+     * @param \yii\db\Query $columns Object, which represents select query
+     * @param \yii\db\Schema $schema Schema object to qoute column name
+     * @return array
+     */
+    protected function prepareInsertSelectSubQuery($columns, $schema)
+    {
+        if (!is_array($columns->select) || empty($columns->select) || in_array('*', $columns->select)) {
+            throw new InvalidParamException('Expected select query object with enumerated (named) parameters');
+        }
+
+        list ($values, ) = $this->build($columns);
+        $values = ' ' . $values;
+        foreach ($columns->select as $title => $field) {
+            if (is_string($title)) {
+                $names[] = $title;
+            } else if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
+                $names[] = $schema->quoteColumnName($matches[2]);
+            } else {
+                $names[] = $schema->quoteColumnName($field);
+            }
+        }
+
+        return array($names, $values);
     }
 
     /**

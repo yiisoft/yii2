@@ -180,14 +180,7 @@ EOD;
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list ($values, $params) = $this->build($columns);
-            foreach ($columns->select as $field) {
-                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
-                    $names[] = $schema->quoteColumnName($matches[2]);
-                } else {
-                    $names[] = $schema->quoteColumnName($field);
-                }
-            }
+            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
