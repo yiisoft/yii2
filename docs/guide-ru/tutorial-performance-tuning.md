@@ -51,7 +51,7 @@ defined('YII_DEBUG') or define('YII_DEBUG', false);
 повторно использована при последующих запросах.
 
 Чтобы включить кеширование схемы, сконфигурируйте [компонент приложения](structure-application-components.md) `cache` 
-для хранения информации о схеме и установите [[yii\db\Connection::enableSchemaCache]] в `true` в [конфигурации приложения](concept-configurations.md):
+для хранения информации о схеме и установите [[yii\db\Connection->schemaCache->enabled]] в `true` в [конфигурации приложения](concept-configurations.md):
 
 ```php
 return [
@@ -66,13 +66,12 @@ return [
             'dsn' => 'mysql:host=localhost;dbname=mydatabase',
             'username' => 'root',
             'password' => '',
-            'enableSchemaCache' => true,
-
-            // Продолжительность кеширования схемы.
-            'schemaCacheDuration' => 3600,
-
-            // Название компонента кеша, используемого для хранения информации о схеме
-            'schemaCache' => 'cache',
+            'schemaCache' => [
+                'enabled' => true,
+                // Продолжительность кеширования схемы.
+                'duration' => 3600,
+                // Название компонента кеша, используемого для хранения информации о схеме
+                'cache' => 'cache',
         ],
     ],
 ];

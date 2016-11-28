@@ -51,7 +51,7 @@ extra SQL queries. By enabling schema caching, the retrieved schema information 
 in future requests.
 
 To enable schema caching, configure a `cache` [application component](structure-application-components.md) to store
-the schema information and set [[yii\db\Connection::enableSchemaCache]] to be `true` in the [application configuration](concept-configurations.md):
+the schema information and set [[yii\db\Connection->schemaCache->enabled]] to be `true` in the [application configuration](concept-configurations.md):
 
 ```php
 return [
@@ -66,13 +66,13 @@ return [
             'dsn' => 'mysql:host=localhost;dbname=mydatabase',
             'username' => 'root',
             'password' => '',
-            'enableSchemaCache' => true,
-
-            // Duration of schema cache.
-            'schemaCacheDuration' => 3600,
-
-            // Name of the cache component used to store schema information
-            'schemaCache' => 'cache',
+            'schemaCache' => [
+                'enabled' => true,
+                // Duration of schema cache.
+                'duration' => 3600,
+                // Name of the cache component used to store schema information
+                'cache' => 'cache',
+            ],
         ],
     ],
 ];

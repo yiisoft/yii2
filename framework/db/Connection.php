@@ -13,6 +13,7 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
 use yii\caching\Cache;
+use yii\di\Instance;
 
 /**
  * Connection represents a connection to a database via [PDO](http://php.net/manual/en/book.pdo.php).
@@ -184,32 +185,11 @@ class Connection extends Component
      */
     public $pdo;
     /**
-     * @var bool whether to enable schema caching.
-     * Note that in order to enable truly schema caching, a valid cache component as specified
-     * by [[schemaCache]] must be enabled and [[enableSchemaCache]] must be set true.
-     * @see schemaCacheDuration
-     * @see schemaCacheExclude
-     * @see schemaCache
-     */
-    public $enableSchemaCache = false;
-    /**
-     * @var int number of seconds that table metadata can remain valid in cache.
-     * Use 0 to indicate that the cached data will never expire.
-     * @see enableSchemaCache
-     */
-    public $schemaCacheDuration = 3600;
-    /**
-     * @var array list of tables whose metadata should NOT be cached. Defaults to empty array.
-     * The table names may contain schema prefix, if any. Do not quote the table names.
-     * @see enableSchemaCache
-     */
-    public $schemaCacheExclude = [];
-    /**
-     * @var Cache|string the cache object or the ID of the cache application component that
+     * @var SchemaCache|string|array the cache object or the config of the cache application component that
      * is used to cache the table metadata.
      * @see enableSchemaCache
      */
-    public $schemaCache = 'cache';
+    public $schemaCache = 'yii\db\SchemaCache';
     /**
      * @var bool whether to enable query caching.
      * Note that in order to enable query caching, a valid cache component as specified
@@ -714,6 +694,82 @@ class Connection extends Component
                 throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
             }
         }
+    }
+
+    /**
+     * Obtains the cache application component that is used to cache the table metadata.
+     * @return SchemaCache
+     */
+    public function getSchemaCache()
+    {
+        if (true !== is_object($this->schemaCache)) {
+            $this->schemaCache = Instance::ensure($this->schemaCache, SchemaCache::className());
+            $this->schemaCache->db = $this;
+        }
+
+        return $this->schemaCache;
+    }
+
+    /**
+     * @param bool $enabled whether to enable schema caching.
+     * Note that in order to enable truly schema caching, a valid cache component as specified
+     * by [[schemaCache]] must be enabled and [[enableSchemaCache]] must be set true.
+     * @deprecated This method used to backward compatibility
+     * @see getSchemaCache()
+     */
+    public function setEnableSchemaCache($enabled) {
+        $this->getSchemaCache()->enabled = $enabled;
+    }
+
+    /**
+     * @return bool whether to enable schema caching.
+     * Note that in order to enable truly schema caching, a valid cache component as specified
+     * by [[schemaCache]] must be enabled and [[enableSchemaCache]] must be set true.
+     * @deprecated This method used to backward compatibility
+     * @see getSchemaCache()
+     */
+    public function getEnableSchemaCache() {
+        return $this->getSchemaCache()->enabled;
+    }
+
+    /**
+     * @param int $duration number of seconds that table metadata can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire.
+     * @deprecated This method used to backward compatibility
+     * @see getSchemaCache
+     */
+    public function setSchemaCacheDuration($duration) {
+        $this->getSchemaCache()->duration = $duration;
+    }
+
+    /**
+     * @return int number of seconds that table metadata can remain valid in cache.
+     * Use 0 to indicate that the cached data will never expire.
+     * @deprecated This method used to backward compatibility
+     * @see getSchemaCache
+     */
+    public function getSchemaCacheDuration() {
+        return $this->getSchemaCache()->duration;
+    }
+
+    /**
+     * @param array $exclude list of tables whose metadata should NOT be cached. Defaults to empty array.
+     * The table names may contain schema prefix, if any. Do not quote the table names.
+     * @deprecated This method used to backward compatibility
+     * @see getSchemaCache
+     */
+    public function setSchemaCacheExclude($exclude) {
+        $this->getSchemaCache()->exclude = $exclude;
+    }
+
+    /**
+     * @return array list of tables whose metadata should NOT be cached. Defaults to empty array.
+     * The table names may contain schema prefix, if any. Do not quote the table names.
+     * @deprecated This method used to backward compatibility
+     * @see getSchemaCache
+     */
+    public function getSchemaCacheExclude() {
+        return $this->getSchemaCache()->exclude;
     }
 
     /**

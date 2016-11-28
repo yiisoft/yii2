@@ -80,8 +80,8 @@ abstract class SchemaTest extends DatabaseTestCase
         /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
-        $schema->db->enableSchemaCache = true;
-        $schema->db->schemaCache = new FileCache();
+        $schema->db->schemaCache = true;
+        $schema->db->schemaCache->cache = new FileCache();
         $noCacheTable = $schema->getTableSchema('type', true);
         $cachedTable = $schema->getTableSchema('type', false);
         $this->assertEquals($noCacheTable, $cachedTable);
@@ -95,8 +95,8 @@ abstract class SchemaTest extends DatabaseTestCase
         /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
-        $schema->db->enableSchemaCache = true;
-        $schema->db->schemaCache = new FileCache();
+        $schema->db->schemaCache->enabled = true;
+        $schema->db->schemaCache->cache = new FileCache();
         $noCacheTable = $schema->getTableSchema('type', true);
 
         $schema->refreshTableSchema('type');

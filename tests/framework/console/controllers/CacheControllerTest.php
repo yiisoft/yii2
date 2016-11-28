@@ -50,8 +50,10 @@ class CacheControllerTest extends TestCase
                     'dsn' => $config['dsn'],
                     'username' => isset($config['username']) ? $config['username'] : null,
                     'password' => isset($config['password']) ? $config['password'] : null,
-                    'enableSchemaCache' => true,
-                    'schemaCache' => 'firstCache',
+                    'schemaCache' => [
+                        'enabled' => true,
+                        'cache' => 'firstCache',
+                    ],
                 ],
             ],
         ]);
