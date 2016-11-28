@@ -45,7 +45,7 @@ Yii Framework 2 Change Log
 - Enh #13035: Use ArrayHelper::getValue() in SluggableBehavior::getValue() (thyseus)
 - Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
-
+- Enh #12854: Added `RangeNotSatisfiableHttpException` that uses when the requested range is not satisfiable (zalatov)
 
 2.0.10 October 20, 2016
 -----------------------
