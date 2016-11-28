@@ -31,7 +31,7 @@ class SyslogTarget extends Target
      * @see http://php.net/openlog
      * @since 2.0.11
      */
-    public $options = LOG_ODELAY | LOG_PID;
+    public $options;
 
     /**
      * @var array syslog levels
@@ -45,6 +45,13 @@ class SyslogTarget extends Target
         Logger::LEVEL_WARNING => LOG_WARNING,
         Logger::LEVEL_ERROR => LOG_ERR,
     ];
+
+    /**
+     * @inheritdoc
+     */
+    public function init() {
+         $this->options = LOG_ODELAY | LOG_PID;
+    }
 
     /**
      * Writes log messages to syslog
