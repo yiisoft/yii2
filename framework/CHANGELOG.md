@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
+- Bug #9305: Fixed MSSQL `Schema::TYPE_TIMESTAMP` to be 'datetime' instead of 'timestamp', which is just an incremental number (nkovacs)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
 - Bug #12714: Fixed `yii\validation\EmailValidator` to prevent false-positives checks when property `checkDns` is set to `true` (silverfire)
@@ -21,6 +22,7 @@ Yii Framework 2 Change Log
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
 - Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
+- Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
 - Enh #6809: Added `\yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
 - Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
 - Enh #7420: Attributes for prompt generated with `renderSelectOptions` of `\yii\helpers\Html` helper (arogachev)
