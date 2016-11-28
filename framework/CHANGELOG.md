@@ -45,6 +45,7 @@ Yii Framework 2 Change Log
 - Enh #13035: Use ArrayHelper::getValue() in SluggableBehavior::getValue() (thyseus)
 - Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #8293: `yii\db\Query` can be passed to `insert` method in `yii\db\QueryBuilder` (voroks)
 
 
 2.0.10 October 20, 2016
