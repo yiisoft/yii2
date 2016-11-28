@@ -6,7 +6,7 @@
 # - http://www.yiiframework.com/doc-2.0/guide-tutorial-console.html#bash-completion
 #
 # Usage:
-# Temporarily you can source this file in you bash by typing: source yii.bash-completion
+# Temporarily you can source this file in you bash by typing: source yii
 # For permanent availability, copy or link this file to /etc/bash_completion.d/
 #
 
