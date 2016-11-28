@@ -245,7 +245,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
      * @param string $table the table that data will be saved into.
-     * @param array $columns the column data (name => value) to be saved into the table.
+     * @param array|\yii\db\Query $columns the column data (name => value) to be saved into the table.
+     * Passing of \yii\db\Query is available since version 2.0.11.
      * @return array normalized columns
      * @since 2.0.9
      */
