@@ -158,31 +158,31 @@ class QueryBuilder extends \yii\base\Object
         }
         $names = [];
         $placeholders = [];
-	$values = ' DEFAULT VALUES';
-	if (($columns instanceof \yii\db\Query) === true) {
-	    list ($values, $params) = $this->build($columns);
-	    foreach ($columns->select as $field) {
-		if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
-		    $names[] = $schema->quoteColumnName($matches[2]);
-		} else {
-		    $names[] = $schema->quoteColumnName($field);
-		}
-	    }
-	} else {
-	    foreach ($columns as $name => $value) {
-		$names[] = $schema->quoteColumnName($name);
-		if ($value instanceof Expression) {
-		    $placeholders[] = $value->expression;
-		    foreach ($value->params as $n => $v) {
-			$params[$n] = $v;
-		    }
-		} else {
-		    $phName = self::PARAM_PREFIX . count($params);
-		    $placeholders[] = $phName;
-		    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
-		}
-	    }
-	}
+        $values = ' DEFAULT VALUES';
+        if (($columns instanceof \yii\db\Query) === true) {
+            list ($values, $params) = $this->build($columns);
+            foreach ($columns->select as $field) {
+                if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
+                    $names[] = $schema->quoteColumnName($matches[2]);
+                } else {
+                    $names[] = $schema->quoteColumnName($field);
+                }
+            }
+        } else {
+            foreach ($columns as $name => $value) {
+                $names[] = $schema->quoteColumnName($name);
+                if ($value instanceof Expression) {
+                    $placeholders[] = $value->expression;
+                    foreach ($value->params as $n => $v) {
+                        $params[$n] = $v;
+                    }
+                } else {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $placeholders[] = $phName;
+                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                }
+            }
+        }
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
