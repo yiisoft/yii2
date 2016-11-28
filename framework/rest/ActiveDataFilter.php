@@ -45,7 +45,7 @@ class ActiveDataFilter extends DataFilter
         '$gt' => '>',
         '$lte' => '<=',
         '$gte' => '>=',
-        '$eq' => '==',
+        '$eq' => '=',
         '$neq' => '!=',
         '$in' => 'IN',
         '$nin' => 'NOT IN',
