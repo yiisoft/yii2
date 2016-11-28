@@ -70,7 +70,7 @@ class HelpController extends Controller
 
     /**
      * List all available controllers and actions in machine readable format.
-     * This is used for bash completion.
+     * This is used for shell completion.
      * @since 2.0.11
      */
     public function actionList()
@@ -92,6 +92,84 @@ class HelpController extends Controller
                 }
             }
         }
+    }
+
+    /**
+     * List all available options for the $action in machine readable format.
+     * This is used for shell completion.
+     *
+     * @param string $action route to action
+     * @since 2.0.11
+     */
+    public function actionListActionOptions($action)
+    {
+        $result = Yii::$app->createController($action);
+
+        if ($result === false || !($result[0] instanceof Controller)) {
+            return;
+        }
+
+        /** @var Controller $controller */
+        list($controller, $actionID) = $result;
+        $action = $controller->createAction($actionID);
+        if ($action === null) {
+            return;
+        }
+
+        $arguments = $controller->getActionArgsHelp($action);
+        foreach ($arguments as $argument => $help) {
+            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
+            $this->stdout($argument . ':' . $description . "\n");
+        }
+
+        $this->stdout("\n");
+        $options = $controller->getActionOptionsHelp($action);
+        foreach ($options as $argument => $help) {
+            $description = str_replace("\n", '', addcslashes($help['comment'], ':')) ?: $argument;
+            $this->stdout('--' . $argument . ':' . $description . "\n");
+        }
+    }
+
+    /**
+     * Displays usage information for $action
+     *
+     * @param string $action route to action
+     * @since 2.0.11
+     */
+    public function actionUsage($action)
+    {
+        $result = Yii::$app->createController($action);
+
+        if ($result === false || !($result[0] instanceof Controller)) {
+            return;
+        }
+
+        /** @var Controller $controller */
+        list($controller, $actionID) = $result;
+        $action = $controller->createAction($actionID);
+        if ($action === null) {
+            return;
+        }
+
+        $scriptName = $this->getScriptName();
+        if ($action->id === $controller->defaultAction) {
+            $this->stdout($scriptName . ' ' . $this->ansiFormat($controller->getUniqueId(), Console::FG_YELLOW));
+        } else {
+            $this->stdout($scriptName . ' ' . $this->ansiFormat($action->getUniqueId(), Console::FG_YELLOW));
+        }
+
+        $args = $controller->getActionArgsHelp($action);
+        foreach ($args as $name => $arg) {
+            if ($arg['required']) {
+                $this->stdout(' <' . $name . '>', Console::FG_CYAN);
+            } else {
+                $this->stdout(' [' . $name . ']', Console::FG_CYAN);
+            }
+        }
+
+        $this->stdout("\n");
+
+        return;
     }
 
     /**
