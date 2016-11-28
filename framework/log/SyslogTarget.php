@@ -69,7 +69,7 @@ class SyslogTarget extends Target
         closelog();
     }
 
-    /**https://www.bol.com/nl/account/orders.html#account_bestellingen
+    /**
      * @inheritdoc
      */
     public function formatMessage($message)
