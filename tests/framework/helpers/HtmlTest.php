@@ -213,10 +213,45 @@ class HtmlTest extends TestCase
         $this->assertEquals('<input type="file" class="t" name="test" value="value">', Html::fileInput('test', 'value', ['class' => 't']));
     }
 
-    public function testTextarea()
+    /**
+     * @return array
+     */
+    public function textareaDataProvider()
     {
-        $this->assertEquals('<textarea name="test"></textarea>', Html::textarea('test'));
-        $this->assertEquals('<textarea class="t" name="test">value&lt;&gt;</textarea>', Html::textarea('test', 'value<>', ['class' => 't']));
+        return [
+            [
+                '<textarea name="test"></textarea>',
+                'test',
+                null,
+                []
+            ],
+            [
+                '<textarea class="t" name="test">value&lt;&gt;</textarea>',
+                'test',
+                'value<>',
+                ['class' => 't']
+            ],
+            [
+                '<textarea name="test">value&amp;lt;&amp;gt;</textarea>',
+                'test',
+                'value&lt;&gt;',
+                []
+            ],
+            [
+                '<textarea name="test">value&lt;&gt;</textarea>',
+                'test',
+                'value&lt;&gt;',
+                ['doubleEncode' => false]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider textareaDataProvider
+     */
+    public function testTextarea($expected, $name, $value, $options)
+    {
+        $this->assertEquals($expected, Html::textarea($name, $value, $options));
     }
 
     public function testRadio()

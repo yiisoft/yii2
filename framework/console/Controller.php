@@ -122,7 +122,7 @@ class Controller extends \yii\base\Controller
             }
         }
         if ($this->help) {
-            $route = $this->id . '/' . $id;
+            $route = $this->getUniqueId() . '/' . $id;
             return Yii::$app->runAction('help', [$route]);
         }
         return parent::runAction($id, $params);
