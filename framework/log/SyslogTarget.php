@@ -27,8 +27,8 @@ class SyslogTarget extends Target
      */
     public $facility = LOG_USER;
     /**
-     * @var int openlog options
-     * @see http://php.net/openlog
+     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](http://php.net/openlog). Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
+     * @see http://php.net/openlog for available options.
      * @since 2.0.11
      */
     public $options;
@@ -51,6 +51,7 @@ class SyslogTarget extends Target
      */
     public function init()
     {
+        parent::init();
         if ($this->options === null) {
             $this->options = LOG_ODELAY | LOG_PID;
         }
@@ -68,7 +69,7 @@ class SyslogTarget extends Target
         closelog();
     }
 
-    /**
+    /**https://www.bol.com/nl/account/orders.html#account_bestellingen
      * @inheritdoc
      */
     public function formatMessage($message)
