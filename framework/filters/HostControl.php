@@ -15,8 +15,8 @@ use yii\web\NotFoundHttpException;
 /**
  * HostControl provides simple control over requested host name.
  *
- * This filter provides protection against 'host header' attacks, allowing action execution only for specified
- * host names.
+ * This filter provides protection against ['host header' attacks](https://www.acunetix.com/vulnerabilities/web/host-header-attack),
+ * allowing action execution only for specified host names.
  *
  * Application configuration example:
  *
@@ -109,10 +109,7 @@ class HostControl extends ActionFilter
 
 
     /**
-     * This method is invoked right before an action is to be executed (after all possible filters.)
-     * You may override this method to do last-minute preparation for the action.
-     * @param Action $action the action to be executed.
-     * @return bool whether the action should continue to be executed.
+     * @inheritdoc
      */
     public function beforeAction($action)
     {
@@ -148,6 +145,8 @@ class HostControl extends ActionFilter
     /**
      * Denies the access.
      * The default implementation will display 404 page right away, terminating the program execution.
+     * You may override this method, creating your own deny access handler. While doing so, make sure you
+     * avoid usage of the current requested host name, creation of absolute URL links, caching page parts and so on.
      * @param Action $action the action to be executed.
      */
     protected function denyAccess($action)
