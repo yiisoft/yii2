@@ -27,9 +27,11 @@ class SyslogTarget extends Target
      */
     public $facility = LOG_USER;
     /**
-     * @var int openlog option
+     * @var int openlog options
+     * @see http://php.net/openlog
+     * @since 2.0.11
      */
-    public $option = LOG_ODELAY | LOG_PID;
+    public $options = LOG_ODELAY | LOG_PID;
 
     /**
      * @var array syslog levels
@@ -49,7 +51,7 @@ class SyslogTarget extends Target
      */
     public function export()
     {
-        openlog($this->identity, $this->option, $this->facility);
+        openlog($this->identity, $this->options, $this->facility);
         foreach ($this->messages as $message) {
             syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message));
         }
