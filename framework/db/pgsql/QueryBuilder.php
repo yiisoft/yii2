@@ -253,16 +253,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     private function normalizeTableRowData($table, $columns)
     {
-        if (($columns instanceof \yii\db\Query) === false) {
-            if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
-                $columnSchemas = $tableSchema->columns;
-                foreach ($columns as $name => $value) {
-                    if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && is_string($value)) {
-                        $columns[$name] = [$value, \PDO::PARAM_LOB]; // explicitly setup PDO param type for binary column
-                    }
+        if ($columns instanceof \yii\db\Query) {
+            return $columns;
+        }
+
+        if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+            foreach ($columns as $name => $value) {
+                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && is_string($value)) {
+                    $columns[$name] = [$value, \PDO::PARAM_LOB]; // explicitly setup PDO param type for binary column
                 }
             }
         }
+
         return $columns;
     }
 

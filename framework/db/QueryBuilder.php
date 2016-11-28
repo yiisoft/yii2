@@ -160,7 +160,7 @@ class QueryBuilder extends \yii\base\Object
         $names = [];
         $placeholders = [];
         $values = ' DEFAULT VALUES';
-        if (($columns instanceof \yii\db\Query) === true) {
+        if ($columns instanceof \yii\db\Query) {
             list ($values, $params) = $this->build($columns);
             foreach ($columns->select as $field) {
                 if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
