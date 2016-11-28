@@ -103,12 +103,16 @@ method to perform the actual translation work. The component can be configured i
 
 In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. The pattern
 `app*` indicates that all message categories whose names start with `app` should be translated using this
-message source. The [[yii\i18n\PhpMessageSource]] class uses PHP files to store message translations. Each
-PHP file corresponds to the messages of a single category. By default, the file name should be the same as
+message source. The [[yii\i18n\PhpMessageSource]] class uses PHP files to store message translations.
+These files contain a simple PHP array that is a map of the messages in source language to the translation in the target language.
+Each PHP file corresponds to the messages of a single category. By default, the file name should be the same as
 the category name. However, you may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category
 to a PHP file with a different naming approach. In the above example, the category `app/error` is mapped to
 the PHP file `@app/messages/ru-RU/error.php` (assuming `ru-RU` is the target language). Without this configuration,
 the category would be mapped to `@app/messages/ru-RU/app/error.php`, instead.
+
+> Tip: You can automatically generate these PHP files by using the [`message` command](#message-command),
+> which will be introduced later in this chapter.
 
 Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:

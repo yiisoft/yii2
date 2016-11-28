@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.10-dev';
+        return '2.0.11-dev';
     }
 
     /**
@@ -120,9 +120,9 @@ class BaseYii
      * Note, this method does not check if the returned path exists or not.
      *
      * @param string $alias the alias to be translated.
-     * @param boolean $throwException whether to throw an exception if the given alias is invalid.
+     * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
+     * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidParamException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
@@ -160,7 +160,7 @@ class BaseYii
      * A root alias is an alias that has been registered via [[setAlias()]] previously.
      * If a given alias matches multiple root aliases, the longest one will be returned.
      * @param string $alias the alias
-     * @return string|boolean the root alias, or false if no root alias is found
+     * @return string|bool the root alias, or false if no root alias is found
      */
     public static function getRootAlias($alias)
     {

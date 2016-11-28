@@ -57,7 +57,7 @@ composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 имя директории.
 
 > Info: Если команда `composer create-project` не выполняется нормально, убедитесь, что вы корректно установили composer
-> asset plugin. Мы можете сделать это выполнив `composer global show`. Вывод должен содержать `fxp/composer-asset-plugin`.
+> asset plugin. Вы можете сделать это выполнив `composer global show`. Вывод должен содержать `fxp/composer-asset-plugin`.
 > Также можно обратиться к [разделу "Troubleshooting" документации Composer](https://getcomposer.org/doc/articles/troubleshooting.md).
 > Там описаны другие типичные ошибки. После того, как вы исправили ошибку, запустите `composer update` в директории `basic`.
 

@@ -25,6 +25,8 @@ use yii\base\NotSupportedException;
  * - `captcha`: [[\yii\captcha\CaptchaValidator]]
  * - `compare`: [[CompareValidator]]
  * - `date`: [[DateValidator]]
+ * - `datetime`: [[DateValidator]]
+ * - `time`: [[DateValidator]]
  * - `default`: [[DefaultValueValidator]]
  * - `double`: [[NumberValidator]]
  * - `each`: [[EachValidator]]
@@ -44,6 +46,8 @@ use yii\base\NotSupportedException;
  * - `url`: [[UrlValidator]]
  * - `ip`: [[IpValidator]]
  *
+ * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -57,6 +61,14 @@ class Validator extends Component
         'captcha' => 'yii\captcha\CaptchaValidator',
         'compare' => 'yii\validators\CompareValidator',
         'date' => 'yii\validators\DateValidator',
+        'datetime' => [
+            'class' => 'yii\validators\DateValidator',
+            'type' => DateValidator::TYPE_DATETIME,
+        ],
+        'time' => [
+            'class' => 'yii\validators\DateValidator',
+            'type' => DateValidator::TYPE_TIME,
+        ],
         'default' => 'yii\validators\DefaultValueValidator',
         'double' => 'yii\validators\NumberValidator',
         'each' => 'yii\validators\EachValidator',
@@ -113,17 +125,17 @@ class Validator extends Component
      */
     public $except = [];
     /**
-     * @var boolean whether this validation rule should be skipped if the attribute being validated
+     * @var bool whether this validation rule should be skipped if the attribute being validated
      * already has some validation error according to some previous rules. Defaults to true.
      */
     public $skipOnError = true;
     /**
-     * @var boolean whether this validation rule should be skipped if the attribute value
+     * @var bool whether this validation rule should be skipped if the attribute value
      * is null or an empty string.
      */
     public $skipOnEmpty = true;
     /**
-     * @var boolean whether to enable client-side validation for this validator.
+     * @var bool whether to enable client-side validation for this validator.
      * The actual client-side validation is done via the JavaScript code returned
      * by [[clientValidateAttribute()]]. If that method returns null, even if this property
      * is true, no client-side validation will be done by this validator.
@@ -277,7 +289,7 @@ class Validator extends Component
      * You may use this method to validate a value out of the context of a data model.
      * @param mixed $value the data value to be validated.
      * @param string $error the error message to be returned, if the validation fails.
-     * @return boolean whether the data is valid.
+     * @return bool whether the data is valid.
      */
     public function validate($value, &$error = null)
     {
@@ -357,7 +369,7 @@ class Validator extends Component
      * - the validator's `on` property contains the specified scenario
      *
      * @param string $scenario scenario name
-     * @return boolean whether the validator applies to the specified scenario.
+     * @return bool whether the validator applies to the specified scenario.
      */
     public function isActive($scenario)
     {
@@ -393,7 +405,7 @@ class Validator extends Component
      * A value is considered empty if it is null, an empty array, or an empty string.
      * Note that this method is different from PHP empty(). It will return false when the value is 0.
      * @param mixed $value the value to be checked
-     * @return boolean whether the value is empty
+     * @return bool whether the value is empty
      */
     public function isEmpty($value)
     {

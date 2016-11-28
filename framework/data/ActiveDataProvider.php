@@ -49,6 +49,8 @@ use yii\di\Instance;
  * $posts = $provider->getModels();
  * ```
  *
+ * For more details and usage information on ActiveDataProvider, see the [guide article on data providers](guide:output-data-providers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -19,6 +19,8 @@ use yii\helpers\FileHelper;
  *
  * Please refer to [[Cache]] for common cache operations that are supported by FileCache.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -42,26 +44,26 @@ class FileCache extends Cache
      */
     public $cacheFileSuffix = '.bin';
     /**
-     * @var integer the level of sub-directories to store cache files. Defaults to 1.
+     * @var int the level of sub-directories to store cache files. Defaults to 1.
      * If the system has huge number of cache files (e.g. one million), you may use a bigger value
      * (usually no bigger than 3). Using sub-directories is mainly to ensure the file system
      * is not over burdened with a single directory having too many files.
      */
     public $directoryLevel = 1;
     /**
-     * @var integer the probability (parts per million) that garbage collection (GC) should be performed
+     * @var int the probability (parts per million) that garbage collection (GC) should be performed
      * when storing a piece of data in the cache. Defaults to 10, meaning 0.001% chance.
      * This number should be between 0 and 1000000. A value 0 means no GC will be performed at all.
      */
     public $gcProbability = 10;
     /**
-     * @var integer the permission to be set for newly created cache files.
+     * @var int the permission to be set for newly created cache files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
     public $fileMode;
     /**
-     * @var integer the permission to be set for newly created directories.
+     * @var int the permission to be set for newly created directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
@@ -89,7 +91,7 @@ class FileCache extends Cache
      * may return false while exists returns true.
      * @param mixed $key a key identifying the cached value. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
-     * @return boolean true if a value exists in cache, false if the value is not in the cache or expired.
+     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
      */
     public function exists($key)
     {
@@ -129,8 +131,8 @@ class FileCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param string $value the value to be cached. Other types (If you have disabled [[serializer]]) unable to get is
      * correct in [[getValue()]].
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)
     {
@@ -162,8 +164,8 @@ class FileCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param string $value the value to be cached. Other types (if you have disabled [[serializer]]) unable to get is
      * correct in [[getValue()]].
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function addValue($key, $value, $duration)
     {
@@ -179,7 +181,7 @@ class FileCache extends Cache
      * Deletes a value with the specified key from cache
      * This is the implementation of the method declared in the parent class.
      * @param string $key the key of the value to be deleted
-     * @return boolean if no error happens during deletion
+     * @return bool if no error happens during deletion
      */
     protected function deleteValue($key)
     {
@@ -212,7 +214,7 @@ class FileCache extends Cache
     /**
      * Deletes all values from cache.
      * This is the implementation of the method declared in the parent class.
-     * @return boolean whether the flush operation was successful.
+     * @return bool whether the flush operation was successful.
      */
     protected function flushValues()
     {
@@ -223,9 +225,9 @@ class FileCache extends Cache
 
     /**
      * Removes expired cache files.
-     * @param boolean $force whether to enforce the garbage collection regardless of [[gcProbability]].
+     * @param bool $force whether to enforce the garbage collection regardless of [[gcProbability]].
      * Defaults to false, meaning the actual deletion happens with the probability as specified by [[gcProbability]].
-     * @param boolean $expiredOnly whether to removed expired cache files only.
+     * @param bool $expiredOnly whether to removed expired cache files only.
      * If false, all cache files under [[cachePath]] will be removed.
      */
     public function gc($force = false, $expiredOnly = true)
@@ -239,7 +241,7 @@ class FileCache extends Cache
      * Recursively removing expired cache files under a directory.
      * This method is mainly used by [[gc()]].
      * @param string $path the directory under which expired cache files are removed.
-     * @param boolean $expiredOnly whether to only remove expired cache files. If false, all files
+     * @param bool $expiredOnly whether to only remove expired cache files. If false, all files
      * under `$path` will be removed.
      */
     protected function gcRecursive($path, $expiredOnly)

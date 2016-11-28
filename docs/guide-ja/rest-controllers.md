@@ -172,6 +172,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // ユーザが $action と $model に対する権限を持つかどうかをチェック
     // アクセスを拒否すべきときは ForbiddenHttpException を投げる
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

@@ -118,6 +118,10 @@
 
             var pos = settings.filterUrl.indexOf('?');
             var url = pos < 0 ? settings.filterUrl : settings.filterUrl.substring(0, pos);
+            var hashPos = settings.filterUrl.indexOf('#');
+            if (hashPos >= 0) {
+                url += settings.filterUrl.substring(pos);
+            }
 
             $grid.find('form.gridview-filter-form').remove();
             var $form = $('<form/>', {
@@ -155,7 +159,7 @@
                 return;
             }
             var checkAll = "#" + id + " input[name='" + options.checkAll + "']";
-            var inputs = options.class ? "input." + options.class : "input[name='" + options.name + "']";
+            var inputs = options['class'] ? "input." + options['class'] : "input[name='" + options.name + "']";
             var inputsEnabled = "#" + id + " " + inputs + ":enabled";
             $(document).off('click.yiiGridView', checkAll).on('click.yiiGridView', checkAll, function () {
                 $grid.find(inputs + ":enabled").prop('checked', this.checked);

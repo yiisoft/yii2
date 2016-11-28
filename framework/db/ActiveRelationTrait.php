@@ -24,7 +24,7 @@ use yii\base\InvalidParamException;
 trait ActiveRelationTrait
 {
     /**
-     * @var boolean whether this query represents a relation to more than one record.
+     * @var bool whether this query represents a relation to more than one record.
      * This property is only used in relational context. If true, this relation will
      * populate all query results into AR instances using [[Query::all()|all()]].
      * If false, only the first row of the results will be retrieved using [[Query::one()|one()]].
@@ -83,15 +83,16 @@ trait ActiveRelationTrait
      * Use this method to specify a pivot record/table when declaring a relation in the [[ActiveRecord]] class:
      *
      * ```php
-     * public function getOrders()
+     * class Order extends ActiveRecord
      * {
-     *     return $this->hasOne(Order::className(), ['id' => 'order_id']);
-     * }
-     *
-     * public function getOrderItems()
-     * {
-     *     return $this->hasMany(Item::className(), ['id' => 'item_id'])
-     *                 ->via('orders');
+     *    public function getOrderItems() {
+     *        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+     *    }
+     * 
+     *    public function getItems() {
+     *        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *                    ->via('orderItems');
+     *    }
      * }
      * ```
      *
@@ -347,7 +348,7 @@ trait ActiveRelationTrait
      * @param array $link
      * @param array $viaModels
      * @param array $viaLink
-     * @param boolean $checkMultiple
+     * @param bool $checkMultiple
      * @return array
      */
     private function buildBuckets($models, $link, $viaModels = null, $viaLink = null, $checkMultiple = true)
