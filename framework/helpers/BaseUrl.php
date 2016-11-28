@@ -256,7 +256,7 @@ class BaseUrl
         if (($pos = strpos($url, '://')) !== false) {
             if ($scheme === '') {
                 $url = substr($url, $pos + 1);
-            } elseif (is_string($scheme)) {
+            } else {
                 $url = $scheme . substr($url, $pos);
             }
         }
