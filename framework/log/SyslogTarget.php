@@ -51,7 +51,9 @@ class SyslogTarget extends Target
      */
     public function init()
     {
-         $this->options = LOG_ODELAY | LOG_PID;
+        if ($this->options === null) {
+            $this->options = LOG_ODELAY | LOG_PID;
+        }
     }
 
     /**
