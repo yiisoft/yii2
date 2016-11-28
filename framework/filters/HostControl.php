@@ -8,7 +8,6 @@
 namespace yii\filters;
 
 use Yii;
-use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\web\NotFoundHttpException;
 
@@ -80,12 +79,12 @@ class HostControl extends ActionFilter
      * This field can be specified as a PHP callback of following signature:
      *
      * ```php
-     * function (Action $action) {
+     * function (\yii\base\Action $action) {
      *     //return array of strings
      * }
      * ```
      *
-     * where `$action` is the current [[Action|action]] object.
+     * where `$action` is the current [[\yii\base\Action|action]] object.
      *
      * If this field is not set - no host name check will be performed.
      */
@@ -97,10 +96,10 @@ class HostControl extends ActionFilter
      * The signature of the callback should be as follows:
      *
      * ```php
-     * function (Action $action)
+     * function (\yii\base\Action $action)
      * ```
      *
-     * where `$action` is the current [[Action|action]] object.
+     * where `$action` is the current [[\yii\base\Action|action]] object.
      *
      * > Note: while implementing your own host deny processing, make sure you avoid usage of the current requested
      * host name, creation of absolute URL links, caching page parts and so on.
@@ -147,7 +146,7 @@ class HostControl extends ActionFilter
      * The default implementation will display 404 page right away, terminating the program execution.
      * You may override this method, creating your own deny access handler. While doing so, make sure you
      * avoid usage of the current requested host name, creation of absolute URL links, caching page parts and so on.
-     * @param Action $action the action to be executed.
+     * @param \yii\base\Action $action the action to be executed.
      */
     protected function denyAccess($action)
     {
