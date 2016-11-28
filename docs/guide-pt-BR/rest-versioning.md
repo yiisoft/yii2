@@ -3,7 +3,7 @@ Versionamento
 
 Uma boa API é *versionada*: Mudanças e novos recursos são implementados em novas versões da API em vez de alterar continuamente apenas uma versão. Diferente de aplicações Web, com a qual você tem total controle do código de ambos os lados cliente e servidor, APIs são destinadas a ser utilizadas por clientes além de seu controle. Por esta razão, a compatibilidade (BC) entre as APIs deve ser mantida sempre que possível. Se uma mudança que pode quebrar esta compatibilidade é necessária, você deve introduzi-la em uma nova versão de API e subir o número da versão. Os clientes existentes podem continuar a usar a versão antiga da API; e os clientes novos ou atualizados podem obter a nova funcionalidade na nova versão da API.
 
-> Dica: Consulte [Semantic Versioning](http://semver.org/) Para obter mais informações sobre como projetar números de versão da API.
+> Dica: Consulte o artigo [Semantic Versioning](http://semver.org/) para obter mais informações sobre como projetar números de versão da API.
 
 Uma maneira comum de implementar versionamento de API é incorporar o número da versão nas URLs da API. Por exemplo, `http://example.com/v1/users` representa o terminal `/users` da API versão 1.
 
@@ -16,7 +16,7 @@ Accept: application/json; version=v1
 Accept: application/vnd.company.myapp-v1+json
 ```
 
-Ambos os métodos tem seus prós e contras, e há uma série de debates sobre cada abordagem. Abaixo, você verá uma estratégia prática para o controle de versão de API que é uma mistura dos dois métodos:
+Ambos os métodos tem seus prós e contras, e há uma série de debates sobre cada abordagem. A seguir, você verá uma estratégia prática para o controle de versão de API que é uma mistura dos dois métodos:
 
 * Coloque cada versão principal de implementação da API em um módulo separado cuja identificação é o número de versão principal (ex. `v1`, `v2`). Naturalmente, as URLs da API irão conter os números da versão principal.
 * Dentro de cada versão principal (e, assim, dentro do módulo correspondente), utilize o cabeçalho `Accept` da requisição HTTP para determinar o número de versão secundária e escrever código condicional para responder às versões menores em conformidade.
@@ -84,11 +84,11 @@ Como resultado do código acima, `http://example.com/v1/users` retornará a list
 
 Graças aos módulos, o código para diferentes versões principais pode ser bem isolado. Entretanto esta abordagem torna possível a reutilização de código entre os módulos através de classes bases comuns e outros recursos partilhados.
  
-Para lidar com números de subversões, você pode tirar proveito da negociação de conteúdo oferecida pelo behavior [[yii\filters\ContentNegotiator|contentNegotiator]]. O behavior `contentNegotiator` irá configurar a propriedade [[yii\web\Response::acceptParams]] que determinará que versão é suportada.
+Para lidar com números de subversões, você pode tirar proveito da negociação de conteúdo oferecida pelo behavior [[yii\filters\ContentNegotiator|contentNegotiator]]. O behavior `contentNegotiator` irá configurar a propriedade [[yii\web\Response::acceptParams]] que determinará qual versão é suportada.
 
 Por exemplo, se uma requisição é enviada com o cabeçalho HTTP `Accept: application/json; version=v1`, Após a negociação de conteúdo, [[yii\web\Response::acceptParams]] terá o valor `['version' => 'v1']`.
 
-Com base na informação da versão em `acceptParams`, você pode escrever código condicional em lugares tais como ações, classes de recursos, serializadores, etc. para fornecer a funcionalidade apropriada.
+Com base na informação da versão em `acceptParams`, você pode escrever um código condicional em lugares tais como ações, classes de recursos, serializadores, etc. para fornecer a funcionalidade apropriada.
 
 
 Uma vez que subversões por definição devem manter compatibilidades entre si, esperamos que não haja muitas verificações de versão em seu código. De outra forma, você pode precisar criar uma nova versão principal.

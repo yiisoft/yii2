@@ -27,17 +27,23 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $user = User::findOne($id);
-        $profile = Profile::findOne($id);
-        
-        if (!isset($user, $profile)) {
+        if (!$user) {
             throw new NotFoundHttpException("The user was not found.");
+        }
+        
+        $profile = Profile::findOne($user->profile_id);
+        
+        if (!$profile) {
+            throw new NotFoundHttpException("The user has no profile.");
         }
         
         $user->scenario = 'update';
         $profile->scenario = 'update';
         
         if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
-            if ($user->validate() && $profile->validate()) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
                 $user->save(false);
                 $profile->save(false);
                 return $this->redirect(['user/view', 'id' => $id]);

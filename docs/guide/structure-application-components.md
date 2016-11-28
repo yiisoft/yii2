@@ -7,7 +7,7 @@ the `urlManager` component is responsible for routing Web requests to appropriat
 the `db` component provides DB-related services; and so on.
 
 Each application component has an ID that uniquely identifies itself among other application components
-in the same application. You can access an application component through the expression
+in the same application. You can access an application component through the expression:
 
 ```php
 \Yii::$app->componentID
@@ -101,7 +101,7 @@ if you do not specify its class, the default one will be used.
   Please refer to the [Internationalization](tutorial-i18n.md) section for more details.
 * [[yii\log\Dispatcher|log]]: manages log targets.
   Please refer to the [Logging](runtime-logging.md) section for more details.
-* [[yii\swiftmailer\Mailer|mail]]: supports mail composing and sending.
+* [[yii\swiftmailer\Mailer|mailer]]: supports mail composing and sending.
   Please refer to the [Mailing](tutorial-mailing.md) section for more details.
 * [[yii\base\Application::response|response]]: represents the response being sent to end users.
   Please refer to the [Responses](runtime-responses.md) section for more details.
@@ -111,9 +111,9 @@ if you do not specify its class, the default one will be used.
   in [[yii\web\Application|Web applications]].
   Please refer to the [Sessions and Cookies](runtime-sessions-cookies.md) section for more details.
 * [[yii\web\UrlManager|urlManager]]: supports URL parsing and creation.
-  Please refer to the [URL Parsing and Generation](runtime-routing.md) section for more details.
+  Please refer to the [Routing and URL Creation](runtime-routing.md) section for more details.
 * [[yii\web\User|user]]: represents the user authentication information. This component is only available
-  in [[yii\web\Application|Web applications]]
+  in [[yii\web\Application|Web applications]].
   Please refer to the [Authentication](security-authentication.md) section for more details.
 * [[yii\web\View|view]]: supports view rendering.
   Please refer to the [Views](structure-views.md) section for more details.

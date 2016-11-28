@@ -24,7 +24,7 @@ class BaseStringHelper
      * Returns the number of bytes in the given string.
      * This method ensures the string is treated as a byte array by using `mb_strlen()`.
      * @param string $string the string being measured for length
-     * @return integer the number of bytes in the given string.
+     * @return int the number of bytes in the given string.
      */
     public static function byteLength($string)
     {
@@ -35,8 +35,8 @@ class BaseStringHelper
      * Returns the portion of string specified by the start and length parameters.
      * This method ensures the string is treated as a byte array by using `mb_substr()`.
      * @param string $string the input string. Must be one character or longer.
-     * @param integer $start the starting position
-     * @param integer $length the desired portion length. If not specified or `null`, there will be
+     * @param int $start the starting position
+     * @param int $length the desired portion length. If not specified or `null`, there will be
      * no limit on length i.e. the output will be until the end of the string.
      * @return string the extracted part of string, or FALSE on failure or an empty string.
      * @see http://www.php.net/manual/en/function.substr.php
@@ -61,7 +61,7 @@ class BaseStringHelper
      */
     public static function basename($path, $suffix = '')
     {
-        if (($len = mb_strlen($suffix)) > 0 && mb_substr($path, -$len) == $suffix) {
+        if (($len = mb_strlen($suffix)) > 0 && mb_substr($path, -$len) === $suffix) {
             $path = mb_substr($path, 0, -$len);
         }
         $path = rtrim(str_replace('\\', '/', $path), '/\\');
@@ -95,10 +95,10 @@ class BaseStringHelper
      * Truncates a string to the number of characters specified.
      *
      * @param string $string The string to truncate.
-     * @param integer $length How many characters from original string to include into truncated string.
+     * @param int $length How many characters from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
      * @param string $encoding The charset to use, defaults to charset currently used by application.
-     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     * @param bool $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
      * This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
@@ -109,7 +109,7 @@ class BaseStringHelper
         }
         
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
-            return trim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
+            return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
@@ -119,9 +119,9 @@ class BaseStringHelper
      * Truncates a string to the number of words specified.
      *
      * @param string $string The string to truncate.
-     * @param integer $count How many words from original string to include into truncated string.
+     * @param int $count How many words from original string to include into truncated string.
      * @param string $suffix String to append to the end of truncated string.
-     * @param boolean $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
+     * @param bool $asHtml Whether to treat the string being truncated as HTML and preserve proper HTML tags.
      * This parameter is available since version 2.0.1.
      * @return string the truncated string.
      */
@@ -143,9 +143,9 @@ class BaseStringHelper
      * Truncate a string while preserving the HTML.
      *
      * @param string $string The string to truncate
-     * @param integer $count
+     * @param int $count
      * @param string $suffix String to append to the end of the truncated string.
-     * @param string|boolean $encoding
+     * @param string|bool $encoding
      * @return string
      * @since 2.0.1
      */
@@ -164,16 +164,14 @@ class BaseStringHelper
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
-                    $token->data = self::truncateWords($token->data, $count - $totalCount, '');
-                    $currentCount = str_word_count($token->data);
+                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
+                    $token->data = $prefixSpace[1] . self::truncateWords(ltrim($token->data), $count - $totalCount, '');
+                    $currentCount = self::countWords($token->data);
                 } else {
-                    $token->data = self::truncate($token->data, $count - $totalCount, '', $encoding) . ' ';
+                    $token->data = self::truncate($token->data, $count - $totalCount, '', $encoding);
                     $currentCount = mb_strlen($token->data, $encoding);
                 }
                 $totalCount += $currentCount;
-                if (1 === $currentCount) {
-                    $token->data = ' ' . $token->data;
-                }
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
                 $openTokens--;
@@ -187,7 +185,7 @@ class BaseStringHelper
         }
         $context = new \HTMLPurifier_Context();
         $generator = new \HTMLPurifier_Generator($config, $context);
-        return $generator->generateFromTokens($truncated) . $suffix;
+        return $generator->generateFromTokens($truncated) . ($totalCount >= $count ? $suffix : '');
     }
 
     /**
@@ -195,9 +193,9 @@ class BaseStringHelper
      * Binary and multibyte safe.
      *
      * @param string $string Input string
-     * @param string $with Part to search
-     * @param boolean $caseSensitive Case sensitive search. Default is true.
-     * @return boolean Returns true if first input starts with second input, false otherwise
+     * @param string $with Part to search inside the $string
+     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value. 
+     * @return bool Returns true if first input starts with second input, false otherwise
      */
     public static function startsWith($string, $with, $caseSensitive = true)
     {
@@ -215,10 +213,10 @@ class BaseStringHelper
      * Check if given string ends with specified substring.
      * Binary and multibyte safe.
      *
-     * @param string $string
-     * @param string $with
-     * @param boolean $caseSensitive Case sensitive search. Default is true.
-     * @return boolean Returns true if first input ends with second input, false otherwise
+     * @param string $string Input string to check
+     * @param string $with Part to search inside of the $string.
+     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the ending of the string in order to get a true value.
+     * @return bool Returns true if first input ends with second input, false otherwise
      */
     public static function endsWith($string, $with, $caseSensitive = true)
     {
@@ -232,7 +230,7 @@ class BaseStringHelper
             }
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
         } else {
-            return mb_strtolower(mb_substr($string, -$bytes, null, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
+            return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
     }
 
@@ -245,7 +243,7 @@ class BaseStringHelper
      *   - boolean - to trim normally;
      *   - string - custom characters to trim. Will be passed as a second argument to `trim()` function.
      *   - callable - will be called for each value instead of trim. Takes the only argument - value.
-     * @param boolean $skipEmpty Whether to skip empty strings between delimiters. Default is false.
+     * @param bool $skipEmpty Whether to skip empty strings between delimiters. Default is false.
      * @return array
      * @since 2.0.4
      */
@@ -264,8 +262,22 @@ class BaseStringHelper
         }
         if ($skipEmpty) {
             // Wrapped with array_values to make array keys sequential after empty values removing
-            $result = array_values(array_filter($result));
+            $result = array_values(array_filter($result, function ($value) {
+                return $value !== '';
+            }));
         }
         return $result;
+    }
+
+    /**
+     * Counts words in a string
+     * @since 2.0.8
+     *
+     * @param string $string
+     * @return int
+     */
+    public static function countWords($string)
+    {
+        return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
     }
 }

@@ -25,7 +25,7 @@ use yii\web\Response;
  * cache the whole page for maximum 60 seconds or until the count of entries in the post table changes.
  * It also stores different versions of the page depending on the application language.
  *
- * ~~~
+ * ```php
  * public function behaviors()
  * {
  *     return [
@@ -43,7 +43,7 @@ use yii\web\Response;
  *         ],
  *     ];
  * }
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -51,7 +51,7 @@ use yii\web\Response;
 class PageCache extends ActionFilter
 {
     /**
-     * @var boolean whether the content being cached should be differentiated according to the route.
+     * @var bool whether the content being cached should be differentiated according to the route.
      * A route consists of the requested controller ID and action ID. Defaults to true.
      */
     public $varyByRoute = true;
@@ -63,7 +63,7 @@ class PageCache extends ActionFilter
      */
     public $cache = 'cache';
     /**
-     * @var integer number of seconds that the data can remain valid in cache.
+     * @var int number of seconds that the data can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      */
     public $duration = 60;
@@ -92,15 +92,15 @@ class PageCache extends ActionFilter
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ~~~
+     * ```php
      * [
      *     Yii::$app->language,
      * ]
-     * ~~~
+     * ```
      */
     public $variations;
     /**
-     * @var boolean whether to enable the page cache. You may use this property to turn on and off
+     * @var bool whether to enable the page cache. You may use this property to turn on and off
      * the page cache according to specific setting (e.g. enable page cache only for GET requests).
      */
     public $enabled = true;
@@ -110,14 +110,14 @@ class PageCache extends ActionFilter
      */
     public $view;
     /**
-     * @var boolean|array a boolean value indicating whether to cache all cookies, or an array of
+     * @var bool|array a boolean value indicating whether to cache all cookies, or an array of
      * cookie names indicating which cookies can be cached. Be very careful with caching cookies, because
      * it may leak sensitive or private data stored in cookies to unwanted users.
      * @since 2.0.4
      */
     public $cacheCookies = false;
     /**
-     * @var boolean|array a boolean value indicating whether to cache all HTTP headers, or an array of
+     * @var bool|array a boolean value indicating whether to cache all HTTP headers, or an array of
      * HTTP header names (case-insensitive) indicating which HTTP headers can be cached.
      * Note if your HTTP headers contain sensitive information, you should white-list which headers can be cached.
      * @since 2.0.4
@@ -140,7 +140,7 @@ class PageCache extends ActionFilter
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
      * @param Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
@@ -164,6 +164,7 @@ class PageCache extends ActionFilter
         ob_implicit_flush(false);
         if ($this->view->beginCache($id, $properties)) {
             $response->on(Response::EVENT_AFTER_SEND, [$this, 'cacheResponse']);
+            Yii::trace('Valid page content is not found in the cache.', __METHOD__);
             return true;
         } else {
             $data = $this->cache->get($this->calculateCacheKey());
@@ -171,6 +172,7 @@ class PageCache extends ActionFilter
                 $this->restoreResponse($response, $data);
             }
             $response->content = ob_get_clean();
+            Yii::trace('Valid page content is found in the cache.', __METHOD__);
             return false;
         }
     }

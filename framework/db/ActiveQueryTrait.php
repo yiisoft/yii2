@@ -25,7 +25,7 @@ trait ActiveQueryTrait
      */
     public $with;
     /**
-     * @var boolean whether to return each record as an array. If false (default), an object
+     * @var bool whether to return each record as an array. If false (default), an object
      * of [[modelClass]] will be created to represent each record.
      */
     public $asArray;
@@ -33,7 +33,7 @@ trait ActiveQueryTrait
 
     /**
      * Sets the [[asArray]] property.
-     * @param boolean $value whether to return the query results in terms of arrays instead of Active Records.
+     * @param bool $value whether to return the query results in terms of arrays instead of Active Records.
      * @return $this the query object itself
      */
     public function asArray($value = true)
@@ -55,27 +55,27 @@ trait ActiveQueryTrait
      *
      * The following are some usage examples:
      *
-     * ~~~
+     * ```php
      * // find customers together with their orders and country
      * Customer::find()->with('orders', 'country')->all();
      * // find customers together with their orders and the orders' shipping address
      * Customer::find()->with('orders.address')->all();
      * // find customers together with their country and orders of status 1
      * Customer::find()->with([
-     *     'orders' => function ($query) {
+     *     'orders' => function (\yii\db\ActiveQuery $query) {
      *         $query->andWhere('status = 1');
      *     },
      *     'country',
      * ])->all();
-     * ~~~
+     * ```
      *
      * You can call `with()` multiple times. Each call will add relations to the existing ones.
      * For example, the following two statements are equivalent:
      *
-     * ~~~
+     * ```php
      * Customer::find()->with('orders', 'country')->all();
      * Customer::find()->with('orders')->with('country')->all();
-     * ~~~
+     * ```
      *
      * @return $this the query object itself
      */
@@ -107,8 +107,9 @@ trait ActiveQueryTrait
      * Converts found rows into model instances
      * @param array $rows
      * @return array|ActiveRecord[]
+     * @since 2.0.11
      */
-    private function createModels($rows)
+    protected function createModels($rows)
     {
         $models = [];
         if ($this->asArray) {
@@ -159,7 +160,10 @@ trait ActiveQueryTrait
      */
     public function findWith($with, &$models)
     {
-        $primaryModel = new $this->modelClass;
+        $primaryModel = reset($models);
+        if (!$primaryModel instanceof ActiveRecordInterface) {
+            $primaryModel = new $this->modelClass;
+        }
         $relations = $this->normalizeRelations($primaryModel, $with);
         /* @var $relation ActiveQuery */
         foreach ($relations as $name => $relation) {

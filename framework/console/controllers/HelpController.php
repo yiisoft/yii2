@@ -23,9 +23,9 @@ use yii\helpers\Inflector;
  *
  * This command can be used as follows on command line:
  *
- * ~~~
+ * ```
  * yii help [command name]
- * ~~~
+ * ```
  *
  * In the above, if the command name is not provided, all
  * available commands will be displayed.
@@ -43,7 +43,7 @@ class HelpController extends Controller
      *
      * @param string $command The name of the command to show help about.
      * If not provided, all available commands will be displayed.
-     * @return integer the exit status
+     * @return int the exit status
      * @throws Exception if the command for help is unknown
      */
     public function actionIndex($command = null)
@@ -90,7 +90,7 @@ class HelpController extends Controller
             $description = '';
 
             $result = Yii::$app->createController($command);
-            if ($result !== false) {
+            if ($result !== false && $result[0] instanceof Controller) {
                 list($controller, $actionID) = $result;
                 /** @var Controller $controller */
                 $description = $controller->getHelpSummary();
@@ -129,7 +129,7 @@ class HelpController extends Controller
      */
     protected function getModuleCommands($module)
     {
-        $prefix = $module instanceof Application ? '' : $module->getUniqueID() . '/';
+        $prefix = $module instanceof Application ? '' : $module->getUniqueId() . '/';
 
         $commands = [];
         foreach (array_keys($module->controllerMap) as $id) {
@@ -182,13 +182,13 @@ class HelpController extends Controller
     protected function getDefaultHelp()
     {
         $commands = $this->getCommandDescriptions();
-        $this->stdout("\nThis is Yii version " . \Yii::getVersion() . ".\n");
+        $this->stdout($this->getDefaultHelpHeader());
         if (!empty($commands)) {
             $this->stdout("\nThe following commands are available:\n\n", Console::BOLD);
             $len = 0;
             foreach ($commands as $command => $description) {
                 $result = Yii::$app->createController($command);
-                if ($result !== false) {
+                if ($result !== false && $result[0] instanceof Controller) {
                     /** @var $controller Controller */
                     list($controller, $actionID) = $result;
                     $actions = $this->getActions($controller);
@@ -215,7 +215,7 @@ class HelpController extends Controller
                 $this->stdout("\n");
 
                 $result = Yii::$app->createController($command);
-                if ($result !== false) {
+                if ($result !== false && $result[0] instanceof Controller) {
                     list($controller, $actionID) = $result;
                     $actions = $this->getActions($controller);
                     if (!empty($actions)) {
@@ -308,7 +308,7 @@ class HelpController extends Controller
         }
 
         $description = $controller->getActionHelp($action);
-        if ($description != '') {
+        if ($description !== '') {
             $this->stdout("\nDESCRIPTION\n", Console::BOLD);
             $this->stdout("\n$description\n\n");
         }
@@ -358,7 +358,7 @@ class HelpController extends Controller
             $this->stdout("\nOPTIONS\n\n", Console::BOLD);
             foreach ($options as $name => $option) {
                 $this->stdout($this->formatOptionHelp(
-                        $this->ansiFormat('--' . $name, Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
+                        $this->ansiFormat('--' . $name . $this->formatOptionAliases($controller, $name), Console::FG_RED, empty($option['required']) ? Console::FG_RED : Console::BOLD),
                         !empty($option['required']),
                         $option['type'],
                         $option['default'],
@@ -370,7 +370,7 @@ class HelpController extends Controller
     /**
      * Generates a well-formed string for an argument or option.
      * @param string $name the name of the argument or option
-     * @param boolean $required whether the argument is required
+     * @param bool $required whether the argument is required
      * @param string $type the type of the option or argument
      * @param mixed $defaultValue the default value of the option or argument
      * @param string $comment comment about the option or argument
@@ -397,7 +397,7 @@ class HelpController extends Controller
             } else {
                 $defaultValue = var_export($defaultValue, true);
             }
-            $doc = "$type (defaults to " . $defaultValue . ")";
+            $doc = "$type (defaults to $defaultValue)";
         } else {
             $doc = $type;
         }
@@ -405,7 +405,7 @@ class HelpController extends Controller
         if ($doc === '') {
             $doc = $comment;
         } elseif ($comment !== '') {
-            $doc .= "\n" . preg_replace("/^/m", "  ", $comment);
+            $doc .= "\n" . preg_replace('/^/m', '  ', $comment);
         }
 
         $name = $required ? "$name (required)" : $name;
@@ -414,10 +414,37 @@ class HelpController extends Controller
     }
 
     /**
+     * @param Controller $controller the controller instance
+     * @param string $option the option name
+     * @return string the formatted string for the alias argument or option
+     * @since 2.0.8
+     */
+    protected function formatOptionAliases($controller, $option)
+    {
+        $aliases = $controller->optionAliases();
+        foreach ($aliases as $name => $value) {
+            if ($value === $option) {
+                return ', -' . $name;
+            }
+        }
+        return '';
+    }
+
+    /**
      * @return string the name of the cli script currently running.
      */
     protected function getScriptName()
     {
         return basename(Yii::$app->request->scriptFile);
+    }
+
+    /**
+     * Return a default help header.
+     * @return string default help header.
+     * @since 2.0.11
+     */
+    protected function getDefaultHelpHeader()
+    {
+        return "\nThis is Yii version " . \Yii::getVersion() . ".\n";
     }
 }

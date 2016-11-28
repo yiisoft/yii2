@@ -33,7 +33,7 @@ The above configuration states that when in [development environment](concept-co
 the application should include a module named `gii`, which is of class [[yii\gii\Module]].
 
 If you check the [entry script](structure-entry-scripts.md) `web/index.php` of your application, you will
-find the following line, which essentially makes `YII_ENV_DEV` to be true.
+find the following line, which essentially makes `YII_ENV_DEV` to be `true`.
 
 ```php
 defined('YII_ENV') or define('YII_ENV', 'dev');
@@ -107,7 +107,7 @@ Trying it Out <span id="trying-it-out"></span>
 To see how it works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 You will see a data grid showing the countries from the database table. You may sort the grid,

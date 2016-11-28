@@ -271,7 +271,7 @@ $resultado = Cliente::getDb()->cache(function ($bd) {
 Cache de consulta tem três opções configuráveis globalmente através de [[yii\db\Connection]]:
 
 * [[yii\db\Connection::enableQueryCache|enableQueryCache]]: Configura se o cache de consulta está habilitado.
-  O padrão é true. Observe que para ter efetivamente o cache de consulta habilitado, você também deve ter um cache válido como especificado por [[yii\db\Connection::queryCache|queryCache]].
+  O padrão é `true`. Observe que para ter efetivamente o cache de consulta habilitado, você também deve ter um cache válido como especificado por [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: representa o número de segundos que o resultado de uma  
   consulta pode se manter válido em cache. Você pode usar 0 para indicar que o resultado da consulta deve permanecer no
   cache indefinidamente. Este é o valor padrão usado quando [[yii\db\Connection::cache()]] é chamado sem nenhuma

@@ -47,11 +47,11 @@ class Schema extends \yii\db\Schema
         'datetime' => self::TYPE_DATETIME,
         'time' => self::TYPE_TIME,
         // character strings
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
         // unicode character strings
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nvarchar' => self::TYPE_STRING,
         'ntext' => self::TYPE_TEXT,
         // binary strings
@@ -152,13 +152,19 @@ class Schema extends \yii\db\Schema
     {
         $parts = explode('.', str_replace(['[', ']'], '', $name));
         $partCount = count($parts);
-        if ($partCount == 3) {
+        if ($partCount === 4) {
+            // server name, catalog name, schema name and table name passed
+            $table->catalogName = $parts[1];
+            $table->schemaName = $parts[2];
+            $table->name = $parts[3];
+            $table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
+        } elseif ($partCount === 3) {
             // catalog name, schema name and table name passed
             $table->catalogName = $parts[0];
             $table->schemaName = $parts[1];
             $table->name = $parts[2];
             $table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
-        } elseif ($partCount == 2) {
+        } elseif ($partCount === 2) {
             // only schema name and table name passed
             $table->schemaName = $parts[0];
             $table->name = $parts[1];
@@ -180,7 +186,7 @@ class Schema extends \yii\db\Schema
         $column = $this->createColumnSchema();
 
         $column->name = $info['column_name'];
-        $column->allowNull = $info['is_nullable'] == 'YES';
+        $column->allowNull = $info['is_nullable'] === 'YES';
         $column->dbType = $info['data_type'];
         $column->enumValues = []; // mssql has only vague equivalents to enum
         $column->isPrimaryKey = null; // primary key will be determined in findColumns() method
@@ -214,7 +220,7 @@ class Schema extends \yii\db\Schema
 
         $column->phpType = $this->getColumnPhpType($column);
 
-        if ($info['column_default'] == '(NULL)') {
+        if ($info['column_default'] === '(NULL)') {
             $info['column_default'] = null;
         }
         if (!$column->isPrimaryKey && ($column->type !== 'timestamp' || $info['column_default'] !== 'CURRENT_TIMESTAMP')) {
@@ -227,7 +233,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -407,12 +413,12 @@ SQL;
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.

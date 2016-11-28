@@ -17,12 +17,12 @@ use yii\base\InvalidConfigException;
  * To define your own URL parsing and creation logic you can extend from this class
  * and add it to [[UrlManager::rules]] like this:
  *
- * ~~~
+ * ```php
  * 'rules' => [
  *     ['class' => 'MyUrlRule', 'pattern' => '...', 'route' => 'site/index', ...],
  *     // ...
  * ]
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -43,8 +43,10 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $name;
     /**
+     * On the rule initialization, the [[pattern]] matching parameters names will be replaced with [[placeholders]].
      * @var string the pattern used to parse and create the path info part of a URL.
      * @see host
+     * @see placeholders
      */
     public $pattern;
     /**
@@ -76,7 +78,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $verb;
     /**
-     * @var integer a value indicating if this rule should be used for both request parsing and URL creation,
+     * @var int a value indicating if this rule should be used for both request parsing and URL creation,
      * parsing only, or creation only.
      * If not set or 0, it means the rule is both request parsing and URL creation.
      * If it is [[PARSING_ONLY]], the rule is for request parsing only.
@@ -84,9 +86,28 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $mode;
     /**
-     * @var boolean a value indicating if parameters should be url encoded.
+     * @var bool a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
+    /**
+     * @var UrlNormalizer|array|false|null the configuration for [[UrlNormalizer]] used by this rule.
+     * If `null`, [[UrlManager::normalizer]] will be used, if `false`, normalization will be skipped
+     * for this rule.
+     * @since 2.0.10
+     */
+    public $normalizer;
+
+    /**
+     * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
+     * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.
+     * This array contains relations between the original parameters names and their placeholders.
+     * The array keys are the placeholders and the values are the original names.
+     *
+     * @see parseRequest()
+     * @see createUrl()
+     * @since 2.0.7
+     */
+    protected $placeholders = [];
 
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -116,6 +137,13 @@ class UrlRule extends Object implements UrlRuleInterface
         }
         if ($this->route === null) {
             throw new InvalidConfigException('UrlRule::route must be set.');
+        }
+        if (is_array($this->normalizer)) {
+            $normalizerConfig = array_merge(['class' => UrlNormalizer::className()], $this->normalizer);
+            $this->normalizer = Yii::createObject($normalizerConfig);
+        }
+        if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {
+            throw new InvalidConfigException('Invalid config for UrlRule::normalizer.');
         }
         if ($this->verb !== null) {
             if (is_array($this->verb)) {
@@ -151,7 +179,7 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->pattern = '/' . $this->pattern . '/';
         }
 
-        if (strpos($this->route, '<') !== false && preg_match_all('/<(\w+)>/', $this->route, $matches)) {
+        if (strpos($this->route, '<') !== false && preg_match_all('/<([\w._-]+)>/', $this->route, $matches)) {
             foreach ($matches[1] as $name) {
                 $this->_routeParams[$name] = "<$name>";
             }
@@ -166,31 +194,34 @@ class UrlRule extends Object implements UrlRuleInterface
             '(' => '\\(',
             ')' => '\\)',
         ];
+
         $tr2 = [];
-        if (preg_match_all('/<(\w+):?([^>]+)?>/', $this->pattern, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
+        if (preg_match_all('/<([\w._-]+):?([^>]+)?>/', $this->pattern, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $name = $match[1][0];
                 $pattern = isset($match[2][0]) ? $match[2][0] : '[^\/]+';
+                $placeholder = 'a' . hash('crc32b', $name); // placeholder must begin with a letter
+                $this->placeholders[$placeholder] = $name;
                 if (array_key_exists($name, $this->defaults)) {
                     $length = strlen($match[0][0]);
                     $offset = $match[0][1];
                     if ($offset > 1 && $this->pattern[$offset - 1] === '/' && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')) {
-                        $tr["/<$name>"] = "(/(?P<$name>$pattern))?";
+                        $tr["/<$name>"] = "(/(?P<$placeholder>$pattern))?";
                     } else {
-                        $tr["<$name>"] = "(?P<$name>$pattern)?";
+                        $tr["<$name>"] = "(?P<$placeholder>$pattern)?";
                     }
                 } else {
-                    $tr["<$name>"] = "(?P<$name>$pattern)";
+                    $tr["<$name>"] = "(?P<$placeholder>$pattern)";
                 }
                 if (isset($this->_routeParams[$name])) {
-                    $tr2["<$name>"] = "(?P<$name>$pattern)";
+                    $tr2["<$name>"] = "(?P<$placeholder>$pattern)";
                 } else {
                     $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
                 }
             }
         }
 
-        $this->_template = preg_replace('/<(\w+):?([^>]+)?>/', '<$1>', $this->pattern);
+        $this->_template = preg_replace('/<([\w._-]+):?([^>]+)?>/', '<$1>', $this->pattern);
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
         if (!empty($this->_routeParams)) {
@@ -199,11 +230,35 @@ class UrlRule extends Object implements UrlRuleInterface
     }
 
     /**
+     * @param UrlManager $manager the URL manager
+     * @return UrlNormalizer|null
+     * @since 2.0.10
+     */
+    protected function getNormalizer($manager)
+    {
+        if ($this->normalizer === null) {
+            return $manager->normalizer;
+        } else {
+            return $this->normalizer;
+        }
+    }
+
+    /**
+     * @param UrlManager $manager the URL manager
+     * @return bool
+     * @since 2.0.10
+     */
+    protected function hasNormalizer($manager)
+    {
+        return $this->getNormalizer($manager) instanceof UrlNormalizer;
+    }
+
+    /**
      * Parses the given request and returns the corresponding route and parameters.
      * @param UrlManager $manager the URL manager
      * @param Request $request the request component
-     * @return array|boolean the parsing result. The route and the parameters are returned as an array.
-     * If false, it means this rule cannot be used to parse this path info.
+     * @return array|bool the parsing result. The route and the parameters are returned as an array.
+     * If `false`, it means this rule cannot be used to parse this path info.
      */
     public function parseRequest($manager, $request)
     {
@@ -215,8 +270,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
+        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
-        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
+        $normalized = false;
+        if ($this->hasNormalizer($manager)) {
+            $pathInfo = $this->getNormalizer($manager)->normalizePathInfo($pathInfo, $suffix, $normalized);
+        }
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
             if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
@@ -237,6 +296,8 @@ class UrlRule extends Object implements UrlRuleInterface
         if (!preg_match($this->pattern, $pathInfo, $matches)) {
             return false;
         }
+        $matches = $this->substitutePlaceholderNames($matches);
+
         foreach ($this->defaults as $name => $value) {
             if (!isset($matches[$name]) || $matches[$name] === '') {
                 $matches[$name] = $value;
@@ -260,7 +321,12 @@ class UrlRule extends Object implements UrlRuleInterface
 
         Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
 
-        return [$route, $params];
+        if ($normalized) {
+            // pathInfo was changed by normalizer - we need also normalize route
+            return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
+        } else {
+            return [$route, $params];
+        }
     }
 
     /**
@@ -268,7 +334,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param UrlManager $manager the URL manager
      * @param string $route the route. It should not have slashes at the beginning or the end.
      * @param array $params the parameters
-     * @return string|boolean the created URL, or false if this rule cannot be used for creating this URL.
+     * @return string|bool the created URL, or `false` if this rule cannot be used for creating this URL.
      */
     public function createUrl($manager, $route, $params)
     {
@@ -281,6 +347,7 @@ class UrlRule extends Object implements UrlRuleInterface
         // match the route part first
         if ($route !== $this->route) {
             if ($this->_routeRule !== null && preg_match($this->_routeRule, $route, $matches)) {
+                $matches = $this->substitutePlaceholderNames($matches);
                 foreach ($this->_routeParams as $name => $token) {
                     if (isset($this->defaults[$name]) && strcmp($this->defaults[$name], $matches[$name]) === 0) {
                         $tr[$token] = '';
@@ -351,5 +418,26 @@ class UrlRule extends Object implements UrlRuleInterface
     protected function getParamRules()
     {
         return $this->_paramRules;
+    }
+
+    /**
+     * Iterates over [[placeholders]] and checks whether each placeholder exists as a key in $matches array.
+     * When found - replaces this placeholder key with a appropriate name of matching parameter.
+     * Used in [[parseRequest()]], [[createUrl()]].
+     *
+     * @param array $matches result of `preg_match()` call
+     * @return array input array with replaced placeholder keys
+     * @see placeholders
+     * @since 2.0.7
+     */
+    protected function substitutePlaceholderNames(array $matches)
+    {
+        foreach ($this->placeholders as $placeholder => $name) {
+            if (isset($matches[$placeholder])) {
+                $matches[$name] = $matches[$placeholder];
+                unset($matches[$placeholder]);
+            }
+        }
+        return $matches;
     }
 }

@@ -67,6 +67,21 @@ use yii\helpers\Html;
 [[yii\base\Widget::widget()]] がウィジェットのレンダリング結果を返すのとは違って、[[yii\base\Widget::begin()]] メソッドがウィジェットのインスタンスを返すことに注意してください。
 返されたウィジェットのインスタンスを使って、ウィジェットのコンテントを構築することが出来ます。
 
+> Note: いくつかのウィジェットは、[[yii\base\Widget::end()]] が呼ばれるときに内包されるコンテンツを調整するため、[出力バッファリング](http://php.net/manual/ja/book.outcontrol.php) を使用します。
+> この理由から、[[yii\base\Widget::begin()]] と [[yii\base\Widget::end()]] の呼び出しは、同じビューファイルの中で発生するものと想定されています。
+> この規則に従わない場合は、予期しない出力結果が生じ得ます。
+
+
+### グローバルなデフォルトを構成する
+
+あるタイプのウィジェットのグローバルなデフォルトを DI コンテナによって構成することが出来ます。
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
+```
+
+詳細については [依存注入コンテナのガイドの "実際の使いかた" の節](concept-di-container.md#practical-usage) を参照してください。
+
 
 ## ウィジェットを作成する <span id="creating-widgets"></span>
 
@@ -137,7 +152,7 @@ class HelloWidget extends Widget
 
 ご覧のように、`init()` の中で PHP の出力バッファが開始され、`init()` と `run()` の呼び出しの間の全ての出力がキャプチャされ、`run()` の中で処理されて返されます。
 
-> Info|情報: [[yii\base\Widget::begin()]] を呼ぶと、ウィジェットの新しいインスタンスが作成され、ウィジェットのコンストラクタの最後で `init()` メソッドが呼ばれます。
+> Info: [[yii\base\Widget::begin()]] を呼ぶと、ウィジェットの新しいインスタンスが作成され、ウィジェットのコンストラクタの最後で `init()` メソッドが呼ばれます。
 [[yii\base\Widget::end()]] を呼ぶと、`run()` メソッドが呼ばれて、その返り値が `end()` によって echo されます。
 
 次のコードは、この `HelloWidget` の新しい変種をどのように使うかを示すものです:

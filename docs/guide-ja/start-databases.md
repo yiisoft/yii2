@@ -32,16 +32,16 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `country` VALUES ('AU','Australia',18886000);
-INSERT INTO `country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `country` VALUES ('CA','Canada',1147000);
-INSERT INTO `country` VALUES ('CN','China',1277558000);
-INSERT INTO `country` VALUES ('DE','Germany',82164700);
-INSERT INTO `country` VALUES ('FR','France',59225700);
-INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `country` VALUES ('IN','India',1013662000);
-INSERT INTO `country` VALUES ('RU','Russia',146934000);
-INSERT INTO `country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
 この時点で、あなたは `yii2basic` という名前のデータベースを持ち、その中に三つのカラムを持つ `country` というテーブルがあり、`country` テーブルは 10 行のデータを持っている、ということになります。
@@ -73,9 +73,14 @@ return [
 
 上記のようにして構成された DB 接続は、アプリケーションコードの中で `Yii::$app->db` という式でアクセスすることが出来ます。
 
-> Info|情報: `config/db.php` は、メインのアプリケーション構成情報ファイルである `config/web.php` によってインクルードされます。
+> Info: `config/db.php` は、メインのアプリケーション構成情報ファイルである `config/web.php` によってインクルードされます。
   この `config/web.php` が [アプリケーション](structure-applications.md) インスタンスが初期化される仕方を指定するものです。
   詳しい情報については、[構成情報](concept-configurations.md) の節を参照してください。
+Yii がサポートを内蔵していないデータベースを扱う必要がある場合は、以下のエクステンションの利用を検討してください。
+
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
 
 
 アクティブレコードを作成する <span id="creating-active-record"></span>
@@ -98,7 +103,7 @@ class Country extends ActiveRecord
 `Country` クラスは [[yii\db\ActiveRecord]] を拡張しています。この中には一つもコードを書く必要はありません。
 単に上記のコードだけで、Yii は関連付けられたテーブル名をクラス名から推測します。
 
-> Info|情報: クラス名とテーブル名を直接に合致させることが出来ない場合は、[[yii\db\ActiveRecord::tableName()]] メソッドをオーバーライドして、関連づけられたテーブル名を明示的に指定することが出来ます。
+> Info: クラス名とテーブル名を直接に合致させることが出来ない場合は、[[yii\db\ActiveRecord::tableName()]] メソッドをオーバーライドして、関連づけられたテーブル名を明示的に指定することが出来ます。
 
 `Country` クラスを使うことによって、以下のコード断片で示すように、`country` テーブルの中のデータを簡単に操作することが出来ます。
 
@@ -119,7 +124,7 @@ $country->name = 'U.S.A.';
 $country->save();
 ```
 
-> Info|情報: アクティブレコードは、オブジェクト指向の流儀でデータベースのデータにアクセスし、操作する強力な方法です。
+> Info: アクティブレコードは、オブジェクト指向の流儀でデータベースのデータにアクセスし、操作する強力な方法です。
 [アクティブレコード](db-active-record.md) の節で、詳細な情報を得ることが出来ます。
 もう一つの方法として、[データアクセスオブジェクト](db-dao.md) と呼ばれる、より低レベルなデータアクセス方法を使ってデータベースを操作することも出来ます。
 
@@ -216,7 +221,7 @@ use yii\widgets\LinkPager;
 上記のコード全てがどのように動作するかを見るために、ブラウザで下記の URL をアクセスします。
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![国リスト](images/start-country-list.png)
@@ -227,7 +232,7 @@ http://hostname/index.php?r=country/index
 注意深く観察すると、ブラウザの URL も次のように変ったことに気付くでしょう。
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 舞台裏では、[[yii\data\Pagination|Pagination]] が、データセットをページ付けするのに必要な全ての機能を提供しています。

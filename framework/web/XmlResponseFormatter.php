@@ -44,6 +44,12 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      * @var string the name of the elements that represent the array elements with numeric keys.
      */
     public $itemTag = 'item';
+    /**
+     * @var bool whether to interpret objects implementing the [[\Traversable]] interface as arrays.
+     * Defaults to `true`.
+     * @since 2.0.7
+     */
+    public $useTraversableAsArray = true;
 
 
     /**
@@ -72,7 +78,23 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     protected function buildXml($element, $data)
     {
-        if (is_object($data)) {
+        if (is_array($data) ||
+            ($data instanceof \Traversable && $this->useTraversableAsArray && !$data instanceof Arrayable)
+        ) {
+            foreach ($data as $name => $value) {
+                if (is_int($name) && is_object($value)) {
+                    $this->buildXml($element, $value);
+                } elseif (is_array($value) || is_object($value)) {
+                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
+                    $element->appendChild($child);
+                    $this->buildXml($child, $value);
+                } else {
+                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
+                    $element->appendChild($child);
+                    $child->appendChild(new DOMText($this->formatScalarValue($value)));
+                }
+            }
+        } elseif (is_object($data)) {
             $child = new DOMElement(StringHelper::basename(get_class($data)));
             $element->appendChild($child);
             if ($data instanceof Arrayable) {
@@ -84,22 +106,28 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 }
                 $this->buildXml($child, $array);
             }
-        } elseif (is_array($data)) {
-            foreach ($data as $name => $value) {
-                if (is_int($name) && is_object($value)) {
-                    $this->buildXml($element, $value);
-                } elseif (is_array($value) || is_object($value)) {
-                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
-                    $element->appendChild($child);
-                    $this->buildXml($child, $value);
-                } else {
-                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
-                    $element->appendChild($child);
-                    $child->appendChild(new DOMText((string) $value));
-                }
-            }
         } else {
-            $element->appendChild(new DOMText((string) $data));
+            $element->appendChild(new DOMText($this->formatScalarValue($data)));
         }
+    }
+
+    /**
+     * Formats scalar value to use in XML text node
+     *
+     * @param int|string|bool $value
+     * @return string
+     * @since 2.0.11
+     */
+    protected function formatScalarValue($value)
+    {
+        if ($value === true) {
+            return 'true';
+        }
+
+        if ($value === false) {
+            return 'false';
+        }
+
+        return (string) $value;
     }
 }

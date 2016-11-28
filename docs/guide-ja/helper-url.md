@@ -45,14 +45,14 @@ $url = Url::toRoute(['product/view', 'id' => 42]);
 配列の形式は、以下のようにしなければなりません。
 
 ```php
-// /index.php?r=site/index&param1=value1&param2=value2 を生成
+// /index.php?r=site%2Findex&param1=value1&param2=value2 を生成
 ['site/index', 'param1' => 'value1', 'param2' => 'value2']
 ```
 
 アンカーの付いた URL を生成したい場合は、`#` パラメータを持つ配列を使うことが出来ます。例えば、
 
 ```php
-// /index.php?r=site/index&param1=value1#name を生成
+// /index.php?r=site%2Findex&param1=value1#name を生成
 ['site/index', 'param1' => 'value1', '#' => 'name']
 ```
 
@@ -70,19 +70,19 @@ $url = Url::toRoute(['product/view', 'id' => 42]);
 以下に、このメソッドの使用例をいくつか挙げます。
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::toRoute('site/index');
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::toRoute(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     エイリアス "@postEdit" は "post/edit" と定義されていると仮定
+// /index.php?r=post%2Fedit&id=100     エイリアス "@postEdit" は "post/edit" と定義されていると仮定
 echo Url::toRoute(['@postEdit', 'id' => 100]);
 
-// http://www.example.com/index.php?r=site/index
+// http://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', true);
 
-// https://www.example.com/index.php?r=site/index
+// https://www.example.com/index.php?r=site%2Findex
 echo Url::toRoute('site/index', 'https');
 ```
 
@@ -104,13 +104,13 @@ echo Url::toRoute('site/index', 'https');
 下記にいくつかの用例を挙げます。
 
 ```php
-// /index.php?r=site/index
+// /index.php?r=site%2Findex
 echo Url::to(['site/index']);
 
-// /index.php?r=site/index&src=ref1#name
+// /index.php?r=site%2Findex&src=ref1#name
 echo Url::to(['site/index', 'src' => 'ref1', '#' => 'name']);
 
-// /index.php?r=post/edit&id=100     エイリアス "@postEdit" が "post/edit" と定義されていると仮定
+// /index.php?r=post%2Fedit&id=100     エイリアス "@postEdit" が "post/edit" と定義されていると仮定
 echo Url::to(['@postEdit', 'id' => 100]);
 
 // 現在リクエストされている URL
@@ -136,12 +136,12 @@ echo Url::to('@web/images/logo.gif', 'https');
 ```php
 // $_GET が ['id' => 123, 'src' => 'google'] であり、現在のルートが "post/view" であると仮定
 
-// /index.php?r=post/view&id=123&src=google
+// /index.php?r=post%2Fview&id=123&src=google
 echo Url::current();
 
-// /index.php?r=post/view&id=123
+// /index.php?r=post%2Fview&id=123
 echo Url::current(['src' => null]);
-// /index.php?r=post/view&id=100&src=google
+// /index.php?r=post%2Fview&id=100&src=google
 echo Url::current(['id' => 100]);
 ```
 

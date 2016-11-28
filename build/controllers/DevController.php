@@ -47,10 +47,13 @@ class DevController extends Controller
         'elasticsearch' => 'git@github.com:yiisoft/yii2-elasticsearch.git',
         'faker' => 'git@github.com:yiisoft/yii2-faker.git',
         'gii' => 'git@github.com:yiisoft/yii2-gii.git',
+        'httpclient' => 'git@github.com:yiisoft/yii2-httpclient.git',
         'imagine' => 'git@github.com:yiisoft/yii2-imagine.git',
         'jui' => 'git@github.com:yiisoft/yii2-jui.git',
         'mongodb' => 'git@github.com:yiisoft/yii2-mongodb.git',
+        'queue' => 'git@github.com:yiisoft/yii2-queue.git',
         'redis' => 'git@github.com:yiisoft/yii2-redis.git',
+        'shell' => 'git@github.com:yiisoft/yii2-shell.git',
         'smarty' => 'git@github.com:yiisoft/yii2-smarty.git',
         'sphinx' => 'git@github.com:yiisoft/yii2-sphinx.git',
         'swiftmailer' => 'git@github.com:yiisoft/yii2-swiftmailer.git',
@@ -258,7 +261,7 @@ class DevController extends Controller
     }
 
     /**
-     * Creates symlinks to freamework and extension sources for the application
+     * Creates symlinks to framework and extension sources for the application
      * @param string $dir application directory
      * @param string $base Yii sources base directory
      *

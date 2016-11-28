@@ -88,7 +88,100 @@ class RequestTest extends TestCase
 
         $token = $request->getCsrfToken();
 
+        // accept any value if CSRF validation is disabled
+        $request->enableCsrfValidation = false;
         $this->assertTrue($request->validateCsrfToken($token));
+        $this->assertTrue($request->validateCsrfToken($token . 'a'));
+        $this->assertTrue($request->validateCsrfToken([]));
+        $this->assertTrue($request->validateCsrfToken([$token]));
+        $this->assertTrue($request->validateCsrfToken(0));
+        $this->assertTrue($request->validateCsrfToken(null));
+
+        // enable validation
+        $request->enableCsrfValidation = true;
+
+        // accept any value on GET request
+        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+            $_POST[$request->methodParam] = $method;
+            $this->assertTrue($request->validateCsrfToken($token));
+            $this->assertTrue($request->validateCsrfToken($token . 'a'));
+            $this->assertTrue($request->validateCsrfToken([]));
+            $this->assertTrue($request->validateCsrfToken([$token]));
+            $this->assertTrue($request->validateCsrfToken(0));
+            $this->assertTrue($request->validateCsrfToken(null));
+        }
+
+        // only accept valid token on POST
+        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+            $_POST[$request->methodParam] = $method;
+            $this->assertTrue($request->validateCsrfToken($token));
+            $this->assertFalse($request->validateCsrfToken($token . 'a'));
+            $this->assertFalse($request->validateCsrfToken([]));
+            $this->assertFalse($request->validateCsrfToken([$token]));
+            $this->assertFalse($request->validateCsrfToken(0));
+            $this->assertFalse($request->validateCsrfToken(null));
+        }
+    }
+
+    /**
+     * test CSRF token validation by POST param
+     */
+    public function testCsrfTokenPost()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->enableCsrfCookie = false;
+
+        $token = $request->getCsrfToken();
+
+        // accept no value on GET request
+        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+            $_POST[$request->methodParam] = $method;
+            $this->assertTrue($request->validateCsrfToken());
+        }
+
+        // only accept valid token on POST
+        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+            $_POST[$request->methodParam] = $method;
+            $request->setBodyParams([]);
+            $this->assertFalse($request->validateCsrfToken());
+            $request->setBodyParams([$request->csrfParam => $token]);
+            $this->assertTrue($request->validateCsrfToken());
+        }
+
+    }
+
+    /**
+     * test CSRF token validation by POST param
+     */
+    public function testCsrfTokenHeader()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->enableCsrfCookie = false;
+
+        $token = $request->getCsrfToken();
+
+        // accept no value on GET request
+        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+            $_POST[$request->methodParam] = $method;
+            $this->assertTrue($request->validateCsrfToken());
+        }
+
+        // only accept valid token on POST
+        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+            $_POST[$request->methodParam] = $method;
+            $request->setBodyParams([]);
+            //$request->headers->remove(Request::CSRF_HEADER);
+            unset($_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))]);
+            $this->assertFalse($request->validateCsrfToken());
+            //$request->headers->add(Request::CSRF_HEADER, $token);
+            $_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))] = $token;
+            $this->assertTrue($request->validateCsrfToken());
+        }
+
     }
 
     public function testResolve()
@@ -145,5 +238,62 @@ class RequestTest extends TestCase
         $result = $request->resolve();
         $this->assertEquals(['post/view', ['id' => 21, 'token' => 'secret']], $result);
         $this->assertEquals($_GET, ['id' => 63]);
+    }
+
+    public function testGetHostInfo()
+    {
+        $request = new Request();
+
+        unset($_SERVER['SERVER_NAME'], $_SERVER['HTTP_HOST']);
+        $this->assertSame(null, $request->getHostInfo());
+        $this->assertSame(null, $request->getHostName());
+
+        $request->setHostInfo('http://servername.com:80');
+        $this->assertSame('http://servername.com:80', $request->getHostInfo());
+        $this->assertSame('servername.com', $request->getHostName());
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testGetScriptFileWithEmptyServer()
+    {
+        $request = new Request();
+        $_SERVER = [];
+
+        $request->getScriptFile();
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testGetScriptUrlWithEmptyServer()
+    {
+        $request = new Request();
+        $_SERVER = [];
+
+        $request->getScriptUrl();
+    }
+
+    public function testGetServerName()
+    {
+        $request = new Request();
+
+        $_SERVER['SERVER_NAME'] = 'servername';
+        $this->assertEquals('servername', $request->getServerName());
+
+        unset($_SERVER['SERVER_NAME']);
+        $this->assertEquals(null, $request->getServerName());
+    }
+
+    public function testGetServerPort()
+    {
+        $request = new Request();
+
+        $_SERVER['SERVER_PORT'] = 33;
+        $this->assertEquals(33, $request->getServerPort());
+
+        unset($_SERVER['SERVER_PORT']);
+        $this->assertEquals(null, $request->getServerPort());
     }
 }

@@ -9,14 +9,14 @@ translation, view translation, date and number formatting.
 
 ## Locale and Language <span id="locale-language"></span>
 
-Locale is a set of parameters that defines the user's language, country and any special variant preferences 
-that the user wants to see in their user interface. It is usually identified by an ID consisting of a language 
-ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States. 
-For consistency, all locale IDs used in Yii applications should be canonicalized to the format of 
+Locale is a set of parameters that defines the user's language, country and any special variant preferences
+that the user wants to see in their user interface. It is usually identified by an ID consisting of a language
+ID and a region ID. For example, the ID `en-US` stands for the locale of English and United States.
+For consistency, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
 [ISO-639](http://www.loc.gov/standards/iso639-2/) and `CC` is a two-letter country code according to
 [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html).
-More details about locale can be found in check the 
+More details about locale can be found in the
 [documentation of the ICU project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept).
 
 In Yii, we often use the term "language" to refer to a locale.
@@ -53,6 +53,9 @@ you can use the following statement to change the target language:
 \Yii::$app->language = 'zh-CN';
 ```
 
+> Tip: If your source language varies among different parts of your code, you can
+> override the source language for different message sources, which are described in the next section.
+
 ## Message Translation <span id="message-translation"></span>
 
 The message translation service translates a text message from one language (usually the [[yii\base\Application::$sourceLanguage|source language]])
@@ -65,7 +68,7 @@ To use the message translation service, you mainly need to do the following work
 
 * Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method;
 * Configure one or multiple message sources in which the message translation service can look for translated messages;
-* Let the translators to translate messages and store them in the message source(s).
+* Let the translators translate messages and store them in the message source(s).
 
 The method [[Yii::t()]] can be used like the following,
 
@@ -76,8 +79,8 @@ echo \Yii::t('app', 'This is a string to translate!');
 where the second parameter refers to the text message to be translated, while the first parameter refers to 
 the name of the category which is used to categorize the message. 
 
-The [[Yii::t()]] method will call the `i18n` [application component](structure-application-components.md) 
-to perform the actual translation work. The component can be configured in the application configuration as follows,
+The [[Yii::t()]] method will call the `i18n` [application component](structure-application-components.md) `translate`
+method to perform the actual translation work. The component can be configured in the application configuration as follows,
 
 ```php
 'components' => [
@@ -100,14 +103,18 @@ to perform the actual translation work. The component can be configured in the a
 
 In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. The pattern
 `app*` indicates that all message categories whose names start with `app` should be translated using this
-message source. The [[yii\i18n\PhpMessageSource]] class uses PHP files to store message translations. Each
-PHP file corresponds to the messages of a single category. By default, the file name should be the same as
+message source. The [[yii\i18n\PhpMessageSource]] class uses PHP files to store message translations.
+These files contain a simple PHP array that is a map of the messages in source language to the translation in the target language.
+Each PHP file corresponds to the messages of a single category. By default, the file name should be the same as
 the category name. However, you may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category
 to a PHP file with a different naming approach. In the above example, the category `app/error` is mapped to
 the PHP file `@app/messages/ru-RU/error.php` (assuming `ru-RU` is the target language). Without this configuration,
 the category would be mapped to `@app/messages/ru-RU/app/error.php`, instead.
 
-Beside storing the messages in PHP files, you may also use the following message sources to store translated messages
+> Tip: You can automatically generate these PHP files by using the [`message` command](#message-command),
+> which will be introduced later in this chapter.
+
+Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
 
 - [[yii\i18n\GettextMessageSource]] uses GNU Gettext MO or PO files to maintain translated messages.
@@ -122,8 +129,8 @@ In this subsection, we will describe different ways of formatting messages.
 
 ### Message Parameters <span id="message-parameters"></span>
 
-In a message to be translated, you can embed one or multiple placeholders so that they can be replaced by the given
-parameter values. By giving different sets of parameter values, you can variate the translated message dynamically.
+In a message to be translated, you can embed one or multiple parameters (also called placeholders) so that they can be
+replaced by the given values. By giving different sets of values, you can variate the translated message dynamically.
 In the following example, the placeholder `{username}` in the message `'Hello, {username}!'` will be replaced
 by `'Alexander'` and `'Qiang'`, respectively.
 
@@ -142,15 +149,15 @@ echo \Yii::t('app', 'Hello, {username}!', [
 ```
 
 While translating a message containing placeholders, you should leave the placeholders as is. This is because the placeholders
-will be replaced with the actual parameter values when you call `Yii::t()` to translate a message.
+will be replaced with the actual values when you call `Yii::t()` to translate a message.
 
 You can use either *named placeholders* or *positional placeholders*, but not both, in a single message.
  
 The previous example shows how you can use named placeholders. That is, each placeholder is written in the format of 
-`{ParameterName}`, and you provide the parameters as an associative array whose keys are the parameter names
-(without the curly brackets) and whose values are the corresponding parameter values.
+`{name}`, and you provide an associative array whose keys are the placeholder names
+(without the curly brackets) and whose values are the corresponding values placeholder to be replaced with.
 
-Positional placeholders use zero-based integer sequence as placeholders which are replaced by the parameter values
+Positional placeholders use zero-based integer sequence as names which are replaced by the provided values
 according to their positions in the call of `Yii::t()`. In the following example, the positional placeholders
 `{0}`, `{1}` and `{2}` will be replaced by the values of `$price`, `$count` and `$subtotal`, respectively.
 
@@ -158,10 +165,16 @@ according to their positions in the call of `Yii::t()`. In the following example
 $price = 100;
 $count = 2;
 $subtotal = 200;
-echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', $price, $count, $subtotal);
+echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', [$price, $count, $subtotal]);
 ```
 
-> Tip: In most cases you should use named placeholders. This is because the parameter names will make the translators
+In case of a single positional parameter its value could be specified without wrapping it into array:
+
+```php
+echo \Yii::t('app', 'Price: {0}', $price);
+```
+
+> Tip: In most cases you should use named placeholders. This is because the names will make the translators
 > understand better the whole messages being translated.
 
 
@@ -173,7 +186,7 @@ treated as a number and formatted as a currency value:
 
 ```php
 $price = 100;
-echo \Yii::t('app', 'Price: {0, number, currency}', $price);
+echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
 > Note: Parameter formatting requires the installation of the [intl PHP extension](http://www.php.net/manual/en/intro.intl.php).
@@ -181,13 +194,17 @@ echo \Yii::t('app', 'Price: {0, number, currency}', $price);
 You can use either the short form or the full form to specify a placeholder with formatting:
 
 ```
-short form: {PlaceholderName, ParameterType}
-full form: {PlaceholderName, ParameterType, ParameterStyle}
+short form: {name,type}
+full form: {name,type,style}
 ```
 
-Please  refer to the [ICU documentation](http://icu-project.org/apiref/icu4c/classMessageFormat.html) for the complete
-instructions on how to specify such placeholders.
+> Note: If you need to use special characters such as `{`, `}`, `'`, `#`, wrap them in `'`:
+> 
+```php
+echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
+```
 
+Complete format is described in the [ICU documentation](http://icu-project.org/apiref/icu4c/classMessageFormat.html).
 In the following we will show some common usages.
 
 
@@ -197,44 +214,50 @@ The parameter value is treated as a number. For example,
 
 ```php
 $sum = 42;
-echo \Yii::t('app', 'Balance: {0, number}', $sum);
+echo \Yii::t('app', 'Balance: {0,number}', $sum);
 ```
 
 You can specify an optional parameter style as `integer`, `currency`, or `percent`:
 
 ```php
 $sum = 42;
-echo \Yii::t('app', 'Balance: {0, number, currency}', $sum);
+echo \Yii::t('app', 'Balance: {0,number,currency}', $sum);
 ```
 
 You can also specify a custom pattern to format the number. For example,
 
 ```php
 $sum = 42;
-echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
+echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 ```
 
-[Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html).
-
+Characters used in the custom format could be found in
+[ICU API reference](http://icu-project.org/apiref/icu4c/classicu_1_1DecimalFormat.html) under "Special Pattern Characters"
+section.
+ 
+ 
+The value is always formatted according to the locale you are translating to i.e. you cannot change decimal or thousands
+separators, currency symbol etc. without changing translation locale. If you need to customize these you can
+use [[yii\i18n\Formatter::asDecimal()]] and [[yii\i18n\Formatter::asCurrency()]].
 
 #### Date <span id="date"></span>
 
 The parameter value should be formatted as a date. For example,
 
 ```php
-echo \Yii::t('app', 'Today is {0, date}', time());
+echo \Yii::t('app', 'Today is {0,date}', time());
 ```
 
 You can specify an optional parameter style as `short`, `medium`, `long`, or `full`:
 
 ```php
-echo \Yii::t('app', 'Today is {0, date, short}', time());
+echo \Yii::t('app', 'Today is {0,date,short}', time());
 ```
 
 You can also specify a custom pattern to format the date value:
 
 ```php
-echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
+echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 ```
 
 [Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
@@ -245,19 +268,19 @@ echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 The parameter value should be formatted as a time. For example,
 
 ```php
-echo \Yii::t('app', 'It is {0, time}', time());
+echo \Yii::t('app', 'It is {0,time}', time());
 ```
 
 You can specify an optional parameter style as `short`, `medium`, `long`, or `full`:
 
 ```php
-echo \Yii::t('app', 'It is {0, time, short}', time());
+echo \Yii::t('app', 'It is {0,time,short}', time());
 ```
 
 You can also specify a custom pattern to format the time value:
 
 ```php
-echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
+echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 ```
 
 [Formatting reference](http://icu-project.org/apiref/icu4c/classicu_1_1SimpleDateFormat.html).
@@ -269,8 +292,20 @@ The parameter value should be treated as a number and formatted as a spellout. F
 
 ```php
 // may produce "42 is spelled as forty-two"
-echo \Yii::t('app', '{n,number} is spelled as {n, spellout}', ['n' => 42]);
+echo \Yii::t('app', '{n,number} is spelled as {n,spellout}', ['n' => 42]);
 ```
+
+By default the number is spelled out as cardinal. It could be changed:
+
+```php
+// may produce "I am forty-seventh agent"
+echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
+```
+
+Note that there should be no space after `spellout,` and before `%`.
+
+To get a list of options available for locale you're using check 
+"Numbering schemas, Spellout" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
 
 #### Ordinal <span id="ordinal"></span>
 
@@ -278,9 +313,20 @@ The parameter value should be treated as a number and formatted as an ordinal na
 
 ```php
 // may produce "You are the 42nd visitor here!"
-echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
+echo \Yii::t('app', 'You are the {n,ordinal} visitor here!', ['n' => 42]);
 ```
 
+Ordinal supports more ways of formatting for languages such as Spanish:
+
+```php
+// may produce 471ª
+echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
+```
+
+Note that there should be no space after `ordinal,` and before `%`.
+
+To get a list of options available for locale you're using check 
+"Numbering schemas, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
 
 #### Duration <span id="duration"></span>
 
@@ -288,9 +334,20 @@ The parameter value should be treated as the number of seconds and formatted as 
 
 ```php
 // may produce "You are here for 47 sec. already!"
-echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
+echo \Yii::t('app', 'You are here for {n,duration} already!', ['n' => 47]);
 ```
 
+Duration supports more ways of formatting:
+
+```php
+// may produce 130:53:47
+echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
+```
+
+Note that there should be no space after `duration,` and before `%`.
+
+To get a list of options available for locale you're using check 
+"Numbering schemas, Duration" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/).
 
 #### Plural <span id="plural"></span>
 
@@ -302,28 +359,67 @@ it is sufficient to provide the translation of inflected words in certain situat
 // When $n = 0, it may produce "There are no cats!"
 // When $n = 1, it may produce "There is one cat!"
 // When $n = 42, it may produce "There are 42 cats!"
-echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
+echo \Yii::t('app', 'There {n,plural,=0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
 ```
 
-In the plural rule arguments above, `=0` means exactly zero, `=1` means exactly one, and `other` is for any other value.
-`#` is replaced with the value of `n`. 
+In the plural rule arguments above, `=` means explicit value. So `=0` means exactly zero, `=1` means exactly one.
+`other` stands for any other value. `#` is replaced with the value of `n` formatted according to target language.
 
 Plural forms can be very complicated in some languages. In the following Russian example, `=1` matches exactly `n = 1` 
 while `one` matches `21` or `101`:
 
 ```
-Здесь {n, plural, =0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
+Здесь {n,plural,=0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
 ```
 
-Note that the above message is mainly used as a translated message, not an original message, unless you set
-the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU`.
+These `other`, `few`, `many` and other special argument names vary depending on language. To learn which ones you should
+specify for a particular locale, please refer to "Plural Rules, Cardinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
-When a translation is not found for an original message, the plural rules for the [[yii\base\Application::$sourceLanguage|source language]]
-will be applied to the original message.
+> Note: The above example Russian message is mainly used as a translated message, not an original message, unless you set
+> the [[yii\base\Application::$sourceLanguage|source language]] of your application as `ru-RU` and translating from Russian.
+>
+> When a translation is not found for an original message specified in `Yii::t()` call, the plural rules for the
+> [[yii\base\Application::$sourceLanguage|source language]] will be applied to the original message.
 
-To learn which inflection forms you should specify for a particular language, please refer to the
-[rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
+There's an `offset` parameter for the cases when the string is like the following:
+ 
+```php
+$likeCount = 2;
+echo Yii::t('app', 'You {likeCount,plural,
+    offset: 1
+    =0{did not like this}
+    =1{liked this}
+    one{and one other person liked this}
+    other{and # others liked this}
+}', [
+    'likeCount' => $likeCount
+]);
 
+// You and one other person liked this
+```
+
+#### Ordinal selection <span id="ordinal-selection">
+
+The parameter type of `selectordinal` is meant to choose a string based on language rules for ordinals for the
+locale you are translating to:
+
+```php
+$n = 3;
+echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
+// For English it outputs:
+// You are the 3rd visitor
+
+// Translation
+'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} other{#th}} visitor' => 'Вы {n,selectordinal,other{#-й}} посетитель',
+
+// For Russian translation it outputs:
+// Вы 3-й посетитель
+```
+
+The format is very close to what's used for plurals. To learn which arguments you should specify for a particular locale,
+please refer to "Plural Rules, Ordinal" at [http://intl.rmcreative.ru/](http://intl.rmcreative.ru/). 
+Alternatively you can refer to [rules reference at unicode.org](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html).
 
 #### Selection <span id="selection"></span>
 
@@ -331,7 +427,7 @@ You can use the `select` parameter type to choose a phrase based on the paramete
 
 ```php
 // It may produce "Snoopy is a dog and it loves Yii!"
-echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
+echo \Yii::t('app', '{name} is a {gender} and {gender,select,female{she} male{he} other{it}} loves Yii!', [
     'name' => 'Snoopy',
     'gender' => 'dog',
 ]);
@@ -342,10 +438,11 @@ do not match either one of them. Following each possible parameter value, you sh
 it in a pair of curly brackets.
 
 
-### Specifying default translation
+### Specifying default message source <span id="default-message-source"></span>
 
-You can specify default translations that will be used as a fallback for categories that don't match any other translation.
-This translation should be marked with `*`. In order to do it add the following to the application config:
+You can specify default message source that will be used as a fallback for category that doesn't match any
+configured category. You can do that by configuring a wildcard category `*`. In order to do that, add the following
+to the application config:
 
 ```php
 //configure i18n component
@@ -368,7 +465,7 @@ echo Yii::t('not_specified_category', 'message from unspecified category');
 
 The message will be loaded from `@app/messages/<LanguageCode>/not_specified_category.php`.
 
-### Translating module messages
+### Translating module messages <span id="module-translation"></span>
 
 If you want to translate the messages for a module and avoid using a single translation file for all the messages, you can do it like the following:
 
@@ -415,7 +512,7 @@ In the example above we are using wildcard for matching and then filtering each 
 use the convention of the category mapping to the same named file.
 Now you can use `Module::t('validation', 'your custom validation message')` or `Module::t('form', 'some form label')` directly.
 
-### Translating widgets messages
+### Translating widgets messages <span id="widget-translation"></span>
 
 The same rule as applied for Modules above can be applied for widgets too, for example:
 
@@ -465,10 +562,10 @@ class Menu extends Widget
 Instead of using `fileMap` you can simply use the convention of the category mapping to the same named file.
 Now you can use `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` directly.
 
-> **Note**: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
+> Note: For widgets you also can use i18n views, with the same rules as for controllers being applied to them too.
 
 
-### Translating framework messages
+### Translating framework messages <span id="framework-translation"></span>
 
 Yii comes with the default translation messages for validation errors and some other strings. These messages are all
 in the category `yii`. Sometimes you want to correct the default framework message translation for your application.
@@ -488,7 +585,7 @@ In order to do so, configure the `i18n` [application component](structure-applic
 
 Now you can place your adjusted translations to `@app/messages/<language>/yii.php`.
 
-### Handling missing translations
+### Handling missing translations <span id="missing-translations"></span>
 
 Even if the translation is missing from the source, Yii will display the requested message content. Such behavior is very convenient
 in case your raw message is a valid verbose text. However, sometimes it is not enough.
@@ -542,12 +639,12 @@ If [[yii\i18n\MissingTranslationEvent::translatedMessage]] is set by the event h
 
 ### Using the `message` command <a name="message-command"></a>
 
-Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files] or to [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
+Translations can be stored in [[yii\i18n\PhpMessageSource|php files]], [[yii\i18n\GettextMessageSource|.po files]] or in a [[yii\i18n\DbMessageSource|database]]. See specific classes for additional options.
 
-First of all you need to create a config file. Decide where you want to store it and then issue the command 
+First of all you need to create a configuration file. Decide where you want to store it and then issue the command 
 
 ```bash
-./yii message/config path/to/config.php
+./yii message/config-template path/to/config.php
 ```
 
 Open the created file and adjust the parameters to fit your needs. Pay special attention to:
@@ -555,13 +652,26 @@ Open the created file and adjust the parameters to fit your needs. Pay special a
 * `languages`: an array representing what languages your app should be translated to;
 * `messagePath`: path where to store message files, which should match the `i18n`'s `basePath` parameter stated in config.
 
-> Note that aliases are not supported here, they must be real path relative to the config file location
+You may also use './yii message/config' command to dynamically generate configuration file with specified options via cli.
+For example, you can set `languages` and `messagePath` parameters like the following:
 
-Once you're done with the config file you can finally extract your messages with the command
+```bash
+./yii message/config --languages=de,ja --messagePath=messages path/to/config.php
+```
+
+To get list of available options execute next command:
+
+```bash
+./yii help message/config
+```
+
+Once you're done with the configuration file you can finally extract your messages with the command:
 
 ```bash
 ./yii message path/to/config.php
 ```
+
+Also, you may use options to dynamically change parameters for extraction.
 
 You will then find your files (if you've chosen file based translations) in your `messagePath` directory.
 
@@ -603,6 +713,7 @@ To find out which version of ICU is used by PHP, you can run the following scrip
 <?php
 echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
+echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 ```
 
 It is also recommended that you use an ICU version equal or greater than version 49. This will ensure you can use all the features

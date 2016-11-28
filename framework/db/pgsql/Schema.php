@@ -15,6 +15,8 @@ use yii\db\ColumnSchema;
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
+ * @property string[] $viewNames All view names in the database. This property is read-only.
+ *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
@@ -45,8 +47,9 @@ class Schema extends \yii\db\Schema
         'polygon' => self::TYPE_STRING,
         'path' => self::TYPE_STRING,
 
-        'character' => self::TYPE_STRING,
-        'char' => self::TYPE_STRING,
+        'character' => self::TYPE_CHAR,
+        'char' => self::TYPE_CHAR,
+        'bpchar' => self::TYPE_CHAR,
         'character varying' => self::TYPE_STRING,
         'varchar' => self::TYPE_STRING,
         'text' => self::TYPE_TEXT,
@@ -104,8 +107,13 @@ class Schema extends \yii\db\Schema
         'uuid' => self::TYPE_STRING,
         'json' => self::TYPE_STRING,
         'jsonb' => self::TYPE_STRING,
-        'xml' => self::TYPE_STRING
+        'xml' => self::TYPE_STRING,
     ];
+
+    /**
+     * @var array list of ALL view names in the database
+     */
+    private $_viewNames = [];
 
 
     /**
@@ -212,6 +220,52 @@ SQL;
     }
 
     /**
+     * Returns all views names in the database.
+     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema.
+     * @return array all views names in the database. The names have NO schema name prefix.
+     * @since 2.0.9
+     */
+    protected function findViewNames($schema = '')
+    {
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
+        }
+        $sql = <<<SQL
+SELECT c.relname AS table_name
+FROM pg_class c
+INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
+WHERE ns.nspname = :schemaName AND c.relkind = 'v'
+ORDER BY c.relname
+SQL;
+        $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
+        $rows = $command->queryAll();
+        $names = [];
+        foreach ($rows as $row) {
+            $names[] = $row['table_name'];
+        }
+
+        return $names;
+    }
+
+    /**
+     * Returns all view names in the database.
+     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
+     * If not empty, the returned view names will be prefixed with the schema name.
+     * @param bool $refresh whether to fetch the latest available view names. If this is false,
+     * view names fetched previously (if available) will be returned.
+     * @return string[] all view names in the database.
+     * @since 2.0.9
+     */
+    public function getViewNames($schema = '', $refresh = false)
+    {
+        if (!isset($this->_viewNames[$schema]) || $refresh) {
+            $this->_viewNames[$schema] = $this->findViewNames($schema);
+        }
+
+        return $this->_viewNames[$schema];
+    }
+
+    /**
      * Collects the foreign key column details for the given table.
      * @param TableSchema $table the table metadata
      */
@@ -303,12 +357,12 @@ SQL;
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
@@ -319,7 +373,13 @@ SQL;
 
         $rows = $this->getUniqueIndexInformation($table);
         foreach ($rows as $row) {
-            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
+            $column = $row['columnname'];
+            if (!empty($column) && $column[0] === '"') {
+                // postgres will quote names that are not lowercase-only
+                // https://github.com/yiisoft/yii2/issues/10613
+                $column = substr($column, 1, -1);
+            }
+            $uniqueIndexes[$row['indexname']][] = $column;
         }
 
         return $uniqueIndexes;
@@ -328,7 +388,7 @@ SQL;
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -411,8 +471,12 @@ SQL;
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
-                } elseif (preg_match("/^(.*?)::/", $column->defaultValue, $matches)) {
-                    $column->defaultValue = $column->phpTypecast($matches[1]);
+                } elseif (preg_match('/^(?:\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
+                    if ($matches[1] === 'NULL') {
+                        $column->defaultValue = null;
+                    } else {
+                        $column->defaultValue = $column->phpTypecast($matches[1]);
+                    }
                 } else {
                     $column->defaultValue = $column->phpTypecast($column->defaultValue);
                 }

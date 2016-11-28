@@ -43,13 +43,14 @@ class Schema extends \yii\db\Schema
         'text' => self::TYPE_TEXT,
         'varchar' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'datetime' => self::TYPE_DATETIME,
         'year' => self::TYPE_DATE,
         'date' => self::TYPE_DATE,
         'time' => self::TYPE_TIME,
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
+        'varbinary' => self::TYPE_BINARY,
     ];
 
 
@@ -61,7 +62,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleTableName($name)
     {
-        return strpos($name, "`") !== false ? $name : "`" . $name . "`";
+        return strpos($name, '`') !== false ? $name : "`$name`";
     }
 
     /**
@@ -72,7 +73,7 @@ class Schema extends \yii\db\Schema
      */
     public function quoteSimpleColumnName($name)
     {
-        return strpos($name, '`') !== false || $name === '*' ? $name : '`' . $name . '`';
+        return strpos($name, '`') !== false || $name === '*' ? $name : "`$name`";
     }
 
     /**
@@ -176,7 +177,7 @@ class Schema extends \yii\db\Schema
             if ($column->type === 'timestamp' && $info['default'] === 'CURRENT_TIMESTAMP') {
                 $column->defaultValue = new Expression('CURRENT_TIMESTAMP');
             } elseif (isset($type) && $type === 'bit') {
-                $column->defaultValue = bindec(trim($info['default'],'b\''));
+                $column->defaultValue = bindec(trim($info['default'], 'b\''));
             } else {
                 $column->defaultValue = $column->phpTypecast($info['default']);
             }
@@ -188,7 +189,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      * @throws \Exception if DB query fails
      */
     protected function findColumns($table)
@@ -243,21 +244,62 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the foreign key column details for the given table.
      * @param TableSchema $table the table metadata
+     * @throws \Exception
      */
     protected function findConstraints($table)
     {
-        $sql = $this->getCreateTableSql($table);
+        $sql = <<<SQL
+SELECT
+    kcu.constraint_name,
+    kcu.column_name,
+    kcu.referenced_table_name,
+    kcu.referenced_column_name
+FROM information_schema.referential_constraints AS rc
+JOIN information_schema.key_column_usage AS kcu ON
+    (
+        kcu.constraint_catalog = rc.constraint_catalog OR
+        (kcu.constraint_catalog IS NULL AND rc.constraint_catalog IS NULL)
+    ) AND
+    kcu.constraint_schema = rc.constraint_schema AND
+    kcu.constraint_name = rc.constraint_name
+WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
+AND rc.table_name = :tableName AND kcu.table_name = :tableName1
+SQL;
 
-        $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
-        if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
-            foreach ($matches as $match) {
-                $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
-                $pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
-                $constraint = [str_replace('`', '', $match[2])];
-                foreach ($fks as $k => $name) {
-                    $constraint[$name] = $pks[$k];
+        try {
+            $rows = $this->db->createCommand($sql, [':tableName' => $table->name, ':tableName1' => $table->name])->queryAll();
+            $constraints = [];
+            foreach ($rows as $row) {
+                $constraints[$row['constraint_name']]['referenced_table_name'] = $row['referenced_table_name'];
+                $constraints[$row['constraint_name']]['columns'][$row['column_name']] = $row['referenced_column_name'];
+            }
+            $table->foreignKeys = [];
+            foreach ($constraints as $constraint) {
+                $table->foreignKeys[] = array_merge(
+                    [$constraint['referenced_table_name']],
+                    $constraint['columns']
+                );
+            }
+        } catch (\Exception $e) {
+            $previous = $e->getPrevious();
+            if (!$previous instanceof \PDOException || strpos($previous->getMessage(), 'SQLSTATE[42S02') === false) {
+                throw $e;
+            }
+
+            // table does not exist, try to determine the foreign keys using the table creation sql
+            $sql = $this->getCreateTableSql($table);
+            $regexp = '/FOREIGN KEY\s+\(([^\)]+)\)\s+REFERENCES\s+([^\(^\s]+)\s*\(([^\)]+)\)/mi';
+            if (preg_match_all($regexp, $sql, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $fks = array_map('trim', explode(',', str_replace('`', '', $match[1])));
+                    $pks = array_map('trim', explode(',', str_replace('`', '', $match[3])));
+                    $constraint = [str_replace('`', '', $match[2])];
+                    foreach ($fks as $k => $name) {
+                        $constraint[$name] = $pks[$k];
+                    }
+                    $table->foreignKeys[md5(serialize($constraint))] = $constraint;
                 }
-                $table->foreignKeys[] = $constraint;
+                $table->foreignKeys = array_values($table->foreignKeys);
             }
         }
     }
@@ -266,12 +308,12 @@ class Schema extends \yii\db\Schema
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
-     *  'IndexName1' => ['col1' [, ...]],
-     *  'IndexName2' => ['col2' [, ...]],
+     *     'IndexName1' => ['col1' [, ...]],
+     *     'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * @param TableSchema $table the table metadata
      * @return array all unique indexes for the given table.
@@ -306,5 +348,13 @@ class Schema extends \yii\db\Schema
         }
 
         return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }

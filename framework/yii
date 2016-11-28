@@ -31,7 +31,7 @@ $application = new yii\console\Application([
     'basePath' => __DIR__ . '/console',
     'controllerNamespace' => 'yii\console\controllers',
 ]);
-if (isset($vendorPath)) {
+if ($vendorPath !== null) {
     $application->setVendorPath($vendorPath);
 }
 $exitCode = $application->run();

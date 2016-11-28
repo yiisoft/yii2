@@ -13,7 +13,7 @@ function time()
 
 /**
  * Mock for the microtime() function for caching classes
- * @param boolean $float
+ * @param bool $float
  * @return float
  */
 function microtime($float = false)
@@ -32,7 +32,7 @@ use yiiunit\TestCase;
 abstract class CacheTestCase extends TestCase
 {
     /**
-     * @var integer virtual time to be returned by mocked time() function.
+     * @var int virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;
@@ -175,6 +175,13 @@ abstract class CacheTestCase extends TestCase
         // ensure that order does not matter
         $this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->mget(['number_test', 'string_test']));
         $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->mget(['number_test', 'non_existent_key']));
+    }
+
+    public function testDefaultTtl()
+    {
+        $cache = $this->getCacheInstance();
+
+        $this->assertSame(0, $cache->defaultDuration);
     }
 
     public function testExpire()

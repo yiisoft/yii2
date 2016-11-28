@@ -29,7 +29,7 @@ class BooleanValidator extends Validator
      */
     public $falseValue = '0';
     /**
-     * @var boolean whether the comparison to [[trueValue]] and [[falseValue]] is strict.
+     * @var bool whether the comparison to [[trueValue]] and [[falseValue]] is strict.
      * When this is true, the attribute value and type must both match those of [[trueValue]] or [[falseValue]].
      * Defaults to false, meaning only the value needs to be matched.
      */
@@ -53,15 +53,16 @@ class BooleanValidator extends Validator
     protected function validateValue($value)
     {
         $valid = !$this->strict && ($value == $this->trueValue || $value == $this->falseValue)
-            || $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
+                 || $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
+
         if (!$valid) {
             return [$this->message, [
-                'true' => $this->trueValue,
-                'false' => $this->falseValue,
+                'true' => $this->trueValue === true ? 'true' : $this->trueValue,
+                'false' => $this->falseValue === false ? 'false' : $this->falseValue,
             ]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -74,8 +75,8 @@ class BooleanValidator extends Validator
             'falseValue' => $this->falseValue,
             'message' => Yii::$app->getI18n()->format($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-                'true' => $this->trueValue,
-                'false' => $this->falseValue,
+                'true' => $this->trueValue === true ? 'true' : $this->trueValue,
+                'false' => $this->falseValue === false ? 'false' : $this->falseValue,
             ], Yii::$app->language),
         ];
         if ($this->skipOnEmpty) {

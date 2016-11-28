@@ -1,10 +1,13 @@
 <?php
 namespace yiiunit\framework\helpers;
 
+use Yii;
 use yii\base\Action;
 use yii\base\Module;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\UrlManager;
+use yii\widgets\Menu;
 use yiiunit\TestCase;
 
 /**
@@ -64,6 +67,8 @@ class UrlTest extends TestCase
 
         // If the route is an empty string, the current route will be used;
         $this->assertEquals('/base/index.php?r=page%2Fview', Url::toRoute(''));
+        // a slash will be an absolute route representing the default route
+        $this->assertEquals('/base/index.php?r=', Url::toRoute('/'));
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', Url::toRoute('', true));
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', Url::toRoute('', 'https'));
 
@@ -184,6 +189,39 @@ class UrlTest extends TestCase
         Url::to(['site/view']);
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/11925
+     */
+    public function testToWithSuffix()
+    {
+        Yii::$app->set('urlManager', [
+            'class' => 'yii\web\UrlManager',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'cache' => null,
+            'rules' => [
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'suffix' => '.html',
+        ]);
+        $url = Yii::$app->urlManager->createUrl(['/site/page', 'view' => 'about']);
+        $this->assertEquals('/site/page.html?view=about', $url);
+
+        $url = Url::to(['/site/page', 'view' => 'about']);
+        $this->assertEquals('/site/page.html?view=about', $url);
+
+        $output = Menu::widget([
+            'items' => [
+                ['label' => 'Test', 'url' => ['/site/page', 'view' => 'about']],
+            ],
+        ]);
+        $this->assertRegExp('~<a href="/site/page.html\?view=about">~', $output);
+    }
+
     public function testBase()
     {
         $this->mockAction('page', 'view', null, ['id' => 10]);
@@ -204,5 +242,14 @@ class UrlTest extends TestCase
         $this->mockAction('page', 'view', null, ['id' => 10]);
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fview&id=10', Url::canonical());
         $this->removeMockedAction();
+    }
+
+    public function testIsRelative()
+    {
+        $this->assertTrue(Url::isRelative('/test/index.php'));
+        $this->assertTrue(Url::isRelative('index.php'));
+        $this->assertFalse(Url::isRelative('//example.com/'));
+        $this->assertFalse(Url::isRelative('http://example.com/'));
+        $this->assertFalse(Url::isRelative('https://example.com/'));
     }
 }

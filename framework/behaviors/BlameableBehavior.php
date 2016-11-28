@@ -8,7 +8,6 @@
 namespace yii\behaviors;
 
 use Yii;
-use yii\base\Event;
 use yii\db\BaseActiveRecord;
 
 /**
@@ -29,8 +28,13 @@ use yii\db\BaseActiveRecord;
  *
  * By default, BlameableBehavior will fill the `created_by` and `updated_by` attributes with the current user ID
  * when the associated AR object is being inserted; it will fill the `updated_by` attribute
- * with the current user ID when the AR object is being updated. If your attribute names are different, you may configure
- * the [[createdByAttribute]] and [[updatedByAttribute]] properties like the following:
+ * with the current user ID when the AR object is being updated.
+ *
+ * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
+ * not be validated, i.e. `created_by` and `updated_by` should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ *
+ * If your attribute names are different, you may configure the [[createdByAttribute]] and [[updatedByAttribute]]
+ * properties like the following:
  *
  * ```php
  * public function behaviors()
@@ -63,17 +67,9 @@ class BlameableBehavior extends AttributeBehavior
      */
     public $updatedByAttribute = 'updated_by';
     /**
-     * @var callable the value that will be assigned to the attributes. This should be a valid
-     * PHP callable whose return value will be assigned to the current attribute(s).
-     * The signature of the callable should be:
+     * @inheritdoc
      *
-     * ```php
-     * function ($event) {
-     *     // return value will be assigned to the attribute(s)
-     * }
-     * ```
-     *
-     * If this property is not set, the value of `Yii::$app->user->id` will be assigned to the attribute(s).
+     * In case, when the property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
     public $value;
 
@@ -94,18 +90,17 @@ class BlameableBehavior extends AttributeBehavior
     }
 
     /**
-     * Evaluates the value of the user.
-     * The return result of this method will be assigned to the current attribute(s).
-     * @param Event $event
-     * @return mixed the value of the user.
+     * @inheritdoc
+     *
+     * In case, when the [[value]] property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
     protected function getValue($event)
     {
         if ($this->value === null) {
             $user = Yii::$app->get('user', false);
             return $user && !$user->isGuest ? $user->id : null;
-        } else {
-            return call_user_func($this->value, $event);
         }
+
+        return parent::getValue($event);
     }
 }

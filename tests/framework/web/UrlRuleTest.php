@@ -2,7 +2,10 @@
 
 namespace yiiunit\framework\web;
 
+use yii\web\NotFoundHttpException;
 use yii\web\UrlManager;
+use yii\web\UrlNormalizer;
+use yii\web\UrlNormalizerRedirectException;
 use yii\web\UrlRule;
 use yii\web\Request;
 use yiiunit\TestCase;
@@ -35,7 +38,10 @@ class UrlRuleTest extends TestCase
 
     public function testParseRequest()
     {
-        $manager = new UrlManager(['cache' => null]);
+        $manager = new UrlManager([
+            'cache' => null,
+            'normalizer' => false,
+        ]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
@@ -43,16 +49,227 @@ class UrlRuleTest extends TestCase
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
-                $route = $test[1];
-                $params = isset($test[2]) ? $test[2] : [];
+                $expected = $test[1];
                 $result = $rule->parseRequest($manager, $request);
-                if ($route === false) {
+                if ($expected === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
                 } else {
-                    $this->assertEquals([$route, $params], $result, "Test#$i-$j: $name");
+                    $this->assertEquals($expected, $result, "Test#$i-$j: $name");
                 }
             }
         }
+    }
+
+    public function testParseRequestWithNormalizer()
+    {
+        $manager = new UrlManager([
+            'cache' => null,
+            'normalizer' => UrlNormalizer::className(),
+        ]);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $suites = $this->getTestsForParseRequest();
+        foreach ($suites as $i => $suite) {
+            list ($name, $config, $tests) = $suite;
+            $rule = new UrlRule($config);
+            foreach ($tests as $j => $test) {
+                $request->pathInfo = $test[0];
+                $expected = isset($test[2]) ? $test[2] : $test[1];
+                try {
+                    $result = $rule->parseRequest($manager, $request);
+                    if ($expected === false) {
+                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    } else {
+                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                    }
+                } catch (UrlNormalizerRedirectException $exc) {
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
+                }
+            }
+        }
+    }
+
+    public function testParseRequestWithUrlManagerCustomNormalizer()
+    {
+        $manager = new UrlManager([
+            'cache' => null,
+            'normalizer' => [
+                'class' => UrlNormalizer::className(),
+                'action' => UrlNormalizer::ACTION_REDIRECT_PERMANENT,
+            ],
+        ]);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $suites = $this->getTestsForParseRequest();
+        foreach ($suites as $i => $suite) {
+            list ($name, $config, $tests) = $suite;
+            $rule = new UrlRule($config);
+            foreach ($tests as $j => $test) {
+                $request->pathInfo = $test[0];
+                $expected = isset($test[2]) ? $test[2] : $test[1];
+                try {
+                    $result = $rule->parseRequest($manager, $request);
+                    if ($expected === false) {
+                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    } else {
+                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                    }
+                } catch (UrlNormalizerRedirectException $exc) {
+                    $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_PERMANENT, $exc->statusCode, "Test-statusCode#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
+                }
+            }
+        }
+
+        $manager = new UrlManager([
+            'cache' => null,
+            'normalizer' => [
+                'class' => UrlNormalizer::className(),
+                'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
+            ],
+        ]);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $suites = $this->getTestsForParseRequest();
+        foreach ($suites as $i => $suite) {
+            list ($name, $config, $tests) = $suite;
+            $rule = new UrlRule($config);
+            foreach ($tests as $j => $test) {
+                $request->pathInfo = $test[0];
+                $expected = isset($test[2]) ? $test[2] : $test[1];
+                try {
+                    $result = $rule->parseRequest($manager, $request);
+                    if ($expected === false) {
+                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    } else {
+                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                    }
+                } catch (UrlNormalizerRedirectException $exc) {
+                    $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_TEMPORARY, $exc->statusCode, "Test-statusCode#$i-$j: $name");
+                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
+                }
+            }
+        }
+
+        $manager = new UrlManager([
+            'cache' => null,
+            'normalizer' => [
+                'class' => UrlNormalizer::className(),
+                'action' => UrlNormalizer::ACTION_NOT_FOUND,
+            ],
+        ]);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $suites = $this->getTestsForParseRequest();
+        foreach ($suites as $i => $suite) {
+            list ($name, $config, $tests) = $suite;
+            $rule = new UrlRule($config);
+            foreach ($tests as $j => $test) {
+                $request->pathInfo = $test[0];
+                $expected = $test[1];
+                try {
+                    $result = $rule->parseRequest($manager, $request);
+                    if ($expected === false) {
+                        $this->assertFalse($result, "Test#$i-$j: $name");
+                    } else {
+                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                    }
+                } catch (NotFoundHttpException $exc) {
+                    $this->assertFalse($expected, "Test#$i-$j: $name");
+                }
+            }
+        }
+
+        $manager = new UrlManager([
+            'cache' => null,
+            'normalizer' => [
+                'class' => UrlNormalizer::className(),
+                'action' => null,
+            ],
+        ]);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $suites = $this->getTestsForParseRequest();
+        foreach ($suites as $i => $suite) {
+            list ($name, $config, $tests) = $suite;
+            $rule = new UrlRule($config);
+            foreach ($tests as $j => $test) {
+                $request->pathInfo = $test[0];
+                $expected = isset($test[2]) ? $test[2] : $test[1];
+                $result = $rule->parseRequest($manager, $request);
+                if ($expected === false) {
+                    $this->assertFalse($result, "Test#$i-$j: $name");
+                } else {
+                    $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                }
+            }
+        }
+
+        $normalizerAction = function ($route) {
+            $route[1]['oldRoute'] = $route[0];
+            $route[0] = 'site/myCustomRoute';
+            return $route;
+        };
+        $manager = new UrlManager([
+            'cache' => null,
+            'normalizer' => [
+                'class' => UrlNormalizer::className(),
+                'action' => $normalizerAction,
+            ],
+        ]);
+        $request = new Request(['hostInfo' => 'http://en.example.com']);
+        $suites = $this->getTestsForParseRequest();
+        foreach ($suites as $i => $suite) {
+            list ($name, $config, $tests) = $suite;
+            $rule = new UrlRule($config);
+            foreach ($tests as $j => $test) {
+                $request->pathInfo = $test[0];
+                $expected = isset($test[2]) ? $normalizerAction($test[2]) : $test[1];
+                $result = $rule->parseRequest($manager, $request);
+                if ($expected === false) {
+                    $this->assertFalse($result, "Test#$i-$j: $name");
+                } else {
+                    $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                }
+            }
+        }
+    }
+
+    public function testParseRequestWithUrlRuleCustomNormalizer()
+    {
+        $manager = new UrlManager([
+            'cache' => null,
+        ]);
+        $request = new Request([
+            'hostInfo' => 'http://en.example.com',
+            'pathInfo' => 'post/1-a/',
+        ]);
+
+        $rule = new UrlRule([
+            'pattern' => 'post/<page:\d+>-<tag>',
+            'route' => 'post/index',
+            'normalizer' => false,
+        ]);
+        $result = $rule->parseRequest($manager, $request);
+        $this->assertFalse($result);
+
+        $rule = new UrlRule([
+            'pattern' => 'post/<page:\d+>-<tag>',
+            'route' => 'post/index',
+            'normalizer' => [
+                'class' => 'yii\web\UrlNormalizer',
+                'normalizeTrailingSlash' => false,
+            ],
+        ]);
+        $result = $rule->parseRequest($manager, $request);
+        $this->assertFalse($result);
+
+        $rule = new UrlRule([
+            'pattern' => 'post/<page:\d+>-<tag>',
+            'route' => 'post/index',
+            'normalizer' => [
+                'class' => 'yii\web\UrlNormalizer',
+                'normalizeTrailingSlash' => true,
+                'action' => null,
+            ],
+        ]);
+        $result = $rule->parseRequest($manager, $request);
+        $this->assertEquals(['post/index', ['page' => 1, 'tag' => 'a']], $result);
     }
 
     protected function getTestsForCreateUrl()
@@ -135,6 +352,30 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => '1abc'], false],
                     ['post/index', ['page' => 1], false],
                     ['post/index', ['page' => 1, 'tag' => 'a'], 'post/1-a'],
+                ],
+            ],
+            [
+                'multiple params with special chars',
+                [
+                    'pattern' => 'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/index', [], false],
+                    ['post/index', ['page-number' => '1', 'per_page' => '25'], false],
+                    ['post/index', ['page-number' => '1', 'per_page' => '25', 'author.login' => 'yiiuser'], 'post/1/25/yiiuser'],
+                ],
+            ],
+            [
+                'multiple params with leading non-letter chars',
+                [
+                    'pattern' => 'post/<1page-number:\d+>/<-per_page:\d+>/<_author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/index', [], false],
+                    ['post/index', ['1page-number' => '1', '-per_page' => '25'], false],
+                    ['post/index', ['1page-number' => '1', '-per_page' => '25', '_author.login' => 'yiiuser'], 'post/1/25/yiiuser'],
                 ],
             ],
             [
@@ -382,8 +623,8 @@ class UrlRuleTest extends TestCase
         //   config for the URL rule
         //   list of inputs and outputs
         //     pathInfo
-        //     expected route, or false if the rule doesn't apply
-        //     expected params, or not set if empty
+        //     expected result (in format [route, params]) with normalization disabled, or false if the rule doesn't apply
+        //     expected result if noralizer is enabled, or not set if result should be the same as without normalizer
         return [
             [
                 'empty pattern',
@@ -392,7 +633,7 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                 ],
                 [
-                    ['', 'post/index'],
+                    ['', ['post/index', []]],
                     ['a', false],
                 ],
             ],
@@ -403,7 +644,7 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                 ],
                 [
-                    ['posts', 'post/index'],
+                    ['posts', ['post/index', []]],
                     ['a', false],
                 ],
             ],
@@ -414,7 +655,7 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                 ],
                 [
-                    ['posts.html', 'post/index'],
+                    ['posts.html', ['post/index', []]],
                     ['postsahtml', false],
                 ],
             ],
@@ -436,8 +677,8 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                 ],
                 [
-                    ['post/1', 'post/index', ['page' => '1']],
-                    ['post/a', 'post/index', ['page' => 'a']],
+                    ['post/1', ['post/index', ['page' => '1']]],
+                    ['post/a', ['post/index', ['page' => 'a']]],
                     ['post', false],
                     ['posts', false],
                 ],
@@ -449,7 +690,7 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                 ],
                 [
-                    ['post/1', 'post/index', ['page' => '1']],
+                    ['post/1', ['post/index', ['page' => '1']]],
                     ['post/a', false],
                     ['post/1/a', false],
                 ],
@@ -461,10 +702,34 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                 ],
                 [
-                    ['post/1-a', 'post/index', ['page' => '1', 'tag' => 'a']],
+                    ['post/1-a', ['post/index', ['page' => '1', 'tag' => 'a']]],
                     ['post/a', false],
                     ['post/1', false],
                     ['post/1/a', false],
+                ],
+            ],
+            [
+                'multiple params with special chars',
+                [
+                    'pattern' => 'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/1/25/yiiuser', ['post/index', ['page-number' => '1', 'per_page' => '25', 'author.login' => 'yiiuser']]],
+                    ['post/1/25', false],
+                    ['post', false],
+                ],
+            ],
+            [
+                'multiple params with special chars',
+                [
+                    'pattern' => 'post/<1page-number:\d+>/<-per_page:\d+>/<_author.login>',
+                    'route' => 'post/index',
+                ],
+                [
+                    ['post/1/25/yiiuser', ['post/index', ['1page-number' => '1', '-per_page' => '25', '_author.login' => 'yiiuser']]],
+                    ['post/1/25', false],
+                    ['post', false],
                 ],
             ],
             [
@@ -475,10 +740,10 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1],
                 ],
                 [
-                    ['post/1/a', 'post/index', ['page' => '1', 'tag' => 'a']],
-                    ['post/2/a', 'post/index', ['page' => '2', 'tag' => 'a']],
-                    ['post/a', 'post/index', ['page' => '1', 'tag' => 'a']],
-                    ['post/1', 'post/index', ['page' => '1', 'tag' => '1']],
+                    ['post/1/a', ['post/index', ['page' => '1', 'tag' => 'a']]],
+                    ['post/2/a', ['post/index', ['page' => '2', 'tag' => 'a']]],
+                    ['post/a', ['post/index', ['page' => '1', 'tag' => 'a']]],
+                    ['post/1', ['post/index', ['page' => '1', 'tag' => '1']]],
                 ],
             ],
             [
@@ -489,8 +754,8 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1],
                 ],
                 [
-                    ['post/a', 'post/index', ['page' => '1', 'tag' => 'a']],
-                    ['post/1', 'post/index', ['page' => '1', 'tag' => '1']],
+                    ['post/a', ['post/index', ['page' => '1', 'tag' => 'a']]],
+                    ['post/1', ['post/index', ['page' => '1', 'tag' => '1']]],
                     ['post', false],
                 ],
             ],
@@ -502,12 +767,12 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1, 'sort' => 'yes'],
                 ],
                 [
-                    ['post/1/a/yes', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'yes']],
-                    ['post/1/a/no', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'no']],
-                    ['post/2/a/no', 'post/index', ['page' => '2', 'tag' => 'a', 'sort' => 'no']],
-                    ['post/2/a', 'post/index', ['page' => '2', 'tag' => 'a', 'sort' => 'yes']],
-                    ['post/a/no', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'no']],
-                    ['post/a', 'post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'yes']],
+                    ['post/1/a/yes', ['post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'yes']]],
+                    ['post/1/a/no', ['post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'no']]],
+                    ['post/2/a/no', ['post/index', ['page' => '2', 'tag' => 'a', 'sort' => 'no']]],
+                    ['post/2/a', ['post/index', ['page' => '2', 'tag' => 'a', 'sort' => 'yes']]],
+                    ['post/a/no', ['post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'no']]],
+                    ['post/a', ['post/index', ['page' => '1', 'tag' => 'a', 'sort' => 'yes']]],
                     ['post', false],
                 ],
             ],
@@ -519,9 +784,9 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1],
                 ],
                 [
-                    ['post/1-a', 'post/index', ['page' => '1', 'tag' => 'a']],
-                    ['post/2-a', 'post/index', ['page' => '2', 'tag' => 'a']],
-                    ['post/-a', 'post/index', ['page' => '1', 'tag' => 'a']],
+                    ['post/1-a', ['post/index', ['page' => '1', 'tag' => 'a']]],
+                    ['post/2-a', ['post/index', ['page' => '2', 'tag' => 'a']]],
+                    ['post/-a', ['post/index', ['page' => '1', 'tag' => 'a']]],
                     ['post/a', false],
                     ['post-a', false],
                 ],
@@ -534,10 +799,10 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1],
                 ],
                 [
-                    ['post/a/1', 'post/index', ['page' => '1', 'tag' => 'a']],
-                    ['post/a/2', 'post/index', ['page' => '2', 'tag' => 'a']],
-                    ['post/a', 'post/index', ['page' => '1', 'tag' => 'a']],
-                    ['post/2', 'post/index', ['page' => '1', 'tag' => '2']],
+                    ['post/a/1', ['post/index', ['page' => '1', 'tag' => 'a']]],
+                    ['post/a/2', ['post/index', ['page' => '2', 'tag' => 'a']]],
+                    ['post/a', ['post/index', ['page' => '1', 'tag' => 'a']]],
+                    ['post/2', ['post/index', ['page' => '1', 'tag' => '2']]],
                     ['post', false],
                 ],
             ],
@@ -549,11 +814,11 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1, 'tag' => 'a'],
                 ],
                 [
-                    ['post/2/b', 'post/index', ['page' => '2', 'tag' => 'b']],
-                    ['post/2', 'post/index', ['page' => '2', 'tag' => 'a']],
-                    ['post', 'post/index', ['page' => '1', 'tag' => 'a']],
-                    ['post/b', 'post/index', ['page' => '1', 'tag' => 'b']],
-                    ['post//b', false],
+                    ['post/2/b', ['post/index', ['page' => '2', 'tag' => 'b']]],
+                    ['post/2', ['post/index', ['page' => '2', 'tag' => 'a']]],
+                    ['post', ['post/index', ['page' => '1', 'tag' => 'a']]],
+                    ['post/b', ['post/index', ['page' => '1', 'tag' => 'b']]],
+                    ['post//b', false, ['post/index', ['page' => '1', 'tag' => 'b']]],
                 ],
             ],
             [
@@ -564,10 +829,10 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1, 'tag' => 'a'],
                 ],
                 [
-                    ['post/2-b', 'post/index', ['page' => '2', 'tag' => 'b']],
-                    ['post/2-', 'post/index', ['page' => '2', 'tag' => 'a']],
-                    ['post/-b', 'post/index', ['page' => '1', 'tag' => 'b']],
-                    ['post/-', 'post/index', ['page' => '1', 'tag' => 'a']],
+                    ['post/2-b', ['post/index', ['page' => '2', 'tag' => 'b']]],
+                    ['post/2-', ['post/index', ['page' => '2', 'tag' => 'a']]],
+                    ['post/-b', ['post/index', ['page' => '1', 'tag' => 'b']]],
+                    ['post/-', ['post/index', ['page' => '1', 'tag' => 'a']]],
                     ['post', false],
                 ],
             ],
@@ -579,7 +844,7 @@ class UrlRuleTest extends TestCase
                     'defaults' => [],
                 ],
                 [
-                    ['post/index', 'post/index'],
+                    ['post/index', ['post/index', []]],
                     ['module/post/index', false],
                 ],
             ],
@@ -591,8 +856,8 @@ class UrlRuleTest extends TestCase
                     'defaults' => [],
                 ],
                 [
-                    ['post/index', 'post/index'],
-                    ['comment/index', 'comment/index'],
+                    ['post/index', ['post/index', []]],
+                    ['comment/index', ['comment/index', []]],
                     ['test/index', false],
                     ['post', false],
                     ['module/post/index', false],
@@ -606,10 +871,10 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['action' => 'index'],
                 ],
                 [
-                    ['post/view', 'post/view'],
-                    ['comment/view', 'comment/view'],
+                    ['post/view', ['post/view', []]],
+                    ['comment/view', ['comment/view', []]],
                     ['test/view', false],
-                    ['post', 'post/index'],
+                    ['post', ['post/index', []]],
                     ['posts', false],
                     ['test', false],
                     ['index', false],
@@ -623,7 +888,7 @@ class UrlRuleTest extends TestCase
                     'suffix' => '.html',
                 ],
                 [
-                    ['', 'post/index'],
+                    ['', ['post/index', []]],
                     ['.html', false],
                     ['a.html', false],
                 ],
@@ -636,7 +901,7 @@ class UrlRuleTest extends TestCase
                     'suffix' => '.html',
                 ],
                 [
-                    ['posts.html', 'post/index'],
+                    ['posts.html', ['post/index', []]],
                     ['posts', false],
                     ['posts.HTML', false],
                     ['a.html', false],
@@ -651,7 +916,7 @@ class UrlRuleTest extends TestCase
                     'suffix' => '/',
                 ],
                 [
-                    ['', 'post/index'],
+                    ['', ['post/index', []]],
                     ['a', false],
                 ],
             ],
@@ -663,8 +928,8 @@ class UrlRuleTest extends TestCase
                     'suffix' => '/',
                 ],
                 [
-                    ['posts/', 'post/index'],
-                    ['posts', false],
+                    ['posts/', ['post/index', []]],
+                    ['posts', false, ['post/index', []]],
                     ['a', false],
                 ],
             ],
@@ -676,7 +941,7 @@ class UrlRuleTest extends TestCase
                     'host' => 'http://<lang:en|fr>.example.com',
                 ],
                 [
-                    ['post/1', 'post/index', ['page' => '1', 'lang' => 'en']],
+                    ['post/1', ['post/index', ['page' => '1', 'lang' => 'en']]],
                     ['post/a', false],
                     ['post/1/a', false],
                 ],
@@ -688,7 +953,7 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                 ],
                 [
-                    ['post/1', 'post/index', ['page' => '1', 'lang' => 'en']],
+                    ['post/1', ['post/index', ['page' => '1', 'lang' => 'en']]],
                     ['post/a', false],
                     ['post/1/a', false],
                 ],
@@ -701,8 +966,8 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1],
                 ],
                 [
-                    ['', 'post/index', ['page' => 1]],
-                    ['2', 'post/index', ['page' => 2]],
+                    ['', ['post/index', ['page' => 1]]],
+                    ['2', ['post/index', ['page' => 2]]],
                 ],
             ],
         ];

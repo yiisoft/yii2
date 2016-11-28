@@ -24,16 +24,16 @@ use yii\helpers\Json;
 class NumberValidator extends Validator
 {
     /**
-     * @var boolean whether the attribute value can only be an integer. Defaults to false.
+     * @var bool whether the attribute value can only be an integer. Defaults to false.
      */
     public $integerOnly = false;
     /**
-     * @var integer|float upper limit of the number. Defaults to null, meaning no upper limit.
+     * @var int|float upper limit of the number. Defaults to null, meaning no upper limit.
      * @see tooBig for the customized message used when the number is too big.
      */
     public $max;
     /**
-     * @var integer|float lower limit of the number. Defaults to null, meaning no lower limit.
+     * @var int|float lower limit of the number. Defaults to null, meaning no lower limit.
      * @see tooSmall for the customized message used when the number is too small.
      */
     public $min;
@@ -80,7 +80,7 @@ class NumberValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if (is_array($value)) {
+        if (is_array($value) || (is_object($value) && !method_exists($value, '__toString'))) {
             $this->addError($model, $attribute, $this->message);
             return;
         }
@@ -101,7 +101,7 @@ class NumberValidator extends Validator
      */
     protected function validateValue($value)
     {
-        if (is_array($value)) {
+        if (is_array($value) || is_object($value)) {
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;

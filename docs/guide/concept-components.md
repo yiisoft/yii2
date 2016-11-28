@@ -38,7 +38,7 @@ these conventions:
 - If you override the constructor, specify a `$config` parameter as the constructor's *last* parameter, and then pass this parameter
   to the parent constructor.
 - Always call the parent constructor *at the end* of your overriding constructor.
-- If you override the [[yii\base\Object::init()]] method, make sure you call the parent implementation of `init` *at the beginning* of your `init` method.
+- If you override the [[yii\base\Object::init()]] method, make sure you call the parent implementation of `init()` *at the beginning* of your `init()` method.
 
 For example:
 

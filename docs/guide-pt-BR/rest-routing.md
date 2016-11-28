@@ -3,9 +3,9 @@ Roteamento
 
 Com as classes de recurso e controller prontas, você pode acessar os recursos utilizando uma URL como `http://localhost/index.php?r=user/create`, semelhante ao que você pode fazer com aplicações Web normais.
 
-Na prática, você geralmente deseja utilizar URLs amigáveis e tirar proveito dos métodos HTTP.
+Na prática, normalmente você desejará utilizar URLs amigáveis e tirar proveito dos métodos HTTP.
 Por exemplo, uma requisição `POST /users` seria o mesmo que a ação `user/create`.
-Isto pode ser feito facilmente através da configuração do `urlManager` [application component](structure-application-components.md) na configuração da aplicação conforme mostrado abaixo:
+Isto pode ser feito facilmente através da configuração do [componente de aplicação](structure-application-components.md) `urlManager` conforme mostrado a seguir:
 
 ```php
 'urlManager' => [
@@ -18,7 +18,7 @@ Isto pode ser feito facilmente através da configuração do `urlManager` [appli
 ]
 ```
 
-Em comparação com o gerenciamento de URL para aplicações web, a principal novidade acima é o uso de [[yii\rest\UrlRule]] para rotear requisições API RESTful API. Esta classe especial regra de URL irá criar um conjunto de regras de URL filhas para dar suporte ao roteamento e a criação de URL para o controller especificado.
+Em comparação com o gerenciamento de URL para aplicações Web, a principal novidade acima é o uso de [[yii\rest\UrlRule]] para rotear requisições API RESTful. Esta classe especial criará um conjunto de regras de URL filhas para dar suporte ao roteamento e a criação de URL para o controller especificado.
 Por exemplo, o código acima é mais ou menos equivalente às seguintes regras:
 
 ```php
@@ -33,7 +33,7 @@ Por exemplo, o código acima é mais ou menos equivalente às seguintes regras:
 ]
 ```
 
-E os seguintes terminais de API são suportados por esta regra:
+E as seguintes URLs (também chamadas de *endpoints*) da API são suportados por esta regra:
 
 * `GET /users`: lista todos os usuários página por página;
 * `HEAD /users`: mostrar a informações gerais da listagem de usuários;
@@ -42,10 +42,10 @@ E os seguintes terminais de API são suportados por esta regra:
 * `HEAD /users/123`: mostrar a informações gerais do usuário 123;
 * `PATCH /users/123` and `PUT /users/123`: atualiza o usuário 123;
 * `DELETE /users/123`: deleta o usuário 123;
-* `OPTIONS /users`: mostrar os metodos suportados pelo terminal `/users`;
-* `OPTIONS /users/123`: mostrar os metodos suportados pelo terminal  `/users/123`.
+* `OPTIONS /users`: exibe os métodos suportados pela URL `/users`;
+* `OPTIONS /users/123`: exibe os métodos suportados pela URL `/users/123`.
 
-Você pode configurar as opções `only` e `except` para listar explicitamente que ações são suportadas ou quais ações devem ser desativada, respectivamente. Por exemplo,
+Você pode configurar as opções `only` e `except` para listar explicitamente quais ações são suportadas ou quais ações devem ser desativadas, respectivamente. Por exemplo,
 
 ```php
 [
@@ -55,7 +55,7 @@ Você pode configurar as opções `only` e `except` para listar explicitamente q
 ],
 ```
 
-Você também pode configurar `patterns` ou `extraPatterns` para redefinir padrões existentes ou adicionar novos padrões suportados por esta regra. Por exemplo, para acessar a uma nova ação `search` pelo terminal `GET /users/search`, configure a opção `extraPatterns` como a seguir,
+Você também pode configurar `patterns` ou `extraPatterns` para redefinir padrões existentes ou adicionar novos padrões suportados por esta regra. Por exemplo, para acessar a uma nova ação `search` pela URL `GET /users/search`, configure a opção `extraPatterns` como a seguir,
 
 ```php
 [
@@ -67,13 +67,13 @@ Você também pode configurar `patterns` ou `extraPatterns` para redefinir padr�
 ]
 ```
 
-Você deve ter notado que o controller ID `user` aparece no plural como `users` na extremidade das  URLs. Isto acontece porque [[yii\rest\UrlRule]] pluraliza os controller IDs automaticamente na criação de regras de Urls filhas.
-Você pode desabilitar este comportamento configurando [[yii\rest\UrlRule::pluralize]] para falso.
+Você deve ter notado que o ID `user` de controller aparece no plural como `users` na extremidade das  URLs. Isto acontece porque [[yii\rest\UrlRule]] pluraliza os IDs de controllers automaticamente na criação de regras de URLs filhas.
+Você pode desabilitar este comportamento configurando [[yii\rest\UrlRule::pluralize]] para `false`.
 
-> Observação: A pluralização dos controller IDs é feita por [[yii\helpers\Inflector::pluralize()]]. O método respeita as regras especiais de pluralização. Por exemplo, a palavra `box` será pluralizada coo `boxes` em vez de `boxs`.
+> Observação: A pluralização dos IDs de controllers são feitas pelo método [[yii\helpers\Inflector::pluralize()]]. O método respeita as regras especiais de pluralização. Por exemplo, a palavra `box` será pluralizada para `boxes` em vez de `boxs`.
 
 
-Caso a pluralização automática não encontre uma opção para a palavra requerida, você pode configurar a propriedade [[yii\rest\UrlRule::controller]] para especificar explicitamente como mapear um nome para ser usado como terminal da URL para um controller ID. Por exemplo, o seguinte código mapeia o nome `u` para o controller ID `user`.  
+Caso a pluralização automática não encontre uma opção para a palavra requerida, você pode configurar a propriedade [[yii\rest\UrlRule::controller]] para especificar explicitamente como mapear um nome para ser usado como uma URL para um ID de controller. Por exemplo, o seguinte código mapeia o nome `u` para o ID `user` de controller.  
 
 ```php
 [

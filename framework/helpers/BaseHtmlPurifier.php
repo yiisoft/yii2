@@ -32,13 +32,13 @@ class BaseHtmlPurifier
      *
      *   Here is a usage example of such a function:
      *
-     *   ~~~
+     *   ```php
      *   // Allow the HTML5 data attribute `data-type` on `img` elements.
      *   $content = HtmlPurifier::process($content, function ($config) {
      *     $config->getHTMLDefinition(true)
      *            ->addAttribute('img', 'data-type', 'Text');
      *   });
-     * ~~~
+     * ```
      *
      * @return string the purified HTML content.
      */
@@ -48,11 +48,12 @@ class BaseHtmlPurifier
         $configInstance->autoFinalize = false;
         $purifier = \HTMLPurifier::instance($configInstance);
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
-        
+        $purifier->config->set('Cache.SerializerPermissions', 0775);
+
+        static::configure($configInstance);
         if ($config instanceof \Closure) {
             call_user_func($config, $configInstance);
         }
-        static::configure($configInstance);
 
         return $purifier->purify($content);
     }

@@ -44,45 +44,45 @@ class CaptchaAction extends Action
     const REFRESH_GET_VAR = 'refresh';
 
     /**
-     * @var integer how many times should the same CAPTCHA be displayed. Defaults to 3.
+     * @var int how many times should the same CAPTCHA be displayed. Defaults to 3.
      * A value less than or equal to 0 means the test is unlimited (available since version 1.1.2).
      */
     public $testLimit = 3;
     /**
-     * @var integer the width of the generated CAPTCHA image. Defaults to 120.
+     * @var int the width of the generated CAPTCHA image. Defaults to 120.
      */
     public $width = 120;
     /**
-     * @var integer the height of the generated CAPTCHA image. Defaults to 50.
+     * @var int the height of the generated CAPTCHA image. Defaults to 50.
      */
     public $height = 50;
     /**
-     * @var integer padding around the text. Defaults to 2.
+     * @var int padding around the text. Defaults to 2.
      */
     public $padding = 2;
     /**
-     * @var integer the background color. For example, 0x55FF00.
+     * @var int the background color. For example, 0x55FF00.
      * Defaults to 0xFFFFFF, meaning white color.
      */
     public $backColor = 0xFFFFFF;
     /**
-     * @var integer the font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
+     * @var int the font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
      */
     public $foreColor = 0x2040A0;
     /**
-     * @var boolean whether to use transparent background. Defaults to false.
+     * @var bool whether to use transparent background. Defaults to false.
      */
     public $transparent = false;
     /**
-     * @var integer the minimum length for randomly generated word. Defaults to 6.
+     * @var int the minimum length for randomly generated word. Defaults to 6.
      */
     public $minLength = 6;
     /**
-     * @var integer the maximum length for randomly generated word. Defaults to 7.
+     * @var int the maximum length for randomly generated word. Defaults to 7.
      */
     public $maxLength = 7;
     /**
-     * @var integer the offset between characters. Defaults to -2. You can adjust this property
+     * @var int the offset between characters. Defaults to -2. You can adjust this property
      * in order to decrease or increase the readability of the captcha.
      */
     public $offset = -2;
@@ -98,6 +98,12 @@ class CaptchaAction extends Action
      * If not set, it means the verification code will be randomly generated.
      */
     public $fixedVerifyCode;
+    /**
+     * @var string the rendering library to use. Currently supported only 'gd' and 'imagick'.
+     * If not set, library will be determined automatically.
+     * @since 2.0.7
+     */
+    public $imageLibrary;
 
 
     /**
@@ -136,7 +142,7 @@ class CaptchaAction extends Action
     }
 
     /**
-     * Generates a hash code that can be used for client side validation.
+     * Generates a hash code that can be used for client-side validation.
      * @param string $code the CAPTCHA code
      * @return string a hash code generated from the CAPTCHA code
      */
@@ -151,7 +157,7 @@ class CaptchaAction extends Action
 
     /**
      * Gets the verification code.
-     * @param boolean $regenerate whether the verification code should be regenerated.
+     * @param bool $regenerate whether the verification code should be regenerated.
      * @return string the verification code.
      */
     public function getVerifyCode($regenerate = false)
@@ -174,8 +180,8 @@ class CaptchaAction extends Action
     /**
      * Validates the input to see if it matches the generated code.
      * @param string $input user input
-     * @param boolean $caseSensitive whether the comparison should be case-sensitive
-     * @return boolean whether the input is valid
+     * @param bool $caseSensitive whether the comparison should be case-sensitive
+     * @return bool whether the input is valid
      */
     public function validate($input, $caseSensitive)
     {
@@ -236,13 +242,21 @@ class CaptchaAction extends Action
      * Renders the CAPTCHA image.
      * @param string $code the verification code
      * @return string image contents
+     * @throws InvalidConfigException if imageLibrary is not supported
      */
     protected function renderImage($code)
     {
-        if (Captcha::checkRequirements() === 'gd') {
-            return $this->renderImageByGD($code);
+        if (isset($this->imageLibrary)) {
+            $imageLibrary = $this->imageLibrary;
         } else {
+            $imageLibrary = Captcha::checkRequirements();
+        }
+        if ($imageLibrary === 'gd') {
+            return $this->renderImageByGD($code);
+        } elseif ($imageLibrary === 'imagick') {
             return $this->renderImageByImagick($code);
+        } else {
+            throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
         }
     }
 
@@ -261,7 +275,7 @@ class CaptchaAction extends Action
             (int) ($this->backColor % 0x10000 / 0x100),
             $this->backColor % 0x100
         );
-        imagefilledrectangle($image, 0, 0, $this->width, $this->height, $backColor);
+        imagefilledrectangle($image, 0, 0, $this->width - 1, $this->height - 1, $backColor);
         imagecolordeallocate($image, $backColor);
 
         if ($this->transparent) {
@@ -306,8 +320,8 @@ class CaptchaAction extends Action
      */
     protected function renderImageByImagick($code)
     {
-        $backColor = $this->transparent ? new \ImagickPixel('transparent') : new \ImagickPixel('#' . dechex($this->backColor));
-        $foreColor = new \ImagickPixel('#' . dechex($this->foreColor));
+        $backColor = $this->transparent ? new \ImagickPixel('transparent') : new \ImagickPixel('#' . str_pad(dechex($this->backColor), 6, 0, STR_PAD_LEFT));
+        $foreColor = new \ImagickPixel('#' . str_pad(dechex($this->foreColor), 6, 0, STR_PAD_LEFT));
 
         $image = new \Imagick();
         $image->newImage($this->width, $this->height, $backColor);
@@ -318,8 +332,8 @@ class CaptchaAction extends Action
         $fontMetrics = $image->queryFontMetrics($draw, $code);
 
         $length = strlen($code);
-        $w = (int) ($fontMetrics['textWidth']) - 8 + $this->offset * ($length - 1);
-        $h = (int) ($fontMetrics['textHeight']) - 8;
+        $w = (int) $fontMetrics['textWidth'] - 8 + $this->offset * ($length - 1);
+        $h = (int) $fontMetrics['textHeight'] - 8;
         $scale = min(($this->width - $this->padding * 2) / $w, ($this->height - $this->padding * 2) / $h);
         $x = 10;
         $y = round($this->height * 27 / 40);
@@ -330,7 +344,7 @@ class CaptchaAction extends Action
             $draw->setFillColor($foreColor);
             $image->annotateImage($draw, $x, $y, rand(-10, 10), $code[$i]);
             $fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
-            $x += (int) ($fontMetrics['textWidth']) + $this->offset;
+            $x += (int) $fontMetrics['textWidth'] + $this->offset;
         }
 
         $image->setImageFormat('png');

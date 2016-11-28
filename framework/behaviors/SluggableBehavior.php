@@ -9,6 +9,7 @@ namespace yii\behaviors;
 
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\UniqueValidator;
 use Yii;
@@ -34,8 +35,12 @@ use Yii;
  * ```
  *
  * By default, SluggableBehavior will fill the `slug` attribute with a value that can be used a slug in a URL
- * when the associated AR object is being validated. If your attribute name is different, you may configure
- * the [[slugAttribute]] property like the following:
+ * when the associated AR object is being validated.
+ *
+ * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
+ * not be validated, i.e. the `slug` attribute should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ *
+ * If your attribute name is different, you may configure the [[slugAttribute]] property like the following:
  *
  * ```php
  * public function behaviors()
@@ -77,13 +82,13 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $value;
     /**
-     * @var boolean whether to generate a new slug if it has already been generated before.
+     * @var bool whether to generate a new slug if it has already been generated before.
      * If true, the behavior will not generate a new slug even if [[attribute]] is changed.
      * @since 2.0.2
      */
     public $immutable = false;
     /**
-     * @var boolean whether to ensure generated slug value to be unique among owner class records.
+     * @var bool whether to ensure generated slug value to be unique among owner class records.
      * If enabled behavior will validate slug uniqueness automatically. If validation fails it will attempt
      * generating unique slug value from based one until success.
      */
@@ -131,60 +136,95 @@ class SluggableBehavior extends AttributeBehavior
      */
     protected function getValue($event)
     {
-        $isNewSlug = true;
-
         if ($this->attribute !== null) {
-            $attributes = (array) $this->attribute;
-            /* @var $owner BaseActiveRecord */
-            $owner = $this->owner;
-            if (!empty($owner->{$this->slugAttribute})) {
-                $isNewSlug = false;
-                if (!$this->immutable) {
-                    foreach ($attributes as $attribute) {
-                        if ($owner->isAttributeChanged($attribute)) {
-                            $isNewSlug = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if ($isNewSlug) {
+            if ($this->isNewSlugNeeded()) {
                 $slugParts = [];
-                foreach ($attributes as $attribute) {
-                    $slugParts[] = $owner->{$attribute};
+                foreach ((array) $this->attribute as $attribute) {
+                    $slugParts[] = ArrayHelper::getValue($this->owner, $attribute);
                 }
-                $slug = Inflector::slug(implode('-', $slugParts));
+
+                $slug = $this->generateSlug($slugParts);
             } else {
-                $slug = $owner->{$this->slugAttribute};
+                return $this->owner->{$this->slugAttribute};
             }
         } else {
             $slug = parent::getValue($event);
         }
 
-        if ($this->ensureUnique && $isNewSlug) {
-            $baseSlug = $slug;
-            $iteration = 0;
-            while (!$this->validateSlug($slug)) {
-                $iteration++;
-                $slug = $this->generateUniqueSlug($baseSlug, $iteration);
+        return $this->ensureUnique ? $this->makeUnique($slug) : $slug;
+    }
+
+    /**
+     * Checks whether the new slug generation is needed
+     * This method is called by [[getValue]] to check whether the new slug generation is needed.
+     * You may override it to customize checking.
+     * @return bool
+     * @since 2.0.7
+     */
+    protected function isNewSlugNeeded()
+    {
+        if (empty($this->owner->{$this->slugAttribute})) {
+            return true;
+        }
+
+        if ($this->immutable) {
+            return false;
+        }
+
+        foreach ((array)$this->attribute as $attribute) {
+            if ($this->owner->isAttributeChanged($attribute)) {
+                return true;
             }
         }
-        return $slug;
+
+        return false;
+    }
+
+    /**
+     * This method is called by [[getValue]] to generate the slug.
+     * You may override it to customize slug generation.
+     * The default implementation calls [[\yii\helpers\Inflector::slug()]] on the input strings
+     * concatenated by dashes (`-`).
+     * @param array $slugParts an array of strings that should be concatenated and converted to generate the slug value.
+     * @return string the conversion result.
+     */
+    protected function generateSlug($slugParts)
+    {
+        return Inflector::slug(implode('-', $slugParts));
+    }
+
+    /**
+     * This method is called by [[getValue]] when [[ensureUnique]] is true to generate the unique slug.
+     * Calls [[generateUniqueSlug]] until generated slug is unique and returns it.
+     * @param string $slug basic slug value
+     * @return string unique slug
+     * @see getValue
+     * @see generateUniqueSlug
+     * @since 2.0.7
+     */
+    protected function makeUnique($slug)
+    {
+        $uniqueSlug = $slug;
+        $iteration = 0;
+        while (!$this->validateSlug($uniqueSlug)) {
+            $iteration++;
+            $uniqueSlug = $this->generateUniqueSlug($slug, $iteration);
+        }
+        return $uniqueSlug;
     }
 
     /**
      * Checks if given slug value is unique.
      * @param string $slug slug value
-     * @return boolean whether slug is unique.
+     * @return bool whether slug is unique.
      */
-    private function validateSlug($slug)
+    protected function validateSlug($slug)
     {
         /* @var $validator UniqueValidator */
         /* @var $model BaseActiveRecord */
         $validator = Yii::createObject(array_merge(
             [
-                'class' => UniqueValidator::className()
+                'class' => UniqueValidator::className(),
             ],
             $this->uniqueValidator
         ));
@@ -200,16 +240,15 @@ class SluggableBehavior extends AttributeBehavior
     /**
      * Generates slug using configured callback or increment of iteration.
      * @param string $baseSlug base slug value
-     * @param integer $iteration iteration number
+     * @param int $iteration iteration number
      * @return string new slug value
      * @throws \yii\base\InvalidConfigException
      */
-    private function generateUniqueSlug($baseSlug, $iteration)
+    protected function generateUniqueSlug($baseSlug, $iteration)
     {
         if (is_callable($this->uniqueSlugGenerator)) {
             return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
-        } else {
-            return $baseSlug . '-' . ($iteration + 1);
         }
+        return $baseSlug . '-' . ($iteration + 1);
     }
 }

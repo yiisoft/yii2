@@ -22,13 +22,13 @@ use yii\di\Instance;
  * The following example shows how you can configure the application to use DbSession:
  * Add the following to your application config under `components`:
  *
- * ~~~
+ * ```php
  * 'session' => [
  *     'class' => 'yii\web\DbSession',
  *     // 'db' => 'mydb',
  *     // 'sessionTable' => 'my_session',
  * ]
- * ~~~
+ * ```
  *
  * DbSession extends [[MultiFieldSession]], thus it allows saving extra fields into the [[sessionTable]].
  * Refer to [[MultiFieldSession]] for more details.
@@ -49,14 +49,14 @@ class DbSession extends MultiFieldSession
      * @var string the name of the DB table that stores the session data.
      * The table should be pre-created as follows:
      *
-     * ~~~
+     * ```sql
      * CREATE TABLE session
      * (
      *     id CHAR(40) NOT NULL PRIMARY KEY,
      *     expire INTEGER,
      *     data BLOB
      * )
-     * ~~~
+     * ```
      *
      * where 'BLOB' refers to the BLOB-type of your preferred DBMS. Below are the BLOB type
      * that can be used for some popular DBMS:
@@ -89,7 +89,7 @@ class DbSession extends MultiFieldSession
     /**
      * Updates the current session ID with a newly generated one .
      * Please refer to <http://php.net/session_regenerate_id> for more details.
-     * @param boolean $deleteOldSession Whether to delete the old associated session file or not.
+     * @param bool $deleteOldSession Whether to delete the old associated session file or not.
      */
     public function regenerateID($deleteOldSession = false)
     {
@@ -139,7 +139,7 @@ class DbSession extends MultiFieldSession
         $query->from($this->sessionTable)
             ->where('[[expire]]>:expire AND [[id]]=:id', [':expire' => time(), ':id' => $id]);
 
-        if (isset($this->readCallback)) {
+        if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
             return $fields === false ? '' : $this->extractData($fields);
         }
@@ -153,12 +153,12 @@ class DbSession extends MultiFieldSession
      * Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
-     * @return boolean whether session write is successful
+     * @return bool whether session write is successful
      */
     public function writeSession($id, $data)
     {
         // exception must be caught in session write handler
-        // http://us.php.net/manual/en/function.session-set-save-handler.php
+        // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
             $query = new Query;
             $exists = $query->select(['id'])
@@ -181,8 +181,9 @@ class DbSession extends MultiFieldSession
             $exception = ErrorHandler::convertExceptionToString($e);
             // its too late to use Yii logging here
             error_log($exception);
-            echo $exception;
-
+            if (YII_DEBUG) {
+                echo $exception;
+            }
             return false;
         }
 
@@ -193,7 +194,7 @@ class DbSession extends MultiFieldSession
      * Session destroy handler.
      * Do not call this method directly.
      * @param string $id session ID
-     * @return boolean whether session is destroyed successfully
+     * @return bool whether session is destroyed successfully
      */
     public function destroySession($id)
     {
@@ -207,8 +208,8 @@ class DbSession extends MultiFieldSession
     /**
      * Session GC (garbage collection) handler.
      * Do not call this method directly.
-     * @param integer $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
-     * @return boolean whether session is GCed successfully
+     * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
+     * @return bool whether session is GCed successfully
      */
     public function gcSession($maxLifetime)
     {

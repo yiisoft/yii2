@@ -27,11 +27,14 @@ Yii をクローンしたディレクトリ、通常は "yii2" に入って、�
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. テスト環境を準備する
+### 3. テスト環境を準備する <span id="prepare-the-test-environment"></span
 
 以下のステップは、翻訳またはドキュメントだけに取り組みたい場合は、必要ではありません。
 
 - `composer update` を実行して、依存パッケージをインストールします ([composer をグローバルにインストール](https://getcomposer.org/doc/00-intro.md#globally) したものと仮定しています)。
+
+> Note: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:^1.2.0"` を実行する必要があります。
+
 - `php build/build dev/app basic` を実行して、ベーシックアプリケーションをクローンし、その依存パッケージをインストールします。
   このコマンドは外部 composer パッケージは通常どおりインストールしますが、yii2 レポジトリは現在チェックアウトされているものをリンクします。
   これで、インストールされる全てのコードについて、一つのインスタンスを持つことになります。
@@ -41,7 +44,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
   このコマンドは後日、依存パッケージを更新するためにも使用されます。
   このコマンドは内部的に `composer update` を実行します。
 
-> Note|注意: デフォルトの git レポジトリの Url を使うため、SSH 経由で github からクローンすることになります。
+> Note: デフォルトの git レポジトリの Url を使うため、SSH 経由で github からクローンすることになります。
 > `build` コマンドに `--useHttp` フラグを追加すれば、代りに HTTP を使うことが出来ます。
 
 **これであなたは Yii 2 をハックするための作業用の遊び場を手に入れました。**
@@ -76,7 +79,7 @@ php build/build dev/ext <extension-name>
 `php build/build dev/app basic` を実行すると、エクステンションとその依存パッケージがインストールされ、`extensions/redis` に対するシンボリックリンクが作成されます。
 こうすることで、composer の vendor ディレクトリではなく、直接に yii2 のレポジトリで作業をすることが出来るようになります。
 
-> Note|注意: デフォルトの git レポジトリの Url を使うため、SSH 経由で github からクローンすることになります。
+> Note: デフォルトの git レポジトリの Url を使うため、SSH 経由で github からクローンすることになります。
 > `build` コマンドに `--useHttp` フラグを追加すれば、代りに HTTP を使うことが出来ます。
 
 バグ修正と機能改良に取り組む
@@ -128,7 +131,7 @@ git checkout -b 999-name-of-your-branch-goes-here
 ### 5. CHANGELOG を更新する
 
 CHANGELOG ファイルを編集して、あなたの修正を追加します。
-新しい行は、ファイル冒頭の "Work in progress" 見出しの下に挿入してください。
+新しい行は、ファイル冒頭の最初の見出し (現在開発中のバージョン) の下に挿入してください。
 チェンジログの行は、下記のどちらかのように書いてください。
 
 ```

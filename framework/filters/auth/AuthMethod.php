@@ -8,6 +8,7 @@
 namespace yii\filters\auth;
 
 use Yii;
+use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\web\UnauthorizedHttpException;
 use yii\web\User;
@@ -34,6 +35,15 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      * @var Response the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
+    /**
+     * @var array list of action IDs that this filter will be applied to, but auth failure will not lead to error.
+     * It may be used for actions, that are allowed for public, but return some additional data for authenticated users.
+     * Defaults to empty, meaning authentication is not optional for any action.
+     * Since version 2.0.10 action IDs can be specified as wildcards, e.g. `site/*`.
+     * @see isOptional()
+     * @since 2.0.7
+     */
+    public $optional = [];
 
 
     /**
@@ -43,13 +53,21 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
     {
         $response = $this->response ? : Yii::$app->getResponse();
 
-        $identity = $this->authenticate(
-            $this->user ? : Yii::$app->getUser(),
-            $this->request ? : Yii::$app->getRequest(),
-            $response
-        );
+        try {
+            $identity = $this->authenticate(
+                $this->user ? : Yii::$app->getUser(),
+                $this->request ? : Yii::$app->getRequest(),
+                $response
+            );
+        } catch (UnauthorizedHttpException $e) {
+            if ($this->isOptional($action)) {
+                return true;
+            }
 
-        if ($identity !== null) {
+            throw $e;
+        }
+
+        if ($identity !== null || $this->isOptional($action)) {
             return true;
         } else {
             $this->challenge($response);
@@ -70,6 +88,25 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
      */
     public function handleFailure($response)
     {
-        throw new UnauthorizedHttpException('You are requesting with an invalid credential.');
+        throw new UnauthorizedHttpException('Your request was made with invalid credentials.');
+    }
+
+    /**
+     * Checks, whether authentication is optional for the given action.
+     *
+     * @param Action $action action to be checked.
+     * @return bool whether authentication is optional or not.
+     * @see optional
+     * @since 2.0.7
+     */
+    protected function isOptional($action)
+    {
+        $id = $this->getActionId($action);
+        foreach ($this->optional as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

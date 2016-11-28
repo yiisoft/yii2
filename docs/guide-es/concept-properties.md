@@ -1,4 +1,4 @@
-﻿Propiedades
+Propiedades
 ===========
 
 En PHP, las variables miembro de clases también llamadas *propiedades*, son parte de la definición de la clase, y se
@@ -21,7 +21,7 @@ Para solventar este problema, Yii introduce la clase base llamada [[yii\base\Obj
 de propiedades basada en los métodos de clase *getter* y *setter*. Si una clase necesita más funcionalidad, debe
 extender a la clase [[yii\base\Object]] o a alguna de sus hijas.
 
-> Información: Casi todas las clases del núcleo (core) en el framework Yii extienden a [[yii\base\Object]] o a una de
+> Info: Casi todas las clases del núcleo (core) en el framework Yii extienden a [[yii\base\Object]] o a una de
   sus clases hijas. Esto significa que siempre que se encuentre un getter o un setter en una clase del núcleo, se
   puede utilizar como una propiedad.
 

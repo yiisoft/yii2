@@ -100,7 +100,15 @@
          *  - jqXHR: a jqXHR object
          *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
-        ajaxComplete: 'ajaxComplete'
+        ajaxComplete: 'ajaxComplete',
+        /**
+         * afterInit event is triggered after yii activeForm init.
+         * The signature of the event handler should be:
+         *     function (event)
+         * where
+         *  - event: an Event object.
+         */        
+        afterInit: 'afterInit'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveForm::getClientOptions() as well
@@ -124,7 +132,9 @@
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
         validationUrl: undefined,
         // whether to scroll to first visible error after validation.
-        scrollToError: true
+        scrollToError: true,
+        // offset in pixels that should be added when scrolling to the first error.
+        scrollToErrorOffset: 0
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -135,7 +145,7 @@
         name: undefined,
         // the jQuery selector of the container of the input field
         container: undefined,
-        // the jQuery selector of the input field under the context of the container
+        // the jQuery selector of the input field under the context of the form
         input: undefined,
         // the jQuery selector of the error tag under the context of the container
         error: '.help-block',
@@ -201,7 +211,8 @@
                     settings: settings,
                     attributes: attributes,
                     submitting: false,
-                    validated: false
+                    validated: false,
+                    options: getFormOptions($form)
                 });
 
                 /**
@@ -216,6 +227,8 @@
                     });
                     $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
+                var event = $.Event(events.afterInit);
+                $form.trigger(event);
             });
         },
 
@@ -281,7 +294,11 @@
         },
 
         // validate all applicable inputs in the form
-        validate: function () {
+        validate: function (forceValidate) {
+            if (forceValidate) {
+                $(this).data('yiiActiveForm').submitting = true;
+            }
+
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
                 needAjaxValidation = false,
@@ -292,6 +309,7 @@
             if (submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
+
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
@@ -301,25 +319,28 @@
 
             // client-side validation
             $.each(data.attributes, function () {
-                this.cancelled = false;
-                // perform validation only if the form is being submitted or if an attribute is pending validation
-                if (data.submitting || this.status === 2 || this.status === 3) {
-                    var msg = messages[this.id];
-                    if (msg === undefined) {
-                        msg = [];
-                        messages[this.id] = msg;
-                    }
-                    var event = $.Event(events.beforeValidateAttribute);
-                    $form.trigger(event, [this, msg, deferreds]);
-                    if (event.result !== false) {
-                        if (this.validate) {
-                            this.validate(this, getValue($form, this), msg, deferreds, $form);
+                this.$form = $form;
+                if (!$(this.input).is(":disabled")) {
+                    this.cancelled = false;
+                    // perform validation only if the form is being submitted or if an attribute is pending validation
+                    if (data.submitting || this.status === 2 || this.status === 3) {
+                        var msg = messages[this.id];
+                        if (msg === undefined) {
+                            msg = [];
+                            messages[this.id] = msg;
                         }
-                        if (this.enableAjaxValidation) {
-                            needAjaxValidation = true;
+                        var event = $.Event(events.beforeValidateAttribute);
+                        $form.trigger(event, [this, msg, deferreds]);
+                        if (event.result !== false) {
+                            if (this.validate) {
+                                this.validate(this, getValue($form, this), msg, deferreds, $form);
+                            }
+                            if (this.enableAjaxValidation) {
+                                needAjaxValidation = true;
+                            }
+                        } else {
+                            this.cancelled = true;
                         }
-                    } else {
-                        this.cancelled = true;
                     }
                 }
             });
@@ -332,7 +353,7 @@
                         delete messages[i];
                     }
                 }
-                if (needAjaxValidation) {
+                if (needAjaxValidation && ($.isEmptyObject(messages) || data.submitting)) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
                     if ($button && $button.length && $button.attr('name')) {
@@ -391,6 +412,7 @@
                     submitFinalize($form);
                     return false;
                 }
+                updateHiddenButton($form);
                 return true;   // continue submitting the form since validation passes
             } else {
                 // First submit's call (from yii.js/handleAction) - execute validating
@@ -472,7 +494,7 @@
         if (attribute.validateOnBlur) {
             $input.on('blur.yiiActiveForm', function () {
                 if (attribute.status == 0 || attribute.status == 1) {
-                    validateAttribute($form, attribute, !attribute.status);
+                    validateAttribute($form, attribute, true);
                 }
             });
         }
@@ -538,6 +560,47 @@
         return array;
     };
 
+    var buttonOptions = ['action', 'target', 'method', 'enctype'];
+
+    /**
+     * Returns current form options
+     * @param $form
+     * @returns object Object with button of form options
+     */
+    var getFormOptions = function ($form) {
+        var attributes = {};
+        for (var i = 0; i < buttonOptions.length; i++) {
+            attributes[buttonOptions[i]] = $form.attr(buttonOptions[i]);
+        }
+        return attributes;
+    };
+
+    /**
+     * Applies temporary form options related to submit button
+     * @param $form the form jQuery object
+     * @param $button the button jQuery object
+     */
+    var applyButtonOptions = function ($form, $button) {
+        for (var i = 0; i < buttonOptions.length; i++) {
+            var value = $button.attr('form' + buttonOptions[i]);
+            if (value) {
+                $form.attr(buttonOptions[i], value);
+            }
+        }
+    };
+
+    /**
+     * Restores original form options
+     * @param $form the form jQuery object
+     */
+    var restoreButtonOptions = function ($form) {
+        var data = $form.data('yiiActiveForm');
+
+        for (var i = 0; i < buttonOptions.length; i++) {
+            $form.attr(buttonOptions[i], data.options[buttonOptions[i]] || null);
+        }
+    };
+
     /**
      * Updates the error messages and the input containers for all applicable attributes
      * @param $form the form jQuery object
@@ -547,10 +610,14 @@
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
 
+        if (data === undefined) {
+            return false;
+        }
+
         if (submitting) {
             var errorAttributes = [];
             $.each(data.attributes, function () {
-                if (!this.cancelled && updateInput($form, this, messages)) {
+                if (!$(this.input).is(":disabled") && !this.cancelled && updateInput($form, this, messages)) {
                     errorAttributes.push(this);
                 }
             });
@@ -563,7 +630,12 @@
                 if (data.settings.scrollToError) {
                     var top = $form.find($.map(errorAttributes, function(attribute) {
                         return attribute.input;
-                    }).join(',')).first().closest(':visible').offset().top;
+                    }).join(',')).first().closest(':visible').offset().top - data.settings.scrollToErrorOffset;
+                    if (top < 0) {
+                        top = 0;
+                    } else if (top > $(document).height()) {
+                        top = $(document).height();
+                    }
                     var wtop = $(window).scrollTop();
                     if (top < wtop || top > wtop + $(window).height()) {
                         $(window).scrollTop(top);
@@ -572,22 +644,13 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                var $button = data.submitObject || $form.find(':submit:first');
-                // TODO: if the submission is caused by "change" event, it will not work
-                if ($button.length && $button.attr('type') == 'submit' && $button.attr('name')) {
-                    // simulate button input value
-                    var $hiddenButton = $('input[type="hidden"][name="' + $button.attr('name') + '"]', $form);
-                    if (!$hiddenButton.length) {
-                        $('<input>').attr({
-                            type: 'hidden',
-                            name: $button.attr('name'),
-                            value: $button.attr('value')
-                        }).appendTo($form);
-                    } else {
-                        $hiddenButton.attr('value', $button.attr('value'));
-                    }
+                if (data.submitObject) {
+                    applyButtonOptions($form, data.submitObject);
                 }
                 $form.submit();
+                if (data.submitObject) {
+                    restoreButtonOptions($form);
+                }
             }
         } else {
             $.each(data.attributes, function () {
@@ -597,6 +660,29 @@
             });
         }
         submitFinalize($form);
+    };
+
+    /**
+     * Updates hidden field that represents clicked submit button.
+     * @param $form the form jQuery object.
+     */
+    var updateHiddenButton = function ($form) {
+        var data = $form.data('yiiActiveForm');
+        var $button = data.submitObject || $form.find(':submit:first');
+        // TODO: if the submission is caused by "change" event, it will not work
+        if ($button.length && $button.attr('type') == 'submit' && $button.attr('name')) {
+            // simulate button input value
+            var $hiddenButton = $('input[type="hidden"][name="' + $button.attr('name') + '"]', $form);
+            if (!$hiddenButton.length) {
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: $button.attr('name'),
+                    value: $button.attr('value')
+                }).appendTo($form);
+            } else {
+                $hiddenButton.attr('value', $button.attr('value'));
+            }
+        }
     };
 
     /**

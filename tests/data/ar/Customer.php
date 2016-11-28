@@ -7,11 +7,11 @@ use yiiunit\framework\db\ActiveRecordTest;
 /**
  * Class Customer
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $email
  * @property string $address
- * @property integer $status
+ * @property int $status
  *
  * @method CustomerQuery findBySql($sql, $params = []) static
  */
@@ -47,6 +47,11 @@ class Customer extends ActiveRecord
     public function getExpensiveOrders()
     {
         return $this->hasMany(Order::className(), ['customer_id' => 'id'])->andWhere('[[total]] > 50')->orderBy('id');
+    }
+
+    public function getOrdersWithItems()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id'])->with('orderItems');
     }
 
     public function getExpensiveOrdersWithNullFK()

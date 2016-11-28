@@ -17,9 +17,12 @@ use yii\base\InvalidConfigException;
  * and save the processed value back to the attribute. The filter must be
  * a valid PHP callback with the following signature:
  *
- * ~~~
- * function foo($value) {...return $newValue; }
- * ~~~
+ * ```php
+ * function foo($value) {
+ *     // compute $newValue here
+ *     return $newValue;
+ * }
+ * ```
  *
  * Many PHP functions qualify this signature (e.g. `trim()`).
  *
@@ -34,18 +37,21 @@ class FilterValidator extends Validator
      * @var callable the filter. This can be a global function name, anonymous function, etc.
      * The function signature must be as follows,
      *
-     * ~~~
-     * function foo($value) {...return $newValue; }
-     * ~~~
+     * ```php
+     * function foo($value) {
+     *     // compute $newValue here
+     *     return $newValue;
+     * }
+     * ```
      */
     public $filter;
     /**
-     * @var boolean whether the filter should be skipped if an array input is given.
+     * @var bool whether the filter should be skipped if an array input is given.
      * If true and an array input is given, the filter will not be applied.
      */
     public $skipOnArray = false;
     /**
-     * @var boolean this property is overwritten to be false so that this validator will
+     * @var bool this property is overwritten to be false so that this validator will
      * be applied when the value being validated is empty.
      */
     public $skipOnEmpty = false;

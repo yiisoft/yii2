@@ -119,7 +119,7 @@ o por si desearas personalizarlos:
 * Modelos: `models/Country.php` y `models/CountrySearch.php`
 * Vistas: `views/country/*.php`
 
-> Información: Gii está diseñado para ser una herramienta altamente configurable. Utilizándola con sabiduría
+> Info: Gii está diseñado para ser una herramienta altamente configurable. Utilizándola con sabiduría
   puede acelerar enormemente la velocidad de desarrollo de tu aplicación. Para más detalles, consulta la
   sección [Gii](tool-gii.md).
 

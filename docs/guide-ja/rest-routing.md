@@ -74,7 +74,7 @@
 これは、[[yii\rest\UrlRule]] が子 URL 規則を作るときに、コントローラの ID を自動的に複数形にするためです。
 この振る舞いは [[yii\rest\UrlRule::pluralize]] を false に設定することで無効にすることが出来ます。
 
-> Info|情報: コントローラ ID の複数形化は [[yii\helpers\Inflector::pluralize()]] によって行われます。
+> Info: コントローラ ID の複数形化は [[yii\helpers\Inflector::pluralize()]] によって行われます。
   このメソッドは特殊な複数形の規則を考慮します。
   例えば、`box` という単語の複数形は `boxs` ではなく `boxes` になります。
 

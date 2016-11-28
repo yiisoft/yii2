@@ -1,12 +1,12 @@
 <?php
 /* @var $file string|null */
-/* @var $line integer|null */
+/* @var $line int|null */
 /* @var $class string|null */
 /* @var $method string|null */
-/* @var $index integer */
+/* @var $index int */
 /* @var $lines string[] */
-/* @var $begin integer */
-/* @var $end integer */
+/* @var $begin int */
+/* @var $end int */
 /* @var $args array */
 /* @var $handler \yii\web\ErrorHandler */
 ?>
@@ -37,7 +37,7 @@
                 <pre><?php
                     // fill empty lines with a whitespace to avoid rendering problems in opera
                     for ($i = $begin; $i <= $end; ++$i) {
-                        echo (trim($lines[$i]) == '') ? " \n" : $handler->htmlEncode($lines[$i]);
+                        echo (trim($lines[$i]) === '') ? " \n" : $handler->htmlEncode($lines[$i]);
                     }
                 ?></pre>
             </div>

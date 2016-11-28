@@ -14,7 +14,7 @@ use yii\base\Model;
 /**
  * EachValidator validates an array by checking each of its elements against an embedded validation rule.
  *
- * ~~~php
+ * ```php
  * class MyModel extends Model
  * {
  *     public $categoryIDs = [];
@@ -27,10 +27,13 @@ use yii\base\Model;
  *         ]
  *     }
  * }
- * ~~~
+ * ```
  *
  * > Note: This validator will not work with inline validation rules in case of usage outside the model scope,
  *   e.g. via [[validate()]] method.
+ *
+ * > Note: EachValidator is meant to be used only in basic cases, you should consider usage of tabular input,
+ *   using several models for the more complex case.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.4
@@ -39,20 +42,20 @@ class EachValidator extends Validator
 {
     /**
      * @var array|Validator definition of the validation rule, which should be used on array values.
-     * It should be specified in the same format as at [[yii\base\Model::rules()]], except it should not
+     * It should be specified in the same format as at [[\yii\base\Model::rules()]], except it should not
      * contain attribute list as the first element.
      * For example:
      *
-     * ~~~
+     * ```php
      * ['integer']
      * ['match', 'pattern' => '/[a-z]/is']
-     * ~~~
+     * ```
      *
-     * Please refer to [[yii\base\Model::rules()]] for more details.
+     * Please refer to [[\yii\base\Model::rules()]] for more details.
      */
     public $rule;
     /**
-     * @var boolean whether to use error message composed by validator declared via [[rule]] if its validation fails.
+     * @var bool whether to use error message composed by validator declared via [[rule]] if its validation fails.
      * If enabled, error message specified for this validator itself will appear only if attribute value is not an array.
      * If disabled, own error message value will be used always.
      */
@@ -115,19 +118,37 @@ class EachValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        $validator = $this->getValidator();
-        if ($validator instanceof FilterValidator && is_array($value)) {
-            $filteredValue = [];
-            foreach ($value as $k => $v) {
-                if (!$validator->skipOnArray || !is_array($v)) {
-                    $filteredValue[$k] = call_user_func($validator->filter, $v);
-                }
-            }
-            $model->$attribute = $filteredValue;
-        } else {
-            $this->getValidator($model); // ensure model context while validator creation
-            parent::validateAttribute($model, $attribute);
+        if (!is_array($value)) {
+            $this->addError($model, $attribute, $this->message, []);
+            return;
         }
+
+        $validator = $this->getValidator($model); // ensure model context while validator creation
+
+        $originalErrors = $model->getErrors($attribute);
+        $filteredValue = [];
+        foreach ($value as $k => $v) {
+            $model->$attribute = $v;
+            if (!$validator->skipOnEmpty || !$validator->isEmpty($v)) {
+                $validator->validateAttribute($model, $attribute);
+            }
+            $filteredValue[$k] = $model->$attribute;
+            if ($model->hasErrors($attribute)) {
+                $validationErrors = $model->getErrors($attribute);
+                $model->clearErrors($attribute);
+                if (!empty($originalErrors)) {
+                    $model->addErrors([$attribute => $originalErrors]);
+                }
+                if ($this->allowMessageFromRule) {
+                    $model->addErrors([$attribute => $validationErrors]);
+                } else {
+                    $this->addError($model, $attribute, $this->message, ['value' => $v]);
+                }
+                $model->$attribute = $value;
+                return;
+            }
+        }
+        $model->$attribute = $filteredValue;
     }
 
     /**
@@ -141,9 +162,17 @@ class EachValidator extends Validator
 
         $validator = $this->getValidator();
         foreach ($value as $v) {
+            if ($validator->skipOnEmpty && $validator->isEmpty($v)) {
+                continue;
+            }
             $result = $validator->validateValue($v);
             if ($result !== null) {
-                return $this->allowMessageFromRule ? $result : [$this->message, []];
+                if ($this->allowMessageFromRule) {
+                    $result[1]['value'] = $v;
+                    return $result;
+                } else {
+                    return [$this->message, ['value' => $v]];
+                }
             }
         }
 

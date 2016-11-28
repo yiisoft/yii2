@@ -22,7 +22,7 @@ namespace yii\web;
  * While extending this class you should use [[composeFields()]] method - while writing the session data into the storage and
  * [[extractData()]] - while reading session data from the storage.
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.6
@@ -80,7 +80,7 @@ abstract class MultiFieldSession extends Session
     /**
      * Returns a value indicating whether to use custom session storage.
      * This method overrides the parent implementation and always returns true.
-     * @return boolean whether to use custom storage.
+     * @return bool whether to use custom storage.
      */
     public function getUseCustomStorage()
     {
@@ -98,7 +98,7 @@ abstract class MultiFieldSession extends Session
         $fields = [
             'data' => $data,
         ];
-        if (isset($this->writeCallback)) {
+        if ($this->writeCallback !== null) {
             $fields = array_merge(
                 $fields,
                 call_user_func($this->writeCallback, $this)
@@ -123,7 +123,7 @@ abstract class MultiFieldSession extends Session
      */
     protected function extractData($fields)
     {
-        if (isset($this->readCallback)) {
+        if ($this->readCallback !== null) {
             if (!isset($fields['data'])) {
                 $fields['data'] = '';
             }

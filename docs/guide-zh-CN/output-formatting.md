@@ -120,7 +120,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
-> 注意：时区从属于全世界各国政府定的规则，可能会频繁的变更，因此你的系统的时区数据库可能不是最新的信息，
+> Note: 时区从属于全世界各国政府定的规则，可能会频繁的变更，因此你的系统的时区数据库可能不是最新的信息，
 > 可参考 [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
 > 关于更新时区数据库的详情，
 > 也可参考：[为国际化设置PHP环境](tutorial-i18n.md#setup-environment).

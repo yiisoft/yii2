@@ -13,8 +13,9 @@ Yii provides the DI container feature through the class [[yii\di\Container]]. It
 dependency injection:
 
 * Constructor injection;
+* Method injection;
 * Setter and property injection;
-* PHP callable injection.
+* PHP callable injection;
 
 
 ### Constructor Injection <span id="constructor-injection"></span>
@@ -38,6 +39,36 @@ $bar = new Bar;
 $foo = new Foo($bar);
 ```
 
+
+### Method Injection <span id="method-injection"></span>
+
+Usually the dependencies of a class are passed to the constructor and are available inside of the class during the whole lifecycle.
+With Method Injection it is possible to provide a dependency that is only needed by a single method of the class
+and passing it to the constructor may not be possible or may cause too much overhead in the majority of use cases.
+
+A class method can be defined like the `doSomething()` method in the following example:
+
+```php
+class MyClass extends \yii\base\Component
+{
+    public function __construct(/*Some lightweight dependencies here*/, $config = [])
+    {
+        // ...
+    }
+
+    public function doSomething($param1, \my\heavy\Dependency $something)
+    {
+        // do something with $something
+    }
+}
+```
+
+You may call that method either by passing an instance of `\my\heavy\Dependency` yourself or using [[yii\di\Container::invoke()]] like the following:
+
+```php
+$obj = new MyClass(/*...*/);
+Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something will be provided by the DI container
+```
 
 ### Setter and Property Injection <span id="setter-and-property-injection"></span>
 
@@ -95,29 +126,25 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-To hide the complex logic for building a new object, you may use a static class method to return the PHP
-callable. For example,
+To hide the complex logic for building a new object, you may use a static class method as callable. For example,
 
 ```php
 class FooBuilder
 {
     public static function build()
     {
-        return function () {
-            $foo = new Foo(new Bar);
-            // ... other initializations ...
-            return $foo;
-       };        
+        $foo = new Foo(new Bar);
+        // ... other initializations ...
+        return $foo;
     }
 }
 
-$container->set('Foo', FooBuilder::build());
+$container->set('Foo', ['app\helper\FooBuilder', 'build']);
 
 $foo = $container->get('Foo');
 ```
 
-As you can see, the PHP callable is returned by the `FooBuilder::build()` method. By doing so, the person
-who wants to configure the `Foo` class no longer needs to be aware of how it is built.
+By doing so, the person who wants to configure the `Foo` class no longer needs to be aware of how it is built.
 
 
 Registering Dependencies <span id="registering-dependencies"></span>
@@ -306,6 +333,8 @@ You can still override the value set via DI container, though:
 ```php
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
+
+> Tip: no matter which value type it is, it will be overwritten so be careful with option arrays. They won't be merged.
 
 Another example is to take advantage of the automatic constructor injection of the DI container.
 Assume your controller class depends on some other objects, such as a hotel booking service. You

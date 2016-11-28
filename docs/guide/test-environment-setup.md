@@ -11,8 +11,8 @@ framework that allows you to create the following test types:
 - [Acceptance testing](test-acceptance.md) - verifies scenarios from a user's perspective in a browser.
 
 Yii provides ready to use test sets for all three test types in both
-[`yii2-basic`](https://github.com/yiisoft/yii2/tree/master/apps/basic) and
-[`yii2-advanced`](https://github.com/yiisoft/yii2/tree/master/apps/advanced) project templates.
+[`yii2-basic`](https://github.com/yiisoft/yii2-app-basic) and
+[`yii2-advanced`](https://github.com/yiisoft/yii2-app-advanced) project templates.
 
 In order to run tests you need to install [Codeception](https://github.com/Codeception/Codeception).
 You can install it either locally - for particular project only, or globally - for your development machine.
@@ -20,7 +20,7 @@ You can install it either locally - for particular project only, or globally - f
 For the local installation use following commands:
 
 ```
-composer require "codeception/codeception=2.0.*"
+composer require "codeception/codeception=2.1.*"
 composer require "codeception/specify=*"
 composer require "codeception/verify=*"
 ```
@@ -28,7 +28,7 @@ composer require "codeception/verify=*"
 For the global installation you will need to use `global` directive:
 
 ```
-composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/codeception=2.1.*"
 composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```

@@ -68,6 +68,23 @@ use yii\helpers\Html;
 Note that unlike [[yii\base\Widget::widget()]] which returns the rendering result of a widget, the method
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
 
+> Note: Some widgets will use [output buffering](http://php.net/manual/en/book.outcontrol.php) to adjust the enclosed
+> content when [[yii\base\Widget::end()]] is called. For this reason calling [[yii\base\Widget::begin()]] and
+> [[yii\base\Widget::end()]] is expected to happen in the same view file.
+> Not following this rule may result in unexpected output.
+
+
+### Configuring global defaults
+
+Global defaults for a widget type could be configured via DI container:
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
+```
+
+See ["Practical Usage" section in Dependency Injection Container guide](concept-di-container.md#practical-usage) for
+details.
+
 
 ## Creating Widgets <span id="creating-widgets"></span>
 

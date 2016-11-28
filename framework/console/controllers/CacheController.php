@@ -32,6 +32,12 @@ use yii\console\Exception;
  * configured are different from web application, web application cache won't be cleared. In order to fix it please
  * duplicate web application cache components in console config. You can use any component names.
  *
+ * Both APC and OpCache aren't shared between PHP processes so flushing cache from command line has no effect on web.
+ * Flushing web cache could be either done by:
+ *
+ * - Putting a php file under web root and calling it via HTTP
+ * - Using [Cachetool](http://gordalina.github.io/cachetool/)
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
  * @since 2.0
@@ -56,18 +62,18 @@ class CacheController extends Controller
      * Flushes given cache components.
      * For example,
      *
-     * ~~~
+     * ```
      * # flushes caches specified by their id: "first", "second", "third"
      * yii cache/flush first second third
-     * ~~~
+     * ```
      *
      */
     public function actionFlush()
     {
         $cachesInput = func_get_args();
-        
+
         if (empty($cachesInput)) {
-            throw new Exception("You should specify cache components names");
+            throw new Exception('You should specify cache components names');
         }
 
         $caches = $this->findCaches($cachesInput);
@@ -93,7 +99,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' =>  Yii::$app->get($name)->flush(),
+                'is_flushed' => Yii::$app->get($name)->flush(),
             ];
         }
 
@@ -117,7 +123,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' =>  Yii::$app->get($name)->flush(),
+                'is_flushed' => Yii::$app->get($name)->flush(),
             ];
         }
 
@@ -127,10 +133,10 @@ class CacheController extends Controller
     /**
      * Clears DB schema cache for a given connection component.
      *
-     * ~~~
+     * ```
      * # clears cache schema specified by component id: "db"
      * yii cache/flush-schema db
-     * ~~~
+     * ```
      *
      * @param string $db id connection component
      * @return int exit code
@@ -210,7 +216,7 @@ class CacheController extends Controller
         $this->stdout("The following cache components were processed:\n\n", Console::FG_YELLOW);
 
         foreach ($caches as $cache) {
-            $this->stdout("\t* " . $cache['name'] ." (" . $cache['class'] . ")", Console::FG_GREEN);
+            $this->stdout("\t* " . $cache['name'] .' (' . $cache['class'] . ')', Console::FG_GREEN);
 
             if (!$cache['is_flushed']) {
                 $this->stdout(" - not flushed\n", Console::FG_RED);
@@ -225,7 +231,7 @@ class CacheController extends Controller
     /**
      * Prompts user with confirmation if caches should be flushed.
      * @param array $cachesNames
-     * @return boolean
+     * @return bool
      */
     private function confirmFlush($cachesNames)
     {
@@ -247,7 +253,7 @@ class CacheController extends Controller
     {
         $caches = [];
         $components = Yii::$app->getComponents();
-        $findAll = ($cachesNames == []);
+        $findAll = ($cachesNames === []);
 
         foreach ($components as $name => $component) {
             if (!$findAll && !in_array($name, $cachesNames)) {
@@ -269,7 +275,7 @@ class CacheController extends Controller
     /**
      * Checks if given class is a Cache class.
      * @param string $className class name.
-     * @return boolean
+     * @return bool
      */
     private function isCacheClass($className)
     {

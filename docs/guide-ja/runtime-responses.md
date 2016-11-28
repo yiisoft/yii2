@@ -72,7 +72,7 @@ $headers->set('Pragma', 'no-cache');
 $values = $headers->remove('Pragma');
 ```
 
-> Info|情報: ヘッダ名は大文字小文字を区別しません。
+> Info: ヘッダ名は大文字小文字を区別しません。
   そして、新しく登録されたヘッダは、[[yii\web\Response::send()]] メソッドが呼ばれるまで送信されません。
 
 
@@ -152,7 +152,7 @@ public function actionInfo()
 }
 ```
 
-> Note|注意: 自分自身のレスポンスオブジェクトを作成しようとする場合は、アプリケーションの構成情報で `response` コンポーネントのために設定した構成情報を利用することは出来ません。
+> Note: 自分自身のレスポンスオブジェクトを作成しようとする場合は、アプリケーションの構成情報で `response` コンポーネントのために設定した構成情報を利用することは出来ません。
   しかし、 [依存の注入](concept-di-container.md) を使えば、 共通の構成情報をあなたの新しいレスポンスオブジェクトに適用することが出来ます。
 
 
@@ -182,7 +182,7 @@ public function actionOld()
 \Yii::$app->response->redirect('http://example.com/new', 301)->send();
 ```
 
-> Info|情報: デフォルトでは、[[yii\web\Response::redirect()]] メソッドはレスポンスのステータスコードを 302 にセットします。
+> Info: デフォルトでは、[[yii\web\Response::redirect()]] メソッドはレスポンスのステータスコードを 302 にセットします。
 これはブラウザに対して、リクエストされているリソースが *一時的に* 異なる URI に配置されていることを示すものです。
 ブラウザに対してリソースが *恒久的に* 配置替えされたことを教えるためには、ステータスコード 301 を渡すことが出来ます。
 
@@ -190,7 +190,7 @@ public function actionOld()
 この問題を解決するために、[[yii\web\Response::redirect()]] メソッドは `X-Redirect` ヘッダにリダイレクト先 URL を値としてセットします。
 そして、クライアントサイドで、このヘッダの値を読み、それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
 
-> Info|情報: Yii には `yii.js` という JavaScript ファイルが付属しています。
+> Info: Yii には `yii.js` という JavaScript ファイルが付属しています。
 これは、よく使われる一連の JavaScript 機能を提供するもので、その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。
 従って、あなたが ([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
 

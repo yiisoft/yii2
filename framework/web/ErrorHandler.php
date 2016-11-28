@@ -22,6 +22,8 @@ use yii\helpers\VarDumper;
  * ErrorHandler is configured as an application component in [[\yii\base\Application]] by default.
  * You can access that instance via `Yii::$app->errorHandler`.
  *
+ * For more details and usage information on ErrorHandler, see the [guide article on handling errors](guide:runtime-handling-errors).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Timur Ruziev <resurtm@gmail.com>
  * @since 2.0
@@ -29,17 +31,17 @@ use yii\helpers\VarDumper;
 class ErrorHandler extends \yii\base\ErrorHandler
 {
     /**
-     * @var integer maximum number of source code lines to be displayed. Defaults to 19.
+     * @var int maximum number of source code lines to be displayed. Defaults to 19.
      */
     public $maxSourceLines = 19;
     /**
-     * @var integer maximum number of trace source code lines to be displayed. Defaults to 13.
+     * @var int maximum number of trace source code lines to be displayed. Defaults to 13.
      */
     public $maxTraceSourceLines = 13;
     /**
-     * @var string the route (e.g. 'site/error') to the controller action that will be used
+     * @var string the route (e.g. `site/error`) to the controller action that will be used
      * to display external errors. Inside the action, it can retrieve the error information
-     * using `Yii::$app->errorHandler->exception. This property defaults to null, meaning ErrorHandler
+     * using `Yii::$app->errorHandler->exception`. This property defaults to null, meaning ErrorHandler
      * will handle the error display.
      */
     public $errorAction;
@@ -59,6 +61,14 @@ class ErrorHandler extends \yii\base\ErrorHandler
      * @var string the path of the view file for rendering previous exceptions.
      */
     public $previousExceptionView = '@yii/views/errorHandler/previousException.php';
+    /**
+     * @var array list of the PHP predefined variables that should be displayed on the error page.
+     * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be displayed.
+     * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION']`.
+     * @see renderRequest()
+     * @since 2.0.7
+     */
+    public $displayVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION'];
 
 
     /**
@@ -91,7 +101,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         } elseif ($response->format === Response::FORMAT_HTML) {
             if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
                 // AJAX request
-                $response->data = '<pre>' . $this->htmlEncode($this->convertExceptionToString($exception)) . '</pre>';
+                $response->data = '<pre>' . $this->htmlEncode(static::convertExceptionToString($exception)) . '</pre>';
             } else {
                 // if there is an error during error rendering it's useful to
                 // display PHP error in debug mode instead of a blank screen
@@ -104,7 +114,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 ]);
             }
         } elseif ($response->format === Response::FORMAT_RAW) {
-            $response->data = $exception;
+            $response->data = static::convertExceptionToString($exception);
         } else {
             $response->data = $this->convertExceptionToArray($exception);
         }
@@ -126,7 +136,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     protected function convertExceptionToArray($exception)
     {
         if (!YII_DEBUG && !$exception instanceof UserException && !$exception instanceof HttpException) {
-            $exception = new HttpException(500, 'There was an error at the server.');
+            $exception = new HttpException(500, Yii::t('yii', 'An internal server error occurred.'));
         }
 
         $array = [
@@ -162,7 +172,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     public function htmlEncode($text)
     {
-        return htmlspecialchars($text, ENT_QUOTES, Yii::$app->charset);
+        return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
     }
 
     /**
@@ -182,9 +192,19 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $text = $this->htmlEncode($class);
         }
 
-        $url = $this->getTypeUrl($class, $method);
+        $url = null;
 
-        if (!$url) {
+        $shouldGenerateLink = true;
+        if ($method !== null) {
+            $reflection = new \ReflectionMethod($class, $method);
+            $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
+        }
+
+        if ($shouldGenerateLink) {
+            $url = $this->getTypeUrl($class, $method);
+        }
+
+        if ($url === null) {
             return $text;
         }
 
@@ -252,11 +272,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
     /**
      * Renders a single call stack element.
      * @param string|null $file name where call has happened.
-     * @param integer|null $line number on which call has happened.
+     * @param int|null $line number on which call has happened.
      * @param string|null $class called class name.
      * @param string|null $method called function/method name.
-     * @param integer $index number of the call stack element.
      * @param array $args array of method arguments.
+     * @param int $index number of the call stack element.
      * @return string HTML content of the rendered call stack element.
      */
     public function renderCallStackItem($file, $line, $class, $method, $args, $index)
@@ -289,13 +309,15 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
-     * Renders the request information.
+     * Renders the global variables of the request.
+     * List of global variables is defined in [[displayVars]].
      * @return string the rendering result
+     * @see displayVars
      */
     public function renderRequest()
     {
         $request = '';
-        foreach (['_GET', '_POST', '_SERVER', '_FILES', '_COOKIE', '_SESSION', '_ENV'] as $name) {
+        foreach ($this->displayVars as $name) {
             if (!empty($GLOBALS[$name])) {
                 $request .= '$' . $name . ' = ' . VarDumper::export($GLOBALS[$name]) . ";\n\n";
             }
@@ -307,7 +329,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
     /**
      * Determines whether given name of the file belongs to the framework.
      * @param string $file name to be checked.
-     * @return boolean whether given name of the file belongs to the framework.
+     * @return bool whether given name of the file belongs to the framework.
      */
     public function isCoreFile($file)
     {
@@ -316,7 +338,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Creates HTML containing link to the page with the information on given HTTP status code.
-     * @param integer $statusCode to be used to generate information link.
+     * @param int $statusCode to be used to generate information link.
      * @param string $statusDescription Description to display after the the status code.
      * @return string generated HTML with HTTP status code information.
      */
@@ -391,8 +413,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = '<span class="keyword">' . ($value ? 'true' : 'false') . '</span>';
             } elseif (is_string($value)) {
                 $fullValue = $this->htmlEncode($value);
-                if (mb_strlen($value, 'utf8') > 32) {
-                    $displayValue = $this->htmlEncode(mb_substr($value, 0, 32, 'utf8')) . '...';
+                if (mb_strlen($value, 'UTF-8') > 32) {
+                    $displayValue = $this->htmlEncode(mb_substr($value, 0, 32, 'UTF-8')) . '...';
                     $args[$key] = "<span class=\"string\" title=\"$fullValue\">'$displayValue'</span>";
                 } else {
                     $args[$key] = "<span class=\"string\">'$fullValue'</span>";
@@ -413,9 +435,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $args[$key] = "<span class=\"number\">$key</span> => $args[$key]";
             }
         }
-        $out = implode(", ", $args);
 
-        return $out;
+        return implode(', ', $args);
     }
 
     /**

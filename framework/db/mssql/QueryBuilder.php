@@ -9,7 +9,6 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\db\Query;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -24,9 +23,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int IDENTITY PRIMARY KEY',
+        Schema::TYPE_UPK => 'int IDENTITY PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint IDENTITY PRIMARY KEY',
-        Schema::TYPE_STRING => 'varchar(255)',
-        Schema::TYPE_TEXT => 'text',
+        Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
+        Schema::TYPE_CHAR => 'nchar(1)',
+        Schema::TYPE_STRING => 'nvarchar(255)',
+        Schema::TYPE_TEXT => 'nvarchar(max)',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
@@ -34,10 +36,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_DOUBLE => 'float',
         Schema::TYPE_DECIMAL => 'decimal',
         Schema::TYPE_DATETIME => 'datetime',
-        Schema::TYPE_TIMESTAMP => 'timestamp',
+        Schema::TYPE_TIMESTAMP => 'datetime',
         Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'binary(1)',
+        Schema::TYPE_BINARY => 'varbinary(max)',
         Schema::TYPE_BOOLEAN => 'bit',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
@@ -54,7 +56,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         if ($this->isOldMssql()) {
-            return $this->oldbuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
+            return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         } else {
             return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
@@ -63,9 +65,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -90,9 +92,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -164,7 +166,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
      * @return string the SQL statement for checking integrity
@@ -185,6 +187,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return "sp_updateextendedproperty @name = N'MS_Description', @value = {$this->db->quoteValue($comment)}, @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}, @level2type = N'Column', @level2name = {$this->db->quoteColumnName($column)}";
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        return "sp_dropextendedproperty @name = N'MS_Description', @level1type = N'Table',  @level1name = {$this->db->quoteTableName($table)}";
+    }
+
+    /**
      * Returns an array of column names given model name
      *
      * @param string $modelClass name of the model class
@@ -198,17 +236,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         /* @var $model \yii\db\ActiveRecord */
         $model = new $modelClass;
         $schema = $model->getTableSchema();
-        $columns = array_keys($schema->columns);
-        return $columns;
+        return array_keys($schema->columns);
     }
 
     /**
-     * @var boolean whether MSSQL used is old.
+     * @var bool whether MSSQL used is old.
      */
     private $_oldMssql;
 
     /**
-     * @return boolean whether the version of the MSSQL being used is older than 2012.
+     * @return bool whether the version of the MSSQL being used is older than 2012.
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -216,20 +253,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         if ($this->_oldMssql === null) {
             $pdo = $this->db->getSlavePdo();
-            $version = preg_split("/\./", $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
+            $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
             $this->_oldMssql = $version[0] < 11;
         }
         return $this->_oldMssql;
     }
 
     /**
-     * Builds SQL for IN condition
-     *
-     * @param string $operator
-     * @param array $columns
-     * @param Query $values
-     * @param array $params
-     * @return string SQL
+     * @inheritdoc
+     * @throws NotSupportedException if `$columns` is an array
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {
@@ -270,5 +302,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return '(' . implode($operator === 'IN' ? ' OR ' : ' AND ', $vss) . ')';
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
     }
 }

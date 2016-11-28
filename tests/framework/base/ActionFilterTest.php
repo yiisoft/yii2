@@ -8,8 +8,10 @@
 namespace yiiunit\framework\base;
 
 use Yii;
+use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\base\Controller;
+use yii\web\User;
 use yiiunit\TestCase;
 
 
@@ -83,6 +85,79 @@ class ActionFilterTest extends TestCase
         $result = $controller->runAction('test');
         $this->assertNull($result);
         $this->assertEquals([1, 3, 2], $controller->result);
+    }
+
+
+    public function actionFilterProvider()
+    {
+        return [
+            [['class' => 'yii\filters\AccessControl', 'user' => 'yiiunit\framework\base\MockUser']],
+            ['yii\filters\ContentNegotiator'],
+            ['yii\filters\Cors'],
+            ['yii\filters\HttpCache'],
+            ['yii\filters\PageCache'],
+            ['yii\filters\RateLimiter'],
+        ];
+    }
+
+    /**
+     * @dataProvider actionFilterProvider
+     */
+    public function testActive($filterClass)
+    {
+        $this->mockWebApplication();
+
+        /** @var $filter ActionFilter */
+        $filter = Yii::createObject($filterClass);
+        $reflection = new \ReflectionClass($filter);
+        $method = $reflection->getMethod('isActive');
+        $method->setAccessible(true);
+
+        $controller = new \yii\web\Controller('test', Yii::$app);
+
+        // active by default
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only = ['index'];
+        $filter->except = [];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only = ['index', 'view'];
+        $filter->except = ['view'];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+
+        $filter->only;
+        $filter->except = ['view'];
+        $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
+    }
+
+    /**
+     * @depends testActive
+     */
+    public function testActiveWildcard()
+    {
+        $this->mockWebApplication();
+
+        $filter = new ActionFilter();
+        $reflection = new \ReflectionClass($filter);
+        $method = $reflection->getMethod('isActive');
+        $method->setAccessible(true);
+
+        $controller = new \yii\web\Controller('test', Yii::$app);
+
+        $filter->only = ['test/*'];
+        $filter->except = [];
+        $this->assertFalse($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('test/index', $controller)]));
+
+        $filter->only = [];
+        $filter->except = ['test/*'];
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('test/index', $controller)]));
     }
 }
 
@@ -162,3 +237,10 @@ class Filter3 extends ActionFilter
     }
 }
 
+class MockUser extends User
+{
+    public function init()
+    {
+        // do not call parent to avoid the need to mock configuration
+    }
+}

@@ -87,7 +87,7 @@ use yii\db\Query;
 $query = (new Query())->from('post')->where(['status' => 1]); 
 ```
 
-> Note|注意: クエリが既に `orderBy` 句を指定しているものである場合、(`sort` の構成を通して) エンドユーザによって与えられる並べ替えの指定は、既存の `orderBy` 句に追加されます。
+> Note: クエリが既に `orderBy` 句を指定しているものである場合、(`sort` の構成を通して) エンドユーザによって与えられる並べ替えの指定は、既存の `orderBy` 句に追加されます。
 一方、`limit` と `offset` の句が存在している場合は、(`pagenation` の構成を通して) エンドユーザによって指定されるページネーションのリクエストによって上書きされます。
 
 デフォルトでは、[[yii\data\ActiveDataProvider]] はデータベース接続として `db` アプリケーションコンポーネントを使用します。
@@ -129,7 +129,7 @@ $provider = new SqlDataProvider([
 $models = $provider->getModels();
 ```
 
-> Info|情報: [[yii\data\SqlDataProvider::totalCount|totalCount]] プロパティは、データにページネーションを適用しなければならない場合にだけ要求されます。
+> Info: [[yii\data\SqlDataProvider::totalCount|totalCount]] プロパティは、データにページネーションを適用しなければならない場合にだけ要求されます。
   これは、[[yii\data\SqlDataProvider::sql|sql]] によって指定される SQL 文は、現在要求されているページのデータだけを返すように、データプロバイダによって修正されてしまうからです。
   データプロバイダは、総ページ数を正しく計算するためには、データアイテムの総数を知る必要があります。
 
@@ -166,7 +166,7 @@ $provider = new ArrayDataProvider([
 $rows = $provider->getModels();
 ``` 
 
-> Note|注意: [アクティブデータプロバイダ](#active-data-provider) および [SQL データプロバイダ](#sql-data-provider) と比較すると、配列データプロバイダは効率の面では劣ります。
+> Note: [アクティブデータプロバイダ](#active-data-provider) および [SQL データプロバイダ](#sql-data-provider) と比較すると、配列データプロバイダは効率の面では劣ります。
   何故なら、*全ての* データをメモリにロードしなければならないからです。
 
 
@@ -183,7 +183,7 @@ use yii\data\ActiveDataProvider;
 $query = Post::find()->where(['status' => 1]);
 
 $provider = new ActiveDataProvider([
-    'query' => Post::find(),
+    'query' => $query,
 ]);
 
 // Post オブジェクトの配列を返す

@@ -7,7 +7,7 @@ puede realizar de forma efectiva
 generan dinámicamente empieza a complicarse su gestión sin ayuda extra. Yii ofrece esta ayuda en forma de una clase auxiliar Html
 que proporciona un conjunto de métodos estáticos para gestionar las etiquetas HTML más comúnmente usadas, sus opciones y contenidos.
 
-> Nota: Si el marcado es casi estático, es preferible usar HTML directamente. No es necesario encapsularlo todo con
+> Note: Si el marcado es casi estático, es preferible usar HTML directamente. No es necesario encapsularlo todo con
 llamadas a la clase auxiliar Html.
 
 ## Lo fundamental <span id="basics"></span>
@@ -115,7 +115,7 @@ $decodedUserName = Html::decode($userName);
 El trato con el marcado de formularios es una tarea repetitiva y propensa a errores. Por esto hay un grupo de métodos
 para ayudar a gestionarlos.
 
-> Nota: hay que considerar la opción de usar [[yii\widgets\ActiveForm|ActiveForm]] en caso de que se gestionen
+> Note: hay que considerar la opción de usar [[yii\widgets\ActiveForm|ActiveForm]] en caso de que se gestionen
 formularios que requieran validaciones.
 
 ### Creando formularios <span id="creating-forms"></span>

@@ -150,6 +150,13 @@ class NumberValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_num' => [1, 2, 3]]);
         $val->validateAttribute($model, 'attr_num');
         $this->assertTrue($model->hasErrors('attr_num'));
+
+        // @see https://github.com/yiisoft/yii2/issues/11672
+        $model = new FakedValidationModel();
+        $model->attr_number = new \stdClass();
+        $val->validateAttribute($model, 'attr_number');
+        $this->assertTrue($model->hasErrors('attr_number'));
+
     }
 
     public function testEnsureCustomMessageIsSetOnValidateAttribute()
@@ -207,5 +214,12 @@ class NumberValidatorTest extends TestCase
         $js = $val->clientValidateAttribute($model, 'attr_number', new View(['assetBundles' => ['yii\validators\ValidationAsset' => true]]));
         $this->assertContains('"min":5.65', $js);
         $this->assertContains('"max":13.37', $js);
+    }
+
+    public function testValidateObject()
+    {
+        $val = new NumberValidator();
+        $value = new \stdClass();
+        $this->assertFalse($val->validate($value));
     }
 }

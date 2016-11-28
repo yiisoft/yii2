@@ -2,7 +2,7 @@
 ================
 
 依存注入 (DI) コンテナは、オブジェクトとそれが依存するすべてのブジェクトを、インスタンス化し、設定する方法を知っているオブジェクトです。
-なぜ DI コンテナが便利なのかは、[Martin の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
+なぜ DI コンテナが便利なのかは、[Martin Fowler の記事](http://martinfowler.com/articles/injection.html) の説明がわかりやすいでしょう。
 ここでは、主に Yii の提供する DI コンテナの使用方法を説明します。
 
 
@@ -12,6 +12,7 @@
 Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を提供します。これは、次の種類の依存注入をサポートしています:
 
 * コンストラクタ·インジェクション
+* メソッド・インジェクション
 * セッター/プロパティ·インジェクション
 * PHP コーラブル·インジェクション
 
@@ -35,6 +36,37 @@ $foo = $container->get('Foo');
 // これは下記と等価:
 $bar = new Bar;
 $foo = new Foo($bar);
+```
+
+
+### メソッド・インジェクション <span id="method-injection"></span>
+
+通常、クラスの依存はコンストラクタに渡されて、そのクラスの内部でライフサイクル全体にわたって利用可能になります。
+メソッド・インジェクションを使うと、クラスのメソッドの一つだけに必要となる依存、例えば、コンストラクタに渡すことが不可能であったり、大半のユースケースにおいてはオーバーヘッドが大きすぎるような依存を提供することが可能になります。
+
+クラスのメソッドを次の例の `doSomething` メソッドのように定義することが出来ます。
+
+```php
+class MyClass extends \yii\base\Component
+{
+    public function __construct(/* 軽量の依存はここに */, $config = [])
+    {
+        // ...
+    }
+
+    public function doSomething($param1, \my\heavy\Dependency $something)
+    {
+        // $something を使って何かをする
+    }
+}
+```
+
+あなた自身で `\my\heavy\Dependency` のインスタンスを渡すか、次のように
+[[yii\di\Container::invoke()]] を使えば、このメソッドを呼ぶことが出来ます。
+
+```php
+$obj = new MyClass(/*...*/);
+Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something は DI コンテナによって提供される
 ```
 
 
@@ -70,7 +102,7 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Info|情報: [[yii\di\Container::get()]] メソッドは三番目のパラメータを、生成されるオブジェクトに適用されるべき構成情報配列として受け取ります。
+> Info: [[yii\di\Container::get()]] メソッドは三番目のパラメータを、生成されるオブジェクトに適用されるべき構成情報配列として受け取ります。
   クラスが [[yii\base\Configurable]] インタフェイスを実装している場合 (例えば、クラスが [[yii\base\Object]] である場合) には、この構成情報配列がクラスのコンストラクタの最後のパラメータとして渡されます。
   そうでない場合は、構成情報はオブジェクトが生成された *後で* 適用されることになります。
 
@@ -91,7 +123,7 @@ $container->set('Foo', function () {
 $foo = $container->get('Foo');
 ```
 
-新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、PHP コーラブルを返すスタティックなクラスメソッドを使うことが出来ます。
+新しいオブジェクトを構築するための複雑なロジックを隠蔽するために、スタティックなクラスメソッドをコーラブルとして使うことが出来ます。
 例えば、
 
 ```php
@@ -99,20 +131,17 @@ class FooBuilder
 {
     public static function build()
     {
-        return function () {
-            $foo = new Foo(new Bar);
-            // ... その他の初期化 ...
-            return $foo;
-       };
+        $foo = new Foo(new Bar);
+        // ... その他の初期化 ...
+        return $foo;
     }
 }
 
-$container->set('Foo', FooBuilder::build());
+$container->set('Foo', ['app\helper\FooBuilder', 'build']);
 
 $foo = $container->get('Foo');
 ```
 
-ご覧のように、PHP コーラブルが `FooBuilder::build()` メソッドによって返されています。
 このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
 
 
@@ -169,7 +198,7 @@ $container->set('db', function ($container, $params, $config) {
 $container->set('pageCache', new FileCache);
 ```
 
-> 補足: 依存の名前が対応する依存の定義と同じである場合は、それを DI コンテナに登録する必要はありません。
+> Note: 依存の名前が対応する依存の定義と同じである場合は、それを DI コンテナに登録する必要はありません。
 
 `set()` を介して登録された依存は、依存が必要とされるたびにインスタンスを生成します。
 [[yii\di\Container::setSingleton()]] を使うと、単一のインスタンスしか生成しない依存を登録することができます:
@@ -194,17 +223,17 @@ $container->setSingleton('yii\db\Connection', [
 
 [[yii\di\Container::get()]] を使って、新しいオブジェクトを作成することができます。
 このメソッドは、クラス名、インタフェース名、エイリアス名で指定できる依存の名前を受け取ります。
-依存の名前は、 `set()` や `setSingleton()` を介して登録されていたりされていなかったりする
-可能性があります。オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成された
-オブジェクトを設定するための [設定情報](concept-configurations.md) を渡すことができます。
+依存の名前は、 `set()` や `setSingleton()` を介して登録されている場合もあれば、登録されていない場合もあります。
+オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成されたオブジェクトを設定するための
+[設定情報](concept-configurations.md) を渡すことができます。
 たとえば
 
 ```php
 // "db" は事前に登録されたエイリアス名
 $db = $container->get('db');
 
-// これと同じ意味: $engine = new \app\components\SearchEngine($apiKey, ['type' => 1]);
-$engine = $container->get('app\components\SearchEngine', [$apiKey], ['type' => 1]);
+// これと同じ意味: $engine = new \app\components\SearchEngine($apiKey, $apiSecret, ['type' => 1]);
+$engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], ['type' => 1]);
 ```
 
 見えないところで、DIコンテナは、単に新しいオブジェクトを作成するよりもはるかに多くの作業を行います。
@@ -290,7 +319,7 @@ Yii は、新しいオブジェクトを作成するさい、そのコアコー�
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
 ```
 
-次のコードでビューでウィジェットを使用すれば、 `maxButtonCount` プロパティは、
+そして、次のコードでビューでウィジェットを使用すれば、`maxButtonCount` プロパティは、
 クラスで定義されているデフォルト値 10 の代わりに 5 で初期化されます。
 
 ```php
@@ -302,6 +331,8 @@ echo \yii\widgets\LinkPager::widget();
 ```php
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
+
+> Tip: どのような型の値であろうとも上書きされますので、オプションの配列の指定には気を付けてください。オプションの配列はマージされません。
 
 DI コンテナの自動コンストラクタ・インジェクションの利点を活かす別の例です。
 あなたのコントローラクラスが、ホテル予約サービスのような、いくつかの他のオブジェクトに依存するとします。

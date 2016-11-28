@@ -20,7 +20,7 @@ Yii は、RESTful アクションを作成する仕事を簡単にするため�
 [[yii\rest\ActiveController]] は次の機能を追加で提供します。
 
 * 普通は必要とされる一連のアクション: `index`、`view`、`create`、`update`、`delete`、`options`
-* リクエストされたアクションとリソースに関するユーザへの権限付与
+* リクエストされたアクションとリソースに対するユーザへの権限付与
 
 
 ## コントローラクラスを作成する <span id="creating-controller"></span>
@@ -49,7 +49,7 @@ public function actionView($id)
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: コンテントネゴシエーションをサポート。
   [レスポンス形式の設定](rest-response-formatting.md) の節で説明します。
 * [[yii\filters\VerbFilter|verbFilter]]: HTTP メソッドのバリデーションをサポート。
-* [[yii\filters\AuthMethod|authenticator]]: ユーザ認証をサポート。
+* [[yii\filters\auth\AuthMethod|authenticator]]: ユーザ認証をサポート。
   [認証](rest-authentication.md) の節で説明します。
 * [[yii\filters\RateLimiter|rateLimiter]]: レート制限をサポート。
   [レート制限](rest-rate-limiting.md) の節で説明します。
@@ -72,9 +72,43 @@ public function behaviors()
 ```
 
 
+### CORS <span id="cors"></span>
+
+コントローラに [CORS (クロスオリジンリソース共有)](structure-filters.md#cors) フィルタを追加するのは、上記の他のフィルタを追加するのより、若干複雑になります。
+と言うのは、CORS フィルタは認証メソッドより前に適用されなければならないため、他のフィルタとは少し異なるアプローチが必要だからです。
+また、ブラウザが認証クレデンシャルを送信する必要なく、リクエストが出来るかどうかを前もって安全に判断できるように、
+[CORS プリフライトリクエスト](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests) の認証を無効にする必要もあります。
+下記のコードは、[[yii\rest\ActiveController]] を拡張した既存のコントローラに [[yii\filters\Cors]] フィルタを追加するのに必要なコードを示しています。
+
+```php
+use yii\filters\auth\HttpBasicAuth;
+
+public function behaviors()
+{
+    $behaviors = parent::behaviors();
+
+    // 認証フィルタを削除する
+    $auth = $behaviors['authenticator'];
+    unset($behaviors['authenticator']);
+    
+    // CORS フィルタを追加する
+    $behaviors['corsFilter'] = [
+        'class' => \yii\filters\Cors::className(),
+    ];
+    
+    // 認証フィルタを再度追加する
+    $behaviors['authenticator'] = $auth;
+    // CORS プリフライトリクエスト (HTTP OPTIONS メソッド) の認証を回避する
+    $behaviors['authenticator']['except'] = ['options'];
+
+    return $behaviors;
+}
+```
+
+
 ## `ActiveController` を拡張する <span id="extending-active-controller"></span>
 
-コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass||modelClass]] プロパティにセットしなければなりません。
+コントローラを [[yii\rest\ActiveController]] から拡張する場合は、このコントローラを通じて提供しようとしているリソースクラスの名前を [[yii\rest\ActiveController::modelClass|modelClass]] プロパティにセットしなければなりません。
 リソースクラスは [[yii\db\ActiveRecord]] から拡張しなければなりません。
 
 
@@ -138,10 +172,14 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // ユーザが $action と $model に対する権限を持つかどうかをチェック
     // アクセスを拒否すべきときは ForbiddenHttpException を投げる
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 
 `checkAccess()` メソッドは [[yii\rest\ActiveController]] のデフォルトのアクションから呼ばれます。
 新しいアクションを作成して、それに対してもアクセスチェックをしたい場合は、新しいアクションの中からこのメソッドを明示的に呼び出さなければなりません。
 
-> Tip|ヒント: [ロールベースアクセス制御 (RBAC) コンポーネント](security-authorization.md) を使って `checkAccess()` を実装することも可能です。
+> Tip: [ロールベースアクセス制御 (RBAC) コンポーネント](security-authorization.md) を使って `checkAccess()` を実装することも可能です。

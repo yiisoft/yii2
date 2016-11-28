@@ -9,6 +9,7 @@ namespace yii\grid;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\db\ActiveQueryInterface;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -28,6 +29,8 @@ use yii\helpers\Inflector;
  * [[renderDataCellContent|data cell content]]. The cell value is an un-formatted value that
  * may be used for calculation, while the actual cell content is a [[format|formatted]] version of that
  * value which may contain HTML markup.
+ *
+ * For more details and usage information on DataColumn, see the [guide article on data widgets](guide:output-data-widgets).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -50,7 +53,7 @@ class DataColumn extends Column
      */
     public $label;
     /**
-     * @var boolean whether the header label should be HTML-encoded.
+     * @var bool whether the header label should be HTML-encoded.
      * @see label
      * @since 2.0.1
      */
@@ -78,7 +81,7 @@ class DataColumn extends Column
      */
     public $format = 'text';
     /**
-     * @var boolean whether to allow sorting by this column. If true and [[attribute]] is found in
+     * @var bool whether to allow sorting by this column. If true and [[attribute]] is found in
      * the sort definition of [[GridView::dataProvider]], then the header cell of this column
      * will contain a link that may trigger the sorting when being clicked.
      */
@@ -90,7 +93,7 @@ class DataColumn extends Column
      */
     public $sortLinkOptions = [];
     /**
-     * @var string|array|boolean the HTML code representing a filter input (e.g. a text field, a dropdown list)
+     * @var string|array|null|false the HTML code representing a filter input (e.g. a text field, a dropdown list)
      * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
      *
      * - If this property is not set, a text field will be generated as the filter input;
@@ -117,6 +120,25 @@ class DataColumn extends Column
             return parent::renderHeaderCellContent();
         }
 
+        $label = $this->getHeaderCellLabel();
+        if ($this->encodeLabel) {
+            $label = Html::encode($label);
+        }
+
+        if ($this->attribute !== null && $this->enableSorting &&
+            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
+        } else {
+            return $label;
+        }
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    protected function getHeaderCellLabel()
+    {
         $provider = $this->grid->dataProvider;
 
         if ($this->label === null) {
@@ -124,6 +146,12 @@ class DataColumn extends Column
                 /* @var $model Model */
                 $model = new $provider->query->modelClass;
                 $label = $model->getAttributeLabel($this->attribute);
+            } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
+                /* @var $model Model */
+                $model = new $provider->modelClass;
+                $label = $model->getAttributeLabel($this->attribute);
+            } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
+                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
@@ -137,12 +165,7 @@ class DataColumn extends Column
             $label = $this->label;
         }
 
-        if ($this->attribute !== null && $this->enableSorting &&
-            ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => ($this->encodeLabel ? Html::encode($label) : $label)]));
-        } else {
-            return $this->encodeLabel ? Html::encode($label) : $label;
-        }
+        return $label;
     }
 
     /**
@@ -178,7 +201,7 @@ class DataColumn extends Column
      * Returns the data cell value.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
      * @return string the data cell value
      */
     public function getDataCellValue($model, $key, $index)

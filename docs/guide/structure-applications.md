@@ -138,15 +138,16 @@ For example:
 ```
 
 > Info: If a module ID is the same as an application component ID, the application component will be used during
-  the bootstrapping process. If you want to use the module instead, you may specify it using an anonymous function
-  like the following:
+> the bootstrapping process. If you want to use the module instead, you may specify it using an anonymous function
+> like the following:
+>
 > ```php
-[
-    function () {
-        return Yii::$app->getModule('user');
-    },
-]
-```
+> [
+>     function () {
+>         return Yii::$app->getModule('user');
+>     },
+> ]
+> ```
 
 
 During the bootstrapping process, each component will be instantiated. If the component class
@@ -191,6 +192,7 @@ The rest of the array elements (key-value pairs) specify the parameters to be bo
 ]
 ```
 
+> Info: Debug panel on development environment will not work when this property is enabled.
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
@@ -231,12 +233,10 @@ specific controllers. In the following example, `account` will be mapped to
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]

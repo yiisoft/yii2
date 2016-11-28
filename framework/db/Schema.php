@@ -37,11 +37,12 @@ use yii\caching\TagDependency;
  */
 abstract class Schema extends Object
 {
-    /**
-     * The following are the supported abstract column data types.
-     */
+    // The following are the supported abstract column data types.
     const TYPE_PK = 'pk';
+    const TYPE_UPK = 'upk';
     const TYPE_BIGPK = 'bigpk';
+    const TYPE_UBIGPK = 'ubigpk';
+    const TYPE_CHAR = 'char';
     const TYPE_STRING = 'string';
     const TYPE_TEXT = 'text';
     const TYPE_SMALLINT = 'smallint';
@@ -75,6 +76,12 @@ abstract class Schema extends Object
     ];
 
     /**
+     * @var string column schema class
+     * @since 2.0.11
+     */
+    public $columnSchemaClass = 'yii\db\ColumnSchema';
+
+    /**
      * @var array list of ALL schema names in the database, except system schemas
      */
     private $_schemaNames;
@@ -98,21 +105,21 @@ abstract class Schema extends Object
      */
     protected function createColumnSchema()
     {
-        return Yii::createObject('yii\db\ColumnSchema');
+        return Yii::createObject($this->columnSchemaClass);
     }
 
     /**
      * Loads the metadata for the specified table.
      * @param string $name table name
-     * @return TableSchema DBMS-dependent table metadata, null if the table does not exist.
+     * @return null|TableSchema DBMS-dependent table metadata, null if the table does not exist.
      */
     abstract protected function loadTableSchema($name);
 
     /**
      * Obtains the metadata for the named table.
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
-     * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
-     * @return TableSchema table metadata. Null if the named table does not exist.
+     * @param bool $refresh whether to reload the table schema even if it is found in the cache.
+     * @return null|TableSchema table metadata. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
     {
@@ -178,7 +185,7 @@ abstract class Schema extends Object
     /**
      * Returns the metadata for all tables in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
-     * @param boolean $refresh whether to fetch the latest available table schemas. If this is false,
+     * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
      * cached data may be returned if available.
      * @return TableSchema[] the metadata for all tables in the database.
      * Each array element is an instance of [[TableSchema]] or its child class.
@@ -200,7 +207,7 @@ abstract class Schema extends Object
 
     /**
      * Returns all schema names in the database, except system schemas.
-     * @param boolean $refresh whether to fetch the latest available schema names. If this is false,
+     * @param bool $refresh whether to fetch the latest available schema names. If this is false,
      * schema names fetched previously (if available) will be returned.
      * @return string[] all schema names in the database, except system schemas.
      * @since 2.0.4
@@ -218,7 +225,7 @@ abstract class Schema extends Object
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
      * If not empty, the returned table names will be prefixed with the schema name.
-     * @param boolean $refresh whether to fetch the latest available table names. If this is false,
+     * @param bool $refresh whether to fetch the latest available table names. If this is false,
      * table names fetched previously (if available) will be returned.
      * @return string[] all table names in the database.
      */
@@ -246,7 +253,7 @@ abstract class Schema extends Object
     /**
      * Determines the PDO type for the given PHP data value.
      * @param mixed $data the data whose PDO type is to be determined
-     * @return integer the PDO type
+     * @return int the PDO type
      * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
@@ -314,7 +321,7 @@ abstract class Schema extends Object
      * This method may be overridden by child classes to create a DBMS-specific column schema builder.
      *
      * @param string $type type of the column. See [[ColumnSchemaBuilder::$type]].
-     * @param integer|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
+     * @param int|string|array $length length or precision of the column. See [[ColumnSchemaBuilder::$length]].
      * @return ColumnSchemaBuilder column schema builder instance
      * @since 2.0.6
      */
@@ -353,12 +360,12 @@ abstract class Schema extends Object
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
      *  'IndexName1' => ['col1' [, ...]],
      *  'IndexName2' => ['col2' [, ...]],
      * ]
-     * ~~~
+     * ```
      *
      * This method should be overridden by child classes in order to support this feature
      * because the default implementation simply throws an exception
@@ -388,7 +395,7 @@ abstract class Schema extends Object
     }
 
     /**
-     * @return boolean whether this DBMS supports [savepoint](http://en.wikipedia.org/wiki/Savepoint).
+     * @return bool whether this DBMS supports [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      */
     public function supportsSavepoint()
     {
@@ -439,7 +446,7 @@ abstract class Schema extends Object
      * Executes the INSERT command, returning primary key values.
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column data (name => value) to be inserted into the table.
-     * @return array primary key values or false if the command fails
+     * @return array|false primary key values or false if the command fails
      * @since 2.0.4
      */
     public function insert($table, $columns)
@@ -519,7 +526,7 @@ abstract class Schema extends Object
      */
     public function quoteColumnName($name)
     {
-        if (strpos($name, '(') !== false || strpos($name, '[[') !== false || strpos($name, '{{') !== false) {
+        if (strpos($name, '(') !== false || strpos($name, '[[') !== false) {
             return $name;
         }
         if (($pos = strrpos($name, '.')) !== false) {
@@ -528,7 +535,9 @@ abstract class Schema extends Object
         } else {
             $prefix = '';
         }
-
+        if (strpos($name, '{{') !== false) {
+            return $name;
+        }
         return $prefix . $this->quoteSimpleColumnName($name);
     }
 
@@ -593,9 +602,9 @@ abstract class Schema extends Object
         ];
         if (isset($typeMap[$column->type])) {
             if ($column->type === 'bigint') {
-                return PHP_INT_SIZE == 8 && !$column->unsigned ? 'integer' : 'string';
+                return PHP_INT_SIZE === 8 && !$column->unsigned ? 'integer' : 'string';
             } elseif ($column->type === 'integer') {
-                return PHP_INT_SIZE == 4 && $column->unsigned ? 'string' : 'integer';
+                return PHP_INT_SIZE === 4 && $column->unsigned ? 'string' : 'integer';
             } else {
                 return $typeMap[$column->type];
             }
@@ -631,7 +640,7 @@ abstract class Schema extends Object
     /**
      * Returns a value indicating whether a SQL statement is for read purpose.
      * @param string $sql the SQL statement
-     * @return boolean whether a SQL statement is for read purpose.
+     * @return bool whether a SQL statement is for read purpose.
      */
     public function isReadQuery($sql)
     {

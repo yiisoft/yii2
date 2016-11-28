@@ -1,4 +1,4 @@
-﻿O'zbekchaga tarjima qilish bilan qanday ishlash kerak
+O'zbekchaga tarjima qilish bilan qanday ishlash kerak
 =====================================================
 
 Yii juda ko'p tillarga tarjima qilinayabdi shu jumladan o'zbekchaga ham. Tarjima qo'llanma va habarlarni o'z ichiga oladi.

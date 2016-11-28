@@ -15,7 +15,7 @@ namespace yii\mail;
  *
  * Messages are sent by a [[\yii\mail\MailerInterface|mailer]], like the following,
  *
- * ~~~
+ * ```php
  * Yii::$app->mailer->compose()
  *     ->setFrom('from@domain.com')
  *     ->setTo($form->email)
@@ -23,7 +23,7 @@ namespace yii\mail;
  *     ->setTextBody('Plain text content')
  *     ->setHtmlBody('<b>HTML content</b>')
  *     ->send();
- * ~~~
+ * ```
  *
  * @see MailerInterface
  *
@@ -206,7 +206,7 @@ interface MessageInterface
      * Sends this email message.
      * @param MailerInterface $mailer the mailer that should be used to send this message.
      * If null, the "mail" application component will be used instead.
-     * @return boolean whether this message is sent successfully.
+     * @return bool whether this message is sent successfully.
      */
     public function send(MailerInterface $mailer = null);
 

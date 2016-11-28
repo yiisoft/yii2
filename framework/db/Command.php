@@ -18,13 +18,14 @@ use yii\base\NotSupportedException;
  * The SQL statement it represents can be set via the [[sql]] property.
  *
  * To execute a non-query SQL (such as INSERT, DELETE, UPDATE), call [[execute()]].
- * To execute a SQL statement that returns result data set (such as SELECT),
+ * To execute a SQL statement that returns a result data set (such as SELECT),
  * use [[queryAll()]], [[queryOne()]], [[queryColumn()]], [[queryScalar()]], or [[query()]].
+ *
  * For example,
  *
- * ~~~
+ * ```php
  * $users = $connection->createCommand('SELECT * FROM user')->queryAll();
- * ~~~
+ * ```
  *
  * Command supports SQL statement preparation and parameter binding.
  * Call [[bindValue()]] to bind a value to a SQL parameter;
@@ -33,16 +34,18 @@ use yii\base\NotSupportedException;
  * You may also call [[prepare()]] explicitly to prepare a SQL statement.
  *
  * Command also supports building SQL statements by providing methods such as [[insert()]],
- * [[update()]], etc. For example,
+ * [[update()]], etc. For example, the following code will create and execute an INSERT SQL statement:
  *
- * ~~~
+ * ```php
  * $connection->createCommand()->insert('user', [
  *     'name' => 'Sam',
  *     'age' => 30,
  * ])->execute();
- * ~~~
+ * ```
  *
- * To build SELECT SQL statements, please use [[QueryBuilder]] instead.
+ * To build SELECT SQL statements, please use [[Query]] instead.
+ *
+ * For more details and usage information on Command, see the [guide article on Database Access Objects](guide:db-dao).
  *
  * @property string $rawSql The raw SQL with parameter values inserted into the corresponding placeholders in
  * [[sql]]. This property is read-only.
@@ -62,7 +65,7 @@ class Command extends Component
      */
     public $pdoStatement;
     /**
-     * @var integer the default fetch mode for this command.
+     * @var int the default fetch mode for this command.
      * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
@@ -73,7 +76,7 @@ class Command extends Component
      */
     public $params = [];
     /**
-     * @var integer the default number of seconds that query results can remain valid in cache.
+     * @var int the default number of seconds that query results can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire. And use a negative number to indicate
      * query cache should not be used.
      * @see cache()
@@ -101,7 +104,7 @@ class Command extends Component
 
     /**
      * Enables query cache for this command.
-     * @param integer $duration the number of seconds that query result of this command can remain valid in the cache.
+     * @param int $duration the number of seconds that query result of this command can remain valid in the cache.
      * If this is not set, the value of [[Connection::queryCacheDuration]] will be used instead.
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query result.
@@ -195,7 +198,7 @@ class Command extends Component
      * this may improve performance.
      * For SQL statement with binding parameters, this method is invoked
      * automatically.
-     * @param boolean $forRead whether this method is called for a read query. If null, it means
+     * @param bool $forRead whether this method is called for a read query. If null, it means
      * the SQL statement should be used to determine whether it is for read or write.
      * @throws Exception if there is any DB error
      */
@@ -239,13 +242,13 @@ class Command extends Component
 
     /**
      * Binds a parameter to the SQL statement to be executed.
-     * @param string|integer $name parameter identifier. For a prepared statement
+     * @param string|int $name parameter identifier. For a prepared statement
      * using named placeholders, this will be a parameter name of
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
      * @param mixed $value the PHP variable to bind to the SQL statement parameter (passed by reference)
-     * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
-     * @param integer $length length of the data type
+     * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @param int $length length of the data type
      * @param mixed $driverOptions the driver-specific options
      * @return $this the current command being executed
      * @see http://www.php.net/manual/en/function.PDOStatement-bindParam.php
@@ -283,12 +286,12 @@ class Command extends Component
 
     /**
      * Binds a value to a parameter.
-     * @param string|integer $name Parameter identifier. For a prepared statement
+     * @param string|int $name Parameter identifier. For a prepared statement
      * using named placeholders, this will be a parameter name of
      * the form `:name`. For a prepared statement using question mark
      * placeholders, this will be the 1-indexed position of the parameter.
      * @param mixed $value The value to bind to the parameter
-     * @param integer $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
+     * @param int $dataType SQL data type of the parameter. If null, the type is determined by the PHP type of the value.
      * @return $this the current command being executed
      * @see http://www.php.net/manual/en/function.PDOStatement-bindValue.php
      */
@@ -348,7 +351,7 @@ class Command extends Component
 
     /**
      * Executes the SQL statement and returns ALL rows at once.
-     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array all rows of the query result. Each array element is an array representing a row of data.
      * An empty array is returned if the query results in nothing.
@@ -362,9 +365,9 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
-     * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+     * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
      * @throws Exception execution failed
      */
@@ -376,7 +379,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the value of the first column in the first row of data.
      * This method is best used when only a single value is needed for a query.
-     * @return string|null|boolean the value of the first column in the first row of the query result.
+     * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if there is no value.
      * @throws Exception execution failed
      */
@@ -406,12 +409,12 @@ class Command extends Component
      * Creates an INSERT command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->insert('user', [
      *     'name' => 'Sam',
      *     'age' => 30,
      * ])->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the column names, and bind the values to be inserted.
      *
@@ -434,13 +437,13 @@ class Command extends Component
      * Creates a batch INSERT command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
      *     ['Tom', 30],
      *     ['Jane', 20],
      *     ['Linda', 25],
      * ])->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the column names, and quote the values to be inserted.
      *
@@ -464,9 +467,9 @@ class Command extends Component
      * Creates an UPDATE command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the column names and bind the values to be updated.
      *
@@ -490,9 +493,9 @@ class Command extends Component
      * Creates a DELETE command.
      * For example,
      *
-     * ~~~
+     * ```php
      * $connection->createCommand()->delete('user', 'status = 0')->execute();
-     * ~~~
+     * ```
      *
      * The method will properly escape the table and column names.
      *
@@ -698,7 +701,7 @@ class Command extends Component
      * @param string $table the table that the new index will be created for. The table name will be properly quoted by the method.
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
      * by commas. The column names will be properly quoted by the method.
-     * @param boolean $unique whether to add UNIQUE constraint on the created index.
+     * @param bool $unique whether to add UNIQUE constraint on the created index.
      * @return $this the command object itself
      */
     public function createIndex($name, $table, $columns, $unique = false)
@@ -740,7 +743,7 @@ class Command extends Component
 
     /**
      * Builds a SQL command for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema name of the tables. Defaults to empty string, meaning the current
      * or default schema.
      * @param string $table the table name.
@@ -755,10 +758,70 @@ class Command extends Component
     }
 
     /**
+     * Builds a SQL command for adding comment to column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        $sql = $this->db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for adding comment to table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        $sql = $this->db->getQueryBuilder()->addCommentOnTable($table, $comment);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for dropping comment from column
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCommentFromColumn($table, $column);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Builds a SQL command for dropping comment from table
+     *
+     * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
+     * @return $this the command object itself
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCommentFromTable($table);
+
+        return $this->setSql($sql);
+    }
+
+    /**
      * Executes the SQL statement.
      * This method should only be used for executing non-query SQL statement, such as `INSERT`, `DELETE`, `UPDATE` SQLs.
      * No result set will be returned.
-     * @return integer number of rows affected by the execution.
+     * @return int number of rows affected by the execution.
      * @throws Exception execution failed
      */
     public function execute()
@@ -796,7 +859,7 @@ class Command extends Component
     /**
      * Performs the actual DB query of a SQL statement.
      * @param string $method method of PDOStatement to be called
-     * @param integer $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return mixed the method execution result
      * @throws Exception if the query causes any problem

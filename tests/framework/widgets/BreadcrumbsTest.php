@@ -162,6 +162,26 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
     }
 
+    public function testTag()
+    {
+        $this->breadcrumbs->homeLink = ['label' => 'home-link'];
+        $this->breadcrumbs->links = ['label' => 'My Home Page', 'url' => 'http://my.example.com/yii2/link/page'];
+        $this->breadcrumbs->itemTemplate = "{link}\n";
+        $this->breadcrumbs->activeItemTemplate = "{link}\n";
+        $this->breadcrumbs->tag = false;
+
+        $expectedHtml = "home-link\n"
+            . "My Home Page\n"
+            . "http://my.example.com/yii2/link/page\n";
+
+        ob_start();
+        $this->breadcrumbs->run();
+        $actualHtml = ob_get_contents();
+        ob_end_clean();
+
+        $this->assertEquals($expectedHtml, $actualHtml);
+    }
+
     /**
      * Helper methods
      */

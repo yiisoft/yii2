@@ -16,7 +16,7 @@ use yii\helpers\Json;
  * UrlValidator validates that the attribute value is a valid http or https URL.
  *
  * Note that this validator only checks if the URL scheme and host part are correct.
- * It does not check the rest part of a URL.
+ * It does not check the remaining parts of a URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -28,7 +28,7 @@ class UrlValidator extends Validator
      * The pattern may contain a `{schemes}` token that will be replaced
      * by a regular expression which represents the [[validSchemes]].
      */
-    public $pattern = '/^{schemes}:\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)/i';
+    public $pattern = '/^{schemes}:\/\/(([A-Z0-9][A-Z0-9_-]*)(\.[A-Z0-9][A-Z0-9_-]*)+)(?::\d{1,5})?(?:$|[?\/#])/i';
     /**
      * @var array list of URI schemes which should be considered valid. By default, http and https
      * are considered to be valid schemes.
@@ -41,7 +41,7 @@ class UrlValidator extends Validator
      */
     public $defaultScheme;
     /**
-     * @var boolean whether validation process should take into account IDN (internationalized
+     * @var bool whether validation process should take into account IDN (internationalized
      * domain names). Defaults to false meaning that validation of URLs containing IDN will always
      * fail. Note that in order to use IDN validation you have to install and enable `intl` PHP
      * extension, otherwise an exception would be thrown.

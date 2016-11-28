@@ -28,6 +28,7 @@ class TestClass extends Object
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @group di
  */
 class ServiceLocatorTest extends TestCase
 {
