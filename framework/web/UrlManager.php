@@ -453,7 +453,8 @@ class UrlManager extends Component
      *
      * @param string|array $params use a string to represent a route (e.g. `site/index`),
      * or an array to represent a route with query parameters (e.g. `['site/index', 'param1' => 'value1']`).
-     * @param string|null $scheme the scheme to use for the URL (either `http`, `https` or empty string).
+     * @param string|null $scheme the scheme to use for the URL (either `http`, `https` or empty string
+     * for protocol-relative URL).
      * If not specified the scheme of the current request will be used.
      * @return string the created URL
      * @see createUrl()

@@ -87,7 +87,8 @@ class BaseUrl
      *
      * - `false` (default): generating a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::$hostInfo]].
-     * - string: generating an absolute URL with the specified scheme (either `http`, `https` or empty string).
+     * - string: generating an absolute URL with the specified scheme (either `http`, `https` or empty string
+     *   for protocol-relative URL).
      *
      * @return string the generated URL
      * @throws InvalidParamException a relative route is given while there is no active controller
@@ -201,7 +202,8 @@ class BaseUrl
      *
      * - `false` (default): generating a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::$hostInfo]].
-     * - string: generating an absolute URL with the specified scheme (either `http`, `https` or empty string).
+     * - string: generating an absolute URL with the specified scheme (either `http`, `https` or empty string
+     *   for protocol-relative URL).
      *
      * @return string the generated URL
      * @throws InvalidParamException a relative route is given while there is no active controller
@@ -268,7 +270,8 @@ class BaseUrl
      *
      * - `false` (default): returning the base URL without host info.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::$hostInfo]].
-     * - string: returning an absolute base URL with the specified scheme (either `http`, `https` or empty string).
+     * - string: returning an absolute base URL with the specified scheme (either `http`, `https` or empty string
+     *   for protocol-relative URL).
      * @return string
      */
     public static function base($scheme = false)
@@ -346,7 +349,8 @@ class BaseUrl
      *
      * - `false` (default): returning a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::$hostInfo]].
-     * - string: returning an absolute URL with the specified scheme (either `http`, `https` or empty string).
+     * - string: returning an absolute URL with the specified scheme (either `http`, `https` or empty string
+     *   for protocol-relative URL).
      *
      * @return string home URL
      */
@@ -411,7 +415,8 @@ class BaseUrl
      *
      * - `false` (default): generating a relative URL.
      * - `true`: returning an absolute base URL whose scheme is the same as that in [[\yii\web\UrlManager::$hostInfo]].
-     * - string: generating an absolute URL with the specified scheme (either `http`, `https` or empty string).
+     * - string: generating an absolute URL with the specified scheme (either `http`, `https` or empty string
+     *   for protocol-relative URL).
      *
      * @return string the generated URL
      * @since 2.0.3
