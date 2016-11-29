@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.1.0 under development
 -----------------------
 
+- Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
 - Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)
@@ -16,7 +17,6 @@ Yii Framework 2 Change Log
 - Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
 - Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
 - Chg: Removed `yii\base\Object::class` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
-- Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 
 2.0.11 under development
 ------------------------
