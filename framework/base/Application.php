@@ -249,12 +249,10 @@ abstract class Application extends Module
         if (isset($config['container'])) {
             if (isset($config['container']['definitions'])) {
                 $this->setContainerDefinitions($config['container']['definitions']);
-                unset($config['container']['definitions']);
             }
 
             if (isset($config['container']['singletons'])) {
                 $this->setContainerSingletons($config['container']['singletons']);
-                unset($config['container']['singletons']);
             }
 
             unset($config['container']);
