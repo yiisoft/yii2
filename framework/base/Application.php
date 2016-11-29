@@ -246,14 +246,18 @@ abstract class Application extends Module
             $this->setTimeZone('UTC');
         }
 
-        if (isset($config['containerDefinitions'])) {
-            $this->setContainerDefinitions($config['containerDefinitions']);
-            unset($config['containerDefinitions']);
-        }
+        if (isset($config['container'])) {
+            if (isset($config['container']['definitions'])) {
+                $this->setContainerDefinitions($config['container']['definitions']);
+                unset($config['container']['definitions']);
+            }
 
-        if (isset($config['containerSingletons'])) {
-            $this->setContainerSingletons($config['containerSingletons']);
-            unset($config['containerSingletons']);
+            if (isset($config['container']['singletons'])) {
+                $this->setContainerSingletons($config['container']['singletons']);
+                unset($config['container']['singletons']);
+            }
+
+            unset($config['container']);
         }
 
         // merge core components with custom components
@@ -469,7 +473,7 @@ abstract class Application extends Module
      * Registers a class definitions in [[yii\di\Container|Dependency Injection Container]]
      * by calling [[yii\di\Container::set()]].
      * This method is provided so that you can configure Dependency Injection Container
-     * when configuring a module.
+     * when configuring an application.
      *
      * @param array $definitions array of definitions. There are two allowed formats of array:
      * The first format:
@@ -528,7 +532,7 @@ abstract class Application extends Module
      * Registers a class definitions in [[yii\di\Container|Dependency Injection Container]]
      * and marks them class as singletons by calling [[yii\di\Container::setSingleton()]].
      * This method is provided so that you can configure Dependency Injection Container
-     * when configuring a module.
+     * when configuring an application.
      *
      * @param array $singletons array of singleton definitions. See [[setContainerDefinitions]]
      * for allowed formats of array.
