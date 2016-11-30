@@ -162,6 +162,38 @@ class Request extends \yii\base\Request
      * @see getBodyParams()
      */
     public $parsers = [];
+    /**
+     * @var array|\Closure|null list of host names, which are allowed.
+     * Each host can be specified as a wildcard pattern. For example:
+     *
+     * ```php
+     * [
+     *     'example.com',
+     *     '*.example.com',
+     * ]
+     * ```
+     *
+     * This field can be specified as a PHP callback of following signature:
+     *
+     * ```php
+     * function (\yii\base\Action $action) {
+     *     //return array of strings
+     * }
+     * ```
+     *
+     * where `$action` is the current [[\yii\base\Action|action]] object.
+     *
+     * If this field is not set - no host name check will be performed.
+     */
+    public $allowedHosts;
+    /**
+     * @var callable a callback that will be called if the current host does not match [[allowedHosts]].
+     * If not set, [[denyAccess()]] will be called.
+     *
+     * > Note: while implementing your own host deny processing, make sure you avoid usage of the current requested
+     * host name, creation of absolute URL links, caching page parts and so on.
+     */
+    public $invalidHostCallback;
 
     /**
      * @var CookieCollection Collection of request cookies.
@@ -555,20 +587,73 @@ class Request extends \yii\base\Request
     public function getHostInfo()
     {
         if ($this->_hostInfo === null) {
-            $secure = $this->getIsSecureConnection();
-            $http = $secure ? 'https' : 'http';
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
-            } elseif (isset($_SERVER['SERVER_NAME'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
-                $port = $secure ? $this->getSecurePort() : $this->getPort();
-                if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
-                    $this->_hostInfo .= ':' . $port;
-                }
-            }
+            $hostInfo = $this->detectHostInfo();
+            $this->_hostInfo = $this->validateHost($hostInfo);
         }
 
         return $this->_hostInfo;
+    }
+
+    protected function detectHostInfo() {
+        $secure = $this->getIsSecureConnection();
+        $http = $secure ? 'https' : 'http';
+        if (isset($_SERVER['HTTP_HOST'])) {
+            return $http . '://' . $_SERVER['HTTP_HOST'];
+        } elseif (isset($_SERVER['SERVER_NAME'])) {
+            $hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
+            $port = $secure ? $this->getSecurePort() : $this->getPort();
+            if (($port !== 80 && !$secure) || ($port !== 443 && $secure)) {
+                return $hostInfo . ':' . $port;
+            }
+        }
+    }
+
+    public function validateHostInfo($denyCallback = null)
+    {
+        $hostInfo = $this->_hostInfo !== null ? $this->_hostInfo : $this->detectHostInfo();
+        if ($this->validateHost($hostInfo) !== false) {
+            return true;
+        }
+
+        if ($denyCallback === null) {
+            $denyCallback = $this->invalidHostCallback;
+        }
+
+        if ($denyCallback === null) {
+            $this->denyAccess();
+        } elseif ($denyCallback !== false) {
+            call_user_func($denyCallback);
+        }
+
+        return false;
+    }
+
+    private function validateHost($hostInfo)
+    {
+        if ($hostInfo === null) {
+            return null;
+        }
+
+        $allowedHosts = $this->allowedHosts;
+        if ($allowedHosts instanceof \Closure) {
+            $allowedHosts = call_user_func($allowedHosts);
+        }
+        if ($allowedHosts === null) {
+            return $hostInfo;
+        }
+
+        if (!is_array($allowedHosts) && !$allowedHosts instanceof \Traversable) {
+            $allowedHosts = (array)$allowedHosts;
+        }
+
+        $host = parse_url($hostInfo, PHP_URL_HOST);
+        foreach ($allowedHosts as $allowedHost) {
+            if (fnmatch($allowedHost, $host)) {
+                return $hostInfo;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1458,5 +1543,25 @@ class Request extends \yii\base\Request
         $token = $this->xorTokens($mask, $token);
 
         return $token === $trueToken;
+    }
+
+    /**
+     * Denies the access.
+     * The default implementation will display 404 page right away, terminating the program execution.
+     * You may override this method, creating your own deny access handler. While doing so, make sure you
+     * avoid usage of the current requested host name, creation of absolute URL links, caching page parts and so on.
+     */
+    protected function denyAccess()
+    {
+        $response = Yii::$app->getResponse();
+        $errorHandler = Yii::$app->getErrorHandler();
+
+        $exception = new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+
+        $response->setStatusCode($exception->statusCode, $exception->getMessage());
+        $response->data = $errorHandler->renderFile($errorHandler->errorView, ['exception' => $exception]);
+        $response->send();
+
+        Yii::$app->end();
     }
 }
