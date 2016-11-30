@@ -145,7 +145,7 @@ class UniqueValidator extends Validator
         } else {
             // if current $model is in the database already we can't use exists()
             /* @var $models ActiveRecordInterface[] */
-            $models = $query->limit(2)->all();
+            $models = $query->select($targetClass::primaryKey())->limit(2)->all();
             $n = count($models);
             if ($n === 1) {
                 $keys = array_keys($params);
