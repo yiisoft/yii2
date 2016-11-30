@@ -46,7 +46,27 @@ class InstanceTest extends TestCase
         $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container) instanceof Connection);
     }
 
-    public function testEnsureWithoutType()
+    /**
+     * ensure an InvalidConfigException is thrown when a component does not exist.
+     */
+    public function testEnsure_NonExistingComponentException()
+    {
+        $container = new Container;
+        $this->setExpectedExceptionRegExp('yii\base\InvalidConfigException', '/^Failed to instantiate component or class/i');
+        Instance::ensure('cache', 'yii\cache\Cache', $container);
+    }
+
+    /**
+     * ensure an InvalidConfigException is thrown when a class does not exist.
+     */
+    public function testEnsure_NonExistingClassException()
+    {
+        $container = new Container;
+        $this->setExpectedExceptionRegExp('yii\base\InvalidConfigException', '/^Failed to instantiate component or class/i');
+        Instance::ensure('yii\cache\DoesNotExist', 'yii\cache\Cache', $container);
+    }
+
+    public function testEnsure_WithoutType()
     {
         $container = new Container;
         $container->set('db', [
@@ -59,7 +79,7 @@ class InstanceTest extends TestCase
         $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container) instanceof Connection);
     }
 
-    public function testEnsureMinimalSettings()
+    public function testEnsure_MinimalSettings()
     {
         Yii::$container->set('db', [
             'class' => 'yii\db\Connection',

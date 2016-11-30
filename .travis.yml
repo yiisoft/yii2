@@ -1,5 +1,8 @@
 dist: trusty
 
+# faster builds on new travis setup not using sudo
+sudo: false
+
 language: php
 
 php:
@@ -9,11 +12,24 @@ php:
   - 7.0
   - 7.1
   - nightly
-  - hhvm-3.6
 
 matrix:
   fast_finish: true
   include:
+    # Test against HHVM 3.12 LTS version by using trusty
+    - php: hhvm-3.12
+      sudo: true
+      dist: trusty
+      group: edge # Use edge image until the next travis CI image update
+      addons:
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
     # test against the latest HHVM version by using a newer image
     - php: hhvm
       sudo: true
@@ -34,16 +50,10 @@ matrix:
     - php: nightly
 
 env:
-  global:
-    - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206
-    - CUBRID_PDO_VERSION=9.3.0.0001
-    - secure: Q3dD9eL9yGDbMbdnNeLPSruRmZH515tLOTBam5rnsqX8spE+/HLqskLwUKIX78ansVdhu/OLGO72rBHvUotrQPLjqp6GnOSXw15gaz1LcxzfqbiZSbNvYw+7nl0hUjysLEMfZFEGWqrrk8BMuRAWyxABCrdR/91CyTFJhhcTnpg=
+  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
 
 services:
   - memcached
-
-# faster builds on new travis setup not using sudo
-sudo: false
 
 # cache vendor dirs
 cache:

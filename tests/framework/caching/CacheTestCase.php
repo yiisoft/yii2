@@ -181,7 +181,7 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->getCacheInstance();
 
-        $this->assertSame(0, $cache->ttl);
+        $this->assertSame(0, $cache->defaultDuration);
     }
 
     public function testExpire()
