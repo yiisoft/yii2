@@ -19,13 +19,14 @@ STATUS
 [![Code Climate](https://img.shields.io/codeclimate/github/yiisoft/yii2.svg)](https://codeclimate.com/github/yiisoft/yii2)
 
 
-REQUIREMENTS
-------------
-
-* PHP 5.4.
-
 INSTALLATION
 ------------
+
+#### Requirements
+* PHP 5.4.
+
+#### Install with Composer
+
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
 ```
