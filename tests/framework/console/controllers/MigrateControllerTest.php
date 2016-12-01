@@ -95,6 +95,14 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
             ]);
 
+            $this->assertCommandCreatedFile('create_unsigned_pk', $migrationName, $table, [
+                'fields' => 'brand_id:primaryKey:unsigned',
+            ]);
+
+            $this->assertCommandCreatedFile('create_unsigned_big_pk', $migrationName, $table, [
+                'fields' => 'brand_id:bigPrimaryKey:unsigned',
+            ]);
+
             $this->assertCommandCreatedFile('create_id_pk', $migrationName, $table, [
                 'fields' => 'id:primaryKey,
                     address:string,
