@@ -187,20 +187,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        if ($table === '') {
+        if (empty($table)) {
             $enable = $check ? 'IMMEDIATE' : 'DEFERRED';
             $command = "SET CONSTRAINTS ALL $enable; ";
         } else {
             $enable = $check ? 'ENABLE' : 'DISABLE';
             $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
-            $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
             $viewNames = $this->db->getSchema()->getViewNames($schema);
-            $tableNames = array_diff($tableNames, $viewNames);
             $command = '';
-
-            foreach ($tableNames as $tableName) {
+            if (!in_array($table, $viewNames)) {
                 $tableName = '"' . $schema . '"."' . $tableName . '"';
-                $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
+                $command = "ALTER TABLE $tableName $enable TRIGGER ALL; ";
             }
         }
 
