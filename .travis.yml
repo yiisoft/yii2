@@ -1,5 +1,18 @@
+#
+# Travis Setup
+#
+
+# use ubuntu trusty for newer version of nodejs, used for JS testing
+dist: trusty
+
 # faster builds on new travis setup not using sudo
 sudo: false
+
+
+#
+# Test Matrix
+#
+
 language: php
 
 php:
