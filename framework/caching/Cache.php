@@ -7,6 +7,7 @@
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
 
@@ -69,6 +70,12 @@ abstract class Cache extends Component implements \ArrayAccess
      * implementations of the cache can not correctly save and retrieve data different from a string type.
      */
     public $serializer;
+    
+    /**
+     * @var bool whether to enable profiling the queries
+     * @since 2.0.11
+     */
+    public $enableProfiling = false;
 
 
     /**
@@ -102,13 +109,10 @@ abstract class Cache extends Component implements \ArrayAccess
     public function get($key)
     {
         $builtKey = $this->buildKey($key);
-        if (YII_DEBUG) {
-            \Yii::beginProfile($builtKey, __METHOD__);
-        }
+        $this->beginProfile($builtKey, __METHOD__);
+        
         $value = $this->getValue($builtKey);
-        if (YII_DEBUG) {
-            \Yii::endProfile($builtKey, __METHOD__);
-        }
+        $this->endProfile($builtKey, __METHOD__);
 
         if ($value === false || $this->serializer === false) {
             return $value;
@@ -225,14 +229,9 @@ abstract class Cache extends Component implements \ArrayAccess
         }
         
         $builtKey = $this->buildKey($key);
-        if (YII_DEBUG) {
-            \Yii::beginProfile($builtKey, __METHOD__);
-        }
+        $this->beginProfile($builtKey, __METHOD__);        
         $setResult = $this->setValue($builtKey, $value, $duration);
-        if (YII_DEBUG) {
-            \Yii::endProfile($builtKey, __METHOD__);
-        }
-        
+        $this->endProfile($builtKey, __METHOD__);
 
         return $setResult;
     }
@@ -539,5 +538,30 @@ abstract class Cache extends Component implements \ArrayAccess
     public function offsetUnset($key)
     {
         $this->delete($key);
+    }
+    
+    /**
+     * Marks the beginning of a code block for profiling.
+     * @param string $token token for the code block
+     * @param string $category the category of this log message
+     * @see endProfile()
+     */
+    protected function beginProfile($token, $category)
+    {
+        if ($this->enableProfiling) {
+            Yii::beginProfile($token, $category);
+        }
+    }
+    /**
+     * Marks the end of a code block for profiling.
+     * @param string $token token for the code block
+     * @param string $category the category of this log message
+     * @see beginProfile()
+     */
+    protected function endProfile($token, $category)
+    {
+        if ($this->enableProfiling) {
+            Yii::endProfile($token, $category);
+        }
     }
 }
