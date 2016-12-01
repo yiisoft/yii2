@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
 - Enh #7420: Attributes for prompt generated with `renderSelectOptions` of `\yii\helpers\Html` helper (arogachev)
 - Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
+- Enh #10896: Select only primary key when counting records in UniqueValidator (developeruz)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
 - Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
 - Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
@@ -53,7 +54,6 @@ Yii Framework 2 Change Log
 - Enh #13074: Improved `\yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options. (timbeks)
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
-
 
 2.0.10 October 20, 2016
 -----------------------
