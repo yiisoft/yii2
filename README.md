@@ -18,7 +18,7 @@ We strive to embrace all the best practices applied in modern Web application de
 INSTALLATION
 ------------
 
-Yii2 requires PHP 5.4. With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+Yii2 requires `PHP 5.4`. With [Composer](https://getcomposer.org/) installed, you can install Yii by running the following commands under a Web-accessible folder:
 
 ```
 composer global require "fxp/composer-asset-plugin:^1.2.0"
