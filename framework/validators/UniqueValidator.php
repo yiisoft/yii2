@@ -76,7 +76,7 @@ class UniqueValidator extends Validator
     /**
      * @var string
      * @since 2.0.9
-     * @deprecated Deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
+     * @deprecated since version 2.0.10, to be removed in 2.1. Use [[message]] property
      * to setup custom message for multiple target attributes.
      */
     public $comboNotUnique;
@@ -145,7 +145,7 @@ class UniqueValidator extends Validator
         } else {
             // if current $model is in the database already we can't use exists()
             /* @var $models ActiveRecordInterface[] */
-            $models = $query->limit(2)->all();
+            $models = $query->select($targetClass::primaryKey())->limit(2)->all();
             $n = count($models);
             if ($n === 1) {
                 $keys = array_keys($params);

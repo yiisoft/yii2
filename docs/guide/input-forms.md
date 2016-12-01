@@ -1,6 +1,8 @@
 Creating Forms
 ==============
 
+ActiveRecord based forms: ActiveForm
+-----------------------
 The primary way of using forms in Yii is through [[yii\widgets\ActiveForm]]. This approach should be preferred when
 the form is based upon a model. Additionally, there are some useful methods in [[yii\helpers\Html]] that are typically
 used for adding buttons and help text to any form.
@@ -52,6 +54,7 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
+### Wrapping with `begin()` and `end()` <span id="wrapping-with-begin-and-end"></span>
 In the above code, [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] not only creates a form instance, but also marks the beginning of the form.
 All of the content placed between [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] and
 [[yii\widgets\ActiveForm::end()|ActiveForm::end()]] will be wrapped within the HTML `<form>` tag.
@@ -59,6 +62,7 @@ As with any widget, you can specify some options as to how the widget should be 
 the `begin` method. In this case, an extra CSS class and identifying ID are passed to be used in the opening `<form>` tag.
 For all available options, please refer to the API documentation of [[yii\widgets\ActiveForm]].
 
+### ActiveField <span id="activefield"></span>.
 In order to create a form element in the form, along with the element's label, and any applicable JavaScript validation,
 the [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] method is called, which returns an instance of [[yii\widgets\ActiveField]].
 When the result of this method is echoed directly, the result is a regular (text) input.
@@ -119,26 +123,76 @@ class like it is done in the above example with [[yii\helpers\Html::submitButton
 > }
 > ```
 
-Creating Drop-down List <span id="creating-activeform-dropdownlist"></span>
+Creating Lists <span id="creating-activeform-lists"></span>
 -----------------------
 
-We can use ActiveForm [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-method to create a drop-down list:
+There are 3 types of lists:
+* Dropdown lists 
+* Radio lists
+* Checkbox lists
+
+To create a list, you have to prepare the items. This can be done manually:
 
 ```php
-use app\models\ProductCategory;
+$items = [
+    1 => 'item 1', 
+    2 => 'item 2'
+]
+```
 
-/* @var $this yii\web\View */
+or by retrieval from the DB:
+```php
+$items = Category::find()
+        ->select(['id', 'label'])
+        ->indexBy('id')
+        ->column();
+```
+
+These `$items` have to be processed by the different list widgets.
+The value of the form field (and the current active item) will be automatically set 
+by the current value of the `$model`'s attribute. 
+
+#### Creating a drop-down list <span id="creating-activeform-dropdownlist"></span>
+
+We can use ActiveField [[\yii\widgets\ActiveField::dropDownList()]] method to create a drop-down list:
+
+```php
 /* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\Product */
 
-echo $form->field($model, 'product_category')->dropdownList(
-    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
+echo $form->field($model, 'category')->dropdownList([
+        1 => 'item 1', 
+        2 => 'item 2'
+    ],
     ['prompt'=>'Select Category']
 );
 ```
 
-The value of your model field will be automatically pre-selected.
+#### Creating a radio list <span id="creating-activeform-radioList"></span>
+
+We can use ActiveField [[\yii\widgets\ActiveField::radioList()]] method to create a radio list:
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->radioList([
+    1 => 'radio 1', 
+    2 => 'radio 2'
+]);
+```
+
+#### Creating a checkbox List <span id="creating-activeform-checkboxList"></span>
+
+We can use ActiveField [[\yii\widgets\ActiveField::checkboxList()]] method to create a checkbox list:
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->checkboxList([
+    1 => 'checkbox 1', 
+    2 => 'checkbox 2'
+]);
+```
+
 
 Working with Pjax <span id="working-with-pjax"></span>
 -----------------------

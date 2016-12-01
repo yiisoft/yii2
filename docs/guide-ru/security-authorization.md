@@ -51,7 +51,7 @@ class SiteController extends Controller
 Параметр `rules` задаёт [[yii\filters\AccessRule|правила доступа]], которые означают следующее:
 
 - Разрешить всем гостям (ещё не прошедшим авторизацию) доступ к действиям `login` и `signup`.
-  Опция `roles` содержит знак вопроса `?`, это специальный токен обозначающий "гостя". 
+  Опция `roles` содержит знак вопроса `?`, это специальный токен обозначающий "гостя".
 - Разрешить аутентифицированным пользователям доступ к действию `logout`. Символ `@` — это другой специальный токен,
   обозначающий аутентифицированного пользователя.
 
@@ -182,7 +182,7 @@ Yii реализует общую иерархическую RBAC, следуя 
 ### Настройка RBAC Manager
 
 Перед определением авторизационных данных и проверкой прав доступа, мы должны настроить компонент приложения
-[[yii\base\Application::authManager|authManager]]. Yii предоставляет два типа менеджеров авторизации: 
+[[yii\base\Application::authManager|authManager]]. Yii предоставляет два типа менеджеров авторизации:
 [[yii\rbac\PhpManager]] и [[yii\rbac\DbManager]]. Первый использует файл с PHP скриптом для хранения данных авторизации,
 второй сохраняет данные в базе данных. Вы можете использовать первый, если ваше приложение не требует слишком динамичного
 управления ролями и разрешениями.
@@ -224,7 +224,7 @@ return [
 ];
 ```
 
-`DbManager` использует четыре таблицы для хранения данных: 
+`DbManager` использует четыре таблицы для хранения данных:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: таблица для хранения авторизационных элементов. По умолчанию "auth_item".
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: таблица для хранения иерархии элементов. По умолчанию "auth_item_child".
@@ -334,7 +334,7 @@ public function signup()
 ```
 
 Для приложений, требующих комплексного контроля доступа с динамически обновляемыми данными авторизации, существуют
-специальные пользовательские интерфейсы (так называемые админ-панели), которые могут быть разработаны с 
+специальные пользовательские интерфейсы (так называемые админ-панели), которые могут быть разработаны с
 использованием API, предлагаемого `authManager`.
 
 
@@ -358,10 +358,10 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user the user ID.
+     * @param string|int $user the user ID.
      * @param Item $item the role or permission that this rule is associated width.
      * @param array $params parameters passed to ManagerInterface::checkAccess().
-     * @return boolean a value indicating whether the rule permits the role or permission it is associated with.
+     * @return bool a value indicating whether the rule permits the role or permission it is associated with.
      */
     public function execute($user, $item, $params)
     {
@@ -541,7 +541,7 @@ $auth->addChild($admin, $author);
 
 Обратите внимание, так как "author" добавлен как дочерняя роль к "admin", следовательно в реализации метода `execute()`
 класса правила вы должны учитывать эту иерархию. Именно поэтому для роли "author" метод `execute()` вернёт истину,
-если пользователь принадлежит к группам 1 или 2 (это означает, что пользователь находится в группе 
+если пользователь принадлежит к группам 1 или 2 (это означает, что пользователь находится в группе
 администраторов или авторов)
 
 Далее настроим `authManager` с помощью перечисления ролей в свойстве [[yii\rbac\BaseManager::$defaultRoles]]:

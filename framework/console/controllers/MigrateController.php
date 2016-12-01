@@ -101,7 +101,7 @@ class MigrateController extends BaseMigrateController
         'create_junction' => '@yii/views/createTableMigration.php',
     ];
     /**
-     * @var boolean indicates whether the table names generated should consider
+     * @var bool indicates whether the table names generated should consider
      * the `tablePrefix` setting of the DB connection. For example, if the table
      * name is `post` the generator wil return `{{%post}}`.
      * @since 2.0.8
@@ -161,7 +161,7 @@ class MigrateController extends BaseMigrateController
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
@@ -199,15 +199,49 @@ class MigrateController extends BaseMigrateController
         if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
             $this->createMigrationHistoryTable();
         }
-        $query = new Query;
-        $rows = $query->select(['version', 'apply_time'])
+        $query = (new Query())
+            ->select(['version', 'apply_time'])
             ->from($this->migrationTable)
-            ->orderBy('apply_time DESC, version DESC')
-            ->limit($limit)
-            ->createCommand($this->db)
-            ->queryAll();
-        $history = ArrayHelper::map($rows, 'version', 'apply_time');
-        unset($history[self::BASE_MIGRATION]);
+            ->orderBy(['apply_time' => SORT_DESC, 'version' => SORT_DESC]);
+
+        if (empty($this->migrationNamespaces)) {
+            $query->limit($limit);
+            $rows = $query->all($this->db);
+            $history = ArrayHelper::map($rows, 'version', 'apply_time');
+            unset($history[self::BASE_MIGRATION]);
+            return $history;
+        }
+
+        $rows = $query->all($this->db);
+
+        $history = [];
+        foreach ($rows as $key => $row) {
+            if ($row['version'] === self::BASE_MIGRATION) {
+                continue;
+            }
+            if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
+                $time = str_replace('_', '', $matches[1]);
+                $row['canonicalVersion'] = $time;
+            } else {
+                $row['canonicalVersion'] = $row['version'];
+            }
+            $row['apply_time'] = (int)$row['apply_time'];
+            $history[] = $row;
+        }
+
+        usort($history, function ($a, $b) {
+            if ($a['apply_time'] === $b['apply_time']) {
+                if (($compareResult = strcasecmp($b['canonicalVersion'], $a['canonicalVersion'])) !== 0) {
+                    return $compareResult;
+                }
+                return strcasecmp($b['version'], $a['version']);
+            }
+            return ($a['apply_time'] > $b['apply_time']) ? -1 : +1;
+        });
+
+        $history = array_slice($history, 0, $limit);
+
+        $history = ArrayHelper::map($history, 'version', 'apply_time');
 
         return $history;
     }
@@ -269,8 +303,8 @@ class MigrateController extends BaseMigrateController
         $table = null;
         if (preg_match('/^create_junction(?:_table_for_|_for_|_)(.+)_and_(.+)_tables?$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['create_junction'];
-            $firstTable = mb_strtolower($matches[1], Yii::$app->charset);
-            $secondTable = mb_strtolower($matches[2], Yii::$app->charset);
+            $firstTable = $matches[1];
+            $secondTable = $matches[2];
 
             $fields = array_merge(
                 [
@@ -300,18 +334,18 @@ class MigrateController extends BaseMigrateController
             $table = $firstTable . '_' . $secondTable;
         } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['add_column'];
-            $table = mb_strtolower($matches[2], Yii::$app->charset);
+            $table = $matches[2];
         } elseif (preg_match('/^drop_(.+)_columns?_from_(.+)_table$/', $name, $matches)) {
             $templateFile = $this->generatorTemplateFiles['drop_column'];
-            $table = mb_strtolower($matches[2], Yii::$app->charset);
+            $table = $matches[2];
         } elseif (preg_match('/^create_(.+)_table$/', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['create_table'];
-            $table = mb_strtolower($matches[1], Yii::$app->charset);
+            $table = $matches[1];
         } elseif (preg_match('/^drop_(.+)_table$/', $name, $matches)) {
             $this->addDefaultPrimaryKey($fields);
             $templateFile = $this->generatorTemplateFiles['drop_table'];
-            $table = mb_strtolower($matches[1], Yii::$app->charset);
+            $table = $matches[1];
         }
 
         foreach ($foreignKeys as $column => $foreignKey) {

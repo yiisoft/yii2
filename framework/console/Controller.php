@@ -43,16 +43,16 @@ class Controller extends \yii\base\Controller
     const EXIT_CODE_ERROR = 1;
 
     /**
-     * @var boolean whether to run the command interactively.
+     * @var bool whether to run the command interactively.
      */
     public $interactive = true;
     /**
-     * @var boolean whether to enable ANSI color in the output.
+     * @var bool whether to enable ANSI color in the output.
      * If not set, ANSI color will only be enabled for terminals that support it.
      */
     public $color;
     /**
-     * @var boolean whether to display help information about current command.
+     * @var bool whether to display help information about current command.
      * @since 2.0.10
      */
     public $help;
@@ -70,7 +70,7 @@ class Controller extends \yii\base\Controller
      * and the terminal supports ANSI color.
      *
      * @param resource $stream the stream to check.
-     * @return boolean Whether to enable ANSI style in output.
+     * @return bool Whether to enable ANSI style in output.
      */
     public function isColorEnabled($stream = \STDOUT)
     {
@@ -82,7 +82,7 @@ class Controller extends \yii\base\Controller
      * If the action ID is empty, the method will use [[defaultAction]].
      * @param string $id the ID of the action to be executed.
      * @param array $params the parameters (name-value pairs) to be passed to the action.
-     * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
+     * @return int the status of the action execution. 0 means normal, other values mean abnormal.
      * @throws InvalidRouteException if the requested action ID cannot be resolved into an action successfully.
      * @throws Exception if there are unknown options or missing arguments
      * @see createAction
@@ -122,7 +122,7 @@ class Controller extends \yii\base\Controller
             }
         }
         if ($this->help) {
-            $route = $this->id . '/' . $id;
+            $route = $this->getUniqueId() . '/' . $id;
             return Yii::$app->runAction('help', [$route]);
         }
         return parent::runAction($id, $params);
@@ -206,7 +206,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
-     * @return integer|boolean Number of bytes printed or false on error
+     * @return int|bool Number of bytes printed or false on error
      */
     public function stdout($string)
     {
@@ -231,7 +231,7 @@ class Controller extends \yii\base\Controller
      * ```
      *
      * @param string $string the string to print
-     * @return integer|boolean Number of bytes printed or false on error
+     * @return int|bool Number of bytes printed or false on error
      */
     public function stderr($string)
     {
@@ -274,26 +274,26 @@ class Controller extends \yii\base\Controller
     {
         if ($this->interactive) {
             return Console::prompt($text, $options);
-        } else {
-            return isset($options['default']) ? $options['default'] : '';
         }
+
+        return isset($options['default']) ? $options['default'] : '';
     }
 
     /**
      * Asks user to confirm by typing y or n.
      *
      * @param string $message to echo out before waiting for user input
-     * @param boolean $default this value is returned if no selection is made.
-     * @return boolean whether user confirmed.
+     * @param bool $default this value is returned if no selection is made.
+     * @return bool whether user confirmed.
      * Will return true if [[interactive]] is false.
      */
     public function confirm($message, $default = false)
     {
         if ($this->interactive) {
             return Console::confirm($message, $default);
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     /**
@@ -320,7 +320,7 @@ class Controller extends \yii\base\Controller
      * until [[beforeAction()]] is being called.
      *
      * @param string $actionID the action id of the current request
-     * @return array the names of the options valid for the action
+     * @return string[] the names of the options valid for the action
      */
     public function options($actionID)
     {
@@ -336,7 +336,7 @@ class Controller extends \yii\base\Controller
      * where the keys is alias name for option and value is option name.
      *
      * @since 2.0.8
-     * @see options($actionID)
+     * @see options()
      */
     public function optionAliases()
     {

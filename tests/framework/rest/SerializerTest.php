@@ -260,7 +260,7 @@ class SerializerTest extends TestCase
      *
      * @param \yii\data\DataProviderInterface $dataProvider
      * @param array $expectedResult
-     * @param boolean $saveKeys
+     * @param bool $saveKeys
      */
     public function testSerializeDataProvider($dataProvider, $expectedResult, $saveKeys = false)
     {

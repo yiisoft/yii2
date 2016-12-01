@@ -41,7 +41,7 @@ class UrlValidator extends Validator
      */
     public $defaultScheme;
     /**
-     * @var boolean whether validation process should take into account IDN (internationalized
+     * @var bool whether validation process should take into account IDN (internationalized
      * domain names). Defaults to false meaning that validation of URLs containing IDN will always
      * fail. Note that in order to use IDN validation you have to install and enable `intl` PHP
      * extension, otherwise an exception would be thrown.

@@ -145,7 +145,7 @@ class Foo
 
 ### 4.4 Doc ブロック
 
-`@param`、`@var`、`@property` および `@return` は `boolean`、`integer`、`string`、`array` または `null` として型を宣言しなければなりません。
+`@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
 `Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
 型付きの配列に対しては `ClassName[]` を使います。
 
@@ -297,14 +297,14 @@ switch には下記の書式を使用します。
 ```php
 switch ($this->phpType) {
     case 'string':
-        $a = (string)$value;
+        $a = (string) $value;
         break;
     case 'integer':
     case 'int':
-        $a = (integer)$value;
+        $a = (int) $value;
         break;
     case 'boolean':
-        $a = (boolean)$value;
+        $a = (bool) $value;
         break;
     default:
         $a = null;

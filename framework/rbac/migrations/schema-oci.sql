@@ -18,7 +18,7 @@ drop table "auth_rule";
 create table "auth_rule"
 (
    "name"  varchar(64) not null,
-   "data"  varchar(1000),
+   "data"  BYTEA,
    "created_at"           integer,
    "updated_at"           integer,
     primary key ("name")
@@ -28,11 +28,10 @@ create table "auth_rule"
 create table "auth_item"
 (
    "name"                 varchar(64) not null,
-   "type"                 integer not null,
+   "type"                 smallint not null,
    "description"          varchar(1000),
    "rule_name"            varchar(64),
-   "data"                 varchar(1000),
-   "created_at"           integer,
+   "data"                 BYTEA,
    "updated_at"           integer,
         foreign key ("rule_name") references "auth_rule"("name") on delete set null,
         primary key ("name")

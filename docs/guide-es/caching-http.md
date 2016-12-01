@@ -28,7 +28,7 @@ la página. El formato de la función de llamada de retorno debe ser el siguient
 /**
  * @param Action $action el objeto acción que se está controlando actualmente
  * @param array $params el valor de la propiedad "params"
- * @return integer un sello de tiempo UNIX que representa el tiempo de modificación de la página
+ * @return int un sello de tiempo UNIX que representa el tiempo de modificación de la página
  */
 function ($action, $params)
 ```
