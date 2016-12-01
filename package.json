@@ -1,6 +1,5 @@
 {
   "name": "yii2",
-  "version": "2.0.10",
   "description": "a modern PHP framework designed for professional Web development",
   "main": "index.js",
   "directories": {

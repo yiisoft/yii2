@@ -54,6 +54,29 @@ matrix:
       services:
         - mysql
         - postgresql
+    # have a separate branch for javascript tests
+    - language: node_js
+      node_js: 6
+      dist: trusty
+      # overwrite php related settings
+      php:
+      services:
+      addons:
+      install:
+        - travis_retry npm install
+        # disable xdebug for performance in composer
+        - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
+        - travis_retry composer self-update && composer --version
+        - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
+        - travis_retry composer update --prefer-dist --no-interaction
+      before_script:
+        - node --version
+        - npm --version
+        - php --version
+        - composer --version
+      script: npm test
+      after_script:
+
   allow_failures:
     - php: nightly
 
@@ -86,8 +109,6 @@ install:
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
 #  - tests/data/travis/cubrid-setup.sh
-  # NPM packages for JS testing
-  - travis_retry npm install
 
 before_script:
   # show some versions and env information
@@ -95,8 +116,6 @@ before_script:
   - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
   - mysql --version
   - psql --version
-  - node --version
-  - npm --version
 
   # initialize databases
   - mysql -e 'CREATE DATABASE `yiitest`;';
@@ -117,8 +136,6 @@ script:
   - cd framework && composer validate --no-check-lock && cd ..
   # run PHPUnit
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
-  # run Mocha for JS testing
-  - npm test
 
 after_script:
   - |
