@@ -1,5 +1,8 @@
+dist: trusty
+
 # faster builds on new travis setup not using sudo
 sudo: false
+
 language: php
 
 php:
@@ -63,6 +66,12 @@ cache:
 addons:
   postgresql: "9.3"
 
+before_install:
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.4' ]; then
+      yes '' | pecl install apc
+    fi
+
 install:
   - |
     if [[ $TRAVIS_PHP_VERSION != '5.6' && $TRAVIS_PHP_VERSION != hhv* ]]; then
@@ -76,6 +85,8 @@ install:
   - travis_retry composer update --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
+# NPM packages
+  - travis_retry npm install
 #  - tests/data/travis/cubrid-setup.sh
 
 before_script:
@@ -84,18 +95,13 @@ before_script:
   - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
   - mysql --version
   - psql --version
+  - node --version
+  - npm --version
 
   # initialize databases
-  - |
-    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
-      mysql -e 'CREATE DATABASE `yiitest`;'
-    fi
-  - |
-    if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
-      mysql -u root -e 'CREATE DATABASE yiitest;';
-      mysql -u root -e 'CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;'
-      mysql -u root -e 'GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;'
-    fi
+  - mysql -e 'CREATE DATABASE yiitest;';
+  - mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
   - |
@@ -110,6 +116,8 @@ script:
   - cd framework && composer validate --no-check-lock && cd ..
   # run PHPUnit
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+  # run Mocha
+  - npm test
 
 after_script:
   - |
