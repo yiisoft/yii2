@@ -32,7 +32,7 @@ There is also a PDF version of the Definitive Guide and a Definitive Guide Mirro
 
 | Type  | Online | PDF |
 | ------------- | ------------- | ------------- |
-| API | http://www.yiiframework.com/doc-2.0/index.html [mirror](http://stuff.cebe.cc/yii2docs/)| |
+| API | http://www.yiiframework.com/doc-2.0/index.html [(mirror)](http://stuff.cebe.cc/yii2docs/)| |
 | Guide |  http://www.yiiframework.com/doc-2.0/guide-index.html | http://stuff.cebe.cc/yii2-guide.en.pdf |
 
 
