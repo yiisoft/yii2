@@ -51,7 +51,7 @@ return [
 
 The default value for the [[yii\base\Application::$sourceLanguage|source language]] is `en-US`, meaning
 US English. It is **recommended** that you keep this default value unchanged. Usually it is much easier
-to find people who can translate from 'English to other languages' than from 'non-English to non-English'.
+to find people who can translate from "English to other languages" than from "non-English to non-English".
 
 You often need to set the [[yii\base\Application::$language|target language]] dynamically based on different 
 factors, such as the language preference of end users. Instead of configuring it in the application configuration,
