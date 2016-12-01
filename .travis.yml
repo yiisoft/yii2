@@ -32,6 +32,8 @@ matrix:
       dist: trusty
       group: edge # Use edge image until the next travis CI image update
       addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
         apt:
           packages:
             - mysql-server-5.6
@@ -45,6 +47,8 @@ matrix:
       dist: trusty
       group: edge # Use edge image until the next travis CI image update
       addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
         postgresql: "9.3"
         apt:
           packages:
@@ -70,6 +74,8 @@ cache:
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
+  code_climate:
+    repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
 install:
   - |
