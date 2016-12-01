@@ -379,10 +379,10 @@ abstract class Cache extends Component implements \ArrayAccess
         $builtKey = $this->buildKey($key);
 
         $this->beginProfile($builtKey, __METHOD__);
-        $opResult = $this->addValue($builtKey, $value, $duration);
+        $addResult = $this->addValue($builtKey, $value, $duration);
         $this->endProfile($builtKey, __METHOD__);
 
-        return $opResult;
+        return $addResult;
     }
 
     /**
