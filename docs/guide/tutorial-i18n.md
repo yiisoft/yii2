@@ -117,7 +117,7 @@ method to perform the actual translation work. The component can be configured i
 
 In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. 
 
-##### Category wildcards with \* symbol
+##### Category wildcards with `*` symbol
 
 The pattern `app*` indicates that all message categories whose names start with `app` should be translated using this
 message source. 
