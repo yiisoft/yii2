@@ -38,8 +38,7 @@ There is also a PDF version of the Definitive Guide and a Definitive Guide Mirro
 
 PARTICIPATION
 ------------------
-
-You may participate in the following ways:
+Your participation to Yii 2 development is very welcome! You may participate in the following ways:
 
 | Type  | Resource |
 | ------------- | ------------- |
