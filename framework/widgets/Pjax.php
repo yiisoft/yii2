@@ -97,7 +97,11 @@ class Pjax extends Widget
      * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
      */
     public $clientOptions;
-
+    /**
+     * @var string the prefix to the automatically generated pjax widget IDs.
+     * @see getId()
+     */
+    public static $pjaxAutoIdPrefix = 'w_pjax_';
 
     /**
      * @inheritdoc
@@ -130,6 +134,23 @@ class Pjax extends Widget
                 'data-pjax-scrollto' => $this->scrollTo,
             ], $options));
         }
+    }
+
+    /**
+     * Custom ID generation for Pjax widgets
+     * This override is to attain a more reliable match between ID's of local and remote Pjax widgets (#12969)
+     * The implementation follows the solution proposed in the following comment:
+     * @link https://github.com/yiisoft/yii2/pull/12977#issuecomment-260123078
+     * @since 2.0.11
+     */
+    private static $pjaxCounter = 0;
+    private $_pjaxId;
+    public function getId($autoGenerate = true)
+    {
+        if ($autoGenerate && $this->_pjaxId === null) {
+            $this->_pjaxId = static::$pjaxAutoIdPrefix . static::$pjaxCounter++;
+        }
+        return $this->_pjaxId;
     }
 
     /**
