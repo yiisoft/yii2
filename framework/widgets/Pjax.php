@@ -99,13 +99,13 @@ class Pjax extends Widget
     public $clientOptions;
     /**
      * @inheritdoc
-     * Note: This variable is redeclared to force separate counting for Pjax widgets (issue #12969)
-     * @since 2.0.11
+     * @internal
+     * @since 2.0.11 (#12969)
      */
     public static $counter = 0;
     /**
      * @inheritdoc
-     * @since 2.0.11
+     * @since 2.0.11 (#12969)
      */
     public static $autoIdPrefix = 'p';
 

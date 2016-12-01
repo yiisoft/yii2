@@ -11,6 +11,8 @@ class PjaxTest extends TestCase
 {
     public function testGeneratedIdByPjaxWidget()
     {
+        ListView::$counter = 0;
+        Pjax::$counter = 0;
         $nonPjaxWidget1 = new ListView(['dataProvider' => new ArrayDataProvider()]);
         ob_start();
         $pjax1 = new Pjax();
