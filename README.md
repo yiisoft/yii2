@@ -18,17 +18,6 @@ Yii 2 requires PHP 5.4 and embraces the best practices and protocols found in mo
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Code Climate](https://img.shields.io/codeclimate/github/yiisoft/yii2.svg)](https://codeclimate.com/github/yiisoft/yii2)
 
-DIRECTORY STRUCTURE
--------------------
-
-```
-build/               internally used build tools
-docs/                documentation
-framework/           core framework code
-tests/               tests of the core framework code
-```
-
-
 REQUIREMENTS
 ------------
 
