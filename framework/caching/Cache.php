@@ -78,7 +78,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @since 2.0.11
      */
     public $defaultDuration = 0;
-    
+
     /**
      * @var bool whether to enable profiling the queries
      * @since 2.0.11
@@ -117,8 +117,8 @@ abstract class Cache extends Component implements \ArrayAccess
     public function get($key)
     {
         $builtKey = $this->buildKey($key);
+
         $this->beginProfile($builtKey, __METHOD__);
-        
         $value = $this->getValue($builtKey);
         $this->endProfile($builtKey, __METHOD__);
 
@@ -150,8 +150,11 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function exists($key)
     {
-        $key = $this->buildKey($key);
-        $value = $this->getValue($key);
+        $builtKey = $this->buildKey($key);
+
+        $this->beginProfile($builtKey, __METHOD__);
+        $value = $this->getValue($builtKey);
+        $this->endProfile($builtKey, __METHOD__);
 
         return $value !== false;
     }
@@ -240,9 +243,10 @@ abstract class Cache extends Component implements \ArrayAccess
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
-        
+
         $builtKey = $this->buildKey($key);
-        $this->beginProfile($builtKey, __METHOD__);        
+
+        $this->beginProfile($builtKey, __METHOD__);
         $setResult = $this->setValue($builtKey, $value, $duration);
         $this->endProfile($builtKey, __METHOD__);
 
@@ -373,9 +377,13 @@ abstract class Cache extends Component implements \ArrayAccess
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
-        $key = $this->buildKey($key);
+        $builtKey = $this->buildKey($key);
 
-        return $this->addValue($key, $value, $duration);
+        $this->beginProfile($builtKey, __METHOD__);
+        $opResult = $this->addValue($key, $value, $duration);
+        $this->endProfile($builtKey, __METHOD__);
+
+        return $opResult;
     }
 
     /**
@@ -386,9 +394,13 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function delete($key)
     {
-        $key = $this->buildKey($key);
+        $builtKey = $this->buildKey($key);
 
-        return $this->deleteValue($key);
+        $this->beginProfile($builtKey, __METHOD__);
+        $value = $this->deleteValue($builtKey);
+        $this->endProfile($builtKey, __METHOD__);
+
+        return $value;
     }
 
     /**
@@ -462,7 +474,9 @@ abstract class Cache extends Component implements \ArrayAccess
     {
         $results = [];
         foreach ($keys as $key) {
+            $this->beginProfile($key, __METHOD__);
             $results[$key] = $this->getValue($key);
+            $this->endProfile($key, __METHOD__);
         }
 
         return $results;
@@ -480,9 +494,11 @@ abstract class Cache extends Component implements \ArrayAccess
     {
         $failedKeys = [];
         foreach ($data as $key => $value) {
+            $this->beginProfile($key, __METHOD__);
             if ($this->setValue($key, $value, $duration) === false) {
                 $failedKeys[] = $key;
             }
+            $this->endProfile($key, __METHOD__);
         }
 
         return $failedKeys;
@@ -500,9 +516,11 @@ abstract class Cache extends Component implements \ArrayAccess
     {
         $failedKeys = [];
         foreach ($data as $key => $value) {
+            $this->beginProfile($key, __METHOD__);
             if ($this->addValue($key, $value, $duration) === false) {
                 $failedKeys[] = $key;
             }
+            $this->endProfile($key, __METHOD__);
         }
 
         return $failedKeys;
@@ -552,7 +570,7 @@ abstract class Cache extends Component implements \ArrayAccess
     {
         $this->delete($key);
     }
-    
+
     /**
      * Marks the beginning of a code block for profiling.
      * @param string $token token for the code block
