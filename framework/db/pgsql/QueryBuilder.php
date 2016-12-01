@@ -196,7 +196,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $viewNames = $this->db->getSchema()->getViewNames($schema);
             $command = '';
             if (!in_array($table, $viewNames)) {
-                $tableName = '"' . $schema . '"."' . $tableName . '"';
+                $tableName = '"' . $schema . '"."' . $table . '"';
                 $command = "ALTER TABLE $tableName $enable TRIGGER ALL; ";
             }
         }
