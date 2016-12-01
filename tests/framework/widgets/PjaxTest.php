@@ -22,8 +22,8 @@ class PjaxTest extends TestCase
 
         $this->assertEquals('w0', $nonPjaxWidget1->options['id']);
         $this->assertEquals('w1', $nonPjaxWidget2->options['id']);
-        $this->assertEquals('w_pjax_0', $pjax1->options['id']);
-        $this->assertEquals('w_pjax_1', $pjax2->options['id']);
+        $this->assertEquals('p0', $pjax1->options['id']);
+        $this->assertEquals('p1', $pjax2->options['id']);
     }
 
     protected function setUp()
