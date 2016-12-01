@@ -1,4 +1,4 @@
-Yii PHP Framework Version 2 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2) [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2) [![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](http://travis-ci.org/yiisoft/yii2)
+Yii PHP Framework Version 2 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2) [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
 ===========================
 
 Thank you for choosing Yii 2 - a modern PHP framework designed for professional Web development.
@@ -74,7 +74,9 @@ If your code is hosted at GitHub, you can place the following in your README.md 
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
 ```
 
-
+FRAMEWORK'S STATUS
+------
+[![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](http://travis-ci.org/yiisoft/yii2)
 [![Reference Status](https://www.versioneye.com/php/yiisoft:yii2/reference_badge.svg)](https://www.versioneye.com/php/yiisoft:yii2/references)
 [![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
 [![HHVM Status](https://img.shields.io/hhvm/yiisoft/yii2-dev.svg)](http://hhvm.h4cc.de/package/yiisoft/yii2-dev)
