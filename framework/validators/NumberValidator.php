@@ -125,13 +125,13 @@ class NumberValidator extends Validator
      */
     private function getStringValue($value)
     {
-        $value = (string)$value;
+        $value = "$value";
 
         $localeInfo = localeconv();
-        $decimalPointSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
+        $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
 
-        if ($decimalPointSeparator !== null && $decimalPointSeparator !== '.') {
-            $value = str_replace($decimalPointSeparator, '.', $value);
+        if ($decimalSeparator !== null && $decimalSeparator !== '.') {
+            $value = str_replace($decimalSeparator, '.', $value);
         }
 
         return $value;
