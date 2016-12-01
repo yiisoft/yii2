@@ -51,6 +51,13 @@ version B between A and C, you need to follow the instructions
 for both A and B.
 
 
+Upgrade from Yii 2.0.10
+----------------------
+
+* PJAX: The value of the `$autoIdPrefix` property of `yii\widgets\Pjax` has been changed to `p`. If you have any PHP or Javascript
+code dependant on this property (like i.e. tests or events), you should update these to match this new value.  
+  
+  
 Upgrade from Yii 2.0.9
 ----------------------
 
