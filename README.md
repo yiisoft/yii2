@@ -39,13 +39,8 @@ a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) which cover 
 There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.en.pdf) of the Definitive Guide
 and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 
-
-
-
-HOW TO PARTICIPATE
+PARTICIPATION
 ------------------
-
-### Your participation to Yii 2 development is very welcome!
 
 You may participate in the following ways:
 
@@ -54,25 +49,6 @@ You may participate in the following ways:
 - [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
 - [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
 
-### Acknowledging or citing Yii 2
-
-**In presentations**
-
-If you are giving a presentation or talk featuring work that makes use of Yii 2 and would like to acknowledge it,
-we suggest using [our logo](http://www.yiiframework.com/logo/) on your title slide.
-
-**In projects**
-
-If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it is to
-[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat) in your README:    
-
-![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)
-
-If your code is hosted at GitHub, you can place the following in your README.md file to get the badge:
-
-```
-[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
-```
 
 STATUS
 ------
