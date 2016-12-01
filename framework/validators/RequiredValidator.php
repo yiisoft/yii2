@@ -88,6 +88,10 @@ class RequiredValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        if ($this->whenClient === null && $this->when !== null && !call_user_func($this->when, $model, $attribute)) {
+            return null;
+        }
+
         $options = [];
         if ($this->requiredValue !== null) {
             $options['message'] = Yii::$app->getI18n()->format($this->message, [
