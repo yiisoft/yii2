@@ -17,7 +17,13 @@ We strive to embrace all the best practices applied in modern Web application de
 INSTALLATION
 ------------
 
-Yii2 requires `PHP 5.4`. With [Composer](https://getcomposer.org/) installed, you can install Yii by running the following commands under a Web-accessible folder:
+**Requirements**
+
+Yii2 requires `PHP 5.4`. 
+
+**Composer**
+
+With [Composer](https://getcomposer.org/) installed, you can install Yii by running the following commands under a Web-accessible folder:
 
 ```
 composer global require "fxp/composer-asset-plugin:^1.2.0"
@@ -53,3 +59,23 @@ improve our framework:
 | Translation | [Translate documentation or messages](docs/internals/translation-workflow.md) |
 
 
+ACKNOWLEDGEMENT
+---------------
+
+**In presentations**
+
+If you are giving a presentation or talk featuring work that makes use of Yii 2 and would like to acknowledge it,
+we suggest using [our logo](http://www.yiiframework.com/logo/) on your title slide.
+
+**In projects**
+
+If you are using Yii 2 as part of an OpenSource project, a way to acknowledge it is to
+[use a special badge](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat) in your README:    
+
+![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)
+
+If your code is hosted at GitHub, you can place the following in your README.md file to get the badge:
+
+```
+[![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
+```
