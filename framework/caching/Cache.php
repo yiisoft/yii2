@@ -85,7 +85,6 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public $enableProfiling = false;
 
-
     /**
      * Builds a normalized cache key from a given key.
      *
@@ -380,7 +379,7 @@ abstract class Cache extends Component implements \ArrayAccess
         $builtKey = $this->buildKey($key);
 
         $this->beginProfile($builtKey, __METHOD__);
-        $opResult = $this->addValue($key, $value, $duration);
+        $opResult = $this->addValue($builtKey, $value, $duration);
         $this->endProfile($builtKey, __METHOD__);
 
         return $opResult;
