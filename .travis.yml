@@ -39,7 +39,6 @@ matrix:
             - mysql-client-5.6
       services:
         - mysql
-      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
     # test against the latest HHVM version by using a newer image
     - php: hhvm
       sudo: true
@@ -55,12 +54,9 @@ matrix:
       services:
         - mysql
         - postgresql
-      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
   allow_failures:
     - php: nightly
 
-env:
-  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
 
 services:
   - memcached
@@ -68,7 +64,6 @@ services:
 # cache vendor dirs
 cache:
   directories:
-#    - cubrid/9.3.0
     - vendor
     - $HOME/.composer/cache
 
