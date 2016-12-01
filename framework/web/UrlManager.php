@@ -12,6 +12,7 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
 use yii\helpers\Url;
+use yii\log\Logger;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
@@ -263,7 +264,14 @@ class UrlManager extends Component
         if ($this->enablePrettyUrl) {
             /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
-                if (($result = $rule->parseRequest($this, $request)) !== false) {
+                $result = $rule->parseRequest($this, $request);
+                if (YII_DEBUG) {
+                    Yii::getLogger()->log([
+                        'route' => ($rule instanceof UrlRule) ? (string)$rule : get_class($rule),
+                        'match' => $result !== false
+                    ], Logger::LEVEL_PROFILE, __METHOD__);
+                }
+                if ($result !== false) {
                     return $result;
                 }
             }

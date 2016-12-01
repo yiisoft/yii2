@@ -126,6 +126,25 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     private $_routeParams = [];
 
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $str = '';
+        if ($this->verb !== null) {
+            $str .= implode(',', $this->verb) . ' ';
+        }
+        if ($this->host !== null && strrpos($this->name, $this->host) === false) {
+            $str .= $this->host . '/';
+        }
+        $str .= $this->name;
+
+        if ($str === '') {
+            return '/';
+        }
+        return $str;
+    }
 
     /**
      * Initializes this rule.
