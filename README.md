@@ -6,10 +6,6 @@ Thank you for choosing Yii2 - a modern PHP framework designed for professional W
 Yii2 inherits the main spirit behind Yii for being highly extensible, secure and fast.
 We strive to embrace all the best practices applied in modern Web application development.
 
-
-STATUS
-------
-
 [![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](http://travis-ci.org/yiisoft/yii2)
 [![Reference Status](https://www.versioneye.com/php/yiisoft:yii2/reference_badge.svg)](https://www.versioneye.com/php/yiisoft:yii2/references)
 [![Dependency Status](https://www.versioneye.com/php/yiisoft:yii2/dev-master/badge.png)](https://www.versioneye.com/php/yiisoft:yii2/dev-master)
