@@ -9,6 +9,9 @@ use yii\filters\HostControl;
 use yii\web\Controller;
 use yiiunit\TestCase;
 
+/**
+ * @group filters
+ */
 class HostControlTest extends TestCase
 {
     protected function setUp()
@@ -24,9 +27,19 @@ class HostControlTest extends TestCase
     /**
      * @return array test data.
      */
-    public function dataProviderFilter()
+    public function hostInfoValidationDataProvider()
     {
         return [
+            [
+                null,
+                'example.com',
+                true
+            ],
+            [
+                'example.com',
+                'example.com',
+                true
+            ],
             [
                 ['example.com'],
                 'example.com',
@@ -65,7 +78,7 @@ class HostControlTest extends TestCase
     }
 
     /**
-     * @dataProvider dataProviderFilter
+     * @dataProvider hostInfoValidationDataProvider
      *
      * @param mixed $allowedHosts
      * @param string $host
@@ -100,5 +113,22 @@ class HostControlTest extends TestCase
             $this->assertTrue($isExit);
             $this->assertEquals(404, Yii::$app->response->getStatusCode());
         }
+    }
+
+    public $denyCallBackCalled = false;
+
+    public function testDenyCallback()
+    {
+        $filter = new HostControl();
+        $filter->allowedHosts = ['example.com'];
+        $this->denyCallBackCalled = false;
+        $filter->denyCallback = function() {
+            $this->denyCallBackCalled = true;
+        };
+
+        $controller = new Controller('test', Yii::$app);
+        $action = new Action('test', $controller);
+        $this->assertFalse($filter->beforeAction($action));
+        $this->assertTrue($this->denyCallBackCalled, 'denyCallback should have been called.');
     }
 }
