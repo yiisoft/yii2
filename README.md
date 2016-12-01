@@ -1,15 +1,10 @@
 Yii PHP Framework Version 2 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2) [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
 ===========================
 
-Thank you for choosing Yii 2 - a modern PHP framework designed for professional Web development.
+Thank you for choosing Yii2 - a modern PHP framework designed for professional Web development.
 
-Yii 2 is a complete rewrite of its previous version Yii 1.1 which is one of the most popular PHP frameworks.
-Yii 2 inherits the main spirit behind Yii for being simple, fast and highly extensible.
-Yii 2 requires PHP 5.4 and embraces the best practices and protocols found in modern Web application development.
-
-
-
-
+Yii2 inherits the main spirit behind Yii for being highly extensible, secure and fast.
+We strive to embrace all the best practices applied in modern Web application development.
 
 REQUIREMENTS
 ------------
@@ -33,11 +28,11 @@ to have a general idea of what has changed in 2.0.
 DOCUMENTATION
 -------------
 
-Yii 2.0 has a [Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-index.html) and 
-a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) which cover every detail of Yii.
+| Online  | Pdf |
+| ------------- | ------------- |
+| [The Guide](http://www.yiiframework.com/doc-2.0/guide-index.html) ([mirror](http://stuff.cebe.cc/yii2-guide.en.pdf))  | http://stuff.cebe.cc/yii2-guide.en.pdf  |
+| [API](http://www.yiiframework.com/doc-2.0/index.html) |   |
 
-There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.en.pdf) of the Definitive Guide
-and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 
 PARTICIPATION
 ------------------
