@@ -2,9 +2,7 @@ Yii PHP Framework Version 2 [![Total Downloads](https://poser.pugx.org/yiisoft/y
 ===========================
 
 Thank you for choosing Yii2 - a modern PHP framework designed for professional Web development.
-
 Yii2 inherits the main spirit behind Yii for being highly extensible, secure and fast.
-
 We strive to embrace all the best practices applied in modern Web application development.
 
 [![Build Status](https://img.shields.io/travis/yiisoft/yii2.svg)](http://travis-ci.org/yiisoft/yii2)
