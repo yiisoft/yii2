@@ -39,9 +39,9 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate(25.45));
 
         $oldLocale = setlocale(LC_ALL, "0");
-        setlocale(LC_ALL, "en_US.UTF-8");
+        setlocale(LC_ALL, 'en_US.UTF-8', 'English_United States.1252');
         $this->assertFalse($val->validate('25,45'));
-        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        setlocale(LC_ALL, 'da_DK.UTF-8', 'Danish_Denmark.1252'); //decimal point is comma
         $this->assertTrue($val->validate('25,45'));
         setlocale(LC_ALL, $oldLocale);
 
@@ -83,10 +83,10 @@ class NumberValidatorTest extends TestCase
 
         $oldLocale = setlocale(LC_ALL, "0");
 
-        setlocale(LC_ALL, "en_US.UTF-8");
+        setlocale(LC_ALL, 'en_US.UTF-8', 'English_United States.1252');
         $this->assertTrue($val->validate(.5));
 
-        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        setlocale(LC_ALL, 'da_DK.UTF-8', 'Danish_Denmark.1252'); //decimal point is comma
         $this->assertTrue($val->validate(.5));
 
         setlocale(LC_ALL, $oldLocale);
@@ -189,11 +189,11 @@ class NumberValidatorTest extends TestCase
 
         $oldLocale = setlocale(LC_ALL, "0");
 
-        setlocale(LC_ALL, "en_US.UTF-8");
+        setlocale(LC_ALL, 'en_US.UTF-8', 'English_United States.1252');
         $val->validateAttribute($model, 'attr_number');
         $this->assertFalse($model->hasErrors('attr_number'));
 
-        setlocale(LC_ALL, "en_DK.UTF-8"); //decimal point is comma
+        setlocale(LC_ALL, 'da_DK.UTF-8', 'Danish_Denmark.1252'); //decimal point is comma
         $val->validateAttribute($model, 'attr_number');
         $this->assertFalse($model->hasErrors('attr_number'));
 

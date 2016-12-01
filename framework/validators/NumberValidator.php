@@ -120,17 +120,21 @@ class NumberValidator extends Validator
     /**
      * Returns string represenation of number value with replaced commas to dots, if decimal point
      * of current locale is comma
-     * @param $value
+     * @param int|float|string $value
      * @return string
      */
     private function getStringValue($value)
     {
+        $value = (string)$value;
+
         $localeInfo = localeconv();
-        if (isset($localeInfo['decimal_point']) && $localeInfo['decimal_point'] ==',') {
-            return str_replace(',', '.', "$value");
-        } else {
-            return "$value";
+        $decimalPointSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
+
+        if ($decimalPointSeparator !== null && $decimalPointSeparator !== '.') {
+            $value = str_replace($decimalPointSeparator, '.', $value);
         }
+
+        return $value;
     }
 
     /**
