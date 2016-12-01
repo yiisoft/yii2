@@ -23,6 +23,19 @@ REQUIREMENTS
 
 The minimum requirement by Yii is that your Web server supports PHP 5.4.
 
+INSTALLATION
+------------
+With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+
+```
+composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
+
+More information on installing Yii2 can be found in our [installation manual](http://www.yiiframework.com/doc-2.0/guide-start-installation.html)
+
+For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
+to have a general idea of what has changed in 2.0.
 
 DOCUMENTATION
 -------------
@@ -33,8 +46,7 @@ a [Class Reference](http://www.yiiframework.com/doc-2.0/index.html) which cover 
 There is also a [PDF version](http://stuff.cebe.cc/yii2-guide.en.pdf) of the Definitive Guide
 and a [Definitive Guide Mirror](http://stuff.cebe.cc/yii2docs/) which is updated every 15 minutes.
 
-For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
-to have a general idea of what has changed in 2.0.
+
 
 
 HOW TO PARTICIPATE
