@@ -18,10 +18,10 @@ We strive to embrace all the best practices applied in modern Web application de
 INSTALLATION
 ------------
 
-#### Requirements
+### Requirements
 * PHP 5.4.
 
-#### Install with Composer
+### Install with Composer
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
