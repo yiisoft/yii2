@@ -451,7 +451,7 @@ EOD;
         $expectedValue = <<<EOD
 <div class="form-group field-activefieldtestmodel-attributename">
 <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="false" aria-invalid="false">
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 <div class="hint-block">Hint for attributeName attribute</div>
 <div class="help-block"></div>
 </div>
@@ -469,7 +469,7 @@ EOD;
         $expectedValue = <<<EOD
 <div class="form-group field-activefieldtestmodel-attributename required">
 <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true" aria-invalid="false">
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true">
 <div class="hint-block">Hint for attributeName attribute</div>
 <div class="help-block"></div>
 </div>
@@ -487,7 +487,7 @@ EOD;
         $expectedValue = <<<EOD
 <div class="form-group field-activefieldtestmodel-attributename has-error">
 <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
-<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="false" aria-invalid="true">
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
 <div class="hint-block">Hint for attributeName attribute</div>
 <div class="help-block">Some error</div>
 </div>

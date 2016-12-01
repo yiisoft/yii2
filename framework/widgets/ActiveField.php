@@ -149,8 +149,9 @@ class ActiveField extends Component
     public $parts = [];
     /**
      * @var bool adds aria HTML attributes `aria-required` and `aria-invalid` for inputs
+     * @since 2.0.11
      */
-    public $addAriaAttributes = false;
+    public $addAriaAttributes = true;
 
     /**
      * @var string this property holds a custom input id if it was set using [[inputOptions]] or in one of the
@@ -802,8 +803,8 @@ class ActiveField extends Component
             $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
         }
 
-        if ($this->addAriaAttributes && !$this->_skipClientAriaInvalid) {
-            $options['ariaInvalidToggle'] = true;
+        if ($this->addAriaAttributes === false && !$this->_skipClientAriaInvalid) {
+            $options['ariaInvalidToggle'] = false;
         }
 
         // only get the options that are different from the default ones (set in yii.activeForm.js)
@@ -814,13 +815,14 @@ class ActiveField extends Component
             'validationDelay' => 500,
             'encodeError' => true,
             'error' => '.help-block',
-            'ariaInvalidToggle' => false,
+            'ariaInvalidToggle' => true,
         ]);
     }
 
     /**
      * Checks if client validation enabled for the field
      * @return bool
+     * @since 2.0.11
      */
     protected function getEnableClientValidation()
     {
@@ -831,6 +833,7 @@ class ActiveField extends Component
     /**
      * Checks if ajax validation enabled for the field
      * @return bool
+     * @since 2.0.11
      */
     protected function getEnableAjaxValidation()
     {
@@ -850,15 +853,18 @@ class ActiveField extends Component
     /**
      * Adds aria attributes to the input options
      * @param $options array input options
+     * @since 2.0.11
      */
     protected function addAriaAttributes(&$options)
     {
         if ($this->addAriaAttributes) {
-            if (!isset($options['aria-required'])) {
-                $options['aria-required'] = $this->model->isAttributeRequired($this->attribute) ? 'true' : 'false';
+            if (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute)) {
+                $options['aria-required'] =  'true';
             }
             if (!isset($options['aria-invalid'])) {
-                $options['aria-invalid'] = $this->model->hasErrors($this->attribute) ? 'true' : 'false';
+                if ($this->model->hasErrors($this->attribute)) {
+                    $options['aria-invalid'] = 'true';
+                }
                 $this->_skipClientAriaInvalid = false;
             }
         }
