@@ -9,7 +9,7 @@ We strive to embrace all the best practices applied in modern Web application de
 REQUIREMENTS
 ------------
 
-The minimum requirement by Yii is that your Web server supports PHP 5.4.
+* PHP 5.4.
 
 INSTALLATION
 ------------
@@ -20,8 +20,7 @@ composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-More information on installing Yii2 can be found in our [installation manual](http://www.yiiframework.com/doc-2.0/guide-start-installation.html)
-
+More information on installing Yii2 can be found in our [installation manual](http://www.yiiframework.com/doc-2.0/guide-start-installation.html).
 For 1.1 users, you may refer to [Upgrading from Yii 1.1](docs/guide/intro-upgrade-from-v1.md)
 to have a general idea of what has changed in 2.0.
 
@@ -39,16 +38,12 @@ PARTICIPATION
 
 You may participate in the following ways:
 
-| First Header  | Second Header |
+| Type  | Resource |
 | ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-
-
-- [Report an issue](docs/internals/report-an-issue.md)
-- [Translate documentation or messages](docs/internals/translation-workflow.md)
-- [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
-- [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
+| Issues | [Report an issue](docs/internals/report-an-issue.md)  |
+| Questions  | [Forum](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)  |
+| Translation | [Translate documentation or messages](docs/internals/translation-workflow.md) |
+| Code | [Contribute to the core code or fix bugs](docs/internals/git-workflow.md) |
 
 
 STATUS
