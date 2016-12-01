@@ -29,8 +29,8 @@ More details about locale can be found in the
 In Yii, we often use the term "language" to refer to a locale.
 
 A Yii application uses two kinds of languages: 
-* [[yii\base\Application::$sourceLanguage|source language]]: This refers to the language in which the text messages in the source code are written 
-* [[yii\base\Application::$language|target language]]: This is the language that should be used to display content to end users
+* [[yii\base\Application::$sourceLanguage|source language]]: This refers to the language in which the text messages in the source code are written.
+* [[yii\base\Application::$language|target language]]: This is the language that should be used to display content to end users.
 
 The so-called message translation service mainly translates a text message from source language to target language.
 
@@ -77,8 +77,8 @@ returned untranslated.
 ### How to implement
 To use the message translation service, you mainly need to do the following work:
 
-1. Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method;
-2. Configure one or multiple message sources in which the message translation service can look for translated messages;
+1. Wrap every text message that needs to be translated in a call to the [[Yii::t()]] method.
+2. Configure one or multiple message sources in which the message translation service can look for translated messages.
 3. Let the translators translate messages and store them in the message source(s).
 
 
@@ -117,7 +117,7 @@ method to perform the actual translation work. The component can be configured i
 
 In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. 
 
-#### Category wildcards with \* symbol
+##### Category wildcards with \* symbol
 
 The pattern `app*` indicates that all message categories whose names start with `app` should be translated using this
 message source. 
@@ -146,7 +146,7 @@ return [
 ```
 
 
-#### File mapping
+##### File mapping
 
 You may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category to a PHP file with a different naming approach. 
 
@@ -154,7 +154,7 @@ In the above example, the category `app/error` is mapped to the PHP file `@app/m
 (assuming `ru-RU` is the target language). 
 However, without this configuration the category would be mapped to `@app/messages/ru-RU/app/error.php` instead.
 
-####  Other storage types
+#####  Other storage types
 
 Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
