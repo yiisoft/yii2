@@ -15,7 +15,7 @@ Locale is a set of parameters that defines the user's language, country and any 
 that the user wants to see in their user interface. It is usually identified by an ID consisting of a language
 ID and a region ID. 
 
-For example, the ID `en-US` stands for the locale of `English and the United States`.
+For example, the ID `en-US` stands for the locale of "English and the United States".
 
 For consistency reasons, all locale IDs used in Yii applications should be canonicalized to the format of
 `ll-CC`, where `ll` is a two- or three-letter lowercase language code according to
@@ -35,7 +35,7 @@ A Yii application uses two kinds of languages:
 The so-called message translation service mainly translates a text message from source language to target language.
 
 ### Configuration
-You can configure application languages in the `application configuration` like the following:
+You can configure application languages in the "application configuration" like the following:
 
 ```php
 return [
@@ -50,7 +50,7 @@ return [
 ```
 
 The default value for the [[yii\base\Application::$sourceLanguage|source language]] is `en-US`, meaning
-US English. It is `recommended` that you keep this default value unchanged. Usually it is much easier
+US English. It is **recommended** that you keep this default value unchanged. Usually it is much easier
 to find people who can translate from 'English to other languages' than from 'non-English to non-English'.
 
 You often need to set the [[yii\base\Application::$language|target language]] dynamically based on different 
@@ -117,7 +117,7 @@ method to perform the actual translation work. The component can be configured i
 
 In the above code, a message source supported by [[yii\i18n\PhpMessageSource]] is being configured. 
 
-**Category wildcards with \* symbol**
+#### Category wildcards with \* symbol
 
 The pattern `app*` indicates that all message categories whose names start with `app` should be translated using this
 message source. 
@@ -131,9 +131,9 @@ These files contain a map of the messages in `source language` to the translatio
 > which will be introduced later in this chapter.
 
 Each PHP file corresponds to the messages of a single category. By default, the file name should be the same as
-the category name. Example for ```app/messages/nl-NL/main.php:```
+the category name. Example for `app/messages/nl-NL/main.php:`
 
-```
+```php
 <?php
 
 /**
@@ -146,7 +146,7 @@ return [
 ```
 
 
-**File mapping**
+#### File mapping
 
 You may configure [[yii\i18n\PhpMessageSource::fileMap|fileMap]] to map a category to a PHP file with a different naming approach. 
 
@@ -154,7 +154,7 @@ In the above example, the category `app/error` is mapped to the PHP file `@app/m
 (assuming `ru-RU` is the target language). 
 However, without this configuration the category would be mapped to `@app/messages/ru-RU/app/error.php` instead.
 
-**Other storage types**
+####  Other storage types
 
 Besides storing the messages in PHP files, you may also use the following message sources to store translated messages
 in different storage:
