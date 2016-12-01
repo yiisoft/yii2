@@ -33,9 +33,13 @@ class BaseMarkdown
             'html5' => true,
         ],
         'gfm-comment' => [
-            'class' => 'cebe\markdown\Markdown',
+            'class' => 'cebe\markdown\GithubMarkdown',
             'html5' => true,
             'enableNewlines' => true,
+        ],
+        'extra' => [
+            'class' => 'cebe\markdown\MarkdownExtra',
+            'html5' => true,
         ],
     ];
     /**
@@ -45,15 +49,17 @@ class BaseMarkdown
      */
     public static $defaultFlavor = 'original';
 
+
     /**
      * Converts markdown into HTML.
      *
      * @param string $markdown the markdown text to parse
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
+     * Defaults to [[$defaultFlavor]], if not set.
      * @return string the parsed HTML output
      * @throws \yii\base\InvalidParamException when an undefined flavor is given.
      */
-    public static function process($markdown, $flavor = 'original')
+    public static function process($markdown, $flavor = null)
     {
         $parser = static::getParser($flavor);
 
@@ -67,10 +73,11 @@ class BaseMarkdown
      *
      * @param string $markdown the markdown text to parse
      * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
+     * Defaults to [[$defaultFlavor]], if not set.
      * @return string the parsed HTML output
      * @throws \yii\base\InvalidParamException when an undefined flavor is given.
      */
-    public static function processParagraph($markdown, $flavor = 'original')
+    public static function processParagraph($markdown, $flavor = null)
     {
         $parser = static::getParser($flavor);
 
@@ -78,23 +85,21 @@ class BaseMarkdown
     }
 
     /**
-     * @param string $flavor
+     * @param string $flavor the markdown flavor to use. See [[$flavors]] for available values.
+     * Defaults to [[$defaultFlavor]], if not set.
      * @return \cebe\markdown\Parser
      * @throws \yii\base\InvalidParamException when an undefined flavor is given.
      */
     protected static function getParser($flavor)
     {
-        /** @var \cebe\markdown\Markdown $parser */
+        if ($flavor === null) {
+            $flavor = static::$defaultFlavor;
+        }
+        /* @var $parser \cebe\markdown\Markdown */
         if (!isset(static::$flavors[$flavor])) {
             throw new InvalidParamException("Markdown flavor '$flavor' is not defined.'");
         } elseif (!is_object($config = static::$flavors[$flavor])) {
-            $parser = Yii::createObject($config);
-            if (is_array($config)) {
-                foreach ($config as $name => $value) {
-                    $parser->{$name} = $value;
-                }
-            }
-            static::$flavors[$flavor] = $parser;
+            static::$flavors[$flavor] = Yii::createObject($config);
         }
 
         return static::$flavors[$flavor];

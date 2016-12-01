@@ -12,6 +12,8 @@ use Yii;
 /**
  * Controller is the base class for classes containing controller logic.
  *
+ * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
  * @property Module[] $modules All ancestor modules that this controller is located within. This property is
  * read-only.
  * @property string $route The route (module ID, controller ID and action ID) of the current request. This
@@ -19,8 +21,7 @@ use Yii;
  * @property string $uniqueId The controller ID that is prefixed with the module ID (if any). This property is
  * read-only.
  * @property View|\yii\web\View $view The view object that can be used to render views or view files.
- * @property string $viewPath The directory containing the view files for this controller. This property is
- * read-only.
+ * @property string $viewPath The directory containing the view files for this controller.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -36,6 +37,7 @@ class Controller extends Component implements ViewContextInterface
      * @event ActionEvent an event raised right after executing a controller action.
      */
     const EVENT_AFTER_ACTION = 'afterAction';
+
     /**
      * @var string the ID of this controller.
      */
@@ -50,7 +52,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $defaultAction = 'index';
     /**
-     * @var string|boolean the name of the layout to be applied to this controller's views.
+     * @var null|string|false the name of the layout to be applied to this controller's views.
      * This property mainly affects the behavior of [[render()]].
      * Defaults to null, meaning the actual layout value should inherit that from [[module]]'s layout value.
      * If false, no layout will be applied.
@@ -61,10 +63,16 @@ class Controller extends Component implements ViewContextInterface
      * by [[run()]] when it is called by [[Application]] to run an action.
      */
     public $action;
+
     /**
      * @var View the view object that can be used to render views or view files.
      */
     private $_view;
+    /**
+     * @var string the root directory that contains view files for this controller.
+     */
+    private $_viewPath;
+
 
     /**
      * @param string $id the ID of this controller.
@@ -84,7 +92,7 @@ class Controller extends Component implements ViewContextInterface
      * It should return an array, with array keys being action IDs, and array values the corresponding
      * action class names or action configuration arrays. For example,
      *
-     * ~~~
+     * ```php
      * return [
      *     'action1' => 'app\components\Action1',
      *     'action2' => [
@@ -93,7 +101,7 @@ class Controller extends Component implements ViewContextInterface
      *         'property2' => 'value2',
      *     ],
      * ];
-     * ~~~
+     * ```
      *
      * [[\Yii::createObject()]] will be used later to create the requested action
      * using the configuration provided here.
@@ -119,7 +127,7 @@ class Controller extends Component implements ViewContextInterface
             throw new InvalidRouteException('Unable to resolve the request: ' . $this->getUniqueId() . '/' . $id);
         }
 
-        Yii::trace("Route to run: " . $action->getUniqueId(), __METHOD__);
+        Yii::trace('Route to run: ' . $action->getUniqueId(), __METHOD__);
 
         if (Yii::$app->requestedAction === null) {
             Yii::$app->requestedAction = $action;
@@ -131,6 +139,7 @@ class Controller extends Component implements ViewContextInterface
         $modules = [];
         $runAction = true;
 
+        // call beforeAction on modules
         foreach ($this->getModules() as $module) {
             if ($module->beforeAction($action)) {
                 array_unshift($modules, $module);
@@ -142,16 +151,17 @@ class Controller extends Component implements ViewContextInterface
 
         $result = null;
 
-        if ($runAction) {
-            if ($this->beforeAction($action)) {
-                $result = $action->runWithParams($params);
-                $result = $this->afterAction($action, $result);
-            }
-        }
+        if ($runAction && $this->beforeAction($action)) {
+            // run the action
+            $result = $action->runWithParams($params);
 
-        foreach ($modules as $module) {
-            /** @var Module $module */
-            $result = $module->afterAction($action, $result);
+            $result = $this->afterAction($action, $result);
+
+            // call afterAction on modules
+            foreach ($modules as $module) {
+                /* @var $module Module */
+                $result = $module->afterAction($action, $result);
+            }
         }
 
         $this->action = $oldAction;
@@ -216,7 +226,7 @@ class Controller extends Component implements ViewContextInterface
             $methodName = 'action' . str_replace(' ', '', ucwords(implode(' ', explode('-', $id))));
             if (method_exists($this, $methodName)) {
                 $method = new \ReflectionMethod($this, $methodName);
-                if ($method->getName() === $methodName) {
+                if ($method->isPublic() && $method->getName() === $methodName) {
                     return new InlineAction($id, $this, $methodName);
                 }
             }
@@ -231,22 +241,29 @@ class Controller extends Component implements ViewContextInterface
      * The method will trigger the [[EVENT_BEFORE_ACTION]] event. The return value of the method
      * will determine whether the action should continue to run.
      *
+     * In case the action should not run, the request should be handled inside of the `beforeAction` code
+     * by either providing the necessary output or redirecting the request. Otherwise the response will be empty.
+     *
      * If you override this method, your code should look like the following:
      *
      * ```php
      * public function beforeAction($action)
      * {
-     *     if (parent::beforeAction($action)) {
-     *         // your custom code here
-     *         return true;  // or false if needed
-     *     } else {
+     *     // your custom code here, if you want the code to run before action filters,
+     *     // which are triggered on the [[EVENT_BEFORE_ACTION]] event, e.g. PageCache or AccessControl
+     *
+     *     if (!parent::beforeAction($action)) {
      *         return false;
      *     }
+     *
+     *     // other custom code here
+     *
+     *     return true; // or false to not run the action
      * }
      * ```
      *
      * @param Action $action the action to be executed.
-     * @return boolean whether the action should continue to run.
+     * @return bool whether the action should continue to run.
      */
     public function beforeAction($action)
     {
@@ -302,6 +319,7 @@ class Controller extends Component implements ViewContextInterface
     }
 
     /**
+     * Returns the unique ID of the controller.
      * @return string the controller ID that is prefixed with the module ID (if any).
      */
     public function getUniqueId()
@@ -346,7 +364,7 @@ class Controller extends Component implements ViewContextInterface
      * - a path alias (e.g. "@app/views/layouts/main");
      * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
      *   looked for under the [[Application::layoutPath|layout path]] of the application;
-     * - a relative path (e.g. "main"): the actual layout layout file will be looked for under the
+     * - a relative path (e.g. "main"): the actual layout file will be looked for under the
      *   [[Module::layoutPath|layout path]] of the context module.
      *
      * If the layout name does not contain a file extension, it will use the default one `.php`.
@@ -359,17 +377,29 @@ class Controller extends Component implements ViewContextInterface
      */
     public function render($view, $params = [])
     {
-        $output = $this->getView()->render($view, $params, $this);
+        $content = $this->getView()->render($view, $params, $this);
+        return $this->renderContent($content);
+    }
+
+    /**
+     * Renders a static string by applying a layout.
+     * @param string $content the static string being rendered
+     * @return string the rendering result of the layout with the given static string as the `$content` variable.
+     * If the layout is disabled, the string will be returned back.
+     * @since 2.0.1
+     */
+    public function renderContent($content)
+    {
         $layoutFile = $this->findLayoutFile($this->getView());
         if ($layoutFile !== false) {
-            return $this->getView()->renderFile($layoutFile, ['content' => $output], $this);
+            return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
         } else {
-            return $output;
+            return $content;
         }
     }
 
     /**
-     * Renders a view.
+     * Renders a view without applying layout.
      * This method differs from [[render()]] in that it does not apply any layout.
      * @param string $view the view name. Please refer to [[render()]] on how to specify a view name.
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
@@ -425,17 +455,31 @@ class Controller extends Component implements ViewContextInterface
      */
     public function getViewPath()
     {
-        return $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+        if ($this->_viewPath === null) {
+            $this->_viewPath = $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
+        }
+        return $this->_viewPath;
+    }
+
+    /**
+     * Sets the directory that contains the view files.
+     * @param string $path the root directory of view files.
+     * @throws InvalidParamException if the directory is invalid
+     * @since 2.0.7
+     */
+    public function setViewPath($path)
+    {
+        $this->_viewPath = Yii::getAlias($path);
     }
 
     /**
      * Finds the applicable layout file.
      * @param View $view the view object to render the layout file.
-     * @return string|boolean the layout file path, or false if layout is not needed.
+     * @return string|bool the layout file path, or false if layout is not needed.
      * Please refer to [[render()]] on how to specify this parameter.
      * @throws InvalidParamException if an invalid path alias is used to specify the layout.
      */
-    protected function findLayoutFile($view)
+    public function findLayoutFile($view)
     {
         $module = $this->module;
         if (is_string($this->layout)) {

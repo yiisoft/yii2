@@ -20,7 +20,7 @@ defined('YII_BEGIN_TIME') or define('YII_BEGIN_TIME', microtime(true));
 /**
  * This constant defines the framework installation directory.
  */
-defined('YII_PATH') or define('YII_PATH', __DIR__);
+defined('YII2_PATH') or define('YII2_PATH', __DIR__);
 /**
  * This constant defines whether the application should be in debug mode or not. Defaults to false.
  */
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.0-dev';
+        return '2.0.11-dev';
     }
 
     /**
@@ -120,9 +120,9 @@ class BaseYii
      * Note, this method does not check if the returned path exists or not.
      *
      * @param string $alias the alias to be translated.
-     * @param boolean $throwException whether to throw an exception if the given alias is invalid.
+     * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
+     * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidParamException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
@@ -160,7 +160,7 @@ class BaseYii
      * A root alias is an alias that has been registered via [[setAlias()]] previously.
      * If a given alias matches multiple root aliases, the longest one will be returned.
      * @param string $alias the alias
-     * @return string|boolean the root alias, or false if no root alias is found
+     * @return string|bool the root alias, or false if no root alias is found
      */
     public static function getRootAlias($alias)
     {
@@ -264,6 +264,8 @@ class BaseYii
      * will be loaded using the `@yii/bootstrap` alias which points to the directory where bootstrap extension
      * files are installed and all classes from other `yii` namespaces will be loaded from the yii framework directory.
      *
+     * Also the [guide section on autoloading](guide:concept-autoloading).
+     *
      * @param string $className the fully qualified class name without a leading backslash "\"
      * @throws UnknownClassException if the class does not exist in the class file
      */
@@ -341,11 +343,11 @@ class BaseYii
             unset($type['class']);
             return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
-            return call_user_func($type, $params);
+            return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
         } else {
-            throw new InvalidConfigException("Unsupported configuration type: " . gettype($type));
+            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
         }
     }
 
@@ -427,14 +429,14 @@ class BaseYii
      * This has to be matched with a call to [[endProfile]] with the same category name.
      * The begin- and end- calls must also be properly nested. For example,
      *
-     * ~~~
+     * ```php
      * \Yii::beginProfile('block1');
      * // some code to be profiled
      *     \Yii::beginProfile('block2');
      *     // some other code to be profiled
      *     \Yii::endProfile('block2');
      * \Yii::endProfile('block1');
-     * ~~~
+     * ```
      * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see endProfile()
@@ -462,7 +464,10 @@ class BaseYii
      */
     public static function powered()
     {
-        return 'Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a>';
+        return \Yii::t('yii', 'Powered by {yii}', [
+            'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
+                    'Yii Framework') . '</a>'
+        ]);
     }
 
     /**

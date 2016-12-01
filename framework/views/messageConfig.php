@@ -2,9 +2,7 @@
 
 return [
     // string, required, root directory of all source files
-    'sourcePath' => __DIR__,
-    // string, required, root directory containing message translations.
-    'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+    'sourcePath' => __DIR__ . DIRECTORY_SEPARATOR . '..',
     // array, required, list of language codes that the extracted messages
     // should be translated to. For example, ['zh-CN', 'de'].
     'languages' => ['de'],
@@ -17,23 +15,20 @@ return [
     // with the existing ones. Defaults to false, which means the new (untranslated)
     // messages will be separated from the old (translated) ones.
     'sort' => false,
-    // boolean, whether the message file should be overwritten with the merged messages
-    'overwrite' => true,
     // boolean, whether to remove messages that no longer appear in the source code.
-    // Defaults to false, which means each of these messages will be enclosed with a pair of '@@' marks.
+    // Defaults to false, which means these messages will NOT be removed.
     'removeUnused' => false,
-    // array, list of patterns that specify which files/directories should NOT be processed.
-    // If empty or not set, all files/directories will be processed.
-    // A path matches a pattern if it contains the pattern string at its end. For example,
-    // '/a/b' will match all files and directories ending with '/a/b';
-    // the '*.svn' will match all files and directories whose name ends with '.svn'.
-    // and the '.svn' will match all files and directories named exactly '.svn'.
-    // Note, the '/' characters in a pattern matches both '/' and '\'.
-    // See helpers/FileHelper::findFiles() description for more details on pattern matching rules.
-    'only' => ['*.php'],
+    // boolean, whether to mark messages that no longer appear in the source code.
+    // Defaults to true, which means each of these messages will be enclosed with a pair of '@@' marks.
+    'markUnused' => true,
     // array, list of patterns that specify which files (not directories) should be processed.
     // If empty or not set, all files will be processed.
-    // Please refer to "except" for details about the patterns.
+    // See helpers/FileHelper::findFiles() for pattern matching rules.
+    // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
+    'only' => ['*.php'],
+    // array, list of patterns that specify which files/directories should NOT be processed.
+    // If empty or not set, all files/directories will be processed.
+    // See helpers/FileHelper::findFiles() for pattern matching rules.
     // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
     'except' => [
         '.svn',
@@ -44,9 +39,40 @@ return [
         '.hgkeep',
         '/messages',
     ],
-    // Generated file format. Can be either "php", "po" or "db".
+
+    // 'php' output format is for saving messages to php files.
     'format' => 'php',
-    // When format is "db", you may specify the following two options
-    //'db' => 'db',
-    //'sourceMessageTable' => '{{%source_message}}',
+    // Root directory containing message translations.
+    'messagePath' => __DIR__,
+    // boolean, whether the message file should be overwritten with the merged messages
+    'overwrite' => true,
+
+    /*
+    // Message categories to ignore
+    'ignoreCategories' => [
+        'yii',
+    ],
+     */
+
+    /*
+    // 'db' output format is for saving messages to database.
+    'format' => 'db',
+    // Connection component to use. Optional.
+    'db' => 'db',
+    // Custom source message table. Optional.
+    // 'sourceMessageTable' => '{{%source_message}}',
+    // Custom name for translation message table. Optional.
+    // 'messageTable' => '{{%message}}',
+    */
+
+    /*
+    // 'po' output format is for saving messages to gettext po files.
+    'format' => 'po',
+    // Root directory containing message translations.
+    'messagePath' => __DIR__ . DIRECTORY_SEPARATOR . 'messages',
+    // Name of the file that will be used for translations.
+    'catalog' => 'messages',
+    // boolean, whether the message file should be overwritten with the merged messages
+    'overwrite' => true,
+    */
 ];

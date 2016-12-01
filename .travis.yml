@@ -1,68 +1,127 @@
+#
+# Travis Setup
+#
+
+# use ubuntu trusty for newer version of nodejs, used for JS testing
+dist: trusty
+
+# faster builds on new travis setup not using sudo
+sudo: false
+
+
+#
+# Test Matrix
+#
+
 language: php
 
 php:
   - 5.4
   - 5.5
   - 5.6
-  - hhvm
+  - 7.0
+  - 7.1
+  - nightly
 
-# run build against PHP 5.6 and hhvm but allow them to fail
-# http://docs.travis-ci.com/user/build-configuration/#Rows-That-are-Allowed-To-Fail
 matrix:
-  allow_failures:
+  fast_finish: true
+  include:
+    # Test against HHVM 3.12 LTS version by using trusty
+    - php: hhvm-3.12
+      sudo: true
+      dist: trusty
+      group: edge # Use edge image until the next travis CI image update
+      addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+    # test against the latest HHVM version by using a newer image
     - php: hhvm
-    - php: 5.6
+      sudo: true
+      dist: trusty
+      group: edge # Use edge image until the next travis CI image update
+      addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
+        postgresql: "9.3"
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+        - postgresql
+  allow_failures:
+    - php: nightly
+
 
 services:
-  - redis-server
   - memcached
-  - elasticsearch
-  - mongodb
+
+# cache vendor dirs
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
+# try running against postgres 9.3
+addons:
+  postgresql: "9.3"
+  code_climate:
+    repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
 install:
-  - composer self-update && composer --version
+  - |
+    if [[ $TRAVIS_PHP_VERSION != '5.6' && $TRAVIS_PHP_VERSION != hhv* ]]; then
+        # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
+        phpenv config-rm xdebug.ini || echo "xdebug is not installed"
+    fi
+  - travis_retry composer self-update && composer --version
+  - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
-  - composer install --prefer-dist
-  - tests/unit/data/travis/mongodb-setup.sh
-  - tests/unit/data/travis/apc-setup.sh
-  - tests/unit/data/travis/memcache-setup.sh
-  - tests/unit/data/travis/cubrid-setup.sh
-# basic application:
-  - composer install --dev --prefer-dist -d apps/basic
-  - cd apps/basic && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
-  - php vendor/bin/codecept build && cd ../..
-# advanced application:
-  - composer install --dev --prefer-dist -d apps/advanced
-  - cd apps/advanced && composer require --dev codeception/codeception:1.8.*@dev codeception/specify:* codeception/verify:*
-  - ./init --env=Development
-  - sed -i s/root/travis/ common/config/main-local.php
-  - cd backend && php ../vendor/bin/codecept build
-  - cd ../common && php ../vendor/bin/codecept build
-  - cd ../frontend && php ../vendor/bin/codecept build && cd ../../..
- # boot server
-  - cd apps && php -S localhost:8080 > /dev/null 2>&1 &
+  - travis_retry composer update --prefer-dist --no-interaction
+  - tests/data/travis/apc-setup.sh
+  - tests/data/travis/memcache-setup.sh
+#  - tests/data/travis/cubrid-setup.sh
 
 before_script:
-  - echo 'elasticsearch version ' && curl http://localhost:9200/
-  - mysql -e 'CREATE DATABASE yiitest;';
+  # show some versions and env information
+  - php -r "echo INTL_ICU_VERSION . \"\n\";"
+  - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
+  - mysql --version
+  - psql --version
+
+  # initialize databases
+  - mysql -e 'CREATE DATABASE `yiitest`;';
+  - mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
-  - tests/unit/data/travis/sphinx-setup.sh
-  - mongo yii2test --eval 'db.addUser("travis", "test");'
-  - mysql -e 'CREATE DATABASE yii2_advanced_acceptance;';
-  - mysql -e 'CREATE DATABASE yii2_advanced_functional;';
-  - mysql -e 'CREATE DATABASE yii2_advanced_unit;';
-  - cd apps/advanced/frontend/tests/acceptance && php yii migrate --interactive=0
-  - cd ../functional && php yii migrate --interactive=0
-  - cd ../unit && php yii migrate --interactive=0 && cd ../../../../..
+
+  # enable code coverage on PHP 5.6, only one PHP version needs to generate coverage data
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+    fi
+
 
 script:
-  - vendor/bin/phpunit --verbose --coverage-clover=coverage.clover --exclude-group mssql,oci,wincache,xcache,zenddata
-  - cd apps/basic && php vendor/bin/codecept run
-  - cd ../advanced/backend && ../vendor/bin/codecept run
-  - cd ../common && ../vendor/bin/codecept run
-  - cd ../frontend && ../vendor/bin/codecept run
+  # validate composer.json
+  - composer validate --no-check-lock
+  - cd framework && composer validate --no-check-lock && cd ..
+  # run PHPUnit
+  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
 
 after_script:
-  - cd ../../..
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - |
+    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+      travis_retry wget https://scrutinizer-ci.com/ocular.phar
+      php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+    fi

@@ -33,14 +33,14 @@ use yii\helpers\FileHelper;
  *
  * It is possible to map a single path to multiple paths. For example,
  *
- * ~~~
+ * ```php
  * 'pathMap' => [
  *     '@app/views' => [
  *         '@app/themes/christmas',
  *         '@app/themes/basic',
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * In this case, the themed version could be either `@app/themes/christmas/site/index.php` or
  * `@app/themes/basic/site/index.php`. The former has precedence over the latter if both files exist.
@@ -48,23 +48,25 @@ use yii\helpers\FileHelper;
  * To use a theme, you should configure the [[View::theme|theme]] property of the "view" application
  * component like the following:
  *
- * ~~~
+ * ```php
  * 'view' => [
  *     'theme' => [
  *         'basePath' => '@app/themes/basic',
  *         'baseUrl' => '@web/themes/basic',
  *     ],
  * ],
- * ~~~
+ * ```
  *
  * The above configuration specifies a theme located under the "themes/basic" directory of the Web folder
  * that contains the entry script of the application. If your theme is designed to handle modules,
  * you may configure the [[pathMap]] property like described above.
  *
+ * For more details and usage information on Theme, see the [guide article on theming](guide:output-theming).
+ *
  * @property string $basePath The root path of this theme. All resources of this theme are located under this
  * directory.
  * @property string $baseUrl The base URL (without ending slash) for this theme. All resources of this theme
- * are considered to be under this base URL. This property is read-only.
+ * are considered to be under this base URL.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -73,29 +75,14 @@ class Theme extends Component
 {
     /**
      * @var array the mapping between view directories and their corresponding themed versions.
-     * If not set, it will be initialized as a mapping from [[Application::basePath]] to [[basePath]].
      * This property is used by [[applyTo()]] when a view is trying to apply the theme.
      * Path aliases can be used when specifying directories.
+     * If this property is empty or not set, a mapping [[Application::basePath]] to [[basePath]] will be used.
      */
     public $pathMap;
 
-    /**
-     * Initializes the theme.
-     * @throws InvalidConfigException if [[basePath]] is not set.
-     */
-    public function init()
-    {
-        parent::init();
-
-        if (empty($this->pathMap)) {
-            if (($basePath = $this->getBasePath()) === null) {
-                throw new InvalidConfigException('The "basePath" property must be set.');
-            }
-            $this->pathMap = [Yii::$app->getBasePath() => [$basePath]];
-        }
-    }
-
     private $_baseUrl;
+
 
     /**
      * @return string the base URL (without ending slash) for this theme. All resources of this theme are considered
@@ -107,7 +94,7 @@ class Theme extends Component
     }
 
     /**
-     * @param $url string the base URL or path alias for this theme. All resources of this theme are considered
+     * @param string $url the base URL or path alias for this theme. All resources of this theme are considered
      * to be under this base URL.
      */
     public function setBaseUrl($url)
@@ -141,11 +128,21 @@ class Theme extends Component
      * If there is no corresponding themed file, the original file will be returned.
      * @param string $path the file to be themed
      * @return string the themed file, or the original file if the themed version is not available.
+     * @throws InvalidConfigException if [[basePath]] is not set
      */
     public function applyTo($path)
     {
+        $pathMap = $this->pathMap;
+        if (empty($pathMap)) {
+            if (($basePath = $this->getBasePath()) === null) {
+                throw new InvalidConfigException('The "basePath" property must be set.');
+            }
+            $pathMap = [Yii::$app->getBasePath() => [$basePath]];
+        }
+
         $path = FileHelper::normalizePath($path);
-        foreach ($this->pathMap as $from => $tos) {
+
+        foreach ($pathMap as $from => $tos) {
             $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
             if (strpos($path, $from) === 0) {
                 $n = strlen($from);

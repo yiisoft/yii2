@@ -18,6 +18,8 @@ use yii\di\Instance;
  * If the query result changes, the dependency is considered as changed.
  * The query is specified via the [[sql]] property.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -37,6 +39,7 @@ class DbDependency extends Dependency
      */
     public $params = [];
 
+
     /**
      * Generates the data needed to determine if dependency has been changed.
      * This method returns the value of the global state.
@@ -48,7 +51,7 @@ class DbDependency extends Dependency
     {
         $db = Instance::ensure($this->db, Connection::className());
         if ($this->sql === null) {
-            throw new InvalidConfigException("DbDependency::sql must be set.");
+            throw new InvalidConfigException('DbDependency::sql must be set.');
         }
 
         if ($db->enableQueryCache) {

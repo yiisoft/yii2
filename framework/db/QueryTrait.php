@@ -22,16 +22,16 @@ trait QueryTrait
 {
     /**
      * @var string|array query condition. This refers to the WHERE clause in a SQL statement.
-     * For example, `age > 31 AND team = 1`.
-     * @see where()
+     * For example, `['age' => 31, 'team' => 1]`.
+     * @see where() for valid syntax on specifying this value.
      */
     public $where;
     /**
-     * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
+     * @var int maximum number of records to be returned. If not set or less than 0, it means no limit.
      */
     public $limit;
     /**
-     * @var integer zero-based offset from where the records are to be returned. If not set or
+     * @var int zero-based offset from where the records are to be returned. If not set or
      * less than 0, it means starting from the beginning.
      */
     public $offset;
@@ -58,14 +58,14 @@ trait QueryTrait
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. The signature of the callable should be:
      *
-     * ~~~
+     * ```php
      * function ($row)
      * {
      *     // return the index value corresponding to $row
      * }
-     * ~~~
+     * ```
      *
-     * @return static the query object itself
+     * @return $this the query object itself
      */
     public function indexBy($column)
     {
@@ -79,7 +79,7 @@ trait QueryTrait
      * See [[QueryInterface::where()]] for detailed documentation.
      *
      * @param string|array $condition the conditions that should be put in the WHERE part.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see andWhere()
      * @see orWhere()
      */
@@ -94,7 +94,7 @@ trait QueryTrait
      * The new condition and the existing one will be joined using the 'AND' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see where()
      * @see orWhere()
      */
@@ -113,7 +113,7 @@ trait QueryTrait
      * The new condition and the existing one will be joined using the 'OR' operator.
      * @param string|array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see where()
      * @see andWhere()
      */
@@ -149,7 +149,7 @@ trait QueryTrait
      *
      * @param array $condition the conditions that should be put in the WHERE part.
      * See [[where()]] on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see where()
      * @see andFilterWhere()
      * @see orFilterWhere()
@@ -173,7 +173,7 @@ trait QueryTrait
      *
      * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see filterWhere()
      * @see orFilterWhere()
      */
@@ -196,7 +196,7 @@ trait QueryTrait
      *
      * @param array $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
-     * @return static the query object itself
+     * @return $this the query object itself
      * @see filterWhere()
      * @see andFilterWhere()
      */
@@ -253,20 +253,6 @@ trait QueryTrait
                     return [];
                 }
                 break;
-            case 'IN':
-            case 'NOT IN':
-            case 'LIKE':
-            case 'OR LIKE':
-            case 'NOT LIKE':
-            case 'OR NOT LIKE':
-            case 'ILIKE': // PostgreSQL operator for case insensitive LIKE
-            case 'OR ILIKE':
-            case 'NOT ILIKE':
-            case 'OR NOT ILIKE':
-                if (array_key_exists(1, $condition) && $this->isEmpty($condition[1])) {
-                    return [];
-                }
-                break;
             case 'BETWEEN':
             case 'NOT BETWEEN':
                 if (array_key_exists(1, $condition) && array_key_exists(2, $condition)) {
@@ -276,7 +262,9 @@ trait QueryTrait
                 }
                 break;
             default:
-                throw new NotSupportedException("Operator not supported: $operator");
+                if (array_key_exists(1, $condition) && $this->isEmpty($condition[1])) {
+                    return [];
+                }
         }
 
         array_unshift($condition, $operator);
@@ -295,7 +283,7 @@ trait QueryTrait
      * - or an empty array.
      *
      * @param mixed $value
-     * @return boolean if the value is empty
+     * @return bool if the value is empty
      */
     protected function isEmpty($value)
     {
@@ -304,15 +292,19 @@ trait QueryTrait
 
     /**
      * Sets the ORDER BY part of the query.
-     * @param string|array $columns the columns (and the directions) to be ordered by.
-     * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
+     * @param string|array|Expression $columns the columns (and the directions) to be ordered by.
+     * Columns can be specified in either a string (e.g. `"id ASC, name DESC"`) or an array
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     *
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
+     *
      * Note that if your order-by is an expression containing commas, you should always use an array
      * to represent the order-by information. Otherwise, the method will not be able to correctly determine
      * the order-by columns.
-     * @return static the query object itself
+     *
+     * Since version 2.0.7, an [[Expression]] object can be passed to specify the ORDER BY part explicitly in plain SQL.
+     * @return $this the query object itself
      * @see addOrderBy()
      */
     public function orderBy($columns)
@@ -323,12 +315,19 @@ trait QueryTrait
 
     /**
      * Adds additional ORDER BY columns to the query.
-     * @param string|array $columns the columns (and the directions) to be ordered by.
+     * @param string|array|Expression $columns the columns (and the directions) to be ordered by.
      * Columns can be specified in either a string (e.g. "id ASC, name DESC") or an array
      * (e.g. `['id' => SORT_ASC, 'name' => SORT_DESC]`).
+     *
      * The method will automatically quote the column names unless a column contains some parenthesis
      * (which means the column contains a DB expression).
-     * @return static the query object itself
+     *
+     * Note that if your order-by is an expression containing commas, you should always use an array
+     * to represent the order-by information. Otherwise, the method will not be able to correctly determine
+     * the order-by columns.
+     *
+     * Since version 2.0.7, an [[Expression]] object can be passed to specify the ORDER BY part explicitly in plain SQL.
+     * @return $this the query object itself
      * @see orderBy()
      */
     public function addOrderBy($columns)
@@ -342,9 +341,17 @@ trait QueryTrait
         return $this;
     }
 
+    /**
+     * Normalizes format of ORDER BY data
+     *
+     * @param array|string|Expression $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
+     * @return array
+     */
     protected function normalizeOrderBy($columns)
     {
-        if (is_array($columns)) {
+        if ($columns instanceof Expression) {
+            return [$columns];
+        } elseif (is_array($columns)) {
             return $columns;
         } else {
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
@@ -362,8 +369,8 @@ trait QueryTrait
 
     /**
      * Sets the LIMIT part of the query.
-     * @param integer $limit the limit. Use null or negative value to disable limit.
-     * @return static the query object itself
+     * @param int $limit the limit. Use null or negative value to disable limit.
+     * @return $this the query object itself
      */
     public function limit($limit)
     {
@@ -373,8 +380,8 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     * @param integer $offset the offset. Use null or negative value to disable offset.
-     * @return static the query object itself
+     * @param int $offset the offset. Use null or negative value to disable offset.
+     * @return $this the query object itself
      */
     public function offset($offset)
     {

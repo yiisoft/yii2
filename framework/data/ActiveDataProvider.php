@@ -22,7 +22,7 @@ use yii\di\Instance;
  *
  * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
- * ~~~
+ * ```php
  * $provider = new ActiveDataProvider([
  *     'query' => Post::find(),
  *     'pagination' => [
@@ -32,12 +32,12 @@ use yii\di\Instance;
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
- * ~~~
+ * ```
  *
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
  *
- * ~~~
- * $query = new Query;
+ * ```php
+ * $query = new Query();
  * $provider = new ActiveDataProvider([
  *     'query' => $query->from('post'),
  *     'pagination' => [
@@ -47,7 +47,9 @@ use yii\di\Instance;
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
- * ~~~
+ * ```
+ *
+ * For more details and usage information on ActiveDataProvider, see the [guide article on data providers](guide:output-data-providers).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -72,8 +74,9 @@ class ActiveDataProvider extends BaseDataProvider
      */
     public $key;
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
      * If not set, the default DB connection will be used.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db;
 
@@ -128,7 +131,7 @@ class ActiveDataProvider extends BaseDataProvider
 
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
-            /** @var \yii\db\ActiveRecord $class */
+            /* @var $class \yii\db\ActiveRecord */
             $class = $this->query->modelClass;
             $pks = $class::primaryKey();
             if (count($pks) === 1) {
@@ -170,15 +173,23 @@ class ActiveDataProvider extends BaseDataProvider
     public function setSort($value)
     {
         parent::setSort($value);
-        if (($sort = $this->getSort()) !== false && empty($sort->attributes) && $this->query instanceof ActiveQueryInterface) {
-            /** @var Model $model */
+        if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
+            /* @var $model Model */
             $model = new $this->query->modelClass;
-            foreach ($model->attributes() as $attribute) {
-                $sort->attributes[$attribute] = [
-                    'asc' => [$attribute => SORT_ASC],
-                    'desc' => [$attribute => SORT_DESC],
-                    'label' => $model->getAttributeLabel($attribute),
-                ];
+            if (empty($sort->attributes)) {
+                foreach ($model->attributes() as $attribute) {
+                    $sort->attributes[$attribute] = [
+                        'asc' => [$attribute => SORT_ASC],
+                        'desc' => [$attribute => SORT_DESC],
+                        'label' => $model->getAttributeLabel($attribute),
+                    ];
+                }
+            } else {
+                foreach ($sort->attributes as $attribute => $config) {
+                    if (!isset($config['label'])) {
+                        $sort->attributes[$attribute]['label'] = $model->getAttributeLabel($attribute);
+                    }
+                }
             }
         }
     }

@@ -35,7 +35,7 @@ trait ArrayableTrait
      * returning the corresponding field value. The signature of the callable should be:
      *
      * ```php
-     * function ($field, $model) {
+     * function ($model, $field) {
      *     // return field value
      * }
      * ```
@@ -63,7 +63,7 @@ trait ArrayableTrait
      * information. For example, depending on the privilege of the current application user,
      * you may return different sets of visible fields or filter out some fields.
      *
-     * The default implementation of this method returns the public object member variables.
+     * The default implementation of this method returns the public object member variables indexed by themselves.
      *
      * @return array the list of field names or field definitions.
      * @see toArray()
@@ -71,7 +71,6 @@ trait ArrayableTrait
     public function fields()
     {
         $fields = array_keys(Yii::getObjectVars($this));
-
         return array_combine($fields, $fields);
     }
 
@@ -111,14 +110,14 @@ trait ArrayableTrait
      * @param array $fields the fields being requested. If empty, all fields as specified by [[fields()]] will be returned.
      * @param array $expand the additional fields being requested for exporting. Only fields declared in [[extraFields()]]
      * will be considered.
-     * @param boolean $recursive whether to recursively return array representation of embedded objects.
+     * @param bool $recursive whether to recursively return array representation of embedded objects.
      * @return array the array representation of the object
      */
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $data = [];
         foreach ($this->resolveFields($fields, $expand) as $field => $definition) {
-            $data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $field, $this);
+            $data[$field] = is_string($definition) ? $this->$definition : call_user_func($definition, $this, $field);
         }
 
         if ($this instanceof Linkable) {
@@ -142,7 +141,7 @@ trait ArrayableTrait
         $result = [];
 
         foreach ($this->fields() as $field => $definition) {
-            if (is_integer($field)) {
+            if (is_int($field)) {
                 $field = $definition;
             }
             if (empty($fields) || in_array($field, $fields, true)) {
@@ -155,7 +154,7 @@ trait ArrayableTrait
         }
 
         foreach ($this->extraFields() as $field => $definition) {
-            if (is_integer($field)) {
+            if (is_int($field)) {
                 $field = $definition;
             }
             if (in_array($field, $expand, true)) {

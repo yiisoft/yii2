@@ -8,14 +8,14 @@
 namespace yii\web;
 
 /**
- * This asset bundle provides the [jquery javascript library](http://jquery.com/)
+ * This asset bundle provides the [jQuery](http://jquery.com/) JavaScript library.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class JqueryAsset extends AssetBundle
 {
-    public $sourcePath = '@vendor/yiisoft/jquery';
+    public $sourcePath = '@bower/jquery/dist';
     public $js = [
         'jquery.js',
     ];

@@ -18,6 +18,8 @@ use yii\helpers\Html;
  *
  * LinkSorter will generate a hyperlink for every attribute declared in [[sort]].
  *
+ * For more details and usage information on LinkSorter, see the [guide article on sorting](guide:output-sorting).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -38,6 +40,13 @@ class LinkSorter extends Widget
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'sorter'];
+    /**
+     * @var array HTML attributes for the link in a sorter container tag which are passed to [[Sort::link()]].
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @since 2.0.6
+     */
+    public $linkOptions = [];
+
 
     /**
      * Initializes the sorter.
@@ -67,7 +76,7 @@ class LinkSorter extends Widget
         $attributes = empty($this->attributes) ? array_keys($this->sort->attributes) : $this->attributes;
         $links = [];
         foreach ($attributes as $name) {
-            $links[] = $this->sort->link($name);
+            $links[] = $this->sort->link($name, $this->linkOptions);
         }
 
         return Html::ul($links, array_merge($this->options, ['encode' => false]));

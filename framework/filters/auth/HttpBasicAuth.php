@@ -7,9 +7,6 @@
 
 namespace yii\filters\auth;
 
-use Yii;
-use yii\web\UnauthorizedHttpException;
-
 /**
  * HttpBasicAuth is an action filter that supports the HTTP Basic authentication method.
  *
@@ -21,6 +18,30 @@ use yii\web\UnauthorizedHttpException;
  *     return [
  *         'basicAuth' => [
  *             'class' => \yii\filters\auth\HttpBasicAuth::className(),
+ *         ],
+ *     ];
+ * }
+ * ```
+ *
+ * The default implementation of HttpBasicAuth uses the [[\yii\web\User::loginByAccessToken()|loginByAccessToken()]]
+ * method of the `user` application component and only passes the user name. This implementation is used
+ * for authenticating API clients.
+ *
+ * If you want to authenticate users using username and password, you should provide the [[auth]] function for example like the following:
+ *
+ * ```php
+ * public function behaviors()
+ * {
+ *     return [
+ *         'basicAuth' => [
+ *             'class' => \yii\filters\auth\HttpBasicAuth::className(),
+ *             'auth' => function ($username, $password) {
+ *                 $user = User::find()->where(['username' => $username])->one();
+ *                 if ($user->verifyPassword($password)) {
+ *                     return $user;
+ *                 }
+ *                 return null;
+ *             },
  *         ],
  *     ];
  * }
@@ -70,7 +91,7 @@ class HttpBasicAuth extends AuthMethod
             if ($username !== null || $password !== null) {
                 $identity = call_user_func($this->auth, $username, $password);
                 if ($identity !== null) {
-                    $user->setIdentity($identity);
+                    $user->switchIdentity($identity);
                 } else {
                     $this->handleFailure($response);
                 }
@@ -90,9 +111,8 @@ class HttpBasicAuth extends AuthMethod
     /**
      * @inheritdoc
      */
-    public function handleFailure($response)
+    public function challenge($response)
     {
         $response->getHeaders()->set('WWW-Authenticate', "Basic realm=\"{$this->realm}\"");
-        throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
     }
 }

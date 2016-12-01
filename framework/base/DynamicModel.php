@@ -10,7 +10,7 @@ namespace yii\base;
 use yii\validators\Validator;
 
 /**
- * DynamicModel is a model class primarily used to support ad-hoc data validation.
+ * DynamicModel is a model class primarily used to support ad hoc data validation.
  *
  * The typical usage of DynamicModel is as follows,
  *
@@ -18,7 +18,7 @@ use yii\validators\Validator;
  * public function actionSearch($name, $email)
  * {
  *     $model = DynamicModel::validateData(compact('name', 'email'), [
- *         [['name', 'email'], 'string', 'max' => 128]],
+ *         [['name', 'email'], 'string', 'max' => 128],
  *         ['email', 'email'],
  *     ]);
  *     if ($model->hasErrors()) {
@@ -57,6 +57,7 @@ class DynamicModel extends Model
 {
     private $_attributes = [];
 
+
     /**
      * Constructors.
      * @param array $attributes the dynamic attributes (name-value pairs, or names) being defined
@@ -65,7 +66,7 @@ class DynamicModel extends Model
     public function __construct(array $attributes = [], $config = [])
     {
         foreach ($attributes as $name => $value) {
-            if (is_integer($name)) {
+            if (is_int($name)) {
                 $this->_attributes[$value] = null;
             } else {
                 $this->_attributes[$name] = $value;
@@ -149,7 +150,7 @@ class DynamicModel extends Model
      * @param mixed $validator the validator for the rule.This can be a built-in validator name,
      * a method name of the model class, an anonymous function, or a validator class name.
      * @param array $options the options (name-value pairs) to be applied to the validator
-     * @return static the model itself
+     * @return $this the model itself
      */
     public function addRule($attributes, $validator, $options = [])
     {
@@ -170,7 +171,7 @@ class DynamicModel extends Model
      */
     public static function validateData(array $data, $rules = [])
     {
-        /** @var DynamicModel $model */
+        /* @var $model DynamicModel */
         $model = new static($data);
         if (!empty($rules)) {
             $validators = $model->getValidators();
@@ -184,8 +185,9 @@ class DynamicModel extends Model
                     throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
                 }
             }
-            $model->validate();
         }
+
+        $model->validate();
 
         return $model;
     }

@@ -9,6 +9,7 @@ namespace yii\rest;
 
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\web\ForbiddenHttpException;
 
 /**
  * ActiveController implements a common set of actions for supporting RESTful access to ActiveRecord.
@@ -31,6 +32,8 @@ use yii\base\Model;
  * You should usually override [[checkAccess()]] to check whether the current user has the privilege to perform
  * the specified action against the specified model.
  *
+ * For more details and usage information on ActiveController, see the [guide article on rest controllers](guide:rest-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -50,6 +53,7 @@ class ActiveController extends Controller
      * @see \yii\base\Model::scenarios()
      */
     public $createScenario = Model::SCENARIO_DEFAULT;
+
 
     /**
      * @inheritdoc
@@ -113,5 +117,21 @@ class ActiveController extends Controller
             'update' => ['PUT', 'PATCH'],
             'delete' => ['DELETE'],
         ];
+    }
+
+    /**
+     * Checks the privilege of the current user.
+     *
+     * This method should be overridden to check whether the current user has the privilege
+     * to run the specified action against the specified data model.
+     * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
+     *
+     * @param string $action the ID of the action to be executed
+     * @param object $model the model to be accessed. If null, it means no specific model is being accessed.
+     * @param array $params additional parameters
+     * @throws ForbiddenHttpException if the user does not have access
+     */
+    public function checkAccess($action, $model = null, $params = [])
+    {
     }
 }

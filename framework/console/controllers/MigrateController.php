@@ -8,12 +8,11 @@
 namespace yii\console\controllers;
 
 use Yii;
-use yii\console\Exception;
-use yii\console\Controller;
 use yii\db\Connection;
 use yii\db\Query;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
-use yii\helpers\FileHelper;
+use yii\helpers\Console;
 
 /**
  * Manages application migrations.
@@ -31,16 +30,16 @@ use yii\helpers\FileHelper;
  * this command is executed, if it does not exist. You may also manually
  * create it as follows:
  *
- * ~~~
+ * ```sql
  * CREATE TABLE migration (
  *     version varchar(180) PRIMARY KEY,
  *     apply_time integer
  * )
- * ~~~
+ * ```
  *
  * Below are some common usages of this command:
  *
- * ~~~
+ * ```
  * # creates a new migration named 'create_user_table'
  * yii migrate/create create_user_table
  *
@@ -49,511 +48,129 @@ use yii\helpers\FileHelper;
  *
  * # reverts the last applied migration
  * yii migrate/down
- * ~~~
+ * ```
+ *
+ * Since 2.0.10 you can use namespaced migrations. In order to enable this feature you should configure [[migrationNamespaces]]
+ * property for the controller at application configuration:
+ *
+ * ```php
+ * return [
+ *     'controllerMap' => [
+ *         'migrate' => [
+ *             'class' => 'yii\console\controllers\MigrateController',
+ *             'migrationNamespaces' => [
+ *                 'app\migrations',
+ *                 'some\extension\migrations',
+ *             ],
+ *             //'migrationPath' => null, // allows to disable not namespaced migration completely
+ *         ],
+ *     ],
+ * ];
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class MigrateController extends Controller
+class MigrateController extends BaseMigrateController
 {
-    /**
-     * The name of the dummy migration that marks the beginning of the whole migration history.
-     */
-    const BASE_MIGRATION = 'm000000_000000_base';
-
-    /**
-     * @var string the default command action.
-     */
-    public $defaultAction = 'up';
-    /**
-     * @var string the directory storing the migration classes. This can be either
-     * a path alias or a directory.
-     */
-    public $migrationPath = '@app/migrations';
     /**
      * @var string the name of the table for keeping applied migration information.
      */
     public $migrationTable = '{{%migration}}';
     /**
-     * @var string the template file for generating new migrations.
-     * This can be either a path alias (e.g. "@app/migrations/template.php")
-     * or a file path.
+     * @inheritdoc
      */
     public $templateFile = '@yii/views/migration.php';
     /**
-     * @var Connection|string the DB connection object or the application
-     * component ID of the DB connection.
+     * @var array a set of template paths for generating migration code automatically.
+     *
+     * The key is the template type, the value is a path or the alias. Supported types are:
+     * - `create_table`: table creating template
+     * - `drop_table`: table dropping template
+     * - `add_column`: adding new column template
+     * - `drop_column`: dropping column template
+     * - `create_junction`: create junction template
+     *
+     * @since 2.0.7
+     */
+    public $generatorTemplateFiles = [
+        'create_table' => '@yii/views/createTableMigration.php',
+        'drop_table' => '@yii/views/dropTableMigration.php',
+        'add_column' => '@yii/views/addColumnMigration.php',
+        'drop_column' => '@yii/views/dropColumnMigration.php',
+        'create_junction' => '@yii/views/createTableMigration.php',
+    ];
+    /**
+     * @var bool indicates whether the table names generated should consider
+     * the `tablePrefix` setting of the DB connection. For example, if the table
+     * name is `post` the generator wil return `{{%post}}`.
+     * @since 2.0.8
+     */
+    public $useTablePrefix = false;
+    /**
+     * @var array column definition strings used for creating migration code.
+     *
+     * The format of each definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Delimiter is `,`.
+     * For example, `--fields="name:string(12):notNull:unique"`
+     * produces a string column of size 12 which is not null and unique values.
+     *
+     * Note: primary key is added automatically and is named id by default.
+     * If you want to use another name you may specify it explicitly like
+     * `--fields="id_key:primaryKey,name:string(12):notNull:unique"`
+     * @since 2.0.7
+     */
+    public $fields = [];
+    /**
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection to use
+     * when applying migrations. Starting from version 2.0.3, this can also be a configuration array
+     * for creating the object.
      */
     public $db = 'db';
+
 
     /**
      * @inheritdoc
      */
-    public function options($actionId)
+    public function options($actionID)
     {
         return array_merge(
-            parent::options($actionId),
-            ['migrationPath', 'migrationTable', 'db'], // global for all actions
-            ($actionId == 'create') ? ['templateFile'] : [] // action create
+            parent::options($actionID),
+            ['migrationTable', 'db'], // global for all actions
+            $actionID === 'create'
+                ? ['templateFile', 'fields', 'useTablePrefix']
+                : []
         );
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            'f' => 'fields',
+            'p' => 'migrationPath',
+            't' => 'migrationTable',
+            'F' => 'templateFile',
+            'P' => 'useTablePrefix',
+        ]);
     }
 
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * It checks the existence of the [[migrationPath]].
      * @param \yii\base\Action $action the action to be executed.
-     * @throws Exception if db component isn't configured
-     * @return boolean whether the action should continue to be executed.
+     * @return bool whether the action should continue to be executed.
      */
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            $path = Yii::getAlias($this->migrationPath);
-            if (!is_dir($path)) {
-                echo "";
-                FileHelper::createDirectory($path);
-            }
-            $this->migrationPath = $path;
-
             if ($action->id !== 'create') {
-                if (is_string($this->db)) {
-                    $this->db = Yii::$app->get($this->db);
-                }
-                if (!$this->db instanceof Connection) {
-                    throw new Exception("The 'db' option must refer to the application component ID of a DB connection.");
-                }
+                $this->db = Instance::ensure($this->db, Connection::className());
             }
-
-            $version = Yii::getVersion();
-            echo "Yii Migration Tool (based on Yii v{$version})\n\n";
-
             return true;
         } else {
-            return false;
-        }
-    }
-
-    /**
-     * Upgrades the application by applying new migrations.
-     * For example,
-     *
-     * ~~~
-     * yii migrate     # apply all new migrations
-     * yii migrate 3   # apply the first 3 new migrations
-     * ~~~
-     *
-     * @param integer $limit the number of new migrations to be applied. If 0, it means
-     * applying all available new migrations.
-     *
-     * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
-     */
-    public function actionUp($limit = 0)
-    {
-        $migrations = $this->getNewMigrations();
-        if (empty($migrations)) {
-            echo "No new migration found. Your system is up-to-date.\n";
-
-            return self::EXIT_CODE_NORMAL;
-        }
-
-        $total = count($migrations);
-        $limit = (int) $limit;
-        if ($limit > 0) {
-            $migrations = array_slice($migrations, 0, $limit);
-        }
-
-        $n = count($migrations);
-        if ($n === $total) {
-            echo "Total $n new " . ($n === 1 ? 'migration' : 'migrations') . " to be applied:\n";
-        } else {
-            echo "Total $n out of $total new " . ($total === 1 ? 'migration' : 'migrations') . " to be applied:\n";
-        }
-
-        foreach ($migrations as $migration) {
-            echo "    $migration\n";
-        }
-        echo "\n";
-
-        if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateUp($migration)) {
-                    echo "\nMigration failed. The rest of the migrations are canceled.\n";
-
-                    return self::EXIT_CODE_ERROR;
-                }
-            }
-            echo "\nMigrated up successfully.\n";
-        }
-    }
-
-    /**
-     * Downgrades the application by reverting old migrations.
-     * For example,
-     *
-     * ~~~
-     * yii migrate/down     # revert the last migration
-     * yii migrate/down 3   # revert the last 3 migrations
-     * ~~~
-     *
-     * @param integer $limit the number of migrations to be reverted. Defaults to 1,
-     * meaning the last applied migration will be reverted.
-     * @throws Exception if the number of the steps specified is less than 1.
-     *
-     * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
-     */
-    public function actionDown($limit = 1)
-    {
-        $limit = (int) $limit;
-        if ($limit < 1) {
-            throw new Exception("The step argument must be greater than 0.");
-        }
-
-        $migrations = $this->getMigrationHistory($limit);
-        if (empty($migrations)) {
-            echo "No migration has been done before.\n";
-
-            return self::EXIT_CODE_NORMAL;
-        }
-        $migrations = array_keys($migrations);
-
-        $n = count($migrations);
-        echo "Total $n " . ($n === 1 ? 'migration' : 'migrations') . " to be reverted:\n";
-        foreach ($migrations as $migration) {
-            echo "    $migration\n";
-        }
-        echo "\n";
-
-        if ($this->confirm('Revert the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateDown($migration)) {
-                    echo "\nMigration failed. The rest of the migrations are canceled.\n";
-
-                    return self::EXIT_CODE_ERROR;
-                }
-            }
-            echo "\nMigrated down successfully.\n";
-        }
-    }
-
-    /**
-     * Redoes the last few migrations.
-     *
-     * This command will first revert the specified migrations, and then apply
-     * them again. For example,
-     *
-     * ~~~
-     * yii migrate/redo     # redo the last applied migration
-     * yii migrate/redo 3   # redo the last 3 applied migrations
-     * ~~~
-     *
-     * @param integer $limit the number of migrations to be redone. Defaults to 1,
-     * meaning the last applied migration will be redone.
-     * @throws Exception if the number of the steps specified is less than 1.
-     *
-     * @return integer the status of the action execution. 0 means normal, other values mean abnormal.
-     */
-    public function actionRedo($limit = 1)
-    {
-        $limit = (int) $limit;
-        if ($limit < 1) {
-            throw new Exception("The step argument must be greater than 0.");
-        }
-
-        $migrations = $this->getMigrationHistory($limit);
-        if (empty($migrations)) {
-            echo "No migration has been done before.\n";
-
-            return self::EXIT_CODE_NORMAL;
-        }
-        $migrations = array_keys($migrations);
-
-        $n = count($migrations);
-        echo "Total $n " . ($n === 1 ? 'migration' : 'migrations') . " to be redone:\n";
-        foreach ($migrations as $migration) {
-            echo "    $migration\n";
-        }
-        echo "\n";
-
-        if ($this->confirm('Redo the above ' . ($n === 1 ? 'migration' : 'migrations') . "?")) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateDown($migration)) {
-                    echo "\nMigration failed. The rest of the migrations are canceled.\n";
-
-                    return self::EXIT_CODE_ERROR;
-                }
-            }
-            foreach (array_reverse($migrations) as $migration) {
-                if (!$this->migrateUp($migration)) {
-                    echo "\nMigration failed. The rest of the migrations migrations are canceled.\n";
-
-                    return self::EXIT_CODE_ERROR;
-                }
-            }
-            echo "\nMigration redone successfully.\n";
-        }
-    }
-
-    /**
-     * Upgrades or downgrades till the specified version.
-     *
-     * Can also downgrade versions to the certain apply time in the past by providing
-     * a UNIX timestamp or a string parseable by the strtotime() function. This means
-     * that all the versions applied after the specified certain time would be reverted.
-     *
-     * This command will first revert the specified migrations, and then apply
-     * them again. For example,
-     *
-     * ~~~
-     * yii migrate/to 101129_185401                      # using timestamp
-     * yii migrate/to m101129_185401_create_user_table   # using full name
-     * yii migrate/to 1392853618                         # using UNIX timestamp
-     * yii migrate/to "2014-02-15 13:00:50"              # using strtotime() parseable string
-     * ~~~
-     *
-     * @param string $version either the version name or the certain time value in the past
-     * that the application should be migrated to. This can be either the timestamp,
-     * the full name of the migration, the UNIX timestamp, or the parseable datetime
-     * string.
-     * @throws Exception if the version argument is invalid.
-     */
-    public function actionTo($version)
-    {
-        if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
-            $this->migrateToVersion('m' . $matches[1]);
-        } elseif ((string) (int) $version == $version) {
-            $this->migrateToTime($version);
-        } elseif (($time = strtotime($version)) !== false) {
-            $this->migrateToTime($time);
-        } else {
-            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401),\n the full name of a migration (e.g. m101129_185401_create_user_table),\n a UNIX timestamp (e.g. 1392853000), or a datetime string parseable\nby the strtotime() function (e.g. 2014-02-15 13:00:50).");
-        }
-    }
-
-    /**
-     * Modifies the migration history to the specified version.
-     *
-     * No actual migration will be performed.
-     *
-     * ~~~
-     * yii migrate/mark 101129_185401                      # using timestamp
-     * yii migrate/mark m101129_185401_create_user_table   # using full name
-     * ~~~
-     *
-     * @param string $version the version at which the migration history should be marked.
-     * This can be either the timestamp or the full name of the migration.
-     * @throws Exception if the version argument is invalid or the version cannot be found.
-     */
-    public function actionMark($version)
-    {
-        $originalVersion = $version;
-        if (preg_match('/^m?(\d{6}_\d{6})(_.*?)?$/', $version, $matches)) {
-            $version = 'm' . $matches[1];
-        } else {
-            throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table).");
-        }
-
-        // try mark up
-        $migrations = $this->getNewMigrations();
-        foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
-                if ($this->confirm("Set migration history at $originalVersion?")) {
-                    $command = $this->db->createCommand();
-                    for ($j = 0; $j <= $i; ++$j) {
-                        $command->insert($this->migrationTable, [
-                            'version' => $migrations[$j],
-                            'apply_time' => time(),
-                        ])->execute();
-                    }
-                    echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
-                }
-
-                return self::EXIT_CODE_NORMAL;
-            }
-        }
-
-        // try mark down
-        $migrations = array_keys($this->getMigrationHistory(-1));
-        foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
-                if ($i === 0) {
-                    echo "Already at '$originalVersion'. Nothing needs to be done.\n";
-                } else {
-                    if ($this->confirm("Set migration history at $originalVersion?")) {
-                        $command = $this->db->createCommand();
-                        for ($j = 0; $j < $i; ++$j) {
-                            $command->delete($this->migrationTable, [
-                                'version' => $migrations[$j],
-                            ])->execute();
-                        }
-                        echo "The migration history is set at $originalVersion.\nNo actual migration was performed.\n";
-                    }
-                }
-
-                return self::EXIT_CODE_NORMAL;
-            }
-        }
-
-        throw new Exception("Unable to find the version '$originalVersion'.");
-    }
-
-    /**
-     * Displays the migration history.
-     *
-     * This command will show the list of migrations that have been applied
-     * so far. For example,
-     *
-     * ~~~
-     * yii migrate/history     # showing the last 10 migrations
-     * yii migrate/history 5   # showing the last 5 migrations
-     * yii migrate/history 0   # showing the whole history
-     * ~~~
-     *
-     * @param integer $limit the maximum number of migrations to be displayed.
-     * If it is 0, the whole migration history will be displayed.
-     */
-    public function actionHistory($limit = 10)
-    {
-        $limit = (int) $limit;
-        $migrations = $this->getMigrationHistory($limit);
-        if (empty($migrations)) {
-            echo "No migration has been done before.\n";
-        } else {
-            $n = count($migrations);
-            if ($limit > 0) {
-                echo "Showing the last $n applied " . ($n === 1 ? 'migration' : 'migrations') . ":\n";
-            } else {
-                echo "Total $n " . ($n === 1 ? 'migration has' : 'migrations have') . " been applied before:\n";
-            }
-            foreach ($migrations as $version => $time) {
-                echo "    (" . date('Y-m-d H:i:s', $time) . ') ' . $version . "\n";
-            }
-        }
-    }
-
-    /**
-     * Displays the un-applied new migrations.
-     *
-     * This command will show the new migrations that have not been applied.
-     * For example,
-     *
-     * ~~~
-     * yii migrate/new     # showing the first 10 new migrations
-     * yii migrate/new 5   # showing the first 5 new migrations
-     * yii migrate/new 0   # showing all new migrations
-     * ~~~
-     *
-     * @param integer $limit the maximum number of new migrations to be displayed.
-     * If it is 0, all available new migrations will be displayed.
-     */
-    public function actionNew($limit = 10)
-    {
-        $limit = (int) $limit;
-        $migrations = $this->getNewMigrations();
-        if (empty($migrations)) {
-            echo "No new migrations found. Your system is up-to-date.\n";
-        } else {
-            $n = count($migrations);
-            if ($limit > 0 && $n > $limit) {
-                $migrations = array_slice($migrations, 0, $limit);
-                echo "Showing $limit out of $n new " . ($n === 1 ? 'migration' : 'migrations') . ":\n";
-            } else {
-                echo "Found $n new " . ($n === 1 ? 'migration' : 'migrations') . ":\n";
-            }
-
-            foreach ($migrations as $migration) {
-                echo "    " . $migration . "\n";
-            }
-        }
-    }
-
-    /**
-     * Creates a new migration.
-     *
-     * This command creates a new migration using the available migration template.
-     * After using this command, developers should modify the created migration
-     * skeleton by filling up the actual migration logic.
-     *
-     * ~~~
-     * yii migrate/create create_user_table
-     * ~~~
-     *
-     * @param string $name the name of the new migration. This should only contain
-     * letters, digits and/or underscores.
-     * @throws Exception if the name argument is invalid.
-     */
-    public function actionCreate($name)
-    {
-        if (!preg_match('/^\w+$/', $name)) {
-            throw new Exception("The migration name should contain letters, digits and/or underscore characters only.");
-        }
-
-        $name = 'm' . gmdate('ymd_His') . '_' . $name;
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $name . '.php';
-
-        if ($this->confirm("Create new migration '$file'?")) {
-            $content = $this->renderFile(Yii::getAlias($this->templateFile), ['className' => $name]);
-            file_put_contents($file, $content);
-            echo "New migration created successfully.\n";
-        }
-    }
-
-    /**
-     * Upgrades with the specified migration class.
-     * @param string $class the migration class name
-     * @return boolean whether the migration is successful
-     */
-    protected function migrateUp($class)
-    {
-        if ($class === self::BASE_MIGRATION) {
-            return true;
-        }
-
-        echo "*** applying $class\n";
-        $start = microtime(true);
-        $migration = $this->createMigration($class);
-        if ($migration->up() !== false) {
-            $this->db->createCommand()->insert($this->migrationTable, [
-                'version' => $class,
-                'apply_time' => time(),
-            ])->execute();
-            $time = microtime(true) - $start;
-            echo "*** applied $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
-
-            return true;
-        } else {
-            $time = microtime(true) - $start;
-            echo "*** failed to apply $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
-
-            return false;
-        }
-    }
-
-    /**
-     * Downgrades with the specified migration class.
-     * @param string $class the migration class name
-     * @return boolean whether the migration is successful
-     */
-    protected function migrateDown($class)
-    {
-        if ($class === self::BASE_MIGRATION) {
-            return true;
-        }
-
-        echo "*** reverting $class\n";
-        $start = microtime(true);
-        $migration = $this->createMigration($class);
-        if ($migration->down() !== false) {
-            $this->db->createCommand()->delete($this->migrationTable, [
-                'version' => $class,
-            ])->execute();
-            $time = microtime(true) - $start;
-            echo "*** reverted $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
-
-            return true;
-        } else {
-            $time = microtime(true) - $start;
-            echo "*** failed to revert $class (time: " . sprintf("%.3f", $time) . "s)\n\n";
-
             return false;
         }
     }
@@ -565,85 +182,66 @@ class MigrateController extends Controller
      */
     protected function createMigration($class)
     {
-        $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-        require_once($file);
+        $class = trim($class, '\\');
+        if (strpos($class, '\\') === false) {
+            $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
+            require_once($file);
+        }
 
         return new $class(['db' => $this->db]);
     }
 
     /**
-     * Migrates to the specified apply time in the past.
-     * @param integer $time UNIX timestamp value.
-     */
-    protected function migrateToTime($time)
-    {
-        $count = 0;
-        $migrations = array_values($this->getMigrationHistory(-1));
-        while ($count < count($migrations) && $migrations[$count] > $time) {
-            ++$count;
-        }
-        if ($count === 0) {
-            echo "Nothing needs to be done.\n";
-        } else {
-            $this->actionDown($count);
-        }
-    }
-
-    /**
-     * Migrates to the certain version.
-     * @param string $version name in the full format.
-     * @throws Exception if the provided version cannot be found.
-     */
-    protected function migrateToVersion($version)
-    {
-        $originalVersion = $version;
-
-        // try migrate up
-        $migrations = $this->getNewMigrations();
-        foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
-                $this->actionUp($i + 1);
-
-                return self::EXIT_CODE_NORMAL;
-            }
-        }
-
-        // try migrate down
-        $migrations = array_keys($this->getMigrationHistory(-1));
-        foreach ($migrations as $i => $migration) {
-            if (strpos($migration, $version . '_') === 0) {
-                if ($i === 0) {
-                    echo "Already at '$originalVersion'. Nothing needs to be done.\n";
-                } else {
-                    $this->actionDown($i);
-                }
-
-                return self::EXIT_CODE_NORMAL;
-            }
-        }
-
-        throw new Exception("Unable to find the version '$originalVersion'.");
-    }
-
-    /**
-     * Returns the migration history.
-     * @param integer $limit the maximum number of records in the history to be returned
-     * @return array the migration history
+     * @inheritdoc
      */
     protected function getMigrationHistory($limit)
     {
         if ($this->db->schema->getTableSchema($this->migrationTable, true) === null) {
             $this->createMigrationHistoryTable();
         }
-        $query = new Query;
-        $rows = $query->select(['version', 'apply_time'])
+        $query = (new Query())
+            ->select(['version', 'apply_time'])
             ->from($this->migrationTable)
-            ->orderBy('version DESC')
-            ->limit($limit)
-            ->createCommand($this->db)
-            ->queryAll();
-        $history = ArrayHelper::map($rows, 'version', 'apply_time');
-        unset($history[self::BASE_MIGRATION]);
+            ->orderBy(['apply_time' => SORT_DESC, 'version' => SORT_DESC]);
+
+        if (empty($this->migrationNamespaces)) {
+            $query->limit($limit);
+            $rows = $query->all($this->db);
+            $history = ArrayHelper::map($rows, 'version', 'apply_time');
+            unset($history[self::BASE_MIGRATION]);
+            return $history;
+        }
+
+        $rows = $query->all($this->db);
+
+        $history = [];
+        foreach ($rows as $key => $row) {
+            if ($row['version'] === self::BASE_MIGRATION) {
+                continue;
+            }
+            if (preg_match('/m?(\d{6}_?\d{6})(\D.*)?$/is', $row['version'], $matches)) {
+                $time = str_replace('_', '', $matches[1]);
+                $row['canonicalVersion'] = $time;
+            } else {
+                $row['canonicalVersion'] = $row['version'];
+            }
+            $row['apply_time'] = (int)$row['apply_time'];
+            $history[] = $row;
+        }
+
+        usort($history, function ($a, $b) {
+            if ($a['apply_time'] === $b['apply_time']) {
+                if (($compareResult = strcasecmp($b['canonicalVersion'], $a['canonicalVersion'])) !== 0) {
+                    return $compareResult;
+                }
+                return strcasecmp($b['version'], $a['version']);
+            }
+            return ($a['apply_time'] > $b['apply_time']) ? -1 : +1;
+        });
+
+        $history = array_slice($history, 0, $limit);
+
+        $history = ArrayHelper::map($history, 'version', 'apply_time');
 
         return $history;
     }
@@ -654,7 +252,7 @@ class MigrateController extends Controller
     protected function createMigrationHistoryTable()
     {
         $tableName = $this->db->schema->getRawTableName($this->migrationTable);
-        echo "Creating migration history table \"$tableName\"...";
+        $this->stdout("Creating migration history table \"$tableName\"...", Console::FG_YELLOW);
         $this->db->createCommand()->createTable($this->migrationTable, [
             'version' => 'varchar(180) NOT NULL PRIMARY KEY',
             'apply_time' => 'integer',
@@ -663,34 +261,211 @@ class MigrateController extends Controller
             'version' => self::BASE_MIGRATION,
             'apply_time' => time(),
         ])->execute();
-        echo "done.\n";
+        $this->stdout("Done.\n", Console::FG_GREEN);
     }
 
     /**
-     * Returns the migrations that are not applied.
-     * @return array list of new migrations
+     * @inheritdoc
      */
-    protected function getNewMigrations()
+    protected function addMigrationHistory($version)
     {
-        $applied = [];
-        foreach ($this->getMigrationHistory(-1) as $version => $time) {
-            $applied[substr($version, 1, 13)] = true;
+        $command = $this->db->createCommand();
+        $command->insert($this->migrationTable, [
+            'version' => $version,
+            'apply_time' => time(),
+        ])->execute();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function removeMigrationHistory($version)
+    {
+        $command = $this->db->createCommand();
+        $command->delete($this->migrationTable, [
+            'version' => $version,
+        ])->execute();
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    protected function generateMigrationSourceCode($params)
+    {
+        $parsedFields = $this->parseFields();
+        $fields = $parsedFields['fields'];
+        $foreignKeys = $parsedFields['foreignKeys'];
+
+        $name = $params['name'];
+
+        $templateFile = $this->templateFile;
+        $table = null;
+        if (preg_match('/^create_junction(?:_table_for_|_for_|_)(.+)_and_(.+)_tables?$/', $name, $matches)) {
+            $templateFile = $this->generatorTemplateFiles['create_junction'];
+            $firstTable = $matches[1];
+            $secondTable = $matches[2];
+
+            $fields = array_merge(
+                [
+                    [
+                        'property' => $firstTable . '_id',
+                        'decorators' => 'integer()',
+                    ],
+                    [
+                        'property' => $secondTable . '_id',
+                        'decorators' => 'integer()',
+                    ],
+                ],
+                $fields,
+                [
+                    [
+                        'property' => 'PRIMARY KEY(' .
+                            $firstTable . '_id, ' .
+                            $secondTable . '_id)',
+                    ],
+                ]
+            );
+
+            $foreignKeys[$firstTable . '_id']['table'] = $firstTable;
+            $foreignKeys[$secondTable . '_id']['table'] = $secondTable;
+            $foreignKeys[$firstTable . '_id']['column'] = null;
+            $foreignKeys[$secondTable . '_id']['column'] = null;
+            $table = $firstTable . '_' . $secondTable;
+        } elseif (preg_match('/^add_(.+)_columns?_to_(.+)_table$/', $name, $matches)) {
+            $templateFile = $this->generatorTemplateFiles['add_column'];
+            $table = $matches[2];
+        } elseif (preg_match('/^drop_(.+)_columns?_from_(.+)_table$/', $name, $matches)) {
+            $templateFile = $this->generatorTemplateFiles['drop_column'];
+            $table = $matches[2];
+        } elseif (preg_match('/^create_(.+)_table$/', $name, $matches)) {
+            $this->addDefaultPrimaryKey($fields);
+            $templateFile = $this->generatorTemplateFiles['create_table'];
+            $table = $matches[1];
+        } elseif (preg_match('/^drop_(.+)_table$/', $name, $matches)) {
+            $this->addDefaultPrimaryKey($fields);
+            $templateFile = $this->generatorTemplateFiles['drop_table'];
+            $table = $matches[1];
         }
 
-        $migrations = [];
-        $handle = opendir($this->migrationPath);
-        while (($file = readdir($handle)) !== false) {
-            if ($file === '.' || $file === '..') {
-                continue;
+        foreach ($foreignKeys as $column => $foreignKey) {
+            $relatedColumn = $foreignKey['column'];
+            $relatedTable = $foreignKey['table'];
+            // Since 2.0.11 if related column name is not specified,
+            // we're trying to get it from table schema
+            // @see https://github.com/yiisoft/yii2/issues/12748
+            if ($relatedColumn === null) {
+                $relatedColumn = 'id';
+                try {
+                    $this->db = Instance::ensure($this->db, Connection::className());
+                    $relatedTableSchema = $this->db->getTableSchema($relatedTable);
+                    if ($relatedTableSchema !== null) {
+                        $primaryKeyCount = count($relatedTableSchema->primaryKey);
+                        if ($primaryKeyCount === 1) {
+                            $relatedColumn = $relatedTableSchema->primaryKey[0];
+                        } elseif ($primaryKeyCount > 1) {
+                            $this->stdout("Related table for field \"{$column}\" exists, but primary key is composite. Default name \"id\" will be used for related field\n", Console::FG_YELLOW);
+                        } elseif ($primaryKeyCount === 0) {
+                            $this->stdout("Related table for field \"{$column}\" exists, but does not have a primary key. Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
+                        }
+                    }
+                } catch (\ReflectionException $e) {
+                    $this->stdout("Cannot initialize database component to try reading referenced table schema for field \"{$column}\". Default name \"id\" will be used for related field.\n", Console::FG_YELLOW);
+                }
             }
-            $path = $this->migrationPath . DIRECTORY_SEPARATOR . $file;
-            if (preg_match('/^(m(\d{6}_\d{6})_.*?)\.php$/', $file, $matches) && is_file($path) && !isset($applied[$matches[2]])) {
-                $migrations[] = $matches[1];
+            $foreignKeys[$column] = [
+                'idx' => $this->generateTableName("idx-$table-$column"),
+                'fk' => $this->generateTableName("fk-$table-$column"),
+                'relatedTable' => $this->generateTableName($relatedTable),
+                'relatedColumn' => $relatedColumn,
+            ];
+        }
+
+        return $this->renderFile(Yii::getAlias($templateFile), array_merge($params, [
+            'table' => $this->generateTableName($table),
+            'fields' => $fields,
+            'foreignKeys' => $foreignKeys,
+        ]));
+    }
+
+    /**
+     * If `useTablePrefix` equals true, then the table name will contain the
+     * prefix format.
+     *
+     * @param string $tableName the table name to generate.
+     * @return string
+     * @since 2.0.8
+     */
+    protected function generateTableName($tableName)
+    {
+        if (!$this->useTablePrefix) {
+            return $tableName;
+        }
+        return '{{%' . $tableName . '}}';
+    }
+
+    /**
+     * Parse the command line migration fields
+     * @return array parse result with following fields:
+     *
+     * - fields: array, parsed fields
+     * - foreignKeys: array, detected foreign keys
+     *
+     * @since 2.0.7
+     */
+    protected function parseFields()
+    {
+        $fields = [];
+        $foreignKeys = [];
+
+        foreach ($this->fields as $index => $field) {
+            $chunks = preg_split('/\s?:\s?/', $field, null);
+            $property = array_shift($chunks);
+
+            foreach ($chunks as $i => &$chunk) {
+                if (strpos($chunk, 'foreignKey') === 0) {
+                    preg_match('/foreignKey\((\w*)\s?(\w*)\)/', $chunk, $matches);
+                    $foreignKeys[$property] = [
+                        'table' => isset($matches[1])
+                            ? $matches[1]
+                            : preg_replace('/_id$/', '', $property),
+                        'column' => !empty($matches[2])
+                            ? $matches[2]
+                            : null,
+                    ];
+
+                    unset($chunks[$i]);
+                    continue;
+                }
+
+                if (!preg_match('/^(.+?)\(([^(]+)\)$/', $chunk)) {
+                    $chunk .= '()';
+                }
+            }
+            $fields[] = [
+                'property' => $property,
+                'decorators' => implode('->', $chunks),
+            ];
+        }
+
+        return [
+            'fields' => $fields,
+            'foreignKeys' => $foreignKeys,
+        ];
+    }
+
+    /**
+     * Adds default primary key to fields list if there's no primary key specified
+     * @param array $fields parsed fields
+     * @since 2.0.7
+     */
+    protected function addDefaultPrimaryKey(&$fields)
+    {
+        foreach ($fields as $field) {
+            if ($field['decorators'] === 'primaryKey()' || $field['decorators'] === 'bigPrimaryKey()') {
+                return;
             }
         }
-        closedir($handle);
-        sort($migrations);
-
-        return $migrations;
+        array_unshift($fields, ['property' => 'id', 'decorators' => 'primaryKey()']);
     }
 }

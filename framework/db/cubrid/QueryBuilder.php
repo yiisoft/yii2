@@ -8,9 +8,10 @@
 namespace yii\db\cubrid;
 
 use yii\base\InvalidParamException;
+use yii\db\Exception;
 
 /**
- * QueryBuilder is the query builder for CUBRID databases (version 9.1.x and higher).
+ * QueryBuilder is the query builder for CUBRID databases (version 9.3.x and higher).
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -22,13 +23,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UPK => 'int UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UBIGPK => 'bigint UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_CHAR => 'char(1)',
         Schema::TYPE_STRING => 'varchar(255)',
         Schema::TYPE_TEXT => 'varchar',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float(7)',
+        Schema::TYPE_DOUBLE => 'double(15)',
         Schema::TYPE_DECIMAL => 'decimal(10,0)',
         Schema::TYPE_DATETIME => 'datetime',
         Schema::TYPE_TIMESTAMP => 'timestamp',
@@ -38,6 +43,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BOOLEAN => 'smallint',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
+
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
@@ -61,7 +67,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $value = (int) $value;
             }
 
-            return "ALTER TABLE " . $this->db->schema->quoteTableName($tableName) . " AUTO_INCREMENT=$value;";
+            return 'ALTER TABLE ' . $this->db->schema->quoteTableName($tableName) . " AUTO_INCREMENT=$value;";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
         } else {
@@ -88,5 +94,91 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $sql;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function selectExists($rawSql)
+    {
+        return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnColumn($table, $column, $comment)
+    {
+        $definition = $this->getColumnDefinition($table, $column);
+        $definition = trim(preg_replace("/COMMENT '(.*?)'/i", '', $definition));
+
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+        . ' CHANGE ' . $this->db->quoteColumnName($column)
+        . ' ' . $this->db->quoteColumnName($column)
+        . (empty($definition) ? '' : ' ' . $definition)
+        . ' COMMENT ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function addCommentOnTable($table, $comment)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' COMMENT ' . $this->db->quoteValue($comment);
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromColumn($table, $column)
+    {
+        return $this->addCommentOnColumn($table, $column, '');
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function dropCommentFromTable($table)
+    {
+        return $this->addCommentOnTable($table, '');
+    }
+
+
+    /**
+     * Gets column definition.
+     *
+     * @param string $table table name
+     * @param string $column column name
+     * @return null|string the column definition
+     * @throws Exception in case when table does not contain column
+     * @since 2.0.8
+     */
+    private function getColumnDefinition($table, $column)
+    {
+        $row = $this->db->createCommand('SHOW CREATE TABLE ' . $this->db->quoteTableName($table))->queryOne();
+        if ($row === false) {
+            throw new Exception("Unable to find column '$column' in table '$table'.");
+        }
+        if (isset($row['Create Table'])) {
+            $sql = $row['Create Table'];
+        } else {
+            $row = array_values($row);
+            $sql = $row[1];
+        }
+        $sql = preg_replace('/^[^(]+\((.*)\).*$/', '\1', $sql);
+        $sql = str_replace(', [', ",\n[", $sql);
+        if (preg_match_all('/^\s*\[(.*?)\]\s+(.*?),?$/m', $sql, $matches)) {
+            foreach ($matches[1] as $i => $c) {
+                if ($c === $column) {
+                    return $matches[2][$i];
+                }
+            }
+        }
+        return null;
     }
 }

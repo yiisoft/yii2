@@ -14,6 +14,8 @@ use yii\helpers\Html;
 /**
  * Column is the base class of all [[GridView]] column classes.
  *
+ * For more details and usage information on Column, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -32,11 +34,14 @@ class Column extends Object
      */
     public $footer;
     /**
-     * @var callable
+     * @var callable This is a callable that will be used to generate the content of each cell.
+     * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
+     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
+     * and `$column` is a reference to the [[Column]] object.
      */
     public $content;
     /**
-     * @var boolean whether this column is visible. Defaults to true.
+     * @var bool whether this column is visible. Defaults to true.
      */
     public $visible = true;
     /**
@@ -51,8 +56,10 @@ class Column extends Object
     public $headerOptions = [];
     /**
      * @var array|\Closure the HTML attributes for the data cell tag. This can either be an array of
-     * attributes or an anonymous function that ([[Closure]]) that returns such an array.
-     * The signature of the function should be the following: `function ($model, $key, $index, $gridView)`.
+     * attributes or an anonymous function ([[Closure]]) that returns such an array.
+     * The signature of the function should be the following: `function ($model, $key, $index, $column)`.
+     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
+     * and `$column` is a reference to the [[Column]] object.
      * A function may be used to assign different attributes to different rows based on the data in that row.
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -68,6 +75,7 @@ class Column extends Object
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $filterOptions = [];
+
 
     /**
      * Renders the header cell.
@@ -89,7 +97,7 @@ class Column extends Object
      * Renders a data cell.
      * @param mixed $model the data model being rendered
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data item among the item array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data item among the item array returned by [[GridView::dataProvider]].
      * @return string the rendering result
      */
     public function renderDataCell($model, $key, $index)
@@ -118,7 +126,18 @@ class Column extends Object
      */
     protected function renderHeaderCellContent()
     {
-        return trim($this->header) !== '' ? $this->header : $this->grid->emptyCell;
+        return trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
+    }
+
+    /**
+     * Returns header cell label.
+     * This method may be overridden to customize the label of the header cell.
+     * @return string label
+     * @since 2.0.8
+     */
+    protected function getHeaderCellLabel()
+    {
+        return $this->grid->emptyCell;
     }
 
     /**
@@ -136,7 +155,7 @@ class Column extends Object
      * Renders the data cell content.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
      * @return string the rendering result
      */
     protected function renderDataCellContent($model, $key, $index)

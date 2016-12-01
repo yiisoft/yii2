@@ -8,10 +8,16 @@
 namespace yii\widgets;
 
 use Yii;
+use Closure;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
+ * The ListView widget is used to display data from data
+ * provider. Each data model is rendered using the view
+ * specified.
+ *
+ * For more details and usage information on ListView, see the [guide article on data widgets](guide:output-data-widgets).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -19,9 +25,19 @@ use yii\helpers\Html;
 class ListView extends BaseListView
 {
     /**
-     * @var array the HTML attributes for the container of the rendering result of each data model.
+     * @var array|Closure the HTML attributes for the container of the rendering result of each data model.
+     * This can be either an array specifying the common HTML attributes for rendering each data item,
+     * or an anonymous function that returns an array of the HTML attributes. The anonymous function will be
+     * called once for every data model returned by [[dataProvider]].
      * The "tag" element specifies the tag name of the container element and defaults to "div".
      * If "tag" is false, it means no container element will be rendered.
+     *
+     * If this property is specified as an anonymous function, it should have the following signature:
+     *
+     * ```php
+     * function ($model, $key, $index, $widget)
+     * ```
+     *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $itemOptions = [];
@@ -39,9 +55,9 @@ class ListView extends BaseListView
      *
      * If this property is specified as a callback, it should have the following signature:
      *
-     * ~~~
+     * ```php
      * function ($model, $key, $index, $widget)
-     * ~~~
+     * ```
      */
     public $itemView;
     /**
@@ -59,6 +75,7 @@ class ListView extends BaseListView
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = ['class' => 'list-view'];
+
 
     /**
      * Renders all data models.
@@ -80,7 +97,7 @@ class ListView extends BaseListView
      * Renders a single data model.
      * @param mixed $model the data model to be rendered
      * @param mixed $key the key value associated with the data model
-     * @param integer $index the zero-based index of the data model in the model array returned by [[dataProvider]].
+     * @param int $index the zero-based index of the data model in the model array returned by [[dataProvider]].
      * @return string the rendering result
      */
     public function renderItem($model, $key, $index)
@@ -97,14 +114,14 @@ class ListView extends BaseListView
         } else {
             $content = call_user_func($this->itemView, $model, $key, $index, $this);
         }
-        $options = $this->itemOptions;
-        $tag = ArrayHelper::remove($options, 'tag', 'div');
-        if ($tag !== false) {
-            $options['data-key'] = is_array($key) ? json_encode($key) : (string) $key;
-
-            return Html::tag($tag, $content, $options);
+        if ($this->itemOptions instanceof Closure) {
+            $options = call_user_func($this->itemOptions, $model, $key, $index, $this);
         } else {
-            return $content;
+            $options = $this->itemOptions;
         }
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+        $options['data-key'] = is_array($key) ? json_encode($key, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : (string) $key;
+
+        return Html::tag($tag, $content, $options);
     }
 }

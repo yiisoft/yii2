@@ -14,8 +14,9 @@ use yii\caching\Dependency;
 use yii\di\Instance;
 
 /**
+ * FragmentCache is used by [[\yii\base\View]] to provide caching of page fragments.
  *
- * @property string|boolean $cachedContent The cached content. False is returned if valid content is not found
+ * @property string|false $cachedContent The cached content. False is returned if valid content is not found
  * in the cache. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -24,13 +25,14 @@ use yii\di\Instance;
 class FragmentCache extends Widget
 {
     /**
-     * @var Cache|string the cache object or the application component ID of the cache object.
+     * @var Cache|array|string the cache object or the application component ID of the cache object.
      * After the FragmentCache object is created, if you want to change this property,
      * you should only assign it with a cache object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $cache = 'cache';
     /**
-     * @var integer number of seconds that the data can remain valid in cache.
+     * @var int number of seconds that the data can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      */
     public $duration = 60;
@@ -39,12 +41,12 @@ class FragmentCache extends Widget
      * This can be either a [[Dependency]] object or a configuration array for creating the dependency object.
      * For example,
      *
-     * ~~~
+     * ```php
      * [
      *     'class' => 'yii\caching\DbDependency',
-     *     'sql' => 'SELECT MAX(lastModified) FROM Post',
+     *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
-     * ~~~
+     * ```
      *
      * would make the output cache depends on the last modified time of all posts.
      * If any post has its modification time changed, the cached content would be invalidated.
@@ -56,14 +58,15 @@ class FragmentCache extends Widget
      * The following variation setting will cause the content to be cached in different versions
      * according to the current application language:
      *
-     * ~~~
+     * ```php
      * [
      *     Yii::$app->language,
      * ]
+     * ```
      */
     public $variations;
     /**
-     * @var boolean whether to enable the fragment cache. You may use this property to turn on and off
+     * @var bool whether to enable the fragment cache. You may use this property to turn on and off
      * the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
      */
     public $enabled = true;
@@ -72,6 +75,7 @@ class FragmentCache extends Widget
      * is used internally to implement the content caching feature. Do not modify it.
      */
     public $dynamicPlaceholders;
+
 
     /**
      * Initializes the FragmentCache object.
@@ -82,7 +86,7 @@ class FragmentCache extends Widget
 
         $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::className()) : null;
 
-        if ($this->getCachedContent() === false) {
+        if ($this->cache instanceof Cache && $this->getCachedContent() === false) {
             $this->getView()->cacheStack[] = $this;
             ob_start();
             ob_implicit_flush(false);
@@ -100,8 +104,12 @@ class FragmentCache extends Widget
         if (($content = $this->getCachedContent()) !== false) {
             echo $content;
         } elseif ($this->cache instanceof Cache) {
-            $content = ob_get_clean();
             array_pop($this->getView()->cacheStack);
+            
+            $content = ob_get_clean();
+            if ($content === false || $content === '') {
+                return;
+            }
             if (is_array($this->dependency)) {
                 $this->dependency = Yii::createObject($this->dependency);
             }
@@ -116,13 +124,13 @@ class FragmentCache extends Widget
     }
 
     /**
-     * @var string|boolean the cached content. False if the content is not cached.
+     * @var string|bool the cached content. False if the content is not cached.
      */
     private $_content;
 
     /**
      * Returns the cached content if available.
-     * @return string|boolean the cached content. False is returned if valid content is not found in the cache.
+     * @return string|false the cached content. False is returned if valid content is not found in the cache.
      */
     public function getCachedContent()
     {
@@ -150,6 +158,13 @@ class FragmentCache extends Widget
         return $this->_content;
     }
 
+    /**
+     * Replaces placeholders in content by results of evaluated dynamic statements.
+     *
+     * @param string $content
+     * @param array $placeholders
+     * @return string final content
+     */
     protected function updateDynamicContent($content, $placeholders)
     {
         foreach ($placeholders as $name => $statements) {

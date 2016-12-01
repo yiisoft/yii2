@@ -90,6 +90,18 @@ class Serializer extends Component
      */
     public $collectionEnvelope;
     /**
+     * @var string the name of the envelope (e.g. `_links`) for returning the links objects.
+     * It takes effect only, if `collectionEnvelope` is set.
+     * @since 2.0.4
+     */
+    public $linksEnvelope = '_links';
+    /**
+     * @var string the name of the envelope (e.g. `_meta`) for returning the pagination object.
+     * It takes effect only, if `collectionEnvelope` is set.
+     * @since 2.0.4
+     */
+    public $metaEnvelope = '_meta';
+    /**
      * @var Request the current request. If not set, the `request` application component will be used.
      */
     public $request;
@@ -97,6 +109,16 @@ class Serializer extends Component
      * @var Response the response to be sent. If not set, the `response` application component will be used.
      */
     public $response;
+    /**
+     * @var bool whether to preserve array keys when serializing collection data.
+     * Set this to `true` to allow serialization of a collection as a JSON object where array keys are
+     * used to index the model objects. The default is to serialize all collections as array, regardless
+     * of how the array is indexed.
+     * @see serializeDataProvider()
+     * @since 2.0.10
+     */
+    public $preserveKeys = false;
+
 
     /**
      * @inheritdoc
@@ -146,8 +168,8 @@ class Serializer extends Component
         $expand = $this->request->get($this->expandParam);
 
         return [
-            preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY),
-            preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY),
+            is_string($fields) ? preg_split('/\s*,\s*/', $fields, -1, PREG_SPLIT_NO_EMPTY) : [],
+            is_string($expand) ? preg_split('/\s*,\s*/', $expand, -1, PREG_SPLIT_NO_EMPTY) : [],
         ];
     }
 
@@ -158,7 +180,12 @@ class Serializer extends Component
      */
     protected function serializeDataProvider($dataProvider)
     {
-        $models = $this->serializeModels($dataProvider->getModels());
+        if ($this->preserveKeys) {
+            $models = $dataProvider->getModels();
+        } else {
+            $models = array_values($dataProvider->getModels());
+        }
+        $models = $this->serializeModels($models);
 
         if (($pagination = $dataProvider->getPagination()) !== false) {
             $this->addPaginationHeaders($pagination);
@@ -189,11 +216,11 @@ class Serializer extends Component
     protected function serializePagination($pagination)
     {
         return [
-            '_links' => Link::serialize($pagination->getLinks(true)),
-            '_meta' => [
+            $this->linksEnvelope => Link::serialize($pagination->getLinks(true)),
+            $this->metaEnvelope => [
                 'totalCount' => $pagination->totalCount,
                 'pageCount' => $pagination->getPageCount(),
-                'currentPage' => $pagination->getPage(),
+                'currentPage' => $pagination->getPage() + 1,
                 'perPage' => $pagination->getPageSize(),
             ],
         ];

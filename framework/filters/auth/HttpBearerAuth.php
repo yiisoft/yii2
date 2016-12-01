@@ -7,9 +7,6 @@
 
 namespace yii\filters\auth;
 
-use Yii;
-use yii\web\UnauthorizedHttpException;
-
 /**
  * HttpBearerAuth is an action filter that supports the authentication method based on HTTP Bearer token.
  *
@@ -36,13 +33,14 @@ class HttpBearerAuth extends AuthMethod
      */
     public $realm = 'api';
 
+
     /**
      * @inheritdoc
      */
     public function authenticate($user, $request, $response)
     {
         $authHeader = $request->getHeaders()->get('Authorization');
-        if ($authHeader !== null && preg_match("/^Bearer\\s+(.*?)$/", $authHeader, $matches)) {
+        if ($authHeader !== null && preg_match('/^Bearer\s+(.*?)$/', $authHeader, $matches)) {
             $identity = $user->loginByAccessToken($matches[1], get_class($this));
             if ($identity === null) {
                 $this->handleFailure($response);
@@ -56,9 +54,8 @@ class HttpBearerAuth extends AuthMethod
     /**
      * @inheritdoc
      */
-    public function handleFailure($response)
+    public function challenge($response)
     {
         $response->getHeaders()->set('WWW-Authenticate', "Bearer realm=\"{$this->realm}\"");
-        throw new UnauthorizedHttpException('You are requesting with an invalid access token.');
     }
 }

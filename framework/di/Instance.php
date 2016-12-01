@@ -25,7 +25,10 @@ use yii\base\InvalidConfigException;
  *
  * ```php
  * $container = new \yii\di\Container;
- * $container->set('cache', 'yii\caching\DbCache', Instance::of('db'));
+ * $container->set('cache', [
+ *     'class' => 'yii\caching\DbCache',
+ *     'db' => Instance::of('db')
+ * ]);
  * $container->set('db', [
  *     'class' => 'yii\db\Connection',
  *     'dsn' => 'sqlite:path/to/file.db',
@@ -56,6 +59,7 @@ class Instance
      * @var string the component ID, class name, interface name or alias name
      */
     public $id;
+
 
     /**
      * Constructor.
@@ -91,13 +95,14 @@ class Instance
      *
      * // returns Yii::$app->db
      * $db = Instance::ensure('db', Connection::className());
-     * // or
-     * $instance = Instance::of('db');
-     * $db = Instance::ensure($instance, Connection::className());
+     * // returns an instance of Connection using the given configuration
+     * $db = Instance::ensure(['dsn' => 'sqlite:path/to/my.db'], Connection::className());
      * ```
      *
-     * @param object|string|static $reference an object or a reference to the desired object.
+     * @param object|string|array|static $reference an object or a reference to the desired object.
      * You may specify a reference in terms of a component ID or an Instance object.
+     * Starting from version 2.0.2, you may also pass in a configuration array for creating the object.
+     * If the "class" value is not specified in the configuration array, it will use the value of `$type`.
      * @param string $type the class/interface name to be checked. If null, type check will not be performed.
      * @param ServiceLocator|Container $container the container. This will be passed to [[get()]].
      * @return object the object referenced by the Instance, or `$reference` itself if it is an object.
@@ -105,19 +110,30 @@ class Instance
      */
     public static function ensure($reference, $type = null, $container = null)
     {
-        if ($reference instanceof $type) {
-            return $reference;
+        if (is_array($reference)) {
+            $class = isset($reference['class']) ? $reference['class'] : $type;
+            if (!$container instanceof Container) {
+                $container = Yii::$container;
+            }
+            unset($reference['class']);
+            return $container->get($class, [], $reference);
         } elseif (empty($reference)) {
             throw new InvalidConfigException('The required component is not specified.');
         }
 
         if (is_string($reference)) {
             $reference = new static($reference);
+        } elseif ($type === null || $reference instanceof $type) {
+            return $reference;
         }
 
         if ($reference instanceof self) {
-            $component = $reference->get($container);
-            if ($component instanceof $type || $type === null) {
+            try {
+                $component = $reference->get($container);
+            } catch(\ReflectionException $e) {
+                throw new InvalidConfigException('Failed to instantiate component or class "' . $reference->id . '".', 0, $e);
+            }
+            if ($type === null || $component instanceof $type) {
                 return $component;
             } else {
                 throw new InvalidConfigException('"' . $reference->id . '" refers to a ' . get_class($component) . " component. $type is expected.");

@@ -10,6 +10,7 @@ namespace yii\log;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -24,9 +25,11 @@ use yii\web\Request;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property integer $levels The message levels that this target is interested in. This is a bitmap of level
+ * @property int $levels The message levels that this target is interested in. This is a bitmap of level
  * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
  * and setter. See [[getLevels()]] and [[setLevels()]] for details.
+ *
+ * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -34,7 +37,7 @@ use yii\web\Request;
 abstract class Target extends Component
 {
     /**
-     * @var boolean whether to enable this log target. Defaults to true.
+     * @var bool whether to enable this log target. Defaults to true.
      */
     public $enabled = true;
     /**
@@ -56,17 +59,30 @@ abstract class Target extends Component
     /**
      * @var array list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
+     *
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
+     *
+     * Since version 2.0.9 additional syntax can be used:
+     * Each element could be specified as one of the following:
+     *
+     * - `var` - `var` will be logged.
+     * - `var.key` - only `var[key]` key will be logged.
+     * - `!var.key` - `var[key]` key will be excluded.
+     *
+     * @see \yii\helpers\ArrayHelper::filter()
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
     /**
-     * @var callable a PHP callable that returns a string to be prefix to every exported message.
-     * If not set, [[getMessagePrefix()]] will be used, which prefixes user IP, user ID and session ID
-     * to every message. The signature of the callable should be `function ($message)`.
+     * @var callable a PHP callable that returns a string to be prefixed to every exported message.
+     *
+     * If not set, [[getMessagePrefix()]] will be used, which prefixes the message with context information
+     * such as user IP, user ID and session ID.
+     *
+     * The signature of the callable should be `function ($message)`.
      */
     public $prefix;
     /**
-     * @var integer how many messages should be accumulated before they are exported.
+     * @var int how many messages should be accumulated before they are exported.
      * Defaults to 1000. Note that messages will always be exported when the application terminates.
      * Set this property to be 0 if you don't want to export messages until the application terminates.
      */
@@ -78,6 +94,7 @@ abstract class Target extends Component
     public $messages = [];
 
     private $_levels = 0;
+
 
     /**
      * Exports log [[messages]] to a specific destination.
@@ -91,17 +108,22 @@ abstract class Target extends Component
      * And if requested, it will also export the filtering result to specific medium (e.g. email).
      * @param array $messages log messages to be processed. See [[Logger::messages]] for the structure
      * of each message.
-     * @param boolean $final whether this method is called at the end of the current application
+     * @param bool $final whether this method is called at the end of the current application
      */
     public function collect($messages, $final)
     {
-        $this->messages = array_merge($this->messages, $this->filterMessages($messages, $this->getLevels(), $this->categories, $this->except));
+        $this->messages = array_merge($this->messages, static::filterMessages($messages, $this->getLevels(), $this->categories, $this->except));
         $count = count($this->messages);
         if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
             if (($context = $this->getContextMessage()) !== '') {
                 $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
             }
+            // set exportInterval to 0 to avoid triggering export again while exporting
+            $oldExportInterval = $this->exportInterval;
+            $this->exportInterval = 0;
             $this->export();
+            $this->exportInterval = $oldExportInterval;
+
             $this->messages = [];
         }
     }
@@ -113,18 +135,16 @@ abstract class Target extends Component
      */
     protected function getContextMessage()
     {
-        $context = [];
-        foreach ($this->logVars as $name) {
-            if (!empty($GLOBALS[$name])) {
-                $context[] = "\${$name} = " . VarDumper::dumpAsString($GLOBALS[$name]);
-            }
+        $context = ArrayHelper::filter($GLOBALS, $this->logVars);
+        $result = [];
+        foreach ($context as $key => $value) {
+            $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
-
-        return implode("\n\n", $context);
+        return implode("\n\n", $result);
     }
 
     /**
-     * @return integer the message levels that this target is interested in. This is a bitmap of
+     * @return int the message levels that this target is interested in. This is a bitmap of
      * level values. Defaults to 0, meaning  all available levels.
      */
     public function getLevels()
@@ -143,14 +163,14 @@ abstract class Target extends Component
      *
      * For example,
      *
-     * ~~~
+     * ```php
      * ['error', 'warning']
      * // which is equivalent to:
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
-     * ~~~
+     * ```
      *
-     * @param array|integer $levels message levels that this target is interested in.
-     * @throws InvalidConfigException if an unknown level name is given
+     * @param array|int $levels message levels that this target is interested in.
+     * @throws InvalidConfigException if $levels value is not correct.
      */
     public function setLevels($levels)
     {
@@ -171,14 +191,21 @@ abstract class Target extends Component
                 }
             }
         } else {
+            $bitmapValues = array_reduce($levelMap, function ($carry, $item) {
+                return $carry | $item;
+            });
+            if (!($bitmapValues & $levels) && $levels !== 0) {
+                throw new InvalidConfigException("Incorrect $levels value");
+            }
             $this->_levels = $levels;
         }
     }
 
     /**
      * Filters the given messages according to their categories and levels.
-     * @param array $messages messages to be filtered
-     * @param integer $levels the message levels to filter by. This is a bitmap of
+     * @param array $messages messages to be filtered.
+     * The message structure follows that in [[Logger::messages]].
+     * @param int $levels the message levels to filter by. This is a bitmap of
      * level values. Value 0 means allowing all levels.
      * @param array $categories the message categories to filter by. If empty, it means all categories are allowed.
      * @param array $except the message categories to exclude. If empty, it means all categories are allowed.
@@ -194,7 +221,7 @@ abstract class Target extends Component
 
             $matched = empty($categories);
             foreach ($categories as $category) {
-                if ($message[2] === $category || substr($category, -1) === '*' && strpos($message[2], rtrim($category, '*')) === 0) {
+                if ($message[2] === $category || !empty($category) && substr_compare($category, '*', -1, 1) === 0 && strpos($message[2], rtrim($category, '*')) === 0) {
                     $matched = true;
                     break;
                 }
@@ -203,7 +230,7 @@ abstract class Target extends Component
             if ($matched) {
                 foreach ($except as $category) {
                     $prefix = rtrim($category, '*');
-                    if (strpos($message[2], $prefix) === 0 && ($message[2] === $category || $prefix !== $category)) {
+                    if (($message[2] === $category || $prefix !== $category) && strpos($message[2], $prefix) === 0) {
                         $matched = false;
                         break;
                     }
@@ -214,14 +241,13 @@ abstract class Target extends Component
                 unset($messages[$i]);
             }
         }
-
         return $messages;
     }
 
     /**
-     * Formats a log message.
-     * The message structure follows that in [[Logger::messages]].
+     * Formats a log message for display as a string.
      * @param array $message the log message to be formatted.
+     * The message structure follows that in [[Logger::messages]].
      * @return string the formatted message
      */
     public function formatMessage($message)
@@ -229,30 +255,58 @@ abstract class Target extends Component
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            $text = var_export($text, true);
+            // exceptions may not be serializable if in the call stack somewhere is a Closure
+            if ($text instanceof \Throwable || $text instanceof \Exception) {
+                $text = (string) $text;
+            } else {
+                $text = VarDumper::export($text);
+            }
+        }
+        $traces = [];
+        if (isset($message[4])) {
+            foreach ($message[4] as $trace) {
+                $traces[] = "in {$trace['file']}:{$trace['line']}";
+            }
         }
 
-        $prefix = $this->prefix ? call_user_func($this->prefix, $message) : $this->getMessagePrefix($message);
-
-        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text";
+        $prefix = $this->getMessagePrefix($message);
+        return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
+            . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }
 
     /**
      * Returns a string to be prefixed to the given message.
+     * If [[prefix]] is configured it will return the result of the callback.
      * The default implementation will return user IP, user ID and session ID as a prefix.
-     * @param array $message the message being exported
+     * @param array $message the message being exported.
+     * The message structure follows that in [[Logger::messages]].
      * @return string the prefix string
      */
     public function getMessagePrefix($message)
     {
+        if ($this->prefix !== null) {
+            return call_user_func($this->prefix, $message);
+        }
+
+        if (Yii::$app === null) {
+            return '';
+        }
+
         $request = Yii::$app->getRequest();
         $ip = $request instanceof Request ? $request->getUserIP() : '-';
-        /** @var \yii\web\User $user */
+
+        /* @var $user \yii\web\User */
         $user = Yii::$app->has('user', true) ? Yii::$app->get('user') : null;
-        $userID = $user ? $user->getId(false) : '-';
-        /** @var \yii\web\Session $session */
+        if ($user && ($identity = $user->getIdentity(false))) {
+            $userID = $identity->getId();
+        } else {
+            $userID = '-';
+        }
+
+        /* @var $session \yii\web\Session */
         $session = Yii::$app->has('session', true) ? Yii::$app->get('session') : null;
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
+
         return "[$ip][$userID][$sessionID]";
     }
 }

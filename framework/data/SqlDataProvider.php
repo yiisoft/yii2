@@ -10,6 +10,7 @@ namespace yii\data;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\di\Instance;
 
 /**
@@ -24,7 +25,7 @@ use yii\di\Instance;
  *
  * SqlDataProvider may be used in the following way:
  *
- * ~~~
+ * ```php
  * $count = Yii::$app->db->createCommand('
  *     SELECT COUNT(*) FROM user WHERE status=:status
  * ', [':status' => 1])->queryScalar();
@@ -51,11 +52,13 @@ use yii\di\Instance;
  *
  * // get the user records in the current page
  * $models = $dataProvider->getModels();
- * ~~~
+ * ```
  *
  * Note: if you want to use the pagination feature, you must configure the [[totalCount]] property
  * to be the total number of rows (without pagination). And if you want to use the sorting feature,
  * you must configure the [[sort]] property so that the provider knows which columns can be sorted.
+ *
+ * For more details and usage information on SqlDataProvider, see the [guide article on data providers](guide:output-data-providers).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -63,7 +66,8 @@ use yii\di\Instance;
 class SqlDataProvider extends BaseDataProvider
 {
     /**
-     * @var Connection|string the DB connection object or the application component ID of the DB connection.
+     * @var Connection|array|string the DB connection object or the application component ID of the DB connection.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $db = 'db';
     /**
@@ -81,6 +85,7 @@ class SqlDataProvider extends BaseDataProvider
      * If this is not set, the keys of the [[models]] array will be used.
      */
     public $key;
+
 
     /**
      * Initializes the DB connection component.
@@ -101,24 +106,32 @@ class SqlDataProvider extends BaseDataProvider
      */
     protected function prepareModels()
     {
+        $sort = $this->getSort();
+        $pagination = $this->getPagination();
+        if ($pagination === false && $sort === false) {
+            return $this->db->createCommand($this->sql, $this->params)->queryAll();
+        }
+
         $sql = $this->sql;
-        $qb = $this->db->getQueryBuilder();
-        if (($sort = $this->getSort()) !== false) {
-            $orderBy = $qb->buildOrderBy($sort->getOrders());
-            if (!empty($orderBy)) {
-                $orderBy = substr($orderBy, 9);
-                if (preg_match('/\s+order\s+by\s+[\w\s,\.]+$/i', $sql)) {
-                    $sql .= ', ' . $orderBy;
-                } else {
-                    $sql .= ' ORDER BY ' . $orderBy;
-                }
+        $orders = [];
+        $limit = $offset = null;
+
+        if ($sort !== false) {
+            $orders = $sort->getOrders();
+            $pattern = '/\s+order\s+by\s+([\w\s,\.]+)$/i';
+            if (preg_match($pattern, $sql, $matches)) {
+                array_unshift($orders, new Expression($matches[1]));
+                $sql = preg_replace($pattern, '', $sql);
             }
         }
 
-        if (($pagination = $this->getPagination()) !== false) {
+        if ($pagination !== false) {
             $pagination->totalCount = $this->getTotalCount();
-            $sql .= ' ' . $qb->buildLimit($pagination->getLimit(), $pagination->getOffset());
+            $limit = $pagination->getLimit();
+            $offset = $pagination->getOffset();
         }
+
+        $sql = $this->db->getQueryBuilder()->buildOrderByAndLimit($sql, $orders, $limit, $offset);
 
         return $this->db->createCommand($sql, $this->params)->queryAll();
     }

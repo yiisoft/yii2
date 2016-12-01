@@ -14,20 +14,23 @@ use yii\helpers\Url;
 /**
  * Controller is the base class of web controllers.
  *
+ * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Controller extends \yii\base\Controller
 {
     /**
-     * @var boolean whether to enable CSRF validation for the actions in this controller.
-     * CSRF validation is enabled only when both this property and [[Request::enableCsrfValidation]] are true.
+     * @var bool whether to enable CSRF validation for the actions in this controller.
+     * CSRF validation is enabled only when both this property and [[\yii\web\Request::enableCsrfValidation]] are true.
      */
     public $enableCsrfValidation = true;
     /**
      * @var array the parameters bound to the current action.
      */
     public $actionParams = [];
+
 
     /**
      * Renders a view in response to an AJAX request.
@@ -47,6 +50,60 @@ class Controller extends \yii\base\Controller
     }
 
     /**
+     * Send data formatted as JSON.
+     *
+     * This method is a shortcut for sending data formatted as JSON. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
+     * be formatted. A common usage will be:
+     *
+     * ```php
+     * return $this->asJson($data);
+     * ```
+     *
+     * @param mixed $data the data that should be formatted.
+     * @return Response a response that is configured to send `$data` formatted as JSON.
+     * @since 2.0.11
+     * @see Response::$format
+     * @see Response::FORMAT_JSON
+     * @see JsonResponseFormatter
+     */
+    public function asJson($data)
+    {
+        $response = Yii::$app->getResponse();
+        $response->format = Response::FORMAT_JSON;
+        $response->data = $data;
+        return $response;
+    }
+
+    /**
+     * Send data formatted as XML.
+     *
+     * This method is a shortcut for sending data formatted as XML. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
+     * be formatted. A common usage will be:
+     *
+     * ```php
+     * return $this->asXml($data);
+     * ```
+     *
+     * @param mixed $data the data that should be formatted.
+     * @return Response a response that is configured to send `$data` formatted as XML.
+     * @since 2.0.11
+     * @see Response::$format
+     * @see Response::FORMAT_XML
+     * @see XmlResponseFormatter
+     */
+    public function asXml($data)
+    {
+        $response = Yii::$app->getResponse();
+        $response->format = Response::FORMAT_XML;
+        $response->data = $data;
+        return $response;
+    }
+
+    /**
      * Binds the parameters to the action.
      * This method is invoked by [[\yii\base\Action]] when it begins to run with the given parameters.
      * This method will check the parameter names that the action requires and return
@@ -55,7 +112,7 @@ class Controller extends \yii\base\Controller
      * @param \yii\base\Action $action the action to be bound with parameters
      * @param array $params the parameters to be bound to the action
      * @return array the valid parameters that the action can run with.
-     * @throws HttpException if there are missing or invalid parameters.
+     * @throws BadRequestHttpException if there are missing or invalid parameters.
      */
     public function bindActionParams($action, $params)
     {
@@ -72,7 +129,7 @@ class Controller extends \yii\base\Controller
             $name = $param->getName();
             if (array_key_exists($name, $params)) {
                 if ($param->isArray()) {
-                    $args[] = $actionParams[$name] = is_array($params[$name]) ? $params[$name] : [$params[$name]];
+                    $args[] = $actionParams[$name] = (array) $params[$name];
                 } elseif (!is_array($params[$name])) {
                     $args[] = $actionParams[$name] = $params[$name];
                 } else {
@@ -105,13 +162,13 @@ class Controller extends \yii\base\Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($this->enableCsrfValidation && Yii::$app->errorHandler->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
+            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
             return true;
-        } else {
-            return false;
         }
+        
+        return false;
     }
 
     /**
@@ -135,7 +192,7 @@ class Controller extends \yii\base\Controller
      * Any relative URL will be converted into an absolute one by prepending it with the host info
      * of the current request.
      *
-     * @param integer $statusCode the HTTP status code. Defaults to 302.
+     * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
      * for details about HTTP status code
      * @return Response the current response object
@@ -171,6 +228,8 @@ class Controller extends \yii\base\Controller
      * // stop executing this action and redirect to last visited page
      * return $this->goBack();
      * ```
+     *
+     * For this function to work you have to [[User::setReturnUrl()|set the return URL]] in appropriate places before.
      *
      * @param string|array $defaultUrl the default return URL in case it was not set previously.
      * If this is null and the return URL was not set previously, [[Application::homeUrl]] will be redirected to.

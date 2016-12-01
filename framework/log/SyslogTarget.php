@@ -8,6 +8,7 @@
 namespace yii\log;
 
 use Yii;
+use yii\helpers\VarDumper;
 
 /**
  * SyslogTarget writes log to syslog.
@@ -21,11 +22,17 @@ class SyslogTarget extends Target
      * @var string syslog identity
      */
     public $identity;
-
     /**
-     * @var integer syslog facility.
+     * @var int syslog facility.
      */
-    public $facility = LOG_SYSLOG;
+    public $facility = LOG_USER;
+    /**
+     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](http://php.net/openlog).
+     * Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
+     * @see http://php.net/openlog for available options.
+     * @since 2.0.11
+     */
+    public $options;
 
     /**
      * @var array syslog levels
@@ -34,17 +41,29 @@ class SyslogTarget extends Target
         Logger::LEVEL_TRACE => LOG_DEBUG,
         Logger::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
         Logger::LEVEL_PROFILE_END => LOG_DEBUG,
+        Logger::LEVEL_PROFILE => LOG_DEBUG,
         Logger::LEVEL_INFO => LOG_INFO,
         Logger::LEVEL_WARNING => LOG_WARNING,
         Logger::LEVEL_ERROR => LOG_ERR,
     ];
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->options === null) {
+            $this->options = LOG_ODELAY | LOG_PID;
+        }
+    }
+
+    /**
      * Writes log messages to syslog
      */
     public function export()
     {
-        openlog($this->identity, LOG_ODELAY | LOG_PID, $this->facility);
+        openlog($this->identity, $this->options, $this->facility);
         foreach ($this->messages as $message) {
             syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message));
         }
@@ -59,11 +78,15 @@ class SyslogTarget extends Target
         list($text, $level, $category, $timestamp) = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
-            $text = var_export($text, true);
+            // exceptions may not be serializable if in the call stack somewhere is a Closure
+            if ($text instanceof \Throwable || $text instanceof \Exception) {
+                $text = (string) $text;
+            } else {
+                $text = VarDumper::export($text);
+            }
         }
 
-        $prefix = $this->prefix ? call_user_func($this->prefix, $message) : $this->getMessagePrefix($message);
-
+        $prefix = $this->getMessagePrefix($message);
         return "{$prefix}[$level][$category] $text";
     }
 }

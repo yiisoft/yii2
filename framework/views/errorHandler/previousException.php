@@ -1,8 +1,6 @@
 <?php
-/**
- * @var \yii\base\Exception $exception
- * @var \yii\web\ErrorHandler $handler
- */
+/* @var $exception \yii\base\Exception */
+/* @var $handler \yii\web\ErrorHandler */
 ?>
 <div class="previous">
     <span class="arrow">&crarr;</span>

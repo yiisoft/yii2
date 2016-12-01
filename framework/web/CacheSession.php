@@ -24,14 +24,14 @@ use yii\di\Instance;
  * The following example shows how you can configure the application to use CacheSession:
  * Add the following to your application config under `components`:
  *
- * ~~~
+ * ```php
  * 'session' => [
  *     'class' => 'yii\web\CacheSession',
  *     // 'cache' => 'mycache',
  * ]
- * ~~~
+ * ```
  *
- * @property boolean $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -39,13 +39,16 @@ use yii\di\Instance;
 class CacheSession extends Session
 {
     /**
-     * @var Cache|string the cache object or the application component ID of the cache object.
+     * @var Cache|array|string the cache object or the application component ID of the cache object.
      * The session data will be stored using this cache object.
      *
      * After the CacheSession object is created, if you want to change this property,
      * you should only assign it with a cache object.
+     *
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $cache = 'cache';
+
 
     /**
      * Initializes the application component.
@@ -59,7 +62,7 @@ class CacheSession extends Session
     /**
      * Returns a value indicating whether to use custom session storage.
      * This method overrides the parent implementation and always returns true.
-     * @return boolean whether to use custom storage.
+     * @return bool whether to use custom storage.
      */
     public function getUseCustomStorage()
     {
@@ -84,7 +87,7 @@ class CacheSession extends Session
      * Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
-     * @return boolean whether session write is successful
+     * @return bool whether session write is successful
      */
     public function writeSession($id, $data)
     {
@@ -95,7 +98,7 @@ class CacheSession extends Session
      * Session destroy handler.
      * Do not call this method directly.
      * @param string $id session ID
-     * @return boolean whether session is destroyed successfully
+     * @return bool whether session is destroyed successfully
      */
     public function destroySession($id)
     {

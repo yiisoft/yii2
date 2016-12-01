@@ -35,7 +35,7 @@ class GettextPoFile extends GettextFile
 
         $messages = [];
         for ($i = 0; $i < $matchCount; ++$i) {
-            if ($matches[2][$i] == $context) {
+            if ($matches[2][$i] === $context) {
                 $id = $this->decode($matches[3][$i]);
                 $message = $this->decode($matches[4][$i]);
                 $messages[$id] = $message;
@@ -54,7 +54,21 @@ class GettextPoFile extends GettextFile
      */
     public function save($filePath, $messages)
     {
-        $content = '';
+        $language = str_replace('-', '_', basename(dirname($filePath)));
+        $headers = [
+            'msgid ""',
+            'msgstr ""',
+            '"Project-Id-Version: \n"',
+            '"POT-Creation-Date: \n"',
+            '"PO-Revision-Date: \n"',
+            '"Last-Translator: \n"',
+            '"Language-Team: \n"',
+            '"Language: ' . $language . '\n"',
+            '"MIME-Version: 1.0\n"',
+            '"Content-Type: text/plain; charset=' . Yii::$app->charset . '\n"',
+            '"Content-Transfer-Encoding: 8bit\n"'
+        ];
+        $content = implode("\n", $headers) . "\n\n";
         foreach ($messages as $id => $message) {
             $separatorPosition = strpos($id, chr(4));
             if ($separatorPosition !== false) {

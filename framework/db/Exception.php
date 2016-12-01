@@ -21,11 +21,12 @@ class Exception extends \yii\base\Exception
      */
     public $errorInfo = [];
 
+
     /**
      * Constructor.
      * @param string $message PDO error message
      * @param array $errorInfo PDO error info
-     * @param integer $code PDO error code
+     * @param int $code PDO error code
      * @param \Exception $previous The previous exception used for the exception chaining.
      */
     public function __construct($message, $errorInfo = [], $code = 0, \Exception $previous = null)
@@ -42,6 +43,9 @@ class Exception extends \yii\base\Exception
         return 'Database Exception';
     }
 
+    /**
+     * @return string readable representation of exception
+     */
     public function __toString()
     {
         return parent::__toString() . PHP_EOL

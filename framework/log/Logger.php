@@ -13,7 +13,7 @@ use yii\base\Component;
 /**
  * Logger records logged messages in memory and sends them to different targets if [[dispatcher]] is set.
  *
- * Logger can be accessed via `Yii::getLogger()`. You can call the method [[log()]] to record a single log message.
+ * A Logger instance can be accessed via `Yii::getLogger()`. You can call the method [[log()]] to record a single log message.
  * For convenience, a set of shortcut methods are provided for logging messages of various severity levels
  * via the [[Yii]] class:
  *
@@ -24,8 +24,11 @@ use yii\base\Component;
  * - [[Yii::beginProfile()]]
  * - [[Yii::endProfile()]]
  *
+ * For more details and usage information on Logger, see the [guide article on logging](guide:runtime-logging).
+ *
  * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
- * to send logged messages to different log targets, such as file, email, Web, with the help of [[dispatcher]].
+ * to send logged messages to different log targets, such as [[FileTarget|file]], [[EmailTarget|email]],
+ * or [[DbTarget|database]], with the help of the [[dispatcher]].
  *
  * @property array $dbProfiling The first element indicates the number of SQL statements executed, and the
  * second element the total time spent in SQL execution. This property is read-only.
@@ -73,12 +76,11 @@ class Logger extends Component
      */
     const LEVEL_PROFILE_END = 0x60;
 
-
     /**
      * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
      * Each log message is of the following structure:
      *
-     * ~~~
+     * ```
      * [
      *   [0] => message (mixed, can be a string or some complex data, such as an exception object)
      *   [1] => level (integer)
@@ -87,11 +89,11 @@ class Logger extends Component
      *   [4] => traces (array, debug backtrace, contains the application code call stacks)
      *   [5] => memory usage in bytes (int, obtained by memory_get_usage(true))
      * ]
-     * ~~~
+     * ```
      */
     public $messages = [];
     /**
-     * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
+     * @var int how many messages should be logged before they are flushed from memory and sent to targets.
      * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
      * Set this property to be 0 if you don't want to flush messages until the application terminates.
      * This property mainly affects how much memory will be taken by the logged messages.
@@ -99,7 +101,7 @@ class Logger extends Component
      */
     public $flushInterval = 1000;
     /**
-     * @var integer how much call stack information (file name and line number) should be logged for each message.
+     * @var int how much call stack information (file name and line number) should be logged for each message.
      * If it is greater than 0, at most that number of call stacks will be logged. Note that only application
      * call stacks are counted.
      */
@@ -116,15 +118,22 @@ class Logger extends Component
     public function init()
     {
         parent::init();
-        register_shutdown_function([$this, 'flush'], true);
+        register_shutdown_function(function () {
+            // make regular flush before other shutdown functions, which allows session data collection and so on
+            $this->flush();
+            // make sure log entries written by shutdown functions are also flushed
+            // ensure "flush()" is called last when there are multiple shutdown functions
+            register_shutdown_function([$this, 'flush'], true);
+        });
     }
 
     /**
      * Logs a message with the given type and category.
      * If [[traceLevel]] is greater than 0, additional call stack information about
      * the application code will be logged as well.
-     * @param string $message the message to be logged.
-     * @param integer $level the level of the message. This must be one of the following:
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure that will be handled by a [[Target|log target]].
+     * @param int $level the level of the message. This must be one of the following:
      * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
      * `Logger::LEVEL_PROFILE_BEGIN`, `Logger::LEVEL_PROFILE_END`.
      * @param string $category the category of the message.
@@ -135,10 +144,10 @@ class Logger extends Component
         $traces = [];
         if ($this->traceLevel > 0) {
             $count = 0;
-            $ts = debug_backtrace();
+            $ts = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
             array_pop($ts); // remove the last trace since it would be the entry script, not very useful
             foreach ($ts as $trace) {
-                if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII_PATH) !== 0) {
+                if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII2_PATH) !== 0) {
                     unset($trace['object'], $trace['args']);
                     $traces[] = $trace;
                     if (++$count >= $this->traceLevel) {
@@ -155,14 +164,17 @@ class Logger extends Component
 
     /**
      * Flushes log messages from memory to targets.
-     * @param boolean $final whether this is a final call during a request.
+     * @param bool $final whether this is a final call during a request.
      */
     public function flush($final = false)
     {
-        if ($this->dispatcher instanceof Dispatcher) {
-            $this->dispatcher->dispatch($this->messages, $final);
-        }
+        $messages = $this->messages;
+        // https://github.com/yiisoft/yii2/issues/5619
+        // new messages could be logged while the existing ones are being handled by targets
         $this->messages = [];
+        if ($this->dispatcher instanceof Dispatcher) {
+            $this->dispatcher->dispatch($messages, $final);
+        }
     }
 
     /**
@@ -203,7 +215,7 @@ class Logger extends Component
             $matched = empty($categories);
             foreach ($categories as $category) {
                 $prefix = rtrim($category, '*');
-                if (strpos($timing['category'], $prefix) === 0 && ($timing['category'] === $category || $prefix !== $category)) {
+                if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
                     $matched = true;
                     break;
                 }
@@ -213,7 +225,7 @@ class Logger extends Component
                 foreach ($excludeCategories as $category) {
                     $prefix = rtrim($category, '*');
                     foreach ($timings as $i => $timing) {
-                        if (strpos($timing['category'], $prefix) === 0 && ($timing['category'] === $category || $prefix !== $category)) {
+                        if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
                             $matched = false;
                             break;
                         }
@@ -287,7 +299,7 @@ class Logger extends Component
 
     /**
      * Returns the text display of the specified level.
-     * @param integer $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
+     * @param int $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
      * @return string the text display of the level
      */
     public static function getLevelName($level)
@@ -299,6 +311,7 @@ class Logger extends Component
             self::LEVEL_TRACE => 'trace',
             self::LEVEL_PROFILE_BEGIN => 'profile begin',
             self::LEVEL_PROFILE_END => 'profile end',
+            self::LEVEL_PROFILE => 'profile'
         ];
 
         return isset($levels[$level]) ? $levels[$level] : 'unknown';

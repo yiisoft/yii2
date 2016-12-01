@@ -23,6 +23,8 @@ use yii\db\TableSchema;
  * After the fixture is loaded, you can access the loaded data via the [[data]] property. If you set [[modelClass]],
  * you will also be able to retrieve an instance of [[modelClass]] with the populated data via [[getModel()]].
  *
+ * For more details and usage information on ActiveFixture, see the [guide article on fixtures](guide:test-fixtures).
+ *
  * @property TableSchema $tableSchema The schema information of the database table associated with this
  * fixture. This property is read-only.
  *
@@ -38,16 +40,18 @@ class ActiveFixture extends BaseActiveFixture
      */
     public $tableName;
     /**
-     * @var string|boolean the file path or path alias of the data file that contains the fixture data
+     * @var string|bool the file path or path alias of the data file that contains the fixture data
      * to be returned by [[getData()]]. If this is not set, it will default to `FixturePath/data/TableName.php`,
      * where `FixturePath` stands for the directory containing this fixture class, and `TableName` stands for the
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
+
     /**
      * @var TableSchema the table schema for the table associated with this fixture
      */
     private $_table;
+
 
     /**
      * @inheritdoc
@@ -55,7 +59,7 @@ class ActiveFixture extends BaseActiveFixture
     public function init()
     {
         parent::init();
-        if (!isset($this->modelClass) && !isset($this->tableName)) {
+        if ($this->modelClass === null && $this->tableName === null) {
             throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
         }
     }
@@ -63,6 +67,7 @@ class ActiveFixture extends BaseActiveFixture
     /**
      * Loads the fixture.
      *
+     * The default implementation will first clean up the table by calling [[resetTable()]].
      * It will then populate the table with the data returned by [[getData()]].
      *
      * If you override this method, you should consider calling the parent implementation
@@ -70,33 +75,13 @@ class ActiveFixture extends BaseActiveFixture
      */
     public function load()
     {
-        parent::load();
-
-        $table = $this->getTableSchema();
-
-        foreach ($this->getData() as $alias => $row) {
-            $this->db->createCommand()->insert($table->fullName, $row)->execute();
-            if ($table->sequenceName !== null) {
-                foreach ($table->primaryKey as $pk) {
-                    if (!isset($row[$pk])) {
-                        $row[$pk] = $this->db->getLastInsertID($table->sequenceName);
-                        break;
-                    }
-                }
-            }
-            $this->data[$alias] = $row;
-        }
-    }
-
-    /**
-     * Unloads the fixture.
-     *
-     * The default implementation will clean up the table by calling [[resetTable()]].
-     */
-    public function unload()
-    {
         $this->resetTable();
-        parent::unload();
+        $this->data = [];
+        $table = $this->getTableSchema();
+        foreach ($this->getData() as $alias => $row) {
+            $primaryKeys = $this->db->schema->insert($table->fullName, $row);
+            $this->data[$alias] = array_merge($row, $primaryKeys);
+        }
     }
 
     /**
@@ -147,7 +132,7 @@ class ActiveFixture extends BaseActiveFixture
         $db = $this->db;
         $tableName = $this->tableName;
         if ($tableName === null) {
-            /** @var \yii\db\ActiveRecord $modelClass */
+            /* @var $modelClass \yii\db\ActiveRecord */
             $modelClass = $this->modelClass;
             $tableName = $modelClass::tableName();
         }

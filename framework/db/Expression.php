@@ -9,14 +9,19 @@ namespace yii\db;
 
 /**
  * Expression represents a DB expression that does not need escaping or quoting.
+ *
  * When an Expression object is embedded within a SQL statement or fragment,
  * it will be replaced with the [[expression]] property value without any
  * DB escaping or quoting. For example,
  *
- * ~~~
+ * ```php
  * $expression = new Expression('NOW()');
- * $sql = 'SELECT ' . $expression;  // SELECT NOW()
- * ~~~
+ * $now = (new \yii\db\Query)->select($expression)->scalar();  // SELECT NOW();
+ * echo $now; // prints the current date
+ * ```
+ *
+ * Expression objects are mainly created for passing raw SQL expressions to methods of
+ * [[Query]], [[ActiveQuery]], and related classes.
  *
  * An expression can also be bound with parameters specified via [[params]].
  *
@@ -35,6 +40,7 @@ class Expression extends \yii\base\Object
      * are the corresponding parameter values.
      */
     public $params = [];
+
 
     /**
      * Constructor.

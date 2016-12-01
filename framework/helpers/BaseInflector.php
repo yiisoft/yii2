@@ -15,6 +15,7 @@ use Yii;
  * Do not use BaseInflector. Use [[Inflector]] instead.
  *
  * @author Antonio Ramirez <amigo.cobos@gmail.com>
+ * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
 class BaseInflector
@@ -94,6 +95,7 @@ class BaseInflector
         '/(m)en$/i' => '\1an',
         '/(c)hildren$/i' => '\1\2hild',
         '/(n)ews$/i' => '\1\2ews',
+        '/(n)etherlands$/i' => '\1\2etherlands',
         '/eaus$/' => 'eau',
         '/^(.*us)$/' => '\\1',
         '/s$/i' => '',
@@ -215,12 +217,10 @@ class BaseInflector
         'wildebeest' => 'wildebeest',
         'Yengeese' => 'Yengeese',
     ];
-
     /**
-     * @var array map of special chars and its translation. This is used by [[slug()]].
+     * @var array fallback map for transliteration used by [[transliterate()]] when intl isn't available.
      */
     public static $transliteration = [
-        // Latin
         'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
         'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
         'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ő' => 'O',
@@ -231,63 +231,55 @@ class BaseInflector
         'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ő' => 'o',
         'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
         'ÿ' => 'y',
-        // Latin symbols
-        '©' => '(c)',
-        // Greek
-        'Α' => 'A', 'Β' => 'B', 'Γ' => 'G', 'Δ' => 'D', 'Ε' => 'E', 'Ζ' => 'Z', 'Η' => 'H', 'Θ' => '8',
-        'Ι' => 'I', 'Κ' => 'K', 'Λ' => 'L', 'Μ' => 'M', 'Ν' => 'N', 'Ξ' => '3', 'Ο' => 'O', 'Π' => 'P',
-        'Ρ' => 'R', 'Σ' => 'S', 'Τ' => 'T', 'Υ' => 'Y', 'Φ' => 'F', 'Χ' => 'X', 'Ψ' => 'PS', 'Ω' => 'W',
-        'Ά' => 'A', 'Έ' => 'E', 'Ί' => 'I', 'Ό' => 'O', 'Ύ' => 'Y', 'Ή' => 'H', 'Ώ' => 'W', 'Ϊ' => 'I',
-        'Ϋ' => 'Y',
-        'α' => 'a', 'β' => 'b', 'γ' => 'g', 'δ' => 'd', 'ε' => 'e', 'ζ' => 'z', 'η' => 'h', 'θ' => '8',
-        'ι' => 'i', 'κ' => 'k', 'λ' => 'l', 'μ' => 'm', 'ν' => 'n', 'ξ' => '3', 'ο' => 'o', 'π' => 'p',
-        'ρ' => 'r', 'σ' => 's', 'τ' => 't', 'υ' => 'y', 'φ' => 'f', 'χ' => 'x', 'ψ' => 'ps', 'ω' => 'w',
-        'ά' => 'a', 'έ' => 'e', 'ί' => 'i', 'ό' => 'o', 'ύ' => 'y', 'ή' => 'h', 'ώ' => 'w', 'ς' => 's',
-        'ϊ' => 'i', 'ΰ' => 'y', 'ϋ' => 'y', 'ΐ' => 'i',
-        // Turkish
-        'Ş' => 'S', 'İ' => 'I', 'Ç' => 'C', 'Ü' => 'U', 'Ö' => 'O', 'Ğ' => 'G',
-        'ş' => 's', 'ı' => 'i', 'ç' => 'c', 'ü' => 'u', 'ö' => 'o', 'ğ' => 'g',
-        // Russian
-        'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D', 'Е' => 'E', 'Ё' => 'Yo', 'Ж' => 'Zh',
-        'З' => 'Z', 'И' => 'I', 'Й' => 'J', 'К' => 'K', 'Л' => 'L', 'М' => 'M', 'Н' => 'N', 'О' => 'O',
-        'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U', 'Ф' => 'F', 'Х' => 'H', 'Ц' => 'C',
-        'Ч' => 'Ch', 'Ш' => 'Sh', 'Щ' => 'Sh', 'Ъ' => '', 'Ы' => 'Y', 'Ь' => '', 'Э' => 'E', 'Ю' => 'Yu',
-        'Я' => 'Ya',
-        'а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' => 'e', 'ё' => 'yo', 'ж' => 'zh',
-        'з' => 'z', 'и' => 'i', 'й' => 'j', 'к' => 'k', 'л' => 'l', 'м' => 'm', 'н' => 'n', 'о' => 'o',
-        'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' => 'f', 'х' => 'h', 'ц' => 'c',
-        'ч' => 'ch', 'ш' => 'sh', 'щ' => 'sh', 'ъ' => '', 'ы' => 'y', 'ь' => '', 'э' => 'e', 'ю' => 'yu',
-        'я' => 'ya',
-        // Ukrainian
-        'Є' => 'Ye', 'І' => 'I', 'Ї' => 'Yi', 'Ґ' => 'G',
-        'є' => 'ye', 'і' => 'i', 'ї' => 'yi', 'ґ' => 'g',
-        // Czech
-        'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Š' => 'S', 'Ť' => 'T', 'Ů' => 'U',
-        'Ž' => 'Z',
-        'č' => 'c', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'š' => 's', 'ť' => 't', 'ů' => 'u',
-        'ž' => 'z',
-        // Polish
-        'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'o', 'Ś' => 'S', 'Ź' => 'Z',
-        'Ż' => 'Z',
-        'ą' => 'a', 'ć' => 'c', 'ę' => 'e', 'ł' => 'l', 'ń' => 'n', 'ó' => 'o', 'ś' => 's', 'ź' => 'z',
-        'ż' => 'z',
-        // Latvian
-        'Ā' => 'A', 'Č' => 'C', 'Ē' => 'E', 'Ģ' => 'G', 'Ī' => 'i', 'Ķ' => 'k', 'Ļ' => 'L', 'Ņ' => 'N',
-        'Š' => 'S', 'Ū' => 'u', 'Ž' => 'Z',
-        'ā' => 'a', 'č' => 'c', 'ē' => 'e', 'ģ' => 'g', 'ī' => 'i', 'ķ' => 'k', 'ļ' => 'l', 'ņ' => 'n',
-        'š' => 's', 'ū' => 'u', 'ž' => 'z',
-        //Vietnamese
-        'Ấ' => 'A', 'Ầ' => 'A', 'Ẩ' => 'A', 'Ẫ' => 'A', 'Ậ' => 'A',
-        'Ắ' => 'A', 'Ằ' => 'A', 'Ẳ' => 'A', 'Ẵ' => 'A', 'Ặ' => 'A',
-        'Ố' => 'O', 'Ồ' => 'O', 'Ổ' => 'O', 'Ỗ' => 'O', 'Ộ' => 'O',
-        'Ớ' => 'O', 'Ờ' => 'O', 'Ở' => 'O', 'Ỡ' => 'O', 'Ợ' => 'O',
-        'Ế' => 'E', 'Ề' => 'E', 'Ể' => 'E', 'Ễ' => 'E', 'Ệ' => 'E',
-        'ấ' => 'a', 'ầ' => 'a', 'ẩ' => 'a', 'ẫ' => 'a', 'ậ' => 'a',
-        'ắ' => 'a', 'ằ' => 'a', 'ẳ' => 'a', 'ẵ' => 'a', 'ặ' => 'a',
-        'ố' => 'o', 'ồ' => 'o', 'ổ' => 'o', 'ỗ' => 'o', 'ộ' => 'o',
-        'ớ' => 'o', 'ờ' => 'o', 'ở' => 'o', 'ỡ' => 'o', 'ợ' => 'o',
-        'ế' => 'e', 'ề' => 'e', 'ể' => 'e', 'ễ' => 'e', 'ệ' => 'e'
     ];
+    /**
+     * Shortcut for `Any-Latin; NFKD` transliteration rule. The rule is strict, letters will be transliterated with
+     * the closest sound-representation chars. The result may contain any UTF-8 chars. For example:
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
+     * `huò qǔ dào dochira Ukraí̈nsʹka: g̀,ê, Srpska: đ, n̂, d̂! ¿Español?`
+     *
+     * Used in [[transliterate()]].
+     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * @see transliterate()
+     * @since 2.0.7
+     */
+    const TRANSLITERATE_STRICT = 'Any-Latin; NFKD';
+    /**
+     * Shortcut for `Any-Latin; Latin-ASCII` transliteration rule. The rule is medium, letters will be
+     * transliterated to characters of Latin-1 (ISO 8859-1) ASCII table. For example:
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
+     * `huo qu dao dochira Ukrainsʹka: g,e, Srpska: d, n, d! ¿Espanol?`
+     *
+     * Used in [[transliterate()]].
+     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * @see transliterate()
+     * @since 2.0.7
+     */
+    const TRANSLITERATE_MEDIUM = 'Any-Latin; Latin-ASCII';
+    /**
+     * Shortcut for `Any-Latin; Latin-ASCII; [\u0080-\uffff] remove` transliteration rule. The rule is loose,
+     * letters will be transliterated with the characters of Basic Latin Unicode Block.
+     * For example:
+     * `获取到 どちら Українська: ґ,є, Српска: ђ, њ, џ! ¿Español?` will be transliterated to
+     * `huo qu dao dochira Ukrainska: g,e, Srpska: d, n, d! Espanol?`
+     *
+     * Used in [[transliterate()]].
+     * For detailed information see [unicode normalization forms](http://unicode.org/reports/tr15/#Normalization_Forms_Table)
+     * @see http://unicode.org/reports/tr15/#Normalization_Forms_Table
+     * @see transliterate()
+     * @since 2.0.7
+     */
+    const TRANSLITERATE_LOOSE = 'Any-Latin; Latin-ASCII; [\u0080-\uffff] remove';
+
+    /**
+     * @var mixed Either a [[\Transliterator]], or a string from which a [[\Transliterator]] can be built
+     * for transliteration. Used by [[transliterate()]] when intl is available. Defaults to [[TRANSLITERATE_LOOSE]]
+     * @see http://php.net/manual/en/transliterator.transliterate.php
+     */
+    public static $transliterator = self::TRANSLITERATE_LOOSE;
+
 
     /**
      * Converts a word to its plural form.
@@ -334,7 +326,7 @@ class BaseInflector
      * Converts an underscored or CamelCase word into a English
      * sentence.
      * @param string $words
-     * @param boolean $ucAll whether to set all words to uppercase
+     * @param bool $ucAll whether to set all words to uppercase
      * @return string
      */
     public static function titleize($words, $ucAll = false)
@@ -362,7 +354,7 @@ class BaseInflector
      * Converts a CamelCase name into space-separated words.
      * For example, 'PostTag' will be converted to 'Post Tag'.
      * @param string $name the string to be converted
-     * @param boolean $ucwords whether to capitalize the first letter in each word
+     * @param bool $ucwords whether to capitalize the first letter in each word
      * @return string the resulting words
      */
     public static function camel2words($name, $ucwords = true)
@@ -370,7 +362,7 @@ class BaseInflector
         $label = trim(strtolower(str_replace([
             '-',
             '_',
-            '.'
+            '.',
         ], ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $name))));
 
         return $ucwords ? ucwords($label) : $label;
@@ -382,14 +374,16 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'post-tag'.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
+     * @param bool|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
      * @return string the resulting ID
      */
-    public static function camel2id($name, $separator = '-')
+    public static function camel2id($name, $separator = '-', $strict = false)
     {
+        $regex = $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/';
         if ($separator === '_') {
-            return trim(strtolower(preg_replace('/(?<![A-Z])[A-Z]/', '_\0', $name)), '_');
+            return trim(strtolower(preg_replace($regex, '_\0', $name)), '_');
         } else {
-            return trim(strtolower(str_replace('_', $separator, preg_replace('/(?<![A-Z])[A-Z]/', $separator . '\0', $name))), $separator);
+            return trim(strtolower(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name))), $separator);
         }
     }
 
@@ -419,7 +413,7 @@ class BaseInflector
     /**
      * Returns a human-readable string from $word
      * @param string $word the string to humanize
-     * @param boolean $ucAll whether to set all words to uppercase or not
+     * @param bool $ucAll whether to set all words to uppercase or not
      * @return string
      */
     public static function humanize($word, $ucAll = false)
@@ -456,27 +450,60 @@ class BaseInflector
     }
 
     /**
-     * Returns a string with all spaces converted to given replacement and
-     * non word characters removed.  Maps special characters to ASCII using
-     * [[$transliteration]] array.
+     * Returns a string with all spaces converted to given replacement,
+     * non word characters removed and the rest of characters transliterated.
+     *
+     * If intl extension isn't available uses fallback that converts latin characters only
+     * and removes the rest. You may customize characters map via $transliteration property
+     * of the helper.
+     *
      * @param string $string An arbitrary string to convert
      * @param string $replacement The replacement to use for spaces
-     * @param boolean $lowercase whether to return the string in lowercase or not. Defaults to `true`.
+     * @param bool $lowercase whether to return the string in lowercase or not. Defaults to `true`.
      * @return string The converted string.
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
     {
-        if (extension_loaded('intl') === true) {
-            $options = 'Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC; [:Punctuation:] Remove;';
-            $string = transliterator_transliterate($options, $string);
-            $string = preg_replace('/[-\s]+/', $replacement, $string);
-        } else {
-            $string = str_replace(array_keys(static::$transliteration), static::$transliteration, $string);
-            $string = preg_replace('/[^\p{L}\p{Nd}]+/u', $replacement, $string);
-        }
+        $string = static::transliterate($string);
+        $string = preg_replace('/[^a-zA-Z0-9=\s—–-]+/u', '', $string);
+        $string = preg_replace('/[=\s—–-]+/u', $replacement, $string);
         $string = trim($string, $replacement);
 
         return $lowercase ? strtolower($string) : $string;
+    }
+
+    /**
+     * Returns transliterated version of a string.
+     *
+     * If intl extension isn't available uses fallback that converts latin characters only
+     * and removes the rest. You may customize characters map via $transliteration property
+     * of the helper.
+     *
+     * @param string $string input string
+     * @param string|\Transliterator $transliterator either a [[\Transliterator]] or a string
+     * from which a [[\Transliterator]] can be built.
+     * @return string
+     * @since 2.0.7 this method is public.
+     */
+    public static function transliterate($string, $transliterator = null)
+    {
+        if (static::hasIntl()) {
+            if ($transliterator === null) {
+                $transliterator = static::$transliterator;
+            }
+
+            return transliterator_transliterate($transliterator, $string);
+        } else {
+            return strtr($string, static::$transliteration);
+        }
+    }
+
+    /**
+     * @return bool if intl extension is loaded
+     */
+    protected static function hasIntl()
+    {
+        return extension_loaded('intl');
     }
 
     /**
@@ -491,12 +518,12 @@ class BaseInflector
 
     /**
      * Converts number to its ordinal English form. For example, converts 13 to 13th, 2 to 2nd ...
-     * @param integer $number the number to get its ordinal value
+     * @param int $number the number to get its ordinal value
      * @return string
      */
     public static function ordinalize($number)
     {
-        if (in_array(($number % 100), range(11, 13))) {
+        if (in_array($number % 100, range(11, 13))) {
             return $number . 'th';
         }
         switch ($number % 10) {
@@ -508,6 +535,51 @@ class BaseInflector
                 return $number . 'rd';
             default:
                 return $number . 'th';
+        }
+    }
+
+    /**
+     * Converts a list of words into a sentence.
+     *
+     * Special treatment is done for the last few words. For example,
+     *
+     * ```php
+     * $words = ['Spain', 'France'];
+     * echo Inflector::sentence($words);
+     * // output: Spain and France
+     *
+     * $words = ['Spain', 'France', 'Italy'];
+     * echo Inflector::sentence($words);
+     * // output: Spain, France and Italy
+     *
+     * $words = ['Spain', 'France', 'Italy'];
+     * echo Inflector::sentence($words, ' & ');
+     * // output: Spain, France & Italy
+     * ```
+     *
+     * @param array $words the words to be converted into an string
+     * @param string $twoWordsConnector the string connecting words when there are only two
+     * @param string $lastWordConnector the string connecting the last two words. If this is null, it will
+     * take the value of `$twoWordsConnector`.
+     * @param string $connector the string connecting words other than those connected by
+     * $lastWordConnector and $twoWordsConnector
+     * @return string the generated sentence
+     * @since 2.0.1
+     */
+    public static function sentence(array $words, $twoWordsConnector = ' and ', $lastWordConnector = null, $connector = ', ')
+    {
+        if ($lastWordConnector === null) {
+            $lastWordConnector = $twoWordsConnector;
+        }
+        switch (count($words)) {
+            case 0:
+                return '';
+            case 1:
+                return reset($words);
+            case 2:
+                return implode($twoWordsConnector, $words);
+            default:
+                return implode($connector, array_slice($words, 0, -1)) . $lastWordConnector . end($words);
         }
     }
 }

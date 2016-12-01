@@ -7,6 +7,7 @@
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -27,7 +28,7 @@ use yii\base\InvalidConfigException;
  *
  * To use MemCache as the cache application component, configure the application as follows,
  *
- * ~~~
+ * ```php
  * [
  *     'components' => [
  *         'cache' => [
@@ -47,10 +48,12 @@ use yii\base\InvalidConfigException;
  *         ],
  *     ],
  * ]
- * ~~~
+ * ```
  *
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
+ *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
  * @property \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache component.
  * This property is read-only.
@@ -63,16 +66,40 @@ use yii\base\InvalidConfigException;
 class MemCache extends Cache
 {
     /**
-     * @var boolean whether to use memcached or memcache as the underlying caching extension.
+     * @var bool whether to use memcached or memcache as the underlying caching extension.
      * If true, [memcached](http://pecl.php.net/package/memcached) will be used.
      * If false, [memcache](http://pecl.php.net/package/memcache) will be used.
      * Defaults to false.
      */
     public $useMemcached = false;
     /**
+     * @var string an ID that identifies a Memcached instance. This property is used only when [[useMemcached]] is true.
+     * By default the Memcached instances are destroyed at the end of the request. To create an instance that
+     * persists between requests, you may specify a unique ID for the instance. All instances created with the
+     * same ID will share the same connection.
+     * @see http://ca2.php.net/manual/en/memcached.construct.php
+     */
+    public $persistentId;
+    /**
+     * @var array options for Memcached. This property is used only when [[useMemcached]] is true.
+     * @see http://ca2.php.net/manual/en/memcached.setoptions.php
+     */
+    public $options;
+    /**
+     * @var string memcached sasl username. This property is used only when [[useMemcached]] is true.
+     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     */
+    public $username;
+    /**
+     * @var string memcached sasl password. This property is used only when [[useMemcached]] is true.
+     * @see http://php.net/manual/en/memcached.setsaslauthdata.php
+     */
+    public $password;
+
+    /**
      * @var \Memcache|\Memcached the Memcache instance
      */
-    private $_cache = null;
+    private $_cache;
     /**
      * @var array list of memcache server configurations
      */
@@ -86,50 +113,96 @@ class MemCache extends Cache
     public function init()
     {
         parent::init();
-        $servers = $this->getServers();
-        $cache = $this->getMemCache();
+        $this->addServers($this->getMemcache(), $this->getServers());
+    }
+
+    /**
+     * Add servers to the server pool of the cache specified
+     *
+     * @param \Memcache|\Memcached $cache
+     * @param MemCacheServer[] $servers
+     * @throws InvalidConfigException
+     */
+    protected function addServers($cache, $servers)
+    {
         if (empty($servers)) {
-            $cache->addServer('127.0.0.1', 11211);
+            $servers = [new MemCacheServer([
+                'host' => '127.0.0.1',
+                'port' => 11211,
+            ])];
         } else {
-            if (!$this->useMemcached) {
-                // different version of memcache may have different number of parameters for the addServer method.
-                $class = new \ReflectionClass($cache);
-                $paramCount = $class->getMethod('addServer')->getNumberOfParameters();
-            }
             foreach ($servers as $server) {
                 if ($server->host === null) {
                     throw new InvalidConfigException("The 'host' property must be specified for every memcache server.");
                 }
-                if ($this->useMemcached) {
-                    $cache->addServer($server->host, $server->port, $server->weight);
-                } else {
-                    // $timeout is used for memcache versions that do not have timeoutms parameter
-                    $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
-                    if ($paramCount === 9) {
-                        $cache->addServer(
-                            $server->host,
-                            $server->port,
-                            $server->persistent,
-                            $server->weight,
-                            $timeout,
-                            $server->retryInterval,
-                            $server->status,
-                            $server->failureCallback,
-                            $server->timeout
-                        );
-                    } else {
-                        $cache->addServer(
-                            $server->host,
-                            $server->port,
-                            $server->persistent,
-                            $server->weight,
-                            $timeout,
-                            $server->retryInterval,
-                            $server->status,
-                            $server->failureCallback
-                        );
-                    }
-                }
+            }
+        }
+        if ($this->useMemcached) {
+            $this->addMemcachedServers($cache, $servers);
+        } else {
+            $this->addMemcacheServers($cache, $servers);
+        }
+    }
+
+    /**
+     * Add servers to the server pool of the cache specified
+     * Used for memcached PECL extension.
+     *
+     * @param \Memcached $cache
+     * @param MemCacheServer[] $servers
+     */
+    protected function addMemcachedServers($cache, $servers)
+    {
+        $existingServers = [];
+        if ($this->persistentId !== null) {
+            foreach ($cache->getServerList() as $s) {
+                $existingServers[$s['host'] . ':' . $s['port']] = true;
+            }
+        }
+        foreach ($servers as $server) {
+            if (empty($existingServers) || !isset($existingServers[$server->host . ':' . $server->port])) {
+                $cache->addServer($server->host, $server->port, $server->weight);
+            }
+        }
+    }
+
+    /**
+     * Add servers to the server pool of the cache specified
+     * Used for memcache PECL extension.
+     *
+     * @param \Memcache $cache
+     * @param MemCacheServer[] $servers
+     */
+    protected function addMemcacheServers($cache, $servers)
+    {
+        $class = new \ReflectionClass($cache);
+        $paramCount = $class->getMethod('addServer')->getNumberOfParameters();
+        foreach ($servers as $server) {
+            // $timeout is used for memcache versions that do not have $timeoutms parameter
+            $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
+            if ($paramCount === 9) {
+                $cache->addserver(
+                    $server->host,
+                    $server->port,
+                    $server->persistent,
+                    $server->weight,
+                    $timeout,
+                    $server->retryInterval,
+                    $server->status,
+                    $server->failureCallback,
+                    $server->timeout
+                );
+            } else {
+                $cache->addserver(
+                    $server->host,
+                    $server->port,
+                    $server->persistent,
+                    $server->weight,
+                    $timeout,
+                    $server->retryInterval,
+                    $server->status,
+                    $server->failureCallback
+                );
             }
         }
     }
@@ -146,14 +219,26 @@ class MemCache extends Cache
             if (!extension_loaded($extension)) {
                 throw new InvalidConfigException("MemCache requires PHP $extension extension to be loaded.");
             }
-            $this->_cache = $this->useMemcached ? new \Memcached : new \Memcache;
+
+            if ($this->useMemcached) {
+                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+                if ($this->username !== null || $this->password !== null) {
+                    $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
+                    $this->_cache->setSaslAuthData($this->username, $this->password);
+                }
+                if (!empty($this->options)) {
+                    $this->_cache->setOptions($this->options);
+                }
+            } else {
+                $this->_cache = new \Memcache;
+            }
         }
 
         return $this->_cache;
     }
 
     /**
-     * Returns the memcache server configurations.
+     * Returns the memcache or memcached server configurations.
      * @return MemCacheServer[] list of memcache server configurations.
      */
     public function getServers()
@@ -162,9 +247,10 @@ class MemCache extends Cache
     }
 
     /**
-     * @param array $config list of memcache server configurations. Each element must be an array
+     * @param array $config list of memcache or memcached server configurations. Each element must be an array
      * with the following keys: host, port, persistent, weight, timeout, retryInterval, status.
-     * @see http://www.php.net/manual/en/function.Memcache-addServer.php
+     * @see http://php.net/manual/en/memcache.addserver.php
+     * @see http://php.net/manual/en/memcached.addserver.php
      */
     public function setServers($config)
     {
@@ -177,7 +263,7 @@ class MemCache extends Cache
      * Retrieves a value from cache with a specified key.
      * This is the implementation of the method declared in the parent class.
      * @param string $key a unique key identifying the cached value
-     * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
+     * @return mixed|false the value stored in cache, false if the value is not in the cache or expired.
      */
     protected function getValue($key)
     {
@@ -199,12 +285,16 @@ class MemCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param mixed $value the value to be cached.
+     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)
     {
+        // Use UNIX timestamp since it doesn't have any limitation
+        // @see http://php.net/manual/en/memcache.set.php
+        // @see http://php.net/manual/en/memcached.expiration.php
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
@@ -213,13 +303,17 @@ class MemCache extends Cache
     /**
      * Stores multiple key-value pairs in cache.
      * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys. Always empty in case of using memcached.
      */
     protected function setValues($data, $duration)
     {
         if ($this->useMemcached) {
-            $this->_cache->setMulti($data, $duration > 0 ? $duration + time() : 0);
+            // Use UNIX timestamp since it doesn't have any limitation
+            // @see http://php.net/manual/en/memcache.set.php
+            // @see http://php.net/manual/en/memcached.expiration.php
+            $expire = $duration > 0 ? $duration + time() : 0;
+            $this->_cache->setMulti($data, $expire);
 
             return [];
         } else {
@@ -232,12 +326,16 @@ class MemCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param mixed $value the value to be cached
+     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function addValue($key, $value, $duration)
     {
+        // Use UNIX timestamp since it doesn't have any limitation
+        // @see http://php.net/manual/en/memcache.set.php
+        // @see http://php.net/manual/en/memcached.expiration.php
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
@@ -247,7 +345,7 @@ class MemCache extends Cache
      * Deletes a value with the specified key from cache
      * This is the implementation of the method declared in the parent class.
      * @param string $key the key of the value to be deleted
-     * @return boolean if no error happens during deletion
+     * @return bool if no error happens during deletion
      */
     protected function deleteValue($key)
     {
@@ -257,7 +355,7 @@ class MemCache extends Cache
     /**
      * Deletes all values from cache.
      * This is the implementation of the method declared in the parent class.
-     * @return boolean whether the flush operation was successful.
+     * @return bool whether the flush operation was successful.
      */
     protected function flushValues()
     {

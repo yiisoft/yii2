@@ -36,7 +36,7 @@ class Link extends Object
      */
     public $type;
     /**
-     * @var boolean a value indicating whether [[href]] refers to a URI or URI template.
+     * @var bool a value indicating whether [[href]] refers to a URI or URI template.
      */
     public $templated = false;
     /**
@@ -51,6 +51,7 @@ class Link extends Object
      * @var string the language of the target resource
      */
     public $hreflang;
+
 
     /**
      * Serializes a list of links into proper array format.

@@ -15,7 +15,7 @@ use yii\helpers\Html;
 /**
  * TranslationController handles tasks related to framework translations.
  *
- * build translation ../docs/guide" "../docs/guide_ru" --title="Russian guide translation report" > report_guide_ru.html
+ * build translation "../docs/guide" "../docs/guide-ru" "Russian guide translation report" > report_guide_ru.html
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  */
@@ -40,7 +40,7 @@ class TranslationController extends Controller
 
         $dir = new DirectoryIterator($sourcePath);
         foreach ($dir as $fileinfo) {
-            /** @var DirectoryIterator $fileinfo */
+            /* @var $fileinfo DirectoryIterator */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
                 $sourceFilePath = $sourcePath . '/' . $fileinfo->getFilename();
@@ -63,7 +63,7 @@ class TranslationController extends Controller
         // checking if there are obsolete translation files
         $dir = new DirectoryIterator($translationPath);
         foreach ($dir as $fileinfo) {
-            /** @var \DirectoryIterator $fileinfo */
+            /* @var $fileinfo \DirectoryIterator */
             if (!$fileinfo->isDot() && !$fileinfo->isDir()) {
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
 
@@ -122,20 +122,17 @@ class TranslationController extends Controller
      * @param string $diff DIFF
      * @return string highlighted DIFF
      */
-    protected function highlightDiff($diff)
+    public function highlightDiff($diff)
     {
         $lines = explode("\n", $diff);
         foreach ($lines as $key => $val) {
             if (mb_substr($val, 0, 1, 'utf-8') === '@') {
                 $lines[$key] = '<span class="info">' . Html::encode($val) . '</span>';
-            }
-            else if (mb_substr($val, 0, 1, 'utf-8') === '+') {
+            } elseif (mb_substr($val, 0, 1, 'utf-8') === '+') {
                 $lines[$key] = '<ins>' . Html::encode($val) . '</ins>';
-            }
-            else if (mb_substr($val, 0, 1, 'utf-8') === '-') {
+            } elseif (mb_substr($val, 0, 1, 'utf-8') === '-') {
                 $lines[$key] = '<del>' . Html::encode($val) . '</del>';
-            }
-            else {
+            } else {
                 $lines[$key] = Html::encode($val);
             }
         }

@@ -10,6 +10,7 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Widget;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -21,26 +22,32 @@ use yii\helpers\Html;
  *
  * To use Breadcrumbs, you need to configure its [[links]] property, which specifies the links to be displayed. For example,
  *
- * ~~~
+ * ```php
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
+ *     'itemTemplate' => "<li><i>{link}</i></li>\n", // template for all links
  *     'links' => [
+ *         [
+ *             'label' => 'Post Category',
+ *             'url' => ['post-category/view', 'id' => 10],
+ *             'template' => "<li><b>{link}</b></li>\n", // template for this link only
+ *         ],
  *         ['label' => 'Sample Post', 'url' => ['post/edit', 'id' => 1]],
  *         'Edit',
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * Because breadcrumbs usually appears in nearly every page of a website, you may consider placing it in a layout view.
  * You can use a view parameter (e.g. `$this->params['breadcrumbs']`) to configure the links in different
  * views. In the layout view, you assign this view parameter to the [[links]] property like the following:
  *
- * ~~~
+ * ```php
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
  *     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -57,7 +64,7 @@ class Breadcrumbs extends Widget
      */
     public $options = ['class' => 'breadcrumb'];
     /**
-     * @var boolean whether to HTML-encode the link labels.
+     * @var bool whether to HTML-encode the link labels.
      */
     public $encodeLabels = true;
     /**
@@ -72,15 +79,38 @@ class Breadcrumbs extends Widget
      * the widget will not render anything. Each array element represents a single link in the breadcrumbs
      * with the following structure:
      *
-     * ~~~
+     * ```php
      * [
      *     'label' => 'label of the link',  // required
      *     'url' => 'url of the link',      // optional, will be processed by Url::to()
+     *     'template' => 'own template of the item', // optional, if not set $this->itemTemplate will be used
      * ]
-     * ~~~
+     * ```
      *
      * If a link is active, you only need to specify its "label", and instead of writing `['label' => $label]`,
-     * you should simply use `$label`.
+     * you may simply use `$label`.
+     *
+     * Since version 2.0.1, any additional array elements for each link will be treated as the HTML attributes
+     * for the hyperlink tag. For example, the following link specification will generate a hyperlink
+     * with CSS class `external`:
+     *
+     * ```php
+     * [
+     *     'label' => 'demo',
+     *     'url' => 'http://example.com',
+     *     'class' => 'external',
+     * ]
+     * ```
+     *
+     * Since version 2.0.3 each individual link can override global [[encodeLabels]] param like the following:
+     *
+     * ```php
+     * [
+     *     'label' => '<strong>Hello!</strong>',
+     *     'encode' => false,
+     * ]
+     * ```
+     *
      */
     public $links = [];
     /**
@@ -93,6 +123,7 @@ class Breadcrumbs extends Widget
      * will be replaced with the actual HTML link for each active item.
      */
     public $activeItemTemplate = "<li class=\"active\">{link}</li>\n";
+
 
     /**
      * Renders the widget.
@@ -129,15 +160,22 @@ class Breadcrumbs extends Widget
      */
     protected function renderItem($link, $template)
     {
-        if (isset($link['label'])) {
-            $label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
+        $encodeLabel = ArrayHelper::remove($link, 'encode', $this->encodeLabels);
+        if (array_key_exists('label', $link)) {
+            $label = $encodeLabel ? Html::encode($link['label']) : $link['label'];
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
         }
-        if (isset($link['url'])) {
-            return strtr($template, ['{link}' => Html::a($label, $link['url'])]);
-        } else {
-            return strtr($template, ['{link}' => $label]);
+        if (isset($link['template'])) {
+            $template = $link['template'];
         }
+        if (isset($link['url'])) {
+            $options = $link;
+            unset($options['template'], $options['label'], $options['url']);
+            $link = Html::a($label, $link['url'], $options);
+        } else {
+            $link = $label;
+        }
+        return strtr($template, ['{link}' => $link]);
     }
 }

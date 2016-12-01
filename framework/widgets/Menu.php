@@ -27,7 +27,7 @@ use yii\helpers\Html;
  *
  * The following example shows how to use Menu:
  *
- * ~~~
+ * ```php
  * echo Menu::widget([
  *     'items' => [
  *         // Important: you need to specify url as 'controller/action',
@@ -41,7 +41,7 @@ use yii\helpers\Html;
  *         ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -53,6 +53,8 @@ class Menu extends Widget
      *
      * - label: string, optional, specifies the menu item label. When [[encodeLabels]] is true, the label
      *   will be HTML-encoded. If the label is not specified, an empty string will be used.
+     * - encode: boolean, optional, whether this item`s label should be HTML-encoded. This param will override
+     *   global [[encodeLabels]] param.
      * - url: string or array, optional, specifies the URL of the menu item. It will be processed by [[Url::to]].
      *   When this is set, the actual menu item content will be generated using [[linkTemplate]];
      *   otherwise, [[labelTemplate]] will be used.
@@ -66,14 +68,20 @@ class Menu extends Widget
      *   The token `{url}` will be replaced by the URL associated with this menu item,
      *   and the token `{label}` will be replaced by the label of the menu item.
      *   If this option is not set, [[linkTemplate]] or [[labelTemplate]] will be used instead.
+     * - submenuTemplate: string, optional, the template used to render the list of sub-menus.
+     *   The token `{items}` will be replaced with the rendered sub-menu items.
+     *   If this option is not set, [[submenuTemplate]] will be used instead.
      * - options: array, optional, the HTML attributes for the menu container tag.
      */
     public $items = [];
     /**
-     * @var array list of HTML attributes for the menu container tag. This will be overwritten
-     * by the "options" set in individual [[items]]. The following special options are recognized:
+     * @var array list of HTML attributes shared by all menu [[items]]. If any individual menu item
+     * specifies its `options`, it will be merged with this property before being used to generate the HTML
+     * attributes for the menu item tag. The following special options are recognized:
      *
      * - tag: string, defaults to "li", the tag name of the item container tags.
+     *   Set to false to disable container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -93,11 +101,11 @@ class Menu extends Widget
     public $labelTemplate = '{label}';
     /**
      * @var string the template used to render a list of sub-menus.
-     * In this template, the token `{items}` will be replaced with the renderer sub-menu items.
+     * In this template, the token `{items}` will be replaced with the rendered sub-menu items.
      */
     public $submenuTemplate = "\n<ul>\n{items}\n</ul>\n";
     /**
-     * @var boolean whether the labels for menu items should be HTML-encoded.
+     * @var bool whether the labels for menu items should be HTML-encoded.
      */
     public $encodeLabels = true;
     /**
@@ -105,25 +113,26 @@ class Menu extends Widget
      */
     public $activeCssClass = 'active';
     /**
-     * @var boolean whether to automatically activate items according to whether their route setting
+     * @var bool whether to automatically activate items according to whether their route setting
      * matches the currently requested route.
      * @see isItemActive()
      */
     public $activateItems = true;
     /**
-     * @var boolean whether to activate parent menu items when one of the corresponding child menu items is active.
+     * @var bool whether to activate parent menu items when one of the corresponding child menu items is active.
      * The activated parent menu items will also have its CSS classes appended with [[activeCssClass]].
      */
     public $activateParents = false;
     /**
-     * @var boolean whether to hide empty menu items. An empty menu item is one whose `url` option is not
+     * @var bool whether to hide empty menu items. An empty menu item is one whose `url` option is not
      * set and which has no visible child menu items.
      */
     public $hideEmptyItems = true;
     /**
      * @var array the HTML attributes for the menu's container tag. The following special options are recognized:
      *
-     * - tag: string, defaults to "ul", the tag name of the item container tags.
+     * - tag: string, defaults to "ul", the tag name of the item container tags. Set to false to disable container tag.
+     *   See also [[\yii\helpers\Html::tag()]].
      *
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -166,9 +175,12 @@ class Menu extends Widget
             $this->params = Yii::$app->request->getQueryParams();
         }
         $items = $this->normalizeItems($this->items, $hasActiveChild);
-        $options = $this->options;
-        $tag = ArrayHelper::remove($options, 'tag', 'ul');
-        echo Html::tag($tag, $this->renderItems($items), $options);
+        if (!empty($items)) {
+            $options = $this->options;
+            $tag = ArrayHelper::remove($options, 'tag', 'ul');
+
+            echo Html::tag($tag, $this->renderItems($items), $options);
+        }
     }
 
     /**
@@ -203,7 +215,8 @@ class Menu extends Widget
 
             $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
-                $menu .= strtr($this->submenuTemplate, [
+                $submenuTemplate = ArrayHelper::getValue($item, 'submenuTemplate', $this->submenuTemplate);
+                $menu .= strtr($submenuTemplate, [
                     '{items}' => $this->renderItems($item['items']),
                 ]);
             }
@@ -225,7 +238,7 @@ class Menu extends Widget
             $template = ArrayHelper::getValue($item, 'template', $this->linkTemplate);
 
             return strtr($template, [
-                '{url}' => Url::to($item['url']),
+                '{url}' => Html::encode(Url::to($item['url'])),
                 '{label}' => $item['label'],
             ]);
         } else {
@@ -240,7 +253,7 @@ class Menu extends Widget
     /**
      * Normalizes the [[items]] property to remove invisible items and activate certain items.
      * @param array $items the items to be normalized.
-     * @param boolean $active whether there is an active child menu item.
+     * @param bool $active whether there is an active child menu item.
      * @return array the normalized menu items
      */
     protected function normalizeItems($items, &$active)
@@ -253,9 +266,8 @@ class Menu extends Widget
             if (!isset($item['label'])) {
                 $item['label'] = '';
             }
-            if ($this->encodeLabels) {
-                $items[$i]['label'] = Html::encode($item['label']);
-            }
+            $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+            $items[$i]['label'] = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $hasActiveChild = false;
             if (isset($item['items'])) {
                 $items[$i]['items'] = $this->normalizeItems($item['items'], $hasActiveChild);
@@ -289,12 +301,12 @@ class Menu extends Widget
      * Only when its route and parameters match [[route]] and [[params]], respectively, will a menu item
      * be considered active.
      * @param array $item the menu item to be checked
-     * @return boolean whether the menu item is active
+     * @return bool whether the menu item is active
      */
     protected function isItemActive($item)
     {
         if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
-            $route = $item['url'][0];
+            $route = Yii::getAlias($item['url'][0]);
             if ($route[0] !== '/' && Yii::$app->controller) {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
@@ -303,7 +315,9 @@ class Menu extends Widget
             }
             unset($item['url']['#']);
             if (count($item['url']) > 1) {
-                foreach (array_splice($item['url'], 1) as $name => $value) {
+                $params = $item['url'];
+                unset($params[0]);
+                foreach ($params as $name => $value) {
                     if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
                         return false;
                     }
