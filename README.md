@@ -26,11 +26,14 @@ to have a general idea of what has changed in 2.0.
 
 DOCUMENTATION
 -------------
+Yii 2.0 has a Definitive Guide and a Class Reference API which cover every detail of Yii.
 
-| Online  | Pdf |
+There is also a PDF version of the Definitive Guide and a Definitive Guide Mirror which is updated every 15 minutes.
+
+| Type  | Online | PDF |
 | ------------- | ------------- |
-| [The Guide](http://www.yiiframework.com/doc-2.0/guide-index.html) ([mirror](http://stuff.cebe.cc/yii2-guide.en.pdf))  | http://stuff.cebe.cc/yii2-guide.en.pdf  |
-| [API](http://www.yiiframework.com/doc-2.0/index.html) |   |
+|API| http://www.yiiframework.com/doc-2.0/index.html [mirror](http://stuff.cebe.cc/yii2docs/)|
+|Guide|  http://www.yiiframework.com/doc-2.0/guide-index.html | http://stuff.cebe.cc/yii2-guide.en.pdf
 
 
 PARTICIPATION
