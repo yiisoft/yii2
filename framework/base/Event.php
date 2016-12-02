@@ -128,7 +128,6 @@ class Event extends Object
         if ($removed) {
             self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
         }
-
         return $removed;
     }
 

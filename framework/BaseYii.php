@@ -151,6 +151,7 @@ class BaseYii
         if ($throwException) {
             throw new InvalidParamException("Invalid path alias: $alias");
         }
+
         return false;
     }
 

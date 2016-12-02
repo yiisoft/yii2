@@ -190,7 +190,6 @@ class Component extends Object
         foreach ($this->_behaviors as $behavior) {
             if ($behavior->canSetProperty($name)) {
                 $behavior->$name = $value;
-
                 return;
             }
         }

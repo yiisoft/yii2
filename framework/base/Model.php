@@ -585,7 +585,6 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $errors[$name] = reset($es);
             }
         }
-
         return $errors;
     }
 
