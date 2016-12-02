@@ -50,6 +50,12 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.10
+-----------------------
+
+* A new method `public function emulateExecution($value = true);` has been added to the `yii\db\QueryInterace`.
+  This method is implemented in the `yii\db\QueryTrait`, so this only affects your code if you implement QueryInterface
+  in a class that does not use the trait.
 
 Upgrade from Yii 2.0.9
 ----------------------

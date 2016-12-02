@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
 - Bug #12714: Fixed `yii\validation\EmailValidator` to prevent false-positives checks when property `checkDns` is set to `true` (silverfire)
+- Bug #12735: Fixed `yii\console\controllers\MigrateController` creating multiple primary keys for field `bigPrimaryKey:unsigned` (SG5)
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
 - Bug #12803, #12921: Fixed BC break in `yii.activeForm.js` introduced in #11999. Reverted commit 3ba72da (silverfire)
 - Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
@@ -26,7 +27,9 @@ Yii Framework 2 Change Log
 - Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
 - Bug #13089: Fixed `yii\console\controllers\AssetController::adjustCssUrl()` breaks URL reference specification (`url(#id)`) (vitalyzhakov)
 - Bug #7727: Fixed truncateHtml leaving extra tags (developeruz)
-- Enh #6809: Added `\yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
+- Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
+- Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
+- Enh #6809: Added `yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
 - Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
 - Enh #7420: Attributes for prompt generated with `renderSelectOptions` of `\yii\helpers\Html` helper (arogachev)
 - Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
@@ -35,6 +38,7 @@ Yii Framework 2 Change Log
 - Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
 - Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
 - Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
+- Enh #12390: Avoid creating queries with false where contdition (`0=1`) when fetching relational data (klimov-paul)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
 - Enh #12738: Added support for creating protocol-relative URLs in `UrlManager::createAbsoluteUrl()` and `Url` helper methods (rob006)
@@ -53,7 +57,10 @@ Yii Framework 2 Change Log
 - Enh #12988: Changed `textarea` method within the `yii\helpers\BaseHtml` class to allow users to control whether html entities found within `$value` will be double-encoded or not (cyphix333)
 - Enh #13074: Improved `\yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options. (timbeks)
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul, rob006)
+- Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options. (timbeks)
+- Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)
 
 2.0.10 October 20, 2016
 -----------------------
