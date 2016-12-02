@@ -537,6 +537,12 @@ EOL;
                 '/test/base/path/assets/css',
                 '.published-relative-dir-class {background-image: url(../img/same_relative_dir.png);}',
             ],
+            [
+                "img {clip-path: url(#xxx)}",
+                '/test/base/path/css',
+                '/test/base/path/assets/output',
+                "img {clip-path: url(#xxx)}",
+            ],
         ];
     }
 

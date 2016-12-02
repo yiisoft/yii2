@@ -243,3 +243,23 @@ For more information about the server configuration, please refer to the documen
 
 - Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
 - Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
+
+If you don't have access to the server configuration, you can setup [[yii\filters\HostControl]] filter at
+application level in order to protect against such kind of attack:
+
+```php
+// Web Application configuration file
+return [
+    'as hostControl' => [
+        'class' => 'yii\filters\HostControl',
+        'allowedHosts' => [
+            'example.com',
+            '*.example.com',
+        ],
+    ],
+    // ...
+];
+```
+
+> Note: you should always prefer web server configuration for 'host header attack' protection instead of the filter usage.
+  [[yii\filters\HostControl]] should be used only if server configuration setup is unavailable.
