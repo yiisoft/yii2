@@ -508,22 +508,9 @@ class ActiveField extends Component
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
-        if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
-            $this->parts['{label}'] = '';
-        } else {
-            if (isset($options['label']) && !isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = $options['label'];
-                if (!empty($options['labelOptions'])) {
-                    $this->labelOptions = $options['labelOptions'];
-                }
-            }
-            unset($options['labelOptions']);
-            $options['label'] = null;
-            $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
-        }
+        $options = $this->adjustCheckableOptions($options, $enclosedByLabel);
+        $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
         $this->adjustLabelFor($options);
-
         return $this;
     }
 
@@ -554,22 +541,9 @@ class ActiveField extends Component
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
-        if ($enclosedByLabel) {
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-            $this->parts['{label}'] = '';
-        } else {
-            if (isset($options['label']) && !isset($this->parts['{label}'])) {
-                $this->parts['{label}'] = $options['label'];
-                if (!empty($options['labelOptions'])) {
-                    $this->labelOptions = $options['labelOptions'];
-                }
-            }
-            unset($options['labelOptions']);
-            $options['label'] = null;
-            $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
-        }
+        $options = $this->adjustCheckableOptions($options, $enclosedByLabel);
+        $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
         $this->adjustLabelFor($options);
-
         return $this;
     }
 
@@ -704,6 +678,29 @@ class ActiveField extends Component
         $this->parts['{input}'] = $class::widget($config);
 
         return $this;
+    }
+
+    /**
+     * Adjusts options for radio and checkbox
+     * @param $options
+     * @param $enclosedByLabel
+     * @return array
+     */
+    protected function adjustCheckableOptions($options, $enclosedByLabel)
+    {
+        if ($enclosedByLabel) {
+            $this->parts['{label}'] = '';
+        } else {
+            if (isset($options['label']) && !isset($this->parts['{label}'])) {
+                $this->parts['{label}'] = $options['label'];
+                if (!empty($options['labelOptions'])) {
+                    $this->labelOptions = $options['labelOptions'];
+                }
+            }
+            unset($options['labelOptions']);
+            $options['label'] = null;
+        }
+        return $options;
     }
 
     /**
