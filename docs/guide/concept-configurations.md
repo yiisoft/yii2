@@ -154,8 +154,8 @@ $config = [
 ];
 ```
 
-To know more about the possible values of `definitions` and `singletons` configuration arrays, please
-read [Setting Multiple Dependencies](concept-di-container.md#multiple-dependencies) subsection of the
+To know more about the possible values of `definitions` and `singletons` configuration arrays and real-life examples,
+please read [Advanced Practical Usage](concept-di-container.md#advanced-practical-usage) subsection of the
 [Dependency Injection Container](concept-di-container.md) article.
 
 ### Widget Configurations <span id="widget-configurations"></span>

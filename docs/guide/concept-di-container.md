@@ -370,7 +370,7 @@ cannot be instantiated. This is because you need to tell the DI container how to
 Now if you access the controller again, an instance of `app\components\BookingService` will be
 created and injected as the 3rd parameter to the controller's constructor.
 
-Advanced practical usage <span id="advanced-practical-usage"></span>
+Advanced Practical Usage <span id="advanced-practical-usage"></span>
 ---------------
 
 Say we work on API application and have:
