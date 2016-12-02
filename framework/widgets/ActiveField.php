@@ -754,10 +754,10 @@ class ActiveField extends Component
             return [];
         }
 
-        $enableClientValidation = $this->getEnableClientValidation();
-        $enableAjaxValidation = $this->getEnableAjaxValidation();
+        $clientValidation = $this->clientValidationEnabled();
+        $ajaxValidation = $this->ajaxValidationEnabled();
 
-        if ($enableClientValidation) {
+        if ($clientValidation) {
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
                 /* @var $validator \yii\validators\Validator */
@@ -771,7 +771,7 @@ class ActiveField extends Component
             }
         }
 
-        if (!$enableAjaxValidation && (!$enableClientValidation || empty($validators))) {
+        if (!$ajaxValidation && (!$clientValidation || empty($validators))) {
             return [];
         }
 
@@ -792,7 +792,7 @@ class ActiveField extends Component
         }
 
         $options['encodeError'] = !isset($this->errorOptions['encode']) || $this->errorOptions['encode'];
-        if ($enableAjaxValidation) {
+        if ($ajaxValidation) {
             $options['enableAjaxValidation'] = true;
         }
         foreach (['validateOnChange', 'validateOnBlur', 'validateOnType', 'validationDelay'] as $name) {
@@ -824,10 +824,9 @@ class ActiveField extends Component
      * @return bool
      * @since 2.0.11
      */
-    protected function getEnableClientValidation()
+    protected function clientValidationEnabled()
     {
-        return $this->enableClientValidation
-            || $this->enableClientValidation === null && $this->form->enableClientValidation;
+        return $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
     }
 
     /**
@@ -835,7 +834,7 @@ class ActiveField extends Component
      * @return bool
      * @since 2.0.11
      */
-    protected function getEnableAjaxValidation()
+    protected function ajaxValidationEnabled()
     {
         return $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
     }
