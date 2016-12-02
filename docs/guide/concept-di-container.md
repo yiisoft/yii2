@@ -431,7 +431,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 Check out the [Application Configurations](concept-service-locator.md#application-configurations) subsection of
 the [Configurations](concept-configurations.md) guide article.
 
-All works, but in case we need to create create `DocumentWriter` class, 
+Everything works, but in case we need to create create `DocumentWriter` class, 
 we shall copy-paste the line that creates `FileStorage` object, that is not the smartest way, obviously.
 
 As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
@@ -447,7 +447,7 @@ Let's modify our example:
 
 ```php
 $container->setDefinitions([
-    'tempFileStorage' => [ // we've created an alias for convinience
+    'tempFileStorage' => [ // we've created an alias for convenience
         ['class' => 'app\storage\FileStorage'],
         ['/var/tempfiles'] // could be extracted from some config files
     ],    
