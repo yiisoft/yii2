@@ -226,7 +226,7 @@ if a dependency has other dependencies, those dependencies will also be resolved
 
 You can use [[yii\di\Container::get()|get()]] to either create or get object instance.
 The method takes a dependency name, which can be a class name, an interface name or an alias name. 
-The dependency name may or may not be registered via [[yii\di\Container::set()|set()]] 
+The dependency name may be registered via [[yii\di\Container::set()|set()]] 
 or [[yii\di\Container::setSingleton()|setSingleton()]]. You may optionally provide a list of class 
 constructor parameters and a [configuration](concept-configurations.md) to configure the newly created object. 
 
