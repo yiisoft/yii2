@@ -164,12 +164,6 @@ class ActiveField extends Component
     private $_skipLabelFor = false;
 
     /**
-     * @var bool whether `aria-invalid` HTML attribute should be updated by client validation
-     */
-    private $_updateAriaInvalidOnClient = true;
-
-
-    /**
      * PHP magic method that returns the string representation of this object.
      * @return string the string representation of this object.
      */
@@ -754,8 +748,8 @@ class ActiveField extends Component
             return [];
         }
 
-        $clientValidation = $this->clientValidationEnabled();
-        $ajaxValidation = $this->ajaxValidationEnabled();
+        $clientValidation = $this->isClientValidationEnabled();
+        $ajaxValidation = $this->isAjaxValidationEnabled();
 
         if ($clientValidation) {
             $validators = [];
@@ -803,7 +797,7 @@ class ActiveField extends Component
             $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
         }
 
-        if ($this->addAriaAttributes === false || !$this->_updateAriaInvalidOnClient) {
+        if ($this->addAriaAttributes === false) {
             $options['updateAriaInvalid'] = false;
         }
 
@@ -824,7 +818,7 @@ class ActiveField extends Component
      * @return bool
      * @since 2.0.11
      */
-    protected function clientValidationEnabled()
+    protected function isClientValidationEnabled()
     {
         return $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
     }
@@ -834,7 +828,7 @@ class ActiveField extends Component
      * @return bool
      * @since 2.0.11
      */
-    protected function ajaxValidationEnabled()
+    protected function isAjaxValidationEnabled()
     {
         return $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
     }
@@ -864,7 +858,6 @@ class ActiveField extends Component
                 if ($this->model->hasErrors($this->attribute)) {
                     $options['aria-invalid'] = 'true';
                 }
-                $this->_updateAriaInvalidOnClient = false;
             }
         }
     }
