@@ -164,7 +164,7 @@ window.yii = (function ($) {
                 pjaxContainer,
                 pjaxOptions = {};
 
-            if (pjax !== undefined && $.support.pjax) {
+            if (pjax !== undefined && pjax !== 0 && $.support.pjax) {
                 if ($e.data('pjax-container')) {
                     pjaxContainer = $e.data('pjax-container');
                 } else {
