@@ -247,13 +247,7 @@ abstract class Application extends Module
         }
 
         if (isset($config['container'])) {
-            if (isset($config['container']['definitions'])) {
-                $this->setContainerDefinitions($config['container']['definitions']);
-            }
-
-            if (isset($config['container']['singletons'])) {
-                $this->setContainerSingletons($config['container']['singletons']);
-            }
+            $this->setContainer($config['container']);
 
             unset($config['container']);
         }
@@ -468,88 +462,6 @@ abstract class Application extends Module
     }
 
     /**
-     * Registers a class definitions in [[yii\di\Container|Dependency Injection Container]]
-     * by calling [[yii\di\Container::set()]].
-     * This method is provided so that you can configure Dependency Injection Container
-     * when configuring an application.
-     *
-     * @param array $definitions array of definitions. There are two allowed formats of array:
-     * The first format:
-     *  - key: class name, interface name or alias name. The key will be passed to the
-     * [[yii\di\Container::set()]] method as a first argument `$class`.
-     *  - value: the definition associated with `$class`. Possible values are described in
-     * [[yii\di\Container::set()]] documentation for the `$definition` parameter. Will be passed to
-     * the [[yii\di\Container::set()]] method as the second argument `$definition`.
-     *
-     * Example:
-     * ```php
-     * [
-     *     'yii\web\Request' => 'app\components\Request',
-     *     'yii\web\Response' => [
-     *         'class' => 'app\components\Response',
-     *         'format' => 'json'
-     *     ],
-     *     'foo\Bar' => function () {
-     *         $qux = new Qux;
-     *         $foo = new Foo($qux);
-     *         return new Bar($foo);
-     *     }
-     * ]
-     * ```
-     *
-     * The second format:
-     *  - key: class name, interface name or alias name. The key will be passed to the
-     * [[yii\di\Container::set()]] method as a first argument `$class`.
-     * - value: array of two elements. The first element will be passed the [[yii\di\Container::set()]]
-     * method as the second argument `$definition`, the second one - as `$params`.
-     *
-     * Example:
-     * ```php
-     * [
-     *     'foo\Bar' => [
-     *          ['class' => 'app\Bar'],
-     *          [Instance::of('baz')]
-     *      ]
-     * ]
-     * ```
-     *
-     * @see \yii\di\Container::set() to know more about possible values of definitions
-     */
-    public function setContainerDefinitions(array $definitions)
-    {
-        foreach ($definitions as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
-                Yii::$container->set($class, $definition[0], $definition[1]);
-            } else {
-                Yii::$container->set($class, $definition);
-            }
-        }
-    }
-
-    /**
-     * Registers a class definitions in [[yii\di\Container|Dependency Injection Container]]
-     * and marks them class as singletons by calling [[yii\di\Container::setSingleton()]].
-     * This method is provided so that you can configure Dependency Injection Container
-     * when configuring an application.
-     *
-     * @param array $singletons array of singleton definitions. See [[setContainerDefinitions]]
-     * for allowed formats of array.
-     *
-     * @see setContainerDefinitions() for allowed formats of $singletons parameter
-     * @see \yii\di\Container::setSingleton() to know more about possible values of definitions
-     */
-    public function setContainerSingletons(array $singletons)
-    {
-        foreach ($singletons as $class => $definition) {
-            if (count($definition) === 2 && array_values($definition) === $definition) {
-                Yii::$container->setSingleton($class, $definition[0], $definition[1]);
-            } else {
-                Yii::$container->setSingleton($class, $definition);
-            }
-        }
-    }
-
-    /**
      * Returns the time zone used by this application.
      * This is a simple wrapper of PHP function date_default_timezone_get().
      * If time zone is not configured in php.ini or application config,
@@ -745,5 +657,16 @@ abstract class Application extends Module
         } else {
             exit($status);
         }
+    }
+
+    /**
+     * Configures [[Yii::$container]] with the $config
+     *
+     * @param array $config values given in terms of name-value pairs
+     * @since 2.0.11
+     */
+    public function setContainer($config)
+    {
+        Yii::configure(Yii::$container, $config);
     }
 }

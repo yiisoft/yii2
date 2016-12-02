@@ -315,7 +315,11 @@ As aforementioned, the DI container will automatically resolve the dependencies 
 into the newly created object. Because Yii uses [[Yii::createObject()]] in most of its core code to create
 new objects, this means you can customize the objects globally by dealing with [[Yii::$container]].
 
-For example, you can customize globally the default number of pagination buttons of [[yii\widgets\LinkPager]]:
+For example, let's customize globally the default number of pagination buttons of [[yii\widgets\LinkPager]],
+and 
+
+### Configuring in imperative style
+
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
