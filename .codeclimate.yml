@@ -13,8 +13,10 @@ engines:
   phpmd:
     enabled: true
     checks:
-        CleanCode/StaticAccess:
-            enabled: false
+      CleanCode/StaticAccess:
+        enabled: false
+      Controversial/CamelCasePropertyName:
+        enabled: false  
 ratings:
   paths:
   - "**.js"
