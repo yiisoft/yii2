@@ -778,7 +778,7 @@
         }
     };
 
-    var toggleAriaInvalid = function($form, attribute, hasError) {
+    var toggleAriaInvalid = function ($form, attribute, hasError) {
         if (attribute.ariaInvalidToggle) {
             $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
         }
