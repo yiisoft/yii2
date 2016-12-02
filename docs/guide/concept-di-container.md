@@ -370,10 +370,32 @@ cannot be instantiated. This is because you need to tell the DI container how to
 Now if you access the controller again, an instance of `app\components\BookingService` will be
 created and injected as the 3rd parameter to the controller's constructor.
 
-Setting Multiple Dependencies <span id="multiple-dependencies"></span>
+Advanced practical usage <span id="advanced-practical-usage"></span>
 ---------------
 
-You can configure multiple definitions at once, passing configuration array to
+Say we work on API application and have:
+ - `app\components\Request` class that extends `yii\web\Request` and provides additional functionality
+ - `app\components\Response` class that extends `yii\web\Response` and should have `format` property 
+ set to `json` on creation
+ - `app\storage\FileStorage` and `app\storage\DocumentsReader` classes the implement some logic on
+ working with documents that are located in some file storage:
+      ```php
+      class FileStorage
+      {
+          public function __contruct($root) {
+              // whatever
+          }
+      }
+      
+      class DocumentsReader
+      {
+          public function __contruct(FileStorage $fs) {
+              // whatever
+          }
+      }
+      ```
+
+It is possible to configure multiple definitions at once, passing configuration array to
 [[yii\di\Container::setDefinitions()|setDefinitions()]] or [[yii\di\Container::setSingletons()|setSingletons()]] method.
 Iterating over the configuration array, the methods will call [[yii\di\Container::set()|set()]]
 or [[yii\di\Container::setSingleton()|setSingleton()]] respectively for each item.
@@ -386,7 +408,7 @@ The configuration array format is:
  documentation for the `$definition` parameter. Will be passed to the [[set()]] method as
  the second argument `$definition`.
 
-For example:
+For example, let's configure our container to follow the aforementioned requirements:
 
 ```php
 $container->setDefinitions([
@@ -395,13 +417,22 @@ $container->setDefinitions([
         'class' => 'app\components\Response',
         'format' => 'json'
     ],
-    'foo\Bar' => function () {
-        $qux = new Qux;
-        $foo = new Foo($qux);
-        return new Bar($foo);
+    'app\storage\DocumentsReader' => function () {
+        $fs = new app\storage\FileStorage('/var/tempfiles');
+        return new app\storage\DocumentsReader($fs);
     }
 ]);
+
+$reader = $container->get('app\storage\DocumentsReader); 
+// Will create DocumentReader object with its dependencies as described in the config 
 ```
+
+> Tip: Container may be configured in declarative style using application configuration since version 2.0.11. 
+Check out the [Application Configurations](concept-service-locator.md#application-configurations) subsection of
+the [Configurations](concept-configurations.md) guide article.
+
+All works, but in case we need to create create `DocumentWriter` class, 
+we shall copy-paste the line that creates `FileStorage` object, that is not the smartest way, obviously.
 
 As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
 and [[yii\di\Container::setSingleton()|setSingleton()]] can optionally take dependency's constructor parameters as
@@ -412,18 +443,34 @@ a third argument. To set the constructor parameters, you may use the following c
  - `value`: array of two elements. The first element will be passed the [[yii\di\Container::set()|set()]] method as the
  second argument `$definition`, the second one — as `$params`.
 
-Example:
+Let's modify our example:
 
 ```php
-$container->setSingletons([
-    'foo\Bar' => [
-         ['class' => 'app\Bar'],
-         [Instance::of('baz')]
-     ]
+$container->setDefinitions([
+    'tempFileStorage' => [ // we've created an alias for convinience
+        ['class' => 'app\storage\FileStorage'],
+        ['/var/tempfiles'] // could be extracted from some config files
+    ],    
+    'app\storage\DocumentsReader' => [
+        ['class' => 'app\storage\DocumentsReader'],
+        [Instance::of('tempFileStorage')]
+    ],
+    'app\storage\DocumentsWriter' => [
+        ['class' => 'app\storage\DocumentsWriter'],
+        [Instance::of('tempFileStorage')]
+    ]
 ]);
+
+$reader = $container->get('app\storage\DocumentsReader); 
+// Will behave exactly the same as in the previous example.
 ```
 
-> Note: These methods are available since version 2.0.11.
+You might notice `Instance::of('tempFileStorage')` notation. It means, that the [[yii\di\Container|Container]]
+will implicitly provide dependency, registered with `tempFileStorage` name and pass it as the first argument 
+of `app\storage\DocumentsWriter` constructor.
+
+> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
+  methods are available since version 2.0.11.
 
 When to Register Dependencies <span id="when-to-register-dependencies"></span>
 -----------------------------
