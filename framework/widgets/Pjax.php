@@ -100,12 +100,10 @@ class Pjax extends Widget
     /**
      * @inheritdoc
      * @internal
-     * @since 2.0.11 (#12969)
      */
     public static $counter = 0;
     /**
      * @inheritdoc
-     * @since 2.0.11 (#12969)
      */
     public static $autoIdPrefix = 'p';
 
