@@ -164,9 +164,9 @@ class ActiveField extends Component
     private $_skipLabelFor = false;
 
     /**
-     * @var bool whether `aria-invalid` HTML attribute should be toggled by validation on client
+     * @var bool whether `aria-invalid` HTML attribute should be updated by client validation
      */
-    private $_skipClientAriaInvalid = true;
+    private $_updateAriaInvalidOnClient = true;
 
 
     /**
@@ -803,8 +803,8 @@ class ActiveField extends Component
             $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
         }
 
-        if ($this->addAriaAttributes === false && !$this->_skipClientAriaInvalid) {
-            $options['ariaInvalidToggle'] = false;
+        if ($this->addAriaAttributes === false || !$this->_updateAriaInvalidOnClient) {
+            $options['updateAriaInvalid'] = false;
         }
 
         // only get the options that are different from the default ones (set in yii.activeForm.js)
@@ -815,7 +815,7 @@ class ActiveField extends Component
             'validationDelay' => 500,
             'encodeError' => true,
             'error' => '.help-block',
-            'ariaInvalidToggle' => true,
+            'updateAriaInvalid' => true,
         ]);
     }
 
@@ -865,7 +865,7 @@ class ActiveField extends Component
                 if ($this->model->hasErrors($this->attribute)) {
                     $options['aria-invalid'] = 'true';
                 }
-                $this->_skipClientAriaInvalid = false;
+                $this->_updateAriaInvalidOnClient = false;
             }
         }
     }

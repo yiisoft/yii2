@@ -170,7 +170,7 @@
         // the value of the input
         value: undefined,
         // whether to toggle aria-invalid attribute after validation
-        ariaInvalidToggle: true
+        updateAriaInvalid: true
     };
 
 
@@ -779,7 +779,7 @@
     };
 
     var toggleAriaInvalid = function ($form, attribute, hasError) {
-        if (attribute.ariaInvalidToggle) {
+        if (attribute.updateAriaInvalid) {
             $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
         }
     }
