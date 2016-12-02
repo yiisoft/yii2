@@ -224,11 +224,13 @@ and the container will automatically resolve dependencies by instantiating them 
 them into the newly created objects. The dependency resolution is recursive, meaning that
 if a dependency has other dependencies, those dependencies will also be resolved automatically.
 
-You can use [[yii\di\Container::get()|get()]] to create new objects. The method takes a dependency name,
-which can be a class name, an interface name or an alias name. The dependency name may or may
-not be registered via [[yii\di\Container::set()|set()]] or [[yii\di\Container::setSingleton()|setSingleton()]].
-You may optionally provide a list of class constructor parameters and a [configuration](concept-configurations.md)
-to configure the newly created object. For example,
+You can use [[yii\di\Container::get()|get()]] to either create or get object instance.
+The method takes a dependency name, which can be a class name, an interface name or an alias name. 
+The dependency name may or may not be registered via [[yii\di\Container::set()|set()]] 
+or [[yii\di\Container::setSingleton()|setSingleton()]]. You may optionally provide a list of class 
+constructor parameters and a [configuration](concept-configurations.md) to configure the newly created object. 
+
+For example:
 
 ```php
 // "db" is a previously registered alias name
@@ -312,7 +314,7 @@ Yii creates a DI container when you include the `Yii.php` file in the [entry scr
 of your application. The DI container is accessible via [[Yii::$container]]. When you call [[Yii::createObject()]],
 the method will actually call the container's [[yii\di\Container::get()|get()]] method to create a new object.
 As aforementioned, the DI container will automatically resolve the dependencies (if any) and inject them
-into the newly created object. Because Yii uses [[Yii::createObject()]] in most of its core code to create
+into obtained object. Because Yii uses [[Yii::createObject()]] in most of its core code to create
 new objects, this means you can customize the objects globally by dealing with [[Yii::$container]].
 
 For example, let's customize globally the default number of pagination buttons of [[yii\widgets\LinkPager]]. 
@@ -421,7 +423,7 @@ $container->setSingletons([
 ]);
 ```
 
-> Note: These methods are available since version 2.0.11
+> Note: These methods are available since version 2.0.11.
 
 When to Register Dependencies <span id="when-to-register-dependencies"></span>
 -----------------------------

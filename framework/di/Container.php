@@ -568,9 +568,9 @@ class Container extends Component
     }
 
     /**
-     * Registers a class definitions with this container.
+     * Registers class definitions within this container.
      *
-     * @param array $definitions array of definitions. There are two allowed formats of array:
+     * @param array $definitions array of definitions. There are two allowed formats of array.
      * The first format:
      *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
      * as a first argument `$class`.
@@ -626,9 +626,8 @@ class Container extends Component
     }
 
     /**
-     * Registers a class definitions with this container and marks them as singletons
-     * by calling [[setSingleton()]].
-
+     * Registers class definitions as singletons within this container by calling [[setSingleton()]]
+     *
      * @param array $singletons array of singleton definitions. See [[setDefinitions()]]
      * for allowed formats of array.
      *
