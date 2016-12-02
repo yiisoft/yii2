@@ -256,6 +256,7 @@ return [
             'example.com',
             '*.example.com',
         ],
+        'fallbackHostInfo' => 'https://example.com',
     ],
     // ...
 ];
