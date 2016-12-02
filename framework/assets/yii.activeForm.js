@@ -169,7 +169,7 @@
         cancelled: false,
         // the value of the input
         value: undefined,
-        // whether to toggle aria-invalid attribute after validation
+        // whether to update aria-invalid attribute after validation
         updateAriaInvalid: true
     };
 
@@ -709,7 +709,7 @@
             hasError = messages[attribute.id].length > 0;
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
-            toggleAriaInvalid($form, attribute, hasError);
+            updateAriaInvalid($form, attribute, hasError);
             if (hasError) {
                 if (attribute.encodeError) {
                     $error.text(messages[attribute.id][0]);
@@ -778,7 +778,7 @@
         }
     };
 
-    var toggleAriaInvalid = function ($form, attribute, hasError) {
+    var updateAriaInvalid = function ($form, attribute, hasError) {
         if (attribute.updateAriaInvalid) {
             $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
         }
