@@ -12,9 +12,30 @@ engines:
     enabled: true
   phpmd:
     enabled: true
+    # configure checks, see https://phpmd.org/rules/index.html for details
     checks:
-        CleanCode/StaticAccess:
-            enabled: false
+      # Static access on Yii::$app is normal in Yii
+      CleanCode/StaticAccess:
+        enabled: false
+      # Yii is a framework so if fulfills the job of encapsulating superglobals
+      Controversial/Superglobals:
+        enabled: false
+      # allow private properties to start with $_
+      Controversial/CamelCasePropertyName:
+        enabled: true
+        allow-underscore: true
+      # Short variable names are no problem in most cases, e.g. $n = count(...);
+      Naming/ShortVariable:
+        enabled: false
+      # Long variable names can help with better understanding so we increase the limit a bit
+      Naming/LongVariable:
+        enabled: true
+        maximum: 25
+      # method names like up(), gc(), ... are okay.
+      Naming/ShortMethodName:
+        enabled: true
+        minimum: 2
+
 ratings:
   paths:
   - "**.js"
