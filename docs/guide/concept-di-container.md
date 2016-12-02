@@ -450,7 +450,7 @@ $container->setDefinitions([
     'tempFileStorage' => [ // we've created an alias for convenience
         ['class' => 'app\storage\FileStorage'],
         ['/var/tempfiles'] // could be extracted from some config files
-    ],    
+    ],
     'app\storage\DocumentsReader' => [
         ['class' => 'app\storage\DocumentsReader'],
         [Instance::of('tempFileStorage')]
@@ -471,6 +471,37 @@ of `app\storage\DocumentsWriter` constructor.
 
 > Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
   methods are available since version 2.0.11.
+  
+Another step on configuration optimization is to register some dependencies as singletons. 
+A dependency registered via [[yii\di\Container::set()|set()]] will be instantiated each time it is needed.
+Some classes do not change the state during runtime, therefore they may be registered as singletons
+in order to increase the application performance. 
+
+A good example could be `app\storage\FileStorage` class, that executes some operations on file system with a simple 
+API (e.g. `$fs->read()`, `$fs->write()`). These operations do not change the internal class state, so we can
+create its instance once and use it multiple times.
+
+```php
+$container->setSingletons([
+    'tempFileStorage' => [
+        ['class' => 'app\storage\FileStorage'],
+        ['/var/tempfiles']
+    ],
+]);
+
+$container->setDefinitions([
+    'app\storage\DocumentsReader' => [
+        ['class' => 'app\storage\DocumentsReader'],
+        [Instance::of('tempFileStorage')]
+    ],
+    'app\storage\DocumentsWriter' => [
+        ['class' => 'app\storage\DocumentsWriter'],
+        [Instance::of('tempFileStorage')]
+    ]
+]);
+
+$reader = $container->get('app\storage\DocumentsReader); 
+```
 
 When to Register Dependencies <span id="when-to-register-dependencies"></span>
 -----------------------------
@@ -478,8 +509,9 @@ When to Register Dependencies <span id="when-to-register-dependencies"></span>
 Because dependencies are needed when new objects are being created, their registration should be done
 as early as possible. The following are the recommended practices:
 
-* If you are the developer of an application, you can register dependencies in your
-  application's [entry script](structure-entry-scripts.md) or in a script that is included by the entry script.
+* If you are the developer of an application, you can register your dependencies using application configuration.
+  Please, read the [Application Configurations](concept-service-locator.md#application-configurations) subsection of 
+  the [Configurations](concept-configurations.md) guide article.
 * If you are the developer of a redistributable [extension](structure-extensions.md), you can register dependencies
   in the bootstrapping class of the extension.
 
