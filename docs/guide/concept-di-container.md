@@ -224,11 +224,11 @@ and the container will automatically resolve dependencies by instantiating them 
 them into the newly created objects. The dependency resolution is recursive, meaning that
 if a dependency has other dependencies, those dependencies will also be resolved automatically.
 
-You can use [[yii\di\Container::get()]] to create new objects. The method takes a dependency name,
+You can use [[yii\di\Container::get()|get()]] to create new objects. The method takes a dependency name,
 which can be a class name, an interface name or an alias name. The dependency name may or may
-not be registered via `set()` or `setSingleton()`. You may optionally provide a list of class
-constructor parameters and a [configuration](concept-configurations.md) to configure the newly created object.
-For example,
+not be registered via [[yii\di\Container::set()|set()]] or [[yii\di\Container::setSingleton()|setSingleton()]].
+You may optionally provide a list of class constructor parameters and a [configuration](concept-configurations.md)
+to configure the newly created object. For example,
 
 ```php
 // "db" is a previously registered alias name
@@ -315,11 +315,7 @@ As aforementioned, the DI container will automatically resolve the dependencies 
 into the newly created object. Because Yii uses [[Yii::createObject()]] in most of its core code to create
 new objects, this means you can customize the objects globally by dealing with [[Yii::$container]].
 
-For example, let's customize globally the default number of pagination buttons of [[yii\widgets\LinkPager]],
-and 
-
-### Configuring in imperative style
-
+For example, let's customize globally the default number of pagination buttons of [[yii\widgets\LinkPager]]. 
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
@@ -372,6 +368,60 @@ cannot be instantiated. This is because you need to tell the DI container how to
 Now if you access the controller again, an instance of `app\components\BookingService` will be
 created and injected as the 3rd parameter to the controller's constructor.
 
+Setting Multiple Dependencies <span id="multiple-dependencies"></span>
+---------------
+
+You can configure multiple definitions at once, passing configuration array to
+[[yii\di\Container::setDefinitions()|setDefinitions()]] or [[yii\di\Container::setSingletons()|setSingletons()]] method.
+Iterating over the configuration array, the methods will call [[yii\di\Container::set()|set()]]
+or [[yii\di\Container::setSingleton()|setSingleton()]] respectively for each item.
+
+The configuration array format is:
+
+ - `key`: class name, interface name or alias name. The key will be passed to the
+ [[yii\di\Container::set()|set()]] method as a first argument `$class`.
+ - `value`: the definition associated with `$class`. Possible values are described in [[yii\di\Container::set()|set()]]
+ documentation for the `$definition` parameter. Will be passed to the [[set()]] method as
+ the second argument `$definition`.
+
+For example:
+
+```php
+$container->setDefinitions([
+    'yii\web\Request' => 'app\components\Request',
+    'yii\web\Response' => [
+        'class' => 'app\components\Response',
+        'format' => 'json'
+    ],
+    'foo\Bar' => function () {
+        $qux = new Qux;
+        $foo = new Foo($qux);
+        return new Bar($foo);
+    }
+]);
+```
+
+As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
+and [[yii\di\Container::setSingleton()|setSingleton()]] can optionally take dependency's constructor parameters as
+a third argument. To set the constructor parameters, you may use the following configuration array format:
+
+ - `key`: class name, interface name or alias name. The key will be passed to the
+ [[yii\di\Container::set()|set()]] method as a first argument `$class`.
+ - `value`: array of two elements. The first element will be passed the [[yii\di\Container::set()|set()]] method as the
+ second argument `$definition`, the second one — as `$params`.
+
+Example:
+
+```php
+$container->setSingletons([
+    'foo\Bar' => [
+         ['class' => 'app\Bar'],
+         [Instance::of('baz')]
+     ]
+]);
+```
+
+> Note: These methods are available since version 2.0.11
 
 When to Register Dependencies <span id="when-to-register-dependencies"></span>
 -----------------------------

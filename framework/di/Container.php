@@ -598,7 +598,7 @@ class Container extends Component
      *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
      * as a first argument `$class`.
      *  - value: array of two elements. The first element will be passed the [[set()]] method as the
-     * second argument `$definition`, the second one - as `$params`.
+     * second argument `$definition`, the second one — as `$params`.
      *
      * Example:
      * ```php
@@ -618,9 +618,10 @@ class Container extends Component
         foreach ($definitions as $class => $definition) {
             if (count($definition) === 2 && array_values($definition) === $definition) {
                 $this->set($class, $definition[0], $definition[1]);
-            } else {
-                $this->set($class, $definition);
+                continue;
             }
+
+            $this->set($class, $definition);
         }
     }
 
@@ -640,9 +641,10 @@ class Container extends Component
         foreach ($singletons as $class => $definition) {
             if (count($definition) === 2 && array_values($definition) === $definition) {
                 $this->setSingleton($class, $definition[0], $definition[1]);
-            } else {
-                $this->setSingleton($class, $definition);
+                continue;
             }
+
+            $this->setSingleton($class, $definition);
         }
     }
 }
