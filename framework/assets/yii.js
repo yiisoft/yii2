@@ -153,7 +153,7 @@ window.yii = (function ($) {
                 method = !$e.data('method') && $form ? $form.attr('method') : $e.data('method'),
                 action = $e.attr('href'),
                 params = $e.data('params'),
-                pjax = $e.data('pjax'),
+                pjax = $e.data('pjax') || 0,
                 pjaxPushState = !!$e.data('pjax-push-state'),
                 pjaxReplaceState = !!$e.data('pjax-replace-state'),
                 pjaxTimeout = $e.data('pjax-timeout'),
@@ -164,7 +164,7 @@ window.yii = (function ($) {
                 pjaxContainer,
                 pjaxOptions = {};
 
-            if (pjax !== undefined && pjax !== 0 && $.support.pjax) {
+            if (pjax !== 0 && $.support.pjax) {
                 if ($e.data('pjax-container')) {
                     pjaxContainer = $e.data('pjax-container');
                 } else {
@@ -190,13 +190,13 @@ window.yii = (function ($) {
 
             if (method === undefined) {
                 if (action && action != '#') {
-                    if (pjax !== undefined && $.support.pjax) {
+                    if (pjax !== 0 && $.support.pjax) {
                         $.pjax.click(event, pjaxOptions);
                     } else {
                         window.location = action;
                     }
                 } else if ($e.is(':submit') && $form.length) {
-                    if (pjax !== undefined && $.support.pjax) {
+                    if (pjax !== 0 && $.support.pjax) {
                         $form.on('submit',function(e){
                             $.pjax.submit(e, pjaxOptions);
                         })
@@ -249,7 +249,7 @@ window.yii = (function ($) {
                 oldAction = $form.attr('action');
                 $form.attr('action', action);
             }
-            if (pjax !== undefined && $.support.pjax) {
+            if (pjax !== 0 && $.support.pjax) {
                 $form.on('submit',function(e){
                     $.pjax.submit(e, pjaxOptions);
                 })
