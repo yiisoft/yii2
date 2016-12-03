@@ -14,6 +14,10 @@ engines:
     enabled: true
     # configure checks, see https://phpmd.org/rules/index.html for details
     checks:
+      # else is not always bad. Disabling this as there is no reason to differentiate
+      # between early return and normal else cases.
+      CleanCode/ElseExpression:
+        enabled: false
       # Static access on Yii::$app is normal in Yii
       CleanCode/StaticAccess:
         enabled: false
