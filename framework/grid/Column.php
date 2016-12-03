@@ -26,11 +26,32 @@ class Column extends Object
      */
     public $grid;
     /**
-     * @var string the header cell content. Note that it will not be HTML-encoded.
+     * @var string|\Closure the header cell content. Note that it will not be HTML-encoded.
+     * When using anonymous function ([[Closure]]) then the signature of the function
+     * should be the following: `function ($dataProvider, $searchModel, $column)`
      */
     public $header;
     /**
-     * @var string the footer cell content. Note that it will not be HTML-encoded.
+     * @var string|\Closure the footer cell content. Note that it will not be HTML-encoded.
+     * When using anonymous function ([[Closure]]) then the signature of the function
+     * should be the following: `function ($dataProvider, $searchModel, $column)`.
+     * The dataProvider contains already filtered query so we can utilize it for loading e.g. total as follows:
+     *
+     * ```php
+     * GridView::widget([
+     *    'showFooter' => true,
+     *     ...
+     *    'columns' => [
+     *    [
+     *       'attribute' => 'hits',
+     *       'footer' => function($dataProvider, $filterModel, $column){
+     *           return $dataProvider->query->sum('hits');
+     *       }
+     *    ]
+     *    ...
+     *    ]
+     * ])
+     * ```
      */
     public $footer;
     /**
@@ -126,6 +147,9 @@ class Column extends Object
      */
     protected function renderHeaderCellContent()
     {
+        if ($this->header instanceOf Closure) {
+            return call_user_func($this->header, $this->grid->dataProvider, $this->grid->filterModel, $this);
+        }
         return trim($this->header) !== '' ? $this->header : $this->getHeaderCellLabel();
     }
 
@@ -148,6 +172,9 @@ class Column extends Object
      */
     protected function renderFooterCellContent()
     {
+        if ($this->footer instanceOf Closure) {
+            return call_user_func($this->footer, $this->grid->dataProvider, $this->grid->filterModel, $this);
+        }
         return trim($this->footer) !== '' ? $this->footer : $this->grid->emptyCell;
     }
 
