@@ -50,9 +50,18 @@ However, most content described here are also applicable to Active Record for No
 
 ## Declaring Active Record Classes <span id="declaring-ar-classes"></span>
 
-To get started, declare an Active Record class by extending [[yii\db\ActiveRecord]]. Because each Active Record
-class is associated with a database table, in this class you should override the [[yii\db\ActiveRecord::tableName()|tableName()]]
-method to specify which table the class is associated with.
+To get started, declare an Active Record class by extending [[yii\db\ActiveRecord]]. 
+
+### Setting a table name
+By default each Active Record class is associated with it's database table, 
+[[yii\db\ActiveRecord::tableName()|tableName()]] returns the class name as the table name by calling [[Inflector::camel2id()]].
+You may override this method if the table is not named after this convention.
+
+Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. For example if
+ [[yii\db\Connection::$tablePrefix|tablePrefix]] is `tbl_`, `Customer` becomes `tbl_customer` and `OrderItem` becomes `tbl_order_item`. 
+
+If a table name is given as `{{%TableName}}`, then the percentage character `%` will be replaced with this property value. 
+For example, `{{%post}}` becomes `{{tbl_post}}`.
 
 In the following example, we declare an Active Record class named `Customer` for the `customer` database table.
 
@@ -76,6 +85,7 @@ class Customer extends ActiveRecord
 }
 ```
 
+### Active records are called models
 Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
 classes under the `app\models` namespace (or other namespaces for keeping model classes). 
 
