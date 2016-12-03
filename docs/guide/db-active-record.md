@@ -53,15 +53,17 @@ However, most content described here are also applicable to Active Record for No
 To get started, declare an Active Record class by extending [[yii\db\ActiveRecord]]. 
 
 ### Setting a table name
+
 By default each Active Record class is associated with its database table.
-The [[yii\db\ActiveRecord::tableName()|tableName()]] method returns the class name as the table name by calling [[yii\helpers\Inflector::camel2id()]].
+The [[yii\db\ActiveRecord::tableName()|tableName()]] method returns the table name by converting the class name via [[yii\helpers\Inflector::camel2id()]].
 You may override this method if the table is not named after this convention.
 
 Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. For example if
  [[yii\db\Connection::$tablePrefix|tablePrefix]] is `tbl_`, `Customer` becomes `tbl_customer` and `OrderItem` becomes `tbl_order_item`. 
 
-If a table name is given as `{{%TableName}}`, then the percentage character `%` will be replaced with this property value. 
-For example, `{{%post}}` becomes `{{tbl_post}}`.
+If a table name is given as `{{%TableName}}`, then the percentage character `%` will be replaced with the table prefix. 
+For example, `{{%post}}` becomes `{{tbl_post}}`. The brackets around the table name are used for
+[quoting in an SQL query](db-dao.md#quoting-table-and-column-names).
 
 In the following example, we declare an Active Record class named `Customer` for the `customer` database table.
 
@@ -80,7 +82,7 @@ class Customer extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer';
+        return '{{customer}}';
     }
 }
 ```
