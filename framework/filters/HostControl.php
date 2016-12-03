@@ -105,6 +105,14 @@ class HostControl extends ActionFilter
      * host name, creation of absolute URL links, caching page parts and so on.
      */
     public $denyCallback;
+    /**
+     * @var string|null fallback host info (e.g. `http://www.yiiframework.com`) used when [[\yii\web\Request::$hostInfo|Request::$hostInfo]] is invalid.
+     * This value will replace [[\yii\web\Request::$hostInfo|Request::$hostInfo]] before [[$denyCallback]] is called to make sure that
+     * an invalid host will not be used for further processing. You can set it to `null` to leave [[\yii\web\Request::$hostInfo|Request::$hostInfo]] untouched.
+     * Default value is empty string (this will result creating relative URLs instead of absolute).
+     * @see \yii\web\Request::getHostInfo()
+     */
+    public $fallbackHostInfo = '';
 
 
     /**
@@ -132,6 +140,11 @@ class HostControl extends ActionFilter
             }
         }
 
+        // replace invalid host info to prevent using it in further processing
+        if ($this->fallbackHostInfo !== null) {
+            Yii::$app->getRequest()->setHostInfo($this->fallbackHostInfo);
+        }
+
         if ($this->denyCallback !== null) {
             call_user_func($this->denyCallback, $action);
         } else {
@@ -147,13 +160,19 @@ class HostControl extends ActionFilter
      * You may override this method, creating your own deny access handler. While doing so, make sure you
      * avoid usage of the current requested host name, creation of absolute URL links, caching page parts and so on.
      * @param \yii\base\Action $action the action to be executed.
+     * @throws NotFoundHttpException
      */
     protected function denyAccess($action)
     {
+        $exception = new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
+
+        // use regular error handling if $this->fallbackHostInfo was set
+        if (!empty(Yii::$app->getRequest()->hostName)) {
+            throw $exception;
+        }
+
         $response = Yii::$app->getResponse();
         $errorHandler = Yii::$app->getErrorHandler();
-
-        $exception = new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
 
         $response->setStatusCode($exception->statusCode, $exception->getMessage());
         $response->data = $errorHandler->renderFile($errorHandler->errorView, ['exception' => $exception]);
