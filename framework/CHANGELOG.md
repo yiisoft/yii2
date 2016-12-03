@@ -63,6 +63,7 @@ Yii Framework 2 Change Log
 - Enh #11758: Implemented Dependency Injection Container configuration using Application configuration array (silverfire)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)
+- Enh #9053: Added`yii\grid\ RadioButtonColumn` (darwinisgod)
 
 2.0.10 October 20, 2016
 -----------------------
@@ -451,7 +452,6 @@ Yii Framework 2 Change Log
 ---------------------
 
 - Bug #4763: Fixed display issue with overlapping call stack item on exception display page (cebe)
-- Enh #9053: Added`yii\grid\ RadioButtonColumn` (darwinisgod)
 - Bug #7305: Logging of Exception objects resulted in failure of the logger i.e. no logs being written (cebe)
 - Bug #7374: Use proper INSERT syntax with default values when no values are specified (nineinchnick)
 - Bug #7707: Client-side `trim` validator now passes the trimmed value to subsequent validators (nkovacs)
