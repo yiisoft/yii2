@@ -111,32 +111,33 @@ class UniqueValidator extends Validator
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
-
-        if (is_array($targetAttribute)) {
-            $params = [];
-            foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_int($k) ? $model->$v : $model->$k;
-            }
-        } else {
-            $params = [$targetAttribute => $model->$attribute];
-        }
+        $params = $this->prepareParams($targetAttribute, $model, $attribute);
 
         foreach ($params as $value) {
             if (is_array($value)) {
                 $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
-
                 return;
             }
         }
 
-        $query = $targetClass::find();
-        $query->andWhere($params);
+        $exists = $this->modelExists($targetClass, $params, $model);
 
-        if ($this->filter instanceof \Closure) {
-            call_user_func($this->filter, $query);
-        } elseif ($this->filter !== null) {
-            $query->andWhere($this->filter);
+        if ($exists) {
+            if (count($targetAttribute) > 1) {
+                $this->addComboNotUniqueError($model, $attribute);
+            } else {
+                $this->addError($model, $attribute, $this->message);
+            }
         }
+    }
+
+    /**
+     * Checks duplicates of the current model in the database
+     * @since 2.0.11
+     */
+    private function modelExists($targetClass, $params, $model)
+    {
+        $query = $this->prepareQuery($targetClass, $params);
 
         if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
             // if current $model isn't in the database yet then it's OK just to call exists()
@@ -164,13 +165,41 @@ class UniqueValidator extends Validator
             }
         }
 
-        if ($exists) {
-            if (count($targetAttribute) > 1) {
-                $this->addComboNotUniqueError($model, $attribute);
-            } else {
-                $this->addError($model, $attribute, $this->message);
-            }
+        return $exists;
+    }
+
+    /**
+     * Prepares a query by applying filters
+     * @since 2.0.11
+     */
+    private function prepareQuery($targetClass, $params)
+    {
+        $query = $targetClass::find();
+        $query->andWhere($params);
+
+        if ($this->filter instanceof \Closure) {
+            call_user_func($this->filter, $query);
+        } elseif ($this->filter !== null) {
+            $query->andWhere($this->filter);
         }
+        return $query;
+    }
+
+    /**
+     * Prepare params based on targetAttribute
+     * @since 2.0.11
+     */
+    private function prepareParams($targetAttribute, $model, $attribute)
+    {
+        if (is_array($targetAttribute)) {
+            $params = [];
+            foreach ($targetAttribute as $k => $v) {
+                $params[$v] = is_int($k) ? $model->$v : $model->$k;
+            }
+        } else {
+            $params = [$targetAttribute => $model->$attribute];
+        }
+        return $params;
     }
 
     /**
