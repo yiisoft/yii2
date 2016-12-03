@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Bug #13089: Fixed `yii\console\controllers\AssetController::adjustCssUrl()` breaks URL reference specification (`url(#id)`) (vitalyzhakov)
 - Bug #7727: Fixed truncateHtml leaving extra tags (developeruz)
 - Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
+- Bug #13128: Fixed incorrect position of {pos} string in ColumnSchemaBuilder __toString (df2)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
 - Enh #6809: Added `yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
