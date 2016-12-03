@@ -107,6 +107,50 @@ You can see an example of this in the advanced project template.
 > ```
 
 
+Console command completion <span id="console-command-completion"></span>
+---------------
+
+Auto-completion of command arguments is a useful thing when working with the shell. 
+Since version 2.0.11, the `./yii` command provides auto completion for the bash out of the box. 
+
+### Bash completion
+
+Make sure bash completion is installed. For most of installations it is available by default.
+
+Place the completion script in `/etc/bash_completion.d/`:
+
+     curl -L https://raw.githubusercontent.com/yiisoft/yii2/blob/master/contrib/completion/bash/yii > /etc/bash_completion.d/yii
+
+Check the [Bash Manual](https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html) for
+other ways of including completion script to your environment.
+
+### ZSH completion
+
+Put the completion script in directory for completions, using e.g. `~/.zsh/completion/`
+
+```
+mkdir -p ~/.zsh/completion
+curl -L https://raw.githubusercontent.com/yiisoft/yii2/blob/master/contrib/completion/zsh/_yii > ~/.zsh/completion/_yii
+```
+
+Include the directory in the `$fpath`, e.g. by adding it to `~/.zshrc`
+
+```
+fpath=(~/.zsh/completion $fpath)
+```
+
+Make sure `compinit` is loaded or do it by adding in `~/.zshrc`
+
+```
+autoload -Uz compinit && compinit -i
+```
+
+Then reload your shell
+
+```
+exec $SHELL -l
+```
+
 Creating your own console commands <span id="create-command"></span>
 ----------------------------------
 
