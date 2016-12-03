@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Enh #12399: Added `ActiveField::addAriaAttributes` property for `aria-required` and `aria-invalid` attributes rendering (Oxyaction, samdark)
 - Enh #12390: Avoid creating queries with false where condition (`0=1`) when fetching relational data (klimov-paul)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
+- Enh #12659: Suggest alternatives when console command was not found (mdmunir, cebe)
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
 - Enh #12738: Added support for creating protocol-relative URLs in `UrlManager::createAbsoluteUrl()` and `Url` helper methods (rob006)
 - Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
