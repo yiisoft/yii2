@@ -73,6 +73,7 @@ class RadiobuttonColumnTest extends TestCase
         ];
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider(['allModels' => $models]),
+            'options' => ['id' => 'radio-gridview'],
             'columns' => [
                 [
                     'class' => RadioButtonColumn::className(),
@@ -89,7 +90,7 @@ class RadiobuttonColumnTest extends TestCase
         $grid->run();
         $actual = ob_get_clean();
         $this->assertEqualsWithoutLE(<<<HTML
-<div id="w0" class="grid-view"><div class="summary">Showing <b>1-2</b> of <b>2</b> items.</div>
+<div id="radio-gridview"><div class="summary">Showing <b>1-2</b> of <b>2</b> items.</div>
 <table class="table table-striped table-bordered"><thead>
 <tr><th>&nbsp;</th></tr>
 </thead>
