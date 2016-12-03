@@ -15,6 +15,7 @@ use yii\helpers\Html;
  * RadioButtonColumn displays a column of radio buttons in a grid view.
  *
  * To add a RadioButtonColumn to the [[GridView]], add it to the [[GridView::columns|columns]] configuration as follows:
+ *
  * ```php
  * 'columns' => [
  *     // ...
@@ -29,6 +30,7 @@ use yii\helpers\Html;
  *     ],
  * ]
  * ```
+ *
  * @author Kirk Hansen <hanski07@luther.edu>
  * @since 2.0.11
  */
@@ -57,6 +59,7 @@ class RadioButtonColumn extends Column
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $radioOptions = [];
+
 
     /**
      * @inheritdoc
