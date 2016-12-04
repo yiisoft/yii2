@@ -83,6 +83,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * @since 2.0.11
      */
     public $enableProfiling = false;
+
+
     /**
      * Builds a normalized cache key from a given key.
      *
@@ -339,7 +341,6 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function multiAdd($items, $duration = 0, $dependency = null)
     {
-
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
