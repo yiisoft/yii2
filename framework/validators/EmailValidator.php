@@ -121,7 +121,7 @@ class EmailValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function getClientOptions($model, $attribute)
+    protected function getClientOptions($model, $attribute)
     {
         $options = [
             'pattern' => new JsExpression($this->pattern),

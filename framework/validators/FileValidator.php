@@ -386,7 +386,7 @@ class FileValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function getClientOptions($model, $attribute)
+    protected function getClientOptions($model, $attribute)
     {
         $label = $model->getAttributeLabel($attribute);
 

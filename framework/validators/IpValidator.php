@@ -597,7 +597,7 @@ class IpValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function getClientOptions($model, $attribute)
+    protected function getClientOptions($model, $attribute)
     {
         $messages = [
             'ipv6NotAllowed' => $this->ipv6NotAllowed,

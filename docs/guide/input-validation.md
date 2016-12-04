@@ -525,7 +525,7 @@ validator options;
 - to extend or customize to fit your specific needs:
 
 ```php
-public function getClientOptions($model, $attribute)
+protected function getClientOptions($model, $attribute)
 {
     $options = parent::getClientOptions($model, $attribute);
     // Modify $options here
