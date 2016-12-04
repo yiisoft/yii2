@@ -119,7 +119,10 @@ Make sure bash completion is installed. For most of installations it is availabl
 
 Place the completion script in `/etc/bash_completion.d/`:
 
-     curl -L https://raw.githubusercontent.com/yiisoft/yii2/blob/master/contrib/completion/bash/yii > /etc/bash_completion.d/yii
+     curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
+
+For temporary usage you can put the file into the current directory and include it in the current session via `source yii`.
+If globally installed you may need to restart the terminal or `source ~/.bashrc` to activate it.
 
 Check the [Bash Manual](https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html) for
 other ways of including completion script to your environment.
@@ -130,7 +133,7 @@ Put the completion script in directory for completions, using e.g. `~/.zsh/compl
 
 ```
 mkdir -p ~/.zsh/completion
-curl -L https://raw.githubusercontent.com/yiisoft/yii2/blob/master/contrib/completion/zsh/_yii > ~/.zsh/completion/_yii
+curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/zsh/_yii -o ~/.zsh/completion/_yii
 ```
 
 Include the directory in the `$fpath`, e.g. by adding it to `~/.zshrc`
