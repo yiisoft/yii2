@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -51,8 +52,8 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Cache extends Component implements \ArrayAccess
-{
+abstract class Cache extends Component implements \ArrayAccess {
+
     /**
      * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
      * It is recommended that you set a unique cache key prefix for each application if the same cache
@@ -61,6 +62,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * To ensure interoperability, only alphanumeric characters should be used.
      */
     public $keyPrefix;
+
     /**
      * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
      * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
@@ -72,6 +74,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * implementations of the cache can not correctly save and retrieve data different from a string type.
      */
     public $serializer;
+
     /**
      * @var integer default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
      * This value is used by [[set()]] if the duration is not explicitly given.
@@ -80,7 +83,7 @@ abstract class Cache extends Component implements \ArrayAccess
     public $defaultDuration = 0;
 
     /**
-     * @var bool whether to enable profiling the queries
+     * @var bool whether to enable profiling the cache operations
      * @since 2.0.11
      */
     public $enableProfiling = false;
@@ -95,8 +98,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param mixed $key the key to be normalized
      * @return string the generated cache key
      */
-    public function buildKey($key)
-    {
+    public function buildKey($key) {
         if (is_string($key)) {
             $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
         } else {
@@ -113,8 +115,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @return mixed the value stored in cache, false if the value is not in the cache, expired,
      * or the dependency associated with the cached data has changed.
      */
-    public function get($key)
-    {
+    public function get($key) {
         $builtKey = $this->buildKey($key);
 
         $this->beginProfile($builtKey, __METHOD__);
@@ -147,8 +148,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * a complex data structure consisting of factors representing the key.
      * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
      */
-    public function exists($key)
-    {
+    public function exists($key) {
         $builtKey = $this->buildKey($key);
 
         $this->beginProfile($builtKey, __METHOD__);
@@ -170,8 +170,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * If a value is not cached or expired, the corresponding array value will be false.
      * @deprecated This method is an alias for [[multiGet()]] and will be removed in 2.1.0.
      */
-    public function mget($keys)
-    {
+    public function mget($keys) {
         return $this->multiGet($keys);
     }
 
@@ -186,12 +185,13 @@ abstract class Cache extends Component implements \ArrayAccess
      * If a value is not cached or expired, the corresponding array value will be false.
      * @since 2.0.7
      */
-    public function multiGet($keys)
-    {
+    public function multiGet($keys) {
         $keyMap = [];
         foreach ($keys as $key) {
             $keyMap[$key] = $this->buildKey($key);
         }
+        
+        $this->beginProfile($keyMap, __METHOD__);
         $values = $this->getValues(array_values($keyMap));
         $results = [];
         foreach ($keyMap as $key => $newKey) {
@@ -200,8 +200,7 @@ abstract class Cache extends Component implements \ArrayAccess
                 if ($this->serializer === false) {
                     $results[$key] = $values[$newKey];
                 } else {
-                    $value = $this->serializer === null ? unserialize($values[$newKey])
-                        : call_user_func($this->serializer[1], $values[$newKey]);
+                    $value = $this->serializer === null ? unserialize($values[$newKey]) : call_user_func($this->serializer[1], $values[$newKey]);
 
                     if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
                         $results[$key] = $value[0];
@@ -209,6 +208,7 @@ abstract class Cache extends Component implements \ArrayAccess
                 }
             }
         }
+        $this->endProfile($keyMap, __METHOD__);
 
         return $results;
     }
@@ -228,8 +228,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
      */
-    public function set($key, $value, $duration = null, $dependency = null)
-    {
+    public function set($key, $value, $duration = null, $dependency = null) {
         if ($duration === null) {
             $duration = $this->defaultDuration;
         }
@@ -265,8 +264,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @return array array of failed keys
      * @deprecated This method is an alias for [[multiSet()]] and will be removed in 2.1.0.
      */
-    public function mset($items, $duration = 0, $dependency = null)
-    {
+    public function mset($items, $duration = 0, $dependency = null) {
         return $this->multiSet($items, $duration, $dependency);
     }
 
@@ -283,8 +281,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @return array array of failed keys
      * @since 2.0.7
      */
-    public function multiSet($items, $duration = 0, $dependency = null)
-    {
+    public function multiSet($items, $duration = 0, $dependency = null) {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -301,7 +298,11 @@ abstract class Cache extends Component implements \ArrayAccess
             $data[$key] = $value;
         }
 
-        return $this->setValues($data, $duration);
+        $this->beginProfile(array_keys($items), __METHOD__);
+        $setResult = $this->setValues($data, $duration);
+        $this->endProfile(array_keys($items), __METHOD__);
+
+        return $setResult;
     }
 
     /**
@@ -316,8 +317,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @return array array of failed keys
      * @deprecated This method is an alias for [[multiAdd()]] and will be removed in 2.1.0.
      */
-    public function madd($items, $duration = 0, $dependency = null)
-    {
+    public function madd($items, $duration = 0, $dependency = null) {
         return $this->multiAdd($items, $duration, $dependency);
     }
 
@@ -333,8 +333,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * @return array array of failed keys
      * @since 2.0.7
      */
-    public function multiAdd($items, $duration = 0, $dependency = null)
-    {
+    public function multiAdd($items, $duration = 0, $dependency = null) {
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -351,7 +351,11 @@ abstract class Cache extends Component implements \ArrayAccess
             $data[$key] = $value;
         }
 
-        return $this->addValues($data, $duration);
+        $this->beginProfile(array_keys($items), __METHOD__);
+        $addResult = $this->addValues($data, $duration);
+        $this->endProfile(array_keys($items), __METHOD__);
+
+        return $addResult;
     }
 
     /**
@@ -366,8 +370,10 @@ abstract class Cache extends Component implements \ArrayAccess
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
      */
-    public function add($key, $value, $duration = 0, $dependency = null)
-    {
+    public function add($key, $value, $duration = 0, $dependency = null) {
+        $builtKey = $this->buildKey($key);
+        $this->beginProfile($builtKey, __METHOD__);
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -376,9 +382,7 @@ abstract class Cache extends Component implements \ArrayAccess
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
-        $builtKey = $this->buildKey($key);
 
-        $this->beginProfile($builtKey, __METHOD__);
         $addResult = $this->addValue($builtKey, $value, $duration);
         $this->endProfile($builtKey, __METHOD__);
 
@@ -391,8 +395,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * a complex data structure consisting of factors representing the key.
      * @return bool if no error happens during deletion
      */
-    public function delete($key)
-    {
+    public function delete($key) {
         $builtKey = $this->buildKey($key);
 
         $this->beginProfile($builtKey, __METHOD__);
@@ -407,8 +410,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * Be careful of performing this operation if the cache is shared among multiple applications.
      * @return bool whether the flush operation was successful.
      */
-    public function flush()
-    {
+    public function flush() {
         return $this->flushValues();
     }
 
@@ -469,13 +471,10 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param array $keys a list of keys identifying the cached values
      * @return array a list of cached values indexed by the keys
      */
-    protected function getValues($keys)
-    {
+    protected function getValues($keys) {
         $results = [];
         foreach ($keys as $key) {
-            $this->beginProfile($key, __METHOD__);
             $results[$key] = $this->getValue($key);
-            $this->endProfile($key, __METHOD__);
         }
 
         return $results;
@@ -489,11 +488,9 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys
      */
-    protected function setValues($data, $duration)
-    {
+    protected function setValues($data, $duration) {
         $failedKeys = [];
         foreach ($data as $key => $value) {
-            $this->beginProfile($key, __METHOD__);
             if ($this->setValue($key, $value, $duration) === false) {
                 $failedKeys[] = $key;
             }
@@ -511,15 +508,12 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys
      */
-    protected function addValues($data, $duration)
-    {
+    protected function addValues($data, $duration) {
         $failedKeys = [];
         foreach ($data as $key => $value) {
-            $this->beginProfile($key, __METHOD__);
             if ($this->addValue($key, $value, $duration) === false) {
                 $failedKeys[] = $key;
             }
-            $this->endProfile($key, __METHOD__);
         }
 
         return $failedKeys;
@@ -531,8 +525,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param string $key a key identifying the cached value
      * @return bool
      */
-    public function offsetExists($key)
-    {
+    public function offsetExists($key) {
         return $this->get($key) !== false;
     }
 
@@ -542,8 +535,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param string $key a key identifying the cached value
      * @return mixed the value stored in cache, false if the value is not in the cache or expired.
      */
-    public function offsetGet($key)
-    {
+    public function offsetGet($key) {
         return $this->get($key);
     }
 
@@ -555,8 +547,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached
      */
-    public function offsetSet($key, $value)
-    {
+    public function offsetSet($key, $value) {
         $this->set($key, $value);
     }
 
@@ -565,9 +556,23 @@ abstract class Cache extends Component implements \ArrayAccess
      * This method is required by the interface [[\ArrayAccess]].
      * @param string $key the key of the value to be deleted
      */
-    public function offsetUnset($key)
-    {
+    public function offsetUnset($key) {
         $this->delete($key);
+    }
+
+    /**
+     * Generate profile key
+     * @param type $srcToken
+     * @return string
+     * @since 2.0.11
+     */
+    protected function getProfileKey($srcToken) {
+        if (is_array($srcToken)) {
+            $genToken = join(', ', $srcToken);
+        } else {
+            $genToken = $srcToken;
+        }
+        return $genToken;
     }
 
     /**
@@ -575,23 +580,25 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see endProfile()
+     * @since 2.0.11
      */
-    protected function beginProfile($token, $category)
-    {
+    protected function beginProfile($token, $category) {
         if ($this->enableProfiling) {
-            Yii::beginProfile($token, $category);
+            Yii::beginProfile($this->getProfileKey($token), $category);
         }
     }
+
     /**
      * Marks the end of a code block for profiling.
      * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see beginProfile()
+     * @since 2.0.11
      */
-    protected function endProfile($token, $category)
-    {
+    protected function endProfile($token, $category) {
         if ($this->enableProfiling) {
-            Yii::endProfile($token, $category);
+            Yii::endProfile($this->getProfileKey($token), $category);
         }
     }
+
 }
