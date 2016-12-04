@@ -584,12 +584,10 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     protected function getProfileKey($srcToken)
     {
-        if (is_array($srcToken)) {
-            $genToken = join(', ', $srcToken);
-        } else {
-            $genToken = $srcToken;
+        if (!is_array($srcToken)) {
+            return $srcToken;
         }
-        return $genToken;
+        return join(', ', $srcToken);
     }
 
     /**
