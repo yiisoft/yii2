@@ -225,8 +225,8 @@ class UrlRule extends CompositeUrlRule
                     if (YII_DEBUG) {
                         Yii::trace([
                             'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
-                            'parent' => self::className(),
-                            'match' => $result !== false
+                            'match' => $result !== false,
+                            'parent' => self::className()
                         ], __METHOD__);
                     }
                     if ($result !== false) {
