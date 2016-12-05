@@ -5,6 +5,8 @@
  * @license http://www.yiiframework.com/license/
  */
 
+namespace yii\rbac\migrations;
+
 use yii\base\InvalidConfigException;
 use yii\rbac\DbManager;
 
