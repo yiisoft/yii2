@@ -266,10 +266,10 @@ class UrlManager extends Component
             foreach ($this->rules as $rule) {
                 $result = $rule->parseRequest($this, $request);
                 if (YII_DEBUG) {
-                    Yii::getLogger()->log([
+                    Yii::trace([
                         'rule' => ($rule instanceof UrlRule) ? (string)$rule : get_class($rule),
                         'match' => $result !== false
-                    ], Logger::LEVEL_PROFILE, __METHOD__);
+                    ], __METHOD__);
                 }
                 if ($result !== false) {
                     return $result;
