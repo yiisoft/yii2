@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Enh #6809: Added `yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
 - Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
 - Enh #7420: Attributes for prompt generated with `renderSelectOptions` of `\yii\helpers\Html` helper (arogachev)
+- Enh #9053: Added`yii\grid\RadioButtonColumn` (darwinisgod)
 - Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
 - Enh #10896: Select only primary key when counting records in UniqueValidator (developeruz)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
