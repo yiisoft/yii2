@@ -154,11 +154,8 @@ $query->from(['u' => $subQuery]);
 ```
 
 #### Prefixes
-Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. For example if
- [[yii\db\Connection::$tablePrefix|tablePrefix]] is `tbl_`, `Customer` becomes `tbl_customer` and `OrderItem` becomes `tbl_order_item`.
- 
-If a table name is given as `{{%TableName}}`, then the percentage character `%` will be replaced with this property value. 
-For example, `{{%post}}` becomes `{{tbl_post}}`.
+Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. Implementation instructions
+are in the ["Quoting Tables" section of the "Database Access Objects" guide](guide-db-dao.html#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
