@@ -1,4 +1,3 @@
----
 engines:
   duplication:
     enabled: true
@@ -12,34 +11,8 @@ engines:
     enabled: true
   phpmd:
     enabled: true
-    # configure checks, see https://phpmd.org/rules/index.html for details
-    checks:
-      # else is not always bad. Disabling this as there is no reason to differentiate
-      # between early return and normal else cases.
-      CleanCode/ElseExpression:
-        enabled: false
-      # Static access on Yii::$app is normal in Yii
-      CleanCode/StaticAccess:
-        enabled: false
-      # Yii is a framework so if fulfills the job of encapsulating superglobals
-      Controversial/Superglobals:
-        enabled: false
-      # allow private properties to start with $_
-      Controversial/CamelCasePropertyName:
-        enabled: true
-        allow-underscore: true
-      # Short variable names are no problem in most cases, e.g. $n = count(...);
-      Naming/ShortVariable:
-        enabled: false
-      # Long variable names can help with better understanding so we increase the limit a bit
-      Naming/LongVariable:
-        enabled: true
-        maximum: 25
-      # method names like up(), gc(), ... are okay.
-      Naming/ShortMethodName:
-        enabled: true
-        minimum: 2
-
+    config:
+      rulesets: "codesize,design,unusedcode,tests/data/codeclimate/phpmd_ruleset.xml"
 ratings:
   paths:
   - "**.js"
