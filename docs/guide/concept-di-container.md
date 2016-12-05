@@ -379,21 +379,22 @@ Say we work on API application and have:
  set to `json` on creation
  - `app\storage\FileStorage` and `app\storage\DocumentsReader` classes the implement some logic on
  working with documents that are located in some file storage:
-      ```php
-      class FileStorage
-      {
-          public function __contruct($root) {
-              // whatever
-          }
-      }
+ 
+```php
+class FileStorage
+{
+    public function __contruct($root) {
+        // whatever
+    }
+}
       
-      class DocumentsReader
-      {
-          public function __contruct(FileStorage $fs) {
-              // whatever
-          }
-      }
-      ```
+class DocumentsReader
+{
+    public function __contruct(FileStorage $fs) {
+        // whatever
+    }
+}
+```
 
 It is possible to configure multiple definitions at once, passing configuration array to
 [[yii\di\Container::setDefinitions()|setDefinitions()]] or [[yii\di\Container::setSingletons()|setSingletons()]] method.
