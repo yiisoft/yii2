@@ -20,42 +20,27 @@ class ListViewTest extends \yiiunit\TestCase
 
     public function testEmptyListShown()
     {
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => [],
-        ]);
-
-        ob_start();
-        echo ListView::widget([
-            'dataProvider' => $dataProvider,
-            'showOnEmpty' => false,
+        $this->getListView([
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => "Nothing at all",
-        ]);
-        $actualHtml = ob_get_clean();
+        ])->run();
 
-        $this->assertTrue(strpos($actualHtml, "Nothing at all") !== false, "displays the empty message");
-        $this->assertTrue(strpos($actualHtml, '<div class="empty">') !== false, "adds the 'empty' class");
-        $this->assertTrue(strpos($actualHtml, '<div class="summary">') === false, "does not display the summary");
+        $this->expectOutputString('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>');
     }
 
     public function testEmptyListNotShown()
     {
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => [],
-        ]);
-
-        ob_start();
-        echo ListView::widget([
-            'dataProvider' => $dataProvider,
+        $this->getListView([
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'showOnEmpty' => true,
-            'emptyText' => "Nothing at all",
-        ]);
-        $actualHtml = ob_get_clean();
+        ])->run();
 
-        $this->assertTrue(strpos($actualHtml, '<div class="empty">') === false, "does not add the 'empty' class");
-        $this->assertTrue(strpos($actualHtml, '<div class="summary">') === false, "does not display the summary");
-        $this->assertEmpty(trim(\strip_tags($actualHtml)), "contains no text");
+        $this->expectOutputString(<<<HTML
+<div id="w0" class="list-view">
 
-        $this->mockWebApplication();
+</div>
+HTML
+        );
     }
 
     private function getListView($options = [])
@@ -79,7 +64,7 @@ class ListViewTest extends \yiiunit\TestCase
 
     public function testSimplyListView()
     {
-        $listView = $this->getListView();
+        $this->getListView()->run();
 
         $this->expectOutputString(<<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
@@ -89,13 +74,11 @@ class ListViewTest extends \yiiunit\TestCase
 </div>
 HTML
         );
-
-        $listView->run();
     }
 
     public function testWidgetOptions()
     {
-        $listView = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => '']);
+        $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
 
         $this->expectOutputString(<<<HTML
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
@@ -103,8 +86,6 @@ HTML
 </div>
 HTML
         );
-
-        $listView->run();
     }
 
     public function itemViewOptions()
@@ -126,7 +107,7 @@ HTML
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: yii\widgets\ListView</div>
 <div data-key="2">Item #2: cebe - Widget: yii\widgets\ListView</div>
-</div>'
+</div>',
             ],
             [
                 '@yiiunit/data/views/widgets/ListView/item',
@@ -134,8 +115,8 @@ HTML
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: yii\widgets\ListView</div>
 <div data-key="2">Item #2: cebe - Widget: yii\widgets\ListView</div>
-</div>'
-            ]
+</div>',
+            ],
         ];
     }
 
@@ -144,9 +125,8 @@ HTML
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        $listView = $this->getListView(['itemView' => $itemView]);
+        $this->getListView(['itemView' => $itemView])->run();
         $this->expectOutputString($expected);
-        $listView->run();
     }
 
     public function itemOptions()
@@ -168,8 +148,8 @@ HTML
                             'test' => 'passed',
                             'key' => $key,
                             'index' => $index,
-                            'id' => $model['id']
-                        ]
+                            'id' => $model['id'],
+                        ],
 
                     ];
                 },
@@ -177,8 +157,8 @@ HTML
 <span data-test="passed" data-key="0" data-index="0" data-id="1" data-key="0">0</span>
 <span data-test="passed" data-key="1" data-index="1" data-id="2" data-key="1">1</span>
 <span data-test="passed" data-key="2" data-index="2" data-id="3" data-key="2">2</span>
-</div>'
-            ]
+</div>',
+            ],
         ];
     }
 
@@ -187,8 +167,7 @@ HTML
      */
     public function testItemOptions($itemOptions, $expected)
     {
-        $listView = $this->getListView(['itemOptions' => $itemOptions]);
+        $this->getListView(['itemOptions' => $itemOptions])->run();
         $this->expectOutputString($expected);
-        $listView->run();
     }
 }
