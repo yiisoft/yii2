@@ -128,6 +128,7 @@ class UrlRule extends Object implements UrlRuleInterface
 
     /**
      * @return string
+     * @since 2.0.11
      */
     public function __toString()
     {
