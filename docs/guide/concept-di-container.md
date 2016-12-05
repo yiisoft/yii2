@@ -379,6 +379,7 @@ Say we work on API application and have:
  set to `json` on creation
  - `app\storage\FileStorage` and `app\storage\DocumentsReader` classes the implement some logic on
  working with documents that are located in some file storage:
+ 
       ```php
       class FileStorage
       {
