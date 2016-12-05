@@ -88,6 +88,17 @@ class RequiredValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.required(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getClientOptions($model, $attribute)
+    {
         $options = [];
         if ($this->requiredValue !== null) {
             $options['message'] = Yii::$app->getI18n()->format($this->message, [
@@ -105,8 +116,6 @@ class RequiredValidator extends Validator
             'attribute' => $model->getAttributeLabel($attribute),
         ], Yii::$app->language);
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.required(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

@@ -113,6 +113,20 @@ class UrlValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        if ($this->enableIDN) {
+            PunycodeAsset::register($view);
+        }
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getClientOptions($model, $attribute)
+    {
         if (strpos($this->pattern, '{schemes}') !== false) {
             $pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
         } else {
@@ -133,11 +147,6 @@ class UrlValidator extends Validator
             $options['defaultScheme'] = $this->defaultScheme;
         }
 
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-
-        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }

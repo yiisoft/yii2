@@ -889,6 +889,22 @@ validation of individual input fields by configuring their [[yii\widgets\ActiveF
 property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
 the former will take precedence.
 
+> Info: Since version 2.0.11 all validators extending from [[yii\validators\Validator]] receive client-side options
+> from separate method - [[yii\validators\Validator::getClientOptions()]]. You can use it:
+>
+> - if you want to implement your own custom client-side validation but leave the synchronization with server-side
+> validator options;
+> - to extend or customize to fit your specific needs:
+> 
+> ```php
+> protected function getClientOptions($model, $attribute)
+> {
+>     $options = parent::getClientOptions($model, $attribute);
+>     // Modify $options here
+> 
+>     return $options;
+> }
+> ```
 
 ### Implementing Client-Side Validation <span id="implementing-client-side-validation"></span>
 

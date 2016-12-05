@@ -65,6 +65,17 @@ class RegularExpressionValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.regularExpression(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getClientOptions($model, $attribute)
+    {
         $pattern = Html::escapeJsRegularExpression($this->pattern);
 
         $options = [
@@ -78,8 +89,6 @@ class RegularExpressionValidator extends Validator
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.regularExpression(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }
