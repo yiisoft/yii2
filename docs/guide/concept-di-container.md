@@ -374,27 +374,28 @@ Advanced Practical Usage <span id="advanced-practical-usage"></span>
 ---------------
 
 Say we work on API application and have:
- - `app\components\Request` class that extends `yii\web\Request` and provides additional functionality
- - `app\components\Response` class that extends `yii\web\Response` and should have `format` property 
- set to `json` on creation
- - `app\storage\FileStorage` and `app\storage\DocumentsReader` classes the implement some logic on
- working with documents that are located in some file storage:
- 
-```php
-class FileStorage
-{
-    public function __contruct($root) {
-        // whatever
-    }
-}
-      
-class DocumentsReader
-{
-    public function __contruct(FileStorage $fs) {
-        // whatever
-    }
-}
-```
+
+- `app\components\Request` class that extends `yii\web\Request` and provides additional functionality
+- `app\components\Response` class that extends `yii\web\Response` and should have `format` property 
+  set to `json` on creation
+- `app\storage\FileStorage` and `app\storage\DocumentsReader` classes the implement some logic on
+  working with documents that are located in some file storage:
+  
+  ```php
+  class FileStorage
+  {
+      public function __contruct($root) {
+          // whatever
+      }
+  }
+  
+  class DocumentsReader
+  {
+      public function __contruct(FileStorage $fs) {
+          // whatever
+      }
+  }
+  ```
 
 It is possible to configure multiple definitions at once, passing configuration array to
 [[yii\di\Container::setDefinitions()|setDefinitions()]] or [[yii\di\Container::setSingletons()|setSingletons()]] method.
