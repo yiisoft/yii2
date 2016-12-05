@@ -12,7 +12,6 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\caching\Cache;
 use yii\helpers\Url;
-use yii\log\Logger;
 
 /**
  * UrlManager handles HTTP request parsing and creation of URLs based on a set of rules.
