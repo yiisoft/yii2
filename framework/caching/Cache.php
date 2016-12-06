@@ -505,7 +505,6 @@ abstract class Cache extends Component implements \ArrayAccess
             if ($this->setValue($key, $value, $duration) === false) {
                 $failedKeys[] = $key;
             }
-            $this->endProfile($key, __METHOD__);
         }
 
         return $failedKeys;
