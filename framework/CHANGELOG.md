@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
 - Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence` implementations, fixed SQLite implementation (boboldehampsink)
 - Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
+- Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
 
 
 2.0.11.2 February 08, 2017
