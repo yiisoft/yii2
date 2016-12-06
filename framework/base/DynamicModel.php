@@ -50,6 +50,10 @@ use yii\validators\Validator;
  * "dynamic attributes". It basically allows an attribute to be defined dynamically through its constructor
  * or [[defineAttribute()]].
  *
+ * Note that it does not support the usual validation flow as normal models, i.e. no scenarios are being defined
+ * and therefor none of the attributes is safe. This means that [[load()]] will not be able to perform massive
+ * assignment and return `false`. Attributes should be assigned via constructor instead.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
