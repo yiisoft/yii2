@@ -29,7 +29,7 @@ phpunit --group=mysql,base,i18n
 
 You can get a list of available groups via `phpunit --list-groups`.
 
-A single test class could be run like the follwing:
+A single test class could be run like the following:
 
 ```
 phpunit tests/framework/base/ObjectTest.php
