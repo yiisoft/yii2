@@ -119,20 +119,23 @@ abstract class Cache extends Component implements \ArrayAccess
 
         $this->beginProfile($builtKey, __METHOD__);
         $value = $this->getValue($builtKey);
-        $this->endProfile($builtKey, __METHOD__);
 
         if ($value === false || $this->serializer === false) {
-            return $value;
+            $result = $value;
         } elseif ($this->serializer === null) {
             $value = unserialize($value);
         } else {
             $value = call_user_func($this->serializer[1], $value);
         }
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
-            return $value[0];
+            $result = $value[0];
         } else {
-            return false;
+            $result = false;
         }
+
+        $this->endProfile($builtKey, __METHOD__);
+
+        return $result;
     }
 
     /**
@@ -192,7 +195,7 @@ abstract class Cache extends Component implements \ArrayAccess
         foreach ($keys as $key) {
             $keyMap[$key] = $this->buildKey($key);
         }
-        
+
         $this->beginProfile($keyMap, __METHOD__);
         $values = $this->getValues(array_values($keyMap));
         $results = [];
@@ -232,6 +235,8 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function set($key, $value, $duration = null, $dependency = null)
     {
+        $this->beginProfile($builtKey, __METHOD__);
+
         if ($duration === null) {
             $duration = $this->defaultDuration;
         }
@@ -247,7 +252,7 @@ abstract class Cache extends Component implements \ArrayAccess
 
         $builtKey = $this->buildKey($key);
 
-        $this->beginProfile($builtKey, __METHOD__);
+
         $setResult = $this->setValue($builtKey, $value, $duration);
         $this->endProfile($builtKey, __METHOD__);
 
@@ -287,6 +292,8 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function multiSet($items, $duration = 0, $dependency = null)
     {
+        $this->beginProfile(array_keys($items), __METHOD__);
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -303,7 +310,7 @@ abstract class Cache extends Component implements \ArrayAccess
             $data[$key] = $value;
         }
 
-        $this->beginProfile(array_keys($items), __METHOD__);
+        
         $setResult = $this->setValues($data, $duration);
         $this->endProfile(array_keys($items), __METHOD__);
 
@@ -341,6 +348,8 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function multiAdd($items, $duration = 0, $dependency = null)
     {
+        $this->beginProfile(array_keys($items), __METHOD__);
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -356,8 +365,7 @@ abstract class Cache extends Component implements \ArrayAccess
             $key = $this->buildKey($key);
             $data[$key] = $value;
         }
-
-        $this->beginProfile(array_keys($items), __METHOD__);
+        
         $addResult = $this->addValues($data, $duration);
         $this->endProfile(array_keys($items), __METHOD__);
 
