@@ -372,7 +372,7 @@ class Validator extends Component
      * @return array the client-side validation options
      * @since 2.0.11
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         return [];
     }

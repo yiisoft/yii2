@@ -234,7 +234,7 @@ class CompareValidator extends Validator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $options = [
             'operator' => $this->operator,

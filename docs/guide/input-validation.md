@@ -895,13 +895,13 @@ the former will take precedence.
 > - if you want to implement your own custom client-side validation but leave the synchronization with server-side
 > validator options;
 > - to extend or customize to fit your specific needs:
-> 
+>
 > ```php
-> protected function getClientOptions($model, $attribute)
+> public function getClientOptions($model, $attribute)
 > {
 >     $options = parent::getClientOptions($model, $attribute);
 >     // Modify $options here
-> 
+>
 >     return $options;
 > }
 > ```
