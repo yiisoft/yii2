@@ -9,6 +9,9 @@ use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
 use yiiunit\TestCase;
 
+/**
+ * @group base
+ */
 class ApplicationTest extends TestCase
 {
     public function testContainerSettingsAffectBootstrap()
