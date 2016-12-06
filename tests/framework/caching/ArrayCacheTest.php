@@ -10,7 +10,7 @@ use yii\caching\ArrayCache;
  */
 class ArrayCacheTest extends CacheTestCase
 {
-    private $_cacheInstance = null;
+    protected $_cacheInstance = null;
 
     /**
      * @return ArrayCache
