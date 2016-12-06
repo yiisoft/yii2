@@ -95,7 +95,7 @@ class CaptchaValidator extends Validator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $captcha = $this->createCaptchaAction();
         $code = $captcha->getVerifyCode(false);

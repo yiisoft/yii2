@@ -130,7 +130,7 @@ class NumberValidator extends Validator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $label = $model->getAttributeLabel($attribute);
 

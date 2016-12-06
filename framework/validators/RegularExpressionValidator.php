@@ -74,7 +74,7 @@ class RegularExpressionValidator extends Validator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $pattern = Html::escapeJsRegularExpression($this->pattern);
 

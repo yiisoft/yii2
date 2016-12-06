@@ -79,7 +79,7 @@ class BooleanValidator extends Validator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $options = [
             'trueValue' => $this->trueValue,

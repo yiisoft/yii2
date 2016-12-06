@@ -117,7 +117,7 @@ class RangeValidator extends Validator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $range = [];
         foreach ($this->range as $value) {
