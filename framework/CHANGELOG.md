@@ -65,7 +65,6 @@ Yii Framework 2 Change Log
 - Enh #11758: Implemented Dependency Injection Container configuration using Application configuration array (silverfire)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)
-- Enh #13149: Added tests for `yii\filters\PageCache` (sergeymakinen)
 
 2.0.10 October 20, 2016
 -----------------------
