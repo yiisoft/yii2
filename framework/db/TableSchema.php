@@ -35,6 +35,10 @@ class TableSchema extends Object
      */
     public $fullName;
     /**
+     * @var string the comment that has been assigned to this table.
+     */
+    public $comment;
+    /**
      * @var string[] primary keys of this table.
      */
     public $primaryKey = [];

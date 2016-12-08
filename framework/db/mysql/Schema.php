@@ -94,6 +94,7 @@ class Schema extends \yii\db\Schema
     {
         $table = new TableSchema;
         $this->resolveTableNames($table, $name);
+        $this->findTableComment($table);
 
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
@@ -118,6 +119,27 @@ class Schema extends \yii\db\Schema
             $table->fullName = $table->schemaName . '.' . $table->name;
         } else {
             $table->fullName = $table->name = $parts[0];
+        }
+    }
+
+    /**
+     * Loads the table comment into the [[TableSchema]] object.
+     * @param TableSchema $table the table metadata object
+     */
+    protected function findTableComment($table)
+    {
+
+        $sql = <<<SQL
+SELECT table_comment
+FROM information_schema.tables
+WHERE table_schema = database() AND table_name = :tableName
+SQL;
+
+        try {
+            $result = $this->db->createCommand($sql, [':tableName' => $table->name])->queryOne();
+            $table->comment = ($result['table_comment'] ? $result['table_comment'] : null);
+        } catch (\Exception $e) {
+            $table->comment = null;
         }
     }
 
