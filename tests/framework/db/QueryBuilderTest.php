@@ -1027,7 +1027,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             if (!(strncmp($column, Schema::TYPE_PK, 2) === 0 ||
                   strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
                   strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
-                  strncmp($column, Schema::TYPE_UBIGPK, 6) === 0)) {
+                  strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
+                  strncmp(substr($column, -5), 'FIRST', 5) === 0
+                )) {
                 $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
