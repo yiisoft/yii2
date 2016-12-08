@@ -424,20 +424,22 @@ class Sort extends Object
     }
 
     /**
-     * Parse params into valid sort format.
-     * The format must be:
-     * - Ascending: only attribute name
-     * - Descending: attribute name ends with `-`
+     * Parses [[sortParam]] into an array of sort attributes.
      *
-     * Example:
+     * The format must be:
+     * - Ascending: only attribute name, e.g. 'category'
+     * - Descending: attribute name is prefixed with `-`, e.g. '-category'
+     *
+     * The following return value will result in ascending sort by `category` and descending sort by `created_at`:
+     *
      * ```php
      * [
      *     'category',
-     *     'created_at-'
+     *     '-created_at'
      * ]
      * ```
-     * @param array $params The request params
-     * @return array the valid sort attributes format
+     * @param array $params the value of the [[sortParam]].
+     * @return array the sort attributes.
      * @since 2.0.11
      */
     protected function parseSortAttributes($params)
