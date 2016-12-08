@@ -956,7 +956,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(255) FIRST',
                     'postgres' => 'varchar(255)',
-                    'sqlite' => 'varchar(255)',
                     'oci' => 'VARCHAR2(255) FIRST',
                     'sqlsrv' => 'varchar(255)',
                     'cubrid' => 'varchar(255) FIRST',
@@ -979,7 +978,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(255) NOT NULL FIRST',
                     'postgres' => 'varchar(255) NOT NULL',
-                    'sqlite' => 'varchar(255) NOT NULL',
                     'oci' => 'VARCHAR2(255) NOT NULL FIRST',
                     'sqlsrv' => 'varchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL FIRST',
