@@ -244,7 +244,7 @@ class Sort extends Object
                 $params = $request instanceof Request ? $request->getQueryParams() : [];
             }
             if (isset($params[$this->sortParam])) {
-                $attributes = $this->parseSortAttributes($params[$this->sortParam]);
+                $attributes = $this->parseSortParam($params[$this->sortParam]);
                 foreach ($attributes as $attribute) {
                     $descending = false;
                     if (strncmp($attribute, '-', 1) === 0) {
@@ -442,7 +442,7 @@ class Sort extends Object
      * @return array the sort attributes.
      * @since 2.0.11
      */
-    protected function parseSortAttributes($params)
+    protected function parseSortParam($params)
     {
         return is_scalar($params) ? explode($this->separator, $params) : [];
     }
