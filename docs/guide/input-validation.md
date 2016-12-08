@@ -331,8 +331,9 @@ the method/function is:
 /**
  * @param string $attribute the attribute currently being validated
  * @param mixed $params the value of the "params" given in the rule
+ * @param \yii\validators\InlineValidator related InlineValidator instance
  */
-function ($attribute, $params)
+function ($attribute, $params, $validator)
 ```
 
 If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
@@ -355,7 +356,7 @@ class MyForm extends Model
             ['country', 'validateCountry'],
 
             // an inline validator defined as an anonymous function
-            ['token', function ($attribute, $params) {
+            ['token', function ($attribute, $params, $validator) {
                 if (!ctype_alnum($this->$attribute)) {
                     $this->addError($attribute, 'The token must contain letters or digits.');
                 }
@@ -363,7 +364,7 @@ class MyForm extends Model
         ];
     }
 
-    public function validateCountry($attribute, $params)
+    public function validateCountry($attribute, $params, $validator)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
             $this->addError($attribute, 'The country must be either "USA" or "Web".');
@@ -371,6 +372,14 @@ class MyForm extends Model
     }
 }
 ```
+
+> Note: Since version 2.0.11 you can use [[yii\validators\InlineValidator::addError()]] for adding errors instead. That way the error
+> message can be formatted using [[yii\i18n\I18N::format()]] right away. Use `{attribute}` and `{value}` in the error
+> message to refer to an attribute label (no need to get it manually) and attribute value accordingly:
+>
+> ```php
+> $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
+> ```
 
 > Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
   or if they have already failed some validation rules. If you want to make sure a rule is always applied,

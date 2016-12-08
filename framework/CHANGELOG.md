@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #7727: Fixed truncateHtml leaving extra tags (developeruz)
 - Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
+- Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
 - Enh #6809: Added `yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
 - Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
