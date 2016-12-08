@@ -243,8 +243,8 @@ class Sort extends Object
                 $request = Yii::$app->getRequest();
                 $params = $request instanceof Request ? $request->getQueryParams() : [];
             }
-            if (isset($params[$this->sortParam]) && is_scalar($params[$this->sortParam])) {
-                $attributes = explode($this->separator, $params[$this->sortParam]);
+            if (isset($params[$this->sortParam])) {
+                $attributes = $this->parseSortAttributes($params[$this->sortParam]);
                 foreach ($attributes as $attribute) {
                     $descending = false;
                     if (strncmp($attribute, '-', 1) === 0) {
@@ -421,5 +421,27 @@ class Sort extends Object
     public function hasAttribute($name)
     {
         return isset($this->attributes[$name]);
+    }
+
+    /**
+     * Parse params into valid sort format.
+     * The format must be:
+     * - Ascending: only attribute name
+     * - Descending: attribute name ends with `-`
+     *
+     * Example:
+     * ```php
+     * [
+     *     'category',
+     *     'created_at-'
+     * ]
+     * ```
+     * @param array $params The request params
+     * @return array the valid sort attributes format
+     * @since 2.0.11
+     */
+    protected function parseSortAttributes($params)
+    {
+        return is_scalar($params) ? explode($this->separator, $params) : [];
     }
 }
