@@ -4,19 +4,19 @@ Yii Framework 2 Change Log
 2.1.0 under development
 -----------------------
 
-- Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
 - Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)
 - Enh #13006: Added a `/` to the `yii\captcha\Captcha::$captchaAction` string to work correctly in a module also (boehsermoe)
 - Removed methods marked as deprected in 2.0.x (samdark)
-- Chg #7770: Updated the fallback date formats used when no `intl` extension is installed to match the defaults of the latest ICU version (cebe)
 - Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
 - Chg #11397: Minimum required version of PHP is 5.5.0 now (samdark)
-- Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
-- Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
-- Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
 - Chg: Removed `yii\base\Object::class` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
+- Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
+- Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
+- Chg #7770: Updated the fallback date formats used when no `intl` extension is installed to match the defaults of the latest ICU version (cebe)
+- Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
+- Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 
 2.0.11 under development
 ------------------------
