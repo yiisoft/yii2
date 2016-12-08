@@ -25,8 +25,6 @@ var vm = require('vm');
 var yii;
 
 describe('yii.validation', function () {
-    this.timeout(15000);
-
     var VALIDATOR_SUCCESS_MESSAGE = 'should leave messages as is';
     var VALIDATOR_ERROR_MESSAGE = 'should add appropriate errors(s) to messages';
 
