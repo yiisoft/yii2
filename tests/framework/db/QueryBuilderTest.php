@@ -963,7 +963,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_INTEGER . "NOT NULL FIRST",
+                Schema::TYPE_INTEGER . " NOT NULL FIRST",
                 $this->integer()->append('NOT NULL')->first(),
                 [
                     'mysql' => "int(11) NOT NULL FIRST",
