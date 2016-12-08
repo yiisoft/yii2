@@ -7,7 +7,7 @@
 
 namespace yii\db\mssql;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 
 /**
@@ -172,7 +172,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
      * @return string the SQL statement for checking integrity
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
@@ -181,7 +181,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $table = $this->db->quoteTableName($table);
         if ($this->db->getTableSchema($table) === null) {
-            throw new InvalidParamException("Table not found: $table");
+            throw new InvalidArgumentException("Table not found: $table");
         }
         $enable = $check ? 'CHECK' : 'NOCHECK';
 

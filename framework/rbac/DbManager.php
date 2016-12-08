@@ -13,7 +13,7 @@ use yii\db\Connection;
 use yii\db\Query;
 use yii\db\Expression;
 use yii\base\InvalidCallException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\di\Instance;
 
 /**
@@ -476,7 +476,7 @@ class DbManager extends BaseManager
         $role = $this->getRole($roleName);
 
         if (is_null($role)) {
-            throw new InvalidParamException("Role \"$roleName\" not found.");
+            throw new InvalidArgumentException("Role \"$roleName\" not found.");
         }
 
         $result = [];
@@ -712,11 +712,11 @@ class DbManager extends BaseManager
     public function addChild($parent, $child)
     {
         if ($parent->name === $child->name) {
-            throw new InvalidParamException("Cannot add '{$parent->name}' as a child of itself.");
+            throw new InvalidArgumentException("Cannot add '{$parent->name}' as a child of itself.");
         }
 
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException('Cannot add a role as a child of a permission.');
+            throw new InvalidArgumentException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {

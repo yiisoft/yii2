@@ -9,8 +9,8 @@ namespace yii\web;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 
 /**
  * Session provides session data management and the related configurations.
@@ -323,7 +323,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * Sets the current session save path.
      * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
      * @param string $value the current session save path. This can be either a directory name or a path alias.
-     * @throws InvalidParamException if the path is not a valid directory
+     * @throws InvalidArgumentException if the path is not a valid directory
      */
     public function setSavePath($value)
     {
@@ -331,7 +331,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if (is_dir($path)) {
             session_save_path($path);
         } else {
-            throw new InvalidParamException("Session save path is not a valid directory: $value");
+            throw new InvalidArgumentException("Session save path is not a valid directory: $value");
         }
     }
 
@@ -349,7 +349,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * The cookie parameters passed to this method will be merged with the result
      * of `session_get_cookie_params()`.
      * @param array $value cookie parameters, valid keys include: `lifetime`, `path`, `domain`, `secure` and `httponly`.
-     * @throws InvalidParamException if the parameters are incomplete.
+     * @throws InvalidArgumentException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
     public function setCookieParams(array $value)
@@ -360,7 +360,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the session cookie parameters.
      * This method is called by [[open()]] when it is about to open the session.
-     * @throws InvalidParamException if the parameters are incomplete.
+     * @throws InvalidArgumentException if the parameters are incomplete.
      * @see http://us2.php.net/manual/en/function.session-set-cookie-params.php
      */
     private function setCookieParamsInternal()
@@ -369,7 +369,8 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
         if (isset($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly'])) {
             session_set_cookie_params($data['lifetime'], $data['path'], $data['domain'], $data['secure'], $data['httponly']);
         } else {
-            throw new InvalidParamException('Please make sure cookieParams contains these elements: lifetime, path, domain, secure and httponly.');
+            throw new InvalidArgumentException('Please make sure cookieParams contains these elements: lifetime, '
+                . 'path, domain, secure and httponly.');
         }
     }
 
@@ -423,7 +424,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * @param float $value the probability (percentage) that the GC (garbage collection) process is started on every session initialization.
-     * @throws InvalidParamException if the value is not between 0 and 100.
+     * @throws InvalidArgumentException if the value is not between 0 and 100.
      */
     public function setGCProbability($value)
     {
@@ -432,7 +433,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             ini_set('session.gc_probability', floor($value * 21474836.47));
             ini_set('session.gc_divisor', 2147483647);
         } else {
-            throw new InvalidParamException('GCProbability must be a value between 0 and 100.');
+            throw new InvalidArgumentException('GCProbability must be a value between 0 and 100.');
         }
     }
 
