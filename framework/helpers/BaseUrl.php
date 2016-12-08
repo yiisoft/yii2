@@ -309,16 +309,22 @@ class BaseUrl
      * Returns the URL previously [[remember()|remembered]].
      *
      * @param string $name the named associated with the URL that was remembered previously.
+     * @param boolean $clear Clear after recover previous url
      * If not set, it will use [[\yii\web\User::returnUrlParam]].
      * @return string|null the URL previously remembered. Null is returned if no URL was remembered with the given name.
      * @see remember()
      */
-    public static function previous($name = null)
+    public static function previous($name = null,$clear=false)
     {
         if ($name === null) {
             return Yii::$app->getUser()->getReturnUrl();
         } else {
-            return Yii::$app->getSession()->get($name);
+            $previousUrl=Yii::$app->getSession()->get($name);
+            if($clear){
+                Yii::$app->getSession()->remove($name);
+            }
+            
+            return $previousUrl;
         }
     }
 
