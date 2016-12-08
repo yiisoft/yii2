@@ -86,6 +86,17 @@ class CaptchaValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $captcha = $this->createCaptchaAction();
         $code = $captcha->getVerifyCode(false);
         $hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
@@ -101,8 +112,6 @@ class CaptchaValidator extends Validator
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

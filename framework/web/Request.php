@@ -529,9 +529,27 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the schema and host part of the current request URL.
+     *
      * The returned URL does not have an ending slash.
-     * By default this is determined based on the user request information.
+     *
+     * By default this value is based on the user request information. This method will
+     * return the value of `$_SERVER['HTTP_HOST']` if it is available or `$_SERVER['SERVER_NAME']` if not.
+     * You may want to check out the [PHP documentation](http://php.net/manual/en/reserved.variables.server.php)
+     * for more information on these variables.
+     *
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
+     *
+     * > Warning: Dependent on the server configuration this information may not be
+     * > reliable and [may be faked by the user sending the HTTP request](https://www.acunetix.com/vulnerabilities/web/host-header-attack).
+     * > If the webserver is configured to serve the same site independent of the value of
+     * > the `Host` header, this value is not reliable. In such situations you should either
+     * > fix your webserver configuration or explicitly set the value by setting the [[setHostInfo()|hostInfo]] property.
+     * > If you don't have access to the server configuration, you can setup [[\yii\filters\HostControl]] filter at
+     * > application level in order to protect against such kind of attack.
+     *
+     * @property string|null schema and hostname part (with port number if needed) of the request URL
+     * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+     * See [[getHostInfo()]] for security related notes on this property.
      * @return string|null schema and hostname part (with port number if needed) of the request URL
      * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * @see setHostInfo()
@@ -560,6 +578,7 @@ class Request extends \yii\base\Request
      * This setter is provided in case the schema and hostname cannot be determined
      * on certain Web servers.
      * @param string|null $value the schema and host part of the application URL. The trailing slashes will be removed.
+     * @see getHostInfo() for security related notes on this property.
      */
     public function setHostInfo($value)
     {
@@ -570,6 +589,10 @@ class Request extends \yii\base\Request
     /**
      * Returns the host part of the current request URL.
      * Value is calculated from current [[getHostInfo()|hostInfo]] property.
+     *
+     * > Warning: The content of this value may not be reliable, dependent on the server
+     * > configuration. Please refer to [[getHostInfo()]] for more information.
+     *
      * @return string|null hostname part of the request URL (e.g. `www.yiiframework.com`)
      * @see getHostInfo()
      * @since 2.0.10
