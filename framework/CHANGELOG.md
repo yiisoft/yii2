@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #12714: Fixed `yii\validation\EmailValidator` to prevent false-positives checks when property `checkDns` is set to `true` (silverfire)
 - Bug #12735: Fixed `yii\console\controllers\MigrateController` creating multiple primary keys for field `bigPrimaryKey:unsigned` (SG5)
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
+- Bug #12795: Fixed inconsistency, `Yii::$app->controller` is available after handling the request since 2.0.10, this is now also the case for `Yii::$app->controller->action` (cebe)
 - Bug #12803, #12921: Fixed BC break in `yii.activeForm.js` introduced in #11999. Reverted commit 3ba72da (silverfire)
 - Bug #12810: Fixed `yii\rbac\DbManager::getChildRoles()` and `yii\rbac\PhpManager::getChildRoles()` throws an exception when role has no child roles (mysterydragon)
 - Bug #12822: Fixed `yii\i18n\Formatter::asTimestamp()` to process timestamp with miliseconds correctly (h311ion)
