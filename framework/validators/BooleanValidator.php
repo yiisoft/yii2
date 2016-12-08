@@ -70,6 +70,17 @@ class BooleanValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.boolean(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $options = [
             'trueValue' => $this->trueValue,
             'falseValue' => $this->falseValue,
@@ -86,8 +97,6 @@ class BooleanValidator extends Validator
             $options['strict'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.boolean(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

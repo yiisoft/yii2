@@ -306,7 +306,7 @@ class RbacController extends Controller
 ```
 
 > Note: アドバンストテンプレートを使おうとするときは、`RbacController` を `console/controllers`
-ディレクトリの中に置いて、名前空間を `console/controllers` に変更する必要があります。
+ディレクトリの中に置いて、名前空間を `console\controllers` に変更する必要があります。
 
 `yii rbac/init` によってコマンドを実行した後には、次の権限階層が得られます。
 

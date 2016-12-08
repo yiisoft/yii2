@@ -29,14 +29,14 @@ The simple way to upgrade Yii, for example to version 2.0.10 (replace this with 
     composer require "yiisoft/yii2:~2.0.10"
 
 This however may fail due to changes in the dependencies of yiisoft/yii2, which may change due to security updates
-in other libraries or by adding support for newer versions. `composer require` will not update any other packages 
+in other libraries or by adding support for newer versions. `composer require` will not update any other packages
 as a safety feature.
 
 The better way to upgrade is to change the `composer.json` file to require the new Yii version and then
 run `composer update` by specifying all packages that are allowed to be updated.
 
     composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
-    
+
 The above command will only update the specified packages and leave the versions of all other dependencies intact.
 This helps to update packages step by step without causing a lot of package version changes that might break in some way.
 If you feel lucky you can of course update everything to the latest version by running `composer update` without
@@ -56,6 +56,9 @@ Upgrade from Yii 2.0.10
 * A new method `public function emulateExecution($value = true);` has been added to the `yii\db\QueryInterace`.
   This method is implemented in the `yii\db\QueryTrait`, so this only affects your code if you implement QueryInterface
   in a class that does not use the trait.
+
+* `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
+  If you extend from these classes and override these methods, you must make them public as well.
 
 Upgrade from Yii 2.0.9
 ----------------------
