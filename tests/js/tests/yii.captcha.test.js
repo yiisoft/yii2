@@ -51,30 +51,21 @@ describe('yii.captcha', function () {
             hashKey: 'yiiCaptcha/posts/captcha'
         };
 
-        describe('with single element', function () {
-            withData({
-                'no method specified': [function () {
-                    $captcha = $('#captcha').yiiCaptcha(settings);
-                }, settings],
-                'no method specified, custom options': [function () {
-                    $captcha = $('#captcha').yiiCaptcha(customSettings);
-                }, customSettings],
-                'manual method call': [function () {
-                    $captcha = $('#captcha').yiiCaptcha('init', settings);
-                }, settings]
-            }, function (initFunction, expectedSettings) {
-                it('should save settings', function () {
-                    initFunction();
-                    assert.deepEqual($captcha.data('yiiCaptcha'), {settings: expectedSettings});
-                });
-            });
-        });
-
-        describe('with multiple elements', function () {
-            it('should save settings for all elements', function () {
+        withData({
+            'no method specified': [function () {
                 $captcha = $('.captcha').yiiCaptcha(settings);
-                assert.deepEqual($('#captcha').data('yiiCaptcha'), {settings: settings});
-                assert.deepEqual($('#captcha-2').data('yiiCaptcha'), {settings: settings});
+            }, settings],
+            'no method specified, custom options': [function () {
+                $captcha = $('.captcha').yiiCaptcha(customSettings);
+            }, customSettings],
+            'manual method call': [function () {
+                $captcha = $('.captcha').yiiCaptcha('init', settings);
+            }, settings]
+        }, function (initFunction, expectedSettings) {
+            it('should save settings for all elements', function () {
+                initFunction();
+                assert.deepEqual($('#captcha').data('yiiCaptcha'), {settings: expectedSettings});
+                assert.deepEqual($('#captcha-2').data('yiiCaptcha'), {settings: expectedSettings});
             });
         });
     });
@@ -117,60 +108,28 @@ describe('yii.captcha', function () {
     describe('destroy method', function () {
         var ajaxStub;
 
-        beforeEach(function () {
+        before(function () {
             ajaxStub = sinon.stub($, 'ajax');
         });
 
-        afterEach(function () {
+        after(function () {
             ajaxStub.restore();
         });
 
-        describe('with single element', function () {
-            it('should remove event handlers with saved settings and return initial jQuery object', function () {
-                $captcha = $('#captcha').yiiCaptcha(settings);
-                var destroyResult = $captcha.yiiCaptcha('destroy');
-                $captcha.trigger('click');
+        var message = 'should remove event handlers with saved settings for destroyed element only and return ' +
+            'initial jQuery object';
+        it(message, function () {
+            $captcha = $('.captcha').yiiCaptcha(settings);
+            var $captcha1 = $('#captcha');
+            var $captcha2 = $('#captcha-2');
+            var destroyResult = $captcha1.yiiCaptcha('destroy');
+            $captcha1.trigger('click');
+            $captcha2.trigger('click');
 
-                assert.strictEqual(destroyResult, $captcha);
-                assert.isFalse(ajaxStub.called);
-                assert.isUndefined($captcha.data('yiiCaptcha'));
-            });
-        });
-
-        describe('with multiple elements', function () {
-            var message = 'should remove event handlers with saved settings for all elements and return initial ' +
-                'jQuery object';
-            it(message, function () {
-                $captcha = $('.captcha').yiiCaptcha(settings);
-                var $captcha1 = $('#captcha');
-                var $captcha2 = $('#captcha-2');
-                var destroyResult = $captcha.yiiCaptcha('destroy');
-                $captcha1.trigger('click');
-                $captcha2.trigger('click');
-
-                assert.strictEqual(destroyResult, $captcha);
-                assert.isFalse(ajaxStub.called);
-                assert.isUndefined($captcha1.data('yiiCaptcha'));
-                assert.isUndefined($captcha2.data('yiiCaptcha'));
-            });
-        });
-
-        describe('with multiple elements, destroy single element', function () {
-            var message = 'should remove event handlers with saved settings for destroyed element only and return ' +
-                'initial jQuery object';
-            it(message, function () {
-                $captcha = $('.captcha').yiiCaptcha(settings);
-                var $captcha1 = $('#captcha');
-                var $captcha2 = $('#captcha-2');
-                var destroyResult = $captcha1.yiiCaptcha('destroy');
-                $captcha1.trigger('click');
-                $captcha2.trigger('click');
-
-                assert.strictEqual(destroyResult, $captcha1);
-                assert.isTrue(ajaxStub.calledOnce);
-                assert.isUndefined($captcha1.data('yiiCaptcha'));
-                assert.deepEqual($captcha2.data('yiiCaptcha'), {settings: settings});
-            });
+            assert.strictEqual(destroyResult, $captcha1);
+            assert.isTrue(ajaxStub.calledOnce);
+            assert.isUndefined($captcha1.data('yiiCaptcha'));
+            assert.deepEqual($captcha2.data('yiiCaptcha'), {settings: settings});
         });
     });
 
