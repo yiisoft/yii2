@@ -373,7 +373,7 @@ class MyForm extends Model
 }
 ```
 
-> Note: you can use [[yii\validators\InlineValidator::addError()]] for adding errors instead. That way the error
+> Note: Since version 2.0.11 you can use [[yii\validators\InlineValidator::addError()]] for adding errors instead. That way the error
 > message can be formatted using [[yii\i18n\I18N::format()]] right away. Use `{attribute}` and `{value}` in the error
 > message to refer to an attribute label (no need to get it manually) and attribute value accordingly:
 >
