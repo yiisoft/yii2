@@ -146,6 +146,10 @@ $subQuery = (new Query())->select('id')->from('user')->where('status=1');
 $query->from(['u' => $subQuery]);
 ```
 
+#### Префиксы
+
+Также может применяться [[yii\db\Connection::$tablePrefix|tablePrefix]] по умолчанию. Подробное описание смотрите
+в подразделе [«Экранирование имён таблиц и столбцов» раздела «Объекты доступа к данным (DAO)»](guide-db-dao.html#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
