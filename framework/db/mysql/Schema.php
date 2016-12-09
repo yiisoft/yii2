@@ -125,10 +125,10 @@ class Schema extends \yii\db\Schema
     /**
      * Loads the table comment into the [[TableSchema]] object.
      * @param TableSchema $table the table metadata object
+     * @since 2.0.12
      */
     protected function findTableComment($table)
     {
-
         $sql = <<<SQL
 SELECT table_comment
 FROM information_schema.tables

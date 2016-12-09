@@ -36,6 +36,7 @@ class TableSchema extends Object
     public $fullName;
     /**
      * @var string the comment that has been assigned to this table.
+     * @since 2.0.12
      */
     public $comment;
     /**
