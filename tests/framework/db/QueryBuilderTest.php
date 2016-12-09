@@ -934,7 +934,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST",
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
-                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY FIRST',
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST",
                 ],
@@ -945,7 +945,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) FIRST",
                     'postgres' => 'integer',
-                    'oci' => "NUMBER(10) FIRST",
+                    'oci' => "NUMBER(10)",
                     'sqlsrv' => 'int',
                     'cubrid' => "int FIRST",
                 ],
@@ -956,7 +956,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(255) FIRST',
                     'postgres' => 'varchar(255)',
-                    'oci' => 'VARCHAR2(255) FIRST',
+                    'oci' => 'VARCHAR2(255)',
                     'sqlsrv' => 'varchar(255)',
                     'cubrid' => 'varchar(255) FIRST',
                 ],
@@ -967,7 +967,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) NOT NULL FIRST",
                     'postgres' => 'integer NOT NULL',
-                    'oci' => "NUMBER(10) NOT NULL FIRST",
+                    'oci' => "NUMBER(10) NOT NULL",
                     'sqlsrv' => 'int NOT NULL',
                     'cubrid' => "int NOT NULL FIRST",
                 ],
@@ -978,7 +978,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'varchar(255) NOT NULL FIRST',
                     'postgres' => 'varchar(255) NOT NULL',
-                    'oci' => 'VARCHAR2(255) NOT NULL FIRST',
+                    'oci' => 'VARCHAR2(255) NOT NULL',
                     'sqlsrv' => 'varchar(255) NOT NULL',
                     'cubrid' => 'varchar(255) NOT NULL FIRST',
                 ],
