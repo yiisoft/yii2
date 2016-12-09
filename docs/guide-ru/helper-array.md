@@ -81,7 +81,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 Часто нужно извлечь столбец значений из многомерного массива или объекта. Например, список ID.
 
 ```php
-$data = [
+$array = [
     ['id' => '123', 'data' => 'abc'],
     ['id' => '345', 'data' => 'def'],
 ];
