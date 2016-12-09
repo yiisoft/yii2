@@ -173,7 +173,7 @@ SQL;
     protected function getTableSequenceName($tableName)
     {
 
-        $seq_name_sql = <<<SQL
+        $sequenceNameSql = <<<SQL
 SELECT 
     UD.REFERENCED_NAME AS SEQUENCE_NAME
 FROM USER_DEPENDENCIES UD
@@ -183,7 +183,7 @@ WHERE
     AND UD.TYPE = 'TRIGGER'
     AND UD.REFERENCED_TYPE = 'SEQUENCE'
 SQL;
-        $sequenceName = $this->db->createCommand($seq_name_sql, [':tableName' => $tableName])->queryScalar();
+        $sequenceName = $this->db->createCommand($sequenceNameSql, [':tableName' => $tableName])->queryScalar();
         return $sequenceName === false ? null : $sequenceName;
     }
 
