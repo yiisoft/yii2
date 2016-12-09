@@ -296,6 +296,7 @@ class PageCacheTest extends TestCase
             $this->mockWebApplication();
             $controller = new Controller('test', Yii::$app);
             $action = new Action('test', $controller);
+            Yii::$app->requestedRoute = $action->uniqueId;
             $filter = new PageCache([
                 'cache' => $cache = new ArrayCache(),
                 'view' => new View(),
@@ -317,6 +318,7 @@ class PageCacheTest extends TestCase
             $this->mockWebApplication();
             $controller = new Controller('test', Yii::$app);
             $action = new Action('test2', $controller);
+            Yii::$app->requestedRoute = $action->uniqueId;
             $filter = new PageCache([
                 'cache' => $cache,
                 'view' => new View(),
