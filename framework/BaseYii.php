@@ -139,20 +139,20 @@ class BaseYii
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
                 return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
-            } else {
-                foreach (static::$aliases[$root] as $name => $path) {
-                    if (strpos($alias . '/', $name . '/') === 0) {
-                        return $path . substr($alias, strlen($name));
-                    }
+            }
+
+            foreach (static::$aliases[$root] as $name => $path) {
+                if (strpos($alias . '/', $name . '/') === 0) {
+                    return $path . substr($alias, strlen($name));
                 }
             }
         }
 
         if ($throwException) {
             throw new InvalidParamException("Invalid path alias: $alias");
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -170,11 +170,11 @@ class BaseYii
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
                 return $root;
-            } else {
-                foreach (static::$aliases[$root] as $name => $path) {
-                    if (strpos($alias . '/', $name . '/') === 0) {
-                        return $name;
-                    }
+            }
+
+            foreach (static::$aliases[$root] as $name => $path) {
+                if (strpos($alias . '/', $name . '/') === 0) {
+                    return $name;
                 }
             }
         }
@@ -346,9 +346,9 @@ class BaseYii
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
-        } else {
-            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
         }
+
+        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
 
     private static $_logger;
@@ -360,9 +360,9 @@ class BaseYii
     {
         if (self::$_logger !== null) {
             return self::$_logger;
-        } else {
-            return self::$_logger = static::createObject('yii\log\Logger');
         }
+
+        return self::$_logger = static::createObject('yii\log\Logger');
     }
 
     /**
@@ -499,14 +499,14 @@ class BaseYii
     {
         if (static::$app !== null) {
             return static::$app->getI18n()->translate($category, $message, $params, $language ?: static::$app->language);
-        } else {
-            $p = [];
-            foreach ((array) $params as $name => $value) {
-                $p['{' . $name . '}'] = $value;
-            }
-
-            return ($p === []) ? $message : strtr($message, $p);
         }
+
+        $placeholders = [];
+        foreach ((array) $params as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        return ($placeholders === []) ? $message : strtr($message, $placeholders);
     }
 
     /**

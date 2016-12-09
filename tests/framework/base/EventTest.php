@@ -12,8 +12,7 @@ use yii\base\Event;
 use yiiunit\TestCase;
 
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @group base
  */
 class EventTest extends TestCase
 {
