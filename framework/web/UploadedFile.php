@@ -7,6 +7,7 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\BaseObject;
 use yii\helpers\Html;
 
@@ -160,6 +161,7 @@ class UploadedFile extends BaseObject
     public function saveAs($file, $deleteTempFile = true)
     {
         if ($this->error == UPLOAD_ERR_OK) {
+            $file = Yii::getAlias($file);
             if ($deleteTempFile) {
                 return move_uploaded_file($this->tempName, $file);
             } elseif (is_uploaded_file($this->tempName)) {
