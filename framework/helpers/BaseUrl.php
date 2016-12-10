@@ -223,10 +223,7 @@ class BaseUrl
             return $url;
         }
 
-        if (
-            substr($url, 0, 2) !== '//'
-            && (($pos = strpos($url, ':')) === false || !ctype_alpha(substr($url, 0, $pos)))
-        ) {
+        if (static::isRelative($url)) {
             // turn relative URL into absolute
             $url = static::getUrlManager()->getHostInfo() . '/' . ltrim($url, '/');
         }
