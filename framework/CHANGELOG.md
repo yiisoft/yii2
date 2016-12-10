@@ -27,6 +27,7 @@ Yii Framework 2 Change Log
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
 - Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
 - Bug #13089: Fixed `yii\console\controllers\AssetController::adjustCssUrl()` breaks URL reference specification (`url(#id)`) (vitalyzhakov)
+- Bug #13159: Fixed `destroy` method in `yii.captcha.js` which did not work as expected (arogachev)
 - Bug #7727: Fixed truncateHtml leaving extra tags (developeruz)
 - Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
