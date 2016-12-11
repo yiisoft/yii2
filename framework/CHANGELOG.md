@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #13159: Fixed `destroy` method in `yii.captcha.js` which did not work as expected (arogachev)
 - Bug #7727: Fixed truncateHtml leaving extra tags (developeruz)
 - Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
+- Bug #13105: Fixed `validate()` method in `yii.activeForm.js` to prevent unexpected form submit when `forceValidate` set to `true` (silverfire)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
