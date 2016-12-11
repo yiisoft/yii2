@@ -441,6 +441,7 @@ class Sort extends Object
      * @param array $params the value of the [[sortParam]].
      * @return array the sort attributes.
      * @since 2.0.11
+     * @see separator
      */
     protected function parseSortParam($params)
     {

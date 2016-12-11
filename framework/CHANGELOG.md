@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
 - Enh #11163: Added separate method for client-side validation options in `yii\validators\Validator` (arogachev)
 - Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
+- Enh #11758: Implemented Dependency Injection Container configuration using Application configuration array (silverfire)
 - Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
 - Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
 - Enh #12399: Added `ActiveField::addAriaAttributes` property for `aria-required` and `aria-invalid` attributes rendering (Oxyaction, samdark)
@@ -62,8 +63,7 @@ Yii Framework 2 Change Log
 - Enh #12988: Changed `textarea` method within the `yii\helpers\BaseHtml` class to allow users to control whether html entities found within `$value` will be double-encoded or not (cyphix333)
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul, rob006)
 - Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options. (timbeks)
-- Enh #11758: Implemented Dependency Injection Container configuration using Application configuration array (silverfire)
-- Enh: Added `yii\data\Sort::parseSortAttributes` allowing customize others params request formats in descendant class (leandrogehlen)
+- Enh #13179: Added `yii\data\Sort::parseSortParam` allowing customize sort param in descendant class (leandrogehlen)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)
 
