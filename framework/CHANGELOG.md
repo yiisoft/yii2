@@ -70,6 +70,7 @@ Yii Framework 2 Change Log
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
+- Enh #11959: Added `yii\caching\Cache::closure()` method to cache closures (silverfire)
 
 2.0.10 October 20, 2016
 -----------------------

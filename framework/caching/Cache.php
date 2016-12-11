@@ -7,6 +7,7 @@
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
 
@@ -536,5 +537,45 @@ abstract class Cache extends Component implements \ArrayAccess
     public function offsetUnset($key)
     {
         $this->delete($key);
+    }
+
+    /**
+     * Method combines both [[set()]] and [[get()]] methods to retrieve value identified by a $key,
+     * or to store the result of $closure execution is there is no cache available for the $key.
+     *
+     * Usage example:
+     *
+     * ```php
+     * public function getTopProducts($count = 10) {
+     *     $cache = $this->cache; // Could be Yii::$app->cache
+     *     return $cache->closure(['top-n-products', 'n' => $count], function ($cache) use ($count) {
+     *         return Products::find()->mostPopular()->limit(10)->all();
+     *     }, 1000);
+     * }
+     * ```
+     *
+     * @param mixed $key a key identifying the value to be cached. This can be a simple string or
+     * a complex data structure consisting of factors representing the key.
+     * @param \Closure $closure the closure that will be used to generate a value to be cached
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
+     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
+     * This parameter is ignored if [[serializer]] is false.
+     * @return mixed result of $closure execution
+     * @since 2.0.11
+     */
+    public function closure($key, \Closure $closure, $duration = null, $dependency = null)
+    {
+        if (($value = $this->get($key)) !== false) {
+            return $value;
+        }
+
+        $value = call_user_func($closure, $this);
+        if (!$this->set($key, $value, $duration, $dependency)) {
+            Yii::warning("Failed to set cache value with key \"$key\"", __METHOD__);
+        }
+
+        return $value;
     }
 }
