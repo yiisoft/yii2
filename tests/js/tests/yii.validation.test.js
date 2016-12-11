@@ -8,7 +8,7 @@ assert.isDeferred = function (object) {
     return String(object.resolve) === String($.Deferred().resolve);
 };
 
-var sinon = require('sinon');
+var sinon;
 var withData = require('leche').withData;
 
 var StringUtils = {
@@ -25,8 +25,6 @@ var vm = require('vm');
 var yii;
 
 describe('yii.validation', function () {
-    this.timeout(15000);
-
     var VALIDATOR_SUCCESS_MESSAGE = 'should leave messages as is';
     var VALIDATOR_ERROR_MESSAGE = 'should add appropriate errors(s) to messages';
 
@@ -82,6 +80,7 @@ describe('yii.validation', function () {
     before(function () {
         $ = window.$;
         registerTestableCode();
+        sinon = require('sinon');
     });
 
     it('should exist', function () {

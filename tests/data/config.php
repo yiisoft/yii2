@@ -43,6 +43,12 @@ $config = [
             'password' => 'postgres',
             'fixture' => __DIR__ . '/postgres.sql',
         ],
+        'oci' => [
+            'dsn' => 'oci:dbname=LOCAL_XE;charset=AL32UTF8;',
+            'username' => '',
+            'password' => '',
+            'fixture' => __DIR__ . '/oci.sql',
+        ],
     ],
 ];
 
