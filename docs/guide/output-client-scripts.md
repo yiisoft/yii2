@@ -1,23 +1,24 @@
 Working with Client Scripts
 ===========================
 
-Modern web applications usually not only contain static HTML pages that are
-rendered and sent to the browser but also contain Javascript that is used
-to modify the page in the browser by manipulating existing elements and also
+Modern web applications, additionally to static HTML pages that are
+rendered and sent to the browser, contain JavaScript that is used
+to modify the page in the browser by manipulating existing elements or
 loading new content via AJAX.
-This section describes the methods provided by Yii for adding JavaScript and CSS to a website as well as dynamically adjusting these.
+This section describes methods provided by Yii for adding JavaScript and CSS to a website as well as dynamically adjusting these.
 
 ## Registering scripts <span id="register-scripts"></span>
 
 When working with the [[yii\web\View]] object you can dynamically register frontend scripts.
 There are two dedicated methods for this:
-[[yii\web\View::registerJs()|registerJs()]] for inline scripts and
-[[yii\web\View::registerJsFile()|registerJsFile()]] for external scripts.
+
+- [[yii\web\View::registerJs()|registerJs()]] for inline scripts
+- [[yii\web\View::registerJsFile()|registerJsFile()]] for external scripts
 
 ### Registering inline scripts <span id="inline-scripts"></span>
 
-Inline scripts are useful for configuration and dynamically generated code and also for small snippets created by reusable frontend code contained in [widgets](structure-widgets.md).
-The method for adding these can be used as follows:
+Inline scripts are useful for configuration, dynamically generated code and small snippets created by reusable frontend code contained in [widgets](structure-widgets.md).
+The [[yii\web\View::registerJs()|registerJs()]] method for adding these can be used as follows:
 
 ```php
 $this->registerJs(
@@ -28,7 +29,7 @@ $this->registerJs(
 ```
 
 The first argument is the actual JS code we want to insert into the page.
-It will be wrapped into a `<script>`-tag. The second argument
+It will be wrapped into a `<script>` tag. The second argument
 determines at which position the script should be inserted into the page. Possible values are:
 
 - [[yii\web\View::POS_HEAD|View::POS_HEAD]] for head section.
@@ -46,8 +47,8 @@ instead of adding a new one. If you don't provide it, the JS code itself will be
 
 The arguments for [[yii\web\View::registerJsFile()|registerJsFile()]] are similar to those for
 [[yii\web\View::registerCssFile()|registerCssFile()]]. In the above example,
-we register the `main.js` file with the dependency on the [[yii\web\JqueryAsset]]. This means the `main.js` file
-will be added AFTER `jquery.js`. Without this dependency specification, the relative order between
+we register the `main.js` file with the dependency on the [[yii\web\JqueryAsset]]. It means that the `main.js` file
+will be added AFTER `jquery.js`. Without such dependency specification, the relative order between
 `main.js` and `jquery.js` would be undefined and the code would not work.
 
 An external script can be added like the following:
@@ -59,9 +60,9 @@ $this->registerJsFile(
 );
 ```
 
-This will add a tag for the script `/js/main.js` located under the applications [base Url](concept-aliases.md#predefined-aliases).
+This will add a tag for the `/js/main.js` script located under the application [base URL](concept-aliases.md#predefined-aliases).
 
-It is highly recommended that you use [asset bundles](structure-assets.md) to register external JS files rather than using [[yii\web\View::registerJsFile()|registerJsFile()]] because these allow better flexibility and more granular configuration of dependencies. Also using asset bundles allows you to combine and compress
+It is highly recommended to use [asset bundles](structure-assets.md) to register external JS files rather than [[yii\web\View::registerJsFile()|registerJsFile()]] because these allow better flexibility and more granular dependency configuration. Also using asset bundles allows you to combine and compress
 multiple JS files, which is desirable for high traffic websites.
 
 ## Registering CSS <span id="register-css"></span>
@@ -110,8 +111,8 @@ The above code will add a link to the `/css/themes/black-and-white.css` CSS file
 * The last argument specifies an ID identifying this CSS file. If it is not provided, the URL of the CSS file will be
   used instead.
 
-It is highly recommended that you use [asset bundles](structure-assets.md) to register external CSS files rather than
-using [[yii\web\View::registerCssFile()|registerCssFile()]]. Using asset bundles allows you to combine and compress
+It is highly recommended to use [asset bundles](structure-assets.md) to register external CSS files rather than
+[[yii\web\View::registerCssFile()|registerCssFile()]]. Using asset bundles allows you to combine and compress
 multiple CSS files, which is desirable for high traffic websites.
 It also provides more flexibility as all asset dependencies of your application are configured in one place.
 
@@ -136,14 +137,14 @@ When registering asset bundles from within a widget, you would pass the
 
 In view files often the HTML code is not written out directly but generated
 by some PHP code dependent on the variables of the view.
-In order for the generated HTML to be manipulated with Javascript, the JS code has to contain dynamic parts too, for example the ids of the jQuery selectors.
+In order for the generated HTML to be manipulated with Javascript, the JS code has to contain dynamic parts too, for example the IDs of the jQuery selectors.
 
 To insert PHP variables into JS code, their values have to be
 escaped properly. Especially when the JS code is inserted into
 HTML instead of residing in a dedicated JS file.
-Yii provides the [[yii\helpers\Json::htmlEncode()|htmlEncode()]] method of the [[yii\helpers\Json|Json]]-helper for this purpose. Its usage will be shown in the following examples.
+Yii provides the [[yii\helpers\Json::htmlEncode()|htmlEncode()]] method of the [[yii\helpers\Json|Json]] helper for this purpose. Its usage will be shown in the following examples.
 
-### Registering a global Javascript configuration <span id="js-configuration"></span>
+### Registering a global JavaScript configuration <span id="js-configuration"></span>
 
 In this example we use an array to pass global configuration parameters from
 the PHP part of the application to the JS frontend code.
@@ -173,7 +174,7 @@ In your Javascript code you can now access these like `yiiOptions.baseUrl` or `y
 
 ### Passing translated messages <span id="translated-messages"></span>
 
-You may encounter a case where your Javascript needs to print a message reacting to some event. In an application that works with multiple languages this string has to be translated to the current application language.
+You may encounter a case where your JavaScript needs to print a message reacting to some event. In an application that works with multiple languages this string has to be translated to the current application language.
 One way to achieve this is to use the
 [message translation feature](tutorial-i18n.md#message-translation) provided by Yii and passing the result to the JavaScript code.
 
@@ -188,10 +189,10 @@ JS
 ```
 
 The above example code uses PHP
-[Heredoc](http://php.net/manual/de/language.types.string.php#language.types.string.syntax.heredoc) syntax for better readability. This also enables better syntax highlighting in most IDEs so it is the
-preferred way of writing inline Javascript, especially useful for code that is longer than a single line. The variable `$message` is created in PHP and
+[Heredoc syntax](http://php.net/manual/de/language.types.string.php#language.types.string.syntax.heredoc) for better readability. This also enables better syntax highlighting in most IDEs so it is the
+preferred way of writing inline JavaScript, especially useful for code that is longer than a single line. The variable `$message` is created in PHP and
 thanks to [[yii\helpers\Json::htmlEncode|Json::htmlEncode]] it contains the 
-string in valid JS syntax, which can be inserted into the Javascript code to place the dynamic string in the function call to `alert()`.
+string in valid JS syntax, which can be inserted into the JavaScript code to place the dynamic string in the function call to `alert()`.
 
 > Note: When using Heredoc, be careful with variable naming in JS code
 > as variables beginning with `$` may be interpreted as PHP variables which
