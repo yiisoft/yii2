@@ -541,7 +541,7 @@ abstract class Cache extends Component implements \ArrayAccess
 
     /**
      * Method combines both [[set()]] and [[get()]] methods to retrieve value identified by a $key,
-     * or to store the result of $closure execution is there is no cache available for the $key.
+     * or to store the result of $closure execution if there is no cache available for the $key.
      *
      * Usage example:
      *
