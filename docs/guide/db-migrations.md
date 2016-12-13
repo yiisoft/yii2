@@ -906,7 +906,7 @@ return [
             'migrationNamespaces' => [
                 'app\migrations', // Common migrations for the whole application
                 'module\migrations', // Migrations for the specific project's module
-                'app\rbac', // Migrations for the specific extension
+                'yii\rbac\migrations', // Migrations for the specific extension
             ],
         ],
     ],
@@ -934,7 +934,7 @@ return [
         // Migrations for the specific extension
         'migrate-rbac' => [
             'class' => 'yii\console\controllers\MigrateController',
-            'migrationNamespaces' => ['app\rbac'],
+            'migrationNamespaces' => ['yii\rbac\migrations'],
             'migrationTable' => 'migration_rbac',
         ],
     ],
