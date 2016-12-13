@@ -1,4 +1,4 @@
-Yii2 コアフレームワークコードスタイル
+Yii 2 コアフレームワークコードスタイル
 =====================================
 
 下記のコードスタイルが Yii 2.x コアと公式エクステンションの開発に用いられています。
@@ -145,7 +145,7 @@ class Foo
 
 ### 4.4 Doc ブロック
 
-`@param`、`@var`、`@property` および `@return` は `boolean`、`integer`、`string`、`array` または `null` として型を宣言しなければなりません。
+`@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
 `Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
 型付きの配列に対しては `ClassName[]` を使います。
 
@@ -297,14 +297,14 @@ switch には下記の書式を使用します。
 ```php
 switch ($this->phpType) {
     case 'string':
-        $a = (string)$value;
+        $a = (string) $value;
         break;
     case 'integer':
     case 'int':
-        $a = (integer)$value;
+        $a = (int) $value;
         break;
     case 'boolean':
-        $a = (boolean)$value;
+        $a = (bool) $value;
         break;
     default:
         $a = null;
@@ -431,10 +431,10 @@ public function getEventHandlers($name)
 
 ドキュメントの中でクラス、メソッド、プロパティをクロスリンクするために使える追加の文法があります。
 
-- `'[[canSetProperty]] ` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
-- `'[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
+- `[[canSetProperty]]` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
+- `[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
 
 上記のリンクにクラス名やメソッド名以外のラベルを付けるためには、次の例で示されている文法を使うことが出来ます。
 

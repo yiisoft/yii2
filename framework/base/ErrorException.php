@@ -12,6 +12,8 @@ use Yii;
 /**
  * ErrorException represents a PHP error.
  *
+ * For more details and usage information on ErrorException, see the [guide article on handling errors](guide:runtime-handling-errors).
+ *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.0
  */
@@ -76,7 +78,7 @@ class ErrorException extends \ErrorException
      * Returns if error is one of fatal type.
      *
      * @param array $error error got from error_get_last()
-     * @return boolean if error is one of fatal type
+     * @return bool if error is one of fatal type
      */
     public static function isFatalError($error)
     {

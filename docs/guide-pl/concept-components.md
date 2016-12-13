@@ -35,7 +35,7 @@ Rozszerzając klasę [[yii\base\Component|Component]] lub [[yii\base\Object|Obje
 
 - Przeciążając konstruktor, dodaj parametr `$config` jako *ostatni* na liście jego argumentów i przekaż go do konstruktora rodzica.
 - Zawsze wywoływuj konstruktor rodzica *na końcu* przeciążanego konstruktora.
-- Przeciążając metodę [[yii\base\Object::init()|init()]], upewnij się, że wywołujesz metodę `init` rodzica *na początku* własnej implementacji metody `init`.
+- Przeciążając metodę [[yii\base\Object::init()|init()]], upewnij się, że wywołujesz metodę `init()` rodzica *na początku* własnej implementacji metody `init()`.
 
 Przykład:
 

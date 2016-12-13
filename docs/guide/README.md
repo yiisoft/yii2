@@ -114,7 +114,6 @@ Security
 * [Authorization](security-authorization.md)
 * [Working with Passwords](security-passwords.md)
 * [Cryptography](security-cryptography.md)
-* [Views security](structure-views.md#security)
 * [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide/README.md)
 * [Best Practices](security-best-practices.md)
 
@@ -148,7 +147,7 @@ Development Tools
 
 * [Debug Toolbar and Debugger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 * [Generating Code using Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* **TBD** [Generating API Documentation](https://github.com/yiisoft/yii2-apidoc)
+* [Generating API Documentation](https://github.com/yiisoft/yii2-apidoc)
 
 
 Testing
@@ -180,14 +179,14 @@ Special Topics
 Widgets
 -------
 
-* GridView: **TBD** link to demo page
-* ListView: **TBD** link to demo page
-* DetailView: **TBD** link to demo page
-* ActiveForm: **TBD** link to demo page
-* Pjax: **TBD** link to demo page
-* Menu: **TBD** link to demo page
-* LinkPager: **TBD** link to demo page
-* LinkSorter: **TBD** link to demo page
+* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Bootstrap Widgets](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
 * [jQuery UI Widgets](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 

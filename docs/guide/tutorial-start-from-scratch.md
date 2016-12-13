@@ -22,7 +22,7 @@ The first step is to clone the basic Yii template's Git repository:
 git clone git@github.com:yiisoft/yii2-app-basic.git
 ```
 
-Then wait for the repository to be downloaded to your computer. Since the changes made to the template won't be pushed back, you can delete the `.git` diretory and all
+Then wait for the repository to be downloaded to your computer. Since the changes made to the template won't be pushed back, you can delete the `.git` directory and all
 of its contents from the download.
 
 Modify the Files

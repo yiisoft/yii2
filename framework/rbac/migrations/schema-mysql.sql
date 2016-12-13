@@ -17,7 +17,7 @@ drop table if exists `auth_rule`;
 create table `auth_rule`
 (
    `name`                 varchar(64) not null,
-   `data`                 text,
+   `data`                 blob,
    `created_at`           integer,
    `updated_at`           integer,
     primary key (`name`)
@@ -26,10 +26,10 @@ create table `auth_rule`
 create table `auth_item`
 (
    `name`                 varchar(64) not null,
-   `type`                 integer not null,
+   `type`                 smallint not null,
    `description`          text,
    `rule_name`            varchar(64),
-   `data`                 text,
+   `data`                 blob,
    `created_at`           integer,
    `updated_at`           integer,
    primary key (`name`),

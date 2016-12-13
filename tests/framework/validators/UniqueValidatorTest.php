@@ -29,6 +29,42 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertTrue(is_string($val->message));
     }
 
+    public function testCustomMessage()
+    {
+        // single attribute
+        $customError = 'Custom message for Id with value "1"';
+        $validator = new UniqueValidator([
+            'message' => 'Custom message for {attribute} with value "{value}"',
+        ]);
+        $model = new Order();
+        $model->id = 1;
+        $validator->validateAttribute($model, 'id');
+        $this->assertTrue($model->hasErrors('id'));
+        $this->assertEquals($customError, $model->getFirstError('id'));
+
+        // multiple attributes
+        $customError = 'Custom message for Order Id and Item Id with values "1"-"1"';
+        $validator = new UniqueValidator([
+            'targetAttribute' => ['order_id', 'item_id'],
+            'message' => 'Custom message for {attributes} with values {values}',
+        ]);
+        $model = OrderItem::findOne(['order_id' => 1, 'item_id' => 2]);
+        $model->item_id = 1;
+        $validator->validateAttribute($model, 'order_id');
+        $this->assertTrue($model->hasErrors('order_id'));
+        $this->assertEquals($customError, $model->getFirstError('order_id'));
+
+        // fallback for deprecated `comboNotUnique` - should be removed on 2.1.0
+        $validator = new UniqueValidator([
+            'targetAttribute' => ['order_id', 'item_id'],
+            'comboNotUnique' => 'Custom message for {attributes} with values {values}',
+        ]);
+        $model->clearErrors();
+        $validator->validateAttribute($model, 'order_id');
+        $this->assertTrue($model->hasErrors('order_id'));
+        $this->assertEquals($customError, $model->getFirstError('order_id'));
+    }
+
     public function testValidateInvalidAttribute()
     {
         $validator = new UniqueValidator();
@@ -230,5 +266,41 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator->targetClass = '\yiiunit\data\ar\Profile';
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));
+    }
+
+    public function testValidateEmptyAttributeInStringField()
+    {
+        ValidatorTestMainModel::deleteAll();
+
+        $val = new UniqueValidator();
+
+        $m = new ValidatorTestMainModel(['field1' => '']);
+        $m->id = 1;
+        $val->validateAttribute($m, 'field1');
+        $this->assertFalse($m->hasErrors('field1'));
+        $m->save(false);
+
+        $m = new ValidatorTestMainModel(['field1' => '']);
+        $m->id = 2;
+        $val->validateAttribute($m, 'field1');
+        $this->assertTrue($m->hasErrors('field1'));
+    }
+
+    public function testValidateEmptyAttributeInIntField()
+    {
+        ValidatorTestRefModel::deleteAll();
+
+        $val = new UniqueValidator();
+
+        $m = new ValidatorTestRefModel(['ref' => 0]);
+        $m->id = 1;
+        $val->validateAttribute($m, 'ref');
+        $this->assertFalse($m->hasErrors('ref'));
+        $m->save(false);
+
+        $m = new ValidatorTestRefModel(['ref' => 0]);
+        $m->id = 2;
+        $val->validateAttribute($m, 'ref');
+        $this->assertTrue($m->hasErrors('ref'));
     }
 }

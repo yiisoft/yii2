@@ -54,7 +54,7 @@ classe si trova in `web/Request.php` nella directory principale del framework Yi
 Componenti ed oggetti
 ---------------------
 
-Yii2 divide la classe `CComponent` della versione 1.1 in due classi: [[yii\base\Object]] and [[yii\base\Component]].
+Yii 2 divide la classe `CComponent` della versione 1.1 in due classi: [[yii\base\Object]] and [[yii\base\Component]].
 La classe [[yii\base\Object|Object]] è una classe leggera da usare come base, che consente la definizione di 
 [proprietà dell'oggetto](concept-properties.md) tramite *geters* e *setters*. La classe [[yii\base\Component|Component]] estende
 [[yii\base\Object|Object]] e supporta [eventi](concept-events.md) e [behavior](concept-behaviors.md).

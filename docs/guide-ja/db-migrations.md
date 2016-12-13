@@ -824,7 +824,7 @@ yii migrate/mark 1392853618                         # UNIX タイムスタンプ
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`)。
   マイグレーション・コードを生成するためのテンプレート・ファイルを指定します。
   詳細は "[マイグレーションを生成する](#generating-migrations)" を参照してください。

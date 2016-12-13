@@ -80,7 +80,7 @@ All Rights Reserved.
 * [Миграции](db-migrations.md) - Контроль версий схемы данных при работе в команде.
 * [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide/README.md)
 * [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide/README.md)
-* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide/README.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ru/README.md)
 * [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide/README.md)
 
 
@@ -109,9 +109,11 @@ All Rights Reserved.
 Безопасность
 ------------
 
+* [Обзор](security-overview.md)
 * [Аутентификация](security-authentication.md)
 * [Авторизация](security-authorization.md)
 * [Работа с паролями](security-passwords.md)
+* [Криптография](security-cryptography.md)
 * [Клиенты авторизации](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ru/README.md)
 * [Лучшие практики](security-best-practices.md)
 

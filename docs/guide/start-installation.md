@@ -46,14 +46,14 @@ If you had Composer already installed before, make sure you use an up to date ve
 by running `composer self-update`.
 
 > Note: During the installation of Yii, Composer will need to request a lot of information from the Github API.
-> The amount of requests depends on the number of dependencies your application has and may be bigger than the
+> The number of requests depends on the number of dependencies your application has and may be bigger than the
 > **Github API rate limit**. If you hit this limit, Composer may ask for your Github login credentials to obtain
 > a Github API access token. On fast connections you may hit this limit earlier than Composer can handle so we
 > recommend to configure the access token before installing Yii.
 > Please refer to the [Composer documentation about Github API tokens](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > for instructions on how to do this.
 
-### Installing Yii
+### Installing Yii <span id="installing-from-composer"></span>
 
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 

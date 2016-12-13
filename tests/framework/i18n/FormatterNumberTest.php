@@ -290,10 +290,18 @@ class FormatterNumberTest extends TestCase
         $this->formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '₽'];
         $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
 
+        // custom separators
+        $this->formatter->locale = 'de-DE';
+        $this->formatter->currencyCode = null;
+        $this->formatter->numberFormatterSymbols = [];
+        $this->formatter->thousandSeparator = ' ';
+        $this->assertSame('123 456,00 €', $this->formatter->asCurrency('123456', 'EUR'));
+
         // empty input
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
         $this->formatter->numberFormatterSymbols = [];
+        $this->formatter->thousandSeparator = null;
         $this->assertSame("0,00 €", $this->formatter->asCurrency(false));
         $this->assertSame("0,00 €", $this->formatter->asCurrency(""));
 

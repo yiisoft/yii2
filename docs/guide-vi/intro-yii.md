@@ -51,5 +51,5 @@ Yii 2.0 đòi hỏi phiên bản PHP 5.4.0 hoặc cao hơn. Bạn có thể ch�
 kiểm tra xem những gì các đặc điểm cụ thể của từng cấu hình PHP.
 
 Để tìm hiểu Yii, bạn cần có kiến thức cơ bản về lập trình hướng đối tượng (OOP), vì Yii là một framework hướng đối tượng
-thuần túy. Yii2 2.0 cũng sử dụng các tính năng PHP mới nhất, chẳng hạn như [namespaces](http://www.php.net/manual/en/language.namespaces.php) và [traits](http://www.php.net/manual/en/language.oop5.traits.php).
+thuần túy. Yii 2.0 cũng sử dụng các tính năng PHP mới nhất, chẳng hạn như [namespaces](http://www.php.net/manual/en/language.namespaces.php) và [traits](http://www.php.net/manual/en/language.oop5.traits.php).
 Hiểu được những khái niệm này sẽ giúp bạn nhanh chóng nắm bắt Yii 2.0.

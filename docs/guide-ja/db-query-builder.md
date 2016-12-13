@@ -305,7 +305,7 @@ if (!empty($search)) {
 }
 ```
 
-`$search` が空でない場合は次の WHERE 条件 が生成されます。
+`$search` が空でない場合は次の `WHERE` 条件 が生成されます。
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')

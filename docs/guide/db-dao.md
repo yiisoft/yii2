@@ -19,6 +19,9 @@ Yii DAO supports the following databases out of box:
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
+> Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
+  [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
+  to compile it.
 
 ## Creating DB Connections <span id="creating-db-connections"></span>
 
@@ -588,7 +591,7 @@ $rows = Yii::$app->db->useMaster(function ($db) {
 });
 ```
 
-You may also directly set `Yii::$app->db->enableSlaves` to be false to direct all queries to the master connection.
+You may also directly set `Yii::$app->db->enableSlaves` to be `false` to direct all queries to the master connection.
 
 
 ## Working with Database Schema <span id="database-schema"></span>

@@ -147,7 +147,7 @@ will be translated into the corresponding physical types. In the case of MySQL, 
 into `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, while `TYPE_STRING` becomes `varchar(255)`.
 
 You can append additional constraints when using abstract types. In the above example, ` NOT NULL` is appended
-to `Schema::TYPE_STRING` to specify that the column cannot be null.
+to `Schema::TYPE_STRING` to specify that the column cannot be `null`.
 
 > Info: The mapping between abstract types and physical types is specified by
   the [[yii\db\QueryBuilder::$typeMap|$typeMap]] property in each concrete `QueryBuilder` class.
@@ -419,6 +419,11 @@ column named `author_id` with a foreign key to the `user` table while
 `category_id:integer:defaultValue(1):foreignKey` will generate a column
 `category_id` with a foreign key to the `category` table.
 
+Since 2.0.11, `foreignKey` keyword accepts a second parameter, separated by whitespace.
+It accepts the name of the related column for the foreign key generated.
+If no second parameter is passed, the column name will be fetched from table schema.
+If no schema exists, primary key isn't set or is composite, default name `id` will be used.
+
 ### Drop Table
 
 ```php
@@ -601,6 +606,9 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 }
 ```
+
+Since 2.0.11 foreign key column names for junction tables are fetched from table schema.
+In case table isn't defined in schema, isn't set or is composite, default name `id` is used.
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
 
@@ -817,9 +825,9 @@ There are several ways to customize the migration command.
 
 The migration command comes with a few command-line options that can be used to customize its behaviors:
 
-* `interactive`: boolean (defaults to true), specifies whether to perform migrations in an interactive mode.
-  When this is true, the user will be prompted before the command performs certain actions.
-  You may want to set this to false if the command is being used in a background process.
+* `interactive`: boolean (defaults to `true`), specifies whether to perform migrations in an interactive mode.
+  When this is `true`, the user will be prompted before the command performs certain actions.
+  You may want to set this to `false` if the command is being used in a background process.
 
 * `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration
   class files. This can be specified as either a directory path or a path [alias](concept-aliases.md).
@@ -842,13 +850,13 @@ The migration command comes with a few command-line options that can be used to 
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`), specifies template files for generating migration code. See "[Generating Migrations](#generating-migrations)"
   for more details.
 
 * `fields`: array of column definition strings used for creating migration code. Defaults to `[]`. The format of each
   definition is `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. For example, `--fields=name:string(12):notNull` produces
-  a string column of size 12 which is not null.
+  a string column of size 12 which is not `null`.
 
 The following example shows how you can use these options.
 

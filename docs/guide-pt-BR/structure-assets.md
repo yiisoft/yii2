@@ -434,7 +434,7 @@ as propriedades [[yii\web\AssetManager::basePath|basePath]] e
 Ao invés de publicar os assets pela cópia de arquivos, você pode considerar o uso 
 de links simbólicos, caso o seu sistema operacional e o servidor Web permita-os. 
 Este recurso pode ser habilitado definindo o 
-[[yii\web\AssetManager::linkAssets|linkAssets]] como true.
+[[yii\web\AssetManager::linkAssets|linkAssets]] como `true`.
 
 ```php
 return [

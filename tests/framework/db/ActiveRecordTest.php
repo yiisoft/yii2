@@ -1275,4 +1275,89 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $order->link('orderItems3', $orderItem);
         $this->assertTrue(isset($order->orderItems3['1_3']));
     }
+
+    public function testUpdateAttributes()
+    {
+        $order = Order::findOne(1);
+        $newTotal = 978;
+        $this->assertSame(1, $order->updateAttributes(['total' => $newTotal]));
+        $this->assertEquals($newTotal, $order->total);
+        $order = Order::findOne(1);
+        $this->assertEquals($newTotal, $order->total);
+
+        // @see https://github.com/yiisoft/yii2/issues/12143
+        $newOrder = new Order();
+        $this->assertTrue($newOrder->getIsNewRecord());
+        $newTotal = 200;
+        $this->assertSame(0, $newOrder->updateAttributes(['total' => $newTotal]));
+        $this->assertTrue($newOrder->getIsNewRecord());
+        $this->assertEquals($newTotal, $newOrder->total);
+    }
+
+    public function testEmulateExecution()
+    {
+        $this->assertGreaterThan(0, Customer::find()->from('customer')->count());
+
+        $rows = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->all();
+        $this->assertSame([], $rows);
+
+        $row = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->one();
+        $this->assertSame(null, $row);
+
+        $exists = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->exists();
+        $this->assertSame(false, $exists);
+
+        $count = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->count();
+        $this->assertSame(0, $count);
+
+        $sum = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->sum('id');
+        $this->assertSame(0, $sum);
+
+        $sum = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->average('id');
+        $this->assertSame(0, $sum);
+
+        $max = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->max('id');
+        $this->assertSame(null, $max);
+
+        $min = Customer::find()
+            ->from('customer')
+            ->emulateExecution()
+            ->min('id');
+        $this->assertSame(null, $min);
+
+        $scalar = Customer::find()
+            ->select(['id'])
+            ->from('customer')
+            ->emulateExecution()
+            ->scalar();
+        $this->assertSame(null, $scalar);
+
+        $column = Customer::find()
+            ->select(['id'])
+            ->from('customer')
+            ->emulateExecution()
+            ->column();
+        $this->assertSame([], $column);
+    }
 }

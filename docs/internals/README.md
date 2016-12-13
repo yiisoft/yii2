@@ -9,8 +9,8 @@ Contributor Guidelines
 - [How to Report an Issue](report-an-issue.md)
 - [Getting started](getting-started.md)
 - [Git workflow for Yii 2 contributors](git-workflow.md) - a step by step guide on how to set up your dev environment and start contributing to Yii.
-- [Yii2 Core Framework Code Style](core-code-style.md)
-- [Yii2 View Code Style](view-code-style.md)
+- [Yii 2 Core Framework Code Style](core-code-style.md)
+- [Yii 2 View Code Style](view-code-style.md)
 
 
 Documentation

@@ -8,9 +8,9 @@ dos métodos de autorización: Filtro de Control de Acceso y Control Basado en R
 ## Filtro de Control de Acceso <span id="access-control-filter"></span>
 
 Filtro de Control de Acceso (ACF) es un único método de autorización implementado como [[yii\filters\AccessControl]], el cual
-es mejor utilizado por aplicaciones que sólo requieran un control de acceso simple. Como su nombre lo indica, ACF es 
+es mejor utilizado por aplicaciones que sólo requieran un control de acceso simple. Como su nombre lo indica, ACF es
 un [filtro](structure-filters.md) de acción que puede ser utilizado en un controlador o en un módulo. Cuando un usuario solicita
-la ejecución de una acción, ACF comprobará una lista de [[yii\filters\AccessControl::rules|reglas de acceso]] 
+la ejecución de una acción, ACF comprobará una lista de [[yii\filters\AccessControl::rules|reglas de acceso]]
 para determinar si el usuario tiene permitido acceder a dicha acción.
 
 El siguiente código muestra cómo utilizar ACF en el controlador `site`:
@@ -48,7 +48,7 @@ class SiteController extends Controller
 
 En el código anterior, ACF es adjuntado al controlador `site` en forma de behavior (comportamiento). Esta es la forma típica de utilizar
 un filtro de acción. La opción `only` especifica que el ACF debe ser aplicado solamente a las acciones `login`, `logout` y `signup`.
-Las acciones restantes en el controlador `site` no están sujetas al control de acceso. La opción `rules` lista 
+Las acciones restantes en el controlador `site` no están sujetas al control de acceso. La opción `rules` lista
 las [[yii\filters\AccessRule|reglas de acceso]], y se lee como a continuación:
 
 - Permite a todos los usuarios invitados (sin autenticar) acceder a las acciones `login` y `signup`. La opción `roles`
@@ -57,7 +57,7 @@ las [[yii\filters\AccessRule|reglas de acceso]], y se lee como a continuación:
   a los "usuarios autenticados".
 
 ACF ejecuta la comprobación de autorización examinando las reglas de acceso una a una desde arriba hacia abajo hasta que encuentra
-una regla que aplique al contexto de ejecución actual. El valor `allow` de la regla que coincida será entonces utilizado 
+una regla que aplique al contexto de ejecución actual. El valor `allow` de la regla que coincida será entonces utilizado
 para juzgar si el usuario está autorizado o no. Si ninguna de las reglas coincide, significa que el usuario NO está autorizado,
 y el ACF detendrá la ejecución de la acción.
 
@@ -97,7 +97,7 @@ La comparación es sensible a mayúsculas. Si la opción está vacía o no defin
      - `?`: coincide con el usuario invitado (sin autenticar)
      - `@`: coincide con el usuario autenticado
 
-   El utilizar otro nombre de rol invocará una llamada a [[yii\web\User::can()]], que requiere habilitar RBAC 
+   El utilizar otro nombre de rol invocará una llamada a [[yii\web\User::can()]], que requiere habilitar RBAC
    (a ser descrito en la próxima subsección). Si la opción está vacía o no definida, significa que la regla se aplica a todos los roles.
 
  * [[yii\filters\AccessRule::ips|ips]]: especifica con qué [[yii\web\Request::userIP|dirección IP del cliente]] coincide esta regla.
@@ -231,7 +231,7 @@ return [
   necesita declararse `authManager` adicionalmente a `config/web.php`.
 > En el caso de yii2-advanced-app, `authManager` sólo debe declararse en `common/config/main.php`.
 
-`DbManager` utiliza cuatro tablas de la BD para almacenar los datos: 
+`DbManager` utiliza cuatro tablas de la BD para almacenar los datos:
 
 - [[yii\rbac\DbManager::$itemTable|itemTable]]: la tabla para almacenar los ítems de autorización. Por defecto "auth_item".
 - [[yii\rbac\DbManager::$itemChildTable|itemChildTable]]: la tabla para almacentar la jerarquía de los ítems de autorización. Por defecto "auth_item_child".
@@ -304,11 +304,11 @@ class RbacController extends Controller
 ```
 
 > Note: Si estas utilizando el template avanzado, necesitas poner tu `RbacController` dentro del directorio `console/controllers`
-  y cambiar el espacio de nombres a `console/controllers`.
+  y cambiar el espacio de nombres a `console\controllers`.
 
 Después de ejecutar el comando `yii rbac/init`, obtendremos la siguiente jerarquía:
 
-![Simple RBAC hierarchy](../guide/images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
+![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
 
 "Author" puede crear un post, "admin" puede actualizar posts y hacer todo lo que puede hacer "author".
 
@@ -362,10 +362,10 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user el ID de usuario.
+     * @param string|int $user el ID de usuario.
      * @param Item $item el rol o permiso asociado a la regla
      * @param array $params parámetros pasados a ManagerInterface::checkAccess().
-     * @return boolean un valor indicando si la regla permite al rol o permiso con el que está asociado.
+     * @return bool un valor indicando si la regla permite al rol o permiso con el que está asociado.
      */
     public function execute($user, $item, $params)
     {
@@ -399,7 +399,7 @@ $auth->addChild($author, $updateOwnPost);
 
 Ahora tenemos la siguiente jerarquía:
 
-![RBAC hierarchy with a rule](../guide/images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
+![RBAC hierarchy with a rule](images/rbac-hierarchy-2.png "RBAC hierarchy with a rule")
 
 
 ### Comprobación de Acceso <span id="access-check"></span>
@@ -416,7 +416,7 @@ if (\Yii::$app->user->can('createPost')) {
 
 Si el usuario actual es Jane con `ID=1`, comenzamos desde `createPost` y tratamos de alcanzar a `Jane`:
 
-![Access check](../guide/images/rbac-access-check-1.png "Access check")
+![Access check](images/rbac-access-check-1.png "Access check")
 
 Con el fin de comprobar si un usuario puede actualizar un post, necesitamos pasarle un parámetro adicional requerido por `AuthorRule`, descrito antes:
 
@@ -429,7 +429,7 @@ if (\Yii::$app->user->can('updatePost', ['post' => $post])) {
 Aquí es lo que sucede si el usuario actual es John:
 
 
-![Access check](../guide/images/rbac-access-check-2.png "Access check")
+![Access check](images/rbac-access-check-2.png "Access check")
 
 Comenzamos desde `updatePost` y pasamos por `updateOwnPost`. Con el fin de pasar la comprobación de acceso, `AuthorRule`
 debe devolver `true` desde su método `execute()`. El método recive `$params` desde la llamada al método `can()`, cuyo valor es
@@ -437,7 +437,7 @@ debe devolver `true` desde su método `execute()`. El método recive `$params` d
 
 En caso de Jane es un poco más simple, ya que ella es un "admin":
 
-![Access check](../guide/images/rbac-access-check-3.png "Access check")
+![Access check](images/rbac-access-check-3.png "Access check")
 
 
 ### Utilizar Roles por Defecto <span id="using-default-roles"></span>
@@ -503,7 +503,7 @@ $auth->addChild($admin, $author);
 
 Tenga en cuenta que en el ejemplo anterior, dado que "author" es agregado como hijo de "admin", cuando implementes el método `execute()`
 de la clase de la regla, necesitas respetar esta jerarquía. Esto se debe a que cuando el nombre del rol es "author",
-el método `execute()` devolverá true si el grupo de usuario es tanto 1 como 2 (lo que significa que el usuario se encuentra en
+el método `execute()` devolverá `true` si el grupo de usuario es tanto 1 como 2 (lo que significa que el usuario se encuentra en
 cualquiera de los dos grupos, "admin" o "author").
 
 Luego, configura `authManager` enumerando los dos roles en [[yii\rbac\BaseManager::$defaultRoles]]:
@@ -522,6 +522,6 @@ return [
 ```
 
 Ahora si realizas una comprobación de acceso, tanto el rol `admin` y como el rol `author` serán comprobados evaluando
-las reglas asociadas con ellos. Si la regla devuelve true, significa que la regla aplica al usuario actual.
+las reglas asociadas con ellos. Si la regla devuelve `true`, significa que la regla aplica al usuario actual.
 Basado en la implementación de la regla anterior, esto significa que si el valor `group` en un usuario es 1, el rol `admin`
 se aplicaría al usuario; y si el valor de `group` es 2, se le aplicaría el rol `author`.

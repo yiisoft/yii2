@@ -23,6 +23,8 @@ namespace yii\base;
  * This interface is mainly used by [[\yii\di\Container]] so that it can pass object configuration as the
  * last parameter to the implementing class' constructor.
  *
+ * For more details and usage information on Configurable, see the [guide article on configurations](guide:concept-configurations).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0.3
  */

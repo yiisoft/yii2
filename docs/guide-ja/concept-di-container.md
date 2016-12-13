@@ -66,7 +66,7 @@ class MyClass extends \yii\base\Component
 
 ```php
 $obj = new MyClass(/*...*/);
-Yii::$container->invoke([$obj, 'doSomethingWithHeavyDependency'], ['param1' => 42]); // $something は DI コンテナによって提供される
+Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something は DI コンテナによって提供される
 ```
 
 
