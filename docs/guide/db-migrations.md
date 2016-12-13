@@ -906,7 +906,7 @@ return [
             'migrationNamespaces' => [
                 'app\migrations', // Common migrations for the whole application
                 'module\migrations', // Migrations for the specific project's module
-                'migration_rbac', // Migrations for the specific extension
+                'app\rbac', // Migrations for the specific extension
             ],
         ],
     ],
