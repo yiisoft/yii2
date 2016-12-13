@@ -893,7 +893,7 @@ command-line option.
 
 ### Separated migrations <span id="separated-migrations"></span>
 
-Sometimes you may need to use migrations from different namespace. It can be some extension or module of your own
+Sometimes you may need to use migrations from a different namespace. It can be some extension or module in your own
 project. One of such examples is migrations for [RBAC module](security-authorization.md#configuring-rbac).
 Since version 2.0.10 you can use [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]
 to solve this task:
@@ -914,7 +914,7 @@ return [
 ```
 
 If you want them to be applied and tracked down completely separated from each other, you can configure multiple
-migration commands, which will use different namespaces and migration history tables:
+migration commands which will use different namespaces and migration history tables:
 
 ```php
 return [
