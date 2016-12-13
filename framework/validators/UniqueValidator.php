@@ -120,9 +120,7 @@ class UniqueValidator extends Validator
             }
         }
 
-        $exists = $this->modelExists($targetClass, $params, $model);
-
-        if ($exists) {
+        if ($this->modelExists($targetClass, $params, $model)) {
             if (count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
