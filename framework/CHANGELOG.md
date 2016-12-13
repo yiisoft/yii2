@@ -46,6 +46,7 @@ Yii Framework 2 Change Log
 - Bug #13277: Fixed invalid parsing of `--` ("End of Options" special argument) in CLI (rugabarbo)
 - Bug #13309: Fixes incorrect console width/height detecting with using Stty on Mac (nowm)
 - Bug #13326: Fixed wrong background color generation in `BaseConsole::renderColoredString()` (nowm, silverfire)
+- Bug #12133: Fixed `getDbTargets()` function in `yii\log\migrations\m141106_185632_log_init` that would create a log table correctly (bumstik)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
