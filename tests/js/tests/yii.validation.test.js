@@ -1547,6 +1547,8 @@ describe('yii.validation', function () {
         withData({
             'empty string, skip on empty': ['', {skipOnEmpty: true}, []],
             'not IP': ['not IP', {}, ['Invalid value.']],
+            'not IP, IPv4 is disabled': ['not:IP', {ipv4: false}, ['Invalid value.']],
+            'not IP, IPv6 is disabled': ['not IP', {ipv6: false}, ['Invalid value.']],
             // subnet, IPv4
             'IPv4, subnet option is not defined': ['192.168.10.0', {}, []],
             'IPv4, subnet option is set to "false"': ['192.168.10.0', {subnet: false}, []],
@@ -1635,12 +1637,12 @@ describe('yii.validation', function () {
             'invalid IPv4, IPv4 option is set to "false"': [
                 '192,168.10.0',
                 {ipv4: false},
-                ['IPv4 is not allowed.', 'Invalid value.']
+                ['Invalid value.', 'IPv4 is not allowed.']
             ],
             'invalid IPv6, IPv6 option is set to "false"': [
                 '2001,0db8:11a3:09d7:1f34:8a2e:07a0:765d',
                 {ipv6: false},
-                ['IPv6 is not allowed.', 'Invalid value.']
+                ['Invalid value.', 'IPv6 is not allowed.']
             ]
         }, function (value, customOptions, expectedMessages) {
             it(getValidatorMessage(expectedMessages), function () {

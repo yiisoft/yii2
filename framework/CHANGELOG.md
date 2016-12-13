@@ -32,6 +32,7 @@ Yii Framework 2 Change Log
 - Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
 - Bug #13128: Fixed incorrect position of {pos} string in ColumnSchemaBuilder `__toString` (df2)
 - Bug #13105: Fixed `validate()` method in `yii.activeForm.js` to prevent unexpected form submit when `forceValidate` set to `true` (silverfire)
+- Bug #13198: Fixed order of checks in `yii\validators\IpValidator` that sometimes caused wrong error message (silverfire)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
