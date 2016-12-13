@@ -35,9 +35,17 @@ class m141106_185632_log_init extends Migration
         if ($this->dbTargets === []) {
             $log = Yii::$app->getLog();
 
+            $diffTargets = [];
             foreach ($log->targets as $target) {
                 if ($target instanceof DbTarget) {
-                    $this->dbTargets[] = $target;
+                    $diffTarget = [
+                        $target->db,
+                        $target->logTable,
+                    ];
+                    if (!in_array($diffTarget, $diffTargets)) {
+                        $diffTargets[] = $diffTarget;
+                        $this->dbTargets[] = $target;
+                    }
                 }
             }
 
