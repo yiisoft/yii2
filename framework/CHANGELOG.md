@@ -72,7 +72,7 @@ Yii Framework 2 Change Log
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
-- Enh: Refactor validateAttribute method in UniqueValidator (developeruz)
+- Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 
 2.0.10 October 20, 2016
 -----------------------
