@@ -243,7 +243,7 @@ Before you can go on you need to create those tables in the database. To do this
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
 Read more about working with migrations from different namespaces in
-[Separated migrations](db-migrations.md#separated-migrations) section.
+[Separated Migrations](db-migrations.md#separated-migrations) section.
 
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
