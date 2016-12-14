@@ -573,7 +573,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional WHERE condition to the existing one.
-     * The new condition and the existing one will be joined using the 'AND' operator.
+     * The new condition and the existing one will be joined using the `AND` operator.
      * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -594,7 +594,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional WHERE condition to the existing one.
-     * The new condition and the existing one will be joined using the 'OR' operator.
+     * The new condition and the existing one will be joined using the `OR` operator.
      * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -619,7 +619,7 @@ class Query extends Component implements QueryInterface
      * It adds an additional WHERE condition for the given field and determines the comparison operator
      * based on the first few characters of the given value.
      * The condition is added in the same way as in [[andFilterWhere]] so [[isEmpty()|empty values]] are ignored.
-     * The new condition and the existing one will be joined using the 'AND' operator.
+     * The new condition and the existing one will be joined using the `AND` operator.
      *
      * The comparison operator is intelligently determined based on the first few characters in the given value.
      * In particular, it recognizes the following operators if they appear as the leading characters in the given value:
@@ -832,7 +832,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional HAVING condition to the existing one.
-     * The new condition and the existing one will be joined using the 'AND' operator.
+     * The new condition and the existing one will be joined using the `AND` operator.
      * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -853,7 +853,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional HAVING condition to the existing one.
-     * The new condition and the existing one will be joined using the 'OR' operator.
+     * The new condition and the existing one will be joined using the `OR` operator.
      * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -911,7 +911,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional HAVING condition to the existing one but ignores [[isEmpty()|empty operands]].
-     * The new condition and the existing one will be joined using the 'AND' operator.
+     * The new condition and the existing one will be joined using the `AND` operator.
      *
      * This method is similar to [[andHaving()]]. The main difference is that this method will
      * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
@@ -935,7 +935,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional HAVING condition to the existing one but ignores [[isEmpty()|empty operands]].
-     * The new condition and the existing one will be joined using the 'OR' operator.
+     * The new condition and the existing one will be joined using the `OR` operator.
      *
      * This method is similar to [[orHaving()]]. The main difference is that this method will
      * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
