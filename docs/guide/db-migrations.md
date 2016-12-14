@@ -894,7 +894,7 @@ command-line option.
 ### Separated migrations <span id="separated-migrations"></span>
 
 Sometimes you may need to use migrations from a different namespace. It can be some extension or module in your own
-project. One of such examples is migrations for [RBAC module](security-authorization.md#configuring-rbac).
+project. One of such examples is migrations for [RBAC component](security-authorization.md#configuring-rbac).
 Since version 2.0.10 you can use [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]
 to solve this task:
 
