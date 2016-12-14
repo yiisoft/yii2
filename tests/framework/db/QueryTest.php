@@ -110,6 +110,60 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals($condition, $query->where);
     }
 
+    public function testFilterHaving()
+    {
+        // should work with hash format
+        $query = new Query;
+        $query->filterHaving([
+            'id' => 0,
+            'title' => '   ',
+            'author_ids' => [],
+        ]);
+        $this->assertEquals(['id' => 0], $query->having);
+
+        $query->andFilterHaving(['status' => null]);
+        $this->assertEquals(['id' => 0], $query->having);
+
+        $query->orFilterHaving(['name' => '']);
+        $this->assertEquals(['id' => 0], $query->having);
+
+        // should work with operator format
+        $query = new Query;
+        $condition = ['like', 'name', 'Alex'];
+        $query->filterHaving($condition);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['between', 'id', null, null]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->orFilterHaving(['not between', 'id', null, null]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['in', 'id', []]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['like', 'id', '']);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['or like', 'id', '']);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['not like', 'id', '   ']);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['or not like', 'id', null]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['or', ['eq', 'id', null], ['eq', 'id', []]]);
+        $this->assertEquals($condition, $query->having);
+    }
+
     public function testFilterRecursively()
     {
         $query = new Query();
