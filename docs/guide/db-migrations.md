@@ -891,7 +891,7 @@ will be used to record the migration history. You no longer need to specify it v
 command-line option.
 
 
-### Separated migrations <span id="separated-migrations"></span>
+### Separated Migrations <span id="separated-migrations"></span>
 
 Sometimes you may need to use migrations from a different namespace. It can be some extension or module in your own
 project. One of such examples is migrations for [RBAC component](security-authorization.md#configuring-rbac).
