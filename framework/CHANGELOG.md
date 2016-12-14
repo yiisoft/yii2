@@ -47,6 +47,7 @@ Yii Framework 2 Change Log
 - Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
 - Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
 - Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
+- Enh #12145: Added `beforeCacheResponse` and `afterRestoreResponse` to `yii\filters\PageCache` to be more easily extendable (sergeymakinen)
 - Enh #12399: Added `ActiveField::addAriaAttributes` property for `aria-required` and `aria-invalid` attributes rendering (Oxyaction, samdark)
 - Enh #12390: Avoid creating queries with false where condition (`0=1`) when fetching relational data (klimov-paul)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
