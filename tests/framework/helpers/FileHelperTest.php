@@ -536,7 +536,9 @@ class FileHelperTest extends TestCase
             $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file1',
             $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file2',
         ];
-        $this->assertEquals($expected, FileHelper::findFiles($dirName));
+        $result = FileHelper::findFiles($dirName);
+        sort($result);
+        $this->assertEquals($expected, $result);
     }
 
     /**
