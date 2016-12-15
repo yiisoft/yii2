@@ -919,6 +919,20 @@ class Request extends \yii\base\Request
      */
     public function getUserIP()
     {
+        $_potentialReverseProxyIP = null;
+
+        if (isset ($_SERVER['HTTP_X_REAL_FORWARDED_FOR']) && $_SERVER['HTTP_X_REAL_FORWARDED_FOR'] != '') {
+            $_potentialReverseProxyIP = $_SERVER['HTTP_X_REAL_FORWARDED_FOR'];
+        }
+        if (isset ($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != '') {
+            $_potentialReverseProxyIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }        
+
+        if ($_potentialReverseProxyIP !== null) {
+            $ipList = explode(",", $_potentialReverseProxyIP);
+            return $ipList[0];
+        }
+
         return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
