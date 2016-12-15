@@ -313,23 +313,23 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $attribute = 'val_attr_a';
 
         $targetAttribute = 'val_attr_b';
-        $result = $this->invokeMethod(new UniqueValidator(), 'prepareParams', [$targetAttribute, $model, $attribute]);
+        $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value a'];
         $this->assertEquals($expected, $result);
 
         $targetAttribute = ['val_attr_b', 'val_attr_c'];
-        $result = $this->invokeMethod(new UniqueValidator(), 'prepareParams', [$targetAttribute, $model, $attribute]);
+        $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value c'];
         $this->assertEquals($expected, $result);
 
         $targetAttribute = ['val_attr_a' => 'val_attr_b'];
-        $result = $this->invokeMethod(new UniqueValidator(), 'prepareParams', [$targetAttribute, $model, $attribute]);
+        $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value a'];
         $this->assertEquals($expected, $result);
 
 
         $targetAttribute = ['val_attr_b', 'val_attr_a' => 'val_attr_c'];
-        $result = $this->invokeMethod(new UniqueValidator(), 'prepareParams', [$targetAttribute, $model, $attribute]);
+        $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];
         $this->assertEquals($expected, $result);
     }

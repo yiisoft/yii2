@@ -8,7 +8,11 @@
 namespace yii\validators;
 
 use Yii;
+use yii\base\Model;
+use yii\db\ActiveQuery;
+use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecordInterface;
+use yii\db\Query;
 use yii\helpers\Inflector;
 
 /**
@@ -44,7 +48,7 @@ class UniqueValidator extends Validator
      */
     public $targetClass;
     /**
-     * @var string|array the name of the ActiveRecord attribute that should be used to
+     * @var string|array the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that should be used to
      * validate the uniqueness of the current attribute value. If not set, it will use the name
      * of the attribute currently being validated. You may use an array to validate the uniqueness
      * of multiple columns at the same time. The array values are the attributes that will be
@@ -111,16 +115,16 @@ class UniqueValidator extends Validator
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
-        $params = $this->prepareParams($targetAttribute, $model, $attribute);
+        $conditions = $this->prepareConditions($targetAttribute, $model, $attribute);
 
-        foreach ($params as $value) {
+        foreach ($conditions as $value) {
             if (is_array($value)) {
                 $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
                 return;
             }
         }
 
-        if ($this->modelExists($targetClass, $params, $model)) {
+        if ($this->modelExists($targetClass, $conditions, $model)) {
             if (count($targetAttribute) > 1) {
                 $this->addComboNotUniqueError($model, $attribute);
             } else {
@@ -130,12 +134,19 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Checks duplicates of the current model in the database
-     * @since 2.0.11
+     * Checks whether the $model exists in the database.
+     *
+     * @param string $targetClass the name of the ActiveRecord class that should be used to validate the uniqueness
+     * of the current attribute value.
+     * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
+     * @param Model $model the data model to be validated
+     *
+     * @return bool whether the model already exists
      */
-    private function modelExists($targetClass, $params, $model)
+    private function modelExists($targetClass, $conditions, $model)
     {
-        $query = $this->prepareQuery($targetClass, $params);
+        /** @var ActiveRecordInterface $targetClass $query */
+        $query = $this->prepareQuery($targetClass, $conditions);
 
         if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
             // if current $model isn't in the database yet then it's OK just to call exists()
@@ -143,11 +154,11 @@ class UniqueValidator extends Validator
             $exists = $query->exists();
         } else {
             // if current $model is in the database already we can't use exists()
-            /* @var $models ActiveRecordInterface[] */
+            /** @var $models ActiveRecordInterface[] */
             $models = $query->select($targetClass::primaryKey())->limit(2)->all();
             $n = count($models);
             if ($n === 1) {
-                $keys = array_keys($params);
+                $keys = array_keys($conditions);
                 $pks = $targetClass::primaryKey();
                 sort($keys);
                 sort($pks);
@@ -167,37 +178,55 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Prepares a query by applying filters
-     * @since 2.0.11
+     * Prepares a query by applying filtering conditions defined in $conditions method property
+     * and [[filter]] class property.
+     *
+     * @param ActiveRecordInterface $targetClass the name of the ActiveRecord class that should be used to validate
+     * the uniqueness of the current attribute value.
+     * @param array $conditions conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format
+     *
+     * @return ActiveQueryInterface|ActiveQuery
      */
-    private function prepareQuery($targetClass, $params)
+    private function prepareQuery($targetClass, $conditions)
     {
         $query = $targetClass::find();
-        $query->andWhere($params);
+        $query->andWhere($conditions);
 
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);
         } elseif ($this->filter !== null) {
             $query->andWhere($this->filter);
         }
+
         return $query;
     }
 
     /**
-     * Prepare params based on targetAttribute
-     * @since 2.0.11
+     * Processes attributes' relations described in $targetAttribute parameter into conditions, compatible with
+     * [[\yii\db\Query::where()|Query::where()]] key-value format.
+     *
+     * @param string|array $targetAttribute the name of the [[\yii\db\ActiveRecord|ActiveRecord]] attribute that
+     * should be used to validate the uniqueness of the current attribute value. You may use an array to validate
+     * the uniqueness of multiple columns at the same time. The array values are the attributes that will be
+     * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
+     * If the key and the value are the same, you can just specify the value.
+     * @param Model $model the data model to be validated
+     * @param string $attribute the name of the attribute to be validated in the $model
+
+     * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
      */
-    private function prepareParams($targetAttribute, $model, $attribute)
+    private function prepareConditions($targetAttribute, $model, $attribute)
     {
         if (is_array($targetAttribute)) {
-            $params = [];
+            $conditions = [];
             foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_int($k) ? $model->$v : $model->$k;
+                $conditions[$v] = is_int($k) ? $model->$v : $model->$k;
             }
         } else {
-            $params = [$targetAttribute => $model->$attribute];
+            $conditions = [$targetAttribute => $model->$attribute];
         }
-        return $params;
+
+        return $conditions;
     }
 
     /**
