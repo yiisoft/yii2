@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.10-dev';
+        return '2.0.11-dev';
     }
 
     /**
@@ -120,9 +120,9 @@ class BaseYii
      * Note, this method does not check if the returned path exists or not.
      *
      * @param string $alias the alias to be translated.
-     * @param boolean $throwException whether to throw an exception if the given alias is invalid.
+     * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
+     * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidParamException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
@@ -139,20 +139,20 @@ class BaseYii
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
                 return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
-            } else {
-                foreach (static::$aliases[$root] as $name => $path) {
-                    if (strpos($alias . '/', $name . '/') === 0) {
-                        return $path . substr($alias, strlen($name));
-                    }
+            }
+
+            foreach (static::$aliases[$root] as $name => $path) {
+                if (strpos($alias . '/', $name . '/') === 0) {
+                    return $path . substr($alias, strlen($name));
                 }
             }
         }
 
         if ($throwException) {
             throw new InvalidParamException("Invalid path alias: $alias");
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -160,7 +160,7 @@ class BaseYii
      * A root alias is an alias that has been registered via [[setAlias()]] previously.
      * If a given alias matches multiple root aliases, the longest one will be returned.
      * @param string $alias the alias
-     * @return string|boolean the root alias, or false if no root alias is found
+     * @return string|bool the root alias, or false if no root alias is found
      */
     public static function getRootAlias($alias)
     {
@@ -170,11 +170,11 @@ class BaseYii
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
                 return $root;
-            } else {
-                foreach (static::$aliases[$root] as $name => $path) {
-                    if (strpos($alias . '/', $name . '/') === 0) {
-                        return $name;
-                    }
+            }
+
+            foreach (static::$aliases[$root] as $name => $path) {
+                if (strpos($alias . '/', $name . '/') === 0) {
+                    return $name;
                 }
             }
         }
@@ -346,9 +346,9 @@ class BaseYii
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
-        } else {
-            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
         }
+
+        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
 
     private static $_logger;
@@ -360,9 +360,9 @@ class BaseYii
     {
         if (self::$_logger !== null) {
             return self::$_logger;
-        } else {
-            return self::$_logger = static::createObject('yii\log\Logger');
         }
+
+        return self::$_logger = static::createObject('yii\log\Logger');
     }
 
     /**
@@ -499,14 +499,14 @@ class BaseYii
     {
         if (static::$app !== null) {
             return static::$app->getI18n()->translate($category, $message, $params, $language ?: static::$app->language);
-        } else {
-            $p = [];
-            foreach ((array) $params as $name => $value) {
-                $p['{' . $name . '}'] = $value;
-            }
-
-            return ($p === []) ? $message : strtr($message, $p);
         }
+
+        $placeholders = [];
+        foreach ((array) $params as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        return ($placeholders === []) ? $message : strtr($message, $placeholders);
     }
 
     /**

@@ -40,10 +40,10 @@ use yii\base\InvalidCallException;
  * [[fetchMode]]. See the [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
  * for more details about possible fetch mode.
  *
- * @property integer $columnCount The number of columns in the result set. This property is read-only.
- * @property integer $fetchMode Fetch mode. This property is write-only.
- * @property boolean $isClosed Whether the reader is closed or not. This property is read-only.
- * @property integer $rowCount Number of rows contained in the result. This property is read-only.
+ * @property int $columnCount The number of columns in the result set. This property is read-only.
+ * @property int $fetchMode Fetch mode. This property is write-only.
+ * @property bool $isClosed Whether the reader is closed or not. This property is read-only.
+ * @property int $rowCount Number of rows contained in the result. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -75,11 +75,11 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
      * Binds a column to a PHP variable.
      * When rows of data are being fetched, the corresponding column value
      * will be set in the variable. Note, the fetch mode must include PDO::FETCH_BOUND.
-     * @param integer|string $column Number of the column (1-indexed) or name of the column
+     * @param int|string $column Number of the column (1-indexed) or name of the column
      * in the result set. If using the column name, be aware that the name
      * should match the case of the column, as returned by the driver.
      * @param mixed $value Name of the PHP variable to which the column will be bound.
-     * @param integer $dataType Data type of the parameter
+     * @param int $dataType Data type of the parameter
      * @see http://www.php.net/manual/en/function.PDOStatement-bindColumn.php
      */
     public function bindColumn($column, &$value, $dataType = null)
@@ -93,7 +93,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Set the default fetch mode for this statement
-     * @param integer $mode fetch mode
+     * @param int $mode fetch mode
      * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
      */
     public function setFetchMode($mode)
@@ -113,7 +113,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * Returns a single column from the next row of a result set.
-     * @param integer $columnIndex zero-based column index
+     * @param int $columnIndex zero-based column index
      * @return mixed the column of the current row, false if no more rows available
      */
     public function readColumn($columnIndex)
@@ -146,7 +146,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
      * Advances the reader to the next result when reading the results of a batch of statements.
      * This method is only useful when there are multiple result sets
      * returned by the query. Not all DBMS support this feature.
-     * @return boolean Returns true on success or false on failure.
+     * @return bool Returns true on success or false on failure.
      */
     public function nextResult()
     {
@@ -170,7 +170,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
 
     /**
      * whether the reader is closed or not.
-     * @return boolean whether the reader is closed or not.
+     * @return bool whether the reader is closed or not.
      */
     public function getIsClosed()
     {
@@ -181,7 +181,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
      * Returns the number of rows in the result set.
      * Note, most DBMS may not give a meaningful count.
      * In this case, use "SELECT COUNT(*) FROM tableName" to obtain the number of rows.
-     * @return integer number of rows contained in the result.
+     * @return int number of rows contained in the result.
      */
     public function getRowCount()
     {
@@ -193,7 +193,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
      * This method is required by the Countable interface.
      * Note, most DBMS may not give a meaningful count.
      * In this case, use "SELECT COUNT(*) FROM tableName" to obtain the number of rows.
-     * @return integer number of rows contained in the result.
+     * @return int number of rows contained in the result.
      */
     public function count()
     {
@@ -203,7 +203,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
     /**
      * Returns the number of columns in the result set.
      * Note, even there's no row in the reader, this still gives correct column number.
-     * @return integer the number of columns in the result set.
+     * @return int the number of columns in the result set.
      */
     public function getColumnCount()
     {
@@ -228,7 +228,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
     /**
      * Returns the index of the current row.
      * This method is required by the interface [[\Iterator]].
-     * @return integer the index of the current row.
+     * @return int the index of the current row.
      */
     public function key()
     {
@@ -258,7 +258,7 @@ class DataReader extends \yii\base\Object implements \Iterator, \Countable
     /**
      * Returns whether there is a row of data at current position.
      * This method is required by the interface [[\Iterator]].
-     * @return boolean whether there is a row of data at current position.
+     * @return bool whether there is a row of data at current position.
      */
     public function valid()
     {

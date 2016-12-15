@@ -13,7 +13,7 @@
             '<?= $table ?>',
             '<?= $column ?>',
             '<?= $fkData['relatedTable'] ?>',
-            'id',
+            '<?= $fkData['relatedColumn'] ?>',
             'CASCADE'
         );
 <?php endforeach;

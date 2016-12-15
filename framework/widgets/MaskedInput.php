@@ -29,7 +29,7 @@ use yii\web\View;
  * ]);
  * ```
  *
- * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
+ * You can also use this widget in an [[ActiveForm]] using the [[ActiveField::widget()|widget()]]
  * method, for example like this:
  *
  * ```php

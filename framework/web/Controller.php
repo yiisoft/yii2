@@ -14,13 +14,15 @@ use yii\helpers\Url;
 /**
  * Controller is the base class of web controllers.
  *
+ * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class Controller extends \yii\base\Controller
 {
     /**
-     * @var boolean whether to enable CSRF validation for the actions in this controller.
+     * @var bool whether to enable CSRF validation for the actions in this controller.
      * CSRF validation is enabled only when both this property and [[\yii\web\Request::enableCsrfValidation]] are true.
      */
     public $enableCsrfValidation = true;
@@ -45,6 +47,60 @@ class Controller extends \yii\base\Controller
     public function renderAjax($view, $params = [])
     {
         return $this->getView()->renderAjax($view, $params, $this);
+    }
+
+    /**
+     * Send data formatted as JSON.
+     *
+     * This method is a shortcut for sending data formatted as JSON. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
+     * be formatted. A common usage will be:
+     *
+     * ```php
+     * return $this->asJson($data);
+     * ```
+     *
+     * @param mixed $data the data that should be formatted.
+     * @return Response a response that is configured to send `$data` formatted as JSON.
+     * @since 2.0.11
+     * @see Response::$format
+     * @see Response::FORMAT_JSON
+     * @see JsonResponseFormatter
+     */
+    public function asJson($data)
+    {
+        $response = Yii::$app->getResponse();
+        $response->format = Response::FORMAT_JSON;
+        $response->data = $data;
+        return $response;
+    }
+
+    /**
+     * Send data formatted as XML.
+     *
+     * This method is a shortcut for sending data formatted as XML. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
+     * be formatted. A common usage will be:
+     *
+     * ```php
+     * return $this->asXml($data);
+     * ```
+     *
+     * @param mixed $data the data that should be formatted.
+     * @return Response a response that is configured to send `$data` formatted as XML.
+     * @since 2.0.11
+     * @see Response::$format
+     * @see Response::FORMAT_XML
+     * @see XmlResponseFormatter
+     */
+    public function asXml($data)
+    {
+        $response = Yii::$app->getResponse();
+        $response->format = Response::FORMAT_XML;
+        $response->data = $data;
+        return $response;
     }
 
     /**
@@ -136,7 +192,7 @@ class Controller extends \yii\base\Controller
      * Any relative URL will be converted into an absolute one by prepending it with the host info
      * of the current request.
      *
-     * @param integer $statusCode the HTTP status code. Defaults to 302.
+     * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
      * for details about HTTP status code
      * @return Response the current response object

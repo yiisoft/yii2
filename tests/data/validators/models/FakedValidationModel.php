@@ -11,6 +11,7 @@ class FakedValidationModel extends Model
     public $val_attr_c;
     public $val_attr_d;
     private $attr = [];
+    private $inlineValArgs;
 
     /**
      * @param  array $attributes
@@ -36,9 +37,16 @@ class FakedValidationModel extends Model
         ];
     }
 
-    public function inlineVal($attribute, $params = [])
+    public function inlineVal($attribute, $params = [], $validator)
     {
+        $this->inlineValArgs = func_get_args();
+
         return true;
+    }
+
+    public function clientInlineVal($attribute, $params = [], $validator)
+    {
+        return func_get_args();
     }
 
     public function __get($name)
@@ -62,5 +70,15 @@ class FakedValidationModel extends Model
     public function getAttributeLabel($attr)
     {
         return $attr;
+    }
+
+    /**
+     * Returns the arguments of the inlineVal method in the last call.
+     * @return array|null an array of arguments in the last call or null if method never been called.
+     * @see inlineVal
+     */
+    public function getInlineValArgs()
+    {
+        return $this->inlineValArgs;
     }
 }

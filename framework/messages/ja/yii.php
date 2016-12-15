@@ -36,7 +36,7 @@ return [
     'Please fix the following errors:' => '次のエラーを修正してください :',
     'Please upload a file.' => 'ファイルをアップロードしてください。',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => '<b>{totalCount, number}</b> 件中 <b>{begin, number}</b> から <b>{end, number}</b> までを表示しています。',
-    'The combination {values} of {attributes} has already been taken.' => '',
+    'The combination {values} of {attributes} has already been taken.' => '{attributes} の {values} という組み合せは既に登録されています。',
     'The file "{file}" is not an image.' => 'ファイル "{file}" は画像ではありません。',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'ファイル "{file}" は大きすぎます。サイズが {formattedLimit} を超えてはいけません。',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'ファイル "{file}" は小さすぎます。サイズが {formattedLimit} より小さくてはいけません。',

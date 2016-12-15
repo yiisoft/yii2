@@ -6,7 +6,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the creation of table `products_from_store`.
+ * Handles the creation of table `{table}`.
  */
 class {$class} extends Migration
 {
@@ -15,7 +15,7 @@ class {$class} extends Migration
      */
     public function up()
     {
-        \$this->createTable('products_from_store', [
+        \$this->createTable('{table}', [
             'id' => \$this->primaryKey(),
         ]);
     }
@@ -25,7 +25,7 @@ class {$class} extends Migration
      */
     public function down()
     {
-        \$this->dropTable('products_from_store');
+        \$this->dropTable('{table}');
     }
 }
 

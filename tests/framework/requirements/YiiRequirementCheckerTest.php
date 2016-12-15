@@ -160,7 +160,7 @@ class YiiRequirementCheckerTest extends TestCase
      * @dataProvider dataProviderGetByteSize
      *
      * @param string  $verboseValue     verbose value.
-     * @param integer $expectedByteSize expected byte size.
+     * @param int $expectedByteSize expected byte size.
      */
     public function testGetByteSize($verboseValue, $expectedByteSize)
     {
@@ -191,7 +191,7 @@ class YiiRequirementCheckerTest extends TestCase
      * @param string  $a                        first value.
      * @param string  $b                        second value.
      * @param string  $compare                  comparison.
-     * @param boolean $expectedComparisonResult expected comparison result.
+     * @param bool $expectedComparisonResult expected comparison result.
      */
     public function testCompareByteSize($a, $b, $compare, $expectedComparisonResult)
     {
