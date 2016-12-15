@@ -255,16 +255,19 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->prepare();
         static::$microtime = \microtime(true);
+        static::$time = \time();
 
         $expected = 'SilverFire';
         $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
         static::$microtime++;
+        static::$time++;
 
         // Call again with another login to make sure that value is cached
         $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
         static::$microtime++;
+        static::$time++;
 
         $expected = 'SamDark';
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
