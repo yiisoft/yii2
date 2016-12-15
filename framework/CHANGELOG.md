@@ -56,6 +56,7 @@ Yii Framework 2 Change Log
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
 - Enh #12659: Suggest alternatives when console command was not found (mdmunir, cebe)
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
+- Enh #12732: Added `is_dir()` validation to `yii\helpers\BaseFileHelper::findFiles()` method (zalatov, silverfire)
 - Enh #12738: Added support for creating protocol-relative URLs in `UrlManager::createAbsoluteUrl()` and `Url` helper methods (rob006)
 - Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
@@ -77,10 +78,6 @@ Yii Framework 2 Change Log
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 
-- Bug #12824: Enabled usage of `yii\mutex\FileMutex` on Windows systems (davidsonalencar)
-- Enh #11037 yii.js and yii.validation.js should use Regexp.test instead of String.match (arogachev, nkovacs)
-- Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
-- Enh: Added `is_dir()` validation to `BaseFileHelper::findFiles` method (zalatov)
 
 2.0.10 October 20, 2016
 -----------------------
