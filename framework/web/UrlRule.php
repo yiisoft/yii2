@@ -480,14 +480,16 @@ class UrlRule extends Object implements UrlRuleInterface
     }
 
     /**
-     * Trim slashes in passed string. Slashes at beginning of string will be saved if string begins with '//'
-     * and then should be any character other than a slash
-     * Regex playground: https://regex101.com/r/X9f3gK/2
+     * Trim slashes in passed string. If string begins with '//', two slashes are left as is
+     * in the beginning of a string.
      *
      * @param string $string
      * @return string
      */
     private function trimSlashes($string) {
-        return preg_replace('/(^(?:\/|\/{3,})(?!\/)|\/+$)/', '', $string);
+        if (strpos($string, '//') === 0) {
+            return '//' . trim($string, '/');
+        }
+        return trim($string, '/');
     }
 }
