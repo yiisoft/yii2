@@ -175,7 +175,7 @@ class UrlRule extends Object implements UrlRuleInterface
             } else {
                 $this->host = $this->pattern;
             }
-        } elseif (substr($this->pattern, 0, 2) === '//') {
+        } elseif (strpos($this->pattern, '//') === 0) {
             if (($pos2 = strpos($this->pattern, '/', $pos + 2)) !== false) {
                 $this->host = substr($this->pattern, 0, $pos2);
             } else {
@@ -231,7 +231,7 @@ class UrlRule extends Object implements UrlRuleInterface
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
         // if host starts with relative scheme, then insert pattern to match any
-        if (substr($this->host, 0, 2) === '//') {
+        if (strpos($this->host, '//') === 0) {
             $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
         }
 
