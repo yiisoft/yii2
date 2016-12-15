@@ -78,6 +78,7 @@ Yii Framework 2 Change Log
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
 - Bug: #12599: Fixed casting of `binary()` type for MSSQL (silverfire) 
+- Enh #12612: Query conditions added with `yii\db\Query::andWhere()` now get appended to the existing conditions if they were already being joined with the `and` operator (brandonkelly))
 
 2.0.9 July 11, 2016
 -------------------
