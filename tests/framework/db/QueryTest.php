@@ -56,9 +56,8 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals([':id' => 1, ':name' => 'something', ':age' => '30'], $query->params);
     }
 
-    public function testFilterWhere()
+    public function testFilterWhereWithHashFormat()
     {
-        // should work with hash format
         $query = new Query;
         $query->filterWhere([
             'id' => 0,
@@ -72,8 +71,10 @@ abstract class QueryTest extends DatabaseTestCase
 
         $query->orFilterWhere(['name' => '']);
         $this->assertEquals(['id' => 0], $query->where);
+    }
 
-        // should work with operator format
+    public function testFilterWhereWithOperatorFormat()
+    {
         $query = new Query;
         $condition = ['like', 'name', 'Alex'];
         $query->filterWhere($condition);
@@ -86,9 +87,6 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals($condition, $query->where);
 
         $query->andFilterWhere(['in', 'id', []]);
-        $this->assertEquals($condition, $query->where);
-
-        $query->andFilterWhere(['not in', 'id', []]);
         $this->assertEquals($condition, $query->where);
 
         $query->andFilterWhere(['not in', 'id', []]);
@@ -110,9 +108,8 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals($condition, $query->where);
     }
 
-    public function testFilterHaving()
+    public function testFilterHavingWithHashFormat()
     {
-        // should work with hash format
         $query = new Query;
         $query->filterHaving([
             'id' => 0,
@@ -126,8 +123,10 @@ abstract class QueryTest extends DatabaseTestCase
 
         $query->orFilterHaving(['name' => '']);
         $this->assertEquals(['id' => 0], $query->having);
+    }
 
-        // should work with operator format
+    public function testFilterHavingWithOperatorFormat()
+    {
         $query = new Query;
         $condition = ['like', 'name', 'Alex'];
         $query->filterHaving($condition);
@@ -140,9 +139,6 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals($condition, $query->having);
 
         $query->andFilterHaving(['in', 'id', []]);
-        $this->assertEquals($condition, $query->having);
-
-        $query->andFilterHaving(['not in', 'id', []]);
         $this->assertEquals($condition, $query->having);
 
         $query->andFilterHaving(['not in', 'id', []]);
@@ -326,7 +322,8 @@ abstract class QueryTest extends DatabaseTestCase
     }
 
     /**
-     * @depends testFilterWhere
+     * @depends testFilterWhereWithHashFormat
+     * @depends testFilterWhereWithOperatorFormat
      */
     public function testAndFilterCompare()
     {
