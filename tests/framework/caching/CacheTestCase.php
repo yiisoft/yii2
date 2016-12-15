@@ -24,6 +24,7 @@ function microtime($float = false)
 namespace yiiunit\framework\caching;
 
 use yii\caching\Cache;
+use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
 /**
@@ -254,22 +255,18 @@ abstract class CacheTestCase extends TestCase
     public function testGetOrSet()
     {
         $cache = $this->prepare();
-        static::$microtime = \microtime(true);
-        static::$time = \time();
+        $dependency = new TagDependency(['tags' => 'test']);
 
         $expected = 'SilverFire';
         $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
-        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
-        static::$microtime++;
-        static::$time++;
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         // Call again with another login to make sure that value is cached
         $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
-        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
-        static::$microtime++;
-        static::$time++;
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
+        $dependency->invalidate($cache, 'test');
         $expected = 'SamDark';
-        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
     }
 }
