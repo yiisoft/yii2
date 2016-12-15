@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\rest;
 
+use Yii;
 use yii\web\UrlManager;
 use yii\rest\UrlRule;
 use yii\web\Request;
@@ -194,4 +195,120 @@ class UrlRuleTest extends TestCase
 
         ];
     }
+
+    /**
+     * Proviedes test cases for createUrl() method
+     *
+     * - first param are properties of the UrlRule
+     * - second param is the route to create
+     * - third param is the expected URL
+     */
+    public function createUrlDataProvider()
+    {
+        return [
+            // with pluralize
+            [
+                [ // Rule properties
+                    'controller' => 'v1/channel',
+                    'pluralize' => true,
+                ],
+                ['v1/channel/index'], // route
+                'v1/channels', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => ['v1/channel'],
+                    'pluralize' => true,
+                ],
+                ['v1/channel/index'], // route
+                'v1/channels', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
+                    'pluralize' => true,
+                ],
+                ['v1/channel/index'], // route
+                'v1/channels', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
+                    'pluralize' => true,
+                ],
+                ['v1/user/index'], // route
+                'v1/u', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => 'v1/channel',
+                    'pluralize' => true,
+                ],
+                ['v1/channel/index', 'offset' => 1], // route
+                'v1/channels?offset=1', // expected
+            ],
+
+
+            // without pluralize
+            [
+                [ // Rule properties
+                    'controller' => 'v1/channel',
+                    'pluralize' => false,
+                ],
+                ['v1/channel/index'], // route
+                'v1/channel', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => ['v1/channel'],
+                    'pluralize' => false,
+                ],
+                ['v1/channel/index'], // route
+                'v1/channel', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
+                    'pluralize' => false,
+                ],
+                ['v1/channel/index'], // route
+                'v1/channel', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
+                    'pluralize' => false,
+                ],
+                ['v1/user/index'], // route
+                'v1/u', // expected
+            ],
+            [
+                [ // Rule properties
+                    'controller' => 'v1/channel',
+                    'pluralize' => false,
+                ],
+                ['v1/channel/index', 'offset' => 1], // route
+                'v1/channel?offset=1', // expected
+            ],
+
+            // ---
+        ];
+    }
+
+    /**
+     * @dataProvider createUrlDataProvider
+     */
+    public function testCreateUrl($rule, $params, $expected)
+    {
+        $this->mockWebApplication();
+        Yii::$app->set('request', new Request(['hostInfo' => 'http://api.example.com', 'scriptUrl' => '/index.php']));
+        $route = array_shift($params);
+
+        $manager = new UrlManager([
+            'cache' => null,
+        ]);
+        $rule = new UrlRule($rule);
+        $this->assertEquals($expected, $rule->createUrl($manager, $route, $params));
+    }
+
 }
