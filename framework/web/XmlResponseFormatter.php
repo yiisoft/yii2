@@ -37,7 +37,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $encoding;
     /**
-     * @var string the name of the root element or null if no root tag should be added.
+     * @var string the name of the root element. If set to false, null or is empty then no root tag should be added.
      */
     public $rootTag = 'response';
     /**
@@ -52,7 +52,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     public $useTraversableAsArray = true;
     /**
      * @var bool if object tags should be added
-     * @since 2.0.10
+     * @since 2.0.11
      */
     public $objectTags = true;
 
@@ -69,7 +69,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         $response->getHeaders()->set('Content-Type', $this->contentType);
         if ($response->data !== null) {
             $dom = new DOMDocument($this->version, $charset);
-            if ($this->rootTag !== null) {
+            if (!empty($this->rootTag)) {
                 $root = new DOMElement($this->rootTag);
                 $dom->appendChild($root);
                 $this->buildXml($root, $response->data);
