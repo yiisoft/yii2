@@ -556,7 +556,8 @@ abstract class Cache extends Component implements \ArrayAccess
      *
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
-     * @param \Closure $closure the closure that will be used to generate a value to be cached
+     * @param \Closure $closure the closure that will be used to generate a value to be cached.
+     * In case $closure returns `false`, the value will not be cached.
      * @param int $duration default duration in seconds before the cache will expire. If not set,
      * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
@@ -565,7 +566,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * @return mixed result of $closure execution
      * @since 2.0.11
      */
-    public function closure($key, \Closure $closure, $duration = null, $dependency = null)
+    public function getOrSet($key, \Closure $closure, $duration = null, $dependency = null)
     {
         if (($value = $this->get($key)) !== false) {
             return $value;
@@ -573,7 +574,7 @@ abstract class Cache extends Component implements \ArrayAccess
 
         $value = call_user_func($closure, $this);
         if (!$this->set($key, $value, $duration, $dependency)) {
-            Yii::warning("Failed to set cache value with key \"$key\"", __METHOD__);
+            Yii::warning('Failed to set cache value for key "' . json_encode($value) . '"', __METHOD__);
         }
 
         return $value;

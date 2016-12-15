@@ -251,25 +251,21 @@ abstract class CacheTestCase extends TestCase
         $this->assertFalse($cache->get('number_test'));
     }
 
-    public function testClosure()
+    public function testGetOrSet()
     {
         $cache = $this->prepare();
 
-        $closure = function ($cache) use (&$login) {
-            return 'Here is some login: ' . $login;
-        };
-
-        $login = 'silverfire';
-        $expected = 'Here is some login: ' . $login;
-        $this->assertEquals($expected, $cache->closure('some-login', $closure, 2));
+        $expected = 'Here is some login: SilverFire';
+        $loginClosure = function ($cache) use (&$login) { return 'Here is some login: SilverFire'; };
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
 
         // Call again with another login to make sure that value is cached
-        $login = 'samdark';
-        $this->assertEquals($expected, $cache->closure('some-login', $closure, 2));
+        $loginClosure = function ($cache) use (&$login) { return 'Here is some login: SamDark'; };
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
 
         // Spend 1 sec and make sure that previous value is expired and new $login is cached
         sleep(2);
-        $expected = 'Here is some login: ' . $login;
-        $this->assertEquals($expected, $cache->closure('some-login', $closure, 2));
+        $expected = 'Here is some login: SamDark';
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
     }
 }
