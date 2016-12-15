@@ -573,7 +573,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional WHERE condition to the existing one.
-     * The new condition and the existing one will be joined using the 'AND' operator.
+     * The new condition and the existing one will be joined using the `AND` operator.
      * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -594,7 +594,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional WHERE condition to the existing one.
-     * The new condition and the existing one will be joined using the 'OR' operator.
+     * The new condition and the existing one will be joined using the `OR` operator.
      * @param string|array|Expression $condition the new WHERE condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -619,7 +619,7 @@ class Query extends Component implements QueryInterface
      * It adds an additional WHERE condition for the given field and determines the comparison operator
      * based on the first few characters of the given value.
      * The condition is added in the same way as in [[andFilterWhere]] so [[isEmpty()|empty values]] are ignored.
-     * The new condition and the existing one will be joined using the 'AND' operator.
+     * The new condition and the existing one will be joined using the `AND` operator.
      *
      * The comparison operator is intelligently determined based on the first few characters in the given value.
      * In particular, it recognizes the following operators if they appear as the leading characters in the given value:
@@ -832,7 +832,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional HAVING condition to the existing one.
-     * The new condition and the existing one will be joined using the 'AND' operator.
+     * The new condition and the existing one will be joined using the `AND` operator.
      * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -853,7 +853,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Adds an additional HAVING condition to the existing one.
-     * The new condition and the existing one will be joined using the 'OR' operator.
+     * The new condition and the existing one will be joined using the `OR` operator.
      * @param string|array|Expression $condition the new HAVING condition. Please refer to [[where()]]
      * on how to specify this parameter.
      * @param array $params the parameters (name => value) to be bound to the query.
@@ -869,6 +869,91 @@ class Query extends Component implements QueryInterface
             $this->having = ['or', $this->having, $condition];
         }
         $this->addParams($params);
+        return $this;
+    }
+
+    /**
+     * Sets the HAVING part of the query but ignores [[isEmpty()|empty operands]].
+     *
+     * This method is similar to [[having()]]. The main difference is that this method will
+     * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
+     * for building query conditions based on filter values entered by users.
+     *
+     * The following code shows the difference between this method and [[having()]]:
+     *
+     * ```php
+     * // HAVING `age`=:age
+     * $query->filterHaving(['name' => null, 'age' => 20]);
+     * // HAVING `age`=:age
+     * $query->having(['age' => 20]);
+     * // HAVING `name` IS NULL AND `age`=:age
+     * $query->having(['name' => null, 'age' => 20]);
+     * ```
+     *
+     * Note that unlike [[having()]], you cannot pass binding parameters to this method.
+     *
+     * @param array $condition the conditions that should be put in the HAVING part.
+     * See [[having()]] on how to specify this parameter.
+     * @return $this the query object itself
+     * @see having()
+     * @see andFilterHaving()
+     * @see orFilterHaving()
+     * @since 2.0.11
+     */
+    public function filterHaving(array $condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->having($condition);
+        }
+        return $this;
+    }
+
+    /**
+     * Adds an additional HAVING condition to the existing one but ignores [[isEmpty()|empty operands]].
+     * The new condition and the existing one will be joined using the `AND` operator.
+     *
+     * This method is similar to [[andHaving()]]. The main difference is that this method will
+     * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
+     * for building query conditions based on filter values entered by users.
+     *
+     * @param array $condition the new HAVING condition. Please refer to [[having()]]
+     * on how to specify this parameter.
+     * @return $this the query object itself
+     * @see filterHaving()
+     * @see orFilterHaving()
+     * @since 2.0.11
+     */
+    public function andFilterHaving(array $condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->andHaving($condition);
+        }
+        return $this;
+    }
+
+    /**
+     * Adds an additional HAVING condition to the existing one but ignores [[isEmpty()|empty operands]].
+     * The new condition and the existing one will be joined using the `OR` operator.
+     *
+     * This method is similar to [[orHaving()]]. The main difference is that this method will
+     * remove [[isEmpty()|empty query operands]]. As a result, this method is best suited
+     * for building query conditions based on filter values entered by users.
+     *
+     * @param array $condition the new HAVING condition. Please refer to [[having()]]
+     * on how to specify this parameter.
+     * @return $this the query object itself
+     * @see filterHaving()
+     * @see andFilterHaving()
+     * @since 2.0.11
+     */
+    public function orFilterHaving(array $condition)
+    {
+        $condition = $this->filterCondition($condition);
+        if ($condition !== []) {
+            $this->orHaving($condition);
+        }
         return $this;
     }
 

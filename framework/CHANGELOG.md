@@ -27,8 +27,13 @@ Yii Framework 2 Change Log
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
 - Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
 - Bug #13089: Fixed `yii\console\controllers\AssetController::adjustCssUrl()` breaks URL reference specification (`url(#id)`) (vitalyzhakov)
+- Bug #13159: Fixed `destroy` method in `yii.captcha.js` which did not work as expected (arogachev)
 - Bug #7727: Fixed truncateHtml leaving extra tags (developeruz)
 - Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
+- Bug #13128: Fixed incorrect position of {pos} string in ColumnSchemaBuilder `__toString` (df2)
+- Bug #13105: Fixed `validate()` method in `yii.activeForm.js` to prevent unexpected form submit when `forceValidate` set to `true` (silverfire)
+- Bug #13198: Fixed order of checks in `yii\validators\IpValidator` that sometimes caused wrong error message (silverfire)
+- Bug #12213: Fixed `yii\db\ActiveRecord::unlinkAll()` to respect `onCondition()` of the relational query (silverfire)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
@@ -43,6 +48,7 @@ Yii Framework 2 Change Log
 - Enh #11756: Added type mapping for `varbinary` data type in MySQL DBMS (silverfire)
 - Enh #11929: Changed `type` column type from `int` to `smallInt` in RBAC migrations (silverfire)
 - Enh #12015: Changed visibility `yii\db\ActiveQueryTrait::createModels()` from private to protected (ArekX, dynasource)
+- Enh #12145: Added `beforeCacheResponse` and `afterRestoreResponse` to `yii\filters\PageCache` to be more easily extendable (sergeymakinen)
 - Enh #12399: Added `ActiveField::addAriaAttributes` property for `aria-required` and `aria-invalid` attributes rendering (Oxyaction, samdark)
 - Enh #12390: Avoid creating queries with false where condition (`0=1`) when fetching relational data (klimov-paul)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
@@ -68,6 +74,9 @@ Yii Framework 2 Change Log
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh #12854: Added `RangeNotSatisfiableHttpException` to cover HTTP error 416 file request exceptions (zalatov)
 - Bug: #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
+- Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
+- Enh #11697: Added `filterHaving()`, `andFilterHaving()` and `orFilterHaving()` to `yii\db\Query` (nicdnepr, samdark)
+- Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 
 2.0.10 October 20, 2016
 -----------------------

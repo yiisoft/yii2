@@ -258,7 +258,8 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
-     * Specify additional SQL to be appended to schema string.
+     * Specify additional SQL to be appended to column definition.
+     * Position modifiers will be appended after column definition in databases that support them.
      * @param string $sql the SQL string to be appended.
      * @return $this
      * @since 2.0.9
