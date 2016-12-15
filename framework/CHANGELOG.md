@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Bug #12213: Fixed `yii\db\ActiveRecord::unlinkAll()` to respect `onCondition()` of the relational query (silverfire)
 - Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
+- Bug #12703: Fixed `StringHelper::truncateHtml()` non functional when dom PHP extension is disabled (samdark)
 - Bug #12714: Fixed `yii\validation\EmailValidator` to prevent false-positives checks when property `checkDns` is set to `true` (silverfire)
 - Bug #12735: Fixed `yii\console\controllers\MigrateController` creating multiple primary keys for field `bigPrimaryKey:unsigned` (SG5)
 - Bug #12791: Fixed `yii\behaviors\AttributeTypecastBehavior` unable to automatically detect `attributeTypes`, triggering PHP Fatal Error (klimov-paul)
