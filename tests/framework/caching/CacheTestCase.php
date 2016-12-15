@@ -254,18 +254,19 @@ abstract class CacheTestCase extends TestCase
     public function testGetOrSet()
     {
         $cache = $this->prepare();
+        static::$time = \time();
 
-        $expected = 'Here is some login: SilverFire';
-        $loginClosure = function ($cache) use (&$login) { return 'Here is some login: SilverFire'; };
+        $expected = 'SilverFire';
+        $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
+        static::$time++;
 
         // Call again with another login to make sure that value is cached
-        $loginClosure = function ($cache) use (&$login) { return 'Here is some login: SamDark'; };
+        $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
+        static::$time++;
 
-        // Spend 1 sec and make sure that previous value is expired and new $login is cached
-        sleep(2);
-        $expected = 'Here is some login: SamDark';
+        $expected = 'SamDark';
         $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, 2));
     }
 }
