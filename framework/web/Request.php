@@ -921,10 +921,10 @@ class Request extends \yii\base\Request
     {
         $potentialReverseProxyIP = null;
 
-        if (isset ($_SERVER['HTTP_X_REAL_FORWARDED_FOR']) && $_SERVER['HTTP_X_REAL_FORWARDED_FOR'] != '') {
+        if (isset ($_SERVER['HTTP_X_REAL_FORWARDED_FOR']) && $_SERVER['HTTP_X_REAL_FORWARDED_FOR'] !== '') {
             $potentialReverseProxyIP = $_SERVER['HTTP_X_REAL_FORWARDED_FOR'];
         }
-        if (isset ($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] != '') {
+        if (isset ($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] !== '') {
             $potentialReverseProxyIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
         }        
 
