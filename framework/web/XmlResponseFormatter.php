@@ -37,7 +37,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $encoding;
     /**
-     * @var string the name of the root element or null.
+     * @var string the name of the root element or null if no root tag should be added.
      */
     public $rootTag = 'response';
     /**
@@ -51,7 +51,8 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $useTraversableAsArray = true;
     /**
-     *  @var boolean mandatory addition of the tag of object name
+     * @var bool if object tags should be added
+     * @since 2.0.10
      */
     public $objectTags = true;
 
