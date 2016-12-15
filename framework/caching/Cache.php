@@ -548,7 +548,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * ```php
      * public function getTopProducts($count = 10) {
      *     $cache = $this->cache; // Could be Yii::$app->cache
-     *     return $cache->closure(['top-n-products', 'n' => $count], function ($cache) use ($count) {
+     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {
      *         return Products::find()->mostPopular()->limit(10)->all();
      *     }, 1000);
      * }
