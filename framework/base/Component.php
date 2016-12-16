@@ -521,7 +521,7 @@ class Component extends Object
         }
 
         $removed = $this->_events[$name]->remove($handler);
-        // TODO Change self::hasEventHandlers to avoid that calculation
+
         if (!count($this->_events[$name])) {
             unset($this->_events[$name]);
         }
