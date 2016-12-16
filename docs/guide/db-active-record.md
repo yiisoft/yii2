@@ -633,7 +633,7 @@ try {
     $customer->save();
     // ...other DB operations...
     $transaction->commit();
-} catch(\Exception $e) {
+} catch(\Exception $e) { // replace \Exception with \Throwable when you are using PHP 7
     $transaction->rollBack();
     throw $e;
 }

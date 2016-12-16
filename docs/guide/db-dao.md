@@ -336,7 +336,7 @@ try {
     
     $transaction->commit();
     
-} catch(\Exception $e) {
+} catch(\Exception $e) { // replace \Exception with \Throwable when you are using PHP 7
 
     $transaction->rollBack();
     
@@ -421,13 +421,13 @@ try {
     try {
         $db->createCommand($sql2)->execute();
         $innerTransaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Exception $e) { // replace \Exception with \Throwable when you are using PHP 7
         $innerTransaction->rollBack();
         throw $e;
     }
 
     $outerTransaction->commit();
-} catch (\Exception $e) {
+} catch (\Exception $e) { // replace \Exception with \Throwable when you are using PHP 7
     $outerTransaction->rollBack();
     throw $e;
 }
@@ -570,7 +570,7 @@ try {
     $db->createCommand("UPDATE user SET username='demo' WHERE id=1")->execute();
 
     $transaction->commit();
-} catch(\Exception $e) {
+} catch(\Exception $e) { // replace \Exception with \Throwable when you are using PHP 7
     $transaction->rollBack();
     throw $e;
 }

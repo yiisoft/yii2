@@ -25,7 +25,7 @@ use yii\base\InvalidConfigException;
  *     $connection->createCommand($sql2)->execute();
  *     //.... other SQL executions
  *     $transaction->commit();
- * } catch (\Exception $e) {
+ * } catch (\Exception $e) { // replace \Exception with \Throwable when you are using PHP 7
  *     $transaction->rollBack();
  *     throw $e;
  * }
