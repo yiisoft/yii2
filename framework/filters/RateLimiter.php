@@ -40,7 +40,7 @@ use yii\web\TooManyRequestsHttpException;
 class RateLimiter extends ActionFilter
 {
     /**
-     * @var boolean whether to include rate limit headers in the response
+     * @var bool whether to include rate limit headers in the response
      */
     public $enableRateLimitHeaders = true;
     /**
@@ -117,9 +117,9 @@ class RateLimiter extends ActionFilter
     /**
      * Adds the rate limit headers to the response
      * @param Response $response
-     * @param integer $limit the maximum number of allowed requests during a period
-     * @param integer $remaining the remaining number of allowed requests within the current period
-     * @param integer $reset the number of seconds to wait before having maximum number of allowed requests again
+     * @param int $limit the maximum number of allowed requests during a period
+     * @param int $remaining the remaining number of allowed requests within the current period
+     * @param int $reset the number of seconds to wait before having maximum number of allowed requests again
      */
     public function addRateLimitHeaders($response, $limit, $remaining, $reset)
     {

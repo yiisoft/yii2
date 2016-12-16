@@ -31,13 +31,13 @@ use yii\base\InvalidConfigException;
  * }
  * ```
  *
- * @property boolean $isActive Whether this transaction is active. Only an active transaction can [[commit()]]
+ * @property bool $isActive Whether this transaction is active. Only an active transaction can [[commit()]]
  * or [[rollBack()]]. This property is read-only.
  * @property string $isolationLevel The transaction isolation level to use for this transaction. This can be
  * one of [[READ_UNCOMMITTED]], [[READ_COMMITTED]], [[REPEATABLE_READ]] and [[SERIALIZABLE]] but also a string
  * containing DBMS specific syntax to be used after `SET TRANSACTION ISOLATION LEVEL`. This property is
  * write-only.
- * @property integer $level The current nesting level of the transaction. This property is read-only.
+ * @property int $level The current nesting level of the transaction. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -71,14 +71,14 @@ class Transaction extends \yii\base\Object
     public $db;
 
     /**
-     * @var integer the nesting level of the transaction. 0 means the outermost level.
+     * @var int the nesting level of the transaction. 0 means the outermost level.
      */
     private $_level = 0;
 
 
     /**
      * Returns a value indicating whether this transaction is active.
-     * @return boolean whether this transaction is active. Only an active transaction
+     * @return bool whether this transaction is active. Only an active transaction
      * can [[commit()]] or [[rollBack()]].
      */
     public function getIsActive()
@@ -214,7 +214,7 @@ class Transaction extends \yii\base\Object
     }
 
     /**
-     * @return integer The current nesting level of the transaction.
+     * @return int The current nesting level of the transaction.
      * @since 2.0.8
      */
     public function getLevel()

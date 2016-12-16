@@ -16,13 +16,6 @@ class FileMutexTest extends TestCase
 {
     use MutexTestTrait;
 
-    protected function setUp() {
-        parent::setUp();
-        if (DIRECTORY_SEPARATOR === '\\') {
-            $this->markTestSkipped('FileMutex does not have MS Windows operating system support.');
-        }
-    }
-
     /**
      * @return FileMutex
      * @throws \yii\base\InvalidConfigException
@@ -31,6 +24,7 @@ class FileMutexTest extends TestCase
     {
         return \Yii::createObject([
             'class' => FileMutex::className(),
+            'mutexPath' => '@yiiunit/runtime/mutex',
         ]);
     }
 

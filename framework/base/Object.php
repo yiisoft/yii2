@@ -16,5 +16,4 @@ namespace yii\base;
  */
 class Object extends BaseObject
 {
-
 }

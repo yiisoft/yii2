@@ -207,7 +207,7 @@ class Cors extends ActionFilter
     /**
      * Adds the CORS headers to the response
      * @param Response $response
-     * @param array CORS headers which have been computed
+     * @param array $headers CORS headers which have been computed
      */
     public function addCorsHeaders($response, $headers)
     {

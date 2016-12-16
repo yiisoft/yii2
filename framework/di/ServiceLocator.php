@@ -41,6 +41,8 @@ use yii\base\InvalidConfigException;
  *
  * Because [[\yii\base\Module]] extends from ServiceLocator, modules and the application are all service locators.
  *
+ * For more details and usage information on ServiceLocator, see the [guide article on service locators](guide:concept-service-locator).
+ *
  * @property array $components The list of the component definitions or the loaded component instances (ID =>
  * definition or instance).
  *
@@ -78,11 +80,11 @@ class ServiceLocator extends Component
      * Checks if a property value is null.
      * This method overrides the parent implementation by checking if the named component is loaded.
      * @param string $name the property name or the event name
-     * @return boolean whether the property value is null
+     * @return bool whether the property value is null
      */
     public function __isset($name)
     {
-        if ($this->has($name, true)) {
+        if ($this->has($name)) {
             return true;
         } else {
             return parent::__isset($name);
@@ -99,8 +101,8 @@ class ServiceLocator extends Component
      *   instantiated the specified component.
      *
      * @param string $id component ID (e.g. `db`).
-     * @param boolean $checkInstance whether the method should check if the component is shared and instantiated.
-     * @return boolean whether the locator has the specified component definition or has instantiated the component.
+     * @param bool $checkInstance whether the method should check if the component is shared and instantiated.
+     * @return bool whether the locator has the specified component definition or has instantiated the component.
      * @see set()
      */
     public function has($id, $checkInstance = false)
@@ -112,7 +114,7 @@ class ServiceLocator extends Component
      * Returns the component instance with the specified ID.
      *
      * @param string $id component ID (e.g. `db`).
-     * @param boolean $throwException whether to throw an exception if `$id` is not registered with the locator before.
+     * @param bool $throwException whether to throw an exception if `$id` is not registered with the locator before.
      * @return object|null the component of the specified ID. If `$throwException` is false and `$id`
      * is not registered before, null will be returned.
      * @throws InvalidConfigException if `$id` refers to a nonexistent component ID
@@ -217,7 +219,7 @@ class ServiceLocator extends Component
 
     /**
      * Returns the list of the component definitions or the loaded component instances.
-     * @param boolean $returnDefinitions whether to return component definitions instead of the loaded component instances.
+     * @param bool $returnDefinitions whether to return component definitions instead of the loaded component instances.
      * @return array the list of the component definitions or the loaded component instances (ID => definition or instance).
      */
     public function getComponents($returnDefinitions = true)

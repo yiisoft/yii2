@@ -38,28 +38,28 @@ class FileTarget extends Target
      */
     public $enableRotation = true;
     /**
-     * @var integer maximum log file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
+     * @var int maximum log file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
      */
     public $maxFileSize = 10240; // in KB
     /**
-     * @var integer number of log files used for rotation. Defaults to 5.
+     * @var int number of log files used for rotation. Defaults to 5.
      */
     public $maxLogFiles = 5;
     /**
-     * @var integer the permission to be set for newly created log files.
+     * @var int the permission to be set for newly created log files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
     public $fileMode;
     /**
-     * @var integer the permission to be set for newly created directories.
+     * @var int the permission to be set for newly created directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
      */
     public $dirMode = 0775;
     /**
-     * @var boolean Whether to rotate log files by copy and truncate in contrast to rotation by
+     * @var bool Whether to rotate log files by copy and truncate in contrast to rotation by
      * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
      * systems which do not play well with rename on open files. Rotation by renaming however is
      * a bit faster.

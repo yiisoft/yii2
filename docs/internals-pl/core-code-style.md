@@ -1,8 +1,8 @@
 Styl kodowania bazowych plików frameworka Yii 2
 ===============================================
 
-Poniższy styl kodowania jest stosowany w kodzie frameworka Yii 2.x i oficjalnych rozszerzeniach. Jeśli planujesz wysłać prośbę 
-o dołączenie kodu do bazowego frameworka, powinieneś rozważyć stosowanie takiego samego stylu. Nie zmuszamy jednak nikogo do 
+Poniższy styl kodowania jest stosowany w kodzie frameworka Yii 2.x i oficjalnych rozszerzeniach. Jeśli planujesz wysłać prośbę
+o dołączenie kodu do bazowego frameworka, powinieneś rozważyć stosowanie takiego samego stylu. Nie zmuszamy jednak nikogo do
 stosowania go we własnych aplikacjach. Wybierz styl, który najbardziej odpowiada Twoim potrzebom.
 
 Możesz pobrać gotową konfigurację dla CodeSniffera pod adresem: https://github.com/yiisoft/yii2-coding-standards
@@ -10,9 +10,9 @@ Możesz pobrać gotową konfigurację dla CodeSniffera pod adresem: https://gith
 1. Omówienie
 ------------
 
-Używamy przede wszystkim standardu kodowania 
-[PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), zatem wszystko, co dotyczy 
-[PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) dotyczy również naszego stylu 
+Używamy przede wszystkim standardu kodowania
+[PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), zatem wszystko, co dotyczy
+[PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) dotyczy również naszego stylu
 kodowania.
 
 - Pliki MUSZĄ używać tagów `<?php` albo `<?=`.
@@ -85,12 +85,12 @@ class Foo
 
 - Deklarując publiczne elementy klasy należy używać wprost słowa kluczowego `public`.
 - Publiczne i chronione zmienne powinny być zadeklarowane na początku klasy, przed deklaracjami metod.
-  Prywatne zmienne również powinny być zadeklarowane na początku klasy, ale mogą być również dodane zaraz przed metodami, 
+  Prywatne zmienne również powinny być zadeklarowane na początku klasy, ale mogą być również dodane zaraz przed metodami,
   które ich używają w przypadku, gdy są stosowane tylko w kilku z nich.
 - Kolejność deklaracji właściwości w klasie powinna być rosnąca według ich widoczności: od publicznych, przez chronione, do prywatnych.
 - Nie ma ścisłych zasad dotyczących kolejności właściwości o tej samej widoczności.
-- Dla zapewnienia lepszej czytelności kodu, nie powinno być żadnych pustych linii pomiędzy deklaracjami właściwości, a sekcje 
-  deklaracji właściwości i metod klasy powinny być rozdzielona dwoma pustymi liniami. Pojedyncza pusta linia powinna być dodana 
+- Dla zapewnienia lepszej czytelności kodu, nie powinno być żadnych pustych linii pomiędzy deklaracjami właściwości, a sekcje
+  deklaracji właściwości i metod klasy powinny być rozdzielona dwoma pustymi liniami. Pojedyncza pusta linia powinna być dodana
   pomiędzy grupami o różnej widoczności.
 - Prywatne zmienne powinny być nazwane w formacie `$_varName`.
 - Publiczne elementy klasy i niezależne zmienne powinny być nazwane w formacie `$camelCase` z pierwszą literą małą.
@@ -143,7 +143,7 @@ class Foo
 
 ### 4.4 Bloki dokumentacji
 
-`@param`, `@var`, `@property` oraz `@return` muszą używać typów zadeklarowanych jako `boolean`, `integer`, `string`, `array` lub `null`. 
+`@param`, `@var`, `@property` oraz `@return` muszą używać typów zadeklarowanych jako `bool`, `int`, `string`, `array` lub `null`.
 Można również używać nazw klas jak `Model` lub `ActiveRecord`. Dla typowanych tablic należy używać `ClassName[]`.
 
 ### 4.5 Konstruktory
@@ -275,7 +275,7 @@ if (empty($result)) {
 }
 ```
 
-wygląda lepiej w postaci 
+wygląda lepiej w postaci
 
 ```php
 $result = $this->getResult();
@@ -347,14 +347,14 @@ Dokumentacja
 
 - Należy stosować dokumentację zgodnie ze składnią [phpDoc](http://phpdoc.org/).
 - Kod bez dokumentacji jest niedozwolony.
-- Każdy plik klasy musi zawierać blok dokumentacji "poziomu pliku" na początku pliku i blok dokumentacji "poziomu klasy" 
+- Każdy plik klasy musi zawierać blok dokumentacji "poziomu pliku" na początku pliku i blok dokumentacji "poziomu klasy"
   zaraz nad klasą.
 - Nie ma konieczności używania `@return`, jeśli metoda niczego nie zwraca.
-- Wszystkie wirtualne właściwości w klasach, które rozszerzają `yii\base\Object` są udokumentowane za pomocą tagu `@property` 
+- Wszystkie wirtualne właściwości w klasach, które rozszerzają `yii\base\Object` są udokumentowane za pomocą tagu `@property`
   w bloku dokumentacji klasy.
-  Adnotacje te są automatycznie generowane z tagów `@return` lub `@param` w odpowiednich getterach lub setterach przez 
+  Adnotacje te są automatycznie generowane z tagów `@return` lub `@param` w odpowiednich getterach lub setterach przez
   uruchomienie `./build php-doc` w folderze build.
-  Można dodać tag `@property` do gettera lub settera, aby wprost określić informację dla dokumentacji właściwości zadeklarowanej 
+  Można dodać tag `@property` do gettera lub settera, aby wprost określić informację dla dokumentacji właściwości zadeklarowanej
   w tych metodach, kiedy opis różni się od tego, co znajduje się w `@return`. Poniżej znajduje się przykład:
 
   ```php

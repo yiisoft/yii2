@@ -45,7 +45,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $itemTag = 'item';
     /**
-     * @var boolean whether to interpret objects implementing the [[\Traversable]] interface as arrays.
+     * @var bool whether to interpret objects implementing the [[\Traversable]] interface as arrays.
      * Defaults to `true`.
      * @since 2.0.7
      */
@@ -91,7 +91,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 } else {
                     $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
                     $element->appendChild($child);
-                    $child->appendChild(new DOMText((string) $value));
+                    $child->appendChild(new DOMText($this->formatScalarValue($value)));
                 }
             }
         } elseif (is_object($data)) {
@@ -107,7 +107,27 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 $this->buildXml($child, $array);
             }
         } else {
-            $element->appendChild(new DOMText((string) $data));
+            $element->appendChild(new DOMText($this->formatScalarValue($data)));
         }
+    }
+
+    /**
+     * Formats scalar value to use in XML text node
+     *
+     * @param int|string|bool $value
+     * @return string
+     * @since 2.0.11
+     */
+    protected function formatScalarValue($value)
+    {
+        if ($value === true) {
+            return 'true';
+        }
+
+        if ($value === false) {
+            return 'false';
+        }
+
+        return (string) $value;
     }
 }
