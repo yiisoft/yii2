@@ -75,6 +75,7 @@ Yii Framework 2 Change Log
 - Enh #13036: Added shortcut methods `asJson()` and `asXml()` for returning JSON and XML data in web controller actions (cebe)
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul, rob006)
 - Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options. (timbeks)
+- Bug: #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
