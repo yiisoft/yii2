@@ -12,16 +12,6 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     public static $params;
 
     /**
-     * Clean up after test.
-     * By default the application created with [[mockApplication]] will be destroyed.
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-        $this->destroyApplication();
-    }
-
-    /**
      * Returns a test configuration param from /data/config.php
      * @param  string $name params name
      * @param  mixed $default default value to use when param is not set.
@@ -34,6 +24,16 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         }
 
         return isset(static::$params[$name]) ? static::$params[$name] : $default;
+    }
+
+    /**
+     * Clean up after test.
+     * By default the application created with [[mockApplication]] will be destroyed.
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+        $this->destroyApplication();
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'components' => [
                 'request' => [
                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ .'/index.php',
+                    'scriptFile' => __DIR__ . '/index.php',
                     'scriptUrl' => '/index.php',
                 ],
             ]
@@ -89,15 +89,75 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
 
     /**
      * Asserting two strings equality ignoring line endings
-     *
      * @param string $expected
      * @param string $actual
      */
-    public function assertEqualsWithoutLE($expected, $actual)
+    protected function assertEqualsWithoutLE($expected, $actual)
     {
         $expected = str_replace("\r\n", "\n", $expected);
         $actual = str_replace("\r\n", "\n", $actual);
 
         $this->assertEquals($expected, $actual);
     }
+
+    /**
+     * Invokes a inaccessible method
+     * @param $object
+     * @param $method
+     * @param array $args
+     * @return mixed
+     * @since 2.0.11
+     */
+    protected function invokeMethod($object, $method, $args = [])
+    {
+        $reflection = new \ReflectionClass($object->className());
+        $method = $reflection->getMethod($method);
+        $method->setAccessible(true);
+        return $method->invokeArgs($object, $args);
+    }
+
+    /**
+     * Sets an inaccessible object property to a designated value
+     * @param $object
+     * @param $propertyName
+     * @param $value
+     * @param bool $revoke
+     * @since 2.0.11
+     */
+    protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true)
+    {
+        $class = new \ReflectionClass($object);
+        while (!$class->hasProperty($propertyName)) {
+            $class = $class->getParentClass();
+        }
+        $property = $class->getProperty($propertyName);
+        $property->setAccessible(true);
+        $property->setValue($value);
+        if($revoke){
+            $property->setAccessible(false);
+        }
+    }
+
+    /**
+     * Gets an inaccessible object property
+     * @param $object
+     * @param $propertyName
+     * @return mixed
+     */
+    protected function getInaccessibleProperty($object, $propertyName)
+    {
+        $class = new \ReflectionClass($object);
+        while (!$class->hasProperty($propertyName)) {
+            $class = $class->getParentClass();
+        }
+        $property = $class->getProperty($propertyName);
+        $property->setAccessible(true);
+        return $property->getValue($object);
+    }
+
+
+
+
+
+
 }

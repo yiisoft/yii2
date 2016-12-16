@@ -23,7 +23,7 @@ HTTP キャッシュ
 /**
  * @param Action $action 現在扱っているアクションオブジェクト
  * @param array $params "params" プロパティの値
- * @return integer ページの更新時刻を表す UNIX タイムスタンプ
+ * @return int ページの更新時刻を表す UNIX タイムスタンプ
  */
 function ($action, $params)
 ```

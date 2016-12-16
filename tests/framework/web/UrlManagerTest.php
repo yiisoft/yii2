@@ -247,9 +247,15 @@ class UrlManagerTest extends TestCase
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'https');
         $this->assertEquals('https://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
 
+        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], '');
+        $this->assertEquals('//www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
+
         $manager->hostInfo = 'https://www.example.com';
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'http');
         $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
+
+        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], '');
+        $this->assertEquals('//www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
     public function testCreateAbsoluteUrlWithSuffix()

@@ -16,7 +16,7 @@ use Yii;
  *
  * - Each PHP script contains one array which stores the message translations in one particular
  *   language and for a single message category;
- * - Each PHP script is saved as a file named as `[[basePath]]/LanguageID/CategoryName.php`;
+ * - Each PHP script is saved as a file named as "[[basePath]]/LanguageID/CategoryName.php";
  * - Within each PHP script, the message translations are returned as an array like the following:
  *
  * ```php

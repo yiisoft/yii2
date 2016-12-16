@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 You can also access attributes like accessing array elements, thanks to the support for
-[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) and [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+[ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) and [Traversable](http://php.net/manual/en/class.traversable.php)
 by [[yii\base\Model]]:
 
 ```php
@@ -47,7 +47,7 @@ $model = new \app\models\ContactForm;
 $model['name'] = 'example';
 echo $model['name'];
 
-// iterate attributes
+// Model is traversable using foreach.
 foreach ($model as $name => $value) {
     echo "$name: $value\n";
 }

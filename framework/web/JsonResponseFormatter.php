@@ -38,13 +38,13 @@ use yii\helpers\Json;
 class JsonResponseFormatter extends Component implements ResponseFormatterInterface
 {
     /**
-     * @var boolean whether to use JSONP response format. When this is true, the [[Response::data|response data]]
+     * @var bool whether to use JSONP response format. When this is true, the [[Response::data|response data]]
      * must be an array consisting of `data` and `callback` members. The latter should be a JavaScript
      * function name while the former will be passed to this function as a parameter.
      */
     public $useJsonp = false;
     /**
-     * @var integer the encoding options passed to [[Json::encode()]]. For more details please refer to
+     * @var int the encoding options passed to [[Json::encode()]]. For more details please refer to
      * <http://www.php.net/manual/en/function.json-encode.php>.
      * Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
      * This property has no effect, when [[useJsonp]] is `true`.

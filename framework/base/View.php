@@ -18,7 +18,9 @@ use yii\widgets\FragmentCache;
  *
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
- * @property string|boolean $viewFile The view file currently being rendered. False if no view file is being
+ * For more details and usage information on View, see the [guide article on views](guide:structure-views).
+ *
+ * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -257,7 +259,7 @@ class View extends Component
     }
 
     /**
-     * @return string|boolean the view file currently being rendered. False if no view file is being rendered.
+     * @return string|bool the view file currently being rendered. False if no view file is being rendered.
      */
     public function getViewFile()
     {
@@ -270,7 +272,7 @@ class View extends Component
      * If you override this method, make sure you call the parent implementation first.
      * @param string $viewFile the view file to be rendered.
      * @param array $params the parameter array passed to the [[render()]] method.
-     * @return boolean whether to continue rendering the view file.
+     * @return bool whether to continue rendering the view file.
      */
     public function beforeRender($viewFile, $params)
     {
@@ -345,9 +347,8 @@ class View extends Component
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;
-        } else {
-            return $this->evaluateDynamicContent($statements);
         }
+        return $this->evaluateDynamicContent($statements);
     }
 
     /**
@@ -379,7 +380,7 @@ class View extends Component
      * Begins recording a block.
      * This method is a shortcut to beginning [[Block]]
      * @param string $id the block ID.
-     * @param boolean $renderInPlace whether to render the block content in place.
+     * @param bool $renderInPlace whether to render the block content in place.
      * Defaults to false, meaning the captured block will not be displayed.
      * @return Block the Block widget instance
      */
@@ -450,7 +451,7 @@ class View extends Component
      *
      * @param string $id a unique ID identifying the fragment to be cached.
      * @param array $properties initial property values for [[FragmentCache]]
-     * @return boolean whether you should generate the content for caching.
+     * @return bool whether you should generate the content for caching.
      * False if the cached version is available.
      */
     public function beginCache($id, $properties = [])
@@ -463,9 +464,8 @@ class View extends Component
             $this->endCache();
 
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**

@@ -98,7 +98,7 @@ public function fields()
 
 ### Overriding `extraFields()` <span id="overriding-extra-fields"></span>
 
-By default, [[yii\base\Model::extraFields()]] returns nothing, while [[yii\db\ActiveRecord::extraFields()]]
+By default, [[yii\base\Model::extraFields()]] returns an empty array, while [[yii\db\ActiveRecord::extraFields()]]
 returns the names of the relations that have been populated from DB.
 
 The return data format of `extraFields()` is the same as that of `fields()`. Usually, `extraFields()`

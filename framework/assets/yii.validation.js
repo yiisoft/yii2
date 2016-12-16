@@ -13,7 +13,7 @@
 yii.validation = (function ($) {
     var pub = {
         isEmpty: function (value) {
-            return value === null || value === undefined || value == [] || value === '';
+            return value === null || value === undefined || ($.isArray(value) && value.length === 0) || value === '';
         },
 
         addMessage: function (messages, message, value) {
@@ -36,6 +36,7 @@ yii.validation = (function ($) {
             }
         },
 
+        // "boolean" is a reserved keyword in older versions of ES so it's quoted for IE < 9 support
         'boolean': function (value, messages, options) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
@@ -58,14 +59,15 @@ yii.validation = (function ($) {
                 return;
             }
 
+            if (options.is !== undefined && value.length != options.is) {
+                pub.addMessage(messages, options.notEqual, value);
+                return;
+            }
             if (options.min !== undefined && value.length < options.min) {
                 pub.addMessage(messages, options.tooShort, value);
             }
             if (options.max !== undefined && value.length > options.max) {
                 pub.addMessage(messages, options.tooLong, value);
-            }
-            if (options.is !== undefined && value.length != options.is) {
-                pub.addMessage(messages, options.notEqual, value);
             }
         },
 
@@ -76,9 +78,8 @@ yii.validation = (function ($) {
             });
         },
 
-        image: function (attribute, messages, options, deferred) {
+        image: function (attribute, messages, options, deferredList) {
             var files = getUploadedFiles(attribute, messages, options);
-
             $.each(files, function (i, file) {
                 validateFile(file, messages, options);
 
@@ -87,48 +88,33 @@ yii.validation = (function ($) {
                     return;
                 }
 
-                var def = $.Deferred(),
-                    fr = new FileReader(),
-                    img = new Image();
-
-                img.onload = function () {
-                    if (options.minWidth && this.width < options.minWidth) {
-                        messages.push(options.underWidth.replace(/\{file\}/g, file.name));
-                    }
-
-                    if (options.maxWidth && this.width > options.maxWidth) {
-                        messages.push(options.overWidth.replace(/\{file\}/g, file.name));
-                    }
-
-                    if (options.minHeight && this.height < options.minHeight) {
-                        messages.push(options.underHeight.replace(/\{file\}/g, file.name));
-                    }
-
-                    if (options.maxHeight && this.height > options.maxHeight) {
-                        messages.push(options.overHeight.replace(/\{file\}/g, file.name));
-                    }
-                    def.resolve();
-                };
-
-                img.onerror = function () {
-                    messages.push(options.notImage.replace(/\{file\}/g, file.name));
-                    def.resolve();
-                };
-
-                fr.onload = function () {
-                    img.src = fr.result;
-                };
-
-                // Resolve deferred if there was error while reading data
-                fr.onerror = function () {
-                    def.resolve();
-                };
-
-                fr.readAsDataURL(file);
-
-                deferred.push(def);
+                var deferred = $.Deferred();
+                pub.validateImage(file, messages, options, deferred, new FileReader(), new Image());
+                deferredList.push(deferred);
             });
+        },
 
+        validateImage: function (file, messages, options, deferred, fileReader, image) {
+            image.onload = function() {
+                validateImageSize(file, image, messages, options);
+                deferred.resolve();
+            };
+
+            image.onerror = function () {
+                messages.push(options.notImage.replace(/\{file\}/g, file.name));
+                deferred.resolve();
+            };
+
+            fileReader.onload = function () {
+                image.src = this.result;
+            };
+
+            // Resolve deferred if there was error while reading data
+            fileReader.onerror = function () {
+                deferred.resolve();
+            };
+
+            fileReader.readAsDataURL(file);
         },
 
         number: function (value, messages, options) {
@@ -136,7 +122,7 @@ yii.validation = (function ($) {
                 return;
             }
 
-            if (typeof value === 'string' && !value.match(options.pattern)) {
+            if (typeof value === 'string' && !options.pattern.test(value)) {
                 pub.addMessage(messages, options.message, value);
                 return;
             }
@@ -170,6 +156,10 @@ yii.validation = (function ($) {
                 }
             });
 
+            if (options.not === undefined) {
+                options.not = false;
+            }
+
             if (options.not === inArray) {
                 pub.addMessage(messages, options.message, value);
             }
@@ -180,7 +170,7 @@ yii.validation = (function ($) {
                 return;
             }
 
-            if (!options.not && !value.match(options.pattern) || options.not && value.match(options.pattern)) {
+            if (!options.not && !options.pattern.test(value) || options.not && options.pattern.test(value)) {
                 pub.addMessage(messages, options.message, value);
             }
         },
@@ -190,28 +180,29 @@ yii.validation = (function ($) {
                 return;
             }
 
-            var valid = true;
-
-
-            var regexp = /^((?:"?([^"]*)"?\s)?)(?:\s+)?(?:(<?)((.+)@([^>]+))(>?))$/,
+            var valid = true,
+                regexp = /^((?:"?([^"]*)"?\s)?)(?:\s+)?(?:(<?)((.+)@([^>]+))(>?))$/,
                 matches = regexp.exec(value);
 
             if (matches === null) {
-                valid = false
+                valid = false;
             } else {
-                if (options.enableIDN) {
-                    matches[5] = punycode.toASCII(matches[5]);
-                    matches[6] = punycode.toASCII(matches[6]);
+                var localPart = matches[5],
+                    domain = matches[6];
 
-                    value = matches[1] + matches[3] + matches[5] + '@' + matches[6] + matches[7];
+                if (options.enableIDN) {
+                    localPart = punycode.toASCII(localPart);
+                    domain = punycode.toASCII(domain);
+
+                    value = matches[1] + matches[3] + localPart + '@' + domain + matches[7];
                 }
 
-                if (matches[5].length > 64) {
+                if (localPart.length > 64) {
                     valid = false;
-                } else if ((matches[5] + '@' + matches[6]).length > 254) {
+                } else if ((localPart + '@' + domain).length > 254) {
                     valid = false;
                 } else {
-                    valid = value.match(options.pattern) || (options.allowName && value.match(options.fullPattern));
+                    valid = options.pattern.test(value) || (options.allowName && options.fullPattern.test(value));
                 }
             }
 
@@ -225,15 +216,14 @@ yii.validation = (function ($) {
                 return;
             }
 
-            if (options.defaultScheme && !value.match(/:\/\//)) {
+            if (options.defaultScheme && !/:\/\//.test(value)) {
                 value = options.defaultScheme + '://' + value;
             }
 
             var valid = true;
 
             if (options.enableIDN) {
-                var regexp = /^([^:]+):\/\/([^\/]+)(.*)$/,
-                    matches = regexp.exec(value);
+                var matches = /^([^:]+):\/\/([^\/]+)(.*)$/.exec(value);
                 if (matches === null) {
                     valid = false;
                 } else {
@@ -241,7 +231,7 @@ yii.validation = (function ($) {
                 }
             }
 
-            if (!valid || !value.match(options.pattern)) {
+            if (!valid || !options.pattern.test(value)) {
                 pub.addMessage(messages, options.message, value);
             }
         },
@@ -263,11 +253,7 @@ yii.validation = (function ($) {
 
             // CAPTCHA may be updated via AJAX and the updated hash is stored in body data
             var hash = $('body').data(options.hashKey);
-            if (hash == null) {
-                hash = options.hash;
-            } else {
-                hash = hash[options.caseSensitive ? 0 : 1];
-            }
+            hash = hash == null ? options.hash : hash[options.caseSensitive ? 0 : 1];
             var v = options.caseSensitive ? value : value.toLowerCase();
             for (var i = v.length - 1, h = 0; i >= 0; --i) {
                 h += v.charCodeAt(i);
@@ -282,7 +268,8 @@ yii.validation = (function ($) {
                 return;
             }
 
-            var compareValue, valid = true;
+            var compareValue,
+                valid = true;
             if (options.compareAttribute === undefined) {
                 compareValue = options.compareValue;
             } else {
@@ -329,17 +316,13 @@ yii.validation = (function ($) {
         },
 
         ip: function (value, messages, options) {
-            var getIpVersion = function (value) {
-                return value.indexOf(':') === -1 ? 4 : 6;
-            };
-
-            var negation = null, cidr = null;
-
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
 
-            var matches = new RegExp(options.ipParsePattern).exec(value);
+            var negation = null,
+                cidr = null,
+                matches = new RegExp(options.ipParsePattern).exec(value);
             if (matches) {
                 negation = matches[1] || null;
                 value = matches[2];
@@ -359,19 +342,20 @@ yii.validation = (function ($) {
                 return;
             }
 
-            if (getIpVersion(value) == 6) {
-                if (!options.ipv6) {
-                    pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
-                }
+            var ipVersion = value.indexOf(':') === -1 ? 4 : 6;
+            if (ipVersion == 6) {
                 if (!(new RegExp(options.ipv6Pattern)).test(value)) {
                     pub.addMessage(messages, options.messages.message, value);
                 }
-            } else {
-                if (!options.ipv4) {
-                    pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
+                if (!options.ipv6) {
+                    pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
                 }
+            } else {
                 if (!(new RegExp(options.ipv4Pattern)).test(value)) {
                     pub.addMessage(messages, options.messages.message, value);
+                }
+                if (!options.ipv4) {
+                    pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
                 }
             }
         }
@@ -406,15 +390,8 @@ yii.validation = (function ($) {
 
     function validateFile(file, messages, options) {
         if (options.extensions && options.extensions.length > 0) {
-            var index, ext;
-
-            index = file.name.lastIndexOf('.');
-
-            if (!~index) {
-                ext = '';
-            } else {
-                ext = file.name.substr(index + 1, file.name.length).toLowerCase();
-            }
+            var index = file.name.lastIndexOf('.');
+            var ext = !~index ? '' : file.name.substr(index + 1, file.name.length).toLowerCase();
 
             if (!~options.extensions.indexOf(ext)) {
                 messages.push(options.wrongExtension.replace(/\{file\}/g, file.name));
@@ -444,6 +421,24 @@ yii.validation = (function ($) {
         }
 
         return false;
+    }
+
+    function validateImageSize(file, image, messages, options) {
+        if (options.minWidth && image.width < options.minWidth) {
+            messages.push(options.underWidth.replace(/\{file\}/g, file.name));
+        }
+
+        if (options.maxWidth && image.width > options.maxWidth) {
+            messages.push(options.overWidth.replace(/\{file\}/g, file.name));
+        }
+
+        if (options.minHeight && image.height < options.minHeight) {
+            messages.push(options.underHeight.replace(/\{file\}/g, file.name));
+        }
+
+        if (options.maxHeight && image.height > options.maxHeight) {
+            messages.push(options.overHeight.replace(/\{file\}/g, file.name));
+        }
     }
 
     return pub;
