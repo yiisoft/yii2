@@ -70,7 +70,7 @@ class Application extends \yii\base\Application
      */
     public $defaultRoute = 'help';
     /**
-     * @var boolean whether to enable the commands provided by the core framework.
+     * @var bool whether to enable the commands provided by the core framework.
      * Defaults to true.
      */
     public $enableCoreCommands = true;
@@ -170,7 +170,7 @@ class Application extends \yii\base\Application
      *
      * @param string $route the route that specifies the action.
      * @param array $params the parameters to be passed to the action
-     * @return integer|Response the result of the action. This can be either an exit code or Response object.
+     * @return int|Response the result of the action. This can be either an exit code or Response object.
      * Exit code 0 means normal, and other values mean abnormal. Exit code of `null` is treaded as `0` as well.
      * @throws Exception if the route is invalid
      */
@@ -180,7 +180,7 @@ class Application extends \yii\base\Application
             $res = parent::runAction($route, $params);
             return is_object($res) ? $res : (int)$res;
         } catch (InvalidRouteException $e) {
-            throw new Exception("Unknown command \"$route\".", 0, $e);
+            throw new UnknownCommandException($route, $this, 0, $e);
         }
     }
 

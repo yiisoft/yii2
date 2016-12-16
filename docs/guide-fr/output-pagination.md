@@ -7,7 +7,7 @@ Yii utilise un objet [[yii\data\Pagination]] pour représenter les informations 
 
 * [[yii\data\Pagination::$totalCount|nombre total (*total count*)]] spécifie le nombre total d'items de données. Notez que cela est ordinairement beaucoup plus élevé que le nombre d'items de données que l'on a besoin d'afficher sur une unique page.
 * [[yii\data\Pagination::$pageSize|taille de la page (*page size*)]] spécifie combien d'items de données chaque page contient. La valeur par défaut est 20.
-* [[yii\data\Pagination::$page|page courante (*current page*)] donne la numéro de la page courante (qui commence à zéro). La valeur par défaut est 0, ce qui indique la première page. 
+* [[yii\data\Pagination::$page|page courante (*current page*)]] donne la numéro de la page courante (qui commence à zéro). La valeur par défaut est 0, ce qui indique la première page. 
 
 Avec un objet [[yii\data\Pagination]] pleinement spécifié, vous pouvez retrouver et afficher partiellement des données. Par exemple, si vous allez chercher des données dans une base de données, vous pouvez spécifier les clauses `OFFSET` et `LIMIT` de la requête de base de données avec les valeurs correspondantes fournies par l'objet pagination. Un exemple est présenté ci-dessous. 
 

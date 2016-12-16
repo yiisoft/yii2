@@ -229,6 +229,8 @@ Il y a encore une manière plus abstraite d'utiliser les événements. Vous pouv
 Par exemple, vous pouvez créer l'interface suivante :
 
 ```php
+namespace app\interfaces;
+
 interface DanceEventInterface
 {
     const EVENT_DANCE = 'dance';
@@ -260,32 +262,36 @@ class Developer extends Component implements DanceEventInterface
 Pour gérer l'évenement `EVENT_DANCE` déclenché par n'importe laquelle de ces classes, appelez [[yii\base\Event::on()|Event::on()]] et passez-lui le nom de l'interface comme premier argument :
 
 ```php
-Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace($event->sender->className . ' danse'); // enregistrer le message disant que le chien ou le développeur danse.
-})
+Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+});
 ```
 
 Vous pouvez déclencher l'événement de ces classes :
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+// trigger event for Dog class
+Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+
+// trigger event for Developer class
+Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
 Notez bien que vous ne pouvez pas déclencher l'événement de toutes les classes qui implémentent l'interface :,
 
 ```php
 // NE FONCTIONNE PAS
-Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // error
+Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 Pour détacher le gestionnaire d'événement, appelez [[yii\base\Event::off()|Event::off()]]. Par exemple :
 
 ```php
 // détache $handler
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
 
 // détache tous les gestionnaires de DanceEventInterface::EVENT_DANCE
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 

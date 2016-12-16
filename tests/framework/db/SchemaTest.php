@@ -218,11 +218,11 @@ abstract class SchemaTest extends DatabaseTestCase
             ],
             'enum_col' => [
                 'type' => 'string',
-                'dbType' => "enum('a','B')",
+                'dbType' => "enum('a','B','c,D')",
                 'phpType' => 'string',
                 'allowNull' => true,
                 'autoIncrement' => false,
-                'enumValues' => ['a', 'B'],
+                'enumValues' => ['a', 'B','c,D'],
                 'size' => null,
                 'precision' => null,
                 'scale' => null,

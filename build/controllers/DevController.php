@@ -261,7 +261,7 @@ class DevController extends Controller
     }
 
     /**
-     * Creates symlinks to freamework and extension sources for the application
+     * Creates symlinks to framework and extension sources for the application
      * @param string $dir application directory
      * @param string $base Yii sources base directory
      *

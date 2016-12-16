@@ -4,7 +4,7 @@ Autenticação
 Autenticação é o processo de verificação da identidade do usuário. Geralmente é usado um identificador (ex. um nome de usuário ou endereço de e-mail) e um token secreto (ex. uma senha ou um token de acesso) para determinar se o usuário é quem ele diz ser. Autenticação é a base do recurso de login.
 
 O Yii fornece um framework de autenticação com vários componentes que dão suporte ao login. Para usar este framework, você precisará primeiramente fazer o seguinte:
- 
+
 * Configurar o componente [[yii\web\User|user]] da aplicação;
 * Criar uma classe que implementa a interface [[yii\web\IdentityInterface]].
 
@@ -14,7 +14,7 @@ O Yii fornece um framework de autenticação com vários componentes que dão su
 O componente [[yii\web\User|user]] da aplicação gerencia o status de autenticação dos usuários. Ele requer que você especifique uma [[yii\web\User::identityClass|classe de identidade]] que contém a atual lógia de autenticação.
 Na cofiguração abaixo, a [[yii\web\User::identityClass|classe de identidade]] do
 [[yii\web\User|user]] é configurada para ser `app\models\User` cuja implementação é explicada na próxima subseção:
-  
+
 ```php
 return [
     'components' => [
@@ -57,7 +57,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * Localiza uma identidade pelo ID informado
      *
-     * @param string|integer $id o ID a ser localizado
+     * @param string|int $id o ID a ser localizado
      * @return IdentityInterface|null o objeto da identidade que corresponde ao ID informado
      */
     public static function findIdentity($id)
@@ -94,7 +94,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $authKey
-     * @return boolean se a chave de autenticação do usuário atual for válida
+     * @return bool se a chave de autenticação do usuário atual for válida
      */
     public function validateAuthKey($authKey)
     {
@@ -110,7 +110,7 @@ e gravá-la na tabela `user`:
 class User extends ActiveRecord implements IdentityInterface
 {
     ......
-    
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
@@ -129,7 +129,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 ## Usando o [[yii\web\User]] <span id="using-user"></span>
 
-Você usa o [[yii\web\User]] principalmente como um componente `user` da aplicação. 
+Você usa o [[yii\web\User]] principalmente como um componente `user` da aplicação.
 
 É possível detectar a identidade do usuário atual utilizando a expressão `Yii::$app->user->identity`. Ele retorna uma instância da [[yii\web\User::identityClass|classe de identidade]] representando o atual usuário logado, ou `null` se o usuário corrente não estiver autenticado (acessando como convidado). O código a seguir mostra como recuperar outras informações relacionadas à autenticação de [[yii\web\User]]:
 
@@ -151,13 +151,13 @@ Para logar um usuário, você pode usar o seguinte código:
 // observe que você pode querer checar a senha se necessário
 $identity = User::findOne(['username' => $username]);
 
-// logar o usuário 
+// logar o usuário
 Yii::$app->user->login($identity);
 ```
 
 O método [[yii\web\User::login()]] define a identidade do usuário atual para o [[yii\web\User]]. Se a sessão estiver [[yii\web\User::enableSession|habilitada]], ele vai manter a identidade na sessão para que o status de autenticação do usuário seja mantido durante toda a sessão. Se o login via cookie (ex. login "remember me") estiver [[yii\web\User::enableAutoLogin|habilitada]], ele também guardará a identidade em um cookie para que o estado de autenticação do usuário possa ser recuperado a partir do cookie enquanto o cookie permanece válido.
 
-A fim de permitir login via cookie, você pode configurar [[yii\web\User::enableAutoLogin]] como `true` na configuração da aplicação. Você também precisará fornecer um parâmetro de tempo de duração quando chamar o método [[yii\web\User::login()]]. 
+A fim de permitir login via cookie, você pode configurar [[yii\web\User::enableAutoLogin]] como `true` na configuração da aplicação. Você também precisará fornecer um parâmetro de tempo de duração quando chamar o método [[yii\web\User::login()]].
 
 Para realizar o logout de um usuário, simplesmente chame:
 
@@ -173,12 +173,12 @@ Observe que o logout de um usuário só tem sentido quando a sessão está habil
 A classe [[yii\web\User]] dispara alguns eventos durante os processos de login e logout:
 
 * [[yii\web\User::EVENT_BEFORE_LOGIN|EVENT_BEFORE_LOGIN]]: disparado no início de [[yii\web\User::login()]].
-  Se o manipulador de evento define a propriedade [[yii\web\UserEvent::isValid|isValid]] do objeto de evento para `false`, o processo de login será cancelado. 
+  Se o manipulador de evento define a propriedade [[yii\web\UserEvent::isValid|isValid]] do objeto de evento para `false`, o processo de login será cancelado.
 * [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]]: dispara após de um login com sucesso.
-* [[yii\web\User::EVENT_BEFORE_LOGOUT|EVENT_BEFORE_LOGOUT]]: dispara no início de [[yii\web\User::logout()]]. Se o manipulador de evento define a propriedade [[yii\web\UserEvent::isValid|isValid]] do objeto de evento para `false`, o processo de logout será cancelado. 
+* [[yii\web\User::EVENT_BEFORE_LOGOUT|EVENT_BEFORE_LOGOUT]]: dispara no início de [[yii\web\User::logout()]]. Se o manipulador de evento define a propriedade [[yii\web\UserEvent::isValid|isValid]] do objeto de evento para `false`, o processo de logout será cancelado.
 * [[yii\web\User::EVENT_AFTER_LOGOUT|EVENT_AFTER_LOGOUT]]: dispara após um logout com sucesso.
 
-Você pode responder a estes eventos implementando funcionalidades, tais como auditoria de login, estatísticas de usuários on-line. Por exemplo, no manipulador 
+Você pode responder a estes eventos implementando funcionalidades, tais como auditoria de login, estatísticas de usuários on-line. Por exemplo, no manipulador
 [[yii\web\User::EVENT_AFTER_LOGIN|EVENT_AFTER_LOGIN]], você pode registrar o tempo de login e endereço IP na tabela `user`.
 
 

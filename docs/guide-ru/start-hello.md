@@ -94,7 +94,7 @@ use yii\helpers\Html;
 После создания действия и представления вы можете перейти на новую страницу по следующему URL:
 
 ```
-http://hostname/index.php?r=site/say&message=Привет+мир
+http://hostname/index.php?r=site%2Fsay&message=Привет+мир
 ```
 
 ![Привет, мир](images/start-hello-world.png)

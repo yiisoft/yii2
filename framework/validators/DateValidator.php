@@ -123,6 +123,12 @@ class DateValidator extends Validator
      *
      * This can be the same attribute as the one being validated. If this is the case,
      * the original value will be overwritten with the timestamp value after successful validation.
+     *
+     * Note, that when using this property, the input value will be converted to a unix timestamp,
+     * which by definition is in UTC, so a conversion from the [[$timeZone|input time zone]] to UTC
+     * will be performed. When defining [[$timestampAttributeFormat]] you can control the conversion by
+     * setting [[$timestampAttributeTimeZone]] to a different value than `'UTC'`.
+     *
      * @see timestampAttributeFormat
      * @see timestampAttributeTimeZone
      */
@@ -151,7 +157,7 @@ class DateValidator extends Validator
      */
     public $timestampAttributeTimeZone = 'UTC';
     /**
-     * @var integer|string upper limit of the date. Defaults to null, meaning no upper limit.
+     * @var int|string upper limit of the date. Defaults to null, meaning no upper limit.
      * This can be a unix timestamp or a string representing a date time value.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooBig for the customized message used when the date is too big.
@@ -159,7 +165,7 @@ class DateValidator extends Validator
      */
     public $max;
     /**
-     * @var integer|string lower limit of the date. Defaults to null, meaning no lower limit.
+     * @var int|string lower limit of the date. Defaults to null, meaning no lower limit.
      * This can be a unix timestamp or a string representing a date time value.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooSmall for the customized message used when the date is too small.
@@ -308,7 +314,7 @@ class DateValidator extends Validator
      * Parses date string into UNIX timestamp
      *
      * @param string $value string representing date
-     * @return integer|false a UNIX timestamp or `false` on failure.
+     * @return int|false a UNIX timestamp or `false` on failure.
      */
     protected function parseDateValue($value)
     {
@@ -321,7 +327,7 @@ class DateValidator extends Validator
      *
      * @param string $value string representing date
      * @param string $format expected date format
-     * @return integer|false a UNIX timestamp or `false` on failure.
+     * @return int|false a UNIX timestamp or `false` on failure.
      */
     private function parseDateValueFormat($value, $format)
     {
@@ -345,7 +351,7 @@ class DateValidator extends Validator
      * Parses a date value using the IntlDateFormatter::parse()
      * @param string $value string representing date
      * @param string $format the expected date format
-     * @return integer|boolean a UNIX timestamp or `false` on failure.
+     * @return int|bool a UNIX timestamp or `false` on failure.
      * @throws InvalidConfigException
      */
     private function parseDateValueIntl($value, $format)
@@ -383,7 +389,7 @@ class DateValidator extends Validator
      * Parses a date value using the DateTime::createFromFormat()
      * @param string $value string representing date
      * @param string $format the expected date format
-     * @return integer|boolean a UNIX timestamp or `false` on failure.
+     * @return int|bool a UNIX timestamp or `false` on failure.
      */
     private function parseDateValuePHP($value, $format)
     {
@@ -404,7 +410,7 @@ class DateValidator extends Validator
 
     /**
      * Formats a timestamp using the specified format
-     * @param integer $timestamp
+     * @param int $timestamp
      * @param string $format
      * @return string
      */

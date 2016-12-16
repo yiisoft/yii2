@@ -21,6 +21,9 @@ Yii DAO из коробки поддерживает следующие базы
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): версии 2008 или выше.
 
 
+> Note: Новая версия pdo_oci для PHP 7 на данный момент существует только в форме исходного кода. Используйте
+  [инструкции сообщества по компиляции](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268).
+
 ## Создание подключения к базе данных <span id="creating-db-connections"></span>
 
 Для доступа к базе данных, вы сначала должны подключится к ней, создав экземпляр класса [[yii\db\Connection]]:

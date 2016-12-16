@@ -15,6 +15,10 @@ namespace yii\caching;
  * Unlike the [[Cache]], ArrayCache allows the expire parameter of [[set]], [[add]], [[multiSet]] and [[multiAdd]] to
  * be a floating point number, so you may specify the time in milliseconds (e.g. 0.1 will be 100 milliseconds).
  *
+ * For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting [[$serializer]] to `false`.
+ *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */

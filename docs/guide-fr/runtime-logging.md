@@ -105,11 +105,15 @@ La propriété [[yii\log\Target::levels|levels]] accepte un tableau constitué d
 
 Si vous ne spécifiez pas la propriété [[yii\log\Target::levels|levels]], cela signifie que la cible traitera les messages de *n'importe quel* niveau de sévérité. 
 
-La propriété [[yii\log\Target::categories|categories]] accepte un tableau constitué de noms ou de motifs de noms de catégorie de messages. Une cible ne traite que les messages dont la catégorie est trouvée ou correspond aux motifs de ce tableau. Un motif de nom de catégorie est un préfixe de nom de catégorie suivi d'une astérisque `*`. Un nom de catégorie correspond à un motif de nom de catégorie s'il commence par le préfixe du motif. Par exemple, `yii\db\Command::execute` et `yii\db\Command::query` sont utilisés comme noms de catégorie pour les messages enregistrés dans la classe [[yii\db\Command]]. Ils correspondent tous deux au motif `yii\db\*`.
+La propriété [[yii\log\Target::categories|categories]] accepte un tableau constitué de noms ou de motifs de noms de catégorie de messages. Une cible ne traite 
+que les messages dont la catégorie est trouvée ou correspond aux motifs de ce tableau. Un motif de nom de catégorie est un préfixe de nom de catégorie 
+suivi d'une astérisque `*`. Un nom de catégorie correspond à un motif de nom de catégorie s'il commence par le préfixe du motif. 
+Par exemple, `yii\db\Command::execute` et `yii\db\Command::query` sont utilisés comme noms de catégorie pour les messages enregistrés dans la classe [[yii\db\Command]]. Ils correspondent tous deux au motif `yii\db\*`.
 
 Si vous ne spécifiez pas la propriété [[yii\log\Target::categories|categories]], cela signifie que le cible traite les messages de *n'importe quelle* catégorie. 
 
-En plus d'inscrire des catégories en liste blanche via la propriété [[yii\log\Target::categories|categories]], vous pouvez également inscrire certaines catégories en liste noire via la propriété [[yii\log\Target::except|except]]. Si la catégorie d'un message est trouvée ou correspond à un des motifs de cette propriété, ce message n'est PAS traité par la cible. 
+En plus d'inscrire des catégories en liste blanche via la propriété [[yii\log\Target::categories|categories]], vous pouvez également inscrire certaines catégories
+en liste noire via la propriété [[yii\log\Target::except|except]]. Si la catégorie d'un message est trouvée ou correspond à un des motifs de cette propriété, ce message n'est PAS traité par la cible. 
  
 La configuration suivante de cible spécifie que la cible  traitera les messages d'erreur ou d'avertissement des catégories dont le nom correspond soit à `yii\db\*`, soit `yii\web\HttpException:*`, mais pas `yii\web\HttpException:404`.
 
