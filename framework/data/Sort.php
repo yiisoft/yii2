@@ -370,11 +370,11 @@ class Sort extends Object
         if ($direction === null) {
             if (isset($directions[$attribute])) {
                 $direction = $directions[$attribute] === SORT_DESC ? SORT_ASC : SORT_DESC;
-                unset($directions[$attribute]);
             } else {
                 $direction = isset($definition['default']) ? $definition['default'] : SORT_ASC;
             }
         }
+        unset($directions[$attribute]);
 
         if ($this->enableMultiSort) {
             $directions = array_merge([$attribute => $direction], $directions);

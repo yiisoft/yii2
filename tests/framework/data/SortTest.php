@@ -120,6 +120,8 @@ class SortTest extends TestCase
 
         $this->assertEquals('-age,-name', $sort->createSortParam('age'));
         $this->assertEquals('name,age', $sort->createSortParam('name'));
+        $this->assertEquals('-age,-name', $sort->createSortParam('age', SORT_DESC));
+        $this->assertEquals('-name,age', $sort->createSortParam('name', SORT_DESC));
     }
 
     public function testCreateUrl()
@@ -148,6 +150,8 @@ class SortTest extends TestCase
 
         $this->assertEquals('/index.php?r=site%2Findex&sort=-age%2C-name', $sort->createUrl('age'));
         $this->assertEquals('/index.php?r=site%2Findex&sort=name%2Cage', $sort->createUrl('name'));
+        $this->assertEquals('/index.php?r=site%2Findex&sort=age%2C-name', $sort->createUrl('age', false, SORT_ASC));
+        $this->assertEquals('/index.php?r=site%2Findex&sort=name%2Cage', $sort->createUrl('name', false, SORT_ASC));
     }
 
     public function testLink()
@@ -176,5 +180,7 @@ class SortTest extends TestCase
         ]);
 
         $this->assertEquals('<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>', $sort->link('age'));
+        $this->assertEquals('<a class="asc" href="/index.php?r=site%2Findex&amp;sort=age%2C-name" data-sort="age,-name">Age</a>', $sort->link('age', [], SORT_ASC));
+        $this->assertEquals('<a class="desc" href="/index.php?r=site%2Findex&amp;sort=-name%2Cage" data-sort="-name,age">Name</a>', $sort->link('name', [], SORT_DESC));
     }
 }
