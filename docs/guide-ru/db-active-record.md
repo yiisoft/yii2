@@ -49,9 +49,20 @@ Yii поддерживает работу с Active Record для следующ
 
 ## Объявление классов Active Record <span id="declaring-ar-classes"></span>
 
-Для начала объявите свой собственный класс, унаследовав класс [[yii\db\ActiveRecord]]. Поскольку каждый класс
-Active Record сопоставлен с таблицей в базе данных, в своём классе вы должны переопределить метод
-[[yii\db\ActiveRecord::tableName()|tableName()]], чтобы указать с какой именно таблицей связан ваш класс.
+Для начала объявите свой собственный класс, унаследовав класс [[yii\db\ActiveRecord]].
+
+### Настройка имени таблицы
+
+По умолчанию каждый класс Active Record ассоциирован с таблицей в базе данных. Метод
+[[yii\db\ActiveRecord::tableName()|tableName()]] получает имя таблицы из имени класса с помощью [[yii\helpers\Inflector::camel2id()]].
+Если таблица не названа соответственно, вы можете переопределить данный метод.
+
+Также может быть применён [[yii\db\Connection::$tablePrefix|tablePrefix]] по умолчанию. Например, если 
+[[yii\db\Connection::$tablePrefix|tablePrefix]] задан как `tbl_`, `Customer` преобразуется в `tbl_customer`, а
+`OrderItem` в `tbl_order_item`. 
+
+Если имя таблицы указано в формате `{{%TableName}}`, символ `%` заменяется префиксом. Например, , `{{%post}}` становится
+`{{tbl_post}}`. Фигуриные скобки используются для [экранирования в SQL-запросах](db-dao.md#quoting-table-and-column-names).
 
 В нижеследующем примере мы объявляем класс Active Record с названием `Customer` для таблицы `customer`.
 
@@ -70,10 +81,12 @@ class Customer extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer';
+        return '{{customer}}';
     }
 }
 ```
+
+### Классы Active record называются "моделями"
 
 Объекты Active Record являются [моделями](structure-models.md). Именно поэтому мы обычно задаём классам Active Record
 пространство имён `app\models` (или другое пространство имён, предназначенное для моделей). 
@@ -1134,6 +1147,37 @@ $customers = Customer::find()->joinWith([
   [[yii\db\ActiveQuery::onCondition()|onCondition()]], это условие будет размещено в конструкции `ON`, если запрос
   содержит оператор JOIN. Если же запрос не содержит оператор JOIN, такое условие будет автоматически размещено в
   конструкции `WHERE`.
+  
+#### Псевдонимы связанных таблиц <span id="relation-table-aliases"></span>
+
+Как уже было отмечено, при использовании в запросе JOIN-ов, приходится явно решать конфликты имён. Поэтому часто таблицам
+дают псевдонимы. Задать псевдоним для реляционного запроса можно следующим образом:
+
+```php
+$query->joinWith([
+  'orders' => function ($q) {
+      $q->from(['o' => Order::tableName()]);
+  },
+])
+```
+
+Выглядит это довольно сложно. Либо приходится задавать явно имена таблиц, либо вызывать `Order::tableName()`.
+Начиная с версии 2.0.7 вы можете задать и использовать псевдоним для связанной таблицы следующим образом:
+
+```php
+// join the orders relation and sort the result by orders.id
+$query->joinWith(['orders o'])->orderBy('o.id');
+```
+
+Этот синтаксис работает для простых связей. Если же необходимо использовать связующую таблицу, например 
+`$query->joinWith(['orders.product'])`, то вызовы joinWith вкладываются друг в друга:
+
+```php
+$query->joinWith(['orders o' => function($q) {
+      $q->joinWith('product p');
+  }])
+  ->where('o.amount > 100');
+```
 
 
 ### Обратные связи <span id="inverse-relations"></span>

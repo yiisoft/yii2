@@ -261,6 +261,8 @@ implement it in classes, where you need it.
 For example, we can create the following interface:
 
 ```php
+namespace app\interfaces;
+
 interface DanceEventInterface
 {
     const EVENT_DANCE = 'dance';
@@ -290,35 +292,39 @@ class Developer extends Component implements DanceEventInterface
 ```
 
 To handle the `EVENT_DANCE`, triggered by any of these classes, call [[yii\base\Event::on()|Event::on()]] and
-pass the interface name as the first argument:
+pass the interface class name as the first argument:
 
 ```php
-Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace($event->sender->className . ' just danced'); // Will log that Dog or Developer danced
-})
+Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+});
 ```
 
 You can trigger the event of those classes:
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+// trigger event for Dog class
+Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+
+// trigger event for Developer class
+Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
 But please notice, that you can not trigger all the classes, that implement the interface:
 
 ```php
-// DOES NOT WORK
-Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // error
+// DOES NOT WORK. Classes that implement this interface will NOT be triggered.
+Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:
 
 ```php
 // detaches $handler
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
 
 // detaches all handlers of DanceEventInterface::EVENT_DANCE
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 

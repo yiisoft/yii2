@@ -167,7 +167,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'char(1) CHECK (value LIKE "test%")',
                     'sqlite' => 'char(1) CHECK (value LIKE "test%")',
-                    'oci' => 'CHAR(1) CHECK (value LIKE "test%")',
                     'cubrid' => 'char(1) CHECK (value LIKE "test%")',
                 ],
             ],
@@ -188,7 +187,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => 'char(6) CHECK (value LIKE "test%")',
                     'sqlite' => 'char(6) CHECK (value LIKE "test%")',
-                    'oci' => 'CHAR(6) CHECK (value LIKE "test%")',
                     'cubrid' => 'char(6) CHECK (value LIKE "test%")',
                 ],
             ],
@@ -883,7 +881,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'mysql' => 'timestamp NULL DEFAULT NULL',
                     'postgres' => 'timestamp(0) NULL DEFAULT NULL',
                     'sqlite' => 'timestamp NULL DEFAULT NULL',
-                    'oci' => 'TIMESTAMP NULL DEFAULT NULL',
                     'sqlsrv' => 'timestamp NULL DEFAULT NULL',
                     'cubrid' => 'timestamp NULL DEFAULT NULL',
                 ],
@@ -912,7 +909,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) COMMENT 'test comment'",
                     'postgres' => 'integer',
-                    'oci' => "NUMBER(10)",
                     'sqlsrv' => 'int',
                     'cubrid' => "int COMMENT 'test comment'",
                 ],
@@ -923,9 +919,63 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 [
                     'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
-                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
                     'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test comment'",
+                ],
+            ],
+            [
+                Schema::TYPE_PK . " FIRST",
+                $this->primaryKey()->first(),
+                [
+                    'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST",
+                    'postgres' => 'serial NOT NULL PRIMARY KEY',
+                    'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
+                    'sqlsrv' => 'int IDENTITY PRIMARY KEY',
+                    'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST",
+                ],
+            ],
+            [
+                Schema::TYPE_INTEGER . " FIRST",
+                $this->integer()->first(),
+                [
+                    'mysql' => "int(11) FIRST",
+                    'postgres' => 'integer',
+                    'oci' => "NUMBER(10)",
+                    'sqlsrv' => 'int',
+                    'cubrid' => "int FIRST",
+                ],
+            ],
+            [
+                Schema::TYPE_STRING . ' FIRST',
+                $this->string()->first(),
+                [
+                    'mysql' => 'varchar(255) FIRST',
+                    'postgres' => 'varchar(255)',
+                    'oci' => 'VARCHAR2(255)',
+                    'sqlsrv' => 'varchar(255)',
+                    'cubrid' => 'varchar(255) FIRST',
+                ],
+            ],
+            [
+                Schema::TYPE_INTEGER . " NOT NULL FIRST",
+                $this->integer()->append('NOT NULL')->first(),
+                [
+                    'mysql' => "int(11) NOT NULL FIRST",
+                    'postgres' => 'integer NOT NULL',
+                    'oci' => "NUMBER(10) NOT NULL",
+                    'sqlsrv' => 'int NOT NULL',
+                    'cubrid' => "int NOT NULL FIRST",
+                ],
+            ],
+            [
+                Schema::TYPE_STRING . ' NOT NULL FIRST',
+                $this->string()->append('NOT NULL')->first(),
+                [
+                    'mysql' => 'varchar(255) NOT NULL FIRST',
+                    'postgres' => 'varchar(255) NOT NULL',
+                    'oci' => 'VARCHAR2(255) NOT NULL',
+                    'sqlsrv' => 'varchar(255) NOT NULL',
+                    'cubrid' => 'varchar(255) NOT NULL FIRST',
                 ],
             ],
         ];
@@ -970,7 +1020,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             if (!(strncmp($column, Schema::TYPE_PK, 2) === 0 ||
                   strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
                   strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||
-                  strncmp($column, Schema::TYPE_UBIGPK, 6) === 0)) {
+                  strncmp($column, Schema::TYPE_UBIGPK, 6) === 0 ||
+                  strncmp(substr($column, -5), 'FIRST', 5) === 0
+                )) {
                 $columns['col' . ++$i] = str_replace('CHECK (value', 'CHECK ([[col' . $i . ']]', $column);
             }
         }
