@@ -165,10 +165,10 @@ Yii Framework 2 Change Log
 - Enh #12440: Added `yii\base\Event::offAll()` method allowing clear all registered class-level event handlers (klimov-paul)
 - Enh #12499: When AJAX validation in enabled, `yii.activeForm.js` will run it forcefully on form submit to display all possible errors (silverfire)
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
+- Enh #12612: Query conditions added with `yii\db\Query::andWhere()` now get appended to the existing conditions if they were already being joined with the `and` operator (brandonkelly)
 - Enh #12664: Added support for wildcards for `optional` at `yii\filters\auth\AuthMethod` (mg-code)
 - Enh #12744: Added `afterInit` event to `yii.activeForm.js` (werew01f)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
-
 
 2.0.9 July 11, 2016
 -------------------

@@ -344,11 +344,11 @@ abstract class QueryTest extends DatabaseTestCase
         $query->andFilterCompare('name', 'Doe', 'like');
         $this->assertEquals($condition, $query->where);
 
-        $condition = ['and', $condition, ['>', 'rating', '9']];
+        $condition[] = ['>', 'rating', '9'];
         $query->andFilterCompare('rating', '>9');
         $this->assertEquals($condition, $query->where);
 
-        $condition = ['and', $condition, ['<=', 'value', '100']];
+        $condition[] = ['<=', 'value', '100'];
         $query->andFilterCompare('value', '<=100');
         $this->assertEquals($condition, $query->where);
     }
