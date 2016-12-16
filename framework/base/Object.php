@@ -12,7 +12,7 @@ namespace yii\base;
  *
  * @author Robert Korulczyk <robert@korulczyk.pl>
  * @since 2.0
- * @deprecated Since version 2.0.11 to be removed in 2.1.0. Use [[BaseObject]] instead.
+ * @deprecated Since version 2.0.12 to be removed in 2.1.0. Use [[BaseObject]] instead.
  */
 class Object extends BaseObject
 {

@@ -72,7 +72,7 @@ use Yii;
  * of the constructor, and the parent implementation should be called at the end of the constructor.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0.11
+ * @since 2.0.12
  */
 class BaseObject implements Configurable
 {
