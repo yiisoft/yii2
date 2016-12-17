@@ -121,6 +121,11 @@ class DbManager extends BaseManager
     public function checkAccess($userId, $permissionName, $params = [])
     {
         $assignments = $this->getAssignments($userId);
+
+        if ($this->hasNoAssignments($assignments)) {
+            return false;
+        }
+
         $this->loadFromCache();
         if ($this->items !== null) {
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
