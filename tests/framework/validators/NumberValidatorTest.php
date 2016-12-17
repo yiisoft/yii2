@@ -12,10 +12,42 @@ use yiiunit\TestCase;
  */
 class NumberValidatorTest extends TestCase
 {
+    private $commaDecimalLocales = ['fr_FR.UTF-8', 'fr_FR.UTF8', 'fr_FR.utf-8', 'fr_FR.utf8', 'French_France.1252'];
+    private $pointDecimalLocales = ['en_US.UTF-8', 'en_US.UTF8', 'en_US.utf-8', 'en_US.utf8', 'English_United States.1252'];
+    private $oldLocale;
+
+    private function setCommaDecimalLocale()
+    {
+        if ($this->oldLocale === false) {
+            $this->markTestSkipped('Your platform does not support locales.');
+        }
+
+        if (setlocale(LC_NUMERIC, $this->commaDecimalLocales) === false) {
+            $this->markTestSkipped('Could not set any of required locales: ' . implode(', ', $this->commaDecimalLocales));
+        }
+    }
+
+    private function setPointDecimalLocale()
+    {
+        if ($this->oldLocale === false) {
+            $this->markTestSkipped('Your platform does not support locales.');
+        }
+
+        if (setlocale(LC_NUMERIC, $this->pointDecimalLocales) === false) {
+            $this->markTestSkipped('Could not set any of required locales: ' . implode(', ', $this->pointDecimalLocales));
+        }
+    }
+
+    private function restoreLocale()
+    {
+        setlocale(LC_NUMERIC, $this->oldLocale);
+    }
+
     protected function setUp()
     {
         parent::setUp();
         $this->mockApplication();
+        $this->oldLocale = setlocale(LC_NUMERIC, 0);
     }
 
     public function testEnsureMessageOnInit()
@@ -38,12 +70,11 @@ class NumberValidatorTest extends TestCase
         $this->assertTrue($val->validate('20'));
         $this->assertTrue($val->validate(25.45));
 
-        $oldLocale = setlocale(LC_ALL, "0");
-        setlocale(LC_ALL, 'en_US.utf8', 'en_US.UTF-8', 'English_United States.1252');
+        $this->setPointDecimalLocale();
         $this->assertFalse($val->validate('25,45'));
-        setlocale(LC_ALL, 'he_IL.utf8', 'da_DK.UTF-8', 'Danish_Denmark.1252'); //decimal point is comma
+        $this->setCommaDecimalLocale();
         $this->assertTrue($val->validate('25,45'));
-        setlocale(LC_ALL, $oldLocale);
+        $this->restoreLocale();
 
         $this->assertFalse($val->validate('12:45'));
         $val = new NumberValidator(['integerOnly' => true]);
@@ -81,15 +112,13 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator();
 
-        $oldLocale = setlocale(LC_ALL, "0");
-
-        setlocale(LC_ALL, 'en_US.utf8', 'en_US.UTF-8', 'English_United States.1252');
+        $this->setPointDecimalLocale();
         $this->assertTrue($val->validate(.5));
 
-        setlocale(LC_ALL, 'he_IL.utf8', 'da_DK.UTF-8', 'Danish_Denmark.1252'); //decimal point is comma
+        $this->setCommaDecimalLocale();
         $this->assertTrue($val->validate(.5));
 
-        setlocale(LC_ALL, $oldLocale);
+        $this->restoreLocale();
     }
 
     public function testValidateValueMin()
@@ -187,17 +216,15 @@ class NumberValidatorTest extends TestCase
         $model = new FakedValidationModel();
         $model->attr_number = 0.5;
 
-        $oldLocale = setlocale(LC_ALL, "0");
-
-        setlocale(LC_ALL, 'en_US.utf8', 'en_US.UTF-8', 'English_United States.1252');
+        $this->setPointDecimalLocale();
         $val->validateAttribute($model, 'attr_number');
         $this->assertFalse($model->hasErrors('attr_number'));
 
-        setlocale(LC_ALL, 'he_IL.utf8', 'da_DK.UTF-8', 'Danish_Denmark.1252'); //decimal point is comma
+        $this->setCommaDecimalLocale();
         $val->validateAttribute($model, 'attr_number');
         $this->assertFalse($model->hasErrors('attr_number'));
 
-        setlocale(LC_ALL, $oldLocale);
+        $this->restoreLocale();
     }
 
     public function testEnsureCustomMessageIsSetOnValidateAttribute()
