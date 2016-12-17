@@ -137,19 +137,43 @@ class Command extends Component
     }
 
     /**
-     * Specifies the SQL statement to be executed.
-     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well.
+     * Specifies the SQL statement to be executed. The SQL statement will be quoted using [[Connection::quoteSql()]].
+     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
      * @param string $sql the SQL statement to be set.
      * @return $this this command instance
+     * @see reset()
+     * @see cancel()
      */
     public function setSql($sql)
     {
         if ($sql !== $this->_sql) {
             $this->cancel();
+            $this->reset();
             $this->_sql = $this->db->quoteSql($sql);
-            $this->_pendingParams = [];
-            $this->params = [];
-            $this->_refreshTableName = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * Specifies the SQL statement to be executed. The SQL statement will not be modified in any way.
+     * The previous SQL execution (if any) will be cancelled, and [[params]] will be cleared as well. See [[reset()]]
+     * for details.
+     *
+     * @param string $sql the SQL statement to be set.
+     * @return $this
+     * @since 2.0.11
+     * @see reset()
+     * @see cancel()
+     */
+    public function setRawSql($sql)
+    {
+        if ($sql !== $this->_sql) {
+            $this->cancel();
+            $this->reset();
+            $this->_sql = $sql;
         }
 
         return $this;
@@ -457,9 +481,16 @@ class Command extends Component
      */
     public function batchInsert($table, $columns, $rows)
     {
+        $table = $this->db->quoteSql($table);
+        $columns = array_map(function ($column) {
+            return $this->db->quoteSql($column);
+        }, $columns);
+
         $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
 
-        return $this->setSql($sql);
+        $this->setRawSql($sql);
+
+        return $this;
     }
 
     /**
@@ -944,5 +975,19 @@ class Command extends Component
         if ($this->_refreshTableName !== null) {
             $this->db->getSchema()->refreshTableSchema($this->_refreshTableName);
         }
+    }
+
+    /**
+     * Resets [[sql]] and [[params]] properties.
+     *
+     * @void
+     * @since 2.0.11
+     */
+    protected function reset()
+    {
+        $this->_sql = null;
+        $this->_pendingParams = [];
+        $this->params = [];
+        $this->_refreshTableName = null;
     }
 }
