@@ -73,10 +73,10 @@ class Request extends \yii\base\Request
                 }
             } elseif (preg_match('/^-(\w+)(?:=(.*))?$/', $param, $matches)) {
                 $name = $matches[1];
-                if (!is_numeric($name)) {
-                    $params['_aliases'][$name] = isset($matches[2]) ? $matches[2] : true;
-                } else {
+                if (is_numeric($name)) {
                     $params[] = $param;
+                } else {
+                    $params['_aliases'][$name] = isset($matches[2]) ? $matches[2] : true;
                 }
             } else {
                 $params[] = $param;
