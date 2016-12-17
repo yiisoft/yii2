@@ -82,6 +82,10 @@ class DbManager extends BaseManager
      */
     public $cache;
     /**
+     * @var bool should assignments be cached
+     */
+    public $cacheAssignments = true;
+    /**
      * @var string the key used to store RBAC data in cache
      * @see cache
      * @since 2.0.3
@@ -100,6 +104,10 @@ class DbManager extends BaseManager
      * @var array auth item parent-child relationships (childName => list of parents)
      */
     protected $parents;
+    /**
+     * @var array auth assignments (userId => list of assignments)
+     */
+    protected $assignments;
 
 
     /**
@@ -120,8 +128,8 @@ class DbManager extends BaseManager
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        $assignments = $this->getAssignments($userId);
         $this->loadFromCache();
+        $assignments = $this->getAssignments($userId);
         if ($this->items !== null) {
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
         } else {
@@ -656,6 +664,10 @@ class DbManager extends BaseManager
         if (empty($userId)) {
             return null;
         }
+        if ($this->cacheAssignments) {
+            $assignments = $this->getAssignments($userId);
+            return isset($assignments[$roleName]) ? $assignments[$roleName] : null;
+        }
 
         $row = (new Query)->from($this->assignmentTable)
             ->where(['user_id' => (string) $userId, 'item_name' => $roleName])
@@ -681,6 +693,10 @@ class DbManager extends BaseManager
             return [];
         }
 
+        if (isset($this->assignments[$userId])) {
+            return $this->assignments[$userId];
+        }
+
         $query = (new Query)
             ->from($this->assignmentTable)
             ->where(['user_id' => (string) $userId]);
@@ -692,6 +708,10 @@ class DbManager extends BaseManager
                 'roleName' => $row['item_name'],
                 'createdAt' => $row['created_at'],
             ]);
+        }
+
+        if ($this->cacheAssignments) {
+            $this->assignments[$userId] = $assignments;
         }
 
         return $assignments;
@@ -826,6 +846,10 @@ class DbManager extends BaseManager
                 'created_at' => $assignment->createdAt,
             ])->execute();
 
+        if ($this->cacheAssignments) {
+            $this->assignments[$userId][$role->name] = $assignment;
+        }
+
         return $assignment;
     }
 
@@ -838,9 +862,15 @@ class DbManager extends BaseManager
             return false;
         }
 
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId, 'item_name' => $role->name])
             ->execute() > 0;
+
+        if ($this->cacheAssignments) {
+            unset($this->assignments[$userId][$role->name]);
+        }
+
+        return $result;
     }
 
     /**
@@ -852,9 +882,15 @@ class DbManager extends BaseManager
             return false;
         }
 
-        return $this->db->createCommand()
+        $result = $this->db->createCommand()
             ->delete($this->assignmentTable, ['user_id' => (string) $userId])
             ->execute() > 0;
+
+        if ($this->cacheAssignments) {
+            $this->assignments[$userId] = [];
+        }
+
+        return $result;
     }
 
     /**
@@ -937,16 +973,24 @@ class DbManager extends BaseManager
     public function removeAllAssignments()
     {
         $this->db->createCommand()->delete($this->assignmentTable)->execute();
+
+        if ($this->cacheAssignments) {
+            foreach ($this->assignments as $userId => $assignments) {
+                $this->assignments[$userId] = [];
+            }
+        }
     }
 
     public function invalidateCache()
     {
-        if ($this->cache !== null) {
-            $this->cache->delete($this->cacheKey);
-            $this->items = null;
-            $this->rules = null;
-            $this->parents = null;
+        $this->assignments = null;
+        if ($this->cache === null) {
+            return;
         }
+        $this->cache->delete($this->cacheKey);
+        $this->items = null;
+        $this->rules = null;
+        $this->parents = null;
     }
 
     public function loadFromCache()
