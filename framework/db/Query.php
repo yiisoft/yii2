@@ -585,6 +585,8 @@ class Query extends Component implements QueryInterface
     {
         if ($this->where === null) {
             $this->where = $condition;
+        } elseif (is_array($this->where) && isset($this->where[0]) && strcasecmp($this->where[0], 'and') === 0) {
+            $this->where[] = $condition;
         } else {
             $this->where = ['and', $this->where, $condition];
         }
