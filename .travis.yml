@@ -58,21 +58,6 @@ matrix:
       services:
         - mysql
         - postgresql
-    - php: 5.4
-      addons:
-        apt:
-          packages:
-            - php5.4-gd
-    - php: 5.5
-      addons:
-        apt:
-          packages:
-            - php5.5-gd
-    - php: 5.6
-      addons:
-        apt:
-          packages:
-            - php5.6-gd
     # have a separate branch for javascript tests
     - language: node_js
       node_js: 6
@@ -129,6 +114,7 @@ install:
   - travis_retry composer update --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
+  - tests/data/travis/imagick-setup.sh
 #  - tests/data/travis/cubrid-setup.sh
 
 before_script:
