@@ -369,6 +369,12 @@ You can also specify operator explicitly:
 $query->andFilterCompare('name', 'Doe', 'like');
 ```
 
+Since Yii 2.0.11 there are similar methods for `HAVING` condition:
+
+- [[yii\db\Query::filterHaving()|filterHaving()]]
+- [[yii\db\Query::andFilterHaving()|andFilterHaving()]]
+- [[yii\db\Query::orFilterHaving()|orFilterHaving()]]
+
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL query. For example,

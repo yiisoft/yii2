@@ -182,6 +182,16 @@ abstract class ManagerTestCase extends TestCase
                 'blablabla' => false,
                 null => false,
             ],
+            'guest' => [
+                // all actions denied for guest (user not exists)
+                'createPost' => false,
+                'readPost' => false,
+                'updatePost' => false,
+                'deletePost' => false,
+                'updateAnyPost' => false,
+                'blablabla' => false,
+                null => false,
+            ],
         ];
 
         $params = ['authorID' => 'author B'];

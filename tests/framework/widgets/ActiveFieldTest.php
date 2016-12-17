@@ -497,6 +497,14 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $actualValue);
     }
 
+    public function testEmptyTag()
+    {
+        $this->activeField->options = ['tag' => false];
+        $expectedValue = '<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">';
+        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
+        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
     /**
      * Helper methods
      */

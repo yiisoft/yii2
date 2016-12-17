@@ -891,6 +891,65 @@ will be used to record the migration history. You no longer need to specify it v
 command-line option.
 
 
+### Separated Migrations <span id="separated-migrations"></span>
+
+Sometimes you may need to use migrations from a different namespace. It can be some extension or module in your own
+project. One of such examples is migrations for [RBAC component](security-authorization.md#configuring-rbac).
+Since version 2.0.10 you can use [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]
+to solve this task:
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => [
+                'app\migrations', // Common migrations for the whole application
+                'module\migrations', // Migrations for the specific project's module
+                'yii\rbac\migrations', // Migrations for the specific extension
+            ],
+        ],
+    ],
+];
+```
+
+If you want them to be applied and tracked down completely separated from each other, you can configure multiple
+migration commands which will use different namespaces and migration history tables:
+
+```php
+return [
+    'controllerMap' => [
+        // Common migrations for the whole application
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+        ],
+        // Migrations for the specific project's module
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+        ],
+        // Migrations for the specific extension
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['yii\rbac\migrations'],
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+Note that to synchronize database you now need to run multiple commands instead of one:
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
+
+
 ## Migrating Multiple Databases <span id="migrating-multiple-databases"></span>
 
 By default, migrations are applied to the same database specified by the `db` [application component](structure-application-components.md).

@@ -58,6 +58,21 @@ matrix:
       services:
         - mysql
         - postgresql
+    - php: 5.4
+      addons:
+        apt:
+          packages:
+            - php5.4-gd
+    - php: 5.5
+      addons:
+        apt:
+          packages:
+            - php5.5-gd
+    - php: 5.6
+      addons:
+        apt:
+          packages:
+            - php5.6-gd
     # have a separate branch for javascript tests
     - language: node_js
       node_js: 6
