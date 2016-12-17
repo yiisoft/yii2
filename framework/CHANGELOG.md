@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Bug #13198: Fixed order of checks in `yii\validators\IpValidator` that sometimes caused wrong error message (silverfire)
 - Bug #13200: Creating Urls for routes specified in `yii\rest\UrlRule::$extraPatterns` did not work if no HTTP verb was specified (cebe)
 - Bug #11242: Fixed excess escaping in `yii\db\Command::batchInsert()` (silverfire)
+- Bug #13108: Fix execute command with negative integer parameter (pana1990, uaoleg)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
