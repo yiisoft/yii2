@@ -31,11 +31,12 @@ Yii Framework 2 Change Log
 - Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
 - Bug #13089: Fixed `yii\console\controllers\AssetController::adjustCssUrl()` breaks URL reference specification (`url(#id)`) (vitalyzhakov)
 - Bug #13105: Fixed `validate()` method in `yii.activeForm.js` to prevent unexpected form submit when `forceValidate` set to `true` (silverfire)
-- Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire)
+- Bug #13118: Fixed `handleAction()` function in `yii.js` to handle attribute `data-pjax=0` as disabled PJAX (silverfire, arisk)
 - Bug #13128: Fixed incorrect position of {pos} string in ColumnSchemaBuilder `__toString` (df2)
 - Bug #13159: Fixed `destroy` method in `yii.captcha.js` which did not work as expected (arogachev)
 - Bug #13198: Fixed order of checks in `yii\validators\IpValidator` that sometimes caused wrong error message (silverfire)
 - Bug #13200: Creating Urls for routes specified in `yii\rest\UrlRule::$extraPatterns` did not work if no HTTP verb was specified (cebe)
+- Bug #13108: Fix execute command with negative integer parameter (pana1990, uaoleg)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
@@ -64,6 +65,7 @@ Yii Framework 2 Change Log
 - Enh #12748: Added Migration tool automatic generation reference column for foreignKey (MKiselev)
 - Enh #12748: Migration generator now tries to fetch reference column name for foreignKey from schema if it's not set explicitly (MKiselev)
 - Enh #12750: `yii\widgets\ListView::itemOptions` can be a closure now (webdevsega, silverfire)
+- Enh #12771: Skip \yii\rbac\PhpManager::checkAccessRecursive and \yii\rbac\DbManager::checkAccessRecursive if role assignments are empty (Ni-san)
 - Enh #12790: Added `scrollToErrorOffset` option for `yii\widgets\ActiveForm` which adds ability to specify offset in pixels when scrolling to error (mg-code)
 - Enh #12798: Changed `yii\cache\Dependency::getHasChanged()` (deprecated, to be removed in 2.1) to `yii\cache\Dependency::isChanged()` (dynasource)
 - Enh #12807: Added console controller checks for `yii\console\controllers\HelpController` (schmunk42)
@@ -233,6 +235,7 @@ Yii Framework 2 Change Log
 - Enh #11857: `yii\filters\AccessRule::$verbs` can now be configured in upper and lowercase (DrDeath72, samdark)
 - Chg #11364: Updated jQuery dependency to include versions `1.12.*` (cebe)
 - Chg #11683: Fixed fixture command to work with short syntax. `yii fixture "*, -User"` should be used instead of `yii fixture "*" -User` (Faryshta, samdark)
+- Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
 
 
 2.0.8 April 28, 2016
