@@ -8,11 +8,9 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
-    public function testResolve()
+    public function provider()
     {
-        $request = new Request();
-
-        $tests = [
+        return [
             [
                 'params' => [
                     'controller',
@@ -48,12 +46,18 @@ class RequestTest extends TestCase
                 ]
             ]
         ];
+    }
 
-        foreach ($tests as $test) {
-            $request->setParams($test['params']);
-            list($route, $params) = $request->resolve();
-            $this->assertEquals($test['expected']['route'], $route);
-            $this->assertEquals($test['expected']['params'], $params);
-        }
+    /**
+     * @dataProvider provider
+     */
+    public function testResolve($params, $expected)
+    {
+        $request = new Request();
+
+        $request->setParams($params);
+        list($route, $params) = $request->resolve();
+        $this->assertEquals($expected['route'], $route);
+        $this->assertEquals($expected['params'], $params);
     }
 }
