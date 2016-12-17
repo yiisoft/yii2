@@ -234,6 +234,7 @@ Yii Framework 2 Change Log
 - Enh #11857: `yii\filters\AccessRule::$verbs` can now be configured in upper and lowercase (DrDeath72, samdark)
 - Chg #11364: Updated jQuery dependency to include versions `1.12.*` (cebe)
 - Chg #11683: Fixed fixture command to work with short syntax. `yii fixture "*, -User"` should be used instead of `yii fixture "*" -User` (Faryshta, samdark)
+- Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
 
 
 2.0.8 April 28, 2016
