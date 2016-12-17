@@ -58,6 +58,44 @@ matrix:
       services:
         - mysql
         - postgresql
+    - php: 5.4
+      addons:
+        apt:
+          packages:
+            - php5.4-gd
+    - php: 5.5
+      addons:
+        apt:
+          packages:
+            - php5.5-gd
+    - php: 5.6
+      addons:
+        apt:
+          packages:
+            - php5.6-gd
+    # have a separate branch for javascript tests
+    - language: node_js
+      node_js: 6
+      dist: trusty
+      # overwrite php related settings
+      php:
+      services:
+      addons:
+      install:
+        - travis_retry npm install
+        # disable xdebug for performance in composer
+        - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
+        - travis_retry composer self-update && composer --version
+        - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+        - travis_retry composer update --prefer-dist --no-interaction
+      before_script:
+        - node --version
+        - npm --version
+        - php --version
+        - composer --version
+      script: npm test
+      after_script:
+
   allow_failures:
     - php: nightly
 
@@ -70,6 +108,7 @@ cache:
   directories:
     - vendor
     - $HOME/.composer/cache
+    - $HOME/.npm
 
 # try running against postgres 9.3
 addons:
@@ -84,7 +123,7 @@ install:
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
+  - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
 # core framework:
   - travis_retry composer update --prefer-dist --no-interaction

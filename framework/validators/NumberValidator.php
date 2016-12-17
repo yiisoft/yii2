@@ -142,6 +142,17 @@ class NumberValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $label = $model->getAttributeLabel($attribute);
 
         $options = [
@@ -173,8 +184,6 @@ class NumberValidator extends Validator
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }
