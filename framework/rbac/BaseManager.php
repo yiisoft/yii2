@@ -224,10 +224,10 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
-     * Checks whether $assignments array is empty and [[defaultRoles]] are empty as well.
+     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well
      *
      * @param Assignment[] $assignments array of user's assignments
-     * @return bool whether $assignments array is empty and [[defaultRoles]] are empty as well
+     * @return bool whether array of $assignments is empty and [[defaultRoles]] property is empty as well
      * @since 2.0.11
      */
     protected function hasNoAssignments(array $assignments)
