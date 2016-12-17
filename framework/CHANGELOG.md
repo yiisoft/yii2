@@ -9,7 +9,7 @@ Yii Framework 2 Change Log
 - Bug #9305: Fixed MSSQL `Schema::TYPE_TIMESTAMP` to be 'datetime' instead of 'timestamp', which is just an incremental number (nkovacs)
 - Bug #9616: Fixed mysql\Schema::loadColumnSchema to set enumValues attribute correctly if enum definition contains commas (fphammerle)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
-- Bug #10488: Fixed incorrect behavior of `yii\validation\NumberValidator` when used with locales where decimal separator is comma (quantum13, samdark)
+- Bug #10488: Fixed incorrect behavior of `yii\validation\NumberValidator` when used with locales where decimal separator is comma (quantum13, samdark, rob006)
 - Bug #11771: Fixed semantics of `yii\di\ServiceLocator::__isset()` to match the behavior of `__get()` which fixes inconsistent behavior on newer PHP versions (cebe)
 - Bug #12213: Fixed `yii\db\ActiveRecord::unlinkAll()` to respect `onCondition()` of the relational query (silverfire)
 - Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
