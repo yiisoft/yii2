@@ -178,10 +178,15 @@ class BaseArrayHelper
      * The possibility to pass an array of keys is available since version 2.0.4.
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
-     * @return mixed the value of the element if found, default value otherwise
+     * @return mixed the value of the element if found, default value otherwise.
+     * @throws InvalidParamException if $array is neither an array nor an object.
      */
     public static function getValue($array, $key, $default = null)
     {
+        if (!is_array($array) && !is_object($array)) {
+            throw new InvalidParamException('Argument passed to getValue() must be an array or object.');
+        }
+
         if ($key instanceof \Closure) {
             return $key($array, $default);
         }
