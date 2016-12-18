@@ -170,4 +170,35 @@ HTML
         $this->getListView(['itemOptions' => $itemOptions])->run();
         $this->expectOutputString($expected);
     }
+
+    public function testBeforeAndAfterItem()
+    {
+        $before = function ($model, $key, $index, $widget) {
+            $widget = get_class($widget);
+            return "<!-- before: {$model['id']}, key: $key, index: $index, widget: $widget -->";
+        };
+        $after = function ($model, $key, $index, $widget) {
+            $widget = get_class($widget);
+            return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
+        };
+        $this->getListView([
+            'beforeItem' => $before,
+            'afterItem' => $after
+        ])->run();
+
+        $this->expectOutputString(<<<HTML
+<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+<!-- before: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
+<div data-key="0">0</div>
+<!-- after: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
+<!-- before: 2, key: 1, index: 1, widget: yii\widgets\ListView -->
+<div data-key="1">1</div>
+<!-- after: 2, key: 1, index: 1, widget: yii\widgets\ListView -->
+<!-- before: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
+<div data-key="2">2</div>
+<!-- after: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
+</div>
+HTML
+);
+    }
 }
