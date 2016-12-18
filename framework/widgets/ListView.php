@@ -88,14 +88,18 @@ class ListView extends BaseListView
      * - `$widget`: the ListView object
      *
      * The return result of the function will be rendered directly.
+     * Note: If the function returns `null`, nothing will be rendered before the item.
      * @see renderBeforeItem
      * @since 2.0.11
      */
     public $beforeItem;
     /**
      * @var Closure an anonymous function that is called once AFTER rendering each data model.
-     * It should have the similar signature as [[beforeItem]]. The return result of the function
-     * will be rendered directly.
+     *
+     * It should have the same signature as [[beforeItem]].
+     *
+     * The return result of the function will be rendered directly.
+     * Note: If the function returns `null`, nothing will be rendered after the item.
      * @see renderAfterItem
      * @since 2.0.11
      */
