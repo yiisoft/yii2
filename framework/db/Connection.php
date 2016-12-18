@@ -364,6 +364,12 @@ class Connection extends Component
      * ```
      */
     public $masterConfig = [];
+    /**
+     * @var bool whether to shuffle [[masters]] before getting one.
+     * @since 2.0.12
+     * @see masters
+     */
+    public $randomizeMasters = true;
 
     /**
      * @var Transaction the currently active transaction
@@ -531,7 +537,7 @@ class Connection extends Component
         }
 
         if (!empty($this->masters)) {
-            $db = $this->openFromPool($this->masters, $this->masterConfig);
+            $db = $this->openFromPool($this->masters, $this->masterConfig, $this->randomizeMasters);
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
@@ -925,10 +931,11 @@ class Connection extends Component
      * This method implements the load balancing among the given list of the servers.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
+     * @param bool $shuffle Whether to do shuffling a pool
      * @return Connection the opened DB connection, or null if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      */
-    protected function openFromPool(array $pool, array $sharedConfig)
+    protected function openFromPool(array $pool, array $sharedConfig, $shuffle = true)
     {
         if (empty($pool)) {
             return null;
@@ -940,7 +947,9 @@ class Connection extends Component
 
         $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
 
-        shuffle($pool);
+        if ($shuffle) {
+            shuffle($pool);
+        }
 
         foreach ($pool as $config) {
             $config = array_merge($sharedConfig, $config);
