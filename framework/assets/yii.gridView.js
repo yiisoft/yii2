@@ -63,7 +63,7 @@
      *     }
      * }
      *
-     * Available types:
+     * Used types:
      *
      * - filter, used for filtering grid with elements found by filterSelector
      * - checkRow, used for checking single row
@@ -84,9 +84,6 @@
                 var id = $e.attr('id');
                 if (gridData[id] === undefined) {
                     gridData[id] = {};
-                }
-                if (gridEventHandlers[id] === undefined) {
-                    gridEventHandlers[id] = {};
                 }
 
                 gridData[id] = $.extend(gridData[id], {settings: settings});
@@ -183,9 +180,6 @@
             if (gridData[id] === undefined) {
                 gridData[id] = {};
             }
-            if (gridEventHandlers[id] === undefined) {
-                gridEventHandlers[id] = {};
-            }
             gridData[id].selectionColumn = options.name;
             if (!options.multiple || !options.checkAll) {
                 return;
@@ -241,16 +235,19 @@
      * @param {string} type Type of the event which acts like a key
      * @param {string} event Event name, for example 'change.yiiGridView'
      * @param {string} selector jQuery selector
-     * @param {function} handler The actual function to be executed with this event
+     * @param {function} callback The actual function to be executed with this event
      */
-    function initEventHandler($gridView, type, event, selector, handler) {
+    function initEventHandler($gridView, type, event, selector, callback) {
         var id = $gridView.attr('id');
-        var prevData = gridEventHandlers[id];
-        if (prevData && prevData[type]) {
-            var prevHandler = prevData[type];
-            $(document).off(prevHandler.event, prevHandler.selector);
+        var handler = gridEventHandlers[id];
+        if (handler !== undefined && handler[type] !== undefined) {
+            var data = handler[type];
+            $(document).off(data.event, data.selector);
         }
-        $(document).on(event, selector, handler);
-        gridEventHandlers[id][type] = {event: event, selector: selector};
+        if (handler === undefined) {
+            handler = {};
+        }
+        $(document).on(event, selector, callback);
+        handler[type] = {event: event, selector: selector};
     }
 })(window.jQuery);
