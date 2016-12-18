@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug #13200: Creating Urls for routes specified in `yii\rest\UrlRule::$extraPatterns` did not work if no HTTP verb was specified (cebe)
 - Bug #13231: Fixed `destroy` method in `yii.gridView.js` which did not work as expected (arogachev)
 - Bug #13232: Event handlers were not detached with changed selector in `yii.gridView.js` (arogachev)
+- Bug #13108: Fix execute command with negative integer parameter (pana1990, uaoleg)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
@@ -235,6 +236,7 @@ Yii Framework 2 Change Log
 - Enh #11857: `yii\filters\AccessRule::$verbs` can now be configured in upper and lowercase (DrDeath72, samdark)
 - Chg #11364: Updated jQuery dependency to include versions `1.12.*` (cebe)
 - Chg #11683: Fixed fixture command to work with short syntax. `yii fixture "*, -User"` should be used instead of `yii fixture "*" -User` (Faryshta, samdark)
+- Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
 
 
 2.0.8 April 28, 2016

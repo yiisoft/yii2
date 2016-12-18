@@ -59,6 +59,9 @@ Upgrade from Yii 2.0.10
 
 * `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
   If you extend from these classes and override these methods, you must make them public as well.
+  
+* `yii\widgets\MaskedInput` inputmask dependency was updated to `~3.3.3`.
+  [See its changelog for details](https://github.com/RobinHerbots/Inputmask/blob/3.x/CHANGELOG.md).
 
 * PJAX: Auto generated IDs of the Pjax widget have been changed to use their own prefix to avoid conflicts.
   Auto generated IDs are now prefixed with `p` instead of `w`. This is defined by the `$autoIdPrefix`

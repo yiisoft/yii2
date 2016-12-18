@@ -1582,10 +1582,65 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 //        // TODO implement
 //    }
 //
-//    public function testBatchInsert()
-//    {
-//        // TODO implement
-//    }
+
+    public function batchInsertProvider()
+    {
+        return [
+            [
+                'customer',
+                ['email', 'name', 'address'],
+                [['test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine']],
+                $this->replaceQuotes("INSERT INTO [[customer]] ([[email]], [[name]], [[address]]) VALUES ('test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine')")
+            ],
+            'escape-danger-chars' => [
+                'customer',
+                ['address'],
+                [["SQL-danger chars are escaped: '); --"]],
+                'expected' => $this->replaceQuotes("INSERT INTO [[customer]] ([[address]]) VALUES ('SQL-danger chars are escaped: \'); --')")
+            ],
+            [
+                'customer',
+                ['address'],
+                [],
+                ''
+            ],
+            [
+                'customer',
+                [],
+                [["no columns passed"]],
+                $this->replaceQuotes("INSERT INTO [[customer]] () VALUES ('no columns passed')")
+            ],
+            'bool-false, bool2-null' => [
+                'type',
+                ['bool_col', 'bool_col2'],
+                [[false, null]],
+                'expected' => $this->replaceQuotes("INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)")
+            ],
+            [
+                '{{%type}}',
+                ['{{%type}}.[[float_col]]', '[[time]]'],
+                [[null, new Expression('now()')]],
+                "INSERT INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) VALUES (NULL, now())"
+            ],
+            'bool-false, time-now()' => [
+                '{{%type}}',
+                ['{{%type}}.[[bool_col]]', '[[time]]'],
+                [[false, new Expression('now()')]],
+                'expected' => "INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())"
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider batchInsertProvider
+     */
+    public function testBatchInsert($table, $columns, $value, $expected)
+    {
+        $queryBuilder = $this->getQueryBuilder();
+
+        $sql = $queryBuilder->batchInsert($table, $columns, $value);
+        $this->assertEquals($expected, $sql);
+    }
 //
 //    public function testUpdate()
 //    {
