@@ -175,6 +175,7 @@ Yii Framework 2 Change Log
 - Enh #12664: Added support for wildcards for `optional` at `yii\filters\auth\AuthMethod` (mg-code)
 - Enh #12744: Added `afterInit` event to `yii.activeForm.js` (werew01f)
 - Enh #12710: Added `beforeItem` and `afterItem` to `yii\widgets\ListView` (mdmunir, silverfire)
+- Enh #12727: Enhanced `yii\widgets\Menu` to allow item option `active` be a Closure (voskobovich, silverfire)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
 
 2.0.9 July 11, 2016

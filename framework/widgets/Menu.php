@@ -7,6 +7,7 @@
 
 namespace yii\widgets;
 
+use Closure;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
@@ -60,8 +61,9 @@ class Menu extends Widget
      *   otherwise, [[labelTemplate]] will be used.
      * - visible: boolean, optional, whether this menu item is visible. Defaults to true.
      * - items: array, optional, specifies the sub-menu items. Its format is the same as the parent items.
-     * - active: boolean or closure that returns boolean, optional, whether this menu item is in active state (currently selected).
-     *   When using a closure, its signature should be `function ($item, $hasActiveChild, $widget)`.
+     * - active: boolean or Closure, optional, whether this menu item is in active state (currently selected).
+     *   When using a closure, its signature should be `function ($item, $hasActiveChild, $isItemActive, $widget)`.
+     *   Closure must return `true` if item should be marked as `active`, otherwise - `false`.
      *   If a menu item is active, its CSS class will be appended with [[activeCssClass]].
      *   If this option is not set, the menu item will be set active automatically when the current request
      *   is triggered by `url`. For more details, please refer to [[isItemActive()]].
@@ -286,8 +288,8 @@ class Menu extends Widget
                 } else {
                     $items[$i]['active'] = false;
                 }
-            } elseif ($item['active'] instanceof \Closure) {
-                $active = $items[$i]['active'] = call_user_func($item['active'], $item, $hasActiveChild, $this);
+            } elseif ($item['active'] instanceof Closure) {
+                $active = $items[$i]['active'] = call_user_func($item['active'], $item, $hasActiveChild, $this->isItemActive($item), $this);
             } elseif ($item['active']) {
                 $active = true;
             }
