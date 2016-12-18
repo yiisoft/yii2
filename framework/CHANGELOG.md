@@ -59,7 +59,7 @@ Yii Framework 2 Change Log
 - Enh #12145: Added `beforeCacheResponse` and `afterRestoreResponse` to `yii\filters\PageCache` to be more easily extendable (sergeymakinen)
 - Enh #12390: Avoid creating queries with false where condition (`0=1`) when fetching relational data (klimov-paul)
 - Enh #12399: Added `ActiveField::addAriaAttributes` property for `aria-required` and `aria-invalid` attributes rendering (Oxyaction, samdark)
-- Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()` (rob006)
+- Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()`, transactions and simlar places where consistency must be kept after exception (rob006, cebe)
 - Enh #12659: Suggest alternatives when console command was not found (mdmunir, cebe)
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
 - Enh #12732: Added `is_dir()` validation to `yii\helpers\BaseFileHelper::findFiles()` method (zalatov, silverfire)

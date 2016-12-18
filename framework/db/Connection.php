@@ -420,7 +420,7 @@ class Connection extends Component
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
-     * @throws \Exception if there is any exception during query
+     * @throws \Exception|\Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see noCache()
@@ -433,6 +433,9 @@ class Connection extends Component
             array_pop($this->_queryCacheInfo);
             return $result;
         } catch (\Exception $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
+        } catch (\Throwable $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
         }
@@ -457,7 +460,7 @@ class Connection extends Component
      * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
      * The signature of the callable is `function (Connection $db)`.
      * @return mixed the return result of the callable
-     * @throws \Exception if there is any exception during query
+     * @throws \Exception|\Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see cache()
@@ -470,6 +473,9 @@ class Connection extends Component
             array_pop($this->_queryCacheInfo);
             return $result;
         } catch (\Exception $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
+        } catch (\Throwable $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
         }
@@ -671,7 +677,7 @@ class Connection extends Component
      * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
-     * @throws \Exception
+     * @throws \Exception|\Throwable if there is any exception during query. In this case the transaction will be rolled back.
      * @return mixed result of callback function
      */
     public function transaction(callable $callback, $isolationLevel = null)
@@ -685,6 +691,11 @@ class Connection extends Component
                 $transaction->commit();
             }
         } catch (\Exception $e) {
+            if ($transaction->isActive && $transaction->level === $level) {
+                $transaction->rollBack();
+            }
+            throw $e;
+        } catch (\Throwable $e) {
             if ($transaction->isActive && $transaction->level === $level) {
                 $transaction->rollBack();
             }
