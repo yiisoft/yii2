@@ -246,6 +246,12 @@ abstract class Application extends Module
             $this->setTimeZone('UTC');
         }
 
+        if (isset($config['container'])) {
+            $this->setContainer($config['container']);
+
+            unset($config['container']);
+        }
+
         // merge core components with custom components
         foreach ($this->coreComponents() as $id => $component) {
             if (!isset($config['components'][$id])) {
@@ -651,5 +657,16 @@ abstract class Application extends Module
         } else {
             exit($status);
         }
+    }
+
+    /**
+     * Configures [[Yii::$container]] with the $config
+     *
+     * @param array $config values given in terms of name-value pairs
+     * @since 2.0.11
+     */
+    public function setContainer($config)
+    {
+        Yii::configure(Yii::$container, $config);
     }
 }

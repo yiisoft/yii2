@@ -97,6 +97,15 @@ class Pjax extends Widget
      * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
      */
     public $clientOptions;
+    /**
+     * @inheritdoc
+     * @internal
+     */
+    public static $counter = 0;
+    /**
+     * @inheritdoc
+     */
+    public static $autoIdPrefix = 'p';
 
 
     /**

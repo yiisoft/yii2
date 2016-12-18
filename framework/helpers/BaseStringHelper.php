@@ -155,13 +155,15 @@ class BaseStringHelper
         $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $lexer = \HTMLPurifier_Lexer::create($config);
         $tokens = $lexer->tokenizeHTML($string, $config, null);
-        $openTokens = 0;
+        $openTokens = [];
         $totalCount = 0;
         $truncated = [];
         foreach ($tokens as $token) {
             if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
-                $openTokens++;
-                $truncated[] = $token;
+                if ($totalCount < $count) {
+                    $openTokens[$token->name] = isset($openTokens[$token->name]) ? $openTokens[$token->name] + 1 : 1;
+                    $truncated[] = $token;
+                }
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
@@ -174,8 +176,10 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                $openTokens--;
-                $truncated[] = $token;
+                if (!empty($openTokens[$token->name])) {
+                    $openTokens[$token->name]--;
+                    $truncated[] = $token;
+                }
             } elseif ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
                 $truncated[] = $token;
             }
