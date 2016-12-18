@@ -191,7 +191,7 @@ class ActiveForm extends Widget
 
     /**
      * Runs the widget.
-     * This registers the necessary JavaScript code and renders the form close tag.
+     * This registers the necessary JavaScript code and renders the form open and close tags.
      * @throws InvalidCallException if `beginField()` and `endField()` calls are not matching.
      */
     public function run()
@@ -205,15 +205,23 @@ class ActiveForm extends Widget
         echo $content;
 
         if ($this->enableClientScript) {
-            $id = $this->options['id'];
-            $options = Json::htmlEncode($this->getClientOptions());
-            $attributes = Json::htmlEncode($this->attributes);
-            $view = $this->getView();
-            ActiveFormAsset::register($view);
-            $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+            $this->registerJs();
         }
 
         echo Html::endForm();
+    }
+    
+    /**
+     * This registers the necessary JavaScript code.
+     */
+    public function registerJs()
+    {
+        $id = $this->options['id'];
+        $options = Json::htmlEncode($this->getClientOptions());
+        $attributes = Json::htmlEncode($this->attributes);
+        $view = $this->getView();
+        ActiveFormAsset::register($view);
+        $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
     }
 
     /**
