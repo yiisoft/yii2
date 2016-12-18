@@ -239,15 +239,15 @@
      */
     function initEventHandler($gridView, type, event, selector, callback) {
         var id = $gridView.attr('id');
-        var handler = gridEventHandlers[id];
-        if (handler !== undefined && handler[type] !== undefined) {
-            var data = handler[type];
+        var prevHandler = gridEventHandlers[id];
+        if (prevHandler !== undefined && prevHandler[type] !== undefined) {
+            var data = prevHandler[type];
             $(document).off(data.event, data.selector);
         }
-        if (handler === undefined) {
-            handler = {};
+        if (prevHandler === undefined) {
+            gridEventHandlers[id] = {};
         }
         $(document).on(event, selector, callback);
-        handler[type] = {event: event, selector: selector};
+        gridEventHandlers[id][type] = {event: event, selector: selector};
     }
 })(window.jQuery);
