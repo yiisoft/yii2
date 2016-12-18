@@ -7,7 +7,6 @@
 
 namespace yii\widgets;
 
-use Yii;
 use Closure;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -89,17 +88,18 @@ class ListView extends BaseListView
      * - `$widget`: the ListView object
      *
      * The return result of the function will be rendered directly.
-     * @since 2.0.10
+     * @see renderBeforeItem
+     * @since 2.0.11
      */
     public $beforeItem;
     /**
      * @var Closure an anonymous function that is called once AFTER rendering each data model.
      * It should have the similar signature as [[beforeItem]]. The return result of the function
      * will be rendered directly.
-     * @since 2.0.10
+     * @see renderAfterItem
+     * @since 2.0.11
      */
     public $afterItem;
-
 
     /**
      * Renders all data models.
@@ -112,24 +112,58 @@ class ListView extends BaseListView
         $rows = [];
         foreach (array_values($models) as $index => $model) {
             $key = $keys[$index];
-            if ($this->beforeItem !== null) {
-                $row = call_user_func($this->beforeItem, $model, $key, $index, $this);
-                if ($row !== null && $row !== false) {
-                    $rows[] = $row;
-                }
+            if (($before = $this->renderBeforeItem($model, $key, $index)) !== null) {
+                $rows[] = $before;
             }
 
             $rows[] = $this->renderItem($model, $key, $index);
 
-            if ($this->afterItem !== null) {
-                $row = call_user_func($this->afterItem, $model, $key, $index, $this);
-                if ($row !== null && $row !== false) {
-                    $rows[] = $row;
-                }
+            if (($after = $this->renderAfterItem($model, $key, $index)) !== null) {
+                $rows[] = $after;
             }
         }
 
         return implode($this->separator, $rows);
+    }
+
+    /**
+     * Calls [[beforeItem]] closure, returns execution result.
+     * If [[beforeItem]] is not a closure, `null` will be returned.
+     *
+     * @param mixed $model the data model to be rendered
+     * @param mixed $key the key value associated with the data model
+     * @param int $index the zero-based index of the data model in the model array returned by [[dataProvider]].
+     * @return string|null [[beforeItem]] call result or `null` when [[beforeItem]] is not a closure
+     * @see beforeItem
+     * @since 2.0.11
+     */
+    protected function renderBeforeItem($model, $key, $index)
+    {
+        if ($this->beforeItem instanceof Closure) {
+            return call_user_func($this->beforeItem, $model, $key, $index, $this);
+        }
+
+        return null;
+    }
+
+    /**
+     * Calls [[afterItem]] closure, returns execution result.
+     * If [[afterItem]] is not a closure, `null` will be returned.
+     *
+     * @param mixed $model the data model to be rendered
+     * @param mixed $key the key value associated with the data model
+     * @param int $index the zero-based index of the data model in the model array returned by [[dataProvider]].
+     * @return string|null [[afterItem]] call result or `null` when [[afterItem]] is not a closure
+     * @see afterItem
+     * @since 2.0.11
+     */
+    protected function renderAfterItem($model, $key, $index)
+    {
+        if ($this->afterItem instanceof Closure) {
+            return call_user_func($this->afterItem, $model, $key, $index, $this);
+        }
+
+        return null;
     }
 
     /**
