@@ -118,6 +118,8 @@ install:
 #  - tests/data/travis/cubrid-setup.sh
 
 before_script:
+  # Disable the HHVM JIT for faster Unit Testing
+  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini; fi
   # show some versions and env information
   - php -r "echo INTL_ICU_VERSION . \"\n\";"
   - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
