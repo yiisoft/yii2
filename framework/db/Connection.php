@@ -933,7 +933,7 @@ class Connection extends Component
             $this->_master = $this->openFromPool($this->masters, $this->masterConfig, $this->randomizeMasters);
         }
 
-        return $this->_master === null ? $this : $this->_master;
+        return $this->_master;
     }
 
     /**
