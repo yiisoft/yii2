@@ -925,6 +925,7 @@ class Connection extends Component
      * Returns the currently active master connection.
      * If this method is called the first time, it will try to open a master connection.
      * @return Connection the currently active master connection. Null is returned if there is no master available.
+     * @since 2.0.12
      */
     public function getMaster()
     {
