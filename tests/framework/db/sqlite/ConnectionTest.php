@@ -96,6 +96,41 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         }
     }
 
+    public function testMasterSlaveRandomization()
+    {
+        $mastersCount = 2;
+        $slavesCount = 2;
+        $retryPerNode = 100;
+
+        $nodesCount = $mastersCount + $slavesCount;
+
+        foreach ([true, false] as $randomize) {
+            $hit_slaves = $hit_masters = [];
+
+            for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+                $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
+                $db->randomizeMasters = $randomize;
+
+                $hit_slaves[$db->getSlave()->dsn] = true;
+                $hit_masters[$db->getMaster()->dsn] = true;
+
+                // everything hit already?
+                if (count($hit_slaves) === $slavesCount && count($hit_masters) === $mastersCount) {
+                    break;
+                }
+            }
+
+            // slaves are always random
+            $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
+
+            if ($randomize) {
+                $this->assertEquals($mastersCount, count($hit_masters), 'all masters hit');
+            } else {
+                $this->assertEquals(1, count($hit_masters));
+            }
+        }
+    }
+
     /**
      * @param int $masterCount
      * @param int $slaveCount
