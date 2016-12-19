@@ -38,6 +38,7 @@ Yii Framework 2 Change Log
 - Bug #13159: Fixed `destroy` method in `yii.captcha.js` which did not work as expected (arogachev)
 - Bug #13198: Fixed order of checks in `yii\validators\IpValidator` that sometimes caused wrong error message (silverfire)
 - Bug #13200: Creating URLs for routes specified in `yii\rest\UrlRule::$extraPatterns` did not work if no HTTP verb was specified (cebe)
+- Bug #13229: Fix fetching table schema for `pgsql` when `PDO::ATTR_CASE` is set (klimov-paul)
 - Bug #13231: Fixed `destroy` method in `yii.gridView.js` which did not work as expected (arogachev)
 - Bug #13232: Event handlers were not detached with changed selector in `yii.gridView.js` (arogachev)
 - Bug #13108: Fix execute command with negative integer parameter (pana1990, uaoleg)
