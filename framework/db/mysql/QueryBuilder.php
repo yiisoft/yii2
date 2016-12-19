@@ -185,6 +185,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
+    protected function hasLimit($limit)
+    {
+        // In MySQL limit argument must be nonnegative integer constant
+        return ctype_digit((string) $limit);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function hasOffset($offset)
+    {
+        // In MySQL offset argument must be nonnegative integer constant
+        $offset = (string) $offset;
+        return ctype_digit($offset) && $offset !== '0';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function insert($table, $columns, &$params)
     {
         $schema = $this->db->getSchema();

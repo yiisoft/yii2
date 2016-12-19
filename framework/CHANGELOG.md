@@ -85,6 +85,7 @@ Yii Framework 2 Change Log
 - Bug: #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
+- Enh #13221: Make \yii\db\QueryTrait::limit and \yii\db\QueryTrait::offset methods works with \yii\db\Expression (Ni-san)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 
 

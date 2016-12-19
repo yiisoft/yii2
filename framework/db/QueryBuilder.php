@@ -921,7 +921,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasLimit($limit)
     {
-        return ctype_digit((string) $limit);
+        return ($limit instanceof Expression) || ctype_digit((string) $limit);
     }
 
     /**
@@ -931,8 +931,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasOffset($offset)
     {
-        $offset = (string) $offset;
-        return ctype_digit($offset) && $offset !== '0';
+        return ($offset instanceof Expression) || ctype_digit((string) $offset) && (string) $offset !== '0';
     }
 
     /**
