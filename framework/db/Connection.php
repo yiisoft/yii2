@@ -120,6 +120,7 @@ use yii\caching\Cache;
  * read-only.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
+ * @property Connection $master The currently active master connection. Null is returned if there is no master
  * @property Connection $slave The currently active slave connection. Null is returned if there is slave
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. Null is returned if no
@@ -384,6 +385,10 @@ class Connection extends Component
      */
     private $_driverName;
     /**
+     * @var Connection the currently active master connection
+     */
+    private $_master = false;
+    /**
      * @var Connection the currently active slave connection
      */
     private $_slave = false;
@@ -537,7 +542,7 @@ class Connection extends Component
         }
 
         if (!empty($this->masters)) {
-            $db = $this->openFromPool($this->masters, $this->masterConfig, $this->randomizeMasters);
+            $db = $this->getMaster();
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
@@ -568,6 +573,15 @@ class Connection extends Component
      */
     public function close()
     {
+        if ($this->_master) {
+            if ($this->pdo === $this->_master->pdo) {
+                $this->pdo = null;
+            }
+
+            $this->_master->close();
+            $this->_master = null;
+        }
+
         if ($this->pdo !== null) {
             Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
@@ -877,8 +891,13 @@ class Connection extends Component
      */
     public function getMasterPdo()
     {
-        $this->open();
-        return $this->pdo;
+        $db = $this->getMaster();
+        if ($db === null) {
+            $this->open();
+            return $this->pdo;
+        } else {
+            return $db->pdo;
+        }
     }
 
     /**
@@ -899,6 +918,20 @@ class Connection extends Component
         }
 
         return $this->_slave === null && $fallbackToMaster ? $this : $this->_slave;
+    }
+
+    /**
+     * Returns the currently active master connection.
+     * If this method is called the first time, it will try to open a master connection.
+     * @return Connection the currently active master connection. Null is returned if there is no master available.
+     */
+    public function getMaster()
+    {
+        if ($this->_master === false) {
+            $this->_master = $this->openFromPool($this->masters, $this->masterConfig, $this->randomizeMasters);
+        }
+
+        return $this->_master === null ? $this : $this->_master;
     }
 
     /**

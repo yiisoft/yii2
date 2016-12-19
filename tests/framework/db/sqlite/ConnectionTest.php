@@ -62,6 +62,12 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             // test UPDATE uses master
             $db->createCommand("UPDATE profile SET description='test' WHERE id=1")->execute();
             $this->assertTrue($db->isActive);
+            if ($masterCount > 0) {
+                $this->assertTrue($db->getMaster() instanceof Connection);
+                $this->assertTrue($db->getMaster()->isActive);
+            } else {
+                $this->assertNull($db->getMaster());
+            }
             $this->assertNotEquals('test', $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar());
             $result = $db->useMaster(function (Connection $db) {
                 return $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar();
