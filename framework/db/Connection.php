@@ -121,7 +121,7 @@ use yii\caching\Cache;
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
  * @property Connection $master The currently active master connection. Null is returned if there is no master
- * @property Connection $slave The currently active slave connection. Null is returned if there is slave
+ * @property Connection $slave The currently active slave connection. Null is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
  * @property PDO $slavePdo The PDO instance for the currently active slave connection. Null is returned if no
  * slave connection is available and `$fallbackToMaster` is false. This property is read-only.
@@ -347,6 +347,7 @@ class Connection extends Component
      * Note that when this property is not empty, the connection setting (e.g. "dsn", "username") of this object will
      * be ignored.
      * @see masterConfig
+     * @see randomizeMasters
      */
     public $masters = [];
     /**
@@ -904,7 +905,7 @@ class Connection extends Component
      * Returns the currently active slave connection.
      * If this method is called the first time, it will try to open a slave connection when [[enableSlaves]] is true.
      * @param bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
-     * @return Connection the currently active slave connection. Null is returned if there is slave available and
+     * @return Connection the currently active slave connection. Null is returned if there is no slave available and
      * `$fallbackToMaster` is false.
      */
     public function getSlave($fallbackToMaster = true)
