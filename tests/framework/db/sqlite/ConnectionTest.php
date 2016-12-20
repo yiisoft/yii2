@@ -100,7 +100,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     {
         $mastersCount = 2;
         $slavesCount = 2;
-        $retryPerNode = 100;
+        $retryPerNode = 10;
 
         $nodesCount = $mastersCount + $slavesCount;
 
