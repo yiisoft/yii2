@@ -189,6 +189,7 @@ class QueryBuilder extends \yii\base\Object
      * @param \yii\db\Query $columns Object, which represents select query
      * @param \yii\db\Schema $schema Schema object to qoute column name
      * @return array
+     * @since 2.0.11
      */
     protected function prepareInsertSelectSubQuery($columns, $schema)
     {
@@ -197,6 +198,7 @@ class QueryBuilder extends \yii\base\Object
         }
 
         list ($values, ) = $this->build($columns);
+        $names = [];
         $values = ' ' . $values;
         foreach ($columns->select as $title => $field) {
             if (is_string($title)) {
