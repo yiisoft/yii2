@@ -146,7 +146,7 @@ contains a single method [[yii\web\Linkable::getLinks()|getLinks()]] which shoul
 Typically, you should return at least the `self` link representing the URL to the resource object itself. For example,
 
 ```php
-use yii\db\ActiveRecord;
+use \yii\base\Model;
 use yii\web\Link; // represents a link object as defined in JSON Hypermedia API Language.
 use yii\web\Linkable;
 use yii\helpers\Url;
