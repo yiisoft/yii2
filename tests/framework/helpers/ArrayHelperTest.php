@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\InvalidParamException;
 use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
@@ -733,36 +732,6 @@ class ArrayHelperTest extends TestCase
     {
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
-    }
-
-    public function invalidArgumentProvider()
-    {
-        return [
-            [null],
-            [false],
-            [true],
-            [42],
-            [''],
-            ['not an object'],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidArgumentProvider
-     * @expectedException \yii\base\InvalidParamException
-     */
-    public function testGetValueInvalidArgumentWithoutDefaultValue($arg)
-    {
-        ArrayHelper::getValue($arg, 'test');
-    }
-
-    /**
-     * @dataProvider invalidArgumentProvider
-     * @expectedException \yii\base\InvalidParamException
-     */
-    public function testGetValueInvalidArgumentWithDefaultValue($arg)
-    {
-        ArrayHelper::getValue($arg, 'test', 'default');
     }
 
     public function testIsAssociative()

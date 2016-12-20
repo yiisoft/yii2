@@ -27,7 +27,6 @@ Yii Framework 2 Change Log
 - Bug #12879: Console progress bar was not working properly in Windows terminals (samdark, kids-return)
 - Bug #12880: Fixed `yii\behaviors\AttributeTypecastBehavior` marks attributes with `null` value as 'dirty' (klimov-paul)
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
-- Bug #12927: `ArrayHelper::getValue()` did not throw exception if the input was neither an object nor an array, even though it was documented (cebe)
 - Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
 - Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
