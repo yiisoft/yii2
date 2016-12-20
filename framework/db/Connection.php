@@ -925,7 +925,9 @@ class Connection extends Component
     public function getMaster()
     {
         if ($this->_master === false) {
-            $this->_master = $this->openFromPool($this->masters, $this->masterConfig, $this->randomizeMasters);
+            $this->_master = ($this->randomizeMasters)
+                ? $this->openFromPool($this->masters, $this->masterConfig)
+                : $this->openFromPoolSequentally($this->masters, $this->masterConfig);
         }
 
         return $this->_master;
@@ -959,13 +961,28 @@ class Connection extends Component
     /**
      * Opens the connection to a server in the pool.
      * This method implements the load balancing among the given list of the servers.
+     * Connections will be tried in random order.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
-     * @param bool $shuffle Whether to do shuffling a pool
      * @return Connection the opened DB connection, or null if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      */
-    protected function openFromPool(array $pool, array $sharedConfig, $shuffle = true)
+    protected function openFromPool(array $pool, array $sharedConfig)
+    {
+        shuffle($pool);
+        return $this->openFromPoolSequentally($pool, $sharedConfig);
+    }
+
+    /**
+     * Opens the connection to a server in the pool.
+     * This method implements the load balancing among the given list of the servers.
+     * Connections will be tried in sequental order.
+     * @param array $pool the list of connection configurations in the server pool
+     * @param array $sharedConfig the configuration common to those given in `$pool`.
+     * @return Connection the opened DB connection, or null if no server is available
+     * @throws InvalidConfigException if a configuration does not specify "dsn"
+     */
+    protected function openFromPoolSequentally(array $pool, array $sharedConfig)
     {
         if (empty($pool)) {
             return null;
@@ -976,10 +993,6 @@ class Connection extends Component
         }
 
         $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
-
-        if ($shuffle) {
-            shuffle($pool);
-        }
 
         foreach ($pool as $config) {
             $config = array_merge($sharedConfig, $config);
