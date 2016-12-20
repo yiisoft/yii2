@@ -892,13 +892,8 @@ class Connection extends Component
      */
     public function getMasterPdo()
     {
-        $db = $this->getMaster();
-        if ($db === null) {
-            $this->open();
-            return $this->pdo;
-        } else {
-            return $db->pdo;
-        }
+        $this->open();
+        return $this->pdo;
     }
 
     /**
