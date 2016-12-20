@@ -174,7 +174,7 @@ class UserResource extends Model implements Linkable
             Link::REL_SELF => Url::to(['user/view', 'id' => $this->id], true),
             'edit' => Url::to(['user/view', 'id' => $this->id], true),
             'profile' => Url::to(['user/profile/view', 'id' => $this->id], true),
-            'index' => Url::to(['users', 'id' => $this->id], true),
+            'index' => Url::to(['users'], true),
         ];
     }
 }
