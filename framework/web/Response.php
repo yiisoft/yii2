@@ -782,7 +782,7 @@ class Response extends \yii\base\Response
      *
      * ```javascript
      * $document.ajaxComplete(function (event, xhr, settings) {
-     *     var url = xhr.getResponseHeader('X-Redirect');
+     *     var url = xhr && xhr.getResponseHeader('X-Redirect');
      *     if (url) {
      *         window.location = url;
      *     }
