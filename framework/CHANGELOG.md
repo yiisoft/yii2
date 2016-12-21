@@ -36,6 +36,7 @@ Yii Framework 2 Change Log
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
 - Enh #13523: Plural rule for pasta (developeruz)
+- Enh #13254: Made StringHelper and StringValidator independent of `Yii::$app` instance (cebe)
 - Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)

@@ -13,7 +13,9 @@ class StringHelperTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testStrlen()
