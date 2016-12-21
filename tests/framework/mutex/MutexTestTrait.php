@@ -22,6 +22,7 @@ trait MutexTestTrait
         $mutex = $this->createMutex();
 
         $this->assertTrue($mutex->acquire(self::$mutexName));
+        $this->assertTrue($mutex->release(self::$mutexName));
     }
 
     public function testThatMutexLockIsWorking()
