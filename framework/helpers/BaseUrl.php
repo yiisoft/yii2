@@ -301,7 +301,8 @@ class BaseUrl
         if ($name === null) {
             Yii::$app->getUser()->setReturnUrl($url);
         } else {
-            Yii::$app->getSession()->set($name, $url);
+            $session = Yii::$app->session;
+            $session["__remember"] = [$name => $url];
         }
     }
 
@@ -318,7 +319,8 @@ class BaseUrl
         if ($name === null) {
             return Yii::$app->getUser()->getReturnUrl();
         } else {
-            return Yii::$app->getSession()->get($name);
+            $session = Yii::$app->session;
+            return $session["__remember"][$name];
         }
     }
 
