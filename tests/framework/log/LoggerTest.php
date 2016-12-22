@@ -34,12 +34,14 @@ class LoggerTest extends TestCase
      */
     public function testLog()
     {
+        $memory = memory_get_usage();
         $this->logger->log('test1', Logger::LEVEL_INFO);
         $this->assertEquals(1, count($this->logger->messages));
         $this->assertEquals('test1', $this->logger->messages[0][0]);
         $this->assertEquals(Logger::LEVEL_INFO, $this->logger->messages[0][1]);
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([], $this->logger->messages[0][4]);
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][5]);
 
         $this->logger->log('test2', Logger::LEVEL_ERROR, 'category');
         $this->assertEquals(2, count($this->logger->messages));
@@ -47,6 +49,7 @@ class LoggerTest extends TestCase
         $this->assertEquals(Logger::LEVEL_ERROR, $this->logger->messages[1][1]);
         $this->assertEquals('category', $this->logger->messages[1][2]);
         $this->assertEquals([], $this->logger->messages[1][4]);
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[1][5]);
     }
 
     /**
@@ -54,6 +57,7 @@ class LoggerTest extends TestCase
      */
     public function testLogWithTraceLevel()
     {
+        $memory = memory_get_usage();
         $this->logger->traceLevel = 3;
         $this->logger->log('test3', Logger::LEVEL_INFO);
         $this->assertEquals(1, count($this->logger->messages));
@@ -62,12 +66,13 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 58,
+            'line' => 62,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->'
         ], $this->logger->messages[0][4][0]);
         $this->assertEquals(3, count($this->logger->messages[0][4]));
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][5]);
     }
 
     /**
