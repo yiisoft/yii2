@@ -85,6 +85,10 @@ Yii Framework 2 Change Log
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #13219:  Enhancements for `yii\db\Connection` (Vovan-VE)
+  - Added `randomizeMasters` option which adds ability to disable shuffling of masters connections.
+  - Added `getMaster()` getter and `master` property for getting currently active master connection.
+  - Extracted `openFromPoolSequentally()` protected method from `openFromPool()` protected method.
 
 
 2.0.10 October 20, 2016
