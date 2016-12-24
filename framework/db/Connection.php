@@ -368,7 +368,7 @@ class Connection extends Component
     public $masterConfig = [];
     /**
      * @var bool whether to shuffle [[masters]] before getting one.
-     * @since 2.0.12
+     * @since 2.0.11
      * @see masters
      */
     public $randomizeMasters = true;
@@ -920,7 +920,7 @@ class Connection extends Component
      * Returns the currently active master connection.
      * If this method is called for the first time, it will try to open a master connection.
      * @return Connection the currently active master connection. `null` is returned if there is no master available.
-     * @since 2.0.12
+     * @since 2.0.11
      */
     public function getMaster()
     {
@@ -964,7 +964,7 @@ class Connection extends Component
      * Connections will be tried in random order.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
-     * @return Connection the opened DB connection, or null if no server is available
+     * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      */
     protected function openFromPool(array $pool, array $sharedConfig)
@@ -979,8 +979,9 @@ class Connection extends Component
      * Connections will be tried in sequental order.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
-     * @return Connection the opened DB connection, or null if no server is available
+     * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
+     * @since 2.0.11
      */
     protected function openFromPoolSequentally(array $pool, array $sharedConfig)
     {
