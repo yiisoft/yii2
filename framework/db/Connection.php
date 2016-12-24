@@ -120,10 +120,10 @@ use yii\caching\Cache;
  * read-only.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
- * @property Connection $master The currently active master connection. Null is returned if there is no master
- * @property Connection $slave The currently active slave connection. Null is returned if there is no slave
+ * @property Connection $master The currently active master connection. `null` is returned if there is no master
+ * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
- * @property PDO $slavePdo The PDO instance for the currently active slave connection. Null is returned if no
+ * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if no
  * slave connection is available and `$fallbackToMaster` is false. This property is read-only.
  * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
  * property is read-only.
@@ -872,7 +872,7 @@ class Connection extends Component
      * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method.
      * @param bool $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
-     * @return PDO the PDO instance for the currently active slave connection. Null is returned if no slave connection
+     * @return PDO the PDO instance for the currently active slave connection. `null` is returned if no slave connection
      * is available and `$fallbackToMaster` is false.
      */
     public function getSlavePdo($fallbackToMaster = true)
@@ -900,7 +900,7 @@ class Connection extends Component
      * Returns the currently active slave connection.
      * If this method is called the first time, it will try to open a slave connection when [[enableSlaves]] is true.
      * @param bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
-     * @return Connection the currently active slave connection. Null is returned if there is no slave available and
+     * @return Connection the currently active slave connection. `null` is returned if there is no slave available and
      * `$fallbackToMaster` is false.
      */
     public function getSlave($fallbackToMaster = true)
@@ -919,7 +919,7 @@ class Connection extends Component
     /**
      * Returns the currently active master connection.
      * If this method is called the first time, it will try to open a master connection.
-     * @return Connection the currently active master connection. Null is returned if there is no master available.
+     * @return Connection the currently active master connection. `null` is returned if there is no master available.
      * @since 2.0.12
      */
     public function getMaster()
