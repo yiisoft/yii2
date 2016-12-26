@@ -88,7 +88,7 @@ Yii Framework 2 Change Log
 - Enh #13219:  Enhancements for `yii\db\Connection` (Vovan-VE)
   - Added `randomizeMasters` option which adds ability to disable shuffling of masters connections.
   - Added `getMaster()` getter and `master` property for getting currently active master connection.
-  - Extracted `openFromPoolSequentally()` protected method from `openFromPool()` protected method.
+  - Extracted `openFromPoolSequentially()` protected method from `openFromPool()` protected method.
 
 
 2.0.10 October 20, 2016

@@ -927,7 +927,7 @@ class Connection extends Component
         if ($this->_master === false) {
             $this->_master = ($this->randomizeMasters)
                 ? $this->openFromPool($this->masters, $this->masterConfig)
-                : $this->openFromPoolSequentally($this->masters, $this->masterConfig);
+                : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
         }
 
         return $this->_master;
@@ -970,20 +970,20 @@ class Connection extends Component
     protected function openFromPool(array $pool, array $sharedConfig)
     {
         shuffle($pool);
-        return $this->openFromPoolSequentally($pool, $sharedConfig);
+        return $this->openFromPoolSequentially($pool, $sharedConfig);
     }
 
     /**
      * Opens the connection to a server in the pool.
      * This method implements the load balancing among the given list of the servers.
-     * Connections will be tried in sequental order.
+     * Connections will be tried in sequential order.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
      * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      * @since 2.0.11
      */
-    protected function openFromPoolSequentally(array $pool, array $sharedConfig)
+    protected function openFromPoolSequentially(array $pool, array $sharedConfig)
     {
         if (empty($pool)) {
             return null;
