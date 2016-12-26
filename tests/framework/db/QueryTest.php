@@ -319,6 +319,10 @@ abstract class QueryTest extends DatabaseTestCase
 
         $count = (new Query)->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
+
+        // testing that orderBy() should be ignored here as it does not affect the count anyway.
+        $count = (new Query)->from('customer')->orderBy('status')->count('*', $db);
+        $this->assertEquals(3, $count);
     }
 
     /**
@@ -344,11 +348,11 @@ abstract class QueryTest extends DatabaseTestCase
         $query->andFilterCompare('name', 'Doe', 'like');
         $this->assertEquals($condition, $query->where);
 
-        $condition = ['and', $condition, ['>', 'rating', '9']];
+        $condition[] = ['>', 'rating', '9'];
         $query->andFilterCompare('rating', '>9');
         $this->assertEquals($condition, $query->where);
 
-        $condition = ['and', $condition, ['<=', 'value', '100']];
+        $condition[] = ['<=', 'value', '100'];
         $query->andFilterCompare('value', '<=100');
         $this->assertEquals($condition, $query->where);
     }

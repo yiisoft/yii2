@@ -421,7 +421,13 @@ class Query extends Component implements QueryInterface
         $this->limit = $limit;
         $this->offset = $offset;
 
-        if (empty($this->groupBy) && empty($this->having) && empty($this->union) && !$this->distinct) {
+        if (
+            !$this->distinct
+            && empty($this->groupBy)
+            && empty($this->having)
+            && empty($this->union)
+            && empty($this->orderBy)
+        ) {
             return $command->queryScalar();
         } else {
             return (new Query)->select([$selectExpression])
@@ -585,6 +591,8 @@ class Query extends Component implements QueryInterface
     {
         if ($this->where === null) {
             $this->where = $condition;
+        } elseif (is_array($this->where) && isset($this->where[0]) && strcasecmp($this->where[0], 'and') === 0) {
+            $this->where[] = $condition;
         } else {
             $this->where = ['and', $this->where, $condition];
         }

@@ -200,8 +200,9 @@ class UrlRuleTest extends TestCase
      * Proviedes test cases for createUrl() method
      *
      * - first param are properties of the UrlRule
-     * - second param is the route to create
-     * - third param is the expected URL
+     * - second param is an array of test cases, containing two element arrays:
+     *   - first element is the route to create
+     *   - second element is the expected URL
      */
     public function createUrlDataProvider()
     {
@@ -212,40 +213,46 @@ class UrlRuleTest extends TestCase
                     'controller' => 'v1/channel',
                     'pluralize' => true,
                 ],
-                ['v1/channel/index'], // route
-                'v1/channels', // expected
+                [ // test cases: route, expected
+                    [ ['v1/channel/index'], 'v1/channels' ],
+                    [ ['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1' ],
+                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/options'], 'v1/channels' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/delete'], false ],
+                ],
             ],
             [
                 [ // Rule properties
                     'controller' => ['v1/channel'],
                     'pluralize' => true,
                 ],
-                ['v1/channel/index'], // route
-                'v1/channels', // expected
+                [ // test cases: route, expected
+                    [ ['v1/channel/index'], 'v1/channels' ],
+                    [ ['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1' ],
+                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/options'], 'v1/channels' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/delete'], false ],
+                ],
             ],
             [
                 [ // Rule properties
                     'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
                     'pluralize' => true,
                 ],
-                ['v1/channel/index'], // route
-                'v1/channels', // expected
-            ],
-            [
-                [ // Rule properties
-                    'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
-                    'pluralize' => true,
+                [ // test cases: route, expected
+                    [ ['v1/channel/index'], 'v1/channels' ],
+                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/options'], 'v1/channels' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/delete'], false ],
+                    [ ['v1/user/index'], 'v1/u' ],
+                    [ ['v1/user/view', 'id' => 1], 'v1/u/1' ],
+                    [ ['v1/channel/options'], 'v1/channels' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/user/delete'], false ],
                 ],
-                ['v1/user/index'], // route
-                'v1/u', // expected
-            ],
-            [
-                [ // Rule properties
-                    'controller' => 'v1/channel',
-                    'pluralize' => true,
-                ],
-                ['v1/channel/index', 'offset' => 1], // route
-                'v1/channels?offset=1', // expected
             ],
 
 
@@ -255,60 +262,97 @@ class UrlRuleTest extends TestCase
                     'controller' => 'v1/channel',
                     'pluralize' => false,
                 ],
-                ['v1/channel/index'], // route
-                'v1/channel', // expected
+                [ // test cases: route, expected
+                    [ ['v1/channel/index'], 'v1/channel' ],
+                    [ ['v1/channel/index', 'offset' => 1], 'v1/channel?offset=1' ],
+                    [ ['v1/channel/view', 'id' => 42], 'v1/channel/42' ],
+                    [ ['v1/channel/options'], 'v1/channel' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channel/42' ],
+                    [ ['v1/channel/delete'], false ],
+                ],
             ],
             [
                 [ // Rule properties
                     'controller' => ['v1/channel'],
                     'pluralize' => false,
                 ],
-                ['v1/channel/index'], // route
-                'v1/channel', // expected
+                [ // test cases: route, expected
+                    [ ['v1/channel/index'], 'v1/channel' ],
+                    [ ['v1/channel/index', 'offset' => 1], 'v1/channel?offset=1' ],
+                    [ ['v1/channel/view', 'id' => 42], 'v1/channel/42' ],
+                    [ ['v1/channel/options'], 'v1/channel' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channel/42' ],
+                    [ ['v1/channel/delete'], false ],
+                ],
             ],
             [
                 [ // Rule properties
                     'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
                     'pluralize' => false,
                 ],
-                ['v1/channel/index'], // route
-                'v1/channel', // expected
-            ],
-            [
-                [ // Rule properties
-                    'controller' => ['v1/channel', 'v1/u' => 'v1/user'],
-                    'pluralize' => false,
+                [ // test cases: route, expected
+                    [ ['v1/channel/index'], 'v1/channel' ],
+                    [ ['v1/channel/view', 'id' => 42], 'v1/channel/42' ],
+                    [ ['v1/channel/options'], 'v1/channel' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channel/42' ],
+                    [ ['v1/channel/delete'], false ],
+                    [ ['v1/user/index'], 'v1/u' ],
+                    [ ['v1/user/view', 'id' => 1], 'v1/u/1' ],
+                    [ ['v1/user/options'], 'v1/u' ],
+                    [ ['v1/user/options', 'id' => 42], 'v1/u/42' ],
+                    [ ['v1/user/delete'], false ],
                 ],
-                ['v1/user/index'], // route
-                'v1/u', // expected
             ],
+
+            // using extra patterns
             [
                 [ // Rule properties
                     'controller' => 'v1/channel',
-                    'pluralize' => false,
+                    'pluralize' => true,
+                    'extraPatterns' => [
+                        '{id}/my' => 'my',
+                        'my' => 'my',
+                        // this should not create a URL, no GET definition
+                        'POST {id}/my2' => 'my2',
+                    ],
                 ],
-                ['v1/channel/index', 'offset' => 1], // route
-                'v1/channel?offset=1', // expected
+                [ // test cases: route, expected
+                    // normal actions should behave as before
+                    [ ['v1/channel/index'], 'v1/channels' ],
+                    [ ['v1/channel/index', 'offset' => 1], 'v1/channels?offset=1' ],
+                    [ ['v1/channel/view', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/options'], 'v1/channels' ],
+                    [ ['v1/channel/options', 'id' => 42], 'v1/channels/42' ],
+                    [ ['v1/channel/delete'], false ],
+
+                    [ ['v1/channel/my'], 'v1/channels/my' ],
+                    [ ['v1/channel/my', 'id' => 42], 'v1/channels/42/my' ],
+                    [ ['v1/channel/my2'], false ],
+                    [ ['v1/channel/my2', 'id' => 42], false ],
+                ],
             ],
 
-            // ---
         ];
     }
 
     /**
      * @dataProvider createUrlDataProvider
      */
-    public function testCreateUrl($rule, $params, $expected)
+    public function testCreateUrl($rule, $tests)
     {
-        $this->mockWebApplication();
-        Yii::$app->set('request', new Request(['hostInfo' => 'http://api.example.com', 'scriptUrl' => '/index.php']));
-        $route = array_shift($params);
+        foreach($tests as $test) {
+            list($params, $expected) = $test;
 
-        $manager = new UrlManager([
-            'cache' => null,
-        ]);
-        $rule = new UrlRule($rule);
-        $this->assertEquals($expected, $rule->createUrl($manager, $route, $params));
+            $this->mockWebApplication();
+            Yii::$app->set('request', new Request(['hostInfo' => 'http://api.example.com', 'scriptUrl' => '/index.php']));
+            $route = array_shift($params);
+
+            $manager = new UrlManager([
+                'cache' => null,
+            ]);
+            $rule = new UrlRule($rule);
+            $this->assertEquals($expected, $rule->createUrl($manager, $route, $params));
+        }
     }
 
 }

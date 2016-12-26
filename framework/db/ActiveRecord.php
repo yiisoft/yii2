@@ -439,6 +439,9 @@ class ActiveRecord extends BaseActiveRecord
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw $e;
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
         }
     }
 
@@ -545,6 +548,9 @@ class ActiveRecord extends BaseActiveRecord
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw $e;
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
         }
     }
 
@@ -583,6 +589,9 @@ class ActiveRecord extends BaseActiveRecord
             }
             return $result;
         } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch (\Throwable $e) {
             $transaction->rollBack();
             throw $e;
         }
