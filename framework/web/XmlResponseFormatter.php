@@ -54,7 +54,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      * @var bool if object tags should be added
      * @since 2.0.11
      */
-    public $objectTags = true;
+    public $useObjectTags = true;
 
     /**
      * Formats the specified response.
@@ -103,7 +103,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 }
             }
         } elseif (is_object($data)) {
-            if ($this->objectTags) {
+            if ($this->useObjectTags) {
                 $child = new DOMElement(StringHelper::basename(get_class($data)));
                 $element->appendChild($child);    
             } else {

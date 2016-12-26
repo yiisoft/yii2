@@ -144,7 +144,7 @@ class XmlResponseFormatterTest extends FormatterTest
     public function testNoObjectTags()
     {
         $formatter = $this->getFormatterInstance([
-            'objectTags' => false,
+            'useObjectTags' => false,
         ]);
 
         $this->response->data = new Post(123, 'abc');
