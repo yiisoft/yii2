@@ -210,12 +210,12 @@ CODE;
 
     public function testUp()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_up1');
+        $this->createMigration('test_up2');
 
         $this->runMigrateControllerAction('up');
 
-        $this->assertMigrationHistory(['m*_base', 'm*_test1', 'm*_test2']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_up1', 'm*_test_up2']);
     }
 
     /**
@@ -223,12 +223,12 @@ CODE;
      */
     public function testUpCount()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_down1');
+        $this->createMigration('test_down2');
 
         $this->runMigrateControllerAction('up', [1]);
 
-        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_down1']);
     }
 
     /**
@@ -236,13 +236,13 @@ CODE;
      */
     public function testDownCount()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_down_count1');
+        $this->createMigration('test_down_count2');
 
         $this->runMigrateControllerAction('up');
         $this->runMigrateControllerAction('down', [1]);
 
-        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_down_count1']);
     }
 
     /**
@@ -250,8 +250,8 @@ CODE;
      */
     public function testDownAll()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_down_all1');
+        $this->createMigration('test_down_all2');
 
         $this->runMigrateControllerAction('up');
         $this->runMigrateControllerAction('down', ['all']);
@@ -267,13 +267,13 @@ CODE;
         $output = $this->runMigrateControllerAction('history');
         $this->assertContains('No migration', $output);
 
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_history1');
+        $this->createMigration('test_history2');
         $this->runMigrateControllerAction('up');
 
         $output = $this->runMigrateControllerAction('history');
-        $this->assertContains('_test1', $output);
-        $this->assertContains('_test2', $output);
+        $this->assertContains('_test_history1', $output);
+        $this->assertContains('_test_history2', $output);
     }
 
     /**
@@ -281,25 +281,25 @@ CODE;
      */
     public function testNew()
     {
-        $this->createMigration('test1');
+        $this->createMigration('test_new1');
 
         $output = $this->runMigrateControllerAction('new');
-        $this->assertContains('_test1', $output);
+        $this->assertContains('_test_new1', $output);
 
         $this->runMigrateControllerAction('up');
 
         $output = $this->runMigrateControllerAction('new');
-        $this->assertNotContains('_test1', $output);
+        $this->assertNotContains('_test_new1', $output);
     }
 
     public function testMark()
     {
         $version = '010101_000001';
-        $this->createMigration('test1', $version);
+        $this->createMigration('test_mark1', $version);
 
         $this->runMigrateControllerAction('mark', [$version]);
 
-        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
     }
 
     public function testTo()
@@ -317,12 +317,12 @@ CODE;
      */
     public function testRedo()
     {
-        $this->createMigration('test1');
+        $this->createMigration('test_redo1');
         $this->runMigrateControllerAction('up');
 
         $this->runMigrateControllerAction('redo');
 
-        $this->assertMigrationHistory(['m*_base', 'm*_test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_redo1']);
     }
 
     // namespace :
