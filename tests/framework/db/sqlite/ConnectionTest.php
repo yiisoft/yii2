@@ -109,7 +109,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
                 $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
-                $db->randomizeMasters = $randomize;
+                $db->shuffleMasters = $randomize;
 
                 $hit_slaves[$db->getSlave()->dsn] = true;
                 $hit_masters[$db->getMaster()->dsn] = true;

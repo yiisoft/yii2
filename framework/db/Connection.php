@@ -347,7 +347,7 @@ class Connection extends Component
      * Note that when this property is not empty, the connection setting (e.g. "dsn", "username") of this object will
      * be ignored.
      * @see masterConfig
-     * @see randomizeMasters
+     * @see shuffleMasters
      */
     public $masters = [];
     /**
@@ -371,7 +371,7 @@ class Connection extends Component
      * @since 2.0.11
      * @see masters
      */
-    public $randomizeMasters = true;
+    public $shuffleMasters = true;
 
     /**
      * @var Transaction the currently active transaction
@@ -925,7 +925,7 @@ class Connection extends Component
     public function getMaster()
     {
         if ($this->_master === false) {
-            $this->_master = ($this->randomizeMasters)
+            $this->_master = ($this->shuffleMasters)
                 ? $this->openFromPool($this->masters, $this->masterConfig)
                 : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
         }
