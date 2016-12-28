@@ -90,6 +90,7 @@ return [
     '{attribute} should contain at least {min, number} {min, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать минимум {min, number} {min, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать максимум {max, number} {max, plural, one{символ} few{символа} many{символов} other{символа}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => 'Значение «{attribute}» должно содержать {length, number} {length, plural, one{символ} few{символа} many{символов} other{символа}}.',
+    'The combination {values} of {attributes} has already been taken.' => 'Комбинация {values} параметров {attributes} уже существует',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, one{# день} few{# дня} many{# дней} other{# дней}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, one{# час} few{# часа} many{# часов} other{# часов}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, one{# минута} few{# минуты} many{# минут} other{# минут}}',
