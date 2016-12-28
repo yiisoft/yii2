@@ -128,15 +128,34 @@ class EmailValidatorTest extends TestCase
     public function malformedAddressesProvider()
     {
         return [
+            // this is the demo email used in the proof of concept of the exploit
+            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
+            // trying more adresses
             ['"Attacker -Param2 -Param3"@test.com'],
             ['\'Attacker -Param2 -Param3\'@test.com'],
             ['"Attacker \" -Param2 -Param3"@test.com'],
             ["'Attacker \\' -Param2 -Param3'@test.com"],
-            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com']
+            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
+            // and even more variants
+            ['"attacker\"\ -oQ/tmp/\ -X/var/www/cache/phpcode.php"@email.com'],
+            ["\"attacker\\\"\0-oQ/tmp/\0-X/var/www/cache/phpcode.php\"@email.com"],
+            ['"attacker@cebe.cc\"-Xbeep"@email.com'],
+
+            ["'attacker\\' -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
+            ["'attacker\\\\' -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
+            ["'attacker\\\\'\\ -oQ/tmp/ -X/var/www/cache/phpcode.php'@email.com"],
+            ["'attacker\\';touch /tmp/hackme'@email.com"],
+            ["'attacker\\\\';touch /tmp/hackme'@email.com"],
+            ["'attacker\\';touch/tmp/hackme'@email.com"],
+            ["'attacker\\\\';touch/tmp/hackme'@email.com"],
+            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com'],
         ];
     }
 
     /**
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074
+     * https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
+     *
      * @dataProvider malformedAddressesProvider
      */
     public function testMalformedAddresses($value)
