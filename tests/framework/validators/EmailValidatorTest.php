@@ -124,4 +124,27 @@ class EmailValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_email');
         $this->assertFalse($model->hasErrors('attr_email'));
     }
+
+    public function malformedAddressesProvider()
+    {
+        return [
+            ['"Attacker -Param2 -Param3"@test.com'],
+            ['\'Attacker -Param2 -Param3\'@test.com'],
+            ['"Attacker \" -Param2 -Param3"@test.com'],
+            ["'Attacker \\' -Param2 -Param3'@test.com"],
+            ['"attacker\" -oQ/tmp/ -X/var/www/cache/phpcode.php "@email.com']
+        ];
+    }
+
+    /**
+     * @dataProvider malformedAddressesProvider
+     */
+    public function testMalformedAddresses($value)
+    {
+        $val = new EmailValidator();
+        $this->assertFalse($val->validate($value));
+
+        $val->enableIDN = true;
+        $this->assertFalse($val->validate($value));
+    }
 }
