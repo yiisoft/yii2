@@ -57,16 +57,27 @@ class Request extends \yii\base\Request
     public function resolve()
     {
         $rawParams = $this->getParams();
+        $endOfOptionsFound = false;
         if (isset($rawParams[0])) {
             $route = $rawParams[0];
             array_shift($rawParams);
+
+            if ($route === '--') {
+                $endOfOptionsFound = true;
+                $route = $rawParams[0];
+                array_shift($rawParams);
+            }
         } else {
             $route = '';
         }
 
         $params = [];
         foreach ($rawParams as $param) {
-            if (preg_match('/^--(\w+)(?:=(.*))?$/', $param, $matches)) {
+            if ($endOfOptionsFound) {
+                $params[] = $param;
+            } elseif ($param === '--') {
+                $endOfOptionsFound = true;
+            } elseif (preg_match('/^--(\w+)(?:=(.*))?$/', $param, $matches)) {
                 $name = $matches[1];
                 if ($name !== Application::OPTION_APPCONFIG) {
                     $params[$name] = isset($matches[2]) ? $matches[2] : true;
