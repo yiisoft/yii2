@@ -85,9 +85,11 @@ Yii Framework 2 Change Log
 - Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options (timbeks)
 - Bug: #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
+- Enh #11959: Added `yii\caching\Cache::getOrSet()` method (silverfire)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 
+- Enh #11959: Added `yii\caching\Cache::closure()` method to cache closures (silverfire)
 
 2.0.10 October 20, 2016
 -----------------------
