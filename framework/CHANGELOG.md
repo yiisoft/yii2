@@ -87,7 +87,7 @@ Yii Framework 2 Change Log
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
-- Bug: Added missing and fixed wrong plural translations for Latvian language. (mg-code)
+- Bug: Added missing and fixed wrong plural translations for Latvian language (mg-code)
 
 
 2.0.10 October 20, 2016
