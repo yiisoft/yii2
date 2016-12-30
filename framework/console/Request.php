@@ -62,7 +62,7 @@ class Request extends \yii\base\Request
             $route = $rawParams[0];
             array_shift($rawParams);
 
-            if ($route == '--') {
+            if ($route === '--') {
                 $endOfOptionsFound = true;
                 $route = $rawParams[0];
                 array_shift($rawParams);
@@ -75,7 +75,7 @@ class Request extends \yii\base\Request
         foreach ($rawParams as $param) {
             if ($endOfOptionsFound) {
                 $params[] = $param;
-            } elseif ($param == '--') {
+            } elseif ($param === '--') {
                 $endOfOptionsFound = true;
             } elseif (preg_match('/^--(\w+)(?:=(.*))?$/', $param, $matches)) {
                 $name = $matches[1];
