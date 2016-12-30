@@ -154,6 +154,7 @@ window.yii = (function ($) {
                 action = $e.attr('href'),
                 params = $e.data('params'),
                 pjax = $e.data('pjax') || 0,
+                usePjax = pjax !== 0 && $.support.pjax,
                 pjaxPushState = !!$e.data('pjax-push-state'),
                 pjaxReplaceState = !!$e.data('pjax-replace-state'),
                 pjaxTimeout = $e.data('pjax-timeout'),
@@ -164,7 +165,7 @@ window.yii = (function ($) {
                 pjaxContainer,
                 pjaxOptions = {};
 
-            if (pjax !== 0 && $.support.pjax) {
+            if (usePjax) {
                 if ($e.data('pjax-container')) {
                     pjaxContainer = $e.data('pjax-container');
                 } else {
@@ -190,13 +191,13 @@ window.yii = (function ($) {
 
             if (method === undefined) {
                 if (action && action != '#') {
-                    if (pjax !== 0 && $.support.pjax) {
+                    if (usePjax) {
                         $.pjax.click(event, pjaxOptions);
                     } else {
                         window.location = action;
                     }
                 } else if ($e.is(':submit') && $form.length) {
-                    if (pjax !== 0 && $.support.pjax) {
+                    if (usePjax) {
                         $form.on('submit',function(e){
                             $.pjax.submit(e, pjaxOptions);
                         })
@@ -249,7 +250,7 @@ window.yii = (function ($) {
                 oldAction = $form.attr('action');
                 $form.attr('action', action);
             }
-            if (pjax !== 0 && $.support.pjax) {
+            if (usePjax) {
                 $form.on('submit',function(e){
                     $.pjax.submit(e, pjaxOptions);
                 })

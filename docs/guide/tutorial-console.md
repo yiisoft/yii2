@@ -111,7 +111,7 @@ Console command completion <span id="console-command-completion"></span>
 ---------------
 
 Auto-completion of command arguments is a useful thing when working with the shell. 
-Since version 2.0.11, the `./yii` command provides auto completion for the bash out of the box. 
+Since version 2.0.11, the `./yii` command provides auto completion for the Bash and ZSH out of the box. 
 
 ### Bash completion
 
