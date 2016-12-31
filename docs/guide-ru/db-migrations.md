@@ -783,6 +783,66 @@ return [
 
 С приведённой выше конфигурацией, каждый раз при запуске команды миграции, таблица `backend_migration` будет использована для записи истории миграций. И Вам больше не нужно указывать её через параметр `migrationTable` в командной строке.
 
+### Отдельностоящие Миграции <span id="separated-migrations"></span>
+
+Иногда может понадобится использовать миграции из другого пространства имён. Это может быть полезно для при использовании
+расширений или модулей в вашем проекте. Одним таких примером могут быть миграции для [компонента RBAC](security-authorization.md#configuring-rbac).
+Начиная с версии 2.0.10, есть возможность использовать свойство [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]
+для указания пространств имён с миграциями:
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => [
+                'app\migrations', // Общие миграции приложения
+                'module\migrations', // Миграции одного из модулей проекта
+                'yii\rbac\migrations', // Миграции одного из расширений
+            ],
+        ],
+    ],
+];
+```
+
+Если необходимо, чтобы миграции из разных пространств имён были независимы друг от друга, вы можете сконфигурировать
+несколько команд миграции, которые будут использовать разные пространства имён и разные таблицы для хранения истории
+миграций:
+
+```php
+return [
+    'controllerMap' => [
+        // Общие миграции приложения
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+        ],
+        // Миграции одного из модулей проекта
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+        ],
+        // Миграции одного из расширений
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['yii\rbac\migrations'],
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+Учтите, что для синхронизации базы данных при такой конфигурации потребуется вызвать несколько команд вместо одной:
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
+
+
 ## Миграции в Несколько Баз Данных <span id="migrating-multiple-databases"></span>
 
 По умолчанию, миграции применяются для базы данных, указанной в `db` [компоненте приложения](structure-application-components.md).
@@ -826,3 +886,4 @@ yii migrate --migrationPath=@app/migrations/db2 --db=db2
 ```
 
 Первая команда применит миграции в директории `@app/migrations/db1` к базе данных `db1`, а вторая команда применит миграции в директории `@app/migrations/db2` к базе данных `db2` и так далее.
+
