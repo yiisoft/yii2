@@ -59,13 +59,11 @@ class Request extends \yii\base\Request
         $rawParams = $this->getParams();
         $endOfOptionsFound = false;
         if (isset($rawParams[0])) {
-            $route = $rawParams[0];
-            array_shift($rawParams);
+            $route = array_shift($rawParams);
 
             if ($route === '--') {
                 $endOfOptionsFound = true;
-                $route = $rawParams[0];
-                array_shift($rawParams);
+                $route = array_shift($rawParams);
             }
         } else {
             $route = '';
