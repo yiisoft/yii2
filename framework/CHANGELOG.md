@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.11 under development
 ------------------------
 
+- Bug #13277: Fixed invalid parsing of `--` ("End of Options" special argument) in CLI (rugabarbo)
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #7727: Fixed `yii\helpers\StringHelper::truncateHtml()` leaving extra tags (developeruz)
 - Bug #9305: Fixed MSSQL `Schema::TYPE_TIMESTAMP` to be 'datetime' instead of 'timestamp', which is just an incremental number (nkovacs)
