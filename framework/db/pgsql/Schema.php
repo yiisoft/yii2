@@ -251,7 +251,7 @@ SQL;
      * Returns all view names in the database.
      * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
      * If not empty, the returned view names will be prefixed with the schema name.
-     * @param boolean $refresh whether to fetch the latest available view names. If this is false,
+     * @param bool $refresh whether to fetch the latest available view names. If this is false,
      * view names fetched previously (if available) will be returned.
      * @return string[] all view names in the database.
      * @since 2.0.9
@@ -388,7 +388,7 @@ SQL;
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -454,6 +454,9 @@ SQL;
             return false;
         }
         foreach ($columns as $column) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+                $column = array_change_key_case($column, CASE_LOWER);
+            }
             $column = $this->loadColumnSchema($column);
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {

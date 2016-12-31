@@ -13,7 +13,7 @@ function time()
 
 /**
  * Mock for the microtime() function for caching classes
- * @param boolean $float
+ * @param bool $float
  * @return float
  */
 function microtime($float = false)
@@ -24,6 +24,7 @@ function microtime($float = false)
 namespace yiiunit\framework\caching;
 
 use yii\caching\Cache;
+use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
 /**
@@ -32,7 +33,7 @@ use yiiunit\TestCase;
 abstract class CacheTestCase extends TestCase
 {
     /**
-     * @var integer virtual time to be returned by mocked time() function.
+     * @var int virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;
@@ -99,22 +100,22 @@ abstract class CacheTestCase extends TestCase
     }
 
     /**
-     * @return array testing mset with and without expiry
+     * @return array testing multiSet with and without expiry
      */
-    public function msetExpiry()
+    public function multiSetExpiry()
     {
         return [[0], [2]];
     }
 
     /**
-     * @dataProvider msetExpiry
+     * @dataProvider multiSetExpiry
      */
-    public function testMset($expiry)
+    public function testMultiset($expiry)
     {
         $cache = $this->getCacheInstance();
         $cache->flush();
 
-        $cache->mset([
+        $cache->multiSet([
             'string_test' => 'string_test',
             'number_test' => 42,
             'array_test' => ['array_test' => 'array_test'],
@@ -167,14 +168,21 @@ abstract class CacheTestCase extends TestCase
         $this->assertTrue($cache->get('bool_value'));
     }
 
-    public function testMget()
+    public function testMultiGet()
     {
         $cache = $this->prepare();
 
-        $this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->mget(['string_test', 'number_test']));
+        $this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->multiGet(['string_test', 'number_test']));
         // ensure that order does not matter
-        $this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->mget(['number_test', 'string_test']));
-        $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->mget(['number_test', 'non_existent_key']));
+        $this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->multiGet(['number_test', 'string_test']));
+        $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->multiGet(['number_test', 'non_existent_key']));
+    }
+
+    public function testDefaultTtl()
+    {
+        $cache = $this->getCacheInstance();
+
+        $this->assertSame(0, $cache->defaultDuration);
     }
 
     public function testExpire()
@@ -213,13 +221,13 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals(13, $cache->get('add_test'));
     }
 
-    public function testMadd()
+    public function testMultiAdd()
     {
         $cache = $this->prepare();
 
         $this->assertFalse($cache->get('add_test'));
 
-        $cache->madd([
+        $cache->multiAdd([
             'number_test' => 13,
             'add_test' => 13,
         ]);
@@ -242,5 +250,23 @@ abstract class CacheTestCase extends TestCase
         $cache = $this->prepare();
         $this->assertTrue($cache->flush());
         $this->assertFalse($cache->get('number_test'));
+    }
+
+    public function testGetOrSet()
+    {
+        $cache = $this->prepare();
+        $dependency = new TagDependency(['tags' => 'test']);
+
+        $expected = 'SilverFire';
+        $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
+
+        // Call again with another login to make sure that value is cached
+        $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
+
+        $dependency->invalidate($cache, 'test');
+        $expected = 'SamDark';
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
     }
 }

@@ -18,13 +18,15 @@ use yii\base\InvalidConfigException;
  *
  * See [[Cache]] for common cache operations that ApcCache supports.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
 class ApcCache extends Cache
 {
     /**
-     * @var boolean whether to use apcu or apc as the underlying caching extension.
+     * @var bool whether to use apcu or apc as the underlying caching extension.
      * If true, [apcu](http://pecl.php.net/package/apcu) will be used.
      * If false, [apc](http://pecl.php.net/package/apc) will be used.
      * Defaults to false.
@@ -54,7 +56,7 @@ class ApcCache extends Cache
      * may return false while exists returns true.
      * @param mixed $key a key identifying the cached value. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
-     * @return boolean true if a value exists in cache, false if the value is not in the cache or expired.
+     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
      */
     public function exists($key)
     {
@@ -92,8 +94,8 @@ class ApcCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
      * it could be something else.
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise.
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise.
      */
     protected function setValue($key, $value, $duration)
     {
@@ -103,7 +105,7 @@ class ApcCache extends Cache
     /**
      * Stores multiple key-value pairs in cache.
      * @param array $data array where key corresponds to cache key while value
-     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys
      */
     protected function setValues($data, $duration)
@@ -118,8 +120,8 @@ class ApcCache extends Cache
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
      * it could be something else.
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function addValue($key, $value, $duration)
     {
@@ -129,7 +131,7 @@ class ApcCache extends Cache
     /**
      * Adds multiple key-value pairs to cache.
      * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys
      */
     protected function addValues($data, $duration)
@@ -142,7 +144,7 @@ class ApcCache extends Cache
      * Deletes a value with the specified key from cache
      * This is the implementation of the method declared in the parent class.
      * @param string $key the key of the value to be deleted
-     * @return boolean if no error happens during deletion
+     * @return bool if no error happens during deletion
      */
     protected function deleteValue($key)
     {
@@ -152,7 +154,7 @@ class ApcCache extends Cache
     /**
      * Deletes all values from cache.
      * This is the implementation of the method declared in the parent class.
-     * @return boolean whether the flush operation was successful.
+     * @return bool whether the flush operation was successful.
      */
     protected function flushValues()
     {

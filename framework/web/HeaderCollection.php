@@ -14,7 +14,7 @@ use ArrayIterator;
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
  *
- * @property integer $count The number of headers in the collection. This property is read-only.
+ * @property int $count The number of headers in the collection. This property is read-only.
  * @property ArrayIterator $iterator An iterator for traversing the headers in the collection. This property
  * is read-only.
  *
@@ -44,7 +44,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * Returns the number of headers in the collection.
      * This method is required by the SPL `Countable` interface.
      * It will be implicitly called when you use `count($collection)`.
-     * @return integer the number of headers in the collection.
+     * @return int the number of headers in the collection.
      */
     public function count()
     {
@@ -53,7 +53,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
 
     /**
      * Returns the number of headers in the collection.
-     * @return integer the number of headers in the collection.
+     * @return int the number of headers in the collection.
      */
     public function getCount()
     {
@@ -64,7 +64,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * Returns the named header(s).
      * @param string $name the name of the header to return
      * @param mixed $default the value to return in case the named header does not exist
-     * @param boolean $first whether to only return the first header of the specified name.
+     * @param bool $first whether to only return the first header of the specified name.
      * If false, all headers of the specified name will be returned.
      * @return string|array the named header(s). If `$first` is true, a string will be returned;
      * If `$first` is false, an array will be returned.
@@ -130,7 +130,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * Returns a value indicating whether the named header exists.
      * @param string $name the name of the header
-     * @return boolean whether the named header exists
+     * @return bool whether the named header exists
      */
     public function has($name)
     {
@@ -189,7 +189,7 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
      * This method is required by the SPL interface [[\ArrayAccess]].
      * It is implicitly called when you use something like `isset($collection[$name])`.
      * @param string $name the header name
-     * @return boolean whether the named header exists
+     * @return bool whether the named header exists
      */
     public function offsetExists($name)
     {

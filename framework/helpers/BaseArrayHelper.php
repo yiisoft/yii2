@@ -53,7 +53,7 @@ class BaseArrayHelper
      * ]
      * ```
      *
-     * @param boolean $recursive whether to recursively converts properties which are objects into arrays.
+     * @param bool $recursive whether to recursively converts properties which are objects into arrays.
      * @return array the array representation of the object
      */
     public static function toArray($object, $properties = [], $recursive = true)
@@ -179,7 +179,6 @@ class BaseArrayHelper
      * @param mixed $default the default value to be returned if the specified array key does not exist. Not used when
      * getting value from an object.
      * @return mixed the value of the element if found, default value otherwise
-     * @throws InvalidParamException if $array is neither an array nor an object.
      */
     public static function getValue($array, $key, $default = null)
     {
@@ -206,7 +205,7 @@ class BaseArrayHelper
 
         if (is_object($array)) {
             // this is expected to fail if the property does not exist, or __get() is not implemented
-            // it is not reliably possible to check whether a property is accessable beforehand
+            // it is not reliably possible to check whether a property is accessible beforehand
             return $array->$key;
         } elseif (is_array($array)) {
             return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
@@ -244,6 +243,38 @@ class BaseArrayHelper
         }
 
         return $default;
+    }
+
+    /**
+     * Removes items with matching values from the array and returns the removed items.
+     *
+     * Example,
+     *
+     * ```php
+     * $array = ['Bob' => 'Dylan', 'Michael' => 'Jackson', 'Mick' => 'Jagger', 'Janet' => 'Jackson'];
+     * $removed = \yii\helpers\ArrayHelper::removeValue($array, 'Jackson');
+     * // result:
+     * // $array = ['Bob' => 'Dylan', 'Mick' => 'Jagger'];
+     * // $removed = ['Michael' => 'Jackson', 'Janet' => 'Jackson'];
+     * ```
+     *
+     * @param array $array the array where to look the value from
+     * @param string $value the value to remove from the array
+     * @return array the items that were removed from the array
+     * @since 2.0.11
+     */
+    public static function removeValue(&$array, $value)
+    {
+        $result = [];
+        if (is_array($array)) {
+            foreach ($array as $key => $val) {
+                if ($val === $value) {
+                    $result[$key] = $val;
+                    unset($array[$key]);
+                }
+            }
+        }
+        return $result;
     }
 
     /**
@@ -403,7 +434,7 @@ class BaseArrayHelper
      *
      * @param array $array
      * @param string|\Closure $name
-     * @param boolean $keepKeys whether to maintain the array keys. If false, the resulting array
+     * @param bool $keepKeys whether to maintain the array keys. If false, the resulting array
      * will be re-indexed with integers.
      * @return array the list of column values
      */
@@ -486,8 +517,8 @@ class BaseArrayHelper
      * key comparison.
      * @param string $key the key to check
      * @param array $array the array with keys to check
-     * @param boolean $caseSensitive whether the key comparison should be case-sensitive
-     * @return boolean whether the array contains the specified key
+     * @param bool $caseSensitive whether the key comparison should be case-sensitive
+     * @return bool whether the array contains the specified key
      */
     public static function keyExists($key, $array, $caseSensitive = true)
     {
@@ -513,9 +544,9 @@ class BaseArrayHelper
      * elements, a property name of the objects, or an anonymous function returning the values for comparison
      * purpose. The anonymous function signature should be: `function($item)`.
      * To sort by multiple keys, provide an array of keys here.
-     * @param integer|array $direction the sorting direction. It can be either `SORT_ASC` or `SORT_DESC`.
+     * @param int|array $direction the sorting direction. It can be either `SORT_ASC` or `SORT_DESC`.
      * When sorting by multiple keys with different sorting directions, use an array of sorting directions.
-     * @param integer|array $sortFlag the PHP sort flag. Valid values include
+     * @param int|array $sortFlag the PHP sort flag. Valid values include
      * `SORT_REGULAR`, `SORT_NUMERIC`, `SORT_STRING`, `SORT_LOCALE_STRING`, `SORT_NATURAL` and `SORT_FLAG_CASE`.
      * Please refer to [PHP manual](http://php.net/manual/en/function.sort.php)
      * for more details. When sorting by multiple keys with different sort flags, use an array of sort flags.
@@ -563,7 +594,7 @@ class BaseArrayHelper
      * If a value is an array, this method will also encode it recursively.
      * Only string values will be encoded.
      * @param array $data data to be encoded
-     * @param boolean $valuesOnly whether to encode array values only. If false,
+     * @param bool $valuesOnly whether to encode array values only. If false,
      * both the array keys and array values will be encoded.
      * @param string $charset the charset that the data is using. If not set,
      * [[\yii\base\Application::charset]] will be used.
@@ -598,7 +629,7 @@ class BaseArrayHelper
      * If a value is an array, this method will also decode it recursively.
      * Only string values will be decoded.
      * @param array $data data to be decoded
-     * @param boolean $valuesOnly whether to decode array values only. If false,
+     * @param bool $valuesOnly whether to decode array values only. If false,
      * both the array keys and array values will be decoded.
      * @return array the decoded data
      * @see http://www.php.net/manual/en/function.htmlspecialchars-decode.php
@@ -631,9 +662,9 @@ class BaseArrayHelper
      * Note that an empty array will NOT be considered associative.
      *
      * @param array $array the array being checked
-     * @param boolean $allStrings whether the array keys must be all strings in order for
+     * @param bool $allStrings whether the array keys must be all strings in order for
      * the array to be treated as associative.
-     * @return boolean whether the array is associative
+     * @return bool whether the array is associative
      */
     public static function isAssociative($array, $allStrings = true)
     {
@@ -667,9 +698,9 @@ class BaseArrayHelper
      * Note that an empty array will be considered indexed.
      *
      * @param array $array the array being checked
-     * @param boolean $consecutive whether the array keys must be a consecutive sequence
+     * @param bool $consecutive whether the array keys must be a consecutive sequence
      * in order for the array to be treated as indexed.
-     * @return boolean whether the array is associative
+     * @return bool whether the array is associative
      */
     public static function isIndexed($array, $consecutive = false)
     {
@@ -700,8 +731,8 @@ class BaseArrayHelper
      * but additionally works for objects that implement the [[\Traversable]] interface.
      * @param mixed $needle The value to look for.
      * @param array|\Traversable $haystack The set of values to search.
-     * @param boolean $strict Whether to enable strict (`===`) comparison.
-     * @return boolean `true` if `$needle` was found in `$haystack`, `false` otherwise.
+     * @param bool $strict Whether to enable strict (`===`) comparison.
+     * @return bool `true` if `$needle` was found in `$haystack`, `false` otherwise.
      * @throws InvalidParamException if `$haystack` is neither traversable nor an array.
      * @see http://php.net/manual/en/function.in-array.php
      * @since 2.0.7
@@ -729,7 +760,7 @@ class BaseArrayHelper
      * This method does the same as the PHP function [is_array()](http://php.net/manual/en/function.is-array.php)
      * but additionally works on objects that implement the [[\Traversable]] interface.
      * @param mixed $var The variable being evaluated.
-     * @return boolean whether $var is array-like
+     * @return bool whether $var is array-like
      * @see http://php.net/manual/en/function.is_array.php
      * @since 2.0.8
      */
@@ -745,9 +776,9 @@ class BaseArrayHelper
      * `$haystack`. If at least one element is missing, `false` will be returned.
      * @param array|\Traversable $needles The values that must **all** be in `$haystack`.
      * @param array|\Traversable $haystack The set of value to search.
-     * @param boolean $strict Whether to enable strict (`===`) comparison.
+     * @param bool $strict Whether to enable strict (`===`) comparison.
      * @throws InvalidParamException if `$haystack` or `$needles` is neither traversable nor an array.
-     * @return boolean `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
+     * @return bool `true` if `$needles` is a subset of `$haystack`, `false` otherwise.
      * @since 2.0.7
      */
     public static function isSubset($needles, $haystack, $strict = false)

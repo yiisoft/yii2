@@ -490,6 +490,7 @@ be referenced in your application or extension code.
 
 - [[yii\web\YiiAsset]]: It mainly includes the `yii.js` file which implements a mechanism of organizing JavaScript code
   in modules. It also provides special support for `data-method` and `data-confirm` attributes and other useful features.
+  More information about `yii.js` can be found in the [Client Scripts Section](output-client-scripts.md#yii.js).
 - [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery Bower package.
 - [[yii\bootstrap\BootstrapAsset]]: It includes the CSS file from the Twitter Bootstrap framework.
 - [[yii\bootstrap\BootstrapPluginAsset]]: It includes the JavaScript file from the Twitter Bootstrap framework for

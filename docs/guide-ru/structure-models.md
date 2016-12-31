@@ -29,7 +29,7 @@ $model->name = 'example';
 echo $model->name;
 ```
 
-Также возможно получить доступ к атрибутам как к элементам массива, спасибо поддержке [ArrayAccess](http://php.net/manual/en/class.arrayaccess.php) и [ArrayIterator](http://php.net/manual/en/class.arrayiterator.php)
+Также возможно получить доступ к атрибутам как к элементам массива, спасибо поддержке [ArrayAccess](http://php.net/manual/ru/class.arrayaccess.php) и [Traversable](http://php.net/manual/ru/class.traversable.php)
 в [[yii\base\Model]]:
 
 ```php
@@ -39,7 +39,7 @@ $model = new \app\models\ContactForm;
 $model['name'] = 'example';
 echo $model['name'];
 
-// перебор атрибутов
+// Модель является обходимой(traversable) с использованием foreach.
 foreach ($model as $name => $value) {
     echo "$name: $value\n";
 }

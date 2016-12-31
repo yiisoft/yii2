@@ -213,10 +213,45 @@ class HtmlTest extends TestCase
         $this->assertEquals('<input type="file" class="t" name="test" value="value">', Html::fileInput('test', 'value', ['class' => 't']));
     }
 
-    public function testTextarea()
+    /**
+     * @return array
+     */
+    public function textareaDataProvider()
     {
-        $this->assertEquals('<textarea name="test"></textarea>', Html::textarea('test'));
-        $this->assertEquals('<textarea class="t" name="test">value&lt;&gt;</textarea>', Html::textarea('test', 'value<>', ['class' => 't']));
+        return [
+            [
+                '<textarea name="test"></textarea>',
+                'test',
+                null,
+                []
+            ],
+            [
+                '<textarea class="t" name="test">value&lt;&gt;</textarea>',
+                'test',
+                'value<>',
+                ['class' => 't']
+            ],
+            [
+                '<textarea name="test">value&amp;lt;&amp;gt;</textarea>',
+                'test',
+                'value&lt;&gt;',
+                []
+            ],
+            [
+                '<textarea name="test">value&lt;&gt;</textarea>',
+                'test',
+                'value&lt;&gt;',
+                ['doubleEncode' => false]
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider textareaDataProvider
+     */
+    public function testTextarea($expected, $name, $value, $options)
+    {
+        $this->assertEquals($expected, Html::textarea($name, $value, $options));
     }
 
     public function testRadio()
@@ -603,6 +638,24 @@ EOD;
             ],
         ];
         $this->assertEqualsWithoutLE(str_replace('&nbsp;', ' ', $expected), Html::renderSelectOptions(['value111', 'value1'], $data, $attributes));
+
+        // Attributes for prompt (https://github.com/yiisoft/yii2/issues/7420)
+
+        $data = [
+            'value1' => 'label1',
+            'value2' => 'label2',
+        ];
+        $expected = <<<EOD
+<option class="prompt" value="-1" label="None">Please select</option>
+<option value="value1" selected>label1</option>
+<option value="value2">label2</option>
+EOD;
+        $attributes = [
+            'prompt' => [
+                'text' => 'Please select', 'options' => ['class' => 'prompt', 'value' => '-1', 'label' => 'None'],
+            ],
+        ];
+        $this->assertEqualsWithoutLE($expected, Html::renderSelectOptions(['value1'], $data, $attributes));
     }
 
     public function testRenderAttributes()

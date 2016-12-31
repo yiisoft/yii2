@@ -37,8 +37,8 @@ interface RateLimitInterface
      * Saves the number of allowed requests and the corresponding timestamp to a persistent storage.
      * @param \yii\web\Request $request the current request
      * @param \yii\base\Action $action the action to be executed
-     * @param integer $allowance the number of allowed requests remaining.
-     * @param integer $timestamp the current timestamp.
+     * @param int $allowance the number of allowed requests remaining.
+     * @param int $timestamp the current timestamp.
      */
     public function saveAllowance($request, $action, $allowance, $timestamp);
 }

@@ -46,13 +46,13 @@ class FileMutex extends Mutex
      */
     public $mutexPath = '@runtime/mutex';
     /**
-     * @var integer the permission to be set for newly created mutex files.
+     * @var int the permission to be set for newly created mutex files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
     public $fileMode;
     /**
-     * @var integer the permission to be set for newly created directories.
+     * @var int the permission to be set for newly created directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
@@ -72,9 +72,6 @@ class FileMutex extends Mutex
      */
     public function init()
     {
-        if (DIRECTORY_SEPARATOR === '\\') {
-            throw new InvalidConfigException('FileMutex does not have MS Windows operating system support.');
-        }
         $this->mutexPath = Yii::getAlias($this->mutexPath);
         if (!is_dir($this->mutexPath)) {
             FileHelper::createDirectory($this->mutexPath, $this->dirMode, true);
@@ -84,8 +81,8 @@ class FileMutex extends Mutex
     /**
      * Acquires lock by given name.
      * @param string $name of the lock to be acquired.
-     * @param integer $timeout to wait for lock to become released.
-     * @return boolean acquiring result.
+     * @param int $timeout to wait for lock to become released.
+     * @return bool acquiring result.
      */
     protected function acquireLock($name, $timeout = 0)
     {
@@ -114,7 +111,7 @@ class FileMutex extends Mutex
     /**
      * Releases lock by given name.
      * @param string $name of the lock to be released.
-     * @return boolean release result.
+     * @return bool release result.
      */
     protected function releaseLock($name)
     {
@@ -137,6 +134,6 @@ class FileMutex extends Mutex
      */
     protected function getLockFilePath($name)
     {
-        return $this->mutexPath . '/' . md5($name) . '.lock';
+        return $this->mutexPath . DIRECTORY_SEPARATOR . md5($name) . '.lock';
     }
 }

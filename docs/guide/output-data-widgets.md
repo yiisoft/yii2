@@ -37,6 +37,28 @@ echo DetailView::widget([
 ]);
 ```
 
+Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of models,
+[[yii\widgets\DetailView|DetailView]] processes just one. So most of the times there is no need for using closure since
+`$model` is the only one model for display and available in view as variable.
+
+However some cases can make using of closure useful. For example when `visible` is specified and you want to prevent
+`value` calculations in case it evaluates to `false`:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            },
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
+    ],
+]);
+```
+
 ListView <a name="list-view"></a>
 --------
 
@@ -345,8 +367,8 @@ For filtering data, the GridView needs a [model](structure-models.md) that repre
 usually taken from the filter fields in the GridView table.
 A common practice when using [active records](db-active-record.md) is to create a search Model class
 that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation
-rules for the search and provides a `search()` method that will return the data provider with an
-adjusted query that respects the search criteria.
+rules to show filter controls on the GridView table and to provide a `search()` method that will return the data 
+provider with an adjusted query that processes the search criteria.
 
 To add the search capability for the `Post` model, we can create a `PostSearch` model like the following example:
 
@@ -362,7 +384,7 @@ use yii\data\ActiveDataProvider;
 class PostSearch extends Post
 {
     public function rules()
-    {
+    { 
         // only fields in rules() are searchable
         return [
             [['id'], 'integer'],

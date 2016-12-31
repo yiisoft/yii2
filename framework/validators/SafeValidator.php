@@ -18,6 +18,8 @@ namespace yii\validators;
  * does not have a validation rule associated with it - for instance, due to no validation being performed, in which case, you use this class
  * as a validation rule for that property. Although it has no functionality, it allows Yii to determine that the property is safe to copy.
  *
+ * > Note: [[when]] property is not supported by SafeValidator.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

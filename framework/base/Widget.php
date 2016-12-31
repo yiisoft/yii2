@@ -13,6 +13,8 @@ use ReflectionClass;
 /**
  * Widget is the base class for widgets.
  *
+ * For more details and usage information on Widget, see the [guide article on widgets](guide:structure-widgets).
+ *
  * @property string $id ID of the widget.
  * @property \yii\web\View $view The view object that can be used to render views or view files. Note that the
  * type of this property differs in getter and setter. See [[getView()]] and [[setView()]] for details.
@@ -25,7 +27,7 @@ use ReflectionClass;
 class Widget extends Component implements ViewContextInterface
 {
     /**
-     * @var integer a counter used to generate [[id]] for widgets.
+     * @var int a counter used to generate [[id]] for widgets.
      * @internal
      */
     public static $counter = 0;
@@ -115,7 +117,7 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Returns the ID of the widget.
-     * @param boolean $autoGenerate whether to generate an ID if it is not set previously
+     * @param bool $autoGenerate whether to generate an ID if it is not set previously
      * @return string ID of the widget.
      */
     public function getId($autoGenerate = true)
