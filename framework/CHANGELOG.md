@@ -89,6 +89,7 @@ Yii Framework 2 Change Log
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 
 
 2.0.10 October 20, 2016
