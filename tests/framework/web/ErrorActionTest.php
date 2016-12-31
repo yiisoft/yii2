@@ -33,9 +33,9 @@ class ErrorActionTest extends TestCase
         return new TestController('test', Yii::$app, ['layout' => false, 'actionConfig' => $actionConfig]);
     }
 
-    public function testGeneralException()
+    public function testYiiException()
     {
-        Yii::$app->getErrorHandler()->exception = new InvalidConfigException('This message will not be shown to user');
+        Yii::$app->getErrorHandler()->exception = new InvalidConfigException('This message will not be shown to the user');
 
         $this->assertEquals('Name: Invalid Configuration
 Message: An internal server error occurred.
@@ -56,6 +56,29 @@ Exception: yii\base\UserException', $this->getController()->runAction('error'));
         $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 
         $this->assertEquals('Not Found (#404): Page not found.', $this->getController()->runAction('error'));
+    }
+
+    public function testGenericException()
+    {
+        Yii::$app->getErrorHandler()->exception = new \InvalidArgumentException('This message will not be shown to the user');
+
+        $this->assertEquals('Name: Error
+Message: An internal server error occurred.
+Exception: InvalidArgumentException', $this->getController()->runAction('error'));
+    }
+
+    public function testGenericExceptionCustomNameAndMessage()
+    {
+        Yii::$app->getErrorHandler()->exception = new \InvalidArgumentException('This message will not be shown to the user');
+
+        $controller = $this->getController([
+            'defaultName' => 'Oops...',
+            'defaultMessage' => 'The system is drunk'
+        ]);
+
+        $this->assertEquals('Name: Oops...
+Message: The system is drunk
+Exception: InvalidArgumentException', $controller->runAction('error'));
     }
 
     public function testNoExceptionInHandler()
