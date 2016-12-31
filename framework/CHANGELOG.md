@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.12
+------
+
+- Bug #13277: Fixed invalid parsing of `--` ("End of Options" special argument) in CLI (rugabarbo)
+
 2.0.11 under development
 ------------------------
 
