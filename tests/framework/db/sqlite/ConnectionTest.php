@@ -96,7 +96,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         }
     }
 
-    public function testMasterSlaveRandomization()
+    public function testMastersShuffled()
     {
         $mastersCount = 2;
         $slavesCount = 2;
@@ -104,31 +104,41 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $nodesCount = $mastersCount + $slavesCount;
 
-        foreach ([true, false] as $randomize) {
-            $hit_slaves = $hit_masters = [];
+        $hit_slaves = $hit_masters = [];
 
-            for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
-                $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
-                $db->shuffleMasters = $randomize;
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+            $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
+            $db->shuffleMasters = true;
 
-                $hit_slaves[$db->getSlave()->dsn] = true;
-                $hit_masters[$db->getMaster()->dsn] = true;
-
-                // everything hit already?
-                if (count($hit_slaves) === $slavesCount && count($hit_masters) === $mastersCount) {
-                    break;
-                }
-            }
-
-            // slaves are always random
-            $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
-
-            if ($randomize) {
-                $this->assertEquals($mastersCount, count($hit_masters), 'all masters hit');
-            } else {
-                $this->assertEquals(1, count($hit_masters));
-            }
+            $hit_slaves[$db->getSlave()->dsn] = true;
+            $hit_masters[$db->getMaster()->dsn] = true;
         }
+
+        $this->assertEquals($mastersCount, count($hit_masters), 'all masters hit');
+        $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
+    }
+
+    public function testMastersSequential()
+    {
+        $mastersCount = 2;
+        $slavesCount = 2;
+        $retryPerNode = 10;
+
+        $nodesCount = $mastersCount + $slavesCount;
+
+        $hit_slaves = $hit_masters = [];
+
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+            $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
+            $db->shuffleMasters = false;
+
+            $hit_slaves[$db->getSlave()->dsn] = true;
+            $hit_masters[$db->getMaster()->dsn] = true;
+        }
+
+        $this->assertEquals(1, count($hit_masters), 'same master hit');
+        // slaves are always random
+        $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
     }
 
     /**
