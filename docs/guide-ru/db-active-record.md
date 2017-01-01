@@ -644,8 +644,15 @@ try {
 } catch(\Exception $e) {
     $transaction->rollBack();
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
+    throw $e;
 }
 ```
+
+> Note: в коде выше ради совместимости с PHP 5.x и PHP 7.x использованы два блока catch. 
+> `\Exception` реализует интерфейс [`\Throwable` interface](http://php.net/manual/ru/class.throwable.php)
+> начиная с PHP 7.0. Если вы используете только PHP 7 и новее, можете пропустить блок с `\Exception`.
 
 Второй способ заключается в том, чтобы перечислить операции с базой данных, которые требуют тразнакционного выполнения,
 в методе [[yii\db\ActiveRecord::transactions()]]. Например:
