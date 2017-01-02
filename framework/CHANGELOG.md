@@ -91,6 +91,10 @@ Yii Framework 2 Change Log
 - Enh #13268: Added logging of memory usage (bashkarev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
+- Enh #13219:  Enhancements for `yii\db\Connection` (Vovan-VE)
+  - Added `shuffleMasters` option which adds ability to disable shuffling of masters connections.
+  - Added `getMaster()` getter and `master` property for getting currently active master connection.
+  - Extracted `openFromPoolSequentially()` protected method from `openFromPool()` protected method.
 
 
 2.0.10 October 20, 2016

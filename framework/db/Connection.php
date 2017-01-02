@@ -120,9 +120,10 @@ use yii\caching\Cache;
  * read-only.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
- * @property Connection $slave The currently active slave connection. Null is returned if there is slave
+ * @property Connection $master The currently active master connection. `null` is returned if there is no master
+ * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
- * @property PDO $slavePdo The PDO instance for the currently active slave connection. Null is returned if no
+ * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if no
  * slave connection is available and `$fallbackToMaster` is false. This property is read-only.
  * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
  * property is read-only.
@@ -346,6 +347,7 @@ class Connection extends Component
      * Note that when this property is not empty, the connection setting (e.g. "dsn", "username") of this object will
      * be ignored.
      * @see masterConfig
+     * @see shuffleMasters
      */
     public $masters = [];
     /**
@@ -364,6 +366,12 @@ class Connection extends Component
      * ```
      */
     public $masterConfig = [];
+    /**
+     * @var bool whether to shuffle [[masters]] before getting one.
+     * @since 2.0.11
+     * @see masters
+     */
+    public $shuffleMasters = true;
 
     /**
      * @var Transaction the currently active transaction
@@ -377,6 +385,10 @@ class Connection extends Component
      * @var string driver name
      */
     private $_driverName;
+    /**
+     * @var Connection the currently active master connection
+     */
+    private $_master = false;
     /**
      * @var Connection the currently active slave connection
      */
@@ -531,7 +543,7 @@ class Connection extends Component
         }
 
         if (!empty($this->masters)) {
-            $db = $this->openFromPool($this->masters, $this->masterConfig);
+            $db = $this->getMaster();
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
@@ -562,6 +574,15 @@ class Connection extends Component
      */
     public function close()
     {
+        if ($this->_master) {
+            if ($this->pdo === $this->_master->pdo) {
+                $this->pdo = null;
+            }
+
+            $this->_master->close();
+            $this->_master = null;
+        }
+
         if ($this->pdo !== null) {
             Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
@@ -851,7 +872,7 @@ class Connection extends Component
      * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method.
      * @param bool $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
-     * @return PDO the PDO instance for the currently active slave connection. Null is returned if no slave connection
+     * @return PDO the PDO instance for the currently active slave connection. `null` is returned if no slave connection
      * is available and `$fallbackToMaster` is false.
      */
     public function getSlavePdo($fallbackToMaster = true)
@@ -877,9 +898,9 @@ class Connection extends Component
 
     /**
      * Returns the currently active slave connection.
-     * If this method is called the first time, it will try to open a slave connection when [[enableSlaves]] is true.
+     * If this method is called for the first time, it will try to open a slave connection when [[enableSlaves]] is true.
      * @param bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
-     * @return Connection the currently active slave connection. Null is returned if there is slave available and
+     * @return Connection the currently active slave connection. `null` is returned if there is no slave available and
      * `$fallbackToMaster` is false.
      */
     public function getSlave($fallbackToMaster = true)
@@ -893,6 +914,23 @@ class Connection extends Component
         }
 
         return $this->_slave === null && $fallbackToMaster ? $this : $this->_slave;
+    }
+
+    /**
+     * Returns the currently active master connection.
+     * If this method is called for the first time, it will try to open a master connection.
+     * @return Connection the currently active master connection. `null` is returned if there is no master available.
+     * @since 2.0.11
+     */
+    public function getMaster()
+    {
+        if ($this->_master === false) {
+            $this->_master = ($this->shuffleMasters)
+                ? $this->openFromPool($this->masters, $this->masterConfig)
+                : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
+        }
+
+        return $this->_master;
     }
 
     /**
@@ -923,12 +961,29 @@ class Connection extends Component
     /**
      * Opens the connection to a server in the pool.
      * This method implements the load balancing among the given list of the servers.
+     * Connections will be tried in random order.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
-     * @return Connection the opened DB connection, or null if no server is available
+     * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      */
     protected function openFromPool(array $pool, array $sharedConfig)
+    {
+        shuffle($pool);
+        return $this->openFromPoolSequentially($pool, $sharedConfig);
+    }
+
+    /**
+     * Opens the connection to a server in the pool.
+     * This method implements the load balancing among the given list of the servers.
+     * Connections will be tried in sequential order.
+     * @param array $pool the list of connection configurations in the server pool
+     * @param array $sharedConfig the configuration common to those given in `$pool`.
+     * @return Connection the opened DB connection, or `null` if no server is available
+     * @throws InvalidConfigException if a configuration does not specify "dsn"
+     * @since 2.0.11
+     */
+    protected function openFromPoolSequentially(array $pool, array $sharedConfig)
     {
         if (empty($pool)) {
             return null;
@@ -939,8 +994,6 @@ class Connection extends Component
         }
 
         $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
-
-        shuffle($pool);
 
         foreach ($pool as $config) {
             $config = array_merge($sharedConfig, $config);
