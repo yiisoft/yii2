@@ -85,6 +85,12 @@ class UniqueValidator extends Validator
      */
     public $comboNotUnique;
 
+    /**
+     * @var string and|or define how target attributes are related
+     * @since 2.0.11
+     */
+    public $combineType = 'and';
+
 
     /**
      * @inheritdoc
@@ -190,8 +196,11 @@ class UniqueValidator extends Validator
     private function prepareQuery($targetClass, $conditions)
     {
         $query = $targetClass::find();
-        $query->andWhere($conditions);
-
+        if($this->combineType == 'or') {
+            $query->orWhere($conditions);
+        } else {
+            $query->andWhere($conditions);
+        }
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);
         } elseif ($this->filter !== null) {
@@ -220,7 +229,7 @@ class UniqueValidator extends Validator
         if (is_array($targetAttribute)) {
             $conditions = [];
             foreach ($targetAttribute as $k => $v) {
-                $conditions[$v] = is_int($k) ? $model->$v : $model->$k;
+                $conditions[$v] = is_int($k) ? $model->$attribute : $model->$k;
             }
         } else {
             $conditions = [$targetAttribute => $model->$attribute];
