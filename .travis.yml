@@ -139,6 +139,8 @@ before_script:
 
 
 script:
+  # ensure no files contain UTF-8 byte order mark
+  - if ! grep -rlI $'\xEF\xBB\xBF' framework/ ; then echo "no utf8 BOM found"; else echo "found utf8 BOM in some files. See above."; exit 1; fi
   # validate composer.json
   - composer validate --no-check-lock
   - cd framework && composer validate --no-check-lock && cd ..
