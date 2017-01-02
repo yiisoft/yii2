@@ -8,6 +8,8 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
@@ -480,10 +482,15 @@ class FixtureController extends Controller
 
     /**
      * Returns fixture path that determined on fixtures namespace.
+     * @throws InvalidConfigException if fixture namespace is invalid
      * @return string fixture path
      */
     private function getFixturePath()
     {
-        return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
+        try{
+            return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
+        } catch (InvalidParamException $e) {
+            throw new InvalidConfigException('Invalid fixture namespace: ' . $this->namespace . '. Please, check your FixtureController::namespace config.');
+        }
     }
 }
