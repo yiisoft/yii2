@@ -87,6 +87,8 @@ matrix:
 
 services:
   - memcached
+  - mysql
+  - postgresql
 
 # cache vendor dirs
 cache:
