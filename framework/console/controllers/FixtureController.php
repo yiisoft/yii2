@@ -487,10 +487,10 @@ class FixtureController extends Controller
      */
     private function getFixturePath()
     {
-        try{
+        try {
             return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
         } catch (InvalidParamException $e) {
-            throw new InvalidConfigException('Invalid fixture namespace: ' . $this->namespace . '. Please, check your FixtureController::namespace config.');
+            throw new InvalidConfigException('Invalid fixture namespace: "' . $this->namespace . '". Please, check your FixtureController::namespace parameter');
         }
     }
 }
