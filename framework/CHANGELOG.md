@@ -96,6 +96,7 @@ Yii Framework 2 Change Log
   - Added `getMaster()` getter and `master` property for getting currently active master connection.
   - Extracted `openFromPoolSequentially()` protected method from `openFromPool()` protected method.
 
+- Enh #13319: Remove label for hidden active field (developeruz)
 
 2.0.10 October 20, 2016
 -----------------------
