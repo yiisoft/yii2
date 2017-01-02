@@ -454,6 +454,9 @@ SQL;
             return false;
         }
         foreach ($columns as $column) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+                $column = array_change_key_case($column, CASE_LOWER);
+            }
             $column = $this->loadColumnSchema($column);
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {

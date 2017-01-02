@@ -16,7 +16,7 @@
     "sinon": "^1.17.6"
   },
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha tests/js/tests/*.test.js"
+    "test": "./node_modules/mocha/bin/mocha tests/js/tests/*.test.js --timeout 30000"
   },
   "repository": {
     "type": "git",
