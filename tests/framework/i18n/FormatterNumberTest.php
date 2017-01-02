@@ -310,6 +310,45 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
+     * https://github.com/yiisoft/yii2/issues/12345
+     */
+    public function testIntlCurrencyFraction()
+    {
+        $this->formatter->numberFormatterOptions = [
+            NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            NumberFormatter::MAX_FRACTION_DIGITS => 0,
+        ];
+        $this->formatter->locale = 'de-DE';
+        $this->formatter->currencyCode = null;
+        $this->assertSame('123 €', $this->formatter->asCurrency('123'));
+        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->formatter->currencyCode = 'USD';
+        $this->assertSame('123 $', $this->formatter->asCurrency('123'));
+        $this->assertSame('123 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->formatter->currencyCode = 'EUR';
+        $this->assertSame('123 €', $this->formatter->asCurrency('123'));
+        $this->assertSame('123 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+
+        $this->formatter->locale = 'ru-RU';
+        $this->formatter->currencyCode = null;
+        if (version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=')) {
+            $this->assertSame('123 ₽', $this->formatter->asCurrency('123'));
+        } else {
+            $this->assertSame('123 руб.', $this->formatter->asCurrency('123'));
+        }
+        $this->formatter->numberFormatterSymbols = [
+            NumberFormatter::CURRENCY_SYMBOL => '&#8381;',
+        ];
+        $this->assertSame('123 &#8381;', $this->formatter->asCurrency('123'));
+
+        $this->formatter->numberFormatterSymbols = [];
+        $this->formatter->currencyCode = 'RUB';
+        $this->assertSame('123 руб.', $this->formatter->asCurrency('123'));
+    }
+
+    /**
      * https://github.com/yiisoft/yii2/pull/5261
      */
     public function testIntlIssue5261()
