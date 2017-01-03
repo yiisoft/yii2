@@ -86,7 +86,7 @@ class ExistValidator extends Validator
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
 
         if (is_array($targetAttribute)) {
-            if ($this->allowArray) {
+            if (!$this->allowArray) {
                 throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
             }
             $params = [];
