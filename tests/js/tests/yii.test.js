@@ -1331,7 +1331,7 @@ describe('yii', function () {
         });
     });
 
-    describe('initDataMethods', function () {
+    describe('data methods', function () {
         var windowConfirmStub;
         var yiiConfirmSpy;
         var yiiHandleActionStub;
