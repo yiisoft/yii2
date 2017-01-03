@@ -1055,17 +1055,19 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
+            $currency = $currency ?: $this->currencyCode;
+            // currency code must be set before fraction digits
+            // http://php.net/manual/en/numberformatter.formatcurrency.php#114376
+            if ($currency && !isset($textOptions[NumberFormatter::CURRENCY_CODE])) {
+                $textOptions[NumberFormatter::CURRENCY_CODE] = $currency;
+            }
             $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY, null, $options, $textOptions);
             if ($currency === null) {
-                if ($this->currencyCode === null) {
-                    if (($result = $formatter->format($value)) === false) {
-                        throw new InvalidParamException('Formatting currency value failed: ' . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
-                    }
-                    return $result;
-                }
-                $currency = $this->currencyCode;
+                $result = $formatter->format($value);
+            } else {
+                $result = $formatter->formatCurrency($value, $currency);
             }
-            if (($result = $formatter->formatCurrency($value, $currency)) === false) {
+            if ($result === false) {
                 throw new InvalidParamException('Formatting currency value failed: ' . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
             }
             return $result;
