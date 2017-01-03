@@ -151,7 +151,7 @@ window.yii = (function ($) {
         handleAction: function ($e, event) {
             var $form = $e.attr('data-form') ? $('#' + $e.attr('data-form')) : $e.closest('form'),
                 method = !$e.data('method') && $form ? $form.attr('method') : $e.data('method'),
-                action = $e.attr('href'),
+                action = $e.attr('href') || $e.data('href'),
                 params = $e.data('params'),
                 pjax = $e.data('pjax') || 0,
                 usePjax = pjax !== 0 && $.support.pjax,
@@ -372,6 +372,17 @@ window.yii = (function ($) {
         // handle data-confirm and data-method for clickable and changeable elements
         $(document).on('click.yii', pub.clickableSelector, handler)
             .on('change.yii', pub.changeableSelector, handler);
+            
+        var selectors = pub.clickableSelector.split(',');
+        $.each(selectors, function(index, item) {
+            selectors[index] = item + "[data-method]";
+        })
+
+        $(selectors.join()).each(function(index, item) {
+            $(item).attr('data-href', $(item).attr('href'));
+            $(item).removeAttr('href');
+            $(item).css('cursor', 'pointer');
+        });    
     }
 
     function isReloadable(url) {
