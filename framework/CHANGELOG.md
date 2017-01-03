@@ -43,7 +43,6 @@ Yii Framework 2 Change Log
 - Bug #13229: Fix fetching table schema for `pgsql` when `PDO::ATTR_CASE` is set (klimov-paul)
 - Bug #13231: Fixed `destroy` method in `yii.gridView.js` which did not work as expected (arogachev)
 - Bug #13232: Event handlers were not detached with changed selector in `yii.gridView.js` (arogachev)
-- Bug: #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
 - Bug #13300: Allow pjax with "data-pjax" with no value in `yii.js` (arogachev)
 - Bug #13307: Preventing of race conditions in script filter in `yii.js` works incorrectly (arogachev)
 - Bug #13310: Handle relative and absolute URLs coincidence in CSS filter in `yii.js` (arogachev)
