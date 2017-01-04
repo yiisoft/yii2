@@ -53,7 +53,6 @@ class UniqueValidator extends Validator
      * of the attribute currently being validated. You may use an array to validate the uniqueness
      * of multiple columns at the same time. The array values are the attributes that will be
      * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
-     * If the key and the value are the same, you can just specify the value.
      */
     public $targetAttribute;
     /**
@@ -215,7 +214,6 @@ class UniqueValidator extends Validator
      * should be used to validate the uniqueness of the current attribute value. You may use an array to validate
      * the uniqueness of multiple columns at the same time. The array values are the attributes that will be
      * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
-     * If the key and the value are the same, you can just specify the value.
      * @param Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
 
