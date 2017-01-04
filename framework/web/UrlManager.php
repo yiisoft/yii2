@@ -32,6 +32,9 @@ use yii\helpers\Url;
  * ]
  * ```
  *
+ * Rules are classes implementing the [[UrlRuleInterface]], by default that is [[UrlRule]].
+ * For nesting rules, there is also a [[GroupUrlRule]] class.
+ *
  * For more details and usage information on UrlManager, see the [guide article on routing](guide:runtime-routing).
  *
  * @property string $baseUrl The base URL that is used by [[createUrl()]] to prepend to created URLs.
@@ -542,7 +545,7 @@ class UrlManager extends Component
 
     /**
      * Returns the host info that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
-     * @return string the host info (e.g. "http://www.example.com") that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
+     * @return string the host info (e.g. `http://www.example.com`) that is used by [[createAbsoluteUrl()]] to prepend to created URLs.
      * @throws InvalidConfigException if running in console application and [[hostInfo]] is not configured.
      */
     public function getHostInfo()

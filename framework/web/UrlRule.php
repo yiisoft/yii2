@@ -67,7 +67,7 @@ class UrlRule extends Object implements UrlRuleInterface
     /**
      * @var string the URL suffix used for this rule.
      * For example, ".html" can be used so that the URL looks like pointing to a static HTML page.
-     * If not, the value of [[UrlManager::suffix]] will be used.
+     * If not set, the value of [[UrlManager::suffix]] will be used.
      */
     public $suffix;
     /**
