@@ -196,7 +196,7 @@ class UniqueValidator extends Validator
     private function prepareQuery($targetClass, $conditions)
     {
         $query = $targetClass::find();
-        if($this->combineType == 'or') {
+        if ($this->combineType === 'or') {
             $query->orWhere($conditions);
         } else {
             $query->andWhere($conditions);
