@@ -149,7 +149,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     {
         $val = new UniqueValidator([
             'targetClass' => OrderItem::className(),
-            'targetAttribute' => ['order_id', 'item_id'],
+            'targetAttribute' => ['order_id', 'item_id' => 'item_id'],
         ]);
         // validate old record
         /** @var OrderItem $m */

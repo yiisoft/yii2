@@ -89,8 +89,7 @@ class UniqueValidator extends Validator
      * @var string and|or define how target attributes are related
      * @since 2.0.11
      */
-    public $combineType = 'and';
-
+    public $targetAttributeJunction = 'and';
 
     /**
      * @inheritdoc
@@ -121,13 +120,15 @@ class UniqueValidator extends Validator
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
-        $conditions = $this->prepareConditions($targetAttribute, $model, $attribute);
+        $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
+        $conditions[] = $this->targetAttributeJunction == 'or' ? 'or' : 'and';
 
-        foreach ($conditions as $value) {
+        foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
                 $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
                 return;
             }
+            $conditions[] = [$key => $value];
         }
 
         if ($this->modelExists($targetClass, $conditions, $model)) {
@@ -196,11 +197,7 @@ class UniqueValidator extends Validator
     private function prepareQuery($targetClass, $conditions)
     {
         $query = $targetClass::find();
-        if ($this->combineType === 'or') {
-            $query->orWhere($conditions);
-        } else {
-            $query->andWhere($conditions);
-        }
+        $query->andWhere($conditions);
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);
         } elseif ($this->filter !== null) {
