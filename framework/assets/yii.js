@@ -316,8 +316,6 @@ window.yii = (function ($) {
             initDataMethods();
         },
 
-        // Utility functions
-
         /**
          * Returns the URL of the current page without params and trailing slash. Separated and made public for testing.
          * @returns {string}
@@ -366,10 +364,10 @@ window.yii = (function ($) {
          * - object - script is currently loading.
          *
          * In case of a value being an object the properties are:
-         * - `xhrList` - represents a queue of XHR requests sent to the same url (related with this script) in the same
+         * - `xhrList` - represents a queue of XHR requests sent to the same URL (related with this script) in the same
          * small period of time.
          * - `xhrDone` - boolean, acts like a locking mechanism. When one of the XHR requests in the queue is
-         * successfully completed, it will abort the rest of concurrent requests to the same url until cleanup is done
+         * successfully completed, it will abort the rest of concurrent requests to the same URL until cleanup is done
          * to prevent possible errors and race conditions.
          * @type {{}}
          */
@@ -482,8 +480,6 @@ window.yii = (function ($) {
             .on('change.yii', pub.changeableSelector, handler);
     }
 
-    // Utility functions
-
     function isReloadableAsset(url) {
         for (var i = 0; i < pub.reloadableScripts.length; i++) {
             var rule = getAbsoluteUrl(pub.reloadableScripts[i]);
@@ -502,8 +498,8 @@ window.yii = (function ($) {
     }
 
     /**
-     * Returns absolute url based on the given url
-     * @param {string} url Initial url
+     * Returns absolute URL based on the given URL
+     * @param {string} url Initial URL
      * @returns {string}
      */
     function getAbsoluteUrl(url) {
