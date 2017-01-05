@@ -378,7 +378,7 @@ Say we work on API application and have:
 - `app\components\Request` class that extends `yii\web\Request` and provides additional functionality
 - `app\components\Response` class that extends `yii\web\Response` and should have `format` property 
   set to `json` on creation
-- `app\storage\FileStorage` and `app\storage\DocumentsReader` classes the implement some logic on
+- `app\storage\FileStorage` and `app\storage\DocumentsReader` classes that implement some logic on
   working with documents that are located in some file storage:
   
   ```php
@@ -430,7 +430,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 ```
 
 > Tip: Container may be configured in declarative style using application configuration since version 2.0.11. 
-Check out the [Application Configurations](concept-service-locator.md#application-configurations) subsection of
+Check out the [Application Configurations](concept-configurations.md#application-configurations) subsection of
 the [Configurations](concept-configurations.md) guide article.
 
 Everything works, but in case we need to create create `DocumentWriter` class, 
@@ -512,7 +512,7 @@ Because dependencies are needed when new objects are being created, their regist
 as early as possible. The following are the recommended practices:
 
 * If you are the developer of an application, you can register your dependencies using application configuration.
-  Please, read the [Application Configurations](concept-service-locator.md#application-configurations) subsection of 
+  Please, read the [Application Configurations](concept-configurations.md#application-configurations) subsection of 
   the [Configurations](concept-configurations.md) guide article.
 * If you are the developer of a redistributable [extension](structure-extensions.md), you can register dependencies
   in the bootstrapping class of the extension.
