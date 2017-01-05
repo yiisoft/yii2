@@ -130,7 +130,7 @@ $config = [
 
 アプリケーションの `components` プロパティ構成の詳細については、 [アプリケーション](structure-applications.md) セクションと [サービスロケータ](concept-service-locator.md) セクションにあります。
 
-バージョン 2.0.11 以降では、アプリケーション構成は `container` プロパティを使って [依存注入コンテナ](concept-di-container.md) を構成することをサポートしています。
+バージョン 2.0.11 以降では、アプリケーション構成で `container` プロパティを使って [依存注入コンテナ](concept-di-container.md) を構成することがサポートされています。
 
 ```php
 $config = [
@@ -149,7 +149,7 @@ $config = [
 ```
 
 `definitions` と `singletons` の構成情報配列に使用できる値とその実例についてさらに知るためには、
-[依存注入コンテナ](concept-di-container.md)の記事の [実際の先進的な使用方法](concept-di-container.md#advanced-practical-usage) の節を読んでください。
+[依存注入コンテナ](concept-di-container.md)の記事の [高度な実際の使用方法](concept-di-container.md#advanced-practical-usage) の節を読んでください。
 
 ### ウィジェットの構成 <span id="widget-configurations"></span>
 

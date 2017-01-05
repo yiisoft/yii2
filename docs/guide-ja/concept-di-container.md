@@ -19,9 +19,9 @@ Yii は [[yii\di\Container]] クラスを通して DI コンテナの機能を�
 
 ### コンストラクタ·インジェクション <span id="constructor-injection"></span>
 
-DI コンテナは、コンストラクタパラメータの型ヒントの助けを借りた、コンストラクタ·インジェクションをサポートしています。
+DI コンテナは、コンストラクタのパラメータの型ヒントの助けを借りた、コンストラクタ·インジェクションをサポートしています。
 型ヒントは、コンテナが新しいオブジェクトの作成に使用されるさい、オブジェクトがどういうクラスやインタフェースに依存しているかをコンテナに教えます。
-コンテナは、依存クラスやインタフェースのインスタンスを取得することを試み、コンストラクタを通して、新しいオブジェクトにそれらの注入します。
+コンテナは、依存クラスやインタフェースのインスタンスを取得することを試み、コンストラクタを通して、新しいオブジェクトにそれらを注入します。
 たとえば
 
 ```php
@@ -61,8 +61,8 @@ class MyClass extends \yii\base\Component
 }
 ```
 
-あなた自身で `\my\heavy\Dependency` のインスタンスを渡すか、次のように
-[[yii\di\Container::invoke()]] を使えば、このメソッドを呼ぶことが出来ます。
+このメソッドを呼ぶためには、あなた自身で `\my\heavy\Dependency` のインスタンスを渡すか、または、次のように
+[[yii\di\Container::invoke()]] を使います。
 
 ```php
 $obj = new MyClass(/*...*/);
@@ -73,7 +73,7 @@ Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something 
 ### セッター/プロパティ·インジェクション <span id="setter-and-property-injection"></span>
 
 セッター/プロパティ·インジェクションは、[構成情報](concept-configurations.md) を通してサポートされます。
-依存がそれに対応するセッターまたはプロパティを通して注入される場合、依存関係を登録するときや、新しいオブジェクトを作成するときに、依存注入のためにコンテナが使用する構成情報を提供することが出来ます。
+依存を登録するときや、新しいオブジェクトを作成するときに、対応するセッターまたはプロパティを通しての依存注入に使用される構成情報を、コンテナに提供することが出来ます。
 たとえば
 
 ```php
@@ -110,7 +110,7 @@ $container->get('Foo', [], [
 
 この場合、コンテナは、登録された PHP のコーラブルを使用して、クラスの新しいインスタンスを構築します。
 [[yii\di\Container::get()]] が呼ばれるたびに、対応するコーラブルが起動されます。
-このコーラブルが、依存関係を解決し、新しく作成されたオブジェクトに適切に依存を注入する役目を果たします。
+このコーラブルが、依存を解決し、新しく作成されたオブジェクトに適切に依存を注入する役目を果たします。
 たとえば
 
 ```php
@@ -145,10 +145,10 @@ $foo = $container->get('Foo');
 このようにすれば、`Foo` クラスを構成しようとする人は、`Foo` がどのように構築されるかを気にする必要はもうなくなります。
 
 
-依存関係の登録 <span id="registering-dependencies"></span>
---------------
+依存の登録 <span id="registering-dependencies"></span>
+----------
 
-あなたは、[[yii\di\Container::set()]] を使って依存関係を登録することができます。
+[[yii\di\Container::set()]] を使って依存を登録することができます。
 登録には依存の名前だけでなく、依存の定義が必要です。
 依存の名前は、クラス名、インタフェース名、エイリアス名を指定することができます。
 依存の定義には、クラス名、構成情報配列、PHPのコーラブルを指定できます。
@@ -213,20 +213,20 @@ $container->setSingleton('yii\db\Connection', [
 ```
 
 
-依存関係の解決 <span id="resolving-dependencies"></span>
+依存の解決 <span id="resolving-dependencies"></span>
 --------------
 
-依存関係を登録すると、新しいオブジェクトを作成するのに DI コンテナを使用することができます。
+依存を登録すると、新しいオブジェクトを作成するのに DI コンテナを使用することができます。
 そして、コンテナが自動的に依存をインスタンス化し、新しく作成されたオブジェクトに注入して、
-依存関係を解決します。依存関係の解決は再帰的に行われます。つまり、ある依存が他の依存関係を持っている場合、
-それらの依存関係も自動的に解決されます。
+依存を解決します。依存の解決は再帰的に行われます。つまり、ある依存が他の依存を持っている場合、
+それらの依存も自動的に解決されます。
 
-[[yii\di\Container::get()]] を使って、新しいオブジェクトを作成することができます。
-このメソッドは、クラス名、インタフェース名、エイリアス名で指定できる依存の名前を受け取ります。
-依存の名前は、 `set()` や `setSingleton()` を介して登録されている場合もあれば、登録されていない場合もあります。
-オプションで、クラスのコンストラクタのパラメータのリストや、新しく作成されたオブジェクトを設定するための
-[設定情報](concept-configurations.md) を渡すことができます。
-たとえば
+[[yii\di\Container::get()|get()]] を使って、オブジェクトのインスタンスを取得または作成することができます。
+このメソッドは依存の名前を引数として取ります、依存の名前は、クラス名、インタフェース名、あるいは、エイリアス名で指定できます。
+依存の名前は、 [[yii\di\Container::set()|set()]] または [[yii\di\Container::setSingleton()|setSingleton()]] を介して登録されている場合もあります。
+オプションで、クラスのコンストラクタのパラメータのリストや、[設定情報](concept-configurations.md) を渡して、新しく作成されるオブジェクトを構成することも出来ます。
+
+たとえば、
 
 ```php
 // "db" は事前に登録されたエイリアス名
@@ -238,12 +238,12 @@ $engine = $container->get('app\components\SearchEngine', [$apiKey, $apiSecret], 
 
 見えないところで、DIコンテナは、単に新しいオブジェクトを作成するよりもはるかに多くの作業を行います。
 コンテナは、最初にクラスのコンストラクタを調査し、依存クラスまたはインタフェースの名前を見つけると、
-自動的にそれらの依存関係を再帰的に解決します。
+自動的にそれらの依存を再帰的に解決します。
 
 次のコードでより洗練された例を示します。 `UserLister` クラスは `UserFinderInterface`
 インタフェースを実装するオブジェクトに依存します。 `UserFinder` クラスはこのインターフェイスを実装していて、かつ、
-`Connection` オブジェクトに依存します。これらのすべての依存関係は、クラスのコンストラクタのパラメータの型ヒントによって宣言されています。
-プロパティ依存性の登録をすれば、DI コンテナは自動的にこれらの依存関係を解決し、単純に `get('userLister')`
+`Connection` オブジェクトに依存します。これらのすべての依存は、クラスのコンストラクタのパラメータの型ヒントによって宣言されています。
+プロパティ依存性の登録をすれば、DI コンテナは自動的にこれらの依存を解決し、単純に `get('userLister')`
 を呼び出すだけで新しい `UserLister` インスタンスを作成できます。
 
 ```php
@@ -303,17 +303,17 @@ $lister = new UserLister($finder);
 ```
 
 
-実際の使いかた <span id="practical-usage"></span>
+実際の使用方法 <span id="practical-usage"></span>
 --------------
 
 あなたのアプリケーションの [エントリスクリプト](structure-entry-scripts.md) で `Yii.php` ファイルをインクルードするとき、
 Yii は DI コンテナを作成します。この DI コンテナは [[Yii::$container]] を介してアクセス可能です。 [[Yii::createObject()]] を呼び出したとき、
-このメソッドは実際には、新しいオブジェクトを作成ために、コンテナの [[yii\di\Container::get()|get()]] メソッドを呼び出しています。
-前述のとおり、DI コンテナは(もしあれば)自動的に依存関係を解決し、新しく作成されたオブジェクトにそれらを注入します。
-Yii は、新しいオブジェクトを作成するさい、そのコアコードのほとんどで [[Yii::createObject()]] を使用しているため、これは、
-[[Yii::$container]] を扱えばグローバルにオブジェクトをカスタマイズすることができることを意味しています。
+このメソッドは実際にはコンテナの [[yii\di\Container::get()|get()]] メソッドを呼び出して新しいオブジェクトを作成します。
+前述のとおり、DI コンテナは(もしあれば)自動的に依存を解決し、取得されたオブジェクトにそれらを注入します。
+Yii は、新しいオブジェクトを作成するコアコードのほとんどにおいて [[Yii::createObject()]] を使用しています。このことは、
+[[Yii::$container]] を操作することでグローバルにオブジェクトをカスタマイズすることができるということを意味しています。
 
-たとえば、 [[yii\widgets\LinkPager]] のページネーションボタンのデフォルト個数をグローバルにカスタマイズすることができます:
+例として、 [[yii\widgets\LinkPager]] のページネーションボタンのデフォルト個数をグローバルにカスタマイズしてみましょう。
 
 ```php
 \Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
@@ -334,9 +334,9 @@ echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 
 > Tip: どのような型の値であろうとも上書きされますので、オプションの配列の指定には気を付けてください。オプションの配列はマージされません。
 
-DI コンテナの自動コンストラクタ・インジェクションの利点を活かす別の例です。
+もう一つの例は、DI コンテナの自動コンストラクタ・インジェクションの利点を活かすものです。
 あなたのコントローラクラスが、ホテル予約サービスのような、いくつかの他のオブジェクトに依存するとします。
-あなたは、コンストラクタパラメータを通して依存関係を宣言して、DI コンテナにあなたの課題を解決させることができます。
+あなたは、コンストラクタのパラメータを通して依存を宣言して、DI コンテナにそれを解決させることができます。
 
 ```php
 namespace app\controllers;
@@ -357,26 +357,160 @@ class HotelController extends Controller
 ```
 
 あなたがブラウザからこのコントローラにアクセスすると、 `BookingInterface` をインスタンス化できない、という不平を言う
-エラーが表示されるでしょう。これは、この依存関係に対処する方法を DI コンテナに教える必要があるからです:
+エラーが表示されるでしょう。これは、この依存に対処する方法を DI コンテナに教える必要があるからです:
 
 ```php
 \Yii::$container->set('app\components\BookingInterface', 'app\components\BookingService');
 ```
 
-これで、あなたが再びコントローラにアクセスするときは、 `app\components\BookingService`
+これで、あなたが再びコントローラにアクセスするときは、`app\components\BookingService`
 のインスタンスが作成され、コントローラのコンストラクタに3番目のパラメータとして注入されるようになります。
 
 
-いつ依存関係を登録するか <span id="when-to-register-dependencies"></span>
-------------------------
+高度な実際の使用方法 <span id="advanced-practical-usage"></span>
+--------------------
 
-依存関係は、新しいオブジェクトが作成されるとき必要とされるので、それらの登録は可能な限り早期に行われるべきです。
-推奨プラクティス以下のとおりです:
+API アプリケーションを開発していて、以下のクラスがあるとします。
 
-* あなたがアプリケーションの開発者である場合、アプリケーションの [エントリスクリプト](structure-entry-scripts.md) 内、
-  またはエントリスクリプトにインクルードされるスクリプト内で、依存関係を登録することができます。
+- `app\components\Request` クラス。`yii\web\Request` から拡張され、追加の機能を提供する。
+- `app\components\Response` クラス。`yii\web\Response` から拡張。生成されるときに、`format` プロパティが `json` に設定されなければならない。
+- `app\storage\FileStorage` および `app\storage\DocumentsReader` クラス。
+  何らかのファイルストレージに配置されているドキュメントを操作するロジックを実装する。
+  
+  ```php
+  class FileStorage
+  {
+      public function __contruct($root) {
+          // あれやこれや
+      }
+  }
+  
+  class DocumentsReader
+  {
+      public function __contruct(FileStorage $fs) {
+          // なんやかんや
+      }
+  }
+  ```
+
+It is possible to configure multiple definitions at once, passing configuration array to
+[[yii\di\Container::setDefinitions()|setDefinitions()]] or [[yii\di\Container::setSingletons()|setSingletons()]] method.
+Iterating over the configuration array, the methods will call [[yii\di\Container::set()|set()]]
+or [[yii\di\Container::setSingleton()|setSingleton()]] respectively for each item.
+
+The configuration array format is:
+
+ - `key`: class name, interface name or alias name. The key will be passed to the
+ [[yii\di\Container::set()|set()]] method as a first argument `$class`.
+ - `value`: the definition associated with `$class`. Possible values are described in [[yii\di\Container::set()|set()]]
+ documentation for the `$definition` parameter. Will be passed to the [[set()]] method as
+ the second argument `$definition`.
+
+For example, let's configure our container to follow the aforementioned requirements:
+
+```php
+$container->setDefinitions([
+    'yii\web\Request' => 'app\components\Request',
+    'yii\web\Response' => [
+        'class' => 'app\components\Response',
+        'format' => 'json'
+    ],
+    'app\storage\DocumentsReader' => function () {
+        $fs = new app\storage\FileStorage('/var/tempfiles');
+        return new app\storage\DocumentsReader($fs);
+    }
+]);
+
+$reader = $container->get('app\storage\DocumentsReader); 
+// Will create DocumentReader object with its dependencies as described in the config 
+```
+
+> Tip: Container may be configured in declarative style using application configuration since version 2.0.11. 
+Check out the [Application Configurations](concept-service-locator.md#application-configurations) subsection of
+the [Configurations](concept-configurations.md) guide article.
+
+Everything works, but in case we need to create create `DocumentWriter` class, 
+we shall copy-paste the line that creates `FileStorage` object, that is not the smartest way, obviously.
+
+As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
+and [[yii\di\Container::setSingleton()|setSingleton()]] can optionally take dependency's constructor parameters as
+a third argument. To set the constructor parameters, you may use the following configuration array format:
+
+ - `key`: class name, interface name or alias name. The key will be passed to the
+ [[yii\di\Container::set()|set()]] method as a first argument `$class`.
+ - `value`: array of two elements. The first element will be passed the [[yii\di\Container::set()|set()]] method as the
+ second argument `$definition`, the second one — as `$params`.
+
+Let's modify our example:
+
+```php
+$container->setDefinitions([
+    'tempFileStorage' => [ // we've created an alias for convenience
+        ['class' => 'app\storage\FileStorage'],
+        ['/var/tempfiles'] // could be extracted from some config files
+    ],
+    'app\storage\DocumentsReader' => [
+        ['class' => 'app\storage\DocumentsReader'],
+        [Instance::of('tempFileStorage')]
+    ],
+    'app\storage\DocumentsWriter' => [
+        ['class' => 'app\storage\DocumentsWriter'],
+        [Instance::of('tempFileStorage')]
+    ]
+]);
+
+$reader = $container->get('app\storage\DocumentsReader); 
+// Will behave exactly the same as in the previous example.
+```
+
+You might notice `Instance::of('tempFileStorage')` notation. It means, that the [[yii\di\Container|Container]]
+will implicitly provide dependency, registered with `tempFileStorage` name and pass it as the first argument 
+of `app\storage\DocumentsWriter` constructor.
+
+> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
+  methods are available since version 2.0.11.
+  
+Another step on configuration optimization is to register some dependencies as singletons. 
+A dependency registered via [[yii\di\Container::set()|set()]] will be instantiated each time it is needed.
+Some classes do not change the state during runtime, therefore they may be registered as singletons
+in order to increase the application performance. 
+
+A good example could be `app\storage\FileStorage` class, that executes some operations on file system with a simple 
+API (e.g. `$fs->read()`, `$fs->write()`). These operations do not change the internal class state, so we can
+create its instance once and use it multiple times.
+
+```php
+$container->setSingletons([
+    'tempFileStorage' => [
+        ['class' => 'app\storage\FileStorage'],
+        ['/var/tempfiles']
+    ],
+]);
+
+$container->setDefinitions([
+    'app\storage\DocumentsReader' => [
+        ['class' => 'app\storage\DocumentsReader'],
+        [Instance::of('tempFileStorage')]
+    ],
+    'app\storage\DocumentsWriter' => [
+        ['class' => 'app\storage\DocumentsWriter'],
+        [Instance::of('tempFileStorage')]
+    ]
+]);
+
+$reader = $container->get('app\storage\DocumentsReader); 
+```
+
+いつ依存を登録するか <span id="when-to-register-dependencies"></span>
+--------------------
+
+依存は、新しいオブジェクトが作成されるとき必要とされるので、それらの登録は可能な限り早期に行われるべきです。
+推奨されるプラクティスは以下のとおりです:
+
+* あなたがアプリケーションの開発者である場合は、アプリケーションの構成情報を使って依存を登録することが出来ます。
+  [構成情報](concept-configurations.md) のガイドの [アプリケーションの構成](concept-configurations.md#application-configurations) の節を読んでください。
 * あなたが再配布可能な [エクステンション](structure-extensions.md) の開発者である場合は、エクステンションのブートストラップクラス内で
-  依存関係を登録することができます。
+  依存を登録することができます。
 
 
 まとめ <span id="summary"></span>
@@ -388,5 +522,5 @@ class HotelController extends Controller
 
 Yii はその [サービスロケータ](concept-service-locator.md) を、依存注入 (DI) コンテナの上に実装しています。
 サービスロケータは、新しいオブジェクトのインスタンスを作成しようとするとき、DI コンテナに呼び出しを転送します。
-後者は、依存関係を、上で説明したように自動的に解決します。
+後者は、依存を、上で説明したように自動的に解決します。
 
