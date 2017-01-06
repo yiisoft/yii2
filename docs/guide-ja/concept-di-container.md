@@ -370,7 +370,7 @@ class HotelController extends Controller
 高度な実際の使用方法 <span id="advanced-practical-usage"></span>
 --------------------
 
-API アプリケーションを開発していて、以下のクラスがあるとします。
+API アプリケーションを開発していて、以下のクラスを持っているとします。
 
 - `app\components\Request` クラス。`yii\web\Request` から拡張され、追加の機能を提供する。
 - `app\components\Response` クラス。`yii\web\Response` から拡張。生成されるときに、`format` プロパティが `json` に設定されなければならない。
@@ -393,20 +393,18 @@ API アプリケーションを開発していて、以下のクラスがある�
   }
   ```
 
-It is possible to configure multiple definitions at once, passing configuration array to
-[[yii\di\Container::setDefinitions()|setDefinitions()]] or [[yii\di\Container::setSingletons()|setSingletons()]] method.
-Iterating over the configuration array, the methods will call [[yii\di\Container::set()|set()]]
-or [[yii\di\Container::setSingleton()|setSingleton()]] respectively for each item.
+[[yii\di\Container::setDefinitions()|setDefinitions()]] または [[yii\di\Container::setSingletons()|setSingletons()]] 
+のメソッドに構成情報の配列を渡して、複数の定義を一度に構成することが可能です。
+これらのメソッドは、構成情報配列を反復して、各アイテムに対し、それぞれ [[yii\di\Container::set()|set()]] を呼び出します。
 
-The configuration array format is:
+構成情報配列のフォーマットは、
 
- - `key`: class name, interface name or alias name. The key will be passed to the
- [[yii\di\Container::set()|set()]] method as a first argument `$class`.
- - `value`: the definition associated with `$class`. Possible values are described in [[yii\di\Container::set()|set()]]
- documentation for the `$definition` parameter. Will be passed to the [[set()]] method as
- the second argument `$definition`.
+ - `key`: クラス名、インタフェイス名、または、エイリアス名。
+  このキーが [[yii\di\Container::set()|set()]] メソッドの最初の引数 `$class` として渡されます。
+ - `value`: `$class` と関連づけられる定義。指定できる値は、[[yii\di\Container::set()|set()]] の `$definition`
+  パラメータのドキュメントで説明されています。[[set()]] メソッドに二番目のパラメータ `$definition` として渡されます。
 
-For example, let's configure our container to follow the aforementioned requirements:
+例として、上述の要求に従うように私たちのコンテナを構成しましょう。
 
 ```php
 $container->setDefinitions([
@@ -422,32 +420,30 @@ $container->setDefinitions([
 ]);
 
 $reader = $container->get('app\storage\DocumentsReader); 
-// Will create DocumentReader object with its dependencies as described in the config 
+// 構成情報に書かれている依存とともに DocumentReader オブジェクトが生成されます
 ```
 
-> Tip: Container may be configured in declarative style using application configuration since version 2.0.11. 
-Check out the [Application Configurations](concept-service-locator.md#application-configurations) subsection of
-the [Configurations](concept-configurations.md) guide article.
+> Tip: バージョン 2.0.11 以降では、アプリケーションの構成情報を使って、宣言的なスタイルでコンテナを構成することが出来ます。
+[構成情報](concept-configurations.md) のガイドの [アプリケーションの構成](concept-configurations.md#application-configurations) の節を参照してください。
+これで全部動きますが、`DocumentWriter` クラスを生成する必要がある場合には、
+`FileStorage` オブジェクトを生成する行をコピペすることになるでしょう。
+もちろん、それが一番スマートな方法ではありません。
 
-Everything works, but in case we need to create create `DocumentWriter` class, 
-we shall copy-paste the line that creates `FileStorage` object, that is not the smartest way, obviously.
+[依存を解決する](#resolving-dependencies) の節で説明したように、[[yii\di\Container::set()|set()]] と [[yii\di\Container::setSingleton()|setSingleton()]] は、
+オプションで、第三の引数として依存のコンストラクタのパラメータを取ることが出来ます。
+コンストラクタのパラメータを設定するために、以下の構成情報配列の形式を使うことが出来ます。
 
-As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
-and [[yii\di\Container::setSingleton()|setSingleton()]] can optionally take dependency's constructor parameters as
-a third argument. To set the constructor parameters, you may use the following configuration array format:
+ - `key`: クラス名、インタフェイス名、または、エイリアス名。
+  このキーが [[yii\di\Container::set()|set()]] メソッドの最初の引数 `$class` として渡されます。
+ - `value`: 二つの要素を持つ配列。最初の要素は [[set()]] メソッドに二番目のパラメータ `$definition` として渡され、第二の要素が `$params` として渡されます。
 
- - `key`: class name, interface name or alias name. The key will be passed to the
- [[yii\di\Container::set()|set()]] method as a first argument `$class`.
- - `value`: array of two elements. The first element will be passed the [[yii\di\Container::set()|set()]] method as the
- second argument `$definition`, the second one — as `$params`.
-
-Let's modify our example:
+では、私たちの例を修正しましょう。
 
 ```php
 $container->setDefinitions([
-    'tempFileStorage' => [ // we've created an alias for convenience
+    'tempFileStorage' => [ // 便利なようにエイリアスを作りました
         ['class' => 'app\storage\FileStorage'],
-        ['/var/tempfiles'] // could be extracted from some config files
+        ['/var/tempfiles'] // 何らかの構成ファイルから抽出することも可能
     ],
     'app\storage\DocumentsReader' => [
         ['class' => 'app\storage\DocumentsReader'],
@@ -460,24 +456,23 @@ $container->setDefinitions([
 ]);
 
 $reader = $container->get('app\storage\DocumentsReader); 
-// Will behave exactly the same as in the previous example.
+// 前の例と全く同じオブジェクトが生成されます
 ```
 
-You might notice `Instance::of('tempFileStorage')` notation. It means, that the [[yii\di\Container|Container]]
-will implicitly provide dependency, registered with `tempFileStorage` name and pass it as the first argument 
-of `app\storage\DocumentsWriter` constructor.
+`Instance::of('tempFileStorage')` という記法に気づいたことでしょう。
+これは、[[yii\di\Container|Container]] が、`tempFileStorage` という名前で登録されている依存を黙示的に提供して、
+`app\storage\DocumentsWriter` のコンストラクタの最初の引数として渡す、ということを意味しています。
 
-> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
-  methods are available since version 2.0.11.
-  
-Another step on configuration optimization is to register some dependencies as singletons. 
-A dependency registered via [[yii\di\Container::set()|set()]] will be instantiated each time it is needed.
-Some classes do not change the state during runtime, therefore they may be registered as singletons
-in order to increase the application performance. 
+> Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] および [[yii\di\Container::setSingletons()|setSingletons()]]
+  のメソッドは、バージョン 2.0.11 以降で利用できます。
 
-A good example could be `app\storage\FileStorage` class, that executes some operations on file system with a simple 
-API (e.g. `$fs->read()`, `$fs->write()`). These operations do not change the internal class state, so we can
-create its instance once and use it multiple times.
+構成情報の最適化にかかわるもう一つのステップは、いくつかの依存をシングルトンとして登録することです。
+[[yii\di\Container::set()|set()]] を通じて登録された依存は、必要になるたびに、毎回インスタンス化されます。
+しかし、ある種のクラスは実行時を通じて状態を変化させませんので、アプリケーションのパフォーマンスを高めるためにシングルトンとして登録することが出来ます。
+
+`app\storage\FileStorage` クラスが好例でしょう。これは単純な API によってファイルシステムに対する何らかの操作を実行するもの
+(例えば `$fs->read()` や `$fs->write()`) ですが、これらの操作はクラスの内部状態を変化させないものです。
+従って、このクラスのインスタンスを一度だけ生成して、それを複数回使用することが可能です。
 
 ```php
 $container->setSingletons([
