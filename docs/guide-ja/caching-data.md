@@ -13,14 +13,41 @@ $data = $cache->get($key);
 if ($data === false) {
 
     // キャッシュの中に $data が見つからない場合は一から作る
+    $data = $this->calculateSomething();
 
-    // 次回はそれを取得できるように $data をキャッシュに格納する
+    // $data をキャッシュに格納して、次回はそれを取得できるようにする
     $cache->set($key, $data);
 }
 
-// $data はここで利用できる
+// この時点で $data は利用可能になっている
 ```
 
+バージョン 2.0.11 以降は、[キャッシュコンポーネント](#cache-components) が提供する [[yii\caching\Cache::getOrSet()|getOrSet()]] メソッドを使って、
+データを取得、計算、保存するためのコードを単純化することが出来ます。
+次に示すコードは、上述の例と全く同じことをするものです。
+
+```php
+$data = $cache->getOrSet($key, function () {
+    return $this->calculateSomething();
+});
+```
+
+キャッシュが `$key` と関連づけられたデータを保持している場合は、キャッシュされている値が返されます。
+そうでない場合は、渡された無名関数が実行されて値が計算され、その値がキャッシュされるとともに返されます。
+
+無名関数が外部のスコープの何らかのデータを必要とする場合は、それを `use` 文を使って渡すことが出来ます。
+例えば、
+
+```php
+$user_id = 42;
+$data = $cache->getOrSet($key, function () use ($user_id) {
+    return $this->calculateSomething($user_id);
+});
+```
+
+> Note: [[yii\caching\Cache::getOrSet()|getOrSet()]] メソッドは、有効期限と依存もサポートしています。
+  詳しくは [キャッシュの有効期限](#cache-expiration) と [キャッシュの依存](#cache-dependencies) を参照してください。
+  
 
 ## キャッシュコンポーネント <span id="cache-components"></span>
 
@@ -97,6 +124,8 @@ Yii はさまざまなキャッシュストレージをサポートしていま�
 * [[yii\caching\Cache::get()|get()]]: 指定されたキーを用いてキャッシュからデータを取得します。データが見つからないか、もしくは有効期限が切れたり無効になったりしている場合は false を返します。
 * [[yii\caching\Cache::set()|set()]]: キーによって識別されるデータをキャッシュに格納します。
 * [[yii\caching\Cache::add()|add()]]: キーがキャッシュ内で見つからない場合に、キーによって識別されるデータをキャッシュに格納します。
+* [[yii\caching\Cache::getOrSet()|getOrSet()]]: 指定されたキーを用いてキャッシュからデータを取得します。
+  取得できなかった場合は、渡されたコールバック関数を実行し、関数の返り値をそのキーでキャッシュに保存し、そしてその値を返します。
 * [[yii\caching\Cache::multiGet()|multiGet()]]: 指定されたキーを用いてキャッシュから複数のデータを取得します。
 * [[yii\caching\Cache::multiSet()|multiSet()]]: キャッシュに複数のデータを格納します。各データはキーによって識別されます。
 * [[yii\caching\Cache::multiAdd()|multiAdd()]]: キャッシュに複数のデータを格納します。各データはキーによって識別されます。もしキャッシュ内にキーがすでに存在する場合はスキップされます。
@@ -173,6 +202,9 @@ if ($data === false) {
     // $data は有効期限が切れているか、またはキャッシュ内に見つからない
 }
 ```
+
+バージョン 2.0.11 以降は、デフォルトの無限の有効期限に替えて特定の有効期限を指定したい場合には、キャッシュコンポーネントの構成で [[yii\caching\Cache::$defaultDuration|defaultDuration]] の値を指定することが出来ます。
+これによって、特定の `duration` パラメータを毎回 [[yii\caching\Cache::set()|set()]] に渡さなくてもよくなります。
 
 
 ### キャッシュの依存 <span id="cache-dependencies"></span>
@@ -259,7 +291,7 @@ $result = Customer::getDb()->cache(function ($db) {
 
 クエリキャッシュには [[yii\db\Connection]] を通して設定可能な三つのグローバルなオプションがあります:
 
-* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: クエリキャッシュを可能にするかどうか。デフォルトは true です。
+* [[yii\db\Connection::enableQueryCache|enableQueryCache]]: クエリキャッシュを可能にするかどうか。デフォルトは `true` です。
 実効的にクエリキャッシュをオンにするには [[yii\db\Connection::queryCache|queryCache]] によって指定される有効なキャッシュを持っている必要があることに注意してください。
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: これはクエリ結果がキャッシュ内に有効な状態として持続できる秒数を表します。
   クエリキャッシュを永遠にキャッシュに残したい場合は 0 を指定することができます。
