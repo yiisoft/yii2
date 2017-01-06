@@ -48,7 +48,19 @@ Yii は次のリレーショナルデータベースに対して、アクティ�
 ## アクティブレコードクラスを宣言する <span id="declaring-ar-classes"></span>
 
 まずは、[[yii\db\ActiveRecord]] を拡張してアクティブレコードクラスを宣言するところから始めましょう。
-すべてのアクティブレコードクラスはデータベーステーブルと関連付けられますので、このクラスの中で [[yii\db\ActiveRecord::tableName()|tableName()]] メソッドをオーバーライドして、どのテーブルにこのクラスが関連付けられるかを指定しなければなりません。
+
+### テーブル名を設定する
+
+デフォルトでは、すべてのアクティブレコードクラスはデータベーステーブルと関連付けられます。
+[[yii\db\ActiveRecord::tableName()|tableName()]] メソッドが、クラス名を [[yii\helpers\Inflector::camel2id()]] によって変換して、テーブル名を返します。
+テーブル名がこの規約に従っていない場合は、このメソッドをオーバライドすることが出来ます。
+
+同時に、デフォルトの [[yii\db\Connection::$tablePrefix|tablePrefix]] を適用することも可能です。
+例えば、[[yii\db\Connection::$tablePrefix|tablePrefix]] が `tbl_` である場合は、`Customer` は `tbl_customer` になり、`OrderItem` は`tbl_order_item` になります。
+
+テーブル名が `{{%TableName}}` という形式で与えられた場合は、パーセント記号 `%` がテーブルプレフィックスに置き換えられます。
+例えば、`{{%post}}` は `{{tbl_post}}` となります。
+テーブル名を囲む二重波括弧は、[テーブル名を囲む引用符号](db-dao.md#quoting-table-and-column-names) となります。
 
 次の例では、`customer` というデータベーステーブルのための `Customer` という名前のアクティブレコードクラスを宣言しています。
 
@@ -67,10 +79,12 @@ class Customer extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer';
+        return '{{customer}}';
     }
 }
 ```
+
+### アクティブレコードは「モデル」と呼ばれる
 
 アクティブレコードのインスタンスは [モデル](structure-models.md) であると見なされます。
 この理由により、私たちは通常 `app\models` 名前空間 (あるいはモデルクラスを保管するための他の名前空間) の下にアクティブレコードクラスを置きます。
@@ -427,6 +441,28 @@ $customer = new Customer();
 $customer->loadDefaultValues();
 // $customer->xyz には、"xyz" カラムを定義するときに宣言されたデフォルト値が割り当てられる
 ```
+
+
+### 属性の型キャスト <span id="attributes-typecasting"></span>
+
+Being populated by query results [[yii\db\ActiveRecord]] performs automatic typecast for its attribute values, using
+information from [database table schema](db-dao.md#database-schema). This allows data retrieved from table column
+declared as integer to be populated in ActiveRecord instance with PHP integer, boolean with boolean and so on.
+However, typecasting mechanism has several limitations:
+
+* Float values are not be converted and will be represented as strings, otherwise they may loose precision.
+* Conversion of the integer values depends on the integer capacity of the operation system you use. In particular:
+  values of column declared as 'unsigned integer' or 'big integer' will be converted to PHP integer only at 64-bit
+  operation system, while on 32-bit ones - they will be represented as strings.
+
+Note that attribute typecast is performed only during populating ActiveRecord instance from query result. There is no
+automatic conversion for the values loaded from HTTP request or set directly via property access.
+The table schema will also be used while preparing SQL statements for the ActiveRecord data saving, ensuring
+values are bound to the query with correct type. However, ActiveRecord instance attribute values will not be
+converted during saving process.
+
+> Tip: you may use [[yii\behaviors\AttributeTypecastBehavior]] to facilitate attribute values typecasting
+  on ActiveRecord validation or saving.
 
 
 ### 複数の行を更新する <span id="updating-multiple-rows"></span>
