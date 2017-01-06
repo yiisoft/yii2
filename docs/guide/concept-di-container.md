@@ -433,7 +433,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 Check out the [Application Configurations](concept-configurations.md#application-configurations) subsection of
 the [Configurations](concept-configurations.md) guide article.
 
-Everything works, but in case we need to create create `DocumentWriter` class, 
+Everything works, but in case we need to create `DocumentWriter` class, 
 we shall copy-paste the line that creates `FileStorage` object, that is not the smartest way, obviously.
 
 As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
@@ -442,7 +442,7 @@ a third argument. To set the constructor parameters, you may use the following c
 
  - `key`: class name, interface name or alias name. The key will be passed to the
  [[yii\di\Container::set()|set()]] method as a first argument `$class`.
- - `value`: array of two elements. The first element will be passed the [[yii\di\Container::set()|set()]] method as the
+ - `value`: array of two elements. The first element will be passed to the [[yii\di\Container::set()|set()]] method as the
  second argument `$definition`, the second one — as `$params`.
 
 Let's modify our example:
@@ -468,7 +468,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 ```
 
 You might notice `Instance::of('tempFileStorage')` notation. It means, that the [[yii\di\Container|Container]]
-will implicitly provide dependency, registered with `tempFileStorage` name and pass it as the first argument 
+will implicitly provide a dependency registered with the name of `tempFileStorage` and pass it as the first argument 
 of `app\storage\DocumentsWriter` constructor.
 
 > Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
