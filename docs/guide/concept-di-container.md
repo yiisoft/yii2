@@ -336,7 +336,9 @@ You can still override the value set via DI container, though:
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
 
-> Tip: no matter which value type it is, it will be overwritten so be careful with option arrays. They won't be merged.
+> Note: Properties given in the widget call will always override the definition in the DI container.
+> Even if you specify an array, e.g. `'options' => ['id' => 'mypager']` these will not be merged
+> with other options but replace them.
 
 Another example is to take advantage of the automatic constructor injection of the DI container.
 Assume your controller class depends on some other objects, such as a hotel booking service. You
