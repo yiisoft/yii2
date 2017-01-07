@@ -951,10 +951,19 @@ class Connection extends Component
      */
     public function useMaster(callable $callback)
     {
-        $enableSlave = $this->enableSlaves;
-        $this->enableSlaves = false;
-        $result = call_user_func($callback, $this);
-        $this->enableSlaves = $enableSlave;
+        if ($this->enableSlaves) {
+            $this->enableSlaves = false;
+            try {
+                $result = call_user_func($callback, $this);
+            } catch (\Exception $e) {
+                $this->enableSlaves = true;
+                throw $e;
+            }
+            $this->enableSlaves = true;
+        } else {
+            $result = call_user_func($callback, $this);
+        }
+
         return $result;
     }
 
