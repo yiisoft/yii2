@@ -608,7 +608,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
 ```
 
 Since 2.0.11 foreign key column names for junction tables are fetched from table schema.
-In case table isn't defined in schema, isn't set or is composite, default name `id` is used.
+In case table isn't defined in schema, or the primary key isn't set or is composite, default name `id` is used.
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
 
