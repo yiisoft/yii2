@@ -27,6 +27,10 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         if (!function_exists('posix_kill')) {
             $this->markTestSkipped('posix_kill() is not available');
         }
+        // HHVM does not support this (?)
+        if (!function_exists('pcntl_sigtimedwait')) {
+            $this->markTestSkipped('pcntl_sigtimedwait() is not available');
+        }
 
         $log = sys_get_temp_dir() . '/deadlock_' . posix_getpid();
         if (is_file($log)) {
