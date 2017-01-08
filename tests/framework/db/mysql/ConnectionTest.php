@@ -78,13 +78,15 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
                     //sleep(1);
                     $trace("child 2: transaction");
                     $second->transaction(function (Connection $second) use ($trace) {
-                        $trace("child 2: update");
-                        // do the 2nd update
-                        $second->createCommand()
-                            ->update('{{customer}}', ['name' => 'second'], ['id' => 97])
-                            ->execute();
+                        $second->transaction(function (Connection $second) use ($trace) {
+                            $trace("child 2: update");
+                            // do the 2nd update
+                            $second->createCommand()
+                                ->update('{{customer}}', ['name' => 'second'], ['id' => 97])
+                                ->execute();
 
-                        $trace("child 2: commit");
+                            $trace("child 2: commit");
+                        });
                     }, Transaction::REPEATABLE_READ);
                 } catch (Exception $e) {
                     list ($sql_error, $driver_error, $driver_message) = $e->errorInfo;
@@ -133,28 +135,30 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
                     $trace("child 1: transaction");
                     $first->transaction(function (Connection $first) use ($trace, $pid) {
-                        $trace("child 1: select");
-                        // SELECT with shared lock
-                        $first->createCommand("SELECT id FROM {{customer}} WHERE id = 97 LOCK IN SHARE MODE")
-                            ->execute();
+                        $first->transaction(function (Connection $first) use ($trace, $pid) {
+                            $trace("child 1: select");
+                            // SELECT with shared lock
+                            $first->createCommand("SELECT id FROM {{customer}} WHERE id = 97 LOCK IN SHARE MODE")
+                                ->execute();
 
-                        $trace("child 1: send signal to child 2");
-                        // let child to continue
-                        if (!posix_kill($pid, SIGUSR1)) {
-                            throw new \RuntimeException('Cannot send signal');
-                        }
+                            $trace("child 1: send signal to child 2");
+                            // let child to continue
+                            if (!posix_kill($pid, SIGUSR1)) {
+                                throw new \RuntimeException('Cannot send signal');
+                            }
 
-                        // now child 2 tries to do the 2nd update, and hits the lock and waits
+                            // now child 2 tries to do the 2nd update, and hits the lock and waits
 
-                        // delay to let child hit the lock
-                        sleep(2);
+                            // delay to let child hit the lock
+                            sleep(2);
 
-                        $trace("child 1: update");
-                        // now do the 3rd update for deadlock
-                        $first->createCommand()
-                            ->update('{{customer}}', ['name' => 'first'], ['id' => 97])
-                            ->execute();
-                        $trace("child 1: commit");
+                            $trace("child 1: update");
+                            // now do the 3rd update for deadlock
+                            $first->createCommand()
+                                ->update('{{customer}}', ['name' => 'first'], ['id' => 97])
+                                ->execute();
+                            $trace("child 1: commit");
+                        });
                     }, Transaction::REPEATABLE_READ);
                 } catch (Exception $e) {
                     list ($sql_error, $driver_error, $driver_message) = $e->errorInfo;
