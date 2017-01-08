@@ -498,4 +498,32 @@ class UrlManagerTest extends TestCase
         $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
         $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
     }
+
+    public function testCreateUrlCache()
+    {
+        $manager = new UrlManager([
+            'rules' => [
+                'user/<name:[\w-]+>' => 'user/show',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+        ]);
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+
+        // same, but with reversed order of URL creation
+        $manager = new UrlManager([
+            'rules' => [
+                'user/<name:[\w-]+>' => 'user/show',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
+            ],
+            'enablePrettyUrl' => true,
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+        ]);
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+    }
 }
