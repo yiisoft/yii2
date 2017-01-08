@@ -713,12 +713,22 @@ class Connection extends Component
             }
         } catch (\Exception $e) {
             if ($transaction->isActive && $transaction->level === $level) {
-                $transaction->rollBack();
+                try {
+                    $transaction->rollBack();
+                } catch (\Exception $e_rollback) {
+                    \Yii::error($e_rollback, __METHOD__);
+                    // continue to throw original exception $e
+                }
             }
             throw $e;
         } catch (\Throwable $e) {
             if ($transaction->isActive && $transaction->level === $level) {
-                $transaction->rollBack();
+                try {
+                    $transaction->rollBack();
+                } catch (\Exception $e_rollback) {
+                    \Yii::error($e_rollback, __METHOD__);
+                    // continue to throw original exception $e
+                }
             }
             throw $e;
         }
