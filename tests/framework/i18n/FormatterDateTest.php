@@ -674,7 +674,7 @@ class FormatterDateTest extends TestCase
     public function testDateOnlyValues()
     {
         date_default_timezone_set('Pacific/Kiritimati');
-        // timzones with exactly 24h difference, ensure this test does not fail on a certain time
+        // timezones with exactly 24h difference, ensure this test does not fail on a certain time
         $this->formatter->defaultTimeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->formatter->timeZone = 'Pacific/Honolulu'; // always UTC-10
 
@@ -686,6 +686,18 @@ class FormatterDateTest extends TestCase
         $this->formatter->defaultTimeZone = 'Pacific/Honolulu'; // always UTC-10
         $this->formatter->timeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->assertSame('2014-08-01', $this->formatter->asDate('2014-08-01', 'yyyy-MM-dd'));
+    }
+    
+    public function testTimeOnlyValues()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+        $this->formatter->timeZone = 'Europe/Berlin'; // UTC+1 (DST UTC+2)
+
+        // when timezone conversion is made on this time, it will result in 11:32 (DST 12:32) to be returned.
+        // ensure this does not happen on time only values
+        $this->assertSame('10:32', $this->formatter->asTime('10:32', 'HH:mm'));
+        
+        $this->assertSame('9am', $this->formatter->asTime('9am', 'Ha'));
     }
 
     /**

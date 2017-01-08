@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.12 under development
+------------------------
+
+- Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
+
 2.0.11 under development
 ------------------------
 
