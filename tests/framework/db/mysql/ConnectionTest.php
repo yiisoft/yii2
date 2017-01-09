@@ -166,14 +166,14 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
                     if ('40001' === $sql_error && 1213 === $driver_error) {
                         exit(15);
                     }
-                    $trace("child 2: ! sql error $sql_error: $driver_error: $driver_message");
+                    $trace("child 1: ! sql error $sql_error: $driver_error: $driver_message");
                     exit(1);
                 } catch (\Exception $e) {
                     // REFACT: PHP >= 7.0: catch (\Trowable $e)
-                    $trace("child 2: ! exit <<" . get_class($e) . " #" . $e->getCode() . ": " . $e->getMessage() . "\n" . $e->getTraceAsString() . ">>");
+                    $trace("child 1: ! exit <<" . get_class($e) . " #" . $e->getCode() . ": " . $e->getMessage() . "\n" . $e->getTraceAsString() . ">>");
                     exit(1);
                 }
-                $trace("child 2: exit");
+                $trace("child 1: exit");
                 exit;
             }
 
