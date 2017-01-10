@@ -118,6 +118,7 @@ class UniqueValidator extends Validator
     {
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass ?: get_class($model);
+        $targetClass = ltrim($targetClass, '\\');
         $targetAttribute = $this->targetAttribute ?: $attribute;
         $conditions = $this->prepareConditions($targetAttribute, $model, $attribute);
 
