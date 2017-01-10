@@ -1,0 +1,41 @@
+version: '2'
+services:
+
+  php:
+    build: ..
+    working_dir: /project
+    depends_on:
+      - postgres
+      - mysql
+    #volumes:
+      # Enable for debugging
+      #- ../tests:/project/tests
+      # - ../framework:/project/framework
+
+  mysql:
+    image: percona:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=yiitest
+      - MYSQL_USER=travis
+      - MYSQL_PASSWORD=travis
+
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_DB=yiitest
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis
+
+  memcached:
+    image: memcached
+
+networks:
+  default:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.99.${TUPLE_C}.1/24

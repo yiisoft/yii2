@@ -53,3 +53,85 @@ contain the following:
 $config['databases']['mysql']['username'] = 'yiitest';
 $config['databases']['mysql']['password'] = 'changeme';
 ```
+
+
+DOCKERIZED TESTING
+------------------
+
+*This section is under construction*
+
+Start test stack and enter PHP container
+
+    cd tests
+    docker-compose up -d
+    docker-compose run --rm php bash
+
+Run a group of unit tests
+    
+    $ vendor/bin/phpunit -v --group base --debug
+
+Run phpunit directly
+    
+    cd tests    
+    docker-compose run --rm php vendor/bin/phpunit -v --group caching,db   
+    docker-compose run --rm php vendor/bin/phpunit -v --exclude base,caching,db,i18n,log,mutex,rbac,validators,web
+
+### Cubrid
+
+    cd tests
+    docker-compose -f docker-compose.cubrid.yml up -d
+    docker-compose -f docker-compose.cubrid.yml run --rm php vendor/bin/phpunit -v --group cubrid
+
+### MSSQL    
+
+**experimental**
+
+- needs 3.5 GB RAM, Docker-host with >4.5 GB is recommended for testing
+- database CLI `tsgkadot/mssql-tools`   
+
+Example commands    
+    
+    cd tests
+
+Using a shell    
+    
+    docker-compose run --rm sqlcmd sqlcmd -S mssql -U sa -P Microsoft-12345
+
+Create database with sqlcmd     
+     
+    $ sqlcmd -S mssql -U sa -P Microsoft-12345 -Q "CREATE DATABASE yii2test"
+
+Create database (one-liner)
+
+    docker-compose run --rm sqlcmd sqlcmd -S mssql -U sa -P Mircosoft-12345 -Q "CREATE DATABASE yii2test"
+
+Run MSSQL tests
+
+    docker-compose run --rm php 
+    $ vendor/bin/phpunit --group mssql
+
+### Run tests locally
+
+#### Via shell script
+    
+    cd tests
+    sh test-local.sh default
+
+#### Via runner (experimental)
+
+    runner:
+      image: schmunk42/gitlab-runner
+      entrypoint: bash
+      working_dir: /project
+      volumes:
+        - ../:/project
+        - /var/run/docker.sock:/var/run/docker.sock
+      environment:
+        - RUNNER_BUILDS_DIR=${PWD}/..    
+        
+    docker-compose -f docker-compose.runner.yml run runner
+    
+    $ gitlab-runner exec shell build
+    $ gitlab-runner exec shell test
+    
+        
