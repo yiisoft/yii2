@@ -118,7 +118,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     }
 
     /**
-     * @todo: tests for internal logic of joinWith()
+     * @todo: tests for internal logic of innerJoinWith()
      */
     public function testInnerJoinWith()
     {
@@ -127,6 +127,24 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals([
             [['profile'], true, 'INNER JOIN']
         ], $result->joinWith);
+    }
+
+    /**
+     * @todo: tests for the regex inside getQueryTableName
+     */
+    public function testGetQueryTableName_from_not_set()
+    {
+        $query = new ActiveQuery(Customer::className());
+        $result = $this->invokeMethod($query,'getTableNameAndAlias');
+        $this->assertEquals(['customer','customer'], $result);
+    }
+
+    public function testGetQueryTableName_from_set()
+    {
+        $options = ['from' => ['alias'=>'customer']];
+        $query = new ActiveQuery(Customer::className(),$options);
+        $result = $this->invokeMethod($query,'getTableNameAndAlias');
+        $this->assertEquals(['customer','alias'], $result);
     }
 
     public function testOnCondition()
@@ -139,7 +157,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testAndOnCondition_OnIsNull()
+    public function testAndOnCondition_on_not_set()
     {
         $query = new ActiveQuery(Customer::class);
         $on = ['active' => true];
@@ -149,7 +167,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testAndOnCondition_OnIsNotNull()
+    public function testAndOnCondition_on_set()
     {
         $onOld = ['active' => true];
         $query = new ActiveQuery(Customer::class);
@@ -162,7 +180,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testOrOnCondition_OnIsNull()
+    public function testOrOnCondition_on_not_set()
     {
         $query = new ActiveQuery(Customer::class);
         $on = ['active' => true];
@@ -172,7 +190,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals($params, $result->params);
     }
 
-    public function testOrOnCondition_OnIsNotNull()
+    public function testOrOnCondition_on_set()
     {
         $onOld = ['active' => true];
         $query = new ActiveQuery(Customer::class);

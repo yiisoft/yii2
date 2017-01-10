@@ -222,4 +222,16 @@ abstract class BaseManager extends Component implements ManagerInterface
             throw new InvalidConfigException("Rule not found: {$item->ruleName}");
         }
     }
+
+    /**
+     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     *
+     * @param Assignment[] $assignments array of user's assignments
+     * @return bool whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     * @since 2.0.11
+     */
+    protected function hasNoAssignments(array $assignments)
+    {
+        return empty($assignments) && empty($this->defaultRoles);
+    }
 }

@@ -24,6 +24,7 @@ function microtime($float = false)
 namespace yiiunit\framework\caching;
 
 use yii\caching\Cache;
+use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
 /**
@@ -99,17 +100,17 @@ abstract class CacheTestCase extends TestCase
     }
 
     /**
-     * @return array testing mset with and without expiry
+     * @return array testing multiSet with and without expiry
      */
-    public function msetExpiry()
+    public function multiSetExpiry()
     {
         return [[0], [2]];
     }
 
     /**
-     * @dataProvider msetExpiry
+     * @dataProvider multiSetExpiry
      */
-    public function testMset($expiry)
+    public function testMultiset($expiry)
     {
         $cache = $this->getCacheInstance();
         $cache->flush();
@@ -167,7 +168,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertTrue($cache->get('bool_value'));
     }
 
-    public function testMget()
+    public function testMultiGet()
     {
         $cache = $this->prepare();
 
@@ -220,7 +221,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals(13, $cache->get('add_test'));
     }
 
-    public function testMadd()
+    public function testMultiAdd()
     {
         $cache = $this->prepare();
 
@@ -249,5 +250,23 @@ abstract class CacheTestCase extends TestCase
         $cache = $this->prepare();
         $this->assertTrue($cache->flush());
         $this->assertFalse($cache->get('number_test'));
+    }
+
+    public function testGetOrSet()
+    {
+        $cache = $this->prepare();
+        $dependency = new TagDependency(['tags' => 'test']);
+
+        $expected = 'SilverFire';
+        $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
+
+        // Call again with another login to make sure that value is cached
+        $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
+
+        $dependency->invalidate($cache, 'test');
+        $expected = 'SamDark';
+        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
     }
 }

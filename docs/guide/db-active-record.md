@@ -50,9 +50,20 @@ However, most content described here are also applicable to Active Record for No
 
 ## Declaring Active Record Classes <span id="declaring-ar-classes"></span>
 
-To get started, declare an Active Record class by extending [[yii\db\ActiveRecord]]. Because each Active Record
-class is associated with a database table, in this class you should override the [[yii\db\ActiveRecord::tableName()|tableName()]]
-method to specify which table the class is associated with.
+To get started, declare an Active Record class by extending [[yii\db\ActiveRecord]]. 
+
+### Setting a table name
+
+By default each Active Record class is associated with its database table.
+The [[yii\db\ActiveRecord::tableName()|tableName()]] method returns the table name by converting the class name via [[yii\helpers\Inflector::camel2id()]].
+You may override this method if the table is not named after this convention.
+
+Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. For example if
+ [[yii\db\Connection::$tablePrefix|tablePrefix]] is `tbl_`, `Customer` becomes `tbl_customer` and `OrderItem` becomes `tbl_order_item`. 
+
+If a table name is given as `{{%TableName}}`, then the percentage character `%` will be replaced with the table prefix. 
+For example, `{{%post}}` becomes `{{tbl_post}}`. The brackets around the table name are used for
+[quoting in an SQL query](db-dao.md#quoting-table-and-column-names).
 
 In the following example, we declare an Active Record class named `Customer` for the `customer` database table.
 
@@ -71,11 +82,12 @@ class Customer extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer';
+        return '{{customer}}';
     }
 }
 ```
 
+### Active records are called "models"
 Active Record instances are considered as [models](structure-models.md). For this reason, we usually put Active Record
 classes under the `app\models` namespace (or other namespaces for keeping model classes). 
 
@@ -624,8 +636,15 @@ try {
 } catch(\Exception $e) {
     $transaction->rollBack();
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
+    throw $e;
 }
 ```
+
+> Note: in the above code we have two catch-blocks for compatibility 
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
 method. For example,
@@ -1592,7 +1611,7 @@ class Customer extends \yii\db\ActiveRecord
 With this code, in case 'ordersCount' is present in 'select' statement - `Customer::ordersCount` will be populated
 by query results, otherwise it will be calculated on demand using `Customer::orders` relation.
 
-This approach can be as well used for creation of the shortcuts for the some relational data, especially for the aggregation.
+This approach can be as well used for creation of the shortcuts for some relational data, especially for the aggregation.
 For example:
 
 ```php

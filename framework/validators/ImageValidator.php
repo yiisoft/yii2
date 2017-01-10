@@ -172,7 +172,7 @@ class ImageValidator extends FileValidator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $options = parent::getClientOptions($model, $attribute);
 

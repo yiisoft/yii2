@@ -562,9 +562,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         if ($attribute === null) {
             return $this->_errors === null ? [] : $this->_errors;
-        } else {
-            return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
         }
+        return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
     }
 
     /**
@@ -578,16 +577,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         if (empty($this->_errors)) {
             return [];
-        } else {
-            $errors = [];
-            foreach ($this->_errors as $name => $es) {
-                if (!empty($es)) {
-                    $errors[$name] = reset($es);
-                }
-            }
-
-            return $errors;
         }
+
+        $errors = [];
+        foreach ($this->_errors as $name => $es) {
+            if (!empty($es)) {
+                $errors[$name] = reset($es);
+            }
+        }
+        return $errors;
     }
 
     /**
@@ -829,9 +827,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
             $this->setAttributes($data[$scope]);
 
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**

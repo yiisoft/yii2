@@ -178,6 +178,13 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
+    public function getLimitedItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->onCondition(['item.id' => [3, 5]])
+            ->via('orderItems');
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

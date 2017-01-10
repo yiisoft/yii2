@@ -239,8 +239,8 @@ class FormatterNumberTest extends TestCase
         $this->assertSame('$0.00', $this->formatter->asCurrency('0'));
         // Starting from ICU 52.1, negative currency value will be formatted as -$123,456.12
         // see: http://source.icu-project.org/repos/icu/icu/tags/release-52-1/source/data/locales/en.txt
-//		$value = '-123456.123';
-//		$this->assertSame("($123,456.12)", $this->formatter->asCurrency($value));
+        //$value = '-123456.123';
+        //$this->assertSame("($123,456.12)", $this->formatter->asCurrency($value));
 
         $this->formatter->locale = 'de-DE';
         $this->formatter->currencyCode = null;
@@ -305,8 +305,56 @@ class FormatterNumberTest extends TestCase
         $this->assertSame("0,00 €", $this->formatter->asCurrency(false));
         $this->assertSame("0,00 €", $this->formatter->asCurrency(""));
 
+        // decimal formatting
+        $this->formatter->locale = 'de-DE';
+        $this->assertSame("100 $", \Yii::$app->formatter->asCurrency(100, 'USD', [
+            NumberFormatter::MAX_FRACTION_DIGITS => 0,
+        ]));
+        $this->assertSame("100,00 $", $this->formatter->asCurrency(100, 'USD', [
+            NumberFormatter::MAX_FRACTION_DIGITS => 2
+        ]));
+
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asCurrency(null));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/12345
+     */
+    public function testIntlCurrencyFraction()
+    {
+        $this->formatter->numberFormatterOptions = [
+            NumberFormatter::MIN_FRACTION_DIGITS => 0,
+            NumberFormatter::MAX_FRACTION_DIGITS => 0,
+        ];
+        $this->formatter->locale = 'de-DE';
+        $this->formatter->currencyCode = null;
+        $this->assertSame('123 €', $this->formatter->asCurrency('123'));
+        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->formatter->currencyCode = 'USD';
+        $this->assertSame('123 $', $this->formatter->asCurrency('123'));
+        $this->assertSame('123 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+        $this->formatter->currencyCode = 'EUR';
+        $this->assertSame('123 €', $this->formatter->asCurrency('123'));
+        $this->assertSame('123 $', $this->formatter->asCurrency('123', 'USD'));
+        $this->assertSame('123 €', $this->formatter->asCurrency('123', 'EUR'));
+
+        $this->formatter->locale = 'ru-RU';
+        $this->formatter->currencyCode = null;
+        if (version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=')) {
+            $this->assertSame('123 ₽', $this->formatter->asCurrency('123'));
+        } else {
+            $this->assertSame('123 руб.', $this->formatter->asCurrency('123'));
+        }
+        $this->formatter->numberFormatterSymbols = [
+            NumberFormatter::CURRENCY_SYMBOL => '&#8381;',
+        ];
+        $this->assertSame('123 &#8381;', $this->formatter->asCurrency('123'));
+
+        $this->formatter->numberFormatterSymbols = [];
+        $this->formatter->currencyCode = 'RUB';
+        $this->assertSame('123 руб.', $this->formatter->asCurrency('123'));
     }
 
     /**

@@ -361,9 +361,8 @@ class View extends Component
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;
-        } else {
-            return $this->evaluateDynamicContent($statements);
         }
+        return $this->evaluateDynamicContent($statements);
     }
 
     /**
@@ -479,9 +478,8 @@ class View extends Component
             $this->endCache();
 
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**

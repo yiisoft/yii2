@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\widgets;
 
+use Yii;
 use yii\widgets\Menu;
 
 /**
@@ -158,5 +159,45 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
+    public function testActiveItemClosure()
+    {
+        $output = Menu::widget([
+            'route' => 'test/test',
+            'params' => [],
+            'linkTemplate' => '',
+            'labelTemplate' => '',
+            'items' => [
+                [
+                    'label'  => 'item1',
+                    'url'    => '#',
+                    'template' => 'label: {label}; url: {url}',
+                    'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
+                        return isset($item, $hasActiveChild, $isItemActive, $widget);
+                    }
+                ],
+                [
+                    'label'  => 'item2',
+                    'template' => 'label: {label}',
+                    'active' => false
+                ],
+                [
+                    'label'  => 'item3 (no template)',
+                    'active' => 'somestring'
+                ],
+            ]
+        ]);
 
+        $expected = <<<HTML
+<ul><li class="active">label: item1; url: #</li>
+<li>label: item2</li>
+<li class="active"></li></ul>
+HTML;
+
+        $this->assertEqualsWithoutLE($expected, $output);
+    }
+
+    public function testIsItemActive()
+    {
+        // TODO: implement test of protected method isItemActive()
+    }
 }

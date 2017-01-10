@@ -1159,9 +1159,9 @@ trait ActiveRecordTestTrait
 
         $afterRefreshCalls = [];
         Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_REFRESH, function ($event) use (&$afterRefreshCalls) {
-    	    /* @var $ar BaseActiveRecord */
-    	    $ar = $event->sender;
-    	    $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
+            /* @var $ar BaseActiveRecord */
+            $ar = $event->sender;
+            $afterRefreshCalls[] = [get_class($ar), $ar->getIsNewRecord(), $ar->getPrimaryKey(), $ar->isRelationPopulated('orders')];
         });
 
         $customer = $customerClass::findOne(1);

@@ -180,7 +180,7 @@ class Application extends \yii\base\Application
             $res = parent::runAction($route, $params);
             return is_object($res) ? $res : (int)$res;
         } catch (InvalidRouteException $e) {
-            throw new Exception("Unknown command \"$route\".", 0, $e);
+            throw new UnknownCommandException($route, $this, 0, $e);
         }
     }
 

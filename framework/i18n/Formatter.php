@@ -921,8 +921,13 @@ class Formatter extends Component
      * value is rounded automatically to the defined decimal digits.
      *
      * @param mixed $value the value to be formatted.
-     * @param int $decimals the number of digits after the decimal point. If not given the number of digits is determined from the
-     * [[locale]] and if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available defaults to `2`.
+     * @param int $decimals the number of digits after the decimal point.
+     * If not given, the number of digits depends in the input value and is determined based on
+     * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
+     * using [[$numberFormatterOptions]].
+     * If the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value is `2`.
+     * If you want consistent behavior between environments where intl is available and not, you should explicitly
+     * specify a value here.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -958,6 +963,12 @@ class Formatter extends Component
      *
      * @param mixed $value the value to be formatted. It must be a factor e.g. `0.75` will result in `75%`.
      * @param int $decimals the number of digits after the decimal point.
+     * If not given, the number of digits depends in the input value and is determined based on
+     * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
+     * using [[$numberFormatterOptions]].
+     * If the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value is `0`.
+     * If you want consistent behavior between environments where intl is available and not, you should explicitly
+     * specify a value here.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -991,6 +1002,12 @@ class Formatter extends Component
      *
      * @param mixed $value the value to be formatted.
      * @param int $decimals the number of digits after the decimal point.
+     * If not given, the number of digits depends in the input value and is determined based on
+     * `NumberFormatter::MIN_FRACTION_DIGITS` and `NumberFormatter::MAX_FRACTION_DIGITS`, which can be configured
+     * using [[$numberFormatterOptions]].
+     * If the [PHP intl extension](http://php.net/manual/en/book.intl.php) is not available, the default value depends on your PHP configuration.
+     * If you want consistent behavior between environments where intl is available and not, you should explicitly
+     * specify a value here.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
@@ -1042,20 +1059,20 @@ class Formatter extends Component
         $value = $this->normalizeNumericValue($value);
 
         if ($this->_intlLoaded) {
+            $currency = $currency ?: $this->currencyCode;
+            // currency code must be set before fraction digits
+            // http://php.net/manual/en/numberformatter.formatcurrency.php#114376
+            if ($currency && !isset($textOptions[NumberFormatter::CURRENCY_CODE])) {
+                $textOptions[NumberFormatter::CURRENCY_CODE] = $currency;
+            }
             $formatter = $this->createNumberFormatter(NumberFormatter::CURRENCY, null, $options, $textOptions);
             if ($currency === null) {
-                if ($this->currencyCode === null) {
-                    if (($result = $formatter->format($value)) === false) {
-                        throw new InvalidArgumentException('Formatting currency value failed: '
-                            . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
-                    }
-                    return $result;
-                }
-                $currency = $this->currencyCode;
+                $result = $formatter->format($value);
+            } else {
+                $result = $formatter->formatCurrency($value, $currency);
             }
-            if (($result = $formatter->formatCurrency($value, $currency)) === false) {
-                throw new InvalidArgumentException('Formatting currency value failed: ' . $formatter->getErrorCode()
-                    . ' ' . $formatter->getErrorMessage());
+            if ($result === false) {
+                throw new InvalidArgumentException('Formatting currency value failed: ' . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
             }
             return $result;
         } else {

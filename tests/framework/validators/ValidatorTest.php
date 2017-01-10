@@ -176,12 +176,39 @@ class ValidatorTest extends TestCase
         $val->validate('abc');
     }
 
+    public function testValidateAttribute()
+    {
+        // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
+
+        $model = new FakedValidationModel();
+        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val->validateAttribute($model, 'val_attr_a');
+        $args = $model->getInlineValArgs();
+
+        $this->assertCount(3, $args);
+        $this->assertEquals('val_attr_a', $args[0]);
+        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+    }
+
     public function testClientValidateAttribute()
     {
         $val = new TestValidator();
         $this->assertNull(
             $val->clientValidateAttribute($this->getTestModel(), 'attr_runMe1', [])
         ); //todo pass a view instead of array
+
+        // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
+
+        $model = new FakedValidationModel();
+        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val->clientValidate = 'clientInlineVal';
+        $args = $val->clientValidateAttribute($model, 'val_attr_a', null);
+
+        $this->assertCount(3, $args);
+        $this->assertEquals('val_attr_a', $args[0]);
+        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
     }
 
     public function testIsActive()

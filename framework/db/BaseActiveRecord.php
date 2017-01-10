@@ -1444,6 +1444,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (!empty($viaRelation->where)) {
                 $condition = ['and', $condition, $viaRelation->where];
             }
+            if (!empty($viaRelation->on)) {
+                $condition = ['and', $condition, $viaRelation->on];
+            }
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 if ($delete) {
@@ -1477,6 +1480,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
                 if (!empty($relation->where)) {
                     $condition = ['and', $condition, $relation->where];
+                }
+                if (!empty($relation->on)) {
+                    $condition = ['and', $condition, $relation->on];
                 }
                 if ($delete) {
                     $relatedModel::deleteAll($condition);

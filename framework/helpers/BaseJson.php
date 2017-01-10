@@ -40,9 +40,14 @@ class BaseJson
 
     /**
      * Encodes the given value into a JSON string.
+     *
      * The method enhances `json_encode()` by supporting JavaScript expressions.
      * In particular, the method will not encode a JavaScript expression that is
      * represented in terms of a [[JsExpression]] object.
+     *
+     * Note that data encoded as JSON must be UTF-8 encoded according to the JSON specification.
+     * You must ensure strings passed to this method have proper encoding before passing them.
+     *
      * @param mixed $value the data to be encoded.
      * @param int $options the encoding options. For more details please refer to
      * <http://www.php.net/manual/en/function.json-encode.php>. Default is `JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE`.
@@ -65,9 +70,13 @@ class BaseJson
 
     /**
      * Encodes the given value into a JSON string HTML-escaping entities so it is safe to be embedded in HTML code.
+     *
      * The method enhances `json_encode()` by supporting JavaScript expressions.
      * In particular, the method will not encode a JavaScript expression that is
      * represented in terms of a [[JsExpression]] object.
+     *
+     * Note that data encoded as JSON must be UTF-8 encoded according to the JSON specification.
+     * You must ensure strings passed to this method have proper encoding before passing them.
      *
      * @param mixed $value the data to be encoded
      * @return string the encoding result

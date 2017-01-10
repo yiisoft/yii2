@@ -61,10 +61,11 @@ class FileHelperTest extends TestCase
             if ($handle = opendir($dirName)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != '.' && $entry != '..') {
-                        if (is_dir($dirName . DIRECTORY_SEPARATOR . $entry) === true) {
-                            $this->removeDir($dirName . DIRECTORY_SEPARATOR . $entry);
+                        $item = $dirName . DIRECTORY_SEPARATOR . $entry;
+                        if (is_dir($item) === true && !is_link($item)) {
+                            $this->removeDir($item);
                         } else {
-                            unlink($dirName . DIRECTORY_SEPARATOR . $entry);
+                            unlink($item);
                         }
                     }
                 }
@@ -510,6 +511,58 @@ class FileHelperTest extends TestCase
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $passedFileName], $foundFiles);
+    }
+
+    /**
+     * @depends testFindFiles
+     */
+    public function testFindFilesRecursiveWithSymLink()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+                'theDir' => [
+                    'file1' => 'abc',
+                    'file2' => 'def',
+                ],
+                'symDir' => ['symlink', 'theDir'],
+            ],
+        ]);
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
+
+        $expected = [
+            $dirName . DIRECTORY_SEPARATOR . 'symDir' . DIRECTORY_SEPARATOR . 'file1',
+            $dirName . DIRECTORY_SEPARATOR . 'symDir' . DIRECTORY_SEPARATOR . 'file2',
+            $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file1',
+            $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file2',
+        ];
+        $result = FileHelper::findFiles($dirName);
+        sort($result);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @depends testFindFiles
+     */
+    public function testFindFilesNotRecursive()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+                'theDir' => [
+                    'file1' => 'abc',
+                    'file2' => 'def',
+                ],
+                'symDir' => ['symlink', 'theDir'],
+                'file3' => 'root'
+            ],
+        ]);
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
+
+        $expected = [
+            $dirName . DIRECTORY_SEPARATOR . 'file3',
+        ];
+        $this->assertEquals($expected, FileHelper::findFiles($dirName, ['recursive' => false]));
     }
 
     /**

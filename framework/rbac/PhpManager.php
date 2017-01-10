@@ -99,6 +99,11 @@ class PhpManager extends BaseManager
     public function checkAccess($userId, $permissionName, $params = [])
     {
         $assignments = $this->getAssignments($userId);
+
+        if ($this->hasNoAssignments($assignments)) {
+            return false;
+        }
+
         return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 

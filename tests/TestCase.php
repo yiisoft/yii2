@@ -105,15 +105,20 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * @param $object
      * @param $method
      * @param array $args
+     * @param bool $revoke whether to make method inaccessible after execution
      * @return mixed
      * @since 2.0.11
      */
-    protected function invokeMethod($object, $method, $args = [])
+    protected function invokeMethod($object, $method, $args = [], $revoke = true)
     {
         $reflection = new \ReflectionClass(get_class($object));
         $method = $reflection->getMethod($method);
         $method->setAccessible(true);
-        return $method->invokeArgs($object, $args);
+        $result = $method->invokeArgs($object, $args);
+        if ($revoke) {
+            $method->setAccessible(false);
+        }
+        return $result;
     }
 
     /**
@@ -121,7 +126,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * @param $object
      * @param $propertyName
      * @param $value
-     * @param bool $revoke
+     * @param bool $revoke whether to make property inaccessible after setting
      * @since 2.0.11
      */
     protected function setInaccessibleProperty($object, $propertyName, $value, $revoke = true)
@@ -133,7 +138,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         $property = $class->getProperty($propertyName);
         $property->setAccessible(true);
         $property->setValue($value);
-        if($revoke){
+        if ($revoke) {
             $property->setAccessible(false);
         }
     }
@@ -142,9 +147,10 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
      * Gets an inaccessible object property
      * @param $object
      * @param $propertyName
+     * @param bool $revoke whether to make property inaccessible after getting
      * @return mixed
      */
-    protected function getInaccessibleProperty($object, $propertyName)
+    protected function getInaccessibleProperty($object, $propertyName, $revoke = true)
     {
         $class = new \ReflectionClass($object);
         while (!$class->hasProperty($propertyName)) {
@@ -152,7 +158,11 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         }
         $property = $class->getProperty($propertyName);
         $property->setAccessible(true);
-        return $property->getValue($object);
+        $result = $property->getValue($object);
+        if ($revoke) {
+            $property->setAccessible(false);
+        }
+        return $result;
     }
 
 

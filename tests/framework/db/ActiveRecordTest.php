@@ -3,6 +3,7 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecordInterface;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
@@ -50,6 +51,11 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function getOrderItemClass()
     {
         return OrderItem::class;
+    }
+
+    public function getCategoryClass()
+    {
+        return Category::className();
     }
 
     public function getOrderWithNullFKClass()
@@ -1294,4 +1300,121 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals($newTotal, $newOrder->total);
     }
 
+    public function testEmulateExecution()
+    {
+        $this->assertGreaterThan(0, Customer::find()->count());
+
+        $rows = Customer::find()
+            ->emulateExecution()
+            ->all();
+        $this->assertSame([], $rows);
+
+        $row = Customer::find()
+            ->emulateExecution()
+            ->one();
+        $this->assertSame(null, $row);
+
+        $exists = Customer::find()
+            ->emulateExecution()
+            ->exists();
+        $this->assertSame(false, $exists);
+
+        $count = Customer::find()
+            ->emulateExecution()
+            ->count();
+        $this->assertSame(0, $count);
+
+        $sum = Customer::find()
+            ->emulateExecution()
+            ->sum('id');
+        $this->assertSame(0, $sum);
+
+        $sum = Customer::find()
+            ->emulateExecution()
+            ->average('id');
+        $this->assertSame(0, $sum);
+
+        $max = Customer::find()
+            ->emulateExecution()
+            ->max('id');
+        $this->assertSame(null, $max);
+
+        $min = Customer::find()
+            ->emulateExecution()
+            ->min('id');
+        $this->assertSame(null, $min);
+
+        $scalar = Customer::find()
+            ->select(['id'])
+            ->emulateExecution()
+            ->scalar();
+        $this->assertSame(null, $scalar);
+
+        $column = Customer::find()
+            ->select(['id'])
+            ->emulateExecution()
+            ->column();
+        $this->assertSame([], $column);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/12213
+     */
+    public function testUnlinkAllOnCondition()
+    {
+        /** @var Category $categoryClass */
+        $categoryClass = $this->getCategoryClass();
+        /** @var Item $itemClass */
+        $itemClass = $this->getItemClass();
+
+        // Ensure there are three items with category_id = 2 in the Items table
+        $itemsCount = $itemClass::find()->where(['category_id' => 2])->count();
+        $this->assertEquals(3, $itemsCount);
+
+        $categoryQuery = $categoryClass::find()->with('limitedItems')->where(['id' => 2]);
+        // Ensure that limitedItems relation returns only one item
+        // (category_id = 2 and id in (1,2,3))
+        $category = $categoryQuery->one();
+        $this->assertCount(1, $category->limitedItems);
+
+        // Unlink all items in the limitedItems relation
+        $category->unlinkAll('limitedItems', true);
+
+        // Make sure that only one item was unlinked
+        $itemsCount = $itemClass::find()->where(['category_id' => 2])->count();
+        $this->assertEquals(2, $itemsCount);
+
+        // Call $categoryQuery again to ensure no items were found
+        $this->assertCount(0, $categoryQuery->one()->limitedItems);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/12213
+     */
+    public function testUnlinkAllOnConditionViaTable()
+    {
+        /** @var Order $orderClass */
+        $orderClass = $this->getOrderClass();
+        /** @var Item $itemClass */
+        $itemClass = $this->getItemClass();
+
+        // Ensure there are three items with category_id = 2 in the Items table
+        $itemsCount = $itemClass::find()->where(['category_id' => 2])->count();
+        $this->assertEquals(3, $itemsCount);
+
+        $orderQuery = $orderClass::find()->with('limitedItems')->where(['id' => 2]);
+        // Ensure that limitedItems relation returns only one item
+        // (category_id = 2 and id in (4, 5))
+        $category = $orderQuery->one();
+        $this->assertCount(2, $category->limitedItems);
+
+        // Unlink all items in the limitedItems relation
+        $category->unlinkAll('limitedItems', true);
+
+        // Call $orderQuery again to ensure that links are removed
+        $this->assertCount(0, $orderQuery->one()->limitedItems);
+
+        // Make sure that only links were removed, the items were not removed
+        $this->assertEquals(3, $itemClass::find()->where(['category_id' => 2])->count());
+    }
 }

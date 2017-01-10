@@ -164,7 +164,9 @@ class Controller extends Component implements ViewContextInterface
             }
         }
 
-        $this->action = $oldAction;
+        if ($oldAction !== null) {
+            $this->action = $oldAction;
+        }
 
         return $result;
     }
@@ -186,9 +188,8 @@ class Controller extends Component implements ViewContextInterface
             return $this->runAction($route, $params);
         } elseif ($pos > 0) {
             return $this->module->runAction($route, $params);
-        } else {
-            return Yii::$app->runAction(ltrim($route, '/'), $params);
         }
+        return Yii::$app->runAction(ltrim($route, '/'), $params);
     }
 
     /**
@@ -393,9 +394,8 @@ class Controller extends Component implements ViewContextInterface
         $layoutFile = $this->findLayoutFile($this->getView());
         if ($layoutFile !== false) {
             return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
-        } else {
-            return $content;
         }
+        return $content;
     }
 
     /**

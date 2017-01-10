@@ -482,7 +482,7 @@ class Response extends \yii\base\Response
      *    meaning a download dialog will pop up.
      *
      * @return $this the response object itself
-     * @throws HttpException if the requested range is not satisfiable
+     * @throws RangeNotSatisfiableHttpException if the requested range is not satisfiable
      * @see sendFile() for an example implementation.
      */
     public function sendContentAsFile($content, $attachmentName, $options = [])
@@ -494,7 +494,7 @@ class Response extends \yii\base\Response
 
         if ($range === false) {
             $headers->set('Content-Range', "bytes */$contentLength");
-            throw new HttpException(416, 'Requested range not satisfiable');
+            throw new RangeNotSatisfiableHttpException();
         }
 
         list($begin, $end) = $range;
@@ -533,7 +533,7 @@ class Response extends \yii\base\Response
      *    This option is available since version 2.0.4.
      *
      * @return $this the response object itself
-     * @throws HttpException if the requested range cannot be satisfied.
+     * @throws RangeNotSatisfiableHttpException if the requested range is not satisfiable
      * @see sendFile() for an example implementation.
      */
     public function sendStreamAsFile($handle, $attachmentName, $options = [])
@@ -549,7 +549,7 @@ class Response extends \yii\base\Response
         $range = $this->getHttpRange($fileSize);
         if ($range === false) {
             $headers->set('Content-Range', "bytes */$fileSize");
-            throw new HttpException(416, 'Requested range not satisfiable');
+            throw new RangeNotSatisfiableHttpException();
         }
 
         list($begin, $end) = $range;

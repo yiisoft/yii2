@@ -1,5 +1,18 @@
+#
+# Travis Setup
+#
+
+# use ubuntu trusty for newer version of nodejs, used for JS testing
+dist: trusty
+
 # faster builds on new travis setup not using sudo
 sudo: false
+
+
+#
+# Test Matrix
+#
+
 language: php
 
 php:
@@ -18,6 +31,8 @@ matrix:
       dist: trusty
       group: edge # Use edge image until the next travis CI image update
       addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
         apt:
           packages:
             - mysql-server-5.6
@@ -25,13 +40,14 @@ matrix:
             - mysql-client-5.6
       services:
         - mysql
-      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
     # test against the latest HHVM version by using a newer image
     - php: hhvm
       sudo: true
       dist: trusty
       group: edge # Use edge image until the next travis CI image update
       addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
         postgresql: "9.3"
         apt:
           packages:
@@ -41,26 +57,50 @@ matrix:
       services:
         - mysql
         - postgresql
-      env: CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
+    # have a separate branch for javascript tests
+    - language: node_js
+      node_js: 6
+      dist: trusty
+      # overwrite php related settings
+      php:
+      services:
+      addons:
+      install:
+        - travis_retry npm install
+        # disable xdebug for performance in composer
+        - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
+        - travis_retry composer self-update && composer --version
+        - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+        - travis_retry composer install --prefer-dist --no-interaction
+      before_script:
+        - node --version
+        - npm --version
+        - php --version
+        - composer --version
+      script: npm test
+      after_script:
+
   allow_failures:
     - php: nightly
 
-env:
-  - CUBRID_VERSION=9.3.0/CUBRID-9.3.0.0206 CUBRID_PDO_VERSION=9.3.0.0001
 
 services:
   - memcached
+  - mysql
+  - postgresql
 
 # cache vendor dirs
 cache:
   directories:
-#    - cubrid/9.3.0
     - vendor
     - $HOME/.composer/cache
+    - $HOME/.npm
 
 # try running against postgres 9.3
 addons:
   postgresql: "9.3"
+  code_climate:
+    repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
 install:
   - |
@@ -69,15 +109,17 @@ install:
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0"
+  - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-# core framework:
-  - travis_retry composer update --prefer-dist --no-interaction
+  # core framework:
+  - travis_retry composer install --prefer-dist --no-interaction
   - tests/data/travis/apc-setup.sh
   - tests/data/travis/memcache-setup.sh
-#  - tests/data/travis/cubrid-setup.sh
+  - tests/data/travis/imagick-setup.sh
 
 before_script:
+  # Disable the HHVM JIT for faster Unit Testing
+  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini; fi
   # show some versions and env information
   - php -r "echo INTL_ICU_VERSION . \"\n\";"
   - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
@@ -85,18 +127,12 @@ before_script:
   - psql --version
 
   # initialize databases
-  - |
-    if [[ $TRAVIS_PHP_VERSION != hhv* ]]; then
-      mysql -e 'CREATE DATABASE `yiitest`;'
-    fi
-  - |
-    if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then
-      mysql -u root -e 'CREATE DATABASE yiitest;';
-      mysql -u root -e 'CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;'
-      mysql -u root -e 'GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;'
-    fi
+  - mysql -e 'CREATE DATABASE `yiitest`;';
+  - mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
+  # enable code coverage on PHP 5.6, only one PHP version needs to generate coverage data
   - |
     if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
@@ -104,6 +140,8 @@ before_script:
 
 
 script:
+  # ensure no files contain UTF-8 byte order mark
+  - if ! grep -rlI $'\xEF\xBB\xBF' framework/ ; then echo "no utf8 BOM found"; else echo "found utf8 BOM in some files. See above."; exit 1; fi
   # validate composer.json
   - composer validate --no-check-lock
   - cd framework && composer validate --no-check-lock && cd ..
