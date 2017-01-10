@@ -20,27 +20,27 @@ class ListViewTest extends \yiiunit\TestCase
 
     public function testEmptyListShown()
     {
-        $this->getListView([
+        $actual = $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => "Nothing at all",
         ])->run();
 
-        $this->expectOutputString('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>');
+        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $actual);
     }
 
     public function testEmptyListNotShown()
     {
-        $this->getListView([
+        $actual = $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'showOnEmpty' => true,
         ])->run();
 
-        $this->expectOutputString(<<<HTML
+        $expected = <<<HTML
 <div id="w0" class="list-view">
 
 </div>
-HTML
-        );
+HTML;
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 
     private function getListView($options = [])
@@ -64,28 +64,29 @@ HTML
 
     public function testSimplyListView()
     {
-        $this->getListView()->run();
+        $actual = $this->getListView()->run();
 
-        $this->expectOutputString(<<<HTML
+        $expected = <<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
 <div data-key="2">2</div>
 </div>
-HTML
-        );
+HTML;
+        
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 
     public function testWidgetOptions()
     {
-        $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
+        $actual = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
 
-        $this->expectOutputString(<<<HTML
+        $expected = <<<HTML
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
-HTML
-        );
+HTML;
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 
     public function itemViewOptions()
@@ -125,8 +126,8 @@ HTML
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        $this->getListView(['itemView' => $itemView])->run();
-        $this->expectOutputString($expected);
+        $actual = $this->getListView(['itemView' => $itemView])->run();
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 
     public function itemOptions()
@@ -167,8 +168,8 @@ HTML
      */
     public function testItemOptions($itemOptions, $expected)
     {
-        $this->getListView(['itemOptions' => $itemOptions])->run();
-        $this->expectOutputString($expected);
+        $actual = $this->getListView(['itemOptions' => $itemOptions])->run();
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 
     public function testBeforeAndAfterItem()
@@ -184,12 +185,12 @@ HTML
             $widget = get_class($widget);
             return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
         };
-        $this->getListView([
+        $actual = $this->getListView([
             'beforeItem' => $before,
             'afterItem' => $after
         ])->run();
 
-        $this->expectOutputString(<<<HTML
+        $expected = <<<HTML
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <!-- before: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
 <div data-key="0">0</div>
@@ -200,7 +201,7 @@ HTML
 <div data-key="2">2</div>
 <!-- after: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
 </div>
-HTML
-);
+HTML;
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 }
