@@ -73,7 +73,7 @@ abstract class BaseMigrateController extends Controller
     {
         return array_merge(
             parent::options($actionID),
-            ['migrationPath'], // global for all actions
+            ['migrationPath', 'migrationNamespaces'], // global for all actions
             $actionID === 'create' ? ['templateFile'] : [] // action create
         );
     }
