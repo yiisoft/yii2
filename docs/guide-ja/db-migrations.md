@@ -869,13 +869,11 @@ return [
 もう、`migrationTable` のコマンドラインオプションを使ってテーブルを指定する必要はなくなります。
 
 
-### 分離されたマイグレーション <span id="separated-migrations"></span>
+### Namespaced Migrations <span id="namespaced-migrations"></span>
 
-時として、異なる名前空間からマイグレーションを使用する必要が生じることがあります。
-それはあなた自身のプロジェクトの何らかのエクステンションであったりモジュールであったりします。
-そのようなものの一つの例は [RBAC コンポーネント](security-authorization.md#configuring-rbac) のためのマイグレーションです。
-バージョン 2.0.10 以降では、[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]
-を使ってこの課題を解決することが出来ます。
+Since 2.0.10 you can use namespaces for the migration classes. You can specify the list of the migration namespaces via
+[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. Using of the namespaces for
+migration classes allows you usage of the several source locations for the migrations. For example:
 
 ```php
 return [
@@ -883,14 +881,36 @@ return [
         'migrate' => [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationNamespaces' => [
-                'app\migrations', // アプリケーション全体のための共通のマイグレーション
-                'module\migrations', // 特定のモジュールのためのマイグレーション
-                'yii\rbac\migrations', // 特定のエクステンションのためのマイグレーション
+                'app\migrations', // Common migrations for the whole application
+                'module\migrations', // Migrations for the specific project's module
+                'some\extension\migrations', // Migrations for the specific extension
             ],
         ],
     ],
 ];
 ```
+
+> Note: migrations applied from different namespaces will create a **single** migration history, e.g. you might be
+  unable to apply or revert migrations from particular namespace only.
+
+While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
+migration name. Note that backslash (`\`) symbol is usually considered a special character in the shell, so you need
+to escape it properly to avoid shell errors or incorrect behavior. For example:
+
+```
+yii migrate/create 'app\\migrations\\createUserTable'
+```
+
+> Note: migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
+  contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
+  property.
+
+
+### 分離されたマイグレーション <span id="separated-migrations"></span>
+
+Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
+'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect
+the ones dedicated to main project functionality.
 
 これらをお互いに完全に分離して適用かつ追跡したい場合は、別々の名前空間とマイグレーション履歴テーブルを使う
 複数のマイグレーションコマンドを構成することが出来ます。
@@ -913,7 +933,7 @@ return [
         // 特定のエクステンションのためのマイグレーション
         'migrate-rbac' => [
             'class' => 'yii\console\controllers\MigrateController',
-            'migrationNamespaces' => ['yii\rbac\migrations'],
+            'migrationPath' => '@yii/rbac/migrations',
             'migrationTable' => 'migration_rbac',
         ],
     ],
