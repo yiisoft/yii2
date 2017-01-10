@@ -188,7 +188,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(3, $args);
         $this->assertEquals('val_attr_a', $args[0]);
         $this->assertEquals(['foo' => 'bar'], $args[1]);
-        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+        $this->assertInstanceOf(InlineValidator::class, $args[2]);
     }
 
     public function testClientValidateAttribute()
@@ -208,7 +208,7 @@ class ValidatorTest extends TestCase
         $this->assertCount(3, $args);
         $this->assertEquals('val_attr_a', $args[0]);
         $this->assertEquals(['foo' => 'bar'], $args[1]);
-        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+        $this->assertInstanceOf(InlineValidator::class, $args[2]);
     }
 
     public function testIsActive()

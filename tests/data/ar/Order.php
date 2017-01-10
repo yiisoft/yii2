@@ -180,7 +180,7 @@ class Order extends ActiveRecord
 
     public function getLimitedItems()
     {
-        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+        return $this->hasMany(Item::class, ['id' => 'item_id'])
             ->onCondition(['item.id' => [3, 5]])
             ->via('orderItems');
     }

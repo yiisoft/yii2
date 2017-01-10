@@ -403,7 +403,7 @@ class PageCacheTest extends TestCase
                 'cache' => $cache = new ArrayCache(),
                 'view' => new View(),
                 'dependency' => [
-                    'class' => ExpressionDependency::className(),
+                    'class' => ExpressionDependency::class,
                     'expression' => 'Yii::$app->params[\'dependency\']',
                 ]
             ]);

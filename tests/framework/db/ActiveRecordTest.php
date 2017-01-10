@@ -55,7 +55,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function getCategoryClass()
     {
-        return Category::className();
+        return Category::class;
     }
 
     public function getOrderWithNullFKClass()
