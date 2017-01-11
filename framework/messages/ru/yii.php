@@ -24,6 +24,7 @@ return [
     '{attribute} must be less than or equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» должно быть меньше или равно значения «{compareValueOrAttribute}».',
     '{attribute} must not be equal to "{compareValueOrAttribute}".' => 'Значение «{attribute}» не должно быть равно «{compareValueOrAttribute}».',
     '(not set)' => '(не задано)',
+    'and' => 'и',
     'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',
     'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
     'Delete' => 'Удалить',
