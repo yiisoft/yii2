@@ -285,7 +285,7 @@ class BaseYii
             return;
         }
 
-        include($classFile);
+        cleanAutoload($classFile);
 
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
@@ -540,4 +540,13 @@ class BaseYii
     {
         return get_object_vars($object);
     }
+}
+
+/**
+ * Prevents access to scope of BaseYii::autoload() from included file.
+ * @param string $classFile
+ */
+function cleanAutoload($classFile)
+{
+    include($classFile);
 }
