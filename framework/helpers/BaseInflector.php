@@ -568,7 +568,7 @@ class BaseInflector
      */
     public static function sentence(array $words, $twoWordsConnector = null, $lastWordConnector = null, $connector = ', ')
     {
-        if (is_null($twoWordsConnector)) {
+        if ($twoWordsConnector === null) {
             $twoWordsConnector = ' ' . Yii::t('yii', 'and') . ' ';
         }
         if ($lastWordConnector === null) {
