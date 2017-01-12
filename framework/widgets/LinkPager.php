@@ -127,7 +127,7 @@ class LinkPager extends Widget
     /**
      * @var bool replace a to span the current page
      */
-    public $disabledCurrentPageLink = false;
+    public $disableCurrentPageLink = false;
 
 
     /**
@@ -196,7 +196,7 @@ class LinkPager extends Widget
         // internal pages
         list($beginPage, $endPage) = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; ++$i) {
-            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disabledCurrentPageLink && $i == $currentPage, $i == $currentPage);
+            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageLink && $i == $currentPage, $i == $currentPage);
         }
 
         // next page
