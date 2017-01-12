@@ -83,6 +83,7 @@ Yii Framework 2 Change Log
 - Enh #12988: Changed `textarea` method within the `yii\helpers\BaseHtml` class to allow users to control whether HTML entities found within `$value` will be double-encoded or not (cyphix333)
 - Enh #13020: Added `disabledListItemSubTagOptions` attribute for `yii\widgets\LinkPager` in order to customize the disabled list item sub tag element (nadar)
 - Enh #13035: Use ArrayHelper::getValue() in SluggableBehavior::getValue() (thyseus)
+- Enh #13375: introduce EVENT_BEFORE_UPDATE_ATTRIBUTES and EVENT_AFTER_UPDATE_ATTRIBUTES in BaseActiveRecord (thyseus)
 - Enh #13036: Added shortcut methods `asJson()` and `asXml()` for returning JSON and XML data in web controller actions (cebe)
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul, rob006)
 - Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options (timbeks)
