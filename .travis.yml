@@ -8,6 +8,12 @@ dist: trusty
 # faster builds on new travis setup not using sudo
 sudo: false
 
+# build only on master branches
+branches:
+  only:
+    - master
+    - 2.1
+
 
 #
 # Test Matrix

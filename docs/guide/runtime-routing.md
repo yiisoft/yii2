@@ -135,7 +135,8 @@ With the above configuration, the `site/offline` action will be used to handle a
 The `catchAll` property should take an array whose first element specifies a route, and
 the rest of the elements (name-value pairs) specify the parameters to be [bound to the action](structure-controllers.md#action-parameters).
 
-> Info: Debug panel on development environment will not work when this property is enabled
+> Info: The [debug toolbar](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md) in development environment
+> will not work when this property is enabled.
 
 
 ## Creating URLs <span id="creating-urls"></span>
@@ -195,7 +196,7 @@ echo Url::to(['post/index']);
 // an absolute route: /index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post%2Findex     assume the alias "@posts" is defined as "/post/index"
+// using an alias "@posts", which is defined as "/post/index": /index.php?r=post%2Findex
 echo Url::to(['@posts']);
 ```
 
@@ -204,7 +205,7 @@ and [[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] methods of t
 In the next few subsections, we will explain how to configure the [[yii\web\UrlManager|URL manager]] to customize
 the format of the created URLs.
 
-The [[yii\helpers\Url::to()]] method also supports creating URLs that are NOT related with particular routes.
+The [[yii\helpers\Url::to()]] method also supports creating URLs that are **not** related with particular routes.
 Instead of passing an array as its first parameter, you should pass a string in this case. For example,
 
 ```php
@@ -270,7 +271,7 @@ The rest of the properties are optional. However, their configuration shown abov
   by setting this property to be `false`, a URL `/post/100` will be generated.
 * [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: this property determines whether to enable
   strict request parsing. If strict parsing is enabled, the incoming requested URL must match at least one of
-  the [[yii\web\UrlManager::rules|rules]] in order to be treated as a valid request, or a [[yii\web\NotFoundHttpException]]
+  the [[yii\web\UrlManager::rules|rules]] in order to be treated as a valid request, otherwise a [[yii\web\NotFoundHttpException]]
   will be thrown. If strict parsing is disabled, when none of the [[yii\web\UrlManager::rules|rules]] matches
   the requested URL, the path info part of the URL will be treated as the requested route.
 * [[yii\web\UrlManager::rules|rules]]: this property contains a list of rules specifying how to parse and create
@@ -280,13 +281,13 @@ The rest of the properties are optional. However, their configuration shown abov
 > Note: In order to hide the entry script name in the created URLs, besides setting
   [[yii\web\UrlManager::showScriptName|showScriptName]] to be `false`, you may also need to configure your Web server
   so that it can correctly identify which PHP script should be executed when a requested URL does not explicitly
-  specify one. If you are using Apache Web server, you may refer to the recommended configuration as described in the
+  specify one. If you are using Apache or nginx Web server, you may refer to the recommended configuration as described in the
   [Installation](start-installation.md#recommended-apache-configuration) section.
 
 
 ### URL Rules <span id="url-rules"></span>
 
-A URL rule is an instance of [[yii\web\UrlRule]] or its child class. Each URL rule consists of a pattern used
+A URL rule is a class implementing the [[yii\web\UrlRuleInterface]], usually [[yii\web\UrlRule]]. Each URL rule consists of a pattern used
 for matching the path info part of URLs, a route, and a few query parameters. A URL rule can be used to parse a request
 if its pattern matches the requested URL. A URL rule can be used to create a URL if its route and query parameter
 names match those that are given.
@@ -298,14 +299,14 @@ declared and looks for the *first* rule that matches the requested URL. The matc
 parse the URL into a route and its associated parameters. Similarly, to create a URL, the [[yii\web\UrlManager|URL manager]]
 looks for the first rule that matches the given route and parameters and uses that to create a URL.
 
-You can configure [[yii\web\UrlManager::rules]] as an array with keys being the patterns and values the corresponding
-routes. Each pattern-route pair constructs a URL rule. For example, the following [[yii\web\UrlManager::rules|rules]]
+You can configure [[yii\web\UrlManager::rules]] as an array with keys being the [[yii\web\UrlRule::$pattern|patterns]] and values the corresponding
+[[yii\web\UrlRule::$route|routes]]. Each pattern-route pair constructs a URL rule. For example, the following [[yii\web\UrlManager::rules|rules]]
 configuration declares two URL rules. The first rule matches a URL `posts` and maps it into the route `post/index`.
 The second rule matches a URL matching the regular expression `post/(\d+)` and maps it into the route `post/view` and
-a parameter named `id`.
+defines a query parameter named `id`.
 
 ```php
-[
+'rules' => [
     'posts' => 'post/index',
     'post/<id:\d+>' => 'post/view',
 ]
@@ -320,9 +321,8 @@ array is used to configure a single URL rule object. This is often needed when y
 properties of a URL rule. For example,
 
 ```php
-[
+'rules' => [
     // ...other url rules...
-
     [
         'pattern' => 'posts',
         'route' => 'post/index',
@@ -332,17 +332,18 @@ properties of a URL rule. For example,
 ```
 
 By default if you do not specify the `class` option for a rule configuration, it will take the default
-class [[yii\web\UrlRule]].
+class [[yii\web\UrlRule]], which is the default value defined in
+[[yii\web\UrlManager::$ruleConfig]].
 
 
 ### Named Parameters <span id="named-parameters"></span>
 
-A URL rule can be associated with a few named query parameters which are specified in the pattern in the format
+A URL rule can be associated with named query parameters which are specified in the pattern in the format
 of `<ParamName:RegExp>`, where `ParamName` specifies the parameter name and `RegExp` is an optional regular
 expression used to match parameter values. If `RegExp` is not specified, it means the parameter value should be
 a string without any slash.
 
-> Note: You can only specify regular expressions for parameters. The rest part of a pattern is considered as plain text.
+> Note: You can only use regular expressions inside of parameters. The rest of a pattern is considered plain text.
 
 When a rule is used to parse a URL, it will fill the associated parameters with values matching the corresponding
 parts of the URL, and these parameters will be made available in `$_GET` later by the `request` application component.
@@ -352,7 +353,7 @@ places where the parameters are declared.
 Let's use some examples to illustrate how named parameters work. Assume we have declared the following three URL rules:
 
 ```php
-[
+'rules' => [
     'posts/<year:\d{4}>/<category>' => 'post/index',
     'posts' => 'post/index',
     'post/<id:\d+>' => 'post/view',
@@ -368,7 +369,7 @@ When the rules are used to parse URLs:
   the third rule;
 - `/index.php/posts/php` will cause a [[yii\web\NotFoundHttpException]] when [[yii\web\UrlManager::enableStrictParsing]]
   is `true`, because it matches none of the patterns. If [[yii\web\UrlManager::enableStrictParsing]] is `false` (the
-  default value), the path info part `posts/php` will be returned as the route.
+  default value), the path info part `posts/php` will be returned as the route. This will either execute the corresponding action if it exists or throw a [[yii\web\NotFoundHttpException]] otherwise.
 
 And when the rules are used to create URLs:
 
@@ -388,20 +389,23 @@ You can embed parameter names in the route of a URL rule. This allows a URL rule
 routes. For example, the following rules embed `controller` and `action` parameters in the routes.
 
 ```php
-[
-    '<controller:(post|comment)>/<id:\d+>/<action:(create|update|delete)>' => '<controller>/<action>',
+'rules' => [
+    '<controller:(post|comment)>/create' => '<controller>/create',
+    '<controller:(post|comment)>/<id:\d+>/<action:(update|delete)>' => '<controller>/<action>',
     '<controller:(post|comment)>/<id:\d+>' => '<controller>/view',
     '<controller:(post|comment)>s' => '<controller>/index',
 ]
 ```
 
-To parse a URL `/index.php/comment/100/create`, the first rule will apply, which sets the `controller` parameter to
-be `comment` and `action` parameter to be `create`. The route `<controller>/<action>` is thus resolved as `comment/create`.
+To parse a URL `/index.php/comment/100/update`, the second rule will apply, which sets the `controller` parameter to
+be `comment` and `action` parameter to be `update`. The route `<controller>/<action>` is thus resolved as `comment/update`.
 
-Similarly, to create a URL for the route `comment/index`, the third rule will apply, which creates a URL `/index.php/comments`.
+Similarly, to create a URL for the route `comment/index`, the last rule will apply, which creates a URL `/index.php/comments`.
 
 > Info: By parameterizing routes, it is possible to greatly reduce the number of URL rules, which can significantly
   improve the performance of [[yii\web\UrlManager|URL manager]].
+
+### Default Parameter Values <span id="default-parameter-values"></span>
 
 By default, all parameters declared in a rule are required. If a requested URL does not contain a particular parameter,
 or if a URL is being created without a particular parameter, the rule will not apply. To make some of the parameters
@@ -412,7 +416,7 @@ In the following rule declaration, the `page` and `tag` parameters are both opti
 empty string, respectively, when they are not provided.
 
 ```php
-[
+'rules' => [
     // ...other rules...
     [
         'pattern' => 'posts/<page:\d+>/<tag>',
@@ -439,7 +443,7 @@ should behave differently for different Web server names. For example, the follo
 `http://admin.example.com/login` into the route `admin/user/login` and `http://www.example.com/login` into `site/login`.
 
 ```php
-[
+'rules' => [
     'http://admin.example.com/login' => 'admin/user/login',
     'http://www.example.com/login' => 'site/login',
 ]
@@ -449,14 +453,14 @@ You can also embed parameters in the server names to extract dynamic information
 will parse the URL `http://en.example.com/posts` into the route `post/index` and the parameter `language=en`.
 
 ```php
-[
+'rules' => [
     'http://<language:\w+>.example.com/posts' => 'post/index',
 ]
 ```
 
-> Note: Rules with server names should NOT include the subfolder of the entry script in their patterns. For example, if the application is under `http://www.example.com/sandbox/blog`, then you should use the pattern
+> Note: Rules with server names should **not** include the subfolder of the entry script in their patterns. For example, if the applications entry script is at `http://www.example.com/sandbox/blog/index.php`, then you should use the pattern
   `http://www.example.com/posts` instead of `http://www.example.com/sandbox/blog/posts`. This will allow your application
-  to be deployed under any directory without the need to change your application code.
+  to be deployed under any directory without the need to change your url rules. Yii will automatically detect the base url of the application.
 
 
 ### URL Suffixes <span id="url-suffixes"></span>
@@ -468,11 +472,11 @@ the following in the application configuration:
 
 ```php
 [
+    // ...
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' => true,
+            // ...
             'suffix' => '.html',
             'rules' => [
                 // ...
@@ -488,20 +492,19 @@ URLs with `.html` as their suffix.
 > Tip: You may set `/` as the URL suffix so that the URLs all end with a slash.
 
 > Note: When you configure a URL suffix, if a requested URL does not have the suffix, it will be considered as
-  an unrecognized URL. This is a recommended practice for SEO (search engine optimization).
+  an unrecognized URL. This is a recommended practice for SEO (search engine optimization) to avoid duplicate content on different URLs.
 
 Sometimes you may want to use different suffixes for different URLs. This can be achieved by configuring the
 [[yii\web\UrlRule::suffix|suffix]] property of individual URL rules. When a URL rule has this property set, it will
 override the suffix setting at the [[yii\web\UrlManager|URL manager]] level. For example, the following configuration
-contains a customized URL rule which uses `.json` as its suffix instead of the global one `.html`.
+contains a customized URL rule which uses `.json` as its suffix instead of the global `.html` suffix.
 
 ```php
 [
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' => true,
+            // ...
             'suffix' => '.html',
             'rules' => [
                 // ...
@@ -516,102 +519,28 @@ contains a customized URL rule which uses `.json` as its suffix instead of the g
 ]
 ```
 
-
-### URL normalization <span id="url-normalization"></span>
-
-Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] can be configured to use [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
-with variations of the same URL with and without trailing slash. Because technically `http://example.com/path`
-and `http://example.com/path/` are different URLs, serving the same content for both of them can degrade SEO.
-By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
-suffix has a trailing slash or not, and redirects to the normalized version of the URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
-The normalizer can be configured globally for the URL manager or individually for each rule - by default each rule will use the normalizer
-from URL manager. You can set [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization
-for particular URL rule.
-
-The following shows an example configuration for the UrlNormalizer:
-
-```php
-[
-    'components' => [
-        'urlManager' => [
-            'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' => true,
-            'suffix' => '.html',
-            'normalizer' => [
-                'class' => 'yii\web\UrlNormalizer',
-                'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY, // use temporary redirection instead of permanent
-            ],
-            'rules' => [
-                // ...
-                [
-                    'pattern' => 'posts',
-                    'route' => 'post/index',
-                    'suffix' => '/',
-                    'normalizer' => false, // disable normalizer for this rule
-                ],
-                [
-                    'pattern' => 'tags',
-                    'route' => 'tag/index',
-                    'normalizer' => [
-                        'collapseSlashes' => false, // do not collapse consecutive slashes for this rule
-                    ],
-                ],
-            ],
-        ],
-    ],
-]
-```
-
-> Note: by default [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] is disabled. You need to explicitly
-  configure it in order to enable URL normalization.
-
-
 ### HTTP Methods <span id="http-methods"></span>
 
 When implementing RESTful APIs, it is commonly needed that the same URL be parsed into different routes according to
 the HTTP methods being used. This can be easily achieved by prefixing the supported HTTP methods to the patterns of
 the rules. If a rule supports multiple HTTP methods, separate the method names with commas. For example, the following
 rules have the same pattern `post/<id:\d+>` with different HTTP method support. A request for `PUT post/100` will
-be parsed into `post/create`, while a request for `GET post/100` will be parsed into `post/view`.
+be parsed into `post/update`, while a request for `GET post/100` will be parsed into `post/view`.
 
 ```php
-[
-    'PUT,POST post/<id:\d+>' => 'post/create',
+'rules' => [
+    'PUT,POST post/<id:\d+>' => 'post/update',
     'DELETE post/<id:\d+>' => 'post/delete',
     'post/<id:\d+>' => 'post/view',
 ]
 ```
 
-> Note: If a URL rule contains HTTP method(s) in its pattern, the rule will only be used for parsing purpose.
+> Note: If a URL rule contains HTTP method(s) in its pattern, the rule will only be used for parsing purpose unless `GET` is among the specified verbs.
   It will be skipped when the [[yii\web\UrlManager|URL manager]] is called to create URLs.
 
 > Tip: To simplify the routing of RESTful APIs, Yii provides a special URL rule class [[yii\rest\UrlRule]]
   which is very efficient and supports some fancy features such as automatic pluralization of controller IDs.
-  For more details, please refer to the [Routing](rest-routing.md) section about developing RESTful APIs.
-
-
-### Customizing Rules <span id="customizing-rules"></span>
-
-In the previous examples, URL rules are mainly declared in terms of pattern-route pairs. This is a commonly used
-shortcut format. In certain scenarios, you may want to customize a URL rule by configuring its other properties, such
-as [[yii\web\UrlRule::suffix]]. This can be done by using a full configuration array to specify a rule. The following
-example is extracted from the [URL Suffixes](#url-suffixes) subsection,
-
-```php
-[
-    // ...other url rules...
-
-    [
-        'pattern' => 'posts',
-        'route' => 'post/index',
-        'suffix' => '.json',
-    ],
-]
-```
-
-> Info: By default if you do not specify the `class` option for a rule configuration, it will take the default
-  class [[yii\web\UrlRule]].
+  For more details, please refer to the [Routing](rest-routing.md) section in the RESTful APIs chapter.
 
 
 ### Adding Rules Dynamically <span id="adding-rules"></span>
@@ -619,7 +548,7 @@ example is extracted from the [URL Suffixes](#url-suffixes) subsection,
 URL rules can be dynamically added to the [[yii\web\UrlManager|URL manager]]. This is often needed by redistributable
 [modules](structure-modules.md) which want to manage their own URL rules. In order for the dynamically added rules
 to take effect during the routing process, you should add them during the [bootstrapping](runtime-bootstrapping.md)
-stage. For modules, this means they should implement [[yii\base\BootstrapInterface]] and add the rules in the
+stage of the application. For modules, this means they should implement [[yii\base\BootstrapInterface]] and add the rules in the
 [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] method like the following:
 
 ```php
@@ -645,6 +574,8 @@ stored in a database table. The default rule class will not work here because it
 We can create the following URL rule class to solve this problem.
 
 ```php
+<?php
+
 namespace app\components;
 
 use yii\web\UrlRuleInterface;
@@ -652,7 +583,6 @@ use yii\base\Object;
 
 class CarUrlRule extends Object implements UrlRuleInterface
 {
-
     public function createUrl($manager, $route, $params)
     {
         if ($route === 'car/index') {
@@ -662,7 +592,7 @@ class CarUrlRule extends Object implements UrlRuleInterface
                 return $params['manufacturer'];
             }
         }
-        return false;  // this rule does not apply
+        return false; // this rule does not apply
     }
 
     public function parseRequest($manager, $request)
@@ -670,11 +600,11 @@ class CarUrlRule extends Object implements UrlRuleInterface
         $pathInfo = $request->getPathInfo();
         if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
             // check $matches[1] and $matches[3] to see
-            // if they match a manufacturer and a model in the database
+            // if they match a manufacturer and a model in the database.
             // If so, set $params['manufacturer'] and/or $params['model']
             // and return ['car/index', $params]
         }
-        return false;  // this rule does not apply
+        return false; // this rule does not apply
     }
 }
 ```
@@ -682,9 +612,8 @@ class CarUrlRule extends Object implements UrlRuleInterface
 And use the new rule class in the [[yii\web\UrlManager::rules]] configuration:
 
 ```php
-[
+'rules' => [
     // ...other rules...
-
     [
         'class' => 'app\components\CarUrlRule',
         // ...configure other properties...
@@ -693,7 +622,56 @@ And use the new rule class in the [[yii\web\UrlManager::rules]] configuration:
 ```
 
 
-## Performance Consideration <span id="performance-consideration"></span>
+## URL normalization <span id="url-normalization"></span>
+
+Since version 2.0.10 [[yii\web\UrlManager|UrlManager]] can be configured to use [[yii\web\UrlNormalizer|UrlNormalizer]] for dealing
+with variations of the same URL, for example with and without a trailing slash. Because technically `http://example.com/path`
+and `http://example.com/path/` are different URLs, serving the same content for both of them can degrade SEO ranking.
+By default normalizer collapses consecutive slashes, adds or removes trailing slashes depending on whether the
+suffix has a trailing slash or not, and redirects to the normalized version of the URL using [permanent redirection](https://en.wikipedia.org/wiki/HTTP_301).
+The normalizer can be configured globally for the URL manager or individually for each rule - by default each rule will use the normalizer
+from URL manager. You can set [[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] to `false` to disable normalization
+for particular URL rule.
+
+The following shows an example configuration for the [[yii\web\UrlNormalizer|UrlNormalizer]]:
+
+```php
+'urlManager' => [
+    'enablePrettyUrl' => true,
+    'showScriptName' => false,
+    'enableStrictParsing' => true,
+    'suffix' => '.html',
+    'normalizer' => [
+        'class' => 'yii\web\UrlNormalizer',
+        // use temporary redirection instead of permanent for debugging
+        'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
+    ],
+    'rules' => [
+        // ...other rules...
+        [
+            'pattern' => 'posts',
+            'route' => 'post/index',
+            'suffix' => '/',
+            'normalizer' => false, // disable normalizer for this rule
+        ],
+        [
+            'pattern' => 'tags',
+            'route' => 'tag/index',
+            'normalizer' => [
+                // do not collapse consecutive slashes for this rule
+                'collapseSlashes' => false,
+            ],
+        ],
+    ],
+]
+```
+
+> Note: by default [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] is disabled. You need to explicitly
+  configure it in order to enable URL normalization.
+
+
+
+## Performance Considerations <span id="performance-consideration"></span>
 
 When developing a complex Web application, it is important to optimize URL rules so that it takes less time to parse
 requests and create URLs.
