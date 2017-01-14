@@ -46,7 +46,7 @@ Yii Framework 2 Change Log
 - Bug #13300: Allow pjax with "data-pjax" with no value in `yii.js` (arogachev)
 - Bug #13307: Preventing of race conditions in script filter in `yii.js` works incorrectly (arogachev)
 - Bug #13310: Handle relative and absolute URLs coincidence in CSS filter in `yii.js` (arogachev)
-- Bug #13312: `skipOuterContainers` option is incorrectly passed to pjax in `handleAction` in `yii.js` (arogachev)
+- Bug #13312: `skipOuterContainers` option was incorrectly passed to pjax in `handleAction` in `yii.js` (arogachev)
 - Bug #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
