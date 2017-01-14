@@ -622,10 +622,12 @@ class BaseConsole
             if (exec('stty -a 2>&1', $stty)) {
                 $stty = implode(' ', $stty);
 
+                // Linux stty output
                 if (preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', $stty, $matches)) {
                     return $size = [(int)$matches[2], (int)$matches[1]];
                 }
 
+                // MacOS stty output
                 if (preg_match('/(\d+)\s+rows;\s*(\d+)\s+columns;/mi', $stty, $matches)) {
                     return $size = [(int)$matches[2], (int)$matches[1]];
                 }
