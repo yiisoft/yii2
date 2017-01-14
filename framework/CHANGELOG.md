@@ -47,7 +47,6 @@ Yii Framework 2 Change Log
 - Bug #13307: Preventing of race conditions in script filter in `yii.js` works incorrectly (arogachev)
 - Bug #13310: Handle relative and absolute URLs coincidence in CSS filter in `yii.js` (arogachev)
 - Bug #13312: `skipOuterContainers` option was incorrectly passed to pjax in `handleAction` in `yii.js` (arogachev)
-- Bug #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
 - Bug #13277: Fixed invalid parsing of `--` ("End of Options" special argument) in CLI (rugabarbo)
 - Bug #13309: Fixes incorrect console width/height detecting with using Stty on Mac (nowm)
 - Bug #13326: Fixed wrong background color generation in `BaseConsole::renderColoredString()` (nowm, silverfire)
