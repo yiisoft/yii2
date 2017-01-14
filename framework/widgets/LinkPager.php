@@ -125,9 +125,10 @@ class LinkPager extends Widget
      */
     public $hideOnSinglePage = true;
     /**
-     * @var bool replace a to span the current page
+     * @var bool whether to render current page button as disabled.
+     * @since 2.0.12
      */
-    public $disableCurrentPageLink = false;
+    public $disableCurrentPageButton = false;
 
 
     /**
@@ -196,7 +197,7 @@ class LinkPager extends Widget
         // internal pages
         list($beginPage, $endPage) = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; ++$i) {
-            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageLink && $i == $currentPage, $i == $currentPage);
+            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
         }
 
         // next page
