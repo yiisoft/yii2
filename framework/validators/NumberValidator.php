@@ -119,26 +119,6 @@ class NumberValidator extends Validator
     }
 
     /**
-     * Returns string represenation of number value with replaced commas to dots, if decimal point
-     * of current locale is comma
-     * @param int|float|string $value
-     * @return string
-     */
-    private function getStringValue($value)
-    {
-        $value = "$value";
-
-        $localeInfo = localeconv();
-        $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
-
-        if ($decimalSeparator !== null && $decimalSeparator !== '.') {
-            $value = str_replace($decimalSeparator, '.', $value);
-        }
-
-        return $value;
-    }
-
-    /**
      * @inheritdoc
      */
     public function clientValidateAttribute($model, $attribute, $view)
