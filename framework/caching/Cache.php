@@ -235,6 +235,7 @@ abstract class Cache extends Component implements \ArrayAccess
      */
     public function set($key, $value, $duration = null, $dependency = null)
     {
+        $builtKey = $this->buildKey($key);
         $this->beginProfile($builtKey, __METHOD__);
 
         if ($duration === null) {
@@ -249,9 +250,6 @@ abstract class Cache extends Component implements \ArrayAccess
         } elseif ($this->serializer !== false) {
             $value = call_user_func($this->serializer[0], [$value, $dependency]);
         }
-
-        $builtKey = $this->buildKey($key);
-
 
         $setResult = $this->setValue($builtKey, $value, $duration);
         $this->endProfile($builtKey, __METHOD__);
