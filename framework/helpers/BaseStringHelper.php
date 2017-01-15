@@ -284,4 +284,25 @@ class BaseStringHelper
     {
         return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
     }
+
+    /**
+     * Returns string represenation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma
+     * @param int|float|string $value
+     * @return string
+     * @since 2.0.11
+     */
+    public static function normalizeNumber($value)
+    {
+        $value = "$value";
+
+        $localeInfo = localeconv();
+        $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
+
+        if ($decimalSeparator !== null && $decimalSeparator !== '.') {
+            $value = str_replace($decimalSeparator, '.', $value);
+        }
+
+        return $value;
+    }
 }
