@@ -272,4 +272,14 @@ trait SchemaBuilderTrait
 
         return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_MONEY, $length);
     }
+
+    /**
+     * Creates a json column.
+     * @return ColumnSchemaBuilder the column instance which can be further customized.
+     * @since 2.0.12
+     */
+    public function json()
+    {
+        return $this->getDb()->getSchema()->createColumnSchemaBuilder(Schema::TYPE_JSON);
+    }
 }
