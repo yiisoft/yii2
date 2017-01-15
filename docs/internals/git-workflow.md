@@ -39,6 +39,14 @@ The following steps are not necessary if you want to work only on translations o
 
 > Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.2.0"`
 
+If you are going to work with JavaScript:
+
+- run `npm install` to install JavaScript testing tools and dependencies (assuming you have [Node.js and NPM installed]
+(https://nodejs.org/en/download/package-manager/)).
+
+> Note: JavaScript tests depend on [jsdom](https://github.com/tmpvar/jsdom) library which requires Node.js 4 or newer.
+Using of Node.js 6 or 7 is more preferable.
+
 - run `php build/build dev/app basic` to clone the basic app and install composer dependencies for the basic app.
   This command will install foreign composer packages as normal but will link the yii2 repo to
   the currently checked out repo, so you have one instance of all the code installed.
@@ -63,7 +71,13 @@ Some tests require additional databases to be set up and configured. You can cre
 settings that are configured in `tests/data/config.php`.
 
 You may limit the tests to a group of tests you are working on e.g. to run only tests for the validators and redis
-`phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --list-groups`. 
+`phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --list-groups`.
+
+You can execute JavaScript unit tests by running `npm test` in the repo root directory.
+
+> Note: If you get timeout errors like `Error: timeout of 2000ms exceeded. Ensure the done() callback is being called
+in this test.`, you can increase timeout: `npm test -- --timeout 30000` (don't miss `--`, it's needed for passing
+additional arguments).
 
 ### Extensions
 

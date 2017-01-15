@@ -409,6 +409,11 @@ class m160328_040430_create_post_table extends Migration
 上記の例で `author_id:integer:notNull:foreignKey(user)` は、`user` テーブルへの外部キーを持つ `author_id` という名前のカラムを生成します。
 一方、`category_id:integer:defaultValue(1):foreignKey` は、`category` テーブルへの外部キーを持つ `category_id` というカラムを生成します。
 
+2.0.11 以降では、`foreignKey` キーワードは空白で区切られた第二のパラメータを取ることが出来ます。
+これは、生成される外部キーに関連づけられるカラム名を表します。
+第二のパラメータが渡されなかった場合は、カラム名はテーブルスキーマから取得されます。
+スキーマが存在しない場合や、プライマリキーが設定されていなかったり、複合キーであったりする場合は、デフォルト名として `id` が使用されます。
+
 
 ### テーブルを削除する
 
@@ -589,6 +594,9 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 }
 ```
+
+2.0.11 以降では、中間テーブルの外部キーのカラム名はテーブルスキーマから取得されます。
+スキーマでテーブルが定義されていない場合や、プライマリキーが設定されていなかったり複合キーであったりする場合は、デフォルト名 `id` が使われます。
 
 
 ### トランザクションを使うマイグレーション <span id="transactional-migrations"></span>
@@ -859,6 +867,86 @@ return [
 
 上記のように構成しておくと、`migrate` コマンドを実行するたびに、`backend_migration` テーブルがマイグレーション履歴を記録するために使われるようになります。
 もう、`migrationTable` のコマンドラインオプションを使ってテーブルを指定する必要はなくなります。
+
+
+### Namespaced Migrations <span id="namespaced-migrations"></span>
+
+Since 2.0.10 you can use namespaces for the migration classes. You can specify the list of the migration namespaces via
+[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. Using of the namespaces for
+migration classes allows you usage of the several source locations for the migrations. For example:
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => [
+                'app\migrations', // Common migrations for the whole application
+                'module\migrations', // Migrations for the specific project's module
+                'some\extension\migrations', // Migrations for the specific extension
+            ],
+        ],
+    ],
+];
+```
+
+> Note: migrations applied from different namespaces will create a **single** migration history, e.g. you might be
+  unable to apply or revert migrations from particular namespace only.
+
+While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
+migration name. Note that backslash (`\`) symbol is usually considered a special character in the shell, so you need
+to escape it properly to avoid shell errors or incorrect behavior. For example:
+
+```
+yii migrate/create 'app\\migrations\\createUserTable'
+```
+
+> Note: migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
+  contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
+  property.
+
+
+### 分離されたマイグレーション <span id="separated-migrations"></span>
+
+Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
+'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect
+the ones dedicated to main project functionality.
+
+これらをお互いに完全に分離して適用かつ追跡したい場合は、別々の名前空間とマイグレーション履歴テーブルを使う
+複数のマイグレーションコマンドを構成することが出来ます。
+
+```php
+return [
+    'controllerMap' => [
+        // アプリケーション全体のための共通のマイグレーション
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+        ],
+        // 特定のモジュールのためのマイグレーション
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+        ],
+        // 特定のエクステンションのためのマイグレーション
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@yii/rbac/migrations',
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+データベースを同期するためには、一つではなく複数のコマンドを実行しなければならなくなることに注意してください。
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
 
 
 ## 複数のデータベースにマイグレーションを適用する <span id="migrating-multiple-databases"></span>

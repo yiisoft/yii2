@@ -168,7 +168,9 @@
         // whether the validation is cancelled by beforeValidateAttribute event handler
         cancelled: false,
         // the value of the input
-        value: undefined
+        value: undefined,
+        // whether to update aria-invalid attribute after validation
+        updateAriaInvalid: true
     };
 
 
@@ -304,9 +306,9 @@
                 needAjaxValidation = false,
                 messages = {},
                 deferreds = deferredArray(),
-                submitting = data.submitting;
+                submitting = data.submitting && !forceValidate;
 
-            if (submitting) {
+            if (data.submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
 
@@ -707,6 +709,7 @@
             hasError = messages[attribute.id].length > 0;
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
+            updateAriaInvalid($form, attribute, hasError);
             if (hasError) {
                 if (attribute.encodeError) {
                     $error.text(messages[attribute.id][0]);
@@ -775,4 +778,9 @@
         }
     };
 
+    var updateAriaInvalid = function ($form, attribute, hasError) {
+        if (attribute.updateAriaInvalid) {
+            $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
+        }
+    }
 })(window.jQuery);

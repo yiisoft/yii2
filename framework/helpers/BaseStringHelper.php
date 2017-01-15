@@ -154,7 +154,7 @@ class BaseStringHelper
         $config = \HTMLPurifier_Config::create(null);
         $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $lexer = \HTMLPurifier_Lexer::create($config);
-        $tokens = $lexer->tokenizeHTML($string, $config, null);
+        $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
         $totalCount = 0;
         $truncated = [];

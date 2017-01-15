@@ -186,6 +186,13 @@ class UrlTest extends TestCase
         $this->assertEquals('https://example.com/#test', Url::to('@web5', 'https'));
         $this->assertEquals('//example.com/#test', Url::to('@web5', ''));
 
+        // @see https://github.com/yiisoft/yii2/issues/13156
+        \Yii::setAlias('@cdn', '//cdn.example.com');
+        $this->assertEquals('http://cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', 'http'));
+        $this->assertEquals('//cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', ''));
+        $this->assertEquals('https://cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', 'https'));
+        \Yii::setAlias('@cdn', null);
+
         //In case there is no controller, throw an exception
         $this->removeMockedAction();
 
