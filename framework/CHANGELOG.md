@@ -17,6 +17,7 @@ Yii Framework 2 Change Log
 - Chg #7770: Updated the fallback date formats used when no `intl` extension is installed to match the defaults of the latest ICU version (cebe)
 - Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
 - Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
+- Chg: Moved masked input field widget into separate extension https://github.com/yiisoft/yii2-maskedinput (samdark)
 
 2.0.11 under development
 ------------------------
