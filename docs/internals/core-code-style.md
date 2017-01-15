@@ -153,7 +153,7 @@ class Foo
 
 ```php
 /**
- * Checkes whether the IP is in subnet range
+ * Checks whether the IP is in subnet range
  *
  * @param string $ip an IPv4 or IPv6 address
  * @param int $cidr the CIDR lendth
