@@ -85,7 +85,8 @@ class NumberValidator extends Validator
             return;
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, "$value")) {
+
+        if (!preg_match($pattern, $this->getStringValue($value))) {
             $this->addError($model, $attribute, $this->message);
         }
         if ($this->min !== null && $value < $this->min) {
@@ -105,7 +106,7 @@ class NumberValidator extends Validator
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, "$value")) {
+        if (!preg_match($pattern, $this->getStringValue($value))) {
             return [$this->message, []];
         } elseif ($this->min !== null && $value < $this->min) {
             return [$this->tooSmall, ['min' => $this->min]];
@@ -113,6 +114,22 @@ class NumberValidator extends Validator
             return [$this->tooBig, ['max' => $this->max]];
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Returns string represenation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma
+     * @param $value
+     * @return string
+     */
+    private function getStringValue($value)
+    {
+        $localeInfo = localeconv();
+        if (isset($localeInfo['decimal_point']) && $localeInfo['decimal_point'] ==',') {
+            return str_replace(',', '.', "$value");
+        } else {
+            return "$value";
         }
     }
 
