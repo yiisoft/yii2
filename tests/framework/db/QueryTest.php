@@ -319,6 +319,10 @@ abstract class QueryTest extends DatabaseTestCase
 
         $count = (new Query)->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
+
+        // testing that orderBy() should be ignored here as it does not affect the count anyway.
+        $count = (new Query)->from('customer')->orderBy('status')->count('*', $db);
+        $this->assertEquals(3, $count);
     }
 
     /**

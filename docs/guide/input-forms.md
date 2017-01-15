@@ -141,6 +141,7 @@ $items = [
 ```
 
 or by retrieval from the DB:
+
 ```php
 $items = Category::find()
         ->select(['id', 'label'])

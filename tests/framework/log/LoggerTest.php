@@ -34,12 +34,14 @@ class LoggerTest extends TestCase
      */
     public function testLog()
     {
+        $memory = memory_get_usage();
         $this->logger->log('test1', Logger::LEVEL_INFO);
         $this->assertEquals(1, count($this->logger->messages));
         $this->assertEquals('test1', $this->logger->messages[0][0]);
         $this->assertEquals(Logger::LEVEL_INFO, $this->logger->messages[0][1]);
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([], $this->logger->messages[0][4]);
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][5]);
 
         $this->logger->log('test2', Logger::LEVEL_ERROR, 'category');
         $this->assertEquals(2, count($this->logger->messages));
@@ -47,6 +49,7 @@ class LoggerTest extends TestCase
         $this->assertEquals(Logger::LEVEL_ERROR, $this->logger->messages[1][1]);
         $this->assertEquals('category', $this->logger->messages[1][2]);
         $this->assertEquals([], $this->logger->messages[1][4]);
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[1][5]);
     }
 
     /**
@@ -54,6 +57,7 @@ class LoggerTest extends TestCase
      */
     public function testLogWithTraceLevel()
     {
+        $memory = memory_get_usage();
         $this->logger->traceLevel = 3;
         $this->logger->log('test3', Logger::LEVEL_INFO);
         $this->assertEquals(1, count($this->logger->messages));
@@ -62,12 +66,13 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 58,
+            'line' => 62,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->'
         ], $this->logger->messages[0][4][0]);
         $this->assertEquals(3, count($this->logger->messages[0][4]));
+        $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][5]);
     }
 
     /**
@@ -158,11 +163,11 @@ class LoggerTest extends TestCase
     public function testCalculateTimingsWithProfileNotBeginOrEnd()
     {
         $messages = [
-            ['message0', Logger::LEVEL_ERROR, 'category', 'time', 'trace'],
-            ['message1', Logger::LEVEL_INFO, 'category', 'time', 'trace'],
-            ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace'],
-            ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace'],
-            ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace'],
+            ['message0', Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1048576],
+            ['message1', Logger::LEVEL_INFO, 'category', 'time', 'trace', 1048576],
+            ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace', 1048576],
+            ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace', 1048576],
+            ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace', 1048576],
         ];
         $this->assertEmpty($this->logger->calculateTimings($messages));
     }
@@ -173,8 +178,8 @@ class LoggerTest extends TestCase
     public function testCalculateTimingsWithProfileBeginEnd()
     {
         $messages = [
-            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace'],
-            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace'],
+            'anyKey' => ['token', Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
+            'anyKey2' => ['token', Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
         ];
         $this->assertEquals([
             [
@@ -184,6 +189,8 @@ class LoggerTest extends TestCase
                 'trace' => 'trace',
                 'level' => 0,
                 'duration' => 5,
+                'memory' => 2097152,
+                'memoryDiff' => 1048576
             ]
         ],
             $this->logger->calculateTimings($messages)
@@ -196,10 +203,10 @@ class LoggerTest extends TestCase
     public function testCalculateTimingsWithProfileBeginEndAndNestedLevels()
     {
         $messages = [
-            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace'],
-            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace'],
-            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace'],
-            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace'],
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1048576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2097152],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
         ];
         $this->assertEquals([
             [
@@ -209,6 +216,8 @@ class LoggerTest extends TestCase
                 'trace' => 'firstTrace',
                 'level' => 0,
                 'duration' => 70,
+                'memory' => 4194304,
+                'memoryDiff' => 3145728
             ],
             [
                 'info' => 'secondLevel',
@@ -217,6 +226,8 @@ class LoggerTest extends TestCase
                 'trace' => 'secondTrace',
                 'level' => 1,
                 'duration' => 40,
+                'memory' => 3145728,
+                'memoryDiff' => 1048576
             ]
         ],
             $this->logger->calculateTimings($messages)

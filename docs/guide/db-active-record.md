@@ -636,8 +636,15 @@ try {
 } catch(\Exception $e) {
     $transaction->rollBack();
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
+    throw $e;
 }
 ```
+
+> Note: in the above code we have two catch-blocks for compatibility 
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 The second way is to list the DB operations that require transactional support in the [[yii\db\ActiveRecord::transactions()]]
 method. For example,
@@ -1603,7 +1610,7 @@ class Customer extends \yii\db\ActiveRecord
 With this code, in case 'ordersCount' is present in 'select' statement - `Customer::ordersCount` will be populated
 by query results, otherwise it will be calculated on demand using `Customer::orders` relation.
 
-This approach can be as well used for creation of the shortcuts for the some relational data, especially for the aggregation.
+This approach can be as well used for creation of the shortcuts for some relational data, especially for the aggregation.
 For example:
 
 ```php

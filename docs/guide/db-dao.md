@@ -328,18 +328,17 @@ The above code is equivalent to the following, which gives you more control abou
 ```php
 $db = Yii::$app->db;
 $transaction = $db->beginTransaction();
-
 try {
     $db->createCommand($sql1)->execute();
     $db->createCommand($sql2)->execute();
     // ... executing other SQL statements ...
     
     $transaction->commit();
-    
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-    
+    throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
     throw $e;
 }
 ```
@@ -351,6 +350,10 @@ the [[yii\db\Transaction::commit()|commit()]] method is called to commit the tra
 will be triggered and caught, the [[yii\db\Transaction::rollBack()|rollBack()]] method is called to roll back
 the changes made by the queries prior to that failed query in the transaction. `throw $e` will then re-throw the
 exception as if we had not caught it, so the normal error handling process will take care of it.
+
+> Note: in the above code we have two catch-blocks for compatibility 
+> with PHP 5.x and PHP 7.x. `\Exception` implements the [`\Throwable` interface](http://php.net/manual/en/class.throwable.php)
+> since PHP 7.0, so you can skip the part with `\Exception` if your app uses only PHP 7.0 and higher.
 
 
 ### Specifying Isolation Levels <span id="specifying-isolation-levels"></span>
@@ -424,10 +427,16 @@ try {
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
         throw $e;
+    } catch (\Throwable $e) {
+        $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
+    $outerTransaction->rollBack();
+    throw $e;
+} catch (\Throwable $e) {
     $outerTransaction->rollBack();
     throw $e;
 }
@@ -571,6 +580,9 @@ try {
 
     $transaction->commit();
 } catch(\Exception $e) {
+    $transaction->rollBack();
+    throw $e;
+} catch(\Throwable $e) {
     $transaction->rollBack();
     throw $e;
 }
