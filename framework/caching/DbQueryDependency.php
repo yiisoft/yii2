@@ -78,11 +78,12 @@ class DbQueryDependency extends Dependency
             throw new InvalidConfigException('"' . get_class($this) . '::$query" should be an instance of "yii\db\QueryInterface".');
         }
 
-        if ($db instanceof Connection && $db->enableQueryCache) {
+        if (!empty($db->enableQueryCache)) {
             // temporarily disable and re-enable query caching
+            $originEnableQueryCache = $db->enableQueryCache;
             $db->enableQueryCache = false;
             $result = $this->executeQuery($this->query, $db);
-            $db->enableQueryCache = true;
+            $db->enableQueryCache = $originEnableQueryCache;
         } else {
             $result = $this->executeQuery($this->query, $db);
         }

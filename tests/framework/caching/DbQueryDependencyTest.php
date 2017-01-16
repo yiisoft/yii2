@@ -53,4 +53,54 @@ class DbQueryDependencyTest extends DatabaseTestCase
 
         $this->assertTrue($dependency->isChanged($cache));
     }
+
+    /**
+     * @depends testIsChanged
+     */
+    public function testCustomMethod()
+    {
+        $db = $this->getConnection(false);
+        $cache = new ArrayCache();
+
+        $dependency = new DbQueryDependency();
+        $dependency->db = $db;
+        $dependency->query = (new Query())
+            ->from('dependency_item')
+            ->andWhere(['value' => 'active']);
+        $dependency->reusable = false;
+        $dependency->method = 'exists';
+
+        $dependency->evaluateDependency($cache);
+        $this->assertFalse($dependency->isChanged($cache));
+
+        $db->createCommand()->insert('dependency_item', ['value' => 'active'])->execute();
+
+        $this->assertTrue($dependency->isChanged($cache));
+    }
+
+    /**
+     * @depends testCustomMethod
+     */
+    public function testCustomMethodCallback()
+    {
+        $db = $this->getConnection(false);
+        $cache = new ArrayCache();
+
+        $dependency = new DbQueryDependency();
+        $dependency->db = $db;
+        $dependency->query = (new Query())
+            ->from('dependency_item')
+            ->andWhere(['value' => 'not exist']);
+        $dependency->reusable = false;
+        $dependency->method = function (Query $query, $db) {
+            return $query->orWhere(['value' => 'initial'])->exists($db);
+        };
+
+        $dependency->evaluateDependency($cache);
+        $this->assertFalse($dependency->isChanged($cache));
+
+        $db->createCommand()->delete('dependency_item')->execute();
+
+        $this->assertTrue($dependency->isChanged($cache));
+    }
 }
