@@ -102,7 +102,7 @@ Yii Framework 2 Change Log
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
-- Enh #11464: Foreign key name is not provided by schema (joaoppereira)
+- Enh #11464: Populate foreign key names from schema (joaoppereira)
 
 
 2.0.10 October 20, 2016
