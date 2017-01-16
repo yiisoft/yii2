@@ -101,6 +101,7 @@ Yii Framework 2 Change Log
 - Enh #13268: Added logging of memory usage (bashkarev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
+- Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
 - Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
 - Enh #11464: Populate foreign key names from schema (joaoppereira)
 
