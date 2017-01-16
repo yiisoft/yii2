@@ -105,6 +105,7 @@ Yii Framework 2 Change Log
 - Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
 - Enh #11464: Populate foreign key names from schema (joaoppereira)
 
+- Enh #13319: Remove label for hidden active field (developeruz)
 
 2.0.10 October 20, 2016
 -----------------------
