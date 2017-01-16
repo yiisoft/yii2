@@ -170,7 +170,7 @@ $value2 = $cache['var2'];  // $value2 = $cache->get('var2'); と同等
 
 見ての通り、キーは一意にデータベースのテーブルを指定するために必要なすべての情報を含んでいます。
 
-> Note: Values stored in cache via [[yii\caching\Cache::multiSet()|multiSet()]] または [[yii\caching\Cache::multiAdd()|multiAdd()]] によってキャッシュに保存される値が持つことが出来るのは、
+> Note: [[yii\caching\Cache::multiSet()|multiSet()]] または [[yii\caching\Cache::multiAdd()|multiAdd()]] によってキャッシュに保存される値が持つことが出来るのは、
 文字列または整数のキーだけです。それらより複雑なキーを設定する必要がある場合は、
 [[yii\caching\Cache::set()|set()]] または [[yii\caching\Cache::add()|add()]] によって、値を個別に保存してください。
 
