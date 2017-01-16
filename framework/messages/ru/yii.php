@@ -21,6 +21,7 @@ return [
     'Unknown alias: -{name}' => 'Неизвестный псевдоним: -{name}',
     'Yii Framework' => 'Yii Framework',
     '(not set)' => '(не задано)',
+    ' and ' => ' и ',
     'An internal server error occurred.' => 'Возникла внутренняя ошибка сервера.',
     'Are you sure you want to delete this item?' => 'Вы уверены, что хотите удалить этот элемент?',
     'Error' => 'Ошибка',
