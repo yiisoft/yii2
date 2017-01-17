@@ -104,7 +104,7 @@ Yii Framework 2 Change Log
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
 - Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
 - Enh #11464: Populate foreign key names from schema (joaoppereira)
-
+- Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
 
 2.0.10 October 20, 2016
 -----------------------
