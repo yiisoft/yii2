@@ -88,7 +88,7 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     // TODO test match controller
 
-    // TODO test match roles
+    // TODO test match roles and permissons
 
     public function testMatchVerb()
     {

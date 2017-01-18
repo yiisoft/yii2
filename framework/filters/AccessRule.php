@@ -48,6 +48,8 @@ class AccessRule extends Component
      * If this property is not set or empty, it means this rule applies to all roles.
      */
     public $roles;
+    /** @var array alias for $roles (see above). **/
+    public $permissions;
     /**
      * @var array list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
@@ -136,6 +138,9 @@ class AccessRule extends Component
      */
     protected function matchRole($user)
     {
+        if (!empty($this->permissions))
+            $this->roles = array_merge($this->roles, $this->permissions);
+
         if (empty($this->roles)) {
             return true;
         }
