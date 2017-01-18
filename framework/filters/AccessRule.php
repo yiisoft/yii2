@@ -48,7 +48,11 @@ class AccessRule extends Component
      * If this property is not set or empty, it means this rule applies to all roles.
      */
     public $roles;
-    /** @var array alias for $roles (see above). **/
+    /** 
+     * @var array alias for $roles
+     * @see $roles
+     * @since 2.0.12
+     */
     public $permissions;
     /**
      * @var array list of user IP addresses that this rule applies to. An IP address
