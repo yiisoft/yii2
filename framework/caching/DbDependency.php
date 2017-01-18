@@ -55,14 +55,21 @@ class DbDependency extends Dependency
             throw new InvalidConfigException('DbDependency::sql must be set.');
         }
 
+        // temporarily disable and re-enable query caching later
+        $reenable_query_cache = false;
         if ($db->enableQueryCache) {
-            // temporarily disable and re-enable query caching
             $db->enableQueryCache = false;
-            $result = $db->createCommand($this->sql, $this->params)->queryOne();
-            $db->enableQueryCache = true;
-        } else {
-            $result = $db->createCommand($this->sql, $this->params)->queryOne();
+            $reenable_query_cache = true;
         }
+
+        if (is_array($this->sql)) {
+            foreach ($this->sql as $sql)
+                $result[] = $db->createCommand($sql, $this->params)->queryOne();
+        } else
+            $result = $db->createCommand($this->sql, $this->params)->queryOne();
+
+        if ($reenable_query_cache)
+            $db->enableQueryCache = true;
 
         return $result;
     }
