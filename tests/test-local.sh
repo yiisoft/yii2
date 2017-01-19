@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Generate a "hash" from 0-200 for subnet tuple
+# Generate a "hash" from 0-99 for subnet tuple (10, 11, ..., 199) - it's a hack
 echo "Creating CI_BUILD_ID and CI_PIPELINE_ID from first argument..."
-export CI_BUILD_ID=$(expr $((32#${1})) % 200)
+export CI_BUILD_ID=$(expr $((32#${1})) % 99)
 export CI_PIPELINE_ID=${1}
 
 # Copy snippets from https://git.hrzg.de/ci/lint

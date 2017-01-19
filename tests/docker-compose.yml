@@ -38,4 +38,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 10.99.${TUPLE_C}.1/24
+        - subnet: 10.100.1${TUPLE_C}.1/24
