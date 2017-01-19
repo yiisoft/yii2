@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\data;
 
+use yii\db\Expression;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
 use yii\data\Sort;
@@ -58,8 +59,8 @@ class SortTest extends TestCase
         $sort = new Sort([
             'attributes' => [
                 'name' => [
-                    'asc' => ['[[last_name]] ASC NULLS FIRST'],
-                    'desc' => ['[[last_name]] DESC NULLS LAST'],
+                    'asc' => [new Expression('[[last_name]] ASC NULLS FIRST')],
+                    'desc' => [new Expression('[[last_name]] DESC NULLS LAST')],
                 ],
             ],
         ]);

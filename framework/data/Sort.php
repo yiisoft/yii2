@@ -107,8 +107,8 @@ class Sort extends Object
      * [
      *     'age',
      *     'name' => [
-     *         'asc' => ['[[last_name]] ASC NULLS FIRST'],
-     *         'desc' => ['[[last_name]] DESC NULLS LAST'],
+     *         'asc' => [new \yii\db\Expression('[[last_name]] ASC NULLS FIRST')],
+     *         'desc' => [new \yii\db\Expression('[[last_name]] DESC NULLS LAST')],
      *         'default' => SORT_DESC,
      *     ],
      * ]
