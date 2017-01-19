@@ -296,6 +296,18 @@ SQL;
             []
         );
         $this->assertEquals(0, $command->execute());
+
+        if (PHP_VERSION_ID >= 50500) {
+            $rows = call_user_func(function () { yield []; });
+
+            $command = $this->getConnection()->createCommand();
+            $command->batchInsert(
+                '{{customer}}',
+                ['email', 'name', 'address'],
+                $rows
+            );
+            $this->assertEquals(0, $command->execute());
+        }
     }
 
     public function testInsert()
