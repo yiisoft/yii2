@@ -117,7 +117,11 @@ Run MSSQL tests
     cd tests
     sh test-local.sh default
 
-#### Via runner (experimental)
+#### Via runner
+
+**experimental**
+
+docker-compose configuration
 
     runner:
       image: schmunk42/gitlab-runner
@@ -128,8 +132,12 @@ Run MSSQL tests
         - /var/run/docker.sock:/var/run/docker.sock
       environment:
         - RUNNER_BUILDS_DIR=${PWD}/..    
+
+Start runner bash        
         
     docker-compose -f docker-compose.runner.yml run runner
+
+Execute jobs via shell runner (with docker-compose support)    
     
     $ gitlab-runner exec shell build
     $ gitlab-runner exec shell test
