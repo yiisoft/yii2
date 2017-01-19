@@ -4,7 +4,7 @@ before_script:
   # set stack isolation
   - export ISOLATION=buildpipeline${CI_PIPELINE_ID}
   - export COMPOSE_PROJECT_NAME=${ISOLATION}
-  - export TUPLE_C=$(expr ${CI_BUILD_ID} % 255)
+  - export TUPLE_C=$(expr ${CI_BUILD_ID} % 99)
   - echo ${TUPLE_C}
 
 after_script:
