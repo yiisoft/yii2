@@ -33,13 +33,18 @@ case $1 in
     export TUPLE_C=$(expr ${CI_BUILD_ID} % 255)
     echo ${TUPLE_C}
     cd mssql
-    export COMPOSE_PROJECT_NAME=${ISOLATION}mssql
     docker-compose up --build -d
     docker-compose run --rm php bash -c 'while [ true ]; do curl mssql:1433; if [ $? == 52 ]; then break; fi; ((c++)) && ((c==15)) && break; sleep 5; done'
     sleep 10
-    docker-compose run --rm sqlcmd sqlcmd -S mssql -U sa -Q "CREATE DATABASE yii2test" -P Mircosoft-12345
+    docker-compose run --rm sqlcmd sh -c 'sqlcmd -S mssql -U sa -Q "CREATE DATABASE yii2test" -P Microsoft-12345'
+    sleep 10
+    docker-compose logs mssql
+    docker-compose config
+    pwd
+    docker-compose ps
+    docker-compose run --rm php php -i
     docker-compose run --rm php vendor/bin/phpunit -v --group mssql
-    docker-compose down -v
+    docker-compose down -v --remove-orphans
   ;;
 'pgsql')
     export ISOLATION=buildpipeline${CI_PIPELINE_ID}

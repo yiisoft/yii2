@@ -4,38 +4,18 @@ services:
   php:
     build: ..
     working_dir: /project
-    depends_on:
-      - postgres
-      - mysql
     #volumes:
-      # Enable for debugging
+      # Enable for debugging, enabling tests might be slow for file access (data) on host-volume
       #- ../tests:/project/tests
       # - ../framework:/project/framework
-
-  mysql:
-    image: percona:5.7
-    environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_DATABASE=yiitest
-      - MYSQL_USER=travis
-      - MYSQL_PASSWORD=travis
-
-  postgres:
-    image: postgres
-    environment:
-      - POSTGRES_DB=yiitest
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-
-  redis:
-    image: redis
-
-  memcached:
-    image: memcached
+    # Tmpfs volume (experimental, asset tests may fail)
+    #tmpfs:
+    #  - /project/tests/runtime
 
 networks:
   default:
     ipam:
       driver: default
       config:
+        # prevent overlapping/duplicated networks, since docker assigns /16 subnets by default ranging from 10.x over 172.x to 192.168.x
         - subnet: 10.100.1${TUPLE_C}.1/24

@@ -103,7 +103,7 @@ Create database with sqlcmd
 
 Create database (one-liner)
 
-    docker-compose run --rm sqlcmd sqlcmd -S mssql -U sa -P Mircosoft-12345 -Q "CREATE DATABASE yii2test"
+    docker-compose run --rm sqlcmd sqlcmd -S mssql -U sa -P Microsoft-12345 -Q "CREATE DATABASE yii2test"
 
 Run MSSQL tests
 
