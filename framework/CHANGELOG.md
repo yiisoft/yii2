@@ -4,12 +4,12 @@ Yii Framework 2 Change Log
 2.0.11 under development
 ------------------------
 
-- Bug #13277: Fixed invalid parsing of `--` ("End of Options" special argument) in CLI (rugabarbo)
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #7727: Fixed `yii\helpers\StringHelper::truncateHtml()` leaving extra tags (developeruz)
 - Bug #9305: Fixed MSSQL `Schema::TYPE_TIMESTAMP` to be 'datetime' instead of 'timestamp', which is just an incremental number (nkovacs)
 - Bug #9616: Fixed mysql\Schema::loadColumnSchema to set enumValues attribute correctly if enum definition contains commas (fphammerle)
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
+- Bug #10488: Fixed incorrect behavior of `yii\validation\NumberValidator` when used with locales where decimal separator is comma (quantum13, samdark, rob006)
 - Bug #11122: Fixed can not use `orderBy` with aggregate functions like `count` (Ni-san)
 - Bug #11771: Fixed semantics of `yii\di\ServiceLocator::__isset()` to match the behavior of `__get()` which fixes inconsistent behavior on newer PHP versions (cebe)
 - Bug #12213: Fixed `yii\db\ActiveRecord::unlinkAll()` to respect `onCondition()` of the relational query (silverfire)
@@ -30,6 +30,7 @@ Yii Framework 2 Change Log
 - Bug #12880: Fixed `yii\behaviors\AttributeTypecastBehavior` marks attributes with `null` value as 'dirty' (klimov-paul)
 - Bug #12904: Fixed lowercase table name in migrations (zlakomanoff)
 - Bug #12939: Hard coded table names for MSSQL in RBAC migration (arogachev)
+- Bug #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
 - Bug #12974: Fixed incorrect order of migrations history in case `yii\console\controllers\MigrateController::$migrationNamespaces` is in use (evgen-d, klimov-paul)
 - Bug #13071: Help option for commands was not working in modules (arogachev, haimanman)
 - Bug #13089: Fixed `yii\console\controllers\AssetController::adjustCssUrl()` breaks URL reference specification (`url(#id)`) (vitalyzhakov)
@@ -43,7 +44,10 @@ Yii Framework 2 Change Log
 - Bug #13229: Fix fetching schema information for `pgsql` when `PDO::ATTR_CASE` is set (klimov-paul)
 - Bug #13231: Fixed `destroy` method in `yii.gridView.js` which did not work as expected (arogachev)
 - Bug #13232: Event handlers were not detached with changed selector in `yii.gridView.js` (arogachev)
-- Bug #12969: Improved unique ID generation for `yii\widgets\Pjax` widgets (dynasource, samdark, rob006)
+- Bug #13277: Fixed invalid parsing of `--` ("End of Options" special argument) in CLI (rugabarbo)
+- Bug #13309: Fixes incorrect console width/height detecting with using Stty on Mac (nowm)
+- Bug #13326: Fixed wrong background color generation in `BaseConsole::renderColoredString()` (nowm, silverfire)
+- Bug #12133: Fixed `getDbTargets()` function in `yii\log\migrations\m141106_185632_log_init` that would create a log table correctly (bumstik)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
@@ -88,14 +92,19 @@ Yii Framework 2 Change Log
 - Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options (timbeks)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
-- Enh #13268: Added logging of memory usage (bashkarev)
-- Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
-- Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh #13219:  Enhancements for `yii\db\Connection` (Vovan-VE)
   - Added `shuffleMasters` option which adds ability to disable shuffling of masters connections.
   - Added `getMaster()` getter and `master` property for getting currently active master connection.
   - Extracted `openFromPoolSequentially()` protected method from `openFromPool()` protected method.
-
+- Enh #13264: Added `yii\widgets\InputWidget::$field` field, allowing access to the related `yii\widget\ActiveField` instance (klimov-paul)
+- Enh #13266: Added `yii\validators\EachValidator::$stopOnFirstError` allowing addition of more than one error (klimov-paul)
+- Enh #13268: Added logging of memory usage (bashkarev)
+- Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
+- Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
+- Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
+- Enh #11464: Populate foreign key names from schema (joaoppereira)
+- Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
 
 2.0.10 October 20, 2016
 -----------------------
