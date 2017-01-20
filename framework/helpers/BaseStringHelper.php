@@ -307,8 +307,8 @@ class BaseStringHelper
     }
 
     /**
-     * Returns base64-encoded string for $input string with url safe alphabet.
-     * It refers to the following RFC chapter https://tools.ietf.org/html/rfc4648#page-7
+     * Implements the "Base 64 Encoding with URL and Filename Safe Alphabet" of RFC 4648
+     * https://tools.ietf.org/html/rfc4648#page-7
      *
      * @param string $input
      * @return string
@@ -316,12 +316,12 @@ class BaseStringHelper
      */
     public static function base64UrlEncode($input)
     {
-        return strtr(base64_encode($input), '+/=', '-_%');
+        return strtr(base64_encode($input), '+/', '-_');
     }
 
     /**
-     * Returns decoded string for base64-encoded string with url safe alphabet.
-     * It refers to the following RFC chapter https://tools.ietf.org/html/rfc4648#page-7
+     * Implements the "Base 64 Encoding with URL and Filename Safe Alphabet" of RFC 4648
+     * https://tools.ietf.org/html/rfc4648#page-7
      *
      * @param string $input
      * @return string
@@ -329,6 +329,6 @@ class BaseStringHelper
      */
     public static function base64UrlDecode($input)
     {
-        return base64_decode(strtr($input, '-_%', '+/='));
+        return base64_decode(strtr($input, '-_', '+/'));
     }
 }

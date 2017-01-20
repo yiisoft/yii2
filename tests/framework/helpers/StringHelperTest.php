@@ -274,9 +274,6 @@ class StringHelperTest extends TestCase
     {
         $encoded = StringHelper::base64UrlEncode($input);
         $this->assertEquals($base64UrlEncoded, $encoded);
-
-        $safeUrlStringRegEx = sprintf('/[a-zA-Z0-9\-_%%]{%d}/', strlen($encoded));
-        $this->assertRegExp($safeUrlStringRegEx, $encoded);
     }
 
     /**
@@ -293,9 +290,9 @@ class StringHelperTest extends TestCase
     public function base64UrlEncodedStringsProvider()
     {
         return [
-            ['This is an encoded string', 'VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw%%'],
-            ['subjects?_d=1', 'c3ViamVjdHM_X2Q9MQ%%'],
-            ['subjects>_d=1', 'c3ViamVjdHM-X2Q9MQ%%'],
+            ['This is an encoded string', 'VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw=='],
+            ['subjects?_d=1', 'c3ViamVjdHM_X2Q9MQ=='],
+            ['subjects>_d=1', 'c3ViamVjdHM-X2Q9MQ=='],
             ['Это закодированная строка', '0K3RgtC-INC30LDQutC-0LTQuNGA0L7QstCw0L3QvdCw0Y8g0YHRgtGA0L7QutCw'],
         ];
     }
