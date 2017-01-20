@@ -307,8 +307,8 @@ class BaseStringHelper
     }
 
     /**
-     * Implements the "Base 64 Encoding with URL and Filename Safe Alphabet" of RFC 4648
-     * https://tools.ietf.org/html/rfc4648#page-7
+     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
      * @param string $input
      * @return string
@@ -320,8 +320,8 @@ class BaseStringHelper
     }
 
     /**
-     * Implements the "Base 64 Encoding with URL and Filename Safe Alphabet" of RFC 4648
-     * https://tools.ietf.org/html/rfc4648#page-7
+     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
      * @param string $input
      * @return string
