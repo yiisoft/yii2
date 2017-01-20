@@ -69,7 +69,7 @@ test:db:pgsql:
 test:db:mssql:
   stage: test
   only:
-    - test/mssql
+    - tests/mssql
   script:
     - cd mssql
     - export COMPOSE_PROJECT_NAME=${ISOLATION}mssql
@@ -85,6 +85,8 @@ test:db:mssql:
 
 test:db:cubrid:
   stage: test
+  only:
+    - tests/cubrid
   script:
     - cd cubrid
     - export COMPOSE_PROJECT_NAME=${ISOLATION}cubrid
