@@ -172,6 +172,10 @@ Yii Framework 2 Change Log
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
 - Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
+- Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
+- Enh #11464: Populate foreign key names from schema (joaoppereira)
+- Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
+- Bug #13418 Fix QueryBuilder::batchInsert() if $rows is \Generator (lav45)
 
 2.0.10 October 20, 2016
 -----------------------
