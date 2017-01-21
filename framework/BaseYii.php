@@ -379,7 +379,7 @@ class BaseYii
      * Trace messages are logged mainly for development purpose to see
      * the execution work flow of some code.
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as arrays.
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function trace($message, $category = 'application')
@@ -394,7 +394,7 @@ class BaseYii
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as arrays.
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function error($message, $category = 'application')
@@ -407,7 +407,7 @@ class BaseYii
      * A warning message is typically logged when an error occurs while the execution
      * can still continue.
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as arrays.
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function warning($message, $category = 'application')
@@ -420,7 +420,7 @@ class BaseYii
      * An informative message is typically logged by an application to keep record of
      * something important (e.g. an administrator logs in).
      * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as arrays.
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function info($message, $category = 'application')
