@@ -236,6 +236,7 @@ Yii Framework 2 Change Log
 - Enh #13268: Added logging of memory usage (bashkarev)
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
 - Enh #13453: Select only primary key when counting records in UniqueValidator (developeruz)
+- Enh #13352: Added option to not render empty row in `yii\grid\GridView` when data is empty and `emptyText` set to `false` (arogachev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
