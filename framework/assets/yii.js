@@ -278,6 +278,7 @@ window.yii = (function ($) {
         },
 
         getQueryParams: function (url) {
+            url = url || document.location.href;
             var pos = url.indexOf('?');
             if (pos < 0) {
                 return {};
