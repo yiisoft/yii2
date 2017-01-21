@@ -77,7 +77,8 @@ abstract class BaseListView extends Widget
      */
     public $showOnEmpty = false;
     /**
-     * @var string the HTML content to be displayed when [[dataProvider]] does not have any data.
+     * @var string|bool the HTML content to be displayed when [[dataProvider]] does not have any data. When `false`,
+     * row with empty text will not be displayed.
      */
     public $emptyText;
     /**
