@@ -296,17 +296,14 @@ SQL;
             []
         );
         $this->assertEquals(0, $command->execute());
+    }
 
-        if (PHP_VERSION_ID >= 50500) {
-            $rows = call_user_func(function () { yield []; });
-
-            $command = $this->getConnection()->createCommand();
-            $command->batchInsert(
-                '{{customer}}',
-                ['email', 'name', 'address'],
-                $rows
-            );
-            $this->assertEquals(0, $command->execute());
+    public function testBatchInsertWithYield()
+    {
+        if (version_compare(PHP_VERSION, '5.5', '<')) {
+            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
+        } else {
+            include __DIR__ . '/testBatchInsertWithYield.php';
         }
     }
 
@@ -570,7 +567,6 @@ SQL;
             ['id' => 2, 'bar' => 'hello'],
         ], $records);
     }
-
 
     public function testDropTable()
     {
