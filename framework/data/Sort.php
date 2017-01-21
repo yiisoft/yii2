@@ -100,6 +100,20 @@ class Sort extends Object
      * ]
      * ```
      *
+     * If you are using a PostgreSQL database, you may need to specify the sorting arbitrary expression.
+     * This syntax can be described using the following example:
+     *
+     * ```php
+     * [
+     *     'age',
+     *     'name' => [
+     *         'asc' => [new \yii\db\Expression('[[last_name]] ASC NULLS FIRST')],
+     *         'desc' => [new \yii\db\Expression('[[last_name]] DESC NULLS LAST')],
+     *         'default' => SORT_DESC,
+     *     ],
+     * ]
+     * ```
+     *
      * In the above, two attributes are declared: `age` and `name`. The `age` attribute is
      * a simple attribute which is equivalent to the following:
      *
@@ -216,7 +230,11 @@ class Sort extends Object
             $definition = $this->attributes[$attribute];
             $columns = $definition[$direction === SORT_ASC ? 'asc' : 'desc'];
             foreach ($columns as $name => $dir) {
-                $orders[$name] = $dir;
+                if (is_int($name)) {
+                    $orders[] = $dir;
+                } else {
+                    $orders[$name] = $dir;
+                }
             }
         }
 

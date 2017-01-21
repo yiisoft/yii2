@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\data;
 
+use yii\db\Expression;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
 use yii\data\Sort;
@@ -51,6 +52,28 @@ class SortTest extends TestCase
         $orders = $sort->getOrders(true);
         $this->assertEquals(1, count($orders));
         $this->assertEquals(SORT_ASC, $orders['age']);
+    }
+
+    public function testGetExpressionOrders()
+    {
+        $sort = new Sort([
+            'attributes' => [
+                'name' => [
+                    'asc' => [new Expression('[[last_name]] ASC NULLS FIRST')],
+                    'desc' => [new Expression('[[last_name]] DESC NULLS LAST')],
+                ],
+            ],
+        ]);
+
+        $sort->params = ['sort' => '-name'];
+        $orders = $sort->getOrders();
+        $this->assertEquals(1, count($orders));
+        $this->assertEquals('[[last_name]] DESC NULLS LAST', $orders[0]);
+
+        $sort->params = ['sort' => 'name'];
+        $orders = $sort->getOrders(true);
+        $this->assertEquals(1, count($orders));
+        $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
     }
 
     /**
