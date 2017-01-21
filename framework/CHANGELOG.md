@@ -175,7 +175,7 @@ Yii Framework 2 Change Log
 - Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
 - Enh #11464: Populate foreign key names from schema (joaoppereira)
 - Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
-- Bug #13418 Fix QueryBuilder::batchInsert() if $rows is \Generator (lav45)
+- Bug #13418: Fix QueryBuilder::batchInsert() if $rows is \Generator (lav45)
 
 2.0.10 October 20, 2016
 -----------------------
