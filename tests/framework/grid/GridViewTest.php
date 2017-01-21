@@ -46,8 +46,14 @@ class GridViewTest extends \yiiunit\TestCase
             'emptyText' => $emptyText,
         ]);
         $html = preg_replace("/\r|\n/", '', $html);
-        $emptyRowHtml = "<tr><td colspan=\"0\"><div class=\"empty\">{$expectedText}</div></td></tr>";
+
+        if ($expectedText) {
+            $emptyRowHtml = "<tr><td colspan=\"0\"><div class=\"empty\">{$expectedText}</div></td></tr>";
+        } else {
+            $emptyRowHtml = '';
+        }
         $expectedHtml = "<div><table><tbody>{$emptyRowHtml}</tbody></table></div>";
+
         $this->assertEquals($expectedHtml, $html);
     }
 
