@@ -209,7 +209,19 @@ class UrlManager extends Component
         if (!$this->enablePrettyUrl) {
             return;
         }
-        $rules = $this->buildRules($rules);
+
+        if ($this->cache instanceof Cache) {
+            $cacheKey = $this->cacheKey . ':' . md5(json_encode($rules));
+            if (($data = $this->cache->get($cacheKey)) !== false) {
+                $rules = $data;
+            } else {
+                $rules = $this->buildRules($rules);
+                $this->cache->set($cacheKey, $rules);
+            }
+        } else {
+            $rules = $this->buildRules($rules);
+        }
+
         if ($append) {
             $this->rules = array_merge($this->rules, $rules);
         } else {

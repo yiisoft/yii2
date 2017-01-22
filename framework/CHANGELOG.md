@@ -106,6 +106,7 @@ Yii Framework 2 Change Log
 - Enh #11464: Populate foreign key names from schema (joaoppereira)
 - Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
+- Enh #13425: Cache dynamically added rules with `yii\web\UrlManager::addRules()` (scriptcube)
 - Chg #13393: Removed redundant call to `yii\helpers\Url::to()` in `yii\web\Controller::redirect()` (greeflas)
 
 2.0.10 October 20, 2016
