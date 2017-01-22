@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Enh #9053: Added`yii\grid\RadioButtonColumn` (darwinisgod)
 - Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
 - Enh #10896: Select only primary key when counting records in UniqueValidator (developeruz)
+- Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
 - Enh #11163: Added separate method for client-side validation options `yii\validators\Validator::getClientOptions()` (arogachev)
 - Enh #11697: Added `filterHaving()`, `andFilterHaving()` and `orFilterHaving()` to `yii\db\Query` (nicdnepr, samdark)

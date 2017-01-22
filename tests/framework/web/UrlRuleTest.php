@@ -31,7 +31,7 @@ class UrlRuleTest extends TestCase
             foreach ($tests as $j => $test) {
                 list ($route, $params, $expected) = $test;
                 $url = $rule->createUrl($manager, $route, $params);
-                $this->assertEquals($expected, $url, "Test#$i-$j: $name");
+                $this->assertSame($expected, $url, "Test#$i-$j: $name");
             }
         }
     }
@@ -481,6 +481,63 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => 1, 'tag' => 'b'], 'post/-b'],
                     ['post/index', ['page' => 2, 'tag' => 'a'], 'post/2-'],
                     ['post/index', ['page' => 2, 'tag' => 'b'], 'post/2-b'],
+                ],
+            ],
+            [
+                'optional params - example from guide',
+                [
+                    'pattern' => 'posts/<page:\d+>/<tag>',
+                    'route' => 'post/index',
+                    'defaults' => ['page' => 1, 'tag' => ''],
+                ],
+                [
+                    ['post/index', ['page' => 1, 'tag' => ''], 'posts'],
+                    ['post/index', ['page' => 2, 'tag' => ''], 'posts/2'],
+                    ['post/index', ['page' => 2, 'tag' => 'news'], 'posts/2/news'],
+                    ['post/index', ['page' => 1, 'tag' => 'news'], 'posts/news'],
+                    // allow skip empty params on URL creation
+                    ['post/index', [], false],
+                    ['post/index', ['tag' => ''], false],
+                    ['post/index', ['page' => 1], 'posts'],
+                    ['post/index', ['page' => 2], 'posts/2'],
+                ],
+            ],
+            [
+                'required params',
+                [
+                    'pattern' => 'about-me',
+                    'route' => 'site/page',
+                    'defaults' => ['id' => 1],
+                ],
+                [
+                    ['site/page', ['id' => 1], 'about-me'],
+                    ['site/page', ['id' => 2], false],
+                ],
+            ],
+            [
+                'required default param',
+                [
+                    'pattern' => '',
+                    'route' => 'site/home',
+                    'defaults' => ['lang' => 'en'],
+                ],
+                [
+                    ['site/home', ['lang' => 'en'], ''],
+                    ['site/home', ['lang' => ''], false],
+                    ['site/home', [], false],
+                ],
+            ],
+            [
+                'required default empty param',
+                [
+                    'pattern' => '',
+                    'route' => 'site/home',
+                    'defaults' => ['lang' => ''],
+                ],
+                [
+                    ['site/home', ['lang' => ''], ''],
+                    ['site/home', ['lang' => 'en'], false],
+                    ['site/home', [], false],
                 ],
             ],
             [
