@@ -1,10 +1,5 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: lav45
- * Date: 22.01.17
- * Time: 2:56
- *
  * @var $this \yiiunit\framework\db\CommandTest
  */
 
