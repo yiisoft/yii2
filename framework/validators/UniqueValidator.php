@@ -53,7 +53,6 @@ class UniqueValidator extends Validator
      * of the attribute currently being validated. You may use an array to validate the uniqueness
      * of multiple columns at the same time. The array values are the attributes that will be
      * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
-     * If the key and the value are the same, you can just specify the value.
      */
     public $targetAttribute;
     /**
@@ -85,6 +84,11 @@ class UniqueValidator extends Validator
      */
     public $comboNotUnique;
 
+    /**
+     * @var string and|or define how target attributes are related
+     * @since 2.0.11
+     */
+    public $targetAttributeJunction = 'and';
 
     /**
      * @inheritdoc
@@ -115,13 +119,15 @@ class UniqueValidator extends Validator
         /* @var $targetClass ActiveRecordInterface */
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
-        $conditions = $this->prepareConditions($targetAttribute, $model, $attribute);
+        $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
+        $conditions[] = $this->targetAttributeJunction == 'or' ? 'or' : 'and';
 
-        foreach ($conditions as $value) {
+        foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
                 $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
                 return;
             }
+            $conditions[] = [$key => $value];
         }
 
         if ($this->modelExists($targetClass, $conditions, $model)) {
@@ -191,7 +197,6 @@ class UniqueValidator extends Validator
     {
         $query = $targetClass::find();
         $query->andWhere($conditions);
-
         if ($this->filter instanceof \Closure) {
             call_user_func($this->filter, $query);
         } elseif ($this->filter !== null) {
@@ -209,7 +214,6 @@ class UniqueValidator extends Validator
      * should be used to validate the uniqueness of the current attribute value. You may use an array to validate
      * the uniqueness of multiple columns at the same time. The array values are the attributes that will be
      * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
-     * If the key and the value are the same, you can just specify the value.
      * @param Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
 
@@ -220,7 +224,7 @@ class UniqueValidator extends Validator
         if (is_array($targetAttribute)) {
             $conditions = [];
             foreach ($targetAttribute as $k => $v) {
-                $conditions[$v] = is_int($k) ? $model->$v : $model->$k;
+                $conditions[$v] = is_int($k) ? $model->$attribute : $model->$k;
             }
         } else {
             $conditions = [$targetAttribute => $model->$attribute];
