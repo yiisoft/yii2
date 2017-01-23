@@ -152,16 +152,16 @@ class AccessRule extends Component
             return true;
         }
 
-        foreach ($privileges as $privileg) {
-            if ($privileg === '?') {
+        foreach ($privileges as $privilege) {
+            if ($privilege === '?') {
                 if ($user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($privileg === '@') {
+            } elseif ($privilege === '@') {
                 if (!$user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($user->can($privileg)) {
+            } elseif ($user->can($privilege)) {
                 return true;
             }
         }
