@@ -49,8 +49,8 @@ class ExistValidator extends Validator
      * @var string|array the name of the ActiveRecord attribute that should be used to
      * validate the existence of the current attribute value. If not set, it will use the name
      * of the attribute currently being validated. You may use an array to validate the existence
-     * of multiple columns at the same time. The array values are the attributes that will be
-     * used to validate the existence, while the array keys are the attributes whose values are to be validated.
+     * of multiple columns at the same time. The array key is the name of the attribute with the value to validate,
+     * the array value is the name of the database field to search.
      */
     public $targetAttribute;
     /**
@@ -120,15 +120,15 @@ class ExistValidator extends Validator
      * Processes attributes' relations described in $targetAttribute parameter into conditions, compatible with
      * [[\yii\db\Query::where()|Query::where()]] key-value format.
      *
-     * @var string|array the name of the ActiveRecord attribute that should be used to
+     * @param $targetAttribute array|string $attribute the name of the ActiveRecord attribute that should be used to
      * validate the existence of the current attribute value. If not set, it will use the name
      * of the attribute currently being validated. You may use an array to validate the existence
-     * of multiple columns at the same time. The array values are the attributes that will be
-     * used to validate the existence, while the array keys are the attributes whose values are to be validated.
-     * @param Model $model the data model to be validated
+     * of multiple columns at the same time. The array key is the name of the attribute with the value to validate,
+     * the array value is the name of the database field to search.
+     * @param \yii\base\Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
-
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
+     * @throws InvalidConfigException
      */
     private function prepareConditions($targetAttribute, $model, $attribute)
     {

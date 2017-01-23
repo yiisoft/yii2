@@ -49,6 +49,7 @@ Yii Framework 2 Change Log
 - Bug #13309: Fixes incorrect console width/height detecting with using Stty on Mac (nowm)
 - Bug #13326: Fixed wrong background color generation in `BaseConsole::renderColoredString()` (nowm, silverfire)
 - Bug #12133: Fixed `getDbTargets()` function in `yii\log\migrations\m141106_185632_log_init` that would create a log table correctly (bumstik)
+- Bug #13416: Fixed `yii\web\MultipartFormDataParser` adds an extra newline to every value (klimov-paul)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
@@ -59,6 +60,7 @@ Yii Framework 2 Change Log
 - Enh #9053: Added`yii\grid\RadioButtonColumn` (darwinisgod)
 - Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
 - Enh #10896: Select only primary key when counting records in UniqueValidator (developeruz)
+- Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
 - Enh #11163: Added separate method for client-side validation options `yii\validators\Validator::getClientOptions()` (arogachev)
 - Enh #11697: Added `filterHaving()`, `andFilterHaving()` and `orFilterHaving()` to `yii\db\Query` (nicdnepr, samdark)
@@ -110,6 +112,7 @@ Yii Framework 2 Change Log
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
 - Enh #13425: Cache dynamically added rules with `yii\web\UrlManager::addRules()` (scriptcube)
 - Chg #13393: Removed redundant call to `yii\helpers\Url::to()` in `yii\web\Controller::redirect()` (greeflas)
+- Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
 
 2.0.10 October 20, 2016
 -----------------------
