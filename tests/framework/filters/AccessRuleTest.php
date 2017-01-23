@@ -43,10 +43,11 @@ class AccessRuleTest extends \yiiunit\TestCase
      */
     protected function mockUser()
     {
-        return new User([
-            'identityClass' => UserIdentity::className(),
-            'enableAutoLogin' => false,
-        ]);
+
+        $user = $this->getMockBuilder('\yii\web\User')->getMock();
+        $user->method('identityClass')->willReturn(UserIdentity::className());
+
+        return $user;
     }
 
     /**
@@ -88,7 +89,42 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     // TODO test match controller
 
-    // TODO test match roles and permissons
+    public function testMatchRolesAndPermissions()
+    {
+        $action = $this->mockAction();
+        $user = $this->mockUser();
+
+        $rule = new AccessRule([
+            'allow' => true,
+        ]);
+
+        $request = $this->mockRequest('GET');
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->roles = [];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $user->method('can')->willReturn(true);
+
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $rule->roles = [];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $rule->roles = ['allowed_role_1', 'allowed_role_2'];
+        $rule->permissions = ['allowed_permission_1', 'allowed_permission_2'];
+        $this->assertTrue($rule->allows($action, $user, $request));
+    }
 
     public function testMatchVerb()
     {

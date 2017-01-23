@@ -142,13 +142,20 @@ class AccessRule extends Component
      */
     protected function matchRole($user)
     {
-        if (!empty($this->permissions)) {
-            $roles = array_merge($this->roles, $this->permissions);
-        }
-
-        if (empty($roles)) {
+        if (empty($this->roles) && empty($this->permissions)) {
             return true;
         }
+
+        $roles = [];
+
+        if($this->roles) {
+            $roles = array_merge($roles, $this->roles);
+        }
+
+        if($this->permissions) {
+            $roles = array_merge($roles, $this->permissions);
+        }
+
         foreach ($roles as $role) {
             if ($role === '?') {
                 if ($user->getIsGuest()) {
