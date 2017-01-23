@@ -172,24 +172,16 @@ class UrlManager extends Component
             }
         }
 
-        if (!$this->enablePrettyUrl || empty($this->rules)) {
+        if (!$this->enablePrettyUrl) {
             return;
         }
         if (is_string($this->cache)) {
             $this->cache = Yii::$app->get($this->cache, false);
         }
-        if ($this->cache instanceof Cache) {
-            $cacheKey = $this->cacheKey;
-            $hash = md5(json_encode($this->rules));
-            if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
-                $this->rules = $data[0];
-            } else {
-                $this->rules = $this->buildRules($this->rules);
-                $this->cache->set($cacheKey, [$this->rules, $hash]);
-            }
-        } else {
-            $this->rules = $this->buildRules($this->rules);
+        if (empty($this->rules)) {
+            return;
         }
+        $this->rules = $this->buildRules($this->rules);
     }
 
     /**
@@ -209,19 +201,7 @@ class UrlManager extends Component
         if (!$this->enablePrettyUrl) {
             return;
         }
-
-        if ($this->cache instanceof Cache) {
-            $cacheKey = $this->cacheKey . ':' . md5(json_encode($rules));
-            if (($data = $this->cache->get($cacheKey)) !== false) {
-                $rules = $data;
-            } else {
-                $rules = $this->buildRules($rules);
-                $this->cache->set($cacheKey, $rules);
-            }
-        } else {
-            $rules = $this->buildRules($rules);
-        }
-
+        $rules = $this->buildRules($rules);
         if ($append) {
             $this->rules = array_merge($this->rules, $rules);
         } else {
@@ -238,6 +218,13 @@ class UrlManager extends Component
      */
     protected function buildRules($rules)
     {
+        if ($this->cache instanceof Cache) {
+            $cacheKey = $this->cacheKey . '#' . md5(json_encode($rules));
+            if (($compiledRules = $this->cache->get($cacheKey)) !== false) {
+                return $compiledRules;
+            }
+        }
+
         $compiledRules = [];
         $verbs = 'GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS';
         foreach ($rules as $key => $rule) {
@@ -260,6 +247,10 @@ class UrlManager extends Component
                 throw new InvalidConfigException('URL rule class must implement UrlRuleInterface.');
             }
             $compiledRules[] = $rule;
+        }
+
+        if ($this->cache instanceof Cache) {
+            $this->cache->set($cacheKey, $compiledRules);
         }
         return $compiledRules;
     }
