@@ -298,7 +298,7 @@ class ActiveRecord extends BaseActiveRecord
 
     /**
      * @inheritdoc
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @return object|ActiveQuery the newly created [[ActiveQuery]] instance.
      */
     public static function find()
     {
@@ -449,6 +449,7 @@ class ActiveRecord extends BaseActiveRecord
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
      * @throws \Exception in case insert failed.
+     * @throws \Throwable
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -558,6 +559,7 @@ class ActiveRecord extends BaseActiveRecord
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
      * @throws \Exception in case update failed.
+     * @throws \Throwable
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -606,6 +608,7 @@ class ActiveRecord extends BaseActiveRecord
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
      * @throws \Exception in case delete failed.
+     * @throws \Throwable
      */
     public function delete()
     {
