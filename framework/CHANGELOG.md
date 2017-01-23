@@ -110,6 +110,7 @@ Yii Framework 2 Change Log
 - Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
 - Chg #13393: Removed redundant call to `yii\helpers\Url::to()` in `yii\web\Controller::redirect()` (greeflas)
+- Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
 
 2.0.10 October 20, 2016
 -----------------------
