@@ -144,7 +144,7 @@ class AccessRule extends Component
     {
         $privileges = empty($this->roles) ? [] : $this->roles;
 
-        if(!empty($this->permissions)) {
+        if (!empty($this->permissions)) {
            $privileges = array_merge($privileges, $this->permissions);
         }
 
