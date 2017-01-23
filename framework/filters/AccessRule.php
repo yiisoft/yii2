@@ -148,24 +148,24 @@ class AccessRule extends Component
 
         $privileges = [];
 
-        if($this->roles) {
+        if (!empty($this->roles)) {
             $privileges = array_merge($privileges, $this->roles);
         }
 
-        if($this->permissions) {
+        if (!empty($this->permissions)) {
             $privileges = array_merge($privileges, $this->permissions);
         }
 
-        foreach ($privileges as $privileg) {
-            if ($privileg === '?') {
+        foreach ($privileges as $privilege) {
+            if ($privilege === '?') {
                 if ($user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($privileg === '@') {
+            } elseif ($privilege === '@') {
                 if (!$user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($user->can($privileg)) {
+            } elseif ($user->can($privilege)) {
                 return true;
             }
         }
