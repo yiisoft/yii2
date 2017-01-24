@@ -9,6 +9,7 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -311,5 +312,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function selectExists($rawSql)
     {
         return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
+
+    /**
+     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
+     * @param string $table the table that data will be saved into.
+     * @param array $columns the column data (name => value) to be saved into the table.
+     * @return array normalized columns
+     */
+    private function normalizeTableRowData($table, $columns, &$params)
+    {
+        if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+            foreach ($columns as $name => $value) {
+                // @see https://github.com/yiisoft/yii2/issues/12599
+                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && is_string($value)) {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", [$phName => $value]);
+                }
+            }
+        }
+        return $columns;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params)
+    {
+        return parent::insert($table, $this->normalizeTableRowData($table, $columns, $params), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function update($table, $columns, $condition, &$params)
+    {
+        return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
     }
 }

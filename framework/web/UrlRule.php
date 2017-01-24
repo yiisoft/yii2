@@ -367,8 +367,15 @@ class UrlRule extends Object implements UrlRuleInterface
                 continue;
             }
             if (!isset($params[$name])) {
-                return false;
-            } elseif (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
+                // allow omit empty optional params
+                // @see https://github.com/yiisoft/yii2/issues/10970
+                if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
+                    $params[$name] = '';
+                } else {
+                    return false;
+                }
+            }
+            if (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
                 unset($params[$name]);
                 if (isset($this->_paramRules[$name])) {
                     $tr["<$name>"] = '';
