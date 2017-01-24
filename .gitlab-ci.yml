@@ -7,6 +7,7 @@ before_script:
   # run docker-compose commands from tests environment
   - cd tests
   - cp .env-dist .env
+  - docker-compose config
 
 after_script:
   - export ISOLATION=buildpipeline${CI_PIPELINE_ID}${CI_BUILD_NAME}
@@ -24,9 +25,6 @@ stages:
 
 test:
   stage: test
-  only:
-    - tests/base
-    - tests/all
   script:
     - docker-compose up --build -d
     - docker-compose run --rm php vendor/bin/phpunit -v --exclude caching,db,data --log-junit tests/_junit/test.xml
@@ -35,7 +33,7 @@ caching:
   stage: test
   only:
     - tests/caching
-    - tests/all
+    - tests/full
   script:
     - export COMPOSE_FILE=docker-compose.yml:docker-compose.${CI_BUILD_NAME}.yml
     - docker-compose up --build -d
@@ -45,7 +43,7 @@ db:
   stage: test
   only:
     - tests/mysql
-    - tests/all
+    - tests/full
   script:
     - docker-compose up --build -d
     - docker-compose run --rm php vendor/bin/phpunit -v --group db --exclude caching,mysql,pgsql,mssql,cubrid
@@ -55,7 +53,7 @@ mysql:
   stage: test
   only:
     - tests/mysql
-    - tests/all
+    - tests/full
   script:
     - export COMPOSE_FILE=docker-compose.yml:docker-compose.${CI_BUILD_NAME}.yml
     - docker-compose up --build -d
@@ -68,7 +66,7 @@ pgsql:
   stage: test
   only:
     - tests/pgsql
-    - tests/all
+    - tests/full
   script:
     - export COMPOSE_FILE=docker-compose.yml:docker-compose.${CI_BUILD_NAME}.yml
     - docker-compose up --build -d
@@ -81,7 +79,7 @@ cubrid:
   stage: test
   only:
     - tests/cubrid
-    - tests/all
+    - tests/extra
   script:
     - cd cubrid
     - docker-compose up --build -d
@@ -95,7 +93,7 @@ mssql:
   stage: test
   only:
     - tests/mssql
-    - tests/all
+    - tests/extra
   script:
     - cd mssql
     - docker-compose up --build -d
@@ -118,28 +116,3 @@ travis:
     - sleep 10
     - docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,cubrid,oci,wincache,xcache,zenddata,cubrid
     - docker-compose down -v --remove-orphans
-
-# temporary cleanup stage
-cleanup:
-  stage: cleanup
-  when: always
-  script:
-    - docker-compose down -v --remove-orphans
-    - export COMPOSE_PROJECT_NAME=${ISOLATION}caching
-    - docker-compose down -v --remove-orphans
-    - export COMPOSE_PROJECT_NAME=${ISOLATION}db
-    - docker-compose down -v --remove-orphans
-    - export COMPOSE_PROJECT_NAME=${ISOLATION}mysql
-    - docker-compose down -v --remove-orphans
-    - export COMPOSE_PROJECT_NAME=${ISOLATION}pgsql
-    - docker-compose down -v --remove-orphans
-    - export COMPOSE_PROJECT_NAME=${ISOLATION}travis
-    - docker-compose down -v --remove-orphans
-    - pushd mssql
-    - export COMPOSE_PROJECT_NAME=${ISOLATION}mssql
-    - docker-compose down -v --remove-orphans
-    - popd
-    - pushd cubrid
-    - export COMPOSE_PROJECT_NAME=${ISOLATION}cubrid
-    - docker-compose down -v --remove-orphans
-    - popd
