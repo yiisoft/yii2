@@ -323,7 +323,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             }
         }
 
-        return '<pre>' . rtrim($request, "\n") . '</pre>';
+        return '<pre>' . $this->htmlEncode(rtrim($request, "\n")) . '</pre>';
     }
 
     /**

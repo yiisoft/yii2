@@ -1,6 +1,6 @@
 <?php
-namespace yiiunit\framework\caching;
 
+namespace yiiunit\framework\caching;
 
 use yii\caching\Cache;
 use yii\caching\Dependency;
@@ -37,7 +37,7 @@ class DependencyTest extends TestCase
         $this->assertEquals(40, strlen($result));
     }
 
-    public function testisChanged()
+    public function testIsChanged()
     {
         $dependency = $this->getMockForAbstractClass(Dependency::class);
         $cache = $this->getMockForAbstractClass(Cache::class);

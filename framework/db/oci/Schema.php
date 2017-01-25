@@ -312,8 +312,12 @@ SQL;
             }
             $constraints[$name]['columns'][$row['COLUMN_NAME']] = $row['COLUMN_REF'];
         }
+
         foreach ($constraints as $constraint) {
-            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
+            $name = array_keys($constraint);
+            $name = current($name);
+
+            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 

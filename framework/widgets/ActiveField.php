@@ -714,10 +714,14 @@ class ActiveField extends Component
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
-        if (isset($config['options']) && isset(class_parents($class)['yii\widgets\InputWidget'])) {
-            $this->addAriaAttributes($config['options']);
-            $this->adjustLabelFor($config['options']);
+        if (is_subclass_of($class, 'yii\widgets\InputWidget')) {
+            $config['field'] = $this;
+            if (isset($config['options'])) {
+                $this->addAriaAttributes($config['options']);
+                $this->adjustLabelFor($config['options']);
+            }
         }
+
         $this->parts['{input}'] = $class::widget($config);
 
         return $this;

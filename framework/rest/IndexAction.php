@@ -61,7 +61,8 @@ class IndexAction extends Action
         /* @var $modelClass \yii\db\BaseActiveRecord */
         $modelClass = $this->modelClass;
 
-        return new ActiveDataProvider([
+        return Yii::createObject([
+            'class' => ActiveDataProvider::className(),
             'query' => $modelClass::find(),
         ]);
     }

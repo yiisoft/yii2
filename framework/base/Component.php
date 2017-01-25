@@ -390,7 +390,7 @@ class Component extends Object
      *
      * @param string $name the property name
      * @param bool $checkBehaviors whether to treat behaviors' methods as methods of this component
-     * @return bool whether the property is defined
+     * @return bool whether the method is defined
      */
     public function hasMethod($name, $checkBehaviors = true)
     {
