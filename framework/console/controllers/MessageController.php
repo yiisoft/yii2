@@ -321,7 +321,7 @@ EOD;
         if (in_array($config['format'], ['php', 'po'])) {
             foreach ($config['languages'] as $language) {
                 $dir = $config['messagePath'] . DIRECTORY_SEPARATOR . $language;
-                if (!is_dir($dir) && !mkdir($dir)) {
+                if (!is_dir($dir) && !@mkdir($dir)) {
                     throw new Exception("Directory '{$dir}' can not be created.");
                 }
                 if ($config['format'] === 'po') {
@@ -362,14 +362,14 @@ EOD;
     protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)
     {
         $currentMessages = [];
-        $query = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable);
-        foreach ($query->each(100, $db) as $row) {
+        $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+        foreach ($rows as $row) {
             $currentMessages[$row['category']][$row['id']] = $row['message'];
         }
 
         $currentLanguages = [];
-        $query = (new Query)->select(['language'])->from($messageTable)->groupBy('language');
-        foreach ($query->each(100, $db) as $row) {
+        $rows = (new Query)->select(['language'])->from($messageTable)->groupBy('language')->all($db);
+        foreach ($rows as $row) {
             $currentLanguages[] = $row['language'];
         }
         $missingLanguages = [];
@@ -421,8 +421,8 @@ EOD;
 
         if (!empty($missingLanguages)) {
             $updatedMessages = [];
-            $query = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable);
-            foreach ($query->each(100, $db) as $row) {
+            $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+            foreach ($rows as $row) {
                 $updatedMessages[$row['category']][$row['id']] = $row['message'];
             }
             foreach ($updatedMessages as $category => $msgs) {
