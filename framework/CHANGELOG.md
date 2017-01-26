@@ -8,6 +8,9 @@ Yii Framework 2 Change Log
 
 
 2.0.11 February 01, 2017
+- Bug #11502: Fixed `yii\console\controllers\MessageController` to properly populate missing languages in case of extraction with "db" format (bizley)
+
+2.0.11 under development
 ------------------------
 
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
