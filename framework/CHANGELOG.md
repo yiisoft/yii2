@@ -1,6 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.12 under development
+------------------------
+
+- Bug #11502: Fixed `yii\console\controllers\MessageController` to properly populate missing languages in case of extraction with "db" format (bizley)
+
 2.0.11 under development
 ------------------------
 
@@ -11,7 +16,6 @@ Yii Framework 2 Change Log
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Bug #10488: Fixed incorrect behavior of `yii\validation\NumberValidator` when used with locales where decimal separator is comma (quantum13, samdark, rob006)
 - Bug #11122: Fixed can not use `orderBy` with aggregate functions like `count` (Ni-san)
-- Bug #11502: Fixed `yii\console\controllers\MessageController` to properly populate missing languages in case of extraction with "db" format (bizley)
 - Bug #11771: Fixed semantics of `yii\di\ServiceLocator::__isset()` to match the behavior of `__get()` which fixes inconsistent behavior on newer PHP versions (cebe)
 - Bug #12213: Fixed `yii\db\ActiveRecord::unlinkAll()` to respect `onCondition()` of the relational query (silverfire)
 - Bug #12681: Changed `data` column type from `text` to `blob` to handle null-byte (`\0`) in serialized RBAC rule properly (silverfire)
