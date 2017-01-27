@@ -119,7 +119,6 @@ Yii Framework 2 Change Log
 - Enh #7435: Added `EVENT_BEFORE_RUN`, `EVENT_AFTER_RUN` and corresponding methods to `yii\base\Widget` (petrabarus)
 
 
-
 2.0.10 October 20, 2016
 -----------------------
 
