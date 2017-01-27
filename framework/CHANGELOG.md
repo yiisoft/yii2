@@ -63,7 +63,6 @@ Yii Framework 2 Change Log
 - Enh #7820: Add `or` relation for `targetAttribute` in `yii\validators\UniqueValidator` (developeruz)
 - Enh #9053: Added`yii\grid\RadioButtonColumn` (darwinisgod)
 - Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
-- Enh #10896: Select only primary key when counting records in UniqueValidator (developeruz)
 - Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
 - Enh #11163: Added separate method for client-side validation options `yii\validators\Validator::getClientOptions()` (arogachev)
@@ -117,6 +116,7 @@ Yii Framework 2 Change Log
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
 - Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
 - Enh #7435: Added `EVENT_BEFORE_RUN`, `EVENT_AFTER_RUN` and corresponding methods to `yii\base\Widget` (petrabarus)
+
 
 2.0.10 October 20, 2016
 -----------------------
