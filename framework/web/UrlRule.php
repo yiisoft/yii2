@@ -126,6 +126,26 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     private $_routeParams = [];
 
+    /**
+     * @return string
+     * @since 2.0.11
+     */
+    public function __toString()
+    {
+        $str = '';
+        if ($this->verb !== null) {
+            $str .= implode(',', $this->verb) . ' ';
+        }
+        if ($this->host !== null && strrpos($this->name, $this->host) === false) {
+            $str .= $this->host . '/';
+        }
+        $str .= $this->name;
+
+        if ($str === '') {
+            return '/';
+        }
+        return $str;
+    }
 
     /**
      * Initializes this rule.
@@ -367,8 +387,15 @@ class UrlRule extends Object implements UrlRuleInterface
                 continue;
             }
             if (!isset($params[$name])) {
-                return false;
-            } elseif (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
+                // allow omit empty optional params
+                // @see https://github.com/yiisoft/yii2/issues/10970
+                if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
+                    $params[$name] = '';
+                } else {
+                    return false;
+                }
+            }
+            if (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
                 unset($params[$name]);
                 if (isset($this->_paramRules[$name])) {
                     $tr["<$name>"] = '';

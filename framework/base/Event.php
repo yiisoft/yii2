@@ -116,20 +116,19 @@ class Event extends Object
         if ($handler === null) {
             unset(self::$_events[$name][$class]);
             return true;
-        } else {
-            $removed = false;
-            foreach (self::$_events[$name][$class] as $i => $event) {
-                if ($event[0] === $handler) {
-                    unset(self::$_events[$name][$class][$i]);
-                    $removed = true;
-                }
-            }
-            if ($removed) {
-                self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
-            }
-
-            return $removed;
         }
+
+        $removed = false;
+        foreach (self::$_events[$name][$class] as $i => $event) {
+            if ($event[0] === $handler) {
+                unset(self::$_events[$name][$class][$i]);
+                $removed = true;
+            }
+        }
+        if ($removed) {
+            self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
+        }
+        return $removed;
     }
 
     /**

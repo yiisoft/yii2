@@ -108,6 +108,17 @@ class RangeValidator extends Validator
             $this->range = call_user_func($this->range, $model, $attribute);
         }
 
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $range = [];
         foreach ($this->range as $value) {
             $range[] = (string) $value;
@@ -126,8 +137,6 @@ class RangeValidator extends Validator
             $options['allowArray'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

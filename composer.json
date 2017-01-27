@@ -47,6 +47,12 @@
             "name": "Dmitry Naumenko",
             "email": "d.naumenko.a@gmail.com",
             "role": "Core framework development"
+        },
+        {
+            "name": "Boudewijn Vahrmeijer",
+            "email": "info@dynasource.eu",
+            "homepage": "http://dynasource.eu",
+            "role": "Core framework development"
         }
     ],
     "support": {
@@ -99,6 +105,10 @@
         "asset-installer-paths": {
             "npm-asset-library": "vendor/npm",
             "bower-asset-library": "vendor/bower"
-        }
+        },
+        "asset-vcs-driver-options": {
+            "github-no-api": true
+        },
+        "asset-pattern-skip-version": "(-build|-patch)"
     }
 }

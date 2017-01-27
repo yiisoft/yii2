@@ -71,7 +71,7 @@ return array (
   '{attribute} is not a valid email address.' => 'Полето "{attribute}" съдържа невалиден email адрес.',
   '{attribute} must be "{requiredValue}".' => 'Полето "{attribute}" трябва да съдържа "{requiredValue}".',
   '{attribute} must be a number.' => 'Полето "{attribute}" съдържа невалиден номер.',
-  '{attribute} must be a string.' => 'Полето "{attribute}" трябва съдържа текст.',
+  '{attribute} must be a string.' => 'Полето "{attribute}" трябва да съдържа текст.',
   '{attribute} must be an integer.' => 'Полето "{attribute}" трябва да съдържа цяло число.',
   '{attribute} must be either "{true}" or "{false}".' => 'Полето "{attribute}"  трябва да бъде "{true}" или "{false}".',
   '{attribute} must be greater than "{compareValue}".' => 'Полето "{attribute}" трябва да е по-голямо от "{compareValue}".',

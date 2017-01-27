@@ -154,14 +154,16 @@ class BaseStringHelper
         $config = \HTMLPurifier_Config::create(null);
         $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $lexer = \HTMLPurifier_Lexer::create($config);
-        $tokens = $lexer->tokenizeHTML($string, $config, null);
-        $openTokens = 0;
+        $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
+        $openTokens = [];
         $totalCount = 0;
         $truncated = [];
         foreach ($tokens as $token) {
             if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
-                $openTokens++;
-                $truncated[] = $token;
+                if ($totalCount < $count) {
+                    $openTokens[$token->name] = isset($openTokens[$token->name]) ? $openTokens[$token->name] + 1 : 1;
+                    $truncated[] = $token;
+                }
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
@@ -174,8 +176,10 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                $openTokens--;
-                $truncated[] = $token;
+                if (!empty($openTokens[$token->name])) {
+                    $openTokens[$token->name]--;
+                    $truncated[] = $token;
+                }
             } elseif ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
                 $truncated[] = $token;
             }
@@ -279,5 +283,26 @@ class BaseStringHelper
     public static function countWords($string)
     {
         return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
+    }
+
+    /**
+     * Returns string represenation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma
+     * @param int|float|string $value
+     * @return string
+     * @since 2.0.11
+     */
+    public static function normalizeNumber($value)
+    {
+        $value = "$value";
+
+        $localeInfo = localeconv();
+        $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
+
+        if ($decimalSeparator !== null && $decimalSeparator !== '.') {
+            $value = str_replace($decimalSeparator, '.', $value);
+        }
+
+        return $value;
     }
 }

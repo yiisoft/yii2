@@ -608,7 +608,7 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
 ```
 
 Since 2.0.11 foreign key column names for junction tables are fetched from table schema.
-In case table isn't defined in schema, isn't set or is composite, default name `id` is used.
+In case table isn't defined in schema, or the primary key isn't set or is composite, default name `id` is used.
 
 ### Transactional Migrations <span id="transactional-migrations"></span>
 
@@ -889,6 +889,86 @@ return [
 With the above configuration, each time you run the migration command, the `backend_migration` table
 will be used to record the migration history. You no longer need to specify it via the `migrationTable`
 command-line option.
+
+
+### Namespaced Migrations <span id="namespaced-migrations"></span>
+
+Since 2.0.10 you can use namespaces for the migration classes. You can specify the list of the migration namespaces via
+[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. Using of the namespaces for
+migration classes allows you usage of the several source locations for the migrations. For example:
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => [
+                'app\migrations', // Common migrations for the whole application
+                'module\migrations', // Migrations for the specific project's module
+                'some\extension\migrations', // Migrations for the specific extension
+            ],
+        ],
+    ],
+];
+```
+
+> Note: migrations applied from different namespaces will create a **single** migration history, e.g. you might be
+  unable to apply or revert migrations from particular namespace only.
+
+While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
+migration name. Note that backslash (`\`) symbol is usually considered a special character in the shell, so you need
+to escape it properly to avoid shell errors or incorrect behavior. For example:
+
+```
+yii migrate/create 'app\\migrations\\createUserTable'
+```
+
+> Note: migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
+  contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
+  property.
+
+
+### Separated Migrations <span id="separated-migrations"></span>
+
+Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
+'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect
+the ones dedicated to main project functionality.
+
+If you want several migrations to be applied and tracked down completely separated from each other, you can configure multiple
+migration commands which will use different namespaces and migration history tables:
+
+```php
+return [
+    'controllerMap' => [
+        // Common migrations for the whole application
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+        ],
+        // Migrations for the specific project's module
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+        ],
+        // Migrations for the specific extension
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@yii/rbac/migrations',
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+Note that to synchronize database you now need to run multiple commands instead of one:
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
 
 
 ## Migrating Multiple Databases <span id="migrating-multiple-databases"></span>

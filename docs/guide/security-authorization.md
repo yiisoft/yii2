@@ -242,6 +242,9 @@ Before you can go on you need to create those tables in the database. To do this
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
+Read more about working with migrations from different namespaces in
+[Separated Migrations](db-migrations.md#separated-migrations) section.
+
 The `authManager` can now be accessed via `\Yii::$app->authManager`.
 
 
@@ -304,7 +307,7 @@ class RbacController extends Controller
 ```
 
 > Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
-  and change namespace to `console/controllers`.
+  and change namespace to `console\controllers`.
 
 After executing the command with `yii rbac/init` we'll get the following hierarchy:
 
@@ -328,7 +331,7 @@ public function signup()
         $user->save(false);
 
         // the following three lines were added:
-        $auth = Yii::$app->authManager;
+        $auth = \Yii::$app->authManager;
         $authorRole = $auth->getRole('author');
         $auth->assign($authorRole, $user->getId());
 

@@ -465,8 +465,10 @@ class ReleaseController extends Controller
         $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
-        $this->runGit("git commit -a -m \"release version $version\"", $frameworkPath);
-        $this->runGit("git tag -a $version -m \"version $version\"", $frameworkPath);
+        $this->stdout("Make sure to have your git set up for GPG signing. The following tag and commit should be signed.\n\n");
+
+        $this->runGit("git commit -S -a -m \"release version $version\"", $frameworkPath);
+        $this->runGit("git tag -s $version -m \"version $version\"", $frameworkPath);
         $this->runGit("git push", $frameworkPath);
         $this->runGit("git push --tags", $frameworkPath);
 
@@ -578,8 +580,10 @@ class ReleaseController extends Controller
         $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
-        $this->runGit("git commit -a -m \"release version $version\"", $path);
-        $this->runGit("git tag -a $version -m \"version $version\"", $path);
+        $this->stdout("Make sure to have your git set up for GPG signing. The following tag and commit should be signed.\n\n");
+
+        $this->runGit("git commit -S -a -m \"release version $version\"", $path);
+        $this->runGit("git tag -s $version -m \"version $version\"", $path);
         $this->runGit("git push", $path);
         $this->runGit("git push --tags", $path);
 
@@ -694,8 +698,10 @@ class ReleaseController extends Controller
         $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
-        $this->runGit("git commit -a -m \"release version $version\"", $path);
-        $this->runGit("git tag -a $version -m \"version $version\"", $path);
+        $this->stdout("Make sure to have your git set up for GPG signing. The following tag and commit should be signed.\n\n");
+
+        $this->runGit("git commit -S -a -m \"release version $version\"", $path);
+        $this->runGit("git tag -s $version -m \"version $version\"", $path);
         $this->runGit("git push", $path);
         $this->runGit("git push --tags", $path);
 

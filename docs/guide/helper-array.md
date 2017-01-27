@@ -398,7 +398,7 @@ Each mapping array contains a set of mappings. Each mapping could be:
 - A key-value pair of desired array key name and model column name to take value from.
 - A key-value pair of desired array key name and a callback which returns value.
 
-The result of conversion above will be:
+The result of conversion above for single model will be:
 
 
 ```php
