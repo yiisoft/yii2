@@ -125,7 +125,7 @@ class BaseFileHelper
      * This will be passed as the second parameter to [finfo_open()](http://php.net/manual/en/function.finfo-open.php)
      * when the `fileinfo` extension is installed. If the MIME type is being determined based via [[getMimeTypeByExtension()]]
      * and this is null, it will use the file specified by [[mimeMagicFile]].
-     * @param boolean $checkExtension whether to use the file extension to determine the MIME type in case
+     * @param bool $checkExtension whether to use the file extension to determine the MIME type in case
      * `finfo_open()` cannot determine it.
      * @return string the MIME type (e.g. `text/plain`). Null is returned if the MIME type cannot be determined.
      * @throws InvalidConfigException when the `fileinfo` PHP extension is not installed and `$checkExtension` is `false`.
@@ -411,7 +411,7 @@ class BaseFileHelper
             if (static::filterPath($path, $options)) {
                 if (is_file($path)) {
                     $list[] = $path;
-                } elseif (!isset($options['recursive']) || $options['recursive']) {
+                } elseif (is_dir($path) && (!isset($options['recursive']) || $options['recursive'])) {
                     $list = array_merge($list, static::findFiles($path, $options));
                 }
             }
@@ -426,7 +426,7 @@ class BaseFileHelper
      * @param string $path the path of the file or directory to be checked
      * @param array $options the filtering options. See [[findFiles()]] for explanations of
      * the supported options.
-     * @return boolean whether the file or directory satisfies the filtering options.
+     * @return bool whether the file or directory satisfies the filtering options.
      */
     public static function filterPath($path, $options)
     {
@@ -469,9 +469,9 @@ class BaseFileHelper
      * in order to avoid the impact of the `umask` setting.
      *
      * @param string $path path of the directory to be created.
-     * @param integer $mode the permission to be set for the created directory.
-     * @param boolean $recursive whether to create parent directories if they do not exist.
-     * @return boolean whether the directory is created successfully
+     * @param int $mode the permission to be set for the created directory.
+     * @param bool $recursive whether to create parent directories if they do not exist.
+     * @return bool whether the directory is created successfully
      * @throws \yii\base\Exception if the directory could not be created (i.e. php error due to parallel changes)
      */
     public static function createDirectory($path, $mode = 0775, $recursive = true)
@@ -507,9 +507,9 @@ class BaseFileHelper
      *
      * @param string $baseName file or directory name to compare with the pattern
      * @param string $pattern the pattern that $baseName will be compared against
-     * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
-     * @param integer $flags pattern flags
-     * @return boolean whether the name matches against pattern
+     * @param int|bool $firstWildcard location of first wildcard character in the $pattern
+     * @param int $flags pattern flags
+     * @return bool whether the name matches against pattern
      */
     private static function matchBasename($baseName, $pattern, $firstWildcard, $flags)
     {
@@ -541,9 +541,9 @@ class BaseFileHelper
      * @param string $path full path to compare
      * @param string $basePath base of path that will not be compared
      * @param string $pattern the pattern that path part will be compared against
-     * @param integer|boolean $firstWildcard location of first wildcard character in the $pattern
-     * @param integer $flags pattern flags
-     * @return boolean whether the path part matches against pattern
+     * @param int|bool $firstWildcard location of first wildcard character in the $pattern
+     * @param int $flags pattern flags
+     * @return bool whether the path part matches against pattern
      */
     private static function matchPathname($path, $basePath, $pattern, $firstWildcard, $flags)
     {
@@ -632,9 +632,9 @@ class BaseFileHelper
     /**
      * Processes the pattern, stripping special characters like / and ! from the beginning and settings flags instead.
      * @param string $pattern
-     * @param boolean $caseSensitive
+     * @param bool $caseSensitive
      * @throws \yii\base\InvalidParamException
-     * @return array with keys: (string) pattern, (int) flags, (int|boolean) firstWildcard
+     * @return array with keys: (string) pattern, (int) flags, (int|bool) firstWildcard
      */
     private static function parseExcludePattern($pattern, $caseSensitive)
     {
@@ -679,7 +679,7 @@ class BaseFileHelper
     /**
      * Searches for the first wildcard character in the pattern.
      * @param string $pattern the pattern to search in
-     * @return integer|boolean position of first wildcard character or false if not found
+     * @return int|bool position of first wildcard character or false if not found
      */
     private static function firstWildcardInPattern($pattern)
     {

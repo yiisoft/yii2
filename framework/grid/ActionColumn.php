@@ -26,6 +26,8 @@ use yii\helpers\Url;
  * ]
  * ```
  *
+ * For more details and usage information on ActionColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -120,7 +122,7 @@ class ActionColumn extends Column
      */
     public $urlCreator;
     /**
-     * @var array html options to be applied to the [[initDefaultButtons()|default buttons]].
+     * @var array html options to be applied to the [[initDefaultButton()|default button]].
      * @since 2.0.4
      */
     public $buttonOptions = [];
@@ -140,36 +142,33 @@ class ActionColumn extends Column
      */
     protected function initDefaultButtons()
     {
-        if (!isset($this->buttons['view'])) {
-            $this->buttons['view'] = function ($url, $model, $key) {
+        $this->initDefaultButton('view', 'eye-open');
+        $this->initDefaultButton('update', 'pencil');
+        $this->initDefaultButton('delete', 'trash', [
+            'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+            'data-method' => 'post',
+        ]);
+    }
+
+    /**
+     * Initializes the default button rendering callback for single button
+     * @param string $name Button name as it's written in template
+     * @param string $iconName The part of Bootstrap glyphicon class that makes it unique
+     * @param array $additionalOptions Array of additional options
+     * @since 2.0.11
+     */
+    protected function initDefaultButton($name, $iconName, $additionalOptions = [])
+    {
+        if (!isset($this->buttons[$name]) && strpos($this->template, '{' . $name . '}') !== false) {
+            $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
+                $title = Yii::t('yii', ucfirst($name));
                 $options = array_merge([
-                    'title' => Yii::t('yii', 'View'),
-                    'aria-label' => Yii::t('yii', 'View'),
+                    'title' => $title,
+                    'aria-label' => $title,
                     'data-pjax' => '0',
-                ], $this->buttonOptions);
-                return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, $options);
-            };
-        }
-        if (!isset($this->buttons['update'])) {
-            $this->buttons['update'] = function ($url, $model, $key) {
-                $options = array_merge([
-                    'title' => Yii::t('yii', 'Update'),
-                    'aria-label' => Yii::t('yii', 'Update'),
-                    'data-pjax' => '0',
-                ], $this->buttonOptions);
-                return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, $options);
-            };
-        }
-        if (!isset($this->buttons['delete'])) {
-            $this->buttons['delete'] = function ($url, $model, $key) {
-                $options = array_merge([
-                    'title' => Yii::t('yii', 'Delete'),
-                    'aria-label' => Yii::t('yii', 'Delete'),
-                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                    'data-method' => 'post',
-                    'data-pjax' => '0',
-                ], $this->buttonOptions);
-                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, $options);
+                ], $additionalOptions, $this->buttonOptions);
+                $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
+                return Html::a($icon, $url, $options);
             };
         }
     }
@@ -180,7 +179,7 @@ class ActionColumn extends Column
      * @param string $action the button name (or action ID)
      * @param \yii\db\ActiveRecord $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the current row index
+     * @param int $index the current row index
      * @return string the created URL
      */
     public function createUrl($action, $model, $key, $index)

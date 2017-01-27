@@ -11,8 +11,8 @@ namespace yiiunit\data\ar;
 /**
  * https://github.com/yiisoft/yii2/issues/9006
  *
- * @property integer $id
- * @property integer $val
+ * @property int $id
+ * @property int $val
  */
 class BitValues extends ActiveRecord
 {

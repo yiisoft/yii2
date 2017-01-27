@@ -9,7 +9,8 @@
  * @since 2.0.8
  */
 
-drop table if exists [session];
+if object_id('[session]', 'U') is not null
+    drop table [session];
 
 create table [session]
 (

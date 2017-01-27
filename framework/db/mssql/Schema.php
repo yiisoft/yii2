@@ -233,7 +233,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -362,6 +362,7 @@ SQL;
         // http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
         $sql = <<<SQL
 SELECT
+    [rc].[constraint_name] AS [fk_name],
     [kcu1].[column_name] AS [fk_column_name],
     [kcu2].[table_name] AS [uq_table_name],
     [kcu2].[column_name] AS [uq_column_name]
@@ -382,9 +383,10 @@ SQL;
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
         ])->queryAll();
+
         $table->foreignKeys = [];
         foreach ($rows as $row) {
-            $table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
+            $table->foreignKeys[$row['fk_name']] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
         }
     }
 

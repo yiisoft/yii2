@@ -17,13 +17,13 @@
  * A module may be structured as follows:
  *
  * ```javascript
- * yii.sample = (function($) {
+ * window.yii.sample = (function($) {
  *     var pub = {
  *         // whether this module is currently active. If false, init() will not be called for this module
  *         // it will also not be called for all its child modules. If this property is undefined, it means true.
  *         isActive: true,
  *         init: function() {
- *             // ... module initialization code go here ...
+ *             // ... module initialization code goes here ...
  *         },
  *
  *         // ... other public functions and properties go here ...
@@ -32,7 +32,7 @@
  *     // ... private functions and properties go here ...
  *
  *     return pub;
- * })(jQuery);
+ * })(window.jQuery);
  * ```
  *
  * Using this structure, you can define public and private functions/properties for a module.
@@ -46,9 +46,9 @@ window.yii = (function ($) {
         /**
          * List of JS or CSS URLs that can be loaded multiple times via AJAX requests.
          * Each item may be represented as either an absolute URL or a relative one.
-         * Each item may contain a wildcart matching character `*`, that means one or more
+         * Each item may contain a wildcard matching character `*`, that means one or more
          * any characters on the position. For example:
-         *  - `/css/*.js` will match any file ending with `.js` in the `css` directory of the current web site
+         *  - `/css/*.css` will match any file ending with `.css` in the `css` directory of the current web site
          *  - `http*://cdn.example.com/*` will match any files on domain `cdn.example.com`, loaded with HTTP or HTTPS
          *  - `/js/myCustomScript.js?realm=*` will match file `/js/myCustomScript.js` with defined `realm` parameter
          */
@@ -56,7 +56,8 @@ window.yii = (function ($) {
         /**
          * The selector for clickable elements that need to support confirmation and form submission.
          */
-        clickableSelector: 'a, button, input[type="submit"], input[type="button"], input[type="reset"], input[type="image"]',
+        clickableSelector: 'a, button, input[type="submit"], input[type="button"], input[type="reset"], ' +
+        'input[type="image"]',
         /**
          * The selector for changeable elements that need to support confirmation and form submission.
          */
@@ -107,7 +108,7 @@ window.yii = (function ($) {
          * @param cancel a callback to be called when the user cancels the confirmation
          */
         confirm: function (message, ok, cancel) {
-            if (confirm(message)) {
+            if (window.confirm(message)) {
                 !ok || ok();
             } else {
                 !cancel || cancel();
@@ -143,84 +144,82 @@ window.yii = (function ($) {
          *             'name2' => 'value2',
          *         ],
          *     ],
-         * ];
+         * ]);
          * ```
          *
          * @param $e the jQuery representation of the element
+         * @param event Related event
          */
         handleAction: function ($e, event) {
             var $form = $e.attr('data-form') ? $('#' + $e.attr('data-form')) : $e.closest('form'),
                 method = !$e.data('method') && $form ? $form.attr('method') : $e.data('method'),
                 action = $e.attr('href'),
+                isValidAction = action && action !== '#',
                 params = $e.data('params'),
+                areValidParams = params && $.isPlainObject(params),
                 pjax = $e.data('pjax'),
-                pjaxPushState = !!$e.data('pjax-push-state'),
-                pjaxReplaceState = !!$e.data('pjax-replace-state'),
-                pjaxTimeout = $e.data('pjax-timeout'),
-                pjaxScrollTo = $e.data('pjax-scrollto'),
-                pjaxPushRedirect = $e.data('pjax-push-redirect'),
-                pjaxReplaceRedirect = $e.data('pjax-replace-redirect'),
-                pjaxSkipOuterContainers = $e.data('pjax-skip-outer-containers'),
+                usePjax = pjax !== undefined && pjax !== 0 && $.support.pjax,
                 pjaxContainer,
                 pjaxOptions = {};
 
-            if (pjax !== undefined && $.support.pjax) {
-                if ($e.data('pjax-container')) {
-                    pjaxContainer = $e.data('pjax-container');
-                } else {
-                    pjaxContainer = $e.closest('[data-pjax-container=""]');
-                }
-                // default to body if pjax container not found
+            if (usePjax) {
+                pjaxContainer = $e.data('pjax-container') || $e.closest('[data-pjax-container]');
                 if (!pjaxContainer.length) {
                     pjaxContainer = $('body');
                 }
                 pjaxOptions = {
                     container: pjaxContainer,
-                    push: pjaxPushState,
-                    replace: pjaxReplaceState,
-                    scrollTo: pjaxScrollTo,
-                    pushRedirect: pjaxPushRedirect,
-                    replaceRedirect: pjaxReplaceRedirect,
-                    pjaxSkipOuterContainers: pjaxSkipOuterContainers,
-                    timeout: pjaxTimeout,
+                    push: !!$e.data('pjax-push-state'),
+                    replace: !!$e.data('pjax-replace-state'),
+                    scrollTo: $e.data('pjax-scrollto'),
+                    pushRedirect: $e.data('pjax-push-redirect'),
+                    replaceRedirect: $e.data('pjax-replace-redirect'),
+                    skipOuterContainers: $e.data('pjax-skip-outer-containers'),
+                    timeout: $e.data('pjax-timeout'),
                     originalEvent: event,
                     originalTarget: $e
-                }
+                };
             }
 
             if (method === undefined) {
-                if (action && action != '#') {
-                    if (pjax !== undefined && $.support.pjax) {
-                        $.pjax.click(event, pjaxOptions);
-                    } else {
-                        window.location = action;
-                    }
+                if (isValidAction) {
+                    usePjax ? $.pjax.click(event, pjaxOptions) : window.location.assign(action);
                 } else if ($e.is(':submit') && $form.length) {
-                    if (pjax !== undefined && $.support.pjax) {
-                        $form.on('submit',function(e){
+                    if (usePjax) {
+                        $form.on('submit', function (e) {
                             $.pjax.submit(e, pjaxOptions);
-                        })
+                        });
                     }
                     $form.trigger('submit');
                 }
                 return;
             }
 
-            var newForm = !$form.length;
-            if (newForm) {
-                if (!action || !action.match(/(^\/|:\/\/)/)) {
-                    action = window.location.href;
+            var oldMethod,
+                oldAction,
+                newForm = !$form.length;
+            if (!newForm) {
+                oldMethod = $form.attr('method');
+                $form.attr('method', method);
+                if (isValidAction) {
+                    oldAction = $form.attr('action');
+                    $form.attr('action', action);
+                }
+            } else {
+                if (!isValidAction) {
+                    action = pub.getCurrentUrl();
                 }
                 $form = $('<form/>', {method: method, action: action});
                 var target = $e.attr('target');
                 if (target) {
                     $form.attr('target', target);
                 }
-                if (!method.match(/(get|post)/i)) {
+                if (!/(get|post)/i.test(method)) {
                     $form.append($('<input/>', {name: '_method', value: method, type: 'hidden'}));
-                    method = 'POST';
+                    method = 'post';
+                    $form.attr('method', method);
                 }
-                if (!method.match(/(get|head|options)/i)) {
+                if (/post/i.test(method)) {
                     var csrfParam = pub.getCsrfParam();
                     if (csrfParam) {
                         $form.append($('<input/>', {name: csrfParam, value: pub.getCsrfToken(), type: 'hidden'}));
@@ -231,49 +230,41 @@ window.yii = (function ($) {
 
             var activeFormData = $form.data('yiiActiveForm');
             if (activeFormData) {
-                // remember who triggers the form submission. This is used by yii.activeForm.js
+                // Remember the element triggered the form submission. This is used by yii.activeForm.js.
                 activeFormData.submitObject = $e;
             }
 
-            // temporarily add hidden inputs according to data-params
-            if (params && $.isPlainObject(params)) {
-                $.each(params, function (idx, obj) {
-                    $form.append($('<input/>').attr({name: idx, value: obj, type: 'hidden'}));
+            if (areValidParams) {
+                $.each(params, function (name, value) {
+                    $form.append($('<input/>').attr({name: name, value: value, type: 'hidden'}));
                 });
             }
 
-            var oldMethod = $form.attr('method');
-            $form.attr('method', method);
-            var oldAction = null;
-            if (action && action != '#') {
-                oldAction = $form.attr('action');
-                $form.attr('action', action);
-            }
-            if (pjax !== undefined && $.support.pjax) {
-                $form.on('submit',function(e){
+            if (usePjax) {
+                $form.on('submit', function (e) {
                     $.pjax.submit(e, pjaxOptions);
-                })
+                });
             }
+
             $form.trigger('submit');
-            $.when($form.data('yiiSubmitFinalizePromise')).then(
-                function () {
-                    if (oldAction != null) {
-                        $form.attr('action', oldAction);
-                    }
-                    $form.attr('method', oldMethod);
 
-                    // remove the temporarily added hidden inputs
-                    if (params && $.isPlainObject(params)) {
-                        $.each(params, function (idx, obj) {
-                            $('input[name="' + idx + '"]', $form).remove();
-                        });
-                    }
-
-                    if (newForm) {
-                        $form.remove();
-                    }
+            $.when($form.data('yiiSubmitFinalizePromise')).then(function () {
+                if (newForm) {
+                    $form.remove();
+                    return;
                 }
-            );
+
+                if (oldAction !== undefined) {
+                    $form.attr('action', oldAction);
+                }
+                $form.attr('method', oldMethod);
+
+                if (areValidParams) {
+                    $.each(params, function (name) {
+                        $('input[name="' + name + '"]', $form).remove();
+                    });
+                }
+            });
         },
 
         getQueryParams: function (url) {
@@ -283,58 +274,65 @@ window.yii = (function ($) {
             }
 
             var pairs = url.substring(pos + 1).split('#')[0].split('&'),
-                params = {},
-                pair,
-                i;
+                params = {};
 
-            for (i = 0; i < pairs.length; i++) {
-                pair = pairs[i].split('=');
+            for (var i = 0, len = pairs.length; i < len; i++) {
+                var pair = pairs[i].split('=');
                 var name = decodeURIComponent(pair[0].replace(/\+/g, '%20'));
                 var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
-                if (name.length) {
-                    if (params[name] !== undefined) {
-                        if (!$.isArray(params[name])) {
-                            params[name] = [params[name]];
-                        }
-                        params[name].push(value || '');
-                    } else {
-                        params[name] = value || '';
+                if (!name.length) {
+                    continue;
+                }
+                if (params[name] === undefined) {
+                    params[name] = value || '';
+                } else {
+                    if (!$.isArray(params[name])) {
+                        params[name] = [params[name]];
                     }
+                    params[name].push(value || '');
                 }
             }
             return params;
         },
 
         initModule: function (module) {
-            if (module.isActive === undefined || module.isActive) {
-                if ($.isFunction(module.init)) {
-                    module.init();
-                }
-                $.each(module, function () {
-                    if ($.isPlainObject(this)) {
-                        pub.initModule(this);
-                    }
-                });
+            if (module.isActive !== undefined && !module.isActive) {
+                return;
             }
+            if ($.isFunction(module.init)) {
+                module.init();
+            }
+            $.each(module, function () {
+                if ($.isPlainObject(this)) {
+                    pub.initModule(this);
+                }
+            });
         },
 
         init: function () {
             initCsrfHandler();
             initRedirectHandler();
-            initScriptFilter();
+            initAssetFilters();
             initDataMethods();
+        },
+
+        /**
+         * Returns the URL of the current page without params and trailing slash. Separated and made public for testing.
+         * @returns {string}
+         */
+        getBaseCurrentUrl: function () {
+            return window.location.protocol + '//' + window.location.host;
+        },
+
+        /**
+         * Returns the URL of the current page. Used for testing, you can always call `window.location.href` manually
+         * instead.
+         * @returns {string}
+         */
+        getCurrentUrl: function () {
+            return window.location.href;
         }
     };
-
-    function initRedirectHandler() {
-        // handle AJAX redirection
-        $(document).ajaxComplete(function (event, xhr, settings) {
-            var url = xhr && xhr.getResponseHeader('X-Redirect');
-            if (url) {
-                window.location = url;
-            }
-        });
-    }
 
     function initCsrfHandler() {
         // automatically send CSRF token for all AJAX requests
@@ -344,6 +342,115 @@ window.yii = (function ($) {
             }
         });
         pub.refreshCsrfToken();
+    }
+
+    function initRedirectHandler() {
+        // handle AJAX redirection
+        $(document).ajaxComplete(function (event, xhr) {
+            var url = xhr && xhr.getResponseHeader('X-Redirect');
+            if (url) {
+                window.location.assign(url);
+            }
+        });
+    }
+
+    function initAssetFilters() {
+        /**
+         * Used for storing loaded scripts and information about loading each script if it's in the process of loading.
+         * A single script can have one of the following values:
+         *
+         * - `undefined` - script was not loaded at all before or was loaded with error last time.
+         * - `true` (boolean) -  script was successfully loaded.
+         * - object - script is currently loading.
+         *
+         * In case of a value being an object the properties are:
+         * - `xhrList` - represents a queue of XHR requests sent to the same URL (related with this script) in the same
+         * small period of time.
+         * - `xhrDone` - boolean, acts like a locking mechanism. When one of the XHR requests in the queue is
+         * successfully completed, it will abort the rest of concurrent requests to the same URL until cleanup is done
+         * to prevent possible errors and race conditions.
+         * @type {{}}
+         */
+        var loadedScripts = {};
+
+        $('script[src]').each(function () {
+            var url = getAbsoluteUrl(this.src);
+            loadedScripts[url] = true;
+        });
+
+        $.ajaxPrefilter('script', function (options, originalOptions, xhr) {
+            if (options.dataType == 'jsonp') {
+                return;
+            }
+
+            var url = getAbsoluteUrl(options.url),
+                forbiddenRepeatedLoad = loadedScripts[url] === true && !isReloadableAsset(url),
+                cleanupRunning = loadedScripts[url] !== undefined && loadedScripts[url]['xhrDone'] === true;
+
+            if (forbiddenRepeatedLoad || cleanupRunning) {
+                xhr.abort();
+                return;
+            }
+
+            if (loadedScripts[url] === undefined || loadedScripts[url] === true) {
+                loadedScripts[url] = {
+                    xhrList: [],
+                    xhrDone: false
+                };
+            }
+
+            xhr.done(function (data, textStatus, jqXHR) {
+                // If multiple requests were successfully loaded, perform cleanup only once
+                if (loadedScripts[jqXHR.yiiUrl]['xhrDone'] === true) {
+                    return;
+                }
+
+                loadedScripts[jqXHR.yiiUrl]['xhrDone'] = true;
+
+                for (var i = 0, len = loadedScripts[jqXHR.yiiUrl]['xhrList'].length; i < len; i++) {
+                    var singleXhr = loadedScripts[jqXHR.yiiUrl]['xhrList'][i];
+                    if (singleXhr && singleXhr.readyState !== XMLHttpRequest.DONE) {
+                        singleXhr.abort();
+                    }
+                }
+
+                loadedScripts[jqXHR.yiiUrl] = true;
+            }).fail(function (jqXHR, textStatus) {
+                if (textStatus === 'abort') {
+                    return;
+                }
+
+                delete loadedScripts[jqXHR.yiiUrl]['xhrList'][jqXHR.yiiIndex];
+
+                var allFailed = true;
+                for (var i = 0, len = loadedScripts[jqXHR.yiiUrl]['xhrList'].length; i < len; i++) {
+                    if (loadedScripts[jqXHR.yiiUrl]['xhrList'][i]) {
+                        allFailed = false;
+                    }
+                }
+
+                if (allFailed) {
+                    delete loadedScripts[jqXHR.yiiUrl];
+                }
+            });
+            // Use prefix for custom XHR properties to avoid possible conflicts with existing properties
+            xhr.yiiIndex = loadedScripts[url]['xhrList'].length;
+            xhr.yiiUrl = url;
+
+            loadedScripts[url]['xhrList'][xhr.yiiIndex] = xhr;
+        });
+
+        $(document).ajaxComplete(function () {
+            var styleSheets = [];
+            $('link[rel=stylesheet]').each(function () {
+                var url = getAbsoluteUrl(this.href);
+                if (isReloadableAsset(url)) {
+                    return;
+                }
+
+                $.inArray(url, styleSheets) === -1 ? styleSheets.push(url) : $(this).remove();
+            });
+        });
     }
 
     function initDataMethods() {
@@ -373,13 +480,9 @@ window.yii = (function ($) {
             .on('change.yii', pub.changeableSelector, handler);
     }
 
-    function isReloadable(url) {
-        var hostInfo = getHostInfo();
-
+    function isReloadableAsset(url) {
         for (var i = 0; i < pub.reloadableScripts.length; i++) {
-            var rule = pub.reloadableScripts[i];
-            rule = rule.charAt(0) === '/' ? hostInfo + rule : rule;
-
+            var rule = getAbsoluteUrl(pub.reloadableScripts[i]);
             var match = new RegExp("^" + escapeRegExp(rule).split('\\*').join('.*') + "$").test(url);
             if (match === true) {
                 return true;
@@ -394,76 +497,18 @@ window.yii = (function ($) {
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
-    function getHostInfo() {
-        return location.protocol + '//' + location.host;
-    }
-
-    function initScriptFilter() {
-        var hostInfo = getHostInfo();
-        var loadedScripts = {};
-
-        var scripts = $('script[src]').map(function () {
-            return this.src.charAt(0) === '/' ? hostInfo + this.src : this.src;
-        }).toArray();
-        for (var i = 0, len = scripts.length; i < len; i++) {
-            loadedScripts[scripts[i]] = true;
-        }
-
-        $.ajaxPrefilter('script', function (options, originalOptions, xhr) {
-            if (options.dataType == 'jsonp') {
-                return;
-            }
-
-            var url = options.url.charAt(0) === '/' ? hostInfo + options.url : options.url;
-
-            if (url in loadedScripts) {
-                var item = loadedScripts[url];
-
-                // If the concurrent XHR request is running and URL is not reloadable
-                if (item !== true && !isReloadable(url)) {
-                    // Abort the current XHR request when previous finished successfully
-                    item.done(function () {
-                        if (xhr && xhr.readyState !== 4) {
-                            xhr.abort();
-                        }
-                    });
-                    // Or abort previous XHR if the current one is loaded faster
-                    xhr.done(function () {
-                        if (item && item.readyState !== 4) {
-                            item.abort();
-                        }
-                    });
-                } else if (!isReloadable(url)) {
-                    xhr.abort();
-                }
-            } else {
-                loadedScripts[url] = xhr.done(function () {
-                    loadedScripts[url] = true;
-                }).fail(function () {
-                    delete loadedScripts[url];
-                });
-            }
-        });
-
-        $(document).ajaxComplete(function (event, xhr, settings) {
-            var styleSheets = [];
-            $('link[rel=stylesheet]').each(function () {
-                if (isReloadable(this.href)) {
-                    return;
-                }
-                if ($.inArray(this.href, styleSheets) == -1) {
-                    styleSheets.push(this.href)
-                } else {
-                    $(this).remove();
-                }
-            })
-        });
+    /**
+     * Returns absolute URL based on the given URL
+     * @param {string} url Initial URL
+     * @returns {string}
+     */
+    function getAbsoluteUrl(url) {
+        return url.charAt(0) === '/' ? pub.getBaseCurrentUrl() + url : url;
     }
 
     return pub;
-})(jQuery);
+})(window.jQuery);
 
-jQuery(function () {
-    yii.initModule(yii);
+window.jQuery(function () {
+    window.yii.initModule(window.yii);
 });
-

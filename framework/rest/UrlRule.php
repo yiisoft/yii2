@@ -52,6 +52,8 @@ use yii\web\CompositeUrlRule;
  * The controller ID used in the pattern will be automatically pluralized (e.g. `user` becomes `users`
  * as shown in the above examples).
  *
+ * For more details and usage information on UrlRule, see the [guide article on rest routing](guide:rest-routing).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -128,7 +130,7 @@ class UrlRule extends CompositeUrlRule
         'class' => 'yii\web\UrlRule',
     ];
     /**
-     * @var boolean whether to automatically pluralize the URL names for controllers.
+     * @var bool whether to automatically pluralize the URL names for controllers.
      * If true, a controller ID will appear in plural form in URLs. For example, `user` controller
      * will appear as `users` in URLs.
      * @see controller
@@ -201,7 +203,7 @@ class UrlRule extends CompositeUrlRule
         $config['verb'] = $verbs;
         $config['pattern'] = rtrim($prefix . '/' . strtr($pattern, $this->tokens), '/');
         $config['route'] = $action;
-        if (!in_array('GET', $verbs)) {
+        if (!empty($verbs) && !in_array('GET', $verbs)) {
             $config['mode'] = \yii\web\UrlRule::PARSING_ONLY;
         }
         $config['suffix'] = $this->suffix;
@@ -219,9 +221,15 @@ class UrlRule extends CompositeUrlRule
             if (strpos($pathInfo, $urlName) !== false) {
                 foreach ($rules as $rule) {
                     /* @var $rule \yii\web\UrlRule */
-                    if (($result = $rule->parseRequest($manager, $request)) !== false) {
-                        Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
-
+                    $result = $rule->parseRequest($manager, $request);
+                    if (YII_DEBUG) {
+                        Yii::trace([
+                            'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
+                            'match' => $result !== false,
+                            'parent' => self::className()
+                        ], __METHOD__);
+                    }
+                    if ($result !== false) {
                         return $result;
                     }
                 }

@@ -50,6 +50,7 @@ class Schema extends \yii\db\Schema
         'time' => self::TYPE_TIME,
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
+        'varbinary' => self::TYPE_BINARY,
     ];
 
 
@@ -146,8 +147,8 @@ class Schema extends \yii\db\Schema
             }
             if (!empty($matches[2])) {
                 if ($type === 'enum') {
-                    $values = explode(',', $matches[2]);
-                    foreach ($values as $i => $value) {
+                    preg_match_all("/'[^']*'/", $matches[2], $values);
+                    foreach ($values[0] as $i => $value) {
                         $values[$i] = trim($value, "'");
                     }
                     $column->enumValues = $values;
@@ -188,7 +189,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      * @throws \Exception if DB query fails
      */
     protected function findColumns($table)
@@ -268,13 +269,15 @@ SQL;
         try {
             $rows = $this->db->createCommand($sql, [':tableName' => $table->name, ':tableName1' => $table->name])->queryAll();
             $constraints = [];
+
             foreach ($rows as $row) {
                 $constraints[$row['constraint_name']]['referenced_table_name'] = $row['referenced_table_name'];
                 $constraints[$row['constraint_name']]['columns'][$row['column_name']] = $row['referenced_column_name'];
             }
+
             $table->foreignKeys = [];
-            foreach ($constraints as $constraint) {
-                $table->foreignKeys[] = array_merge(
+            foreach ($constraints as $name => $constraint) {
+                $table->foreignKeys[$name] = array_merge(
                     [$constraint['referenced_table_name']],
                     $constraint['columns']
                 );

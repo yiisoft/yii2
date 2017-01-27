@@ -79,7 +79,7 @@ class MessageFormatter extends Component
      * @param string $pattern The pattern string to insert parameters into.
      * @param array $params The array of name value pairs to insert into the format string.
      * @param string $language The locale to use for formatting locale-dependent parts
-     * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
+     * @return string|false The formatted pattern string or `false` if an error occurred
      */
     public function format($pattern, $params, $language)
     {
@@ -141,7 +141,7 @@ class MessageFormatter extends Component
      * @param string $pattern The pattern to use for parsing the message.
      * @param string $message The message to parse, conforming to the pattern.
      * @param string $language The locale to use for formatting locale-dependent parts
-     * @return array|boolean An array containing items extracted, or `FALSE` on error.
+     * @return array|bool An array containing items extracted, or `FALSE` on error.
      * @throws \yii\base\NotSupportedException when PHP intl extension is not installed.
      */
     public function parse($pattern, $message, $language)
@@ -259,7 +259,7 @@ class MessageFormatter extends Component
      * @param string $pattern The pattern string to insert things into.
      * @param array $args The array of values to insert into the format string
      * @param string $locale The locale to use for formatting locale-dependent parts
-     * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
+     * @return false|string The formatted pattern string or `false` if an error occurred
      */
     protected function fallbackFormat($pattern, $args, $locale)
     {
@@ -286,7 +286,7 @@ class MessageFormatter extends Component
     /**
      * Tokenizes a pattern by separating normal text from replaceable patterns
      * @param string $pattern patter to tokenize
-     * @return array|boolean array of tokens or false on failure
+     * @return array|bool array of tokens or false on failure
      */
     private static function tokenizePattern($pattern)
     {
@@ -331,7 +331,7 @@ class MessageFormatter extends Component
      * @param array $token the token to parse
      * @param array $args arguments to replace
      * @param string $locale the locale
-     * @return boolean|string parsed token or false on failure
+     * @return bool|string parsed token or false on failure
      * @throws \yii\base\NotSupportedException when unsupported formatting is used.
      */
     private function parseToken($token, $args, $locale)

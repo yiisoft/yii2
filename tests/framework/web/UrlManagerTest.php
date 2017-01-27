@@ -247,9 +247,15 @@ class UrlManagerTest extends TestCase
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'https');
         $this->assertEquals('https://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
 
+        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], '');
+        $this->assertEquals('//www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
+
         $manager->hostInfo = 'https://www.example.com';
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'http');
         $this->assertEquals('http://www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
+
+        $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], '');
+        $this->assertEquals('//www.example.com?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
     public function testCreateAbsoluteUrlWithSuffix()
@@ -491,5 +497,51 @@ class UrlManagerTest extends TestCase
         ]);
         $url = $manager->createAbsoluteUrl(['site/test', '#' => 'testhash']);
         $this->assertEquals('http://example.com/index.php/testPage#testhash', $url);
+    }
+
+    /**
+     * @dataProvider multipleHostsRulesDataProvider
+     *
+     * @see https://github.com/yiisoft/yii2/issues/7948
+     *
+     * @param string $host
+     */
+    public function testMultipleHostsRules($host)
+    {
+        $manager = new UrlManager([
+            'enablePrettyUrl' => true,
+            'cache' => null,
+            'rules' => [
+                ['host' => 'http://example.com', 'pattern' => '<slug:(search)>', 'route' => 'products/search', 'defaults' => ['lang' => 'en']],
+                ['host' => 'http://example.fr', 'pattern' => '<slug:(search)>', 'route' => 'products/search', 'defaults' => ['lang' => 'fr']],
+            ],
+            'hostInfo' => $host,
+            'baseUrl' => '/',
+            'scriptUrl' => '',
+        ]);
+
+        $url = $manager->createAbsoluteUrl(['products/search', 'lang' => 'en', 'slug' => 'search'], 'https');
+        $this->assertEquals('https://example.com/search', $url);
+        $url = $manager->createUrl(['products/search', 'lang' => 'en', 'slug' => 'search']);
+        $this->assertEquals('http://example.com/search', $url);
+        $url = $manager->createUrl(['products/search', 'lang' => 'en', 'slug' => 'search', 'param1' => 'value1']);
+        $this->assertEquals('http://example.com/search?param1=value1', $url);
+
+        $url = $manager->createAbsoluteUrl(['products/search', 'lang' => 'fr', 'slug' => 'search'], 'https');
+        $this->assertEquals('https://example.fr/search', $url);
+        $url = $manager->createUrl(['products/search', 'lang' => 'fr', 'slug' => 'search']);
+        $this->assertEquals('http://example.fr/search', $url);
+        $url = $manager->createUrl(['products/search', 'lang' => 'fr', 'slug' => 'search', 'param1' => 'value1']);
+        $this->assertEquals('http://example.fr/search?param1=value1', $url);
+    }
+
+    public function multipleHostsRulesDataProvider()
+    {
+        return [
+            ['http://example.com'],
+            ['https://example.com'],
+            ['http://example.fr'],
+            ['https://example.fr'],
+        ];
     }
 }

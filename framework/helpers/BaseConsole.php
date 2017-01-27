@@ -55,7 +55,7 @@ class BaseConsole
     /**
      * Moves the terminal cursor up by sending ANSI control code CUU to the terminal.
      * If the cursor is already at the edge of the screen, this has no effect.
-     * @param integer $rows number of rows the cursor should be moved up
+     * @param int $rows number of rows the cursor should be moved up
      */
     public static function moveCursorUp($rows = 1)
     {
@@ -65,7 +65,7 @@ class BaseConsole
     /**
      * Moves the terminal cursor down by sending ANSI control code CUD to the terminal.
      * If the cursor is already at the edge of the screen, this has no effect.
-     * @param integer $rows number of rows the cursor should be moved down
+     * @param int $rows number of rows the cursor should be moved down
      */
     public static function moveCursorDown($rows = 1)
     {
@@ -75,7 +75,7 @@ class BaseConsole
     /**
      * Moves the terminal cursor forward by sending ANSI control code CUF to the terminal.
      * If the cursor is already at the edge of the screen, this has no effect.
-     * @param integer $steps number of steps the cursor should be moved forward
+     * @param int $steps number of steps the cursor should be moved forward
      */
     public static function moveCursorForward($steps = 1)
     {
@@ -85,7 +85,7 @@ class BaseConsole
     /**
      * Moves the terminal cursor backward by sending ANSI control code CUB to the terminal.
      * If the cursor is already at the edge of the screen, this has no effect.
-     * @param integer $steps number of steps the cursor should be moved backward
+     * @param int $steps number of steps the cursor should be moved backward
      */
     public static function moveCursorBackward($steps = 1)
     {
@@ -94,7 +94,7 @@ class BaseConsole
 
     /**
      * Moves the terminal cursor to the beginning of the next line by sending ANSI control code CNL to the terminal.
-     * @param integer $lines number of lines the cursor should be moved down
+     * @param int $lines number of lines the cursor should be moved down
      */
     public static function moveCursorNextLine($lines = 1)
     {
@@ -103,7 +103,7 @@ class BaseConsole
 
     /**
      * Moves the terminal cursor to the beginning of the previous line by sending ANSI control code CPL to the terminal.
-     * @param integer $lines number of lines the cursor should be moved up
+     * @param int $lines number of lines the cursor should be moved up
      */
     public static function moveCursorPrevLine($lines = 1)
     {
@@ -112,8 +112,8 @@ class BaseConsole
 
     /**
      * Moves the cursor to an absolute position given as column and row by sending ANSI control code CUP or CHA to the terminal.
-     * @param integer $column 1-based column number, 1 is the left edge of the screen.
-     * @param integer|null $row 1-based row number, 1 is the top edge of the screen. if not set, will move cursor only in current line.
+     * @param int $column 1-based column number, 1 is the left edge of the screen.
+     * @param int|null $row 1-based row number, 1 is the top edge of the screen. if not set, will move cursor only in current line.
      */
     public static function moveCursorTo($column, $row = null)
     {
@@ -127,7 +127,7 @@ class BaseConsole
     /**
      * Scrolls whole page up by sending ANSI control code SU to the terminal.
      * New lines are added at the bottom. This is not supported by ANSI.SYS used in windows.
-     * @param integer $lines number of lines to scroll up
+     * @param int $lines number of lines to scroll up
      */
     public static function scrollUp($lines = 1)
     {
@@ -137,7 +137,7 @@ class BaseConsole
     /**
      * Scrolls whole page down by sending ANSI control code SD to the terminal.
      * New lines are added at the top. This is not supported by ANSI.SYS used in windows.
-     * @param integer $lines number of lines to scroll down
+     * @param int $lines number of lines to scroll down
      */
     public static function scrollDown($lines = 1)
     {
@@ -296,7 +296,7 @@ class BaseConsole
      * You can pass the return value of this to one of the formatting methods:
      * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
      *
-     * @param integer $colorCode xterm color code
+     * @param int $colorCode xterm color code
      * @return string
      * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
@@ -310,7 +310,7 @@ class BaseConsole
      * You can pass the return value of this to one of the formatting methods:
      * [[ansiFormat]], [[ansiFormatCode]], [[beginAnsiFormat]]
      *
-     * @param integer $colorCode xterm color code
+     * @param int $colorCode xterm color code
      * @return string
      * @see http://en.wikipedia.org/wiki/Talk:ANSI_escape_code#xterm-256colors
      */
@@ -333,7 +333,7 @@ class BaseConsole
     /**
      * Returns the length of the string without ANSI color codes.
      * @param string $string the string to measure
-     * @return integer the length of the string not counting ANSI format characters
+     * @return int the length of the string not counting ANSI format characters
      */
     public static function ansiStrlen($string)
     {
@@ -496,7 +496,7 @@ class BaseConsole
      * color codes will just be removed (And %% will be transformed into %)
      *
      * @param string $string String to convert
-     * @param boolean $colored Should the string be colored?
+     * @param bool $colored Should the string be colored?
      * @return string
      */
     public static function renderColoredString($string, $colored = true)
@@ -528,9 +528,9 @@ class BaseConsole
             '%4' => [self::BG_BLUE],
             '%1' => [self::BG_RED],
             '%5' => [self::BG_PURPLE],
-            '%6' => [self::BG_PURPLE],
-            '%7' => [self::BG_CYAN],
-            '%0' => [self::BG_GREY],
+            '%6' => [self::BG_CYAN],
+            '%7' => [self::BG_GREY],
+            '%0' => [self::BG_BLACK],
             '%F' => [self::BLINK],
             '%U' => [self::UNDERLINE],
             '%8' => [self::NEGATIVE],
@@ -577,7 +577,7 @@ class BaseConsole
      * - not tty consoles
      *
      * @param mixed $stream
-     * @return boolean true if the stream supports ANSI colors, otherwise false.
+     * @return bool true if the stream supports ANSI colors, otherwise false.
      */
     public static function streamSupportsAnsiColors($stream)
     {
@@ -588,7 +588,7 @@ class BaseConsole
 
     /**
      * Returns true if the console is running on windows
-     * @return boolean
+     * @return bool
      */
     public static function isRunningOnWindows()
     {
@@ -598,10 +598,10 @@ class BaseConsole
     /**
      * Usage: list($width, $height) = ConsoleHelper::getScreenSize();
      *
-     * @param boolean $refresh whether to force checking and not re-use cached size value.
+     * @param bool $refresh whether to force checking and not re-use cached size value.
      * This is useful to detect changing window size while the application is running but may
      * not get up to date values on every terminal.
-     * @return array|boolean An array of ($width, $height) or false when it was not able to determine size.
+     * @return array|bool An array of ($width, $height) or false when it was not able to determine size.
      */
     public static function getScreenSize($refresh = false)
     {
@@ -619,8 +619,18 @@ class BaseConsole
         } else {
             // try stty if available
             $stty = [];
-            if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {
-                return $size = [(int)$matches[2], (int)$matches[1]];
+            if (exec('stty -a 2>&1', $stty)) {
+                $stty = implode(' ', $stty);
+
+                // Linux stty output
+                if (preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', $stty, $matches)) {
+                    return $size = [(int)$matches[2], (int)$matches[1]];
+                }
+
+                // MacOS stty output
+                if (preg_match('/(\d+)\s+rows;\s*(\d+)\s+columns;/mi', $stty, $matches)) {
+                    return $size = [(int)$matches[2], (int)$matches[1]];
+                }
             }
 
             // fallback to tput, which may not be updated on terminal resize
@@ -652,8 +662,8 @@ class BaseConsole
      * ```
      *
      * @param string $text the text to be wrapped
-     * @param integer $indent number of spaces to use for indentation.
-     * @param boolean $refresh whether to force refresh of screen size.
+     * @param int $indent number of spaces to use for indentation.
+     * @param bool $refresh whether to force refresh of screen size.
      * This will be passed to [[getScreenSize()]].
      * @return string the wrapped text.
      * @since 2.0.4
@@ -680,7 +690,7 @@ class BaseConsole
     /**
      * Gets input from STDIN and returns a string right-trimmed for EOLs.
      *
-     * @param boolean $raw If set to true, returns the raw string without trimming
+     * @param bool $raw If set to true, returns the raw string without trimming
      * @return string the string read from stdin
      */
     public static function stdin($raw = false)
@@ -692,7 +702,7 @@ class BaseConsole
      * Prints a string to STDOUT.
      *
      * @param string $string the string to print
-     * @return integer|boolean Number of bytes printed or false on error
+     * @return int|bool Number of bytes printed or false on error
      */
     public static function stdout($string)
     {
@@ -703,7 +713,7 @@ class BaseConsole
      * Prints a string to STDERR.
      *
      * @param string $string the string to print
-     * @return integer|boolean Number of bytes printed or false on error
+     * @return int|bool Number of bytes printed or false on error
      */
     public static function stderr($string)
     {
@@ -730,7 +740,7 @@ class BaseConsole
      * Prints text to STDOUT appended with a carriage return (PHP_EOL).
      *
      * @param string $string the text to print
-     * @return integer|boolean number of bytes printed or false on error.
+     * @return int|bool number of bytes printed or false on error.
      */
     public static function output($string = null)
     {
@@ -741,7 +751,7 @@ class BaseConsole
      * Prints text to STDERR appended with a carriage return (PHP_EOL).
      *
      * @param string $string the text to print
-     * @return integer|boolean number of bytes printed or false on error.
+     * @return int|bool number of bytes printed or false on error.
      */
     public static function error($string = null)
     {
@@ -805,9 +815,19 @@ class BaseConsole
     /**
      * Asks user to confirm by typing y or n.
      *
+     * A typical usage looks like the following:
+     *
+     * ```php
+     * if (Console::confirm("Are you sure?")) {
+     *     echo "user typed yes\n";
+     * } else {
+     *     echo "user typed no\n";
+     * }
+     * ```
+     *
      * @param string $message to print out before waiting for user input
-     * @param boolean $default this value is returned if no selection is made.
-     * @return boolean whether user confirmed
+     * @param bool $default this value is returned if no selection is made.
+     * @return bool whether user confirmed
      */
     public static function confirm($message, $default = false)
     {
@@ -889,11 +909,11 @@ class BaseConsole
      * Console::endProgress("done." . PHP_EOL);
      * ```
      *
-     * @param integer $done the number of items that are completed.
-     * @param integer $total the total value of items that are to be done.
+     * @param int $done the number of items that are completed.
+     * @param int $total the total value of items that are to be done.
      * @param string $prefix an optional string to display before the progress bar.
      * Default to empty string which results in no prefix to be displayed.
-     * @param integer|boolean $width optional width of the progressbar. This can be an integer representing
+     * @param int|bool $width optional width of the progressbar. This can be an integer representing
      * the number of characters to display for the progress bar or a float between 0 and 1 representing the
      * percentage of screen with the progress bar may take. It can also be set to false to disable the
      * bar and only show progress information like percent, number of items and ETA.
@@ -917,8 +937,8 @@ class BaseConsole
     /**
      * Updates a progress bar that has been started by [[startProgress()]].
      *
-     * @param integer $done the number of items that are completed.
-     * @param integer $total the total value of items that are to be done.
+     * @param int $done the number of items that are completed.
+     * @param int $total the total value of items that are to be done.
      * @param string $prefix an optional string to display before the progress bar.
      * Defaults to null meaning the prefix specified by [[startProgress()]] will be used.
      * If prefix is specified it will update the prefix that will be used by later calls.
@@ -968,7 +988,10 @@ class BaseConsole
             $info .= sprintf(' ETA: %d sec.', self::$_progressEta);
         }
 
-        $width -= 3 + static::ansiStrlen($info);
+        // Number extra characters outputted. These are opening [, closing ], and space before info
+        // Since Windows uses \r\n\ for line endings, there's one more in the case
+        $extraChars = static::isRunningOnWindows() ? 4 : 3;
+        $width -= $extraChars + static::ansiStrlen($info);
         // skipping progress bar on very small display or if forced to skip
         if ($width < 5) {
             static::stdout("\r$prefix$info   ");
@@ -992,10 +1015,10 @@ class BaseConsole
     /**
      * Ends a progress bar that has been started by [[startProgress()]].
      *
-     * @param string|boolean $remove This can be `false` to leave the progress bar on screen and just print a newline.
+     * @param string|bool $remove This can be `false` to leave the progress bar on screen and just print a newline.
      * If set to `true`, the line of the progress bar will be cleared. This may also be a string to be displayed instead
      * of the progress bar.
-     * @param boolean $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
+     * @param bool $keepPrefix whether to keep the prefix that has been specified for the progressbar when progressbar
      * gets removed. Defaults to true.
      * @see startProgress
      * @see updateProgress

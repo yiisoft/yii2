@@ -176,7 +176,7 @@ The [[yii\validators\Validator::when|when]] property takes a PHP callable with t
 /**
  * @param Model $model the model being validated
  * @param string $attribute the attribute being validated
- * @return boolean whether the rule should be applied
+ * @return bool whether the rule should be applied
  */
 function ($model, $attribute)
 ```
@@ -331,8 +331,10 @@ the method/function is:
 /**
  * @param string $attribute the attribute currently being validated
  * @param mixed $params the value of the "params" given in the rule
+ * @param \yii\validators\InlineValidator related InlineValidator instance.
+ * This parameter is available since version 2.0.11.
  */
-function ($attribute, $params)
+function ($attribute, $params, $validator)
 ```
 
 If an attribute fails the validation, the method/function should call [[yii\base\Model::addError()]] to save
@@ -355,7 +357,7 @@ class MyForm extends Model
             ['country', 'validateCountry'],
 
             // an inline validator defined as an anonymous function
-            ['token', function ($attribute, $params) {
+            ['token', function ($attribute, $params, $validator) {
                 if (!ctype_alnum($this->$attribute)) {
                     $this->addError($attribute, 'The token must contain letters or digits.');
                 }
@@ -363,7 +365,7 @@ class MyForm extends Model
         ];
     }
 
-    public function validateCountry($attribute, $params)
+    public function validateCountry($attribute, $params, $validator)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
             $this->addError($attribute, 'The country must be either "USA" or "Web".');
@@ -371,6 +373,14 @@ class MyForm extends Model
     }
 }
 ```
+
+> Note: Since version 2.0.11 you can use [[yii\validators\InlineValidator::addError()]] for adding errors instead. That way the error
+> message can be formatted using [[yii\i18n\I18N::format()]] right away. Use `{attribute}` and `{value}` in the error
+> message to refer to an attribute label (no need to get it manually) and attribute value accordingly:
+>
+> ```php
+> $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
+> ```
 
 > Note: By default, inline validators will not be applied if their associated attributes receive empty inputs
   or if they have already failed some validation rules. If you want to make sure a rule is always applied,
@@ -441,6 +451,119 @@ class EntryForm extends Model
 }
 ```
 
+
+## Multiple Attributes Validation <span id="multiple-attributes-validation"></span>
+
+Sometimes validators involve multiple attributes. Consider the following form:
+
+```php
+class MigrationForm extends \yii\base\Model
+{
+    /**
+     * Minimal funds amount for one adult person
+     */
+    const MIN_ADULT_FUNDS = 3000;
+    /**
+     * Minimal funds amount for one child
+     */
+    const MIN_CHILD_FUNDS = 1500;
+
+    public $personalSalary;
+    public $spouseSalary;
+    public $childrenCount;
+    public $description;
+
+    public function rules()
+    {
+        return [
+            [['personalSalary', 'description'], 'required'],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => self::MIN_ADULT_FUNDS],
+            ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
+            [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
+            ['description', 'string'],
+        ];
+    }
+}
+```
+
+### Creating validator <span id="multiple-attributes-validator"></span>
+
+Let's say we need to check if the family income is enough for children. We can create inline validator
+`validateChildrenFunds` for that which will run only when `childrenCount` is more than 0.
+
+Note that we can't use all validated attributes (`['personalSalary', 'spouseSalary', 'childrenCount']`) when attaching
+validator. This is because the same validator will run for each attribute (3 times in total) and we only need to run it
+once for the whole attribute set.
+
+You can use any of these attributes instead (or use what you think is the most relevant):
+
+```php
+['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
+    return $model->childrenCount > 0;
+}],
+```
+
+Implementation of `validateChildrenFunds` can be like this:
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // Double the minimal adult funds if spouse salary is specified
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', 'Your salary is not enough for children.');
+    }
+}
+```
+
+You can ignore `$attribute` parameter because validation is not related to just one attribute.
+
+
+### Adding errors <span id="multiple-attributes-errors"></span>
+
+Adding error in case of multiple attributes can vary depending on desired form design:
+
+- Select the most relevant field in your opinion and add error to it's attribute:
+
+```php
+$this->addError('childrenCount', 'Your salary is not enough for children.');
+```
+
+- Select multiple important relevant attributes or all attributes and add the same error message to them. We can store
+message in separate variable before passing it to `addError` to keep code DRY.
+
+```php
+$message = 'Your salary is not enough for children.';
+$this->addError('personalSalary', $message);
+$this->addError('wifeSalary', $message);
+$this->addError('childrenCount', $message);
+```
+
+Or use a loop:
+
+```php
+$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+foreach ($attributes as $attribute) {
+    $this->addError($attribute, 'Your salary is not enough for children.');
+}
+```
+
+- Add a common error (not related to particular attribute). We can use the not existing attribute name for adding
+error, for example `*`, because attribute existence is not checked at that point.
+
+```php
+$this->addError('*', 'Your salary is not enough for children.');
+```
+
+As a result, we will not see error message near form fields. To display it, we can include the error summary in view:
+
+```php
+<?= $form->errorSummary($model) ?>
+```
+
+> Note: Creating validator which validates multiple attributes at once is well described in the [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md).
 
 ## Client-Side Validation <span id="client-side-validation"></span>
 
@@ -517,6 +640,22 @@ validation of individual input fields by configuring their [[yii\widgets\ActiveF
 property to be false. When `enableClientValidation` is configured at both the input field level and the form level,
 the former will take precedence.
 
+> Info: Since version 2.0.11 all validators extending from [[yii\validators\Validator]] receive client-side options
+> from separate method - [[yii\validators\Validator::getClientOptions()]]. You can use it:
+>
+> - if you want to implement your own custom client-side validation but leave the synchronization with server-side
+> validator options;
+> - to extend or customize to fit your specific needs:
+>
+> ```php
+> public function getClientOptions($model, $attribute)
+> {
+>     $options = parent::getClientOptions($model, $attribute);
+>     // Modify $options here
+>
+>     return $options;
+> }
+> ```
 
 ### Implementing Client-Side Validation <span id="implementing-client-side-validation"></span>
 

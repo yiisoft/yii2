@@ -84,15 +84,15 @@ class IpValidator extends Validator
         'system' => ['multicast', 'linklocal', 'localhost', 'documentation'],
     ];
     /**
-     * @var boolean whether the validating value can be an IPv6 address. Defaults to `true`.
+     * @var bool whether the validating value can be an IPv6 address. Defaults to `true`.
      */
     public $ipv6 = true;
     /**
-     * @var boolean whether the validating value can be an IPv4 address. Defaults to `true`.
+     * @var bool whether the validating value can be an IPv4 address. Defaults to `true`.
      */
     public $ipv4 = true;
     /**
-     * @var boolean whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`.
+     * @var bool whether the address can be an IP with CIDR subnet, like `192.168.10.0/24`.
      * The following values are possible:
      *
      * - `false` - the address must not have a subnet (default).
@@ -101,7 +101,7 @@ class IpValidator extends Validator
      */
     public $subnet = false;
     /**
-     * @var boolean whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
+     * @var bool whether to add the CIDR prefix with the smallest length (32 for IPv4 and 128 for IPv6) to an
      * address without it. Works only when `subnet` is not `false`. For example:
      *  - `10.0.1.5` will normalized to `10.0.1.5/32`
      *  - `2008:db0::1` will be normalized to `2008:db0::1/128`
@@ -110,12 +110,12 @@ class IpValidator extends Validator
      */
     public $normalize = false;
     /**
-     * @var boolean whether address may have a [[NEGATION_CHAR]] character at the beginning.
+     * @var bool whether address may have a [[NEGATION_CHAR]] character at the beginning.
      * Defaults to `false`.
      */
     public $negation = false;
     /**
-     * @var boolean whether to expand an IPv6 address to the full notation format.
+     * @var bool whether to expand an IPv6 address to the full notation format.
      * Defaults to `false`.
      */
     public $expandIPv6 = false;
@@ -369,11 +369,11 @@ class IpValidator extends Validator
                 $cidr = static::IPV6_ADDRESS_LENGTH;
             }
 
-            if (!$this->ipv6) {
-                return [$this->ipv6NotAllowed, []];
-            }
             if (!$this->validateIPv6($ip)) {
                 return [$this->message, []];
+            }
+            if (!$this->ipv6) {
+                return [$this->ipv6NotAllowed, []];
             }
 
             if ($this->expandIPv6) {
@@ -388,12 +388,11 @@ class IpValidator extends Validator
                 $isCidrDefault = true;
                 $cidr = static::IPV4_ADDRESS_LENGTH;
             }
-
-            if (!$this->ipv4) {
-                return [$this->ipv4NotAllowed, []];
-            }
             if (!$this->validateIPv4($ip)) {
                 return [$this->message, []];
+            }
+            if (!$this->ipv4) {
+                return [$this->ipv4NotAllowed, []];
             }
         }
 
@@ -427,8 +426,8 @@ class IpValidator extends Validator
      * The method checks whether the IP address with specified CIDR is allowed according to the [[ranges]] list.
      *
      * @param string $ip
-     * @param integer $cidr
-     * @return boolean
+     * @param int $cidr
+     * @return bool
      * @see ranges
      */
     private function isAllowed($ip, $cidr)
@@ -451,7 +450,7 @@ class IpValidator extends Validator
      * Parses IP address/range for the negation with [[NEGATION_CHAR]].
      *
      * @param $string
-     * @return array `[0 => boolean, 1 => string]`
+     * @return array `[0 => bool, 1 => string]`
      *  - boolean: whether the string is negated
      *  - string: the string without negation (when the negation were present)
      */
@@ -493,7 +492,7 @@ class IpValidator extends Validator
      * Validates IPv4 address
      *
      * @param string $value
-     * @return boolean
+     * @return bool
      */
     protected function validateIPv4($value)
     {
@@ -504,7 +503,7 @@ class IpValidator extends Validator
      * Validates IPv6 address
      *
      * @param string $value
-     * @return boolean
+     * @return bool
      */
     protected function validateIPv6($value)
     {
@@ -515,7 +514,7 @@ class IpValidator extends Validator
      * Gets the IP version
      *
      * @param string $ip
-     * @return integer
+     * @return int
      */
     private function getIpVersion($ip)
     {
@@ -535,9 +534,9 @@ class IpValidator extends Validator
      * Checks whether the IP is in subnet range
      *
      * @param string $ip an IPv4 or IPv6 address
-     * @param integer $cidr
+     * @param int $cidr
      * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
-     * @return boolean
+     * @return bool
      */
     private function inRange($ip, $cidr, $range)
     {
@@ -588,6 +587,17 @@ class IpValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $messages = [
             'ipv6NotAllowed' => $this->ipv6NotAllowed,
             'ipv4NotAllowed' => $this->ipv4NotAllowed,
@@ -605,8 +615,8 @@ class IpValidator extends Validator
             'ipv4Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv4Pattern)),
             'ipv6Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv6Pattern)),
             'messages' => $messages,
-            'ipv4' => (boolean)$this->ipv4,
-            'ipv6' => (boolean)$this->ipv6,
+            'ipv4' => (bool) $this->ipv4,
+            'ipv6' => (bool) $this->ipv6,
             'ipParsePattern' => new JsExpression(Html::escapeJsRegularExpression($this->getIpParsePattern())),
             'negation' => $this->negation,
             'subnet' => $this->subnet,
@@ -615,8 +625,6 @@ class IpValidator extends Validator
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }

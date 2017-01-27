@@ -116,22 +116,28 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the table column metadata.
      * @param TableSchema $table the table schema
-     * @return boolean whether the table exists
+     * @return bool whether the table exists
      */
     protected function findColumns($table)
     {
         $sql = <<<SQL
-SELECT a.column_name, a.data_type, a.data_precision, a.data_scale, a.data_length,
-    a.nullable, a.data_default,
-    com.comments as column_comment
+SELECT 
+    A.COLUMN_NAME, 
+    A.DATA_TYPE, 
+    A.DATA_PRECISION, 
+    A.DATA_SCALE, 
+    A.DATA_LENGTH,
+    A.NULLABLE, 
+    A.DATA_DEFAULT,
+    COM.COMMENTS AS COLUMN_COMMENT
 FROM ALL_TAB_COLUMNS A
-inner join ALL_OBJECTS B ON b.owner = a.owner and ltrim(B.OBJECT_NAME) = ltrim(A.TABLE_NAME)
-LEFT JOIN all_col_comments com ON (A.owner = com.owner AND A.table_name = com.table_name AND A.column_name = com.column_name)
+    INNER JOIN ALL_OBJECTS B ON B.OWNER = A.OWNER AND LTRIM(B.OBJECT_NAME) = LTRIM(A.TABLE_NAME)
+    LEFT JOIN ALL_COL_COMMENTS COM ON (A.OWNER = COM.OWNER AND A.TABLE_NAME = COM.TABLE_NAME AND A.COLUMN_NAME = COM.COLUMN_NAME)
 WHERE
-    a.owner = :schemaName
-    and b.object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
-    and b.object_name = :tableName
-ORDER by a.column_id
+    A.OWNER = :schemaName
+    AND B.OBJECT_TYPE IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
+    AND B.OBJECT_NAME = :tableName
+ORDER BY A.COLUMN_ID
 SQL;
 
         try {
@@ -167,15 +173,17 @@ SQL;
     protected function getTableSequenceName($tableName)
     {
 
-        $seq_name_sql = <<<SQL
-SELECT ud.referenced_name as sequence_name
-FROM user_dependencies ud
-JOIN user_triggers ut on (ut.trigger_name = ud.name)
-WHERE ut.table_name = :tableName
-AND ud.type='TRIGGER'
-AND ud.referenced_type='SEQUENCE'
+        $sequenceNameSql = <<<SQL
+SELECT 
+    UD.REFERENCED_NAME AS SEQUENCE_NAME
+FROM USER_DEPENDENCIES UD
+    JOIN USER_TRIGGERS UT ON (UT.TRIGGER_NAME = UD.NAME)
+WHERE 
+    UT.TABLE_NAME = :tableName
+    AND UD.TYPE = 'TRIGGER'
+    AND UD.REFERENCED_TYPE = 'SEQUENCE'
 SQL;
-        $sequenceName = $this->db->createCommand($seq_name_sql, [':tableName' => $tableName])->queryScalar();
+        $sequenceName = $this->db->createCommand($sequenceNameSql, [':tableName' => $tableName])->queryScalar();
         return $sequenceName === false ? null : $sequenceName;
     }
 
@@ -251,15 +259,23 @@ SQL;
     protected function findConstraints($table)
     {
         $sql = <<<SQL
-SELECT D.CONSTRAINT_NAME, D.CONSTRAINT_TYPE, C.COLUMN_NAME, C.POSITION, D.R_CONSTRAINT_NAME,
-        E.TABLE_NAME AS TABLE_REF, F.COLUMN_NAME AS COLUMN_REF,
-        C.TABLE_NAME
+SELECT
+    /*+ PUSH_PRED(C) PUSH_PRED(D) PUSH_PRED(E) */
+    D.CONSTRAINT_NAME,
+    D.CONSTRAINT_TYPE,
+    C.COLUMN_NAME,
+    C.POSITION,
+    D.R_CONSTRAINT_NAME,
+    E.TABLE_NAME AS TABLE_REF,
+    F.COLUMN_NAME AS COLUMN_REF,
+    C.TABLE_NAME
 FROM ALL_CONS_COLUMNS C
-INNER JOIN ALL_CONSTRAINTS D ON D.OWNER = C.OWNER AND D.CONSTRAINT_NAME = C.CONSTRAINT_NAME
-LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_CONSTRAINT_NAME
-LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
-WHERE C.OWNER = :schemaName
-   AND C.TABLE_NAME = :tableName
+    INNER JOIN ALL_CONSTRAINTS D ON D.OWNER = C.OWNER AND D.CONSTRAINT_NAME = C.CONSTRAINT_NAME
+    LEFT JOIN ALL_CONSTRAINTS E ON E.OWNER = D.R_OWNER AND E.CONSTRAINT_NAME = D.R_CONSTRAINT_NAME
+    LEFT JOIN ALL_CONS_COLUMNS F ON F.OWNER = E.OWNER AND F.CONSTRAINT_NAME = E.CONSTRAINT_NAME AND F.POSITION = C.POSITION
+WHERE
+    C.OWNER = :schemaName
+    AND C.TABLE_NAME = :tableName
 ORDER BY D.CONSTRAINT_NAME, C.POSITION
 SQL;
         $command = $this->db->createCommand($sql, [
@@ -295,8 +311,12 @@ SQL;
             }
             $constraints[$name]['columns'][$row['COLUMN_NAME']] = $row['COLUMN_REF'];
         }
+
         foreach ($constraints as $constraint) {
-            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
+            $name = array_keys($constraint);
+            $name = current($name);
+
+            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 
@@ -306,13 +326,12 @@ SQL;
     protected function findSchemaNames()
     {
         $sql = <<<SQL
-SELECT username
-  FROM dba_users u
- WHERE EXISTS (
-    SELECT 1
-      FROM dba_objects o
-     WHERE o.owner = u.username )
-   AND default_tablespace not in ('SYSTEM','SYSAUX')
+SELECT
+    USERNAME
+FROM DBA_USERS U
+WHERE 
+    EXISTS (SELECT 1 FROM DBA_OBJECTS O WHERE O.OWNER = U.USERNAME)
+    AND DEFAULT_TABLESPACE NOT IN ('SYSTEM','SYSAUX')
 SQL;
         return $this->db->createCommand($sql)->queryColumn();
     }
@@ -324,20 +343,29 @@ SQL;
     {
         if ($schema === '') {
             $sql = <<<SQL
-SELECT table_name FROM user_tables
+SELECT 
+    TABLE_NAME 
+FROM USER_TABLES
 UNION ALL
-SELECT view_name AS table_name FROM user_views
+SELECT 
+    VIEW_NAME AS TABLE_NAME 
+FROM USER_VIEWS
 UNION ALL
-SELECT mview_name AS table_name FROM user_mviews
-ORDER BY table_name
+SELECT 
+    MVIEW_NAME AS TABLE_NAME 
+FROM USER_MVIEWS
+ORDER BY TABLE_NAME
 SQL;
             $command = $this->db->createCommand($sql);
         } else {
             $sql = <<<SQL
-SELECT object_name AS table_name
-FROM all_objects
-WHERE object_type IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW') AND owner=:schema
-ORDER BY object_name
+SELECT 
+    OBJECT_NAME AS TABLE_NAME
+FROM ALL_OBJECTS
+WHERE 
+    OBJECT_TYPE IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW') 
+    AND OWNER = :schema
+ORDER BY OBJECT_NAME
 SQL;
             $command = $this->db->createCommand($sql, [':schema' => $schema]);
         }
@@ -371,13 +399,16 @@ SQL;
     public function findUniqueIndexes($table)
     {
         $query = <<<SQL
-SELECT dic.INDEX_NAME, dic.COLUMN_NAME
-FROM ALL_INDEXES di
-INNER JOIN ALL_IND_COLUMNS dic ON di.TABLE_NAME = dic.TABLE_NAME AND di.INDEX_NAME = dic.INDEX_NAME
-WHERE di.UNIQUENESS = 'UNIQUE'
-AND dic.TABLE_OWNER = :schemaName
-AND dic.TABLE_NAME = :tableName
-ORDER BY dic.TABLE_NAME, dic.INDEX_NAME, dic.COLUMN_POSITION
+SELECT 
+    DIC.INDEX_NAME,
+    DIC.COLUMN_NAME
+FROM ALL_INDEXES DI
+    INNER JOIN ALL_IND_COLUMNS DIC ON DI.TABLE_NAME = DIC.TABLE_NAME AND DI.INDEX_NAME = DIC.INDEX_NAME
+WHERE 
+    DI.UNIQUENESS = 'UNIQUE'
+    AND DIC.TABLE_OWNER = :schemaName
+    AND DIC.TABLE_NAME = :tableName
+ORDER BY DIC.TABLE_NAME, DIC.INDEX_NAME, DIC.COLUMN_POSITION
 SQL;
         $result = [];
         $command = $this->db->createCommand($query, [

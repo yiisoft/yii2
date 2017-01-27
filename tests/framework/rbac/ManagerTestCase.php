@@ -182,6 +182,16 @@ abstract class ManagerTestCase extends TestCase
                 'blablabla' => false,
                 null => false,
             ],
+            'guest' => [
+                // all actions denied for guest (user not exists)
+                'createPost' => false,
+                'readPost' => false,
+                'updatePost' => false,
+                'deletePost' => false,
+                'updateAnyPost' => false,
+                'blablabla' => false,
+                null => false,
+            ],
         ];
 
         $params = ['authorID' => 'author B'];
@@ -222,6 +232,9 @@ abstract class ManagerTestCase extends TestCase
         $updateAnyPost = $this->auth->createPermission('updateAnyPost');
         $updateAnyPost->description = 'update any post';
         $this->auth->add($updateAnyPost);
+
+        $withoutChildren = $this->auth->createRole('withoutChildren');
+        $this->auth->add($withoutChildren);
 
         $reader = $this->auth->createRole('reader');
         $this->auth->add($reader);
@@ -291,6 +304,11 @@ abstract class ManagerTestCase extends TestCase
     public function testGetChildRoles()
     {
         $this->prepareData();
+
+        $roles = $this->auth->getChildRoles('withoutChildren');
+        $this->assertCount(1, $roles);
+        $this->assertInstanceOf(Role::className(), reset($roles));
+        $this->assertTrue(reset($roles)->name === 'withoutChildren');
 
         $roles = $this->auth->getChildRoles('reader');
         $this->assertCount(1, $roles);
@@ -471,5 +489,23 @@ abstract class ManagerTestCase extends TestCase
         $role->ruleName = 'all_rule';
         $auth->update('Reader', $role);
         $this->assertTrue($auth->checkAccess($userId, 'AdminPost', ['action' => 'print']));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/10176
+     * https://github.com/yiisoft/yii2/issues/12681
+     */
+    public function testRuleWithPrivateFields()
+    {
+        $auth = $this->auth;
+
+        $auth->removeAll();
+
+        $rule = new ActionRule();
+        $auth->add($rule);
+
+        /** @var ActionRule $rule */
+        $rule = $this->auth->getRule('action_rule');
+        $this->assertTrue($rule instanceof ActionRule);
     }
 }
