@@ -115,6 +115,7 @@ Yii Framework 2 Change Log
 - Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
 - Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
+- Enh #7435: Added `EVENT_BEFORE_RUN`, `EVENT_AFTER_RUN` and corresponding methods to `yii\base\Widget` (petrabarus)
 
 2.0.10 October 20, 2016
 -----------------------

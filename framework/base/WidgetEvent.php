@@ -7,15 +7,13 @@
 
 namespace yii\base;
 
-use Yii;
-
 /**
  * WidgetEvent represents the event parameter used for a widget event.
  *
  * By setting the [[isValid]] property, one may control whether to continue running the widget.
  *
  * @author Petra Barus <petra.barus@gmail.com>
- * @since 2.0
+ * @since 2.0.11
  */
 class WidgetEvent extends Event {
     

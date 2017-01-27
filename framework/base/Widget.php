@@ -29,10 +29,12 @@ class Widget extends Component implements ViewContextInterface
     /**
      * @event WidgetEvent an event raised right before executing a widget.
      * You may set [[WidgetEvent::isValid]] to be false to cancel the widget execution.
+     * @since 2.0.11
      */
     const EVENT_BEFORE_RUN = 'beforeRun';
     /**
      * @event WidgetEvent an event raised right after executing a widget.
+     * @since 2.0.11
      */
     const EVENT_AFTER_RUN = 'afterRun';
     
@@ -262,6 +264,7 @@ class Widget extends Component implements ViewContextInterface
      * ```
      *
      * @return boolean whether the widget should continue to be executed.
+     * @since 2.0.11
      */
     public function beforeRun()
     {
@@ -289,6 +292,7 @@ class Widget extends Component implements ViewContextInterface
      *
      * @param mixed $result the widget return result.
      * @return mixed the processed widget result.
+     * @since 2.0.11
      */
     public function afterRun($result)
     {
