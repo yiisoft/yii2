@@ -391,9 +391,8 @@ class Module extends ServiceLocator
             $module = $this->getModule(substr($id, 0, $pos));
 
             return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
-        } else {
-            return isset($this->_modules[$id]);
         }
+        return isset($this->_modules[$id]);
     }
 
     /**
@@ -467,9 +466,8 @@ class Module extends ServiceLocator
             }
 
             return $modules;
-        } else {
-            return $this->_modules;
         }
+        return $this->_modules;
     }
 
     /**
@@ -527,10 +525,10 @@ class Module extends ServiceLocator
             }
 
             return $result;
-        } else {
-            $id = $this->getUniqueId();
-            throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
         }
+
+        $id = $this->getUniqueId();
+        throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
     }
 
     /**
@@ -640,9 +638,8 @@ class Module extends ServiceLocator
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

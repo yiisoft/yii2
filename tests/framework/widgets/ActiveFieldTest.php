@@ -8,6 +8,7 @@ use yii\base\DynamicModel;
 use yii\widgets\ActiveForm;
 use yii\web\View;
 use yii\web\AssetManager;
+use yii\widgets\InputWidget;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>
@@ -147,7 +148,8 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testBegin() {
+    public function testBegin()
+    {
         $expectedValue = '<article class="form-group field-activefieldtestmodel-attributename">';
         $this->activeField->options['tag'] = 'article';
         $actualValue = $this->activeField->begin();
@@ -216,7 +218,6 @@ EOT;
 
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
     }
-
 
     public function testError()
     {
@@ -444,6 +445,82 @@ EOD;
         ], $actualValue);
     }
 
+    public function testAriaAttributes()
+    {
+        $this->activeField->addAriaAttributes = true;
+
+        $expectedValue = <<<EOD
+<div class="form-group field-activefieldtestmodel-attributename">
+<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testAriaRequiredAttribute()
+    {
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addRule([$this->attributeName], 'required');
+
+        $expectedValue = <<<EOD
+<div class="form-group field-activefieldtestmodel-attributename required">
+<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block"></div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testAriaInvalidAttribute()
+    {
+        $this->activeField->addAriaAttributes = true;
+        $this->helperModel->addError($this->attributeName, 'Some error');
+
+        $expectedValue = <<<EOD
+<div class="form-group field-activefieldtestmodel-attributename has-error">
+<label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
+<input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">
+<div class="hint-block">Hint for attributeName attribute</div>
+<div class="help-block">Some error</div>
+</div>
+EOD;
+
+        $actualValue = $this->activeField->render();
+        $this->assertEqualsWithoutLE($expectedValue, $actualValue);
+    }
+
+    public function testEmptyTag()
+    {
+        $this->activeField->options = ['tag' => false];
+        $expectedValue = '<input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">';
+        $actualValue = $this->activeField->hiddenInput()->label(false)->error(false)->hint(false)->render();
+        $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
+    }
+
+    public function testWidget()
+    {
+        $this->activeField->widget(TestInputWidget::className());
+        $this->assertEquals('Render: ' . TestInputWidget::className(), $this->activeField->parts['{input}']);
+        $widget = TestInputWidget::$lastInstance;
+
+        $this->assertSame($this->activeField->model, $widget->model);
+        $this->assertEquals($this->activeField->attribute, $widget->attribute);
+        $this->assertSame($this->activeField->form->view, $widget->view);
+        $this->assertSame($this->activeField, $widget->field);
+
+        $this->activeField->widget(TestInputWidget::className(), ['options' => ['id' => 'test-id']]);
+        $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
+    }
+
     /**
      * Helper methods
      */
@@ -508,5 +585,24 @@ class TestValidator extends \yii\validators\Validator
     public function setWhenClient($js)
     {
         $this->whenClient = $js;
+    }
+}
+
+class TestInputWidget extends InputWidget
+{
+    /**
+     * @var static
+     */
+    public static $lastInstance;
+
+    public function init()
+    {
+        parent::init();
+        self::$lastInstance = $this;
+    }
+
+    public function run()
+    {
+        return 'Render: ' . get_class($this);
     }
 }

@@ -203,7 +203,7 @@ class UrlRule extends CompositeUrlRule
         $config['verb'] = $verbs;
         $config['pattern'] = rtrim($prefix . '/' . strtr($pattern, $this->tokens), '/');
         $config['route'] = $action;
-        if (!in_array('GET', $verbs)) {
+        if (!empty($verbs) && !in_array('GET', $verbs)) {
             $config['mode'] = \yii\web\UrlRule::PARSING_ONLY;
         }
         $config['suffix'] = $this->suffix;

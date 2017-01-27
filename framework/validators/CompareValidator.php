@@ -225,6 +225,17 @@ class CompareValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $options = [
             'operator' => $this->operator,
             'type' => $this->type,
@@ -251,8 +262,6 @@ class CompareValidator extends Validator
             'compareValueOrAttribute' => $compareValueOrAttribute,
         ], Yii::$app->language);
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

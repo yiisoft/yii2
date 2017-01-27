@@ -154,7 +154,7 @@ class BaseStringHelper
         $config = \HTMLPurifier_Config::create(null);
         $config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $lexer = \HTMLPurifier_Lexer::create($config);
-        $tokens = $lexer->tokenizeHTML($string, $config, null);
+        $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
         $totalCount = 0;
         $truncated = [];
@@ -283,5 +283,26 @@ class BaseStringHelper
     public static function countWords($string)
     {
         return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
+    }
+
+    /**
+     * Returns string represenation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma
+     * @param int|float|string $value
+     * @return string
+     * @since 2.0.11
+     */
+    public static function normalizeNumber($value)
+    {
+        $value = "$value";
+
+        $localeInfo = localeconv();
+        $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
+
+        if ($decimalSeparator !== null && $decimalSeparator !== '.') {
+            $value = str_replace($decimalSeparator, '.', $value);
+        }
+
+        return $value;
     }
 }

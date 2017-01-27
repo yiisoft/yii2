@@ -45,6 +45,79 @@ class HelpControllerTest extends TestCase
         return $controller->flushStdOutBuffer();
     }
 
+    public function testActionList()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerMap' => [
+                'migrate' => 'yii\console\controllers\MigrateController',
+                'cache' => 'yii\console\controllers\CacheController',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list'));
+        $this->assertEquals(<<<STRING
+cache
+cache/flush
+cache/flush-all
+cache/flush-schema
+cache/index
+help
+help/index
+help/list
+help/list-action-options
+help/usage
+migrate
+migrate/create
+migrate/down
+migrate/history
+migrate/mark
+migrate/new
+migrate/redo
+migrate/to
+migrate/up
+
+STRING
+        , $result);
+    }
+
+    public function testActionListActionOptions()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerMap' => [
+                'migrate' => 'yii\console\controllers\MigrateController',
+                'cache' => 'yii\console\controllers\CacheController',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
+        $this->assertEquals(<<<STRING
+action:route to action
+
+--interactive: whether to run the command interactively.
+--color: whether to enable ANSI color in the output.If not set, ANSI color will only be enabled for terminals that support it.
+--help: whether to display help information about current command.
+
+STRING
+        , $result);
+    }
+
+    public function testActionUsage()
+    {
+        $this->mockApplication([
+            'enableCoreCommands' => false,
+            'controllerMap' => [
+                'migrate' => 'yii\console\controllers\MigrateController',
+                'cache' => 'yii\console\controllers\CacheController',
+            ],
+        ]);
+        $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
+        $this->assertEquals(<<<STRING
+bootstrap.php help/list-action-options <action>
+
+STRING
+            , $result);
+    }
+
     public function testActionIndex()
     {
         $result = Console::stripAnsiFormat($this->runControllerAction('index'));
@@ -56,7 +129,7 @@ class HelpControllerTest extends TestCase
 
     public function testActionIndexWithHelpCommand()
     {
-        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help']));
+        $result = Console::stripAnsiFormat($this->runControllerAction('index', ['command' => 'help/index']));
         $this->assertContains('Displays available commands or the detailed information', $result);
         $this->assertContains('bootstrap.php help [command] [...options...]', $result);
         $this->assertContains('--appconfig: string', $result);

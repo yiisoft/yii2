@@ -329,14 +329,17 @@ try {
     // ... executing other SQL statements ...
     
     $transaction->commit();
-    
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-    
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
 }
 ```
+
+> Note: в коде выше ради совместимости с PHP 5.x и PHP 7.x использованы два блока catch. 
+> `\Exception` реализует интерфейс [`\Throwable` interface](http://php.net/manual/ru/class.throwable.php)
+> начиная с PHP 7.0. Если вы используете только PHP 7 и новее, можете пропустить блок с `\Exception`.
 
 При вызове метода [[yii\db\Connection::beginTransaction()|beginTransaction()]], будет запущена новая транзакция.
 Транзакция представлена объектом [[yii\db\Transaction]] сохранённым в переменной `$transaction`. Потом, запросы будут
@@ -357,7 +360,7 @@ Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
  
-// or alternatively
+// или
 
 $transaction = Yii::$app->db->beginTransaction($isolationLevel);
 ```
@@ -393,10 +396,10 @@ Yii предоставляет четыре константы для наибо
 
 ```php
 Yii::$app->db->transaction(function ($db) {
-    // outer transaction
+    // внешняя транзакция
     
     $db->transaction(function ($db) {
-        // inner transaction
+        // внутренняя транзакция
     });
 });
 ```
@@ -415,11 +418,17 @@ try {
         $innerTransaction->commit();
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
+    } catch (\Throwable $e) {
+        $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
     $outerTransaction->rollBack();
+} catch (\Throwable $e) {
+    $innerTransaction->rollBack();
+    throw $e;
 }
 ```
 
@@ -559,6 +568,9 @@ try {
     $transaction->commit();
 } catch(\Exception $e) {
     $transaction->rollBack();
+    throw $e;
+} catch (\Throwable $e) {
+    $innerTransaction->rollBack();
     throw $e;
 }
 ```
