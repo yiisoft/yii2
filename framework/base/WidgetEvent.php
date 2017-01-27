@@ -15,12 +15,8 @@ namespace yii\base;
  * @author Petra Barus <petra.barus@gmail.com>
  * @since 2.0.11
  */
-class WidgetEvent extends Event {
-    
-    /**
-     * @var Widget the widget currently being executed
-     */
-    public $widget;
+class WidgetEvent extends Event
+{
     /**
      * @var mixed the widget result. Event handlers may modify this property to change the widget result.
      */
@@ -31,16 +27,4 @@ class WidgetEvent extends Event {
      * to continue running the current widget.
      */
     public $isValid = true;
-
-
-    /**
-     * Constructor.
-     * @param Widget $widget the widget associated with this widget event.
-     * @param array $config name-value pairs that will be used to initialize the object properties
-     */
-    public function __construct($widget, $config = [])
-    {
-        $this->widget = $widget;
-        parent::__construct($config);
-    }
 }
