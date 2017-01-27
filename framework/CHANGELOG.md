@@ -108,6 +108,7 @@ Yii Framework 2 Change Log
 - Enh #13266: Added `yii\validators\EachValidator::$stopOnFirstError` allowing addition of more than one error (klimov-paul)
 - Enh #13268: Added logging of memory usage (bashkarev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #13134: Added logging URL rules (bashkarev)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
 - Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
