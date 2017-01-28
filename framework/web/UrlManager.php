@@ -263,7 +263,15 @@ class UrlManager extends Component
         if ($this->enablePrettyUrl) {
             /* @var $rule UrlRule */
             foreach ($this->rules as $rule) {
-                if (($result = $rule->parseRequest($this, $request)) !== false) {
+                $result = $rule->parseRequest($this, $request);
+                if (YII_DEBUG) {
+                    Yii::trace([
+                        'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
+                        'match' => $result !== false,
+                        'parent' => null
+                    ], __METHOD__);
+                }
+                if ($result !== false) {
                     return $result;
                 }
             }
