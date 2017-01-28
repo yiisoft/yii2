@@ -283,7 +283,7 @@ class Widget extends Component implements ViewContextInterface
      */
     public function beforeRun()
     {
-        $event = new WidgetEvent($this);
+        $event = new WidgetEvent();
         $this->trigger(self::EVENT_BEFORE_RUN, $event);
         return $event->isValid;
     }
@@ -311,7 +311,7 @@ class Widget extends Component implements ViewContextInterface
      */
     public function afterRun($result)
     {
-        $event = new WidgetEvent($this);
+        $event = new WidgetEvent();
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_RUN, $event);
         return $event->result;
