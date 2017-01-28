@@ -108,6 +108,7 @@ Yii Framework 2 Change Log
 - Enh #13266: Added `yii\validators\EachValidator::$stopOnFirstError` allowing addition of more than one error (klimov-paul)
 - Enh #13268: Added logging of memory usage (bashkarev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #8293: `yii\db\Query` can be passed to `insert` method in `yii\db\QueryBuilder` (voroks)
 - Enh #13134: Added logging URL rules (bashkarev)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
@@ -115,6 +116,7 @@ Yii Framework 2 Change Log
 - Enh #11464: Populate foreign key names from schema (joaoppereira)
 - Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
+- Enh #13453: Select only primary key when counting records in UniqueValidator (developeruz)
 - Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
 - Enh #7435: Added `EVENT_BEFORE_RUN`, `EVENT_AFTER_RUN` and corresponding methods to `yii\base\Widget` (petrabarus)
 

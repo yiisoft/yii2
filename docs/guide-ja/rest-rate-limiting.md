@@ -58,4 +58,4 @@ public function behaviors()
 * `X-Rate-Limit-Remaining` - 現在の期間において残っている許可されているリクエスト数
 * `X-Rate-Limit-Reset` - 許可されているリクエストの最大数にリセットされるまで待たなければならない秒数
 
-これらのヘッダは、上記のコード例で示されているように、[[yii\filters\RateLimiter::enableRateLimitHeaders]] を false に設定することで無効にすることが出来ます。
+これらのヘッダは、上記のコード例で示されているように、[[yii\filters\RateLimiter::enableRateLimitHeaders]] を `false` に設定することで無効にすることが出来ます。
