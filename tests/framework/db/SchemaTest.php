@@ -250,7 +250,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'size' => null,
                 'precision' => null,
                 'scale' => null,
-                'defaultValue' => 1.23,
+                'defaultValue' => '1.23',
             ],
             'blob_col' => [
                 'type' => 'binary',
