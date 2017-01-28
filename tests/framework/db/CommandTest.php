@@ -321,6 +321,136 @@ SQL;
         ], $record);
     }
 
+    /**
+     * Test INSERT INTO ... SELECT SQL statement
+     */
+    public function testInsertSelect()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}};')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+
+        $query = new \yii\db\Query();
+        $query->select([
+                    '{{customer}}.email as name',
+                    'name as email',
+                    'address',
+                ]
+        )->from('{{customer}}');
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            $query
+        )->execute();
+
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals([
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ],
+            [
+                'email' => 'test',
+                'name' => 't1@example.com',
+                'address' => 'test address',
+            ],
+        ], $record);
+    }
+
+    /**
+     * Test INSERT INTO ... SELECT SQL statement with alias syntax
+     */
+    public function testInsertSelectAlias()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}};')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+
+        $query = new \yii\db\Query();
+        $query->select([
+                'email' => '{{customer}}.email',
+                'address' => 'name',
+                'name' => 'address',
+            ]
+        )->from('{{customer}}');
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            $query
+        )->execute();
+
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals([
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ],
+            [
+                'email' => 't1@example.com',
+                'name' => 'test address',
+                'address' => 'test',
+            ],
+        ], $record);
+    }
+
+    /**
+     * Data provider for testInsertSelectFailed
+     * @return array
+     */
+    public function invalidSelectColumns() {
+        return [
+            [[]],
+            ['*'],
+            [['*']],
+        ];
+    }
+
+    /**
+     * Test INSERT INTO ... SELECT SQL statement with wrong query object
+     *
+     * @dataProvider invalidSelectColumns
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
+     */
+    public function testInsertSelectFailed($invalidSelectCulumns)
+    {
+        $this->setExpectedException('\yii\base\InvalidParamException');
+
+        $query = new \yii\db\Query();
+        $query->select(['*'])->from('{{customer}}');
+
+        $db = $this->getConnection();
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            $query
+        )->execute();
+    }
+
     public function testInsertExpression()
     {
         $db = $this->getConnection();
