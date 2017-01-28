@@ -484,6 +484,40 @@ SQL;
         ], $record);
     }
 
+    public function testsInsertQueryAsColumnValue()
+    {
+        $time = time();
+
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
+
+        $command = $db->createCommand();
+        $command->insert('{{order}}', [
+            'id' => 42,
+            'customer_id' => 1,
+            'created_at' => $time,
+            'total' => 42,
+        ])->execute();
+
+        $columnValueQuery = new \yii\db\Query();
+        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => '42']);
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{order_with_null_fk}}',
+            [
+                'customer_id' => 42,
+                'created_at' => $columnValueQuery,
+                'total' => 42,
+            ]
+        )->execute();
+
+        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = 42')->queryScalar());
+
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
+        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = 42')->execute();
+    }
+
     public function testCreateTable()
     {
         $db = $this->getConnection();

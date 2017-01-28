@@ -189,6 +189,9 @@ EOD;
                     foreach ($value->params as $n => $v) {
                         $params[$n] = $v;
                     }
+                } elseif ($value instanceof \yii\db\Query) {
+                    list($sql, $params) = $this->build($value, $params);
+                    $placeholders[] = "($sql)";
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
                     $placeholders[] = $phName;
