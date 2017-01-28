@@ -436,12 +436,10 @@ SQL;
      * @expectedException \yii\base\InvalidParamException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
      */
-    public function testInsertSelectFailed($invalidSelectCulumns)
+    public function testInsertSelectFailed($invalidSelectColumns)
     {
-        $this->setExpectedException('\yii\base\InvalidParamException');
-
         $query = new \yii\db\Query();
-        $query->select(['*'])->from('{{customer}}');
+        $query->select($invalidSelectColumns)->from('{{customer}}');
 
         $db = $this->getConnection();
         $command = $db->createCommand();
