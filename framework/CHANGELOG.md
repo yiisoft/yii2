@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 ------------------------
 
-- Enh #12752: ActiveDataProvider should avoid query data when data count is zero
+- Enh #12752: ActiveDataProvider should avoid query data when data count is zero (kLkA)
 
 2.0.11 under development
 ------------------------
