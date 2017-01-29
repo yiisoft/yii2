@@ -476,9 +476,18 @@ class BaseFileHelper
             $path = $dir . DIRECTORY_SEPARATOR . $file;
             if (static::filterPath($path, $options)) {
                 if (is_file($path)) {
-                    $list[] = $path;
-                } elseif (is_dir($path) && (!isset($options['recursive']) || $options['recursive'])) {
-                    $list = array_merge($list, static::findFiles($path, $options));
+                    if ( !isset( $options['only_directories'] ) || !$options['only_directories'] ) {
+                        $list[] = $path;
+                    }
+                } else {
+                    if ( is_dir( $path ) ) {
+                        if ( isset( $options['include_directories'] ) && $options['include_directories'] ) {
+                            $list[] = $path;
+                        }
+                        if ( ! isset( $options['recursive'] ) || $options['recursive'] ) {
+                            $list = array_merge( $list, static::findFiles( $path, $options ) );
+                        }
+                    }
                 }
             }
         }
