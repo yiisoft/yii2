@@ -861,7 +861,13 @@ class ReleaseController extends Controller
             if ($state === 'changelog' && isset($lines[$l+1]) && strncmp($lines[$l+1], '---', 3) === 0) {
                 $state = 'end';
             }
-            ${$state}[] = $line;
+            // add continued lines to the last item to keep them together
+            if (!empty(${$state}) && trim($line !== '') && strpos($line, '- ') !== 0) {
+                end(${$state});
+                ${$state}[key(${$state})] .= "\n" . $line;
+            } else {
+                ${$state}[] = $line;
+            }
         }
         return [$start, $changelog, $end];
     }
@@ -879,7 +885,7 @@ class ReleaseController extends Controller
 
         $i = 0;
         ArrayHelper::multisort($changelog, function($line) use (&$i) {
-            if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+$/', $line, $m)) {
+            if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
