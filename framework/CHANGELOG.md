@@ -108,6 +108,7 @@ Yii Framework 2 Change Log
 - Enh #13264: Added `yii\widgets\InputWidget::$field` field, allowing access to the related `yii\widget\ActiveField` instance (klimov-paul)
 - Enh #13266: Added `yii\validators\EachValidator::$stopOnFirstError` allowing addition of more than one error (klimov-paul)
 - Enh #13268: Added logging of memory usage (bashkarev)
+- Enh #13352: Do not render empty row in `yii\grid\GridView` when data is empty and `emptyText` set to `false` (arogachev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh #8293: `yii\db\Query` can be passed to `insert` method in `yii\db\QueryBuilder` (voroks)
 - Enh #13134: Added logging URL rules (bashkarev)
