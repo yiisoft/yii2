@@ -79,6 +79,7 @@ Yii Framework 2 Change Log
 - Enh #12419: Added ability to remove root tag and object tags for `yii\web\XmlResponseFormatter` (mhthnz, samdark)
 - Enh #12619: Added catch `Throwable` in `yii\base\ErrorHandler::handleException()`, transactions and simlar places where consistency must be kept after exception (rob006, cebe)
 - Enh #12659: Suggest alternatives when console command was not found (mdmunir, cebe)
+- Enh #12691: Added support for protocol-relative URLs in `yii\web\UrlRule::$pattern` (erickskrauch)
 - Enh #12726: `yii\base\Application::$version` converted to `yii\base\Module::$version` virtual property, allowing to specify version as a PHP callback (klimov-paul)
 - Enh #12732: Added `is_dir()` validation to `yii\helpers\BaseFileHelper::findFiles()` method (zalatov, silverfire)
 - Enh #12738: Added support for creating protocol-relative URLs in `UrlManager::createAbsoluteUrl()` and `Url` helper methods (rob006)
