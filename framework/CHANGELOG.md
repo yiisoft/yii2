@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.11 under development
 ------------------------
 
+- Enh #12758: Added the ability to use instances of `\yii\db\Query` class as values in the `\yii\db\QueryBuilder::insert()` method (PowerGamer1)
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #7727: Fixed `yii\helpers\StringHelper::truncateHtml()` leaving extra tags (developeruz)
 - Bug #9305: Fixed MSSQL `Schema::TYPE_TIMESTAMP` to be 'datetime' instead of 'timestamp', which is just an incremental number (nkovacs)
@@ -46,9 +47,14 @@ Yii Framework 2 Change Log
 - Bug #13231: Fixed `destroy` method in `yii.gridView.js` which did not work as expected (arogachev)
 - Bug #13232: Event handlers were not detached with changed selector in `yii.gridView.js` (arogachev)
 - Bug #13277: Fixed invalid parsing of `--` ("End of Options" special argument) in CLI (rugabarbo)
+- Bug #13300: Allow pjax with "data-pjax" with no value in `yii.js` (arogachev)
+- Bug #13307: Preventing of race conditions in script filter in `yii.js` works incorrectly (arogachev)
+- Bug #13310: Handle relative and absolute URLs coincidence in CSS filter in `yii.js` (arogachev)
+- Bug #13312: `skipOuterContainers` option was incorrectly passed to pjax in `handleAction` in `yii.js` (arogachev)
 - Bug #13309: Fixes incorrect console width/height detecting with using Stty on Mac (nowm)
 - Bug #13326: Fixed wrong background color generation in `BaseConsole::renderColoredString()` (nowm, silverfire)
 - Bug #12133: Fixed `getDbTargets()` function in `yii\log\migrations\m141106_185632_log_init` that would create a log table correctly (bumstik)
+- Bug #13416: Fixed `yii\web\MultipartFormDataParser` adds an extra newline to every value (klimov-paul)
 - Enh #475: Added Bash and Zsh completion support for the `./yii` command (cebe, silverfire)
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
@@ -58,7 +64,6 @@ Yii Framework 2 Change Log
 - Enh #7820: Add `or` relation for `targetAttribute` in `yii\validators\UniqueValidator` (developeruz)
 - Enh #9053: Added`yii\grid\RadioButtonColumn` (darwinisgod)
 - Enh #9162: Added support of closures in `value` for attributes in `yii\widgets\DetailView` (arogachev)
-- Enh #10896: Select only primary key when counting records in UniqueValidator (developeruz)
 - Enh #10970: Allow omit specifying empty default params on URL creation (rob006)
 - Enh #11037: `yii.js` and `yii.validation.js` use `Regexp.test()` instead of `String.match()` (arogachev, nkovacs)
 - Enh #11163: Added separate method for client-side validation options `yii\validators\Validator::getClientOptions()` (arogachev)
@@ -103,14 +108,18 @@ Yii Framework 2 Change Log
 - Enh #13266: Added `yii\validators\EachValidator::$stopOnFirstError` allowing addition of more than one error (klimov-paul)
 - Enh #13268: Added logging of memory usage (bashkarev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
+- Enh #8293: `yii\db\Query` can be passed to `insert` method in `yii\db\QueryBuilder` (voroks)
+- Enh #13134: Added logging URL rules (bashkarev)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
 - Bug #13287: Fixed translating "and" separator in `UniqueValidator` error message (jetexe)
 - Enh #11464: Populate foreign key names from schema (joaoppereira)
 - Bug #13401: Fixed lack of escaping of request dump at exception screens (samdark)
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
-- Chg #13393: Removed redundant call to `yii\helpers\Url::to()` in `yii\web\Controller::redirect()` (greeflas)
+- Enh #13453: Select only primary key when counting records in UniqueValidator (developeruz)
 - Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
+- Enh #7435: Added `EVENT_BEFORE_RUN`, `EVENT_AFTER_RUN` and corresponding methods to `yii\base\Widget` (petrabarus)
+
 
 2.0.10 October 20, 2016
 -----------------------
@@ -204,6 +213,10 @@ Yii Framework 2 Change Log
 - Enh #12710: Added `beforeItem` and `afterItem` to `yii\widgets\ListView` (mdmunir, silverfire)
 - Enh #12727: Enhanced `yii\widgets\Menu` to allow item option `active` be a Closure (voskobovich, silverfire)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
+- Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
+- Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
+- Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
+- Enh #12000: Added EVENT_INIT to widget (user57376)
 
 2.0.9 July 11, 2016
 -------------------
