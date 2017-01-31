@@ -120,13 +120,19 @@ Yii Framework 2 Change Log
 - Enh #13453: Select only primary key when counting records in UniqueValidator (developeruz)
 - Bug #12599: Fixed MSSQL fail to work with `nvarbinary`. Enhanced SQL scripts compatibility with older versions (samdark)
 - Enh #7435: Added `EVENT_BEFORE_RUN`, `EVENT_AFTER_RUN` and corresponding methods to `yii\base\Widget` (petrabarus)
+- Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
+- Enh #12000: Added EVENT_INIT to widget (user57376)
+- Enh #12725: Enhanced `yii\widgets\Menu` to allow item option `active` be a Closure (voskobovich, silverfire)
+- Enh #12710: Added `beforeItem` and `afterItem` to `yii\widgets\ListView` (mdmunir, silverfire)
+- Enh #12612: Query conditions added with `yii\db\Query::andWhere()` now get appended to the existing conditions if they were already being joined with the `and` operator (brandonkelly)
+- Bug #12713: Fixed `yii\caching\FileDependency` to clear stat cache before reading filemtime (SG5)
+- Bug #12345 Fixed `Formatter::asCurrency()` for proper decimal formatting (Oxyaction)
 
 
 2.0.10 October 20, 2016
 -----------------------
 
 - Bug #7670: Added `yii\web\UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
-- Bug #12345 Fixed `Formatter::asCurrency()` for proper decimal formatting (Oxyaction)
 - Bug #7670: Added `UrlNormalizer` for normalizing requests with and without trailing slashes (rob006, cronfy, klimov-paul)
 - Bug #9027: Fixed descendant class of `yii\web\UploadedFile` returns parent instances in case invoked after it (andrewnester)
 - Bug #9277: Fixed `yii\console\controllers\AssetController` looses custom options of 'target' bundles (petrabarus, klimov-paul)
@@ -173,7 +179,6 @@ Yii Framework 2 Change Log
 - Bug #12605: Make 'safe' validator work on write-only properties (arthibald, CeBe)
 - Bug #12629: Fixed `yii\widgets\ActiveField::widget()` to call `adjustLabelFor()` for `InputWidget` descendants (coderlex)
 - Bug #12649: Fixed consistency of `indexBy` handling for `yii\db\Query::column()` (silverfire)
-- Bug #12713: Fixed `yii\caching\FileDependency` to clear stat cache before reading filemtime (SG5)
 - Enh #384: Added ability to run migration from several locations via `yii\console\controllers\BaseMigrateController::$migrationNamespaces` (klimov-paul)
 - Enh #6996: Added `yii\web\MultipartFormDataParser`, which allows proper processing of 'multipart/form-data' encoded non POST requests (klimov-paul)
 - Enh #8719: Add support for HTML5 attributes on submitbutton (formaction/formmethod...) for ActiveForm (VirtualRJ)
@@ -208,16 +213,10 @@ Yii Framework 2 Change Log
 - Enh #12440: Added `yii\base\Event::offAll()` method allowing clear all registered class-level event handlers (klimov-paul)
 - Enh #12499: When AJAX validation in enabled, `yii.activeForm.js` will run it forcefully on form submit to display all possible errors (silverfire)
 - Enh #12580: Make `yii.js` comply with strict and non-strict javascript mode to allow concatenation with external code (mikehaertl)
-- Enh #12612: Query conditions added with `yii\db\Query::andWhere()` now get appended to the existing conditions if they were already being joined with the `and` operator (brandonkelly)
 - Enh #12664: Added support for wildcards for `optional` at `yii\filters\auth\AuthMethod` (mg-code)
 - Enh #12744: Added `afterInit` event to `yii.activeForm.js` (werew01f)
-- Enh #12710: Added `beforeItem` and `afterItem` to `yii\widgets\ListView` (mdmunir, silverfire)
-- Enh #12727: Enhanced `yii\widgets\Menu` to allow item option `active` be a Closure (voskobovich, silverfire)
 - Enh: Method `yii\console\controllers\AssetController::getAssetManager()` automatically enables `yii\web\AssetManager::forceCopy` in case it is not explicitly specified (pana1990, klimov-paul)
-- Bug #11949: Fixed `ActiveField::end` generates close tag when it's `option['tag']` is null (egorio)
-- Enh #11950: Improve BaseArrayHelper::keyExists speed (egorio)
-- Bug #11972: Fixed active form `afterValidate` wasn't triggered in some cases (lynicidn)
-- Enh #12000: Added EVENT_INIT to widget (user57376)
+
 
 2.0.9 July 11, 2016
 -------------------
@@ -279,7 +278,6 @@ Yii Framework 2 Change Log
 - Enh #11857: `yii\filters\AccessRule::$verbs` can now be configured in upper and lowercase (DrDeath72, samdark)
 - Chg #11364: Updated jQuery dependency to include versions `1.12.*` (cebe)
 - Chg #11683: Fixed fixture command to work with short syntax. `yii fixture "*, -User"` should be used instead of `yii fixture "*" -User` (Faryshta, samdark)
-- Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
 
 
 2.0.8 April 28, 2016
