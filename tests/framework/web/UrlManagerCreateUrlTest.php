@@ -472,7 +472,7 @@ class UrlManagerCreateUrlTest extends TestCase
             [
                 'pattern' => 'post/<id>/<title>',
                 'route' => 'post/view',
-                'host' => 'http://<lang:en|fr>.example.com', // TODO variation of scheme https://github.com/yiisoft/yii2/issues/12691
+                'host' => 'http://<lang:en|fr>.example.com',
             ],
             // note: baseUrl is not included in the pattern
             'http://www.example.com/login' => 'site/login',
@@ -518,6 +518,86 @@ class UrlManagerCreateUrlTest extends TestCase
         $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
 
+    }
+
+    /**
+     * Test rules that have host info in the patterns, that are protocol relative.
+     * @dataProvider absolutePatternsVariations
+     * @see https://github.com/yiisoft/yii2/issues/12691
+     */
+    public function testProtocolRelativeAbsolutePattern($showScriptName, $prefix, $config)
+    {
+        $config['rules'] = [
+            [
+                'pattern' => 'post/<id>/<title>',
+                'route' => 'post/view',
+                'host' => '//<lang:en|fr>.example.com',
+            ],
+            // note: baseUrl is not included in the pattern
+            '//www.example.com/login' => 'site/login',
+            '//app.example.com' => 'app/index',
+            '//app2.example.com/' => 'app2/index',
+        ];
+        $manager = $this->getUrlManager($config, $showScriptName);
+        // first rule matches
+        $urlParams = ['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en'];
+        $expected = "//en.example.com$prefix/post/1/sample+post";
+        $this->assertEquals($expected, $manager->createUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, true));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, 'http'));
+        $this->assertEquals("https:$expected", $manager->createAbsoluteUrl($urlParams, 'https'));
+        $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, '')); // protocol relative Url
+
+        $urlParams = ['post/view', 'id' => 1, 'title' => 'sample post', 'lang' => 'en', '#' => 'testhash'];
+        $expected = "//en.example.com$prefix/post/1/sample+post#testhash";
+        $this->assertEquals($expected, $manager->createUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams));
+
+        // second rule matches
+        $urlParams = ['site/login'];
+        $expected = "//www.example.com$prefix/login";
+        $this->assertEquals($expected, $manager->createUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, true));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, 'http'));
+        $this->assertEquals("https:$expected", $manager->createAbsoluteUrl($urlParams, 'https'));
+        $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, '')); // protocol relative Url
+
+        // third rule matches
+        $urlParams = ['app/index'];
+        $expected = "//app.example.com$prefix";
+        $this->assertEquals($expected, $manager->createUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, true));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, 'http'));
+        $this->assertEquals("https:$expected", $manager->createAbsoluteUrl($urlParams, 'https'));
+        $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, '')); // protocol relative Url
+
+        // fourth rule matches
+        $urlParams = ['app2/index'];
+        $expected = "//app2.example.com$prefix";
+        $this->assertEquals($expected, $manager->createUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, true));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, 'http'));
+        $this->assertEquals("https:$expected", $manager->createAbsoluteUrl($urlParams, 'https'));
+        $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, '')); // protocol relative Url
+
+        // none of the rules matches
+        $urlParams = ['post/index', 'page' => 1];
+        $this->assertEquals("$prefix/post/index?page=1", $manager->createUrl($urlParams));
+        $expected = "//www.example.com$prefix/post/index?page=1";
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, true));
+        $this->assertEquals("http:$expected", $manager->createAbsoluteUrl($urlParams, 'http'));
+        $this->assertEquals("https:$expected", $manager->createAbsoluteUrl($urlParams, 'https'));
+        $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams, '')); // protocol relative Url
+
+        $urlParams = ['post/index', 'page' => 1, '#' => 'testhash'];
+        $this->assertEquals("$prefix/post/index?page=1#testhash", $manager->createUrl($urlParams));
+        $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
+        $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
     }
 
     public function multipleHostsRulesDataProvider()
