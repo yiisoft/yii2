@@ -100,6 +100,7 @@ Yii Framework 2 Change Log
 - Enh #13050: Added `yii\filters\HostControl` allowing protection against 'host header' attacks (klimov-paul, rob006)
 - Enh #13074: Improved `yii\log\SyslogTarget` with `$options` to be able to change the default `openlog` options (timbeks)
 - Enh #13122: Optimized query for information about foreign keys in `yii\db\oci` (zlakomanoff)
+- Enh #11959: Added `yii\caching\Cache::getOrSet()` method (silverfire)
 - Enh #13202: Refactor validateAttribute method in UniqueValidator (developeruz)
 - Enh #13219:  Enhancements for `yii\db\Connection` (Vovan-VE)
   - Added `shuffleMasters` option which adds ability to disable shuffling of masters connections.
