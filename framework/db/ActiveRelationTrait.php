@@ -88,7 +88,7 @@ trait ActiveRelationTrait
      *    public function getOrderItems() {
      *        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
      *    }
-     * 
+     *
      *    public function getItems() {
      *        return $this->hasMany(Item::className(), ['id' => 'item_id'])
      *                    ->via('orderItems');

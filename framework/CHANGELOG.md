@@ -1,7 +1,7 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.11 under development
+2.0.11 February 01, 2017
 ------------------------
 
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)

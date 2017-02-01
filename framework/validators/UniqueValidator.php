@@ -83,12 +83,12 @@ class UniqueValidator extends Validator
      * to setup custom message for multiple target attributes.
      */
     public $comboNotUnique;
-
     /**
      * @var string and|or define how target attributes are related
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+
 
     /**
      * @inheritdoc
@@ -218,7 +218,7 @@ class UniqueValidator extends Validator
      * If the key and the value are the same, you can just specify the value.
      * @param Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
-
+     *
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
      */
     private function prepareConditions($targetAttribute, $model, $attribute)

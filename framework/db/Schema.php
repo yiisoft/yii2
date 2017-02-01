@@ -74,7 +74,6 @@ abstract class Schema extends Object
     public $exceptionMap = [
         'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
-
     /**
      * @var string column schema class
      * @since 2.0.11

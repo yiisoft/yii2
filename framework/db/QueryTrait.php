@@ -401,7 +401,7 @@ trait QueryTrait
      * and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
-     * @param boolean $value whether to prevent query execution.
+     * @param bool $value whether to prevent query execution.
      * @return $this the query object itself.
      * @since 2.0.11
      */

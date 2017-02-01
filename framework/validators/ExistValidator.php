@@ -64,12 +64,12 @@ class ExistValidator extends Validator
      * @var bool whether to allow array type attribute.
      */
     public $allowArray = false;
-
     /**
      * @var string and|or define how target attributes are related
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+
 
     /**
      * @inheritdoc

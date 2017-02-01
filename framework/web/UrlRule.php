@@ -126,6 +126,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     private $_routeParams = [];
 
+
     /**
      * @return string
      * @since 2.0.11
