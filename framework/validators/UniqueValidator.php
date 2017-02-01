@@ -159,8 +159,12 @@ class UniqueValidator extends Validator
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();
         } else {
-            // if current $model is in the database already we can't use exists()
-            $models = $query->select($targetClass::primaryKey())->limit(2)->createCommand()->queryAll();
+            // if current $model is in the dat1abase already we can't use exists()
+            if ($query instanceof \yii\db\ActiveQuery) {
+                $models = $query->select($targetClass::primaryKey())->limit(2)->asArray()->all();
+            } else {
+                $models = $query->limit(2)->asArray()->all();
+            }
             $n = count($models);
             if ($n === 1) {
                 $keys = array_keys($conditions);
