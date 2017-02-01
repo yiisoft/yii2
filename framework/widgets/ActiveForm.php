@@ -27,7 +27,7 @@ use yii\helpers\Json;
 class ActiveForm extends Widget
 {
     /**
-     * @var array|string $action the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
+     * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
      */
     public $action = '';

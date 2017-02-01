@@ -56,6 +56,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      */
     public $useObjectTags = true;
 
+
     /**
      * Formats the specified response.
      * @param Response $response the response to be formatted.

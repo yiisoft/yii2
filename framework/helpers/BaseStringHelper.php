@@ -198,7 +198,7 @@ class BaseStringHelper
      *
      * @param string $string Input string
      * @param string $with Part to search inside the $string
-     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value. 
+     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value.
      * @return bool Returns true if first input starts with second input, false otherwise
      */
     public static function startsWith($string, $with, $caseSensitive = true)

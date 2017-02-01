@@ -869,11 +869,12 @@ return [
 もう、`migrationTable` のコマンドラインオプションを使ってテーブルを指定する必要はなくなります。
 
 
-### Namespaced Migrations <span id="namespaced-migrations"></span>
+### 名前空間を持つマイグレーション <span id="namespaced-migrations"></span>
 
-Since 2.0.10 you can use namespaces for the migration classes. You can specify the list of the migration namespaces via
-[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]. Using of the namespaces for
-migration classes allows you usage of the several source locations for the migrations. For example:
+2.0.10 以降では、マイグレーションのクラスに名前空間を適用することが出来ます。
+マイグレーションの名前空間のリストをを [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]] によって指定することが出来ます。
+マイグレーションのクラスに名前空間を使うと、マイグレーションのソースについて、複数の配置場所を使用することが出来ます。
+例えば、
 
 ```php
 return [
@@ -881,36 +882,35 @@ return [
         'migrate' => [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationNamespaces' => [
-                'app\migrations', // Common migrations for the whole application
-                'module\migrations', // Migrations for the specific project's module
-                'some\extension\migrations', // Migrations for the specific extension
+                'app\migrations', // アプリケーション全体のための共通のマイグレーション
+                'module\migrations', // プロジェクトの特定のモジュールのためのマイグレーション
+                'some\extension\migrations', // 特定のエクステンションのためのマイグレーション
             ],
         ],
     ],
 ];
 ```
 
-> Note: migrations applied from different namespaces will create a **single** migration history, e.g. you might be
-  unable to apply or revert migrations from particular namespace only.
+> Note: 異なる名前空間に属するマイグレーションを適用しても、**単一の** マイグレーション履歴が生成されます。
+> つまり、特定の名前空間に属するマイグレーションだけを適用したり元に戻したりすることは出来ません。
 
-While operating namespaced migrations: creating new, reverting and so on, you should specify full namespace before
-migration name. Note that backslash (`\`) symbol is usually considered a special character in the shell, so you need
-to escape it properly to avoid shell errors or incorrect behavior. For example:
+名前空間を持つマイグレーションを操作するときは、新規作成時も、元に戻すときも、マイグレーション名の前にフルパスの名前空間を指定しなければなりません。
+バックスラッシュ (`\`) のシンボルは、通常、シェルでは特殊文字として扱われますので、シェルのエラーや誤った動作を防止するために、適切にエスケープしなければならないことに注意して下さい。
+例えば、
 
 ```
 yii migrate/create 'app\\migrations\\createUserTable'
 ```
 
-> Note: migrations specified via [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] can not
-  contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
-  property.
+> Note: [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] によって指定されたマイグレーションは、名前空間を持つことが出来ません。
+  名前空間を持つマイグレーションは [[yii\console\controllers\MigrateController::migrationNamespaces]] プロパティを通じてのみ適用可能です。
 
 
 ### 分離されたマイグレーション <span id="separated-migrations"></span>
 
-Sometimes using single migration history for all project migrations is not desirable. For example: you may install some
-'blog' extension, which contains fully separated functionality and contain its own migrations, which should not affect
-the ones dedicated to main project functionality.
+プロジェクトのマイグレーション全体に単一のマイグレーション履歴を使用することが望ましくない場合もあります。
+例えば、完全に独立した機能性とそれ自身のためのマイグレーションを持つような 'blog' エクステンションをインストールする場合には、
+メインのプロジェクトの機能専用のマイグレーションに影響を与えたくないでしょう。
 
 これらをお互いに完全に分離して適用かつ追跡したい場合は、別々の名前空間とマイグレーション履歴テーブルを使う
 複数のマイグレーションコマンドを構成することが出来ます。
