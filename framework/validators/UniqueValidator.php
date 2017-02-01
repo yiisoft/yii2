@@ -120,7 +120,7 @@ class UniqueValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction == 'or' ? 'or' : 'and';
+        $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
 
         foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
@@ -159,26 +159,24 @@ class UniqueValidator extends Validator
             // also there's no need to run check based on primary keys, when $targetClass is not the same as $model's class
             $exists = $query->exists();
         } else {
-            // if current $model is in the dat1abase already we can't use exists()
+            // if current $model is in the database already we can't use exists()
             if ($query instanceof \yii\db\ActiveQuery) {
-                $models = $query->select($targetClass::primaryKey())->limit(2)->asArray()->all();
-            } else {
-                $models = $query->limit(2)->asArray()->all();
+                // only select primary key to optimize query
+                $query->select($targetClass::primaryKey());
             }
+            $models = $query->limit(2)->asArray()->all();
             $n = count($models);
             if ($n === 1) {
-                $keys = array_keys($conditions);
+                // if there is one record, check if it is the currently validated model
+                $dbModel = reset($models);
                 $pks = $targetClass::primaryKey();
-                sort($keys);
-                sort($pks);
-                if ($keys === $pks) {
-                    // primary key is modified and not unique
-                    $exists = $model->getOldPrimaryKey() != $model->getPrimaryKey();
-                } else {
-                    // non-primary key, need to exclude the current record based on PK
-                    $exists = $models[0] != $model->getOldPrimaryKey(true);
+                $pk = [];
+                foreach($pks as $pkAttribute) {
+                    $pk[$pkAttribute] = $dbModel[$pkAttribute];
                 }
+                $exists = ($pk != $model->getOldPrimaryKey(true));
             } else {
+                // if there is more than one record, the value is not unique
                 $exists = $n > 1;
             }
         }
