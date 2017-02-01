@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 ------------------------
 
-- no changes in this release.
+- Bug #11502: Fixed `yii\console\controllers\MessageController` to properly populate missing languages in case of extraction with "db" format (bizley)
 
 
 2.0.11 February 01, 2017
