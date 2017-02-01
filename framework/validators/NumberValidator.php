@@ -8,6 +8,7 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\StringHelper;
 use yii\web\JsExpression;
 use yii\helpers\Json;
 
@@ -85,7 +86,8 @@ class NumberValidator extends Validator
             return;
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, "$value")) {
+
+        if (!preg_match($pattern, StringHelper::normalizeNumber($value))) {
             $this->addError($model, $attribute, $this->message);
         }
         if ($this->min !== null && $value < $this->min) {
@@ -105,7 +107,7 @@ class NumberValidator extends Validator
             return [Yii::t('yii', '{attribute} is invalid.'), []];
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;
-        if (!preg_match($pattern, "$value")) {
+        if (!preg_match($pattern, StringHelper::normalizeNumber($value))) {
             return [$this->message, []];
         } elseif ($this->min !== null && $value < $this->min) {
             return [$this->tooSmall, ['min' => $this->min]];

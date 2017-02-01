@@ -50,8 +50,8 @@ This guide is mainly about version 2.0.
 Requirements and Prerequisites
 ------------------------------
 
-Yii 2.0 requires PHP 5.4.0 or above. You can find more detailed requirements for individual features
-by running the requirement checker included in every Yii release.
+Yii 2.0 requires PHP 5.4.0 or above and runs best with the latest version of PHP 7. You can find more detailed
+requirements for individual features by running the requirement checker included in every Yii release.
 
 Using Yii requires basic knowledge of object-oriented programming (OOP), as Yii is a pure OOP-based framework.
 Yii 2.0 also makes use of the latest features of PHP, such as [namespaces](http://www.php.net/manual/en/language.namespaces.php)

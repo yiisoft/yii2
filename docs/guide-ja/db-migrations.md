@@ -869,13 +869,12 @@ return [
 もう、`migrationTable` のコマンドラインオプションを使ってテーブルを指定する必要はなくなります。
 
 
-### 分離されたマイグレーション <span id="separated-migrations"></span>
+### 名前空間を持つマイグレーション <span id="namespaced-migrations"></span>
 
-時として、異なる名前空間からマイグレーションを使用する必要が生じることがあります。
-それはあなた自身のプロジェクトの何らかのエクステンションであったりモジュールであったりします。
-そのようなものの一つの例は [RBAC コンポーネント](security-authorization.md#configuring-rbac) のためのマイグレーションです。
-バージョン 2.0.10 以降では、[[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]]
-を使ってこの課題を解決することが出来ます。
+2.0.10 以降では、マイグレーションのクラスに名前空間を適用することが出来ます。
+マイグレーションの名前空間のリストをを [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]] によって指定することが出来ます。
+マイグレーションのクラスに名前空間を使うと、マイグレーションのソースについて、複数の配置場所を使用することが出来ます。
+例えば、
 
 ```php
 return [
@@ -884,13 +883,34 @@ return [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationNamespaces' => [
                 'app\migrations', // アプリケーション全体のための共通のマイグレーション
-                'module\migrations', // 特定のモジュールのためのマイグレーション
-                'yii\rbac\migrations', // 特定のエクステンションのためのマイグレーション
+                'module\migrations', // プロジェクトの特定のモジュールのためのマイグレーション
+                'some\extension\migrations', // 特定のエクステンションのためのマイグレーション
             ],
         ],
     ],
 ];
 ```
+
+> Note: 異なる名前空間に属するマイグレーションを適用しても、**単一の** マイグレーション履歴が生成されます。
+> つまり、特定の名前空間に属するマイグレーションだけを適用したり元に戻したりすることは出来ません。
+
+名前空間を持つマイグレーションを操作するときは、新規作成時も、元に戻すときも、マイグレーション名の前にフルパスの名前空間を指定しなければなりません。
+バックスラッシュ (`\`) のシンボルは、通常、シェルでは特殊文字として扱われますので、シェルのエラーや誤った動作を防止するために、適切にエスケープしなければならないことに注意して下さい。
+例えば、
+
+```
+yii migrate/create 'app\\migrations\\createUserTable'
+```
+
+> Note: [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] によって指定されたマイグレーションは、名前空間を持つことが出来ません。
+  名前空間を持つマイグレーションは [[yii\console\controllers\MigrateController::migrationNamespaces]] プロパティを通じてのみ適用可能です。
+
+
+### 分離されたマイグレーション <span id="separated-migrations"></span>
+
+プロジェクトのマイグレーション全体に単一のマイグレーション履歴を使用することが望ましくない場合もあります。
+例えば、完全に独立した機能性とそれ自身のためのマイグレーションを持つような 'blog' エクステンションをインストールする場合には、
+メインのプロジェクトの機能専用のマイグレーションに影響を与えたくないでしょう。
 
 これらをお互いに完全に分離して適用かつ追跡したい場合は、別々の名前空間とマイグレーション履歴テーブルを使う
 複数のマイグレーションコマンドを構成することが出来ます。
@@ -913,7 +933,7 @@ return [
         // 特定のエクステンションのためのマイグレーション
         'migrate-rbac' => [
             'class' => 'yii\console\controllers\MigrateController',
-            'migrationNamespaces' => ['yii\rbac\migrations'],
+            'migrationPath' => '@yii/rbac/migrations',
             'migrationTable' => 'migration_rbac',
         ],
     ],

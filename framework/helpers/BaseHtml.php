@@ -663,7 +663,7 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - `doubleEncode`: whether to double encode HTML entities in `$value`. If `false`, HTML entities in `$value` will not
-     * be further encoded. This option is available since version 2.0.11.
+     *   be further encoded. This option is available since version 2.0.11.
      *
      * @return string the generated text area tag
      */
