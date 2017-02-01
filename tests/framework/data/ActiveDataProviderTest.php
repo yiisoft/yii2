@@ -177,4 +177,18 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $provider->refresh();
         $this->assertEquals(2, count($provider->getModels()));
     }
+
+    public function testZeroTotalCount()
+    {
+        $query = new Query;
+        $provider = new ActiveDataProvider([
+            'db' => $this->getConnection(),
+            'query' => $query->from('item')->where([
+                'name' => 'Should not exist'
+            ]),
+        ]);
+        $this->assertTrue(($pagination = $provider->getPagination()) !== false);
+        $this->assertTrue(($pagination->totalCount = $provider->getTotalCount()) === 0);
+        $this->assertCount(0, $provider->getModels());
+    }
 }
