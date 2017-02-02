@@ -161,7 +161,7 @@ class ActionColumn extends Column
     {
         if (!isset($this->buttons[$name]) && strpos($this->template, '{' . $name . '}') !== false) {
             $this->buttons[$name] = function ($url, $model, $key) use ($name, $iconName, $additionalOptions) {
-                switch($name) {
+                switch ($name) {
                     case 'view':
                         $title = Yii::t('yii', 'View');
                         break;
