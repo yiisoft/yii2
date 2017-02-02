@@ -1,11 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.12 under development
+2.0.11.1 February 02, 2017
 ------------------------
 
 - Bug #11502: Fixed `yii\console\controllers\MessageController` to properly populate missing languages in case of extraction with "db" format (bizley)
-- Bug #13489: Fixed button names in ActionColumn to contain proper `Yii::t()` tags and restored missing translations for `ja` and `ru` (cebe, softark)
+- Bug #13489: Fixed button names in ActionColumn to contain proper `Yii::t()` tags and restored missing translations for `el`, `fa`, `ja`, `ru`, and `sk` (cebe, softark)
 
 
 2.0.11 February 01, 2017
@@ -1742,3 +1742,4 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
+
