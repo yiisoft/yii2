@@ -574,10 +574,10 @@ class Container extends Component
      * @param array $definitions array of definitions. There are two allowed formats of array.
      * The first format:
      *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
-     * as a first argument `$class`.
+     *    as a first argument `$class`.
      *  - value: the definition associated with `$class`. Possible values are described in
-     * [[set()]] documentation for the `$definition` parameter. Will be passed to the [[set()]] method
-     * as the second argument `$definition`.
+     *    [[set()]] documentation for the `$definition` parameter. Will be passed to the [[set()]] method
+     *    as the second argument `$definition`.
      *
      * Example:
      * ```php
@@ -597,9 +597,9 @@ class Container extends Component
      *
      * The second format:
      *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
-     * as a first argument `$class`.
+     *    as a first argument `$class`.
      *  - value: array of two elements. The first element will be passed the [[set()]] method as the
-     * second argument `$definition`, the second one — as `$params`.
+     *    second argument `$definition`, the second one — as `$params`.
      *
      * Example:
      * ```php

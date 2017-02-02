@@ -61,10 +61,9 @@ use yii\base\InvalidConfigException;
  * read-only.
  * @property string $name The current session name.
  * @property string $savePath The current session save path, defaults to '/tmp'.
- * @property int $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up.
- * The default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
- * @property bool|null $useCookies The value indicating whether cookies should be used to store session
- * IDs.
+ * @property int $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up. The
+ * default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
+ * @property bool|null $useCookies The value indicating whether cookies should be used to store session IDs.
  * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
  * @property bool $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to
  * false.

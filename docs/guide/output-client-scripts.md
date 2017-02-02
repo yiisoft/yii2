@@ -46,7 +46,7 @@ instead of adding a new one. If you don't provide it, the JS code itself will be
 ### Registering script files <span id="script-files"></span>
 
 The arguments for [[yii\web\View::registerJsFile()|registerJsFile()]] are similar to those for
-[[yii\web\View::registerCssFile()|registerCssFile()]]. In the above example,
+[[yii\web\View::registerCssFile()|registerCssFile()]]. In the following example,
 we register the `main.js` file with the dependency on the [[yii\web\JqueryAsset]]. It means that the `main.js` file
 will be added AFTER `jquery.js`. Without such dependency specification, the relative order between
 `main.js` and `jquery.js` would be undefined and the code would not work.
@@ -67,7 +67,7 @@ multiple JS files, which is desirable for high traffic websites.
 
 ## Registering CSS <span id="register-css"></span>
 
-Similar to Javascript, you can register CSS using
+Similar to JavaScript, you can register CSS using
 [[yii\web\View::registerCss()|registerCss()]] or 
 [[yii\web\View::registerCssFile()|registerCssFile()]].
 The former registers a block of CSS code while the latter registers an external CSS file.
@@ -170,7 +170,7 @@ variable definition, e.g.:
 var yiiOptions = {"appName":"My Yii Application","baseUrl":"/basic/web","language":"en"};
 ```
 
-In your Javascript code you can now access these like `yiiOptions.baseUrl` or `yiiOptions.language`.
+In your JavaScript code you can now access these like `yiiOptions.baseUrl` or `yiiOptions.language`.
 
 ### Passing translated messages <span id="translated-messages"></span>
 
@@ -189,7 +189,7 @@ JS
 ```
 
 The above example code uses PHP
-[Heredoc syntax](http://php.net/manual/de/language.types.string.php#language.types.string.syntax.heredoc) for better readability. This also enables better syntax highlighting in most IDEs so it is the
+[Heredoc syntax](http://php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc) for better readability. This also enables better syntax highlighting in most IDEs so it is the
 preferred way of writing inline JavaScript, especially useful for code that is longer than a single line. The variable `$message` is created in PHP and
 thanks to [[yii\helpers\Json::htmlEncode|Json::htmlEncode]] it contains the 
 string in valid JS syntax, which can be inserted into the JavaScript code to place the dynamic string in the function call to `alert()`.

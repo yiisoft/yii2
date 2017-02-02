@@ -1626,7 +1626,7 @@ class Customer extends \yii\db\ActiveRecord
             return null; // this avoid calling a query searching for null primary keys
         }
         
-        return $this->ordersAggregation[0]['counted'];
+        return empty($this->ordersAggregation) ? 0 : $this->ordersAggregation[0]['counted'];
     }
 
     /**

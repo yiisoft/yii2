@@ -11,6 +11,7 @@ use yiiunit\framework\console\controllers\EchoMigrateController;
 
 /**
  * @group i18n
+ * @group db
  * @group mysql
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7

@@ -398,7 +398,7 @@ trait ActiveRelationTrait
      * Indexes buckets by column name.
      *
      * @param array $buckets
-     * @var string|callable $column the name of the column by which the query results should be indexed by.
+     * @param string|callable $indexBy the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given row data.
      * @return array
      */

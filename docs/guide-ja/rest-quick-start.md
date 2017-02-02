@@ -62,6 +62,10 @@ as `app\models\User`, the controller knows which model can be used for fetching 
 上記の構成情報は、主として、`user` コントローラの URL 規則を追加して、ユーザのデータが綺麗な URL と意味のある HTTP 動詞によってアクセスおよび操作できるようにするものです。
 
 
+> Info: Yii はコントローラの名前を自動的に複数形にしてエンドポイントとして使用します (下の「試してみる」(#trying-it-out) を参照してください)。
+> この振る舞いは [[yii\rest\UrlRule::$pluralize]] プロパティを使って構成することが可能です。
+
+
 ## JSON の入力を可能にする <span id="enabling-json-input"></span>
 
 API が JSON 形式で入力データを受け取ることが出来るように、`request` [アプリケーションコンポーネント](structure-application-components.md) の [[yii\web\Request::$parsers|parsers]] プロパティを構成して、JSON 入力のために [[yii\web\JsonParser]] を使うようにします。
@@ -92,9 +96,6 @@ API が JSON 形式で入力データを受け取ることが出来るように�
 * `DELETE /users/123`: ユーザ 123 を削除する
 * `OPTIONS /users`: エンドポイント `/users` に関してサポートされている動詞を示す
 * `OPTIONS /users/123`: エンドポイント `/users/123` に関してサポートされている動詞を示す
-
-> Info: Yii はコントローラの名前を自動的に複数形にしてエンドポイントとして使用します。
-> この振る舞いは [[yii\rest\UrlRule::$pluralize]] プロパティを使って構成することが可能です。
 
 作成した API は、次のように、`curl` コマンドでアクセスすることが出来ます。
 

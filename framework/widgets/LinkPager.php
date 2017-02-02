@@ -75,18 +75,16 @@ class LinkPager extends Widget
      * @var string the CSS class for the disabled page buttons.
      */
     public $disabledPageCssClass = 'disabled';
-    
     /**
      * @var array the options for the disabled tag to be generated inside the disabled list element.
      * In order to customize the html tag, please use the tag key.
-     * 
+     *
      * ```php
      * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
      * ```
      * @since 2.0.11
      */
     public $disabledListItemSubTagOptions = [];
-    
     /**
      * @var int maximum number of page buttons that can be displayed. Defaults to 10.
      */
