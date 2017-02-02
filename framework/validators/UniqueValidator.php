@@ -63,7 +63,9 @@ class UniqueValidator extends Validator
      */
     public $filter;
     /**
-     * @var string the user-defined error message. When validating single attribute, it may contain
+     * @var string the user-defined error message.
+     *
+     * When validating single attribute, it may contain
      * the following placeholders which will be replaced accordingly by the validator:
      *
      * - `{attribute}`: the label of the attribute being validated
