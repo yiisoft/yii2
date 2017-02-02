@@ -21,6 +21,8 @@ namespace yii\caching;
  * TagDependency::invalidate(Yii::$app->cache, 'user-123');
  * ```
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -56,11 +58,9 @@ class TagDependency extends Dependency
     }
 
     /**
-     * Performs the actual dependency checking.
-     * @param Cache $cache the cache component that is currently evaluating this dependency
-     * @return boolean whether the dependency is changed or not.
+     * @inheritdoc
      */
-    public function getHasChanged($cache)
+    public function isChanged($cache)
     {
         $timestamps = $this->getTimestamps($cache, (array) $this->tags);
         return $timestamps !== $this->data;

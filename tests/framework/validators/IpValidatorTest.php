@@ -61,7 +61,7 @@ class IpValidatorTest extends TestCase
     }
 
     public function provideBadIps() {
-        return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false]];
+        return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false], ['bad:forSure']];
     }
 
     /**
@@ -72,6 +72,37 @@ class IpValidatorTest extends TestCase
         $validator = new IpValidator();
 
         $this->assertFalse($validator->validate($badIp));
+    }
+
+    /**
+     * @dataProvider provideBadIps
+     */
+    public function testValidateModelAttributeNotAnIP($badIp)
+    {
+        $validator = new IpValidator();
+        $model = new FakedValidationModel();
+
+        $model->attr_ip = $badIp;
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
+        $model->clearErrors();
+
+
+        $validator->ipv4 = false;
+
+        $model->attr_ip = $badIp;
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
+        $model->clearErrors();
+
+
+        $validator->ipv4 = true;
+        $validator->ipv6 = false;
+
+        $model->attr_ip = $badIp;
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
+        $model->clearErrors();
     }
 
     public function testValidateValueIPv4()

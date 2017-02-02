@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\base\Widget;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -22,6 +23,8 @@ use yii\data\Pagination;
  * Note that LinkPager only generates the necessary HTML markups. In order for it
  * to look like a real pager, you should provide some CSS styles for it.
  * With the default configuration, LinkPager should look good using Twitter Bootstrap CSS framework.
+ *
+ * For more details and usage information on LinkPager, see the [guide article on pagination](guide:output-pagination).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -47,7 +50,7 @@ class LinkPager extends Widget
      * @var string the CSS class for the each page button.
      * @since 2.0.7
      */
-    public $pageCssClass = null;
+    public $pageCssClass;
     /**
      * @var string the CSS class for the "first" page button.
      */
@@ -73,40 +76,50 @@ class LinkPager extends Widget
      */
     public $disabledPageCssClass = 'disabled';
     /**
-     * @var integer maximum number of page buttons that can be displayed. Defaults to 10.
+     * @var array the options for the disabled tag to be generated inside the disabled list element.
+     * In order to customize the html tag, please use the tag key.
+     *
+     * ```php
+     * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
+     * ```
+     * @since 2.0.11
+     */
+    public $disabledListItemSubTagOptions = [];
+    /**
+     * @var int maximum number of page buttons that can be displayed. Defaults to 10.
      */
     public $maxButtonCount = 10;
     /**
-     * @var string|boolean the label for the "next" page button. Note that this will NOT be HTML-encoded.
+     * @var string|bool the label for the "next" page button. Note that this will NOT be HTML-encoded.
      * If this property is false, the "next" page button will not be displayed.
      */
     public $nextPageLabel = '&raquo;';
     /**
-     * @var string|boolean the text label for the previous page button. Note that this will NOT be HTML-encoded.
+     * @var string|bool the text label for the previous page button. Note that this will NOT be HTML-encoded.
      * If this property is false, the "previous" page button will not be displayed.
      */
     public $prevPageLabel = '&laquo;';
     /**
-     * @var string|boolean the text label for the "first" page button. Note that this will NOT be HTML-encoded.
+     * @var string|bool the text label for the "first" page button. Note that this will NOT be HTML-encoded.
      * If it's specified as true, page number will be used as label.
      * Default is false that means the "first" page button will not be displayed.
      */
     public $firstPageLabel = false;
     /**
-     * @var string|boolean the text label for the "last" page button. Note that this will NOT be HTML-encoded.
+     * @var string|bool the text label for the "last" page button. Note that this will NOT be HTML-encoded.
      * If it's specified as true, page number will be used as label.
      * Default is false that means the "last" page button will not be displayed.
      */
     public $lastPageLabel = false;
     /**
-     * @var boolean whether to register link tags in the HTML header for prev, next, first and last page.
+     * @var bool whether to register link tags in the HTML header for prev, next, first and last page.
      * Defaults to `false` to avoid conflicts when multiple pagers are used on one page.
      * @see http://www.w3.org/TR/html401/struct/links.html#h-12.1.2
      * @see registerLinkTags()
      */
     public $registerLinkTags = false;
     /**
-     * @var boolean Hide widget when only one page exist.
+     * @var bool Hide widget when only one page exist.
      */
     public $hideOnSinglePage = true;
 
@@ -201,10 +214,10 @@ class LinkPager extends Widget
      * Renders a page button.
      * You may override this method to customize the generation of page buttons.
      * @param string $label the text label for the button
-     * @param integer $page the page number
+     * @param int $page the page number
      * @param string $class the CSS class for the page button.
-     * @param boolean $disabled whether this page button is disabled
-     * @param boolean $active whether this page button is active
+     * @param bool $disabled whether this page button is disabled
+     * @param bool $active whether this page button is active
      * @return string the rendering result
      */
     protected function renderPageButton($label, $page, $class, $disabled, $active)
@@ -215,8 +228,9 @@ class LinkPager extends Widget
         }
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
-
-            return Html::tag('li', Html::tag('span', $label), $options);
+            $tag = ArrayHelper::remove($this->disabledListItemSubTagOptions, 'tag', 'span');
+            
+            return Html::tag('li', Html::tag($tag, $label, $this->disabledListItemSubTagOptions), $options);
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;

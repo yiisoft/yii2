@@ -81,6 +81,20 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
+    public function testCompositeFk()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('composite_fk');
+
+        $this->assertCount(1, $table->foreignKeys);
+        $this->assertTrue(isset($table->foreignKeys['fk_composite_fk_order_item']));
+        $this->assertEquals('order_item', $table->foreignKeys['fk_composite_fk_order_item'][0]);
+        $this->assertEquals('order_id', $table->foreignKeys['fk_composite_fk_order_item']['order_id']);
+        $this->assertEquals('item_id', $table->foreignKeys['fk_composite_fk_order_item']['item_id']);
+    }
+
     public function testGetPDOType()
     {
         $values = [
@@ -154,5 +168,30 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $actual = Type::find()->one();
         $this->assertEquals($bigint, $actual->bigint_col);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/12483
+     */
+    public function testParenthesisDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_default_parenthesis') !== null) {
+            $db->createCommand()->dropTable('test_default_parenthesis')->execute();
+        }
+
+        $db->createCommand()->createTable('test_default_parenthesis', [
+            'id' => 'pk',
+            'user_timezone' => 'numeric(5,2) DEFAULT (0)::numeric NOT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_default_parenthesis');
+        $tableSchema = $db->schema->getTableSchema('test_default_parenthesis');
+        $this->assertNotNull($tableSchema);
+        $column = $tableSchema->getColumn('user_timezone');
+        $this->assertNotNull($column);
+        $this->assertFalse($column->allowNull);
+        $this->assertEquals('numeric', $column->dbType);
+        $this->assertEquals(0, $column->defaultValue);
     }
 }

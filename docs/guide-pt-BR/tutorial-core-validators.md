@@ -170,7 +170,7 @@ Este validador verifica se o valor de entrada é um double. É equivalente ao va
 Este validador só funciona com um atributo array. Ele valida *todos* os elementos do array com uma regra de validação especificada. No exemplo acima, o atributo `categoryIDs` deve ter um array e cada elemento do array será validado pela regra de validação  `integer`.
 
 - `rule`: um array especificando as regras de validação. O primeiro elemento do array determina o nome da classe ou o alias do validador. O restante dos pares nome-valor no array são utilizados para configurar o objeto do validador.
-- `allowMessageFromRule`: se pretende usar a mensagem de erro retornada pela regra de validação incorporada. Padrão é true. Se for false, ele usará `message` como a mensagem de erro.
+- `allowMessageFromRule`: se pretende usar a mensagem de erro retornada pela regra de validação incorporada. Padrão é `true`. Se for `false`, ele usará `message` como a mensagem de erro.
 
 > Observação: Se o valor do atributo não for um array, a validação será considerada como falha e a `mensagem` será retornada como erro.
 
@@ -186,9 +186,9 @@ Este validador só funciona com um atributo array. Ele valida *todos* os element
 
 Este validador verifica se o valor de entrada é um endereço de email válido.
 
-- `allowName`: permitir nome no endereço de email (ex. `John Smith <john.smith@example.com>`). O padrão é false;
-- `checkDNS`, para verificar se o domínio do e-mail existe e tem tanto um A ou registro MX. Esteja ciente de que esta verificação pode falhar devido a problemas de DNS temporários, mesmo se o endereço de e-mail for realmente válido. O padrão é false;
-- `enableIDN`, se o processo de validação deve verificar uma conta IDN (internationalized domain names). O padrão é false. Observe que para usar a validação IDN você deve instalar e habilitar a extensão PHP `intl`, caso contrário uma exceção será lançada.
+- `allowName`: permitir nome no endereço de email (ex. `John Smith <john.smith@example.com>`). O padrão é `false`;
+- `checkDNS`, para verificar se o domínio do e-mail existe e tem tanto um A ou registro MX. Esteja ciente de que esta verificação pode falhar devido a problemas de DNS temporários, mesmo se o endereço de e-mail for realmente válido. O padrão é `false`;
+- `enableIDN`, se o processo de validação deve verificar uma conta IDN (internationalized domain names). O padrão é `false`. Observe que para usar a validação IDN você deve instalar e habilitar a extensão PHP `intl`, caso contrário uma exceção será lançada.
 
 
 ## [[yii\validators\ExistValidator|exist]] <span id="exist"></span>
@@ -222,7 +222,7 @@ Você pode usar este validador para validar uma ou várias colunas (ex., a combi
 - `targetClass`: o nome da classe [Active Record](db-active-record.md) que deve ser usada para procurar o valor de entrada que está sendo validado. Se não for configurada, a atual classe do model (modelo) que está sendo validado será usada.
 - `targetAttribute`: o nome do atributo em `targetClass` que deve ser utilizado para validar a existência do valor de entrada. Se não for configurado, será usado o nome do atual atributo que está sendo validado. Você pode utilizar um array para validar a existência de múltiplas colunas ao mesmo tempo. Os valores do array são os atributos que serão utilizados para validar a existência, enquanto as chaves são os atributos cujos valores devem ser validados. Se a chave e o valor forem os mesmos, você pode especificar apenas o valor.
 - `filter`: filtro adicional para ser aplicado na consulta do banco de dados utilizada para verificar a existência do valor de entrada. Pode ser uma string ou um array representando a condição da consulta adicional (consulte o formato de condição [[yii\db\Query::where()]]), ou uma função anônima com a assinatura `function ($query)`, onde `$query` é o objeto  [[yii\db\Query|Query]] que você pode modificar.
-- `allowArray`: se permitir que o valor de entrada seja um array. Padrão é false. Se esta propriedade for definida como true e a entrada for um array, então, cada elemento do array deve existir na coluna destinada. Observe que essa propriedade não pode ser definida como true se você estiver validando várias colunas configurando `targetAttribute` como um array.
+- `allowArray`: se permitir que o valor de entrada seja um array. Padrão é `false`. Se esta propriedade for definida como `true` e a entrada for um array, então, cada elemento do array deve existir na coluna destinada. Observe que essa propriedade não pode ser definida como `true` se você estiver validando várias colunas configurando `targetAttribute` como um array.
 
 
 ## [[yii\validators\FileValidator|file]] <span id="file"></span>
@@ -237,12 +237,12 @@ Você pode usar este validador para validar uma ou várias colunas (ex., a combi
 
 Este validador verifica se o dados de entrada é um arquivo válido.
 
-- `extensions`: uma lista de extensões de arquivos que são permitidos para upload. Pode ser utilizado tanto um array quanto uma string constituída de extensões de arquivos separados por espaços ou por vírgulas (Ex. "gif, jpg"). Os nomes das extensões são case-insensitive. O padrão é null, significa que todas as extensões são permitidas.
-- `mimeTypes`: uma lista de tipos de arquivos MIME que são permitidos no upload. Pode ser utilizado tanto um array quanto uma string constituída de tipos MIME separados por espaços ou por virgulas (ex. "image/jpeg, image/png"). Os nomes dos tipos MIME são case-insensitivo. O padrão é null, significa que todos os tipos MIME são permitidos. Para mais detalhes, consulte o artigo [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
-- `minSize`: o número mínimo de bytes exigido para o arquivo carregado. O padrão é null, significa não ter limite mínimo.
-- `maxSize`: o número máximo de bytes exigido para o arquivo carregado. O padrão é null, significa não ter limite máximo.
+- `extensions`: uma lista de extensões de arquivos que são permitidos para upload. Pode ser utilizado tanto um array quanto uma string constituída de extensões de arquivos separados por espaços ou por vírgulas (Ex. "gif, jpg"). Os nomes das extensões são case-insensitive. O padrão é `null`, significa que todas as extensões são permitidas.
+- `mimeTypes`: uma lista de tipos de arquivos MIME que são permitidos no upload. Pode ser utilizado tanto um array quanto uma string constituída de tipos MIME separados por espaços ou por virgulas (ex. "image/jpeg, image/png"). Os nomes dos tipos MIME são case-insensitivo. O padrão é `null`, significa que todos os tipos MIME são permitidos. Para mais detalhes, consulte o artigo [common media types](http://en.wikipedia.org/wiki/Internet_media_type#List_of_common_media_types).
+- `minSize`: o número mínimo de bytes exigido para o arquivo carregado. O padrão é `null`, significa não ter limite mínimo.
+- `maxSize`: o número máximo de bytes exigido para o arquivo carregado. O padrão é `null`, significa não ter limite máximo.
 - `maxFiles`: o número máximo de arquivos que o atributo pode receber. O padrão é 1, ou seja, a entrada de dados deve ser composto de um único arquivo. Se o `maxFiles` for maior que 1, então a entrada de dados deve ser composto por um array constituído de no máximo `maxFiles` arquivos.
-- `checkExtensionByMimeType`: verificação da extensão do arquivo por tipo MIME do arquivo. Se a extensão produzido pela verificação do tipo MIME difere da extensão do arquivo carregado, o arquivo será considerado inválido. O padrão é true, o que significa realizar tal verificação.
+- `checkExtensionByMimeType`: verificação da extensão do arquivo por tipo MIME do arquivo. Se a extensão produzido pela verificação do tipo MIME difere da extensão do arquivo carregado, o arquivo será considerado inválido. O padrão é `true`, o que significa realizar tal verificação.
 
 `FileValidator` é usado junto com [[yii\web\UploadedFile]]. Consulte a seção [Upload de Arquivos](input-file-upload.md) para mais informações sobre o upload de arquivos e de uma validação sobre os arquivos carregados.
 
@@ -265,7 +265,7 @@ Este validador verifica se o dados de entrada é um arquivo válido.
 Este validador não valida dados. Em vez disso, aplica um filtro no valor de entrada e retorna para o atributo que está sendo validado.
 
 - `filter`: um PHP callback que define um filtro. Pode ser um nome de função global, uma função anônima, etc. A assinatura da função deve ser `function ($value) { return $newValue; }`. Esta propriedade deve ser definida.
-- `skipOnArray`: para ignorar o filtro se o valor de entrada for um array. O padrão é false. Observe que se o filtro não puder manipular a entrada de array, você deve configurar esta propriedade como true. De outra forma algum erro do PHP deve ocorrer.
+- `skipOnArray`: para ignorar o filtro se o valor de entrada for um array. O padrão é `false`. Observe que se o filtro não puder manipular a entrada de array, você deve configurar esta propriedade como `true`. De outra forma algum erro do PHP deve ocorrer.
 
 > Dica: Se você quiser trimar valores de entrada, você deve utilizar o validador [trim](#trim).
 
@@ -294,10 +294,10 @@ Este validador não valida dados. Em vez disso, aplica um filtro no valor de ent
 
 Este validador verifica se o valor de entrada representa um arquivo de imagem válido. Por estender o validador [file](#file), ele herda todas as suas propriedades. Além disso, suporta as seguintes propriedades adicionais específicas para fins de validação de imagem:
 
-- `minWidth`: a largura mínima da imagem. O padrão é null, significa não ter limite mínimo.
-- `maxWidth`: a largura máxima da imagem. O padrão é null, significa não ter limite máximo.
-- `minHeight`: a altura mínima da imagem. O padrão é null, significa não ter limite mínimo.
-- `maxHeight`: a altura máxima da imagem. O padrão é null, significa não ter limite máximo.
+- `minWidth`: a largura mínima da imagem. O padrão é `null`, significa não ter limite mínimo.
+- `maxWidth`: a largura máxima da imagem. O padrão é `null`, significa não ter limite máximo.
+- `minHeight`: a altura mínima da imagem. O padrão é `null`, significa não ter limite mínimo.
+- `maxHeight`: a altura máxima da imagem. O padrão é `null`, significa não ter limite máximo.
 
 
 ## [[yii\validators\RangeValidator|in]] <span id="in"></span>
@@ -313,9 +313,9 @@ Este validador verifica se o valor de entrada pode ser encontrado entre os valor
 
 - `range`: uma lista de determinados valores dentro da qual o valor de entrada deve ser procurado.
 - `strict`: se a comparação entre o valor de entrada e os valores dados devem ser strict
-(o tipo e o valor devem ser idênticos). O padrão é false.
-- `not`: se o resultado de validação deve ser invertido. O padrão é false. Quando esta propriedade é definida como true, o validador verifica se o valor de entrada NÃO está entre os valores da lista fornecida.
-- `allowArray`: para permitir que o valor de entrada seja um array. Quando esta propriedade é marcada como true e o valor de entrada é um array, todos os elementos neste array devem ser encontrados na lista de valores fornecida, caso contrário a validação falhará.
+(o tipo e o valor devem ser idênticos). O padrão é `false`.
+- `not`: se o resultado de validação deve ser invertido. O padrão é `false`. Quando esta propriedade é definida como `true`, o validador verifica se o valor de entrada NÃO está entre os valores da lista fornecida.
+- `allowArray`: para permitir que o valor de entrada seja um array. Quando esta propriedade é marcada como `true` e o valor de entrada é um array, todos os elementos neste array devem ser encontrados na lista de valores fornecida, caso contrário a validação falhará.
 
 
 ## [[yii\validators\NumberValidator|integer]] <span id="integer"></span>
@@ -345,7 +345,7 @@ Este validador verifica se o valor de entrada é um inteiro.
 Este validador verifica se o valor de entrada atende a expressão regular especificada.
 
 - `pattern`: a expressão regular que o valor de entrada deve corresponder. Esta propriedade deve ser configurada, caso contrário uma exceção será lançada.
-- `not`: para inverter o resultado da validação. O padrão é false, significa que a validação terá sucesso apenas se o valor de entrada corresponder ao padrão definido. Se for configurado como true a validação terá sucesso apenas se o valor de entrada NÃO corresponder ao padrão definido.
+- `not`: para inverter o resultado da validação. O padrão é `false`, significa que a validação terá sucesso apenas se o valor de entrada corresponder ao padrão definido. Se for configurado como `true` a validação terá sucesso apenas se o valor de entrada NÃO corresponder ao padrão definido.
 
 
 ## [[yii\validators\NumberValidator|number]] <span id="number"></span>
@@ -375,7 +375,7 @@ Este validador verifica se o valor de entrada é um number. É equivalente ao va
 Este validador verifica se o valor de entrada foi fornecido e não está vazio.
 
 - `requiredValue`: o valor desejado que a entrada deve ter. Se não configurado, significa que o valor de entrada apenas não deve estar vazio.
-- `strict`: para verificar os tipos de dados ao validar um valor. O padrão é false. Quando `requiredValue` não é configurado, se esta propriedade for true, o validador verificará se o valor de entrada não é estritamente nulo; Se esta propriedade for false, o validador usará uma regra solta para determinar se o valor está vazio ou não. Quando `requiredValue` está configurado, a comparação entre o valor de entrada e `requiredValue` também verificará os tipos de dados se esta propriedade for true.
+- `strict`: para verificar os tipos de dados ao validar um valor. O padrão é `false`. Quando `requiredValue` não é configurado, se esta propriedade for `true`, o validador verificará se o valor de entrada não é estritamente nulo; Se esta propriedade for `false`, o validador usará uma regra solta para determinar se o valor está vazio ou não. Quando `requiredValue` está configurado, a comparação entre o valor de entrada e `requiredValue` também verificará os tipos de dados se esta propriedade for `true`.
 
 > Observação: Como determinar se um valor está vazio ou não é um tópico separado descrito na seção [Valores Vazios](input-validation.md#handling-empty-inputs).
 
@@ -465,7 +465,7 @@ Este validador verifica se o valor de entrada é único na coluna da tabela. Ele
 Este validador verifica se o valor de entrada é uma URL válida.
 
 - `validSchemes`: um array especificando o esquema da URI que deve ser considerada válida. O padrão é `['http', 'https']`, significa que ambas URLs `http` e `https` são considerados como válidos.
-- `defaultScheme`: o esquema padrão da URI para ser anexado à entrada, se a parte do esquema não for informada na entrada. O padrão é null, significa que o valor de entrada não será modificado.
-- `enableIDN`: se o validador deve ter uma conta IDN (internationalized domain names). O padrão é false. Observe que para usar a validação IDN você tem que instalar e ativar a extenção PHP `intl`, caso contrário uma exceção será lançada.
+- `defaultScheme`: o esquema padrão da URI para ser anexado à entrada, se a parte do esquema não for informada na entrada. O padrão é `null`, significa que o valor de entrada não será modificado.
+- `enableIDN`: se o validador deve ter uma conta IDN (internationalized domain names). O padrão é `false`. Observe que para usar a validação IDN você tem que instalar e ativar a extenção PHP `intl`, caso contrário uma exceção será lançada.
 
 

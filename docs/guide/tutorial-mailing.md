@@ -32,7 +32,7 @@ return [
 Basic usage
 -----------
 
-Once the 'mailer' component is configured, you can use the following code to send an email message:
+Once the `mailer` component is configured, you can use the following code to send an email message:
 
 ```php
 Yii::$app->mailer->compose()
@@ -50,9 +50,9 @@ You may put more complex logic in this process if needed:
 ```php
 $message = Yii::$app->mailer->compose();
 if (Yii::$app->user->isGuest) {
-    $message->setFrom('from@domain.com')
+    $message->setFrom('from@domain.com');
 } else {
-    $message->setFrom(Yii::$app->user->identity->email)
+    $message->setFrom(Yii::$app->user->identity->email);
 }
 $message->setTo(Yii::$app->params['adminEmail'])
     ->setSubject('Message subject')
@@ -60,8 +60,8 @@ $message->setTo(Yii::$app->params['adminEmail'])
     ->send();
 ```
 
-> Note: each 'mailer' extension comes in 2 major classes: 'Mailer' and 'Message'. 'Mailer' always knows
-  the class name and specific of the 'Message'. Do not attempt to instantiate 'Message' object directly -
+> Note: each `mailer` extension comes in 2 major classes: `Mailer` and `Message`. `Mailer` always knows
+  the class name and specific of the `Message`. Do not attempt to instantiate `Message` object directly —
   always use `compose()` method for it.
 
 You may also send several messages at once:
@@ -83,7 +83,7 @@ Composing mail content
 ----------------------
 
 Yii allows composition of the actual mail messages content via special view files.
-By default these files should be located at '@app/mail' path.
+By default these files should be located at `@app/mail` path.
 
 Example mail view file content:
 
@@ -91,7 +91,6 @@ Example mail view file content:
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
-
 
 /* @var $this \yii\web\View view component instance */
 /* @var $message \yii\mail\BaseMessage instance of newly created mail message */
@@ -175,10 +174,10 @@ You can add attachments to message using methods `attach()` and `attachContent()
 ```php
 $message = Yii::$app->mailer->compose();
 
-// Attach file from local file system:
+// attach file from local file system
 $message->attach('/path/to/source/file.pdf');
 
-// Create attachment on-the-fly
+// create attachment on-the-fly
 $message->attachContent('Attachment content', ['fileName' => 'attach.txt', 'contentType' => 'text/plain']);
 ```
 
@@ -187,7 +186,7 @@ Embedding images
 ----------------
 
 You can embed images into the message content using `embed()` method. This method returns the attachment id,
-which should be then used at 'img' tag.
+which should be then used at `img` tag.
 This method is easy to use when composing message content via view file:
 
 ```php
@@ -209,7 +208,7 @@ Testing and debugging
 A developer often has to check, what actual emails are sent by the application, what was their content and so on.
 Such ability is granted by Yii via `yii\mail\BaseMailer::useFileTransport`. If enabled, this option enforces
 saving mail message data into the local files instead of regular sending. These files will be saved under
-`yii\mail\BaseMailer::fileTransportPath`, which is '@runtime/mail' by default.
+`yii\mail\BaseMailer::fileTransportPath`, which is `@runtime/mail` by default.
 
 > Note: you can either save the messages to the files or send them to the actual recipients, but can not do both simultaneously.
 
@@ -223,8 +222,8 @@ This mechanism may prove itself, while debugging application or running unit tes
 Creating your own mail solution
 -------------------------------
 
-In order to create your own custom mail solution, you need to create 2 classes: one for the 'Mailer' and
-another one for the 'Message'.
+In order to create your own custom mail solution, you need to create 2 classes: one for the `Mailer` and
+another one for the `Message`.
 You can use `yii\mail\BaseMailer` and `yii\mail\BaseMessage` as the base classes for your solution. These classes
 already contain the basic logic, which is described in this guide. However, their usage is not mandatory, it is enough
 to implement `yii\mail\MailerInterface` and `yii\mail\MessageInterface` interfaces.

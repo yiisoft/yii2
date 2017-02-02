@@ -33,6 +33,8 @@ use yii\base\InvalidConfigException;
  * ]
  * ```
  *
+ * For more details and usage information on View, see the [guide article on views](guide:structure-views).
+ *
  * @property \yii\web\AssetManager $assetManager The asset manager. Defaults to the "assetManager" application
  * component.
  *
@@ -163,7 +165,7 @@ class View extends \yii\base\View
 
     /**
      * Marks the ending of an HTML page.
-     * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
+     * @param bool $ajaxMode whether the view is rendering in AJAX mode.
      * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
      * will be rendered at the end of the view like normal scripts.
      */
@@ -270,7 +272,7 @@ class View extends \yii\base\View
      * Registers the named asset bundle.
      * All dependent asset bundles will be registered.
      * @param string $name the class name of the asset bundle (without the leading backslash)
-     * @param integer|null $position if set, this forces a minimum position for javascript files.
+     * @param int|null $position if set, this forces a minimum position for javascript files.
      * This will adjust depending assets javascript file position or fail if requirement can not be met.
      * If this is null, asset bundles position settings will not be changed.
      * See [[registerJsFile]] for more details on javascript position.
@@ -398,16 +400,18 @@ class View extends \yii\base\View
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+
         $depends = ArrayHelper::remove($options, 'depends', []);
 
         if (empty($depends)) {
             $this->cssFiles[$key] = Html::cssFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = new AssetBundle([
+            $this->getAssetManager()->bundles[$key] = Yii::createObject([
+                'class' => AssetBundle::className(),
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
-                'depends' => (array) $depends,
+                'depends' => (array)$depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -416,7 +420,7 @@ class View extends \yii\base\View
     /**
      * Registers a JS code block.
      * @param string $js the JS code block to be registered
-     * @param integer $position the position at which the JS script tag should be inserted
+     * @param int $position the position at which the JS script tag should be inserted
      * in a page. The possible values are:
      *
      * - [[POS_HEAD]]: in the head section
@@ -455,24 +459,27 @@ class View extends \yii\base\View
      * Please refer to [[Html::jsFile()]] for other supported options.
      *
      * @param string $key the key that identifies the JS script file. If null, it will use
-     * $url as the key. If two JS files are registered with the same key, the latter
-     * will overwrite the former.
+     * $url as the key. If two JS files are registered with the same key at the same position, the latter
+     * will overwrite the former. Note that position option takes precedence, thus files registered with the same key,
+     * but different position option will not override each other.
      */
     public function registerJsFile($url, $options = [], $key = null)
     {
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
+
         $depends = ArrayHelper::remove($options, 'depends', []);
 
         if (empty($depends)) {
             $position = ArrayHelper::remove($options, 'position', self::POS_END);
             $this->jsFiles[$position][$key] = Html::jsFile($url, $options);
         } else {
-            $this->getAssetManager()->bundles[$key] = new AssetBundle([
+            $this->getAssetManager()->bundles[$key] = Yii::createObject([
+                'class' => AssetBundle::className(),
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
-                'depends' => (array) $depends,
+                'depends' => (array)$depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -530,7 +537,7 @@ class View extends \yii\base\View
     /**
      * Renders the content to be inserted at the end of the body section.
      * The content is rendered using the registered JS code blocks and files.
-     * @param boolean $ajaxMode whether the view is rendering in AJAX mode.
+     * @param bool $ajaxMode whether the view is rendering in AJAX mode.
      * If true, the JS scripts registered at [[POS_READY]] and [[POS_LOAD]] positions
      * will be rendered at the end of the view like normal scripts.
      * @return string the rendered content
@@ -566,7 +573,7 @@ class View extends \yii\base\View
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {
-                $js = "jQuery(window).load(function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
+                $js = "jQuery(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }

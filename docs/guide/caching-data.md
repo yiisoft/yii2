@@ -13,8 +13,8 @@ a [cache component](#cache-components):
 $data = $cache->get($key);
 
 if ($data === false) {
-
     // $data is not found in cache, calculate it from scratch
+    $data = $this->calculateSomething();
 
     // store $data in cache so that it can be retrieved next time
     $cache->set($key, $data);
@@ -23,6 +23,32 @@ if ($data === false) {
 // $data is available here
 ```
 
+Since version 2.0.11, [cache component](#cache-components) provides [[yii\caching\Cache::getOrSet()|getOrSet()]] method
+that simplifies code for data getting, calculating and storing. The following code does exactly the same as the 
+previous example:
+
+```php
+$data = $cache->getOrSet($key, function () {
+    return $this->calculateSomething();
+});
+```
+
+When cache has data associated with the `$key`, the cached value will be returned. 
+Otherwise, the passed anonymous function will be executed to calculate the value that will be cached and returned.
+
+If the anonymous function requires some data from the outer scope, you can pass it with the `use` statement.
+For example:
+
+```php
+$user_id = 42;
+$data = $cache->getOrSet($key, function () use ($user_id) {
+    return $this->calculateSomething($user_id);
+});
+```
+
+> Note: [[yii\caching\Cache::getOrSet()|getOrSet()]] method supports duration and dependencies as well. 
+  See [Cache Expiration](#cache-expiration) and [Cache Dependencies](#cache-dependencies) to know more.
+  
 
 ## Cache Components <span id="cache-components"></span>
 
@@ -89,7 +115,7 @@ Yii supports a wide range of cache storage. The following is a summary:
   the corresponding cache component. In both cases, you may use the same code
   `Yii::$app->cache->get($key)` to attempt retrieving data from the cache without worrying that
   `Yii::$app->cache` might be `null`.
-* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particular suitable
+* [[yii\caching\FileCache]]: uses standard files to store cached data. This is particularly suitable
   to cache large chunk of data, such as page content.
 * [[yii\caching\MemCache]]: uses PHP [memcache](http://php.net/manual/en/book.memcache.php)
   and [memcached](http://php.net/manual/en/book.memcached.php) extensions. This option can be considered as
@@ -118,6 +144,8 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
   value will be returned if the data item is not found in the cache or is expired/invalidated.
 * [[yii\caching\Cache::set()|set()]]: stores a data item identified by a key in cache.
 * [[yii\caching\Cache::add()|add()]]: stores a data item identified by a key in cache if the key is not found in the cache.
+* [[yii\caching\Cache::getOrSet()|getOrSet()]]: retrieves a data item from cache with a specified key or executes passed
+  callback, stores return of the callback in a cache by a key and returns that data.  
 * [[yii\caching\Cache::multiGet()|multiGet()]]: retrieves multiple data items from cache with the specified keys.
 * [[yii\caching\Cache::multiSet()|multiSet()]]: stores multiple data items in cache. Each item is identified by a key.
 * [[yii\caching\Cache::multiAdd()|multiAdd()]]: stores multiple data items in cache. Each item is identified by a key.
@@ -128,7 +156,7 @@ All cache components have the same base class [[yii\caching\Cache]] and thus sup
 
 > Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
 `false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
-this array instead to avoid this problem.
+this array instead to avoid this problem. 
 
 Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
 which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::multiGet()|multiGet()]]
@@ -167,6 +195,10 @@ For example, [[yii\db\Schema]] uses the following key to cache schema informatio
 
 As you can see, the key includes all necessary information needed to uniquely specify a database table.
 
+> Note: Values stored in cache via [[yii\caching\Cache::multiSet()|multiSet()]] or [[yii\caching\Cache::multiAdd()|multiAdd()]] can
+have only string or integer keys. If you need to set more complex key store the value separately via 
+[[yii\caching\Cache::set()|set()]] or [[yii\caching\Cache::add()|add()]].
+
 When the same cache storage is used by different applications, you should specify a unique cache key prefix
 for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\Cache::keyPrefix]]
 property. For example, in the application configuration you can write the following code:
@@ -204,6 +236,10 @@ if ($data === false) {
 }
 ```
 
+Since 2.0.11 you may set [[yii\caching\Cache::$defaultDuration|defaultDuration]] value in your cache component configuration if you prefer a custom cache duration
+over the default unlimited duration.
+This will allow you not to pass custom `duration` parameter to [[yii\caching\Cache::set()|set()]] each time.
+
 
 ### Cache Dependencies <span id="cache-dependencies"></span>
 
@@ -227,7 +263,7 @@ $cache->set($key, $data, 30, $dependency);
 
 // The cache will check if the data has expired.
 // It will also check if the associated dependency was changed.
-// It will return false if any of these conditions is met.
+// It will return false if any of these conditions are met.
 $data = $cache->get($key);
 ```
 
@@ -272,7 +308,7 @@ $result = Customer::getDb()->cache(function ($db) {
 ```
 
 > Info: Some DBMS (e.g. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  also support query caching on the DB server side. You may choose to use either query caching mechanism.
+  also support query caching on the DB server-side. You may choose to use either query caching mechanism.
   The query caching described above has the advantage that you may specify flexible cache dependencies
   and are potentially more efficient.
 
@@ -296,7 +332,7 @@ components in your web and console application configs to reach the proper effec
 Query caching has three global configurable options through [[yii\db\Connection]]:
 
 * [[yii\db\Connection::enableQueryCache|enableQueryCache]]: whether to turn on or off query caching.
-  It defaults to true. Note that to effectively turn on query caching, you also need to have a valid
+  It defaults to `true`. Note that to effectively turn on query caching, you also need to have a valid
   cache, as specified by [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: this represents the number of seconds
   that a query result can remain valid in the cache. You can use 0 to indicate a query result should

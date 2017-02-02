@@ -2,7 +2,7 @@ Shared Hosting Environment
 ==========================
 
 Shared hosting environments are often quite limited about configuration and directory structure. Still in most cases you
-can run Yii 2.0 on a shared hosting environment with a few adjustements.
+can run Yii 2.0 on a shared hosting environment with a few adjustments.
 
 ## Deploying a basic project template
 
@@ -63,5 +63,5 @@ browser using `http://example.com/requirements.php` URL. Don't forget to delete 
 ## Deploying an advanced project template
 
 Deploying an advanced application to shared hosting is a bit trickier than a basic application but it could be achieved.
-Follow intructions described in
+Follow instructions described in
 [advanced project template documentation](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/topic-shared-hosting.md).

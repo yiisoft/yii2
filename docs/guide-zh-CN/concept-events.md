@@ -196,7 +196,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // 显示 "app\models\Foo"
+    var_dump($event->sender);  // 显示 "null"
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);

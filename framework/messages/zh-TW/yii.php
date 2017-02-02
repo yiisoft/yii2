@@ -77,6 +77,7 @@ return [
     '{attribute} must be an IP address with specified subnet.' => '{attribute} 必須指定一個IP地址和子網。',
     '{attribute} must be an integer.' => '{attribute} 必須為整數。',
     '{attribute} must be either "{true}" or "{false}".' => '{attribute} 必須為 "{true}" 或 "{false}"。',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute}必須等於"{compareValueOrAttribute}"。',
     '{attribute} must be greater than "{compareValue}".' => '{attribute} 必須大於 "{compareValue}"。',
     '{attribute} must be greater than or equal to "{compareValue}".' => '{attribute} 必須大或等於 "{compareValue}"。',
     '{attribute} must be less than "{compareValue}".' => '{attribute} 必須小於 "{compareValue}"。',

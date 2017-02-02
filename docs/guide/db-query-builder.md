@@ -153,6 +153,9 @@ $subQuery = (new Query())->select('id')->from('user')->where('status=1');
 $query->from(['u' => $subQuery]);
 ```
 
+#### Prefixes
+Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. Implementation instructions
+are in the ["Quoting Tables" section of the "Database Access Objects" guide](guide-db-dao.html#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
@@ -166,7 +169,7 @@ the three formats to specify a `WHERE` condition:
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions or if you need to use builtin functions of the DBMS.
+String format is best used to specify very simple conditions or if you need to use built-in functions of the DBMS.
 It works as if you are writing a raw SQL. For example,
 
 ```php
@@ -291,7 +294,7 @@ the operator can be one of the following:
   the `NOT LIKE` predicates.
 
 - `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
-  It will build a `EXISTS (sub-query)` expression.
+  It will build an `EXISTS (sub-query)` expression.
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
@@ -319,7 +322,7 @@ if (!empty($search)) {
 }
 ```
 
-If `$search` is not empty, the following WHERE condition will be generated:
+If `$search` is not empty, the following `WHERE` condition will be generated:
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
@@ -345,7 +348,7 @@ The only difference between [[yii\db\Query::filterWhere()|filterWhere()]] and [[
 is that the former will ignore empty values provided in the condition in [hash format](#hash-format). So if `$email`
 is empty while `$username` is not, the above code will result in the SQL condition `WHERE username=:username`.
 
-> Info: A value is considered empty if it is null, an empty array, an empty string or a string consisting of whitespaces only.
+> Info: A value is considered empty if it is `null`, an empty array, an empty string or a string consisting of whitespaces only.
 
 Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhere()]], you can use
 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]
@@ -366,6 +369,12 @@ You can also specify operator explicitly:
 $query->andFilterCompare('name', 'Doe', 'like');
 ```
 
+Since Yii 2.0.11 there are similar methods for `HAVING` condition:
+
+- [[yii\db\Query::filterHaving()|filterHaving()]]
+- [[yii\db\Query::andFilterHaving()|andFilterHaving()]]
+- [[yii\db\Query::orFilterHaving()|orFilterHaving()]]
+
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL query. For example,
@@ -378,7 +387,7 @@ $query->orderBy([
 ]);
 ```
  
-In the above code, the array keys are column names while the array values are the corresponding order-by directions.
+In the above code, the array keys are column names while the array values are the corresponding order by directions.
 The PHP constant `SORT_ASC` specifies ascending sort and `SORT_DESC` descending sort.
 
 If `ORDER BY` only involves simple column names, you can specify it using a string, just like you do when writing 

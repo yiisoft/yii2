@@ -15,6 +15,6 @@ Za każdym razem kiedy aplikacja Yii obsługuje żądanie, przetwarza je w podob
 10. Wyrenderowana zawartość jest zwracana do komponentu [odpowiedzi](runtime-responses.md) aplikacji.
 11. Komponent odpowiedzi wysyła wyrenderowaną zawartość do przeglądarki użytkownika.
 
-![Cykl życia żądania](../guide/images/request-lifecycle.png)
+![Cykl życia żądania](images/request-lifecycle.png)
 
 W tej sekcji opiszemy szczegóły dotyczące niektórych kroków przetwarzania żądania.

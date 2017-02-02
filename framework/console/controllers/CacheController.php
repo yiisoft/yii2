@@ -71,7 +71,7 @@ class CacheController extends Controller
     public function actionFlush()
     {
         $cachesInput = func_get_args();
-        
+
         if (empty($cachesInput)) {
             throw new Exception('You should specify cache components names');
         }
@@ -139,7 +139,7 @@ class CacheController extends Controller
      * ```
      *
      * @param string $db id connection component
-     * @return integer exit code
+     * @return int exit code
      * @throws Exception
      * @throws \yii\base\InvalidConfigException
      *
@@ -231,7 +231,7 @@ class CacheController extends Controller
     /**
      * Prompts user with confirmation if caches should be flushed.
      * @param array $cachesNames
-     * @return boolean
+     * @return bool
      */
     private function confirmFlush($cachesNames)
     {
@@ -275,7 +275,7 @@ class CacheController extends Controller
     /**
      * Checks if given class is a Cache class.
      * @param string $className class name.
-     * @return boolean
+     * @return bool
      */
     private function isCacheClass($className)
     {

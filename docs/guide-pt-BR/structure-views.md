@@ -757,7 +757,7 @@ antes de serem enviados para os usuários finais.
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: é disparado no 
   início da renderização de um arquivo no controlador. Na função deste evento 
-  pode definir a propriedade [[yii\base\ViewEvent::isValid]] como false para 
+  pode definir a propriedade [[yii\base\ViewEvent::isValid]] como `false` para 
   cancelar o processo de renderização.
 - [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: é disparado depois 
   da renderização de um arquivo pela chamada do método [[yii\base\View::afterRender()]].

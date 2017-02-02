@@ -91,6 +91,7 @@ public function rules()
 属性は、上記の検証のステップに従って、`scenarios()` でアクティブな属性であると宣言されており、かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、また、その場合に限って、検証されます。
 
 > Note: 規則に名前を付けると便利です。すなわち、
+>
 > ```php
 > public function rules()
 > {
@@ -161,7 +162,7 @@ public function rules()
 /**
  * @param Model $model 検証されるモデル
  * @param string $attribute 検証される属性
- * @return boolean 規則が適用されるか否か
+ * @return bool 規則が適用されるか否か
  */
 function ($model, $attribute)
 ```
@@ -310,8 +311,10 @@ Yii のリリースに含まれている [コアバリデータ](tutorial-core-v
 /**
  * @param string $attribute 現在検証されている属性
  * @param mixed $params 規則に与えられる "params" の値
+ * @param \yii\validators\InlineValidator 関係する InlineValidator のインスタンス。
+ * このパラメータは、バージョン 2.0.11 以降で利用可能。
  */
-function ($attribute, $params)
+function ($attribute, $params, $validator)
 ```
 
 属性が検証に失敗した場合は、メソッド/関数 は [[yii\base\Model::addError()]] を呼んでエラーメッセージをモデルに保存し、後で読み出してエンドユーザに表示することが出来るようにしなければなりません。
@@ -333,7 +336,7 @@ class MyForm extends Model
             ['country', 'validateCountry'],
 
             // 無名関数として定義されるインラインバリデータ
-            ['token', function ($attribute, $params) {
+            ['token', function ($attribute, $params, $validator) {
                 if (!ctype_alnum($this->$attribute)) {
                     $this->addError($attribute, 'トークンは英数字で構成しなければなりません。');
                 }
@@ -341,7 +344,7 @@ class MyForm extends Model
         ];
     }
 
-    public function validateCountry($attribute, $params)
+    public function validateCountry($attribute, $params, $validator)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
             $this->addError($attribute, '国は "USA" または "Web" でなければなりません。');
@@ -349,6 +352,14 @@ class MyForm extends Model
     }
 }
 ```
+
+> Note: バージョン 2.0.11 以降では、代わりに、[[yii\validators\InlineValidator::addError()]] を使ってエラーメッセージを追加することが出来ます。
+> そうすれば、エラーメッセージはそのまま [[yii\i18n\I18N::format()]] を使ってフォーマットされます。
+> 属性のラベルと値を参照するためには、それぞれ、`{attribute}` と `{value}` を使ってください(手作業で取得する必要はありません)。
+>
+> ```php
+> $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
+> ```
 
 > Note: デフォルトでは、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかの検証規則に失敗したりしている場合には、適用されません。
 > 規則が常に適用されることを保証したい場合は、規則の宣言において [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] および/または [[yii\validators\Validator::skipOnError|skipOnError]] のプロパティを false に設定することが出来ます。
@@ -417,6 +428,121 @@ class EntryForm extends Model
 }
 ```
 
+## 複数の属性の検証 <span id="multiple-attributes-validation"></span>
+
+時として、バリデータが複数の属性に関係する場合があります。次のようなフォームを考えてみてください。
+
+```php
+class MigrationForm extends \yii\base\Model
+{
+    /**
+     * 成人一人のための最低限の生活費
+     */
+    const MIN_ADULT_FUNDS = 3000;
+    /**
+     * こども一人のための最低限の生活費
+     */
+    const MIN_CHILD_FUNDS = 1500;
+
+    public $personalSalary;   // 給与
+    public $spouseSalary;     // 配偶者の給与
+    public $childrenCount;    // こどもの数
+    public $description;
+
+    public function rules()
+    {
+        return [
+            [['personalSalary', 'description'], 'required'],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => self::MIN_ADULT_FUNDS],
+            ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
+            [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
+            ['description', 'string'],
+        ];
+    }
+}
+```
+
+### バリデータを作成する <span id="multiple-attributes-validator"></span>
+
+家族の収入が子ども達のために十分であるかどうかをチェックする必要があるとしましょう。
+そのためには、`childrenCount` が 1 以上である場合にのみ実行される `validateChildrenFunds` というインラインバリデータを作れば良いわけです。
+
+検証されるすべての属性 (`['personalSalary', 'spouseSalary', 'childrenCount']`) にこのバリデータをアタッチすることは出来ない、ということに注意してください。
+そのようにすると、同じバリデータが属性ごとに (合計で三回) 走ることになりますが、
+属性のセット全体に対してこのバリデータを一度だけ走らせれば十分なのです。
+
+これらの属性のどれを使っても構いません (あるいは、もっとも関係が深いと思うものを使ってください)。
+
+```php
+['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
+    return $model->childrenCount > 0;
+}],
+```
+
+`validateChildrenFunds` の実装は次のようにすることが出来ます。
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // 配偶者の給与が指定されているときは、成人の最低生活費を倍にする
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', '子どもの数に対して給与が不足しています。');
+    }
+}
+```
+
+この検証は属性一つだけに関係するものではないので、`$attribute` のパラメータは無視することが出来ます。
+
+
+### エラーメッセージを追加する <span id="multiple-attributes-errors"></span>
+
+複数の属性の場合のエラーメッセージの追加は、フォームをどのように設計するかによって異なってきます。
+
+- もっとも関係が深いとあなたが思うフィールドを選んで、その属性にエラーメッセージを追加する。
+
+```php
+$this->addError('childrenCount', '子どもの数に対して給与が不足しています。');
+```
+
+- 重要な複数の属性、または、すべての属性を選んで、同じエラーメッセージを追加する。
+  メッセージを独立した変数に格納してから `addError` に渡せば、コードを DRY に保つことが出来ます。
+
+```php
+$message = '子どもの数に対して給与が不足しています。';
+$this->addError('personalSalary', $message);
+$this->addError('wifeSalary', $message);
+$this->addError('childrenCount', $message);
+```
+
+あるいは、ループを使います。
+
+```php
+$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+foreach ($attributes as $attribute) {
+    $this->addError($attribute, '子どもの数に対して給与が不足しています。');
+}
+```
+
+- (特定の属性に結び付かない) 共通のエラーメッセージを追加する。
+  その時点では属性の存在はチェックされませんので、存在しない属性の名前、例えば `*` を使ってエラーメッセージを追加することが出来ます。
+
+```php
+$this->addError('*', '子どもの数に対して給与が不足しています。');
+```
+
+結果として、フォームのフィールドの近くにはこのエラーメッセージは表示されません。
+これを表示するためには、ビューにエラーサマリーを含めます。
+
+```php
+<?= $form->errorSummary($model) ?>
+```
+
+> Note: 複数の属性を一度に検証するバリデータを作成する方法が [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md) で分り易く解説されています。.
+
+
 ## クライアント側での検証 <span id="client-side-validation"></span>
 
 エンドユーザが HTML フォームで値を入力する際には、JavaScript に基づくクライアント側での検証を提供することが望まれます。
@@ -484,10 +610,26 @@ class LoginForm extends Model
 舞台裏では、[[yii\widgets\ActiveForm]] がモデルで宣言されている検証規則を読んで、クライアント側の検証をサポートするバリデータのために、適切な JavaScript コードを生成します。
 ユーザが入力フィールドの値を変更したりフォームを送信したりすると、クライアント側の検証の JavaScript が起動されます。
 
-クライアント側の検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]] プロパティを false に設定することが出来ます。
+クライアント側の検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]] プロパティを `false` に設定することが出来ます。
 また、個々の入力フィールドごとにクライアント側の検証を無効にしたい場合には、入力フィールドの [[yii\widgets\ActiveField::enableClientValidation]] プロパティを false に設定することが出来ます。
 `eanbleClientValidation` が入力フィールドのレベルとフォームのレベルの両方で構成されている場合は前者が優先されます。
 
+> Info: バージョン 2.0.11 以降、[[yii\validators\Validator]] を拡張する全てのバリデータは、
+> クライアント側のオプションを独立したメソッド - [[yii\validators\Validator::getClientOptions()]] から受け取るようになりました。
+> これを使うと、次のことが可能になります。
+>
+> - 独自のクライアント側検証を実装しながら、サーバ側検証のオプションとの同期はそのまま残す
+> - 特殊な要求に合うように拡張またはカスタマイズする
+>
+> ```php
+> public function getClientOptions($model, $attribute)
+> {
+>     $options = parent::getClientOptions($model, $attribute);
+>     // ここで $options を修正
+>
+>     return $options;
+> }
+> ```
 
 ### クライアント側の検証を実装する <span id="implementing-client-side-validation"></span>
 

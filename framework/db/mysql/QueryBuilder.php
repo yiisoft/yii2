@@ -24,7 +24,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public $typeMap = [
         Schema::TYPE_PK => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-        Schema::TYPE_UPK => 'int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
+        Schema::TYPE_UPK => 'int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_BIGPK => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_UBIGPK => 'bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY',
         Schema::TYPE_CHAR => 'char(1)',
@@ -151,7 +151,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Meaningless for MySQL.
      * @param string $table the table name. Meaningless for MySQL.
      * @return string the SQL statement for checking integrity
@@ -195,30 +195,38 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $names = [];
         $placeholders = [];
-        foreach ($columns as $name => $value) {
-            $names[] = $schema->quoteColumnName($name);
-            if ($value instanceof Expression) {
-                $placeholders[] = $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $placeholders[] = $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
-            }
-        }
-        if (empty($names) && $tableSchema !== null) {
-            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : reset($tableSchema->columns)->name;
-            foreach ($columns as $name) {
+        $values = ' DEFAULT VALUES';
+        if ($columns instanceof \yii\db\Query) {
+            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+        } else {
+            foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                $placeholders[] = 'DEFAULT';
+                if ($value instanceof Expression) {
+                    $placeholders[] = $value->expression;
+                    foreach ($value->params as $n => $v) {
+                        $params[$n] = $v;
+                    }
+                } elseif ($value instanceof \yii\db\Query) {
+                    list($sql, $params) = $this->build($value, $params);
+                    $placeholders[] = "($sql)";
+                } else {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $placeholders[] = $phName;
+                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                }
+            }
+            if (empty($names) && $tableSchema !== null) {
+                $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
+                foreach ($columns as $name) {
+                    $names[] = $schema->quoteColumnName($name);
+                    $placeholders[] = 'DEFAULT';
+                }
             }
         }
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
     }
 
     /**

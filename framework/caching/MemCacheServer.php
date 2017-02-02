@@ -13,6 +13,8 @@ namespace yii\caching;
  * See [PHP manual](http://www.php.net/manual/en/function.Memcache-addServer.php) for detailed explanation
  * of each configuration property.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -23,29 +25,29 @@ class MemCacheServer extends \yii\base\Object
      */
     public $host;
     /**
-     * @var integer memcache server port
+     * @var int memcache server port
      */
     public $port = 11211;
     /**
-     * @var integer probability of using this server among all servers.
+     * @var int probability of using this server among all servers.
      */
     public $weight = 1;
     /**
-     * @var boolean whether to use a persistent connection. This is used by memcache only.
+     * @var bool whether to use a persistent connection. This is used by memcache only.
      */
     public $persistent = true;
     /**
-     * @var integer timeout in milliseconds which will be used for connecting to the server.
+     * @var int timeout in milliseconds which will be used for connecting to the server.
      * This is used by memcache only. For old versions of memcache that only support specifying
      * timeout in seconds this will be rounded up to full seconds.
      */
     public $timeout = 1000;
     /**
-     * @var integer how often a failed server will be retried (in seconds). This is used by memcache only.
+     * @var int how often a failed server will be retried (in seconds). This is used by memcache only.
      */
     public $retryInterval = 15;
     /**
-     * @var boolean if the server should be flagged as online upon a failure. This is used by memcache only.
+     * @var bool if the server should be flagged as online upon a failure. This is used by memcache only.
      */
     public $status = true;
     /**

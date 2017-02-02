@@ -8,6 +8,8 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
@@ -98,6 +100,8 @@ class FixtureController extends Controller
      * yii fixture/load "*, -User, -UserProfile"
      * ```
      *
+     * @param array $fixturesInput
+     * @return int return code
      * @throws Exception if the specified fixture does not exist.
      */
     public function actionLoad(array $fixturesInput = [])
@@ -175,6 +179,8 @@ class FixtureController extends Controller
      * yii fixture/unload "*, -User, -UserProfile"
      * ```
      *
+     * @param array $fixturesInput
+     * @return int return code
      * @throws Exception if the specified fixture does not exist.
      */
     public function actionUnload(array $fixturesInput = [])
@@ -306,7 +312,7 @@ class FixtureController extends Controller
      * Prompts user with confirmation if fixtures should be loaded.
      * @param array $fixtures
      * @param array $except
-     * @return boolean
+     * @return bool
      */
     private function confirmLoad($fixtures, $except)
     {
@@ -338,7 +344,7 @@ class FixtureController extends Controller
      * Prompts user with confirmation for fixtures that should be unloaded.
      * @param array $fixtures
      * @param array $except
-     * @return boolean
+     * @return bool
      */
     private function confirmUnload($fixtures, $except)
     {
@@ -377,7 +383,7 @@ class FixtureController extends Controller
     /**
      * Checks if needed to apply all fixtures.
      * @param string $fixture
-     * @return boolean
+     * @return bool
      */
     public function needToApplyAll($fixture)
     {
@@ -476,10 +482,15 @@ class FixtureController extends Controller
 
     /**
      * Returns fixture path that determined on fixtures namespace.
+     * @throws InvalidConfigException if fixture namespace is invalid
      * @return string fixture path
      */
     private function getFixturePath()
     {
-        return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
+        try {
+            return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
+        } catch (InvalidParamException $e) {
+            throw new InvalidConfigException('Invalid fixture namespace: "' . $this->namespace . '". Please, check your FixtureController::namespace parameter');
+        }
     }
 }

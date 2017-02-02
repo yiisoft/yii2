@@ -471,7 +471,7 @@ Active Record Behaviors
 
 In 2.0, we have dropped the base behavior class `CActiveRecordBehavior`. If you want to create an Active Record Behavior,
 you will have to extend directly from `yii\base\Behavior`. If the behavior class needs to respond to some events
-of the owner, you have to override the `events()` method like the following,
+of the owner, you have to override the `events()` method like the following:
 
 ```php
 namespace app\components;
@@ -536,5 +536,5 @@ Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md) section.
+the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md#using-both-yii2-yii1) section.
 

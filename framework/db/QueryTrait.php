@@ -27,11 +27,11 @@ trait QueryTrait
      */
     public $where;
     /**
-     * @var integer maximum number of records to be returned. If not set or less than 0, it means no limit.
+     * @var int maximum number of records to be returned. If not set or less than 0, it means no limit.
      */
     public $limit;
     /**
-     * @var integer zero-based offset from where the records are to be returned. If not set or
+     * @var int zero-based offset from where the records are to be returned. If not set or
      * less than 0, it means starting from the beginning.
      */
     public $offset;
@@ -45,11 +45,17 @@ trait QueryTrait
      */
     public $orderBy;
     /**
-     * @var string|callable $column the name of the column by which the query results should be indexed by.
+     * @var string|callable the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. For more details, see [[indexBy()]]. This property is only used by [[QueryInterface::all()|all()]].
      */
     public $indexBy;
+    /**
+     * @var boolean whether to emulate the actual query execution, returning empty or false results.
+     * @see emulateExecution()
+     * @since 2.0.11
+     */
+    public $emulateExecution = false;
 
 
     /**
@@ -283,7 +289,7 @@ trait QueryTrait
      * - or an empty array.
      *
      * @param mixed $value
-     * @return boolean if the value is empty
+     * @return bool if the value is empty
      */
     protected function isEmpty($value)
     {
@@ -369,7 +375,7 @@ trait QueryTrait
 
     /**
      * Sets the LIMIT part of the query.
-     * @param integer $limit the limit. Use null or negative value to disable limit.
+     * @param int $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit)
@@ -380,12 +386,28 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     * @param integer $offset the offset. Use null or negative value to disable offset.
+     * @param int $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset)
     {
         $this->offset = $offset;
+        return $this;
+    }
+
+    /**
+     * Sets whether to emulate query execution, preventing any interaction with data storage.
+     * After this mode is enabled, methods, returning query results like [[one()]], [[all()]], [[exists()]]
+     * and so on, will return empty or false values.
+     * You should use this method in case your program logic indicates query should not return any results, like
+     * in case you set false where condition like `0=1`.
+     * @param bool $value whether to prevent query execution.
+     * @return $this the query object itself.
+     * @since 2.0.11
+     */
+    public function emulateExecution($value = true)
+    {
+        $this->emulateExecution = $value;
         return $this;
     }
 }

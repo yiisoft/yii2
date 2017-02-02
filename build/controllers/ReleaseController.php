@@ -212,13 +212,15 @@ class ReleaseController extends Controller
         $this->stdout("\n");
 
         $this->stdout("Before you make a release briefly go over the changes and check if you spot obvious mistakes:\n\n", Console::BOLD);
+        $gitDir = reset($what) === 'framework' ? 'framework/' : '';
+        $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
-            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n");
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
             $this->stdout("- are all new `@since` tags for this relase version?\n");
         }
+        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.org/yiisoft/yii2$travisUrl/builds\n");
-        $this->stdout("- other issues with code changes?\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
         $this->printWhatUrls($what, $versions);
         $this->stdout("\n");
@@ -302,6 +304,34 @@ class ReleaseController extends Controller
         return 0;
     }
 
+    /**
+     * Sorts CHANGELOG for framework or extension.
+     *
+     * @param array $what what do you want to resort changelog for? this can either be:
+     *
+     * - an extension name such as `redis` or `bootstrap`,
+     * - or `framework` if you want to release a new version of the framework itself.
+     */
+    public function actionSortChangelog(array $what)
+    {
+        if (count($what) > 1) {
+            $this->stdout("Currently only one simultaneous release is supported.\n");
+            return 1;
+        }
+        $this->validateWhat($what, ['framework', 'ext'], false);
+
+        $version = array_values($this->getNextVersions($this->getCurrentVersions($what), self::PATCH))[0];
+        $this->stdout('sorting CHANGELOG of ');
+        $this->stdout(reset($what), Console::BOLD);
+        $this->stdout(" for version ");
+        $this->stdout($version, Console::BOLD);
+        $this->stdout("...");
+
+        $this->resortChangelogs($what, $version);
+
+        $this->stdout("done.\n", Console::BOLD, Console::FG_GREEN);
+    }
+
     protected function printWhat(array $what, $newVersions, $versions)
     {
         foreach($what as $ext) {
@@ -340,7 +370,7 @@ class ReleaseController extends Controller
      * @param array $limit list of things to allow, or empty to allow any, can be `app`, `framework`, `extension`
      * @throws \yii\base\Exception
      */
-    protected function validateWhat(array $what, $limit = [])
+    protected function validateWhat(array $what, $limit = [], $ensureGitClean = true)
     {
         foreach($what as $w) {
             if (strncmp('app-', $w, 4) === 0) {
@@ -350,7 +380,9 @@ class ReleaseController extends Controller
                 if (!is_dir($appPath = "{$this->basePath}/apps/" . substr($w, 4))) {
                     throw new Exception("Application path does not exist: \"{$appPath}\"\n");
                 }
-                $this->ensureGitClean($appPath);
+                if ($ensureGitClean) {
+                    $this->ensureGitClean($appPath);
+                }
             } elseif ($w === 'framework') {
                 if (!empty($limit) && !in_array('framework', $limit)) {
                     throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
@@ -358,7 +390,9 @@ class ReleaseController extends Controller
                 if (!is_dir($fwPath = "{$this->basePath}/framework")) {
                     throw new Exception("Framework path does not exist: \"{$this->basePath}/framework\"\n");
                 }
-                $this->ensureGitClean($fwPath);
+                if ($ensureGitClean) {
+                    $this->ensureGitClean($fwPath);
+                }
             } else {
                 if (!empty($limit) && !in_array('ext', $limit)) {
                     throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
@@ -366,7 +400,9 @@ class ReleaseController extends Controller
                 if (!is_dir($extPath = "{$this->basePath}/extensions/$w")) {
                     throw new Exception("Extension path for \"$w\" does not exist: \"{$this->basePath}/extensions/$w\"\n");
                 }
-                $this->ensureGitClean($extPath);
+                if ($ensureGitClean) {
+                    $this->ensureGitClean($extPath);
+                }
             }
         }
     }
@@ -431,8 +467,10 @@ class ReleaseController extends Controller
         $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
-        $this->runGit("git commit -a -m \"release version $version\"", $frameworkPath);
-        $this->runGit("git tag -a $version -m \"version $version\"", $frameworkPath);
+        $this->stdout("Make sure to have your git set up for GPG signing. The following tag and commit should be signed.\n\n");
+
+        $this->runGit("git commit -S -a -m \"release version $version\"", $frameworkPath);
+        $this->runGit("git tag -s $version -m \"version $version\"", $frameworkPath);
         $this->runGit("git push", $frameworkPath);
         $this->runGit("git push --tags", $frameworkPath);
 
@@ -544,8 +582,10 @@ class ReleaseController extends Controller
         $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
-        $this->runGit("git commit -a -m \"release version $version\"", $path);
-        $this->runGit("git tag -a $version -m \"version $version\"", $path);
+        $this->stdout("Make sure to have your git set up for GPG signing. The following tag and commit should be signed.\n\n");
+
+        $this->runGit("git commit -S -a -m \"release version $version\"", $path);
+        $this->runGit("git tag -s $version -m \"version $version\"", $path);
         $this->runGit("git push", $path);
         $this->runGit("git push --tags", $path);
 
@@ -660,8 +700,10 @@ class ReleaseController extends Controller
         $this->stdout("    ****    Commit, Tag and Push it!    ****\n", Console::FG_YELLOW, Console::BOLD);
         $this->stdout("\n\nHint: if you decide 'no' for any of the following, the command will not be executed. You may manually run them later if needed. E.g. try the release locally without pushing it.\n\n");
 
-        $this->runGit("git commit -a -m \"release version $version\"", $path);
-        $this->runGit("git tag -a $version -m \"version $version\"", $path);
+        $this->stdout("Make sure to have your git set up for GPG signing. The following tag and commit should be signed.\n\n");
+
+        $this->runGit("git commit -S -a -m \"release version $version\"", $path);
+        $this->runGit("git tag -s $version -m \"version $version\"", $path);
         $this->runGit("git push", $path);
         $this->runGit("git push --tags", $path);
 
@@ -821,7 +863,13 @@ class ReleaseController extends Controller
             if ($state === 'changelog' && isset($lines[$l+1]) && strncmp($lines[$l+1], '---', 3) === 0) {
                 $state = 'end';
             }
-            ${$state}[] = $line;
+            // add continued lines to the last item to keep them together
+            if (!empty(${$state}) && trim($line !== '') && strpos($line, '- ') !== 0) {
+                end(${$state});
+                ${$state}[key(${$state})] .= "\n" . $line;
+            } else {
+                ${$state}[] = $line;
+            }
         }
         return [$start, $changelog, $end];
     }
@@ -839,7 +887,7 @@ class ReleaseController extends Controller
 
         $i = 0;
         ArrayHelper::multisort($changelog, function($line) use (&$i) {
-            if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+$/', $line, $m)) {
+            if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
@@ -966,6 +1014,7 @@ class ReleaseController extends Controller
             switch($type) {
                 case self::MINOR:
                     $parts[1]++;
+                    $parts[2] = 0;
                     break;
                 case self::PATCH:
                     $parts[2]++;

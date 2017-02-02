@@ -25,6 +25,8 @@ use yii\filters\VerbFilter;
  * 4. Rate limiting (see [[RateLimiter]]);
  * 5. Formatting response data (see [[serializeData()]]).
  *
+ * For more details and usage information on Controller, see the [guide article on rest controllers](guide:rest-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

@@ -12,13 +12,15 @@ use yii\db\Schema;
  */
 class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    public $driverName = 'sqlsrv';
+
     /**
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @return ColumnSchemaBuilder
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 }

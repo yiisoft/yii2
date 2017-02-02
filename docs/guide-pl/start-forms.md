@@ -2,8 +2,8 @@ Praca z formularzami
 ==================
 
 Ta sekcja opisuje jak utworzyć nową stronę z formularzem pobierającym dane od użytkownika.
-Strona będzie wyświetlała formularz z polami dwoma polami do uzupełnienia: `nazwa` oraz `email`.
-Po otrzymaniu tych dwóch danych od użytkownika, wyświetlimy spowrotem wprowadzone wartości w celu ich potwierdzenia.
+Strona będzie wyświetlała formularz z dwoma polami do uzupełnienia: `nazwa` oraz `email`.
+Po otrzymaniu tych dwóch danych od użytkownika, wyświetlimy z powrotem wprowadzone wartości w celu ich potwierdzenia.
 
 Aby to osiągnąć, oprócz utworzenia [akcji](structure-controllers.md) i dwóch [widoków](structure-views.md), będziesz musiał utworzyć [model](structure-models.md).
 
@@ -50,7 +50,7 @@ Klasa `EntryForm` rozszerza [[yii\base\Model|Model]], podstawową klasę dostarc
 > [[yii\db\ActiveRecord|ActiveRecord]] jest rodzicem dla klas modeli powiązanych z tabelami bazy danych.
 
 Klasa `EntryForm` zawiera dwa elementy publiczne, `name` oraz `email`, które są używane do przechowania danych wprowadzonych przez użytkownika.
-Zawieta również metodą nazwaną `rules()`, która zwraca zestaw zasad do walidacji wprowadzonych danych. Zadeklarowane zasady oznaczają:
+Zawiera również metodę nazwaną `rules()`, która zwraca zestaw zasad do walidacji wprowadzonych danych. Zadeklarowane zasady oznaczają:
 
 * wartości w polach `name` oraz `email są wymagane
 * wartość pola `email` musi być prawidłowym adresem email
@@ -184,11 +184,11 @@ http://hostname/index.php?r=site%2Fentry
 Zobaczysz stronę wyświetlającą formularz z dwoma polami. Przed każdym polem znajduje się etykieta opisująca to pole. Jeśli klikniesz przycisk "Wyślij" nie wpisując żadnych danych, lub 
 jeśli nie wprowadzisz prawidłowego adresu email, zobaczysz wiadomość błędu wyświeloną pod polem którego ona dotyczy.
 
-![Formularz z błędami walidacji](../guide/images/start-form-validation.png)
+![Formularz z błędami walidacji](images/start-form-validation.png)
 
 Po wpisaniu prawidłowej nazwy, adresu email oraz kliknięciu przycisku "Wyślij", zobaczysz nową stronę wyświetlającą dane, które właśnie wprowadziłes.
 
-![Potwierdzenie](../guide/images/start-entry-confirmation.png)
+![Potwierdzenie](images/start-entry-confirmation.png)
 
 
 ### "Wyjaśnienie magii" <span id="magic-explained"></span>

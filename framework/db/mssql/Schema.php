@@ -152,7 +152,13 @@ class Schema extends \yii\db\Schema
     {
         $parts = explode('.', str_replace(['[', ']'], '', $name));
         $partCount = count($parts);
-        if ($partCount === 3) {
+        if ($partCount === 4) {
+            // server name, catalog name, schema name and table name passed
+            $table->catalogName = $parts[1];
+            $table->schemaName = $parts[2];
+            $table->name = $parts[3];
+            $table->fullName = $table->catalogName . '.' . $table->schemaName . '.' . $table->name;
+        } elseif ($partCount === 3) {
             // catalog name, schema name and table name passed
             $table->catalogName = $parts[0];
             $table->schemaName = $parts[1];
@@ -227,7 +233,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -356,6 +362,7 @@ SQL;
         // http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
         $sql = <<<SQL
 SELECT
+    [rc].[constraint_name] AS [fk_name],
     [kcu1].[column_name] AS [fk_column_name],
     [kcu2].[table_name] AS [uq_table_name],
     [kcu2].[column_name] AS [uq_column_name]
@@ -376,9 +383,10 @@ SQL;
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
         ])->queryAll();
+
         $table->foreignKeys = [];
         foreach ($rows as $row) {
-            $table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
+            $table->foreignKeys[$row['fk_name']] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
         }
     }
 
