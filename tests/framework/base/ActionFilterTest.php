@@ -135,6 +135,30 @@ class ActionFilterTest extends TestCase
         $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
     }
 
+    /**
+     * @depends testActive
+     */
+    public function testActiveWildcard()
+    {
+        $this->mockWebApplication();
+
+        $filter = new ActionFilter();
+        $reflection = new \ReflectionClass($filter);
+        $method = $reflection->getMethod('isActive');
+        $method->setAccessible(true);
+
+        $controller = new \yii\web\Controller('test', Yii::$app);
+
+        $filter->only = ['test/*'];
+        $filter->except = [];
+        $this->assertFalse($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertTrue($method->invokeArgs($filter, [new Action('test/index', $controller)]));
+
+        $filter->only = [];
+        $filter->except = ['test/*'];
+        $this->assertTrue($method->invokeArgs($filter, [new Action('index', $controller)]));
+        $this->assertFalse($method->invokeArgs($filter, [new Action('test/index', $controller)]));
+    }
 }
 
 class FakeController extends Controller

@@ -10,9 +10,13 @@ namespace yiiunit\framework\di;
 use Yii;
 use yii\di\Container;
 use yii\di\Instance;
+use yiiunit\data\ar\Cat;
+use yiiunit\data\ar\Order;
+use yiiunit\data\ar\Type;
 use yiiunit\framework\di\stubs\Bar;
 use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
+use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
 use yii\validators\NumberValidator;
 
@@ -168,7 +172,6 @@ class ContainerTest extends TestCase
         list($request, $response) = Yii::$container->invoke($myFunc);
         $this->assertEquals($request, Yii::$app->request);
         $this->assertEquals($response, Yii::$app->response);
-
     }
 
     public function testAssociativeInvoke()
@@ -212,5 +215,69 @@ class ContainerTest extends TestCase
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['b' => 5, 'a' => 1]));
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['a' => 1, 'b' => 5]));
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, [1, 5]));
+    }
+
+    public function testOptionalDependencies()
+    {
+        $container = new Container();
+        // Test optional unresolvable dependency.
+        $closure = function(QuxInterface $test = null) {
+            return $test;
+        };
+        $this->assertNull($container->invoke($closure));
+    }
+
+    public function testSetDependencies()
+    {
+        $container = new Container();
+        $container->setDefinitions([
+            'model.order' => Order::className(),
+            Cat::className() => Type::className(),
+            'test\TraversableInterface' => [
+                ['class' => 'yiiunit\data\base\TraversableObject'],
+                [['item1', 'item2']]
+            ],
+            'qux.using.closure' => function () {
+                return new Qux();
+            }
+        ]);
+        $container->setDefinitions([]);
+
+        $this->assertInstanceOf(Order::className(), $container->get('model.order'));
+        $this->assertInstanceOf(Type::className(), $container->get(Cat::className()));
+
+        $traversable = $container->get('test\TraversableInterface');
+        $this->assertInstanceOf('yiiunit\data\base\TraversableObject', $traversable);
+        $this->assertEquals('item1', $traversable->current());
+
+        $this->assertInstanceOf('yiiunit\framework\di\stubs\Qux', $container->get('qux.using.closure'));
+    }
+
+    public function testContainerSingletons()
+    {
+        $container = new Container();
+        $container->setSingletons([
+            'model.order' => Order::className(),
+            'test\TraversableInterface' => [
+                ['class' => 'yiiunit\data\base\TraversableObject'],
+                [['item1', 'item2']]
+            ],
+            'qux.using.closure' => function () {
+                return new Qux();
+            }
+        ]);
+        $container->setSingletons([]);
+
+        $order = $container->get('model.order');
+        $sameOrder = $container->get('model.order');
+        $this->assertSame($order, $sameOrder);
+
+        $traversable = $container->get('test\TraversableInterface');
+        $sameTraversable = $container->get('test\TraversableInterface');
+        $this->assertSame($traversable, $sameTraversable);
+
+        $foo = $container->get('qux.using.closure');
+        $sameFoo = $container->get('qux.using.closure');
+        $this->assertSame($foo, $sameFoo);
     }
 }

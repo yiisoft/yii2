@@ -60,7 +60,7 @@ public function behaviors()
 新しいアクションフィルタを作成するためには、[[yii\base\ActionFilter]] を拡張して、[[yii\base\ActionFilter::beforeAction()|beforeAction()]] および/または [[yii\base\ActionFilter::afterAction()|afterAction()]] メソッドをオーバーライドします。
 前者はアクションが走る前に実行され、後者は走った後に実行されます。
 [[yii\base\ActionFilter::beforeAction()|beforeAction()]] の返り値が、アクションが実行されるべきか否かを決定します。
-返り値が false である場合、このフィルタの後に続くフィルタはスキップされ、アクションは実行を中止されます。
+返り値が `false` である場合、このフィルタの後に続くフィルタはスキップされ、アクションは実行を中止されます。
 
 次の例は、アクションの実行時間をログに記録するフィルタを示すものです。
 
@@ -328,7 +328,9 @@ public function behaviors()
 }
 ```
 
-Cors のフィルタリングは `cors` プロパティを使ってチューニングすることが出来ます。
+あなたの API の [[yii\rest\ActiveController]] クラスに CORS フィルタを追加したい場合は、[REST コントローラ](rest-controllers.md#cors) の節も参照して下さい。
+
+Cors のフィルタリングは [[yii\filters\Cors::$cors|$cors]] プロパティを使ってチューニングすることが出来ます。
 
 * `cors['Origin']`: 許可される生成元を定義するのに使われる配列。
   `['*']` (すべて) または `['http://www.myserver.net'、'http://www.myotherserver.com']` などが設定可能。デフォルトは `['*']`。

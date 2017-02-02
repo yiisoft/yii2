@@ -34,7 +34,7 @@ use yiiunit\TestCase;
 class UserTest extends TestCase
 {
     /**
-     * @var integer virtual time to be returned by mocked time() function.
+     * @var int virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;
@@ -121,6 +121,12 @@ class UserTest extends TestCase
 
         $this->mockWebApplication($appConfig);
         Yii::$app->session->removeAll();
+
+        $cookie = new Cookie(Yii::$app->user->identityCookie);
+        $cookie->value = 'junk';
+        $cookiesMock->add($cookie);
+        Yii::$app->user->getIdentity();
+        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
 
         Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
         $this->assertFalse(Yii::$app->user->isGuest);
@@ -210,10 +216,18 @@ class UserTest extends TestCase
 
         $this->reset();
         Yii::$app->request->setUrl('accept-all');
-        $_SERVER['HTTP_ACCEPT'] = '*;q=0.1';
+        $_SERVER['HTTP_ACCEPT'] = '*/*;q=0.1';
         $user->loginRequired();
         $this->assertEquals('accept-all', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
+
+        $this->reset();
+        Yii::$app->request->setUrl('json-and-accept-all');
+        $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
+        try {
+            $user->loginRequired();
+        } catch (ForbiddenHttpException $e) {}
+        $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
         Yii::$app->request->setUrl('accept-html-json');
@@ -229,6 +243,20 @@ class UserTest extends TestCase
         $this->assertEquals('accept-html-json', $user->getReturnUrl());
         $this->assertTrue(Yii::$app->response->getIsRedirection());
 
+        $this->reset();
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        Yii::$app->request->setUrl('dont-set-return-url-on-post-request');
+        Yii::$app->getSession()->set($user->returnUrlParam, null);
+        $user->loginRequired();
+        $this->assertNull(Yii::$app->getSession()->get($user->returnUrlParam));
+
+        $this->reset();
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        Yii::$app->request->setUrl('set-return-url-on-get-request');
+        Yii::$app->getSession()->set($user->returnUrlParam, null);
+        $user->loginRequired();
+        $this->assertEquals('set-return-url-on-get-request', Yii::$app->getSession()->get($user->returnUrlParam));
+
         // Confirm that returnUrl is not set.
         $this->reset();
         Yii::$app->request->setUrl('json-only');
@@ -237,7 +265,6 @@ class UserTest extends TestCase
             $user->loginRequired();
         } catch (ForbiddenHttpException $e) {}
         $this->assertNotEquals('json-only', $user->getReturnUrl());
-
 
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';

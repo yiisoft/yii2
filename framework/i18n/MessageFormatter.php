@@ -79,7 +79,7 @@ class MessageFormatter extends Component
      * @param string $pattern The pattern string to insert parameters into.
      * @param array $params The array of name value pairs to insert into the format string.
      * @param string $language The locale to use for formatting locale-dependent parts
-     * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
+     * @return string|false The formatted pattern string or `false` if an error occurred
      */
     public function format($pattern, $params, $language)
     {
@@ -99,18 +99,32 @@ class MessageFormatter extends Component
         $pattern = $this->replaceNamedArguments($pattern, $params, $newParams);
         $params = $newParams;
 
-        $formatter = new \MessageFormatter($language, $pattern);
-        if ($formatter === null) {
-            $this->_errorCode = intl_get_error_code();
-            $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+        try {
+            $formatter = new \MessageFormatter($language, $pattern);
 
+            if ($formatter === null) {
+                // formatter may be null in PHP 5.x
+                $this->_errorCode = intl_get_error_code();
+                $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+                return false;
+            }
+        } catch (\IntlException $e) {
+            // IntlException is thrown since PHP 7
+            $this->_errorCode = $e->getCode();
+            $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
+            return false;
+        } catch (\Exception $e) {
+            // Exception is thrown by HHVM
+            $this->_errorCode = $e->getCode();
+            $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
             return false;
         }
+
         $result = $formatter->format($params);
+
         if ($result === false) {
             $this->_errorCode = $formatter->getErrorCode();
             $this->_errorMessage = $formatter->getErrorMessage();
-
             return false;
         } else {
             return $result;
@@ -127,7 +141,7 @@ class MessageFormatter extends Component
      * @param string $pattern The pattern to use for parsing the message.
      * @param string $message The message to parse, conforming to the pattern.
      * @param string $language The locale to use for formatting locale-dependent parts
-     * @return array|boolean An array containing items extracted, or `FALSE` on error.
+     * @return array|bool An array containing items extracted, or `FALSE` on error.
      * @throws \yii\base\NotSupportedException when PHP intl extension is not installed.
      */
     public function parse($pattern, $message, $language)
@@ -245,7 +259,7 @@ class MessageFormatter extends Component
      * @param string $pattern The pattern string to insert things into.
      * @param array $args The array of values to insert into the format string
      * @param string $locale The locale to use for formatting locale-dependent parts
-     * @return string|boolean The formatted pattern string or `FALSE` if an error occurred
+     * @return false|string The formatted pattern string or `false` if an error occurred
      */
     protected function fallbackFormat($pattern, $args, $locale)
     {
@@ -272,7 +286,7 @@ class MessageFormatter extends Component
     /**
      * Tokenizes a pattern by separating normal text from replaceable patterns
      * @param string $pattern patter to tokenize
-     * @return array|boolean array of tokens or false on failure
+     * @return array|bool array of tokens or false on failure
      */
     private static function tokenizePattern($pattern)
     {
@@ -317,7 +331,7 @@ class MessageFormatter extends Component
      * @param array $token the token to parse
      * @param array $args arguments to replace
      * @param string $locale the locale
-     * @return boolean|string parsed token or false on failure
+     * @return bool|string parsed token or false on failure
      * @throws \yii\base\NotSupportedException when unsupported formatting is used.
      */
     private function parseToken($token, $args, $locale)
@@ -401,10 +415,10 @@ class MessageFormatter extends Component
 
                     if ($i == 1 && strncmp($selector, 'offset:', 7) === 0) {
                         $offset = (int) trim(mb_substr($selector, 7, ($pos = mb_strpos(str_replace(["\n", "\r", "\t"], ' ', $selector), ' ', 7, $charset)) - 7, $charset));
-                        $selector = trim(mb_substr($selector, $pos + 1, null, $charset));
+                        $selector = trim(mb_substr($selector, $pos + 1, mb_strlen($selector, $charset), $charset));
                     }
                     if ($message === false && $selector === 'other' ||
-                        $selector[0] === '=' && (int) mb_substr($selector, 1, null, $charset) === $arg ||
+                        $selector[0] === '=' && (int) mb_substr($selector, 1, mb_strlen($selector, $charset), $charset) === $arg ||
                         $selector === 'one' && $arg - $offset == 1
                     ) {
                         $message = implode(',', str_replace('#', $arg - $offset, $plural[$i]));

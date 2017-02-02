@@ -8,6 +8,7 @@ IF OBJECT_ID('[dbo].[customer]', 'U') IS NOT NULL DROP TABLE [dbo].[customer];
 IF OBJECT_ID('[dbo].[profile]', 'U') IS NOT NULL DROP TABLE [dbo].[profile];
 IF OBJECT_ID('[dbo].[type]', 'U') IS NOT NULL DROP TABLE [dbo].[type];
 IF OBJECT_ID('[dbo].[null_values]', 'U') IS NOT NULL DROP TABLE [dbo].[null_values];
+IF OBJECT_ID('[dbo].[negative_default_values]', 'U') IS NOT NULL DROP TABLE [dbo].[negative_default_values];
 IF OBJECT_ID('[dbo].[animal]', 'U') IS NOT NULL DROP TABLE [dbo].[animal];
 IF OBJECT_ID('[dbo].[default_pk]', 'U') IS NOT NULL DROP TABLE [dbo].[default_pk];
 IF OBJECT_ID('[dbo].[document]', 'U') IS NOT NULL DROP TABLE [dbo].[document];
@@ -94,6 +95,14 @@ CREATE TABLE [dbo].[null_values] (
   var3 [int] DEFAULT NULL,
   stringcol [varchar](32) DEFAULT NULL,
   PRIMARY KEY (id)
+);
+
+CREATE TABLE [dbo].[negative_default_values] (
+  [smallint_col] [tinyint] DEFAULT '-123',
+  [int_col] [smallint] DEFAULT '-123',
+  [bigint_col] [int] DEFAULT '-123',
+  [float_col] [float] DEFAULT '-12345.6789',
+  [numeric_col] [decimal](5,2) DEFAULT '-33.22'
 );
 
 CREATE TABLE [dbo].[type] (

@@ -8,11 +8,7 @@ use yii\db\DataReader;
 use yii\db\Expression;
 use yii\db\Schema;
 
-/**
- * @group db
- * @group mysql
- */
-class CommandTest extends DatabaseTestCase
+abstract class CommandTest extends DatabaseTestCase
 {
     public function testConstruct()
     {
@@ -142,6 +138,10 @@ class CommandTest extends DatabaseTestCase
 
     public function testBindParamValue()
     {
+        if (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
+            $this->markTestSkipped('HHVMs PgSQL implementation has some specific behavior that breaks some parts of this test.');
+        }
+        
         $db = $this->getConnection();
 
         // bindParam
@@ -199,12 +199,14 @@ SQL;
         $this->assertEquals($floatCol, $row['float_col']);
         if ($this->driverName === 'mysql' || $this->driverName === 'sqlite' || $this->driverName === 'oci') {
             $this->assertEquals($blobCol, $row['blob_col']);
+        } elseif (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
+            // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
             $this->assertTrue(is_resource($row['blob_col']));
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
-        if ($this->driverName === 'mysql' || (defined('HHVM_VERSION') && $this->driverName === 'sqlite') || $this->driverName === 'oci') {
+        if ($this->driverName === 'mysql' || $this->driverName === 'oci' || (defined('HHVM_VERSION') && in_array($this->driverName, ['sqlite', 'pgsql']))) {
             $this->assertEquals($boolCol, (int) $row['bool_col']);
         } else {
             $this->assertEquals($boolCol, $row['bool_col']);
@@ -285,6 +287,15 @@ SQL;
             ]
         );
         $this->assertEquals(2, $command->execute());
+
+        // @see https://github.com/yiisoft/yii2/issues/11693
+        $command = $this->getConnection()->createCommand();
+        $command->batchInsert(
+            '{{customer}}',
+            ['email', 'name', 'address'],
+            []
+        );
+        $this->assertEquals(0, $command->execute());
     }
 
     public function testInsert()
@@ -308,6 +319,134 @@ SQL;
             'name' => 'test',
             'address' => 'test address',
         ], $record);
+    }
+
+    /**
+     * Test INSERT INTO ... SELECT SQL statement
+     */
+    public function testInsertSelect()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}};')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+
+        $query = new \yii\db\Query();
+        $query->select([
+                    '{{customer}}.email as name',
+                    'name as email',
+                    'address',
+                ]
+        )->from('{{customer}}');
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            $query
+        )->execute();
+
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals([
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ],
+            [
+                'email' => 'test',
+                'name' => 't1@example.com',
+                'address' => 'test address',
+            ],
+        ], $record);
+    }
+
+    /**
+     * Test INSERT INTO ... SELECT SQL statement with alias syntax
+     */
+    public function testInsertSelectAlias()
+    {
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{customer}};')->execute();
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ]
+        )->execute();
+
+        $query = new \yii\db\Query();
+        $query->select([
+                'email' => '{{customer}}.email',
+                'address' => 'name',
+                'name' => 'address',
+            ]
+        )->from('{{customer}}');
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            $query
+        )->execute();
+
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
+        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals([
+            [
+                'email' => 't1@example.com',
+                'name' => 'test',
+                'address' => 'test address',
+            ],
+            [
+                'email' => 't1@example.com',
+                'name' => 'test address',
+                'address' => 'test',
+            ],
+        ], $record);
+    }
+
+    /**
+     * Data provider for testInsertSelectFailed
+     * @return array
+     */
+    public function invalidSelectColumns() {
+        return [
+            [[]],
+            ['*'],
+            [['*']],
+        ];
+    }
+
+    /**
+     * Test INSERT INTO ... SELECT SQL statement with wrong query object
+     *
+     * @dataProvider invalidSelectColumns
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
+     */
+    public function testInsertSelectFailed($invalidSelectColumns)
+    {
+        $query = new \yii\db\Query();
+        $query->select($invalidSelectColumns)->from('{{customer}}');
+
+        $db = $this->getConnection();
+        $command = $db->createCommand();
+        $command->insert(
+            '{{customer}}',
+            $query
+        )->execute();
     }
 
     public function testInsertExpression()
@@ -343,6 +482,40 @@ SQL;
         $this->assertEquals([
             'created_at' => date('Y'),
         ], $record);
+    }
+
+    public function testsInsertQueryAsColumnValue()
+    {
+        $time = time();
+
+        $db = $this->getConnection();
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
+
+        $command = $db->createCommand();
+        $command->insert('{{order}}', [
+            'id' => 42,
+            'customer_id' => 1,
+            'created_at' => $time,
+            'total' => 42,
+        ])->execute();
+
+        $columnValueQuery = new \yii\db\Query();
+        $columnValueQuery->select('created_at')->from('{{order}}')->where(['id' => '42']);
+
+        $command = $db->createCommand();
+        $command->insert(
+            '{{order_with_null_fk}}',
+            [
+                'customer_id' => 42,
+                'created_at' => $columnValueQuery,
+                'total' => 42,
+            ]
+        )->execute();
+
+        $this->assertEquals($time, $db->createCommand('SELECT [[created_at]] FROM {{order_with_null_fk}} WHERE [[customer_id]] = 42')->queryScalar());
+
+        $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
+        $db->createCommand('DELETE FROM {{order}} WHERE [[id]] = 42')->execute();
     }
 
     public function testCreateTable()

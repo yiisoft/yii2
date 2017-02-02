@@ -16,7 +16,7 @@ use Yii;
  *
  * - Each PHP script contains one array which stores the message translations in one particular
  *   language and for a single message category;
- * - Each PHP script is saved as a file named as `[[basePath]]/LanguageID/CategoryName.php`;
+ * - Each PHP script is saved as a file named as "[[basePath]]/LanguageID/CategoryName.php";
  * - Within each PHP script, the message translations are returned as an array like the following:
  *
  * ```php
@@ -105,7 +105,11 @@ class PhpMessageSource extends MessageSource
         $fallbackMessageFile = $this->getMessageFilePath($category, $fallbackLanguage);
         $fallbackMessages = $this->loadMessagesFromFile($fallbackMessageFile);
 
-        if ($messages === null && $fallbackMessages === null && $fallbackLanguage !== $this->sourceLanguage) {
+        if (
+            $messages === null && $fallbackMessages === null
+            && $fallbackLanguage !== $this->sourceLanguage
+            && $fallbackLanguage !== substr($this->sourceLanguage, 0, 2)
+        ) {
             Yii::error("The message file for category '$category' does not exist: $originalMessageFile "
                 . "Fallback file does not exist as well: $fallbackMessageFile", __METHOD__);
         } elseif (empty($messages)) {

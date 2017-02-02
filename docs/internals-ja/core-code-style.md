@@ -1,5 +1,5 @@
-Yii2 コアフレームワークのコードスタイル
-=======================================
+Yii 2 コアフレームワークコードスタイル
+=====================================
 
 下記のコードスタイルが Yii 2.x コアと公式エクステンションの開発に用いられています。
 コアに対してコードをプルリクエストをしたいときは、これを使用することを考慮してください。
@@ -126,7 +126,7 @@ class Foo
 - クラスのメソッドは常に修飾子 `private`、`protected` または `public` を使って、可視性を宣言すべきです。`var` は許可されません。
 - 関数の開始の中括弧は関数宣言の次の行に置くべきです。
 
-```
+```php
 /**
  * ドキュメント
  */
@@ -145,7 +145,7 @@ class Foo
 
 ### 4.4 Doc ブロック
 
-`@param`、`@var`、`@property` および `@return` は `boolean`、`integer`、`string`、`array` または `null` として型を宣言しなければなりません。
+`@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
 `Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
 型付きの配列に対しては `ClassName[]` を使います。
 
@@ -239,7 +239,7 @@ $arr = [
 
 ```php
 $config = [
-    'name'  => 'Yii',
+    'name' => 'Yii',
     'options' => ['usePHP' => true],
 ];
 ```
@@ -273,9 +273,9 @@ if (!$model && null === $event)
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 } else {
-  // $result を処理
+    // $result を処理
 }
 ```
 
@@ -284,7 +284,7 @@ if (empty($result)) {
 ```php
 $result = $this->getResult();
 if (empty($result)) {
-  return true;
+    return true;
 }
 
 // $result を処理
@@ -297,14 +297,14 @@ switch には下記の書式を使用します。
 ```php
 switch ($this->phpType) {
     case 'string':
-        $a = (string)$value;
+        $a = (string) $value;
         break;
     case 'integer':
     case 'int':
-        $a = (integer)$value;
+        $a = (int) $value;
         break;
     case 'boolean':
-        $a = (boolean)$value;
+        $a = (bool) $value;
         break;
     default:
         $a = null;
@@ -431,10 +431,10 @@ public function getEventHandlers($name)
 
 ドキュメントの中でクラス、メソッド、プロパティをクロスリンクするために使える追加の文法があります。
 
-- `'[[canSetProperty]] ` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
-- `'[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
+- `[[canSetProperty]]` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
+- `[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
 
 上記のリンクにクラス名やメソッド名以外のラベルを付けるためには、次の例で示されている文法を使うことが出来ます。
 
@@ -474,7 +474,7 @@ public function getEventHandlers($name)
 
 - 定数へのアクセスには `self` を使わなければなりません: `self::MY_CONSTANT`
 - private な静的プロパティへのアクセスには `self` を使わなければなりません: `self::$_events`
-- 再帰呼出しにおいて、拡張クラスの実装ではなく、現在のクラスの実装を再び呼び出したいときには、`self` を使うことが許可されます。
+- 再帰呼出しにおいて、拡張クラスの実装ではなく、現在のクラスの実装を再び呼び出したいときなど、合理的な理由がある場合には、`self` を使うことが許可されます。
 
 ### 「何かをするな」を示す値
 
@@ -484,5 +484,7 @@ public function getEventHandlers($name)
 ### ディレクトリ/名前空間の名前
 
 - 小文字を使います。
-- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)
-- 機能や特徴を表す名前には単数形を使います (例えば、web)
+- オブジェクトを表すものには複数形の名詞を使います (例えば、validators)。
+- 機能や特徴を表す名前には単数形を使います (例えば、web)。
+- 出来れば単一の語の名前空間にします。
+- 単一の語が適切でない場合は、camelCase を使います。

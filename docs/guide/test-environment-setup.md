@@ -20,7 +20,7 @@ You can install it either locally - for particular project only, or globally - f
 For the local installation use following commands:
 
 ```
-composer require "codeception/codeception=2.0.*"
+composer require "codeception/codeception=2.1.*"
 composer require "codeception/specify=*"
 composer require "codeception/verify=*"
 ```
@@ -28,7 +28,7 @@ composer require "codeception/verify=*"
 For the global installation you will need to use `global` directive:
 
 ```
-composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/codeception=2.1.*"
 composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```

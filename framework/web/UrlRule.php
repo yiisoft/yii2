@@ -67,7 +67,7 @@ class UrlRule extends Object implements UrlRuleInterface
     /**
      * @var string the URL suffix used for this rule.
      * For example, ".html" can be used so that the URL looks like pointing to a static HTML page.
-     * If not, the value of [[UrlManager::suffix]] will be used.
+     * If not set, the value of [[UrlManager::suffix]] will be used.
      */
     public $suffix;
     /**
@@ -78,7 +78,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $verb;
     /**
-     * @var integer a value indicating if this rule should be used for both request parsing and URL creation,
+     * @var int a value indicating if this rule should be used for both request parsing and URL creation,
      * parsing only, or creation only.
      * If not set or 0, it means the rule is both request parsing and URL creation.
      * If it is [[PARSING_ONLY]], the rule is for request parsing only.
@@ -86,9 +86,16 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $mode;
     /**
-     * @var boolean a value indicating if parameters should be url encoded.
+     * @var bool a value indicating if parameters should be url encoded.
      */
     public $encodeParams = true;
+    /**
+     * @var UrlNormalizer|array|false|null the configuration for [[UrlNormalizer]] used by this rule.
+     * If `null`, [[UrlManager::normalizer]] will be used, if `false`, normalization will be skipped
+     * for this rule.
+     * @since 2.0.10
+     */
+    public $normalizer;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
@@ -121,6 +128,27 @@ class UrlRule extends Object implements UrlRuleInterface
 
 
     /**
+     * @return string
+     * @since 2.0.11
+     */
+    public function __toString()
+    {
+        $str = '';
+        if ($this->verb !== null) {
+            $str .= implode(',', $this->verb) . ' ';
+        }
+        if ($this->host !== null && strrpos($this->name, $this->host) === false) {
+            $str .= $this->host . '/';
+        }
+        $str .= $this->name;
+
+        if ($str === '') {
+            return '/';
+        }
+        return $str;
+    }
+
+    /**
      * Initializes this rule.
      */
     public function init()
@@ -130,6 +158,13 @@ class UrlRule extends Object implements UrlRuleInterface
         }
         if ($this->route === null) {
             throw new InvalidConfigException('UrlRule::route must be set.');
+        }
+        if (is_array($this->normalizer)) {
+            $normalizerConfig = array_merge(['class' => UrlNormalizer::className()], $this->normalizer);
+            $this->normalizer = Yii::createObject($normalizerConfig);
+        }
+        if ($this->normalizer !== null && $this->normalizer !== false && !$this->normalizer instanceof UrlNormalizer) {
+            throw new InvalidConfigException('Invalid config for UrlRule::normalizer.');
         }
         if ($this->verb !== null) {
             if (is_array($this->verb)) {
@@ -144,7 +179,7 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->name = $this->pattern;
         }
 
-        $this->pattern = trim($this->pattern, '/');
+        $this->pattern = $this->trimSlashes($this->pattern);
         $this->route = trim($this->route, '/');
 
         if ($this->host !== null) {
@@ -157,6 +192,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return;
         } elseif (($pos = strpos($this->pattern, '://')) !== false) {
             if (($pos2 = strpos($this->pattern, '/', $pos + 3)) !== false) {
+                $this->host = substr($this->pattern, 0, $pos2);
+            } else {
+                $this->host = $this->pattern;
+            }
+        } elseif (strpos($this->pattern, '//') === 0) {
+            if (($pos2 = strpos($this->pattern, '/', $pos + 2)) !== false) {
                 $this->host = substr($this->pattern, 0, $pos2);
             } else {
                 $this->host = $this->pattern;
@@ -210,17 +251,46 @@ class UrlRule extends Object implements UrlRuleInterface
         $this->_template = preg_replace('/<([\w._-]+):?([^>]+)?>/', '<$1>', $this->pattern);
         $this->pattern = '#^' . trim(strtr($this->_template, $tr), '/') . '$#u';
 
+        // if host starts with relative scheme, then insert pattern to match any
+        if (strpos($this->host, '//') === 0) {
+            $this->pattern = substr_replace($this->pattern, '[\w]+://', 2, 0);
+        }
+
         if (!empty($this->_routeParams)) {
             $this->_routeRule = '#^' . strtr($this->route, $tr2) . '$#u';
         }
     }
 
     /**
+     * @param UrlManager $manager the URL manager
+     * @return UrlNormalizer|null
+     * @since 2.0.10
+     */
+    protected function getNormalizer($manager)
+    {
+        if ($this->normalizer === null) {
+            return $manager->normalizer;
+        } else {
+            return $this->normalizer;
+        }
+    }
+
+    /**
+     * @param UrlManager $manager the URL manager
+     * @return bool
+     * @since 2.0.10
+     */
+    protected function hasNormalizer($manager)
+    {
+        return $this->getNormalizer($manager) instanceof UrlNormalizer;
+    }
+
+    /**
      * Parses the given request and returns the corresponding route and parameters.
      * @param UrlManager $manager the URL manager
      * @param Request $request the request component
-     * @return array|boolean the parsing result. The route and the parameters are returned as an array.
-     * If false, it means this rule cannot be used to parse this path info.
+     * @return array|bool the parsing result. The route and the parameters are returned as an array.
+     * If `false`, it means this rule cannot be used to parse this path info.
      */
     public function parseRequest($manager, $request)
     {
@@ -232,8 +302,12 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $pathInfo = $request->getPathInfo();
         $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $pathInfo = $request->getPathInfo();
+        $normalized = false;
+        if ($this->hasNormalizer($manager)) {
+            $pathInfo = $this->getNormalizer($manager)->normalizePathInfo($pathInfo, $suffix, $normalized);
+        }
         if ($suffix !== '' && $pathInfo !== '') {
             $n = strlen($suffix);
             if (substr_compare($pathInfo, $suffix, -$n, $n) === 0) {
@@ -279,7 +353,12 @@ class UrlRule extends Object implements UrlRuleInterface
 
         Yii::trace("Request parsed with URL rule: {$this->name}", __METHOD__);
 
-        return [$route, $params];
+        if ($normalized) {
+            // pathInfo was changed by normalizer - we need also normalize route
+            return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
+        } else {
+            return [$route, $params];
+        }
     }
 
     /**
@@ -287,7 +366,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param UrlManager $manager the URL manager
      * @param string $route the route. It should not have slashes at the beginning or the end.
      * @param array $params the parameters
-     * @return string|boolean the created URL, or false if this rule cannot be used for creating this URL.
+     * @return string|bool the created URL, or `false` if this rule cannot be used for creating this URL.
      */
     public function createUrl($manager, $route, $params)
     {
@@ -320,8 +399,15 @@ class UrlRule extends Object implements UrlRuleInterface
                 continue;
             }
             if (!isset($params[$name])) {
-                return false;
-            } elseif (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
+                // allow omit empty optional params
+                // @see https://github.com/yiisoft/yii2/issues/10970
+                if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
+                    $params[$name] = '';
+                } else {
+                    return false;
+                }
+            }
+            if (strcmp($params[$name], $value) === 0) { // strcmp will do string conversion automatically
                 unset($params[$name]);
                 if (isset($this->_paramRules[$name])) {
                     $tr["<$name>"] = '';
@@ -341,7 +427,7 @@ class UrlRule extends Object implements UrlRuleInterface
             }
         }
 
-        $url = trim(strtr($this->_template, $tr), '/');
+        $url = $this->trimSlashes(strtr($this->_template, $tr));
         if ($this->host !== null) {
             $pos = strpos($url, '/', 8);
             if ($pos !== false) {
@@ -383,8 +469,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @see placeholders
      * @since 2.0.7
      */
-     protected function substitutePlaceholderNames (array $matches)
-     {
+    protected function substitutePlaceholderNames(array $matches)
+    {
         foreach ($this->placeholders as $placeholder => $name) {
             if (isset($matches[$placeholder])) {
                 $matches[$name] = $matches[$placeholder];
@@ -392,5 +478,19 @@ class UrlRule extends Object implements UrlRuleInterface
             }
         }
         return $matches;
+    }
+
+    /**
+     * Trim slashes in passed string. If string begins with '//', two slashes are left as is
+     * in the beginning of a string.
+     *
+     * @param string $string
+     * @return string
+     */
+    private function trimSlashes($string) {
+        if (strpos($string, '//') === 0) {
+            return '//' . trim($string, '/');
+        }
+        return trim($string, '/');
     }
 }

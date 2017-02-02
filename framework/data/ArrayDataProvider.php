@@ -45,6 +45,8 @@ use yii\helpers\ArrayHelper;
  * Note: if you want to use the sorting feature, you must configure the [[sort]] property
  * so that the provider knows which columns can be sorted.
  *
+ * For more details and usage information on ArrayDataProvider, see the [guide article on data providers](guide:output-data-providers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -63,6 +65,12 @@ class ArrayDataProvider extends BaseDataProvider
      * The array elements must use zero-based integer keys.
      */
     public $allModels;
+    /**
+     * @var string the name of the [[\yii\base\Model|Model]] class that will be represented.
+     * This property is used to get columns' names.
+     * @since 2.0.9
+     */
+    public $modelClass;
 
 
     /**

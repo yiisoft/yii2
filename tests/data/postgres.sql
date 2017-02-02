@@ -15,6 +15,7 @@ DROP TABLE IF EXISTS "customer" CASCADE;
 DROP TABLE IF EXISTS "profile" CASCADE;
 DROP TABLE IF EXISTS "type" CASCADE;
 DROP TABLE IF EXISTS "null_values" CASCADE;
+DROP TABLE IF EXISTS "negative_default_values" CASCADE;
 DROP TABLE IF EXISTS "constraints" CASCADE;
 DROP TABLE IF EXISTS "bool_values" CASCADE;
 DROP TABLE IF EXISTS "animal" CASCADE;
@@ -128,7 +129,8 @@ CREATE TABLE "type" (
   bool_col boolean NOT NULL,
   bool_col2 boolean DEFAULT TRUE,
   ts_default TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  bit_col BIT(8) NOT NULL DEFAULT B'10000010'
+  bit_col BIT(8) NOT NULL DEFAULT B'10000010',
+  bigint_col BIGINT
 );
 
 CREATE TABLE "bool_values" (
@@ -136,6 +138,14 @@ CREATE TABLE "bool_values" (
   bool_col bool,
   default_true bool not null default true,
   default_false boolean not null default false
+);
+
+CREATE TABLE "negative_default_values" (
+  smallint_col smallint default '-123',
+  int_col integer default '-123',
+  bigint_col bigint default '-123',
+  float_col double precision default '-12345.6789',
+  numeric_col decimal(5,2) default '-33.22'
 );
 
 CREATE TABLE "animal" (

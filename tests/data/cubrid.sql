@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS "category";
 DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "negative_default_values";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "constraints";
 DROP TABLE IF EXISTS "animal";
@@ -100,6 +101,14 @@ CREATE TABLE null_values (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE "negative_default_values" (
+  smallint_col smallint default '-123',
+  int_col int default '-123',
+  bigint_col bigint default '-123',
+  float_col double default '-12345.6789',
+  numeric_col decimal(5,2) default '-33.22'
+);
+
 
 CREATE TABLE "type" (
   "int_col" int(11) NOT NULL,
@@ -108,7 +117,7 @@ CREATE TABLE "type" (
   "char_col" char(100) NOT NULL,
   "char_col2" varchar(100) DEFAULT 'something',
   "char_col3" string,
-  "enum_col" enum('a','B'),
+  "enum_col" enum('a','B','c,D'),
   "float_col" double NOT NULL,
   "float_col2" double DEFAULT '1.23',
   "blob_col" blob,

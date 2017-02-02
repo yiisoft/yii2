@@ -182,6 +182,8 @@ if (YII_ENV_DEV) {
 ]
 ```
 
+> Info: このプロパティを有効にすると、開発環境でデバッグパネルが動作しなくなります。
+
 
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
@@ -223,12 +225,10 @@ if (YII_ENV_DEV) {
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]

@@ -18,6 +18,8 @@ use yii\helpers\Html;
  *
  * LinkSorter will generate a hyperlink for every attribute declared in [[sort]].
  *
+ * For more details and usage information on LinkSorter, see the [guide article on sorting](guide:output-sorting).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

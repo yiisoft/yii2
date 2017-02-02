@@ -2,7 +2,6 @@
 
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
-
 /**
  * Unit test for [[yii\helpers\FileHelper]]
  * @see FileHelper
@@ -21,6 +20,18 @@ class FileHelperTest extends TestCase
         $this->createDir($this->testFilePath);
         if (!file_exists($this->testFilePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
+        }
+
+        // Check if chmod works as expected.
+        $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
+        mkdir($dir);
+        chmod($dir, 0700);
+        if ($this->getMode($dir) !== "0700") {
+            /**
+             * Chmod returns true but fileperms does not reflect this.
+             * This happens on remote file systems, also has been seen in vagrant mounts.
+             */
+            $this->markTestInComplete('Unit tests runtime directory should be local!');
         }
     }
 
@@ -50,10 +61,11 @@ class FileHelperTest extends TestCase
             if ($handle = opendir($dirName)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != '.' && $entry != '..') {
-                        if (is_dir($dirName . DIRECTORY_SEPARATOR . $entry) === true) {
-                            $this->removeDir($dirName . DIRECTORY_SEPARATOR . $entry);
+                        $item = $dirName . DIRECTORY_SEPARATOR . $entry;
+                        if (is_dir($item) === true && !is_link($item)) {
+                            $this->removeDir($item);
                         } else {
-                            unlink($dirName . DIRECTORY_SEPARATOR . $entry);
+                            unlink($item);
                         }
                     }
                 }
@@ -101,7 +113,7 @@ class FileHelperTest extends TestCase
 
     /**
      * Asserts that file has specific permission mode.
-     * @param integer $expectedMode expected file permission mode.
+     * @param int $expectedMode expected file permission mode.
      * @param string  $fileName     file name.
      * @param string  $message      error message
      */
@@ -113,6 +125,23 @@ class FileHelperTest extends TestCase
 
     // Tests :
 
+    public function testCreateDirectory()
+    {
+        $basePath = $this->testFilePath;
+        $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
+        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true if directory was created!');
+        $this->assertFileExists($dirName, 'Unable to create directory recursively!');
+        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true for already existing directories!');
+
+        $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_perms';
+        $this->assertTrue(FileHelper::createDirectory($dirName, 0700, false));
+        $this->assertFileMode(0700, $dirName);
+
+    }
+
+    /**
+     * @depends testCreateDirectory
+     */
     public function testCopyDirectory()
     {
         $srcDirName = 'test_src_dir';
@@ -251,6 +280,73 @@ class FileHelperTest extends TestCase
         $this->assertFileMode($dirMode, $dstDirName, 'Destination directory has wrong mode!');
         $this->assertFileMode($dirMode, $dstDirName . DIRECTORY_SEPARATOR . $subDirName, 'Copied sub directory has wrong mode!');
         $this->assertFileMode($fileMode, $dstDirName . DIRECTORY_SEPARATOR . $fileName, 'Copied file has wrong mode!');
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirectoryToItself()
+    {
+        $dirName = 'test_dir';
+
+        $this->createFileStructure([
+            $dirName => [],
+        ]);
+
+        $this->setExpectedException('yii\base\InvalidParamException');
+
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_dir';
+        FileHelper::copyDirectory($dirName, $dirName);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirToSubdirOfItself()
+    {
+        $this->createFileStructure([
+            'data' => [],
+            'backup' => ['data' => []]
+        ]);
+
+        $this->setExpectedException('yii\base\InvalidParamException');
+
+        FileHelper::copyDirectory(
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'backup',
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
+        );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirToAnotherWithSameName()
+    {
+        $this->createFileStructure([
+            'data' => [],
+            'backup' => ['data' => []]
+        ]);
+
+        FileHelper::copyDirectory(
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
+        );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirWithSameName()
+    {
+        $this->createFileStructure([
+            'data' => [],
+            'data-backup' => []
+        ]);
+
+        FileHelper::copyDirectory(
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
+        );
     }
 
     public function testRemoveDirectory()
@@ -420,6 +516,58 @@ class FileHelperTest extends TestCase
     /**
      * @depends testFindFiles
      */
+    public function testFindFilesRecursiveWithSymLink()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+                'theDir' => [
+                    'file1' => 'abc',
+                    'file2' => 'def',
+                ],
+                'symDir' => ['symlink', 'theDir'],
+            ],
+        ]);
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
+
+        $expected = [
+            $dirName . DIRECTORY_SEPARATOR . 'symDir' . DIRECTORY_SEPARATOR . 'file1',
+            $dirName . DIRECTORY_SEPARATOR . 'symDir' . DIRECTORY_SEPARATOR . 'file2',
+            $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file1',
+            $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file2',
+        ];
+        $result = FileHelper::findFiles($dirName);
+        sort($result);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @depends testFindFiles
+     */
+    public function testFindFilesNotRecursive()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+                'theDir' => [
+                    'file1' => 'abc',
+                    'file2' => 'def',
+                ],
+                'symDir' => ['symlink', 'theDir'],
+                'file3' => 'root'
+            ],
+        ]);
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
+
+        $expected = [
+            $dirName . DIRECTORY_SEPARATOR . 'file3',
+        ];
+        $this->assertEquals($expected, FileHelper::findFiles($dirName, ['recursive' => false]));
+    }
+
+    /**
+     * @depends testFindFiles
+     */
     public function testFindFilesExclude()
     {
         $basePath = $this->testFilePath . DIRECTORY_SEPARATOR;
@@ -514,15 +662,6 @@ class FileHelperTest extends TestCase
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(2, $foundFiles);
-    }
-
-    public function testCreateDirectory()
-    {
-        $basePath = $this->testFilePath;
-        $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_level_1' . DIRECTORY_SEPARATOR . 'test_dir_level_2';
-        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true if directory was created!');
-        $this->assertFileExists($dirName, 'Unable to create directory recursively!');
-        $this->assertTrue(FileHelper::createDirectory($dirName), 'FileHelper::createDirectory should return true for already existing directories!');
     }
 
     public function testGetMimeTypeByExtension()

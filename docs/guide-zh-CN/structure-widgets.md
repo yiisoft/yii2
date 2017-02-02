@@ -12,7 +12,7 @@ use yii\jui\DatePicker;
 <?= DatePicker::widget(['name' => 'date']) ?>
 ```
 
-Yii提供许多优秀的小部件，比如[[yii\widgets\ActiveForm|active form]], [yii\widgets\Menu|menu]],
+Yii提供许多优秀的小部件，比如[[yii\widgets\ActiveForm|active form]], [[yii\widgets\Menu|menu]],
 [jQuery UI widgets](widget-jui.md), [Twitter Bootstrap widgets](widget-bootstrap.md)。
 接下来介绍小部件的基本知识，如果你想了解某个小部件请参考对应的类API文档。
 

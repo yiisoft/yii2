@@ -385,8 +385,8 @@ class PostController extends Controller
 
 最初のステップで、Yii はレイアウトの値とコンテキストモジュールを決定します。
 
-- コントローラの [[yii\base\Controller::layout]] プロパティが null でないときは、それをレイアウトの値として使い、コントローラの [[yii\base\Controller::module|モジュール]] をコンテキストモジュールとして使う。
-- [[yii\base\Controller::layout|layout]] が null のときは、コントローラの祖先となっている全てのモジュール (アプリケーション自体も含む) を探して、[[yii\base\Module::layout|layout]] プロパティが null でない最初のモジュールを見つける。
+- コントローラの [[yii\base\Controller::layout]] プロパティが `null` でないときは、それをレイアウトの値として使い、コントローラの [[yii\base\Controller::module|モジュール]] をコンテキストモジュールとして使う。
+- [[yii\base\Controller::layout|layout]] が `null` のときは、コントローラの祖先となっている全てのモジュール (アプリケーション自体も含む) を探して、[[yii\base\Module::layout|layout]] プロパティが `null` でない最初のモジュールを見つける。
   見つかったモジュールとその [[yii\base\Module::layout|layout]] の値をコンテキストモジュールと選ばれたレイアウトの値とする。
   そのようなモジュールが見つからなかったときは、レイアウトは適用されないということを意味する。
 
@@ -587,7 +587,7 @@ $this->registerLinkTag([
 <link title="Yii ライブニューズ" rel="alternate" type="application/rss+xml" href="http://www.yiiframework.com/rss.xml/">
 ```
 
-[[yii\web\View::registerMetaTag()|registerMetaTags()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
+[[yii\web\View::registerMetaTag()|registerMetaTag()]] と同じように、[[yii\web\View::registerLinkTag()|registerLinkTag()]] を呼ぶときにキーを指定すると、同じリンクタグを繰り返して生成するのを避けることが出来ます。
 
 
 ## ビューのイベント <span id="view-events"></span>
@@ -596,7 +596,7 @@ $this->registerLinkTag([
 これらのイベントに反応することによって、ビューにコンテントを注入したり、エンドユーザに送信される前にレンダリング結果を加工したりすることが出来ます。
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: コントローラでファイルをレンダリングする前にトリガされます。
-  このイベントのハンドラは、[[yii\base\ViewEvent::isValid]] を false にセットして、レンダリングのプロセスをキャンセルすることが出来ます。
+  このイベントのハンドラは、[[yii\base\ViewEvent::isValid]] を `false` にセットして、レンダリングのプロセスをキャンセルすることが出来ます。
 - [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: ファイルのレンダリングの後、[[yii\base\View::afterRender()]] を呼ぶことによってトリガされます。
   このイベントのハンドラは、レンダリング結果をプロパティ [[yii\base\ViewEvent::output]] を通じて取得して、それを修正してレンダリング結果を変更することが出来ます。
 - [[yii\base\View::EVENT_BEGIN_PAGE|EVENT_BEGIN_PAGE]]: レイアウトの中で [[yii\base\View::beginPage()]] を呼ぶことによってトリガされます。

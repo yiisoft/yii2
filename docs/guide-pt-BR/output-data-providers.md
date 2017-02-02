@@ -90,7 +90,7 @@ Por padrão, [[yii\data\ActiveDataProvider]] utiliza o componente da aplicação
 O [[yii\data\SqlDataProvider]] trabalha com uma instrução SQL, que é usado para obter os dados necessários. Com base nas especificações de [[yii\data\SqlDataProvider::sort|sort]] e
 [[yii\data\SqlDataProvider::pagination|pagination]], o provider ajustará as cláusulas `ORDER BY` e `LIMIT` da instrução SQL em conformidade para buscar somente a página de dados solicitada na ordem desejada.
 
-Para usar [[yii\data\SqlDataProvider]], você deve especificar a propriedade [[yii\data\SqlDataProvider::sql|sql]] bem como a propriedade [[yii\data\SqlDataProvider::totalCount|totalCount]. Por exemplo:
+Para usar [[yii\data\SqlDataProvider]], você deve especificar a propriedade [[yii\data\SqlDataProvider::sql|sql]] bem como a propriedade [[yii\data\SqlDataProvider::totalCount|totalCount]]. Por exemplo:
 
 ```php
 use yii\data\SqlDataProvider;

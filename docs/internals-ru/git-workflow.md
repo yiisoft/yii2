@@ -1,5 +1,5 @@
-Рабочий процесс Git для разработчиков Yii2
-==========================================
+Рабочий процесс Git для разработчиков Yii 2
+===========================================
 
 Итак, вы хотите разрабатывать Yii? Хорошо! Но для того чтоб увеличить шанс принятия ваших изменений,
 пожалуйста следуйте следующим шагам. Если вы новичок в git и github, вы можете сначала проверить
@@ -36,7 +36,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 - выполните `composer update` для установки зависимостей (если [composer у вас установлен глобально](https://getcomposer.org/doc/00-intro.md#globally)).
 
 > Note: Если вы видите такие ошибки, как `Problem 1 The requested package bower-asset/jquery could not be found in
-> any version, there may be a typo in the package name.`, необходимо запустить `composer global require "fxp/composer-asset-plugin:~1.1.1"`
+> any version, there may be a typo in the package name.`, необходимо запустить `composer global require "fxp/composer-asset-plugin:^1.2.0"`
 
 - выполните `php build/build dev/app basic` для клонирования базового приложения и установки его зависимостей.
   Эта команда установит сторонние пакеты composer обычным образом, но создаст ссылку с репозитория yii2 на только
@@ -76,7 +76,7 @@ php build/build dev/ext <extension-name>
 где `<extension-name>` это имя расширения, например `redis`.
 
 Если вы хотите протестировать расширение в одном из шаблонов приложений, просто добавьте его в `composer.json`
-приложения, например добавив `"yiisoft/yii2-redis": "*"` в секцию `require` базового приложения.
+приложения, например добавив `"yiisoft/yii2-redis": "~2.0.0"` в секцию `require` базового приложения.
 Запустите `php build/build dev/app basic` для установки расширения и его зависимостей и создания символической
 ссылки на `extensions/redis` так чтоб вы работали не папке вендорных пакетов composer, а напрямую в репозиторий yii2.
 

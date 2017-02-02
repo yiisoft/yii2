@@ -66,6 +66,7 @@ return [
     '{attribute} must be a string.' => '{attribute} يجب أن يكون كلمات',
     '{attribute} must be an integer.' => '{attribute} يجب أن يكون رقمًا صحيحًا',
     '{attribute} must be either "{true}" or "{false}".' => '{attribute} يجب أن يكن إما "{true}" أو "{false}".',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} يجب أن يساوي "{compareValueOrAttribute}".',
     '{attribute} must be greater than "{compareValue}".' => '{attribute} يجب أن يكون أكبر من "{compareValue}".',
     '{attribute} must be greater than or equal to "{compareValue}".' => '{attribute} يجب أن يكون أكبر من أو يساوي  "{compareValue}".',
     '{attribute} must be less than "{compareValue}".' => '{attribute} يجب أن يكون أصغر من "{compareValue}".',

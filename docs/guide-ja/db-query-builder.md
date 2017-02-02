@@ -305,7 +305,7 @@ if (!empty($search)) {
 }
 ```
 
-`$search` が空でない場合は次の WHERE 条件 が生成されます。
+`$search` が空でない場合は次の `WHERE` 条件 が生成されます。
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
@@ -328,9 +328,29 @@ $query->filterWhere([
 [[yii\db\Query::filterWhere()|filterWhere()]] と [[yii\db\Query::where()|where()]] の唯一の違いは、前者は [ハッシュ形式](#hash-format) の条件において提供された空の値を無視する、という点です。
 従って、`$email` が空で `$sername` がそうではない場合は、上記のコードは、結果として `WHERE username=:username` という SQL 条件になります。
 
-> Info: 値が空であると見なされるのは、null、空の配列、空の文字列、または空白のみを含む文字列である場合です。
+> Info: 値が空であると見なされるのは、`null`、空の配列、空の文字列、または空白のみを含む文字列である場合です。
 
 [[yii\db\Query::andWhere()|andWhere()]] または [[yii\db\Query::orWhere()|orWhere()]] と同じように、[[yii\db\Query::andFilterWhere()|andFilterWhere()]] または [[yii\db\Query::orFilterWhere()|orFilterWhere()]] を使って、既存の条件に別のフィルタ条件を追加することも出来ます。
+
+さらに加えて、値の方に含まれている比較演算子を適切に判断してくれる [[yii\db\Query::andFilterCompare()]] があります。
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+比較演算子を明示的に指定することも可能です。
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
+
+Yii 2.0.11 以降には、`HAVING` の条件のためにも、同様のメソッドがあります。
+
+- [[yii\db\Query::filterHaving()|filterHaving()]]
+- [[yii\db\Query::andFilterHaving()|andFilterHaving()]]
+- [[yii\db\Query::orFilterHaving()|orFilterHaving()]]
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
@@ -579,6 +599,13 @@ $query = (new \yii\db\Query())
 ```
 
 この無名関数は、現在の行データを含む `$row` というパラメータを取り、現在の行のインデックス値として使われるスカラ値を返さなくてはなりません。
+
+> Note: [[yii\db\Query::groupBy()|groupBy()]] や [[yii\db\Query::orderBy()|orderBy()]]
+> のようなクエリメソッドが SQL に変換されてクエリの一部となるのとは対照的に、
+> このメソッドはデータベースからデータが取得された後で動作します。
+> このことは、クエリの SELECT に含まれるカラム名だけを使うことが出来る、ということを意味します。
+> また、テーブルプレフィックスを付けてカラムを選択した場合、例えば `customer.id` を選択した場合は、
+> リザルトセットのカラム名は `id` しか含みませんので、テーブルプレフィックス無しで `->indexBy('id')` と呼ぶ必要があります。
 
 
 ## バッチクエリ <span id="batch-query"></span>

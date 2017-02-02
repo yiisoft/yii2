@@ -76,13 +76,13 @@ class DbMessageSource extends MessageSource
      */
     public $messageTable = '{{%message}}';
     /**
-     * @var integer the time in seconds that the messages can remain valid in cache.
+     * @var int the time in seconds that the messages can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      * @see enableCaching
      */
     public $cachingDuration = 0;
     /**
-     * @var boolean whether to enable caching translated messages
+     * @var bool whether to enable caching translated messages
      */
     public $enableCaching = false;
 
@@ -146,7 +146,7 @@ class DbMessageSource extends MessageSource
             ->where([
                 't1.id' => new Expression('[[t2.id]]'),
                 't1.category' => $category,
-                't2.language' => $language
+                't2.language' => $language,
             ]);
 
         $fallbackLanguage = substr($language, 0, 2);
@@ -181,7 +181,7 @@ class DbMessageSource extends MessageSource
             ->where([
                 't1.id' => new Expression('[[t2.id]]'),
                 't1.category' => $category,
-                't2.language' => $fallbackLanguage
+                't2.language' => $fallbackLanguage,
             ])->andWhere([
                 'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language])
             ]);

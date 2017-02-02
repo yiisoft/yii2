@@ -10,6 +10,7 @@ namespace yii\log;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
 use yii\web\Request;
 
@@ -24,9 +25,11 @@ use yii\web\Request;
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
  *
- * @property integer $levels The message levels that this target is interested in. This is a bitmap of level
+ * @property int $levels The message levels that this target is interested in. This is a bitmap of level
  * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
  * and setter. See [[getLevels()]] and [[setLevels()]] for details.
+ *
+ * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -34,7 +37,7 @@ use yii\web\Request;
 abstract class Target extends Component
 {
     /**
-     * @var boolean whether to enable this log target. Defaults to true.
+     * @var bool whether to enable this log target. Defaults to true.
      */
     public $enabled = true;
     /**
@@ -56,7 +59,17 @@ abstract class Target extends Component
     /**
      * @var array list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
+     *
      * Defaults to `['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER']`.
+     *
+     * Since version 2.0.9 additional syntax can be used:
+     * Each element could be specified as one of the following:
+     *
+     * - `var` - `var` will be logged.
+     * - `var.key` - only `var[key]` key will be logged.
+     * - `!var.key` - `var[key]` key will be excluded.
+     *
+     * @see \yii\helpers\ArrayHelper::filter()
      */
     public $logVars = ['_GET', '_POST', '_FILES', '_COOKIE', '_SESSION', '_SERVER'];
     /**
@@ -69,7 +82,7 @@ abstract class Target extends Component
      */
     public $prefix;
     /**
-     * @var integer how many messages should be accumulated before they are exported.
+     * @var int how many messages should be accumulated before they are exported.
      * Defaults to 1000. Note that messages will always be exported when the application terminates.
      * Set this property to be 0 if you don't want to export messages until the application terminates.
      */
@@ -95,7 +108,7 @@ abstract class Target extends Component
      * And if requested, it will also export the filtering result to specific medium (e.g. email).
      * @param array $messages log messages to be processed. See [[Logger::messages]] for the structure
      * of each message.
-     * @param boolean $final whether this method is called at the end of the current application
+     * @param bool $final whether this method is called at the end of the current application
      */
     public function collect($messages, $final)
     {
@@ -122,18 +135,16 @@ abstract class Target extends Component
      */
     protected function getContextMessage()
     {
-        $context = [];
-        foreach ($this->logVars as $name) {
-            if (!empty($GLOBALS[$name])) {
-                $context[] = "\${$name} = " . VarDumper::dumpAsString($GLOBALS[$name]);
-            }
+        $context = ArrayHelper::filter($GLOBALS, $this->logVars);
+        $result = [];
+        foreach ($context as $key => $value) {
+            $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
-
-        return implode("\n\n", $context);
+        return implode("\n\n", $result);
     }
 
     /**
-     * @return integer the message levels that this target is interested in. This is a bitmap of
+     * @return int the message levels that this target is interested in. This is a bitmap of
      * level values. Defaults to 0, meaning  all available levels.
      */
     public function getLevels()
@@ -158,8 +169,8 @@ abstract class Target extends Component
      * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
      * ```
      *
-     * @param array|integer $levels message levels that this target is interested in.
-     * @throws InvalidConfigException if an unknown level name is given
+     * @param array|int $levels message levels that this target is interested in.
+     * @throws InvalidConfigException if $levels value is not correct.
      */
     public function setLevels($levels)
     {
@@ -180,6 +191,12 @@ abstract class Target extends Component
                 }
             }
         } else {
+            $bitmapValues = array_reduce($levelMap, function ($carry, $item) {
+                return $carry | $item;
+            });
+            if (!($bitmapValues & $levels) && $levels !== 0) {
+                throw new InvalidConfigException("Incorrect $levels value");
+            }
             $this->_levels = $levels;
         }
     }
@@ -188,7 +205,7 @@ abstract class Target extends Component
      * Filters the given messages according to their categories and levels.
      * @param array $messages messages to be filtered.
      * The message structure follows that in [[Logger::messages]].
-     * @param integer $levels the message levels to filter by. This is a bitmap of
+     * @param int $levels the message levels to filter by. This is a bitmap of
      * level values. Value 0 means allowing all levels.
      * @param array $categories the message categories to filter by. If empty, it means all categories are allowed.
      * @param array $except the message categories to exclude. If empty, it means all categories are allowed.

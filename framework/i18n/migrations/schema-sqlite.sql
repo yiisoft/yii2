@@ -26,3 +26,5 @@ CREATE TABLE `message`
    PRIMARY KEY (`id`, `language`)
 );
 
+CREATE INDEX idx_message_language ON message (language);
+CREATE INDEX idx_source_message_category ON source_message (category);

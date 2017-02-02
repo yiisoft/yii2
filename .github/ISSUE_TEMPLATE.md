@@ -9,6 +9,6 @@
 
 | Q                | A
 | ---------------- | ---
-| Yii version      | 
-| PHP version      | 
-| Operating system | 
+| Yii version      | 2.0.?
+| PHP version      |
+| Operating system |

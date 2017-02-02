@@ -35,6 +35,8 @@ use yii\helpers\Json;
  * // keys is an array consisting of the keys associated with the selected rows
  * ```
  *
+ * For more details and usage information on CheckboxColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -64,9 +66,14 @@ class CheckboxColumn extends Column
      */
     public $checkboxOptions = [];
     /**
-     * @var boolean whether it is possible to select multiple rows. Defaults to `true`.
+     * @var bool whether it is possible to select multiple rows. Defaults to `true`.
      */
     public $multiple = true;
+    /**
+     * @var string the css class that will be used to find the checkboxes.
+     * @since 2.0.9
+     */
+    public $cssClass;
 
 
     /**
@@ -116,6 +123,10 @@ class CheckboxColumn extends Column
             $options['value'] = is_array($key) ? Json::encode($key) : $key;
         }
 
+        if ($this->cssClass !== null) {
+            Html::addCssClass($options, $this->cssClass);
+        }
+
         return Html::checkbox($this->name, !empty($options['checked']), $options);
     }
 
@@ -148,6 +159,7 @@ class CheckboxColumn extends Column
         $id = $this->grid->options['id'];
         $options = Json::encode([
             'name' => $this->name,
+            'class' => $this->cssClass,
             'multiple' => $this->multiple,
             'checkAll' => $this->grid->showHeader ? $this->getHeaderCheckBoxName() : null,
         ]);

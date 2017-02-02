@@ -23,10 +23,14 @@ class PhpDocController extends Controller
 {
     public $defaultAction = 'property';
     /**
-     * @var boolean whether to update class docs directly. Setting this to false will just output docs
+     * @var bool whether to update class docs directly. Setting this to false will just output docs
      * for copy and paste.
      */
     public $updateFiles = true;
+    /**
+     * @var bool whether to add copyright header to php files. This should be skipped in application code.
+     */
+    public $skipFrameworkRequirements = false;
 
 
     /**
@@ -83,7 +87,9 @@ class PhpDocController extends Controller
             // fix line endings
             $lines = preg_split('/(\r\n|\n|\r)/', $contents);
 
-            $this->fixFileDoc($lines);
+            if (!$this->skipFrameworkRequirements) {
+                $this->fixFileDoc($lines);
+            }
             $this->fixDocBlockIndentation($lines);
             $lines = array_values($this->fixLineSpacing($lines));
 
@@ -105,7 +111,7 @@ class PhpDocController extends Controller
      */
     public function options($actionID)
     {
-        return array_merge(parent::options($actionID), ['updateFiles']);
+        return array_merge(parent::options($actionID), ['updateFiles', 'skipFrameworkRequirements']);
     }
 
     protected function findFiles($root, $needsInclude = true)
@@ -169,11 +175,7 @@ class PhpDocController extends Controller
         } elseif (preg_match('~extensions/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
 
             $extensionPath = dirname(rtrim($root, '\\/'));
-            foreach (scandir($extensionPath) as $extension) {
-                if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
-                    Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
-                }
-            }
+            $this->setUpExtensionAliases($extensionPath);
 
             list(, $extension) = $matches;
             Yii::setAlias("@yii/$extension", "$root");
@@ -194,6 +196,22 @@ class PhpDocController extends Controller
 //            if ($extension === 'composer') {
 //                return [];
 //            }
+        } elseif (preg_match('~apps/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+
+            $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
+            $this->setUpExtensionAliases($extensionPath);
+
+            list(, $appName) = $matches;
+            Yii::setAlias("@app-$appName", "$root");
+            if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
+                include($autoloadFile);
+            }
+
+            $except[] = '/runtime/';
+            $except[] = '/vendor/';
+            $except[] = '/tests/';
+            $except[] = '/docs/';
+
         }
         $root = FileHelper::normalizePath($root);
         $options = [
@@ -217,6 +235,15 @@ class PhpDocController extends Controller
             ]),
         ];
         return FileHelper::findFiles($root, $options);
+    }
+
+    private function setUpExtensionAliases($extensionPath)
+    {
+        foreach (scandir($extensionPath) as $extension) {
+            if (ctype_alpha($extension) && is_dir($extensionPath . '/' . $extension)) {
+                Yii::setAlias("@yii/$extension", "$extensionPath/$extension");
+            }
+        }
     }
 
     /**
@@ -323,8 +350,8 @@ class PhpDocController extends Controller
             $types = explode('|', $matches[2]);
             foreach($types as $i => $type) {
                 switch($type){
-                    case 'int': $types[$i] = 'integer'; break;
-                    case 'bool': $types[$i] = 'boolean'; break;
+                    case 'integer': $types[$i] = 'int'; break;
+                    case 'boolean': $types[$i] = 'bool'; break;
                 }
             }
             return '@' . $matches[1] . ' ' . implode('|', $types);
@@ -452,14 +479,24 @@ class PhpDocController extends Controller
 
     protected function updateClassPropertyDocs($file, $className, $propertyDoc)
     {
-        $ref = new \ReflectionClass($className);
+        try {
+            $ref = new \ReflectionClass($className);
+        } catch (\Exception $e) {
+            $this->stderr("[ERR] Unable to create ReflectionClass for class '$className': " . $e->getMessage() . "\n", Console::FG_RED);
+            return false;
+        }
         if ($ref->getFileName() != $file) {
             $this->stderr("[ERR] Unable to create ReflectionClass for class: $className loaded class is not from file: $file\n", Console::FG_RED);
+            return false;
         }
 
         if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object') {
             $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\Object.\n", Console::FG_BLUE, Console::BOLD);
+            return false;
+        }
 
+        if ($ref->isSubclassOf('yii\db\BaseActiveRecord')) {
+            $this->stderr("[INFO] Skipping class $className as it is an ActiveRecord class, property handling is not supported yet.\n", Console::FG_BLUE, Console::BOLD);
             return false;
         }
 
@@ -484,11 +521,13 @@ class PhpDocController extends Controller
             }
         }
 
-        if (!$seenSince) {
-            $this->stderr("[ERR] No @since found in class doc in file: $file\n", Console::FG_RED);
-        }
-        if (!$seenAuthor) {
-            $this->stderr("[ERR] No @author found in class doc in file: $file\n", Console::FG_RED);
+        if (!$this->skipFrameworkRequirements) {
+            if (!$seenSince) {
+                $this->stderr("[ERR] No @since found in class doc in file: $file\n", Console::FG_RED);
+            }
+            if (!$seenAuthor) {
+                $this->stderr("[ERR] No @author found in class doc in file: $file\n", Console::FG_RED);
+            }
         }
 
         if (trim($oldDoc) != trim($newDoc)) {
@@ -563,6 +602,12 @@ class PhpDocController extends Controller
                 unset($lines[$i]);
             }
         }
+
+        // if no properties or other tags where present add properties at the end
+        if ($propertyPosition === false) {
+            $propertyPosition = count($lines) - 2;
+        }
+
         $finalDoc = '';
         foreach ($lines as $i => $line) {
             $finalDoc .= $line . "\n";
@@ -589,13 +634,13 @@ class PhpDocController extends Controller
             return false;
         }
         if (count($classes) < 1) {
-            $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.+)\n\}(\n|$)#', $file);
+            $interfaces = $this->match('#\ninterface (?<name>\w+)( extends .+)?\n\{(?<content>.*)\n\}(\n|$)#', $file);
             if (count($interfaces) == 1) {
                 return false;
             } elseif (count($interfaces) > 1) {
                 $this->stderr("[ERR] There should be only one interface in a file: $fileName\n", Console::FG_RED);
             } else {
-                $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.+)\n\}(\n|$)#', $file);
+                $traits = $this->match('#\ntrait (?<name>\w+)\n\{(?<content>.*)\n\}(\n|$)#', $file);
                 if (count($traits) == 1) {
                     return false;
                 } elseif (count($traits) > 1) {

@@ -280,6 +280,37 @@ class DateValidatorTest extends TestCase
     public function testIntlValidationWithTime($timezone)
     {
         $this->testValidationWithTime($timezone);
+
+        $this->mockApplication([
+            'language' => 'en-GB',
+            'components' => [
+                'formatter' => [
+                    'dateFormat' => 'long',
+                    'datetimeFormat' => 'short', // this is the format to be used by the validator by default
+                ]
+            ]
+        ]);
+        $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $val = new DateValidator(['format' => 'short', 'locale' => 'en-GB', 'type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31/5/2017 12:30'));
+        $this->assertFalse($val->validate('5/31/2017 12:30'));
+        $this->mockApplication([
+            'language' => 'de-DE',
+            'components' => [
+                'formatter' => [
+                    'dateFormat' => 'long',
+                    'datetimeFormat' => 'short', // this is the format to be used by the validator by default
+                ]
+            ]
+        ]);
+        $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertFalse($val->validate('5.31.2017 12:30'));
+        $val = new DateValidator(['format' => 'short', 'locale' => 'de-DE', 'type' => DateValidator::TYPE_DATETIME]);
+        $this->assertTrue($val->validate('31.5.2017 12:30'));
+        $this->assertFalse($val->validate('5.31.2017 12:30'));
     }
 
     /**
@@ -524,7 +555,7 @@ class DateValidatorTest extends TestCase
      * returns true if the version of ICU is old and has a bug that makes it
      * impossible to parse two digit years properly.
      * see http://bugs.icu-project.org/trac/ticket/9836
-     * @return boolean
+     * @return bool
      */
     private function checkOldIcuBug()
     {

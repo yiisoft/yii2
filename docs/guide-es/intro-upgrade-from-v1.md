@@ -1,5 +1,5 @@
-Actualizando desde Yii 1.1
-==========================
+Actualizar desde Yii 1.1
+========================
 
 Existen muchas diferencias entre las versiones 1.1 y 2.0 de Yii ya que el framework fue completamente reescrito
 en su segunda versión.
@@ -18,7 +18,8 @@ Instalación
 Yii 2.0 adopta íntegramente [Composer](https://getcomposer.org/), el administrador de paquetes de facto de PHP.
 Tanto la instalación del núcleo del framework como las extensiones se manejan a través de Composer. Por favor consulta
 la sección [Comenzando con la Aplicación Básica](start-installation.md) para aprender a instalar Yii 2.0. Si quieres crear extensiones
-o transformar extensiones de Yii 1.1 para que sean compatibles con Yii 2.0, consulta la sección [Creando Extensiones](structure-extensions.md#creating-extensions) de la guía.
+o transformar extensiones de Yii 1.1 para que sean compatibles con Yii 2.0, consulta
+la sección [Creando Extensiones](structure-extensions.md#creating-extensions) de la guía.
 
 
 Requerimientos de PHP
@@ -107,7 +108,7 @@ $object = Yii::createObject([
 ], [$param1, $param2]);
 ```
 
-Se puede encontrar más detalles acerca del tema en la sección [Configuración de objetos](concept-configurations.md).
+Se puede encontrar más detalles acerca del tema en la sección [Configuración](concept-configurations.md).
 
 
 Eventos
@@ -142,7 +143,7 @@ están soportados en la mayor parte del núcleo. Por ejemplo, [[yii\caching\File
 una ruta de directorios normal como un alias.
 
 Un alias está estrechamente relacionado con un namespace de la clase. Se recomienda definir un alias
-por cada namespace raíz, y así poder utilizar el autolader de Yii sin otra configuración.
+por cada namespace raíz, y así poder utilizar el autoloader de Yii sin otra configuración.
 Por ejemplo, debido a que `@yii` se refiere al directorio de instalación, una clase
 como `yii\web\Request` puede ser auto-cargada. Si estás utilizando una librería de terceros,
 como Zend Framework, puedes definir un alias `@Zend` que se refiera al directorio de instalación
@@ -155,15 +156,12 @@ Vistas
 ------
 
 El cambio más significativo con respecto a las vistas en Yii 2 es que la variable especial `$this` dentro de una vista
-ya no se refiere al controlador o widget actual.
-En vez de eso, `$this` ahora se refiere al objeto de la *vista*, un concepto nuevo introducido en Yii 2.0.
-El objeto *vista* es del tipo [[yii\web\View]], que representa la parte de las vistas en el patrón MVC. Si
-quieres acceder al controlador o al widget correspondiente desde la propia vista,
-puedes utilizar `$this->context`.
+ya no se refiere al controlador o widget actual. En vez de eso, `$this` ahora se refiere al objeto de la *vista*, un concepto nuevo
+introducido en Yii 2.0. El objeto *vista* es del tipo [[yii\web\View]], que representa la parte de las vistas
+en el patrón MVC. Si quieres acceder al controlador o al widget correspondiente desde la propia vista, puedes utilizar `$this->context`.
 
-Para renderizar una vista parcial (partial) dentro de otra vista, se utiliza `$this->render()`, no `$this->renderPartial()`.
-La llamada a `render` además tiene que ser mostrada explícitamente a través de `echo`, ya que el método `render()`
-devuelve el resultado de la renderización en vez de mostrarlo directamente. Por ejemplo:
+Para renderizar una vista parcial (partial) dentro de otra vista, se utiliza `$this->render()`, no `$this->renderPartial()`. La llamada a `render` además tiene que ser mostrada explícitamente a través de `echo`,
+ya que el método `render()` devuelve el resultado de la renderización en vez de mostrarlo directamente. Por ejemplo:
 
 ```php
 echo $this->render('_item', ['item' => $item]);
@@ -172,7 +170,8 @@ echo $this->render('_item', ['item' => $item]);
 Además de utilizar PHP como el lenguaje principal de plantillas (templates), Yii 2.0 está también equipado con soporte
 oficial de otros dos motores de plantillas populares: Smarty y Twig. El motor de plantillas de Prado ya no está soportado.
 Para utilizar esos motores, necesitas configurar el componente `view` de la aplicación, definiendo la propiedad [[yii\base\View::$renderers|View::$renderers]].
-Por favor consulta la sección [Motores de Plantillas](tutorial-template-engines.md) para más detalles.
+Por favor consulta la sección [Motores de Plantillas](tutorial-template-engines.md)
+para más detalles.
 
 
 Modelos
@@ -431,7 +430,7 @@ class Customer extends \yii\db\ActiveRecord
 ```
 
 Ahora puedes utilizar `$customer->orders` para acceder a las órdenes de la tabla relacionada. También puedes utilizar el siguiente
-código para realizar una consulta relacional 'al-vuelo' con una condición personalizada:
+código para realizar una consulta relacional 'sobre la marcha' con una condición personalizada:
 
 ```php
 $orders = $customer->getOrders()->andWhere('status=1')->all();
@@ -504,9 +503,10 @@ User e IdentityInterface
 
 La clase `CWebUser` de 1.1 es reemplazada por [[yii\web\User]], y la clase `CUserIdentity` ha dejado de existir.
 En cambio, ahora debes implementar [[yii\web\IdentityInterface]] el cual es mucho más directo de usar.
-La plantilla de Aplicación Avanzada provee un ejemplo así.
+El template de proyecto avanzado provee un ejemplo así.
 
-Consulta las secciones [Autenticación](security-authentication.md), [Autorización](security-authorization.md), y [Plantilla de Aplicación Avanzada](tutorial-advanced-app.md) para más detalles.
+Consulta las secciones [Autenticación](security-authentication.md), [Autorización](security-authorization.md), y [Template de Proyecto Avanzado](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-es/README.md) para más detalles.
+
 
 
 Manejo de URLs
@@ -526,8 +526,14 @@ En 1.1, tendrías que haber creado dos reglas diferentes para obtener el mismo r
 
 Por favor, consulta la sección [Documentación del Manejo de URLs](runtime-routing.md) para más detalles.
 
-Utilizando Yii 1.1 y 2.x juntos
--------------------------------
+Un cambio importante en la convención de nombres para rutas es que los nombres en CamelCase de controladores
+y acciones ahora son convertidos a minúsculas y cada palabra separada por un guión, por ejemplo el id del controlador
+`CamelCaseController` será `camel-case`.
+Consulta la sección acerca de [IDs de controladores](structure-controllers.md#controller-ids) y [IDs de acciones](structure-controllers.md#action-ids) para más detalles.
+
+
+Utilizar Yii 1.1 y 2.x juntos
+-----------------------------
 
 Si tienes código en Yii 1.1 que quisieras utilizar junto con Yii 2.0, por favor consulta
 la sección [Utilizando Yii 1.1 y 2.0 juntos](tutorial-yii-integration.md).

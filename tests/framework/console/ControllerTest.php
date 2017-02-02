@@ -8,6 +8,9 @@
 namespace yiiunit\framework\console;
 
 use Yii;
+use yii\base\Module;
+use yii\console\controllers\HelpController;
+use yii\console\Request;
 use yiiunit\TestCase;
 
 /**
@@ -15,10 +18,18 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->mockApplication();
+        Yii::$app->controllerMap = [
+            'fake' => 'yiiunit\framework\console\FakeController',
+            'help' => 'yiiunit\framework\console\FakeHelpController',
+        ];
+    }
+
     public function testBindActionParams()
     {
-        $this->mockApplication([]);
-
         $controller = new FakeController('fake', Yii::$app);
 
         $params = ['from params'];
@@ -52,5 +63,73 @@ class ControllerTest extends TestCase
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
         $this->setExpectedException('yii\console\Exception', $message);
         $result = $controller->runAction('aksi3', $params);
+    }
+
+    public function assertResponseStatus($status, $response)
+    {
+        $this->assertInstanceOf('yii\console\Response', $response);
+        $this->assertSame($status, $response->exitStatus);
+    }
+
+    public function runRequest($route, $args = 0)
+    {
+        $request = new Request();
+        $request->setParams(func_get_args());
+        return Yii::$app->handleRequest($request);
+    }
+
+    public function testResponse()
+    {
+        $status = 123;
+
+        $response = $this->runRequest('fake/status');
+        $this->assertResponseStatus(0, $response);
+
+        $response = $this->runRequest('fake/status', (string)$status);
+        $this->assertResponseStatus($status, $response);
+
+        $response = $this->runRequest('fake/response');
+        $this->assertResponseStatus(0, $response);
+
+        $response = $this->runRequest('fake/response', (string)$status);
+        $this->assertResponseStatus($status, $response);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/12028
+     */
+    public function testHelpOptionNotSet()
+    {
+        $controller = new FakeController('posts', Yii::$app);
+        $controller->runAction('index');
+
+        $this->assertTrue(FakeController::getWasActionIndexCalled());
+        $this->assertNull(FakeHelpController::getActionIndexLastCallParams());
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/12028
+     */
+    public function testHelpOption()
+    {
+        $controller = new FakeController('posts', Yii::$app);
+        $controller->help = true;
+        $controller->runAction('index');
+
+        $this->assertFalse(FakeController::getWasActionIndexCalled());
+        $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['posts/index']);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13071
+     */
+    public function testHelpOptionWithModule()
+    {
+        $controller = new FakeController('posts', new Module('news'));
+        $controller->help = true;
+        $controller->runAction('index');
+
+        $this->assertFalse(FakeController::getWasActionIndexCalled());
+        $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
     }
 }

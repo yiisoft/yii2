@@ -140,7 +140,7 @@ class HelloController extends Controller
 {
     public $message;
     
-    public function options()
+    public function options($actionID)
     {
         return ['message'];
     }
@@ -152,7 +152,7 @@ class HelloController extends Controller
     
     public function actionIndex()
     {
-        echo $message . "\n";
+        echo $this->message . "\n";
     }
 }
 ```
@@ -160,7 +160,7 @@ class HelloController extends Controller
 これで、次の構文を使ってコマンドを走らせることが出来るようになります。
 
 ```
-./yii hello -m=hola
+./yii hello -m=hello
 ```
 
 ### 引数

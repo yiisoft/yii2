@@ -1,11 +1,11 @@
 Console applications
 ====================
 
-Besides the rich features for building web applications, Yii also has full featured support for console applications
+Besides the rich features for building web applications, Yii also has full-featured support for console applications
 which are mainly used to create background and maintenance tasks that need to be performed for a website.
 
 The structure of console applications is very similar to a Yii web application. It consists of one
-or more [[yii\console\Controller]] classes, which are often referred to as "commands" in the console environment.
+or more [[yii\console\Controller]] classes, which are often referred to as *commands* in the console environment.
 Each controller can also have one or more actions, just like web controllers.
 
 Both project templates already have a console application with them.
@@ -17,7 +17,7 @@ This will give you a list of available commands when you run it without any furt
 As you can see in the screenshot, Yii has already defined a set of commands that are available by default:
 
 - [[yii\console\controllers\AssetController|AssetController]] - Allows you to combine and compress your JavaScript and CSS files.
-  You can learn more about this command in the [Assets Section](structure-assets.md#using-the-asset-command).
+  You can learn more about this command in the [Assets Section](structure-assets.md#using-asset-bundles).
 - [[yii\console\controllers\CacheController|CacheController]] - Allows you to flush application caches.
 - [[yii\console\controllers\FixtureController|FixtureController]] - Manages fixture data loading and unloading for testing purposes.
   This command is described in more detail in the [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
@@ -69,6 +69,7 @@ It contains code like the following:
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 require(__DIR__ . '/vendor/autoload.php');
 require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
@@ -93,7 +94,7 @@ you should configure various [application components](structure-application-comp
 
 If your web application and console application share a lot of configuration parameters and values, you may consider moving the common
 parts into a separate file, and including this file in both of the application configurations (web and console).
-You can see an example of this in the "advanced" project template.
+You can see an example of this in the advanced project template.
 
 > Tip: Sometimes, you may want to run a console command using an application configuration that is different
 > from the one specified in the entry script. For example, you may want to use the `yii migrate` command to
@@ -105,6 +106,53 @@ You can see an example of this in the "advanced" project template.
 > yii <route> --appconfig=path/to/config.php ...
 > ```
 
+
+Console command completion <span id="console-command-completion"></span>
+---------------
+
+Auto-completion of command arguments is a useful thing when working with the shell. 
+Since version 2.0.11, the `./yii` command provides auto completion for the Bash and ZSH out of the box. 
+
+### Bash completion
+
+Make sure bash completion is installed. For most of installations it is available by default.
+
+Place the completion script in `/etc/bash_completion.d/`:
+
+     curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
+
+For temporary usage you can put the file into the current directory and include it in the current session via `source yii`.
+If globally installed you may need to restart the terminal or `source ~/.bashrc` to activate it.
+
+Check the [Bash Manual](https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html) for
+other ways of including completion script to your environment.
+
+### ZSH completion
+
+Put the completion script in directory for completions, using e.g. `~/.zsh/completion/`
+
+```
+mkdir -p ~/.zsh/completion
+curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/zsh/_yii -o ~/.zsh/completion/_yii
+```
+
+Include the directory in the `$fpath`, e.g. by adding it to `~/.zshrc`
+
+```
+fpath=(~/.zsh/completion $fpath)
+```
+
+Make sure `compinit` is loaded or do it by adding in `~/.zshrc`
+
+```
+autoload -Uz compinit && compinit -i
+```
+
+Then reload your shell
+
+```
+exec $SHELL -l
+```
 
 Creating your own console commands <span id="create-command"></span>
 ----------------------------------
@@ -123,8 +171,8 @@ If a route offered during execution does not contain an action ID, the default a
 
 By overriding the [[yii\console\Controller::options()]] method, you can specify options that are available
 to a console command (controller/actionID). The method should return a list of the controller class's public properties.
-When running a command, you may specify the value of an option using the syntax `--OptionName=OptionValue`.
-This will assign `OptionValue` to the `OptionName` property of the controller class.
+When running a command, you may specify the value of an option using the syntax `--optionName=optionValue`.
+This will assign `optionValue` to the `optionName` property of the controller class.
 
 If the default value of an option is of an array type and you set this option while running the command,
 the option value will be converted into an array by splitting the input string on any commas.
@@ -145,7 +193,7 @@ class HelloController extends Controller
 {
     public $message;
     
-    public function options()
+    public function options($actionID)
     {
         return ['message'];
     }
@@ -157,7 +205,7 @@ class HelloController extends Controller
     
     public function actionIndex()
     {
-        echo $message . "\n";
+        echo $this->message . "\n";
     }
 }
 ```
@@ -165,7 +213,7 @@ class HelloController extends Controller
 Now, you can use the following syntax to run the command:
 
 ```
-./yii hello -m=hello
+yii hello -m=hello
 ```
 
 ### Arguments

@@ -27,9 +27,15 @@ trait MigrateControllerTestTrait
      * @var string test migration path.
      */
     protected $migrationPath;
+    /**
+     * @var string test migration namespace
+     */
+    protected $migrationNamespace;
+
 
     public function setUpMigrationPath()
     {
+        $this->migrationNamespace = 'yiiunit\runtime\test_migrations';
         $this->migrationPath = Yii::getAlias('@yiiunit/runtime/test_migrations');
         FileHelper::createDirectory($this->migrationPath);
         if (!file_exists($this->migrationPath)) {
@@ -49,27 +55,29 @@ trait MigrateControllerTestTrait
 
     /**
      * Creates test migrate controller instance.
+     * @param array $config controller configuration.
      * @return BaseMigrateController migrate command instance.
      */
-    protected function createMigrateController()
+    protected function createMigrateController(array $config = [])
     {
         $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
         $class = $this->migrateControllerClass;
         $migrateController = new $class('migrate', $module);
         $migrateController->interactive = false;
         $migrateController->migrationPath = $this->migrationPath;
-        return $migrateController;
+        return Yii::configure($migrateController, $config);
     }
 
     /**
      * Emulates running of the migrate controller action.
-     * @param  string $actionID id of action to be run.
-     * @param  array  $args     action arguments.
+     * @param string $actionID id of action to be run.
+     * @param array $args action arguments.
+     * @param array $config controller configuration.
      * @return string command output.
      */
-    protected function runMigrateControllerAction($actionID, array $args = [])
+    protected function runMigrateControllerAction($actionID, array $args = [], array $config = [])
     {
-        $controller = $this->createMigrateController();
+        $controller = $this->createMigrateController($config);
         ob_start();
         ob_implicit_flush(false);
         $controller->run($actionID, $args);
@@ -94,6 +102,40 @@ trait MigrateControllerTestTrait
 <?php
 
 class {$class} extends {$baseClass}
+{
+    public function up()
+    {
+    }
+
+    public function down()
+    {
+    }
+}
+CODE;
+        file_put_contents($this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php', $code);
+        return $class;
+    }
+
+    /**
+     * @param string $name
+     * @param string|null $date
+     * @return string generated class name
+     */
+    protected function createNamespaceMigration($name, $date = null)
+    {
+        if ($date === null) {
+            $date = gmdate('ymdHis');
+        }
+        $class = 'M' . $date . ucfirst($name);
+        $baseClass = $this->migrationBaseClass;
+        $namespace = $this->migrationNamespace;
+
+        $code = <<<CODE
+<?php
+
+namespace {$namespace};
+
+class {$class} extends \\{$baseClass}
 {
     public function up()
     {
@@ -137,7 +179,7 @@ CODE;
         $appliedMigrations = $migrationHistory;
         foreach ($expectedMigrations as $expectedMigrationName) {
             $appliedMigration = array_shift($appliedMigrations);
-            if (strpos($appliedMigration['version'], $expectedMigrationName) === false) {
+            if (!fnmatch(strtr($expectedMigrationName, ['\\' => DIRECTORY_SEPARATOR]), strtr($appliedMigration['version'], ['\\' => DIRECTORY_SEPARATOR]))) {
                 $success = false;
                 break;
             }
@@ -166,1060 +208,14 @@ CODE;
         $this->assertContains($migrationName, basename($files[0]), 'Wrong migration name!');
     }
 
-    public function testGenerateDefaultMigration()
-    {
-        $migrationName = 'DefaultTest';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [$migrationName]);
-        $file = $this->parseNameClassMigration($class);
-
-        $newLine = '\n';
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-class {$class} extends Migration
-{
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "{$class} cannot be reverted.{$newLine}";
-
-        return false;
-    }
-
-    /*
-    // Use safeUp/safeDown to run migration code within a transaction
-    public function safeUp()
-    {
-    }
-
-    public function safeDown()
-    {
-    }
-    */
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-    }
-
-    public function testGenerateCreateMigration()
-    {
-        $migrationName = 'create_test';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:string(10):notNull:unique:defaultValue("test"),body:text:notNull,price:money(11,2):notNull'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-            'title' => \$this->string(10)->notNull()->unique()->defaultValue("test"),
-            'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2)->notNull(),
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'title' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2),
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'id:primaryKey,address:string,address2:string,email:string',
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-            'address' => \$this->string(),
-            'address2' => \$this->string(),
-            'email' => \$this->string(),
-        ]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `test`.
- * Has foreign keys to the tables:
- *
- * - `user`
- * - `product`
- * - `user_order`
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-            'user_id' => \$this->integer(),
-            'product_id' => \$this->integer()->unsigned()->notNull(),
-            'order_id' => \$this->integer()->notNull(),
-            'created_at' => \$this->dateTime()->notNull(),
-        ]);
-
-        // creates index for column `user_id`
-        \$this->createIndex(
-            'idx-test-user_id',
-            'test',
-            'user_id'
-        );
-
-        // add foreign key for table `user`
-        \$this->addForeignKey(
-            'fk-test-user_id',
-            'test',
-            'user_id',
-            'user',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `product_id`
-        \$this->createIndex(
-            'idx-test-product_id',
-            'test',
-            'product_id'
-        );
-
-        // add foreign key for table `product`
-        \$this->addForeignKey(
-            'fk-test-product_id',
-            'test',
-            'product_id',
-            'product',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `order_id`
-        \$this->createIndex(
-            'idx-test-order_id',
-            'test',
-            'order_id'
-        );
-
-        // add foreign key for table `user_order`
-        \$this->addForeignKey(
-            'fk-test-order_id',
-            'test',
-            'order_id',
-            'user_order',
-            'id',
-            'CASCADE'
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        // drops foreign key for table `user`
-        \$this->dropForeignKey(
-            'fk-test-user_id',
-            'test'
-        );
-
-        // drops index for column `user_id`
-        \$this->dropIndex(
-            'idx-test-user_id',
-            'test'
-        );
-
-        // drops foreign key for table `product`
-        \$this->dropForeignKey(
-            'fk-test-product_id',
-            'test'
-        );
-
-        // drops index for column `product_id`
-        \$this->dropIndex(
-            'idx-test-product_id',
-            'test'
-        );
-
-        // drops foreign key for table `user_order`
-        \$this->dropForeignKey(
-            'fk-test-order_id',
-            'test'
-        );
-
-        // drops index for column `order_id`
-        \$this->dropIndex(
-            'idx-test-order_id',
-            'test'
-        );
-
-        \$this->dropTable('test');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'useTablePrefix' => true,
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `{{%test}}`.
- * Has foreign keys to the tables:
- *
- * - `{{%user}}`
- * - `{{%product}}`
- * - `{{%user_order}}`
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('{{%test}}', [
-            'id' => \$this->primaryKey(),
-            'user_id' => \$this->integer(),
-            'product_id' => \$this->integer()->unsigned()->notNull(),
-            'order_id' => \$this->integer()->notNull(),
-            'created_at' => \$this->dateTime()->notNull(),
-        ]);
-
-        // creates index for column `user_id`
-        \$this->createIndex(
-            '{{%idx-test-user_id}}',
-            '{{%test}}',
-            'user_id'
-        );
-
-        // add foreign key for table `{{%user}}`
-        \$this->addForeignKey(
-            '{{%fk-test-user_id}}',
-            '{{%test}}',
-            'user_id',
-            '{{%user}}',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `product_id`
-        \$this->createIndex(
-            '{{%idx-test-product_id}}',
-            '{{%test}}',
-            'product_id'
-        );
-
-        // add foreign key for table `{{%product}}`
-        \$this->addForeignKey(
-            '{{%fk-test-product_id}}',
-            '{{%test}}',
-            'product_id',
-            '{{%product}}',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `order_id`
-        \$this->createIndex(
-            '{{%idx-test-order_id}}',
-            '{{%test}}',
-            'order_id'
-        );
-
-        // add foreign key for table `{{%user_order}}`
-        \$this->addForeignKey(
-            '{{%fk-test-order_id}}',
-            '{{%test}}',
-            'order_id',
-            '{{%user_order}}',
-            'id',
-            'CASCADE'
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        // drops foreign key for table `{{%user}}`
-        \$this->dropForeignKey(
-            '{{%fk-test-user_id}}',
-            '{{%test}}'
-        );
-
-        // drops index for column `user_id`
-        \$this->dropIndex(
-            '{{%idx-test-user_id}}',
-            '{{%test}}'
-        );
-
-        // drops foreign key for table `{{%product}}`
-        \$this->dropForeignKey(
-            '{{%fk-test-product_id}}',
-            '{{%test}}'
-        );
-
-        // drops index for column `product_id`
-        \$this->dropIndex(
-            '{{%idx-test-product_id}}',
-            '{{%test}}'
-        );
-
-        // drops foreign key for table `{{%user_order}}`
-        \$this->dropForeignKey(
-            '{{%fk-test-order_id}}',
-            '{{%test}}'
-        );
-
-        // drops index for column `order_id`
-        \$this->dropIndex(
-            '{{%idx-test-order_id}}',
-            '{{%test}}'
-        );
-
-        \$this->dropTable('{{%test}}');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-    }
-
-    public function testGenerateDropMigration()
-    {
-        $migrationName = 'drop_test';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the dropping for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->dropTable('test');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-        ]);
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'body:text:notNull,price:money(11,2)'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the dropping for table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->dropTable('test');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->createTable('test', [
-            'id' => \$this->primaryKey(),
-            'body' => \$this->text()->notNull(),
-            'price' => \$this->money(11,2),
-        ]);
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-    }
-
-    public function testGenerateAddColumnMigration()
-    {
-        $migrationName = 'add_columns_to_test';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:string(10):notNull,
-                body:text:notNull,
-                price:money(11,2):notNull,
-                created_at:dateTime'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles adding columns to table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'price', \$this->money(11,2)->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'price');
-        \$this->dropColumn('test', 'created_at');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $migrationName = 'add_columns_to_test';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles adding columns to table `test`.
- * Has foreign keys to the tables:
- *
- * - `user`
- * - `product`
- * - `user_order`
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->addColumn('test', 'user_id', \$this->integer());
-        \$this->addColumn('test', 'product_id', \$this->integer()->unsigned()->notNull());
-        \$this->addColumn('test', 'order_id', \$this->integer()->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime()->notNull());
-
-        // creates index for column `user_id`
-        \$this->createIndex(
-            'idx-test-user_id',
-            'test',
-            'user_id'
-        );
-
-        // add foreign key for table `user`
-        \$this->addForeignKey(
-            'fk-test-user_id',
-            'test',
-            'user_id',
-            'user',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `product_id`
-        \$this->createIndex(
-            'idx-test-product_id',
-            'test',
-            'product_id'
-        );
-
-        // add foreign key for table `product`
-        \$this->addForeignKey(
-            'fk-test-product_id',
-            'test',
-            'product_id',
-            'product',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `order_id`
-        \$this->createIndex(
-            'idx-test-order_id',
-            'test',
-            'order_id'
-        );
-
-        // add foreign key for table `user_order`
-        \$this->addForeignKey(
-            'fk-test-order_id',
-            'test',
-            'order_id',
-            'user_order',
-            'id',
-            'CASCADE'
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        // drops foreign key for table `user`
-        \$this->dropForeignKey(
-            'fk-test-user_id',
-            'test'
-        );
-
-        // drops index for column `user_id`
-        \$this->dropIndex(
-            'idx-test-user_id',
-            'test'
-        );
-
-        // drops foreign key for table `product`
-        \$this->dropForeignKey(
-            'fk-test-product_id',
-            'test'
-        );
-
-        // drops index for column `product_id`
-        \$this->dropIndex(
-            'idx-test-product_id',
-            'test'
-        );
-
-        // drops foreign key for table `user_order`
-        \$this->dropForeignKey(
-            'fk-test-order_id',
-            'test'
-        );
-
-        // drops index for column `order_id`
-        \$this->dropIndex(
-            'idx-test-order_id',
-            'test'
-        );
-
-        \$this->dropColumn('test', 'user_id');
-        \$this->dropColumn('test', 'product_id');
-        \$this->dropColumn('test', 'order_id');
-        \$this->dropColumn('test', 'created_at');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-
-        $migrationName = 'add_columns_to_test';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'useTablePrefix' => true,
-            'fields' => 'user_id:integer:foreignKey,
-                product_id:foreignKey:integer:unsigned:notNull,
-                order_id:integer:foreignKey(user_order):notNull,
-                created_at:dateTime:notNull',
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles adding columns to table `{{%test}}`.
- * Has foreign keys to the tables:
- *
- * - `{{%user}}`
- * - `{{%product}}`
- * - `{{%user_order}}`
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->addColumn('{{%test}}', 'user_id', \$this->integer());
-        \$this->addColumn('{{%test}}', 'product_id', \$this->integer()->unsigned()->notNull());
-        \$this->addColumn('{{%test}}', 'order_id', \$this->integer()->notNull());
-        \$this->addColumn('{{%test}}', 'created_at', \$this->dateTime()->notNull());
-
-        // creates index for column `user_id`
-        \$this->createIndex(
-            '{{%idx-test-user_id}}',
-            '{{%test}}',
-            'user_id'
-        );
-
-        // add foreign key for table `{{%user}}`
-        \$this->addForeignKey(
-            '{{%fk-test-user_id}}',
-            '{{%test}}',
-            'user_id',
-            '{{%user}}',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `product_id`
-        \$this->createIndex(
-            '{{%idx-test-product_id}}',
-            '{{%test}}',
-            'product_id'
-        );
-
-        // add foreign key for table `{{%product}}`
-        \$this->addForeignKey(
-            '{{%fk-test-product_id}}',
-            '{{%test}}',
-            'product_id',
-            '{{%product}}',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `order_id`
-        \$this->createIndex(
-            '{{%idx-test-order_id}}',
-            '{{%test}}',
-            'order_id'
-        );
-
-        // add foreign key for table `{{%user_order}}`
-        \$this->addForeignKey(
-            '{{%fk-test-order_id}}',
-            '{{%test}}',
-            'order_id',
-            '{{%user_order}}',
-            'id',
-            'CASCADE'
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        // drops foreign key for table `{{%user}}`
-        \$this->dropForeignKey(
-            '{{%fk-test-user_id}}',
-            '{{%test}}'
-        );
-
-        // drops index for column `user_id`
-        \$this->dropIndex(
-            '{{%idx-test-user_id}}',
-            '{{%test}}'
-        );
-
-        // drops foreign key for table `{{%product}}`
-        \$this->dropForeignKey(
-            '{{%fk-test-product_id}}',
-            '{{%test}}'
-        );
-
-        // drops index for column `product_id`
-        \$this->dropIndex(
-            '{{%idx-test-product_id}}',
-            '{{%test}}'
-        );
-
-        // drops foreign key for table `{{%user_order}}`
-        \$this->dropForeignKey(
-            '{{%fk-test-order_id}}',
-            '{{%test}}'
-        );
-
-        // drops index for column `order_id`
-        \$this->dropIndex(
-            '{{%idx-test-order_id}}',
-            '{{%test}}'
-        );
-
-        \$this->dropColumn('{{%test}}', 'user_id');
-        \$this->dropColumn('{{%test}}', 'product_id');
-        \$this->dropColumn('{{%test}}', 'order_id');
-        \$this->dropColumn('{{%test}}', 'created_at');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-    }
-
-    public function testGenerateDropColumnMigration()
-    {
-        $migrationName = 'drop_columns_from_test';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-            'fields' => 'title:string(10):notNull,body:text:notNull,price:money(11,2):notNull,created_at:dateTime'
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles dropping columns from table `test`.
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'price');
-        \$this->dropColumn('test', 'created_at');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'price', \$this->money(11,2)->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-    }
-
-    public function testGenerateCreateJunctionMigration()
-    {
-        $migrationName = 'create_junction_post_and_tag';
-        $class = 'm' . gmdate('ymd_His') . '_' . $migrationName;
-        $this->runMigrateControllerAction('create', [
-            $migrationName,
-        ]);
-        $file = $this->parseNameClassMigration($class);
-
-        $code = <<<CODE
-<?php
-
-use yii\db\Migration;
-
-/**
- * Handles the creation for table `post_tag`.
- * Has foreign keys to the tables:
- *
- * - `post`
- * - `tag`
- */
-class {$class} extends Migration
-{
-    /**
-     * @inheritdoc
-     */
-    public function up()
-    {
-        \$this->createTable('post_tag', [
-            'post_id' => \$this->integer(),
-            'tag_id' => \$this->integer(),
-            'PRIMARY KEY(post_id, tag_id)',
-        ]);
-
-        // creates index for column `post_id`
-        \$this->createIndex(
-            'idx-post_tag-post_id',
-            'post_tag',
-            'post_id'
-        );
-
-        // add foreign key for table `post`
-        \$this->addForeignKey(
-            'fk-post_tag-post_id',
-            'post_tag',
-            'post_id',
-            'post',
-            'id',
-            'CASCADE'
-        );
-
-        // creates index for column `tag_id`
-        \$this->createIndex(
-            'idx-post_tag-tag_id',
-            'post_tag',
-            'tag_id'
-        );
-
-        // add foreign key for table `tag`
-        \$this->addForeignKey(
-            'fk-post_tag-tag_id',
-            'post_tag',
-            'tag_id',
-            'tag',
-            'id',
-            'CASCADE'
-        );
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function down()
-    {
-        // drops foreign key for table `post`
-        \$this->dropForeignKey(
-            'fk-post_tag-post_id',
-            'post_tag'
-        );
-
-        // drops index for column `post_id`
-        \$this->dropIndex(
-            'idx-post_tag-post_id',
-            'post_tag'
-        );
-
-        // drops foreign key for table `tag`
-        \$this->dropForeignKey(
-            'fk-post_tag-tag_id',
-            'post_tag'
-        );
-
-        // drops index for column `tag_id`
-        \$this->dropIndex(
-            'idx-post_tag-tag_id',
-            'post_tag'
-        );
-
-        \$this->dropTable('post_tag');
-    }
-}
-
-CODE;
-        $this->assertEqualsWithoutLE($code, $file);
-    }
-
     public function testUp()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_up1');
+        $this->createMigration('test_up2');
 
         $this->runMigrateControllerAction('up');
 
-        $this->assertMigrationHistory(['base', 'test1', 'test2']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_up1', 'm*_test_up2']);
     }
 
     /**
@@ -1227,12 +223,12 @@ CODE;
      */
     public function testUpCount()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_down1');
+        $this->createMigration('test_down2');
 
         $this->runMigrateControllerAction('up', [1]);
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_down1']);
     }
 
     /**
@@ -1240,13 +236,13 @@ CODE;
      */
     public function testDownCount()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_down_count1');
+        $this->createMigration('test_down_count2');
 
         $this->runMigrateControllerAction('up');
         $this->runMigrateControllerAction('down', [1]);
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_down_count1']);
     }
 
     /**
@@ -1254,13 +250,13 @@ CODE;
      */
     public function testDownAll()
     {
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_down_all1');
+        $this->createMigration('test_down_all2');
 
         $this->runMigrateControllerAction('up');
         $this->runMigrateControllerAction('down', ['all']);
 
-        $this->assertMigrationHistory(['base']);
+        $this->assertMigrationHistory(['m*_base']);
     }
 
     /**
@@ -1271,13 +267,13 @@ CODE;
         $output = $this->runMigrateControllerAction('history');
         $this->assertContains('No migration', $output);
 
-        $this->createMigration('test1');
-        $this->createMigration('test2');
+        $this->createMigration('test_history1');
+        $this->createMigration('test_history2');
         $this->runMigrateControllerAction('up');
 
         $output = $this->runMigrateControllerAction('history');
-        $this->assertContains('_test1', $output);
-        $this->assertContains('_test2', $output);
+        $this->assertContains('_test_history1', $output);
+        $this->assertContains('_test_history2', $output);
     }
 
     /**
@@ -1285,25 +281,35 @@ CODE;
      */
     public function testNew()
     {
-        $this->createMigration('test1');
+        $this->createMigration('test_new1');
 
         $output = $this->runMigrateControllerAction('new');
-        $this->assertContains('_test1', $output);
+        $this->assertContains('_test_new1', $output);
 
         $this->runMigrateControllerAction('up');
 
         $output = $this->runMigrateControllerAction('new');
-        $this->assertNotContains('_test1', $output);
+        $this->assertNotContains('_test_new1', $output);
     }
 
     public function testMark()
     {
         $version = '010101_000001';
-        $this->createMigration('test1', $version);
+        $this->createMigration('test_mark1', $version);
 
         $this->runMigrateControllerAction('mark', [$version]);
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
+    }
+
+    public function testTo()
+    {
+        $version = '020202_000001';
+        $this->createMigration('to1', $version);
+
+        $this->runMigrateControllerAction('to', [$version]);
+
+        $this->assertMigrationHistory(['m*_base', 'm*_to1']);
     }
 
     /**
@@ -1311,11 +317,153 @@ CODE;
      */
     public function testRedo()
     {
-        $this->createMigration('test1');
+        $this->createMigration('test_redo1');
         $this->runMigrateControllerAction('up');
 
         $this->runMigrateControllerAction('redo');
 
-        $this->assertMigrationHistory(['base', 'test1']);
+        $this->assertMigrationHistory(['m*_base', 'm*_test_redo1']);
+    }
+
+    // namespace :
+
+    /**
+     * @depends testCreate
+     */
+    public function testNamespaceCreate()
+    {
+        // default namespace apply :
+        $migrationName = 'testDefaultNamespace';
+        $this->runMigrateControllerAction('create', [$migrationName], [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $fileContent = file_get_contents($files[0]);
+        $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
+        $this->assertRegExp('/class M[0-9]{12}' . ucfirst($migrationName) . '/s', $fileContent);
+        unlink($files[0]);
+
+        // namespace specify :
+        $migrationName = 'test_namespace_specify';
+        $this->runMigrateControllerAction('create', [$this->migrationNamespace . '\\' . $migrationName], [
+            'migrationPath' => $this->migrationPath,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $fileContent = file_get_contents($files[0]);
+        $this->assertContains("namespace {$this->migrationNamespace};", $fileContent);
+        unlink($files[0]);
+
+        // no namespace:
+        $migrationName = 'test_no_namespace';
+        $this->runMigrateControllerAction('create', [$migrationName], [
+            'migrationPath' => $this->migrationPath,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+        $files = FileHelper::findFiles($this->migrationPath);
+        $fileContent = file_get_contents($files[0]);
+        $this->assertNotContains("namespace {$this->migrationNamespace};", $fileContent);
+    }
+
+    /**
+     * @depends testUp
+     */
+    public function testNamespaceUp()
+    {
+        $this->createNamespaceMigration('nsTest1');
+        $this->createNamespaceMigration('nsTest2');
+
+        $this->runMigrateControllerAction('up', [], [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ]);
+
+        $this->assertMigrationHistory([
+            'm*_*_base',
+            $this->migrationNamespace . '\\M*NsTest1',
+            $this->migrationNamespace . '\\M*NsTest2',
+        ]);
+    }
+
+    /**
+     * @depends testNamespaceUp
+     * @depends testDownCount
+     */
+    public function testNamespaceDownCount()
+    {
+        $this->createNamespaceMigration('down1');
+        $this->createNamespaceMigration('down2');
+
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->runMigrateControllerAction('down', [1], $controllerConfig);
+
+        $this->assertMigrationHistory([
+            'm*_*_base',
+            $this->migrationNamespace . '\\M*Down1',
+        ]);
+    }
+
+    /**
+     * @depends testNamespaceUp
+     * @depends testHistory
+     */
+    public function testNamespaceHistory()
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+
+        $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
+        $this->assertContains('No migration', $output);
+
+        $this->createNamespaceMigration('history1');
+        $this->createNamespaceMigration('history2');
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+
+        $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
+        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*History1/s', $output);
+        $this->assertRegExp('/' . preg_quote($this->migrationNamespace) . '.*History2/s', $output);
+    }
+
+    /**
+     * @depends testMark
+     */
+    public function testNamespaceMark()
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+
+        $version = '010101000001';
+        $this->createNamespaceMigration('mark1', $version);
+
+        $this->runMigrateControllerAction('mark', [$this->migrationNamespace . '\\M' . $version], $controllerConfig);
+
+        $this->assertMigrationHistory(['m*_base', $this->migrationNamespace . '\\M*Mark1']);
+    }
+
+    /**
+     * @depends testTo
+     */
+    public function testNamespaceTo()
+    {
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+
+        $version = '020202000020';
+        $this->createNamespaceMigration('to1', $version);
+
+        $this->runMigrateControllerAction('to', [$this->migrationNamespace . '\\M' . $version], $controllerConfig);
+
+        $this->assertMigrationHistory(['m*_base', $this->migrationNamespace . '\\M*To1']);
     }
 }

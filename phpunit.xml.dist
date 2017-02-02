@@ -11,6 +11,9 @@
 			</testsuite>
 		</testsuites>
 		<filter>
+            <whitelist>
+                <directory suffix=".php">framework/</directory>
+            </whitelist>
 			<blacklist>
 				<file>framework/helpers/Json.php</file>
 				<file>framework/helpers/StringHelper.php</file>

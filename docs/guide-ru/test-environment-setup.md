@@ -20,7 +20,7 @@ Yii 2 официально поддерживает интеграцию с фр
 Для локальной установки используйте следующие команды:
 
 ```
-composer require "codeception/codeception=2.0.*"
+composer require "codeception/codeception=2.1.*"
 composer require "codeception/specify=*"
 composer require "codeception/verify=*"
 ```
@@ -28,7 +28,7 @@ composer require "codeception/verify=*"
 Для глобальной установки необходимо добавить директиву `global`:
 
 ```
-composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/codeception=2.1.*"
 composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```

@@ -19,6 +19,8 @@ use yii\helpers\Html;
  *
  * It provides features like sorting, paging and also filtering the data.
  *
+ * For more details and usage information on BaseListView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -69,7 +71,9 @@ abstract class BaseListView extends Widget
      */
     public $summaryOptions = ['class' => 'summary'];
     /**
-     * @var boolean whether to show the list view if [[dataProvider]] returns no data.
+     * @var bool whether to show an empty list view if [[dataProvider]] returns no data.
+     * The default value is false which displays an element according to the `emptyText`
+     * and `emptyTextOptions` properties.
      */
     public $showOnEmpty = false;
     /**
@@ -140,7 +144,7 @@ abstract class BaseListView extends Widget
      * Renders a section of the specified name.
      * If the named section is not supported, false will be returned.
      * @param string $name the section name, e.g., `{summary}`, `{items}`.
-     * @return string|boolean the rendering result of the section, or false if the named section is not supported.
+     * @return string|bool the rendering result of the section, or false if the named section is not supported.
      */
     public function renderSection($name)
     {

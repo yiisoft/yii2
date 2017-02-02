@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This is the configuration file for the Yii2 unit tests.
+ * This is the configuration file for the Yii 2 unit tests.
  * You can override configuration values by creating a `config.local.php` file
  * and manipulate the `$config` variable.
  * For example to change MySQL username and password your `config.local.php` should
@@ -42,6 +42,12 @@ $config = [
             'username' => 'postgres',
             'password' => 'postgres',
             'fixture' => __DIR__ . '/postgres.sql',
+        ],
+        'oci' => [
+            'dsn' => 'oci:dbname=LOCAL_XE;charset=AL32UTF8;',
+            'username' => '',
+            'password' => '',
+            'fixture' => __DIR__ . '/oci.sql',
         ],
     ],
 ];

@@ -5,9 +5,9 @@ namespace yiiunit\data\ar;
 /**
  * Class Order
  *
- * @property integer $id
- * @property integer $customer_id
- * @property integer $created_at
+ * @property int $id
+ * @property int $customer_id
+ * @property int $created_at
  * @property string $total
  */
 class Order extends ActiveRecord
@@ -22,6 +22,18 @@ class Order extends ActiveRecord
     public function getCustomer()
     {
         return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
+    }
+
+    public function getCustomerJoinedWithProfile()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id'])
+            ->joinWith('profile');
+    }
+
+    public function getCustomerJoinedWithProfileIndexOrdered()
+    {
+        return $this->hasMany(Customer::className(), ['id' => 'customer_id'])
+            ->joinWith('profile')->orderBy(['profile.description' => SORT_ASC])->indexBy('name');
     }
 
     public function getCustomer2()
@@ -166,6 +178,13 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
+    public function getLimitedItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->onCondition(['item.id' => [3, 5]])
+            ->via('orderItems');
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
@@ -182,6 +201,13 @@ class Order extends ActiveRecord
         return [
             'customer_id' => 'Customer',
             'total' => 'Invoice Total',
+        ];
+    }
+
+    public function activeAttributes()
+    {
+        return [
+            0 => 'customer_id'
         ];
     }
 }

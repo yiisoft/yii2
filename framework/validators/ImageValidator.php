@@ -27,25 +27,25 @@ class ImageValidator extends FileValidator
      */
     public $notImage;
     /**
-     * @var integer the minimum width in pixels.
+     * @var int the minimum width in pixels.
      * Defaults to null, meaning no limit.
      * @see underWidth for the customized message used when image width is too small.
      */
     public $minWidth;
     /**
-     * @var integer the maximum width in pixels.
+     * @var int the maximum width in pixels.
      * Defaults to null, meaning no limit.
      * @see overWidth for the customized message used when image width is too big.
      */
     public $maxWidth;
     /**
-     * @var integer the minimum height in pixels.
+     * @var int the minimum height in pixels.
      * Defaults to null, meaning no limit.
      * @see underHeight for the customized message used when image height is too small.
      */
     public $minHeight;
     /**
-     * @var integer the maximum width in pixels.
+     * @var int the maximum width in pixels.
      * Defaults to null, meaning no limit.
      * @see overWidth for the customized message used when image height is too big.
      */
@@ -115,11 +115,11 @@ class ImageValidator extends FileValidator
     /**
      * @inheritdoc
      */
-    protected function validateValue($file)
+    protected function validateValue($value)
     {
-        $result = parent::validateValue($file);
+        $result = parent::validateValue($value);
 
-        return empty($result) ? $this->validateImage($file) : $result;
+        return empty($result) ? $this->validateImage($value) : $result;
     }
 
     /**
@@ -172,7 +172,7 @@ class ImageValidator extends FileValidator
     /**
      * @inheritdoc
      */
-    protected function getClientOptions($model, $attribute)
+    public function getClientOptions($model, $attribute)
     {
         $options = parent::getClientOptions($model, $attribute);
 
@@ -180,7 +180,7 @@ class ImageValidator extends FileValidator
 
         if ($this->notImage !== null) {
             $options['notImage'] = Yii::$app->getI18n()->format($this->notImage, [
-                'attribute' => $label
+                'attribute' => $label,
             ], Yii::$app->language);
         }
 
@@ -188,7 +188,7 @@ class ImageValidator extends FileValidator
             $options['minWidth'] = $this->minWidth;
             $options['underWidth'] = Yii::$app->getI18n()->format($this->underWidth, [
                 'attribute' => $label,
-                'limit' => $this->minWidth
+                'limit' => $this->minWidth,
             ], Yii::$app->language);
         }
 
@@ -196,7 +196,7 @@ class ImageValidator extends FileValidator
             $options['maxWidth'] = $this->maxWidth;
             $options['overWidth'] = Yii::$app->getI18n()->format($this->overWidth, [
                 'attribute' => $label,
-                'limit' => $this->maxWidth
+                'limit' => $this->maxWidth,
             ], Yii::$app->language);
         }
 
@@ -204,7 +204,7 @@ class ImageValidator extends FileValidator
             $options['minHeight'] = $this->minHeight;
             $options['underHeight'] = Yii::$app->getI18n()->format($this->underHeight, [
                 'attribute' => $label,
-                'limit' => $this->minHeight
+                'limit' => $this->minHeight,
             ], Yii::$app->language);
         }
 
@@ -212,7 +212,7 @@ class ImageValidator extends FileValidator
             $options['maxHeight'] = $this->maxHeight;
             $options['overHeight'] = Yii::$app->getI18n()->format($this->overHeight, [
                 'attribute' => $label,
-                'limit' => $this->maxHeight
+                'limit' => $this->maxHeight,
             ], Yii::$app->language);
         }
 

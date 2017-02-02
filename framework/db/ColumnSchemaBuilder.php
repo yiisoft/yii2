@@ -34,17 +34,18 @@ class ColumnSchemaBuilder extends Object
      */
     protected $type;
     /**
-     * @var integer|string|array column size or precision definition. This is what goes into the parenthesis after
+     * @var int|string|array column size or precision definition. This is what goes into the parenthesis after
      * the column type. This can be either a string, an integer or an array. If it is an array, the array values will
      * be joined into a string separated by comma.
      */
     protected $length;
     /**
-     * @var boolean whether the column is not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * @var bool|null whether the column is or not nullable. If this is `true`, a `NOT NULL` constraint will be added.
+     * If this is `false`, a `NULL` constraint will be added.
      */
-    protected $isNotNull = false;
+    protected $isNotNull;
     /**
-     * @var boolean whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
+     * @var bool whether the column values should be unique. If this is `true`, a `UNIQUE` constraint will be added.
      */
     protected $isUnique = false;
     /**
@@ -56,7 +57,12 @@ class ColumnSchemaBuilder extends Object
      */
     protected $default;
     /**
-     * @var boolean whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
+     * @var mixed SQL string to be appended to column schema definition.
+     * @since 2.0.9
+     */
+    protected $append;
+    /**
+     * @var bool whether the column values should be unsigned. If this is `true`, an `UNSIGNED` keyword will be added.
      * @since 2.0.7
      */
     protected $isUnsigned = false;
@@ -66,10 +72,12 @@ class ColumnSchemaBuilder extends Object
      */
     protected $after;
     /**
-     * @var boolean whether this column is to be inserted at the beginning of the table.
+     * @var bool whether this column is to be inserted at the beginning of the table.
      * @since 2.0.8
      */
     protected $isFirst;
+
+
     /**
      * @var array mapping of abstract column types (keys) to type categories (values).
      * @since 2.0.8
@@ -108,12 +116,11 @@ class ColumnSchemaBuilder extends Object
      */
     public $comment;
 
-
     /**
      * Create a column schema builder instance giving the type and value precision.
      *
      * @param string $type type of the column. See [[$type]].
-     * @param integer|string|array $length length or precision of the column. See [[$length]].
+     * @param int|string|array $length length or precision of the column. See [[$length]].
      * @param \yii\db\Connection $db the current database connection. See [[$db]].
      * @param array $config name-value pairs that will be used to initialize the object properties
      */
@@ -132,6 +139,17 @@ class ColumnSchemaBuilder extends Object
     public function notNull()
     {
         $this->isNotNull = true;
+        return $this;
+    }
+
+    /**
+     * Adds a `NULL` constraint to the column
+     * @return $this
+     * @since 2.0.9
+     */
+    public function null()
+    {
+        $this->isNotNull = false;
         return $this;
     }
 
@@ -163,6 +181,10 @@ class ColumnSchemaBuilder extends Object
      */
     public function defaultValue($default)
     {
+        if ($default === null) {
+            $this->null();
+        }
+
         $this->default = $default;
         return $this;
     }
@@ -236,6 +258,19 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Specify additional SQL to be appended to column definition.
+     * Position modifiers will be appended after column definition in databases that support them.
+     * @param string $sql the SQL string to be appended.
+     * @return $this
+     * @since 2.0.9
+     */
+    public function append($sql)
+    {
+        $this->append = $sql;
+        return $this;
+    }
+
+    /**
      * Builds the full string for the column's schema
      * @return string
      */
@@ -243,10 +278,10 @@ class ColumnSchemaBuilder extends Object
     {
         switch ($this->getTypeCategory()) {
             case self::CATEGORY_PK:
-                $format = '{type}{check}{comment}';
+                $format = '{type}{check}{comment}{append}';
                 break;
             default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}';
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
         return $this->buildCompleteString($format);
     }
@@ -268,11 +303,18 @@ class ColumnSchemaBuilder extends Object
 
     /**
      * Builds the not null constraint for the column.
-     * @return string returns 'NOT NULL' if [[isNotNull]] is true, otherwise it returns an empty string.
+     * @return string returns 'NOT NULL' if [[isNotNull]] is true,
+     * 'NULL' if [[isNotNull]] is false or an empty string otherwise.
      */
     protected function buildNotNullString()
     {
-        return $this->isNotNull ? ' NOT NULL' : '';
+        if ($this->isNotNull === true) {
+            return ' NOT NULL';
+        } elseif ($this->isNotNull === false) {
+            return ' NULL';
+        } else {
+            return '';
+        }
     }
 
     /**
@@ -291,7 +333,7 @@ class ColumnSchemaBuilder extends Object
     protected function buildDefaultString()
     {
         if ($this->default === null) {
-            return '';
+            return $this->isNotNull === false ? ' DEFAULT NULL' : '';
         }
 
         $string = ' DEFAULT ';
@@ -356,13 +398,23 @@ class ColumnSchemaBuilder extends Object
     }
 
     /**
+     * Builds the custom string that's appended to column definition.
+     * @return string custom string to append.
+     * @since 2.0.9
+     */
+    protected function buildAppendString()
+    {
+        return $this->append !== null ? ' ' . $this->append : '';
+    }
+
+    /**
      * Returns the category of the column type.
      * @return string a string containing the column type category name.
      * @since 2.0.8
      */
     protected function getTypeCategory()
     {
-        return $this->categoryMap[$this->type];
+        return isset($this->categoryMap[$this->type]) ? $this->categoryMap[$this->type] : null;
     }
 
     /**
@@ -392,9 +444,8 @@ class ColumnSchemaBuilder extends Object
             '{default}' => $this->buildDefaultString(),
             '{check}' => $this->buildCheckString(),
             '{comment}' => $this->buildCommentString(),
-            '{pos}' => ($this->isFirst) ?
-                        $this->buildFirstString() :
-                            $this->buildAfterString(),
+            '{pos}' => $this->isFirst ? $this->buildFirstString() : $this->buildAfterString(),
+            '{append}' => $this->buildAppendString(),
         ];
         return strtr($format, $placeholderValues);
     }

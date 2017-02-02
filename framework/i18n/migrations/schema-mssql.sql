@@ -8,8 +8,11 @@
  * @since 2.0.7
  */
 
-drop table if exists [source_message];
-drop table if exists [message];
+if object_id('[source_message]', 'U') is not null
+    drop table [source_message];
+
+if object_id('[message]', 'U') is not null
+    drop table [message];
 
 CREATE TABLE [source_message]
 (
@@ -27,3 +30,6 @@ CREATE TABLE [message]
 
 ALTER TABLE [message] ADD CONSTRAINT [pk_message_id_language] PRIMARY KEY ([id], [language]);
 ALTER TABLE [message] ADD CONSTRAINT [fk_message_source_message] FOREIGN KEY ([id]) REFERENCES [source_message] ([id]) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+CREATE INDEX [idx_message_language] on [message] ([language]);
+CREATE INDEX [idx_source_message_category] on [source_message] ([category]);

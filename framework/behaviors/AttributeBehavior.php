@@ -42,6 +42,9 @@ use yii\db\ActiveRecord;
  * }
  * ```
  *
+ * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
+ * not be validated, i.e. they should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
+ *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -62,10 +65,9 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $attributes = [];
-
     /**
      * @var mixed the value that will be assigned to the current attributes. This can be an anonymous function,
-     * callable in array format (e.g. `[$this, 'methodName']`), an [[Expression]] object representing a DB expression
+     * callable in array format (e.g. `[$this, 'methodName']`), an [[\yii\db\Expression|Expression]] object representing a DB expression
      * (e.g. `new Expression('NOW()')`), scalar, string or an arbitrary value. If the former, the return value of the
      * function will be assigned to the attributes.
      * The signature of the function should be as follows,
@@ -78,13 +80,13 @@ class AttributeBehavior extends Behavior
      * ```
      */
     public $value;
-
     /**
-     * @var boolean whether to skip this behavior when the `$owner` has not been
+     * @var bool whether to skip this behavior when the `$owner` has not been
      * modified
      * @since 2.0.8
      */
     public $skipUpdateOnClean = true;
+
 
     /**
      * @inheritdoc

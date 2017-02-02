@@ -71,7 +71,7 @@ class ConsoleTest extends TestCase
         $this->assertEquals(str_repeat('a', 25), $output);
     }
 
-/*	public function testScreenSize()
+    /*public function testScreenSize()
     {
         for ($i = 1; $i < 20; $i++) {
             echo implode(', ', Console::getScreenSize(true)) . "\n";

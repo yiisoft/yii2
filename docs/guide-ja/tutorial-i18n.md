@@ -48,6 +48,9 @@ return [
 \Yii::$app->language = 'zh-CN';
 ```
 
+> Tip: ソース言語がコードの部分によって異なる場合は、メッセージソースごとにソース言語をオーバーライドすることが出来ます。
+> これについては、次の説で説明します。
+
 
 ## メッセージ翻訳 <span id="message-translation"></span>
 
@@ -481,10 +484,10 @@ echo \Yii::t('app', '{name} is a {gender} and {gender,select,female{she} male{he
 >
 > 日本語出力: 'Snoopy は dog であり、それは Yii を愛しています。'
 
-### デフォルトの翻訳を指定する <span id="default-translation"></span>
+### デフォルトのメッセージソースを指定する <span id="default-message-source"></span>
 
-他の翻訳にマッチしないカテゴリのフォールバックとして使用されるデフォルトの翻訳を指定することが出来ます。
-この翻訳は `*` によってマークされなければなりません。
+構成されたカテゴリのどれにもマッチしないカテゴリのためのフォールバックとして使用される、デフォルトのメッセージソースを指定することが出来ます。
+これは、ワイルドカードのカテゴリ `*` を構成することによって可能になります。
 そうするためには、アプリケーションの構成情報に次のように追加します。
 
 ```php
@@ -683,7 +686,7 @@ class TranslationEventHandler
 
 ### `message` コマンドを使う <a name="message-command"></a>
 
-翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
+翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
 追加のオプションについてはそれぞれのクラスを参照してください。
 
 まず最初に、構成情報ファイルを作成する必要があります。
