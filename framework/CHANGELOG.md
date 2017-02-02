@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Bug #11502: Fixed `yii\console\controllers\MessageController` to properly populate missing languages in case of extraction with "db" format (bizley)
+- Bug #13489: Fixed button names in ActionColumn to contain proper `Yii::t()` tags and restored missing translations for `ja` and `ru` (cebe, softark)
 
 
 2.0.11 February 01, 2017
