@@ -529,6 +529,12 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- wait for your changes to be propagated to the repo and create a tag $version on  https://github.com/yiisoft/yii2-framework\n\n");
+        $this->stdout("    git clone git@github.com:yiisoft/yii2-framework.git\n");
+        $this->stdout("    cd yii2-framework/\n");
+        $this->stdout("    export RELEASECOMMIT=$(git log --oneline |grep $version |grep -Po \"^[0-9a-f]+\")\n");
+        $this->stdout("    git tag -s $version -m \"version $version\" \$RELEASECOMMIT\n");
+        $this->stdout("    git tag --verify $version\n");
+        $this->stdout("    git push --tags\n\n");
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion['framework']} and {$nextVersion2['framework']}: https://github.com/yiisoft/yii2/milestones\n");
         $this->stdout("- create a release on github.\n");
         $this->stdout("- release news and announcement.\n");
