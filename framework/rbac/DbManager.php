@@ -631,7 +631,12 @@ class DbManager extends BaseManager
             ->from($this->ruleTable)
             ->where(['name' => $name])
             ->one($this->db);
-        return $row === false ? null : unserialize($row['data']);
+        $result = $row['data'];
+        if (is_resource($result)) {
+            $result = stream_get_contents($result);
+        }
+        return $row === false ? null : unserialize($result);
+
     }
 
     /**
