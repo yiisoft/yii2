@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
-- no changes in this release.
+- Bug #13501: Fixed `yii\rbac\DbManager::getRule()` and `yii\rbac\DbManager::getRules()` to properly handle resource data came from Rule table. (StalkAlex)
 
 
 2.0.11.1 February 02, 2017
