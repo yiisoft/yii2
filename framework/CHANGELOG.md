@@ -1,10 +1,10 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.12 under development
+2.0.11.2 under development
 --------------------------
 
-- no changes in this release.
+- Bug #13508: Fixed duplicate attachment of behavior BC break (cebe)
 
 
 2.0.11.1 February 02, 2017
