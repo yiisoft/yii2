@@ -1,11 +1,11 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.12 under development
+2.0.11.2 under development
 --------------------------
 
 - Bug #13501: Fixed `yii\rbac\DbManager::getRule()` and `yii\rbac\DbManager::getRules()` to properly handle resource data came from Rule table. (StalkAlex)
-
+- Bug #13508: Fixed duplicate attachment of behavior BC break (cebe)
 
 2.0.11.1 February 02, 2017
 ------------------------
