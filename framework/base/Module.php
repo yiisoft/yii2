@@ -573,6 +573,12 @@ class Module extends ServiceLocator
             $route = '';
         }
 
+        foreach ($this->getBehaviors() as $behavior) {
+            if ($behavior instanceof ModuleBehaviorInterface) {
+                $this->controllerMap = array_merge($this->controllerMap, $behavior->controllers());
+            }
+        }
+
         // module and controller map take precedence
         if (isset($this->controllerMap[$id])) {
             $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
