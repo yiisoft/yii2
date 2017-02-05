@@ -8,7 +8,7 @@
 namespace yii\base;
 
 /**
- * {@inheritdoc}
+ * @inheritdoc
  *
  * @author Robert Korulczyk <robert@korulczyk.pl>
  * @since 2.0
