@@ -14,7 +14,7 @@ namespace yii\base;
 interface ControllerBehaviorInterface
 {
     /**
-     * @return array the view path that may be prefixed to a relative view name.
+     * @return array the array of actions to be included into the owner.
      */
     public function getActions();
 }
