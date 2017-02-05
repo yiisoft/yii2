@@ -224,7 +224,7 @@ class Controller extends Component implements ViewContextInterface
         foreach ($this->getBehaviors() as $behavior) {
             if ($behavior instanceof ControllerBehaviorInterface) {
                 $actions = $behavior->actions();
-                $actionMap = array_repplace_recursive($actionMap, $actions);
+                $actionMap = array_replace_recursive($actionMap, $actions);
             }
         }
 
