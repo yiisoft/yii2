@@ -290,7 +290,7 @@ Dans les versions de votre extension, en plus des fichiers de code, vous devez e
 * Un fichier *changelog* (journal des modifications) dans le dossier racine du paquet : il liste les changements apportés dans chacune des versions. Ce fichier peut être écrit dans le format Markdown et nommé `changelog.md`.
 * Un fichier *upgrade* (mise à jour) dans le dossier racine du paquet : il donne les instructions sur la manière de mettre l'extension à jour en partant d'une version précédente.   Ce fichier peut être écrit dans le format Markdown et nommé `upgrade.md`.
 * Tutorials, demos, screenshots, etc.: ces derniers sont nécessaires si votre extension fournit de nombreuses fonctionnalités qui ne peuvent être couvertes dans le fichier readme. 
-* Une documentation de l'API : votre code doit être bien documenté pour permettre aux autres personnes de le lire plus facilement et de le comprendre. Vous pouvez faire référence au [fichier de la classe Object](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) pour savoir comment documenter votre code. 
+* Une documentation de l'API : votre code doit être bien documenté pour permettre aux autres personnes de le lire plus facilement et de le comprendre. Vous pouvez faire référence au [fichier de la classe BaseObject](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) pour savoir comment documenter votre code. 
  
 > Info: les commentaires de votre code peuvent être écrits dans le format Markdown. L'extension `yiisoft/yii2-apidoc` vous fournit un outil pour générer une documentation d'API agréable et basée sur les commentaires de votre code. 
 
