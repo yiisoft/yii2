@@ -573,6 +573,7 @@ class Module extends ServiceLocator
             $route = '';
         }
 
+        $this->ensureBehaviors();
         foreach ($this->getBehaviors() as $behavior) {
             if ($behavior instanceof ModuleBehaviorInterface) {
                 $this->controllerMap = array_replace_recursive($this->controllerMap, $behavior->controllers());
