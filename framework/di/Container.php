@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
  * ```php
  * namespace app\models;
  *
- * use yii\base\Object;
+ * use yii\base\BaseObject;
  * use yii\db\Connection;
  * use yii\di\Container;
  *
@@ -45,7 +45,7 @@ use yii\helpers\ArrayHelper;
  *     function findUser();
  * }
  *
- * class UserFinder extends Object implements UserFinderInterface
+ * class UserFinder extends BaseObject implements UserFinderInterface
  * {
  *     public $db;
  *
@@ -60,7 +60,7 @@ use yii\helpers\ArrayHelper;
  *     }
  * }
  *
- * class UserLister extends Object
+ * class UserLister extends BaseObject
  * {
  *     public $finder;
  *
