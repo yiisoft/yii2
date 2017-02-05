@@ -195,7 +195,7 @@ redirect the browser accordingly.
 > Info: Yii comes with a `yii.js` JavaScript file which provides a set of commonly used JavaScript utilities,
   including browser redirection based on the `X-Redirect` header. Therefore, if you are using this JavaScript file
   (by registering the [[yii\web\YiiAsset]] asset bundle), you do not need to write anything to support AJAX redirection.
-
+  More information about `yii.js` can be found in the [Client Scripts Section](output-client-scripts.md#yii.js).
 
 ## Sending Files <span id="sending-files"></span>
 

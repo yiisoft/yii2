@@ -163,6 +163,7 @@ class ActiveField extends Component
      */
     private $_skipLabelFor = false;
 
+
     /**
      * PHP magic method that returns the string representation of this object.
      * @return string the string representation of this object.
@@ -713,10 +714,14 @@ class ActiveField extends Component
         $config['model'] = $this->model;
         $config['attribute'] = $this->attribute;
         $config['view'] = $this->form->getView();
-        if (isset($config['options']) && isset(class_parents($class)['yii\widgets\InputWidget'])) {
-        	$this->addAriaAttributes($config['options']);
-            $this->adjustLabelFor($config['options']);
+        if (is_subclass_of($class, 'yii\widgets\InputWidget')) {
+            $config['field'] = $this;
+            if (isset($config['options'])) {
+                $this->addAriaAttributes($config['options']);
+                $this->adjustLabelFor($config['options']);
+            }
         }
+
         $this->parts['{input}'] = $class::widget($config);
 
         return $this;

@@ -40,6 +40,7 @@ return [
     'Please fix the following errors:' => 'Silahkan perbaiki kesalahan berikut:',
     'Please upload a file.' => 'Silahkan mengunggah berkas.',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Menampilkan <b>{begin, number}-{end, number}</b> dari <b>{totalCount, number}</b> {totalCount, plural, one{item} other{item}}.',
+    'The combination {values} of {attributes} has already been taken.' => 'Kombinasi {values} dari {attributes} telah dipergunakan.',
     'The file "{file}" is not an image.' => 'File bukan berupa gambar.',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Berkas "{file}" terlalu besar. Ukurannya tidak boleh lebih besar dari {formattedLimit}.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Berkas "{file}" terlalu kecil. Ukurannya tidak boleh lebih kecil dari {formattedLimit}.',

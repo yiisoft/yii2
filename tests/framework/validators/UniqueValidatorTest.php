@@ -327,7 +327,6 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $expected = ['val_attr_b' => 'test value a'];
         $this->assertEquals($expected, $result);
 
-
         $targetAttribute = ['val_attr_b', 'val_attr_a' => 'val_attr_c'];
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];

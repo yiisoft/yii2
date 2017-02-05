@@ -37,6 +37,12 @@ use yii\helpers\Html;
 class InputWidget extends Widget
 {
     /**
+     * @var \yii\widgets\ActiveField active input field, which triggers this widget rendering.
+     * This field will be automatically filled up in case widget instance is created via [[\yii\widgets\ActiveField::widget()]].
+     * @since 2.0.11
+     */
+    public $field;
+    /**
      * @var Model the data model that this widget is associated with.
      */
     public $model;

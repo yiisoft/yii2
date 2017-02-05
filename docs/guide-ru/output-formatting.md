@@ -17,7 +17,7 @@ Formatter может быть использован двумя различны
    echo Yii::$app->formatter->asEmail('cebe@example.com'); // выведет: <a href="mailto:cebe@example.com">cebe@example.com</a>
    echo Yii::$app->formatter->asBoolean(true); // выведет: Yes
    // он также умеет отображать null значения:
-   echo Yii::$app->formatter->asDate(null); // выведет: (Not set)
+   echo Yii::$app->formatter->asDate(null); // выведет: (not set)
    ```
 
 2. Используя метод [[yii\i18n\Formatter::format()|format()]] и имя формата.
