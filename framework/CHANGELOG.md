@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #13501: Fixed `yii\rbac\DbManager::getRule()` and `yii\rbac\DbManager::getRules()` to properly handle resource data came from Rule table when using PostgreSQL (StalkAlex)
 - Bug #13508: Fixed duplicate attachment of behavior BC break (cebe)
-- Enh #13473: Add ControllerBehaviorInterface that allows behaviors who implement the interface to add actions to their owner. (derekisbusy)
+- Enh #13473: Add ControllerBehaviorInterface that allows behaviors which implement the interface to add actions to their owner. (derekisbusy)
 
 2.0.11.1 February 02, 2017
 ------------------------
