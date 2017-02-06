@@ -443,6 +443,12 @@ class UrlManagerCreateUrlTest extends TestCase
             $this->assertEquals("$prefix/?page=1", $url);
             $url = $manager->$method(['/front/site/index', 'page' => 1]);
             $this->assertEquals("$prefix/?page=1", $url);
+
+            // no match
+            $url = $manager->$method(['']);
+            $this->assertEquals("$prefix/", $url);
+            $url = $manager->$method(['/']);
+            $this->assertEquals("$prefix/", $url);
         };
 
         // normal rule
