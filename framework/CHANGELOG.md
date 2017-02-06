@@ -6,7 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #13501: Fixed `yii\rbac\DbManager::getRule()` and `yii\rbac\DbManager::getRules()` to properly handle resource data came from Rule table when using PostgreSQL (StalkAlex)
 - Bug #13508: Fixed duplicate attachment of behavior BC break (cebe)
-- Enh #13254: Core validators no longer require Yii::$app to be set. (sammousa)
+- Enh #13254: Core validators no longer require application instance in `Yii::$app` (sammousa)
 
 2.0.11.1 February 02, 2017
 ------------------------
