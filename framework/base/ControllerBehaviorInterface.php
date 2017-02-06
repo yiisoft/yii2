@@ -6,7 +6,7 @@
  */
 namespace yii\base;
 /**
- * ControllerBehaviorInterface is the class that should be implemented by behaviors who want to add actions to the controller.
+ * ControllerBehaviorInterface is the class that should be implemented by behaviors that want to add actions to the controller.
  *
  * @author Derek Gifford <derekisbusy@gmail.com>
  * @since 2.0.11.2
