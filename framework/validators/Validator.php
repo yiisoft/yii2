@@ -307,7 +307,7 @@ class Validator extends Component
         } else {
             $params['value'] = $value;
         }
-        $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+        $error = $this->format($message, $params);
 
         return false;
     }
@@ -414,7 +414,7 @@ class Validator extends Component
                 $params['value'] = $value;
             }
         }
-        $model->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
+        $model->addError($attribute, $this->format($message, $params));
     }
 
     /**
@@ -431,5 +431,26 @@ class Validator extends Component
         } else {
             return $value === null || $value === [] || $value === '';
         }
+    }
+
+    /**
+     * Formats a mesage using the I18N, or simple strtr if \Yii::$app is not available.
+     * Same implementation as used by \Yii::t
+     * @param string $message
+     * @param array $params
+     * @return string
+     */
+    protected function format($message, $params)
+    {
+        if (Yii::$app !== null) {
+            return \Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+        }
+
+        $placeholders = [];
+        foreach ((array) $params as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        return ($placeholders === []) ? $message : strtr($message, $placeholders);
     }
 }
