@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #13501: Fixed `yii\rbac\DbManager::getRule()` and `yii\rbac\DbManager::getRules()` to properly handle resource data came from Rule table when using PostgreSQL (StalkAlex)
 - Bug #13508: Fixed duplicate attachment of behavior BC break (cebe)
+- Bug #13533: Fixed BC break in `yii\validators\ExistValidator::$targetAttribute` (developeruz)
 
 2.0.11.1 February 02, 2017
 ------------------------
