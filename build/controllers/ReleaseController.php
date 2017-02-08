@@ -1021,9 +1021,15 @@ class ReleaseController extends Controller
                 case self::MINOR:
                     $parts[1]++;
                     $parts[2] = 0;
+                    if (isset($parts[3])) {
+                        unset($parts[3]);
+                    }
                     break;
                 case self::PATCH:
                     $parts[2]++;
+                    if (isset($parts[3])) {
+                        unset($parts[3]);
+                    }
                     break;
                 default:
                     throw new Exception('Unknown version type.');

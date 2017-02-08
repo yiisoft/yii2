@@ -125,6 +125,7 @@ class ExistValidator extends Validator
      * of the attribute currently being validated. You may use an array to validate the existence
      * of multiple columns at the same time. The array key is the name of the attribute with the value to validate,
      * the array value is the name of the database field to search.
+     * If the key and the value are the same, you can just specify the value.
      * @param \yii\base\Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
@@ -138,7 +139,7 @@ class ExistValidator extends Validator
             }
             $params = [];
             foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_int($k) ? $model->$attribute : $model->$k;
+                $params[$v] = is_int($k) ? $model->$v : $model->$k;
             }
         } else {
             $params = [$targetAttribute => $model->$attribute];
