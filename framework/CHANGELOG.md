@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
-- no changes in this release.
+- Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
 
 
 2.0.11.2 February 08, 2017
