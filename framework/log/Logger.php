@@ -35,7 +35,8 @@ use yii\base\Component;
  * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
  * read-only.
  * @property array $profiling The profiling results. Each element is an array consisting of these elements:
- * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. This property is read-only.
+ * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory` and
+ * `memoryDiff` values are available since version 2.0.11. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

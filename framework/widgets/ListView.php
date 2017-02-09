@@ -105,6 +105,7 @@ class ListView extends BaseListView
      */
     public $afterItem;
 
+
     /**
      * Renders all data models.
      * @return string the rendering result

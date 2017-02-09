@@ -26,7 +26,7 @@ In the following, we will describe the main usage and properties of every core v
     // checks if "selected" is either 0 or 1, regardless of data type
     ['selected', 'boolean'],
 
-    // checks if "deleted" is of boolean type, either `true` or `false`
+    // checks if "deleted" is of boolean type, either true or false
     ['deleted', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
 ]
 ```
@@ -175,7 +175,7 @@ or `1970-01-01` in the input field of a date picker.
 
 ```php
 [
-    // set "age" to be `null` if it is empty
+    // set "age" to be null if it is empty
     ['age', 'default', 'value' => null],
 
     // set "country" to be "USA" if it is empty

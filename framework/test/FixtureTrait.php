@@ -20,7 +20,7 @@ use yii\base\InvalidConfigException;
  * through the syntax `$this->fixtureName('model name')`.
  *
  * For more details and usage information on FixtureTrait, see the [guide article on fixtures](guide:test-fixtures).
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
