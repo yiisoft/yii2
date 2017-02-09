@@ -112,7 +112,7 @@ travis:
   script:
     - export COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml:docker-compose.pgsql.yml
     - docker-compose up --build -d
-    # TODO: retry/wait for db
+    # wait for dbs ...
     - sleep 10
     - docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,cubrid,oci,wincache,xcache,zenddata,cubrid
     - docker-compose down -v --remove-orphans
