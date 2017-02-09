@@ -13,6 +13,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\Response;
+use yii\web\View;
 
 /**
  * Pjax is a widget integrating the [pjax](https://github.com/yiisoft/jquery-pjax) jQuery plugin.
@@ -147,11 +148,13 @@ class Pjax extends Widget
     public function run()
     {
         if (!$this->requiresPjax()) {
+            $this->registerClientScript();
             echo Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
             $this->registerClientScript();
 
             return;
         }
+        $this->registerClientScript(false);
 
         $view = $this->getView();
         $view->endBody();
@@ -189,7 +192,7 @@ class Pjax extends Widget
     /**
      * Registers the needed JavaScript.
      */
-    public function registerClientScript()
+    public function registerClientScript($registerAssets = true)
     {
         $id = $this->options['id'];
         $this->clientOptions['push'] = $this->enablePushState;
@@ -211,10 +214,13 @@ class Pjax extends Widget
             $js .= "\njQuery(document).on($submitEvent, $formSelector, function (event) {jQuery.pjax.submit(event, $options);});";
         }
         $view = $this->getView();
-        PjaxAsset::register($view);
+        
+        if ($registerAssets) {
+            PjaxAsset::register($view);
+        }
 
         if ($js !== '') {
-            $view->registerJs($js);
+            $view->registerJs($js, View::POS_READY, 'pjax-init', View::MERGE_PREPEND);
         }
     }
 }
