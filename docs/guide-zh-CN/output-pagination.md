@@ -6,7 +6,7 @@
 每个部分都包含一些数据列表并且一次只显示一部分。
 这些部分在网页上被称为 *分页*。
   
-Yii 使用 [[yii\data\Pagination]] 对象来表现分页模式的有关信息。
+Yii 使用 [[yii\data\Pagination]] 对象来代表分页方案的有关信息。
 特别地，
 
 * [[yii\data\Pagination::$totalCount|total count]] 指定数据条目的总数。注意，这个数字通常远远大于需要在一个页面上展示的数据条目。
@@ -37,7 +37,7 @@ $articles = $query->offset($pagination->offset)
     ->all();
 ```
 
-上述例子中，文章的哪一页将被返回？它取决于是否给出一个叫做 `page` 的参数。
+上述例子中，文章的哪一页将被返回？它取决于是否给出一个名为 `page` 的参数。
 默认情况下，分页对象将尝试将 [[yii\data\Pagination::$page|current page]] 设置为 `page` 参数的值。
 如果没有提供该参数，那么它将默认为0。
 
@@ -72,4 +72,4 @@ echo $pagination->createUrl(100);
 echo $pagination->createUrl(101);
 ```
 
-> Tip: 创建分页对象时，你可以通过配置 [[yii\data\Pagination::pageParam|pageParam]] 属性来自定义查询参数 `page`。
+> Tip: 创建分页对象时，你可以通过配置 [[yii\data\Pagination::pageParam|pageParam]] 属性来自定义查询参数 `page` 的名字。
