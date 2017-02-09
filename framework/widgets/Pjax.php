@@ -100,11 +100,11 @@ class Pjax extends Widget
     /**
      * @var bool Reapply stylesheets if the stylesheet is already loaded. 
      */
-    public $reapplyStyles = true;
+    public $reapplyStyles = false;
     /**
      * @var bool Put stylesheets in the HTML head section so that they do not get removed on subsequent PJAX calls. 
      */
-    public $stylesHead = true;
+    public $stylesHead = false;
     /**
      * @inheritdoc
      * @internal
