@@ -963,6 +963,7 @@ class Connection extends Component
                 $this->enableSlaves = true;
                 throw $e;
             }
+            // TODO: use "finally" keyword when miminum required PHP version is >= 5.5
             $this->enableSlaves = true;
         } else {
             $result = call_user_func($callback, $this);
