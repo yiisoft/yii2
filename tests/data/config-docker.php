@@ -16,15 +16,15 @@ $config['databases']['mysql']['password'] = 'changeme';
 $config = [
     'databases' => [
         'cubrid' => [
-            'dsn' => 'cubrid:dbname=demodb;host=localhost;port=33000',
+            'dsn' => 'cubrid:dbname=demodb;host=cubrid;port=33000',
             'username' => 'dba',
             'password' => '',
             'fixture' => __DIR__ . '/cubrid.sql',
         ],
         'mysql' => [
-            'dsn' => 'mysql:host=127.0.0.1;dbname=yiitest',
+            'dsn' => 'mysql:host=mysql;dbname=yiitest',
             'username' => 'travis',
-            'password' => '',
+            'password' => 'travis',
             'fixture' => __DIR__ . '/mysql.sql',
         ],
         'sqlite' => [
@@ -32,13 +32,13 @@ $config = [
             'fixture' => __DIR__ . '/sqlite.sql',
         ],
         'sqlsrv' => [
-            'dsn' => 'sqlsrv:Server=localhost;Database=test',
-            'username' => '',
-            'password' => '',
+            'dsn' => 'sqlsrv:Server=mssql;Database=yii2test',
+            'username' => 'sa',
+            'password' => 'Microsoft-12345',
             'fixture' => __DIR__ . '/mssql.sql',
         ],
         'pgsql' => [
-            'dsn' => 'pgsql:host=localhost;dbname=yiitest;port=5432;',
+            'dsn' => 'pgsql:host=postgres;dbname=yiitest;port=5432;',
             'username' => 'postgres',
             'password' => 'postgres',
             'fixture' => __DIR__ . '/postgres.sql',
