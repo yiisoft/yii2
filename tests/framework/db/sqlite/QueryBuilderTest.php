@@ -59,7 +59,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
-    public function testBatchInsert($table, $columns, $value, $expected)
+    public function batchInsertProvider()
+    {
+        $data = parent::batchInsertProvider();
+        $data['escape-danger-chars']['expected'] = "INSERT INTO `customer` (`address`) VALUES ('SQL-danger chars are escaped: ''); --')";
+        return $data;
+    }
+
+    public function testBatchInsertOnOlderVersions()
     {
         $db = $this->getConnection();
         if (version_compare($db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {

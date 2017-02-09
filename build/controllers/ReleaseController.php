@@ -212,13 +212,15 @@ class ReleaseController extends Controller
         $this->stdout("\n");
 
         $this->stdout("Before you make a release briefly go over the changes and check if you spot obvious mistakes:\n\n", Console::BOLD);
+        $gitDir = reset($what) === 'framework' ? 'framework/' : '';
+        $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
-            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n");
+            $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
             $this->stdout("- are all new `@since` tags for this relase version?\n");
         }
+        $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.org/yiisoft/yii2$travisUrl/builds\n");
-        $this->stdout("- other issues with code changes?\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
         $this->printWhatUrls($what, $versions);
         $this->stdout("\n");
@@ -527,6 +529,12 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- wait for your changes to be propagated to the repo and create a tag $version on  https://github.com/yiisoft/yii2-framework\n\n");
+        $this->stdout("    git clone git@github.com:yiisoft/yii2-framework.git\n");
+        $this->stdout("    cd yii2-framework/\n");
+        $this->stdout("    export RELEASECOMMIT=$(git log --oneline |grep $version |grep -Po \"^[0-9a-f]+\")\n");
+        $this->stdout("    git tag -s $version -m \"version $version\" \$RELEASECOMMIT\n");
+        $this->stdout("    git tag --verify $version\n");
+        $this->stdout("    git push --tags\n\n");
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion['framework']} and {$nextVersion2['framework']}: https://github.com/yiisoft/yii2/milestones\n");
         $this->stdout("- create a release on github.\n");
         $this->stdout("- release news and announcement.\n");
@@ -861,7 +869,13 @@ class ReleaseController extends Controller
             if ($state === 'changelog' && isset($lines[$l+1]) && strncmp($lines[$l+1], '---', 3) === 0) {
                 $state = 'end';
             }
-            ${$state}[] = $line;
+            // add continued lines to the last item to keep them together
+            if (!empty(${$state}) && trim($line !== '') && strpos($line, '- ') !== 0) {
+                end(${$state});
+                ${$state}[key(${$state})] .= "\n" . $line;
+            } else {
+                ${$state}[] = $line;
+            }
         }
         return [$start, $changelog, $end];
     }
@@ -879,7 +893,7 @@ class ReleaseController extends Controller
 
         $i = 0;
         ArrayHelper::multisort($changelog, function($line) use (&$i) {
-            if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+$/', $line, $m)) {
+            if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
@@ -1007,9 +1021,15 @@ class ReleaseController extends Controller
                 case self::MINOR:
                     $parts[1]++;
                     $parts[2] = 0;
+                    if (isset($parts[3])) {
+                        unset($parts[3]);
+                    }
                     break;
                 case self::PATCH:
                     $parts[2]++;
+                    if (isset($parts[3])) {
+                        unset($parts[3]);
+                    }
                     break;
                 default:
                     throw new Exception('Unknown version type.');

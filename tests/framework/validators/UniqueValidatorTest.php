@@ -80,7 +80,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
         $customerModel->name = 'test data';
         $customerModel->email = ['email@mail.com', 'email2@mail.com',];
-        $validator->targetAttribute = ['email' => 'email', 'name' => 'name'];
+        $validator->targetAttribute = ['email', 'name'];
         $validator->validateAttribute($customerModel, 'name');
         $this->assertEquals($messageError, $customerModel->getFirstError('name'));
     }
@@ -149,7 +149,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     {
         $val = new UniqueValidator([
             'targetClass' => OrderItem::className(),
-            'targetAttribute' => ['order_id', 'item_id' => 'item_id'],
+            'targetAttribute' => ['order_id', 'item_id'],
         ]);
         // validate old record
         /** @var OrderItem $m */
@@ -319,7 +319,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
         $targetAttribute = ['val_attr_b', 'val_attr_c'];
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
-        $expected = ['val_attr_b' => 'test value a', 'val_attr_c' => 'test value a'];
+        $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value c'];
         $this->assertEquals($expected, $result);
 
         $targetAttribute = ['val_attr_a' => 'val_attr_b'];
@@ -329,7 +329,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
         $targetAttribute = ['val_attr_b', 'val_attr_a' => 'val_attr_c'];
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
-        $expected = ['val_attr_b' => 'test value a', 'val_attr_c' => 'test value a'];
+        $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];
         $this->assertEquals($expected, $result);
     }
 
