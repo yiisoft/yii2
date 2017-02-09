@@ -88,6 +88,21 @@ class View extends \yii\base\View
      * This is internally used as the placeholder for receiving the content registered for the end of the body section.
      */
     const PH_BODY_END = '<![CDATA[YII-BLOCK-BODY-END]]>';
+    /**
+     * How the registered JavaScript code block should be included in the JavaScript section.
+     * This means the JavaScript code block will replace the current code block if the code block exists.
+     */
+    const MERGE_REPLACE = 1;
+    /**
+     * How the registered JavaScript code block should be included in the JavaScript section.
+     * This means the JavaScript code block will be prepended to the current code block if the code block exists.
+     */
+    const MERGE_PREPEND = 2;
+    /**
+     * How the registered JavaScript code block should be included in the JavaScript section.
+     * This means the JavaScript code block will be appended to the current code block if the code block exists.
+     */
+    const MERGE_APPEND = 3;
 
     /**
      * @var AssetBundle[] list of the registered asset bundles. The keys are the bundle names, and the values
@@ -434,11 +449,27 @@ class View extends \yii\base\View
      * @param string $key the key that identifies the JS code block. If null, it will use
      * $js as the key. If two JS code blocks are registered with the same key, the latter
      * will overwrite the former.
+     * @param int $merger the type of merge that should be applied if a code block exists with the same key:
+     *
+     * - [[MERGE_REPLACE]]: the existing code block will be replaced (default)
+     * - [[MERGE_PREPEND]]: the JS code will be prepended to the existing JS code block.
+     * - [[MERGE_APPEND]]: the JS code will be appended to the existing JS code block.
+     *
      */
-    public function registerJs($js, $position = self::POS_READY, $key = null)
+    public function registerJs($js, $position = self::POS_READY, $key = null, $merger = self::MERGE_REPLACE)
     {
         $key = $key ?: md5($js);
-        $this->js[$position][$key] = $js;
+        if (isset($this->js[$position][$key]) && $merger !== self::MERGE_REPLACE) {
+            if ($merger === self::MERGE_PREPEND) {
+                $this->js[$position][$key] = $js ."\n". $this->js[$position][$key];
+            } else if ($merger === self::MERGE_APPEND) {
+                $this->js[$position][$key] .= $js;
+            } else {
+                $this->js[$position][$key] = $js;
+            }
+        } else {
+            $this->js[$position][$key] = $js;
+        }
         if ($position === self::POS_READY || $position === self::POS_LOAD) {
             JqueryAsset::register($this);
         }
