@@ -464,8 +464,6 @@ class View extends \yii\base\View
                 $this->js[$position][$key] = $js ."\n". $this->js[$position][$key];
             } else if ($merger === self::MERGE_APPEND) {
                 $this->js[$position][$key] .= $js;
-            } else {
-                $this->js[$position][$key] = $js;
             }
         } else {
             $this->js[$position][$key] = $js;
