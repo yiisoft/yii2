@@ -43,7 +43,7 @@ The [[yii\web\UrlManager|URL manager]] supports two URL formats:
 - the default URL format;
 - the pretty URL format.
 
-The default URL format uses a query parameter named `r` to represent the route and normal query parameters
+The default URL format uses a [[yii\web\UrlManager::$routeParam|query parameter]] named `r` to represent the route and normal query parameters
 to represent the query parameters associated with the route. For example, the URL `/index.php?r=post/view&id=100` represents
 the route `post/view` and the `id` query parameter `100`. The default URL format does not require any configuration of
 the [[yii\web\UrlManager|URL manager]] and works in any Web server setup.
@@ -457,6 +457,9 @@ will parse the URL `http://en.example.com/posts` into the route `post/index` and
     'http://<language:\w+>.example.com/posts' => 'post/index',
 ]
 ```
+
+Since version 2.0.11, you may also use protocol relative patterns that work for both, `http` and `https`.
+The syntax is the same as above but skipping the `http:` part, e.g.: `'//www.example.com/login' => 'site/login'`.
 
 > Note: Rules with server names should **not** include the subfolder of the entry script in their patterns. For example, if the applications entry script is at `http://www.example.com/sandbox/blog/index.php`, then you should use the pattern
   `http://www.example.com/posts` instead of `http://www.example.com/sandbox/blog/posts`. This will allow your application

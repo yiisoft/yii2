@@ -47,11 +47,12 @@ If you are going to work with JavaScript:
 > Note: JavaScript tests depend on [jsdom](https://github.com/tmpvar/jsdom) library which requires Node.js 4 or newer.
 Using of Node.js 6 or 7 is more preferable.
 
-- run `php build/build dev/app basic` to clone the basic app and install composer dependencies for the basic app.
+- run `php build/build dev/app basic <fork>` to clone the basic app and install composer dependencies for the basic app.
+  `<fork>` is URL of your repository fork such as `git@github.com:my_nickname/yii2-app-basic.git`. If you are core framework contributor you may skip specifying fork.
   This command will install foreign composer packages as normal but will link the yii2 repo to
   the currently checked out repo, so you have one instance of all the code installed.
   
-  Do the same for the advanced app if needed: `php build/build dev/app advanced`.
+  Do the same for the advanced app if needed: `php build/build dev/app advanced <fork>`.
   
   This command will also be used to update dependencies, it runs `composer update` internally.
 
@@ -84,14 +85,14 @@ additional arguments).
 To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
 
 ```
-php build/build dev/ext <extension-name>
+php build/build dev/ext <extension-name> <fork>
 ```
 
-where `<extension-name>` is the name of the extension, e.g. `redis`.
+where `<extension-name>` is the name of the extension, e.g. `redis` and `<fork>` is URL of your extension fork such as `git@github.com:my_nickname/yii2-redis.git`. If you are core framework contributor you may skip specifying fork.
 
 If you want to test the extension in one of the application templates, just add it to the `composer.json` of the application as you would
 normally do e.g. add `"yiisoft/yii2-redis": "~2.0.0"` to the `require` section of the basic app.
-Running `php build/build dev/app basic` will install the extension and its dependencies and create
+Running `php build/build dev/app basic <fork>` will install the extension and its dependencies and create
 a symlink to `extensions/redis` so you are not working in the composer vendor dir but in the yii2 repository directly.
 
 > Note: The default git repository Urls clone from github via SSH, you may add the `--useHttp` flag to the `build` command

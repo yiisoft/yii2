@@ -8,6 +8,7 @@ use yii\base\DynamicModel;
 use yii\widgets\ActiveForm;
 use yii\web\View;
 use yii\web\AssetManager;
+use yii\widgets\InputWidget;
 
 /**
  * @author Nelson J Morais <njmorais@gmail.com>
@@ -147,7 +148,8 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
     }
 
-    public function testBegin() {
+    public function testBegin()
+    {
         $expectedValue = '<article class="form-group field-activefieldtestmodel-attributename">';
         $this->activeField->options['tag'] = 'article';
         $actualValue = $this->activeField->begin();
@@ -216,7 +218,6 @@ EOT;
 
         $this->assertEquals($expectedValue, $this->activeField->parts['{label}']);
     }
-
 
     public function testError()
     {
@@ -505,6 +506,21 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, trim($actualValue));
     }
 
+    public function testWidget()
+    {
+        $this->activeField->widget(TestInputWidget::className());
+        $this->assertEquals('Render: ' . TestInputWidget::className(), $this->activeField->parts['{input}']);
+        $widget = TestInputWidget::$lastInstance;
+
+        $this->assertSame($this->activeField->model, $widget->model);
+        $this->assertEquals($this->activeField->attribute, $widget->attribute);
+        $this->assertSame($this->activeField->form->view, $widget->view);
+        $this->assertSame($this->activeField, $widget->field);
+
+        $this->activeField->widget(TestInputWidget::className(), ['options' => ['id' => 'test-id']]);
+        $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
+    }
+
     /**
      * Helper methods
      */
@@ -569,5 +585,24 @@ class TestValidator extends \yii\validators\Validator
     public function setWhenClient($js)
     {
         $this->whenClient = $js;
+    }
+}
+
+class TestInputWidget extends InputWidget
+{
+    /**
+     * @var static
+     */
+    public static $lastInstance;
+
+    public function init()
+    {
+        parent::init();
+        self::$lastInstance = $this;
+    }
+
+    public function run()
+    {
+        return 'Render: ' . get_class($this);
     }
 }
