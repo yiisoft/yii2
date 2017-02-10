@@ -76,12 +76,16 @@ class FixtureControllerTest extends TestCase
         $this->assertEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should be empty');
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be empty');
         $this->assertEmpty(FixtureStorage::$secondFixtureData, 'second fixture data should be empty');
+        $this->assertEmpty(FixtureStorage::$subdirFirstFixtureData, 'subdir / first fixture data should be empty');
+        $this->assertEmpty(FixtureStorage::$subdirSecondFixtureData, 'subdir / second fixture data should be empty');
 
         $this->_fixtureController->actionLoad(['*']);
 
         $this->assertCount(1, FixtureStorage::$globalFixturesData, 'global fixture data should be loaded');
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
         $this->assertCount(1, FixtureStorage::$secondFixtureData, 'second fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$subdirFirstFixtureData, 'subdir / first fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$subdirSecondFixtureData, 'subdir / second fixture data should be loaded');
     }
 
     public function testUnloadAll()
@@ -89,25 +93,33 @@ class FixtureControllerTest extends TestCase
         FixtureStorage::$globalFixturesData[] = 'some seeded global fixture data';
         FixtureStorage::$firstFixtureData[] = 'some seeded first fixture data';
         FixtureStorage::$secondFixtureData[] = 'some seeded second fixture data';
+        FixtureStorage::$subdirFirstFixtureData[] = 'some seeded subdir/first fixture data';
+        FixtureStorage::$subdirSecondFixtureData[] = 'some seeded subdir/second fixture data';
 
         $this->assertCount(1, FixtureStorage::$globalFixturesData, 'global fixture data should be loaded');
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
         $this->assertCount(1, FixtureStorage::$secondFixtureData, 'second fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$subdirFirstFixtureData, 'subdir/first fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$subdirSecondFixtureData, 'subdir/second fixture data should be loaded');
 
         $this->_fixtureController->actionUnload(['*']);
 
         $this->assertEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should be unloaded');
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be unloaded');
         $this->assertEmpty(FixtureStorage::$secondFixtureData, 'second fixture data should be unloaded');
+        $this->assertEmpty(FixtureStorage::$subdirFirstFixtureData, 'subdir/first fixture data should be unloaded');
+        $this->assertEmpty(FixtureStorage::$subdirSecondFixtureData, 'subdir/second fixture data should be unloaded');
     }
 
     public function testLoadParticularExceptOnes()
     {
-        $this->_fixtureController->actionLoad(['First', '-Second', '-Global']);
+        $this->_fixtureController->actionLoad(['First', 'subdir/First', '-Second', '-Global', '-subdir/Second']);
 
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$subdirFirstFixtureData, 'subdir/first fixture data should be loaded');
         $this->assertEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should not be loaded');
         $this->assertEmpty(FixtureStorage::$secondFixtureData, 'second fixture data should not be loaded');
+        $this->assertEmpty(FixtureStorage::$subdirSecondFixtureData, 'subdir/second fixture data should not be loaded');
     }
 
     public function testUnloadParticularExceptOnes()
@@ -115,25 +127,33 @@ class FixtureControllerTest extends TestCase
         FixtureStorage::$globalFixturesData[] = 'some seeded global fixture data';
         FixtureStorage::$firstFixtureData[] = 'some seeded first fixture data';
         FixtureStorage::$secondFixtureData[] = 'some seeded second fixture data';
+        FixtureStorage::$subdirFirstFixtureData[] = 'some seeded subdir/first fixture data';
+        FixtureStorage::$subdirSecondFixtureData[] = 'some seeded subdir/second fixture data';
 
         $this->_fixtureController->actionUnload([
             'First',
+            'subdir/First',
             '-Second',
             '-Global',
+            '-subdir/Second',
         ]);
 
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be unloaded');
+        $this->assertEmpty(FixtureStorage::$subdirFirstFixtureData, 'subdir/first fixture data should be unloaded');
         $this->assertNotEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should not be unloaded');
         $this->assertNotEmpty(FixtureStorage::$secondFixtureData, 'second fixture data should not be unloaded');
+        $this->assertNotEmpty(FixtureStorage::$subdirSecondFixtureData, 'subdir/second fixture data should not be unloaded');
     }
 
     public function testLoadAllExceptOnes()
     {
-        $this->_fixtureController->actionLoad(['*', '-Second', '-Global']);
+        $this->_fixtureController->actionLoad(['*', '-Second', '-Global', '-subdir/First']);
 
         $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$subdirSecondFixtureData, 'subdir/second fixture data should be loaded');
         $this->assertEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should not be loaded');
         $this->assertEmpty(FixtureStorage::$secondFixtureData, 'second fixture data should not be loaded');
+        $this->assertEmpty(FixtureStorage::$subdirFirstFixtureData, 'subdir/first fixture data should not be loaded');
     }
 
     public function testUnloadAllExceptOnes()
@@ -141,12 +161,16 @@ class FixtureControllerTest extends TestCase
         FixtureStorage::$globalFixturesData[] = 'some seeded global fixture data';
         FixtureStorage::$firstFixtureData[] = 'some seeded first fixture data';
         FixtureStorage::$secondFixtureData[] = 'some seeded second fixture data';
+        FixtureStorage::$subdirFirstFixtureData[] = 'some seeded subdir/first fixture data';
+        FixtureStorage::$subdirSecondFixtureData[] = 'some seeded subdir/second fixture data';
 
-        $this->_fixtureController->actionUnload(['*', '-Second', '-Global']);
+        $this->_fixtureController->actionUnload(['*', '-Second', '-Global', '-subdir/First']);
 
         $this->assertEmpty(FixtureStorage::$firstFixtureData, 'first fixture data should be unloaded');
+        $this->assertEmpty(FixtureStorage::$subdirSecondFixtureData, 'subdir/second fixture data should be unloaded');
         $this->assertNotEmpty(FixtureStorage::$globalFixturesData, 'global fixture data should not be unloaded');
         $this->assertNotEmpty(FixtureStorage::$secondFixtureData, 'second fixture data should not be unloaded');
+        $this->assertNotEmpty(FixtureStorage::$subdirFirstFixtureData, 'subdir/first fixture data should not be unloaded');
     }
 
     public function testNothingToLoadParticularExceptOnes()
