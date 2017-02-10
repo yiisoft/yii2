@@ -162,7 +162,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 ```
 
 > Tip: Начиная с версии 2.0.11 контейнер может быть настроен в декларативном стиле через конфигурацию приложения. 
-Как это сделать ищите в подразделе [Конфигурация приложения](concept-configurations.md#Конфигурация-приложения-)
+Как это сделать ищите в подразделе [Конфигурация приложения](concept-configurations.md#application-configurations)
 раздела [Конфигурации](concept-configurations.md).
 
 Вроде всё работает, но если нам необходимо создать экземпляр класса `DocumentWriter`, придётся скопировать код, 
@@ -233,7 +233,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader');
 ```
 
 ### Внедрение зависимости через PHP callback <span id="php-callable-injection"></span>
