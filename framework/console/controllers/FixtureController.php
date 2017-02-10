@@ -415,7 +415,13 @@ class FixtureController extends Controller
         $foundFixtures = [];
 
         foreach ($files as $fixture) {
-            $foundFixtures[] = basename($fixture, 'Fixture.php');
+            // strip $fixturesPath from $fixture's full path
+            $relativeName = str_replace($fixturesPath . "/", "", $fixture);
+            // get fixtures's directory
+            $relativeDir = dirname($relativeName) == '.' ? '' : dirname($relativeName) . '/';
+            // get fixture name relatively to $fixturesPath
+            $relativeName = $relativeDir . basename($fixture, 'Fixture.php');
+            $foundFixtures[] = $relativeName;
         }
 
         return $foundFixtures;
@@ -431,11 +437,18 @@ class FixtureController extends Controller
         $config = [];
 
         foreach ($fixtures as $fixture) {
-            $isNamespaced = (strpos($fixture, '\\') !== false);
-            $fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
+            // $isNamespaced = (strpos($fixture, '\\') !== false);
+            // this would have incorrect result on windows-based systems in case of fixtures placed in subdirectories
 
-            if (class_exists($fullClassName)) {
-                $config[] = $fullClassName;
+            // istead of guessing if $fixture is namespaced, let's just check it _both_ as non-namespaced and namespaced
+            $className = $fixture . 'Fixture';
+            if (class_exists($className)) {
+                $config[] = $className;
+            } else {
+                $className = $this->namespace . '\\' . str_replace('/','\\',$fixture) . 'Fixture';
+                if (class_exists($className)) {
+                    $config[] = $className;
+                }
             }
         }
 
