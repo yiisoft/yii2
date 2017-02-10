@@ -186,12 +186,12 @@ class ServiceLocator extends Component
      */
     public function set($id, $definition)
     {
+        unset($this->_components[$id]);
+
         if ($definition === null) {
-            unset($this->_components[$id], $this->_definitions[$id]);
+            unset($this->_definitions[$id]);
             return;
         }
-
-        unset($this->_components[$id]);
 
         if (is_object($definition) || is_callable($definition, true)) {
             // an object, a class name, or a PHP callable
