@@ -493,7 +493,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader');
 ```
 
 いつ依存を登録するか <span id="when-to-register-dependencies"></span>
