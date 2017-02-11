@@ -76,10 +76,6 @@ You may limit the tests to a group of tests you are working on e.g. to run only 
 
 You can execute JavaScript unit tests by running `npm test` in the repo root directory.
 
-> Note: If you get timeout errors like `Error: timeout of 2000ms exceeded. Ensure the done() callback is being called
-in this test.`, you can increase timeout: `npm test -- --timeout 30000` (don't miss `--`, it's needed for passing
-additional arguments).
-
 ### Extensions
 
 To work on extensions you have to clone the extension repository. We have created a command that can do this for you:
