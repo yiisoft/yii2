@@ -634,6 +634,21 @@ abstract class BaseMigrateController extends Controller
      */
     private function getNamespacePath($namespace)
     {
+        static $composerClassMap;
+
+        // Filling composer class name array
+        if (is_null($composerClassMap)) {
+            $file = Yii::getAlias('@vendor/composer/autoload_classmap.php');
+            $composerClassMap = file_exists($file) ? require $file : [];
+        }
+
+        // Try to find a path for namespace
+        foreach ($composerClassMap as $className => $path) {
+            if (preg_match('/^' . preg_quote($namespace) . '/s', $className)) {
+                return dirname($path);
+            }
+        }
+
         return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
     }
 
