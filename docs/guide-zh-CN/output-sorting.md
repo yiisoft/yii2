@@ -1,20 +1,18 @@
 排序
 =======
 
-When displaying multiple rows of data, it is often needed that the data be sorted according to some columns
-specified by end users. Yii uses a [[yii\data\Sort]] object to represent the information about a sorting schema.
-In particular, 
+展示多条数据时，通常需要对数据按照用户指定的列进行排序。
+Yii 使用 [[yii\data\Sort]] 对象来代表排序方案的有关信息。
+特别地，
 
-* [[yii\data\Sort::$attributes|attributes]] specifies the *attributes* by which the data can be sorted.
-  An attribute can be as simple as a [model attribute](structure-models.md#attributes). It can also be a composite
-  one by combining multiple model attributes or DB columns. More details will be given in the following.
-* [[yii\data\Sort::$attributeOrders|attributeOrders]] gives the currently requested ordering directions for 
-  each attribute.
-* [[yii\data\Sort::$orders|orders]] gives the ordering directions in terms of the low-level columns.
+* [[yii\data\Sort::$attributes|attributes]] 指定 *属性*，数据按照其排序。一个属性可以就是简单的一个 [model attribute](structure-models.md#attributes)，也可以是结合了多个 model 属性或者 DB 列的复合属性。下面将给出更多细节。
+* [[yii\data\Sort::$attributeOrders|attributeOrders]] 给出每个属性当前设置的排序方向。
+* [[yii\data\Sort::$orders|orders]] 按照低级列的方式给出排序方向。
 
-To use [[yii\data\Sort]], first declare which attributes can be sorted. Then retrieve the currently requested
-ordering information from [[yii\data\Sort::$attributeOrders|attributeOrders]] or [[yii\data\Sort::$orders|orders]]
-and use them to customize the data query. For example,
+使用 [[yii\data\Sort]]，首先要声明什么属性能进行排序。
+接着从 [[yii\data\Sort::$attributeOrders|attributeOrders]] 或者 [[yii\data\Sort::$orders|orders]] 取得当前设置的排序信息，
+然后使用它们来自定义数据查询。
+例如，
 
 ```php
 use yii\data\Sort;
@@ -37,10 +35,10 @@ $articles = Article::find()
     ->all();
 ```
 
-In the above example, two attributes are declared for the [[yii\data\Sort|Sort]] object: `age` and `name`. 
+上述例子中，为 [[yii\data\Sort|Sort]] 对象声明了两个属性： `age` 和 `name`。
 
-The `age` attribute is a *simple* attribute corresponding to the `age` attribute of the `Article` Active Record class.
-It is equivalent to the following declaration:
+`age` 属性是 `Article` 与 Active Record 类中 `age` 属性对应的一个简单属性。
+上述声明与下述等同：
 
 ```php
 'age' => [
@@ -51,39 +49,34 @@ It is equivalent to the following declaration:
 ]
 ```
 
-The `name` attribute is a *composite* attribute defined by `first_name` and `last_name` of `Article`. It is declared
-using the following array structure:
+`name` 属性是由 `Article` 的 `firsr_name` 和 `last_name` 定义的一个复合属性。
+使用下面的数组结构来对它进行声明：
 
-- The `asc` and `desc` elements specify how to sort by the attribute in ascending and descending directions, respectively.
-  Their values represent the actual columns and the directions by which the data should be sorted by. You can specify
-  one or multiple columns to indicate simple ordering or composite ordering.
-- The `default` element specifies the direction by which the attribute should be sorted when initially requested. 
-  It defaults to ascending order, meaning if it is not sorted before and you request to sort by this attribute, 
-  the data will be sorted by this attribute in ascending order.
-- The `label` element specifies what label should be used when calling [[yii\data\Sort::link()]] to create a sort link.
-  If not set, [[yii\helpers\Inflector::camel2words()]] will be called to generate a label from the attribute name.
-  Note that it will not be HTML-encoded.
+- `asc` 和 `desc` 元素指定了如何按照该属性进行升序和降序的排序。它们的值代表数据真正地应该按照什么列和方向进行排序。
+  你可以指定一列或多列来指出到底是简单排序还是多重排序。
+- `default` 元素指定了当一次请求时，属性应该按照什么方向来进行排序。它默认为升序方向，意味着如果之前没有进行排序，并且
+  你请求按照该属性进行排序，那么数据将按照该属性来进行升序排序。
+- `label` 元素指定了调用 [[yii\data\Sort::link()]] 来创建一个排序链接时应该使用什么标签，如果不设置，将调用 
+  [[yii\helpers\Inflector::camel2words()]] 来通过属性名生成一个标签。注意，它并不是 HTML编码的。
+  
+> Info: 你可以将 [[yii\data\Sort::$orders|orders]] 的值直接提供给数据库查询来构建其 `ORDER BY` 子句。不要使用 [[yii\data\Sort::$attributeOrders|attributeOrders]] ，因为一些属性可能是复合的，是不能被数据库查询识别的。
 
-> Info: You can directly feed the value of [[yii\data\Sort::$orders|orders]] to the database query to build
-  its `ORDER BY` clause. Do not use [[yii\data\Sort::$attributeOrders|attributeOrders]] because some of the
-  attributes may be composite and cannot be recognized by the database query.
-
-You can call [[yii\data\Sort::link()]] to generate a hyperlink upon which end users can click to request sorting
-the data by the specified attribute. You may also call [[yii\data\Sort::createUrl()]] to create a sortable URL.
-For example,
+你可以调用 [[yii\data\Sort::link()]] 来生成一个超链接，用户可以通过点击它来请求按照指定的属性对数据进行排序。
+你也可以调用 [[yii\data\Sort::createUrl()]] 来生成一个可排序的 URL。
+例如，
 
 ```php
-// specifies the route that the URL to be created should use
-// If you do not specify this, the currently requested route will be used
+// 指定被创建的 URL 应该使用的路由
+// 如果你没有指定，将使用当前被请求的路由
 $sort->route = 'article/index';
 
-// display links leading to sort by name and age, respectively
+// 显示链接，链接分别指向以 name 和 age 进行排序
 echo $sort->link('name') . ' | ' . $sort->link('age');
 
-// displays: /index.php?r=article%2Findex&sort=age
+// 显示: /index.php?r=article%2Findex&sort=age
 echo $sort->createUrl('age');
 ```
 
-[[yii\data\Sort]] checks the `sort` query parameter to determine which attributes are being requested for sorting.
-You may specify a default ordering via [[yii\data\Sort::defaultOrder]] when the query parameter is not present.
-You may also customize the name of the query parameter by configuring the [[yii\data\Sort::sortParam|sortParam]] property.
+[[yii\data\Sort]] 查看 `sort` 查询参数来决定哪一个属性正在被请求来进行排序。
+当该参数不存在时，你可以通过 [[yii\data\Sort::defaultOrder]] 来指定默认的排序。
+你也可以通过配置 [[yii\data\Sort::sortParam|sortParam]] 属性来自定义该查询参数的名字。
