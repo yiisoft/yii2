@@ -979,30 +979,18 @@ describe('yii', function () {
 
     describe('asset filters', function () {
         var server;
-        var ajaxDataType;
+        var prefilterCallback = function (options) {
+            options.crossDomain = false;
+        };
         var jsResponse = {
             status: 200,
-            headers: {'Content-Type': 'application/x-custom-javascript'},
+            headers: {'Content-Type': 'application/javascript'},
             body: 'var foobar = 1;'
         };
 
         before(function () {
-            // Sent ajax requests with dataType "script" and "jsonp" are not captured by Sinon's fake server.
-            // As a workaround we can use custom dataType.
-            // This $.ajaxPrefilter handler must be run after the one from yii.js.
-            ajaxDataType = 'customscript';
-            $.ajaxPrefilter('script', function () {
-                return ajaxDataType;
-            });
-            $.ajaxSetup({
-                accepts: {
-                    customscript: 'application/x-custom-javascript'
-                },
-                converters: {
-                    'text customscript': function (result) {
-                        return result;
-                    }
-                }
+            $.ajaxPrefilter('script', function (options) {
+                prefilterCallback(options);
             });
         });
 
@@ -1018,7 +1006,8 @@ describe('yii', function () {
         });
 
         after(function () {
-            ajaxDataType = 'script';
+            prefilterCallback = function () {
+            };
         });
 
         afterEach(function () {
