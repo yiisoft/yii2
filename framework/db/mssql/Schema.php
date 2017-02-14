@@ -68,6 +68,11 @@ class Schema extends \yii\db\Schema
         'table' => self::TYPE_STRING,
     ];
 
+    /**
+     * @var array list of ALL view names in the database
+     */
+    private $_viewNames = [];
+
 
     /**
      * @inheritdoc
@@ -409,6 +414,44 @@ ORDER BY [t].[table_name]
 SQL;
 
         return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+    }
+
+    /**
+     * Returns all views names in the database.
+     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema.
+     * @return array all views names in the database. The names have NO schema name prefix.
+     */
+    protected function findViewNames($schema = '')
+    {
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
+        }
+
+        $sql = <<<SQL
+SELECT [t].[table_name]
+FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
+WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'VIEW'
+ORDER BY [t].[table_name]
+SQL;
+
+        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+    }
+
+    /**
+     * Returns all view names in the database.
+     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
+     * If not empty, the returned view names will be prefixed with the schema name.
+     * @param bool $refresh whether to fetch the latest available view names. If this is false,
+     * view names fetched previously (if available) will be returned.
+     * @return string[] all view names in the database.
+     */
+    public function getViewNames($schema = '', $refresh = false)
+    {
+        if (!isset($this->_viewNames[$schema]) || $refresh) {
+            $this->_viewNames[$schema] = $this->findViewNames($schema);
+        }
+
+        return $this->_viewNames[$schema];
     }
 
     /**
