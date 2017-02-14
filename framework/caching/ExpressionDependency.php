@@ -18,7 +18,7 @@ namespace yii\caching;
  * please refer to the [php manual](http://www.php.net/manual/en/language.expressions.php).
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

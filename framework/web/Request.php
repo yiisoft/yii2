@@ -44,13 +44,13 @@ use yii\helpers\StringHelper;
  * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
- * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+ * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
+ * [[getHostInfo()]] for security related notes on this property.
  * @property string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`). This
  * property is read-only.
  * @property bool $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
  * @property bool $isDelete Whether this is a DELETE request. This property is read-only.
- * @property bool $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
- * read-only.
+ * @property bool $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is read-only.
  * @property bool $isGet Whether this is a GET request. This property is read-only.
  * @property bool $isHead Whether this is a HEAD request. This property is read-only.
  * @property bool $isOptions Whether this is a OPTIONS request. This property is read-only.

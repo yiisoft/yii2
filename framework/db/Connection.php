@@ -114,17 +114,18 @@ use yii\caching\Cache;
  * @property bool $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
+ * @property Connection $master The currently active master connection. `null` is returned if there is no
+ * master available. This property is read-only.
  * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
  * read-only.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
- * @property Connection $master The currently active master connection. `null` is returned if there is no master
  * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
- * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if no
- * slave connection is available and `$fallbackToMaster` is false. This property is read-only.
+ * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
+ * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
  * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
  * property is read-only.
  *

@@ -14,7 +14,7 @@ namespace yii\caching;
  * the actual dependency data.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
- * 
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

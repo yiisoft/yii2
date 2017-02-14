@@ -29,7 +29,7 @@ class Widget extends Component implements ViewContextInterface
     /**
      * @event Event an event that is triggered when the widget is initialized via [[init()]].
      * @since 2.0.11
-     */    
+     */
     const EVENT_INIT = 'init';
     /**
      * @event WidgetEvent an event raised right before executing a widget.
@@ -42,7 +42,7 @@ class Widget extends Component implements ViewContextInterface
      * @since 2.0.11
      */
     const EVENT_AFTER_RUN = 'afterRun';
-    
+
     /**
      * @var int a counter used to generate [[id]] for widgets.
      * @internal
@@ -60,11 +60,12 @@ class Widget extends Component implements ViewContextInterface
      */
     public static $stack = [];
 
+
     /**
      * Initializes the object.
      * This method is called at the end of the constructor.
      * The default implementation will trigger an [[EVENT_INIT]] event.
-     */    
+     */
     public function init()
     {
         parent::init();
@@ -278,7 +279,7 @@ class Widget extends Component implements ViewContextInterface
      * }
      * ```
      *
-     * @return boolean whether the widget should continue to be executed.
+     * @return bool whether the widget should continue to be executed.
      * @since 2.0.11
      */
     public function beforeRun()
