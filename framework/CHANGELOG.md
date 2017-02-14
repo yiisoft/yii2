@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Enh #13523: Plural rule for pasta (developeruz)
 - Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
+- Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 
 
 2.0.11.2 February 08, 2017
@@ -35,7 +36,6 @@ Yii Framework 2 Change Log
 - Bug #9796: Initialization of not existing `yii\grid\ActionColumn` default buttons (arogachev)
 - Bug #10488: Fixed incorrect behavior of `yii\validation\NumberValidator` when used with locales where decimal separator is comma (quantum13, samdark, rob006)
 - Bug #11122: Fixed can not use `orderBy` with aggregate functions like `count` (Ni-san)
-- Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #11771: Fixed semantics of `yii\di\ServiceLocator::__isset()` to match the behavior of `__get()` which fixes inconsistent behavior on newer PHP versions (cebe)
 - Bug #12133: Fixed `getDbTargets()` function in `yii\log\migrations\m141106_185632_log_init` that would create a log table correctly (bumstik)
 - Bug #12213: Fixed `yii\db\ActiveRecord::unlinkAll()` to respect `onCondition()` of the relational query (silverfire)
