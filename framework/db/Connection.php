@@ -373,6 +373,18 @@ class Connection extends Component
      * @see masters
      */
     public $shuffleMasters = true;
+    /**
+     * @var string DBMS name.
+     * Can be checked against particular DBMS names to use DBMS-specific features.
+     * @since 2.0.12
+     */
+    public $dbmsName;
+    /**
+     * @var string DBMS version.
+     * Can be checked against particular DBMS versions to use DBMS-specific features.
+     * @since 2.0.12
+     */
+    public $dbmsVersion;
 
     /**
      * @var Transaction the currently active transaction
