@@ -458,6 +458,9 @@ will parse the URL `http://en.example.com/posts` into the route `post/index` and
 ]
 ```
 
+Since version 2.0.11, you may also use protocol relative patterns that work for both, `http` and `https`.
+The syntax is the same as above but skipping the `http:` part, e.g.: `'//www.example.com/login' => 'site/login'`.
+
 > Note: Rules with server names should **not** include the subfolder of the entry script in their patterns. For example, if the applications entry script is at `http://www.example.com/sandbox/blog/index.php`, then you should use the pattern
   `http://www.example.com/posts` instead of `http://www.example.com/sandbox/blog/posts`. This will allow your application
   to be deployed under any directory without the need to change your url rules. Yii will automatically detect the base url of the application.
