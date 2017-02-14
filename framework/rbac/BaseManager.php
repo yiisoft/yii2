@@ -198,7 +198,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     {
         $result = [];
         foreach($this->defaultRoles as $roleName) {
-            $result[$roleName] = new Role(['name' => $roleName]);
+            $result[$roleName] = $this->createRole($roleName);
         }
         return $result;
     }
