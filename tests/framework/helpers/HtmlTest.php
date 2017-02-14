@@ -137,6 +137,30 @@ class HtmlTest extends TestCase
         $this->assertEquals('<img src="/example" alt="">', Html::img('/example'));
         $this->assertEquals('<img src="/test" alt="">', Html::img(''));
         $this->assertEquals('<img src="/example" width="10" alt="something">', Html::img('/example', ['alt' => 'something', 'width' => 10]));
+        $this->assertEquals('<img src="/base-url" alt="" srcset="/example-100w 100w,/example-500w 500w,/example-1500w 1500w">', Html::img('/base-url', [
+            'srcset' => [
+                '100w' => '/example-100w',
+                '500w' => '/example-500w',
+                '1500w' => '/example-1500w',
+            ],
+        ]));
+        $this->assertEquals('<img src="/base-url" alt="" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x">', Html::img('/base-url', [
+            'srcset' => [
+                '1x' => '/example-1x',
+                '2x' => '/example-2x',
+                '3x' => '/example-3x',
+            ],
+        ]));
+        $this->assertEquals('<img src="/base-url" alt="" srcset="/example-1.42x 1.42x,/example-2.0x 2.0x,/example-3.999x 3.999x">', Html::img('/base-url', [
+            'srcset' => [
+                '1.42x' => '/example-1.42x',
+                '2.0x' => '/example-2.0x',
+                '3.999x' => '/example-3.999x',
+            ],
+        ]));
+        $this->assertEquals('<img src="/base-url" alt="" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x">', Html::img('/base-url', [
+            'srcset' => '/example-1x 1x,/example-2x 2x,/example-3x 3x',
+        ]));
     }
 
     public function testLabel()
