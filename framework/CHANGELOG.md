@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
+- Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 
 
 2.0.11.2 February 08, 2017
