@@ -21,7 +21,7 @@ Yii DAO supports the following databases out of box:
 
 > Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
   [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
-  to compile it.
+  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
 
 ## Creating DB Connections <span id="creating-db-connections"></span>
 
