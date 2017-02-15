@@ -2,9 +2,30 @@ Yii Framework 2 Change Log
 ==========================
 
 2.0.12 under development
+--------------------------
+
+- Enh #13523: Plural rule for pasta (developeruz)
+- Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
+- Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
+- Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
+- Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
+
+
+2.0.11.2 February 08, 2017
+--------------------------
+
+- Bug #13501: Fixed `yii\rbac\DbManager::getRule()` and `yii\rbac\DbManager::getRules()` to properly handle resource data came from Rule table when using PostgreSQL (StalkAlex)
+- Bug #13508: Fixed duplicate attachment of behavior BC break (cebe)
+- Bug #13522: Issue with UrlRule, which created duplicate slashes when a default value was used (cebe)
+- Bug #13533: Fixed BC break in `yii\validators\ExistValidator::$targetAttribute` (developeruz)
+
+
+2.0.11.1 February 02, 2017
 ------------------------
 
 - Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
+- Bug #11502: Fixed `yii\console\controllers\MessageController` to properly populate missing languages in case of extraction with "db" format (bizley)
+- Bug #13489: Fixed button names in ActionColumn to contain proper `Yii::t()` tags and restored missing translations for `el`, `fa`, `ja`, `ru`, and `sk` (cebe, softark)
 
 
 2.0.11 February 01, 2017
@@ -1741,3 +1762,4 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
+

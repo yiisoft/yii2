@@ -216,7 +216,7 @@ class ReleaseController extends Controller
         $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
             $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
-            $this->stdout("- are all new `@since` tags for this relase version?\n");
+            $this->stdout("- are all new `@since` tags for this release version?\n");
         }
         $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);
@@ -529,6 +529,12 @@ class ReleaseController extends Controller
         $this->stdout("\n\nThe following steps are left for you to do manually:\n\n");
         $nextVersion2 = $this->getNextVersions($nextVersion, self::PATCH); // TODO support other versions
         $this->stdout("- wait for your changes to be propagated to the repo and create a tag $version on  https://github.com/yiisoft/yii2-framework\n\n");
+        $this->stdout("    git clone git@github.com:yiisoft/yii2-framework.git\n");
+        $this->stdout("    cd yii2-framework/\n");
+        $this->stdout("    export RELEASECOMMIT=$(git log --oneline |grep $version |grep -Po \"^[0-9a-f]+\")\n");
+        $this->stdout("    git tag -s $version -m \"version $version\" \$RELEASECOMMIT\n");
+        $this->stdout("    git tag --verify $version\n");
+        $this->stdout("    git push --tags\n\n");
         $this->stdout("- close the $version milestone on github and open new ones for {$nextVersion['framework']} and {$nextVersion2['framework']}: https://github.com/yiisoft/yii2/milestones\n");
         $this->stdout("- create a release on github.\n");
         $this->stdout("- release news and announcement.\n");
@@ -1015,9 +1021,15 @@ class ReleaseController extends Controller
                 case self::MINOR:
                     $parts[1]++;
                     $parts[2] = 0;
+                    if (isset($parts[3])) {
+                        unset($parts[3]);
+                    }
                     break;
                 case self::PATCH:
                     $parts[2]++;
+                    if (isset($parts[3])) {
+                        unset($parts[3]);
+                    }
                     break;
                 default:
                     throw new Exception('Unknown version type.');
