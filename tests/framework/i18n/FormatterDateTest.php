@@ -437,7 +437,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('5 months', $this->formatter->asDuration($interval_5_months));
         $this->assertSame('1 year', $this->formatter->asDuration($interval_1_year));
         $this->assertSame('12 years', $this->formatter->asDuration($interval_12_years));
-        
+
         // Pass a numeric value
         $this->assertSame('0 seconds', $this->formatter->asDuration(0));
         $this->assertSame('1 second', $this->formatter->asDuration(1));
@@ -687,7 +687,7 @@ class FormatterDateTest extends TestCase
         $this->formatter->timeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->assertSame('2014-08-01', $this->formatter->asDate('2014-08-01', 'yyyy-MM-dd'));
     }
-    
+
     public function testTimeOnlyValues()
     {
         $this->formatter->defaultTimeZone = 'UTC';
@@ -696,8 +696,7 @@ class FormatterDateTest extends TestCase
         // when timezone conversion is made on this time, it will result in 11:32 (DST 12:32) to be returned.
         // ensure this does not happen on time only values
         $this->assertSame('10:32', $this->formatter->asTime('10:32', 'HH:mm'));
-        
-        $this->assertSame('9am', $this->formatter->asTime('9am', 'Ha'));
+        $this->assertSame('10:32:37', $this->formatter->asTime('10:32:37', 'HH:mm:ss'));
     }
 
     /**

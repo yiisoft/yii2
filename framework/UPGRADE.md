@@ -50,6 +50,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.11
+-----------------------
+
+* `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
+  indicating whether the timestamp has date information or it is just time value.
+
+
 Upgrade from Yii 2.0.10
 -----------------------
 
@@ -59,7 +66,7 @@ Upgrade from Yii 2.0.10
 
 * `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
   If you extend from these classes and override these methods, you must make them public as well.
-  
+
 * `yii\widgets\MaskedInput` inputmask dependency was updated to `~3.3.3`.
   [See its changelog for details](https://github.com/RobinHerbots/Inputmask/blob/3.x/CHANGELOG.md).
 

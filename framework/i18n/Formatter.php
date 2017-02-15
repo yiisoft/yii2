@@ -650,16 +650,17 @@ class Formatter extends Component
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
-     * @param boolean $checkDateTimeInfo whether to also check if the date/time value has some time and date information attached.
+     * @param bool $checkDateTimeInfo whether to also check if the date/time value has some time and date information attached.
      * Defaults to `false`. If `true`, the method will then return an array with the first element being the normalized
-     * timestamp, the second a boolean indicating whether the timestamp has time information and third a boolean indicating 
+     * timestamp, the second a boolean indicating whether the timestamp has time information and third a boolean indicating
      * whether the timestamp has date information.
      * This parameter is available since version 2.0.1.
      * @return DateTime|array the normalized datetime value.
      * Since version 2.0.1 this may also return an array if `$checkTimeInfo` is true.
      * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
      * the timestamp has time information or it is just a date value.
-     * Since version 2.0.12 the array has third boolean element indicating whether the timestamp has date information.
+     * Since version 2.0.12 the array has third boolean element indicating whether the timestamp has date information 
+     * or it is just a time value.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      */
     protected function normalizeDatetimeValue($value, $checkDateTimeInfo = false)
@@ -686,8 +687,8 @@ class Formatter extends Component
                 $timestamp = new DateTime($value, new DateTimeZone($this->defaultTimeZone));
                 $info = date_parse($value);
                 return [
-                    $timestamp, 
-                    !($info['hour'] === false && $info['minute'] === false && $info['second'] === false), 
+                    $timestamp,
+                    !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
                     !($info['year'] === false && $info['month'] === false && $info['day'] === false)
                 ];
             } else {
