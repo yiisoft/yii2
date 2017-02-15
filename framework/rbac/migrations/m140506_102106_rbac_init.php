@@ -37,7 +37,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         return $this->db->driverName === 'mssql' || $this->db->driverName === 'sqlsrv' || $this->db->driverName === 'dblib';
     }
 
-    protected function isPgSQL()
+    protected function isOracle()
     {
         return $this->db->driverName === 'oci';
     }
@@ -159,7 +159,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             return '';
         }
 
-        if ($this->isPgSQL()) {
+        if ($this->isOracle()) {
             return ' ON DELETE SET NULL';
         }
 
