@@ -114,6 +114,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
      */
     protected function createManager()
     {
-        return new DbManager(['db' => $this->getConnection()]);
+        return new DbManager(['db' => $this->getConnection(), 'defaultRoles' => ['myDefaultRole']]);
     }
 }

@@ -265,7 +265,7 @@ class Controller extends \yii\base\Controller
      *         return false;
      *     }
      *     return true;
-     * });
+     * }]);
      * ```
      *
      * @return string the user input

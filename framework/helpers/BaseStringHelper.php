@@ -198,7 +198,7 @@ class BaseStringHelper
      *
      * @param string $string Input string
      * @param string $with Part to search inside the $string
-     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value. 
+     * @param bool $caseSensitive Case sensitive search. Default is true. When case sensitive is enabled, $with must exactly match the starting of the string in order to get a true value.
      * @return bool Returns true if first input starts with second input, false otherwise
      */
     public static function startsWith($string, $with, $caseSensitive = true)
@@ -283,5 +283,26 @@ class BaseStringHelper
     public static function countWords($string)
     {
         return count(preg_split('/\s+/u', $string, null, PREG_SPLIT_NO_EMPTY));
+    }
+
+    /**
+     * Returns string represenation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma
+     * @param int|float|string $value
+     * @return string
+     * @since 2.0.11
+     */
+    public static function normalizeNumber($value)
+    {
+        $value = "$value";
+
+        $localeInfo = localeconv();
+        $decimalSeparator = isset($localeInfo['decimal_point']) ? $localeInfo['decimal_point'] : null;
+
+        if ($decimalSeparator !== null && $decimalSeparator !== '.') {
+            $value = str_replace($decimalSeparator, '.', $value);
+        }
+
+        return $value;
     }
 }

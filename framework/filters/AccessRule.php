@@ -31,8 +31,16 @@ class AccessRule extends Component
      */
     public $actions;
     /**
-     * @var array list of the controller IDs that this rule applies to. Each controller ID is prefixed with the module ID (if any).
-     * The comparison is case-sensitive. If not set or empty, it means this rule applies to all controllers.
+     * @var array list of the controller IDs that this rule applies to.
+     *
+     * The comparison uses [[\yii\base\Controller::uniqueId]], so each controller ID is prefixed
+     * with the module ID (if any). For a `product` controller in the application, you would specify
+     * this property like `['product']` and if that controller is located in a `shop` module, this
+     * would be `['shop/product']`.
+     *
+     * The comparison is case-sensitive.
+     *
+     * If not set or empty, it means this rule applies to all controllers.
      */
     public $controllers;
     /**

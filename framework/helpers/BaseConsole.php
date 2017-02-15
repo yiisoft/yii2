@@ -528,9 +528,9 @@ class BaseConsole
             '%4' => [self::BG_BLUE],
             '%1' => [self::BG_RED],
             '%5' => [self::BG_PURPLE],
-            '%6' => [self::BG_PURPLE],
-            '%7' => [self::BG_CYAN],
-            '%0' => [self::BG_GREY],
+            '%6' => [self::BG_CYAN],
+            '%7' => [self::BG_GREY],
+            '%0' => [self::BG_BLACK],
             '%F' => [self::BLINK],
             '%U' => [self::UNDERLINE],
             '%8' => [self::NEGATIVE],
@@ -619,8 +619,18 @@ class BaseConsole
         } else {
             // try stty if available
             $stty = [];
-            if (exec('stty -a 2>&1', $stty) && preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', implode(' ', $stty), $matches)) {
-                return $size = [(int)$matches[2], (int)$matches[1]];
+            if (exec('stty -a 2>&1', $stty)) {
+                $stty = implode(' ', $stty);
+
+                // Linux stty output
+                if (preg_match('/rows\s+(\d+);\s*columns\s+(\d+);/mi', $stty, $matches)) {
+                    return $size = [(int)$matches[2], (int)$matches[1]];
+                }
+
+                // MacOS stty output
+                if (preg_match('/(\d+)\s+rows;\s*(\d+)\s+columns;/mi', $stty, $matches)) {
+                    return $size = [(int)$matches[2], (int)$matches[1]];
+                }
             }
 
             // fallback to tput, which may not be updated on terminal resize

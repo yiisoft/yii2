@@ -132,6 +132,7 @@ class BaseInflector
         'octopus' => 'octopuses',
         'opus' => 'opuses',
         'ox' => 'oxen',
+        'pasta' => 'pasta',
         'penis' => 'penises',
         'sex' => 'sexes',
         'soliloquy' => 'soliloquies',
@@ -566,8 +567,11 @@ class BaseInflector
      * @return string the generated sentence
      * @since 2.0.1
      */
-    public static function sentence(array $words, $twoWordsConnector = ' and ', $lastWordConnector = null, $connector = ', ')
+    public static function sentence(array $words, $twoWordsConnector = null, $lastWordConnector = null, $connector = ', ')
     {
+        if ($twoWordsConnector === null) {
+            $twoWordsConnector = Yii::t('yii', ' and ');
+        }
         if ($lastWordConnector === null) {
             $lastWordConnector = $twoWordsConnector;
         }
