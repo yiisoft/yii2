@@ -9,7 +9,7 @@ Yii Framework 2 Change Log
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
-- Enh #13577: `yii\test\ActiveFixture::resetTable()` should use `yii\db\QueryBuilder::truncateTable()` in stead of manual delete and reset (boboldehampsink)
+- Enh #13577: `yii\test\ActiveFixture::resetTable()` should use `yii\db\QueryBuilder::truncateTable()` instead of manual delete and reset (boboldehampsink)
 
 
 2.0.11.2 February 08, 2017
