@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
+- Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 
 
 2.0.11.2 February 08, 2017
