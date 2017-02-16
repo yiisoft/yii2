@@ -110,6 +110,15 @@ Run MSSQL tests
     docker-compose run --rm php 
     $ vendor/bin/phpunit --group mssql
 
+### Build triggers
+
+    curl -X POST \
+         -F token=${TOKEN} \
+         -F ref=travis \
+         -F "variables[DOCKER_MYSQL_IMAGE]=mysql:5.6" \
+         -F "variables[DOCKER_POSTGRES_IMAGE]=postgres:9.5" \
+         ${TRIGGER_URL}
+
 ### Run tests locally
 
 #### Via shell script
