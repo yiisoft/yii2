@@ -1,6 +1,10 @@
 <?php
 namespace yiiunit\framework\console\controllers;
 
+/**
+ * @group db
+ */
+
 use Yii;
 use yii\db\Connection;
 
