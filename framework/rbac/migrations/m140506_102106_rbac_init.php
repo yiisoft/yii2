@@ -74,7 +74,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'updated_at' => $this->integer(),
             'PRIMARY KEY ([[name]])',
             'FOREIGN KEY ([[rule_name]]) REFERENCES ' . $authManager->ruleTable . ' ([[name]])'.
-                $this->buildFkClause()
+                $this->buildFkClause('ON DELETE SET NULL', 'ON UPDATE CASCADE')
         ], $tableOptions);
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
 
@@ -83,9 +83,9 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'child' => $this->string(64)->notNull(),
             'PRIMARY KEY ([[parent]], [[child]])',
             'FOREIGN KEY ([[parent]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])'.
-                $this->buildFkClause(),
+                $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
             'FOREIGN KEY ([[child]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])'.
-                $this->buildFkClause(),
+                $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
         ], $tableOptions);
 
         $this->createTable($authManager->assignmentTable, [
@@ -94,7 +94,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'created_at' => $this->integer(),
             'PRIMARY KEY ([[item_name]], [[user_id]])',
             'FOREIGN KEY ([[item_name]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])' .
-                $this->buildFkClause(),
+                $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
         ], $tableOptions);
 
         if ($this->isMSSQL()) {
@@ -153,16 +153,16 @@ class m140506_102106_rbac_init extends \yii\db\Migration
         $this->dropTable($authManager->ruleTable);
     }
 
-    protected function buildFkClause()
+    protected function buildFkClause($delete = '', $update = '')
     {
         if ($this->isMSSQL()) {
             return '';
         }
 
         if ($this->isOracle()) {
-            return ' ON DELETE SET NULL';
+            return ' ' . $delete;
         }
 
-        return ' ON DELETE SET NULL ON UPDATE CASCADE';
+        return implode(' ', ['', $delete, $update]);
     }
 }
