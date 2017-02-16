@@ -436,7 +436,7 @@ class DbManager extends BaseManager
     {
         $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
 
-        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
+        if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;
         }
 

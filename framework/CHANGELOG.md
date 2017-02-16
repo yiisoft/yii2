@@ -52,7 +52,7 @@ Yii Framework 2 Change Log
 - Bug #13848: `yii\di\Instance::ensure()` wasn't throwing an exception when `$type` is specified and `$reference` object isn't instance of `$type` (c-jonua)
 - Bug #13890: `yii\log\DbTarget` log messages where not written when a database transaction was rolled back, added support for cloning a `yii\db\Connection` (shirase, cebe)
 - Bug #13901: Fixed passing unused parameter to `formatMessage()` call in `\yii\validators\IpValidator` (Kolyunya)
-- Bug #13961: Fixed `unserialize()` error during RBAC rule retrieving from PostgreSQL DBMS (vsguts)
+- Bug #13961: Fixed `unserialize()` error during RBAC rule retrieving from PostgreSQL DBMS (vsguts, nanodesu88, cebe)
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
 - Bug #14033: Fixed `yii\filters\AccessRule::matchIp()` erroring in case IP is not defined under HHVM (Kolyunya)
 - Bug #14052: Fixed processing parse errors on PHP 7 since these are instances of `\ParseError` (samdark)
