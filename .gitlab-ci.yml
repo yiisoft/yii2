@@ -47,7 +47,7 @@ db:
   script:
     - docker-compose up --build -d
     - docker-compose run --rm php vendor/bin/phpunit -v --group db --exclude caching,mysql,pgsql,mssql,cubrid
-    - docker-compose down -v --remove-orphans
+
 
 mysql:
   stage: test
@@ -60,7 +60,7 @@ mysql:
     # wait for db (retry X times)
     - docker-compose run --rm php bash -c "while ! curl mysql:3306; do ((c++)) && ((c==30)) && break; sleep 2; done"
     - docker-compose run --rm php vendor/bin/phpunit -v --group mysql
-    - docker-compose down -v --remove-orphans
+
 
 pgsql:
   stage: test
@@ -73,7 +73,7 @@ pgsql:
     # wait for db (retry X times)
     - docker-compose run --rm php bash -c 'while [ true ]; do curl postgres:5432; if [ $? == 52 ]; then break; fi; ((c++)) && ((c==25)) && break; sleep 2; done'
     - docker-compose run --rm php vendor/bin/phpunit -v --group pgsql
-    - docker-compose down -v --remove-orphans
+
 
 cubrid:
   stage: test
@@ -87,7 +87,7 @@ cubrid:
     - docker-compose run --rm php bash -c 'while [ true ]; do curl cubrid:1523; if [ $? == 56 ]; then break; fi; ((c++)) && ((c==20)) && break; sleep 3; done'
     - sleep 5
     - docker-compose run --rm php /project/vendor/bin/phpunit -v --group cubrid
-    - docker-compose down -v --remove-orphans
+
 
 mssql:
   stage: test
@@ -103,7 +103,7 @@ mssql:
     # Note: Password has to be the last parameter
     - docker-compose run --rm sqlcmd sh -c 'sqlcmd -S mssql -U sa -Q "CREATE DATABASE yii2test" -P Microsoft-12345'
     - docker-compose run --rm php vendor/bin/phpunit -v --group mssql
-    - docker-compose down -v --remove-orphans
+
 
 travis:
   stage: travis
@@ -112,7 +112,7 @@ travis:
   script:
     - export COMPOSE_FILE=docker-compose.yml:docker-compose.mysql.yml:docker-compose.pgsql.yml
     - docker-compose up --build -d
-    # TODO: retry/wait for db
+    # wait for dbs ...
     - sleep 10
     - docker-compose run --rm php vendor/bin/phpunit -v --exclude mssql,cubrid,oci,wincache,xcache,zenddata,cubrid
-    - docker-compose down -v --remove-orphans
+

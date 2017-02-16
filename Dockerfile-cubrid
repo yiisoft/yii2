@@ -5,7 +5,6 @@ RUN pecl install pdo_cubrid-9.3.0.0001
 RUN echo "extension=pdo_cubrid.so" > /usr/local/etc/php/conf.d/cubrid.ini
 
 
-# TODO: temporary section --->
 # Install system packages for composer (git)
 RUN apt-get update && \
     apt-get -y install \
@@ -23,7 +22,7 @@ ENV COMPOSER_ALLOW_SUPERUSER 1
 RUN curl -sS https://getcomposer.org/installer | php -- \
         --filename=composer.phar \
         --install-dir=/usr/local/bin
-# TODO: <--- end
+
 
 # Project source-code
 WORKDIR /project

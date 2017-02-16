@@ -191,8 +191,9 @@ public function actionOld()
 そして、クライアントサイドで、このヘッダの値を読み、それに応じてブラウザをリダイレクトする JavaScript を書くことが出来ます。
 
 > Info: Yii には `yii.js` という JavaScript ファイルが付属しています。
-これは、よく使われる一連の JavaScript 機能を提供するもので、その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。
-従って、あなたが ([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
+  これは、よく使われる一連の JavaScript 機能を提供するもので、その中には `X-Redirect` ヘッダに基づくブラウザのリダイレクトも含まれています。
+  従って、あなたが ([[yii\web\YiiAsset]] アセットバンドルを登録して) この JavaScript ファイルを使うつもりなら、AJAX のリダイレクトをサポートするためには、何も書く必要がなくなります。
+  `yii.js` に関する更なる情報は [クライアントスクリプトの節](output-client-scripts.md#yii.js) にあります。
 
 
 ## ファイルを送信する <span id="sending-files"></span>

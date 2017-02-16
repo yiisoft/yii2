@@ -63,7 +63,9 @@ class UniqueValidator extends Validator
      */
     public $filter;
     /**
-     * @var string the user-defined error message. When validating single attribute, it may contain
+     * @var string the user-defined error message.
+     *
+     * When validating single attribute, it may contain
      * the following placeholders which will be replaced accordingly by the validator:
      *
      * - `{attribute}`: the label of the attribute being validated
@@ -83,12 +85,12 @@ class UniqueValidator extends Validator
      * to setup custom message for multiple target attributes.
      */
     public $comboNotUnique;
-
     /**
      * @var string and|or define how target attributes are related
      * @since 2.0.11
      */
     public $targetAttributeJunction = 'and';
+
 
     /**
      * @inheritdoc
@@ -120,7 +122,7 @@ class UniqueValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
-        $conditions[] = $this->targetAttributeJunction == 'or' ? 'or' : 'and';
+        $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
 
         foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
@@ -160,22 +162,23 @@ class UniqueValidator extends Validator
             $exists = $query->exists();
         } else {
             // if current $model is in the database already we can't use exists()
-            /** @var $models ActiveRecordInterface[] */
-            $models = $query->select($targetClass::primaryKey())->limit(2)->all();
+            if ($query instanceof \yii\db\ActiveQuery) {
+                // only select primary key to optimize query
+                $query->select($targetClass::primaryKey());
+            }
+            $models = $query->limit(2)->asArray()->all();
             $n = count($models);
             if ($n === 1) {
-                $keys = array_keys($conditions);
+                // if there is one record, check if it is the currently validated model
+                $dbModel = reset($models);
                 $pks = $targetClass::primaryKey();
-                sort($keys);
-                sort($pks);
-                if ($keys === $pks) {
-                    // primary key is modified and not unique
-                    $exists = $model->getOldPrimaryKey() != $model->getPrimaryKey();
-                } else {
-                    // non-primary key, need to exclude the current record based on PK
-                    $exists = reset($models)->getPrimaryKey() != $model->getOldPrimaryKey();
+                $pk = [];
+                foreach($pks as $pkAttribute) {
+                    $pk[$pkAttribute] = $dbModel[$pkAttribute];
                 }
+                $exists = ($pk != $model->getOldPrimaryKey(true));
             } else {
+                // if there is more than one record, the value is not unique
                 $exists = $n > 1;
             }
         }
@@ -214,9 +217,10 @@ class UniqueValidator extends Validator
      * should be used to validate the uniqueness of the current attribute value. You may use an array to validate
      * the uniqueness of multiple columns at the same time. The array values are the attributes that will be
      * used to validate the uniqueness, while the array keys are the attributes whose values are to be validated.
+     * If the key and the value are the same, you can just specify the value.
      * @param Model $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated in the $model
-
+     *
      * @return array conditions, compatible with [[\yii\db\Query::where()|Query::where()]] key-value format.
      */
     private function prepareConditions($targetAttribute, $model, $attribute)
@@ -224,7 +228,7 @@ class UniqueValidator extends Validator
         if (is_array($targetAttribute)) {
             $conditions = [];
             foreach ($targetAttribute as $k => $v) {
-                $conditions[$v] = is_int($k) ? $model->$attribute : $model->$k;
+                $conditions[$v] = is_int($k) ? $model->$v : $model->$k;
             }
         } else {
             $conditions = [$targetAttribute => $model->$attribute];

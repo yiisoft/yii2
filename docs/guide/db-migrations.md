@@ -191,7 +191,7 @@ In the following all variants of this feature are described.
 
 ### Create Table
 
-```php
+```
 yii migrate/create create_post_table
 ```
 
@@ -225,7 +225,7 @@ class m150811_220037_create_post_table extends Migration
 
 To create table fields right away, specify them via `--fields` option.
 
-```php
+```
 yii migrate/create create_post_table --fields="title:string,body:text"
 ```
 
@@ -262,7 +262,7 @@ class m150811_220037_create_post_table extends Migration
 
 You can specify more field parameters.
 
-```php
+```
 yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
 ```
 
@@ -303,7 +303,7 @@ class m150811_220037_create_post_table extends Migration
 
 Since 2.0.8 the generator supports foreign keys using the `foreignKey` keyword.
 
-```php
+```
 yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
 ```
 
@@ -426,7 +426,7 @@ If no schema exists, primary key isn't set or is composite, default name `id` wi
 
 ### Drop Table
 
-```php
+```
 yii migrate/create drop_post_table --fields="title:string(12):notNull:unique,body:text"
 ```
 
@@ -458,7 +458,7 @@ content would contain `addColumn` and `dropColumn` statements necessary.
 
 To add column:
 
-```php
+```
 yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ```
 
@@ -477,6 +477,12 @@ class m150811_220037_add_position_column_to_post_table extends Migration
         $this->dropColumn('post', 'position');
     }
 }
+```
+
+You can specify multiple columns as follows:
+
+```
+yii migrate/create add_xxx_column_yyy_column_to_zzz_table --fields="xxx:integer,yyy:text"
 ```
 
 ### Drop Column
@@ -510,7 +516,7 @@ class m150811_220037_drop_position_column_from_post_table extends Migration
 If the migration name is of the form `create_junction_table_for_xxx_and_yyy_tables` or `create_junction_xxx_and_yyy_tables`
 then code necessary to create junction table will be generated.
 
-```php
+```
 yii migrate/create create_junction_table_for_post_and_tag_tables --fields="created_at:dateTime"
 ```
 

@@ -18,8 +18,10 @@
  */
 return [
     '(not set)' => '(nie je nastavené)',
+    ' and ' => ' a ',
     'An internal server error occurred.' => 'Vyskytla sa interná chyba servera.',
     'Are you sure you want to delete this item?' => 'Skutočne chcete odstrániť tento záznam?',
+    'Delete' => 'Zmazať',
     'Error' => 'Chyba',
     'File upload failed.' => 'Súbor sa nepodarilo nahrať.',
     'Home' => 'Úvod',
@@ -34,7 +36,7 @@ return [
     'Page not found.' => 'Stránka nebola nájdená.',
     'Please fix the following errors:' => 'Opravte prosím nasledujúce chyby:',
     'Please upload a file.' => 'Nahrajte prosím súbor.',
-    'Powered by {yii}' => 'Powered by {yii}',
+    'Powered by {yii}' => 'Beží na {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Zobrazujem <b>{begin, number}-{end, number}</b> z <b>{totalCount, number}</b> {totalCount, plural, one{záznam} other{záznamov}}.',
     'The combination {values} of {attributes} has already been taken.' => 'Kombinácia {values} pre {attributes} je už použitá.',
     'The file "{file}" is not an image.' => 'Súbor "{file}" nie je obrázok.',
@@ -51,6 +53,8 @@ return [
     'Unable to verify your data submission.' => 'Nebolo možné preveriť odoslané údaje.',
     'Unknown alias: -{name}' => 'Neznámy alias: -{name}',
     'Unknown option: --{name}' => 'Neznáme nastavenie: --{name}',
+    'Update' => 'Upraviť',
+    'View' => 'Náhľad',
     'Yes' => 'Áno',
     'Yii Framework' => 'Yii Framework',
     'You are not allowed to perform this action.' => 'Nemáte oprávnenie pre požadovanú akciu.',
