@@ -149,11 +149,10 @@ class Pjax extends Widget
         $view = $this->getView();
         $this->registerClientScript();
         if (!$this->requiresPjax()) {
+            PjaxAsset::register($view);
             echo Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
             return;
         }
-
-        PjaxAsset::register($view);
         
         $view->endBody();
         $view->endPage(true);
