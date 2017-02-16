@@ -46,7 +46,7 @@ db:
     - tests/full
   script:
     - docker-compose up --build -d
-    - docker-compose run --rm php vendor/bin/phpunit -v --group db --exclude caching,mysql,pgsql,mssql,cubrid
+    - docker-compose run --rm php vendor/bin/phpunit -v --group db --exclude caching,mysql,pgsql,mssql,cubrid,oci
 
 
 mysql:

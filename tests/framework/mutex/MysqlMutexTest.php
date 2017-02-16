@@ -9,6 +9,7 @@ use yiiunit\framework\db\DatabaseTestCase;
  * Class MysqlMutexTest
  *
  * @group mutex
+ * @group db
  * @group mysql
  * 
  * @package yiiunit\framework\mutex
