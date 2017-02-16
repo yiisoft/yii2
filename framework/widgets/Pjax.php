@@ -99,11 +99,6 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
-     * @var boolean set to true if using PJAX widget in the layout file. This will make sure PJAX widgets in the layout are 
-     * initialized before nested PJAX widgets in the view.
-     */
-    public $isLayout = false;
-    /**
      * @inheritdoc
      * @internal
      */
@@ -112,7 +107,6 @@ class Pjax extends Widget
      * @inheritdoc
      */
     public static $autoIdPrefix = 'p';
-
 
     /**
      * @inheritdoc
@@ -123,11 +117,10 @@ class Pjax extends Widget
             $this->options['id'] = $this->getId();
         }
 
-        $view = $this->getView();
-        
         if ($this->requiresPjax()) {
             ob_start();
             ob_implicit_flush(false);
+            $view = $this->getView();
             $view->clear();
             $view->beginPage();
             $view->head();
@@ -135,14 +128,7 @@ class Pjax extends Widget
             if ($view->title !== null) {
                 echo Html::tag('title', Html::encode($view->title));
             }
-            if (!$this->isLayout) {
-                $this->registerClientScript();
-            }
         } else {
-            if (!$this->isLayout) {
-                $this->registerClientScript();
-                PjaxAsset::register($view);
-            }
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'div');
             echo Html::beginTag($tag, array_merge([
@@ -161,26 +147,15 @@ class Pjax extends Widget
     public function run()
     {
         $view = $this->getView();
-        
+        $this->registerClientScript();
         if (!$this->requiresPjax()) {
             echo Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
-            if ($this->isLayout) {
-                $this->registerClientScript(View::MERGE_PREPEND);
-                PjaxAsset::register($view);
-            }
             return;
         }
-        if ($this->isLayout) {
-            $this->registerClientScript(View::MERGE_PREPEND);
-        }
 
+        PjaxAsset::register($view);
+        
         $view->endBody();
-
-        // Do not re-send css files as it may override the css files that were loaded after them.
-        // This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
-        // It should be removed once pjax supports loading only missing css files
-        $view->cssFiles = null;
-
         $view->endPage(true);
 
         $content = ob_get_clean();
@@ -209,7 +184,7 @@ class Pjax extends Widget
     /**
      * Registers the needed JavaScript.
      */
-    public function registerClientScript($registerAssets = true)
+    public function registerClientScript($jsMerge = View::MERGE_APPEND)
     {
         $id = $this->options['id'];
         $this->clientOptions['push'] = $this->enablePushState;
