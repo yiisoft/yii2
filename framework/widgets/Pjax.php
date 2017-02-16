@@ -99,6 +99,11 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
+     * @var boolean set to true if using PJAX widget in the layout file. This will make sure PJAX widgets in the layout are 
+     * initialized before nested PJAX widgets in the view.
+     */
+    public $isLayout = false;
+    /**
      * @inheritdoc
      * @internal
      */
@@ -118,10 +123,11 @@ class Pjax extends Widget
             $this->options['id'] = $this->getId();
         }
 
+        $view = $this->getView();
+        
         if ($this->requiresPjax()) {
             ob_start();
             ob_implicit_flush(false);
-            $view = $this->getView();
             $view->clear();
             $view->beginPage();
             $view->head();
@@ -129,7 +135,14 @@ class Pjax extends Widget
             if ($view->title !== null) {
                 echo Html::tag('title', Html::encode($view->title));
             }
+            if (!$this->isLayout) {
+                $this->registerClientScript();
+            }
         } else {
+            if (!$this->isLayout) {
+                $this->registerClientScript();
+                PjaxAsset::register($view);
+            }
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'div');
             echo Html::beginTag($tag, array_merge([
@@ -147,16 +160,20 @@ class Pjax extends Widget
      */
     public function run()
     {
+        $view = $this->getView();
+        
         if (!$this->requiresPjax()) {
-            $this->registerClientScript();
             echo Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
-            $this->registerClientScript();
-
+            if ($this->isLayout) {
+                $this->registerClientScript(View::MERGE_PREPEND);
+                PjaxAsset::register($view);
+            }
             return;
         }
-        $this->registerClientScript(false);
+        if ($this->isLayout) {
+            $this->registerClientScript(View::MERGE_PREPEND);
+        }
 
-        $view = $this->getView();
         $view->endBody();
 
         // Do not re-send css files as it may override the css files that were loaded after them.
@@ -213,13 +230,9 @@ class Pjax extends Widget
             $submitEvent = Json::htmlEncode($this->submitEvent);
             $js .= "\njQuery(document).on($submitEvent, $formSelector, function (event) {jQuery.pjax.submit(event, $options);});";
         }
-        $view = $this->getView();
-        
-        if ($registerAssets) {
-            PjaxAsset::register($view);
-        }
 
         if ($js !== '') {
+            $view = $this->getView();
             $view->registerJs($js, View::POS_READY, 'pjax-init', View::MERGE_PREPEND);
         }
     }
