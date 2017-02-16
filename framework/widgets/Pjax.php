@@ -190,7 +190,7 @@ class Pjax extends Widget
     /**
      * Registers the needed JavaScript.
      */
-    public function registerClientScript($jsMerge = View::MERGE_APPEND)
+    public function registerClientScript()
     {
         $id = $this->options['id'];
         $this->clientOptions['push'] = $this->enablePushState;
