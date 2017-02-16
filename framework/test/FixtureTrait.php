@@ -195,9 +195,10 @@ trait FixtureTrait
                 if (!isset($instances[$name])) {
                     $instances[$name] = false;
                     $stack[] = $fixture = Yii::createObject($fixture);
-                    foreach ($fixture->depends as $dep) {
+                    foreach ($fixture->depends as $alias => $dep) {
                         // need to use the configuration provided in test case
                         $stack[] = isset($config[$dep]) ? $config[$dep] : ['class' => $dep];
+                        if (is_string($alias)) $aliases[$dep] = $alias;
                     }
                 } elseif ($instances[$name] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
