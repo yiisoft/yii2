@@ -3,7 +3,6 @@
 namespace yiiunit\framework\i18n;
 
 use yii\i18n\Formatter;
-use Yii;
 use yiiunit\TestCase;
 use DateTime;
 use DateInterval;
@@ -688,15 +687,25 @@ class FormatterDateTest extends TestCase
         $this->assertSame('2014-08-01', $this->formatter->asDate('2014-08-01', 'yyyy-MM-dd'));
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/13343
+     *
+     * Prevent timezone conversion for time-only values.
+     */
     public function testTimeOnlyValues()
     {
         $this->formatter->defaultTimeZone = 'UTC';
-        $this->formatter->timeZone = 'Europe/Berlin'; // UTC+1 (DST UTC+2)
+        $this->formatter->timeZone = 'Europe/Zurich'; // UTC+1 (DST UTC+2)
 
-        // when timezone conversion is made on this time, it will result in 11:32 (DST 12:32) to be returned.
-        // ensure this does not happen on time only values
-        $this->assertSame('10:32', $this->formatter->asTime('10:32', 'HH:mm'));
-        $this->assertSame('10:32:37', $this->formatter->asTime('10:32:37', 'HH:mm:ss'));
+        // time-only value, do not convert
+        $this->assertSame('12:00:00', $this->formatter->asTime('12:00:00', 'HH:mm:ss'));
+        // full info, convert
+        $this->assertSame('13:00:00', $this->formatter->asTime('07.01.2017 12:00:00', 'HH:mm:ss'));
+        $this->assertSame('14:00:00', $this->formatter->asTime('29.06.2017 12:00:00', 'HH:mm:ss'));
+
+        // timezone conversion expected with asDatetime() and asDate() with time-only value
+        $this->assertNotSame('12:00:00', $this->formatter->asDatetime('12:00:00', 'HH:mm:ss'));
+        $this->assertNotSame('12:00:00', $this->formatter->asDate('12:00:00', 'HH:mm:ss'));
     }
 
     /**
