@@ -82,6 +82,7 @@ return [
     '{attribute} must be an IP address with specified subnet.' => '{attribute} doit être une adresse IP avec un sous-réseau.',
     '{attribute} must be an integer.' => '{attribute} doit être un entier.',
     '{attribute} must be either "{true}" or "{false}".' => '{attribute} doit être soit « {true} » soit « {false} ».',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} doit être égal à "{compareValueOrAttribute}".',
     '{attribute} must be greater than "{compareValueOrAttribute}".' => '{attribute} doit être supérieur à « {compareValueOrAttribute} ».',
     '{attribute} must be greater than or equal to "{compareValueOrAttribute}".' => '{attribute} doit être supérieur ou égal à « {compareValueOrAttribute} ».',
     '{attribute} must be less than "{compareValueOrAttribute}".' => '{attribute} doit être inférieur à « {compareValueOrAttribute} ».',
