@@ -99,6 +99,11 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
+     * @var bool clear the resources. If set to `true` any resources registered outside the pjax widget's scope will be removed.
+     * This should be set to `false` if your pjax widget is inside the layout view since the layout is rendered after the content.
+     */
+    public $clear = true;
+    /**
      * @inheritdoc
      * @internal
      */
@@ -121,7 +126,9 @@ class Pjax extends Widget
             ob_start();
             ob_implicit_flush(false);
             $view = $this->getView();
-            $view->clear();
+            if ($this->clear) {
+                $view->clear();
+            }
             $view->beginPage();
             $view->head();
             $view->beginBody();
