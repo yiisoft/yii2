@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Enh #13523: Plural rule for pasta (developeruz)
+- Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 
 
 2.0.11.2 February 08, 2017
