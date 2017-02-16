@@ -136,6 +136,9 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $m = new OrderItem(['order_id' => 1, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
+        $m = new OrderItem(['order_id' => 2, 'item_id' => 5]);
+        $val->validateAttribute($m, 'order_id');
+        $this->assertFalse($m->hasErrors('order_id'));
         $m = new OrderItem(['order_id' => 10, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertTrue($m->hasErrors('order_id'));

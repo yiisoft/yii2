@@ -334,7 +334,7 @@ class CountryValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!in_array($model->$attribute, ['兲朝', '墙外'])) {
-            $this->addError($attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
+            $this->addError($model, $attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
         }
     }
 }

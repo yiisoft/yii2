@@ -72,7 +72,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         static::assertContains('<span class="foo-bar">&laquo;</span>', $output);
     }
     
-	public function testDisabledPageElementOptionsWithTagOption()
+    public function testDisabledPageElementOptionsWithTagOption()
     {
         $pagination = new Pagination();
         $pagination->setPage(0);

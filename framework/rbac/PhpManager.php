@@ -99,6 +99,11 @@ class PhpManager extends BaseManager
     public function checkAccess($userId, $permissionName, $params = [])
     {
         $assignments = $this->getAssignments($userId);
+
+        if ($this->hasNoAssignments($assignments)) {
+            return false;
+        }
+
         return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 
@@ -387,7 +392,7 @@ class PhpManager extends BaseManager
      */
     public function getRolesByUser($userId)
     {
-        $roles = [];
+        $roles = $this->getDefaultRoles();
         foreach ($this->getAssignments($userId) as $name => $assignment) {
             $role = $this->items[$assignment->roleName];
             if ($role->type === Item::TYPE_ROLE) {

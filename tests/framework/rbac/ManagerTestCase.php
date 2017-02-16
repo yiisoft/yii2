@@ -182,6 +182,16 @@ abstract class ManagerTestCase extends TestCase
                 'blablabla' => false,
                 null => false,
             ],
+            'guest' => [
+                // all actions denied for guest (user not exists)
+                'createPost' => false,
+                'readPost' => false,
+                'updatePost' => false,
+                'deletePost' => false,
+                'updateAnyPost' => false,
+                'blablabla' => false,
+                null => false,
+            ],
         ];
 
         $params = ['authorID' => 'author B'];
@@ -289,6 +299,8 @@ abstract class ManagerTestCase extends TestCase
         $roles = $this->auth->getRolesByUser(123);
         $this->assertTrue(reset($roles) instanceof Role);
         $this->assertEquals($roles['reader']->name, 'reader');
+
+        $this->assertContains('myDefaultRole', array_keys($roles));
     }
 
     public function testGetChildRoles()

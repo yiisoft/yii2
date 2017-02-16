@@ -86,4 +86,29 @@ class ServiceLocatorTest extends TestCase
         $this->assertTrue($object2 instanceof $className);
         $this->assertTrue($object === $object2);
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/11771
+     */
+    public function testModulePropertyIsset()
+    {
+        $config = [
+            'components' => [
+                'captcha' => [
+                    'name' => 'foo bar',
+                    'class' => 'yii\captcha\Captcha',
+                ],
+            ],
+        ];
+
+        $app = new ServiceLocator($config);
+
+        $this->assertTrue(isset($app->captcha->name));
+        $this->assertFalse(empty($app->captcha->name));
+
+        $this->assertEquals('foo bar', $app->captcha->name);
+
+        $this->assertTrue(isset($app->captcha->name));
+        $this->assertFalse(empty($app->captcha->name));
+    }
 }

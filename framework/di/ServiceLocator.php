@@ -84,7 +84,7 @@ class ServiceLocator extends Component
      */
     public function __isset($name)
     {
-        if ($this->has($name, true)) {
+        if ($this->has($name)) {
             return true;
         } else {
             return parent::__isset($name);

@@ -190,7 +190,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Данное свойство является наиболее важным. Оно позволяет вам зарегистрировать список именованных компонентов, называемых
-[компоненты приложения](#structure-application-components.md), которые Вы можете использовать в других местах.
+[компоненты приложения](structure-application-components.md), которые Вы можете использовать в других местах.
 Например,
 
 ```php
