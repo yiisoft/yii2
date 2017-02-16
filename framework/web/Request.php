@@ -874,6 +874,8 @@ class Request extends \yii\base\Request
     public function getIsSecureConnection()
     {
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
+            // If we've gone through multiple proxies, only check the edge node.
+            // https://github.com/yiisoft/yii2/issues/13451
             || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strncasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https', 5) === 0;
     }
 

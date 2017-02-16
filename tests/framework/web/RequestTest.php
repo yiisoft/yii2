@@ -301,6 +301,13 @@ class RequestTest extends TestCase
     {
         $request = new Request();
 
+        $_SERVER['HTTPS'] = 'on';
+        $this->assertTrue($request->getIsSecureConnection());
+
+        // Trust HTTPS header over the X_FORWARDED header
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+        $this->assertTrue($request->getIsSecureConnection());
+
         $_SERVER['HTTPS'] = false;
         $this->assertFalse($request->getIsSecureConnection());
 
