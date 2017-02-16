@@ -207,6 +207,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Builds a SQL statement for truncating a DB table.
+     * Explicitly restart identity for PGSQL to be consistent with other databases which all do this by default.
      * @param string $table the table to be truncated. The name will be properly quoted by the method.
      * @return string the SQL statement for truncating a DB table.
      */
