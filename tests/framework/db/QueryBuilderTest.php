@@ -13,6 +13,7 @@ use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
 use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\oci\QueryBuilder as OracleQueryBuilder;
+use yiiunit\data\ar\Order;
 use yiiunit\data\base\TraversableObject;
 
 abstract class QueryBuilderTest extends DatabaseTestCase
@@ -1441,17 +1442,87 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      */
     public function testFromIndexHint()
     {
+        // pass
         $query = (new Query)->from([new Expression('{{%user}} USE INDEX (primary)')]);
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes('SELECT * FROM {{%user}} USE INDEX (primary)');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
+        // fails
         $query = (new Query)
             ->from([new Expression('{{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
             ->leftJoin(['p' => 'profile'], 'user.id = profile.user_id USE INDEX (i2)');
         list ($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes('SELECT * FROM {{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] ON user.id = profile.user_id USE INDEX (i2)');
+        $expected = $this->replaceQuotes('SELECT * FROM {{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] USE INDEX (i2) ON user.id = profile.user_id');
+        $this->assertNotEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // fails
+        $query = (new Query)
+            ->from([new Expression('{{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
+            ->leftJoin(['p' => 'profile USE INDEX (i2)'], 'user.id = profile.user_id');
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        $expected = $this->replaceQuotes('SELECT * FROM {{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1) LEFT JOIN [[profile]] [[p]] USE INDEX (i2) ON user.id = profile.user_id');
+        $this->assertNotEquals($expected, $sql);
+        $this->assertEmpty($params);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/10869
+     */
+    public function testIndexHint()
+    {
+        // Simple
+        $query = (new Query)->from('order')->hintIndex(['order', 'useIndex', 'primary']);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] USE INDEX ([[primary]])');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]]');
+        }
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // Multiple hints columns
+        $query = (new Query)
+            ->from('order')->hintIndex([['order', 'forceIndex', 'primary'], ['order', 'ignoreIndex', 'FK_order_customer_id', 'orderBy']])
+            ->leftJoin('customer', 'order.customer_id = customer.id')->hintIndex(['customer', 'useIndex', 'primary']);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] FORCE INDEX ([[primary]]) IGNORE INDEX FOR ORDER BY ([[FK_order_customer_id]]) LEFT JOIN [[customer]] USE INDEX ([[primary]]) ON order.customer_id = customer.id');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] LEFT JOIN [[customer]] ON order.customer_id = customer.id');
+        }
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // With alias
+        $query = (new Query)
+            ->from('order')->hintIndex([['order', 'forceIndex', 'primary'], ['order', 'ignoreIndex', 'FK_order_customer_id', 'orderBy']])
+            ->leftJoin(['c' => 'customer'], 'order.customer_id = c.id')->hintIndex(['customer', 'useIndex', 'primary']);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] FORCE INDEX ([[primary]]) IGNORE INDEX FOR ORDER BY ([[FK_order_customer_id]]) LEFT JOIN [[customer]] [[c]] USE INDEX ([[primary]]) ON order.customer_id = c.id');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] LEFT JOIN [[customer]] [[c]] ON order.customer_id = c.id');
+        }
+        $this->assertEquals($expected, $sql);
+        $this->assertEmpty($params);
+
+        // with subquery
+        $subquery = (new Query)->from('customer')->where('status = 1')->hintIndex(['customer', 'forceIndex', 'primary']);
+        $query = (new Query)->from(['activecustomers' => $subquery]);
+        list ($sql, $params) = $this->getQueryBuilder()->build($query);
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM [[customer]] FORCE INDEX ([[primary]]) WHERE status = 1) [[activecustomers]]');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM [[customer]]) WHERE status = 1) [[activecustomers]]');
+        }
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
     }

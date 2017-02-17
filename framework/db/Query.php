@@ -70,6 +70,24 @@ class Query extends Component implements QueryInterface
      */
     public $from;
     /**
+     * @var array which hint index to use for the query, if supported. Each array element represents the specification
+     * of one hint index which has the following structure:
+     *
+     * ```php
+     * [$tableName, $hintType, $indexList, $for]
+     * ```
+     *
+     * For example,
+     *
+     * ```php
+     * [
+     *     ['user', 'useIndex', ['primary', 'user.name'], 'groupBy'],
+     *     ['user', 'ignoreIndex', 'profile_id'],
+     * ]
+     * ```
+     */
+    public $hintIndex = [];
+    /**
      * @var array how to group the query results. For example, `['company', 'department']`.
      * This is used to construct the GROUP BY clause in a SQL statement.
      */
@@ -991,6 +1009,28 @@ class Query extends Component implements QueryInterface
     }
 
     /**
+     * Sets the $hintIndex property in order to hint indexes if available.
+     * @param array $hints the hint(s) to be applied. See [[hintIndex]] for more
+     * details about the format of this parameter.
+     * The method will automatically quote the table and column names unless it contains some parenthesis
+     * (which means the table is given as a sub-query or DB expression).
+     *
+     * @return $this the query object itself
+     */
+    public function hintIndex($hints)
+    {
+        if (!is_array($hints[0])) {
+            $hints = [$hints];
+        }
+
+        foreach($hints as $hint) {
+            $this->hintIndex[] = $hint;
+        }
+
+        return $this;
+    }
+
+    /**
      * Adds additional parameters to be bound to the query.
      * @param array $params list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
@@ -1038,6 +1078,7 @@ class Query extends Component implements QueryInterface
             'having' => $from->having,
             'union' => $from->union,
             'params' => $from->params,
+            'hintIndex' => $from->hintIndex,
         ]);
     }
 }

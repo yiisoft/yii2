@@ -1417,4 +1417,82 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // Make sure that only links were removed, the items were not removed
         $this->assertEquals(3, $itemClass::find()->where(['category_id' => 2])->count());
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/10869
+     */
+    public function testIndexHintActiveRecord()
+    {
+        // hinted columns as array
+        $hintIndex = ['order', 'useIndex', ['primary', 'FK_order_customer_id']];
+        $query = Order::find()->hintIndex($hintIndex)->where(['id' => 1, 'customer_id' => 1]);
+        $sql = $query->createCommand()->getRawSql();
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] USE INDEX ([[primary]], [[FK_order_customer_id]]) WHERE ([[id]]=1) AND ([[customer_id]]=1)');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] WHERE ([[id]]=1) AND ([[customer_id]]=1)');
+        }
+        $this->assertEquals($expected, $sql);
+
+        // hinted columns as string
+        $hintIndex = ['order', 'ignoreIndex', 'FK_order_customer_id'];
+        $query = Order::find()->hintIndex($hintIndex)->where(['id' => 1, 'customer_id' => 1]);
+        $sql = $query->createCommand()->getRawSql();
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] IGNORE INDEX ([[FK_order_customer_id]]) WHERE ([[id]]=1) AND ([[customer_id]]=1)');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] WHERE ([[id]]=1) AND ([[customer_id]]=1)');
+        }
+        $this->assertEquals($expected, $sql);
+
+        // multiple hints
+        $hintIndex = [['order', 'forceIndex', ['primary']], ['order', 'ignoreIndex', 'FK_order_customer_id', 'orderBy']];
+        $query = Order::find()->hintIndex($hintIndex)->orderBy('customer_id');
+        $sql = $query->createCommand()->getRawSql();
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] FORCE INDEX ([[primary]]) IGNORE INDEX FOR ORDER BY ([[FK_order_customer_id]]) ORDER BY [[customer_id]]');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] ORDER BY [[customer_id]]');
+        }
+        $this->assertEquals($expected, $sql);
+
+        // with alias
+        $hintIndex = ['order', 'ignoreIndex', 'FK_order_customer_id'];
+        $query = Order::find()->from(['o' => 'order'])->hintIndex($hintIndex)->where(['id' => 1, 'customer_id' => 1]);
+        $sql = $query->createCommand()->getRawSql();
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] [[o]] IGNORE INDEX ([[FK_order_customer_id]]) WHERE ([[id]]=1) AND ([[customer_id]]=1)');
+        } else {
+            $expected = $this->replaceQuotes('SELECT * FROM [[order]] [[o]] WHERE ([[id]]=1) AND ([[customer_id]]=1)');
+        }
+        $this->assertEquals($expected, $sql);
+
+        // joinWith, primary and alias
+        $hintIndex = ['order', 'forceIndex', 'primary'];
+        $query = Order::find()->hintIndex($hintIndex)->joinWith('items');
+        $sql = $query->createCommand()->getRawSql();
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT [[order]].* FROM [[order]] FORCE INDEX ([[primary]]) LEFT JOIN [[order_item]] ON [[order]].[[id]] = [[order_item]].[[order_id]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] ORDER BY [[item]].[[id]]');
+        } else {
+            $expected = $this->replaceQuotes('SELECT [[order]].* FROM [[order]] LEFT JOIN [[order_item]] ON [[order]].[[id]] = [[order_item]].[[order_id]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] ORDER BY [[item]].[[id]]');
+        }
+        $this->assertEquals($expected, $sql);
+
+        // Relation by puntuation and hint on join table
+        $hintIndex = ['item', 'forceIndex', 'primary', 'orderBy'];
+        $query = Order::find()->joinWith('orderItems.item')->hintIndex($hintIndex)->orderBy('item.id');
+        $sql = $query->createCommand()->getRawSql();
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT [[order]].* FROM [[order]] LEFT JOIN [[order_item]] ON [[order]].[[id]] = [[order_item]].[[order_id]] LEFT JOIN [[item]] FORCE INDEX FOR ORDER BY ([[primary]]) ON [[order_item]].[[item_id]] = [[item]].[[id]] ORDER BY [[item]].[[id]]');
+        } else {
+            $expected = $this->replaceQuotes('SELECT [[order]].* FROM [[order]] LEFT JOIN [[order_item]] ON [[order]].[[id]] = [[order_item]].[[order_id]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] ORDER BY [[item]].[[id]]');
+        }
+        $this->assertEquals($expected, $sql);
+    }
 }

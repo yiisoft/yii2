@@ -95,8 +95,8 @@ class QueryBuilder extends \yii\base\Object
 
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query->from, $params),
-            $this->buildJoin($query->join, $params),
+            $this->buildFrom($query, $params),
+            $this->buildJoin($query, $params),
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),
@@ -775,12 +775,14 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * @param array $tables
+     * @param Query $query the [[Query]] object from which the SQL statement will be generated.
      * @param array $params the binding parameters to be populated
      * @return string the FROM clause built from [[Query::$from]].
      */
-    public function buildFrom($tables, &$params)
+    public function buildFrom($query, &$params)
     {
+        $tables = $query->from;
+
         if (empty($tables)) {
             return '';
         }
@@ -791,13 +793,15 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * @param array $joins
+     * @param Query $query the [[Query]] object from which the SQL statement will be generated.
      * @param array $params the binding parameters to be populated
      * @return string the JOIN clause built from [[Query::$join]].
      * @throws Exception if the $joins parameter is not in proper format
      */
-    public function buildJoin($joins, &$params)
+    public function buildJoin($query, &$params)
     {
+        $joins = $query->join;
+
         if (empty($joins)) {
             return '';
         }
@@ -829,7 +833,7 @@ class QueryBuilder extends \yii\base\Object
      * @param array $params
      * @return array
      */
-    private function quoteTableNames($tables, &$params)
+    protected function quoteTableNames($tables, &$params)
     {
         foreach ($tables as $i => $table) {
             if ($table instanceof Query) {
