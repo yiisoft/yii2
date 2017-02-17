@@ -112,7 +112,7 @@ class YiiRequirementChecker
      */
     function checkYii()
     {
-        return $this->check(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'requirements.php');
+        return $this->check(__DIR__ . DIRECTORY_SEPARATOR . 'requirements.php');
     }
 
     /**
@@ -155,7 +155,7 @@ class YiiRequirementChecker
         if (!isset($this->result)) {
             $this->usageError('Nothing to render!');
         }
-        $baseViewFilePath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'views';
+        $baseViewFilePath = __DIR__ . DIRECTORY_SEPARATOR . 'views';
         if (!empty($_SERVER['argv'])) {
             $viewFileName = $baseViewFilePath . DIRECTORY_SEPARATOR . 'console' . DIRECTORY_SEPARATOR . 'index.php';
         } else {
