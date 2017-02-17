@@ -8,6 +8,7 @@
 namespace yii\db\mssql;
 
 use yii\db\ColumnSchema;
+use yii\db\ViewFinderTrait;
 
 /**
  * Schema is the class for retrieving metadata from a MS SQL Server databases (version 2008 and above).
@@ -17,6 +18,8 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    use ViewFinderTrait;
+
     /**
      * @var string the default schema used for the current session.
      */
@@ -67,11 +70,6 @@ class Schema extends \yii\db\Schema
         'xml' => self::TYPE_STRING,
         'table' => self::TYPE_STRING,
     ];
-
-    /**
-     * @var array list of ALL view names in the database
-     */
-    private $_viewNames = [];
 
 
     /**
@@ -435,23 +433,6 @@ ORDER BY [t].[table_name]
 SQL;
 
         return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
-    }
-
-    /**
-     * Returns all view names in the database.
-     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
-     * If not empty, the returned view names will be prefixed with the schema name.
-     * @param bool $refresh whether to fetch the latest available view names. If this is false,
-     * view names fetched previously (if available) will be returned.
-     * @return string[] all view names in the database.
-     */
-    public function getViewNames($schema = '', $refresh = false)
-    {
-        if (!isset($this->_viewNames[$schema]) || $refresh) {
-            $this->_viewNames[$schema] = $this->findViewNames($schema);
-        }
-
-        return $this->_viewNames[$schema];
     }
 
     /**
