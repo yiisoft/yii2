@@ -182,7 +182,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $tableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
-                $value = "(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
             } else {
                 $value = (int) $value;
             }
