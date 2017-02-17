@@ -8,12 +8,10 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
-use yii\base\NotSupportedException;
 use yii\db\ColumnSchema;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\Transaction;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database
@@ -524,26 +522,5 @@ SQL;
         }
 
         return $result;
-    }
-
-    /**
-     * Sets the isolation level of the current transaction.
-     * @param string $level The transaction isolation level to use for this transaction.
-     * This can be either [[Transaction::READ_COMMITTED]] or [[Transaction::SERIALIZABLE]].
-     * @throws \yii\base\NotSupportedException when unsupported isolation levels are used.
-     * Oracle only supports SERIALIZABLE and READ COMMITTED.
-     * @see http://docs.oracle.com/cd/E11882_01/server.112/e41084/statements_10005.htm#SQLRF01705
-     * @since 2.0.12
-     */
-    public function setTransactionIsolationLevel($level)
-    {
-        switch ($level) {
-            case Transaction::SERIALIZABLE:
-            case Transaction::READ_COMMITTED:
-            parent::setTransactionIsolationLevel($level);
-                break;
-            default:
-                throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ COMMITTED and SERIALIZABLE.');
-        }
     }
 }
