@@ -197,13 +197,7 @@ trait ActiveRelationTrait
             throw new InvalidConfigException('Invalid link: it must be an array of key-value pairs.');
         }
 
-        if ($this->via instanceof self) {
-            // via junction table
-            /* @var $viaQuery ActiveRelationTrait */
-            $viaQuery = $this->via;
-            $viaModels = $viaQuery->findJunctionRows($primaryModels);
-            $this->filterByModels($viaModels);
-        } elseif (is_array($this->via)) {
+        if (is_array($this->via)) {
             // via relation
             /* @var $viaQuery ActiveRelationTrait|ActiveQueryTrait */
             list($viaName, $viaQuery) = $this->via;
