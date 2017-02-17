@@ -1471,6 +1471,19 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         }
         $this->assertEquals($expected, $sql);
 
+        // join
+        $hintIndex = ['order', 'forceIndex', 'primary'];
+        $query = Order::find()->hintIndex($hintIndex)
+            ->leftJoin('customer', 'order.customer_id = customer.id')->hintIndex(['customer', 'forceIndex', 'primary']);
+        $sql = $query->createCommand()->getRawSql();
+        // Mysql support hintIndex
+        if ($this->driverName === 'mysql') {
+            $expected = $this->replaceQuotes('SELECT [[order]].* FROM [[order]] FORCE INDEX ([[primary]]) LEFT JOIN [[customer]] FORCE INDEX ([[primary]]) ON order.customer_id = customer.id');
+        } else {
+            $expected = $this->replaceQuotes('SELECT [[order]].* FROM [[order]] LEFT JOIN [[customer]] ON order.customer_id = customer.id');
+        }
+        $this->assertEquals($expected, $sql);
+
         // joinWith, primary and alias
         $hintIndex = ['order', 'forceIndex', 'primary'];
         $query = Order::find()->hintIndex($hintIndex)->joinWith('items');

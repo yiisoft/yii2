@@ -1521,7 +1521,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         if ($this->driverName === 'mysql') {
             $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM [[customer]] FORCE INDEX ([[primary]]) WHERE status = 1) [[activecustomers]]');
         } else {
-            $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM [[customer]]) WHERE status = 1) [[activecustomers]]');
+            $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM [[customer]] WHERE status = 1) [[activecustomers]]');
         }
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
