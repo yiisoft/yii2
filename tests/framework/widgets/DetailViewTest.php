@@ -29,6 +29,8 @@ class DetailViewTest extends \yiiunit\TestCase
     {
         $model = new ObjectMock();
         $model->id = 'id';
+        $model->setAttribute('ИдентификаторТовара', 'A00001');
+        $model->setAttribute('το_αναγνωριστικό_του', 'A00002');
 
         $this->detailView = new PublicDetailView([
             'model' => $model,
@@ -53,6 +55,9 @@ class DetailViewTest extends \yiiunit\TestCase
                         return $model->getDisplayedId();
                     },
                 ],
+                // https://github.com/yiisoft/yii2/issues/13243
+                'ИдентификаторТовара',
+                'το_αναγνωριστικό_του',
             ],
         ]);
 
@@ -61,6 +66,14 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->assertEquals('Id:1', $this->detailView->renderAttribute($this->detailView->attributes[2], 2));
         $this->assertEquals('Id:Displayed id', $this->detailView->renderAttribute($this->detailView->attributes[3], 3));
         $this->assertEquals('Id:Displayed id', $this->detailView->renderAttribute($this->detailView->attributes[4], 4));
+        $this->assertEquals(
+            'ИдентификаторТовара:A00001',
+            $this->detailView->renderAttribute($this->detailView->attributes[5], 5)
+        );
+        $this->assertEquals(
+            'το αναγνωριστικό του:A00002',
+            $this->detailView->renderAttribute($this->detailView->attributes[6], 6)
+        );
         $this->assertEquals(2, $model->getDisplayedIdCallCount());
     }
 
@@ -306,8 +319,35 @@ class ObjectMock extends Object
     public $id;
     public $text;
 
+    /**
+     * Used for testing attributes containing non-English characters
+     * @var array
+     */
+    private $_attributes = [
+        'ИдентификаторТовара' => null, // Product's ID (Russian)
+        'το_αναγνωριστικό_του' => null, // ID (Greek)
+    ];
     private $_related;
     private $_displayedIdCallCount = 0;
+
+    public function getAttribute($name)
+    {
+        return array_key_exists($name, $this->_attributes) ? $this->_attributes[$name] : $this->$name;
+    }
+
+    public function setAttribute($name, $value)
+    {
+        if (array_key_exists($name, $this->_attributes)) {
+            $this->_attributes[$name] = $value;
+        } else {
+            $this->$name = $value;
+        }
+    }
+
+    public function __get($name)
+    {
+        return array_key_exists($name, $this->_attributes) ? $this->_attributes[$name] : parent::__get($name);
+    }
 
     public function getRelated()
     {
