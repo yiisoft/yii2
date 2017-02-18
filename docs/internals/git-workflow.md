@@ -66,7 +66,7 @@ The following steps are optional.
 ### Unit tests
 
 You can execute unit tests by running `phpunit` in the repo root directory. If you do not have phpunit installed globally
-you can run `vendor/bin/phpunit` instead.
+you can run `php vendor/bin/phpunit` or run `vendor/bin/phpunit.bat` (Windows) instead.
 
 Some tests require additional databases to be set up and configured. You can create `tests/data/config.local.php` to override
 settings that are configured in `tests/data/config.php`.
