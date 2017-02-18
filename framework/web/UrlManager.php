@@ -392,6 +392,7 @@ class UrlManager extends Component
                         return $url . $baseUrl . $anchor;
                     }
                 } else {
+                    $url = ltrim($url, '/');
                     return "$baseUrl/{$url}{$anchor}";
                 }
             }
@@ -403,6 +404,7 @@ class UrlManager extends Component
                 $route .= '?' . $query;
             }
 
+            $route = ltrim($route, '/');
             return "$baseUrl/{$route}{$anchor}";
         } else {
             $url = "$baseUrl?{$this->routeParam}=" . urlencode($route);

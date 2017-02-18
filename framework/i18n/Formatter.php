@@ -584,10 +584,10 @@ class Formatter extends Component
     private function formatDateTimeValue($value, $format, $type)
     {
         $timeZone = $this->timeZone;
-        // avoid time zone conversion for date-only values
-        if ($type === 'date') {
-            list($timestamp, $hasTimeInfo) = $this->normalizeDatetimeValue($value, true);
-            if (!$hasTimeInfo) {
+        // avoid time zone conversion for date-only and time-only values
+        if ($type === 'date' || $type === 'time') {
+            list($timestamp, $hasTimeInfo, $hasDateInfo) = $this->normalizeDatetimeValue($value, true);
+            if ($type === 'date' && !$hasTimeInfo || $type === 'time' && !$hasDateInfo) {
                 $timeZone = $this->defaultTimeZone;
             }
         } else {
@@ -650,22 +650,25 @@ class Formatter extends Component
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
      * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
      *
-     * @param bool $checkTimeInfo whether to also check if the date/time value has some time information attached.
+     * @param bool $checkDateTimeInfo whether to also check if the date/time value has some time and date information attached.
      * Defaults to `false`. If `true`, the method will then return an array with the first element being the normalized
-     * timestamp and the second a boolean indicating whether the timestamp has time information or it is just a date value.
+     * timestamp, the second a boolean indicating whether the timestamp has time information and third a boolean indicating
+     * whether the timestamp has date information.
      * This parameter is available since version 2.0.1.
      * @return DateTime|array the normalized datetime value.
      * Since version 2.0.1 this may also return an array if `$checkTimeInfo` is true.
      * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
      * the timestamp has time information or it is just a date value.
+     * Since version 2.0.12 the array has third boolean element indicating whether the timestamp has date information 
+     * or it is just a time value.
      * @throws InvalidArgumentException if the input value can not be evaluated as a date value.
      */
-    protected function normalizeDatetimeValue($value, $checkTimeInfo = false)
+    protected function normalizeDatetimeValue($value, $checkDateTimeInfo = false)
     {
         // checking for DateTime and DateTimeInterface is not redundant, DateTimeInterface is only in PHP>5.5
         if ($value === null || $value instanceof DateTime || $value instanceof DateTimeInterface) {
             // skip any processing
-            return $checkTimeInfo ? [$value, true] : $value;
+            return $checkDateTimeInfo ? [$value, true, true] : $value;
         }
         if (empty($value)) {
             $value = 0;
@@ -673,17 +676,21 @@ class Formatter extends Component
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
                 $timestamp = new DateTime('@' . (int)$value, new DateTimeZone('UTC'));
-                return $checkTimeInfo ? [$timestamp, true] : $timestamp;
+                return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
-                return $checkTimeInfo ? [$timestamp, false] : $timestamp;
+                return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
-                return $checkTimeInfo ? [$timestamp, true] : $timestamp;
+                return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             }
             // finally try to create a DateTime object with the value
-            if ($checkTimeInfo) {
+            if ($checkDateTimeInfo) {
                 $timestamp = new DateTime($value, new DateTimeZone($this->defaultTimeZone));
                 $info = date_parse($value);
-                return [$timestamp, !($info['hour'] === false && $info['minute'] === false && $info['second'] === false)];
+                return [
+                    $timestamp,
+                    !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
+                    !($info['year'] === false && $info['month'] === false && $info['day'] === false)
+                ];
             } else {
                 return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
             }

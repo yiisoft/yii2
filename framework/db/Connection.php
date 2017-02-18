@@ -949,13 +949,27 @@ class Connection extends Component
      * @param callable $callback a PHP callable to be executed by this method. Its signature is
      * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
+     * @throws \Exception|\Throwable if there is any exception thrown from the callback
      */
     public function useMaster(callable $callback)
     {
-        $enableSlave = $this->enableSlaves;
-        $this->enableSlaves = false;
-        $result = call_user_func($callback, $this);
-        $this->enableSlaves = $enableSlave;
+        if ($this->enableSlaves) {
+            $this->enableSlaves = false;
+            try {
+                $result = call_user_func($callback, $this);
+            } catch (\Exception $e) {
+                $this->enableSlaves = true;
+                throw $e;
+            } catch (\Throwable $e) {
+                $this->enableSlaves = true;
+                throw $e;
+            }
+            // TODO: use "finally" keyword when miminum required PHP version is >= 5.5
+            $this->enableSlaves = true;
+        } else {
+            $result = call_user_func($callback, $this);
+        }
+
         return $result;
     }
 

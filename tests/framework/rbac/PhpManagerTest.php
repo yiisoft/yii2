@@ -64,6 +64,7 @@ class PhpManagerTest extends ManagerTestCase
             'itemFile' => $this->getItemFile(),
             'assignmentFile' => $this->getAssignmentFile(),
             'ruleFile' => $this->getRuleFile(),
+            'defaultRoles' => ['myDefaultRole']
         ]);
     }
 

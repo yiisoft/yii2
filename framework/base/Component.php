@@ -669,13 +669,13 @@ class Component extends Object
         if (is_int($name)) {
             $behavior->attach($this);
             $this->_behaviors[] = $behavior;
+        } else {
+            if (isset($this->_behaviors[$name])) {
+                $this->_behaviors[$name]->detach();
+            }
+            $behavior->attach($this);
+            $this->_behaviors[$name] = $behavior;
         }
-
-        if (isset($this->_behaviors[$name])) {
-            $this->_behaviors[$name]->detach();
-        }
-        $behavior->attach($this);
-        $this->_behaviors[$name] = $behavior;
 
         return $behavior;
     }

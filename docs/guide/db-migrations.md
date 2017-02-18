@@ -136,7 +136,7 @@ class m150101_185401_create_news_table extends Migration
 
 The base migration class [[yii\db\Migration]] exposes a database connection via the [[yii\db\Migration::db|db]]
 property. You can use it to manipulate the database schema using the methods as described in
-[Working with Database Schema](db-dao.md#working-with-database-schema-).
+[Working with Database Schema](db-dao.md#database-schema).
 
 Rather than using physical types, when creating a table or column you should use *abstract types*
 so that your migrations are independent of specific DBMS. The [[yii\db\Schema]] class defines

@@ -25,7 +25,20 @@ abstract class BaseMessageControllerTest extends TestCase
         if (!file_exists($this->sourcePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
         }
-        $this->configFileName = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . 'message_controller_test_config.php';
+        $this->configFileName = $this->generateConfigFileName();
+    }
+
+    /**
+     * Generate random config name.
+     *
+     * @return string
+     */
+    protected function generateConfigFileName()
+    {
+        $this->configFileName = Yii::getAlias('@yiiunit/runtime')
+            . DIRECTORY_SEPARATOR . 'message_controller_test_config-' . md5(uniqid()) . '.php';
+
+        return $this->configFileName;
     }
 
     public function tearDown()
@@ -72,7 +85,9 @@ abstract class BaseMessageControllerTest extends TestCase
             unlink($this->configFileName);
         }
         $fileContent = '<?php return ' . VarDumper::export($config) . ';';
-        file_put_contents($this->configFileName, $fileContent);
+        // save new config on random name to bypass HHVM cache
+        // https://github.com/facebook/hhvm/issues/1447
+        file_put_contents($this->generateConfigFileName(), $fileContent);
     }
 
     /**
@@ -402,7 +417,7 @@ abstract class BaseMessageControllerTest extends TestCase
         $this->assertArrayHasKey($mainMessage, $messages, "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
         $this->assertArrayHasKey($nestedMessage, $messages, "\"$nestedMessage\" is missing in translation file. Command output:\n\n" . $out);
     }
-    
+
     /**
      * @depends testCreateTranslation
      *
@@ -417,7 +432,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
         $this->saveConfigFile($this->getConfig());
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
-        
+
         $secondLanguage = 'pl';
         $this->saveConfigFile($this->getConfig(['languages' => [$this->language, $secondLanguage]]));
         $out .= $this->runMessageControllerAction('extract', [$this->configFileName]);

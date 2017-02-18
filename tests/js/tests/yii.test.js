@@ -979,30 +979,18 @@ describe('yii', function () {
 
     describe('asset filters', function () {
         var server;
-        var ajaxDataType;
+        var prefilterCallback = function (options) {
+            options.crossDomain = false;
+        };
         var jsResponse = {
             status: 200,
-            headers: {'Content-Type': 'application/x-custom-javascript'},
+            headers: {'Content-Type': 'application/javascript'},
             body: 'var foobar = 1;'
         };
 
         before(function () {
-            // Sent ajax requests with dataType "script" and "jsonp" are not captured by Sinon's fake server.
-            // As a workaround we can use custom dataType.
-            // This $.ajaxPrefilter handler must be run after the one from yii.js.
-            ajaxDataType = 'customscript';
-            $.ajaxPrefilter('script', function () {
-                return ajaxDataType;
-            });
-            $.ajaxSetup({
-                accepts: {
-                    customscript: 'application/x-custom-javascript'
-                },
-                converters: {
-                    'text customscript': function (result) {
-                        return result;
-                    }
-                }
+            $.ajaxPrefilter('script', function (options) {
+                prefilterCallback(options);
             });
         });
 
@@ -1018,7 +1006,8 @@ describe('yii', function () {
         });
 
         after(function () {
-            ajaxDataType = 'script';
+            prefilterCallback = function () {
+            };
         });
 
         afterEach(function () {
@@ -1106,7 +1095,7 @@ describe('yii', function () {
                     yii.reloadableScripts = [
                         '/js/reloadable.js',
                         // https://github.com/yiisoft/yii2/issues/11494
-                        '/js/reloadable/script*.js'
+                        '/js/reloadable/script*.js?v=*'
                     ];
                 });
 
@@ -1117,9 +1106,9 @@ describe('yii', function () {
                 describe('with match', function () {
                     withData({
                         'relative url, exact': ['/js/reloadable.js'],
-                        'relative url, wildcard': ['http://foo.bar/js/reloadable/script1.js'],
+                        'relative url, wildcard': ['/js/reloadable/script1.js?v=1'],
                         'absolute url, exact': ['http://foo.bar/js/reloadable.js'],
-                        'absolute url, wildcard': ['http://foo.bar/js/reloadable/script2.js']
+                        'absolute url, wildcard': ['http://foo.bar/js/reloadable/script2.js?v=2']
                     }, function (url) {
                         it('should load it as many times as it was requested', function () {
                             $.getScript(url);
@@ -1138,7 +1127,9 @@ describe('yii', function () {
                 describe('with no match', function () {
                     withData({
                         'relative url': ['/js/not_reloadable.js'],
-                        'absolute url': ['http://foo.bar/js/reloadable/not_reloadable_script.js']
+                        'relative url, all wildcards are empty': ['/js/reloadable/script.js?v='],
+                        'absolute url': ['http://foo.bar/js/reloadable/not_reloadable_script.js'],
+                        'absolute url, 1 empty wildcard': ['http://foo.bar/js/reloadable/script1.js?v=']
                     }, function (url) {
                         it('should load it only once for both relative and absolute urls', function () {
                             $.getScript(url);
@@ -1155,14 +1146,14 @@ describe('yii', function () {
 
                 describe('with failed load after successful load and making it not reloadable', function () {
                     it('should allow to load it again', function () {
-                        $.getScript('/js/reloadable/script_fail.js');
+                        $.getScript('/js/reloadable/script_fail.js?v=1');
                         respondToRequestWithSuccess(0);
 
-                        $.getScript('/js/reloadable/script_fail.js');
+                        $.getScript('/js/reloadable/script_fail.js?v=1');
                         respondToRequestWithError(1);
                         yii.reloadableScripts = [];
 
-                        $.getScript('/js/reloadable/script_fail.js');
+                        $.getScript('/js/reloadable/script_fail.js?v=1');
                         respondToRequestWithError(2);
 
                         assert.lengthOf(server.requests, 3);

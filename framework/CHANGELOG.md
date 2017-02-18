@@ -23,7 +23,27 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
-- no changes in this release.
+- Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
+- Enh #13523: Plural rule for pasta (developeruz)
+- Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
+- Bug: Fixed `yii\db\Connection::useMaster()` - Exception within callback completely disables slaves (Vovan-VE)
+- Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
+- Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
+- Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
+- Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
+- Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
+- Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
+- Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
+- Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
+
+
+2.0.11.2 February 08, 2017
+--------------------------
+
+- Bug #13501: Fixed `yii\rbac\DbManager::getRule()` and `yii\rbac\DbManager::getRules()` to properly handle resource data came from Rule table when using PostgreSQL (StalkAlex)
+- Bug #13508: Fixed duplicate attachment of behavior BC break (cebe)
+- Bug #13522: Issue with UrlRule, which created duplicate slashes when a default value was used (cebe)
+- Bug #13533: Fixed BC break in `yii\validators\ExistValidator::$targetAttribute` (developeruz)
 
 
 2.0.11.1 February 02, 2017

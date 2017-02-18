@@ -66,7 +66,7 @@ The following steps are optional.
 ### Unit tests
 
 You can execute unit tests by running `phpunit` in the repo root directory. If you do not have phpunit installed globally
-you can run `php vendor/bin/phpunit` instead.
+you can run `php vendor/bin/phpunit` or `vendor/bin/phpunit.bat` in case of execution from the Windows OS.
 
 Some tests require additional databases to be set up and configured. You can create `tests/data/config.local.php` to override
 settings that are configured in `tests/data/config.php`.
@@ -75,10 +75,6 @@ You may limit the tests to a group of tests you are working on e.g. to run only 
 `phpunit --group=validators,redis`. You get the list of available groups by running `phpunit --list-groups`.
 
 You can execute JavaScript unit tests by running `npm test` in the repo root directory.
-
-> Note: If you get timeout errors like `Error: timeout of 2000ms exceeded. Ensure the done() callback is being called
-in this test.`, you can increase timeout: `npm test -- --timeout 30000` (don't miss `--`, it's needed for passing
-additional arguments).
 
 ### Extensions
 

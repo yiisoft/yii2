@@ -299,6 +299,8 @@ abstract class ManagerTestCase extends TestCase
         $roles = $this->auth->getRolesByUser(123);
         $this->assertTrue(reset($roles) instanceof Role);
         $this->assertEquals($roles['reader']->name, 'reader');
+
+        $this->assertContains('myDefaultRole', array_keys($roles));
     }
 
     public function testGetChildRoles()

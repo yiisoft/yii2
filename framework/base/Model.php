@@ -861,12 +861,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         foreach ($models as $i => $model) {
             /* @var $model Model */
             if ($formName == '') {
-                if (!empty($data[$i])) {
-                    $model->load($data[$i], '');
+                if (!empty($data[$i]) && $model->load($data[$i], '')) {
                     $success = true;
                 }
-            } elseif (!empty($data[$formName][$i])) {
-                $model->load($data[$formName][$i], '');
+            } elseif (!empty($data[$formName][$i]) && $model->load($data[$formName][$i], '')) {
                 $success = true;
             }
         }

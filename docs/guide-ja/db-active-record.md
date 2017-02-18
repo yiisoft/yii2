@@ -1545,7 +1545,7 @@ class Customer extends \yii\db\ActiveRecord
             return null; // プライマリキーが null の場合のリレーショナルクエリを防止
         }
         
-        return $this->ordersAggregation[0]['counted'];
+        return empty($this->ordersAggregation) ? 0 : $this->ordersAggregation[0]['counted'];
     }
 
     /**
