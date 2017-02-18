@@ -23,7 +23,7 @@ use yii\mail\MailerInterface;
  *     'log' => [
  *          'targets' => [
  *              [
- *                  'class' => 'yii\log\EmailTarget',
+ *                  'class' => \yii\log\EmailTarget::class,
  *                  'mailer' => 'mailer',
  *                  'levels' => ['error', 'warning'],
  *                  'message' => [
@@ -67,7 +67,7 @@ class EmailTarget extends Target
         if (empty($this->message['to'])) {
             throw new InvalidConfigException('The "to" option must be set for EmailTarget::message.');
         }
-        $this->mailer = Instance::ensure($this->mailer, 'yii\mail\MailerInterface');
+        $this->mailer = Instance::ensure($this->mailer, MailerInterface::class);
     }
 
     /**

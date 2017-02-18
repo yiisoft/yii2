@@ -184,7 +184,7 @@ class ActiveRecordSluggable extends ActiveRecord
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
             ],
         ];
@@ -205,7 +205,7 @@ class ActiveRecordSluggable extends ActiveRecord
 
     public function getRelated()
     {
-        return $this->hasOne(ActiveRecordRelated::className(), ['id' => 'belongs_to_id']);
+        return $this->hasOne(ActiveRecordRelated::class, ['id' => 'belongs_to_id']);
     }
 }
 
@@ -223,7 +223,7 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'ensureUnique' => true,
             ],

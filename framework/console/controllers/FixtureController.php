@@ -15,6 +15,7 @@ use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
+use yii\test\InitDb;
 
 /**
  * Manages fixture data loading and unloading.
@@ -57,9 +58,7 @@ class FixtureController extends Controller
      * @var array global fixtures that should be applied when loading and unloading. By default it is set to `InitDbFixture`
      * that disables and enables integrity check, so your data can be safely loaded.
      */
-    public $globalFixtures = [
-        'yii\test\InitDb',
-    ];
+    public $globalFixtures = [InitDb::class];
 
 
     /**

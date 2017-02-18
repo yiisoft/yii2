@@ -8,6 +8,7 @@
 namespace yii\grid;
 
 use yii\web\AssetBundle;
+use yii\web\YiiAsset;
 
 /**
  * This asset bundle provides the javascript files for the [[GridView]] widget.
@@ -17,11 +18,18 @@ use yii\web\AssetBundle;
  */
 class GridViewAsset extends AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public $sourcePath = '@yii/assets';
-    public $js = [
-        'yii.gridView.js',
-    ];
-    public $depends = [
-        'yii\web\YiiAsset',
-    ];
+
+    /**
+     * @inheritdoc
+     */
+    public $js = ['yii.gridView.js'];
+
+    /**
+     * @inheritdoc
+     */
+    public $depends = [YiiAsset::class];
 }

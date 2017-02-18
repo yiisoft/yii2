@@ -60,9 +60,9 @@ class TestController extends Controller
          */
         return [
             'authenticator' => [
-                'class' => CompositeAuth::className(),
+                'class' => CompositeAuth::class,
                 'authMethods' => [
-                    TestAuth::className()
+                    TestAuth::class
                 ],
             ],
         ];
@@ -84,11 +84,11 @@ class CompositeAuthTest extends \yiiunit\TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className()
+                    'identityClass' => UserIdentity::class
                 ],
             ],
             'controllerMap' => [
-                'test' => TestController::className()
+                'test' => TestController::class
             ]
         ];
 

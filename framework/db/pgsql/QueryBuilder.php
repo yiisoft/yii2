@@ -7,7 +7,7 @@
 
 namespace yii\db\pgsql;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * QueryBuilder is the query builder for PostgreSQL databases.
@@ -154,7 +154,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -172,9 +172,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             return "SELECT SETVAL('$sequence',$value,false)";
         } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
+            throw new InvalidArgumentException("Table not found: $tableName");
         } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
+            throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.");
         }
     }
 

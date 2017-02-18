@@ -211,7 +211,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -229,11 +229,11 @@ handlers only. For example:
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     var_dump($event->sender);  // displays "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Note that, in this case, `$event->sender` is `null` instead of an object instance.
@@ -245,10 +245,10 @@ To detach a class-level event handler, call [[yii\base\Event::off()]]. For examp
 
 ```php
 // detach $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // detach all handlers of Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 
@@ -295,7 +295,7 @@ To handle the `EVENT_DANCE`, triggered by any of these classes, call [[yii\base\
 pass the interface class name as the first argument:
 
 ```php
-Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
     Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
 });
 ```
@@ -304,27 +304,27 @@ You can trigger the event of those classes:
 
 ```php
 // trigger event for Dog class
-Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Dog::class, DanceEventInterface::EVENT_DANCE);
 
 // trigger event for Developer class
-Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 But please notice, that you can not trigger all the classes, that implement the interface:
 
 ```php
 // DOES NOT WORK. Classes that implement this interface will NOT be triggered.
-Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:
 
 ```php
 // detaches $handler
-Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, $handler);
 
 // detaches all handlers of DanceEventInterface::EVENT_DANCE
-Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 

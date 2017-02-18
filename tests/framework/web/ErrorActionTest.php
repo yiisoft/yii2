@@ -22,7 +22,7 @@ class ErrorActionTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'request' => [
-                    'class' => Request::className(),
+                    'class' => Request::class,
                 ],
             ],
         ]);
@@ -115,7 +115,7 @@ class TestController extends Controller
     {
         return [
             'error' => array_merge([
-                'class' => ErrorAction::className(),
+                'class' => ErrorAction::class,
                 'view' => '@yiiunit/data/views/error.php',
             ], $this->actionConfig),
         ];

@@ -19,7 +19,7 @@ use yii\web\CompositeUrlRule;
  *
  * ```php
  * [
- *     'class' => 'yii\rest\UrlRule',
+ *     'class' => \yii\rest\UrlRule::class,
  *     'controller' => 'user',
  * ]
  * ```
@@ -41,7 +41,7 @@ use yii\web\CompositeUrlRule;
  *
  * ```php
  * [
- *     'class' => 'yii\rest\UrlRule',
+ *     'class' => \yii\rest\UrlRule::class,
  *     'controller' => ['user', 'post'],
  *     'except' => ['delete'],
  * ]
@@ -127,7 +127,7 @@ class UrlRule extends CompositeUrlRule
      * @var array the default configuration for creating each URL rule contained by this rule.
      */
     public $ruleConfig = [
-        'class' => 'yii\web\UrlRule',
+        'class' => \yii\web\UrlRule::class,
     ];
     /**
      * @var bool whether to automatically pluralize the URL names for controllers.
