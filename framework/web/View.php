@@ -465,7 +465,8 @@ class View extends \yii\base\View
      * - [[MERGE_APPEND]]: the JS code will be appended to the existing JS code block.
      * - [[MERGE_SKIP]]: keep the current value of the JS code block.
      *
-     * @param string|array $afterKeys key or array of keys that should be rendered before the current script if they exist. 
+     * @param string|array $beforeKeys key or array of keys that should be rendered before the current script if they exist. 
+     * @param string|array $afterKeys key or array of keys that should be rendered after the current script if they exist. 
      */
     public function registerJs($js, $position = self::POS_READY, $key = null, $mergeType = self::MERGE_REPLACE, $beforeKeys = null, $afterKeys = null)
     {
@@ -475,11 +476,11 @@ class View extends \yii\base\View
         }
         $this->_currentKey = $key;
         $this->_currentPos = $position;
-        if ($beforeKeys) {
-            $this->addAfter($beforeKeys, $key, $position);
-        }
         if ($afterKeys) {
-            $this->addBefore($afterKeys, $key, $position);
+            $this->addAfter($afterKeys, $key, $position);
+        }
+        if ($beforeKeys) {
+            $this->addBefore($beforeKeys, $key, $position);
         }
         if (isset($this->js[$position][$key]) && $mergeType !== self::MERGE_REPLACE) {
             if ($mergeType === self::MERGE_SKIP) {
