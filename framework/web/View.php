@@ -458,7 +458,7 @@ class View extends \yii\base\View
      * @param string $key the key that identifies the JS code block. If null, it will use
      * $js as the key. If two JS code blocks are registered with the same key, the latter
      * will overwrite the former.
-     * @param int $merger the type of merge that should be applied if a code block exists with the same key:
+     * @param int $mergeType the type of merge that should be applied if a code block exists with the same key:
      *
      * - [[MERGE_REPLACE]]: the existing code block will be replaced (default)
      * - [[MERGE_PREPEND]]: the JS code will be prepended to the existing JS code block.
@@ -467,7 +467,7 @@ class View extends \yii\base\View
      *
      * @param string|array $afterKeys key or array of keys that should be rendered before the current script if they exist. 
      */
-    public function registerJs($js, $position = self::POS_READY, $key = null, $merger = self::MERGE_REPLACE, $beforeKeys = null, $afterKeys = null)
+    public function registerJs($js, $position = self::POS_READY, $key = null, $mergeType = self::MERGE_REPLACE, $beforeKeys = null, $afterKeys = null)
     {
         $key = $key ?: md5($js);
         if ($position === self::POS_READY || $position === self::POS_LOAD) {
@@ -481,13 +481,13 @@ class View extends \yii\base\View
         if ($afterKeys) {
             $this->addBefore($afterKeys, $key, $position);
         }
-        if (isset($this->js[$position][$key]) && $merger !== self::MERGE_REPLACE) {
-            if ($merger === self::MERGE_SKIP) {
+        if (isset($this->js[$position][$key]) && $mergeType !== self::MERGE_REPLACE) {
+            if ($mergeType === self::MERGE_SKIP) {
                 return;
             }
-            if ($merger === self::MERGE_PREPEND) {
+            if ($mergeType === self::MERGE_PREPEND) {
                 $this->js[$position][$key] = $js ."\n". $this->js[$position][$key];
-            } else if ($merger === self::MERGE_APPEND) {
+            } else if ($mergeType === self::MERGE_APPEND) {
                 $this->js[$position][$key] .= $js;
             }
         } else {
