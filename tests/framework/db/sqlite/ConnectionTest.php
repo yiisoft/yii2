@@ -141,7 +141,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
     }
 
-    public function testUseMasterException()
+    public function testRestoreMasterAfterException()
     {
         $db = $this->prepareMasterSlave(1, 1);
         $this->assertTrue($db->enableSlaves);
