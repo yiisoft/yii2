@@ -659,7 +659,7 @@ class View extends \yii\base\View
         if (empty($this->_jsAfter[$scriptKey])) {
             return false;
         }
-        foreach ($this->_jsAfter[$scriptKey] as $beforeKey => $null) {
+        foreach ($this->_jsAfter[$scriptKey] as $beforeKey => $isAfter) {
             if (array_key_exists($beforeKey, $this->_jsAfter) && array_key_exists($scriptKey, $this->_jsAfter[$beforeKey])) {
                 throw new \Exception("Circular dependency detected with keys: $beforeKey <-> $scriptKey");
             } else if (array_key_exists($beforeKey, $array) && !array_key_exists($beforeKey, $this->_jsHandled)) {
