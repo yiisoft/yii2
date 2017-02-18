@@ -510,4 +510,41 @@ abstract class ManagerTestCase extends TestCase
         $rule = $this->auth->getRule('action_rule');
         $this->assertTrue($rule instanceof ActionRule);
     }
+
+    public function testHasAssignments()
+    {
+        $auth = $this->auth;
+
+        $auth->removeAll();
+
+        $roleAdmin = $auth->createRole('Admin');
+        $auth->add($roleAdmin);
+        $auth->assign($roleAdmin, 13);
+
+        $roleModerator = $auth->createRole('Moderator');
+        $auth->add($roleModerator);
+        $auth->assign($roleModerator, 13);
+        $auth->assign($roleModerator, 14);
+
+        $roleUser = $auth->createRole('User');
+        $auth->add($roleUser);
+        $auth->assign($roleUser, 15);
+        $auth->assign($roleUser, 16);
+        $auth->assign($roleUser, 17);
+
+        $roleDeprecated = $auth->createRole('Deprecated');
+        $auth->add($roleDeprecated);
+
+        $adminHasAssignments = $auth->hasAssignments('Admin');
+        $this->assertTrue($adminHasAssignments);
+
+        $moderatorHasAssignments = $auth->hasAssignments('Moderator');
+        $this->assertTrue($moderatorHasAssignments);
+
+        $userHasAssignments = $auth->hasAssignments('User');
+        $this->assertTrue($userHasAssignments);
+
+        $deprecatedHasAssignments = $auth->hasAssignments('Deprecated');
+        $this->assertFalse($deprecatedHasAssignments);
+    }
 }

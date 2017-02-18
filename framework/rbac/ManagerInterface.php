@@ -230,6 +230,13 @@ interface ManagerInterface extends CheckAccessInterface
     public function getUserIdsByRole($roleName);
 
     /**
+     * Returns a boolean indicating whether the role has assignments.
+     * @param string $roleName the role name
+     * @return bool whether the role has assignments.
+     */
+    public function hasAssignments($roleName);
+
+    /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.
      */
     public function removeAll();

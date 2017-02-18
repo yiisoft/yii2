@@ -248,4 +248,15 @@ abstract class BaseManager extends Component implements ManagerInterface
     {
         return empty($assignments) && empty($this->defaultRoles);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasAssignments($roleName)
+    {
+        $userIds = $this->getUserIdsByRole($roleName);
+        $hasAssignments = count($userIds) > 0;
+
+        return $hasAssignments;
+    }
 }
