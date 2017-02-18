@@ -153,6 +153,8 @@ class View extends \yii\base\View
     private $_assetManager;
     private $_jsHandled;
     private $_jsAfter;
+    private $_currentKey;
+    private $_currentPos;
 
 
     /**
@@ -465,14 +467,19 @@ class View extends \yii\base\View
      *
      * @param string|array $afterKeys key or array of keys that should be rendered before the current script if they exist. 
      */
-    public function registerJs($js, $position = self::POS_READY, $key = null, $merger = self::MERGE_REPLACE, $afterKeys = null)
+    public function registerJs($js, $position = self::POS_READY, $key = null, $merger = self::MERGE_REPLACE, $beforeKeys = null, $afterKeys = null)
     {
         $key = $key ?: md5($js);
         if ($position === self::POS_READY || $position === self::POS_LOAD) {
             JqueryAsset::register($this);
         }
+        $this->_currentKey = $key;
+        $this->_currentPos = $position;
+        if ($beforeKeys) {
+            $this->addAfter($beforeKeys, $key, $position);
+        }
         if ($afterKeys) {
-            $this->addAfter($afterKeys, $key);
+            $this->addBefore($afterKeys, $key, $position);
         }
         if (isset($this->js[$position][$key]) && $merger !== self::MERGE_REPLACE) {
             if ($merger === self::MERGE_SKIP) {
@@ -625,14 +632,31 @@ class View extends \yii\base\View
         return empty($lines) ? '' : implode("\n", $lines);
     }
     
-    public function addAfter($afterKeys, $sciptKey)
+    public function addBefore($beforeKeys, $scriptKey = null, $pos = null)
     {
-        if (is_array($afterKeys)) {
-            foreach($afterKeys as $afterKey) {
-                $this->_jsAfter[$sciptKey][$afterKey] = true;
+        if (!isset($scriptKey)) {
+            $scriptKey = $this->_currentKey;
+        }
+        if (is_array($beforeKeys)) {
+            foreach($beforeKeys as $key) {
+                $this->_jsBefore[$pos][$scriptKey][$key] = true;
             }
         } else {
-            $this->_jsAfter[$sciptKey][$afterKeys] = true;
+            $this->_jsBefore[$pos][$scriptKey][$beforeKeys] = true;
+        }
+    }
+    
+    public function addAfter($afterKeys, $scriptKey = null, $pos = null)
+    {
+        if (!isset($scriptKey)) {
+            $scriptKey = $this->_currentKey;
+        }
+        if (is_array($afterKeys)) {
+            foreach($afterKeys as $afterKey) {
+                $this->_jsAfter[$pos][$scriptKey][$afterKey] = true;
+            }
+        } else {
+            $this->_jsAfter[$pos][$scriptKey][$afterKeys] = true;
         }
     }
     
@@ -641,28 +665,35 @@ class View extends \yii\base\View
     {
         $array = $this->js[$pos];
         $lines = '';
-        $this->_jsHandled = [];
-        while (count($this->_jsHandled) < count($array)) {
+        $this->_jsHandled[$pos] = [];
+        foreach ($this->_jsBefore[$pos] as $beforeKey => $afterKeys) {
+            foreach ($afterKeys as $afterKey) {
+                if (isset($array[$afterKey])) {
+                    $this->_jsAfter[$pos][$afterKey][$beforeKey] = true;
+                }
+            }
+        }
+        while (count($this->_jsHandled[$pos]) < count($array)) {
             foreach ($array as $scriptKey => $script) {
-                if (array_key_exists($scriptKey, $this->_jsHandled) || $this->isLineDeferred($scriptKey, $array)) {
+                if (array_key_exists($scriptKey, $this->_jsHandled[$pos]) || $this->isLineDeferred($scriptKey, $array, $pos)) {
                     continue;
                 }
                 $lines .= $script."\n";
-                $this->_jsHandled[$scriptKey] = true;
+                $this->_jsHandled[$pos][$scriptKey] = true;
             }
         }
         return $lines;
     }
     
-    public function isLineDeferred(&$scriptKey, &$array)
+    private function isLineDeferred(&$scriptKey, &$array, $pos)
     {
-        if (empty($this->_jsAfter[$scriptKey])) {
+        if (empty($this->_jsAfter[$pos][$scriptKey])) {
             return false;
         }
-        foreach ($this->_jsAfter[$scriptKey] as $beforeKey => $isAfter) {
-            if (array_key_exists($beforeKey, $this->_jsAfter) && array_key_exists($scriptKey, $this->_jsAfter[$beforeKey])) {
+        foreach ($this->_jsAfter[$pos][$scriptKey] as $beforeKey => $isAfter) {
+            if (array_key_exists($beforeKey, $this->_jsAfter[$pos]) && array_key_exists($scriptKey, $this->_jsAfter[$pos][$beforeKey])) {
                 throw new \Exception("Circular dependency detected with keys: $beforeKey <-> $scriptKey");
-            } else if (array_key_exists($beforeKey, $array) && !array_key_exists($beforeKey, $this->_jsHandled)) {
+            } else if (array_key_exists($beforeKey, $array) && !array_key_exists($beforeKey, $this->_jsHandled[$pos])) {
                 return true;
             }
         }
