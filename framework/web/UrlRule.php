@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Object;
 use yii\base\InvalidConfigException;
+use yii\base\Object;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -96,6 +96,14 @@ class UrlRule extends Object implements UrlRuleInterface
      * @since 2.0.10
      */
     public $normalizer;
+    /**
+     * @var bool Value used when pattern contains only optional params. If `true` rule pattern will contain slash at
+     * the end of param pattern (last optional param can not be omitted if all other patterns are not omitted), if `false`
+     * rule pattern will contain slash at the beginning of param pattern (first optional param can not be omitted
+     * if all other patterns are not omitted).
+     * @since 2.0.12
+     */
+    public $trailingSlashForDefaults = false;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
@@ -179,6 +187,11 @@ class UrlRule extends Object implements UrlRuleInterface
             $this->name = $this->pattern;
         }
 
+        $this->preparePattern();
+    }
+
+    private function preparePattern()
+    {
         $this->pattern = $this->trimSlashes($this->pattern);
         $this->route = trim($this->route, '/');
 
@@ -212,6 +225,11 @@ class UrlRule extends Object implements UrlRuleInterface
             }
         }
 
+        $this->translatePattern(true);
+    }
+
+    private function translatePattern($allowAppendSlash)
+    {
         $tr = [
             '.' => '\\.',
             '*' => '\\*',
@@ -223,7 +241,9 @@ class UrlRule extends Object implements UrlRuleInterface
         ];
 
         $tr2 = [];
+        $requiredPatternPart = $this->pattern;
         if (preg_match_all('/<([\w._-]+):?([^>]+)?>/', $this->pattern, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
+            $appendSlash = false;
             foreach ($matches as $match) {
                 $name = $match[1][0];
                 $pattern = isset($match[2][0]) ? $match[2][0] : '[^\/]+';
@@ -232,20 +252,43 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (array_key_exists($name, $this->defaults)) {
                     $length = strlen($match[0][0]);
                     $offset = $match[0][1];
-                    if ($offset > 1 && $this->pattern[$offset - 1] === '/' && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')) {
+                    $requiredPatternPart = str_replace("/{$match[0][0]}/", '//', $requiredPatternPart);
+                    if (
+                        $allowAppendSlash
+                        && ($appendSlash || $offset === 1)
+                        && isset($this->pattern[$offset + $length])
+                        && $this->pattern[$offset + $length] === '/'
+                        && isset($this->pattern[$offset + $length + 1])
+                    ) {
+                        // if pattern starts from optional params, put slash at the end of param pattern
+                        // @see https://github.com/yiisoft/yii2/issues/13086
+                        $appendSlash = true;
+                        $tr["<$name>/"] = "((?P<$placeholder>$pattern)/)?";
+                    } elseif (
+                        $offset > 1
+                        && $this->pattern[$offset - 1] === '/'
+                        && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')
+                    ) {
                         $tr["/<$name>"] = "(/(?P<$placeholder>$pattern))?";
-                    } else {
-                        $tr["<$name>"] = "(?P<$placeholder>$pattern)?";
                     }
+                    $tr["<$name>"] = "(?P<$placeholder>$pattern)?";
                 } else {
+                    $appendSlash = false;
                     $tr["<$name>"] = "(?P<$placeholder>$pattern)";
                 }
+
                 if (isset($this->_routeParams[$name])) {
                     $tr2["<$name>"] = "(?P<$placeholder>$pattern)";
                 } else {
                     $this->_paramRules[$name] = $pattern === '[^\/]+' ? '' : "#^$pattern$#u";
                 }
             }
+        }
+
+        // we have only optional params in route - ensure slash position on param patterns
+        if ($allowAppendSlash !== $this->trailingSlashForDefaults && trim($requiredPatternPart, '/') === '') {
+            $this->translatePattern($this->trailingSlashForDefaults);
+            return;
         }
 
         $this->_template = preg_replace('/<([\w._-]+):?([^>]+)?>/', '<$1>', $this->pattern);
@@ -487,7 +530,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param string $string
      * @return string
      */
-    private function trimSlashes($string) {
+    private function trimSlashes($string)
+    {
         if (strpos($string, '//') === 0) {
             return '//' . trim($string, '/');
         }
