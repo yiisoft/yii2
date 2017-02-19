@@ -141,7 +141,7 @@ abstract class CommandTest extends DatabaseTestCase
         if (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             $this->markTestSkipped('HHVMs PgSQL implementation has some specific behavior that breaks some parts of this test.');
         }
-        
+
         $db = $this->getConnection();
 
         // bindParam
