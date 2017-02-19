@@ -152,6 +152,7 @@ class View extends \yii\base\View
 
     private $_assetManager;
     private $_jsHandled;
+    private $_jsBefore;
     private $_jsAfter;
     private $_currentKey;
     private $_currentPos;
@@ -476,11 +477,11 @@ class View extends \yii\base\View
         }
         $this->_currentKey = $key;
         $this->_currentPos = $position;
-        if ($afterKeys) {
-            $this->addAfter($afterKeys, $key, $position);
-        }
         if ($beforeKeys) {
             $this->addBefore($beforeKeys, $key, $position);
+        }
+        if ($afterKeys) {
+            $this->addAfter($afterKeys, $key, $position);
         }
         if (isset($this->js[$position][$key]) && $mergeType !== self::MERGE_REPLACE) {
             if ($mergeType === self::MERGE_SKIP) {
@@ -634,34 +635,29 @@ class View extends \yii\base\View
         return empty($lines) ? '' : implode("\n", $lines);
     }
     
-    public function addBefore($beforeKeys, $scriptKey = null, $pos = null)
+    private function add(&$where, $beforeKeys, $scriptKey = null, $pos = null)
     {
         if (!isset($scriptKey)) {
             $scriptKey = $this->_currentKey;
         }
         if (is_array($beforeKeys)) {
             foreach($beforeKeys as $key) {
-                $this->_jsBefore[$pos][$scriptKey][$key] = true;
+                $where[$pos][$scriptKey][$key] = true;
             }
         } else {
-            $this->_jsBefore[$pos][$scriptKey][$beforeKeys] = true;
+            $where[$pos][$scriptKey][$beforeKeys] = true;
         }
         return $this;
     }
     
+    public function addBefore($beforeKeys, $scriptKey = null, $pos = null)
+    {
+       return $this->add($this->_jsBefore, $beforeKeys, $scriptKey, $pos);
+    }
+    
     public function addAfter($afterKeys, $scriptKey = null, $pos = null)
     {
-        if (!isset($scriptKey)) {
-            $scriptKey = $this->_currentKey;
-        }
-        if (is_array($afterKeys)) {
-            foreach($afterKeys as $afterKey) {
-                $this->_jsAfter[$pos][$scriptKey][$afterKey] = true;
-            }
-        } else {
-            $this->_jsAfter[$pos][$scriptKey][$afterKeys] = true;
-        }
-        return $this;
+       return $this->add($this->_jsAfter, $afterKeys, $scriptKey, $pos);
     }
     
     
