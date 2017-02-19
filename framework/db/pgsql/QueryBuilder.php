@@ -187,17 +187,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
-        $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
-        $viewNames = $this->db->getSchema()->getViewNames($schema);
-        $tableNames = array_diff($tableNames, $viewNames);
-        $command = '';
-
-        foreach ($tableNames as $tableName) {
-            $tableName = '"' . $schema . '"."' . $tableName . '"';
-            $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
-        }
+        $enable = $check ? 'IMMEDIATE' : 'DEFERRED';
+        $command = "SET CONSTRAINTS ALL $enable; ";
 
         // enable to have ability to alter several tables
         $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
