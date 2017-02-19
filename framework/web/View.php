@@ -475,27 +475,33 @@ class View extends \yii\base\View
         if ($position === self::POS_READY || $position === self::POS_LOAD) {
             JqueryAsset::register($this);
         }
-        $this->_currentKey = $key;
-        $this->_currentPos = $position;
-        if ($beforeKeys) {
-            $this->addBefore($beforeKeys, $key, $position);
-        }
-        if ($afterKeys) {
-            $this->addAfter($afterKeys, $key, $position);
-        }
-        if (isset($this->js[$position][$key]) && $mergeType !== self::MERGE_REPLACE) {
-            if ($mergeType === self::MERGE_SKIP) {
-                return;
-            }
-            if ($mergeType === self::MERGE_PREPEND) {
-                $this->js[$position][$key] = $js ."\n". $this->js[$position][$key];
-            } else if ($mergeType === self::MERGE_APPEND) {
-                $this->js[$position][$key] .= $js;
-            }
-        } else {
+        $this->setCurrent($key, $position);
+        $this->addBefore($beforeKeys, $key, $position);
+        $this->addAfter($afterKeys, $key, $position);
+        
+        if (!isset($this->js[$position][$key])) {
             $this->js[$position][$key] = $js;
+            return;
+        }
+        
+        switch ($mergeType) {
+            case self::MERGE_REPLACE:
+                $this->js[$position][$key] = $js;
+                break;
+            case self::MERGE_PREPEND:
+                $this->js[$position][$key] = $js ."\n". $this->js[$position][$key];
+                break;
+            case self::MERGE_APPEND:
+                $this->js[$position][$key] .= $js;
+                break;
         }
         return $this;
+    }
+    
+    public function setCurrent($key, $position)
+    {
+        $this->_currentKey = $key;
+        $this->_currentPos = $position;
     }
 
     /**
@@ -637,6 +643,9 @@ class View extends \yii\base\View
     
     private function add(&$where, $beforeKeys, $scriptKey = null, $pos = null)
     {
+        if (!isset($where)) {
+            return $this;
+        }
         if (!isset($scriptKey)) {
             $scriptKey = $this->_currentKey;
         }
@@ -650,14 +659,14 @@ class View extends \yii\base\View
         return $this;
     }
     
-    public function addBefore($beforeKeys, $scriptKey = null, $pos = null)
+    public function addBefore($beforeKeys = null, $scriptKey = null, $pos = null)
     {
-       return $this->add($this->_jsBefore, $beforeKeys, $scriptKey, $pos);
+        return $this->add($this->_jsBefore, $beforeKeys, $scriptKey, $pos);
     }
     
-    public function addAfter($afterKeys, $scriptKey = null, $pos = null)
+    public function addAfter($afterKeys = null, $scriptKey = null, $pos = null)
     {
-       return $this->add($this->_jsAfter, $afterKeys, $scriptKey, $pos);
+        return $this->add($this->_jsAfter, $afterKeys, $scriptKey, $pos);
     }
     
     
