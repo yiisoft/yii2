@@ -962,7 +962,7 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
-                'two optional params separated by placeholder',
+                'two optional params at the beginning separated by placeholder',
                 [
                     'pattern' => '<language:(en|pl)>/test/<category>',
                     'route' => 'site/category',
@@ -973,6 +973,20 @@ class UrlRuleTest extends TestCase
                     ['en/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
                     ['test/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
                     ['en/test/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'three optional params at the beginning separated by placeholder',
+                [
+                    'pattern' => '<language:(en|pl)>/test/<category>/<id:\d+>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books', 'id' => 1],
+                ],
+                [
+                    ['test', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en/test', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['test/books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en/test/books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
                 ],
             ],
             [
@@ -987,6 +1001,22 @@ class UrlRuleTest extends TestCase
                     ['en-', ['site/category', ['language' => 'en', 'category' => 'books']]],
                     ['-books', ['site/category', ['language' => 'en', 'category' => 'books']]],
                     ['en-books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'three optional params at the beginning separated by dash',
+                [
+                    'pattern' => '<language:(en|pl)>-<category>/<id:\d+>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books', 'id' => 1],
+                ],
+                [
+                    ['-', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['-books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books/1', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books/2', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 2]]],
                 ],
             ],
             [

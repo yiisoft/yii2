@@ -242,6 +242,7 @@ class UrlRule extends Object implements UrlRuleInterface
 
         $tr2 = [];
         $requiredPatternPart = $this->pattern;
+        $oldOffset = 0;
         if (preg_match_all('/<([\w._-]+):?([^>]+)?>/', $this->pattern, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER)) {
             $appendSlash = false;
             foreach ($matches as $match) {
@@ -256,6 +257,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     if (
                         $allowAppendSlash
                         && ($appendSlash || $offset === 1)
+                        && (($offset - $oldOffset) === 1)
                         && isset($this->pattern[$offset + $length])
                         && $this->pattern[$offset + $length] === '/'
                         && isset($this->pattern[$offset + $length + 1])
@@ -269,9 +271,11 @@ class UrlRule extends Object implements UrlRuleInterface
                         && $this->pattern[$offset - 1] === '/'
                         && (!isset($this->pattern[$offset + $length]) || $this->pattern[$offset + $length] === '/')
                     ) {
+                        $appendSlash = false;
                         $tr["/<$name>"] = "(/(?P<$placeholder>$pattern))?";
                     }
                     $tr["<$name>"] = "(?P<$placeholder>$pattern)?";
+                    $oldOffset = $offset + $length;
                 } else {
                     $appendSlash = false;
                     $tr["<$name>"] = "(?P<$placeholder>$pattern)";
