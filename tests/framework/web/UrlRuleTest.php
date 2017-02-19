@@ -462,6 +462,31 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'optional param at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en'],
+                ],
+                [
+                    ['site/category', ['language' => 'en', 'category' => 'books'], 'books'],
+                    ['site/category', ['language' => 'pl', 'category' => 'books'], 'pl/books'],
+                ],
+            ],
+            [
+                'two optional params at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['site/category', ['language' => 'en', 'category' => 'books'], ''],
+                    ['site/category', ['language' => 'en', 'category' => 'games'], 'games'],
+                    ['site/category', ['language' => 'pl', 'category' => 'games'], 'pl/games'],
+                ],
+            ],
+            [
                 'consecutive optional params',
                 [
                     'pattern' => 'post/<page:\d+>/<tag>',

@@ -477,7 +477,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 $url = substr($url, 0, $pos) . preg_replace('#/+#', '/', substr($url, $pos));
             }
         } elseif (strpos($url, '//') !== false) {
-            $url = preg_replace('#/+#', '/', $url);
+            $url = preg_replace('#/+#', '/', trim($url, '/'));
         }
 
         if ($url !== '') {
