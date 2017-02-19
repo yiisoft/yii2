@@ -350,4 +350,19 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildLikeCondition($operator, $operands, &$params, $escapeChars = null)
+    {
+        $escapeChars = is_array($escapeChars) ? $escapeChars : [
+            '%' => '[%]',
+            '_' => '[_]',
+            '\\' => '[\\]',
+            '[' => '[[]',
+            ']' => '[]]',
+        ];
+        return parent::buildLikeCondition($operator, $operands, $params, $escapeChars);
+    }
 }

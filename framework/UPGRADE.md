@@ -56,6 +56,8 @@ Upgrade from Yii 2.0.11
 * `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
   indicating whether the timestamp has date information or it is just time value.
 
+* The signature of `yii\db\QueryBuilder::buildLikeCondition()` was changed. The method has got an extra optional parameter `$escapeChars`.
+
 
 Upgrade from Yii 2.0.10
 -----------------------
