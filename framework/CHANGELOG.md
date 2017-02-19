@@ -7,7 +7,7 @@ Yii Framework 2 Change Log
 - Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
 - Enh #13523: Plural rule for pasta (developeruz)
 - Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
-- Bug: Fixed `yii\db\Connection::useMaster()` - Exception within callback completely disables slaves (Vovan-VE)
+- Bug #13340: Fixed `yii\db\Connection::useMaster()` - Exception within callback completely disables slaves (Vovan-VE)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
