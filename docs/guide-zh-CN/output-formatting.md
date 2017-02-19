@@ -1,11 +1,11 @@
 数据格式器
 ==============
 
-To display data in a more readable format for users, you may format them using the `formatter` [application component](structure-application-components.md).
-By default the formatter is implemented by [[yii\i18n\Formatter]] which provides a set of methods to format data as 
-date/time, numbers, currencies, and other commonly used formats. You can use the formatter like the following,
+你可以使用 `formatter` [application component](structure-application-components.md) 来格式化数据。
+默认 `fomatter` 由 [[yii\i18n\Formatter]] 来实现，这个组件提供了一系列关于日期/时间，数字，货币等的格式化方法。
+使用方法如下：
 
-```php
+``` php
 $formatter = \Yii::$app->formatter;
 
 // output: January 1, 2014
@@ -25,32 +25,29 @@ echo $formatter->asBoolean(true);
 echo $formatter->asDate(null); 
 ```
 
-As you can see, all these methods are named as `asXyz()`, where `Xyz` stands for a supported format. Alternatively,
-you may format data using the generic method [[yii\i18n\Formatter::format()|format()]], which allows you to control
-the desired format programmatically and is commonly used by widgets like [[yii\grid\GridView]] and [[yii\widgets\DetailView]].
-For example,
+我们可以看到，所有的方法都形似 `asXyz()`，这个 `Xzy` 就是所支持的格式化类型。
+当然你也可以使用类方法 [[yii\i18n\Formatter::format()|format()]] 来进行格式化，通过这个类方法，你可以更自由地控制格式化的数据，这时候，类方法通常配合 [[yii\grid\GridView]] 或者 [[yii\widgets\DetailView]] 来使用。
 
-```php
+举个例子：
+
+``` php
 // output: January 1, 2014
 echo Yii::$app->formatter->format('2014-01-01', 'date'); 
 
-// you can also use an array to specify parameters for the format method:
-// `2` is the value for the $decimals parameter of the asPercent()-method.
+// 你可以在第二个参数指定一个数组，这个数组提供了一些配置的参数
+// 例如这个 2 就是 asPercent() 方法的 $decimals 参数
 // output: 12.50%
 echo Yii::$app->formatter->format(0.125, ['percent', 2]); 
 ```
 
-> Note: The formatter component is designed to format values to be displayed for the end user. If you want
-> to convert user input into machine readable format, or just format a date in a machine readable format,
-> the formatter is not the right tool for that.
-> To convert user input for date and number values you may use [[yii\validators\DateValidator]] and [[yii\validators\NumberValidator]]
-> respectively. For simple conversion between machine readable date and time formats,
-> the PHP [date()](http://php.net/manual/en/function.date.php)-function is enough.
+> Note: `formatter` 组件用来格式化最终展示给用户的数据. 
+> 如果你想要将用户的输入进行格式化或者只是将一些别的日期数据进行格式化（这里的格式化说的是机器可读的格式化），不要使用这个组件，
+> 而应该使用 [[yii\validators\DateValidator]] 和 [[yii\validators\NumberValidator]] 进行用户输入格式化
+> 关于日期格式化，戳这里 [date()](http://php.net/manual/en/function.date.php)
 
-## Configuring Formatter <span id="configuring-formatter"></span>
+## 配置 Formatter <span id="configuring-formatter"></span>
 
-You may customize the formatting rules by configuring the `formatter` component in the [application configuration](concept-configurations.md#application-configurations).
-For example,
+可以对 `formatter` 组件在 [application configuration](concept-configurations.md#application-configurations) 中进行配置
 
 ```php
 return [
@@ -65,31 +62,26 @@ return [
 ];
 ```
 
-Please refer to [[yii\i18n\Formatter]] for the properties that may be configured.
+可以参考 [[yii\i18n\Formatter]] 的配置
 
 
-## Formatting Date and Time Values <span id="date-and-time"></span>
+## 格式化时间/日期数据 <span id="date-and-time"></span>
 
-The formatter supports the following output formats that are related with date and time:
+默认支持一下几种格式化格式
 
-- [[yii\i18n\Formatter::asDate()|date]]: the value is formatted as a date, e.g. `January 01, 2014`.
-- [[yii\i18n\Formatter::asTime()|time]]: the value is formatted as a time, e.g. `14:23`.
-- [[yii\i18n\Formatter::asDatetime()|datetime]]: the value is formatted as date and time, e.g. `January 01, 2014 14:23`.
-- [[yii\i18n\Formatter::asTimestamp()|timestamp]]: the value is formatted as a [unix timestamp](http://en.wikipedia.org/wiki/Unix_time), e.g. `1412609982`.
-- [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: the value is formatted as the time interval between a date
-  and now in human readable form e.g. `1 hour ago`.
-- [[yii\i18n\Formatter::asDuration()|duration]]: the value is formatted as a duration in human readable format. e.g. `1 day, 2 minutes`.
+- [[yii\i18n\Formatter::asDate()|date]]: 这个变量将被格式化为日期 `January 01, 2014`.
+- [[yii\i18n\Formatter::asTime()|time]]: 这个变量将被格式化为时间 `14:23`.
+- [[yii\i18n\Formatter::asDatetime()|datetime]]: 这个变量将被格式化为日期+时间 `January 01, 2014 14:23`.
+- [[yii\i18n\Formatter::asTimestamp()|timestamp]]: 这个变量将被格式化为 UNIX 时间戳 [unix timestamp](http://en.wikipedia.org/wiki/Unix_time), 例如 `1412609982`.
+- [[yii\i18n\Formatter::asRelativeTime()|relativeTime]]: 这个变量将被格式化为人类可读的当前相对时间 `1 hour ago`.
+- [[yii\i18n\Formatter::asDuration()|duration]]: 这个变量将被格式化为人类可读的时长 `1 day, 2 minutes`.
 
-The default date and time formats used for the [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]],
-and [[yii\i18n\Formatter::asDatetime()|datetime]] methods can be customized globally by configuring  
-[[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], and
-[[yii\i18n\Formatter::datetimeFormat|datetimeFormat]].
+时间/日期数据默认使用 [[yii\i18n\Formatter::asDate()|date]], [[yii\i18n\Formatter::asTime()|time]]， [[yii\i18n\Formatter::asDatetime()|datetime]] 方法进行格式化,
+你可以对他们进行一些自己的配置，只需在配置文件里配置 [[yii\i18n\Formatter::dateFormat|dateFormat]], [[yii\i18n\Formatter::timeFormat|timeFormat]], 和 [[yii\i18n\Formatter::datetimeFormat|datetimeFormat]] 即可。
 
-You can specify date and time formats using the [ICU syntax](http://userguide.icu-project.org/formatparse/datetime).
-You can also use the [PHP date() syntax](http://php.net/manual/en/function.date.php) with a prefix `php:` to differentiate
-it from ICU syntax. For example,
+同时，你还可以配置它使用 [ICU syntax](http://userguide.icu-project.org/formatparse/datetime)，同时你也可以配置它使用 [PHP date() 语法](http://php.net/manual/en/function.date.php)，只需要加上 `php:` 前缀即可。
 
-```php
+``` php
 // ICU format
 echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 
@@ -97,29 +89,26 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
-When working with applications that need to support multiple languages, you often need to specify different date
-and time formats for different locales. To simplify this task, you may use format shortcuts (e.g. `long`, `short`), instead.
-The formatter will turn a format shortcut into an appropriate format according to the currently active [[yii\i18n\Formatter::locale|locale]].
-The following format shortcuts are supported (the examples assume `en_GB` is the active locale):
+不同的国家和地区使用不同的时间格式。 你可以使用短语 (例如 `long`, `short`) 来代替.
+`formatter` 组件会根据当前的 [[yii\i18n\Formatter::locale|locale]] 将你的短语转换成合适的格式化输出。
+目前支持以下短语 (例子当前的 [[yii\i18n\Formatter::locale|locale]] 为 `en_GB`):
 
 - `short`: will output `06/10/2014` for date and `15:58` for time;
 - `medium`: will output `6 Oct 2014` and `15:58:42`;
 - `long`: will output `6 October 2014` and `15:58:42 GMT`;
 - `full`: will output `Monday, 6 October 2014` and `15:58:42 GMT`.
 
-Since version 2.0.7 it is also possible to format dates in different calendar systems.
-Please refer to the API documentation of the formatters [[yii\i18n\Formatter::$calendar|$calendar]]-property on how to set a different calendar.
+版本 2.0.7 起，支持格式化日期为不同的系统时钟，具体请查看文档 [[yii\i18n\Formatter::$calendar|$calendar]]-property
 
 
-### Time Zones <span id="time-zones"></span>
+### 时区 <span id="time-zones"></span>
 
-When formatting date and time values, Yii will convert them to the target [[yii\i18n\Formatter::timeZone|time zone]].
-The value being formatted is assumed to be in UTC, unless a time zone is explicitly given or you have configured
-[[yii\i18n\Formatter::defaultTimeZone]].
+格式化时间/日期数据时，你会将他们转换成 [[yii\i18n\Formatter::timeZone|time zone]]
+这个时候，默认的时区为 UTC，除非你另外指定 [[yii\i18n\Formatter::defaultTimeZone]]。
 
-In the following examples, we assume the target [[yii\i18n\Formatter::timeZone|time zone]] is set as `Europe/Berlin`. 
+下面使用 `Europe/Berlin` 作为默认 [[yii\i18n\Formatter::timeZone|time zone]] 
 
-```php
+``` php
 // formatting a UNIX timestamp as a time
 echo Yii::$app->formatter->asTime(1412599260); // 14:41:00
 
@@ -130,36 +119,31 @@ echo Yii::$app->formatter->asTime('2014-10-06 12:41:00'); // 14:41:00
 echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 ```
 
-> Note: As time zones are subject to rules made by the governments around the world and may change frequently, it is
-> likely that you do not have the latest information in the time zone database installed on your system.
-> You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
-> for details on updating the time zone database. Please also read
-> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
+> 不同的政府和地区政策决定不同的时区, 你在你的时区数据库中可能拿不到最新的数据。
+> 这时你可以戳 [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data) 来查看如何更新时区。
+> 同时，这篇也可以作为参考 [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment)
 
 
-## Formatting Numbers <span id="numbers"></span>
+## 格式化数字 <span id="numbers"></span>
 
-The formatter supports the following output formats that are related with numbers:
+`formatter` 支持如下的方法
 
-- [[yii\i18n\Formatter::asInteger()|integer]]: the value is formatted as an integer e.g. `42`.
-- [[yii\i18n\Formatter::asDecimal()|decimal]]: the value is formatted as a decimal number considering decimal and thousand
-  separators e.g. `2,542.123` or `2.542,123`.
-- [[yii\i18n\Formatter::asPercent()|percent]]: the value is formatted as a percent number e.g. `42%`.
-- [[yii\i18n\Formatter::asScientific()|scientific]]: the value is formatted as a number in scientific format e.g. `4.2E4`.
-- [[yii\i18n\Formatter::asCurrency()|currency]]: the value is formatted as a currency value e.g. `£420.00`.
-  Note that for this function to work properly, the locale needs to include a country part e.g. `en_GB` or `en_US` because language only
-  would be ambiguous in this case.
-- [[yii\i18n\Formatter::asSize()|size]]: the value that is a number of bytes is formatted as a human readable size e.g. `410 kibibytes`.
-- [[yii\i18n\Formatter::asShortSize()|shortSize]]: is the short version of [[yii\i18n\Formatter::asSize()|size]], e.g. `410 KiB`.
+- [[yii\i18n\Formatter::asInteger()|integer]]: 这个变量将被格式化为整形 e.g. `42`.
+- [[yii\i18n\Formatter::asDecimal()|decimal]]: 这个变量将被格式化为带着逗号的指定精度的浮点型 e.g. `2,542.123` or `2.542,123`.
+- [[yii\i18n\Formatter::asPercent()|percent]]: 这个变量将被格式化为百分比 e.g. `42%`.
+- [[yii\i18n\Formatter::asScientific()|scientific]]: 这个变量将被格式化为科学计数法 e.g. `4.2E4`.
+- [[yii\i18n\Formatter::asCurrency()|currency]]: 这个变量将被格式化为货币 `£420.00`.
+  使用这个方法前请确认是否已经正确配置 [[yii\i18n\Formatter::locale|locale]]
+- [[yii\i18n\Formatter::asSize()|size]]: 这个变量将被格式化为人类可读的字节数 e.g. `410 kibibytes`.
+- [[yii\i18n\Formatter::asShortSize()|shortSize]]: 这个变量将被格式化为人类可读的字节数（缩写） [[yii\i18n\Formatter::asSize()|size]], e.g. `410 KiB`.
 
-The format for number formatting can be adjusted using the [[yii\i18n\Formatter::decimalSeparator|decimalSeparator]] and
-[[yii\i18n\Formatter::thousandSeparator|thousandSeparator]], both of which take default values according to the 
-active [[yii\i18n\Formatter::locale|locale]].
+你可以使用 [[yii\i18n\Formatter::decimalSeparator|decimalSeparator]] 和 [[yii\i18n\Formatter::thousandSeparator|thousandSeparator]] 来进行调整。
+他们都会根据当前的 [[yii\i18n\Formatter::locale|locale]] 来进行格式化.
 
-For more advanced configuration, [[yii\i18n\Formatter::numberFormatterOptions]] and [[yii\i18n\Formatter::numberFormatterTextOptions]]
-can be used to configure the [NumberFormatter class](http://php.net/manual/en/class.numberformatter.php) used internally
-to implement the formatter. For example, to adjust the maximum and minimum value of fraction digits, you can configure 
-the [[yii\i18n\Formatter::numberFormatterOptions]] property like the following:
+如果你想要进行更高级的配置, 可以使用 [[yii\i18n\Formatter::numberFormatterOptions]] 和 [[yii\i18n\Formatter::numberFormatterTextOptions]]，[NumberFormatter class](http://php.net/manual/en/class.numberformatter.php) 来进行格式化。
+
+举个例子，为了调整小数部分的最大值和最小值，你可以配置 [[yii\i18n\Formatter::numberFormatterOptions]] 如下：
+
 
 ```php
 'numberFormatterOptions' => [
@@ -169,40 +153,31 @@ the [[yii\i18n\Formatter::numberFormatterOptions]] property like the following:
 ```
 
 
-## Other Formats <span id="other"></span>
+## 其他的格式化 <span id="other"></span>
 
-Besides date/time and number formats, Yii also supports other commonly used formats, including
+除了时间/日期和数字的格式化，Yii 还支持如下的常用格式化
 
-- [[yii\i18n\Formatter::asRaw()|raw]]: the value is outputted as is, this is a pseudo-formatter that has no effect except that
-  `null` values will be formatted using [[nullDisplay]].
-- [[yii\i18n\Formatter::asText()|text]]: the value is HTML-encoded.
-  This is the default format used by the [GridView DataColumn](output-data-widgets.md#data-column).
-- [[yii\i18n\Formatter::asNtext()|ntext]]: the value is formatted as an HTML-encoded plain text with newlines converted
-  into line breaks.
-- [[yii\i18n\Formatter::asParagraphs()|paragraphs]]: the value is formatted as HTML-encoded text paragraphs wrapped
-  into `<p>` tags.
-- [[yii\i18n\Formatter::asHtml()|html]]: the value is purified using [[HtmlPurifier]] to avoid XSS attacks. You can
-  pass additional options such as `['html', ['Attr.AllowedFrameTargets' => ['_blank']]]`.
-- [[yii\i18n\Formatter::asEmail()|email]]: the value is formatted as a `mailto`-link.
-- [[yii\i18n\Formatter::asImage()|image]]: the value is formatted as an image tag.
-- [[yii\i18n\Formatter::asUrl()|url]]: the value is formatted as a hyperlink.
-- [[yii\i18n\Formatter::asBoolean()|boolean]]: the value is formatted as a boolean. By default `true` is rendered
-  as `Yes` and `false` as `No`, translated to the current application language. You can adjust this by configuring
-  the [[yii\i18n\Formatter::booleanFormat]] property.
+- [[yii\i18n\Formatter::asRaw()|raw]]: 除了 `null` 会被 [[nullDisplay]] 格式化外，原样输出。
+- [[yii\i18n\Formatter::asText()|text]]: 编码为 HTML 格式。同时这也是 [GridView DataColumn](output-data-widgets.md#data-column) 默认使用的方法。
+- [[yii\i18n\Formatter::asNtext()|ntext]]: 编码为 HTML 格式，换行也将被转换。
+- [[yii\i18n\Formatter::asParagraphs()|paragraphs]]: 编码为 HTML 格式，以 `<p>` 标签包裹。
+- [[yii\i18n\Formatter::asHtml()|html]]: 这个数值将会被 [[HtmlPurifier]] 来进行过滤来防御 XSS 攻击，你可以添加一些配置例如 `['html', ['Attr.AllowedFrameTargets' => ['_blank']]]`。
+- [[yii\i18n\Formatter::asEmail()|email]]: 这个数值将被转换为 `mailto` 链接。
+- [[yii\i18n\Formatter::asImage()|image]]: 转换为图片标签（`img`)。
+- [[yii\i18n\Formatter::asUrl()|url]]: 转换为超链接。
+- [[yii\i18n\Formatter::asBoolean()|boolean]]: `true` => `Yes`, `false` => `No`，可以进行另外的配置： [[yii\i18n\Formatter::booleanFormat]] 。
 
 
-## Null Values <span id="null-values"></span>
+## 空值 <span id="null-values"></span>
 
-Null values are specially formatted. Instead of displaying an empty string, the formatter will convert it into a
-preset string which defaults to `(not set)` translated into the current application language. You can configure the
-[[yii\i18n\Formatter::nullDisplay|nullDisplay]] property to customize this string.
+空值（`null`）会被特殊格式化. `fommater` 默认会将空值格式化为 `(not set)` 对应的当前的语言.
+你可以配置 [[yii\i18n\Formatter::nullDisplay|nullDisplay]] 属性来进行个性化.
 
 
-## Localizing Data Format <span id="localizing-data-format"></span>
+## 本地日期格式化 <span id="localizing-data-format"></span>
 
-As aforementioned, the formatter may use the currently active [[yii\i18n\Formatter::locale|locale]] to determine how
-to format a value that is suitable in the target country/region. For example, the same date value may be formatted
-differently for different locales:
+`formatter` 会使用当前的 [[yii\i18n\Formatter::locale|locale]] 来决定格式化的内容。
+对于同样的日期，不同的时区配置会有不同的输出：
 
 ```php
 Yii::$app->formatter->locale = 'en-US';
@@ -215,15 +190,13 @@ Yii::$app->formatter->locale = 'ru-RU';
 echo Yii::$app->formatter->asDate('2014-01-01'); // output: 1 января 2014 г.
 ```
 
-By default, the currently active [[yii\i18n\Formatter::locale|locale]] is determined by the value of 
-[[yii\base\Application::language]]. You may override it by setting the [[yii\i18n\Formatter::locale]] property explicitly.
+默认配置下，当前 [[yii\i18n\Formatter::locale|locale]] 决定于 [[yii\base\Application::language]].
+你可以覆盖 [[yii\i18n\Formatter::locale]] 属性来满足不同的需要。
 
-> Note: The Yii formatter relies on the [PHP intl extension](http://php.net/manual/en/book.intl.php) to support
-> localized data formatting. Because different versions of the ICU library compiled with PHP may cause different
-> formatting results, it is recommended that you use the same ICU version for all your environments. For more details,
-> please refer to [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
+> Note: Yii formatter 依赖 [PHP intl extension](http://php.net/manual/en/book.intl.php) 来进行本地数据格式化
+> 因为不同的 ICU 库可能会导致不同的输出，所以请在你的所有机器上保持 ICU 库的一致性. 
+> 请戳 [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
 >
-> If the intl extension is not installed, the data will not be localized. 
->
-> Note that for date values that are before year 1901 or after 2038, they will not be localized on 32-bit systems, even
-> if the intl extension is installed. This is because in this case ICU is using 32-bit UNIX timestamps to date values.
+> 如果 `intl` 扩展没有被安装，数据格式化不会考虑本地化. 
+> 
+> 在 32 位系统中，1901 年前或者 2038 年后的日期数据将不会被本地化，因为 ICU 使用的是 32 位的 UNIX 时间戳。
