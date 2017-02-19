@@ -494,6 +494,7 @@ class View extends \yii\base\View
         } else {
             $this->js[$position][$key] = $js;
         }
+        return $this;
     }
 
     /**
@@ -645,6 +646,7 @@ class View extends \yii\base\View
         } else {
             $this->_jsBefore[$pos][$scriptKey][$beforeKeys] = true;
         }
+        return $this;
     }
     
     public function addAfter($afterKeys, $scriptKey = null, $pos = null)
@@ -659,6 +661,7 @@ class View extends \yii\base\View
         } else {
             $this->_jsAfter[$pos][$scriptKey][$afterKeys] = true;
         }
+        return $this;
     }
     
     
