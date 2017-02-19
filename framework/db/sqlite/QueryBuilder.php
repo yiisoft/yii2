@@ -411,8 +411,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         $clauses = [
             $this->buildSelect($query->select, $params, $query->distinct, $query->selectOption),
-            $this->buildFrom($query, $params),
-            $this->buildJoin($query, $params),
+            $this->buildFrom($query->from, $params),
+            $this->buildJoin($query->join, $params),
             $this->buildWhere($query->where, $params),
             $this->buildGroupBy($query->groupBy),
             $this->buildHaving($query->having, $params),

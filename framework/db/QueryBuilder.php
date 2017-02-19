@@ -775,13 +775,16 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * @param Query $query the [[Query]] object from which the SQL statement will be generated.
+     * @param array|Query $tables the [[Query]] object from which the SQL statement will be generated or tables array
      * @param array $params the binding parameters to be populated
      * @return string the FROM clause built from [[Query::$from]].
      */
-    public function buildFrom($query, &$params)
+    public function buildFrom($tables, &$params)
     {
-        $tables = $query->from;
+        $query = $tables;
+        if ($query instanceof Query) {
+            $tables = $query->from;
+        }
 
         if (empty($tables)) {
             return '';
@@ -793,14 +796,17 @@ class QueryBuilder extends \yii\base\Object
     }
 
     /**
-     * @param Query $query the [[Query]] object from which the SQL statement will be generated.
+     * @param array|Query $joins the [[Query]] object from which the SQL statement will be generated or joins array
      * @param array $params the binding parameters to be populated
      * @return string the JOIN clause built from [[Query::$join]].
      * @throws Exception if the $joins parameter is not in proper format
      */
-    public function buildJoin($query, &$params)
+    public function buildJoin($joins, &$params)
     {
-        $joins = $query->join;
+        $query = $joins;
+        if ($query instanceof Query) {
+            $joins = $query->join;
+        }
 
         if (empty($joins)) {
             return '';
