@@ -669,12 +669,11 @@ class View extends \yii\base\View
         return $this->add($this->_jsAfter, $afterKeys, $scriptKey, $pos);
     }
     
-    
-    public function jsLines($pos)
+    private function mergeAfter($pos, &$array)
     {
-        $array = $this->js[$pos];
-        $lines = '';
-        $this->_jsHandled[$pos] = [];
+        if (!isset($this->_jsBefore[$pos])) {
+            return;
+        }
         foreach ($this->_jsBefore[$pos] as $beforeKey => $afterKeys) {
             foreach ($afterKeys as $afterKey) {
                 if (isset($array[$afterKey])) {
@@ -682,6 +681,15 @@ class View extends \yii\base\View
                 }
             }
         }
+        unset($this->_jsBefore);
+    }
+    
+    public function jsLines($pos)
+    {
+        $array = $this->js[$pos];
+        $lines = '';
+        $this->_jsHandled[$pos] = [];
+        $this->mergeAfter($pos, $array);
         while (count($this->_jsHandled[$pos]) < count($array)) {
             foreach ($array as $scriptKey => $script) {
                 if (array_key_exists($scriptKey, $this->_jsHandled[$pos]) || $this->isLineDeferred($scriptKey, $array, $pos)) {
