@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Bug #13592: Fixes Oracle’s `yii\db\oci\Schema::setTransactionIsolationLevel()` (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
+- Chg #12699: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` (rob006)
 
 
 2.0.11.2 February 08, 2017
