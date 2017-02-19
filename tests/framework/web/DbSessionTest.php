@@ -40,7 +40,7 @@ class DbSessionTest extends TestCase
             'user_id' => 'integer',
         ])->execute();
     }
-    
+
     // Tests :
 
     public function testReadWrite()
@@ -117,7 +117,7 @@ class DbSessionTest extends TestCase
             return substr($version, 15);
         }, (new Query())->select(['version'])->from('migration')->column());
     }
-    
+
     public function testMigration()
     {
         $this->mockWebApplication([

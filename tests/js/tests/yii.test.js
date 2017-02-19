@@ -245,9 +245,9 @@ describe('yii', function () {
 
             it(message, function () {
                 confirmed = confirmChoice;
-                
+
                 var result = yii.confirm('Are you sure?', setOk ? okSpy : undefined, setCancel ? cancelSpy : undefined);
-                
+
                 assert.isUndefined(result);
                 assert.isTrue(windowConfirmStub.calledOnce);
                 assert.deepEqual(windowConfirmStub.getCall(0).args, ['Are you sure?']);

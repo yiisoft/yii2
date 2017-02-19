@@ -27,7 +27,7 @@ namespace yiiunit\framework\log {
 
     /**
      * Class SyslogTargetTest
-     * 
+     *
      * @package yiiunit\framework\log
      * @group log
      */
@@ -35,7 +35,7 @@ namespace yiiunit\framework\log {
     {
         /**
          * Array of static functions
-         * 
+         *
          * @var array
          */
         static $functions = [];
