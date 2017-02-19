@@ -684,6 +684,16 @@ class View extends \yii\base\View
         unset($this->_jsBefore);
     }
     
+    public function jsLine($script)
+    {
+        if (is_array($script)) {
+            return call_user_func($script, $this);
+        } else if ($script instanceof Closure) {
+            return $script($this);
+        }
+        return $script."\n";
+    }
+    
     public function jsLines($pos)
     {
         $array = $this->js[$pos];
@@ -695,7 +705,7 @@ class View extends \yii\base\View
                 if (array_key_exists($scriptKey, $this->_jsHandled[$pos]) || $this->isLineDeferred($scriptKey, $array, $pos)) {
                     continue;
                 }
-                $lines .= $script."\n";
+                $lines .= $this->getJsLine($script)."\n";
                 $this->_jsHandled[$pos][$scriptKey] = true;
             }
         }
