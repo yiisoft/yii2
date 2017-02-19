@@ -89,7 +89,7 @@ class AssetConverter extends Component implements AssetConverterInterface
     protected function runCommand($command, $basePath, $asset, $result)
     {
         $command = Yii::getAlias($command);
-        
+
         $command = strtr($command, [
             '{from}' => escapeshellarg("$basePath/$asset"),
             '{to}' => escapeshellarg("$basePath/$result"),

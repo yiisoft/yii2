@@ -736,7 +736,7 @@ EOL;
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
 
         $bundlesConfig = require $bundleFile;
-        
+
         $this->assertEquals($assetBundleOverrideConfig['css'], $bundlesConfig[$assetBundleClassName]['css']);
         $this->assertEquals($assetBundleOverrideConfig['js'], $bundlesConfig[$assetBundleClassName]['js']);
     }

@@ -105,7 +105,7 @@ class FragmentCache extends Widget
             echo $content;
         } elseif ($this->cache instanceof Cache) {
             array_pop($this->getView()->cacheStack);
-            
+
             $content = ob_get_clean();
             if ($content === false || $content === '') {
                 return;

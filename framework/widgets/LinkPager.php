@@ -229,7 +229,7 @@ class LinkPager extends Widget
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
             $tag = ArrayHelper::remove($this->disabledListItemSubTagOptions, 'tag', 'span');
-            
+
             return Html::tag('li', Html::tag($tag, $label, $this->disabledListItemSubTagOptions), $options);
         }
         $linkOptions = $this->linkOptions;

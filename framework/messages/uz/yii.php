@@ -78,7 +78,7 @@ return [
     'View' => 'Ko`rish',
     'Yes' => 'Ha',
     'You are not allowed to perform this action.' => 'Sizga ushbu amalni bajarishga ruhsat berilmagan.',
-    'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Siz {limit, number} {limit, plural, one{fayldan} few{fayllardan} many{fayllardan} other{fayllardan}} ko`pini yuklab ola olmaysiz.',    
+    'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Siz {limit, number} {limit, plural, one{fayldan} few{fayllardan} many{fayllardan} other{fayllardan}} ko`pini yuklab ola olmaysiz.',
     'in {delta, plural, =1{a day} other{# days}}' => '{delta, plural, =1{kundan} one{# kundan} few{# kundan} many{# kunlardan} other{# kundan}} keyin',
     'in {delta, plural, =1{a minute} other{# minutes}}' => '{delta, plural, =1{minutdan} one{# minutdan} few{# minutlardan} many{# minutdan} other{# minutlardan}} keyin',
     'in {delta, plural, =1{a month} other{# months}}' => '{delta, plural, =1{oydan} one{# oydan} few{# oydan} many{# oylardan} other{# oylardan}} keyin',
