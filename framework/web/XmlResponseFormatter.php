@@ -106,7 +106,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         } elseif (is_object($data)) {
             if ($this->useObjectTags) {
                 $child = new DOMElement(StringHelper::basename(get_class($data)));
-                $element->appendChild($child);    
+                $element->appendChild($child);
             } else {
                 $child = $element;
             }

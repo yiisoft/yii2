@@ -18,7 +18,7 @@ class Cat extends Animal
 {
 
     /**
-     * 
+     *
      * @param self $record
      * @param array $row
      */

@@ -4,7 +4,6 @@ namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\base\DynamicModel;
-use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yiiunit\TestCase;
@@ -132,11 +131,98 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="mailto:test&gt;">test<></a>', Html::mailto('test<>', 'test>'));
     }
 
-    public function testImg()
+    /**
+     * @return array
+     */
+    public function imgDataProvider()
     {
-        $this->assertEquals('<img src="/example" alt="">', Html::img('/example'));
-        $this->assertEquals('<img src="/test" alt="">', Html::img(''));
-        $this->assertEquals('<img src="/example" width="10" alt="something">', Html::img('/example', ['alt' => 'something', 'width' => 10]));
+        return [
+            [
+                '<img src="/example" alt="">',
+                '/example',
+                [],
+            ],
+            [
+                '<img src="/test" alt="">',
+                '',
+                [],
+            ],
+            [
+                '<img src="/example" width="10" alt="something">',
+                '/example',
+                [
+                    'alt' => 'something',
+                    'width' => 10,
+                ],
+            ],
+            [
+                '<img src="/base-url" alt="" srcset="">',
+                '/base-url',
+                [
+                    'srcset' => [
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" alt="" srcset="/example-9001w 9001w">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '9001w' => '/example-9001w',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" alt="" srcset="/example-100w 100w,/example-500w 500w,/example-1500w 1500w">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '100w' => '/example-100w',
+                        '500w' => '/example-500w',
+                        '1500w' => '/example-1500w',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" alt="" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x,/example-4x 4x,/example-5x 5x">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '1x' => '/example-1x',
+                        '2x' => '/example-2x',
+                        '3x' => '/example-3x',
+                        '4x' => '/example-4x',
+                        '5x' => '/example-5x',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" alt="" srcset="/example-1.42x 1.42x,/example-2.0x 2.0x,/example-3.99999x 3.99999x">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '1.42x' => '/example-1.42x',
+                        '2.0x' => '/example-2.0x',
+                        '3.99999x' => '/example-3.99999x',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" alt="" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x">',
+                '/base-url',
+                [
+                    'srcset' => '/example-1x 1x,/example-2x 2x,/example-3x 3x',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider imgDataProvider
+     */
+    public function testImg($expected, $src, $options)
+    {
+        $this->assertEquals($expected, Html::img($src, $options));
     }
 
     public function testLabel()
