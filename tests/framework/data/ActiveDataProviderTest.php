@@ -7,12 +7,14 @@
 
 namespace yiiunit\framework\data;
 
+use yii\base\InvalidCallException;
 use yii\data\ActiveDataProvider;
 use yii\db\Query;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Item;
 use yiiunit\framework\db\DatabaseTestCase;
+use yiiunit\framework\db\UnqueryableQueryMock;
 use yiiunit\data\ar\Order;
 
 /**
@@ -176,5 +178,24 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertEquals(3, count($provider->getModels()));
         $provider->refresh();
         $this->assertEquals(2, count($provider->getModels()));
+    }
+
+    public function testDoesNotPerformQueryWhenHasNoModels()
+    {
+        $query = new UnqueryableQueryMock;
+        $provider = new ActiveDataProvider([
+            'db' => $this->getConnection(),
+            'query' => $query->from('order')->where('0=1'),
+        ]);
+        $pagination = $provider->getPagination();
+        $this->assertEquals(0, $pagination->getPageCount());
+
+        try {
+            $this->assertCount(0, $provider->getModels());
+        } catch (InvalidCallException $exception) {
+            $this->fail('An excessive models query was executed.');
+        }
+
+        $this->assertEquals(0, $pagination->getPageCount());
     }
 }
