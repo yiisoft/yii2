@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
+- Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
 - Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 - Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Bug #13582: PK column in `yii\db\pgsql\resetSequence()` was not quoted properly (boboldehampsink)
@@ -19,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder`
+- Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
 
 
 2.0.11.2 February 08, 2017
