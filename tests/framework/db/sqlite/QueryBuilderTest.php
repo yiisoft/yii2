@@ -111,7 +111,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
     public function testResetSequence()
     {
-        $qb = $this->getQueryBuilder();
+        $qb = $this->getQueryBuilder(true, true);
 
         $expected = "UPDATE sqlite_sequence SET seq='5' WHERE name='item'";
         $sql = $qb->resetSequence('item');
