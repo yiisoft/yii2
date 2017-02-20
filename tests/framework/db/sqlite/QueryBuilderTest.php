@@ -108,4 +108,17 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
     }
+
+    public function testResetSequence()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "UPDATE sqlite_sequence SET seq='6' WHERE name='item'";
+        $sql = $qb->resetSequence('item');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "UPDATE sqlite_sequence SET seq='4' WHERE name='item'";
+        $sql = $qb->resetSequence('item', 4);
+        $this->assertEquals($expected, $sql);
+    }
 }
