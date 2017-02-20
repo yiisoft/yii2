@@ -483,7 +483,7 @@ window.yii = (function ($) {
     function isReloadableAsset(url) {
         for (var i = 0; i < pub.reloadableScripts.length; i++) {
             var rule = getAbsoluteUrl(pub.reloadableScripts[i]);
-            var match = new RegExp("^" + escapeRegExp(rule).split('\\*').join('.*') + "$").test(url);
+            var match = new RegExp("^" + escapeRegExp(rule).split('\\*').join('.+') + "$").test(url);
             if (match === true) {
                 return true;
             }
