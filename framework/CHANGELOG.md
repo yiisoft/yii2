@@ -21,6 +21,7 @@ Yii Framework 2 Change Log
 - Bug #13592: Fixes Oracle’s `yii\db\oci\Schema::setTransactionIsolationLevel()` (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
+- Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
 - Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence` implementations, fixed SQLite implementation (boboldehampsink)
 
