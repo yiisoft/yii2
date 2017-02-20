@@ -132,6 +132,7 @@ class BaseInflector
         'octopus' => 'octopuses',
         'opus' => 'opuses',
         'ox' => 'oxen',
+        'pasta' => 'pasta',
         'penis' => 'penises',
         'sex' => 'sexes',
         'soliloquy' => 'soliloquies',

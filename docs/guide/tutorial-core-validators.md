@@ -202,7 +202,8 @@ function foo($model, $attribute) {
 ```
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section. Default value from database
+  schema could be loaded via [loadDefaultValues()](db-active-record.md#default-attribute-values) method of the model.
 
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>

@@ -328,6 +328,13 @@ class UrlManagerCreateUrlTest extends TestCase
                 'defaults' => ['slug' => 'index'],
             ],
             'page/<slug>' => 'frontend/page/view',
+            [
+                'pattern' => '<language>',
+                'route' => 'site/index',
+                'defaults' => [
+                    'language' => 'en'
+                ],
+            ],
         ];
         $manager = $this->getUrlManager($config, $showScriptName);
 
@@ -354,6 +361,24 @@ class UrlManagerCreateUrlTest extends TestCase
         // match second rule with hash
         $url = $manager->$method(['frontend/page/view', 'slug' => 'services', '#' => 'testhash']);
         $this->assertEquals("$prefix/page/services#testhash", $url);
+
+        // match third rule
+        $url = $manager->$method(['site/index', 'language' => 'en']);
+        $this->assertEquals("$prefix/", $url);
+        $url = $manager->$method(['site/index', 'language' => 'de']);
+        $this->assertEquals("$prefix/de", $url);
+
+        // match third rule with additional param
+        $url = $manager->$method(['site/index', 'language' => 'en', 'sort' => 'name']);
+        $this->assertEquals("$prefix/?sort=name", $url);
+        $url = $manager->$method(['site/index', 'language' => 'de', 'sort' => 'name']);
+        $this->assertEquals("$prefix/de?sort=name", $url);
+
+        // match first rule with hash
+        $url = $manager->$method(['site/index', 'language' => 'en', '#' => 'testhash']);
+        $this->assertEquals("$prefix/#testhash", $url);
+        $url = $manager->$method(['site/index', 'language' => 'de', '#' => 'testhash']);
+        $this->assertEquals("$prefix/de#testhash", $url);
 
         // matches none of the rules
         $url = $manager->$method(['frontend/page/view']);
@@ -418,6 +443,12 @@ class UrlManagerCreateUrlTest extends TestCase
             $this->assertEquals("$prefix/?page=1", $url);
             $url = $manager->$method(['/front/site/index', 'page' => 1]);
             $this->assertEquals("$prefix/?page=1", $url);
+
+            // no match
+            $url = $manager->$method(['']);
+            $this->assertEquals("$prefix/", $url);
+            $url = $manager->$method(['/']);
+            $this->assertEquals("$prefix/", $url);
         };
 
         // normal rule
