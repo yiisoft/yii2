@@ -102,6 +102,10 @@ class CacheSession extends Session
      */
     public function destroySession($id)
     {
+        if (!$this->cache->exists($id)) {
+            return true;
+        }
+
         return $this->cache->delete($this->calculateKey($id));
     }
 

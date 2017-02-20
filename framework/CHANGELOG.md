@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 - Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Bug #13582: PK column in `yii\db\pgsql\QueryBuilder::resetSequence()` was not quoted properly (boboldehampsink)
+- Bug #13537: Fixed `yii\web\CacheSession::destroySession()` to work correctly when session is not written yet (silverfire, papalapa)
 - Bug #13592: Fixes Oracle’s `yii\db\oci\Schema::setTransactionIsolationLevel()` (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
