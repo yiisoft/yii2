@@ -48,6 +48,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapeCharacter = '\\';
 
     /**
      * Generates a batch INSERT SQL statement.

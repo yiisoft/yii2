@@ -14,6 +14,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'sqlsrv';
 
+    protected $likeEscapeCharSql = " ESCAPE '\\'";
+    protected $likeParameterReplacements = [
+        '[abc]' => '\[abc\]',
+    ];
+
     public function testOffsetLimit()
     {
         $expectedQuerySql = 'SELECT [id] FROM [example] ORDER BY (SELECT NULL) OFFSET 5 ROWS FETCH NEXT 10 ROWS ONLY';
@@ -100,49 +105,5 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $data['bool-false, time-now()']['expected'] = "INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())";
 
         return $data;
-    }
-
-    public function likeConditionProvider()
-    {
-        $conditions = [
-            // simple like
-            [ ['like', 'name', 'heyho%'], '[[name]] LIKE :qp0', [':qp0' => '%heyho[%]%'] ],
-            [ ['not like', 'name', 'heyho%'], '[[name]] NOT LIKE :qp0', [':qp0' => '%heyho[%]%'] ],
-            [ ['or like', 'name', 'heyho%'], '[[name]] LIKE :qp0', [':qp0' => '%heyho[%]%'] ],
-            [ ['or not like', 'name', 'heyho%'], '[[name]] NOT LIKE :qp0', [':qp0' => '%heyho[%]%'] ],
-
-            // like for many values
-            [ ['like', 'name', ['heyho%', '[abc]']], '[[name]] LIKE :qp0 AND [[name]] LIKE :qp1', [':qp0' => '%heyho[%]%', ':qp1' => '%[[]abc[]]%'] ],
-            [ ['not like', 'name', ['heyho%', '[abc]']], '[[name]] NOT LIKE :qp0 AND [[name]] NOT LIKE :qp1', [':qp0' => '%heyho[%]%', ':qp1' => '%[[]abc[]]%'] ],
-            [ ['or like', 'name', ['heyho%', '[abc]']], '[[name]] LIKE :qp0 OR [[name]] LIKE :qp1', [':qp0' => '%heyho[%]%', ':qp1' => '%[[]abc[]]%'] ],
-            [ ['or not like', 'name', ['heyho%', '[abc]']], '[[name]] NOT LIKE :qp0 OR [[name]] NOT LIKE :qp1', [':qp0' => '%heyho[%]%', ':qp1' => '%[[]abc[]]%'] ],
-
-            // like with Expression
-            [ ['like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['not like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] NOT LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['or like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['or not like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] NOT LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'ab_c']], '[[name]] LIKE CONCAT("test", colname, "%") AND [[name]] LIKE :qp0', [':qp0' => '%ab[_]c%'] ],
-            [ ['not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'ab_c']], '[[name]] NOT LIKE CONCAT("test", colname, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%ab[_]c%'] ],
-            [ ['or like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'ab_c']], '[[name]] LIKE CONCAT("test", colname, "%") OR [[name]] LIKE :qp0', [':qp0' => '%ab[_]c%'] ],
-            [ ['or not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'ab_c']], '[[name]] NOT LIKE CONCAT("test", colname, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%ab[_]c%'] ],
-        ];
-
-        // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
-            $conditions[$i][1] = $this->replaceQuotes($condition[1]);
-        }
-        return $conditions;
-    }
-
-    /**
-     * @dataProvider likeConditionProvider
-     */
-    public function testBuildLikeCondition($condition, $expected, $expectedParams)
-    {
-        $query = (new Query())->where($condition);
-        list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
-        $this->assertEquals($expectedParams, $params);
     }
 }

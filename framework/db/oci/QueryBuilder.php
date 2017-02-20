@@ -46,6 +46,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'NUMBER(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapeCharacter = '\\';
 
     /**
      * @inheritdoc

@@ -45,6 +45,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapingCharacterReplacements = [
+        '%' => '\%',
+        '_' => '\_',
+        '[' => '\[',
+        ']' => '\]',
+        '\\' => '\\\\',
+    ];
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapeCharacter = '\\';
 
     /**
      * @inheritdoc
@@ -349,20 +363,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function update($table, $columns, $condition, &$params)
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function buildLikeCondition($operator, $operands, &$params, $escapeChars = null)
-    {
-        $escapeChars = is_array($escapeChars) ? $escapeChars : [
-            '%' => '[%]',
-            '_' => '[_]',
-            '\\' => '[\\]',
-            '[' => '[[]',
-            ']' => '[]]',
-        ];
-        return parent::buildLikeCondition($operator, $operands, $params, $escapeChars);
     }
 }

@@ -18,7 +18,7 @@ Yii Framework 2 Change Log
 - Bug #13592: Fixes Oracle’s `yii\db\oci\Schema::setTransactionIsolationLevel()` (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
-- Bug #8120: Fixes LIKE escaping for MSSQL in `yii\db\QueryBuilder`
+- Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder`
 
 
 2.0.11.2 February 08, 2017
