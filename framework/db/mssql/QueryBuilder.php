@@ -176,14 +176,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         $enable = $check ? 'CHECK' : 'NOCHECK';
         $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
-        $table = $this->db->quoteTableName($table);
         $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
         $viewNames = $this->db->getSchema()->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
         $command = '';
 
         foreach ($tableNames as $tableName) {
-            $tableName = '"' . $schema . '"."' . $tableName . '"';
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
             $command .= "ALTER TABLE $tableName $enable CONSTRAINT ALL; ";
         }
 
