@@ -164,8 +164,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $sequence = $this->db->quoteTableName($table->sequenceName);
             $tableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
-                $key = reset($table->primaryKey);
-                $value = "(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
             } else {
                 $value = (int) $value;
             }

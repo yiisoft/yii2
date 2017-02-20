@@ -422,6 +422,10 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 ]
 ```
 
+バージョン 2.0.11 以降は、`http` と `https` の両方に通用する、プロトコル相対パターンを使うことも出来ます。
+記法は上記と同じです、ただ、`http:` の部分を省略します。
+例えば、`'//www.example.com/login' => 'site/login'`。
+
 > Note: サーバ名を持つ規則は、そのパターンに、エントリスクリプトのサブフォルダを**含まない**ようにすべきです。
 例えば、アプリケーションのエントリスクリプトが `http://www.example.com/sandbox/blog/index.php` である場合は、
 `http://www.example.com/sandbox/blog/posts` ではなく、`http://www.example.com/posts` というパターンを使うべきです。
