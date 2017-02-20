@@ -434,10 +434,10 @@ class Validator extends Component
     }
 
     /**
-     * Formats a mesage using the I18N, or simple strtr if \Yii::$app is not available.
-     * Same implementation as used by \Yii::t
+     * Formats a mesage using the I18N, or simple strtr if `\Yii::$app` is not available.
      * @param string $message
      * @param array $params
+     * @since 2.0.12
      * @return string
      */
     protected function format($message, $params)
