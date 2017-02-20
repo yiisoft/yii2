@@ -129,53 +129,53 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     // TODO test match controller
 
-    public function testMatchRole()
-    {
+    /**
+     * Data provider for testMatchRole
+     *
+     * @return array or arrays
+     *           the id of the action
+     *           should the action allow (true) or disallow (false)
+     *           test user id
+     *           excepted match result (true, false, null)
+     */
+    public function matchRoleProvider() {
+        return [
+            ['create', true, 'user1', true],
+            ['create', true, 'user2', true],
+            ['create', true, 'user3', null],
+            ['create', true, 'unknown', null],
+            ['create', false, 'user1', false],
+            ['create', false, 'user2', false],
+            ['create', false, 'user3', null],
+            ['create', false, 'unknown', null],
+        ];
+    }
+
+    /**
+     * Test that a user matches certain roles
+     *
+     * @dataProvider matchRoleProvider
+     * @param string the action id
+     * @param boolean wether the rule hould allow access
+     * @param string the userid to check
+     * @param boolean the excepted result or null
+     */
+    public function testMatchRole($actionid, $allow, $userid, $excepted) {
         $action = $this->mockAction();
         $auth = $this->mockAuthManager();
         $request = $this->mockRequest();
 
         $rule = new AccessRule([
-            'allow' => true,
+            'allow' => $allow,
             'roles' => ['createPost'],
             'actions' => ['create'],
         ]);
 
-        $action->id = 'create';
+        $action->id = $actionid;
 
-        $user = $this->mockUser('user1');
+        $user = $this->mockUser($userid);
         $user->accessChecker = $auth;
-        $this->assertTrue($rule->allows($action, $user, $request));
-
-        $user = $this->mockUser('user2');
-        $user->accessChecker = $auth;
-        $this->assertTrue($rule->allows($action, $user, $request));
-
-        $user = $this->mockUser('user3');
-        $user->accessChecker = $auth;
-        $this->assertNull($rule->allows($action, $user, $request));
-
-        $user = $this->mockUser('unknown');
-        $user->accessChecker = $auth;
-        $this->assertNull($rule->allows($action, $user, $request));
-
-        $rule->allow = false;
-
-        $user = $this->mockUser('user1');
-        $user->accessChecker = $auth;
-        $this->assertFalse($rule->allows($action, $user, $request));
-
-        $user = $this->mockUser('user2');
-        $user->accessChecker = $auth;
-        $this->assertFalse($rule->allows($action, $user, $request));
-
-        $user = $this->mockUser('user3');
-        $user->accessChecker = $auth;
-        $this->assertNull($rule->allows($action, $user, $request));
-
-        $user = $this->mockUser('unknown');
-        $user->accessChecker = $auth;
-        $this->assertNull($rule->allows($action, $user, $request));
+        $this->assertEquals($excepted, $rule->allows($action, $user, $request));
     }
 
 
