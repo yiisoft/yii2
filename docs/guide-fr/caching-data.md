@@ -87,7 +87,7 @@ Comme tous les composants de mise en cache prennent en charge le même jeux d'AP
 > Conseil : vous pouvez enregistrer de multiples composants d'application de mise en cache. Le composant nommé `cache` est utilisé par défaut par de nombreuses classes dépendantes d'un cache (p. ex.[[yii\web\UrlManager]]). 
 
 
-### Support de stockage pour cache pris en charge <span id="supported-cache-storage"></span>
+### Supports de stockage pour cache pris en charge <span id="supported-cache-storage"></span>
 
 Yii prend en charge un large panel de supports de stockage pour cache. Ce qui suit est un résumé :
 
@@ -106,7 +106,7 @@ Yii prend en charge un large panel de supports de stockage pour cache. Ce qui su
   en tant que médium de cache sous-jacent.
 
 
-> Conseil : vous pouvez utiliser différents supports de stockage de cache dans la même application. Une stratégie courante est d'utiliser un support de stockage de cache basé sur la mémoire pour stocker des données de petite taille mais d'usage constant (p. ex. des données statistiques), et d'utiliser des supports de stockage de cache basés sur des fichiers ou des bases de données pour stocker des données volumineuses et utilisées moins souvent (p. ex. des contenus de pages).
+> Conseil : vous pouvez utiliser différents supports de stockage pour cache dans la même application. Une stratégie courante est d'utiliser un support de stockage pour cache basé sur la mémoire pour stocker des données de petite taille mais d'usage constant (p. ex. des données statistiques), et d'utiliser des supports de stockage pour cache basés sur des fichiers ou des bases de données pour stocker des données volumineuses et utilisées moins souvent (p. ex. des contenus de pages).
 
 
 ## Les API Cache <span id="cache-apis"></span>
@@ -216,7 +216,7 @@ Ci-dessous nous présentons un résumé des dépendances de mise en cache dispon
 
 - [[yii\caching\ChainedDependency]]: la dépendance est modifiée si l'une des dépendances de la chaîne est modifiée.
 - [[yii\caching\DbDependency]]: la dépendance est modifiée si le résultat de le requête de l'instruction SQL spécifiée est modifié.
-- [[yii\caching\ExpressionDependency]]: la dépendance est modifiée si le résultat de l'expression PHP spécifiée est modifiée.
+- [[yii\caching\ExpressionDependency]]: la dépendance est modifiée si le résultat de l'expression PHP spécifiée est modifié.
 - [[yii\caching\FileDependency]]: la dépendance est modifiée si la date de dernière modification du fichier est modifiée.
 - [[yii\caching\TagDependency]]: associe une donnée mise en cache à une ou plusieurs balises. Vous pouvez invalider la donnée mise en cache associée à la balise spécifiée en appelant [[yii\caching\TagDependency::invalidate()]].
 
@@ -249,7 +249,7 @@ $result = Customer::getDb()->cache(function ($db) {
 ```
 
 > Info : quelques systèmes de gestion de bases de données (DBMS) (p. ex. [MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html))
-  prennent également en charge la mise en cache de requêtes du côté serveur de base de données. Vous pouvez choisir d'utiliser l'un ou l'autre des ces mécanismes de mise en cache de requêtes. La mise en cache de requêtes décrite ci-dessus offre l'avantage de pouvoir spécifier des dépendances de mise en cache flexibles et sont potentiellement plus efficaces.
+  prennent également en charge la mise en cache de requêtes du côté serveur de base de données. Vous pouvez choisir d'utiliser l'un ou l'autre des ces mécanismes de mise en cache de requêtes. Les mises en cache de requêtes décrites ci-dessus offrent l'avantage de pouvoir spécifier des dépendances de mise en cache flexibles et sont potentiellement plus efficaces.
 
 
 ### Vidage du cache <span id="cache-flushing">
