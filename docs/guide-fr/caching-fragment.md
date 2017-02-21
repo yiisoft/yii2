@@ -1,7 +1,7 @@
 Mise en cache de fragments
 ==========================
 
-La mise en cache de fragments fait référence à la mise en cache de fragments de pages Web. Par exemple, si une page affiche un résumé des ventes annuelles dans un tableau, vous pouvez stocker cette table en cache pour éliminer le temps nécessaire à la génération de ce tableau à chacune des requêtes. La mise en cache de fragments est construite au-dessus de la [mise en cache de données](caching-data.md).
+La mise en cache de fragments fait référence à la mise en cache de fragments de pages Web. Par exemple, si une page affiche un résumé des ventes annuelles dans un tableau, vous pouvez stocker ce tableau en cache pour éliminer le temps nécessaire à sa génération à chacune des requêtes. La mise en cache de fragments est construite au-dessus de la [mise en cache de données](caching-data.md).
 
 Pour utiliser la mise en cache de fragments, utilisez la construction qui suit dans une [vue](structure-views.md):
 
@@ -121,7 +121,7 @@ Différentes options de mise en cache peuvent être définies pour les caches im
 
 ## Contenu dynamique <span id="dynamic-content"></span>
 
-Lors de l'utilisation de la mise en cache de fragments, vous pouvez rencontrer une situation dans laquelle un gros fragment de contenu est relativement statique en dehors de quelques endroits particuliers. Par exemple, l'entête d'une page peut afficher le menu principal avec le nom de l'utilisateur courant. Un autre problème se rencontre lorsque le contenu mis en cache, contient du code PHP qui doit être exécuté à chacune des requêtes (p. ex. le code pour enregistre un paquet de ressources). Ces deux problèmes peuvent être résolus par une fonctionnalité qu'on appelle *contenu dynamique*.
+Lors de l'utilisation de la mise en cache de fragments, vous pouvez rencontrer une situation dans laquelle un gros fragment de contenu est relativement statique en dehors de quelques endroits particuliers. Par exemple, l'entête d'une page peut afficher le menu principal avec le nom de l'utilisateur courant. Un autre problème se rencontre lorsque le contenu mis en cache, contient du code PHP qui doit être exécuté à chacune des requêtes (p. ex. le code pour enregistrer un paquet de ressources). Ces deux problèmes peuvent être résolus par une fonctionnalité qu'on appelle *contenu dynamique*.
 
 Un contenu dynamique signifie un fragment de sortie qui ne doit jamais être mis en cache même s'il est contenu dans un  fragment mis en cache. Pour faire en sorte que le contenu soit dynamique en permanence, il doit être généré en exécutant un code PHP à chaque requête, même si le contenu l'englobant est servi à partir du cache.
 
