@@ -12,7 +12,7 @@ namespace yii\db;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Bob Olde Hampsink <b.oldehampsink@nerds.company>
- * @since 2.0
+ * @since 2.0.12
  */
 trait ViewFinderTrait
 {
