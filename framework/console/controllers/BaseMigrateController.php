@@ -35,6 +35,9 @@ abstract class BaseMigrateController extends Controller
      * @var string the directory containing the migration classes. This can be either
      * a path alias or a directory path.
      *
+     * Migration classes located at this path should be declared without a namespace.
+     * Use [[migrationNamespaces]] property in case you are using namespaced migrations.
+     *
      * If you have set up [[migrationNamespaces]], you may set this field to `null` in order
      * to disable usage of migrations that are not namespaced.
      */
@@ -73,7 +76,7 @@ abstract class BaseMigrateController extends Controller
     {
         return array_merge(
             parent::options($actionID),
-            ['migrationPath'], // global for all actions
+            ['migrationPath', 'migrationNamespaces'], // global for all actions
             $actionID === 'create' ? ['templateFile'] : [] // action create
         );
     }

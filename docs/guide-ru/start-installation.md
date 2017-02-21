@@ -1,4 +1,4 @@
-Установка Yii
+Установка Yii <span id="installing-from-composer"></span>
 ==============
 
 Вы можете установить Yii двумя способами: используя [Composer](https://getcomposer.org/) или скачав архив.

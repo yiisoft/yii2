@@ -107,7 +107,7 @@
          *     function (event)
          * where
          *  - event: an Event object.
-         */        
+         */
         afterInit: 'afterInit'
     };
 
@@ -306,9 +306,9 @@
                 needAjaxValidation = false,
                 messages = {},
                 deferreds = deferredArray(),
-                submitting = data.submitting;
+                submitting = data.submitting && !forceValidate;
 
-            if (submitting) {
+            if (data.submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
 

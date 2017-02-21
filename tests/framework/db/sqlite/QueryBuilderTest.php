@@ -59,7 +59,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->markTestSkipped('Comments are not supported in SQLite');
     }
 
-    public function testBatchInsert()
+    public function batchInsertProvider()
+    {
+        $data = parent::batchInsertProvider();
+        $data['escape-danger-chars']['expected'] = "INSERT INTO `customer` (`address`) VALUES ('SQL-danger chars are escaped: ''); --')";
+        return $data;
+    }
+
+    public function testBatchInsertOnOlderVersions()
     {
         $db = $this->getConnection();
         if (version_compare($db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
@@ -100,5 +107,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
+    }
+
+    public function testResetSequence()
+    {
+        $qb = $this->getQueryBuilder(true, true);
+
+        $expected = "UPDATE sqlite_sequence SET seq='5' WHERE name='item'";
+        $sql = $qb->resetSequence('item');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "UPDATE sqlite_sequence SET seq='3' WHERE name='item'";
+        $sql = $qb->resetSequence('item', 4);
+        $this->assertEquals($expected, $sql);
     }
 }

@@ -3,7 +3,7 @@ Autocarga de clases
 
 Yii depende del [mecanismo de autocarga de clases](http://www.php.net/manual/es/language.oop5.autoload.php) para localizar
 e incluir los archivos de las clases requiridas. Proporciona un cargador de clases de alto rendimiento que cumple con el
-[estandard PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md).
+[estandard PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md).
 El cargador se instala cuando incluyes el archivo `Yii.php`.
 
 > Note: Para simplificar la descripción, en esta sección sólo hablaremos de la carga automática de clases. Sin embargo,

@@ -43,7 +43,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $id;
     /**
-     * @var Module $module the module that this controller belongs to.
+     * @var Module the module that this controller belongs to.
      */
     public $module;
     /**
@@ -164,7 +164,9 @@ class Controller extends Component implements ViewContextInterface
             }
         }
 
-        $this->action = $oldAction;
+        if ($oldAction !== null) {
+            $this->action = $oldAction;
+        }
 
         return $result;
     }

@@ -344,18 +344,18 @@ yii.validation = (function ($) {
 
             var ipVersion = value.indexOf(':') === -1 ? 4 : 6;
             if (ipVersion == 6) {
-                if (!options.ipv6) {
-                    pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
-                }
                 if (!(new RegExp(options.ipv6Pattern)).test(value)) {
                     pub.addMessage(messages, options.messages.message, value);
                 }
-            } else {
-                if (!options.ipv4) {
-                    pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
+                if (!options.ipv6) {
+                    pub.addMessage(messages, options.messages.ipv6NotAllowed, value);
                 }
+            } else {
                 if (!(new RegExp(options.ipv4Pattern)).test(value)) {
                     pub.addMessage(messages, options.messages.message, value);
+                }
+                if (!options.ipv4) {
+                    pub.addMessage(messages, options.messages.ipv4NotAllowed, value);
                 }
             }
         }

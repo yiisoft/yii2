@@ -203,7 +203,7 @@ class UrlRule extends CompositeUrlRule
         $config['verb'] = $verbs;
         $config['pattern'] = rtrim($prefix . '/' . strtr($pattern, $this->tokens), '/');
         $config['route'] = $action;
-        if (!in_array('GET', $verbs)) {
+        if (!empty($verbs) && !in_array('GET', $verbs)) {
             $config['mode'] = \yii\web\UrlRule::PARSING_ONLY;
         }
         $config['suffix'] = $this->suffix;
@@ -221,9 +221,15 @@ class UrlRule extends CompositeUrlRule
             if (strpos($pathInfo, $urlName) !== false) {
                 foreach ($rules as $rule) {
                     /* @var $rule \yii\web\UrlRule */
-                    if (($result = $rule->parseRequest($manager, $request)) !== false) {
-                        Yii::trace("Request parsed with URL rule: {$rule->name}", __METHOD__);
-
+                    $result = $rule->parseRequest($manager, $request);
+                    if (YII_DEBUG) {
+                        Yii::trace([
+                            'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
+                            'match' => $result !== false,
+                            'parent' => self::className()
+                        ], __METHOD__);
+                    }
+                    if ($result !== false) {
                         return $result;
                     }
                 }

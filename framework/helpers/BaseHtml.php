@@ -430,11 +430,22 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @since 2.0.12 It is possible to pass the "srcset" option as an array which keys are
+     * descriptors and values are URLs. All URLs will be processed by [[Url::to()]].
      * @return string the generated image tag
      */
     public static function img($src, $options = [])
     {
         $options['src'] = Url::to($src);
+
+        if (isset($options['srcset']) && is_array($options['srcset'])) {
+            $srcset = [];
+            foreach ($options['srcset'] as $descriptor => $url) {
+                $srcset[] = Url::to($url) . ' ' . $descriptor;
+            }
+            $options['srcset'] = implode(',', $srcset);
+        }
+
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
@@ -663,7 +674,7 @@ class BaseHtml
      * The following special options are recognized:
      *
      * - `doubleEncode`: whether to double encode HTML entities in `$value`. If `false`, HTML entities in `$value` will not
-     * be further encoded. This option is available since version 2.0.11.
+     *   be further encoded. This option is available since version 2.0.11.
      *
      * @return string the generated text area tag
      */

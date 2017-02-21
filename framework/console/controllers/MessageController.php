@@ -8,8 +8,10 @@
 namespace yii\console\controllers;
 
 use Yii;
-use yii\console\Controller;
 use yii\console\Exception;
+use yii\db\Connection;
+use yii\db\Query;
+use yii\di\Instance;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -35,7 +37,7 @@ use yii\i18n\GettextPoFile;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class MessageController extends Controller
+class MessageController extends \yii\console\Controller
 {
     /**
      * @var string controller default action ID.
@@ -105,7 +107,7 @@ class MessageController extends Controller
      */
     public $only = ['*.php'];
     /**
-     * @var string generated file format. Can be "php", "db" or "po".
+     * @var string generated file format. Can be "php", "db", "po" or "pot".
      */
     public $format = 'php';
     /**
@@ -217,13 +219,13 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($filePath, $content) !== false) {
-            $this->stdout("Configuration file created: '{$filePath}'.\n\n", Console::FG_GREEN);
-            return self::EXIT_CODE_NORMAL;
-        } else {
+        if (file_put_contents($filePath, $content) === false) {
             $this->stdout("Configuration file was NOT created: '{$filePath}'.\n\n", Console::FG_RED);
             return self::EXIT_CODE_ERROR;
         }
+
+        $this->stdout("Configuration file created: '{$filePath}'.\n\n", Console::FG_GREEN);
+        return self::EXIT_CODE_NORMAL;
     }
 
     /**
@@ -240,18 +242,20 @@ EOD;
     public function actionConfigTemplate($filePath)
     {
         $filePath = Yii::getAlias($filePath);
+
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
                 return self::EXIT_CODE_NORMAL;
             }
         }
-        if (copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath)) {
-            $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
-            return self::EXIT_CODE_NORMAL;
-        } else {
+
+        if (!copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath)) {
             $this->stdout("Configuration file template was NOT created at '{$filePath}'.\n\n", Console::FG_RED);
             return self::EXIT_CODE_ERROR;
         }
+
+        $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
+        return self::EXIT_CODE_NORMAL;
     }
 
     /**
@@ -272,9 +276,8 @@ EOD;
             $configFile = Yii::getAlias($configFile);
             if (!is_file($configFile)) {
                 throw new Exception("The configuration file does not exist: $configFile");
-            } else {
-                $configFileContent = require($configFile);
             }
+            $configFileContent = require($configFile);
         }
 
         $config = array_merge(
@@ -297,7 +300,8 @@ EOD;
         if (in_array($config['format'], ['php', 'po', 'pot'])) {
             if (!isset($config['messagePath'])) {
                 throw new Exception('The configuration file must specify "messagePath".');
-            } elseif (!is_dir($config['messagePath'])) {
+            }
+            if (!is_dir($config['messagePath'])) {
                 throw new Exception("The message path {$config['messagePath']} is not a valid directory.");
             }
         }
@@ -311,24 +315,24 @@ EOD;
         foreach ($files as $file) {
             $messages = array_merge_recursive($messages, $this->extractMessages($file, $config['translator'], $config['ignoreCategories']));
         }
+
+        $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
+
         if (in_array($config['format'], ['php', 'po'])) {
             foreach ($config['languages'] as $language) {
                 $dir = $config['messagePath'] . DIRECTORY_SEPARATOR . $language;
-                if (!is_dir($dir)) {
-                    @mkdir($dir);
+                if (!is_dir($dir) && !@mkdir($dir)) {
+                    throw new Exception("Directory '{$dir}' can not be created.");
                 }
                 if ($config['format'] === 'po') {
-                    $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
                     $this->saveMessagesToPO($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['sort'], $catalog, $config['markUnused']);
                 } else {
                     $this->saveMessagesToPHP($messages, $dir, $config['overwrite'], $config['removeUnused'], $config['sort'], $config['markUnused']);
                 }
             }
         } elseif ($config['format'] === 'db') {
-            $db = \Yii::$app->get(isset($config['db']) ? $config['db'] : 'db');
-            if (!$db instanceof \yii\db\Connection) {
-                throw new Exception('The "db" option must refer to a valid database application component.');
-            }
+            /** @var Connection $db */
+            $db = Instance::ensure($config['db'], Connection::className());
             $sourceMessageTable = isset($config['sourceMessageTable']) ? $config['sourceMessageTable'] : '{{%source_message}}';
             $messageTable = isset($config['messageTable']) ? $config['messageTable'] : '{{%message}}';
             $this->saveMessagesToDb(
@@ -341,7 +345,6 @@ EOD;
                 $config['markUnused']
             );
         } elseif ($config['format'] === 'pot') {
-            $catalog = isset($config['catalog']) ? $config['catalog'] : 'messages';
             $this->saveMessagesToPOT($messages, $config['messagePath'], $catalog);
         }
     }
@@ -350,7 +353,7 @@ EOD;
      * Saves messages to database
      *
      * @param array $messages
-     * @param \yii\db\Connection $db
+     * @param Connection $db
      * @param string $sourceMessageTable
      * @param string $messageTable
      * @param bool $removeUnused
@@ -359,11 +362,20 @@ EOD;
      */
     protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)
     {
-        $q = new \yii\db\Query;
-        $current = [];
+        $currentMessages = [];
+        $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+        foreach ($rows as $row) {
+            $currentMessages[$row['category']][$row['id']] = $row['message'];
+        }
 
-        foreach ($q->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db) as $row) {
-            $current[$row['category']][$row['id']] = $row['message'];
+        $currentLanguages = [];
+        $rows = (new Query)->select(['language'])->from($messageTable)->groupBy('language')->all($db);
+        foreach ($rows as $row) {
+            $currentLanguages[] = $row['language'];
+        }
+        $missingLanguages = [];
+        if (!empty($currentLanguages)) {
+            $missingLanguages = array_diff($languages, $currentLanguages);
         }
 
         $new = [];
@@ -372,21 +384,21 @@ EOD;
         foreach ($messages as $category => $msgs) {
             $msgs = array_unique($msgs);
 
-            if (isset($current[$category])) {
-                $new[$category] = array_diff($msgs, $current[$category]);
-                $obsolete += array_diff($current[$category], $msgs);
+            if (isset($currentMessages[$category])) {
+                $new[$category] = array_diff($msgs, $currentMessages[$category]);
+                $obsolete += array_diff($currentMessages[$category], $msgs);
             } else {
                 $new[$category] = $msgs;
             }
         }
 
-        foreach (array_diff(array_keys($current), array_keys($messages)) as $category) {
-            $obsolete += $current[$category];
+        foreach (array_diff(array_keys($currentMessages), array_keys($messages)) as $category) {
+            $obsolete += $currentMessages[$category];
         }
 
         if (!$removeUnused) {
-            foreach ($obsolete as $pk => $m) {
-                if (mb_substr($m, 0, 2) === '@@' && mb_substr($m, -2) === '@@') {
+            foreach ($obsolete as $pk => $msg) {
+                if (mb_substr($msg, 0, 2) === '@@' && mb_substr($msg, -2) === '@@') {
                     unset($obsolete[$pk]);
                 }
             }
@@ -397,9 +409,9 @@ EOD;
         $savedFlag = false;
 
         foreach ($new as $category => $msgs) {
-            foreach ($msgs as $m) {
+            foreach ($msgs as $msg) {
                 $savedFlag = true;
-                $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $m]);
+                $lastPk = $db->schema->insert($sourceMessageTable, ['category' => $category, 'message' => $msg]);
                 foreach ($languages as $language) {
                     $db->createCommand()
                        ->insert($messageTable, ['id' => $lastPk['id'], 'language' => $language])
@@ -408,7 +420,25 @@ EOD;
             }
         }
 
-        $this->stdout($savedFlag ? "saved.\n" : "Nothing new...skipped.\n");
+        if (!empty($missingLanguages)) {
+            $updatedMessages = [];
+            $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+            foreach ($rows as $row) {
+                $updatedMessages[$row['category']][$row['id']] = $row['message'];
+            }
+            foreach ($updatedMessages as $category => $msgs) {
+                foreach ($msgs as $id => $msg) {
+                    $savedFlag = true;
+                    foreach ($missingLanguages as $language) {
+                        $db->createCommand()
+                            ->insert($messageTable, ['id' => $id, 'language' => $language])
+                            ->execute();
+                    }
+                }
+            }
+        }
+
+        $this->stdout($savedFlag ? "saved.\n" : "Nothing to save.\n");
         $this->stdout($removeUnused ? 'Deleting obsoleted messages...' : 'Updating obsoleted messages...');
 
         if (empty($obsolete)) {
@@ -554,22 +584,18 @@ EOD;
      */
     protected function isCategoryIgnored($category, array $ignoreCategories)
     {
-        $result = false;
-
         if (!empty($ignoreCategories)) {
             if (in_array($category, $ignoreCategories, true)) {
-                $result = true;
-            } else {
-                foreach ($ignoreCategories as $pattern) {
-                    if (strpos($pattern, '*') > 0 && strpos($category, rtrim($pattern, '*')) === 0) {
-                        $result = true;
-                        break;
-                    }
+                return true;
+            }
+            foreach ($ignoreCategories as $pattern) {
+                if (strpos($pattern, '*') > 0 && strpos($category, rtrim($pattern, '*')) === 0) {
+                    return true;
                 }
             }
         }
 
-        return $result;
+        return false;
     }
 
     /**
@@ -584,7 +610,8 @@ EOD;
     {
         if (is_string($a) && is_string($b)) {
             return $a === $b;
-        } elseif (isset($a[0], $a[1], $b[0], $b[1])) {
+        }
+        if (isset($a[0], $a[1], $b[0], $b[1])) {
             return $a[0] === $b[0] && $a[1] == $b[1];
         }
         return false;
@@ -695,7 +722,6 @@ EOD;
             ksort($merged);
         }
 
-
         $array = VarDumper::export($merged);
         $content = <<<EOD
 <?php
@@ -720,13 +746,13 @@ return $array;
 
 EOD;
 
-        if (file_put_contents($fileName, $content) !== false) {
-            $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
-            return self::EXIT_CODE_NORMAL;
-        } else {
+        if (file_put_contents($fileName, $content) === false) {
             $this->stdout("Translation was NOT saved.\n\n", Console::FG_RED);
             return self::EXIT_CODE_ERROR;
         }
+
+        $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
+        return self::EXIT_CODE_NORMAL;
     }
 
     /**
@@ -747,7 +773,6 @@ EOD;
         $this->stdout("Saving messages to $file...\n");
 
         $poFile = new GettextPoFile();
-
 
         $merged = [];
         $todos = [];
