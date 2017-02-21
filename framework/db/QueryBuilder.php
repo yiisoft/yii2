@@ -80,7 +80,7 @@ class QueryBuilder extends \yii\base\Object
      * By default it's assumed to be `\`.
      * @since 2.0.12
      */
-    protected $likeEscapeCharacter = null;
+    protected $likeEscapeCharacter;
 
     /**
      * Constructor.
