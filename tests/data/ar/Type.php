@@ -29,4 +29,3 @@ class Type extends ActiveRecord
         return 'type';
     }
 }
- 

@@ -33,4 +33,17 @@ class CacheSessionTest extends \yiiunit\TestCase
         $this->setExpectedException('\Exception');
         new CacheSession(['cache' => 'invalid']);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13537
+     */
+    public function testNotWrittenSessionDestroying()
+    {
+        $session = new CacheSession();
+
+        $session->set('foo', 'bar');
+        $this->assertEquals('bar', $session->get('foo'));
+
+        $this->assertTrue($session->destroySession($session->getId()));
+    }
 }

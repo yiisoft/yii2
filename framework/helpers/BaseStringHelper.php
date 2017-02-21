@@ -90,7 +90,7 @@ class BaseStringHelper
             return '';
         }
     }
-    
+
     /**
      * Truncates a string to the number of characters specified.
      *
@@ -107,14 +107,14 @@ class BaseStringHelper
         if ($asHtml) {
             return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
         }
-        
+
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
             return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
     }
-    
+
     /**
      * Truncates a string to the number of words specified.
      *
@@ -138,7 +138,7 @@ class BaseStringHelper
             return $string;
         }
     }
-    
+
     /**
      * Truncate a string while preserving the HTML.
      *
