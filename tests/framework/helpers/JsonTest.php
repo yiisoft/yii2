@@ -147,7 +147,7 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->setExpectedException('yii\base\InvalidArgumentException');
         Json::decode($json);
     }
 
@@ -157,7 +157,7 @@ class JsonTest extends TestCase
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (\yii\base\InvalidArgumentException $e) {
             $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
         }
 
@@ -167,7 +167,7 @@ class JsonTest extends TestCase
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (\yii\base\InvalidArgumentException $e) {
             if (PHP_VERSION_ID >= 50500) {
                 $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
             } else {

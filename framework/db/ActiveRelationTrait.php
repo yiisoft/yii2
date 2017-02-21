@@ -8,7 +8,7 @@
 namespace yii\db;
 
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * ActiveRelationTrait implements the common methods and properties for active record relational queries.
@@ -86,11 +86,11 @@ trait ActiveRelationTrait
      * class Order extends ActiveRecord
      * {
      *    public function getOrderItems() {
-     *        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+     *        return $this->hasMany(OrderItem::class, ['order_id' => 'id']);
      *    }
      *
      *    public function getItems() {
-     *        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+     *        return $this->hasMany(Item::class, ['id' => 'item_id'])
      *                    ->via('orderItems');
      *    }
      * }
@@ -124,7 +124,7 @@ trait ActiveRelationTrait
      * ```php
      * public function getOrders()
      * {
-     *     return $this->hasMany(Order::className(), ['customer_id' => 'id'])->inverseOf('customer');
+     *     return $this->hasMany(Order::class, ['customer_id' => 'id'])->inverseOf('customer');
      * }
      * ```
      *
@@ -143,7 +143,7 @@ trait ActiveRelationTrait
      * @param string $name the relation name
      * @param ActiveRecordInterface|BaseActiveRecord $model the primary model
      * @return mixed the related record(s)
-     * @throws InvalidParamException if the relation is invalid
+     * @throws InvalidArgumentException if the relation is invalid
      */
     public function findFor($name, $model)
     {
@@ -151,7 +151,8 @@ trait ActiveRelationTrait
             $method = new \ReflectionMethod($model, 'get' . $name);
             $realName = lcfirst(substr($method->getName(), 3));
             if ($realName !== $name) {
-                throw new InvalidParamException('Relation names are case sensitive. ' . get_class($model) . " has a relation named \"$realName\" instead of \"$name\".");
+                throw new InvalidArgumentException('Relation names are case sensitive. ' . get_class($model)
+                    . " has a relation named \"$realName\" instead of \"$name\".");
             }
         }
 

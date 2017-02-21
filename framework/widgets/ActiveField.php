@@ -210,7 +210,7 @@ class ActiveField extends Component
                 $this->error();
             }
             if (!isset($this->parts['{hint}'])) {
-                $this->hint(null);
+                $this->hint();
             }
             $content = strtr($this->template, $this->parts);
         } elseif (!is_string($content)) {
@@ -334,7 +334,7 @@ class ActiveField extends Component
      *
      * @return $this the field object itself.
      */
-    public function hint($content, $options = [])
+    public function hint($content = null, $options = [])
     {
         if ($content === false) {
             $this->parts['{hint}'] = '';
@@ -415,6 +415,7 @@ class ActiveField extends Component
      */
     public function hiddenInput($options = [])
     {
+        $this->label(false);
         $options = array_merge($this->inputOptions, $options);
         $this->adjustLabelFor($options);
         $this->parts['{input}'] = Html::activeHiddenInput($this->model, $this->attribute, $options);
@@ -697,7 +698,7 @@ class ActiveField extends Component
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
      * ```php
-     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::className(), [
+     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::class, [
      *     'mask' => '99/99/9999',
      * ]);
      * ```

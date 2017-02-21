@@ -95,7 +95,7 @@ class SqlDataProvider extends BaseDataProvider
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->sql === null) {
             throw new InvalidConfigException('The "sql" property must be set.');
         }

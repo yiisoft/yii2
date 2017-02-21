@@ -56,7 +56,7 @@ class GridView extends BaseListView
      * @var string the default data column class if the class name is not explicitly specified when configuring a data column.
      * Defaults to 'yii\grid\DataColumn'.
      */
-    public $dataColumnClass;
+    public $dataColumnClass = DataColumn::class;
     /**
      * @var string the caption of the grid table
      * @see captionOptions
@@ -143,14 +143,14 @@ class GridView extends BaseListView
      *
      * ```php
      * [
-     *     ['class' => SerialColumn::className()],
+     *     ['class' => \yii\grid\SerialColumn::class],
      *     [
-     *         'class' => DataColumn::className(), // this line is optional
+     *         'class' => \yii\grid\DataColumn::class, // this line is optional
      *         'attribute' => 'name',
      *         'format' => 'text',
      *         'label' => 'Name',
      *     ],
-     *     ['class' => CheckboxColumn::className()],
+     *     ['class' => \yii\grid\CheckboxColumn::class],
      * ]
      * ```
      *
@@ -288,7 +288,8 @@ class GridView extends BaseListView
         $view = $this->getView();
         GridViewAsset::register($view);
         $view->registerJs("jQuery('#$id').yiiGridView($options);");
-        parent::run();
+
+        return parent::run();
     }
 
     /**
@@ -529,7 +530,7 @@ class GridView extends BaseListView
                 $column = $this->createDataColumn($column);
             } else {
                 $column = Yii::createObject(array_merge([
-                    'class' => $this->dataColumnClass ? : DataColumn::className(),
+                    'class' => $this->dataColumnClass,
                     'grid' => $this,
                 ], $column));
             }
@@ -554,7 +555,7 @@ class GridView extends BaseListView
         }
 
         return Yii::createObject([
-            'class' => $this->dataColumnClass ? : DataColumn::className(),
+            'class' => $this->dataColumnClass,
             'grid' => $this,
             'attribute' => $matches[1],
             'format' => isset($matches[3]) ? $matches[3] : 'text',

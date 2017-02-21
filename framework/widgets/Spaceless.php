@@ -60,10 +60,11 @@ class Spaceless extends Widget
 
     /**
      * Marks the end of content to be cleaned from whitespace characters between HTML tags.
-     * Stops capturing an output and echoes cleaned result.
+     * Stops capturing an output and returns cleaned result.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
-        echo trim(preg_replace('/>\s+</', '><', ob_get_clean()));
+        return trim(preg_replace('/>\s+</', '><', ob_get_clean()));
     }
 }
