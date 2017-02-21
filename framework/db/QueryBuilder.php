@@ -1408,7 +1408,7 @@ class QueryBuilder extends \yii\base\Object
                 $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
             }
             $escapeSql = '';
-            if ($this->likeEscapeCharacter !== null) {
+            if (isset($this->likeEscapeCharacter)) {
                 $escapeSql = " ESCAPE '{$this->likeEscapeCharacter}'";
             }
             $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
