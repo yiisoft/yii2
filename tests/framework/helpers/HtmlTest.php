@@ -4,7 +4,6 @@ namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\base\DynamicModel;
-use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yiiunit\TestCase;

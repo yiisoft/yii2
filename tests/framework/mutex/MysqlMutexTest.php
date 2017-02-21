@@ -10,7 +10,7 @@ use yiiunit\framework\db\DatabaseTestCase;
  *
  * @group mutex
  * @group mysql
- * 
+ *
  * @package yiiunit\framework\mutex
  */
 class MysqlMutexTest extends DatabaseTestCase

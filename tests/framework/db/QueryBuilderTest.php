@@ -28,9 +28,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @throws \Exception
      * @return QueryBuilder
      */
-    protected function getQueryBuilder()
+    protected function getQueryBuilder($reset = true, $open = false)
     {
-        $connection = $this->getConnection(true, false);
+        $connection = $this->getConnection($reset, $open);
 
         \Yii::$container->set('db', $connection);
 
