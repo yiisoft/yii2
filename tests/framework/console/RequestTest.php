@@ -117,13 +117,9 @@ class RequestTest extends TestCase
                     '--0=test',
                     '--1=testing',
                 ],
-                'expected' => [
-                    'route' => 'controller/route',
-                    'params' => [
-                    ],
-                ],
+                'expected' => [],
                 'exception' => [
-                    '\yii\base\InvalidParamException',
+                    '\yii\console\Exception',
                     'Parameter "0" is not valid'
                 ],
             ],
