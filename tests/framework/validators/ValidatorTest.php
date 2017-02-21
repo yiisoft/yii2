@@ -246,6 +246,13 @@ class ValidatorTest extends TestCase
     {
         $model = $this->getTestModel();
         $validators = $model->getActiveValidators('safe_attr');
-        $this->assertInstanceOf('yii\validators\NumberValidator', array_shift($validators));
+        $is_found = false;
+        foreach ($validators as $v) {
+            if ($v instanceof NumberValidator) {
+                $is_found = true;
+                break;
+            }
+        }
+        $this->assertTrue($is_found);
     }
 }

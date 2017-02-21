@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Bug #13087: Fixed getting active validators for safe attribute (developeruz)
 - Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
 - Enh #13523: Plural rule for pasta (developeruz)
 - Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
@@ -104,7 +105,6 @@ Yii Framework 2 Change Log
 - Enh #6242: Access to validator in inline validation (arogachev)
 - Enh #6373: Introduce `yii\db\Query::emulateExecution()` to force returning an empty result for a query (klimov-paul)
 - Enh #6809: Added `yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
-- Bug #13087: Fixed getting active validators for safe attribute (developeruz)
 - Enh #6809: Added `\yii\caching\Cache::$defaultDuration` property, allowing to set custom default cache duration (sdkiller)
 - Enh #7333: Improved error message for `yii\di\Instance::ensure()` when a component does not exist (cebe)
 - Enh #7420: Attributes for prompt generated with `renderSelectOptions` of `\yii\helpers\Html` helper (arogachev)
