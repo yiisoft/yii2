@@ -2,6 +2,8 @@
 
 namespace yiiunit\framework\db\oci;
 
+use yii\db\Transaction;
+
 /**
  * @group db
  * @group oci
@@ -66,5 +68,16 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{table}}."column"'));
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{%table}}.[[column]]'));
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{%table}}."column"'));
+    }
+
+    public function testTransactionIsolation()
+    {
+        $connection = $this->getConnection(true);
+
+        $transaction = $connection->beginTransaction(Transaction::READ_COMMITTED);
+        $transaction->commit();
+
+        $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
+        $transaction->commit();
     }
 }

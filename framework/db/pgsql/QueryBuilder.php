@@ -164,8 +164,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $sequence = $this->db->quoteTableName($table->sequenceName);
             $tableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
-                $key = reset($table->primaryKey);
-                $value = "(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
             } else {
                 $value = (int) $value;
             }
@@ -203,6 +203,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
         return $command;
+    }
+
+    /**
+     * Builds a SQL statement for truncating a DB table.
+     * Explicitly restarts identity for PGSQL to be consistent with other databases which all do this by default.
+     * @param string $table the table to be truncated. The name will be properly quoted by the method.
+     * @return string the SQL statement for truncating a DB table.
+     */
+    public function truncateTable($table)
+    {
+        return 'TRUNCATE TABLE ' . $this->db->quoteTableName($table) . ' RESTART IDENTITY';
     }
 
     /**
