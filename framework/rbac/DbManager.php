@@ -480,7 +480,7 @@ class DbManager extends BaseManager
     {
         $role = $this->getRole($roleName);
 
-        if (is_null($role)) {
+        if ($role === null) {
             throw new InvalidParamException("Role \"$roleName\" not found.");
         }
 
