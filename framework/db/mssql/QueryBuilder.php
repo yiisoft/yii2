@@ -198,23 +198,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
+     * @param string $schema the schema of the tables.
+     * @param string $table the table name.
      * @return string the SQL statement for checking integrity
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        if ($schema !== '') {
-            $table = "{$schema}.{$table}";
-        }
-        $table = $this->db->quoteTableName($table);
-        if ($this->db->getTableSchema($table) === null) {
-            throw new InvalidParamException("Table not found: $table");
-        }
         $enable = $check ? 'CHECK' : 'NOCHECK';
+        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
+        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $tableNames = array_diff($tableNames, $viewNames);
+        $command = '';
 
-        return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+        foreach ($tableNames as $tableName) {
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
+            $command .= "ALTER TABLE $tableName $enable CONSTRAINT ALL; ";
+        }
+
+        return $command;
     }
 
     /**
