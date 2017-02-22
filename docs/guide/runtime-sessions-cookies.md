@@ -200,7 +200,7 @@ $session->setFlash('postDeleted', 'You have successfully deleted your post.');
 echo $session->getFlash('postDeleted');
 
 // Request #3
-// $result will be `false` since the flash message was automatically deleted
+// $result will be false since the flash message was automatically deleted
 $result = $session->hasFlash('postDeleted');
 ```
 

@@ -97,7 +97,7 @@ class UserTest extends TestCase
         $this->assertFalse(Yii::$app->user->can('doSomething'));
 
     }
-    
+
     public function testCookieCleanup()
     {
         global $cookiesMock;
@@ -177,7 +177,7 @@ class UserTest extends TestCase
         ];
         $this->mockWebApplication($appConfig);
 
-        
+
         $user = Yii::$app->user;
 
         $this->reset();
@@ -354,7 +354,7 @@ class MockResponse extends \yii\web\Response
     public function getCookies()
     {
         global $cookiesMock;
-      
+
         return $cookiesMock;
     }
 }

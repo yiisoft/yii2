@@ -143,11 +143,31 @@ class Foo
 }
 ```
 
-### 4.4 Doc ブロック
+### 4.4 PHPDoc ブロック
 
-`@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
-`Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
-型付きの配列に対しては `ClassName[]` を使います。
+ - `@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
+   `Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
+ - 型付きの配列に対しては `ClassName[]` を使います。
+ - PHPDoc の最初の行には、メソッドの目的を記述しなければなりません。
+ - メソッドが何かをチェックする (たとえば、`isActive`, `hasClass` など) ものである場合は、
+   最初の行は `Checks whether` で始まらなければなりません。
+ - `@return` は、厳密に何が返されるのかを明示的に記述しなければなりません。
+
+```php
+/**
+ * Checks whether the IP is in subnet range
+ *
+ * @param string $ip an IPv4 or IPv6 address
+ * @param int $cidr the CIDR lendth
+ * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
+ * @return bool whether the IP is in subnet range
+ */
+ private function inRange($ip, $cidr, $range)
+ {
+   // ...
+ }
+```
+
 
 ### 4.5 コンストラクタ
 

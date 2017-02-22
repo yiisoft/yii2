@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    ' and ' => ' et ',
     '{delta, plural, =1{1 day} other{# days}}' => '{delta, plural, =1{1 jour} other{# jours}}',
     '{delta, plural, =1{1 hour} other{# hours}}' => '{delta, plural, =1{1 heure} other{# heures}}',
     '{delta, plural, =1{1 minute} other{# minutes}}' => '{delta, plural, =1{1 minute} other{# minutes}}',
@@ -42,6 +43,7 @@ return [
     'Please fix the following errors:' => 'Veuillez vérifier les erreurs suivantes :',
     'Please upload a file.' => 'Veuillez télécharger un fichier.',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Affichage de <b>{begin, number}-{end, number}</b> sur <b>{totalCount, number}</b> {totalCount, plural, one{élément} other{éléments}}.',
+    'The combination {values} of {attributes} has already been taken.' => 'La combinaison {values} de {attributes} est déjà utilisée.',
     'The file "{file}" is not an image.' => 'Le fichier « {file} » n\'est pas une image.',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Le fichier « {file} » est trop gros. Sa taille ne peut dépasser {formattedLimit}.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Le fichier « {file} » est trop petit. Sa taille ne peut être inférieure à {formattedLimit}.',
@@ -82,6 +84,7 @@ return [
     '{attribute} must be an IP address with specified subnet.' => '{attribute} doit être une adresse IP avec un sous-réseau.',
     '{attribute} must be an integer.' => '{attribute} doit être un entier.',
     '{attribute} must be either "{true}" or "{false}".' => '{attribute} doit être soit « {true} » soit « {false} ».',
+    '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} doit être égal à "{compareValueOrAttribute}".',
     '{attribute} must be greater than "{compareValueOrAttribute}".' => '{attribute} doit être supérieur à « {compareValueOrAttribute} ».',
     '{attribute} must be greater than or equal to "{compareValueOrAttribute}".' => '{attribute} doit être supérieur ou égal à « {compareValueOrAttribute} ».',
     '{attribute} must be less than "{compareValueOrAttribute}".' => '{attribute} doit être inférieur à « {compareValueOrAttribute} ».',
