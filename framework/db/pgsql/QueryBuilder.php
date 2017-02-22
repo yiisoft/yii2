@@ -195,7 +195,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $command = '';
 
         foreach ($tableNames as $tableName) {
-            $tableName = '"' . $schema . '"."' . $tableName . '"';
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
             $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
         }
 

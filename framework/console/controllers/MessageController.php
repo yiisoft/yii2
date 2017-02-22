@@ -443,23 +443,31 @@ EOD;
 
         if (empty($obsolete)) {
             $this->stdout("Nothing obsoleted...skipped.\n");
-        } else {
-            if ($removeUnused) {
-                $db->createCommand()
-                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])
-                   ->execute();
-                $this->stdout("deleted.\n");
-            } elseif ($markUnused) {
-                $db->createCommand()
-                   ->update(
-                       $sourceMessageTable,
-                       ['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
-                       ['in', 'id', $obsolete]
-                   )->execute();
-                $this->stdout("updated.\n");
-            } else {
-                $this->stdout("kept untouched.\n");
+            return;
+        }
+
+        if ($removeUnused) {
+            $db->createCommand()
+               ->delete($sourceMessageTable, ['in', 'id', $obsolete])
+               ->execute();
+            $this->stdout("deleted.\n");
+        } elseif ($markUnused) {
+            $rows = (new Query)
+                ->select(['id', 'message'])
+                ->from($sourceMessageTable)
+                ->where(['in', 'id', $obsolete])
+                ->all($db);
+
+            foreach ($rows as $row) {
+                $db->createCommand()->update(
+                    $sourceMessageTable,
+                    ['message' => '@@' . $row['message'] . '@@'],
+                    ['id' => $row['id']]
+                )->execute();
             }
+            $this->stdout("updated.\n");
+        } else {
+            $this->stdout("kept untouched.\n");
         }
     }
 

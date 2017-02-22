@@ -559,9 +559,7 @@ class Security extends Component
         }
 
         $bytes = $this->generateRandomKey($length);
-        // '=' character(s) returned by base64_encode() are always discarded because
-        // they are guaranteed to be after position $length in the base64_encode() output.
-        return strtr(substr(base64_encode($bytes), 0, $length), '+/', '_-');
+        return substr(StringHelper::base64UrlEncode($bytes), 0, $length);
     }
 
     /**
