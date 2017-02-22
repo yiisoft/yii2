@@ -113,7 +113,7 @@ class Dispatcher extends Component
     public function getLogger()
     {
         if ($this->_logger === null) {
-            $this->setLogger(Yii::getLogger());
+            $this->setLogger('yii\log\Logger');
         }
         return $this->_logger;
     }
@@ -130,6 +130,7 @@ class Dispatcher extends Component
         }
         $this->_logger = $value;
         $this->_logger->dispatcher = $this;
+        Yii::setLogger($value);
     }
 
     /**

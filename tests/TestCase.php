@@ -48,6 +48,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'id' => 'testapp',
             'basePath' => __DIR__,
             'vendorPath' => $this->getVendorPath(),
+            'bootstrap' => ['log'],
         ], $config));
     }
 

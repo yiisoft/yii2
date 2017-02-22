@@ -97,10 +97,16 @@ class BaseYiiTest extends TestCase
         BaseYii::setLogger($logger);
 
         $this->assertSame($logger, BaseYii::getLogger());
+    }
 
+    /**
+     * @covers \yii\BaseYii::getLogger()
+     * @expectedException \yii\base\InvalidConfigException
+     */
+    public function testShouldThrowExceptionIfNoLoggerSetup()
+    {
         BaseYii::setLogger(null);
-        $defaultLogger = BaseYii::getLogger();
-        $this->assertInstanceOf(Logger::className(), $defaultLogger);
+        BaseYii::getLogger();
     }
 
     /**

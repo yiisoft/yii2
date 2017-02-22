@@ -354,6 +354,8 @@ class BaseYii
     private static $_logger;
 
     /**
+     * @throws InvalidConfigException When call shortcut before initialization
+     *
      * @return Logger message logger
      */
     public static function getLogger()
@@ -362,7 +364,10 @@ class BaseYii
             return self::$_logger;
         }
 
-        return self::$_logger = static::createObject('yii\log\Logger');
+        throw new InvalidConfigException(
+            'Logger component must be initialized before using logging actions. ' .
+            'Add "log" component to the "bootstrap" section of the configuration on the first position.'
+        );
     }
 
     /**
