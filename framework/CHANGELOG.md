@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
 - Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence` implementations, fixed SQLite implementation (boboldehampsink)
+- Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
 
 
 2.0.11.2 February 08, 2017
@@ -169,7 +170,6 @@ Yii Framework 2 Change Log
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
 - Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
-
 
 2.0.10 October 20, 2016
 -----------------------

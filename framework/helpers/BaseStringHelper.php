@@ -305,4 +305,30 @@ class BaseStringHelper
 
         return $value;
     }
+
+    /**
+     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     *
+     * @param string $input
+     * @return string
+     * @since 2.0.11
+     */
+    public static function base64UrlEncode($input)
+    {
+        return strtr(base64_encode($input), '+/', '-_');
+    }
+
+    /**
+     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     *
+     * @param string $input
+     * @return string
+     * @since 2.0.11
+     */
+    public static function base64UrlDecode($input)
+    {
+        return base64_decode(strtr($input, '-_', '+/'));
+    }
 }
