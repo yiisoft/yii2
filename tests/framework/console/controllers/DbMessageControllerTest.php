@@ -11,12 +11,12 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 {
     protected static $driverName = 'mysql';
     protected static $database;
-    
+
     /**
      * @var Connection
      */
     protected static $db;
-    
+
     protected static function runConsoleAction($route, $params = [])
     {
         if (Yii::$app === null) {
@@ -41,7 +41,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
             ob_end_clean();
         }
     }
-    
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -55,7 +55,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
     }
-    
+
     public static function tearDownAfterClass()
     {
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
@@ -65,13 +65,13 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         Yii::$app = null;
         parent::tearDownAfterClass();
     }
-    
+
     public function tearDown()
     {
         parent::tearDown();
         Yii::$app = null;
     }
-    
+
     /**
      * @throws \yii\base\InvalidParamException
      * @throws \yii\db\Exception
@@ -97,7 +97,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         }
         return static::$db;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -148,9 +148,9 @@ class DbMessageControllerTest extends BaseMessageControllerTest
                 't2.language' => $this->language,
             ])->all(static::$db), 'message', 'translation');
     }
-    
+
     // DbMessage tests variants:
-    
+
     /**
      * Source is marked instead of translation.
      * @depends testMerge
@@ -170,7 +170,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $obsoleteMessage = '@@obsolete message@@';
-        
+
         $messages = $this->loadMessages($category);
 
         $this->assertArrayHasKey($obsoleteMessage, $messages, "Obsolete message should not be removed. Command output:\n\n" . $out);
