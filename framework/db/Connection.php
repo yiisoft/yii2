@@ -715,8 +715,8 @@ class Connection extends Component
             if ($transaction->isActive && $transaction->level === $level) {
                 try {
                     $transaction->rollBack();
-                } catch (\Exception $e_rollback) {
-                    \Yii::error($e_rollback, __METHOD__);
+                } catch (\Exception $rollbackException) {
+                    \Yii::error($rollbackException, __METHOD__);
                     // continue to throw original exception $e
                 }
             }
@@ -725,8 +725,8 @@ class Connection extends Component
             if ($transaction->isActive && $transaction->level === $level) {
                 try {
                     $transaction->rollBack();
-                } catch (\Exception $e_rollback) {
-                    \Yii::error($e_rollback, __METHOD__);
+                } catch (\Exception $rollbackException) {
+                    \Yii::error($rollbackException, __METHOD__);
                     // continue to throw original exception $e
                 }
             }
