@@ -18,8 +18,8 @@ class RequestTest extends TestCase
                 'expected' => [
                     'route' => 'controller',
                     'params' => [
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'params' => [
@@ -29,7 +29,7 @@ class RequestTest extends TestCase
                     '--option1',
                     '--option2=testValue',
                     '-alias1',
-                    '-alias2=testValue'
+                    '-alias2=testValue',
                 ],
                 'expected' => [
                     'route' => 'controller/route',
@@ -40,19 +40,101 @@ class RequestTest extends TestCase
                         'option2' => 'testValue',
                         '_aliases' => [
                             'alias1' => true,
-                            'alias2' => 'testValue'
-                        ]
-                    ]
-                ]
-            ]
+                            'alias2' => 'testValue',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                // Case: Special argument "End of Options" used
+                'params' => [
+                    'controller/route',
+                    'param1',
+                    '-12345',
+                    '--option1',
+                    '--option2=testValue',
+                    '-alias1',
+                    '-alias2=testValue',
+                    '--', // Special argument "End of Options"
+                    'param2',
+                    '-54321',
+                    '--option3',
+                    '--', // Second `--` argument shouldn't be treated as special
+                    '--option4=testValue',
+                    '-alias3',
+                    '-alias4=testValue',
+                ],
+                'expected' => [
+                    'route' => 'controller/route',
+                    'params' => [
+                        'param1',
+                        '-12345',
+                        'option1' => '1',
+                        'option2' => 'testValue',
+                        '_aliases' => [
+                            'alias1' => true,
+                            'alias2' => 'testValue',
+                        ],
+                        'param2',
+                        '-54321',
+                        '--option3',
+                        '--',
+                        '--option4=testValue',
+                        '-alias3',
+                        '-alias4=testValue',
+                    ],
+                ],
+            ],
+            [
+                // Case: Special argument "End of Options" placed before route
+                'params' => [
+                    '--', // Special argument "End of Options"
+                    'controller/route',
+                    'param1',
+                    '-12345',
+                    '--option1',
+                    '--option2=testValue',
+                    '-alias1',
+                    '-alias2=testValue',
+                ],
+                'expected' => [
+                    'route' => 'controller/route',
+                    'params' => [
+                        'param1',
+                        '-12345',
+                        '--option1',
+                        '--option2=testValue',
+                        '-alias1',
+                        '-alias2=testValue',
+                    ],
+                ],
+            ],
+            [
+                // PHP does not allow variable name, starting with digit.
+                // InvalidParamException must be thrown during request resolving:
+                'params' => [
+                    'controller/route',
+                    '--0=test',
+                    '--1=testing',
+                ],
+                'expected' => [],
+                'exception' => [
+                    '\yii\console\Exception',
+                    'Parameter "0" is not valid'
+                ],
+            ],
         ];
     }
 
     /**
      * @dataProvider provider
      */
-    public function testResolve($params, $expected)
+    public function testResolve($params, $expected, $expectedException = null)
     {
+        if (isset($expectedException)) {
+            $this->setExpectedException($expectedException[0], $expectedException[1]);
+        }
+
         $request = new Request();
 
         $request->setParams($params);

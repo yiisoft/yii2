@@ -33,8 +33,8 @@ public function rules()
 
 Этот валидатор проверяет, что второе значение является *boolean*.
 
-- `trueValue`: значение, соответствующее *true*. По умолчанию - `'1'`.
-- `falseValue`: значение, соответствующее *false*. По умолчанию - `'0'`.
+- `trueValue`: значение, соответствующее `true`. По умолчанию - `'1'`.
+- `falseValue`: значение, соответствующее `false`. По умолчанию - `'0'`.
 - `strict`: должна ли проверка учитывать соответствие типов данных `trueValue` или `falseValue`. По умолчанию - `false`.
 
 > Note: Из-за того, что как правило данные, полученные из HTML-форм, представляются в виде строки, обычно вам стоит
@@ -65,9 +65,12 @@ public function rules()
 [
     // проверяет, является ли значение атрибута "password" таким же, как "password_repeat"
     ['password', 'compare'],
+    
+    // то же, что и выше, но атрбут для сравнения указан явно
+    ['password', 'compare', 'compareAttribute' => 'password_repeat'],
 
     // проверяет, что возраст больше или равен 30
-    ['age', 'compare', 'compareValue' => 30, 'operator' => '>='],
+    ['age', 'compare', 'compareValue' => 30, 'operator' => '>=', 'type' => 'number'],
 ]
 ```
 
@@ -90,24 +93,59 @@ public function rules()
      * `>=`: проверяет, что валидируемое значение больше или равно тому, с которым происходит сравнение.
      * `<`: проверяет, что валидируемое значение меньше, чем то, с которым происходит сравнение.
      * `<=`: проверяет, что валидируемое значение меньше или равно тому, с которым происходит сравнение.
+- `type`: По умолчанию при сравнении используется тип '[[yii\validators\CompareValidator::TYPE_STRING|string]]'. То есть
+   значения сравниваются побайтово. При сравнении чисел необходимо задать [[yii\validators\CompareValidator::$type|$type]]
+   как '[[yii\validators\CompareValidator::TYPE_NUMBER|number]]'.     
 
 
 ## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
+Валидатор [[yii\validators\DateValidator|date]] можно использовать тремя способами:
+
 ```php
 [
     [['from', 'to'], 'date'],
+    [['from_datetime', 'to_datetime'], 'datetime'],
+    [['some_time'], 'time'],
 ]
 ```
+
 Этот валидатор проверяет соответствие входящих данных форматам *date*, *time* или *datetime*.
 Опционально, он может конвертировать входящее значение в UNIX timestamp и сохранить в атрибуте,
 описанном здесь: [[yii\validators\DateValidator::timestampAttribute|timestampAttribute]].
 
-- `format`: формат даты/времени, согласно которому должна быть сделана проверка. Чтобы узнать больше о формате
-  строки, пожалуйста, посмотрите [руководство PHP по date_create_from_format()](http://www.php.net/manual/ru/datetime.createfromformat.php)
-  Значением по умолчанию является `'Y-m-d'`.
-- `timestampAttribute`: имя атрибута, которому этот валидатор может передать UNIX timestamp, конвертированный
-  из строки даты/времени.
+- `format`: формат даты/времени, согласно которому должна быть сделана проверка.
+   Значение может быть паттерном, описанным в [руководстве ICU](http://userguide.icu-project.org/formatparse/datetime#TOC-Date-Time-Format-Syntax)
+   или форматом PHP префиксированным `php:`. Формат должен приниматься классом `Datetime`. Подробнее о нём можно
+   прочитать в [руководстве PHP по date_create_from_format()](http://www.php.net/manual/ru/datetime.createfromformat.php).
+   Если значение не задано, используется `Yii::$app->formatter->dateFormat`.
+   Подробнее читайте в [[yii\validators\DateValidator::$format|документации по API]].
+- `timestampAttribute`: имя атрибута, которому данный валидатор может присваивать значение UNIX timestamp,
+   получаемое из входных даты и времени. Это может быть как тот же атрибут, что валидируется в данный момент. Если это так,
+   после валидации оригинальное значение будет перезаписано значеним timestamp.
+   Дополнительные примеры вы модете найти в разделе ["Handling date input with the DatePicker"](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/topics-date-picker.md).
+
+  Начиная с версии 2.0.4, для атрибута могут быть заданы формат и часовой пояс через
+  [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] и
+  [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]] соответственно.
+  
+  При использовании `timestampAttribute`, входное значение будет конвертировано в unix timestamp, который по определению
+  содержит время в UTC. То есть будет произведено преобразование из [[yii\validators\DateValidator::timeZone|входного часового пояса]]
+  в UTC.
+
+- Начиная с версии 2.0.4 также можно задать [[yii\validators\DateValidator::$min|минимальное]] и
+  [[yii\validators\DateValidator::$max|максимальное]] значение timestamp.
+
+В том случае, если ввод не обязателен, вам может понадобится добавить [фильтр значения по умолчанию](#default) в
+дополнение к валидатору даты для того, чтобы пустой ввод сохранялся как `null`. В противном случае вы можете получить
+даты вроде `0000-00-00` в базе данных или `1970-01-01` в полях ввода виджета date picker.
+
+```php
+[
+    [['from_date', 'to_date'], 'default', 'value' => null],
+    [['from_date', 'to_date'], 'date'],
+],
+```
 
 
 ## [[yii\validators\DefaultValueValidator|default]] <span id="default"></span>
@@ -585,3 +623,7 @@ IPv4 адрес `192.168.10.128` также разрешен, так как на
   По умолчанию - `false`. Учтите, что для того, чтобы IDN валидация работала корректно, вы должны установить `intl`
   PHP расширение, иначе будет выброшено исключение.
 
+> Note: Валидатор проверяет, что протокол и хост в URL являются корректными. Валидатор НЕ проверяет другие части URL
+и НЕ предназначен для защиты от XSS или любых других видов атак. Обратитесь к секции
+[Лучшие практики безопасности](security-best-practices.md) чтобы узнать больше о том, как предтвращать известные угрозы
+при разработке приложений.

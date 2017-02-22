@@ -8,6 +8,12 @@ dist: trusty
 # faster builds on new travis setup not using sudo
 sudo: false
 
+# build only on master branches
+branches:
+  only:
+    - master
+    - 2.1
+
 
 #
 # Test Matrix
@@ -87,6 +93,8 @@ matrix:
 
 services:
   - memcached
+  - mysql
+  - postgresql
 
 # cache vendor dirs
 cache:
@@ -126,7 +134,7 @@ before_script:
   - psql --version
 
   # initialize databases
-  - mysql -e 'CREATE DATABASE `yiitest`;';
+  - travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
   - mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
@@ -139,6 +147,8 @@ before_script:
 
 
 script:
+  # ensure no files contain UTF-8 byte order mark
+  - if ! grep -rlI $'\xEF\xBB\xBF' framework/ ; then echo "no utf8 BOM found"; else echo "found utf8 BOM in some files. See above."; exit 1; fi
   # validate composer.json
   - composer validate --no-check-lock
   - cd framework && composer validate --no-check-lock && cd ..

@@ -83,11 +83,11 @@ class CompareValidatorTest extends TestCase
                 [$value + 1, false],
                 [$value - 1, true],
             ],
-            //'non-op' => [
-            //	[$value, false],
-            //	[$value + 1, false],
-            //	[$value - 1, false],
-            //],
+            /*'non-op' => [
+                [$value, false],
+                [$value + 1, false],
+                [$value - 1, false],
+            ],*/
         ];
     }
 

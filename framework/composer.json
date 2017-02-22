@@ -47,6 +47,12 @@
             "name": "Dmitry Naumenko",
             "email": "d.naumenko.a@gmail.com",
             "role": "Core framework development"
+        },
+        {
+            "name": "Boudewijn Vahrmeijer",
+            "email": "info@dynasource.eu",
+            "homepage": "http://dynasource.eu",
+            "role": "Core framework development"
         }
     ],
     "support": {

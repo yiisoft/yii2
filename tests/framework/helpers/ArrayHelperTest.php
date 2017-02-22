@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\InvalidParamException;
 use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
@@ -297,6 +296,32 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals(['name' => 'a', 'age' => 2], $array[0]);
         $this->assertEquals(['name' => 'a', 'age' => 1], $array[1]);
         $this->assertEquals(['name' => 'b', 'age' => 3], $array[2]);
+    }
+
+    public function testMultisortClosure()
+    {
+        $changelog = [
+            '- Enh #123: test1',
+            '- Bug #125: test2',
+            '- Bug #123: test2',
+            '- Enh: test3',
+            '- Bug: test4',
+        ];
+        $i = 0;
+        ArrayHelper::multisort($changelog, function($line) use (&$i) {
+            if (preg_match('/^- (Enh|Bug)( #\d+)?: .+$/', $line, $m)) {
+                $o = ['Bug' => 'C', 'Enh' => 'D'];
+                return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
+            }
+            return 'B' . $i++;
+        }, SORT_ASC, SORT_NATURAL);
+        $this->assertEquals([
+            '- Bug #123: test2',
+            '- Bug #125: test2',
+            '- Bug: test4',
+            '- Enh #123: test1',
+            '- Enh: test3',
+        ], $changelog);
     }
 
     public function testMerge()
@@ -733,36 +758,6 @@ class ArrayHelperTest extends TestCase
     {
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
-    }
-
-    public function invalidArgumentProvider()
-    {
-        return [
-            [null],
-            [false],
-            [true],
-            [42],
-            [''],
-            ['not an object'],
-        ];
-    }
-
-    /**
-     * @dataProvider invalidArgumentProvider
-     * @expectedException \yii\base\InvalidParamException
-     */
-    public function testGetValueInvalidArgumentWithoutDefaultValue($arg)
-    {
-        ArrayHelper::getValue($arg, 'test');
-    }
-
-    /**
-     * @dataProvider invalidArgumentProvider
-     * @expectedException \yii\base\InvalidParamException
-     */
-    public function testGetValueInvalidArgumentWithDefaultValue($arg)
-    {
-        ArrayHelper::getValue($arg, 'test', 'default');
     }
 
     public function testIsAssociative()

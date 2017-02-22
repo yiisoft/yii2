@@ -111,7 +111,7 @@ class StringHelperTest extends TestCase
         $this->assertEquals('<span>This is a test</span>...', StringHelper::truncate('<span>This is a test </span>sentance', 14, '...', null, true));
         $this->assertEquals('<span>This is a test </span><strong>for</strong>...', StringHelper::truncate('<span>This is a test </span><strong>for a sentance</strong>', 18, '...', null, true));
         $this->assertEquals('<span>This is a test</span><strong> for</strong>...', StringHelper::truncate('<span>This is a test</span><strong> for a sentance</strong>', 18, '...', null, true));
-        
+
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncate('<span><img src="image.png" />This is a test sentance</span>', 14, '...', null, true));
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncate('<span><img src="image.png" />This is a test </span>sentance', 14, '...', null, true));
         $this->assertEquals('<span><img src="image.png" />This is a test </span><strong>for</strong>...', StringHelper::truncate('<span><img src="image.png" />This is a test </span><strong>for a sentance</strong>', 18, '...', null, true));
@@ -136,7 +136,7 @@ class StringHelperTest extends TestCase
 
         $this->assertEquals('<span><img src="image.png" />This is a test</span>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test sentance</span>', 4, '...', true));
         $this->assertEquals('<span><img src="image.png" />This is a test </span><strong>for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test </span><strong>for a sentance</strong>', 5, '...', true));
-        $this->assertEquals('<span><img src="image.png" />This is a test</span><strong> for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test</span><strong> for a sentance</strong>', 5, '...', true));        
+        $this->assertEquals('<span><img src="image.png" />This is a test</span><strong> for</strong>...', StringHelper::truncateWords('<span><img src="image.png" />This is a test</span><strong> for a sentance</strong>', 5, '...', true));
     }
 
     /**
@@ -263,5 +263,37 @@ class StringHelperTest extends TestCase
         $this->assertEquals(4, StringHelper::countWords("и\rмного\r\nтут\nслов?"));
         $this->assertEquals(1, StringHelper::countWords('крем-брюле'));
         $this->assertEquals(1, StringHelper::countWords(' слово '));
+    }
+
+    /**
+     * @dataProvider base64UrlEncodedStringsProvider
+     * @param $input
+     * @param $base64UrlEncoded
+     */
+    public function testBase64UrlEncode($input, $base64UrlEncoded)
+    {
+        $encoded = StringHelper::base64UrlEncode($input);
+        $this->assertEquals($base64UrlEncoded, $encoded);
+    }
+
+    /**
+     * @dataProvider base64UrlEncodedStringsProvider
+     * @param $output
+     * @param $base64UrlEncoded
+     */
+    public function testBase64UrlDecode($output, $base64UrlEncoded)
+    {
+        $decoded = StringHelper::base64UrlDecode($base64UrlEncoded);
+        $this->assertEquals($output, $decoded);
+    }
+
+    public function base64UrlEncodedStringsProvider()
+    {
+        return [
+            ['This is an encoded string', 'VGhpcyBpcyBhbiBlbmNvZGVkIHN0cmluZw=='],
+            ['subjects?_d=1', 'c3ViamVjdHM_X2Q9MQ=='],
+            ['subjects>_d=1', 'c3ViamVjdHM-X2Q9MQ=='],
+            ['Это закодированная строка', '0K3RgtC-INC30LDQutC-0LTQuNGA0L7QstCw0L3QvdCw0Y8g0YHRgtGA0L7QutCw'],
+        ];
     }
 }

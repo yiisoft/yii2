@@ -1610,7 +1610,7 @@ class Customer extends \yii\db\ActiveRecord
 With this code, in case 'ordersCount' is present in 'select' statement - `Customer::ordersCount` will be populated
 by query results, otherwise it will be calculated on demand using `Customer::orders` relation.
 
-This approach can be as well used for creation of the shortcuts for the some relational data, especially for the aggregation.
+This approach can be as well used for creation of the shortcuts for some relational data, especially for the aggregation.
 For example:
 
 ```php
@@ -1625,7 +1625,7 @@ class Customer extends \yii\db\ActiveRecord
             return null; // this avoid calling a query searching for null primary keys
         }
         
-        return $this->ordersAggregation[0]['counted'];
+        return empty($this->ordersAggregation) ? 0 : $this->ordersAggregation[0]['counted'];
     }
 
     /**

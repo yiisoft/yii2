@@ -62,6 +62,12 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             // test UPDATE uses master
             $db->createCommand("UPDATE profile SET description='test' WHERE id=1")->execute();
             $this->assertTrue($db->isActive);
+            if ($masterCount > 0) {
+                $this->assertTrue($db->getMaster() instanceof Connection);
+                $this->assertTrue($db->getMaster()->isActive);
+            } else {
+                $this->assertNull($db->getMaster());
+            }
             $this->assertNotEquals('test', $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar());
             $result = $db->useMaster(function (Connection $db) {
                 return $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar();
@@ -88,6 +94,66 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             });
             $this->assertEquals('test', $result);
         }
+    }
+
+    public function testMastersShuffled()
+    {
+        $mastersCount = 2;
+        $slavesCount = 2;
+        $retryPerNode = 10;
+
+        $nodesCount = $mastersCount + $slavesCount;
+
+        $hit_slaves = $hit_masters = [];
+
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+            $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
+            $db->shuffleMasters = true;
+
+            $hit_slaves[$db->getSlave()->dsn] = true;
+            $hit_masters[$db->getMaster()->dsn] = true;
+        }
+
+        $this->assertEquals($mastersCount, count($hit_masters), 'all masters hit');
+        $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
+    }
+
+    public function testMastersSequential()
+    {
+        $mastersCount = 2;
+        $slavesCount = 2;
+        $retryPerNode = 10;
+
+        $nodesCount = $mastersCount + $slavesCount;
+
+        $hit_slaves = $hit_masters = [];
+
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+            $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
+            $db->shuffleMasters = false;
+
+            $hit_slaves[$db->getSlave()->dsn] = true;
+            $hit_masters[$db->getMaster()->dsn] = true;
+        }
+
+        $this->assertEquals(1, count($hit_masters), 'same master hit');
+        // slaves are always random
+        $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
+    }
+
+    public function testRestoreMasterAfterException()
+    {
+        $db = $this->prepareMasterSlave(1, 1);
+        $this->assertTrue($db->enableSlaves);
+        try {
+            $db->useMaster(function (Connection $db) {
+                throw new \Exception('fail');
+            });
+            $this->fail('Exception was caught somewhere');
+        } catch (\Exception $e) {
+            // ok
+        }
+        $this->assertTrue($db->enableSlaves);
     }
 
     /**

@@ -46,7 +46,7 @@ trait QueryTrait
      */
     public $orderBy;
     /**
-     * @var string|callable $column the name of the column by which the query results should be indexed by.
+     * @var string|callable the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. For more details, see [[indexBy()]]. This property is only used by [[QueryInterface::all()|all()]].
      */
@@ -402,7 +402,7 @@ trait QueryTrait
      * and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
-     * @param boolean $value whether to prevent query execution.
+     * @param bool $value whether to prevent query execution.
      * @return $this the query object itself.
      * @since 2.0.11
      */

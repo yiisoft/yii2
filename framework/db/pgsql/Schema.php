@@ -10,6 +10,7 @@ namespace yii\db\pgsql;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
+use yii\db\ViewFinderTrait;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
@@ -22,6 +23,8 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    use ViewFinderTrait;
+
     /**
      * @var string the default schema used for the current session.
      */
@@ -110,11 +113,6 @@ class Schema extends \yii\db\Schema
         'xml' => self::TYPE_STRING,
     ];
 
-    /**
-     * @var array list of ALL view names in the database
-     */
-    private $_viewNames = [];
-
 
     /**
      * Creates a query builder for the PostgreSQL database.
@@ -167,7 +165,6 @@ class Schema extends \yii\db\Schema
         $this->resolveTableNames($table, $name);
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
-
             return $table;
         } else {
             return null;
@@ -209,21 +206,11 @@ INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
 WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
 ORDER BY c.relname
 SQL;
-        $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
-        $rows = $command->queryAll();
-        $names = [];
-        foreach ($rows as $row) {
-            $names[] = $row['table_name'];
-        }
-
-        return $names;
+        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
     }
 
     /**
-     * Returns all views names in the database.
-     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema.
-     * @return array all views names in the database. The names have NO schema name prefix.
-     * @since 2.0.9
+     * @inheritdoc
      */
     protected function findViewNames($schema = '')
     {
@@ -237,32 +224,7 @@ INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
 WHERE ns.nspname = :schemaName AND c.relkind = 'v'
 ORDER BY c.relname
 SQL;
-        $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
-        $rows = $command->queryAll();
-        $names = [];
-        foreach ($rows as $row) {
-            $names[] = $row['table_name'];
-        }
-
-        return $names;
-    }
-
-    /**
-     * Returns all view names in the database.
-     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
-     * If not empty, the returned view names will be prefixed with the schema name.
-     * @param bool $refresh whether to fetch the latest available view names. If this is false,
-     * view names fetched previously (if available) will be returned.
-     * @return string[] all view names in the database.
-     * @since 2.0.9
-     */
-    public function getViewNames($schema = '', $refresh = false)
-    {
-        if (!isset($this->_viewNames[$schema]) || $refresh) {
-            $this->_viewNames[$schema] = $this->findViewNames($schema);
-        }
-
-        return $this->_viewNames[$schema];
+        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
     }
 
     /**
@@ -271,7 +233,6 @@ SQL;
      */
     protected function findConstraints($table)
     {
-
         $tableName = $this->quoteValue($table->name);
         $tableSchema = $this->quoteValue($table->schemaName);
 
@@ -305,6 +266,9 @@ SQL;
 
         $constraints = [];
         foreach ($this->db->createCommand($sql)->queryAll() as $constraint) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+                $constraint = array_change_key_case($constraint, CASE_LOWER);
+            }
             if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
                 $foreignTable = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
             } else {
@@ -319,8 +283,8 @@ SQL;
             }
             $constraints[$name]['columns'][$constraint['column_name']] = $constraint['foreign_column_name'];
         }
-        foreach ($constraints as $constraint) {
-            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
+        foreach ($constraints as $name => $constraint) {
+            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 
@@ -373,6 +337,9 @@ SQL;
 
         $rows = $this->getUniqueIndexInformation($table);
         foreach ($rows as $row) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+                $row = array_change_key_case($row, CASE_LOWER);
+            }
             $column = $row['columnname'];
             if (!empty($column) && $column[0] === '"') {
                 // postgres will quote names that are not lowercase-only
