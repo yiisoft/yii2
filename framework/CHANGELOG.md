@@ -83,6 +83,7 @@ Yii Framework 2 Change Log
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
 - Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence()` implementations, fixed SQLite implementation (boboldehampsink)
+- Enh #13642: Allow overriding the function for creating related queries in ActiveRecord by adding `createRelationQuery()` (leandrogehlen)
 - Enh #13650: Improved `yii\base\Security::hkdf()` to take advantage of native `hash_hkdf()` implementation in PHP >= 7.1.2  (charlesportwoodii)
 - Enh #13695: `yii\web\Response::setStatusCode()` method now returns the Response object itself (kyle-mccarthy)
 - Enh #13698: `yii\grid\DataColumn` filter is automatically generated as dropdown list in case of `format` set to `boolean` (bizley)
@@ -106,6 +107,7 @@ Yii Framework 2 Change Log
 - Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 - Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
 - Bug #13846: Fixed `Query::count()` issue with `orderBy` (Alex-Code)
+
 
 2.0.11.2 February 08, 2017
 --------------------------
