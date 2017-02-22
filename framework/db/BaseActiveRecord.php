@@ -370,13 +370,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasOne($class, $link)
     {
-        /* @var $class ActiveRecordInterface */
-        /* @var $query ActiveQuery */
-        $query = $class::find();
-        $query->primaryModel = $this;
-        $query->link = $link;
-        $query->multiple = false;
-        return $query;
+        return $this->createRelationQuery($class, $link, false);
     }
 
     /**
@@ -411,12 +405,25 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasMany($class, $link)
     {
+        return $this->createRelationQuery($class, $link, true);
+    }
+
+    /**
+     * Creates query instance for `has-one` and `has-many` relation.
+     * @param string $class the class name of the related record
+     * @param array $link the primary-foreign key constraint
+     * @param boolean whether this query represents a relation to more than one record.
+     * @return ActiveQueryInterface the relational query object.
+     * @since 2.0.12
+     */
+    protected function createRelationQuery($class, $link, $multiple)
+    {
         /* @var $class ActiveRecordInterface */
         /* @var $query ActiveQuery */
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
-        $query->multiple = true;
+        $query->multiple = $multiple;
         return $query;
     }
 
