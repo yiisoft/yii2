@@ -105,7 +105,7 @@ class Validator extends Component
      * @var array cleaned attribute names. Contains attribute names without `!` character at the beginning
      * @since 2.0.12
      */
-    private $attributeNames = [];
+    private $_attributeNames = [];
     /**
      * @var string the user-defined error message. It may contain the following placeholders which
      * will be replaced accordingly by the validator:
@@ -247,7 +247,6 @@ class Validator extends Component
      * @param array|null $attributes the list of attributes to be validated.
      * Note that if an attribute is not associated with the validator - it will be
      * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
-     * @since 2.0.12
      */
     public function validateAttributes($model, $attributes = null)
     {
@@ -444,7 +443,7 @@ class Validator extends Component
      */
     public function getAttributeNames()
     {
-        return $this->attributeNames;
+        return $this->_attributeNames;
     }
 
     /**
@@ -454,7 +453,7 @@ class Validator extends Component
      */
     private function setAttributeNames($attributeNames)
     {
-        $this->attributeNames = array_map(function($attribute) {
+        $this->_attributeNames = array_map(function($attribute) {
             return ltrim($attribute, '!');
         }, $attributeNames);
     }
