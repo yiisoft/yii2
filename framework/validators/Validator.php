@@ -102,6 +102,11 @@ class Validator extends Component
      */
     public $attributes = [];
     /**
+     * @var array cleaned attribute names. Contains attribute names without `!` character at the beginning
+     * @since 2.0.12
+     */
+    private $attributeNames = [];
+    /**
      * @var string the user-defined error message. It may contain the following placeholders which
      * will be replaced accordingly by the validator:
      *
@@ -233,30 +238,29 @@ class Validator extends Component
         $this->attributes = (array) $this->attributes;
         $this->on = (array) $this->on;
         $this->except = (array) $this->except;
+        $this->setAttributeNames((array)$this->attributes);
     }
 
     /**
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
      * @param array|null $attributes the list of attributes to be validated.
-     * Note that if an attribute is not associated with the validator, or is is prefixed with `!` char - it will be
+     * Note that if an attribute is not associated with the validator - it will be
      * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
+     * @since 2.0.12
      */
     public function validateAttributes($model, $attributes = null)
     {
         if (is_array($attributes)) {
             $newAttributes = [];
             foreach ($attributes as $attribute) {
-                if (in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)) {
+                if (in_array($attribute, $this->getAttributeNames(), true)) {
                     $newAttributes[] = $attribute;
                 }
             }
             $attributes = $newAttributes;
         } else {
-            $attributes = [];
-            foreach ($this->attributes as $attribute) {
-                $attributes[] = $attribute[0] === '!' ? substr($attribute, 1) : $attribute;
-            }
+            $attributes = $this->getAttributeNames();
         }
 
         foreach ($attributes as $attribute) {
@@ -431,5 +435,27 @@ class Validator extends Component
         } else {
             return $value === null || $value === [] || $value === '';
         }
+    }
+
+    /**
+     * Returns cleaned attribute names without the `!` character at the beginning
+     * @return array
+     * @since 2.0.12
+     */
+    public function getAttributeNames()
+    {
+        return $this->attributeNames;
+    }
+
+    /**
+     * Saves attribute names without `!` character at the beginning
+     * @param array $attributeNames
+     * @since 2.0.12
+     */
+    private function setAttributeNames($attributeNames)
+    {
+        $this->attributeNames = array_map(function($attribute) {
+            return ltrim($attribute, '!');
+        }, $attributeNames);
     }
 }

@@ -390,7 +390,7 @@ class Component extends Object
      *
      * @param string $name the property name
      * @param bool $checkBehaviors whether to treat behaviors' methods as methods of this component
-     * @return bool whether the property is defined
+     * @return bool whether the method is defined
      */
     public function hasMethod($name, $checkBehaviors = true)
     {
@@ -669,13 +669,13 @@ class Component extends Object
         if (is_int($name)) {
             $behavior->attach($this);
             $this->_behaviors[] = $behavior;
+        } else {
+            if (isset($this->_behaviors[$name])) {
+                $this->_behaviors[$name]->detach();
+            }
+            $behavior->attach($this);
+            $this->_behaviors[$name] = $behavior;
         }
-
-        if (isset($this->_behaviors[$name])) {
-            $this->_behaviors[$name]->detach();
-        }
-        $behavior->attach($this);
-        $this->_behaviors[$name] = $behavior;
 
         return $behavior;
     }

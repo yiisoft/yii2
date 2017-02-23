@@ -26,13 +26,13 @@ as well as a stable version of Composer:
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
 
-    composer require "yiisoft/yii2:~2.0.10"
+    composer require "yiisoft/yii2:~2.0.10" --update-with-dependencies
 
-This however may fail due to changes in the dependencies of yiisoft/yii2, which may change due to security updates
-in other libraries or by adding support for newer versions. `composer require` will not update any other packages
-as a safety feature.
+This command will only upgrade Yii and its direct dependencies, if necessary. Without `--update-with-dependencies` the
+upgrade might fail when the Yii version you chose has slightly different dependencies than the version you had before.
+`composer require` will by default not update any other packages as a safety feature.
 
-The better way to upgrade is to change the `composer.json` file to require the new Yii version and then
+Another way to upgrade is to change the `composer.json` file to require the new Yii version and then
 run `composer update` by specifying all packages that are allowed to be updated.
 
     composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
@@ -50,6 +50,13 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.11
+-----------------------
+
+* `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
+  indicating whether the timestamp has date information or it is just time value.
+
+
 Upgrade from Yii 2.0.10
 -----------------------
 
@@ -59,7 +66,7 @@ Upgrade from Yii 2.0.10
 
 * `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
   If you extend from these classes and override these methods, you must make them public as well.
-  
+
 * `yii\widgets\MaskedInput` inputmask dependency was updated to `~3.3.3`.
   [See its changelog for details](https://github.com/RobinHerbots/Inputmask/blob/3.x/CHANGELOG.md).
 

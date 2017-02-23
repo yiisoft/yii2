@@ -9,6 +9,7 @@ use yiiunit\framework\console\controllers\EchoMigrateController;
 use yiiunit\TestCase;
 
 /**
+ * @group db
  * @group log
  */
 abstract class DbTargetTest extends TestCase

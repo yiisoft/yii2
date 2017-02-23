@@ -72,16 +72,19 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
      */
     protected function loadMessages($category)
     {
-        if (defined('HHVM_VERSION')) {
-            // https://github.com/facebook/hhvm/issues/1447
-            static::markTestSkipped('Can not test on HHVM because require is cached.');
-        }
-
         $messageFilePath = $this->getMessageFilePath($category);
 
         if (!file_exists($messageFilePath)) {
             return [];
         }
-        return require $messageFilePath;
+
+        if (defined('HHVM_VERSION')) {
+            // use eval() to bypass HHVM content cache
+            // https://github.com/facebook/hhvm/issues/1447
+            $content = file_get_contents($messageFilePath);
+            return eval(substr($content, strpos($content, 'return ')));
+        } else {
+            return require $messageFilePath;
+        }
     }
 }

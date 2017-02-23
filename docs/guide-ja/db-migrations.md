@@ -183,7 +183,7 @@ class m150101_185401_create_news_table extends Migration
 
 ### テーブルの作成
 
-```php
+```
 yii migrate/create create_post_table
 ``` 
 
@@ -217,7 +217,7 @@ class m150811_220037_create_post_table extends Migration
 
 テーブルのフィールドも直接に生成したい場合は、`--fields` オプションでフィールドを指定します。
  
-```php
+```
 yii migrate/create create_post_table --fields="title:string,body:text"
 ``` 
 
@@ -254,7 +254,7 @@ class m150811_220037_create_post_table extends Migration
 
 さらに多くのフィールド・パラメータを指定することも出来ます。
 
-```php
+```
 yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
@@ -296,7 +296,7 @@ class m150811_220037_create_post_table extends Migration
 
 バージョン 2.0.8 からは、`foreignKey` キーワードを使って外部キーを生成することができます。
 
-```php
+```
 yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
 ```
 
@@ -409,10 +409,15 @@ class m160328_040430_create_post_table extends Migration
 上記の例で `author_id:integer:notNull:foreignKey(user)` は、`user` テーブルへの外部キーを持つ `author_id` という名前のカラムを生成します。
 一方、`category_id:integer:defaultValue(1):foreignKey` は、`category` テーブルへの外部キーを持つ `category_id` というカラムを生成します。
 
+2.0.11 以降では、`foreignKey` キーワードは空白で区切られた第二のパラメータを取ることが出来ます。
+これは、生成される外部キーに関連づけられるカラム名を表します。
+第二のパラメータが渡されなかった場合は、カラム名はテーブルスキーマから取得されます。
+スキーマが存在しない場合や、プライマリキーが設定されていなかったり、複合キーであったりする場合は、デフォルト名として `id` が使用されます。
+
 
 ### テーブルを削除する
 
-```php
+```
 yii migrate/create drop_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
@@ -443,7 +448,7 @@ class m150811_220037_drop_post_table extends Migration
 
 カラムを追加するためには、次のようにします。
 
-```php
+```
 yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ```
 
@@ -464,11 +469,17 @@ class m150811_220037_add_position_column_to_post_table extends Migration
 }
 ```
 
+次のようにして複数のカラムを指定することも出来ます。
+
+```
+yii migrate/create add_xxx_column_yyy_column_to_zzz_table --fields="xxx:integer,yyy:text"
+```
+
 ### カラムを削除する
 
 マイグレーションの名前が `drop_xxx_column_from_yyy_table` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
 
-```php
+```
 yii migrate/create drop_position_column_from_post_table --fields="position:integer"
 ```
 
@@ -493,7 +504,7 @@ class m150811_220037_drop_position_column_from_post_table extends Migration
 
 マイグレーションの名前が `create_junction_table_for_xxx_and_yyy_tables` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
 
-```php
+```
 yii migrate/create create_junction_table_for_post_and_tag_tables --fields="created_at:dateTime"
 ```
 
@@ -589,6 +600,9 @@ class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migra
     }
 }
 ```
+
+2.0.11 以降では、中間テーブルの外部キーのカラム名はテーブルスキーマから取得されます。
+スキーマでテーブルが定義されていない場合や、プライマリキーが設定されていなかったり複合キーであったりする場合は、デフォルト名 `id` が使われます。
 
 
 ### トランザクションを使うマイグレーション <span id="transactional-migrations"></span>
@@ -859,6 +873,86 @@ return [
 
 上記のように構成しておくと、`migrate` コマンドを実行するたびに、`backend_migration` テーブルがマイグレーション履歴を記録するために使われるようになります。
 もう、`migrationTable` のコマンドラインオプションを使ってテーブルを指定する必要はなくなります。
+
+
+### 名前空間を持つマイグレーション <span id="namespaced-migrations"></span>
+
+2.0.10 以降では、マイグレーションのクラスに名前空間を適用することが出来ます。
+マイグレーションの名前空間のリストをを [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]] によって指定することが出来ます。
+マイグレーションのクラスに名前空間を使うと、マイグレーションのソースについて、複数の配置場所を使用することが出来ます。
+例えば、
+
+```php
+return [
+    'controllerMap' => [
+        'migrate' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => [
+                'app\migrations', // アプリケーション全体のための共通のマイグレーション
+                'module\migrations', // プロジェクトの特定のモジュールのためのマイグレーション
+                'some\extension\migrations', // 特定のエクステンションのためのマイグレーション
+            ],
+        ],
+    ],
+];
+```
+
+> Note: 異なる名前空間に属するマイグレーションを適用しても、**単一の** マイグレーション履歴が生成されます。
+> つまり、特定の名前空間に属するマイグレーションだけを適用したり元に戻したりすることは出来ません。
+
+名前空間を持つマイグレーションを操作するときは、新規作成時も、元に戻すときも、マイグレーション名の前にフルパスの名前空間を指定しなければなりません。
+バックスラッシュ (`\`) のシンボルは、通常、シェルでは特殊文字として扱われますので、シェルのエラーや誤った動作を防止するために、適切にエスケープしなければならないことに注意して下さい。
+例えば、
+
+```
+yii migrate/create 'app\\migrations\\createUserTable'
+```
+
+> Note: [[yii\console\controllers\MigrateController::migrationPath|migrationPath]] によって指定されたマイグレーションは、名前空間を持つことが出来ません。
+  名前空間を持つマイグレーションは [[yii\console\controllers\MigrateController::migrationNamespaces]] プロパティを通じてのみ適用可能です。
+
+
+### 分離されたマイグレーション <span id="separated-migrations"></span>
+
+プロジェクトのマイグレーション全体に単一のマイグレーション履歴を使用することが望ましくない場合もあります。
+例えば、完全に独立した機能性とそれ自身のためのマイグレーションを持つような 'blog' エクステンションをインストールする場合には、
+メインのプロジェクトの機能専用のマイグレーションに影響を与えたくないでしょう。
+
+これらをお互いに完全に分離して適用かつ追跡したい場合は、別々の名前空間とマイグレーション履歴テーブルを使う
+複数のマイグレーションコマンドを構成することが出来ます。
+
+```php
+return [
+    'controllerMap' => [
+        // アプリケーション全体のための共通のマイグレーション
+        'migrate-app' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['app\migrations'],
+            'migrationTable' => 'migration_app',
+        ],
+        // 特定のモジュールのためのマイグレーション
+        'migrate-module' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationNamespaces' => ['module\migrations'],
+            'migrationTable' => 'migration_module',
+        ],
+        // 特定のエクステンションのためのマイグレーション
+        'migrate-rbac' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => '@yii/rbac/migrations',
+            'migrationTable' => 'migration_rbac',
+        ],
+    ],
+];
+```
+
+データベースを同期するためには、一つではなく複数のコマンドを実行しなければならなくなることに注意してください。
+
+```
+yii migrate-app
+yii migrate-module
+yii migrate-rbac
+```
 
 
 ## 複数のデータベースにマイグレーションを適用する <span id="migrating-multiple-databases"></span>
