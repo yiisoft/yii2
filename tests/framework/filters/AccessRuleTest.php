@@ -155,10 +155,10 @@ class AccessRuleTest extends \yiiunit\TestCase
      * Test that a user matches certain roles
      *
      * @dataProvider matchRoleProvider
-     * @param string the action id
-     * @param boolean whether the rule should allow access
-     * @param string the userid to check
-     * @param boolean the expected result or null
+     * @param string $actionid the action id
+     * @param boolean $allow whether the rule should allow access
+     * @param string $userid the userid to check
+     * @param boolean $expected the expected result or null
      */
     public function testMatchRole($actionid, $allow, $userid, $expected) {
         $action = $this->mockAction();
