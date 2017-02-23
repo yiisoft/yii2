@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.12 under development
 --------------------------
-- Bug #13649: Fixes issue where `['uncheck' => false]` and `['label' => false]` options for `ActiveRadio` and `ActiveCheckbox` were ignored (Alex-Code)
+
 - Bug #13087: Fixed getting active validators for safe attribute (developeruz)
 - Bug #13571: Fix `yii\db\mssql\QueryBuilder::checkIntegrity` for all tables (boboldehampsink)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
@@ -28,6 +28,7 @@ Yii Framework 2 Change Log
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
 - Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence` implementations, fixed SQLite implementation (boboldehampsink)
 - Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
+- Bug #13649: Fixes issue where `['uncheck' => false]` and `['label' => false]` options for `ActiveRadio` and `ActiveCheckbox` were ignored (Alex-Code)
 
 
 2.0.11.2 February 08, 2017
