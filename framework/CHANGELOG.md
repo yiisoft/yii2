@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
 - Bug #13340: Fixed `yii\db\Connection::useMaster()` - Exception within callback completely disables slaves (Vovan-VE)
 - Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
+- Bug #13418: Fixed `QueryBuilder::batchInsert()` if $rows is `\Generator` (lav45)
 - Bug #13494: Fixed `yii\console\controllers\MessageConstroller::saveMessagesToDb()` to work on different DBMS correctly (silverfire)
 - Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 - Bug #13537: Fixed `yii\web\CacheSession::destroySession()` to work correctly when session is not written yet (silverfire, papalapa)
