@@ -70,7 +70,7 @@ class QueryBuilder extends \yii\base\Object
      * By default it's configured to escape `%`, `_` and `\` with `\`.
      * @since 2.0.12.
      */
-    protected $likeEscapingCharacterReplacements = [
+    protected $likeEscapingReplacements = [
         '%' => '\%',
         '_' => '\_',
         '\\' => '\\\\',
@@ -1372,7 +1372,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
-        $escape = isset($operands[2]) ? $operands[2] : $this->likeEscapingCharacterReplacements;
+        $escape = isset($operands[2]) ? $operands[2] : $this->likeEscapingReplacements;
         unset($operands[2]);
 
         if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {

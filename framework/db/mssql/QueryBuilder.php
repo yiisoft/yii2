@@ -48,7 +48,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    protected $likeEscapingCharacterReplacements = [
+    protected $likeEscapingReplacements = [
         '%' => '\%',
         '_' => '\_',
         '[' => '\[',
