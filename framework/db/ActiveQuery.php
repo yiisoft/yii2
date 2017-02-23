@@ -224,16 +224,19 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $model->afterFind();
             }
         }
-        if (is_callable($this->iterator_callback)) { 
+        $this->applyCallback($models);
+       
+
+        return $models;
+    }
+    private function applyCallback(&$models){
+      if (is_callable($this->iterator_callback)) { 
             array_walk($models,function($model,$index)use(&$models){
                $modified = call_user_func($this->iterator_callback,$model);
                $models[$index]=($modified)?$modified:$model;
             });
         }      
-
-        return $models;
     }
-
     /**
      * Removes duplicated models by checking their primary key values.
      * This method is mainly called when a join query is performed, which may cause duplicated rows being returned.
