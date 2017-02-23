@@ -225,18 +225,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
         if (is_callable($this->iterator_callback)) { 
-            $temp=$models;
-            $models=[];
-            foreach ($temp as $model) {               
-                if($return=call_user_func($this->iterator_callback,$model)){
-                  $models[]=$return;
-                }else{
-                  throw new \Exception("Iterator callback must return data", 1);  
-                }
-                
-               
-            }
-            unset($temp);
+            array_walk($models,function($model,$index)use(&$models){
+               $modified = call_user_func($this->iterator_callback,$model);
+               $models[$index]=($modified)?$modified:$model;
+            });
         }      
 
         return $models;
