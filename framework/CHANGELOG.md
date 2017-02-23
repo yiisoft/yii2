@@ -31,6 +31,7 @@ Yii Framework 2 Change Log
 - Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
 - Enh #13221: Make `\yii\db\QueryTrait::limit()` and `\yii\db\QueryTrait::offset()` methods work with `\yii\db\Expression` (Ni-san)
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
+- Enh #13650: Improved `yii\base\Security::hkdf()` to take advantage of native `hash_hkdf()` implementation in PHP >= 7.1.2  (charlesportwoodii)
 
 
 2.0.11.2 February 08, 2017
