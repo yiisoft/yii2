@@ -262,6 +262,9 @@ EOD;
             }
             $values[] = '(' . implode(', ', $vs) . ')';
         }
+        if (empty($values)) {
+            return '';
+        }
 
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
