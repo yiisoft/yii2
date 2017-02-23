@@ -9,6 +9,8 @@ use yii\filters\HttpCache;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\User;
+use yiiunit\framework\filters\stubs\MockAuthManager;
+use yiiunit\framework\filters\stubs\AuthorRule;
 use yiiunit\framework\filters\stubs\UserIdentity;
 
 /**
@@ -39,14 +41,19 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
+     * @param string optional user id
      * @return User
      */
-    protected function mockUser()
+    protected function mockUser($userid = null)
     {
-        return new User([
+        $user = new User([
             'identityClass' => UserIdentity::className(),
             'enableAutoLogin' => false,
         ]);
+        if ($userid !== null) {
+            $user->setIdentity(UserIdentity::findIdentity($userid));
+        }
+        return $user;
     }
 
     /**
@@ -56,6 +63,56 @@ class AccessRuleTest extends \yiiunit\TestCase
     {
         $controller = new Controller('site', Yii::$app);
         return new Action('test', $controller);
+    }
+
+    /**
+     * @return BaseManager
+     */
+    protected function mockAuthManager() {
+        $auth = new MockAuthManager();
+        // add "createPost" permission
+        $createPost = $auth->createPermission('createPost');
+        $createPost->description = 'Create a post';
+        $auth->add($createPost);
+
+        // add "updatePost" permission
+        $updatePost = $auth->createPermission('updatePost');
+        $updatePost->description = 'Update post';
+        $auth->add($updatePost);
+
+        // add "author" role and give this role the "createPost" permission
+        $author = $auth->createRole('author');
+        $auth->add($author);
+        $auth->addChild($author, $createPost);
+
+        // add "admin" role and give this role the "updatePost" permission
+        // as well as the permissions of the "author" role
+        $admin = $auth->createRole('admin');
+        $auth->add($admin);
+        $auth->addChild($admin, $updatePost);
+        $auth->addChild($admin, $author);
+
+        // Simple author rule
+        $rule = new AuthorRule;
+        $auth->add($rule);
+
+        $updateOwnPost = $auth->createPermission('updateOwnPost');
+        $updateOwnPost->description = 'Update own post';
+        $updateOwnPost->ruleName = $rule->name;
+        $auth->add($updateOwnPost);
+
+        // "updateOwnPost" will be used from "updatePost"
+        $auth->addChild($updateOwnPost, $updatePost);
+
+        // allow "author" to update their own posts
+        $auth->addChild($author, $updateOwnPost);
+
+        // Assign roles to users. 1 and 2 are IDs returned by IdentityInterface::getId()
+        // usually implemented in your User model.
+        $auth->assign($author, 'user2');
+        $auth->assign($admin, 'user1');
+
+        return $auth;
     }
 
     public function testMatchAction()
@@ -88,7 +145,107 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     // TODO test match controller
 
-    // TODO test match roles
+    public function testMatchRole()
+    {
+        $action = $this->mockAction();
+        $auth = $this->mockAuthManager();
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'roles' => ['createPost'],
+            'actions' => ['create'],
+        ]);
+
+        $action->id = 'create';
+
+        $user = $this->mockUser('user1');
+        $user->accessChecker = $auth;
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user2');
+        $user->accessChecker = $auth;
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user3');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('unknown');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->allow = false;
+
+        $user = $this->mockUser('user1');
+        $user->accessChecker = $auth;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user2');
+        $user->accessChecker = $auth;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user3');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('unknown');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
+
+    public function testMatchRoleWithRule()
+    {
+        $action = $this->mockAction();
+        $auth = $this->mockAuthManager();
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'roles' => ['updatePost'],
+            'actions' => ['update'],
+            'ruleParamsCallback' => function($rule, $action, $role) {
+                return ['authorId' => 'user2'];
+            }
+        ]);
+
+        $action->id = 'update';
+
+        $user = $this->mockUser('user1');
+        $user->accessChecker = $auth;
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user2');
+        $user->accessChecker = $auth;
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user3');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('unknown');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->allow = false;
+
+        $user = $this->mockUser('user1');
+        $user->accessChecker = $auth;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user2');
+        $user->accessChecker = $auth;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('user3');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $user = $this->mockUser('unknown');
+        $user->accessChecker = $auth;
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
+
 
     public function testMatchVerb()
     {

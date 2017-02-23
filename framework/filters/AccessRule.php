@@ -83,6 +83,20 @@ class AccessRule extends Component
      */
     public $matchCallback;
     /**
+     * Optional callback to supply parameters for rbac rules
+     * The signature of the callback should be as follows:
+     *
+     * ```php
+     * function ($rule, $action, $role)
+     * ```
+     *
+     * where `$rule` is this access rule,
+     * `$action` is the current [[Action|action]] object,
+     * `$role` is the [[Rule]] object
+     * The callback should return an array with the parameters
+     */
+    public $ruleParamsCallback;
+    /**
      * @var callable a callback that will be called if this rule determines the access to
      * the current action should be denied. If not set, the behavior will be determined by
      * [[AccessControl]].
@@ -108,7 +122,7 @@ class AccessRule extends Component
     public function allows($action, $user, $request)
     {
         if ($this->matchAction($action)
-            && $this->matchRole($user)
+            && $this->matchRole($user, $action)
             && $this->matchIP($request->getUserIP())
             && $this->matchVerb($request->getMethod())
             && $this->matchController($action->controller)
@@ -140,9 +154,10 @@ class AccessRule extends Component
 
     /**
      * @param User $user the user object
+     * @param Action $action the action
      * @return bool whether the rule applies to the role
      */
-    protected function matchRole($user)
+    protected function matchRole($user, $action)
     {
         if (empty($this->roles)) {
             return true;
@@ -156,8 +171,13 @@ class AccessRule extends Component
                 if (!$user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($user->can($role)) {
-                return true;
+            } else {
+                $params = empty($this->ruleParamsCallback) ? [] :
+                    call_user_func($this->ruleParamsCallback, $this, $action, $role);
+
+                if ($user->can($role, $params)) {
+                    return true;
+                }
             }
         }
 
