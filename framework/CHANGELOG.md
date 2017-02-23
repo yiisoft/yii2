@@ -19,6 +19,7 @@ Yii Framework 2 Change Log
 - Bug #13582: PK column in `yii\db\pgsql\QueryBuilder::resetSequence()` was not quoted properly (boboldehampsink)
 - Bug #13592: Fixes Oracle’s `yii\db\oci\Schema::setTransactionIsolationLevel()` (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
+- Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
