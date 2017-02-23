@@ -656,7 +656,7 @@
             }
         } else {
             $.each(data.attributes, function () {
-                if (!this.cancelled && (this.status === 2 || this.status === 3)) {
+                if (!this.cancelled) {
                     updateInput($form, this, messages);
                 }
             });
