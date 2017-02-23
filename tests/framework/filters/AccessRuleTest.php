@@ -136,7 +136,7 @@ class AccessRuleTest extends \yiiunit\TestCase
      *           the id of the action
      *           should the action allow (true) or disallow (false)
      *           test user id
-     *           excepted match result (true, false, null)
+     *           expected match result (true, false, null)
      */
     public function matchRoleProvider() {
         return [
@@ -156,11 +156,11 @@ class AccessRuleTest extends \yiiunit\TestCase
      *
      * @dataProvider matchRoleProvider
      * @param string the action id
-     * @param boolean wether the rule hould allow access
+     * @param boolean whether the rule should allow access
      * @param string the userid to check
-     * @param boolean the excepted result or null
+     * @param boolean the expected result or null
      */
-    public function testMatchRole($actionid, $allow, $userid, $excepted) {
+    public function testMatchRole($actionid, $allow, $userid, $expected) {
         $action = $this->mockAction();
         $auth = $this->mockAuthManager();
         $request = $this->mockRequest();
@@ -175,7 +175,7 @@ class AccessRuleTest extends \yiiunit\TestCase
 
         $user = $this->mockUser($userid);
         $user->accessChecker = $auth;
-        $this->assertEquals($excepted, $rule->allows($action, $user, $request));
+        $this->assertEquals($expected, $rule->allows($action, $user, $request));
     }
 
 
