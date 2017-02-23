@@ -65,7 +65,22 @@ class QueryBuilder extends \yii\base\Object
         'EXISTS' => 'buildExistsCondition',
         'NOT EXISTS' => 'buildExistsCondition',
     ];
-
+    /**
+     * @var array map of chars to their replacements in LIKE conditions.
+     * By default it's configured to escape `%`, `_` and `\` with `\`.
+     * @since 2.0.12.
+     */
+    protected $likeEscapingReplacements = [
+        '%' => '\%',
+        '_' => '\_',
+        '\\' => '\\\\',
+    ];
+    /**
+     * @var string|null character used to escape special characters in LIKE conditions.
+     * By default it's assumed to be `\`.
+     * @since 2.0.12
+     */
+    protected $likeEscapeCharacter;
 
     /**
      * Constructor.
@@ -1359,7 +1374,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
-        $escape = isset($operands[2]) ? $operands[2] : ['%' => '\%', '_' => '\_', '\\' => '\\\\'];
+        $escape = isset($operands[2]) ? $operands[2] : $this->likeEscapingReplacements;
         unset($operands[2]);
 
         if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {
@@ -1394,7 +1409,11 @@ class QueryBuilder extends \yii\base\Object
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
             }
-            $parts[] = "$column $operator $phName";
+            $escapeSql = '';
+            if ($this->likeEscapeCharacter !== null) {
+                $escapeSql = " ESCAPE '{$this->likeEscapeCharacter}'";
+            }
+            $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
         }
 
         return implode($andor, $parts);
