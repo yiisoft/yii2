@@ -4,9 +4,30 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Bug #13087: Fixed getting active validators for safe attribute (developeruz)
+- Bug #13571: Fix `yii\db\mssql\QueryBuilder::checkIntegrity` for all tables (boboldehampsink)
+- Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
+- Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
+- Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
+- Bug #13340: Fixed `yii\db\Connection::useMaster()` - Exception within callback completely disables slaves (Vovan-VE)
+- Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
+- Bug #13494: Fixed `yii\console\controllers\MessageConstroller::saveMessagesToDb()` to work on different DBMS correctly (silverfire)
+- Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
+- Bug #13537: Fixed `yii\web\CacheSession::destroySession()` to work correctly when session is not written yet (silverfire, papalapa)
 - Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
+- Bug #13577: `yii\db\QueryBuilder::truncateTable` should work consistent over all databases (boboldehampsink)
+- Bug #13582: PK column in `yii\db\pgsql\QueryBuilder::resetSequence()` was not quoted properly (boboldehampsink)
+- Bug #13592: Fixes Oracle’s `yii\db\oci\Schema::setTransactionIsolationLevel()` (sergeymakinen)
+- Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
+- Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
+- Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
+- Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
 - Enh #13523: Plural rule for pasta (developeruz)
+- Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
+- Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
+- Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
+- Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence` implementations, fixed SQLite implementation (boboldehampsink)
 - Enh #13642: Allows override query relation in descendant class (leandrogehlen)
 
 
@@ -152,7 +173,6 @@ Yii Framework 2 Change Log
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
 - Chg #11906: Updated `yii\widgets\MaskedInput` inputmask dependency to `~3.3.3` (samdark)
-
 
 2.0.10 October 20, 2016
 -----------------------

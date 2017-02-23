@@ -14,14 +14,14 @@ Yii DAO supports the following databases out of box:
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): version 8.4 or higher
 - [CUBRID](http://www.cubrid.org/): version 9.3 or higher.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): version 2008 or higher.
 
 > Note: New version of pdo_oci for PHP 7 currently exists only as the source code. Follow
   [instruction provided by community](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268)
-  to compile it.
+  to compile it or use [PDO emulation layer](https://github.com/taq/pdooci).
 
 ## Creating DB Connections <span id="creating-db-connections"></span>
 

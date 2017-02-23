@@ -241,4 +241,18 @@ class ValidatorTest extends TestCase
         $errors = $m->getErrors('attr_msg_val');
         $this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
     }
+
+    public function testGetActiveValidatorsForSafeAttributes()
+    {
+        $model = $this->getTestModel();
+        $validators = $model->getActiveValidators('safe_attr');
+        $is_found = false;
+        foreach ($validators as $v) {
+            if ($v instanceof NumberValidator) {
+                $is_found = true;
+                break;
+            }
+        }
+        $this->assertTrue($is_found);
+    }
 }

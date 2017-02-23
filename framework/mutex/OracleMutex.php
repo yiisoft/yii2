@@ -8,7 +8,6 @@
 namespace yii\mutex;
 
 use PDO;
-use Yii;
 use yii\base\InvalidConfigException;
 
 /**

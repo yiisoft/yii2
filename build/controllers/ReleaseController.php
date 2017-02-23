@@ -216,7 +216,7 @@ class ReleaseController extends Controller
         $gitVersion = $versions[reset($what)];
         if (strncmp('app-', reset($what), 4) !== 0) {
             $this->stdout("- no accidentally added CHANGELOG lines for other versions than this one?\n\n    git diff $gitVersion.. ${gitDir}CHANGELOG.md\n\n");
-            $this->stdout("- are all new `@since` tags for this relase version?\n");
+            $this->stdout("- are all new `@since` tags for this release version?\n");
         }
         $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
         $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);

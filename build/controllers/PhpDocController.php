@@ -172,7 +172,7 @@ class PhpDocController extends Controller
                     $except[] = "/extensions/$ext$path";
                 }
             }
-        } elseif (preg_match('~extensions/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+        } elseif (preg_match('~extensions/([\w-]+)[\\\\/]?$~', $root, $matches)) {
 
             $extensionPath = dirname(rtrim($root, '\\/'));
             $this->setUpExtensionAliases($extensionPath);
@@ -196,7 +196,7 @@ class PhpDocController extends Controller
 //            if ($extension === 'composer') {
 //                return [];
 //            }
-        } elseif (preg_match('~apps/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+        } elseif (preg_match('~apps/([\w-]+)[\\\\/]?$~', $root, $matches)) {
 
             $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
