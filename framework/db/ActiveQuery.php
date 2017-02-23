@@ -224,6 +224,19 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 $model->afterFind();
             }
         }
+        if (is_callable($this->iterator_callback)) { 
+            $models_=$models;
+            $models=[];
+            foreach ($models_ as $model) {               
+                if($return=call_user_func($this->iterator_callback,$model)){
+                  $models[]=$return;
+                }else{
+                  throw new \Exception("Iterator callback must return data", 1);  
+                }
+                
+               
+            }
+        }      
 
         return $models;
     }
