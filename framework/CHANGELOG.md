@@ -1,6 +1,12 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.12 under development
+--------------------------
+
+- Enh #13144: Refactor to `queryScalar` (Alex-Code)
+
+
 2.0.11 under development
 ------------------------
 
