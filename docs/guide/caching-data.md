@@ -195,6 +195,10 @@ For example, [[yii\db\Schema]] uses the following key to cache schema informatio
 
 As you can see, the key includes all necessary information needed to uniquely specify a database table.
 
+> Note: Values stored in cache via [[yii\caching\Cache::multiSet()|multiSet()]] or [[yii\caching\Cache::multiAdd()|multiAdd()]] can
+have only string or integer keys. If you need to set more complex key store the value separately via 
+[[yii\caching\Cache::set()|set()]] or [[yii\caching\Cache::add()|add()]].
+
 When the same cache storage is used by different applications, you should specify a unique cache key prefix
 for each application to avoid conflicts of cache keys. This can be done by configuring the [[yii\caching\Cache::keyPrefix]]
 property. For example, in the application configuration you can write the following code:
