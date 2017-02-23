@@ -225,9 +225,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
         if (is_callable($this->iterator_callback)) { 
-            $models_=$models;
+            $temp=$models;
             $models=[];
-            foreach ($models_ as $model) {               
+            foreach ($temp as $model) {               
                 if($return=call_user_func($this->iterator_callback,$model)){
                   $models[]=$return;
                 }else{
@@ -236,6 +236,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 
                
             }
+            unset($temp);
         }      
 
         return $models;
