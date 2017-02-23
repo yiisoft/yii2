@@ -188,7 +188,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
         $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
         $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
         $viewNames = $this->db->getSchema()->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
@@ -315,6 +315,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $vs[] = $value;
             }
             $values[] = '(' . implode(', ', $vs) . ')';
+        }
+        if (empty($values)) {
+            return '';
         }
 
         foreach ($columns as $i => $name) {
