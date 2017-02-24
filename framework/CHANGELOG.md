@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #13087: Fixed getting active validators for safe attribute (developeruz)
 - Bug #13571: Fix `yii\db\mssql\QueryBuilder::checkIntegrity` for all tables (boboldehampsink)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
+- Enh #13243: Added support for unicode attribute names in `yii\widgets\DetailView` (arogachev)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
 - Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
 - Bug #13340: Fixed `yii\db\Connection::useMaster()` - Exception within callback completely disables slaves (Vovan-VE)
