@@ -90,7 +90,7 @@ class BaseStringHelper
             return '';
         }
     }
-    
+
     /**
      * Truncates a string to the number of characters specified.
      *
@@ -107,14 +107,14 @@ class BaseStringHelper
         if ($asHtml) {
             return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
         }
-        
+
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
             return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
     }
-    
+
     /**
      * Truncates a string to the number of words specified.
      *
@@ -138,7 +138,7 @@ class BaseStringHelper
             return $string;
         }
     }
-    
+
     /**
      * Truncate a string while preserving the HTML.
      *
@@ -304,5 +304,31 @@ class BaseStringHelper
         }
 
         return $value;
+    }
+
+    /**
+     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     *
+     * @param string $input
+     * @return string
+     * @since 2.0.11
+     */
+    public static function base64UrlEncode($input)
+    {
+        return strtr(base64_encode($input), '+/', '-_');
+    }
+
+    /**
+     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     *
+     * @param string $input
+     * @return string
+     * @since 2.0.11
+     */
+    public static function base64UrlDecode($input)
+    {
+        return base64_decode(strtr($input, '-_', '+/'));
     }
 }
