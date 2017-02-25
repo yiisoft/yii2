@@ -4,11 +4,15 @@ namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecordInterface;
+use yii\helpers\ArrayHelper;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Department;
 use yiiunit\data\ar\Document;
+use yiiunit\data\ar\Dossier;
+use yiiunit\data\ar\Employee;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Order;
@@ -892,6 +896,76 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         Order::$tableName = null;
         OrderItem::$tableName = null;
+    }
+
+    public function testOutdatedRelationsAreResetForNewRecords()
+    {
+        $orderItem = new OrderItem();
+        $orderItem->order_id = 1;
+        $orderItem->item_id = 3;
+        $orderItem->quantity = 5;
+        $orderItem->subtotal = 80.0;
+        $this->assertEquals(1, $orderItem->order->id);
+        $this->assertEquals(3, $orderItem->item->id);
+
+        // Test `__set()`.
+        $orderItem->order_id = 2;
+        $orderItem->item_id = 1;
+        $this->assertEquals(2, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+
+        // Test `setAttribute()`.
+        $orderItem->setAttribute('order_id', 2);
+        $orderItem->setAttribute('item_id', 2);
+        $this->assertEquals(2, $orderItem->order->id);
+        $this->assertEquals(2, $orderItem->item->id);
+    }
+
+    public function testOutdatedRelationsAreResetForExistingRecords()
+    {
+        $orderItem = OrderItem::findOne(1);
+        $this->assertEquals(1, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+
+        // Test `__set()`.
+        $orderItem->order_id = 2;
+        $orderItem->item_id = 1;
+        $this->assertEquals(2, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+
+        // Test `setAttribute()`.
+        $orderItem->setAttribute('order_id', 3);
+        $orderItem->setAttribute('item_id', 1);
+        $this->assertEquals(3, $orderItem->order->id);
+        $this->assertEquals(1, $orderItem->item->id);
+    }
+
+    public function testOutdatedCompositeKeyRelationsAreReset()
+    {
+        $dossier = Dossier::findOne([
+            'department_id' => 1,
+            'employee_id' => 1,
+        ]);
+        $this->assertEquals('John Doe', $dossier->employee->fullName);
+
+        $dossier->department_id = 2;
+        $this->assertEquals('Ann Smith', $dossier->employee->fullName);
+
+        $dossier->employee_id = 2;
+        $this->assertEquals('Will Smith', $dossier->employee->fullName);
+    }
+
+    public function testOutdatedViaTableRelationsAreReset()
+    {
+        $this->markTestSkipped('Not implemented yet.');
+
+        $order = Order::findOne(1);
+        $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        $this->assertArraySubset([1, 2], $orderItemIds);
+
+        $order->id = 3;
+        $newOrderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        $this->assertEmpty($newOrderItemIds);
     }
 
     public function testAlias()

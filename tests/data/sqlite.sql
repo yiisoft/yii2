@@ -141,6 +141,28 @@ CREATE TABLE "document" (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE "department" (
+  id INTEGER NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE "employee" (
+  id INTEGER NOT NULL,
+  department_id INTEGER NOT NULL,
+  first_name VARCHAR(255) NOT NULL,
+  last_name VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id, department_id)
+);
+
+CREATE TABLE "dossier" (
+  id INTEGER NOT NULL,
+  department_id INTEGER NOT NULL,
+  employee_id INTEGER NOT NULL,
+  summary VARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+);
+
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
 INSERT INTO "animal" ("type") VALUES ('yiiunit\data\ar\Cat');
@@ -185,6 +207,17 @@ INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VA
 INSERT INTO "order_item_with_null_fk" (order_id, item_id, quantity, subtotal) VALUES (3, 2, 1, 40.0);
 
 INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This is Yii 2.0 guide', 0);
+
+INSERT INTO "department" (id, title) VALUES (1, 'IT');
+INSERT INTO "department" (id, title) VALUES (2, 'accounting');
+
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (1, 1, 'John', 'Doe');
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (1, 2, 'Ann', 'Smith');
+INSERT INTO "employee" (id, department_id, first_name, last_name) VALUES (2, 2, 'Will', 'Smith');
+
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (1, 1, 1, 'Excellent employee.');
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (2, 2, 1, 'Brilliant employee.');
+INSERT INTO "dossier" (id, department_id, employee_id, summary) VALUES (3, 2, 2, 'Good employee.');
 
 /**
  * (SqLite-)Database Schema for validator tests
