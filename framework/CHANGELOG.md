@@ -23,16 +23,17 @@ Yii Framework 2 Change Log
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
+- Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
+- Enh #13221: Make `\yii\db\QueryTrait::limit()` and `\yii\db\QueryTrait::offset()` methods work with `\yii\db\Expression` (Ni-san)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
+- Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
 - Enh #13523: Plural rule for pasta (developeruz)
 - Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
 - Enh #13577: Implemented `yii\db\mssql\QueryBuilder::resetSequence()` (boboldehampsink)
 - Enh #13582: Added tests for all `yii\db\QueryBuilder::resetSequence` implementations, fixed SQLite implementation (boboldehampsink)
-- Enh #13407: Added URL-safe base64 encode/decode methods to `StringHelper` (andrewnester)
-- Enh #13221: Make `\yii\db\QueryTrait::limit()` and `\yii\db\QueryTrait::offset()` methods work with `\yii\db\Expression` (Ni-san)
-- Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
+- Enh #13642: Allows override query relation in descendant class (leandrogehlen)
 
 
 2.0.11.2 February 08, 2017
@@ -1784,4 +1785,3 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
-
