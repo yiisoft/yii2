@@ -513,6 +513,20 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'single optional param with suffix',
+                [
+                    'pattern' => '<page>',
+                    'route' => 'page/view',
+                    'defaults' => ['page' => 'index'],
+                    'suffix' => '/',
+                ],
+                [
+                    ['page/view', [], '/'],
+                    ['page/view', ['page' => 'index'], '/'],
+                    ['page/view', ['page' => 'news'], 'news/'],
+                ],
+            ],
+            [
                 'required params',
                 [
                     'pattern' => 'about-me',
