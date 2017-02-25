@@ -1165,6 +1165,94 @@ EOD;
         $noCsrfForm = Html::beginForm('/index.php', 'post', ['csrf' => false, 'id' => 'myform']);
         $this->assertEquals('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
     }
+    
+    /**
+     * Data provider for [[testActiveRadio()]]
+     * @return array test data
+     */
+    public function dataProviderActiveRadio()
+    {
+        return [
+            [
+                true,
+                [],
+                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>'
+            ],
+            [
+                true,
+                ['uncheck' => false],
+                '<label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>'
+            ],
+            [
+                true,
+                ['label' => false],
+                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>'
+            ],
+            [
+                true,
+                ['uncheck' => false, 'label' => false],
+                '<input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>'
+            ],
+        ];
+    }
+    
+    /**
+     * @dataProvider dataProviderActiveRadio
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActiveRadio($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->radio = $value;
+        $this->assertEquals($expectedHtml, Html::activeRadio($model, 'radio', $options));
+    }
+        
+    /**
+     * Data provider for [[testActiveCheckbox()]]
+     * @return array test data
+     */
+    public function dataProviderActiveCheckbox()
+    {
+        return [
+            [
+                true,
+                [],
+                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>'
+            ],
+            [
+                true,
+                ['uncheck' => false],
+                '<label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>'
+            ],
+            [
+                true,
+                ['label' => false],
+                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>'
+            ],
+            [
+                true,
+                ['uncheck' => false, 'label' => false],
+                '<input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>'
+            ],
+        ];
+    }
+    
+    /**
+     * @dataProvider dataProviderActiveCheckbox
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActiveCheckbox($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->checkbox = $value;
+        $this->assertEquals($expectedHtml, Html::activeCheckbox($model, 'checkbox', $options));
+    }
 }
 
 /**
@@ -1176,7 +1264,7 @@ class HtmlTestModel extends DynamicModel
 {
     public function init()
     {
-        foreach (['name', 'types', 'description'] as $attribute) {
+        foreach (['name', 'types', 'description', 'radio', 'checkbox'] as $attribute) {
             $this->defineAttribute($attribute);
         }
     }
@@ -1187,6 +1275,7 @@ class HtmlTestModel extends DynamicModel
             ['name', 'required'],
             ['name', 'string', 'max' => 100],
             ['description', 'string', 'max' => 500],
+            [['radio', 'checkbox'], 'boolean'],
         ];
     }
 }
