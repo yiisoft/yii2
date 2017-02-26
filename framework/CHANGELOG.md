@@ -11,7 +11,7 @@ Yii Framework 2 Change Log
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
-- Bug #13086: Fixed bug with optional params at the beginning of pattern in `yii\web\UrlRule` (rob006)
+- Bug #13086, #13656: Fixed bug with optional params at the beginning of pattern in `yii\web\UrlRule` (rob006)
 - Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 - Enh #13550: Refactored unset call order in `yii\di\ServiceLocator::set()` (Lanrik)
 - Enh #13576: Added support of `srcset` to `yii\helpers\Html::img()` (Kolyunya)
