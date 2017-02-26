@@ -156,7 +156,7 @@ class HtmlTest extends TestCase
                 ],
             ],
             [
-                '<img src="/base-url" alt="" srcset="">',
+                '<img src="/base-url" srcset="" alt="">',
                 '/base-url',
                 [
                     'srcset' => [
@@ -164,7 +164,7 @@ class HtmlTest extends TestCase
                 ],
             ],
             [
-                '<img src="/base-url" alt="" srcset="/example-9001w 9001w">',
+                '<img src="/base-url" srcset="/example-9001w 9001w" alt="">',
                 '/base-url',
                 [
                     'srcset' => [
@@ -173,7 +173,7 @@ class HtmlTest extends TestCase
                 ],
             ],
             [
-                '<img src="/base-url" alt="" srcset="/example-100w 100w,/example-500w 500w,/example-1500w 1500w">',
+                '<img src="/base-url" srcset="/example-100w 100w,/example-500w 500w,/example-1500w 1500w" alt="">',
                 '/base-url',
                 [
                     'srcset' => [
@@ -184,7 +184,7 @@ class HtmlTest extends TestCase
                 ],
             ],
             [
-                '<img src="/base-url" alt="" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x,/example-4x 4x,/example-5x 5x">',
+                '<img src="/base-url" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x,/example-4x 4x,/example-5x 5x" alt="">',
                 '/base-url',
                 [
                     'srcset' => [
@@ -197,7 +197,7 @@ class HtmlTest extends TestCase
                 ],
             ],
             [
-                '<img src="/base-url" alt="" srcset="/example-1.42x 1.42x,/example-2.0x 2.0x,/example-3.99999x 3.99999x">',
+                '<img src="/base-url" srcset="/example-1.42x 1.42x,/example-2.0x 2.0x,/example-3.99999x 3.99999x" alt="">',
                 '/base-url',
                 [
                     'srcset' => [
@@ -208,7 +208,7 @@ class HtmlTest extends TestCase
                 ],
             ],
             [
-                '<img src="/base-url" alt="" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x">',
+                '<img src="/base-url" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x" alt="">',
                 '/base-url',
                 [
                     'srcset' => '/example-1x 1x,/example-2x 2x,/example-3x 3x',

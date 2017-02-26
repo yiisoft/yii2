@@ -59,6 +59,7 @@ class BaseHtml
 
         'href',
         'src',
+        'srcset',
         'action',
         'method',
 
