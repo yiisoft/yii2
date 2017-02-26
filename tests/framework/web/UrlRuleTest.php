@@ -487,6 +487,19 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'optional param at the beginning with suffix',
+                [
+                    'pattern' => '<page>',
+                    'route' => 'page/view',
+                    'defaults' => ['page' => 'index'],
+                    'suffix' => '/'
+                ],
+                [
+                    ['page/view', ['page' => 'index'], ''],
+                    ['page/view', ['page' => 'news'], 'news/'],
+                ],
+            ],
+            [
                 'consecutive optional params',
                 [
                     'pattern' => 'post/<page:\d+>/<tag>',
