@@ -56,6 +56,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             }
             if (0 === $pid_second) {
                 // SECOND child
+                $this->setErrorHandler();
                 exit($this->childrenUpdateLocked());
             }
 
@@ -65,6 +66,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             }
             if (0 === $pid_first) {
                 // FIRST child
+                $this->setErrorHandler();
                 exit($this->childrenSelectAndAccidentUpdate($pid_second));
             }
 
@@ -250,6 +252,21 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         }
         $this->log("child 2: exit");
         return 0;
+    }
+
+    /**
+     * Set own error handler.
+     * In case of error in child process its execution bubbles up to phpunit to continue
+     * all the rest tests. So, all the rest tests in this case will run both in the child
+     * and parent processes. Such mess must be prevented with child's own error handler.
+     */
+    private function setErrorHandler()
+    {
+        if (version_compare(PHP_VERSION, '7', '<')) {
+            set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+                throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
+            });
+        }
     }
 
     /**
