@@ -33,7 +33,7 @@
 用法 <span id="usage"></span>
 -----
 
-你可以使用以下语法来执行控制台控制器操作：
+你可以使用以下语法来执行控制台控制器动作：
 
 ```
 yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
@@ -117,7 +117,7 @@ exit($exitCode);
 当你运行一个命令时，你需要指定一个控制器的路由。
 例如，路由 `migrate/create` 调用子命令对应的[[yii\console\controllers\MigrateController::actionCreate()|MigrateController::actionCreate()]] 动作方法。
 如果在执行过程中提供的路由不包含路由 ID ，
-将执行默认操作（如 web 控制器）。
+将执行默认动作（如 web 控制器）。
 
 ### 选项
 
@@ -170,7 +170,7 @@ Now, you can use the following syntax to run the command:
 
 ### 参数
 
-除了选项，命令还可以接收参数。参数将传递给请求的子命令对应的操作方法。
+除了选项，命令还可以接收参数。参数将传递给请求的子命令对应的动作方法。
 第一个参数对应第一个参数，第二个参数对应第二个参数，依次类推。
 命令被调用时，如果没有足够的参数，如果有定义默认值的情况下，则相应的参数将采取默认声明的值；
 如果没有设置默认值，并且在运行时没有提供任何值，该命令将以一个错误退出。
@@ -205,7 +205,7 @@ class ExampleController extends \yii\console\Controller
 所有的代码都将保留在特定的情况下：输入错误，丢失的文件等等。
 
 要让控制台命令返回一个退出代码，
-只需在控制器操作方法中返回一个整数：
+只需在控制器动作方法中返回一个整数：
 
 ```php
 public function actionIndex()

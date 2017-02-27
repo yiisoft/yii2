@@ -669,7 +669,7 @@ public function actionAbout()
 ```
 
 如果Web站点包含很多静态页面，多次重复相似的代码显得很繁琐，
-为解决这个问题，可以使用一个在控制器中称为 [[yii\web\ViewAction]] 的[独立操作](structure-controllers.md#standalone-actions)。
+为解决这个问题，可以使用一个在控制器中称为 [[yii\web\ViewAction]] 的[独立动作](structure-controllers.md#standalone-actions)。
 例如：
 
 ```php
@@ -697,7 +697,7 @@ class SiteController extends Controller
 http://localhost/index.php?r=site/page&view=about
 ```
 
-`GET` 中 `view` 参数告知 [[yii\web\ViewAction]] 操作请求哪个视图，然后操作在
+`GET` 中 `view` 参数告知 [[yii\web\ViewAction]] 动作请求哪个视图，然后操作在
 `@app/views/site/pages`目录下寻找该视图，可配置 [[yii\web\ViewAction::viewPrefix]]
 修改搜索视图的目录。
 

@@ -3,7 +3,7 @@
 
 本章节将介绍如何创建一个从数据表 `country` 中读取国家数据并显示出来的页面。
 为了实现这个目标，你将会配置一个数据库连接，创建一个[活动记录](db-active-record.md)类，
-并且创建一个[操作](structure-controllers.md)及一个[视图](structure-views.md)。
+并且创建一个[动作](structure-controllers.md)及一个[视图](structure-views.md)。
 
 
 贯穿整个章节，你将会学到：
@@ -132,13 +132,13 @@ $country->save();
 除此之外你还可以使用另一种更原生的被称做[数据访问对象](db-dao)的方法操作数据库数据。
 
 
-创建操作 <span id="creating-action"></span>
+创建动作 <span id="creating-action"></span>
 ------------------
 
-为了向最终用户显示国家数据，你需要创建一个操作。
-相比之前小节掌握的在 `site` 控制器中创建操作，
+为了向最终用户显示国家数据，你需要创建一个动作。
+相比之前小节掌握的在 `site` 控制器中创建动作，
 在这里为所有和国家有关的数据新建一个控制器更加合理。
-新控制器名为 `CountryController`，并在其中创建一个 `index` 操作，如下：
+新控制器名为 `CountryController`，并在其中创建一个 `index` 动作，如下：
 
 ```php
 <?php
@@ -175,7 +175,7 @@ class CountryController extends Controller
 
 把上面的代码保存在 `controllers/CountryController.php` 文件中。
 
-`index` 操作调用了活动记录 `Country::find()` 方法，去生成查询语句并从 `country` 表中取回所有数据。
+`index` 动作调用了活动记录 `Country::find()` 方法，去生成查询语句并从 `country` 表中取回所有数据。
 为了限定每个请求所返回的国家数量，查询在 [[yii\data\Pagination]] 对象的帮助下进行分页。
 `Pagination` 对象的使命主要有两点：
 
@@ -184,7 +184,7 @@ class CountryController extends Controller
 * 在视图中显示一个由页码列表组成的分页器，
   这点将在后面的段落中解释。
 
-在代码末尾，`index` 操作渲染一个名为 `index` 的视图，
+在代码末尾，`index` 动作渲染一个名为 `index` 的视图，
 并传递国家数据和分页信息进去。
 
 
@@ -214,7 +214,7 @@ use yii\widgets\LinkPager;
 ```
 
 这个视图包含两部分用以显示国家数据。第一部分遍历国家数据并以无序 HTML 列表渲染出来。
-第二部分使用 [[yii\widgets\LinkPager]] 去渲染从操作中传来的分页信息。
+第二部分使用 [[yii\widgets\LinkPager]] 去渲染从动作中传来的分页信息。
 小部件 `LinkPager` 显示一个分页按钮的列表。
 点击任何一个按钮都会跳转到对应的分页。
 

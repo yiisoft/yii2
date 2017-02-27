@@ -4,7 +4,7 @@ HTTP 缓存
 除了前面章节讲到的服务器端缓存外， Web 应用还可以利用客户端
 缓存去节省相同页面内容的生成和传输时间。
 
-通过配置 [[yii\filters\HttpCache]] 过滤器，控制器操作渲染的内容就能
+通过配置 [[yii\filters\HttpCache]] 过滤器，控制器动作渲染的内容就能
 缓存在客户端。[[yii\filters\HttpCache|HttpCache]] 过滤器仅对 `GET`
 和 `HEAD` 请求生效，它能为这些请求设置三种与缓存有关的 HTTP 头。
 
@@ -23,7 +23,7 @@ HTTP 缓存
 
 ```php
 /**
- * @param Action $action 当前处理的操作对象
+ * @param Action $action 当前处理的动作对象
  * @param array $params “params” 属性的值
  * @return integer 页面修改时的 Unix 时间戳
  */
@@ -48,7 +48,7 @@ public function behaviors()
 }
 ```
 
-上述代码表明 HTTP 缓存只在 `index` 操作时启用。它会基于页面
+上述代码表明 HTTP 缓存只在 `index` 动作时启用。它会基于页面
 最后修改时间生成一个 `Last-Modified` HTTP 头。当浏览器第一
 次访问 `index` 页时，服务器将会生成页面并发送至客户端浏览器。
 之后客户端浏览器在页面没被修改期间访问该页，服务器将不会重新
@@ -68,7 +68,7 @@ public function behaviors()
 
 ```php
 /**
- * @param Action $action 当前处理的操作对象
+ * @param Action $action 当前处理的动作对象
  * @param array $params “params” 属性的值
  * @return string 一段种子字符用来生成 ETag 哈希值
  */
@@ -93,7 +93,7 @@ public function behaviors()
 }
 ```
 
-上述代码表明 HTTP 缓存只在 `view` 操作时启用。它会基于用户
+上述代码表明 HTTP 缓存只在 `view` 动作时启用。它会基于用户
 请求的标题和内容生成一个 `ETag` HTTP 头。当浏览器第一次访问
 `view` 页时，服务器将会生成页面并发送至客户端浏览器。之后
 客户端浏览器标题和内容没被修改在期间访问该页，服务器将不会

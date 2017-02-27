@@ -301,10 +301,10 @@ Yii 2.0 移除了原来内置的日期格式器和数字格式器，为了支持
 更多细节请参阅[国际化（Internationalization）](tutorial-i18n.md)章节。
 
 
-操作过滤器（Action Filters）
+动作过滤器（Action Filters）
 --------------
 
-操作的过滤现在通过行为（behavior）来实现。要定义一个新的，自定义的过滤器，
+动作的过滤现在通过行为（behavior）来实现。要定义一个新的，自定义的过滤器，
 请继承 [[yii\base\ActionFilter]] 类。要使用一个过滤器，需要把过滤器类作为一个 `behavior` 绑定到控制器上。
 例如，要使用 [[yii\filters\AccessControl]] 过滤器，你需要在控制器内添加如下代码：
 

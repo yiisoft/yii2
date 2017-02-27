@@ -109,7 +109,7 @@ class User extends ActiveRecord implements IdentityInterface
 在上述认证启用后，对于每个API请求，请求控制器都会在它的`beforeAction()`
 步骤中对用户进行认证。
 
-如果认证成功，控制器再执行其他检查(如频率限制，操作权限)，然后再执行操作，
+如果认证成功，控制器再执行其他检查(如频率限制，操作权限)，然后再执行动作，
 授权用户信息可使用`Yii::$app->user->identity`获取.
 
 如果认证失败，会发送一个HTTP状态码为401的响应，并带有其他相关信息头
@@ -118,7 +118,7 @@ class User extends ActiveRecord implements IdentityInterface
 
 ## 授权 <a name="authorization"></a>
 
-在用户认证成功后，你可能想要检查他是否有权限执行对应的操作来获取资源，
+在用户认证成功后，你可能想要检查他是否有权限执行对应的动作来获取资源，
 这个过程称为 *authorization* ，
 详情请参考 [Authorization section](security-authorization.md).
 

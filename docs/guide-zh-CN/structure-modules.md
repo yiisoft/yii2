@@ -169,11 +169,11 @@ yii <module_id>/<command>/<sub_command>
 
 和访问应用的控制器类似，[路由](structure-controllers.md#routes) 
 也用在模块中控制器的寻址，
-模块中控制器的路由必须以模块ID开始，接下来为控制器ID和操作ID。
+模块中控制器的路由必须以模块ID开始，接下来为控制器ID和动作ID。
 例如，假定应用使用一个名为 `forum` 模块，
-路由`forum/post/index` 代表模块中 `post` 控制器的 `index` 操作，
+路由`forum/post/index` 代表模块中 `post` 控制器的 `index` 动作，
 如果路由只包含模块ID，默认为 `default` 
-的[[yii\base\Module::defaultRoute]] 属性来决定使用哪个控制器/操作，
+的[[yii\base\Module::defaultRoute]] 属性来决定使用哪个控制器/动作，
 也就是说路由 `forum` 可能代表 `forum` 模块的 `default` 控制器。
 
 
@@ -263,7 +263,7 @@ class Module extends \yii\base\Module
 
 在嵌套模块中的控制器，它的路由应包含它所有祖先模块的ID，
 例如`forum/admin/dashboard/index` 代表
-在模块`forum`中子模块`admin`中`dashboard`控制器的`index`操作。
+在模块`forum`中子模块`admin`中`dashboard`控制器的`index`动作。
 
 > 注意：[[yii\base\Module::getModule()|getModule()]] 方法只返回属直接归属于其父级的子模块。
 [[yii\base\Application::loadedModules]] 属性保存加载模块的列表，

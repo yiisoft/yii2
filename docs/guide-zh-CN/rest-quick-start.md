@@ -190,7 +190,7 @@ Content-Type: application/json; charset=UTF-8
 
 ## 总结 <span id="summary"></span>
 
-使用 Yii 框架的 RESTful 风格的 API, 在控制器的操作中实现API末端，使用
+使用 Yii 框架的 RESTful 风格的 API, 在控制器的动作中实现API末端，使用
 控制器来组织末端接口为一个单一的资源类型。
 
 从 [[yii\base\Model]] 类扩展的资源被表示为数据模型。

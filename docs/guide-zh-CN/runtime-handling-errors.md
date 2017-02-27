@@ -7,7 +7,7 @@ Yii错误处理器做以下工作来提升错误处理效果：
 * 所有非致命PHP错误（如，警告，提示）会转换成可获取异常；
 * 异常和致命的PHP错误会被显示，
   在调试模式会显示详细的函数调用栈和源代码行数。
-* 支持使用专用的 [控制器操作](structure-controllers.md#actions) 来显示错误；
+* 支持使用专用的 [控制器动作](structure-controllers.md#actions) 来显示错误；
 * 支持不同的错误响应格式；
 
 [[yii\web\ErrorHandler|error handler]] 错误处理器默认启用，
@@ -80,9 +80,9 @@ throw new NotFoundHttpException();
 使用自定义的错误显示视图。
 
 
-### 使用错误操作 <span id="using-error-actions"></span>
+### 使用错误动作 <span id="using-error-actions"></span>
 
-使用指定的错误[操作](structure-controllers.md) 来自定义错误显示更方便，
+使用指定的错误[动作](structure-controllers.md) 来自定义错误显示更方便，
 为此，首先配置`errorHandler`组件的 [[yii\web\ErrorHandler::errorAction|errorAction]] 属性，
 类似如下： 
 
@@ -97,10 +97,10 @@ return [
 ```
 
 [[yii\web\ErrorHandler::errorAction|errorAction]] 属性使用
-[路由](structure-controllers.md#routes)到一个操作，
-上述配置表示不用显示函数调用栈信息的错误会通过执行`site/error`操作来显示。
+[路由](structure-controllers.md#routes)到一个动作，
+上述配置表示不用显示函数调用栈信息的错误会通过执行`site/error`动作来显示。
 
-可以创建`site/error` 操作如下所示：
+可以创建 `site/error` 动作如下所示：
 
 ```php
 namespace app\controllers;
@@ -121,10 +121,10 @@ class SiteController extends Controller
 }
 ```
 
-上述代码定义`error` 操作使用[[yii\web\ErrorAction]] 类，
+上述代码定义 `error` 动作使用 [[yii\web\ErrorAction]] 类，
 该类渲染名为`error`视图来显示错误。
 
-除了使用[[yii\web\ErrorAction]], 可定义`error` 操作使用类似如下的操作方法：
+除了使用[[yii\web\ErrorAction]], 可定义`error` 动作使用类似如下的操作方法：
 
 ```php
 public function actionError()
@@ -136,8 +136,8 @@ public function actionError()
 }
 ```
 
-现在应创建一个视图文件为`views/site/error.php`，在该视图文件中，如果错误操作定义为[[yii\web\ErrorAction]]，
-可以访问该操作中定义的如下变量：
+现在应创建一个视图文件为`views/site/error.php`，在该视图文件中，如果错误动作定义为[[yii\web\ErrorAction]]，
+可以访问该动作中定义的如下变量：
 
 * `name`: 错误名称
 * `message`: 错误信息
@@ -145,7 +145,7 @@ public function actionError()
   错误调用栈等。
 
 > Info: 如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
-错误操作和错误视图已经定义好了。
+错误动作和错误视图已经定义好了。
 
 > Note: If you need to redirect in an error handler, do it the following way:
 > ```php

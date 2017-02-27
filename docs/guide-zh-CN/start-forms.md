@@ -5,7 +5,7 @@
 该页将显示一个包含 name 输入框和 email 输入框的表单。
 当提交这两部分信息后，页面将会显示用户所输入的信息。
 
-为了实现这个目标，除了创建一个[操作](structure-controllers.md)和两个[视图](structure-views)外，
+为了实现这个目标，除了创建一个[动作](structure-controllers.md)和两个[视图](structure-views)外，
 还需要创建一个[模型](structure-models.md)。
 
 通过本教程，你将会学到：
@@ -77,11 +77,11 @@ if ($model->validate()) {
 ```
 
 
-创建操作 <span id="creating-action"></span>
+创建动作 <span id="creating-action"></span>
 ------------------
 
-下面你得在 `site` 控制器中创建一个 `entry` 操作用于新建的模型。
-操作的创建和使用已经在[说一声你好](start-hello.md)小节中解释了。
+下面你得在 `site` 控制器中创建一个 `entry` 动作用于新建的模型。
+动作的创建和使用已经在[说一声你好](start-hello.md)小节中解释了。
 
 ```php
 <?php
@@ -114,9 +114,9 @@ class SiteController extends Controller
 }
 ```
 
-该操作首先创建了一个 `EntryForm` 对象。然后尝试从 `$_POST` 搜集用户提交的数据，
+该动作首先创建了一个 `EntryForm` 对象。然后尝试从 `$_POST` 搜集用户提交的数据，
 由 Yii 的 [[yii\web\Request::post()]] 方法负责搜集。如果模型被成功填充数据（比如：如果用户已经提交了 HTML 表单），
-操作将调用 [[yii\base\Model::validate()|validate()]] 去确保用户提交的是有效数据。
+动作将调用 [[yii\base\Model::validate()|validate()]] 去确保用户提交的是有效数据。
 
 
 > 补充：表达式 `Yii::$app` 代表[应用](structure-applications.md)实例，
@@ -124,7 +124,7 @@ class SiteController extends Controller
   能提供 `request`，`response`，`db` 等等特定功能的组件。
   在上面的代码里就是使用 `request` 组件来访问应用实例收到的 `$_POST` 数据。
 
-如果一切都准备好了，用户提交表单后，操作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。
+如果一切都准备好了，用户提交表单后，动作将会渲染一个名为 `entry-confirm` 的视图去确认用户输入的数据。
 如果没填表单就提交，或数据包含错误（译者：如 email 格式不对），`entry` 视图将会渲染输出，
 连同表单一起输出的还有验证错误的详细信息。
 
@@ -137,7 +137,7 @@ class SiteController extends Controller
 --------------
 
 最后创建两个视图文件 `entry-confirm` 和 `entry`。
-他们会被刚才创建的 `entry` 操作渲染。
+他们会被刚才创建的 `entry` 动作渲染。
 
 `entry-confirm` 视图简单地显示提交的 name 和 email 数据。视图文件应该保存在 `views/site/entry-confirm.php`。
 

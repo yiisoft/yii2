@@ -8,10 +8,10 @@
 ## 存取控制过滤器 <span id="access-control-filter"></span>
 
 存取控制过滤器（ACF）是一种通过 [[yii\filters\AccessControl]] 类来实现的简单授权方法，
-非常适用于仅需要简单的存取控制的应用。正如其名称所指，ACF 是一个种行动（action）过滤器
-[filter](structure-filters.md)，可在控制器或者模块中使用。当一个用户请求一个 action 时，
+非常适用于仅需要简单的存取控制的应用。正如其名称所指，ACF 是一种动作过滤器
+[filter](structure-filters.md)，可在控制器或者模块中使用。当一个用户请求一个动作时，
 ACF会检查 [[yii\filters\AccessControl::rules|access rules]] 列表，判断该用户是否允许执
-行所请求的action。（译者注： `action` 在本文中视情况翻译为`行动`、`操作`、`方法`等）
+行所请求的动作。
 
 下述代码展示如何在 `site` 控制器中使用 ACF：
 
@@ -51,17 +51,17 @@ class SiteController extends Controller
 对 `login`， `logout` 和 `signup` 方法起作用。所有其它的 `site` 
 控制器中的方法不受存取控制的限制。 `rules` 选项列出了 [[yii\filters\AccessRule|存取规则 (access rules)]]，解读如下：
 
-- 允许所有访客（还未经认证的用户）执行 `login` 和 `signup` 操作。 
+- 允许所有访客（还未经认证的用户）执行 `login` 和 `signup` 动作。 
   `roles` 选项包含的问号 `?` 是一个特殊的标识，代表”访客用户”。
-- 允许已认证用户执行 `logout` 操作。`@`是另一个特殊标识，
+- 允许已认证用户执行 `logout` 动作。`@`是另一个特殊标识，
   代表”已认证用户”。
 
 ACF 自顶向下逐一检查存取规则，直到找到一个与当前
-欲执行的操作相符的规则。 然后该匹配规则中的 `allow` 
+欲执行的动作相符的规则。 然后该匹配规则中的 `allow` 
 选项的值用于判定该用户是否获得授权。如果没有找到匹配的规则，
-意味着该用户没有获得授权。（译者注： `only` 中没有列出的操作，将无条件获得授权）
+意味着该用户没有获得授权。（译者注： `only` 中没有列出的动作，将无条件获得授权）
 
-当 ACF 判定一个用户没有获得执行当前操作的授权时，它的默认处理是：
+当 ACF 判定一个用户没有获得执行当前动作的授权时，它的默认处理是：
 
 * 如果该用户是访客，将调用 [[yii\web\User::loginRequired()]] 将用户的浏览器重定向到登录页面。
 * 如果该用户是已认证用户，将抛出一个 [[yii\web\ForbiddenHttpException]] 异常。
@@ -83,13 +83,13 @@ ACF 自顶向下逐一检查存取规则，直到找到一个与当前
 
  * [[yii\filters\AccessRule::allow|allow]]： 指定该规则是 "允许" 还是 "拒绝" 。（译者注：true是允许，false是拒绝）
 
- * [[yii\filters\AccessRule::actions|actions]]：指定该规则用于匹配哪些操作。
-   它的值应该是操作方法的ID数组。匹配比较是大小写敏感的。如果该选项为空，或者不使用该选项，
-   意味着当前规则适用于所有的操作。
+ * [[yii\filters\AccessRule::actions|actions]]：指定该规则用于匹配哪些动作。
+   它的值应该是动作方法的ID数组。匹配比较是大小写敏感的。如果该选项为空，或者不使用该选项，
+   意味着当前规则适用于所有的动作。
 
  * [[yii\filters\AccessRule::controllers|controllers]]：指定该规则用于匹配哪些控制器。
    它的值应为控制器ID数组。匹配比较是大小写敏感的。如果该选项为空，或者不使用该选项，
-   则意味着当前规则适用于所有的操作。（译者注：这个选项一般是在控制器的自定义父类中使用才有意义）
+   则意味着当前规则适用于所有的动作。（译者注：这个选项一般是在控制器的自定义父类中使用才有意义）
 
  * [[yii\filters\AccessRule::roles|roles]]：指定该规则用于匹配哪些用户角色。
    系统自带两个特殊的角色，通过 [[yii\web\User::isGuest]] 来判断：

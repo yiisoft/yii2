@@ -96,7 +96,7 @@ the failure of the routing process.
 如果传入请求并没有提供一个具体的路由，（一般这种情况多为于对首页的请求）此时就会启用由
 [[yii\web\Application::defaultRoute]] 属性所指定的缺省路由。
 该属性的默认值为 `site/index`，它指向 `site` 控制器的 `index`
-操作。你可以像这样在应用配置中调整该属性的值：
+动作。你可以像这样在应用配置中调整该属性的值：
 
 ```php
 return [

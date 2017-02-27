@@ -117,11 +117,11 @@ public function actionIndex()
 }
 ```
 
-上述的 `index` 操作返回 `index` 视图渲染结果，
+上述的 `index` 动作返回 `index` 视图渲染结果，
 返回值会被 `response` 组件格式化后发送给终端用户。
 
 因为响应格式默认为[[yii\web\Response::FORMAT_HTML|HTML]], 
-只需要在操作方法中返回一个字符串，
+只需要在动作方法中返回一个字符串，
 如果想使用其他响应格式，应在返回数据前先设置格式，例如：
 
 ```php
@@ -136,7 +136,7 @@ public function actionInfo()
 ```
 
 如上所述，触雷使用默认的 `response` 应用组件，也可创建自己的响应对象并发送给终端用户，
-可在操作方法中返回该响应对象，如下所示：
+可在动作方法中返回该响应对象，如下所示：
 
 ```php
 public function actionInfo()
@@ -164,7 +164,7 @@ public function actionInfo()
 
 可调用[[yii\web\Response::redirect()]] 方法将用户浏览器跳转到一个URL地址，该方法设置合适的
 带指定URL的 `Location` 头并返回它自己为响应对象，
-在操作的方法中，可调用缩写版[[yii\web\Controller::redirect()]]，例如：
+在动作的方法中，可调用缩写版[[yii\web\Controller::redirect()]]，例如：
 
 ```php
 public function actionOld()
@@ -173,10 +173,10 @@ public function actionOld()
 }
 ```
 
-在如上代码中，操作的方法返回`redirect()` 方法的结果，如前所述，
-操作的方法返回的响应对象会被当总响应发送给终端用户。
+在如上代码中，动作的方法返回`redirect()` 方法的结果，如前所述，
+动作的方法返回的响应对象会被当总响应发送给终端用户。
 
-除了操作方法外，可直接调用[[yii\web\Response::redirect()]] 再调用
+除了动作方法外，可直接调用[[yii\web\Response::redirect()]] 再调用
 [[yii\web\Response::send()]] 方法来确保没有其他内容追加到响应中。
 
 ```php
@@ -208,7 +208,7 @@ Yii提供方法集合来支持各种文件发送需求，它们对HTTP头都有�
 
 这些方法都将响应对象作为返回值，如果要发送的文件非常大，应考虑使用
 [[yii\web\Response::sendStreamAsFile()]] 因为它更节约内存，
-以下示例显示在控制器操作中如何发送文件：
+以下示例显示在控制器动作中如何发送文件：
 
 ```php
 public function actionDownload()
@@ -217,7 +217,7 @@ public function actionDownload()
 }
 ```
 
-如果不是在操作方法中调用文件发送方法，
+如果不是在动作方法中调用文件发送方法，
 在后面还应调用 [[yii\web\Response::send()]] 没有其他内容追加到响应中。
 
 ```php
