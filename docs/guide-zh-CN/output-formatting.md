@@ -5,7 +5,7 @@
 默认 `fomatter` 由 [[yii\i18n\Formatter]] 来实现，这个组件提供了一系列关于日期/时间，数字，货币等的格式化方法。
 使用方法如下：
 
-``` php
+```php
 $formatter = \Yii::$app->formatter;
 
 // output: January 1, 2014
@@ -30,7 +30,7 @@ echo $formatter->asDate(null);
 
 举个例子：
 
-``` php
+```php
 // output: January 1, 2014
 echo Yii::$app->formatter->format('2014-01-01', 'date'); 
 
@@ -81,7 +81,7 @@ return [
 
 同时，你还可以配置它使用 [ICU syntax](http://userguide.icu-project.org/formatparse/datetime)，同时你也可以配置它使用 [PHP date() 语法](http://php.net/manual/en/function.date.php)，只需要加上 `php:` 前缀即可。
 
-``` php
+```php
 // ICU format
 echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 
@@ -108,7 +108,7 @@ echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 
 下面使用 `Europe/Berlin` 作为默认 [[yii\i18n\Formatter::timeZone|time zone]] 
 
-``` php
+```php
 // formatting a UNIX timestamp as a time
 echo Yii::$app->formatter->asTime(1412599260); // 14:41:00
 
