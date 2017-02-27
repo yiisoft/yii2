@@ -34,7 +34,7 @@ Yii Framework 2 Change Log
 - Bug #13649: Fixes issue where `['uncheck' => false]` and `['label' => false]` options for `ActiveRadio` and `ActiveCheckbox` were ignored (Alex-Code)
 - Enh #13221: Make `\yii\db\QueryTrait::limit()` and `\yii\db\QueryTrait::offset()` methods work with `\yii\db\Expression` (Ni-san)
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
-- Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire) 
+- Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire, arogachev)
 
 
 2.0.11.2 February 08, 2017
