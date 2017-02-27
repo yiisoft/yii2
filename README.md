@@ -1,3 +1,9 @@
+
+
+<div align="center">
+   <img width="300" src="https://upload.wikimedia.org/wikipedia/en/6/6b/Yii-logo-transparent.png">
+</div>
+
 Yii PHP Framework Version 2
 ===========================
 
