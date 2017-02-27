@@ -118,7 +118,7 @@ class StringHelperTest extends TestCase
 
         $this->assertEquals('<p>This is a test</p><ul><li>bullet1</li><li>b</li></ul>...', StringHelper::truncate('<p>This is a test</p><ul><li>bullet1</li><li>bullet2</li><li>bullet3</li><li>bullet4</li></ul>', 22, '...', null, true));
 
-        $this->assertEquals('<div><ul><li>bullet1</li><li>b</li></ul></div>...', StringHelper::truncate('<div><ul><li>bullet1</li><li>bullet2</li><li>bullet3</li></ul><br></div>', 8, '...', null, true));
+        $this->assertEquals('<div><ul><li>bullet1</li><li><div>b</div></li></ul></div>...', StringHelper::truncate('<div><ul><li>bullet1</li><li><div>bullet2</div></li></ul><br></div>', 8, '...', null, true));
     }
 
     public function testTruncateWords()

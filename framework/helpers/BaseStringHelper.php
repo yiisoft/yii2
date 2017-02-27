@@ -157,11 +157,13 @@ class BaseStringHelper
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
         $totalCount = 0;
+        $depth = 0;
         $truncated = [];
         foreach ($tokens as $token) {
             if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
-                $openTokens[$token->name] = isset($openTokens[$token->name]) ? $openTokens[$token->name] + 1 : 1;
+                $openTokens[$depth] = $token->name;
                 $truncated[] = $token;
+                ++$depth;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
@@ -174,11 +176,9 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                if (!empty($openTokens[$token->name])) {
-                    $openTokens[$token->name]--;
-                    if ($openTokens[$token->name] <= 0) {
-                        unset($openTokens[$token->name]);
-                    }
+                if ($token->name === $openTokens[$depth-1]) {
+                    --$depth;
+                    unset($openTokens[$depth]);
                     $truncated[] = $token;
                 }
             } elseif ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
@@ -186,11 +186,9 @@ class BaseStringHelper
             }
             if ($totalCount >= $count) {
                 if (0 < count($openTokens)) {
-                    foreach (array_reverse($openTokens) as $name => $countTag) {
-                        while ($countTag > 0) {
-                            $truncated[] = new \HTMLPurifier_Token_End($name);
-                            $countTag--;
-                        }
+                    krsort($openTokens);
+                    foreach ($openTokens as $name) {
+                        $truncated[] = new \HTMLPurifier_Token_End($name);
                     }
                 }
                 break;
