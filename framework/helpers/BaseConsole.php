@@ -1105,14 +1105,31 @@ class BaseConsole
 
     protected static function renderRows(array $rows, array $size, $spanLeft, $spanMiddle, $spanRight)
     {
-        $buffer = $spanLeft . ' ';
-        foreach ($rows as $index => $row) {
-            if ($index != 0) {
-                $buffer .= $spanMiddle . ' ';
+        $rowsPerCell = array_map(function ($size, $columnWidth) {
+            return ceil($columnWidth / ($size - 2));
+        }, $size, array_map('mb_strwidth', $rows));
+
+        $buffer = '';
+
+        for ($i = 0; $i < max($rowsPerCell); $i++) {
+            $buffer .= $spanLeft . ' ';
+
+            foreach ($rows as $index => $row) {
+                if ($index != 0) {
+                    $buffer .= $spanMiddle . ' ';
+                }
+
+                $chunk = mb_substr($row, ($size[$index] * $i) - ($i * 2) , $size[$index] - 2 , Yii::$app->charset);
+                $repeat = $size[$index]  - mb_strwidth($chunk, Yii::$app->charset) - 1;
+
+                $buffer .= $chunk;
+                if ($repeat >= 0) {
+                    $buffer .= str_repeat(' ', $repeat);
+                }
             }
-            $buffer .= $row . str_repeat(' ', $size[$index] - mb_strwidth($row, Yii::$app->charset) - 1);
+            $buffer .= "$spanRight\n";
         }
-        $buffer .= "$spanRight\n";
+
         return $buffer;
     }
 
@@ -1132,14 +1149,30 @@ class BaseConsole
     protected static function calculateSizeRows(array $headers, array $rows)
     {
         $arraySizes = $columns = [];
+        $totalWidth = 0;
+        $screenWidth = static::getScreenSize()[0] - 3;
+
         for ($i = 0, $size = count($headers); $i < $size; $i++) {
             $columns[] = ArrayHelper::getColumn($rows, $i);
             array_push($columns[$i], $headers[$i]);
         }
-
         $encoding = array_fill(0, count($columns), Yii::$app->charset);
         foreach ($columns as $column) {
-            $arraySizes[] = max(array_map('mb_strwidth', $column, $encoding)) + 2;
+            $columnWidth = max(array_map('mb_strwidth', $column, $encoding)) + 2;
+            $arraySizes[] = $columnWidth;
+            $totalWidth += $columnWidth;
+        }
+
+        $relativeWidth = $screenWidth / $totalWidth;
+
+        if ($totalWidth > $screenWidth) {
+            foreach ($arraySizes as $j => $width) {
+                $arraySizes[$j] = intval($width * $relativeWidth);
+                if ($j == count($arraySizes)) {
+                    $arraySizes = $totalWidth;
+                }
+                $totalWidth -= $arraySizes[$j];
+            }
         }
 
         return $arraySizes;
