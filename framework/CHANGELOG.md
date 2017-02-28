@@ -39,6 +39,7 @@ Yii Framework 2 Change Log
 - Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire, arogachev)
 - Enh #13650: Improved `yii\base\Security::hkdf()` to take advantage of native `hash_hkdf()` implementation in PHP >= 7.1.2  (charlesportwoodii)
 - Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire) 
+- Bug #13670: Fixed alias option from console when it includes `-` or `_` in option name (pana1990)
 
 
 2.0.11.2 February 08, 2017
