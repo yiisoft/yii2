@@ -55,7 +55,7 @@ Contributing
 
 The framework is Open Source [powered by excellent community](https://github.com/yiisoft/yii2/graphs/contributors).
 
-You may join them and:
+You may join us and:
 
 - [Report an issue](docs/internals/report-an-issue.md)
 - [Translate documentation or messages](docs/internals/translation-workflow.md)
