@@ -160,10 +160,8 @@ class BaseStringHelper
         $truncated = [];
         foreach ($tokens as $token) {
             if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
-                if ($totalCount < $count) {
-                    $openTokens[$token->name] = isset($openTokens[$token->name]) ? $openTokens[$token->name] + 1 : 1;
-                    $truncated[] = $token;
-                }
+                $openTokens[$token->name] = isset($openTokens[$token->name]) ? $openTokens[$token->name] + 1 : 1;
+                $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
@@ -178,12 +176,23 @@ class BaseStringHelper
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
                 if (!empty($openTokens[$token->name])) {
                     $openTokens[$token->name]--;
+                    if ($openTokens[$token->name] <= 0) {
+                        unset($openTokens[$token->name]);
+                    }
                     $truncated[] = $token;
                 }
             } elseif ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
                 $truncated[] = $token;
             }
-            if (0 === $openTokens && $totalCount >= $count) {
+            if ($totalCount >= $count) {
+                if (0 < count($openTokens)) {
+                    foreach (array_reverse($openTokens) as $name => $countTag) {
+                        while ($countTag > 0) {
+                            $truncated[] = new \HTMLPurifier_Token_End($name);
+                            $countTag--;
+                        }
+                    }
+                }
                 break;
             }
         }
