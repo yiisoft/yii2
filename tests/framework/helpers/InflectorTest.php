@@ -31,6 +31,7 @@ class InflectorTest extends TestCase
             'test' => 'tests',
             'car' => 'cars',
             'netherlands' => 'netherlands',
+            'currency' => 'currencies',
         ];
 
         foreach ($testData as $testIn => $testOut) {
@@ -59,6 +60,7 @@ class InflectorTest extends TestCase
             'tests' => 'test',
             'cars' => 'car',
             'Netherlands' => 'Netherlands',
+            'currencies' => 'currency',
         ];
         foreach ($testData as $testIn => $testOut) {
             $this->assertEquals($testOut, Inflector::singularize($testIn));

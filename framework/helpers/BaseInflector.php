@@ -51,6 +51,7 @@ class BaseInflector
         '/us$/i' => 'uses',
         '/(alias)$/i' => '\1es',
         '/(ax|cris|test)is$/i' => '\1es',
+        '/(currenc)y$/' => '\1ies',
         '/s$/' => 's',
         '/^$/' => '',
         '/$/' => 's',
@@ -97,6 +98,7 @@ class BaseInflector
         '/(n)ews$/i' => '\1\2ews',
         '/(n)etherlands$/i' => '\1\2etherlands',
         '/eaus$/' => 'eau',
+        '/(currenc)ies$/' => '\1y',
         '/^(.*us)$/' => '\\1',
         '/s$/i' => '',
     ];
