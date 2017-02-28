@@ -321,8 +321,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $function = $trace[$i]['function'];
             }
             $args = !empty($trace[$i]['args']) ? $trace[$i]['args'] : [];
-            echo $this->renderCallStackItem($file, $line, $class, $function, $args, $i + 2);
-
+            $out .= $this->renderCallStackItem($file, $line, $class, $function, $args, $i + 2);
         }
         $out .= '</ul>';
         return $out;
