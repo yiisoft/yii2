@@ -4,12 +4,10 @@
     </a>
 </p>
 
-Yii 2 is a modern framework designed to be solid foundation for your PHP application.
+Yii 2 is a modern framework designed to be a solid foundation for your PHP application.
 
 It is fast, secure and efficient and works right out of the box pre-configured with reasonable defaults.
 The framework is easy to adjust to meet your needs, because Yii has been designed to be flexible.
-
-<div align="center">
 
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2/v/stable.png)](https://packagist.org/packages/yiisoft/yii2)
 [![Total Downloads](https://poser.pugx.org/yiisoft/yii2/downloads.png)](https://packagist.org/packages/yiisoft/yii2)
@@ -21,12 +19,10 @@ The framework is easy to adjust to meet your needs, because Yii has been designe
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/yiisoft/yii2/badges/quality-score.png?s=b1074a1ff6d0b214d54fa5ab7abbb90fc092471d)](https://scrutinizer-ci.com/g/yiisoft/yii2/)
 [![Code Climate](https://img.shields.io/codeclimate/github/yiisoft/yii2.svg)](https://codeclimate.com/github/yiisoft/yii2)
 
-</div>
-
 Installation
 ------------
 
-- The minimum requirement by Yii is PHP 5.4.
+- The minimum required PHP version of Yii is PHP 5.4.
 - It works best with PHP 7.
 - [Follow the Definitive Guide](http://www.yiiframework.com/doc-2.0/guide-start-installation.html)
 in order to get step by step instructions.
@@ -53,7 +49,7 @@ and [GitHub](https://github.com/yiisoft/yii2).
 Contributing
 ------------
 
-The framework is Open Source [powered by excellent community](https://github.com/yiisoft/yii2/graphs/contributors).
+The framework is Open Source [powered by an excellent community](https://github.com/yiisoft/yii2/graphs/contributors).
 
 You may join us and:
 
@@ -64,8 +60,8 @@ You may join us and:
 
 ### Reporting Secirity issues
 
-Refer to a [special page at the website](http://www.yiiframework.com/security/)
-decribing proper workflow for security issue reports.
+Please refer to a [special page at the website](http://www.yiiframework.com/security/)
+describing proper workflow for security issue reports.
 
 ### Directory Structure
 
