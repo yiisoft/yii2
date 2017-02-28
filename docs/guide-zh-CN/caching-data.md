@@ -269,7 +269,7 @@ $result = $db->cache(function ($db) {
 $result = Customer::getDb()->cache(function ($db) {
     return Customer::find()->where(['id' => 1])->one();
 });
-
+```
 
 > Info: 有些 DBMS （例如：[MySQL](http://dev.mysql.com/doc/refman/5.1/en/query-cache.html) ）
   也支持数据库服务器端的查询缓存。你可以选择使用任一查询缓存机制。
