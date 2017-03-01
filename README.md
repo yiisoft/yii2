@@ -49,7 +49,7 @@ and [GitHub](https://github.com/yiisoft/yii2).
 Contributing
 ------------
 
-The framework is Open Source [powered by an excellent community](https://github.com/yiisoft/yii2/graphs/contributors).
+The framework is [Open Source](LICENSE.md) powered by [an excellent community](https://github.com/yiisoft/yii2/graphs/contributors).
 
 You may join us and:
 
