@@ -96,14 +96,6 @@ class UrlRule extends Object implements UrlRuleInterface
      * @since 2.0.10
      */
     public $normalizer;
-    /**
-     * @var bool Value used when pattern contains only optional params. If `true` rule pattern will contain slash at
-     * the end of param pattern (last optional param can not be omitted if all other patterns are not omitted), if `false`
-     * rule pattern will contain slash at the beginning of param pattern (first optional param can not be omitted
-     * if all other patterns are not omitted).
-     * @since 2.0.12
-     */
-    public $trailingSlashForDefaults = false;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
@@ -290,8 +282,8 @@ class UrlRule extends Object implements UrlRuleInterface
         }
 
         // we have only optional params in route - ensure slash position on param patterns
-        if ($allowAppendSlash !== $this->trailingSlashForDefaults && trim($requiredPatternPart, '/') === '') {
-            $this->translatePattern($this->trailingSlashForDefaults);
+        if ($allowAppendSlash && trim($requiredPatternPart, '/') === '') {
+            $this->translatePattern(false);
             return;
         }
 

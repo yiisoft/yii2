@@ -947,20 +947,6 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
-                'two optional params at the beginning with trailingSlashForDefaults=true',
-                [
-                    'pattern' => '<language:(en|pl)>/<category>',
-                    'route' => 'site/category',
-                    'defaults' => ['language' => 'en', 'category' => 'books'],
-                    'trailingSlashForDefaults' => true,
-                ],
-                [
-                    ['', ['site/category', ['language' => 'en', 'category' => 'books']]],
-                    ['books', ['site/category', ['language' => 'en', 'category' => 'books']]],
-                    ['en/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
-                ],
-            ],
-            [
                 'two optional params at the beginning followed by placeholder',
                 [
                     'pattern' => '<language:(en|pl)>/<category>/test',
