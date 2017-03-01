@@ -257,7 +257,7 @@ class Widget extends Component implements ViewContextInterface
 
         return dirname($class->getFileName()) . DIRECTORY_SEPARATOR . 'views';
     }
-    
+
     /**
      * This method is invoked right before the widget is executed.
      *

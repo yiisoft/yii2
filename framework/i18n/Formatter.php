@@ -659,7 +659,7 @@ class Formatter extends Component
      * Since version 2.0.1 this may also return an array if `$checkTimeInfo` is true.
      * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
      * the timestamp has time information or it is just a date value.
-     * Since version 2.0.12 the array has third boolean element indicating whether the timestamp has date information 
+     * Since version 2.0.12 the array has third boolean element indicating whether the timestamp has date information
      * or it is just a time value.
      * @throws InvalidParamException if the input value can not be evaluated as a date value.
      */

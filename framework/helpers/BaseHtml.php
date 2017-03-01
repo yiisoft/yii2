@@ -59,6 +59,8 @@ class BaseHtml
 
         'href',
         'src',
+        'srcset',
+        'form',
         'action',
         'method',
 
@@ -741,7 +743,11 @@ class BaseHtml
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value
-            $hidden = static::hiddenInput($name, $options['uncheck']);
+            $hiddenOptions = [];
+            if (isset($options['form'])) {
+                $hiddenOptions['form'] = $options['form'];
+            }
+            $hidden = static::hiddenInput($name, $options['uncheck'], $hiddenOptions);
             unset($options['uncheck']);
         } else {
             $hidden = '';
@@ -1476,9 +1482,13 @@ class BaseHtml
         }
         if (!array_key_exists('uncheck', $options)) {
             $options['uncheck'] = '0';
+        } elseif ($options['uncheck'] === false) {
+            unset($options['uncheck']);
         }
         if (!array_key_exists('label', $options)) {
             $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
+        } elseif ($options['label'] === false) {
+            unset($options['label']);
         }
 
         $checked = "$value" === "{$options['value']}";

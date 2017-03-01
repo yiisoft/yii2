@@ -44,6 +44,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapeCharacter = '\\';
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
