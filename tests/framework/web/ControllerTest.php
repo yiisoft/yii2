@@ -37,6 +37,19 @@ class ControllerTest extends TestCase
 
     }
 
+    public function testAsRaw()
+    {
+        $data = [
+            'test' => 123,
+            'example' => 'data',
+        ];
+        $result = $this->controller->asRaw($data);
+        $this->assertInstanceOf('yii\web\Response', $result);
+        $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
+        $this->assertEquals(Response::FORMAT_RAW, $result->format);
+        $this->assertEquals($data, $result->data);
+    }
+
     public function testAsJson()
     {
         $data = [
@@ -47,6 +60,19 @@ class ControllerTest extends TestCase
         $this->assertInstanceOf('yii\web\Response', $result);
         $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
         $this->assertEquals(Response::FORMAT_JSON, $result->format);
+        $this->assertEquals($data, $result->data);
+    }
+
+    public function testAsJsonp()
+    {
+        $data = [
+            'test' => 123,
+            'example' => 'data',
+        ];
+        $result = $this->controller->asJsonp($data);
+        $this->assertInstanceOf('yii\web\Response', $result);
+        $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
+        $this->assertEquals(Response::FORMAT_JSONP, $result->format);
         $this->assertEquals($data, $result->data);
     }
 
@@ -61,6 +87,29 @@ class ControllerTest extends TestCase
         $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
         $this->assertEquals(Response::FORMAT_XML, $result->format);
         $this->assertEquals($data, $result->data);
+    }
+
+    public function testSetResponseData()
+    {
+        Yii::$app->response->format = Response::FORMAT_XML;
+
+        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>';
+        $response = $this->controller->testSetResponseData($xmlData);
+        $this->assertInstanceOf(Response::className(), $response);
+        $this->assertEquals($xmlData, $response->data);
+        $this->assertEquals(Response::FORMAT_XML, $response->format);
+
+        $jsonData = '{}';
+        $response = $this->controller->testSetResponseData($jsonData, Response::FORMAT_JSON);
+        $this->assertInstanceOf(Response::className(), $response);
+        $this->assertEquals($jsonData, $response->data);
+        $this->assertEquals(Response::FORMAT_JSON, $response->format);
+
+        $rawData = 'raw data';
+        $response = $this->controller->testSetResponseData($rawData, Response::FORMAT_RAW);
+        $this->assertInstanceOf(Response::className(), $response);
+        $this->assertEquals($rawData, $response->data);
+        $this->assertEquals(Response::FORMAT_RAW, $response->format);
     }
 
     public function testRedirect()

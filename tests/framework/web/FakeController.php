@@ -24,4 +24,8 @@ class FakeController extends Controller
     {
     }
 
+    public function testSetResponseData($data, $format = null)
+    {
+        return $this->setResponseData($data, $format);
+    }
 }
