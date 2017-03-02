@@ -162,10 +162,10 @@ class InstanceTest extends TestCase
         $instance = Instance::of('something');
         $export = var_export($instance, true);
 
-        $this->assertEquals(<<<'PHP'
-yii\di\Instance::__set_state(array(
-   'id' => 'something',
-))
+        $this->assertRegExp(<<<'PHP'
+@yii\\di\\Instance::__set_state\(array\(
+\s+'id' => 'something',
+\)\)@
 PHP
         , $export);
 
