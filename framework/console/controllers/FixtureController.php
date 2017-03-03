@@ -415,18 +415,33 @@ class FixtureController extends Controller
         $foundFixtures = [];
 
         foreach ($files as $fixture) {
-            // strip $fixturesPath from $fixture's full path
-            $relativeName = str_replace($fixturesPath . "/", "", $fixture);
-            // get fixtures's directory
-            $relativeDir = dirname($relativeName) == '.' ? '' : dirname($relativeName) . '/';
-            // get fixture name relatively to $fixturesPath
-            $relativeName = $relativeDir . basename($fixture, 'Fixture.php');
-            // normalize path to unix format
-            $relativeName = str_replace("\\", "/", $relativeName);
+            $relativeName = $this->getFixtureRelativeName($fixture);
             $foundFixtures[] = $relativeName;
         }
 
         return $foundFixtures;
+    }
+
+    /**
+     * Calculates $fixture's name relatively to $templatePath.
+     * Basically, strips getFixturePath() and 'Fixture.php' prefix from fixture's full path
+     * @see getFixturePath()
+     * @param $fixture string Full fixture path
+     * @return string Relative fixture name
+     *
+    */
+    private function getFixtureRelativeName($fixture) {
+        // $fixturesPath is normalized to unix format in getFixturesPath()
+        $fixturesPath = $this->getFixturePath();
+        // normalize $fixture to unix format
+        $fixture = str_replace("\\", "/", $fixture);
+        // strip $fixturesPath from $fixture's full path
+        $relativeName = str_replace($fixturesPath . "/", "", $fixture);
+        // get fixtures's directory
+        $relativeDir = dirname($relativeName) === '.' ? '' : dirname($relativeName) . '/';
+        // get fixture name relatively to $fixturesPath
+        $relativeName = $relativeDir . basename($fixture, 'Fixture.php');
+        return $relativeName;
     }
 
     /**
