@@ -166,9 +166,9 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
 一个参数占位符应该是以冒号开头的字符串。
 之后你可以调用下面绑定参数的方法来绑定参数值：
 
-* [[yii\db\Command::bindValue()|bindValue()]]: 绑定一个参数值
-* [[yii\db\Command::bindValues()|bindValues()]]: 在一次调用中绑定多个参数值
-* [[yii\db\Command::bindParam()|bindParam()]]: 与 [[yii\db\Command::bindValue()|bindValue()]] 相似，但是也支持绑定参数引用。
+* [[yii\db\Command::bindValue()|bindValue()]]：绑定一个参数值
+* [[yii\db\Command::bindValues()|bindValues()]]：在一次调用中绑定多个参数值
+* [[yii\db\Command::bindParam()|bindParam()]]：与 [[yii\db\Command::bindValue()|bindValue()]] 相似，但是也支持绑定参数引用。
 
 下面的例子展示了几个可供选择的绑定参数的方法：
 
