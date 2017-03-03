@@ -58,7 +58,7 @@ You may join us and:
 - [Give us feedback or start a design discussion](http://www.yiiframework.com/forum/index.php/forum/42-general-discussions-for-yii-20/)
 - [Contribute to the core code or fix bugs](docs/internals/git-workflow.md)
 
-### Reporting Secirity issues
+### Reporting Security issues
 
 Please refer to a [special page at the website](http://www.yiiframework.com/security/)
 describing proper workflow for security issue reports.
