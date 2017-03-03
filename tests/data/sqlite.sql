@@ -18,6 +18,9 @@ DROP TABLE IF EXISTS "negative_default_values";
 DROP TABLE IF EXISTS "animal";
 DROP TABLE IF EXISTS "default_pk";
 DROP TABLE IF EXISTS "document";
+DROP TABLE IF EXISTS "dossier";
+DROP TABLE IF EXISTS "employee";
+DROP TABLE IF EXISTS "department";
 DROP VIEW IF EXISTS "animal_view";
 
 CREATE TABLE "profile" (

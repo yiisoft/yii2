@@ -953,19 +953,42 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $dossier->employee_id = 2;
         $this->assertEquals('Will Smith', $dossier->employee->fullName);
+
+        unset($dossier->employee_id);
+        $this->assertNull($dossier->employee);
+
+        $dossier = new Dossier();
+        $this->assertNull($dossier->employee);
+
+        $dossier->employee_id = 1;
+        $dossier->department_id = 2;
+        $this->assertEquals('Ann Smith', $dossier->employee->fullName);
+
+        $dossier->employee_id = 2;
+        $this->assertEquals('Will Smith', $dossier->employee->fullName);
     }
 
     public function testOutdatedViaTableRelationsAreReset()
     {
-        $this->markTestSkipped('Not implemented yet.');
-
         $order = Order::findOne(1);
         $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
-        $this->assertArraySubset([1, 2], $orderItemIds);
+        sort($orderItemIds);
+        $this->assertSame([1, 2], $orderItemIds);
+
+        $order->id = 2;
+        sort($orderItemIds);
+        $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        $this->assertSame([3, 4, 5], $orderItemIds);
+
+        unset($order->id);
+        $this->assertSame([], $order->items);
+
+        $order = new Order();
+        $this->assertSame([], $order->items);
 
         $order->id = 3;
-        $newOrderItemIds = ArrayHelper::getColumn($order->items, 'id');
-        $this->assertEmpty($newOrderItemIds);
+        $orderItemIds = ArrayHelper::getColumn($order->items, 'id');
+        $this->assertSame([2], $orderItemIds);
     }
 
     public function testAlias()
