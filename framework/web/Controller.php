@@ -50,6 +50,32 @@ class Controller extends \yii\base\Controller
     }
 
     /**
+     * Send unformatted data.
+     *
+     * This method is a shortcut for sending unformatted data. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]].
+     * A common usage will be:
+     *
+     * ```php
+     * return $this->asRaw($data);
+     * ```
+     *
+     * @param mixed $data the data that should be sent.
+     * @return Response a response that is configured to send unformatted `$data`.
+     * @since 2.0.12
+     * @see Response::$format
+     * @see Response::FORMAT_RAW
+     * @see ResponseFormatterInterface
+     */
+    public function asRaw($data)
+    {
+        $format = Response::FORMAT_RAW;
+        $response = $this->setResponseData($data, $format);
+        return $response;
+    }
+
+    /**
      * Send data formatted as JSON.
      *
      * This method is a shortcut for sending data formatted as JSON. It will return
@@ -70,9 +96,34 @@ class Controller extends \yii\base\Controller
      */
     public function asJson($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_JSON;
-        $response->data = $data;
+        $format = Response::FORMAT_JSON;
+        $response = $this->setResponseData($data, $format);
+        return $response;
+    }
+
+    /**
+     * Send data formatted as JSONP.
+     *
+     * This method is a shortcut for sending data formatted as JSONP. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
+     * be formatted. A common usage will be:
+     *
+     * ```php
+     * return $this->asJsonp($data);
+     * ```
+     *
+     * @param mixed $data the data that should be formatted.
+     * @return Response a response that is configured to send `$data` formatted as JSONP.
+     * @since 2.0.12
+     * @see Response::$format
+     * @see Response::FORMAT_JSONP
+     * @see JsonResponseFormatter
+     */
+    public function asJsonp($data)
+    {
+        $format = Response::FORMAT_JSONP;
+        $response = $this->setResponseData($data, $format);
         return $response;
     }
 
@@ -97,9 +148,8 @@ class Controller extends \yii\base\Controller
      */
     public function asXml($data)
     {
-        $response = Yii::$app->getResponse();
-        $response->format = Response::FORMAT_XML;
-        $response->data = $data;
+        $format = Response::FORMAT_XML;
+        $response = $this->setResponseData($data, $format);
         return $response;
     }
 
@@ -260,5 +310,31 @@ class Controller extends \yii\base\Controller
     public function refresh($anchor = '')
     {
         return Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
+    }
+
+    /**
+     * Sets response data and configures its format.
+     *
+     * This method is a shortcut for setting response data formatted as specified by the `$format` parameter.
+     * It will return the [[Application::getResponse()|response]] application component after setting
+     * the [[Response::$data|data]] that should be formatted and configuring the [[Response::$format|format]].
+     * Used internally by the [[Controller::asJson()]], [[Controller::asXml()]] and similar methods.
+     *
+     * @param mixed $data the data that should be formatted.
+     * @param string|null $format the format `$data` should be formatted as. Defaults to `null` meaning,
+     * that the current response format should be preserved.
+     * @return Response a response that is configured to send `$data` formatted as specified by the `$format`.
+     * @since 2.0.12
+     * @see Response::$format
+     * @see ResponseFormatterInterface
+     */
+    protected function setResponseData($data, $format = null)
+    {
+        $response = Yii::$app->getResponse();
+        $response->data = $data;
+        if ($format !== null) {
+            $response->format = $format;
+        }
+        return $response;
     }
 }

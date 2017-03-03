@@ -41,6 +41,7 @@ Yii Framework 2 Change Log
 - Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire) 
 - Bug #13670: Fixed alias option from console when it includes `-` or `_` in option name (pana1990)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
+- Enh: Added `yii\web\Controller::asRaw()`, `yii\web\Controller::asJsonp()` and `yii\web\Controller::setResponseData()` methods (Kolyunya)
 
 
 2.0.11.2 February 08, 2017
