@@ -9,10 +9,12 @@ dist: trusty
 sudo: false
 
 # build only on master branches
-branches:
-  only:
-    - master
-    - 2.1
+# commented as this prevents people from running builds on their forks:
+# https://github.com/yiisoft/yii2/commit/bd87be990fa238c6d5e326d0a171f38d02dc253a
+#branches:
+#  only:
+#    - master
+#    - 2.1
 
 
 #
