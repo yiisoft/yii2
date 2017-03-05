@@ -22,6 +22,8 @@ class StringValidatorTest extends TestCase
         $val = new StringValidator();
         $this->assertFalse($val->validate(['not a string']));
         $this->assertTrue($val->validate('Just some string'));
+        $this->assertFalse($val->validate(true));
+        $this->assertFalse($val->validate(false));
     }
 
     public function testValidateValueLength()
@@ -70,6 +72,12 @@ class StringValidatorTest extends TestCase
         $model->attr_string = 'a tet string';
         $val->validateAttribute($model, 'attr_string');
         $this->assertFalse($model->hasErrors());
+        $model->attr_string = true;
+        $val->validateAttribute($model, 'attr_string');
+        $this->assertTrue($model->hasErrors());
+        $model->attr_string = false;
+        $val->validateAttribute($model, 'attr_string');
+        $this->assertTrue($model->hasErrors());
         $val = new StringValidator(['length' => 20]);
         $model = new FakedValidationModel();
         $model->attr_string = str_repeat('x', 20);
