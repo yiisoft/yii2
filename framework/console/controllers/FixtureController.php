@@ -426,21 +426,21 @@ class FixtureController extends Controller
      * Calculates $fixture's name relatively to $templatePath.
      * Basically, strips getFixturePath() and 'Fixture.php' prefix from fixture's full path
      * @see getFixturePath()
-     * @param $fixture string Full fixture path
+     * @param string $fullFixturePath Full fixture path
      * @return string Relative fixture name
      *
     */
-    private function getFixtureRelativeName($fixture) {
+    private function getFixtureRelativeName($fullFixturePath) {
         // $fixturesPath is normalized to unix format in getFixturesPath()
         $fixturesPath = $this->getFixturePath();
         // normalize $fixture to unix format
-        $fixture = str_replace("\\", "/", $fixture);
+        $fullFixturePath = str_replace("\\", "/", $fullFixturePath);
         // strip $fixturesPath from $fixture's full path
-        $relativeName = str_replace($fixturesPath . "/", "", $fixture);
+        $relativeName = str_replace($fixturesPath . "/", "", $fullFixturePath);
         // get fixtures's directory
         $relativeDir = dirname($relativeName) === '.' ? '' : dirname($relativeName) . '/';
         // get fixture name relatively to $fixturesPath
-        $relativeName = $relativeDir . basename($fixture, 'Fixture.php');
+        $relativeName = $relativeDir . basename($fullFixturePath, 'Fixture.php');
         return $relativeName;
     }
 
