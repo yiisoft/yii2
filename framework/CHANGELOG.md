@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Enh #13706: Profiling methods extracted from `yii\base\BaseYii` to new `yii\base\Profiler` core component (cronfy)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #7946 Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #13087: Fixed getting active validators for safe attribute (developeruz)
