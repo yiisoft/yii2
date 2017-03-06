@@ -12,6 +12,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'oci';
 
+    protected $likeEscapeCharSql = " ESCAPE '\\'";
+
     /**
      * this is not used as a dataprovider for testGetColumnType to speed up the test
      * when used as dataprovider every single line will cause a reconnect with the database which is not needed here
@@ -52,5 +54,20 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = "COMMENT ON TABLE [[comment]] IS ''";
         $sql = $qb->dropCommentFromTable('comment');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
+
+    public function testResetSequence()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = 'DROP SEQUENCE "item_SEQ";'
+            .'CREATE SEQUENCE "item_SEQ" START WITH 6 INCREMENT BY 1 NOMAXVALUE NOCACHE';
+        $sql = $qb->resetSequence('item');
+        $this->assertEquals($expected, $sql);
+
+        $expected = 'DROP SEQUENCE "item_SEQ";'
+            .'CREATE SEQUENCE "item_SEQ" START WITH 4 INCREMENT BY 1 NOMAXVALUE NOCACHE';
+        $sql = $qb->resetSequence('item', 4);
+        $this->assertEquals($expected, $sql);
     }
 }

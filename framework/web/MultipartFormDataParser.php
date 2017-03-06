@@ -132,7 +132,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
         }
         $boundary = $matches[1];
 
-        $bodyParts = preg_split('/\\R?-+' . preg_quote($boundary) . '/s', $rawBody);
+        $bodyParts = preg_split('/\\R?-+' . preg_quote($boundary, '/') . '/s', $rawBody);
         array_pop($bodyParts); // last block always has no data, contains boundary ending like `--`
 
         $bodyParams = [];
@@ -143,7 +143,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             }
             list($headers, $value) = preg_split("/\\R\\R/", $bodyPart, 2);
             $headers = $this->parseHeaders($headers);
-            
+
             if (!isset($headers['content-disposition']['name'])) {
                 continue;
             }

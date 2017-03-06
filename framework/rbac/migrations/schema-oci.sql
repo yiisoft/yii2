@@ -36,7 +36,7 @@ create table "auth_item"
         foreign key ("rule_name") references "auth_rule"("name") on delete set null,
         primary key ("name")
 );
--- adds oracle specific index to auth_item 
+-- adds oracle specific index to auth_item
 CREATE INDEX auth_type_index ON "auth_item"("type");
 
 create table "auth_item_child"

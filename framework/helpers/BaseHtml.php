@@ -59,6 +59,8 @@ class BaseHtml
 
         'href',
         'src',
+        'srcset',
+        'form',
         'action',
         'method',
 
@@ -430,11 +432,22 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
+     * @since 2.0.12 It is possible to pass the "srcset" option as an array which keys are
+     * descriptors and values are URLs. All URLs will be processed by [[Url::to()]].
      * @return string the generated image tag
      */
     public static function img($src, $options = [])
     {
         $options['src'] = Url::to($src);
+
+        if (isset($options['srcset']) && is_array($options['srcset'])) {
+            $srcset = [];
+            foreach ($options['srcset'] as $descriptor => $url) {
+                $srcset[] = Url::to($url) . ' ' . $descriptor;
+            }
+            $options['srcset'] = implode(',', $srcset);
+        }
+
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
@@ -730,7 +743,11 @@ class BaseHtml
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value
-            $hidden = static::hiddenInput($name, $options['uncheck']);
+            $hiddenOptions = [];
+            if (isset($options['form'])) {
+                $hiddenOptions['form'] = $options['form'];
+            }
+            $hidden = static::hiddenInput($name, $options['uncheck'], $hiddenOptions);
             unset($options['uncheck']);
         } else {
             $hidden = '';
@@ -1465,9 +1482,13 @@ class BaseHtml
         }
         if (!array_key_exists('uncheck', $options)) {
             $options['uncheck'] = '0';
+        } elseif ($options['uncheck'] === false) {
+            unset($options['uncheck']);
         }
         if (!array_key_exists('label', $options)) {
             $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
+        } elseif ($options['label'] === false) {
+            unset($options['label']);
         }
 
         $checked = "$value" === "{$options['value']}";

@@ -245,9 +245,9 @@ describe('yii', function () {
 
             it(message, function () {
                 confirmed = confirmChoice;
-                
+
                 var result = yii.confirm('Are you sure?', setOk ? okSpy : undefined, setCancel ? cancelSpy : undefined);
-                
+
                 assert.isUndefined(result);
                 assert.isTrue(windowConfirmStub.calledOnce);
                 assert.deepEqual(windowConfirmStub.getCall(0).args, ['Are you sure?']);
@@ -1095,7 +1095,7 @@ describe('yii', function () {
                     yii.reloadableScripts = [
                         '/js/reloadable.js',
                         // https://github.com/yiisoft/yii2/issues/11494
-                        '/js/reloadable/script*.js'
+                        '/js/reloadable/script*.js?v=*'
                     ];
                 });
 
@@ -1106,9 +1106,9 @@ describe('yii', function () {
                 describe('with match', function () {
                     withData({
                         'relative url, exact': ['/js/reloadable.js'],
-                        'relative url, wildcard': ['http://foo.bar/js/reloadable/script1.js'],
+                        'relative url, wildcard': ['/js/reloadable/script1.js?v=1'],
                         'absolute url, exact': ['http://foo.bar/js/reloadable.js'],
-                        'absolute url, wildcard': ['http://foo.bar/js/reloadable/script2.js']
+                        'absolute url, wildcard': ['http://foo.bar/js/reloadable/script2.js?v=2']
                     }, function (url) {
                         it('should load it as many times as it was requested', function () {
                             $.getScript(url);
@@ -1127,7 +1127,9 @@ describe('yii', function () {
                 describe('with no match', function () {
                     withData({
                         'relative url': ['/js/not_reloadable.js'],
-                        'absolute url': ['http://foo.bar/js/reloadable/not_reloadable_script.js']
+                        'relative url, all wildcards are empty': ['/js/reloadable/script.js?v='],
+                        'absolute url': ['http://foo.bar/js/reloadable/not_reloadable_script.js'],
+                        'absolute url, 1 empty wildcard': ['http://foo.bar/js/reloadable/script1.js?v=']
                     }, function (url) {
                         it('should load it only once for both relative and absolute urls', function () {
                             $.getScript(url);
@@ -1144,14 +1146,14 @@ describe('yii', function () {
 
                 describe('with failed load after successful load and making it not reloadable', function () {
                     it('should allow to load it again', function () {
-                        $.getScript('/js/reloadable/script_fail.js');
+                        $.getScript('/js/reloadable/script_fail.js?v=1');
                         respondToRequestWithSuccess(0);
 
-                        $.getScript('/js/reloadable/script_fail.js');
+                        $.getScript('/js/reloadable/script_fail.js?v=1');
                         respondToRequestWithError(1);
                         yii.reloadableScripts = [];
 
-                        $.getScript('/js/reloadable/script_fail.js');
+                        $.getScript('/js/reloadable/script_fail.js?v=1');
                         respondToRequestWithError(2);
 
                         assert.lengthOf(server.requests, 3);
