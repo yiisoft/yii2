@@ -461,10 +461,10 @@ class BaseYii
     public static function beginProfile($token, $category = 'application')
     {
         if (static::$app !== null) {
-            return static::$app->getProfiler()->begin($token, $category);
+            static::$app->getProfiler()->begin($token, $category);
+        } else {
+            static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
         }
-
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
     }
 
     /**
@@ -477,10 +477,10 @@ class BaseYii
     public static function endProfile($token, $category = 'application')
     {
         if (static::$app !== null) {
-            return static::$app->getProfiler()->end($token, $category);
+            static::$app->getProfiler()->end($token, $category);
+        } else {
+            static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
         }
-
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
     }
 
     /**
