@@ -309,6 +309,30 @@ class ErrorHandler extends \yii\base\ErrorHandler
     }
 
     /**
+     * Renders call stack.
+     * @param \Exception $exception exception to get call stack from
+     * @return string HTML content of the rendered call stack.
+     */
+    public function renderCallStack(\Exception $exception)
+    {
+        $out = '<ul>';
+        $out .= $this->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, [], 1);
+        for ($i = 0, $trace = $exception->getTrace(), $length = count($trace); $i < $length; ++$i) {
+            $file = !empty($trace[$i]['file']) ? $trace[$i]['file'] : null;
+            $line = !empty($trace[$i]['line']) ? $trace[$i]['line'] : null;
+            $class = !empty($trace[$i]['class']) ? $trace[$i]['class'] : null;
+            $function = null;
+            if (!empty($trace[$i]['function']) && $trace[$i]['function'] !== 'unknown') {
+                $function = $trace[$i]['function'];
+            }
+            $args = !empty($trace[$i]['args']) ? $trace[$i]['args'] : [];
+            $out .= $this->renderCallStackItem($file, $line, $class, $function, $args, $i + 2);
+        }
+        $out .= '</ul>';
+        return $out;
+    }
+
+    /**
      * Renders the global variables of the request.
      * List of global variables is defined in [[displayVars]].
      * @return string the rendering result
