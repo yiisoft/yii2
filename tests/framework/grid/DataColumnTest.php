@@ -144,5 +144,53 @@ HTML
             , $result);
     }
 
+    /**
+     * @see DataColumn::$filter
+     * @see DataColumn::renderFilterCellContent()
+     */
+    public function testFilterInput_FormatBoolean()
+    {
+        $this->mockApplication([
+            'components' => [
+                'db' => [
+                    'class' => '\yii\db\Connection',
+                    'dsn' => 'sqlite::memory:',
+                ]
+            ]
+        ]);
+        $columns = [
+            'id' => 'pk',
+            'customer_id' => 'integer',
+        ];
+        ActiveRecord::$db = Yii::$app->getDb();
+        Yii::$app->getDb()->createCommand()->createTable(Order::tableName(), $columns)->execute();
 
+        $grid = new GridView([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [],
+                'totalCount' => 0,
+            ]),
+            'columns' => [
+                0 => [
+                    'attribute' => 'customer_id',
+                    'format' => 'boolean' // does not make sense for this column but should still output proper dropdown list
+                ]
+            ],
+            'filterModel' => new Order
+        ]);
+
+        $dataColumn = $grid->columns[0];
+        $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
+        $method->setAccessible(true);
+        $result = $method->invoke($dataColumn);
+
+        $this->assertEqualsWithoutLE(<<<HTML
+<select class="form-control" name="Order[customer_id]">
+<option value=""></option>
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
+HTML
+            , $result);
+    }
 }
