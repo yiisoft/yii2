@@ -4,7 +4,7 @@ services:
   php:
     build:
       context: ../..
-      dockerfile: Dockerfile-mssql
+      dockerfile: tests/mssql/Dockerfile
     # Alternative pre-built image (TODO: evaluate)
     #image: ppoffice/apache-php-mssql-odbc
     ports:

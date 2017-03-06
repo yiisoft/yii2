@@ -4,7 +4,7 @@ services:
   php:
     build:
       context: ../..
-      dockerfile: Dockerfile-cubrid
+      dockerfile: tests/cubrid/Dockerfile
     ports:
       - 80
     #volumes:
