@@ -13,16 +13,14 @@ use yii\log\Logger;
 /**
  * Profiler is the class for application profiling.
  *
- * It is a basic implementation of profiling class. It has [[begin()]] and
- * [[end()]] methods to start and stop profiling of a code block.
- *
  * Profiler is used as a core component of Yii application.
  *
  * @see [[Yii::beginProfile()]]
+ * @see [[Yii::endProfile()]]
  *
  * @author cronfy <cronfy@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since 2.0.12
  */
 class Profiler extends Component
 {
