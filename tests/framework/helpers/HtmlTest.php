@@ -4,7 +4,6 @@ namespace yiiunit\framework\helpers;
 
 use Yii;
 use yii\base\DynamicModel;
-use yii\base\Model;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yiiunit\TestCase;
@@ -132,11 +131,98 @@ class HtmlTest extends TestCase
         $this->assertEquals('<a href="mailto:test&gt;">test<></a>', Html::mailto('test<>', 'test>'));
     }
 
-    public function testImg()
+    /**
+     * @return array
+     */
+    public function imgDataProvider()
     {
-        $this->assertEquals('<img src="/example" alt="">', Html::img('/example'));
-        $this->assertEquals('<img src="/test" alt="">', Html::img(''));
-        $this->assertEquals('<img src="/example" width="10" alt="something">', Html::img('/example', ['alt' => 'something', 'width' => 10]));
+        return [
+            [
+                '<img src="/example" alt="">',
+                '/example',
+                [],
+            ],
+            [
+                '<img src="/test" alt="">',
+                '',
+                [],
+            ],
+            [
+                '<img src="/example" width="10" alt="something">',
+                '/example',
+                [
+                    'alt' => 'something',
+                    'width' => 10,
+                ],
+            ],
+            [
+                '<img src="/base-url" srcset="" alt="">',
+                '/base-url',
+                [
+                    'srcset' => [
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" srcset="/example-9001w 9001w" alt="">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '9001w' => '/example-9001w',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" srcset="/example-100w 100w,/example-500w 500w,/example-1500w 1500w" alt="">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '100w' => '/example-100w',
+                        '500w' => '/example-500w',
+                        '1500w' => '/example-1500w',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x,/example-4x 4x,/example-5x 5x" alt="">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '1x' => '/example-1x',
+                        '2x' => '/example-2x',
+                        '3x' => '/example-3x',
+                        '4x' => '/example-4x',
+                        '5x' => '/example-5x',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" srcset="/example-1.42x 1.42x,/example-2.0x 2.0x,/example-3.99999x 3.99999x" alt="">',
+                '/base-url',
+                [
+                    'srcset' => [
+                        '1.42x' => '/example-1.42x',
+                        '2.0x' => '/example-2.0x',
+                        '3.99999x' => '/example-3.99999x',
+                    ],
+                ],
+            ],
+            [
+                '<img src="/base-url" srcset="/example-1x 1x,/example-2x 2x,/example-3x 3x" alt="">',
+                '/base-url',
+                [
+                    'srcset' => '/example-1x 1x,/example-2x 2x,/example-3x 3x',
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider imgDataProvider
+     */
+    public function testImg($expected, $src, $options)
+    {
+        $this->assertEquals($expected, Html::img($src, $options));
     }
 
     public function testLabel()
@@ -291,6 +377,13 @@ class HtmlTest extends TestCase
             'uncheck' => '0',
             'label' => 'ccc',
             'value' => 2,
+        ]));
+        $this->assertEquals('<input type="hidden" name="test" value="0" form="test-form"><label><input type="checkbox" class="a" name="test" value="2" form="test-form" checked> ccc</label>', Html::checkbox('test', true, [
+            'class' => 'a',
+            'uncheck' => '0',
+            'label' => 'ccc',
+            'value' => 2,
+            'form' => 'test-form',
         ]));
     }
 
@@ -1079,6 +1172,94 @@ EOD;
         $noCsrfForm = Html::beginForm('/index.php', 'post', ['csrf' => false, 'id' => 'myform']);
         $this->assertEquals('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
     }
+    
+    /**
+     * Data provider for [[testActiveRadio()]]
+     * @return array test data
+     */
+    public function dataProviderActiveRadio()
+    {
+        return [
+            [
+                true,
+                [],
+                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>'
+            ],
+            [
+                true,
+                ['uncheck' => false],
+                '<label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>'
+            ],
+            [
+                true,
+                ['label' => false],
+                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>'
+            ],
+            [
+                true,
+                ['uncheck' => false, 'label' => false],
+                '<input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>'
+            ],
+        ];
+    }
+    
+    /**
+     * @dataProvider dataProviderActiveRadio
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActiveRadio($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->radio = $value;
+        $this->assertEquals($expectedHtml, Html::activeRadio($model, 'radio', $options));
+    }
+        
+    /**
+     * Data provider for [[testActiveCheckbox()]]
+     * @return array test data
+     */
+    public function dataProviderActiveCheckbox()
+    {
+        return [
+            [
+                true,
+                [],
+                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>'
+            ],
+            [
+                true,
+                ['uncheck' => false],
+                '<label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>'
+            ],
+            [
+                true,
+                ['label' => false],
+                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>'
+            ],
+            [
+                true,
+                ['uncheck' => false, 'label' => false],
+                '<input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>'
+            ],
+        ];
+    }
+    
+    /**
+     * @dataProvider dataProviderActiveCheckbox
+     *
+     * @param string $value
+     * @param array $options
+     * @param string $expectedHtml
+     */
+    public function testActiveCheckbox($value, array $options, $expectedHtml)
+    {
+        $model = new HtmlTestModel();
+        $model->checkbox = $value;
+        $this->assertEquals($expectedHtml, Html::activeCheckbox($model, 'checkbox', $options));
+    }
 }
 
 /**
@@ -1090,7 +1271,7 @@ class HtmlTestModel extends DynamicModel
 {
     public function init()
     {
-        foreach (['name', 'types', 'description'] as $attribute) {
+        foreach (['name', 'types', 'description', 'radio', 'checkbox'] as $attribute) {
             $this->defineAttribute($attribute);
         }
     }
@@ -1101,6 +1282,7 @@ class HtmlTestModel extends DynamicModel
             ['name', 'required'],
             ['name', 'string', 'max' => 100],
             ['description', 'string', 'max' => 500],
+            [['radio', 'checkbox'], 'boolean'],
         ];
     }
 }

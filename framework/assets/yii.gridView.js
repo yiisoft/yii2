@@ -126,7 +126,7 @@
             var namesInFilter = Object.keys(data);
 
             $.each(yii.getQueryParams(settings.filterUrl), function (name, value) {
-                if (namesInFilter.indexOf(name) === -1 && namesInFilter.indexOf(name.replace(/\[\]$/, '')) === -1) {
+                if (namesInFilter.indexOf(name) === -1 && namesInFilter.indexOf(name.replace(/\[\d*\]$/, '')) === -1) {
                     if (!$.isArray(value)) {
                         value = [value];
                     }

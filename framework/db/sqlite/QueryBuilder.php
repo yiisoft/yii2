@@ -48,6 +48,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapeCharacter = '\\';
 
     /**
      * Generates a batch INSERT SQL statement.
@@ -106,6 +110,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
             $values[] = implode(', ', $vs);
         }
+        if (empty($values)) {
+            return '';
+        }
 
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
@@ -134,13 +141,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $key = reset($table->primaryKey);
                 $tableName = $db->quoteTableName($tableName);
                 $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
-                    return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                    return $db->createCommand("SELECT MAX($key) FROM $tableName")->queryScalar();
                 });
             } else {
                 $value = (int) $value - 1;
             }
             try {
-                $db->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
+                return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
             } catch (Exception $e) {
                 // it's possible that sqlite_sequence does not exist
             }

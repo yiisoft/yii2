@@ -141,7 +141,7 @@ abstract class CommandTest extends DatabaseTestCase
         if (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             $this->markTestSkipped('HHVMs PgSQL implementation has some specific behavior that breaks some parts of this test.');
         }
-        
+
         $db = $this->getConnection();
 
         // bindParam
@@ -296,6 +296,15 @@ SQL;
             []
         );
         $this->assertEquals(0, $command->execute());
+    }
+
+    public function testBatchInsertWithYield()
+    {
+        if (version_compare(PHP_VERSION, '5.5', '<')) {
+            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
+        } else {
+            include __DIR__ . '/testBatchInsertWithYield.php';
+        }
     }
 
     public function testInsert()
@@ -558,7 +567,6 @@ SQL;
             ['id' => 2, 'bar' => 'hello'],
         ], $records);
     }
-
 
     public function testDropTable()
     {

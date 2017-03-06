@@ -389,18 +389,12 @@ describe('yii.gridView', function () {
             });
         });
 
-        // https://github.com/yiisoft/yii2/pull/10284
-
         describe('with list box', function () {
-            var queryString = 'PostSearch[name]=&PostSearch[tags]=-1&PostSearch[tags][]=1&PostSearch[tags][]=2';
-
-            beforeEach(function () {
-                $listBox.find('option[value="1"]').prop('selected', true);
-                $listBox.find('option[value="2"]').prop('selected', true);
-            });
-
             describe('with values selected', function () {
                 it('should send the request to correct url with correct parameters', function () {
+                    $listBox.find('option[value="1"]').prop('selected', true);
+                    $listBox.find('option[value="2"]').prop('selected', true);
+
                     $gridView = $('#w2').yiiGridView({
                         filterUrl: '/posts/index',
                         filterSelector: '#w2-filters input, #w2-filters select'
@@ -408,15 +402,25 @@ describe('yii.gridView', function () {
                     $gridView.yiiGridView('applyFilter');
 
                     var $form = $gridView.find('.gridview-filter-form');
+                    var expectedQueryString = 'PostSearch[name]=&PostSearch[tags]=-1&PostSearch[tags][]=1' +
+                        '&PostSearch[tags][]=2';
+
                     assert.equal($form.attr('action'), '/posts/index');
-                    assert.equal(decodeURIComponent($form.serialize()), queryString);
+                    assert.equal(decodeURIComponent($form.serialize()), expectedQueryString);
                 });
             });
 
+            // https://github.com/yiisoft/yii2/pull/10284
+
             describe('with unselected values after applied filter', function () {
                 it('should send the request to correct url with correct parameters', function () {
+                    $listBox.find('option[value="1"]').prop('selected', true);
+                    $listBox.find('option[value="2"]').prop('selected', true);
+
+                    var filterUrl = '/posts/index/?PostSearch[name]=&PostSearch[tags]=-1&PostSearch[tags][]=1' +
+                        '&PostSearch[tags][]=2';
                     $gridView = $('#w2').yiiGridView({
-                        filterUrl: '/posts/index/?' + queryString,
+                        filterUrl: filterUrl,
                         filterSelector: '#w2-filters input, #w2-filters select'
                     });
                     $listBox.find('option:selected').prop('selected', false);
@@ -425,6 +429,33 @@ describe('yii.gridView', function () {
                     var $form = $gridView.find('.gridview-filter-form');
                     assert.equal($form.attr('action'), '/posts/index/');
                     assert.equal(decodeURIComponent($form.serialize()), 'PostSearch[name]=&PostSearch[tags]=-1');
+                });
+            });
+
+            // https://github.com/yiisoft/yii2/issues/13379
+
+            describe('with applied pagination', function () {
+                it("should correctly change multiple select's data", function () {
+                    $listBox.find('option[value="2"]').prop('selected', true);
+                    $listBox.find('option[value="3"]').prop('selected', true);
+
+                    var filterUrl = '/posts/index?PostSearch[tags]=-1PostSearch[tags][0]=2&PostSearch[tags][1]=3' +
+                        '&page=2&per-page=2';
+                    $gridView = $('#w2').yiiGridView({
+                        filterUrl: filterUrl,
+                        filterSelector: '#w2-filters input, #w2-filters select'
+                    });
+
+                    $listBox.find('option[value="4"]').prop('selected', true);
+
+                    $gridView.yiiGridView('applyFilter');
+
+                    var $form = $gridView.find('.gridview-filter-form');
+                    var expectedQueryString = 'PostSearch[name]=' +
+                        '&PostSearch[tags]=-1&PostSearch[tags][]=2&PostSearch[tags][]=3&PostSearch[tags][]=4' +
+                        '&page=2&per-page=2';
+
+                    assert.equal(decodeURIComponent($form.serialize()), expectedQueryString);
                 });
             });
         });
