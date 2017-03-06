@@ -615,6 +615,15 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the profiler component.
+     * @return \yii\base\Profiler the profiler application component.
+     */
+    public function getProfiler()
+    {
+        return $this->get('profiler');
+    }
+
+    /**
      * Returns the configuration of core application components.
      * @see set()
      */
@@ -629,6 +638,7 @@ abstract class Application extends Module
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
             'security' => ['class' => 'yii\base\Security'],
+            'profiler' => ['class' => 'yii\base\Profiler'],
         ];
     }
 
