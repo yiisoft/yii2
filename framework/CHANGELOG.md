@@ -38,10 +38,11 @@ Yii Framework 2 Change Log
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
 - Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire, arogachev)
 - Enh #13650: Improved `yii\base\Security::hkdf()` to take advantage of native `hash_hkdf()` implementation in PHP >= 7.1.2  (charlesportwoodii)
-- Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire) 
+- Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire)
 - Bug #13670: Fixed alias option from console when it includes `-` or `_` in option name (pana1990)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 - Enh #13695: `\yii\web\Response::setStatusCode()` method now returns the Response object itself (kyle-mccarthy)
+- Enh #13698: `yii\grid\DataColumn` filter is automatically generated as dropdown list in case of `format` set to `boolean`
 
 
 2.0.11.2 February 08, 2017
