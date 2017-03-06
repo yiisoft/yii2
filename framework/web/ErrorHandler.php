@@ -308,6 +308,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
         ]);
     }
 
+    /**
+     * Renders call stack.
+     * @param \Exception $exception exception to get call stack from
+     * @return string HTML content of the rendered call stack.
+     */
     public function renderCallStack(\Exception $exception)
     {
         $out = '<ul>';
