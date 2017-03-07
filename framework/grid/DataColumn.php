@@ -192,9 +192,9 @@ class DataColumn extends Column
             } elseif ($this->format === 'boolean') {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
                 return Html::activeDropDownList($model, $this->attribute, [
-                        $this->grid->formatter->booleanFormat[0],
-                        $this->grid->formatter->booleanFormat[1]
-                    ], $options) . $error;
+                    $this->grid->formatter->booleanFormat[0],
+                    $this->grid->formatter->booleanFormat[1],
+                ], $options) . $error;
             } else {
                 return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
             }
