@@ -6,6 +6,9 @@ use yii\db\Connection;
 
 /**
  * Tests that [[\yii\console\controllers\MessageController]] works as expected with DB message format.
+ *
+ * @group db
+ * @group mysql
  */
 class DbMessageControllerTest extends BaseMessageControllerTest
 {
