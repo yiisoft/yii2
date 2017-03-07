@@ -267,7 +267,7 @@ can properly detect if a connection is secure.
 
 Like Nginx and Apache it's recommended to host the application in a virtual host, in which, its document root points to `path/to/app/web` folder and in that folder, `web`, you have to place a file named `web.config` to its root to be available at `path/to/app/web/web.config` with the following syntax, to allow pretty Urls and other features required for Yii2:
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 <system.webServer>
