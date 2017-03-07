@@ -263,9 +263,9 @@ in order to avoid many unnecessary system `stat()` calls.
 Also note that when running an HTTPS server, you need to add `fastcgi_param HTTPS on;` so that Yii
 can properly detect if a connection is secure.
 
-### IIS Configurations
+### IIS Configuration <span id="iis-configuration"></span>
 
-Like Nginx and Apache it's recommended to host the application in a virtual host, in which, its document root points to `path/to/app/web` folder and in that folder, `web`, you have to place a file named `web.config` to its root to be available at `path/to/app/web/web.config` with the following syntax, to allow pretty Urls and other features required for Yii2:
+It's recommended to host the application in a virtual host where document root points to `path/to/app/web` folder. In that `web` folder you have to place a file named `web.config` i.e. `path/to/app/web/web.config`. Content of the file should be the following:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
