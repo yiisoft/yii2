@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
-- Bug #7946 Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
+- Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
