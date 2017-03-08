@@ -10,6 +10,7 @@ namespace yii\db\pgsql;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
+use yii\db\ViewFinderTrait;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
@@ -22,6 +23,8 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    use ViewFinderTrait;
+
     /**
      * @var string the default schema used for the current session.
      */
@@ -109,11 +112,6 @@ class Schema extends \yii\db\Schema
         'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING,
     ];
-
-    /**
-     * @var array list of ALL view names in the database
-     */
-    private $_viewNames = [];
 
 
     /**
@@ -212,10 +210,7 @@ SQL;
     }
 
     /**
-     * Returns all views names in the database.
-     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema.
-     * @return array all views names in the database. The names have NO schema name prefix.
-     * @since 2.0.9
+     * @inheritdoc
      */
     protected function findViewNames($schema = '')
     {
@@ -230,24 +225,6 @@ WHERE ns.nspname = :schemaName AND c.relkind = 'v'
 ORDER BY c.relname
 SQL;
         return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
-    }
-
-    /**
-     * Returns all view names in the database.
-     * @param string $schema the schema of the views. Defaults to empty string, meaning the current or default schema name.
-     * If not empty, the returned view names will be prefixed with the schema name.
-     * @param bool $refresh whether to fetch the latest available view names. If this is false,
-     * view names fetched previously (if available) will be returned.
-     * @return string[] all view names in the database.
-     * @since 2.0.9
-     */
-    public function getViewNames($schema = '', $refresh = false)
-    {
-        if (!isset($this->_viewNames[$schema]) || $refresh) {
-            $this->_viewNames[$schema] = $this->findViewNames($schema);
-        }
-
-        return $this->_viewNames[$schema];
     }
 
     /**

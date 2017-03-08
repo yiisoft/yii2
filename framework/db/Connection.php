@@ -713,18 +713,34 @@ class Connection extends Component
                 $transaction->commit();
             }
         } catch (\Exception $e) {
-            if ($transaction->isActive && $transaction->level === $level) {
-                $transaction->rollBack();
-            }
+            $this->rollbackTransactionOnLevel($transaction, $level);
             throw $e;
         } catch (\Throwable $e) {
-            if ($transaction->isActive && $transaction->level === $level) {
-                $transaction->rollBack();
-            }
+            $this->rollbackTransactionOnLevel($transaction, $level);
             throw $e;
         }
 
         return $result;
+    }
+
+    /**
+     * Rolls back given [[Transaction]] object if it's still active and level match.
+     * In some cases rollback can fail, so this method is fail safe. Exception thrown
+     * from rollback will be caught and just logged with [[\Yii::error()]].
+     * @param Transaction $transaction Transaction object given from [[beginTransaction()]].
+     * @param int $level Transaction level just after [[beginTransaction()]] call.
+     */
+    protected function rollbackTransactionOnLevel($transaction, $level)
+    {
+        if ($transaction->isActive && $transaction->level === $level) {
+            // https://github.com/yiisoft/yii2/pull/13347
+            try {
+                $transaction->rollBack();
+            } catch (\Exception $e) {
+                \Yii::error($e, __METHOD__);
+                // hide this exception to be able to continue throwing original exception outside
+            }
+        }
     }
 
     /**
@@ -949,13 +965,27 @@ class Connection extends Component
      * @param callable $callback a PHP callable to be executed by this method. Its signature is
      * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
+     * @throws \Exception|\Throwable if there is any exception thrown from the callback
      */
     public function useMaster(callable $callback)
     {
-        $enableSlave = $this->enableSlaves;
-        $this->enableSlaves = false;
-        $result = call_user_func($callback, $this);
-        $this->enableSlaves = $enableSlave;
+        if ($this->enableSlaves) {
+            $this->enableSlaves = false;
+            try {
+                $result = call_user_func($callback, $this);
+            } catch (\Exception $e) {
+                $this->enableSlaves = true;
+                throw $e;
+            } catch (\Throwable $e) {
+                $this->enableSlaves = true;
+                throw $e;
+            }
+            // TODO: use "finally" keyword when miminum required PHP version is >= 5.5
+            $this->enableSlaves = true;
+        } else {
+            $result = call_user_func($callback, $this);
+        }
+
         return $result;
     }
 

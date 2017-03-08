@@ -41,3 +41,4 @@ phpunit.phar
 
 # NPM packages
 /node_modules
+.env

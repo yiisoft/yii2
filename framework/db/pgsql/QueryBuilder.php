@@ -164,8 +164,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $sequence = $this->db->quoteTableName($table->sequenceName);
             $tableName = $this->db->quoteTableName($tableName);
             if ($value === null) {
-                $key = reset($table->primaryKey);
-                $value = "(SELECT COALESCE(MAX(\"{$key}\"),0) FROM {$tableName})+1";
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
             } else {
                 $value = (int) $value;
             }
@@ -188,14 +188,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
         $enable = $check ? 'ENABLE' : 'DISABLE';
-        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
         $tableNames = $table ? [$table] : $this->db->getSchema()->getTableNames($schema);
         $viewNames = $this->db->getSchema()->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);
         $command = '';
 
         foreach ($tableNames as $tableName) {
-            $tableName = '"' . $schema . '"."' . $tableName . '"';
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
             $command .= "ALTER TABLE $tableName $enable TRIGGER ALL; ";
         }
 
@@ -203,6 +203,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $this->db->getMasterPdo()->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
         return $command;
+    }
+
+    /**
+     * Builds a SQL statement for truncating a DB table.
+     * Explicitly restarts identity for PGSQL to be consistent with other databases which all do this by default.
+     * @param string $table the table to be truncated. The name will be properly quoted by the method.
+     * @return string the SQL statement for truncating a DB table.
+     */
+    public function truncateTable($table)
+    {
+        return 'TRUNCATE TABLE ' . $this->db->quoteTableName($table) . ' RESTART IDENTITY';
     }
 
     /**
@@ -304,6 +315,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 $vs[] = $value;
             }
             $values[] = '(' . implode(', ', $vs) . ')';
+        }
+        if (empty($values)) {
+            return '';
         }
 
         foreach ($columns as $i => $name) {

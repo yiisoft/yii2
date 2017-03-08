@@ -273,6 +273,14 @@ class Security extends Component
      */
     public function hkdf($algo, $inputKey, $salt = null, $info = null, $length = 0)
     {
+        if (function_exists('hash_hkdf')) {
+            $outputKey = hash_hkdf($algo, $inputKey, $length, $info, $salt);
+            if ($outputKey === false) {
+                throw new InvalidParamException('Invalid parameters to hash_hkdf()');
+            }
+            return $outputKey;
+        }
+        
         $test = @hash_hmac($algo, '', '', true);
         if (!$test) {
             throw new InvalidParamException('Failed to generate HMAC with hash algorithm: ' . $algo);
@@ -559,9 +567,7 @@ class Security extends Component
         }
 
         $bytes = $this->generateRandomKey($length);
-        // '=' character(s) returned by base64_encode() are always discarded because
-        // they are guaranteed to be after position $length in the base64_encode() output.
-        return strtr(substr(base64_encode($bytes), 0, $length), '+/', '_-');
+        return substr(StringHelper::base64UrlEncode($bytes), 0, $length);
     }
 
     /**

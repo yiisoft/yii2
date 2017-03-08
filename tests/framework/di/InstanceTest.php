@@ -156,4 +156,31 @@ class InstanceTest extends TestCase
         $this->assertInstanceOf('yii\db\Connection', $db = $cache->db);
         $this->assertEquals('sqlite:path/to/file.db', $db->dsn);
     }
+
+    public function testRestoreAfterVarExport()
+    {
+        $instance = Instance::of('something');
+        $export = var_export($instance, true);
+
+        $this->assertRegExp(<<<'PHP'
+@yii\\di\\Instance::__set_state\(array\(
+\s+'id' => 'something',
+\)\)@
+PHP
+        , $export);
+
+        $this->assertEquals($instance, Instance::__set_state([
+            'id' => 'something',
+        ]));
+    }
+
+    public function testRestoreAfterVarExportRequiresId()
+    {
+        $this->setExpectedException(
+            'yii\base\InvalidConfigException',
+            'Failed to instantiate class "Instance". Required parameter "id" is missing'
+        );
+
+        Instance::__set_state([]);
+    }
 }

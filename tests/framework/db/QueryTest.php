@@ -235,6 +235,22 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(5, $query->offset);
     }
 
+    public function testLimitOffsetWithExpression()
+    {
+        $query = (new Query())->from('customer')->select('id')->orderBy('id');
+        $query
+            ->limit(new Expression('1 + 1'))
+            ->offset(new Expression('1 + 0'));
+
+        $result = $query->column($this->getConnection());
+
+        $this->assertCount(2, $result);
+
+        $this->assertNotContains(1, $result);
+        $this->assertContains(2, $result);
+        $this->assertContains(3, $result);
+    }
+
     public function testUnion()
     {
         $connection = $this->getConnection();
