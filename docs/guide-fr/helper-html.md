@@ -3,7 +3,7 @@ Classe assistante Html
 
 Toutes les applications Web génèrent un grand nombre de balises HTML. Si le code HTML est statique, il peut être créé efficacement sous forme de [mélange de code PHP et de code HTML dans un seul fichier](http://php.net/manual/en/language.basic-syntax.phpmode.php), mais lorsqu'il est généré dynamiquement, cela commence à être compliqué à gérer sans une aide supplémentaire. Yii fournit une telle aide sous la forme de la classe assistante Html, qui offre un jeu de méthodes statiques pour manipuler les balises Html les plus courantes, leurs options et leur contenu.
 
-> Note: se votre code HTML est presque statique, il vaut mieux utiliser HTML directement. Il n'est pas nécessaire d'envelopper tout dans un appel aux méthodes de la classe assistante Html.
+> Note: si votre code HTML est presque statique, il vaut mieux utiliser HTML directement. Il n'est pas nécessaire d'envelopper tout dans des appels aux méthodes de la classe assistante Html.
 
 
 ## Les bases <span id="basics"></span>
@@ -135,7 +135,7 @@ accepte un tableau de propriétés à retirer. S'il s'agit d'une propriété uni
 ### Encodage et décodage du contenu <span id="encoding-and-decoding-content"></span>
 
 Pour que le contenu puisse être affiché en HTML de manière propre et en toute sécurité, les caractères spéciaux du contenu doivent être encodés. En PHP, cela s'obtient avec [htmlspecialchars](http://www.php.net/manual/en/function.htmlspecialchars.php) et 
-[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php). Le problème rencontré en utilisant ces méthodes directement est qui vous devez spécifier l'encodage et des options supplémentaires tout le temps. Comme ces options restent toujours les mêmes et que l'encodage doit correspondre à celui de l'application pour éviter les problèmes de sécurité, Yii fournit deux méthodes compactes est faciles à utiliser :
+[htmlspecialchars_decode](http://www.php.net/manual/en/function.htmlspecialchars-decode.php). Le problème rencontré en utilisant ces méthodes directement est que vous devez spécifier l'encodage et des options supplémentaires tout le temps. Comme ces options restent toujours les mêmes et que l'encodage doit correspondre à celui de l'application pour éviter les problèmes de sécurité, Yii fournit deux méthodes compactes et faciles à utiliser :
 
 ```php
 $userName = Html::encode($user->name);
@@ -208,7 +208,7 @@ Si vous connaissez le type de l'entrée à l'avance, il est plus commode d'utili
 - [[yii\helpers\Html::fileInput()]], [[yii\helpers\Html::activeFileInput()]]
 - [[yii\helpers\Html::textarea()]], [[yii\helpers\Html::activeTextarea()]]
 
-Radios et checkboxes sont un peu différentes en matière de signature de méthode :
+Les listes radio et les boîtes à cocher sont un peu différentes en matière de signature de méthode :
 
 ```php
 <?= Html::radio('agree', true, ['label' => 'I agree']);
@@ -228,7 +228,7 @@ Les listes déroulantes et les boîtes listes peuvent être rendues comme suit 
 <?= Html::activeListBox($users, 'id', ArrayHelper::map($userModels, 'id', 'name')) ?>
 ```
 
-Le premier argument est le nom de l'entrée, le deuxième est la valeur sélectionnée actuelle et le troisième est un tableau de paires clé-valeur, dans le quel la clé est la valeur d'entrée dans la liste et la valeur est l'étiquette qui correspond à cette valeur dans la liste.
+Le premier argument est le nom de l'entrée, le deuxième est la valeur sélectionnée actuelle et le troisième est un tableau de paires clé-valeur, dans lequel la clé est la valeur d'entrée dans la liste et la valeur est l'étiquette qui correspond à cette valeur dans la liste.
 
 Si vous désirez que des choix multiples soient sélectionnables, vous pouvez utiliser la liste à sélection multiples (checkbox list) :
 
@@ -341,7 +341,7 @@ Pour lier un fichier JavaScript :
 <?= Html::jsFile('@web/js/main.js') ?>
 ```
 
-Se passe comme avec CSS, le premier argument spécifie l'URL du fichier à inclure. Les options sont passées via le deuxième argument. Dans les options vous pouvez spécifier `condition` de la même manière que dans les options par un fichier CSS (méthode `cssFile`). 
+Se passe comme avec CSS, le premier argument spécifie l'URL du fichier à inclure. Les options sont passées via le deuxième argument. Dans les options vous pouvez spécifier `condition` de la même manière que dans les options pour un fichier CSS (méthode `cssFile`). 
 
 
 ## Hyperliens <span id="hyperlinks"></span>
@@ -355,7 +355,7 @@ Il y a une méthode commode pour générer les hyperliens :
 Le premier argument est le titre. Il n'est pas encodé, mais si vous utilisez des données entrées par l'utilisateur, vous devez les encoder avec `Html::encode()`. Le deuxième argument est ce qui se retrouvera dans l'attribut `href` de la balise `<a`.
 
 Voir [Url::to()](helper-url.md) pour les détails sur les valeurs acceptées. 
-Le troisième argument es un tableau pour les attributs de la balise.
+Le troisième argument est un tableau pour les attributs de la balise.
 
 Si vous devez générer des liens  `mailto`, vous pouvez utiliser le code suivant :
 
@@ -393,4 +393,4 @@ Les listes non ordonnées peuvent être générées comme suit :
 }]) ?>
 ```
 
-Pour une liste ordonnées, utilisez plutôt `Html::ol()`.
+Pour une liste ordonnée, utilisez plutôt `Html::ol()`.

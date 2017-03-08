@@ -1,12 +1,12 @@
-ArrayHelper
-===========
+Classe assistante ArrayHelper
+=============================
 
 En plus du jeu riche de [fonctions de tableaux](http://php.net/manual/en/book.array.php) qu'offre PHP, la classe assistante traitant les tableaux dans Yii fournit des méthodes statiques supplémentaires qui vous permettent de traiter les tableaux avec plus d'efficacité.
 
 
 ## Obtention de valeurs <span id="getting-values"></span>
 
-Récupérer des valeurs d'un tableau ou d'un objet ou une structure complexe écrits tous deux en PHP standard est un processus assez répétitif. Vous devez d'abord vérifier que la la clé existe avec `isset`, puis si c'est le cas, vous récupérez la valeur associée, sinon il vous faut fournir une valeur par défaut : 
+Récupérer des valeurs d'un tableau ou d'un objet ou une structure complexe écrits tous deux en PHP standard est un processus assez répétitif. Vous devez d'abord vérifier que la clé existe avec `isset`, puis si c'est le cas, vous récupérez la valeur associée, sinon il vous faut fournir une valeur par défaut : 
 
 ```php
 class User
@@ -29,10 +29,10 @@ Yii fournit une méthode très pratique pour faire cela :
 $value = ArrayHelper::getValue($array, 'foo.bar.name');
 ```
 
-Le premier argument de la méthode indique de quelle source nous voulons récupérer une valeur. Le deuxième spécifie comment récupérer la données. Il peut s'agir d'un des éléments suivants :
+Le premier argument de la méthode indique de quelle source nous voulons récupérer une valeur. Le deuxième spécifie comment récupérer la donnée. Il peut s'agir d'un des éléments suivants :
 
 - Nom d'une clé de tableau ou de la propriété d'un objet de laquelle récupérer une valeur.
-- Un jeu de noms de clés de tableau ou de propriétés d'objet séparées par des points, comme dans l'exemple que nous venons de présenter ci-dessus.
+- Un jeu de noms de clé de tableau ou de propriétés d'objet séparées par des points, comme dans l'exemple que nous venons de présenter ci-dessus.
 - Une fonction de rappel qui retourne une valeur.
 
 Le fonction de rappel doit être la suivante :
@@ -43,7 +43,7 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 });
 ```
 
-Le troisième argument facultif est la valeur par défaut qui est `null` si on ne la spécifie pas. Elle peut être utilisée comme ceci :
+Le troisième argument facultatif est la valeur par défaut qui est `null` si on ne la spécifie pas. Il peut être utilisé comme ceci :
 
 ```php
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
@@ -56,7 +56,7 @@ $array = ['type' => 'A', 'options' => [1, 2]];
 $type = ArrayHelper::remove($array, 'type');
 ```
 
-Après exécution du code, `$array` contiendra `['options' => [1, 2]]` et `$type` sera `A`. Notez que contrairement à la méthode `getValue`, `remove` n'accepte que les noms de clés seulement.
+Après exécution du code, `$array` contiendra `['options' => [1, 2]]` et `$type` sera `A`. Notez que contrairement à la méthode `getValue`, `remove` accepte seulement les noms de clé.
 
 
 ## Tester l'existence des clés <span id="checking-existence-of-keys"></span>
@@ -102,7 +102,7 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 
 ## Réindexation de tableaux <span id="reindexing-arrays"></span>
 
-La méthode `index` peut être utilisées pour indexer un tableau selon une clé spécifiée. L'entrée doit être soit un tableau multidimensionnel, soit un tableau d'objets. `$key` peut être soit un nom de clé du sous-tableau, un nom de propriété d'objet ou une fonction anonyme qui doit retourner la valeur à utiliser comme clé. 
+La méthode `index` peut être utilisées pour indexer un tableau selon une clé spécifiée. L'entrée doit être soit un tableau multidimensionnel, soit un tableau d'objets. `$key` peut être un nom de clé du sous-tableau, un nom de propriété d'objet ou une fonction anonyme qui doit retourner la valeur à utiliser comme clé. 
 
 L'attribut `$groups` est un tableau de clés qui est utilisé pour regrouper le tableau d'entrée en un ou plusieurs sous-tableaux basés sur les clés spécifiées. 
 
@@ -252,7 +252,7 @@ ArrayHelper::multisort($data, function($item) {
 
 Le troisième argument précise la direction. Dans le cas d'un tri selon une clé unique, il s'agit soit de `SORT_ASC`, soit de `SORT_DESC`. Si le tri se fait selon des valeurs multiples, vous pouvez préciser des directions de tri différentes pour chacune des clés en présentant ces directions sous forme de tableau.
 
-Le dernier argument est un drapeau de tri de PHP qui peut prendre les mêmes valeurs que celles acceptées par la fonuction [sort()](http://php.net/manual/en/function.sort.php) de PHP.
+Le dernier argument est une option de tri de PHP qui peut prendre les mêmes valeurs que celles acceptées par la fonction [sort()](http://php.net/manual/en/function.sort.php) de PHP.
 
 
 ## Détection des types de tableau <span id="detecting-array-types"></span>

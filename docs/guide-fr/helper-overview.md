@@ -1,9 +1,9 @@
-classes assistantes
+Classes assistantes
 ===================
 
 > Note: cette section est en cours de développement.
 
-Yii procure de nombreuses classe qui vous aident à simplifier le code de tâches courantes, telles que la manipulation de chaînes de caractères ou de tableaux, la génération de code HTML, et ainsi de suite. Ces classes assistantes sont organisées dans l'espace de noms `yii\helpers` et sont toutes des classes statiques (ce qui signifie qu'elles ne contiennent que des propriétés et des méthodes statiques et ne doivent jamais être instanciées).
+Yii procure de nombreuses classes qui vous aident à simplifier le code de tâches courantes, telles que la manipulation de chaînes de caractères ou de tableaux, la génération de code HTML, et ainsi de suite. Ces classes assistantes sont organisées dans l'espace de noms `yii\helpers` et sont toutes des classes statiques (ce qui signifie qu'elles ne contiennent que des propriétés et des méthodes statiques et ne doivent jamais être instanciées).
 
 Vous utilisez une classe assistante en appelant directement une de ses méthodes statiques, comme ceci :
 
@@ -41,7 +41,7 @@ Personnalisation des classes assistantes <span id="customizing-helper-classes"><
 
 Pour personnaliser une classe assistante du noyau (p. ex. [[yii\helpers\ArrayHelper]]), vous devez créer une nouvelle classe qui étend la classe de base correspondant à la classe assistante (p. ex. [[yii\helpers\ArrayHelper]]), y compris son espace de noms. Cette classe sera ensuite configurée pour remplacer l'implémentation originale de Yii.
 
-L'exemple qui suit montre comment personnaliser la méthode [[yii\helpers\ArrayHelper::merge()|merge()]] de le classe [[yii\helpers\ArrayHelper]] :
+L'exemple qui suit montre comment personnaliser la méthode [[yii\helpers\ArrayHelper::merge()|merge()]] de la classe [[yii\helpers\ArrayHelper]] :
 
 ```php
 <?php

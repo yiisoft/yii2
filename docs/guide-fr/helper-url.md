@@ -6,7 +6,7 @@ La classe assistante Url fournit un jeu de méthodes statiques pour gérer les U
 
 ## Obtenir des URL communes <span id="getting-common-urls"></span>
 
-Vous pouvez utiliser deux méthodes pour obtenir des URL communes : l'URL de la page d'accueil et l'URL de base de la requête courant. Pour obtenir l'URL de la page d'accueil, utilisez ce qui suit :
+Vous pouvez utiliser deux méthodes pour obtenir des URL communes : l'URL de la page d'accueil et l'URL de base de la requête courante. Pour obtenir l'URL de la page d'accueil, utilisez ce qui suit :
 
 ```php
 $relativeHomeUrl = Url::home();
@@ -35,7 +35,7 @@ En vue de créer une URL pour une route donnée, utilisez la méthode `Url::toR
 $url = Url::toRoute(['product/view', 'id' => 42]);
 ```
  
-Vous pouvez spécifier la route sous forme de chaîne de caractère, p. ex. `site/index`. Vous pouvez également utiliser un tableau si vous désirez spécifier des paramètres de requête supplémentaires pour l'URL créée. Le format du tableau doit être :Y
+Vous pouvez spécifier la route sous forme de chaîne de caractère, p. ex. `site/index`. Vous pouvez également utiliser un tableau si vous désirez spécifier des paramètres de requête supplémentaires pour l'URL créée. Le format du tableau doit être :
 
 ```php
 // génère : /index.php?r=site%2Findex&param1=value1&param2=value2
@@ -51,8 +51,8 @@ Si vous voulez créer une URL avec une ancre, vous pouvez utiliser le format de 
 
 Une route peut être ,soit absolue, soit relative. Une route absolue commence par une barre oblique de division (p. ex. `/site/index`) tandis que route relative commence sans ce caractère (p. ex. `site/index` ou `index`). Une route relative peut être convertie en une route absolue en utilisant une des règles suivantes :
 - Si la route est une chaîne de caractères vide, la [[\yii\web\Controller::route|route]] est utilisée ;
--Si la route en contient aucune barre oblique de division (p. ex. `index`), elle est considérée être un identifiant d'action dans le contrôleur courant et sera préfixée par l'identifiant du contrôleur ([[\yii\web\Controller::uniqueId]]);
--Si la route ne commence pas par une barre oblique de division (p. ex. `site/index`), elle est considérée être une route relative au module courant et sera préfixée par l'identifiant du module ([[\yii\base\Module::uniqueId|uniqueId]]).
+- Si la route ne contient aucune barre oblique de division (p. ex. `index`), elle est considérée être un identifiant d'action dans le contrôleur courant et sera préfixée par l'identifiant du contrôleur ([[\yii\web\Controller::uniqueId]]);
+- Si la route ne commence pas par une barre oblique de division (p. ex. `site/index`), elle est considérée être une route relative au module courant et sera préfixée par l'identifiant du module ([[\yii\base\Module::uniqueId|uniqueId]]).
   
 Depuis la version 2.0.2, vous pouvez spécifier une route sous forme d'[alias](concept-aliases.md). Si c'est le cas, l'alias sera d'abord converti en la route réelle puis transformé en une route absolue en respectant les règles ci-dessus.
 
