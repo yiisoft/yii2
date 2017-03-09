@@ -739,6 +739,7 @@ describe('yii', function () {
     describe('getQueryParams method', function () {
         withData({
             'no query parameters': ['/posts/index', {}],
+            'no query parameters with question char': ['/posts/index?', {}],
             'query parameters': ['/posts/index?foo=1&bar=2', {foo: '1', bar: '2'}],
             'query parameter with multiple values (not array)': ['/posts/index?foo=1&foo=2', {'foo': ['1', '2']}],
             'query parameter with multiple values (array)': ['/posts/index?foo[]=1&foo[]=2', {'foo[]': ['1', '2']}],
