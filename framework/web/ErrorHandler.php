@@ -105,7 +105,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
                 $response->data = $result;
             }
         } elseif ($response->format === Response::FORMAT_HTML) {
-            if (YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+            if ($this->shouldRenderSimpleHtml()) {
                 // AJAX request
                 $response->data = '<pre>' . $this->htmlEncode(static::convertExceptionToString($exception)) . '</pre>';
             } else {
@@ -450,5 +450,13 @@ class ErrorHandler extends \yii\base\ErrorHandler
             return $exception->getName();
         }
         return null;
+    }
+
+    /**
+     * @return bool if simple HTML should be rendered
+     */
+    protected function shouldRenderSimpleHtml()
+    {
+        return YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
 }
