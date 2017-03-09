@@ -76,4 +76,11 @@ class FormatConverterTest extends TestCase
         // See https://github.com/yiisoft/yii2/issues/9906
         $this->assertRegExp('/24 авг\.? 2014 г\./', $formatter->asDate('2014-8-24', 'dd MMM y \'г\'.'));
     }
+
+    public function testPhpToICU()
+    {
+        $expected = 'yyyy-MM-dd\'T\'HH:mm:ssxxx';
+        $actual = FormatConverter::convertDatePhpToIcu('Y-m-d\TH:i:sP');
+        $this->assertEquals($expected, $actual);
+    }
 }
