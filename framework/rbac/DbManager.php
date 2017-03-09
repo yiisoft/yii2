@@ -639,7 +639,6 @@ class DbManager extends BaseManager
             $data = stream_get_contents($data);
         }
         return unserialize($data);
-
     }
 
     /**

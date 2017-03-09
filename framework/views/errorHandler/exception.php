@@ -381,8 +381,14 @@ body.mousedown pre {
         <ul>
             <?= $handler->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, [], 1) ?>
             <?php for ($i = 0, $trace = $exception->getTrace(), $length = count($trace); $i < $length; ++$i): ?>
-                <?= $handler->renderCallStackItem(@$trace[$i]['file'] ?: null, @$trace[$i]['line'] ?: null,
-                    @$trace[$i]['class'] ?: null, @$trace[$i]['function'] ?: null, @$trace[$i]['args'] ?: [], $i + 2) ?>
+                <?= $handler->renderCallStackItem(
+                    @$trace[$i]['file'] ?: null,
+                    @$trace[$i]['line'] ?: null,
+                    @$trace[$i]['class'] ?: null,
+                    @$trace[$i]['function'] ?: null,
+                    @$trace[$i]['args'] ?: [],
+                    $i + 2
+                ) ?>
             <?php endfor; ?>
         </ul>
     </div>

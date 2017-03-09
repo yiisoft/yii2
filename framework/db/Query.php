@@ -408,8 +408,7 @@ class Query extends Component implements QueryInterface
             return null;
         }
 
-        if (
-            !$this->distinct
+        if (!$this->distinct
             && empty($this->groupBy)
             && empty($this->having)
             && empty($this->union)

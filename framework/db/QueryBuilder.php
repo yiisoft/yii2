@@ -221,7 +221,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($columns->select as $title => $field) {
             if (is_string($title)) {
                 $names[] = $schema->quoteColumnName($title);
-            } else if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
+            } elseif (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
                 $names[] = $schema->quoteColumnName($matches[2]);
             } else {
                 $names[] = $schema->quoteColumnName($field);

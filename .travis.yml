@@ -156,6 +156,8 @@ script:
   - cd framework && composer validate --no-check-lock && cd ..
   # run PHPUnit
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+  # run PHP_CodeSniffer
+  - vendor/bin/phpcs framework
 
 after_script:
   - |

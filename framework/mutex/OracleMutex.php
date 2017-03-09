@@ -89,14 +89,14 @@ class OracleMutex extends DbMutex
 
         /** inside pl/sql scopes pdo binding not working correctly :(  */
         $this->db->createCommand(
-                'DECLARE
+            'DECLARE
     handle VARCHAR2(128);
 BEGIN
     DBMS_LOCK.ALLOCATE_UNIQUE(:name, handle);
     :lockStatus := DBMS_LOCK.REQUEST(handle, DBMS_LOCK.' . $this->lockMode . ', ' . $timeout . ', ' . $releaseOnCommit . ');
 END;',
-                [':name' => $name]
-            )
+            [':name' => $name]
+        )
             ->bindParam(':lockStatus', $lockStatus, PDO::PARAM_INT, 1)
             ->execute();
 
@@ -113,14 +113,14 @@ END;',
     {
         $releaseStatus = null;
         $this->db->createCommand(
-                'DECLARE
+            'DECLARE
     handle VARCHAR2(128);
 BEGIN
     DBMS_LOCK.ALLOCATE_UNIQUE(:name, handle);
     :result := DBMS_LOCK.RELEASE(handle);
 END;',
-                [':name' => $name]
-            )
+            [':name' => $name]
+        )
             ->bindParam(':result', $releaseStatus, PDO::PARAM_INT, 1)
             ->execute();
 
