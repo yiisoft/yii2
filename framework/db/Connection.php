@@ -730,7 +730,7 @@ class Connection extends Component
      * @param Transaction $transaction Transaction object given from [[beginTransaction()]].
      * @param int $level Transaction level just after [[beginTransaction()]] call.
      */
-    protected function rollbackTransactionOnLevel($transaction, $level)
+    private function rollbackTransactionOnLevel($transaction, $level)
     {
         if ($transaction->isActive && $transaction->level === $level) {
             // https://github.com/yiisoft/yii2/pull/13347
