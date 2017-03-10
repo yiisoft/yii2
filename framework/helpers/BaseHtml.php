@@ -432,9 +432,10 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @since 2.0.12 It is possible to pass the "srcset" option as an array which keys are
+     *
+     * Since version 2.0.12 It is possible to pass the `srcset` option as an array which keys are
      * descriptors and values are URLs. All URLs will be processed by [[Url::to()]].
-     * @return string the generated image tag
+     * @return string the generated image tag.
      */
     public static function img($src, $options = [])
     {
