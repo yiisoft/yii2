@@ -12,7 +12,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'oci';
 
-    protected $likeEscapeCharSql = " ESCAPE '\\'";
+    protected $likeEscapeCharSql = " ESCAPE '!'";
+    protected $likeParameterReplacements = [
+        '\%' => '!%',
+        '\_' => '!_',
+        '!' => '!!',
+    ];
 
     /**
      * this is not used as a dataprovider for testGetColumnType to speed up the test
@@ -70,4 +75,19 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function testBuildLikeCondition($condition, $expected, $expectedParams)
+    {
+        /*
+         * Different pdo_oci8 version may or may not implement PDO::quote(), so
+         * it may or may not fallback to yii\db\Schema::quoteValue() which quotes \.
+         */
+        $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
+        $this->likeParameterReplacements[$encodedBackslash] = '\\';
+        parent::testBuildLikeCondition($condition, $expected, $expectedParams);
+    }
+
 }

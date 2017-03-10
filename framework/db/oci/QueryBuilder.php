@@ -49,7 +49,29 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    protected $likeEscapeCharacter = '\\';
+    protected $likeEscapeCharacter = '!';
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapingReplacements = [
+        '%' => '!%',
+        '_' => '!_',
+        '!' => '!!',
+        // \ will be checked later Because yii\db\Schema::quoteValue may quote it
+    ];
+
+    /**
+     * @inheritDoc
+     */
+    public function init()
+    {
+        parent::init();
+        /*
+         * Different pdo_oci8 version may or may not implement PDO::quote(), so
+         * it may or may not fallback to yii\db\Schema::quoteValue() which quotes \.
+         */
+        $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
+    }
 
     /**
      * @inheritdoc
