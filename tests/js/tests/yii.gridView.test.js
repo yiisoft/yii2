@@ -325,6 +325,11 @@ describe('yii.gridView', function () {
                         '/posts/index#post',
                         'PostSearch[name]=&PostSearch[category_id]='
                     ],
+                    'empty query parameters with question char': [
+                        '/posts/index?',
+                        '/posts/index',
+                        'PostSearch[name]=&PostSearch[category_id]='
+                    ],
                     'query parameters, anchor': [
                         '/posts/index?foo=1&bar=2#post',
                         '/posts/index#post',

@@ -273,16 +273,16 @@ window.yii = (function ($) {
                 return {};
             }
 
-            var pairs = url.substring(pos + 1).split('#')[0].split('&'),
+            var pairs = url.substring(pos + 1).split('#')[0].split('&').filter(String),
                 params = {};
 
             for (var i = 0, len = pairs.length; i < len; i++) {
                 var pair = pairs[i].split('=');
                 var name = decodeURIComponent(pair[0].replace(/\+/g, '%20'));
+                var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
                 if (!name.length) {
                     continue;
                 }
-                var value = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
                 if (params[name] === undefined) {
                     params[name] = value || '';
                 } else {
