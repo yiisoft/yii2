@@ -245,8 +245,8 @@ class RequestTest extends TestCase
         $request = new Request();
 
         unset($_SERVER['SERVER_NAME'], $_SERVER['HTTP_HOST']);
-        $this->assertSame(null, $request->getHostInfo());
-        $this->assertSame(null, $request->getHostName());
+        $this->assertNull($request->getHostInfo());
+        $this->assertNull($request->getHostName());
 
         $request->setHostInfo('http://servername.com:80');
         $this->assertSame('http://servername.com:80', $request->getHostInfo());

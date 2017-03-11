@@ -82,11 +82,11 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertTrue($reader instanceof DataReader);
+        $this->assertInstanceOf(DataReader::className(), $reader);
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
-        $this->assertEquals(3, count($rows));
+        $this->assertCount(3, $rows);
         $row = $rows[2];
         $this->assertEquals(3, $row['id']);
         $this->assertEquals('user3', $row['name']);
@@ -583,10 +583,10 @@ SQL;
         $db = $this->getConnection();
 
         $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
-        $this->assertEquals(2, count($rows));
+        $this->assertCount(2, $rows);
         $db->createCommand()->truncateTable('animal')->execute();
         $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
-        $this->assertEquals(0, count($rows));
+        $this->assertCount(0, $rows);
     }
 
     public function testRenameTable()

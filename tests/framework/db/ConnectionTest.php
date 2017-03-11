@@ -27,7 +27,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection->open();
         $this->assertTrue($connection->isActive);
-        $this->assertTrue($connection->pdo instanceof \PDO);
+        $this->assertInstanceOf('\\PDO', $connection->pdo);
 
         $connection->close();
         $this->assertFalse($connection->isActive);

@@ -900,7 +900,7 @@ EOD;
 
         $options = [];
         Html::removeCssStyle($options, ['color', 'background']);
-        $this->assertTrue(!array_key_exists('style', $options));
+        $this->assertNotTrue(array_key_exists('style', $options));
         $options = [
             'style' => [
                 'color' => 'red',
