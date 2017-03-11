@@ -51,27 +51,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected $likeEscapeCharacter = '!';
     /**
+     * `\` is initialized in [[buildLikeCondition()]] method since
+     * we need to choose replacement value based on [[\yii\db\Schema::quoteValue()]].
      * @inheritdoc
      */
     protected $likeEscapingReplacements = [
         '%' => '!%',
         '_' => '!_',
         '!' => '!!',
-        // \ will be checked later Because yii\db\Schema::quoteValue may quote it
     ];
-
-    /**
-     * @inheritDoc
-     */
-    public function init()
-    {
-        parent::init();
-        /*
-         * Different pdo_oci8 version may or may not implement PDO::quote(), so
-         * it may or may not fallback to yii\db\Schema::quoteValue() which quotes \.
-         */
-        $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
-    }
 
     /**
      * @inheritdoc
@@ -327,5 +315,20 @@ EOD;
     public function dropCommentFromTable($table)
     {
         return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . " IS ''";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildLikeCondition($operator, $operands, &$params)
+    {
+        if (!isset($this->likeEscapingReplacements['\\'])) {
+            /*
+             * Different pdo_oci8 versions may or may not implement PDO::quote(), so
+             * yii\db\Schema::quoteValue() may or may not quote \.
+             */
+            $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
+        }
+        return parent::buildLikeCondition($operator, $operands, $params);
     }
 }

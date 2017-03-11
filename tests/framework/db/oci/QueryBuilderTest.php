@@ -76,18 +76,14 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function testBuildLikeCondition($condition, $expected, $expectedParams)
+    public function likeConditionProvider()
     {
         /*
-         * Different pdo_oci8 version may or may not implement PDO::quote(), so
-         * it may or may not fallback to yii\db\Schema::quoteValue() which quotes \.
+         * Different pdo_oci8 versions may or may not implement PDO::quote(), so
+         * yii\db\Schema::quoteValue() may or may not quote \.
          */
         $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
         $this->likeParameterReplacements[$encodedBackslash] = '\\';
-        parent::testBuildLikeCondition($condition, $expected, $expectedParams);
+        return parent::likeConditionProvider();
     }
-
 }
