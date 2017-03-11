@@ -5,6 +5,7 @@ namespace yiiunit\framework\db;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\db\Schema;
 
 abstract class QueryTest extends DatabaseTestCase
 {
@@ -457,5 +458,75 @@ abstract class QueryTest extends DatabaseTestCase
             ->emulateExecution()
             ->column($db);
         $this->assertSame([], $column);
+    }
+
+    /**
+     * @param Connection $db
+     * @param string $tableName
+     * @param string $columnName
+     * @param array $condition
+     * @param string $operator
+     * @return int
+     */
+    protected function countLikeQuery(Connection $db, $tableName, $columnName, array $condition, $operator = 'or')
+    {
+        $whereCondition = [$operator];
+        foreach ($condition as $value) {
+            $whereCondition[] = ['like', $columnName, $value];
+        }
+        $result = (new Query())
+            ->from($tableName)
+            ->where($whereCondition)
+            ->count('*', $db);
+        if (is_numeric($result)) {
+            $result = (int) $result;
+        }
+        return $result;
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13745
+     */
+    public function testMultipleLikeConditions()
+    {
+        $db = $this->getConnection();
+        $tableName = 'like_test';
+        $columnName = 'col';
+
+        if($db->getSchema()->getTableSchema($tableName) !== null){
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            $columnName => $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+        ])->execute();
+        $db->createCommand()->batchInsert($tableName, ['col'], [
+            ['test0'],
+            ['test\1'],
+            ['test\2'],
+            ['foo%'],
+            ['%bar'],
+            ['%baz%'],
+        ])->execute();
+
+        // Basic tests
+        $this->assertSame(1, $this->countLikeQuery($db, $tableName, $columnName, ['test0']));
+        $this->assertSame(2, $this->countLikeQuery($db, $tableName, $columnName, ['test\\']));
+        $this->assertSame(0, $this->countLikeQuery($db, $tableName, $columnName, ['test%']));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, ['%']));
+
+        // Multiple condition tests
+        $this->assertSame(2, $this->countLikeQuery($db, $tableName, $columnName, [
+            'test0',
+            'test\1',
+        ]));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, [
+            'test0',
+            'test\1',
+            'test\2',
+        ]));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, [
+            'foo',
+            '%ba',
+        ]));
     }
 }
