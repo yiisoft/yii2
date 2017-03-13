@@ -33,35 +33,57 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         ActiveRecord::$db = $this->getConnection();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getCustomerClass()
     {
         return Customer::className();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getItemClass()
     {
         return Item::className();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getOrderClass()
     {
         return Order::className();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getOrderItemClass()
     {
         return OrderItem::className();
     }
 
+    /**
+     * @return string
+     */
     public function getCategoryClass()
     {
         return Category::className();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getOrderWithNullFKClass()
     {
         return OrderWithNullFK::className();
     }
+
+    /**
+     * @inheritdoc
+     */
     public function getOrderItemWithNullFKmClass()
     {
         return OrderItemWithNullFK::className();

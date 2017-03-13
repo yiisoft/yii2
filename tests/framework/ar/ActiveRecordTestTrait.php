@@ -85,7 +85,8 @@ trait ActiveRecordTestTrait
         $customer = $customerClass::findOne(5);
         $this->assertNull($customer);
         $customer = $customerClass::findOne(['id' => [5, 6, 1]]);
-        $this->assertCount(1, $customer);
+        // can't use assertCount() here since it will count model attributes instead
+        $this->assertEquals(1, count($customer));
         $customer = $customerClass::find()->where(['id' => [5, 6, 1]])->one();
         $this->assertNotNull($customer);
 
@@ -385,8 +386,7 @@ trait ActiveRecordTestTrait
         $this->assertCount(2, $customerClass::find()->where(['name' => ['user1', 'user2']])->all());
 
         $this->assertEquals(1, $customerClass::find()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->count());
-        $this->assertCount(1,
-            $customerClass::find()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->all());
+        $this->assertCount(1, $customerClass::find()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->all());
     }
 
     public function testFindNullValues()
