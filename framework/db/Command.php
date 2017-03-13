@@ -66,7 +66,7 @@ class Command extends Component
     public $pdoStatement;
     /**
      * @var int the default fetch mode for this command.
-     * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
+     * @see http://www.php.net/manual/en/pdostatement.setfetchmode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
