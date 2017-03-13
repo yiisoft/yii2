@@ -14,6 +14,7 @@ use yii\helpers\Inflector;
 use yii\helpers\Url;
 use yii\helpers\FileHelper;
 use yii\helpers\StringHelper;
+use Psr\Http\Message\StreamInterface;
 
 /**
  * The web Response class represents an HTTP response
@@ -133,8 +134,8 @@ class Response extends \yii\base\Response
      */
     public $content;
     /**
-     * @var resource|array the stream to be sent. This can be a stream handle or an array of stream handle,
-     * the begin position and the end position. Note that when this property is set, the [[data]] and [[content]]
+     * @var resource|array|StreamInterface the stream to be sent. This can be a stream handle, an array of stream handle,
+     * the begin position and the end position or [[\Psr\Http\Message\StreamInterface]]. Note that when this property is set, the [[data]] and [[content]]
      * properties will be ignored by [[send()]].
      */
     public $stream;
@@ -409,6 +410,11 @@ class Response extends \yii\base\Response
                 flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
             }
             fclose($handle);
+        } elseif ($this->stream instanceof StreamInterface && $this->stream->isReadable()) {
+            while (($chunk = $this->stream->read($chunkSize)) !== '') {
+                echo $chunk;
+                flush();
+            }
         } else {
             while (!feof($this->stream)) {
                 echo fread($this->stream, $chunkSize);
