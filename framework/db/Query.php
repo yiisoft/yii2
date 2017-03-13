@@ -1029,6 +1029,7 @@ class Query extends Component implements QueryInterface
             'offset' => $from->offset,
             'orderBy' => $from->orderBy,
             'indexBy' => $from->indexBy,
+            'indexByDimensions' => $from->indexByDimensions,
             'select' => $from->select,
             'selectOption' => $from->selectOption,
             'distinct' => $from->distinct,
