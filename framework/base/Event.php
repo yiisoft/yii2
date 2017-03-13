@@ -211,13 +211,15 @@ class Event extends Object
         );
 
         foreach ($classes as $class) {
-            if (!empty(self::$_events[$name][$class])) {
-                foreach (self::$_events[$name][$class] as $handler) {
-                    $event->data = $handler[1];
-                    call_user_func($handler[0], $event);
-                    if ($event->handled) {
-                        return;
-                    }
+            if (empty(self::$_events[$name][$class])) {
+                continue;
+            }
+            
+            foreach (self::$_events[$name][$class] as $handler) {
+                $event->data = $handler[1];
+                call_user_func($handler[0], $event);
+                if ($event->handled) {
+                    return;
                 }
             }
         }
