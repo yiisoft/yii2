@@ -303,7 +303,11 @@ class ActiveRecord extends BaseActiveRecord
     public static function find($id=null)
     {
         //THis bullshit function should return single instance on passing a numberic value
-        return Yii::createObject(ActiveQuery::class, [get_called_class()]);
+        $n =  Yii::createObject(ActiveQuery::class, [get_called_class()]);
+        if($id != null && is_numeric($id)){
+            return $n->where(['id'=>$id])->one();
+        }
+        return $n;
     }
 
     /**
