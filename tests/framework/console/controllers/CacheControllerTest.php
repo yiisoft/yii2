@@ -58,7 +58,7 @@ class CacheControllerTest extends TestCase
             ],
         ]);
 
-        if(isset($config['fixture'])) {
+        if (isset($config['fixture'])) {
             Yii::$app->db->open();
             $lines = explode(';', file_get_contents($config['fixture']));
             foreach ($lines as $line) {

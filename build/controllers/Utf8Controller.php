@@ -39,14 +39,14 @@ class Utf8Controller extends Controller
             ]);
         }
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
 
             $content = file_get_contents($file);
             $chars = preg_split('//u', $content, null, PREG_SPLIT_NO_EMPTY);
 
             $line = 1;
             $pos = 0;
-            foreach($chars as $c) {
+            foreach ($chars as $c) {
 
                 $ord = $this->unicodeOrd($c);
 
