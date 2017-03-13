@@ -25,7 +25,7 @@ use yii\base\Model;
 class BaseHtml
 {
 
-    public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/';
+    public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/u';
     /**
      * @var array list of void elements (element name => 1)
      * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
