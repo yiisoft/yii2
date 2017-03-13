@@ -24,6 +24,8 @@ use yii\base\Model;
  */
 class BaseHtml
 {
+
+    public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/';
     /**
      * @var array list of void elements (element name => 1)
      * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
@@ -2073,7 +2075,7 @@ class BaseHtml
      */
     public static function getAttributeName($attribute)
     {
-        if (preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (preg_match(static::$attributeRegex, $attribute, $matches)) {
             return $matches[2];
         } else {
             throw new InvalidParamException('Attribute name must contain word characters only.');
@@ -2096,7 +2098,7 @@ class BaseHtml
      */
     public static function getAttributeValue($model, $attribute)
     {
-        if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $attribute = $matches[2];
@@ -2146,7 +2148,7 @@ class BaseHtml
     public static function getInputName($model, $attribute)
     {
         $formName = $model->formName();
-        if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $prefix = $matches[1];
