@@ -59,6 +59,8 @@ Upgrade from Yii 2.0.11
 * `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
   in case of `format` being set to `boolean`.
 
+* `yii\base\Object` is now deprecated in favor of `yii\base\BaseObject`. You should use `instanceof \yii\base\BaseObject` instead of `instanceof \yii\base\Object` and use `yii\base\BaseObject` as a base class wherever possible (note that changing base class from `yii\base\Object` to `yii\base\BaseObject` may break BC).
+
 
 Upgrade from Yii 2.0.10
 -----------------------
