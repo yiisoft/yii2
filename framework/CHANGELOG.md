@@ -45,7 +45,7 @@ Yii Framework 2 Change Log
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 - Enh #13695: `\yii\web\Response::setStatusCode()` method now returns the Response object itself (kyle-mccarthy)
 - Enh #13698: `yii\grid\DataColumn` filter is automatically generated as dropdown list in case of `format` set to `boolean` (bizley)
-
+- Bug #10372: Fixed console controller including complex typed arguments in help (sammousa)
 
 2.0.11.2 February 08, 2017
 --------------------------
