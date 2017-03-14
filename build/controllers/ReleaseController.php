@@ -130,7 +130,6 @@ class ReleaseController extends Controller
             $this->stdout($ext . str_repeat(' ', $w + 3 - mb_strlen($ext)) . $version . "");
             $this->stdout(str_repeat(' ', 17 - mb_strlen($version)) . $nextVersions[$ext] . "\n");
         }
-
     }
 
     private function minWidth($a)
@@ -544,7 +543,6 @@ class ReleaseController extends Controller
         $this->stdout("- release applications: ./build/build release app-advanced\n");
 
         $this->stdout("\n");
-
     }
 
     protected function releaseApplication($name, $path, $version)
@@ -892,7 +890,7 @@ class ReleaseController extends Controller
         $changelog = array_filter($changelog);
 
         $i = 0;
-        ArrayHelper::multisort($changelog, function($line) use (&$i) {
+        ArrayHelper::multisort($changelog, function ($line) use (&$i) {
             if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
@@ -925,7 +923,7 @@ class ReleaseController extends Controller
 
     protected function getExtensionChangelogs($what)
     {
-        return array_filter(glob($this->basePath . '/extensions/*/CHANGELOG.md'), function($elem) use ($what) {
+        return array_filter(glob($this->basePath . '/extensions/*/CHANGELOG.md'), function ($elem) use ($what) {
             foreach ($what as $ext) {
                 if (strpos($elem, "extensions/$ext/CHANGELOG.md") !== false) {
                     return true;

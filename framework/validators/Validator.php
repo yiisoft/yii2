@@ -474,7 +474,7 @@ class Validator extends Component
      */
     private function setAttributeNames($attributeNames)
     {
-        $this->_attributeNames = array_map(function($attribute) {
+        $this->_attributeNames = array_map(function ($attribute) {
             return ltrim($attribute, '!');
         }, $attributeNames);
     }

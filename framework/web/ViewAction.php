@@ -80,9 +80,7 @@ class ViewAction extends Action
             if ($controllerLayout) {
                 $this->controller->layout = $controllerLayout;
             }
-
         } catch (ViewNotFoundException $e) {
-
             if ($controllerLayout) {
                 $this->controller->layout = $controllerLayout;
             }

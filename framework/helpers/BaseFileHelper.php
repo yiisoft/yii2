@@ -489,7 +489,8 @@ class BaseFileHelper
                 return false;
             }
         } catch (\Exception $e) {
-            if (!is_dir($path)) {// https://github.com/yiisoft/yii2/issues/9288
+            if (!is_dir($path)) {
+                // https://github.com/yiisoft/yii2/issues/9288
                 throw new \yii\base\Exception("Failed to create directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
             }
         }

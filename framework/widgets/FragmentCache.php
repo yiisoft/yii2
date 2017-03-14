@@ -140,7 +140,7 @@ class FragmentCache extends Widget
                 $key = $this->calculateKey();
                 $data = $this->cache->get($key);
                 if (is_array($data) && count($data) === 2) {
-                    list ($content, $placeholders) = $data;
+                    list($content, $placeholders) = $data;
                     if (is_array($placeholders) && count($placeholders) > 0) {
                         if (empty($this->getView()->cacheStack)) {
                             // outermost cache: replace placeholder with dynamic content
