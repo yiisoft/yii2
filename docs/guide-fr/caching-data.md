@@ -84,7 +84,7 @@ Comme tous les composants de mise en cache prennent en charge le même jeux d'AP
 ],
 ```
 
-> Conseil : vous pouvez enregistrer de multiples composants d'application de mise en cache. Le composant nommé `cache` est utilisé par défaut par de nombreuses classes dépendantes d'un cache (p. ex.[[yii\web\UrlManager]]). 
+> Tip: vous pouvez enregistrer de multiples composants d'application de mise en cache. Le composant nommé `cache` est utilisé par défaut par de nombreuses classes dépendantes d'un cache (p. ex.[[yii\web\UrlManager]]). 
 
 
 ### Supports de stockage pour cache pris en charge <span id="supported-cache-storage"></span>
@@ -106,7 +106,7 @@ Yii prend en charge un large panel de supports de stockage pour cache. Ce qui su
   en tant que médium de cache sous-jacent.
 
 
-> Conseil : vous pouvez utiliser différents supports de stockage pour cache dans la même application. Une stratégie courante est d'utiliser un support de stockage pour cache basé sur la mémoire pour stocker des données de petite taille mais d'usage constant (p. ex. des données statistiques), et d'utiliser des supports de stockage pour cache basés sur des fichiers ou des bases de données pour stocker des données volumineuses et utilisées moins souvent (p. ex. des contenus de pages).
+> Tip: vous pouvez utiliser différents supports de stockage pour cache dans la même application. Une stratégie courante est d'utiliser un support de stockage pour cache basé sur la mémoire pour stocker des données de petite taille mais d'usage constant (p. ex. des données statistiques), et d'utiliser des supports de stockage pour cache basés sur des fichiers ou des bases de données pour stocker des données volumineuses et utilisées moins souvent (p. ex. des contenus de pages).
 
 
 ## Les API Cache <span id="cache-apis"></span>

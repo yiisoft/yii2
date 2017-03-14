@@ -44,7 +44,7 @@ class ServiceLocatorTest extends TestCase
             ]);
         });
         $object = $container->get($className);
-        $this->assertTrue($object instanceof $className);
+        $this->assertInstanceOf($className, $object);
         $this->assertEquals(100, $object->prop1);
         $this->assertEquals(200, $object->prop2);
 
@@ -53,7 +53,7 @@ class ServiceLocatorTest extends TestCase
         $className = TestClass::className();
         $container->set($className, [__NAMESPACE__ . "\\Creator", 'create']);
         $object = $container->get($className);
-        $this->assertTrue($object instanceof $className);
+        $this->assertInstanceOf($className, $object);
         $this->assertEquals(1, $object->prop1);
         $this->assertNull($object->prop2);
     }
@@ -64,7 +64,7 @@ class ServiceLocatorTest extends TestCase
         $className = TestClass::className();
         $container = new ServiceLocator;
         $container->set($className, $object);
-        $this->assertTrue($container->get($className) === $object);
+        $this->assertSame($container->get($className), $object);
     }
 
     public function testShared()
@@ -80,11 +80,11 @@ class ServiceLocatorTest extends TestCase
         $object = $container->get($className);
         $this->assertEquals(10, $object->prop1);
         $this->assertEquals(20, $object->prop2);
-        $this->assertTrue($object instanceof $className);
+        $this->assertInstanceOf($className, $object);
         // check shared
         $object2 = $container->get($className);
-        $this->assertTrue($object2 instanceof $className);
-        $this->assertTrue($object === $object2);
+        $this->assertInstanceOf($className, $object2);
+        $this->assertSame($object, $object2);
     }
 
     /**
@@ -104,11 +104,11 @@ class ServiceLocatorTest extends TestCase
         $app = new ServiceLocator($config);
 
         $this->assertTrue(isset($app->captcha->name));
-        $this->assertFalse(empty($app->captcha->name));
+        $this->assertNotEmpty($app->captcha->name);
 
         $this->assertEquals('foo bar', $app->captcha->name);
 
         $this->assertTrue(isset($app->captcha->name));
-        $this->assertFalse(empty($app->captcha->name));
+        $this->assertNotEmpty($app->captcha->name);
     }
 }

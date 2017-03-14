@@ -95,7 +95,7 @@ class ComponentTest extends TestCase
 
     public function testGetProperty()
     {
-        $this->assertTrue('default' === $this->component->Text);
+        $this->assertSame('default', $this->component->Text);
         $this->setExpectedException('yii\base\UnknownPropertyException');
         $value2 = $this->component->Caption;
     }
@@ -112,15 +112,15 @@ class ComponentTest extends TestCase
     public function testIsset()
     {
         $this->assertTrue(isset($this->component->Text));
-        $this->assertFalse(empty($this->component->Text));
+        $this->assertNotEmpty($this->component->Text);
 
         $this->component->Text = '';
         $this->assertTrue(isset($this->component->Text));
-        $this->assertTrue(empty($this->component->Text));
+        $this->assertEmpty($this->component->Text);
 
         $this->component->Text = null;
         $this->assertFalse(isset($this->component->Text));
-        $this->assertTrue(empty($this->component->Text));
+        $this->assertEmpty($this->component->Text);
 
         $this->assertFalse(isset($this->component->p2));
         $this->component->attachBehavior('a', new NewBehavior());
@@ -138,7 +138,7 @@ class ComponentTest extends TestCase
     {
         unset($this->component->Text);
         $this->assertFalse(isset($this->component->Text));
-        $this->assertTrue(empty($this->component->Text));
+        $this->assertEmpty($this->component->Text);
 
         $this->component->attachBehavior('a', new NewBehavior());
         $this->component->setP2('test');
