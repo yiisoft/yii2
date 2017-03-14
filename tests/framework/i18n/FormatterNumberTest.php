@@ -264,7 +264,7 @@ class FormatterNumberTest extends TestCase
         // default russian currency symbol
         $this->formatter->locale = 'ru-RU';
         $this->formatter->currencyCode = null;
-        if (version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=')) {
+        if ($this->hasNewICUData()) {
             $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123'));
         } else {
             $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
@@ -342,7 +342,7 @@ class FormatterNumberTest extends TestCase
 
         $this->formatter->locale = 'ru-RU';
         $this->formatter->currencyCode = null;
-        if (version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=')) {
+        if ($this->hasNewICUData()) {
             $this->assertSame('123 ₽', $this->formatter->asCurrency('123'));
         } else {
             $this->assertSame('123 руб.', $this->formatter->asCurrency('123'));
@@ -672,5 +672,13 @@ class FormatterNumberTest extends TestCase
         $this->formatter->thousandSeparator = '.';
         $this->assertSame("1023 bytes", $this->formatter->asSize(1023));
         $this->assertSame("1023 B", $this->formatter->asShortSize(1023));
+    }
+
+    /**
+     * @return boolean if ICU version is >= 57.1
+     */
+    private function hasNewICUData()
+    {
+        return version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=');
     }
 }
