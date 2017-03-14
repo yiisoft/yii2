@@ -1260,6 +1260,55 @@ EOD;
         $model->checkbox = $value;
         $this->assertEquals($expectedHtml, Html::activeCheckbox($model, 'checkbox', $options));
     }
+
+    /**
+     * Data provider for [[testAttributeNameValidation()]]
+     * @return array test data
+     */
+    public function dataProviderAttributeNames()
+    {
+        return [
+            ["asd]asdf.asdfa[asdfa", "asdf.asdfa"],
+            ["a", "a"],
+            ["[0]a", "a"],
+            ["a[0]", "a"],
+            ["[0]a[0]", "a"],
+            ["[0]a.[0]", "a."],
+
+            // Unicode checks.
+            ["ä", "ä"],
+            ["ä", "ä"],
+            ["asdf]öáöio..[asdfasdf", "öáöio.."],
+            ["öáöio", "öáöio"],
+            ["[0]test.ööößß.d", "test.ööößß.d"],
+            ["ИІК", "ИІК"],
+            ["]ИІК[", "ИІК"],
+            ["[0]ИІК[0]", "ИІК"],
+
+            // Exception checks
+            ['. ..', null],
+            ['a +b', null],
+            ['a,b', null]
+
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderAttributeNames
+     *
+     * @param string $name
+     * @param string|null $expected
+     */
+    public function testAttributeNameValidation($name, $expected)
+    {
+        if (!isset($expected)) {
+            $this->setExpectedException('yii\base\InvalidParamException');
+            Html::getAttributeName($name);
+        } else {
+            $this->assertEquals($expected, Html::getAttributeName($name));
+        }
+
+    }
 }
 
 /**
