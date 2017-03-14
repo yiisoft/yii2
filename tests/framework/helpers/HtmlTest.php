@@ -1265,7 +1265,7 @@ EOD;
      * Data provider for [[testAttributeNameValidation()]]
      * @return array test data
      */
-    public function dataProviderAttributeNames()
+    public function dataProviderValidAttributeNames()
     {
         return [
             ["asd]asdf.asdfa[asdfa", "asdf.asdfa"],
@@ -1283,12 +1283,20 @@ EOD;
             ["[0]test.ööößß.d", "test.ööößß.d"],
             ["ИІК", "ИІК"],
             ["]ИІК[", "ИІК"],
-            ["[0]ИІК[0]", "ИІК"],
+            ["[0]ИІК[0]", "ИІК"]
+        ];
+    }
 
-            // Exception checks
-            ['. ..', null],
-            ['a +b', null],
-            ['a,b', null]
+        /**
+     * Data provider for [[testAttributeNameValidation()]]
+     * @return array test data
+     */
+    public function dataProviderInvalidAttributeNames()
+    {
+        return [
+            '. ..',
+            'a +b',
+            'a,b',
 
         ];
     }
@@ -1308,6 +1316,18 @@ EOD;
             $this->assertEquals($expected, Html::getAttributeName($name));
         }
 
+    }
+    
+    /**
+     * @dataProvider dataProviderInvalidAttributeNames
+     *
+     * @param string $name
+     * @param string|null $expected
+     */
+    public function testAttributeNameException($name)
+    {
+        $this->setExpectedException('yii\base\InvalidParamException');
+        Html::getAttributeName($name);
     }
 }
 
