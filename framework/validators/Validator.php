@@ -307,7 +307,7 @@ class Validator extends Component
         } else {
             $params['value'] = $value;
         }
-        $error = $this->format($message, $params);
+        $error = $this->formatMessage($message, $params);
 
         return false;
     }
@@ -414,7 +414,7 @@ class Validator extends Component
                 $params['value'] = $value;
             }
         }
-        $model->addError($attribute, $this->format($message, $params));
+        $model->addError($attribute, $this->formatMessage($message, $params));
     }
 
     /**
@@ -440,7 +440,7 @@ class Validator extends Component
      * @since 2.0.12
      * @return string
      */
-    protected function format($message, $params)
+    protected function formatMessage($message, $params)
     {
         if (Yii::$app !== null) {
             return \Yii::$app->getI18n()->format($message, $params, Yii::$app->language);

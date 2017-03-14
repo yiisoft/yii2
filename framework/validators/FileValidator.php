@@ -392,7 +392,7 @@ class FileValidator extends Validator
 
         $options = [];
         if ($this->message !== null) {
-            $options['message'] = $this->format($this->message, [
+            $options['message'] = $this->formatMessage($this->message, [
                 'attribute' => $label,
             ]);
         }
@@ -400,7 +400,7 @@ class FileValidator extends Validator
         $options['skipOnEmpty'] = $this->skipOnEmpty;
 
         if (!$this->skipOnEmpty) {
-            $options['uploadRequired'] = $this->format($this->uploadRequired, [
+            $options['uploadRequired'] = $this->formatMessage($this->uploadRequired, [
                 'attribute' => $label,
             ]);
         }
@@ -411,7 +411,7 @@ class FileValidator extends Validator
                 $mimeTypes[] = new JsExpression(Html::escapeJsRegularExpression($this->buildMimeTypeRegexp($mimeType)));
             }
             $options['mimeTypes'] = $mimeTypes;
-            $options['wrongMimeType'] = $this->format($this->wrongMimeType, [
+            $options['wrongMimeType'] = $this->formatMessage($this->wrongMimeType, [
                 'attribute' => $label,
                 'mimeTypes' => implode(', ', $this->mimeTypes),
             ]);
@@ -419,7 +419,7 @@ class FileValidator extends Validator
 
         if ($this->extensions !== null) {
             $options['extensions'] = $this->extensions;
-            $options['wrongExtension'] = $this->format($this->wrongExtension, [
+            $options['wrongExtension'] = $this->formatMessage($this->wrongExtension, [
                 'attribute' => $label,
                 'extensions' => implode(', ', $this->extensions),
             ]);
@@ -427,7 +427,7 @@ class FileValidator extends Validator
 
         if ($this->minSize !== null) {
             $options['minSize'] = $this->minSize;
-            $options['tooSmall'] = $this->format($this->tooSmall, [
+            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
                 'attribute' => $label,
                 'limit' => $this->minSize,
                 'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
@@ -436,7 +436,7 @@ class FileValidator extends Validator
 
         if ($this->maxSize !== null) {
             $options['maxSize'] = $this->maxSize;
-            $options['tooBig'] = $this->format($this->tooBig, [
+            $options['tooBig'] = $this->formatMessage($this->tooBig, [
                 'attribute' => $label,
                 'limit' => $this->getSizeLimit(),
                 'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
@@ -445,7 +445,7 @@ class FileValidator extends Validator
 
         if ($this->maxFiles !== null) {
             $options['maxFiles'] = $this->maxFiles;
-            $options['tooMany'] = $this->format($this->tooMany, [
+            $options['tooMany'] = $this->formatMessage($this->tooMany, [
                 'attribute' => $label,
                 'limit' => $this->maxFiles,
             ]);

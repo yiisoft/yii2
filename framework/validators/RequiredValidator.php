@@ -101,7 +101,7 @@ class RequiredValidator extends Validator
     {
         $options = [];
         if ($this->requiredValue !== null) {
-            $options['message'] = $this->format($this->message, [
+            $options['message'] = $this->formatMessage($this->message, [
                 'requiredValue' => $this->requiredValue,
             ]);
             $options['requiredValue'] = $this->requiredValue;
@@ -112,7 +112,7 @@ class RequiredValidator extends Validator
             $options['strict'] = 1;
         }
 
-        $options['message'] = $this->format($options['message'], [
+        $options['message'] = $this->formatMessage($options['message'], [
             'attribute' => $model->getAttributeLabel($attribute),
         ]);
 

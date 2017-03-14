@@ -179,14 +179,14 @@ class ImageValidator extends FileValidator
         $label = $model->getAttributeLabel($attribute);
 
         if ($this->notImage !== null) {
-            $options['notImage'] = $this->format($this->notImage, [
+            $options['notImage'] = $this->formatMessage($this->notImage, [
                 'attribute' => $label,
             ]);
         }
 
         if ($this->minWidth !== null) {
             $options['minWidth'] = $this->minWidth;
-            $options['underWidth'] = $this->format($this->underWidth, [
+            $options['underWidth'] = $this->formatMessage($this->underWidth, [
                 'attribute' => $label,
                 'limit' => $this->minWidth,
             ]);
@@ -194,7 +194,7 @@ class ImageValidator extends FileValidator
 
         if ($this->maxWidth !== null) {
             $options['maxWidth'] = $this->maxWidth;
-            $options['overWidth'] = $this->format($this->overWidth, [
+            $options['overWidth'] = $this->formatMessage($this->overWidth, [
                 'attribute' => $label,
                 'limit' => $this->maxWidth,
             ]);
@@ -202,7 +202,7 @@ class ImageValidator extends FileValidator
 
         if ($this->minHeight !== null) {
             $options['minHeight'] = $this->minHeight;
-            $options['underHeight'] = $this->format($this->underHeight, [
+            $options['underHeight'] = $this->formatMessage($this->underHeight, [
                 'attribute' => $label,
                 'limit' => $this->minHeight,
             ]);
@@ -210,7 +210,7 @@ class ImageValidator extends FileValidator
 
         if ($this->maxHeight !== null) {
             $options['maxHeight'] = $this->maxHeight;
-            $options['overHeight'] = $this->format($this->overHeight, [
+            $options['overHeight'] = $this->formatMessage($this->overHeight, [
                 'attribute' => $label,
                 'limit' => $this->maxHeight,
             ]);

@@ -255,7 +255,7 @@ class CompareValidator extends Validator
             $options['skipOnEmpty'] = 1;
         }
 
-        $options['message'] = $this->format($this->message, [
+        $options['message'] = $this->formatMessage($this->message, [
             'attribute' => $model->getAttributeLabel($attribute),
             'compareAttribute' => $compareLabel,
             'compareValue' => $compareValue,

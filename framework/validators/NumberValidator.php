@@ -138,7 +138,7 @@ class NumberValidator extends Validator
 
         $options = [
             'pattern' => new JsExpression($this->integerOnly ? $this->integerPattern : $this->numberPattern),
-            'message' => $this->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $label,
             ]),
         ];
@@ -147,7 +147,7 @@ class NumberValidator extends Validator
             // ensure numeric value to make javascript comparison equal to PHP comparison
             // https://github.com/yiisoft/yii2/issues/3118
             $options['min'] = is_string($this->min) ? (float) $this->min : $this->min;
-            $options['tooSmall'] = $this->format($this->tooSmall, [
+            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
                 'attribute' => $label,
                 'min' => $this->min,
             ]);
@@ -156,7 +156,7 @@ class NumberValidator extends Validator
             // ensure numeric value to make javascript comparison equal to PHP comparison
             // https://github.com/yiisoft/yii2/issues/3118
             $options['max'] = is_string($this->max) ? (float) $this->max : $this->max;
-            $options['tooBig'] = $this->format($this->tooBig, [
+            $options['tooBig'] = $this->formatMessage($this->tooBig, [
                 'attribute' => $label,
                 'max' => $this->max,
             ]);

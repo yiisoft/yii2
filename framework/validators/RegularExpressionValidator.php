@@ -81,7 +81,7 @@ class RegularExpressionValidator extends Validator
         $options = [
             'pattern' => new JsExpression($pattern),
             'not' => $this->not,
-            'message' => $this->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
             ]),
         ];
