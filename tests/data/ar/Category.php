@@ -28,7 +28,7 @@ class Category extends ActiveRecord
     public function getLimitedItems()
     {
         return $this->hasMany(Item::className(), ['category_id' => 'id'])
-            ->onCondition(['item.id' => [1, 2, 3]]);
+            ->onCondition(['item.id' => [21, 22, 23]]);
     }
 
     public function getOrderItems()
