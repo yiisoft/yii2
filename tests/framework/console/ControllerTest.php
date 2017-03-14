@@ -138,7 +138,7 @@ class ControllerTest extends TestCase
      * Tests if action help does not include (class) type hinted arguments.
      * @see #10372
      */
-    public function testHelpSkipsTypehintedArguments()
+    public function testHelpSkipsTypeHintedArguments()
      {
          $controller = new FakeController('fake', Yii::$app);
          $help = $controller->getActionArgsHelp($controller->createAction('aksi7'));
