@@ -159,11 +159,11 @@ class ContainerTest extends TestCase
         $this->assertEquals(['ok', 'yii\validators\NumberValidator', 'value_of_c'], $result);
 
         // use native php function
-        $this->assertEquals(Yii::$container->invoke('trim',[' M2792684  ']), 'M2792684');
+        $this->assertEquals(Yii::$container->invoke('trim', [' M2792684  ']), 'M2792684');
 
         // use helper function
         $array = ['M36', 'D426', 'Y2684'];
-        $this->assertFalse(Yii::$container->invoke(['yii\helpers\ArrayHelper', 'isAssociative'],[$array]));
+        $this->assertFalse(Yii::$container->invoke(['yii\helpers\ArrayHelper', 'isAssociative'], [$array]));
 
 
         $myFunc = function (\yii\console\Request $request, \yii\console\Response $response) {

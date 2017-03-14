@@ -41,7 +41,7 @@ TEST CONFIGURATION
 PHPUnit configuration is in `phpunit.xml.dist` in repository root folder.
 You can create your own phpunit.xml to override dist config.
 
-Database and other backend system configuration can be found in `unit/data/config.php`
+Database and other backend system configuration can be found in `tests/data/config.php`
 adjust them to your needs to allow testing databases and caching in your environment.
 You can override configuration values by creating a `config.local.php` file
 and manipulate the `$config` variable.

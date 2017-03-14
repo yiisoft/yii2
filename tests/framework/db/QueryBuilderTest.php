@@ -1145,7 +1145,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         }
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1193,7 +1193,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ];
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1464,7 +1464,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([
             'id' => 1,
             'abc' => 'abc',
-        ],$params);
+        ], $params);
 
         // simple subquery
         $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
@@ -1697,7 +1697,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ];
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
             if (!empty($this->likeEscapeCharSql)) {
                 preg_match_all('/(?P<condition>LIKE.+?)( AND| OR|$)/', $conditions[$i][1], $matches, PREG_SET_ORDER);

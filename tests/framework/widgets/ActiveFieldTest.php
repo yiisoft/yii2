@@ -395,7 +395,7 @@ EOD;
         $this->activeField->enableAjaxValidation = true;
         $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
 
-        foreach($this->activeField->model->validators as $validator) {
+        foreach ($this->activeField->model->validators as $validator) {
             $validator->whenClient = "function (attribute, value) { return 'yii2' == 'yii2'; }"; // js
         }
 

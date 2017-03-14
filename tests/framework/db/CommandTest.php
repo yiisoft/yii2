@@ -463,7 +463,7 @@ SQL;
         $db = $this->getConnection();
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
 
-        switch($this->driverName){
+        switch ($this->driverName) {
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
             break;
@@ -531,7 +531,7 @@ SQL;
     {
         $db = $this->getConnection();
 
-        if($db->getSchema()->getTableSchema('testCreateTable') !== null){
+        if ($db->getSchema()->getTableSchema('testCreateTable') !== null) {
             $db->createCommand()->dropTable('testCreateTable')->execute();
         }
 
@@ -545,13 +545,13 @@ SQL;
 
     public function testAlterTable()
     {
-        if ($this->driverName === 'sqlite'){
+        if ($this->driverName === 'sqlite') {
             $this->markTestSkipped('Sqlite does not support alterTable');
         }
 
         $db = $this->getConnection();
 
-        if($db->getSchema()->getTableSchema('testAlterTable') !== null){
+        if ($db->getSchema()->getTableSchema('testAlterTable') !== null) {
             $db->createCommand()->dropTable('testAlterTable')->execute();
         }
 
@@ -596,7 +596,7 @@ SQL;
         $fromTableName = 'type';
         $toTableName = 'new_type';
 
-        if($db->getSchema()->getTableSchema($toTableName) !== null){
+        if ($db->getSchema()->getTableSchema($toTableName) !== null) {
             $db->createCommand()->dropTable($toTableName)->execute();
         }
 
