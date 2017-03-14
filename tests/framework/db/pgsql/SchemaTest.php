@@ -124,15 +124,15 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('bool_values');
-        $this->assertSame(true, $table->getColumn('default_true')->defaultValue);
-        $this->assertSame(false, $table->getColumn('default_false')->defaultValue);
+        $this->assertTrue($table->getColumn('default_true')->defaultValue);
+        $this->assertFalse($table->getColumn('default_false')->defaultValue);
     }
 
     public function testFindSchemaNames()
     {
         $schema = $this->getConnection()->schema;
 
-        $this->assertEquals(3, count($schema->getSchemaNames()));
+        $this->assertCount(3, $schema->getSchemaNames());
     }
 
     public function bigintValueProvider()

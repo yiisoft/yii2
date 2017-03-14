@@ -101,7 +101,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
         $schema->refreshTableSchema('type');
         $refreshedTable = $schema->getTableSchema('type', false);
-        $this->assertFalse($noCacheTable === $refreshedTable);
+        $this->assertNotSame($noCacheTable, $refreshedTable);
     }
 
     public function testCompositeFk()

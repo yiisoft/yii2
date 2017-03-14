@@ -42,14 +42,14 @@ class SortTest extends TestCase
         ]);
 
         $orders = $sort->getOrders();
-        $this->assertEquals(3, count($orders));
+        $this->assertCount(3, $orders);
         $this->assertEquals(SORT_ASC, $orders['age']);
         $this->assertEquals(SORT_DESC, $orders['first_name']);
         $this->assertEquals(SORT_DESC, $orders['last_name']);
 
         $sort->enableMultiSort = false;
         $orders = $sort->getOrders(true);
-        $this->assertEquals(1, count($orders));
+        $this->assertCount(1, $orders);
         $this->assertEquals(SORT_ASC, $orders['age']);
     }
 
@@ -73,13 +73,13 @@ class SortTest extends TestCase
         ]);
 
         $orders = $sort->getAttributeOrders();
-        $this->assertEquals(2, count($orders));
+        $this->assertCount(2, $orders);
         $this->assertEquals(SORT_ASC, $orders['age']);
         $this->assertEquals(SORT_DESC, $orders['name']);
 
         $sort->enableMultiSort = false;
         $orders = $sort->getAttributeOrders(true);
-        $this->assertEquals(1, count($orders));
+        $this->assertCount(1, $orders);
         $this->assertEquals(SORT_ASC, $orders['age']);
     }
 

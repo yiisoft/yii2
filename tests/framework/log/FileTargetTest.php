@@ -62,11 +62,11 @@ class FileTargetTest extends TestCase
 
         clearstatcache();
 
-        $this->assertTrue(file_exists($logFile));
-        $this->assertFalse(file_exists($logFile . '.1'));
-        $this->assertFalse(file_exists($logFile . '.2'));
-        $this->assertFalse(file_exists($logFile . '.3'));
-        $this->assertFalse(file_exists($logFile . '.4'));
+        $this->assertFileExists($logFile);
+        $this->assertFileNotExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.4');
 
         // exceed max size
         for ($i = 0; $i < 1024; $i++) {
@@ -81,11 +81,11 @@ class FileTargetTest extends TestCase
 
         clearstatcache();
 
-        $this->assertTrue(file_exists($logFile));
-        $this->assertTrue(file_exists($logFile . '.1'));
-        $this->assertFalse(file_exists($logFile . '.2'));
-        $this->assertFalse(file_exists($logFile . '.3'));
-        $this->assertFalse(file_exists($logFile . '.4'));
+        $this->assertFileExists($logFile);
+        $this->assertFileExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.4');
 
         // second rotate
 
@@ -96,10 +96,10 @@ class FileTargetTest extends TestCase
 
         clearstatcache();
 
-        $this->assertTrue(file_exists($logFile));
-        $this->assertTrue(file_exists($logFile . '.1'));
-        $this->assertFalse(file_exists($logFile . '.2'));
-        $this->assertFalse(file_exists($logFile . '.3'));
-        $this->assertFalse(file_exists($logFile . '.4'));
+        $this->assertFileExists($logFile);
+        $this->assertFileExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.4');
     }
 }
