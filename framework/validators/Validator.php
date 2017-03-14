@@ -453,4 +453,26 @@ class Validator extends Component
 
         return ($placeholders === []) ? $message : strtr($message, $placeholders);
     }
+
+    /**
+     * Returns cleaned attribute names without the `!` character at the beginning
+     * @return array
+     * @since 2.0.12
+     */
+    public function getAttributeNames()
+    {
+        return $this->_attributeNames;
+    }
+
+    /**
+     * Saves attribute names without `!` character at the beginning
+     * @param array $attributeNames
+     * @since 2.0.12
+     */
+    private function setAttributeNames($attributeNames)
+    {
+        $this->_attributeNames = array_map(function($attribute) {
+            return ltrim($attribute, '!');
+        }, $attributeNames);
+    }
 }
