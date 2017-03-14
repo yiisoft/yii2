@@ -480,7 +480,7 @@ class WriteOnlyModel extends Model
     public function rules()
     {
         return [
-            [['password'],'safe'],
+            [['password'], 'safe'],
         ];
     }
 

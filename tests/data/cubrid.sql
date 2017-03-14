@@ -55,7 +55,7 @@ CREATE TABLE "item" (
   "name" varchar(128) NOT NULL,
   "category_id" int(11) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_item_category_id" FOREIGN KEY ("category_id") REFERENCES "category" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_item_category_id" FOREIGN KEY ("category_id") REFERENCES "category" ("id")
 );
 
 CREATE TABLE "order" (
@@ -64,7 +64,7 @@ CREATE TABLE "order" (
   "created_at" int(11) NOT NULL,
   "total" decimal(10,0) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_order_customer_id" FOREIGN KEY ("customer_id") REFERENCES "customer" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_order_customer_id" FOREIGN KEY ("customer_id") REFERENCES "customer" ("id")
 );
 
 CREATE TABLE "order_with_null_fk" (
@@ -81,8 +81,8 @@ CREATE TABLE "order_item" (
   "quantity" int(11) NOT NULL,
   "subtotal" decimal(10,0) NOT NULL,
   PRIMARY KEY ("order_id","item_id"),
-  CONSTRAINT "FK_order_item_order_id" FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE CASCADE,
-  CONSTRAINT "FK_order_item_item_id" FOREIGN KEY ("item_id") REFERENCES "item" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_order_item_order_id" FOREIGN KEY ("order_id") REFERENCES "order" ("id"),
+  CONSTRAINT "FK_order_item_item_id" FOREIGN KEY ("item_id") REFERENCES "item" ("id")
 );
 
 CREATE TABLE "order_item_with_null_fk" (
@@ -134,7 +134,7 @@ CREATE TABLE "composite_fk" (
   "order_id" int(11) NOT NULL,
   "item_id" int(11) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_composite_fk_order_item" FOREIGN KEY ("order_id","item_id") REFERENCES "order_item" ("order_id","item_id") ON DELETE CASCADE
+  CONSTRAINT "FK_composite_fk_order_item" FOREIGN KEY ("order_id","item_id") REFERENCES "order_item" ("order_id","item_id")
 );
 
 CREATE TABLE "animal" (
@@ -204,12 +204,12 @@ INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This 
 
 /* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
 
-DROP TABLE IF EXISTS `bit_values` CASCADE;
+DROP TABLE IF EXISTS `bit_values`;
 
 CREATE TABLE `bit_values` (
   `id`      INT(11) NOT NULL AUTO_INCREMENT,
   `val` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');

@@ -33,18 +33,18 @@ class MultipartFormDataParserTest extends TestCase
         ];
         $this->assertEquals($expectedBodyParams, $bodyParams);
 
-        $this->assertFalse(empty($_FILES['someFile']));
+        $this->assertNotEmpty($_FILES['someFile']);
         $this->assertEquals(UPLOAD_ERR_OK, $_FILES['someFile']['error']);
         $this->assertEquals('some-file.txt', $_FILES['someFile']['name']);
         $this->assertEquals('text/plain', $_FILES['someFile']['type']);
-        $this->assertEquals('some file content', file_get_contents($_FILES['someFile']['tmp_name']));
+        $this->assertStringEqualsFile($_FILES['someFile']['tmp_name'], 'some file content');
 
-        $this->assertFalse(empty($_FILES['Item']));
-        $this->assertFalse(empty($_FILES['Item']['name']['file']));
+        $this->assertNotEmpty($_FILES['Item']);
+        $this->assertNotEmpty($_FILES['Item']['name']['file']);
         $this->assertEquals(UPLOAD_ERR_OK, $_FILES['Item']['error']['file']);
         $this->assertEquals('item-file.txt', $_FILES['Item']['name']['file']);
         $this->assertEquals('text/plain', $_FILES['Item']['type']['file']);
-        $this->assertEquals('item file content', file_get_contents($_FILES['Item']['tmp_name']['file']));
+        $this->assertStringEqualsFile($_FILES['Item']['tmp_name']['file'], 'item file content');
     }
 
     /**

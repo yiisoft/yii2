@@ -14,6 +14,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     protected $driverName = 'sqlite';
 
+    protected $likeEscapeCharSql = " ESCAPE '\\'";
+
     public function columnTypes()
     {
         return array_merge(parent::columnTypes(), [

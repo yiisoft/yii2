@@ -527,7 +527,7 @@ class IpValidator extends Validator
      */
     private function getIpParsePattern()
     {
-        return '/^(' . preg_quote(static::NEGATION_CHAR) . '?)(.+?)(\/(\d+))?$/';
+        return '/^(' . preg_quote(static::NEGATION_CHAR, '/') . '?)(.+?)(\/(\d+))?$/';
     }
 
     /**

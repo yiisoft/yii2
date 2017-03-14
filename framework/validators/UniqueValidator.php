@@ -173,7 +173,7 @@ class UniqueValidator extends Validator
                 $dbModel = reset($models);
                 $pks = $targetClass::primaryKey();
                 $pk = [];
-                foreach($pks as $pkAttribute) {
+                foreach ($pks as $pkAttribute) {
                     $pk[$pkAttribute] = $dbModel[$pkAttribute];
                 }
                 $exists = ($pk != $model->getOldPrimaryKey(true));
@@ -247,7 +247,7 @@ class UniqueValidator extends Validator
         $attributeCombo = [];
         $valueCombo = [];
         foreach ($this->targetAttribute as $key => $value) {
-            if(is_int($key)) {
+            if (is_int($key)) {
                 $attributeCombo[] = $model->getAttributeLabel($value);
                 $valueCombo[] = '"' . $model->$value . '"';
             } else {

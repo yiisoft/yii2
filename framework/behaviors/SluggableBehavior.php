@@ -65,12 +65,14 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $slugAttribute = 'slug';
     /**
-     * @var string|array the attribute or list of attributes whose value will be converted into a slug
+     * @var string|array|null the attribute or list of attributes whose value will be converted into a slug
+     * or `null` meaning that the `$value` property will be used to generate a slug. 
      */
     public $attribute;
     /**
-     * @var string|callable the value that will be used as a slug. This can be an anonymous function
-     * or an arbitrary value. If the former, the return value of the function will be used as a slug.
+     * @var callable|string|null the value that will be used as a slug. This can be an anonymous function
+     * or an arbitrary value or null. If the former, the return value of the function will be used as a slug.
+     * If `null` then the `$attribute` property will be used to generate a slug.
      * The signature of the function should be as follows,
      *
      * ```php

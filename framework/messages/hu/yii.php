@@ -16,7 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array (
+return [
   '(not set)' => '(nincs beállítva)',
   'An internal server error occurred.' => 'Egy belső szerver hiba történt.',
   'Are you sure you want to delete this item?' => 'Biztos benne, hogy törli ezt az elemet?',
@@ -104,4 +104,4 @@ return array (
   '{n} MB' => '{n} MB',
   '{n} PB' => '{n} PB',
   '{n} TB' => '{n} TB',
-);
+];

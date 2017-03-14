@@ -271,6 +271,7 @@ class Response extends \yii\base\Response
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidParamException if the status code is invalid.
+     * @return $this the response object itself
      */
     public function setStatusCode($value, $text = null)
     {
@@ -286,6 +287,7 @@ class Response extends \yii\base\Response
         } else {
             $this->statusText = $text;
         }
+        return $this;
     }
 
     /**
