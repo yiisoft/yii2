@@ -148,7 +148,7 @@ class UniqueValidator extends Validator
      */
     private function getTargetClass($model)
     {
-        return is_null($this->targetClass) ? get_class($model) : $this->targetClass;
+        return $this->targetClass === null ? get_class($model) : $this->targetClass;
     }
 
     /**

@@ -331,6 +331,31 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];
         $this->assertEquals($expected, $result);
+
+        // Add table prefix for column name.
+        $model = Profile::findOne(1);
+        $attribute = 'id';
+        $targetAttribute = 'id';
+        $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
+        $expected = [Profile::tableName() . '.' . $attribute => $model->id];
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testGetTargetClass()
+    {
+        // Filled validator target class.
+        $validator = new UniqueValidator();
+        $validator->targetClass = 'target class';
+        $model = new FakedValidationModel();
+        $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
+        $this->assertEquals('target class', $actualTargetClass);
+
+        // Not filled validator target class.
+        $validator = new UniqueValidator();
+        $model = new FakedValidationModel();
+        $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
+        $expectedTargetClass = FakedValidationModel::className();
+        $this->assertEquals($expectedTargetClass, $actualTargetClass);
     }
 
     public function testPrepareQuery()
