@@ -69,7 +69,7 @@ class FileTargetTest extends TestCase
         $this->assertFalse(file_exists($logFile . '.4'));
 
         // exceed max size
-        for($i = 0; $i < 1024; $i++) {
+        for ($i = 0; $i < 1024; $i++) {
             $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
         }
         $logger->flush(true);
@@ -89,7 +89,7 @@ class FileTargetTest extends TestCase
 
         // second rotate
 
-        for($i = 0; $i < 1024; $i++) {
+        for ($i = 0; $i < 1024; $i++) {
             $logger->log(str_repeat('x', 1024), Logger::LEVEL_WARNING);
         }
         $logger->flush(true);

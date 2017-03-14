@@ -24,7 +24,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testGetTableNames($pdoAttributes)
     {
         $connection = $this->getConnection();
-        foreach($pdoAttributes as $name => $value) {
+        foreach ($pdoAttributes as $name => $value) {
             $connection->pdo->setAttribute($name, $value);
         }
         /* @var $schema Schema */
@@ -47,7 +47,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testGetTableSchemas($pdoAttributes)
     {
         $connection = $this->getConnection();
-        foreach($pdoAttributes as $name => $value) {
+        foreach ($pdoAttributes as $name => $value) {
             $connection->pdo->setAttribute($name, $value);
         }
         /* @var $schema Schema */
@@ -364,7 +364,7 @@ abstract class SchemaTest extends DatabaseTestCase
         sort($colNames);
         $this->assertEquals($expectedColNames, $colNames);
 
-        foreach($table->columns as $name => $column) {
+        foreach ($table->columns as $name => $column) {
             $expected = $columns[$name];
             $this->assertSame($expected['dbType'], $column->dbType, "dbType of column $name does not match. type is $column->type, dbType is $column->dbType.");
             $this->assertSame($expected['phpType'], $column->phpType, "phpType of column $name does not match. type is $column->type, dbType is $column->dbType.");
@@ -396,7 +396,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
         }
         $db->createCommand()->createTable('uniqueIndex', [
             'somecol' => 'string',
