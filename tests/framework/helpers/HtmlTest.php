@@ -1287,7 +1287,7 @@ EOD;
         ];
     }
 
-        /**
+    /**
      * Data provider for [[testAttributeNameValidation()]]
      * @return array test data
      */
@@ -1296,8 +1296,7 @@ EOD;
         return [
             '. ..',
             'a +b',
-            'a,b',
-
+            'a,b'
         ];
     }
 
@@ -1305,7 +1304,7 @@ EOD;
      * @dataProvider dataProviderAttributeNames
      *
      * @param string $name
-     * @param string|null $expected
+     * @param string $expected
      */
     public function testAttributeNameValidation($name, $expected)
     {
@@ -1315,14 +1314,12 @@ EOD;
         } else {
             $this->assertEquals($expected, Html::getAttributeName($name));
         }
-
     }
     
     /**
      * @dataProvider dataProviderInvalidAttributeNames
      *
      * @param string $name
-     * @param string|null $expected
      */
     public function testAttributeNameException($name)
     {
