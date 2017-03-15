@@ -1301,7 +1301,7 @@ EOD;
     }
 
     /**
-     * @dataProvider dataProviderAttributeNames
+     * @dataProvider dataProviderValidAttributeNames
      *
      * @param string $name
      * @param string $expected
