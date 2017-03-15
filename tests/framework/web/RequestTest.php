@@ -332,6 +332,7 @@ class RequestTest extends TestCase
      */
     public function testGetIsSecureConnection($server, $expected)
     {
+        $original = $_SERVER;
         $request = new Request([
             'trustedHostConfig' => [
                 '/^test.com$/',
@@ -341,7 +342,7 @@ class RequestTest extends TestCase
         $_SERVER = $server;
 
         $this->assertEquals($expected, $request->getIsSecureConnection());
-
+        $_SERVER = $original;
 
     }
 
