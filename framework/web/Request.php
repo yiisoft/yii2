@@ -191,6 +191,10 @@ class Request extends \yii\base\Request
         'X-Forwarded-Proto',
         'Front-End-Https',
     ];
+
+    public $ipHeaders = [
+        'X-Forwarded-For'
+    ];
     /**
      * @var CookieCollection Collection of request cookies.
      */
@@ -231,7 +235,8 @@ class Request extends \yii\base\Request
     protected function filterHeaders(array $headers)
     {
         $host = $this->getUserHost();
-        $ip = $this->getUserIP();
+        // Don't use getUserIP here since that depends on using headers.
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         foreach($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
             if (is_numeric($hostRegex)) {
                 $hostRegex = $trustedHeaders;
@@ -295,8 +300,8 @@ class Request extends \yii\base\Request
             return strtoupper($_POST[$this->methodParam]);
         }
 
-        if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-            return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+        if ($this->headers->get('X-Http-Method-Override') !== null) {
+            return strtoupper($this->headers->get('X-Http-Method-Override'));
         }
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
@@ -379,7 +384,7 @@ class Request extends \yii\base\Request
      */
     public function getIsAjax()
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        return $this->headers->get('X-Requested-With') === 'XMLHttpRequest';
     }
 
     /**
@@ -388,7 +393,7 @@ class Request extends \yii\base\Request
      */
     public function getIsPjax()
     {
-        return $this->getIsAjax() && !empty($_SERVER['HTTP_X_PJAX']);
+        return $this->getIsAjax() && $this->headers->get('X-Pjax') !== null;
     }
 
     /**
@@ -397,8 +402,7 @@ class Request extends \yii\base\Request
      */
     public function getIsFlash()
     {
-        return isset($_SERVER['HTTP_USER_AGENT']) &&
-            (stripos($_SERVER['HTTP_USER_AGENT'], 'Shockwave') !== false || stripos($_SERVER['HTTP_USER_AGENT'], 'Flash') !== false);
+        return in_array($this->headers->get('User-Agent'), ['Shockwave', 'Flash'], true);
     }
 
     private $_rawBody;
@@ -618,8 +622,8 @@ class Request extends \yii\base\Request
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if (isset($_SERVER['HTTP_HOST'])) {
-                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
+            if ($this->headers->get('Host') !== null) {
+                $this->_hostInfo = $http . '://' . $this->headers->get('Host');
             } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
                 $port = $secure ? $this->getSecurePort() : $this->getPort();
@@ -898,8 +902,8 @@ class Request extends \yii\base\Request
      */
     protected function resolveRequestUri()
     {
-        if (isset($_SERVER['HTTP_X_REWRITE_URL'])) { // IIS
-            $requestUri = $_SERVER['HTTP_X_REWRITE_URL'];
+        if ($this->headers->get('X-Rewrite-Url') !== null) { // IIS
+            $requestUri = $this->headers->get('X-Rewrite-Url');
         } elseif (isset($_SERVER['REQUEST_URI'])) {
             $requestUri = $_SERVER['REQUEST_URI'];
             if ($requestUri !== '' && $requestUri[0] !== '/') {
@@ -961,7 +965,7 @@ class Request extends \yii\base\Request
      */
     public function getReferrer()
     {
-        return isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+        $this->headers->get('Referer');
     }
 
     /**
@@ -970,7 +974,7 @@ class Request extends \yii\base\Request
      */
     public function getUserAgent()
     {
-        return isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : null;
+        return $this->headers->get('User-Agent');
     }
 
     /**
@@ -979,8 +983,15 @@ class Request extends \yii\base\Request
      */
     public function getUserIP()
     {
+        foreach($this->ipHeaders as $ipHeader) {
+            if ($this->headers->get($ipHeader) !== null) {
+                return trim(explode(',', $this->headers->get($ipHeader))[0]);
+            }
+        }
+
         return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
+
 
     /**
      * Returns the user host name.
@@ -1096,8 +1107,8 @@ class Request extends \yii\base\Request
     public function getAcceptableContentTypes()
     {
         if ($this->_contentTypes === null) {
-            if (isset($_SERVER['HTTP_ACCEPT'])) {
-                $this->_contentTypes = $this->parseAcceptHeader($_SERVER['HTTP_ACCEPT']);
+            if ($this->headers->get('Accept') !== null) {
+                $this->_contentTypes = $this->parseAcceptHeader($this->headers->get('Accept'));
             } else {
                 $this->_contentTypes = [];
             }
@@ -1133,12 +1144,10 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER['CONTENT_TYPE'])) {
             return $_SERVER['CONTENT_TYPE'];
-        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+        } else {
             //fix bug https://bugs.php.net/bug.php?id=66606
-            return $_SERVER['HTTP_CONTENT_TYPE'];
+            return $this->headers->get('Content-Type');
         }
-
-        return null;
     }
 
     private $_languages;
@@ -1152,8 +1161,8 @@ class Request extends \yii\base\Request
     public function getAcceptableLanguages()
     {
         if ($this->_languages === null) {
-            if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
-                $this->_languages = array_keys($this->parseAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']));
+            if ($this->headers->get('Accept-Language') !== null) {
+                $this->_languages = array_keys($this->parseAcceptHeader($this->headers->get('Accept-Language')));
             } else {
                 $this->_languages = [];
             }
@@ -1292,8 +1301,8 @@ class Request extends \yii\base\Request
      */
     public function getETags()
     {
-        if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
-            return preg_split('/[\s,]+/', str_replace('-gzip', '', $_SERVER['HTTP_IF_NONE_MATCH']), -1, PREG_SPLIT_NO_EMPTY);
+        if ($this->headers->get('If-None-Match') !== null) {
+            return preg_split('/[\s,]+/', str_replace('-gzip', '', $this->headers->get('If-None-Match')), -1, PREG_SPLIT_NO_EMPTY);
         } else {
             return [];
         }
@@ -1450,8 +1459,7 @@ class Request extends \yii\base\Request
      */
     public function getCsrfTokenFromHeader()
     {
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
-        return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
+        return $this->headers->get(str_replace('-', '_', strtoupper(static::CSRF_HEADER)));
     }
 
     /**
