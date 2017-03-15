@@ -238,7 +238,7 @@ class Request extends \yii\base\Request
         // Don't use getUserIP here since that depends on using headers.
         $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         foreach($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
-            if (is_numeric($hostRegex)) {
+            if (!is_array($trustedHeaders)) {
                 $hostRegex = $trustedHeaders;
                 $trustedHeaders = $this->secureHeaders;
             }
