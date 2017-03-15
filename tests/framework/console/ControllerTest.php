@@ -141,7 +141,7 @@ class ControllerTest extends TestCase
     public function testHelpSkipsTypeHintedArguments()
      {
          $controller = new FakeController('fake', Yii::$app);
-         $help = $controller->getActionArgsHelp($controller->createAction('aksi7'));
+         $help = $controller->getActionArgsHelp($controller->createAction('withComplexTypeHint'));
 
          $this->assertArrayNotHasKey('typedArgument', $help);
          $this->assertArrayHasKey('simpleArgument', $help);
