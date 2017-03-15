@@ -162,7 +162,18 @@ class Request extends \yii\base\Request
      * @see getBodyParams()
      */
     public $parsers = [];
-
+    /**
+     * @var array The configuration for trusting security related header.
+     * The array key is a regular expression for matching the hostname.
+     * The value is a list of headers to trust.
+     * Example: trust all headers from domains ending in '.trusted.com'
+     * ```
+     * [
+     *     '/^.*\.trusted.com$/' => ['-.*-']
+     * ]
+     * ```
+     */
+    public $trustedHostConfig = [];
     /**
      * @var CookieCollection Collection of request cookies.
      */
