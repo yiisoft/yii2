@@ -108,7 +108,7 @@ class Schema extends \yii\db\Schema
         'unknown' => self::TYPE_STRING,
 
         'uuid' => self::TYPE_STRING,
-        'json' => self::TYPE_STRING,
+        'json' => self::TYPE_JSON,
         'jsonb' => self::TYPE_STRING,
         'xml' => self::TYPE_STRING,
     ];

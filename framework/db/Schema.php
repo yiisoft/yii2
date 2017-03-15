@@ -58,6 +58,7 @@ abstract class Schema extends Object
     const TYPE_BINARY = 'binary';
     const TYPE_BOOLEAN = 'boolean';
     const TYPE_MONEY = 'money';
+    const TYPE_JSON = 'json';
 
     /**
      * @var Connection the database connection
