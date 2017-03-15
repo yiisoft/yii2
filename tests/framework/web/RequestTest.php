@@ -101,7 +101,7 @@ class RequestTest extends TestCase
         $request->enableCsrfValidation = true;
 
         // accept any value on GET request
-        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+        foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertTrue($request->validateCsrfToken($token . 'a'));
@@ -112,7 +112,7 @@ class RequestTest extends TestCase
         }
 
         // only accept valid token on POST
-        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+        foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertFalse($request->validateCsrfToken($token . 'a'));
@@ -136,13 +136,13 @@ class RequestTest extends TestCase
         $token = $request->getCsrfToken();
 
         // accept no value on GET request
-        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+        foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken());
         }
 
         // only accept valid token on POST
-        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+        foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $request->setBodyParams([]);
             $this->assertFalse($request->validateCsrfToken());
@@ -165,13 +165,13 @@ class RequestTest extends TestCase
         $token = $request->getCsrfToken();
 
         // accept no value on GET request
-        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+        foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken());
         }
 
         // only accept valid token on POST
-        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+        foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $request->setBodyParams([]);
             //$request->headers->remove(Request::CSRF_HEADER);
@@ -245,8 +245,8 @@ class RequestTest extends TestCase
         $request = new Request();
 
         unset($_SERVER['SERVER_NAME'], $_SERVER['HTTP_HOST']);
-        $this->assertSame(null, $request->getHostInfo());
-        $this->assertSame(null, $request->getHostName());
+        $this->assertNull($request->getHostInfo());
+        $this->assertNull($request->getHostName());
 
         $request->setHostInfo('http://servername.com:80');
         $this->assertSame('http://servername.com:80', $request->getHostInfo());

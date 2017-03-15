@@ -14,9 +14,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'sqlsrv';
 
-    protected $likeEscapeCharSql = " ESCAPE '\\'";
     protected $likeParameterReplacements = [
-        '[abc]' => '\[abc\]',
+        '\%' => '[%]',
+        '\_' => '[_]',
+        '[' => '[[]',
+        ']' => '[]]',
+        '\\\\' => '[\\]',
     ];
 
     public function testOffsetLimit()

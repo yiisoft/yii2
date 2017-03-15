@@ -37,7 +37,7 @@ class HttpCacheTest extends \yiiunit\TestCase
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
         $this->assertFalse($response->getHeaders()->offsetExists('Pragma'));
-        $this->assertFalse($response->getHeaders()->get('Pragma') === '');
+        $this->assertNotSame($response->getHeaders()->get('Pragma'), '');
     }
 
     /**
