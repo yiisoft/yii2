@@ -170,8 +170,8 @@ class Request extends \yii\base\Request
      * Example 2: trust just the x-forwarded-for header from domains ending in '.partial.com'
      * ```
      * [
-     *     '/^.*\.trusted.com$/',
-     *     '/^.*\.partial.com$/' => ['X-Forwarded-For']
+     *     '/^.*\.trusted\.com$/',
+     *     '/^.*\.partial\.com$/' => ['X-Forwarded-For']
      *
      * ]
      * ```
