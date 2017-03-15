@@ -84,11 +84,11 @@ class BooleanValidator extends Validator
         $options = [
             'trueValue' => $this->trueValue,
             'falseValue' => $this->falseValue,
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
                 'true' => $this->trueValue === true ? 'true' : $this->trueValue,
                 'false' => $this->falseValue === false ? 'false' : $this->falseValue,
-            ], Yii::$app->language),
+            ]),
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;

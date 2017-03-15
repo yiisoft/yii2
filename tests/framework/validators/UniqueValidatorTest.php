@@ -338,7 +338,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         $model = new ValidatorTestMainModel();
-        $query = $this->invokeMethod(new UniqueValidator(), 'prepareQuery', [$model,['val_attr_b' => 'test value a']]);
+        $query = $this->invokeMethod(new UniqueValidator(), 'prepareQuery', [$model, ['val_attr_b' => 'test value a']]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE {$schema->quoteColumnName('val_attr_b')}=:qp0";
         $this->assertEquals($expected, $query->createCommand()->getSql());
 

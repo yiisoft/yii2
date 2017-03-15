@@ -139,7 +139,7 @@ class DateValidator extends Validator
      *
      * If not set, [[timestampAttribute]] will receive a UNIX timestamp.
      * If [[timestampAttribute]] is not set, this property will be ignored.
-     * @see format
+     * @see formatMessage
      * @see timestampAttribute
      * @since 2.0.4
      */

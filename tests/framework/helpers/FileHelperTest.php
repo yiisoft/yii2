@@ -163,7 +163,7 @@ class FileHelperTest extends TestCase
         foreach ($files as $name => $content) {
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
             $this->assertFileExists($fileName);
-            $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+            $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
         }
     }
 
@@ -200,7 +200,7 @@ class FileHelperTest extends TestCase
                 } else {
                     $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
                     $this->assertFileExists($fileName);
-                    $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+                    $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
                 }
             }
         };
@@ -241,7 +241,7 @@ class FileHelperTest extends TestCase
                 $this->assertFileNotExists($fileName);
             } else {
                 $this->assertFileExists($fileName);
-                $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+                $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
             }
         }
     }
@@ -780,7 +780,7 @@ class FileHelperTest extends TestCase
         foreach ($dataFiles as $name => $content) {
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
             $this->assertFileExists($fileName);
-            $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+            $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
         }
     }
 }

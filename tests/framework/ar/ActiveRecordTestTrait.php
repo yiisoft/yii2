@@ -67,31 +67,32 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         // find one
         $result = $customerClass::find();
-        $this->assertTrue($result instanceof ActiveQueryInterface);
+        $this->assertInstanceOf('\\yii\\db\\ActiveQueryInterface', $result);
         $customer = $result->one();
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
 
         // find all
         $customers = $customerClass::find()->all();
-        $this->assertEquals(3, count($customers));
-        $this->assertTrue($customers[0] instanceof $customerClass);
-        $this->assertTrue($customers[1] instanceof $customerClass);
-        $this->assertTrue($customers[2] instanceof $customerClass);
+        $this->assertCount(3, $customers);
+        $this->assertInstanceOf($customerClass, $customers[0]);
+        $this->assertInstanceOf($customerClass, $customers[1]);
+        $this->assertInstanceOf($customerClass, $customers[2]);
 
         // find by a single primary key
         $customer = $customerClass::findOne(2);
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals('user2', $customer->name);
         $customer = $customerClass::findOne(5);
         $this->assertNull($customer);
         $customer = $customerClass::findOne(['id' => [5, 6, 1]]);
+        // can't use assertCount() here since it will count model attributes instead
         $this->assertEquals(1, count($customer));
         $customer = $customerClass::find()->where(['id' => [5, 6, 1]])->one();
         $this->assertNotNull($customer);
 
         // find by column values
         $customer = $customerClass::findOne(['id' => 2, 'name' => 'user2']);
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals('user2', $customer->name);
         $customer = $customerClass::findOne(['id' => 2, 'name' => 'user1']);
         $this->assertNull($customer);
@@ -102,11 +103,11 @@ trait ActiveRecordTestTrait
 
         // find by attributes
         $customer = $customerClass::find()->where(['name' => 'user2'])->one();
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals(2, $customer->id);
 
         // scope
-        $this->assertEquals(2, count($customerClass::find()->active()->all()));
+        $this->assertCount(2, $customerClass::find()->active()->all());
         $this->assertEquals(2, $customerClass::find()->active()->count());
     }
 
@@ -128,7 +129,7 @@ trait ActiveRecordTestTrait
 
         // find all asArray
         $customers = $customerClass::find()->asArray()->all();
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
         $this->assertArrayHasKey('id', $customers[0]);
         $this->assertArrayHasKey('name', $customers[0]);
         $this->assertArrayHasKey('email', $customers[0]);
@@ -200,19 +201,19 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy
         $customers = $customerClass::find()->indexBy('name')->orderBy('id')->all();
-        $this->assertEquals(3, count($customers));
-        $this->assertTrue($customers['user1'] instanceof $customerClass);
-        $this->assertTrue($customers['user2'] instanceof $customerClass);
-        $this->assertTrue($customers['user3'] instanceof $customerClass);
+        $this->assertCount(3, $customers);
+        $this->assertInstanceOf($customerClass, $customers['user1']);
+        $this->assertInstanceOf($customerClass, $customers['user2']);
+        $this->assertInstanceOf($customerClass, $customers['user3']);
 
         // indexBy callable
         $customers = $customerClass::find()->indexBy(function ($customer) {
             return $customer->id . '-' . $customer->name;
         })->orderBy('id')->all();
-        $this->assertEquals(3, count($customers));
-        $this->assertTrue($customers['1-user1'] instanceof $customerClass);
-        $this->assertTrue($customers['2-user2'] instanceof $customerClass);
-        $this->assertTrue($customers['3-user3'] instanceof $customerClass);
+        $this->assertCount(3, $customers);
+        $this->assertInstanceOf($customerClass, $customers['1-user1']);
+        $this->assertInstanceOf($customerClass, $customers['2-user2']);
+        $this->assertInstanceOf($customerClass, $customers['3-user3']);
     }
 
     public function testFindIndexByAsArray()
@@ -223,7 +224,7 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         // indexBy + asArray
         $customers = $customerClass::find()->asArray()->indexBy('name')->all();
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
         $this->assertArrayHasKey('id', $customers['user1']);
         $this->assertArrayHasKey('name', $customers['user1']);
         $this->assertArrayHasKey('email', $customers['user1']);
@@ -244,7 +245,7 @@ trait ActiveRecordTestTrait
         $customers = $customerClass::find()->indexBy(function ($customer) {
             return $customer['id'] . '-' . $customer['name'];
         })->asArray()->all();
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
         $this->assertArrayHasKey('id', $customers['1-user1']);
         $this->assertArrayHasKey('name', $customers['1-user1']);
         $this->assertArrayHasKey('email', $customers['1-user1']);
@@ -332,27 +333,27 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         // all()
         $customers = $customerClass::find()->all();
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
 
         $customers = $customerClass::find()->orderBy('id')->limit(1)->all();
-        $this->assertEquals(1, count($customers));
+        $this->assertCount(1, $customers);
         $this->assertEquals('user1', $customers[0]->name);
 
         $customers = $customerClass::find()->orderBy('id')->limit(1)->offset(1)->all();
-        $this->assertEquals(1, count($customers));
+        $this->assertCount(1, $customers);
         $this->assertEquals('user2', $customers[0]->name);
 
         $customers = $customerClass::find()->orderBy('id')->limit(1)->offset(2)->all();
-        $this->assertEquals(1, count($customers));
+        $this->assertCount(1, $customers);
         $this->assertEquals('user3', $customers[0]->name);
 
         $customers = $customerClass::find()->orderBy('id')->limit(2)->offset(1)->all();
-        $this->assertEquals(2, count($customers));
+        $this->assertCount(2, $customers);
         $this->assertEquals('user2', $customers[0]->name);
         $this->assertEquals('user3', $customers[1]->name);
 
         $customers = $customerClass::find()->limit(2)->offset(3)->all();
-        $this->assertEquals(0, count($customers));
+        $this->assertCount(0, $customers);
 
         // one()
         $customer = $customerClass::find()->orderBy('id')->one();
@@ -379,13 +380,13 @@ trait ActiveRecordTestTrait
 
         /* @var $this TestCase|ActiveRecordTestTrait */
         $this->assertEquals(2, $customerClass::find()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->count());
-        $this->assertEquals(2, count($customerClass::find()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->all()));
+        $this->assertCount(2, $customerClass::find()->where(['OR', ['name' => 'user1'], ['name' => 'user2']])->all());
 
         $this->assertEquals(2, $customerClass::find()->where(['name' => ['user1', 'user2']])->count());
-        $this->assertEquals(2, count($customerClass::find()->where(['name' => ['user1', 'user2']])->all()));
+        $this->assertCount(2, $customerClass::find()->where(['name' => ['user1', 'user2']])->all());
 
         $this->assertEquals(1, $customerClass::find()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->count());
-        $this->assertEquals(1, count($customerClass::find()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->all()));
+        $this->assertCount(1, $customerClass::find()->where(['AND', ['name' => ['user2', 'user3']], ['BETWEEN', 'status', 2, 4]])->all());
     }
 
     public function testFindNullValues()
@@ -400,7 +401,7 @@ trait ActiveRecordTestTrait
         $this->afterSave();
 
         $result = $customerClass::find()->where(['name' => null])->all();
-        $this->assertEquals(1, count($result));
+        $this->assertCount(1, $result);
         $this->assertEquals(2, reset($result)->primaryKey);
     }
 
@@ -430,8 +431,8 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->isRelationPopulated('orders'));
         $orders = $customer->orders;
         $this->assertTrue($customer->isRelationPopulated('orders'));
-        $this->assertEquals(2, count($orders));
-        $this->assertEquals(1, count($customer->relatedRecords));
+        $this->assertCount(2, $orders);
+        $this->assertCount(1, $customer->relatedRecords);
 
         // unset
         unset($customer['orders']);
@@ -442,9 +443,9 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->isRelationPopulated('orders'));
         $orders = $customer->getOrders()->where(['id' => 3])->all();
         $this->assertFalse($customer->isRelationPopulated('orders'));
-        $this->assertEquals(0, count($customer->relatedRecords));
+        $this->assertCount(0, $customer->relatedRecords);
 
-        $this->assertEquals(1, count($orders));
+        $this->assertCount(1, $orders);
         $this->assertEquals(3, $orders[0]->id);
     }
 
@@ -458,29 +459,29 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         $customers = $customerClass::find()->with('orders')->indexBy('id')->all();
         ksort($customers);
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
         $this->assertTrue($customers[1]->isRelationPopulated('orders'));
         $this->assertTrue($customers[2]->isRelationPopulated('orders'));
         $this->assertTrue($customers[3]->isRelationPopulated('orders'));
-        $this->assertEquals(1, count($customers[1]->orders));
-        $this->assertEquals(2, count($customers[2]->orders));
-        $this->assertEquals(0, count($customers[3]->orders));
+        $this->assertCount(1, $customers[1]->orders);
+        $this->assertCount(2, $customers[2]->orders);
+        $this->assertCount(0, $customers[3]->orders);
         // unset
         unset($customers[1]->orders);
         $this->assertFalse($customers[1]->isRelationPopulated('orders'));
 
         $customer = $customerClass::find()->where(['id' => 1])->with('orders')->one();
         $this->assertTrue($customer->isRelationPopulated('orders'));
-        $this->assertEquals(1, count($customer->orders));
-        $this->assertEquals(1, count($customer->relatedRecords));
+        $this->assertCount(1, $customer->orders);
+        $this->assertCount(1, $customer->relatedRecords);
 
         // multiple with() calls
         $orders = $orderClass::find()->with('customer', 'items')->all();
-        $this->assertEquals(3, count($orders));
+        $this->assertCount(3, $orders);
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
         $this->assertTrue($orders[0]->isRelationPopulated('items'));
         $orders = $orderClass::find()->with('customer')->with('items')->all();
-        $this->assertEquals(3, count($orders));
+        $this->assertCount(3, $orders);
         $this->assertTrue($orders[0]->isRelationPopulated('customer'));
         $this->assertTrue($orders[0]->isRelationPopulated('items'));
     }
@@ -494,7 +495,7 @@ trait ActiveRecordTestTrait
         /* @var $order Order */
         $order = $orderClass::findOne(1);
         $this->assertEquals(1, $order->id);
-        $this->assertEquals(2, count($order->items));
+        $this->assertCount(2, $order->items);
         $this->assertEquals(1, $order->items[0]->id);
         $this->assertEquals(2, $order->items[1]->id);
     }
@@ -518,11 +519,11 @@ trait ActiveRecordTestTrait
 
         /* @var $this TestCase|ActiveRecordTestTrait */
         $orders = $orderClass::find()->with('items')->orderBy('id')->all();
-        $this->assertEquals(3, count($orders));
+        $this->assertCount(3, $orders);
         $order = $orders[0];
         $this->assertEquals(1, $order->id);
         $this->assertTrue($order->isRelationPopulated('items'));
-        $this->assertEquals(2, count($order->items));
+        $this->assertCount(2, $order->items);
         $this->assertEquals(1, $order->items[0]->id);
         $this->assertEquals(2, $order->items[1]->id);
     }
@@ -535,19 +536,19 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         $customers = $customerClass::find()->with('orders', 'orders.items')->indexBy('id')->all();
         ksort($customers);
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
         $this->assertTrue($customers[1]->isRelationPopulated('orders'));
         $this->assertTrue($customers[2]->isRelationPopulated('orders'));
         $this->assertTrue($customers[3]->isRelationPopulated('orders'));
-        $this->assertEquals(1, count($customers[1]->orders));
-        $this->assertEquals(2, count($customers[2]->orders));
-        $this->assertEquals(0, count($customers[3]->orders));
+        $this->assertCount(1, $customers[1]->orders);
+        $this->assertCount(2, $customers[2]->orders);
+        $this->assertCount(0, $customers[3]->orders);
         $this->assertTrue($customers[1]->orders[0]->isRelationPopulated('items'));
         $this->assertTrue($customers[2]->orders[0]->isRelationPopulated('items'));
         $this->assertTrue($customers[2]->orders[1]->isRelationPopulated('items'));
-        $this->assertEquals(2, count($customers[1]->orders[0]->items));
-        $this->assertEquals(3, count($customers[2]->orders[0]->items));
-        $this->assertEquals(1, count($customers[2]->orders[1]->items));
+        $this->assertCount(2, $customers[1]->orders[0]->items);
+        $this->assertCount(3, $customers[2]->orders[0]->items);
+        $this->assertCount(1, $customers[2]->orders[1]->items);
 
         $customers = $customerClass::find()->where(['id' => 1])->with('ordersWithItems')->one();
         $this->assertTrue($customers->isRelationPopulated('ordersWithItems'));
@@ -601,19 +602,19 @@ trait ActiveRecordTestTrait
             Item 3: 'Ice Age', 2
          */
         $orders = $orderClass::find()->with('itemsInOrder1')->orderBy('created_at')->all();
-        $this->assertEquals(3, count($orders));
+        $this->assertCount(3, $orders);
 
         $order = $orders[0];
         $this->assertEquals(1, $order->id);
         $this->assertTrue($order->isRelationPopulated('itemsInOrder1'));
-        $this->assertEquals(2, count($order->itemsInOrder1));
+        $this->assertCount(2, $order->itemsInOrder1);
         $this->assertEquals(1, $order->itemsInOrder1[0]->id);
         $this->assertEquals(2, $order->itemsInOrder1[1]->id);
 
         $order = $orders[1];
         $this->assertEquals(2, $order->id);
         $this->assertTrue($order->isRelationPopulated('itemsInOrder1'));
-        $this->assertEquals(3, count($order->itemsInOrder1));
+        $this->assertCount(3, $order->itemsInOrder1);
         $this->assertEquals(5, $order->itemsInOrder1[0]->id);
         $this->assertEquals(3, $order->itemsInOrder1[1]->id);
         $this->assertEquals(4, $order->itemsInOrder1[2]->id);
@@ -621,7 +622,7 @@ trait ActiveRecordTestTrait
         $order = $orders[2];
         $this->assertEquals(3, $order->id);
         $this->assertTrue($order->isRelationPopulated('itemsInOrder1'));
-        $this->assertEquals(1, count($order->itemsInOrder1));
+        $this->assertCount(1, $order->itemsInOrder1);
         $this->assertEquals(2, $order->itemsInOrder1[0]->id);
     }
 
@@ -632,19 +633,19 @@ trait ActiveRecordTestTrait
         $orderClass = $this->getOrderClass();
 
         $orders = $orderClass::find()->with('itemsInOrder2')->orderBy('created_at')->all();
-        $this->assertEquals(3, count($orders));
+        $this->assertCount(3, $orders);
 
         $order = $orders[0];
         $this->assertEquals(1, $order->id);
         $this->assertTrue($order->isRelationPopulated('itemsInOrder2'));
-        $this->assertEquals(2, count($order->itemsInOrder2));
+        $this->assertCount(2, $order->itemsInOrder2);
         $this->assertEquals(1, $order->itemsInOrder2[0]->id);
         $this->assertEquals(2, $order->itemsInOrder2[1]->id);
 
         $order = $orders[1];
         $this->assertEquals(2, $order->id);
         $this->assertTrue($order->isRelationPopulated('itemsInOrder2'));
-        $this->assertEquals(3, count($order->itemsInOrder2));
+        $this->assertCount(3, $order->itemsInOrder2);
         $this->assertEquals(5, $order->itemsInOrder2[0]->id);
         $this->assertEquals(3, $order->itemsInOrder2[1]->id);
         $this->assertEquals(4, $order->itemsInOrder2[2]->id);
@@ -652,7 +653,7 @@ trait ActiveRecordTestTrait
         $order = $orders[2];
         $this->assertEquals(3, $order->id);
         $this->assertTrue($order->isRelationPopulated('itemsInOrder2'));
-        $this->assertEquals(1, count($order->itemsInOrder2));
+        $this->assertCount(1, $order->itemsInOrder2);
         $this->assertEquals(2, $order->itemsInOrder2[0]->id);
     }
 
@@ -668,7 +669,7 @@ trait ActiveRecordTestTrait
         $itemClass = $this->getItemClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
         $customer = $customerClass::findOne(2);
-        $this->assertEquals(2, count($customer->orders));
+        $this->assertCount(2, $customer->orders);
 
         // has many
         $order = new $orderClass;
@@ -676,9 +677,9 @@ trait ActiveRecordTestTrait
         $this->assertTrue($order->isNewRecord);
         $customer->link('orders', $order);
         $this->afterSave();
-        $this->assertEquals(3, count($customer->orders));
+        $this->assertCount(3, $customer->orders);
         $this->assertFalse($order->isNewRecord);
-        $this->assertEquals(3, count($customer->getOrders()->all()));
+        $this->assertCount(3, $customer->getOrders()->all());
         $this->assertEquals(2, $order->customer_id);
 
         // belongs to
@@ -694,17 +695,17 @@ trait ActiveRecordTestTrait
 
         // via model
         $order = $orderClass::findOne(1);
-        $this->assertEquals(2, count($order->items));
-        $this->assertEquals(2, count($order->orderItems));
+        $this->assertCount(2, $order->items);
+        $this->assertCount(2, $order->orderItems);
         $orderItem = $orderItemClass::findOne(['order_id' => 1, 'item_id' => 3]);
         $this->assertNull($orderItem);
         $item = $itemClass::findOne(3);
         $order->link('items', $item, ['quantity' => 10, 'subtotal' => 100]);
         $this->afterSave();
-        $this->assertEquals(3, count($order->items));
-        $this->assertEquals(3, count($order->orderItems));
+        $this->assertCount(3, $order->items);
+        $this->assertCount(3, $order->orderItems);
         $orderItem = $orderItemClass::findOne(['order_id' => 1, 'item_id' => 3]);
-        $this->assertTrue($orderItem instanceof $orderItemClass);
+        $this->assertInstanceOf($orderItemClass, $orderItem);
         $this->assertEquals(10, $orderItem->quantity);
         $this->assertEquals(100, $orderItem->subtotal);
     }
@@ -725,10 +726,10 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         // has many without delete
         $customer = $customerClass::findOne(2);
-        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $this->assertCount(2, $customer->ordersWithNullFK);
         $customer->unlink('ordersWithNullFK', $customer->ordersWithNullFK[1], false);
 
-        $this->assertEquals(1, count($customer->ordersWithNullFK));
+        $this->assertCount(1, $customer->ordersWithNullFK);
         $orderWithNullFK = $orderWithNullFKClass::findOne(3);
 
         $this->assertEquals(3,$orderWithNullFK->id);
@@ -736,30 +737,30 @@ trait ActiveRecordTestTrait
 
         // has many with delete
         $customer = $customerClass::findOne(2);
-        $this->assertEquals(2, count($customer->orders));
+        $this->assertCount(2, $customer->orders);
         $customer->unlink('orders', $customer->orders[1], true);
         $this->afterSave();
 
-        $this->assertEquals(1, count($customer->orders));
+        $this->assertCount(1, $customer->orders);
         $this->assertNull($orderClass::findOne(3));
 
         // via model with delete
         $order = $orderClass::findOne(2);
-        $this->assertEquals(3, count($order->items));
-        $this->assertEquals(3, count($order->orderItems));
+        $this->assertCount(3, $order->items);
+        $this->assertCount(3, $order->orderItems);
         $order->unlink('items', $order->items[2], true);
         $this->afterSave();
 
-        $this->assertEquals(2, count($order->items));
-        $this->assertEquals(2, count($order->orderItems));
+        $this->assertCount(2, $order->items);
+        $this->assertCount(2, $order->orderItems);
 
         // via model without delete
-        $this->assertEquals(3, count($order->itemsWithNullFK));
+        $this->assertCount(3, $order->itemsWithNullFK);
         $order->unlink('itemsWithNullFK', $order->itemsWithNullFK[2], false);
         $this->afterSave();
 
-        $this->assertEquals(2, count($order->itemsWithNullFK));
-        $this->assertEquals(2, count($order->orderItems));
+        $this->assertCount(2, $order->itemsWithNullFK);
+        $this->assertCount(2, $order->orderItems);
     }
 
     public function testUnlinkAll()
@@ -780,12 +781,12 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         // has many with delete
         $customer = $customerClass::findOne(2);
-        $this->assertEquals(2, count($customer->orders));
+        $this->assertCount(2, $customer->orders);
         $this->assertEquals(3, $orderClass::find()->count());
         $customer->unlinkAll('orders', true);
         $this->afterSave();
         $this->assertEquals(1, $orderClass::find()->count());
-        $this->assertEquals(0, count($customer->orders));
+        $this->assertCount(0, $customer->orders);
 
         $this->assertNull($orderClass::findOne(2));
         $this->assertNull($orderClass::findOne(3));
@@ -793,11 +794,11 @@ trait ActiveRecordTestTrait
 
         // has many without delete
         $customer = $customerClass::findOne(2);
-        $this->assertEquals(2, count($customer->ordersWithNullFK));
+        $this->assertCount(2, $customer->ordersWithNullFK);
         $this->assertEquals(3, $orderWithNullFKClass::find()->count());
         $customer->unlinkAll('ordersWithNullFK', false);
         $this->afterSave();
-        $this->assertEquals(0, count($customer->ordersWithNullFK));
+        $this->assertCount(0, $customer->ordersWithNullFK);
         $this->assertEquals(3, $orderWithNullFKClass::find()->count());
         $this->assertEquals(2, $orderWithNullFKClass::find()->where(['AND', ['id' => [2, 3]], ['customer_id' => null]])->count());
 
@@ -805,22 +806,22 @@ trait ActiveRecordTestTrait
         // via model with delete
         /* @var $order Order */
         $order = $orderClass::findOne(1);
-        $this->assertEquals(2, count($order->books));
+        $this->assertCount(2, $order->books);
         $orderItemCount = $orderItemClass::find()->count();
         $this->assertEquals(5, $itemClass::find()->count());
         $order->unlinkAll('books', true);
         $this->afterSave();
         $this->assertEquals(5, $itemClass::find()->count());
         $this->assertEquals($orderItemCount - 2, $orderItemClass::find()->count());
-        $this->assertEquals(0, count($order->books));
+        $this->assertCount(0, $order->books);
 
         // via model without delete
-        $this->assertEquals(2, count($order->booksWithNullFK));
+        $this->assertCount(2, $order->booksWithNullFK);
         $orderItemCount = $orderItemsWithNullFKClass::find()->count();
         $this->assertEquals(5, $itemClass::find()->count());
         $order->unlinkAll('booksWithNullFK',false);
         $this->afterSave();
-        $this->assertEquals(0, count($order->booksWithNullFK));
+        $this->assertCount(0, $order->booksWithNullFK);
         $this->assertEquals(2, $orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
         $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
         $this->assertEquals(5, $itemClass::find()->count());
@@ -842,16 +843,16 @@ trait ActiveRecordTestTrait
         $this->afterSave();
 
         $customer = $customerClass::findOne(1);
-        $this->assertEquals(3, count($customer->ordersWithNullFK));
-        $this->assertEquals(1, count($customer->expensiveOrdersWithNullFK));
+        $this->assertCount(3, $customer->ordersWithNullFK);
+        $this->assertCount(1, $customer->expensiveOrdersWithNullFK);
         $this->assertEquals(3, $orderClass::find()->count());
         $customer->unlinkAll('expensiveOrdersWithNullFK');
-        $this->assertEquals(3, count($customer->ordersWithNullFK));
-        $this->assertEquals(0, count($customer->expensiveOrdersWithNullFK));
+        $this->assertCount(3, $customer->ordersWithNullFK);
+        $this->assertCount(0, $customer->expensiveOrdersWithNullFK);
         $this->assertEquals(3, $orderClass::find()->count());
         $customer = $customerClass::findOne(1);
-        $this->assertEquals(2, count($customer->ordersWithNullFK));
-        $this->assertEquals(0, count($customer->expensiveOrdersWithNullFK));
+        $this->assertCount(2, $customer->ordersWithNullFK);
+        $this->assertCount(0, $customer->expensiveOrdersWithNullFK);
     }
 
     public function testUnlinkAllAndConditionDelete()
@@ -868,16 +869,16 @@ trait ActiveRecordTestTrait
         $this->afterSave();
 
         $customer = $customerClass::findOne(1);
-        $this->assertEquals(3, count($customer->orders));
-        $this->assertEquals(1, count($customer->expensiveOrders));
+        $this->assertCount(3, $customer->orders);
+        $this->assertCount(1, $customer->expensiveOrders);
         $this->assertEquals(3, $orderClass::find()->count());
         $customer->unlinkAll('expensiveOrders', true);
-        $this->assertEquals(3, count($customer->orders));
-        $this->assertEquals(0, count($customer->expensiveOrders));
+        $this->assertCount(3, $customer->orders);
+        $this->assertCount(0, $customer->expensiveOrders);
         $this->assertEquals(2, $orderClass::find()->count());
         $customer = $customerClass::findOne(1);
-        $this->assertEquals(2, count($customer->orders));
-        $this->assertEquals(0, count($customer->expensiveOrders));
+        $this->assertCount(2, $customer->orders);
+        $this->assertCount(0, $customer->expensiveOrders);
     }
 
     public static $afterSaveNewRecord;
@@ -934,7 +935,7 @@ trait ActiveRecordTestTrait
         // save
         /* @var $customer Customer */
         $customer = $customerClass::findOne(2);
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals('user2', $customer->name);
         $this->assertFalse($customer->isNewRecord);
         static::$afterSaveNewRecord = null;
@@ -976,7 +977,7 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         /* @var $customer Customer */
         $customer = $customerClass::findOne(2);
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals('user2', $customer->name);
         $this->assertFalse($customer->isNewRecord);
         static::$afterSaveNewRecord = null;
@@ -1042,7 +1043,7 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
         // delete
         $customer = $customerClass::findOne(2);
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
         $this->assertEquals('user2', $customer->name);
         $customer->delete();
         $this->afterSave();
@@ -1051,12 +1052,12 @@ trait ActiveRecordTestTrait
 
         // deleteAll
         $customers = $customerClass::find()->all();
-        $this->assertEquals(2, count($customers));
+        $this->assertCount(2, $customers);
         $ret = $customerClass::deleteAll();
         $this->afterSave();
         $this->assertEquals(2, $ret);
         $customers = $customerClass::find()->all();
-        $this->assertEquals(0, count($customers));
+        $this->assertCount(0, $customers);
 
         $ret = $customerClass::deleteAll();
         $this->afterSave();
@@ -1088,10 +1089,10 @@ trait ActiveRecordTestTrait
         $this->assertEquals(0, $customer->status);
 
         $customers = $customerClass::find()->where(['status' => true])->all();
-        $this->assertEquals(2, count($customers));
+        $this->assertCount(2, $customers);
 
         $customers = $customerClass::find()->where(['status' => false])->all();
-        $this->assertEquals(1, count($customers));
+        $this->assertCount(1, $customers);
     }
 
     public function testAfterFind()
@@ -1179,16 +1180,16 @@ trait ActiveRecordTestTrait
         /* @var $this TestCase|ActiveRecordTestTrait */
 
         $customers = $customerClass::find()->where(['id' => [1]])->all();
-        $this->assertEquals(1, count($customers));
+        $this->assertCount(1, $customers);
 
         $customers = $customerClass::find()->where(['id' => []])->all();
-        $this->assertEquals(0, count($customers));
+        $this->assertCount(0, $customers);
 
         $customers = $customerClass::find()->where(['IN', 'id', [1]])->all();
-        $this->assertEquals(1, count($customers));
+        $this->assertCount(1, $customers);
 
         $customers = $customerClass::find()->where(['IN', 'id', []])->all();
-        $this->assertEquals(0, count($customers));
+        $this->assertCount(0, $customers);
     }
 
     public function testFindEagerIndexBy()
@@ -1202,7 +1203,7 @@ trait ActiveRecordTestTrait
         $order = $orderClass::find()->with('itemsIndexed')->where(['id' => 1])->one();
         $this->assertTrue($order->isRelationPopulated('itemsIndexed'));
         $items = $order->itemsIndexed;
-        $this->assertEquals(2, count($items));
+        $this->assertCount(2, $items);
         $this->assertTrue(isset($items[1]));
         $this->assertTrue(isset($items[2]));
 
@@ -1210,7 +1211,7 @@ trait ActiveRecordTestTrait
         $order = $orderClass::find()->with('itemsIndexed')->where(['id' => 2])->one();
         $this->assertTrue($order->isRelationPopulated('itemsIndexed'));
         $items = $order->itemsIndexed;
-        $this->assertEquals(3, count($items));
+        $this->assertCount(3, $items);
         $this->assertTrue(isset($items[3]));
         $this->assertTrue(isset($items[4]));
         $this->assertTrue(isset($items[5]));
@@ -1239,7 +1240,7 @@ trait ActiveRecordTestTrait
 
         /* @var $customer ActiveRecord */
         $customer = new $customerClass();
-        $this->assertTrue($customer instanceof $customerClass);
+        $this->assertInstanceOf($customerClass, $customer);
 
         $this->assertTrue($customer->canGetProperty('id'));
         $this->assertTrue($customer->canSetProperty('id'));

@@ -267,7 +267,7 @@ abstract class QueryTest extends DatabaseTestCase
             );
         $result = $query->all($connection);
         $this->assertNotEmpty($result);
-        $this->assertSame(4, count($result));
+        $this->assertCount(4, $result);
     }
 
     public function testOne()
@@ -407,13 +407,13 @@ abstract class QueryTest extends DatabaseTestCase
             ->from('customer')
             ->emulateExecution()
             ->one($db);
-        $this->assertSame(false, $row);
+        $this->assertFalse($row);
 
         $exists = (new Query())
             ->from('customer')
             ->emulateExecution()
             ->exists($db);
-        $this->assertSame(false, $exists);
+        $this->assertFalse($exists);
 
         $count = (new Query())
             ->from('customer')
@@ -437,20 +437,20 @@ abstract class QueryTest extends DatabaseTestCase
             ->from('customer')
             ->emulateExecution()
             ->max('id', $db);
-        $this->assertSame(null, $max);
+        $this->assertNull($max);
 
         $min = (new Query())
             ->from('customer')
             ->emulateExecution()
             ->min('id', $db);
-        $this->assertSame(null, $min);
+        $this->assertNull($min);
 
         $scalar = (new Query())
             ->select(['id'])
             ->from('customer')
             ->emulateExecution()
             ->scalar($db);
-        $this->assertSame(null, $scalar);
+        $this->assertNull($scalar);
 
         $column = (new Query())
             ->select(['id'])

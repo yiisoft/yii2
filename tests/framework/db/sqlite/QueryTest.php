@@ -24,6 +24,6 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
             );
         $result = $query->all($connection);
         $this->assertNotEmpty($result);
-        $this->assertSame(7, count($result));
+        $this->assertCount(7, $result);
     }
 }
