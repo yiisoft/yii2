@@ -1265,7 +1265,7 @@ EOD;
      * Data provider for [[testAttributeNameValidation()]]
      * @return array test data
      */
-    public function dataProviderValidAttributeNames()
+    public function validAttributeNamesProvider()
     {
         return [
             ["asd]asdf.asdfa[asdfa", "asdf.asdfa"],
@@ -1291,17 +1291,17 @@ EOD;
      * Data provider for [[testAttributeNameValidation()]]
      * @return array test data
      */
-    public function dataProviderInvalidAttributeNames()
+    public function invalidAttributeNamesProvider()
     {
         return [
-            '. ..',
-            'a +b',
-            'a,b'
+            ['. ..'],
+            ['a +b'],
+            ['a,b']
         ];
     }
 
     /**
-     * @dataProvider dataProviderValidAttributeNames
+     * @dataProvider validAttributeNamesProvider
      *
      * @param string $name
      * @param string $expected
@@ -1317,7 +1317,7 @@ EOD;
     }
     
     /**
-     * @dataProvider dataProviderInvalidAttributeNames
+     * @dataProvider invalidAttributeNamesProvider
      *
      * @param string $name
      */
