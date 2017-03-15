@@ -1145,7 +1145,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         }
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1193,7 +1193,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ];
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1230,25 +1230,25 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $qb = $this->getQueryBuilder();
         $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, ['id'])->execute();
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(1, count($tableSchema->primaryKey));
+        $this->assertCount(1, $tableSchema->primaryKey);
 
         // DROP
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(0, count($tableSchema->primaryKey));
+        $this->assertCount(0, $tableSchema->primaryKey);
 
         // ADD (2 columns)
         $qb = $this->getQueryBuilder();
         $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, 'id, field1')->execute();
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(2, count($tableSchema->primaryKey));
+        $this->assertCount(2, $tableSchema->primaryKey);
 
         // DROP (2 columns)
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(0, count($tableSchema->primaryKey));
+        $this->assertCount(0, $tableSchema->primaryKey);
     }
 
     public function existsParamsProvider()
@@ -1464,7 +1464,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([
             'id' => 1,
             'abc' => 'abc',
-        ],$params);
+        ], $params);
 
         // simple subquery
         $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
@@ -1697,7 +1697,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ];
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
             if (!empty($this->likeEscapeCharSql)) {
                 preg_match_all('/(?P<condition>LIKE.+?)( AND| OR|$)/', $conditions[$i][1], $matches, PREG_SET_ORDER);
