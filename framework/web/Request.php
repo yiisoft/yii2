@@ -166,14 +166,31 @@ class Request extends \yii\base\Request
      * @var array The configuration for trusting security related header.
      * The array key is a regular expression for matching the hostname.
      * The value is a list of headers to trust.
-     * Example: trust all headers from domains ending in '.trusted.com'
+     * Example 1: trust all headers from domains ending in '.trusted.com'
+     * Example 2: trust just the x-forwarded-for header from domains ending in '.partial.com'
      * ```
      * [
-     *     '/^.*\.trusted.com$/' => ['-.*-']
+     *     '/^.*\.trusted.com$/',
+     *     '/^.*\.partial.com$/' => ['X-Forwarded-For']
+     *
      * ]
      * ```
+     * The default value trusts all headers from all hosts (to not break BC).
      */
-    public $trustedHostConfig = [];
+    public $trustedHostConfig = [
+        '//'
+    ];
+    /**
+     * Lists the headers that are subject to the trusted host configuration.
+     * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
+     * @var array
+     */
+    public $secureHeaders = [
+        'X-Forwarded-For',
+        'X-Forwarded-Host',
+        'X-Forwarded-Proto',
+        'Front-End-Https',
+    ];
     /**
      * @var CookieCollection Collection of request cookies.
      */
@@ -206,6 +223,34 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Filters headers according to the trusted host config.
+     * @param array $headers
+     * @since 2.0.12
+     * @return array The filtered list of headers.
+     */
+    protected function filterHeaders(array $headers)
+    {
+        $host = $this->getUserHost();
+        $ip = $this->getUserIP();
+        foreach($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
+            if (is_numeric($hostRegex)) {
+                $hostRegex = $trustedHeaders;
+                $trustedHeaders = $this->secureHeaders;
+            }
+
+            if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
+                foreach($this->secureHeaders as $secureHeader) {
+                    if (!in_array($secureHeader, $trustedHeaders)) {
+                        unset($headers[$secureHeader]);
+                    }
+                }
+                return $headers;
+            }
+        }
+        return [];
+    }
+
+    /**
      * Returns the header collection.
      * The header collection contains incoming HTTP headers.
      * @return HeaderCollection the header collection
@@ -213,22 +258,25 @@ class Request extends \yii\base\Request
     public function getHeaders()
     {
         if ($this->_headers === null) {
+            // Check hosts.
+            
+            
             $this->_headers = new HeaderCollection;
             if (function_exists('getallheaders')) {
                 $headers = getallheaders();
             } elseif (function_exists('http_get_request_headers')) {
                 $headers = http_get_request_headers();
             } else {
+                $headers = [];
                 foreach ($_SERVER as $name => $value) {
                     if (strncmp($name, 'HTTP_', 5) === 0) {
                         $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
-                        $this->_headers->add($name, $value);
+                        $headers[$name] = $value;
                     }
                 }
-
-                return $this->_headers;
             }
-            foreach ($headers as $name => $value) {
+
+            foreach ($this->filterHeaders($headers) as $name => $value) {
                 $this->_headers->add($name, $value);
             }
         }
@@ -885,7 +933,8 @@ class Request extends \yii\base\Request
     public function getIsSecureConnection()
     {
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+            || $this->headers->get('X-Forwarded-Proto', null) === 'https';
+
     }
 
     /**
