@@ -141,13 +141,13 @@ class QueryBuilder extends \yii\db\QueryBuilder
             if ($value === null) {
                 $key = $this->db->quoteColumnName(reset($table->primaryKey));
                 $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
-                    return $db->createCommand("SELECT MAX({$key}) FROM {$tableName}")->queryScalar();
+                    return $db->createCommand("SELECT MAX($key) FROM $tableName")->queryScalar();
                 });
             } else {
                 $value = (int) $value - 1;
             }
 
-            return "UPDATE sqlite_sequence SET seq='{$value}' WHERE name='{$table->name}'";
+            return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
         } else {
