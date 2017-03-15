@@ -341,21 +341,22 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testGetTargetClass()
+    public function testGetTargetClassFilledPropertyTargetClass()
     {
-        // Filled property targetClass.
-        $validator = new UniqueValidator();
-        $validator->targetClass = 'target class';
+        $validator = new UniqueValidator(['targetClass' => Profile::className()]);
         $model = new FakedValidationModel();
         $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
-        $this->assertEquals('target class', $actualTargetClass);
 
-        // Not filled property targetClass.
+        $this->assertEquals(Profile::className(), $actualTargetClass);
+    }
+
+    public function testGetTargetClassNotFilledPropertyTargetClass()
+    {
         $validator = new UniqueValidator();
         $model = new FakedValidationModel();
         $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
-        $expectedTargetClass = FakedValidationModel::className();
-        $this->assertEquals($expectedTargetClass, $actualTargetClass);
+        
+        $this->assertEquals(FakedValidationModel::className(), $actualTargetClass);
     }
 
     public function testPrepareQuery()
