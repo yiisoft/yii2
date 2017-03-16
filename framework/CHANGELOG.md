@@ -49,6 +49,7 @@ Yii Framework 2 Change Log
 - Enh #13254: Core validators no longer require Yii::$app to be set (sammousa)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #10372: Fixed console controller including complex typed arguments in help (sammousa)
+- Bug #13738: Fixed `getQueryParams()` method in `yii.js` to correctly parse URL with question mark and no query parameters (vladdnepr)
 
 2.0.11.2 February 08, 2017
 --------------------------
