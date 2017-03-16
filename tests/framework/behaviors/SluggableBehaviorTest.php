@@ -78,7 +78,7 @@ class SluggableBehaviorTest extends TestCase
     public function testSlugSeveralAttributes()
     {
         $model = new ActiveRecordSluggable();
-        $model->getBehavior('sluggable')->attribute = array('name', 'category_id');
+        $model->getBehavior('sluggable')->attribute = ['name', 'category_id'];
 
         $model->name = 'test';
         $model->category_id = 10;

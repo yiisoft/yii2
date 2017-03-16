@@ -4,8 +4,9 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
-- Bug #7946 Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
+- Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #13087: Fixed getting active validators for safe attribute (developeruz)
 - Bug #13571: Fix `yii\db\mssql\QueryBuilder::checkIntegrity` for all tables (boboldehampsink)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
@@ -24,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #13592: Fixes Oracle’s `yii\db\oci\Schema::setTransactionIsolationLevel()` (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
+- Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
@@ -36,14 +38,17 @@ Yii Framework 2 Change Log
 - Bug #13649: Fixes issue where `['uncheck' => false]` and `['label' => false]` options for `ActiveRadio` and `ActiveCheckbox` were ignored (Alex-Code)
 - Enh #13221: Make `\yii\db\QueryTrait::limit()` and `\yii\db\QueryTrait::offset()` methods work with `\yii\db\Expression` (Ni-san)
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
+- Enh #13360: Added Dockerized test setup for the framework tests (schmunk42)
 - Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire, arogachev)
 - Enh #13650: Improved `yii\base\Security::hkdf()` to take advantage of native `hash_hkdf()` implementation in PHP >= 7.1.2  (charlesportwoodii)
-- Bug #13379: Fixed `applyFilter` function in `yii.gridView.js` to work correctly when params in `filterUrl` are indexed (SilverFire) 
 - Bug #13670: Fixed alias option from console when it includes `-` or `_` in option name (pana1990)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 - Enh #13695: `\yii\web\Response::setStatusCode()` method now returns the Response object itself (kyle-mccarthy)
 - Bug #13707: Fixed `\yii\web\ErrorHandler` and `\yii\web\ErrorAction` not setting correct response code to response object before rendering error view (samdark)
-
+- Enh #13698: `yii\grid\DataColumn` filter is automatically generated as dropdown list in case of `format` set to `boolean` (bizley)
+- Enh #13254: Core validators no longer require Yii::$app to be set (sammousa)
+- Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
+- Bug #10372: Fixed console controller including complex typed arguments in help (sammousa)
 
 2.0.11.2 February 08, 2017
 --------------------------

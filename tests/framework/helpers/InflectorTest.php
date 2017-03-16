@@ -234,6 +234,14 @@ class InflectorTest extends TestCase
         }
     }
 
+    /**
+     * @return boolean if ICU version is >= 57.1
+     */
+    private function hasNewICUData()
+    {
+        return version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=');
+    }
+
     public function testTransliterateMedium()
     {
         if (!extension_loaded('intl')) {
@@ -252,12 +260,12 @@ class InflectorTest extends TestCase
             'العربي' => 'alʿrby',
             'عرب' => 'ʿrb',
             // Hebrew
-            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'ʻiberiyt',
+            'עִבְרִית' => $this->hasNewICUData() ? '\'iberiyt' : 'ʻiberiyt',
             // Turkish
             'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
 
             // Russian
-            'недвижимость' => 'nedvizimostʹ',
+            'недвижимость' => $this->hasNewICUData() ? 'nedvizimost\'' : 'nedvizimostʹ',
             'Контакты' => 'Kontakty',
 
             // Ukrainian
@@ -295,12 +303,12 @@ class InflectorTest extends TestCase
             'العربي' => 'alrby',
             'عرب' => 'rb',
             // Hebrew
-            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'iberiyt',
+            'עִבְרִית' => $this->hasNewICUData() ? '\'iberiyt' : 'iberiyt',
             // Turkish
             'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
 
             // Russian
-            'недвижимость' => 'nedvizimost',
+            'недвижимость' => $this->hasNewICUData() ? 'nedvizimost\'' : 'nedvizimost',
             'Контакты' => 'Kontakty',
 
             // Ukrainian
