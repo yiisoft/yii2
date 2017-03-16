@@ -10,9 +10,9 @@ namespace yii\validators;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecordInterface;
-use yii\db\Query;
 use yii\helpers\Inflector;
 
 /**
@@ -119,7 +119,7 @@ class UniqueValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         /* @var $targetClass ActiveRecordInterface */
-        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
+        $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
         $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
@@ -139,6 +139,15 @@ class UniqueValidator extends Validator
                 $this->addError($model, $attribute, $this->message);
             }
         }
+    }
+
+    /**
+     * @param Model $model the data model to be validated
+     * @return string Target class name
+     */
+    private function getTargetClass($model)
+    {
+        return $this->targetClass === null ? get_class($model) : $this->targetClass;
     }
 
     /**
@@ -234,7 +243,20 @@ class UniqueValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        return $conditions;
+        if (!$model instanceof ActiveRecord) {
+            return $conditions;
+        }
+
+        // Add table prefix for column
+        $targetClass = $this->getTargetClass($model);
+        $tableName = $targetClass::tableName();
+        $conditionsWithTableName = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            $prefixedColumnName = "{$tableName}.$columnName";
+            $conditionsWithTableName[$prefixedColumnName] = $columnValue;
+        }
+
+        return $conditionsWithTableName;
     }
 
     /**
