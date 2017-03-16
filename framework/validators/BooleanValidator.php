@@ -54,8 +54,7 @@ class BooleanValidator extends Validator
     {
         if ($this->strict) {
             $valid = $value === $this->trueValue || $value === $this->falseValue;
-        }
-        else {
+        } else {
             $valid = $value == $this->trueValue || $value == $this->falseValue;
         }
 
