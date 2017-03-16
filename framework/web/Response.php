@@ -291,6 +291,24 @@ class Response extends \yii\base\Response
     }
 
     /**
+     * Sets the response status code based on the exception.
+     * @param \Exception $e
+     * @throws InvalidParamException if the status code is invalid.
+     * @return $this the response object itself
+     *
+     * @since 2.0.12
+     */
+    public function setStatusCodeByException(\Exception $e)
+    {
+        if ($e instanceof HttpException) {
+            $this->setStatusCode($e->statusCode);
+        } else {
+            $this->setStatusCode(500);
+        }
+        return $this;
+    }
+
+    /**
      * Returns the header collection.
      * The header collection contains the currently registered HTTP headers.
      * @return HeaderCollection the header collection
