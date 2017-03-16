@@ -12,6 +12,7 @@ use yii\base\Widget;
 use yii\base\Model;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 
 /**
  * InputWidget is the base class for widgets that collect user inputs.
@@ -59,6 +60,11 @@ class InputWidget extends Widget
      */
     public $value;
     /**
+     * @var array the default HTML attributes for the input tag.
+     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     */
+    public $defaultOptions = [];
+    /**
      * @var array the HTML attributes for the input tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
@@ -74,6 +80,7 @@ class InputWidget extends Widget
         if ($this->name === null && !$this->hasModel()) {
             throw new InvalidConfigException("Either 'name', or 'model' and 'attribute' properties must be specified.");
         }
+        $this->options = ArrayHelper::merge($this->defaultOptions, $this->options);
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->hasModel() ? Html::getInputId($this->model, $this->attribute) : $this->getId();
         }
