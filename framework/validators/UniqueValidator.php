@@ -144,7 +144,7 @@ class UniqueValidator extends Validator
 
     /**
      * @param Model $model the data model to be validated
-     * @return string Target class name.
+     * @return string Target class name
      */
     private function getTargetClass($model)
     {
@@ -248,7 +248,7 @@ class UniqueValidator extends Validator
             return $conditions;
         }
 
-        // Add table prefix for column.
+        // Add table prefix for column
         $targetClass = $this->getTargetClass($model);
         $tableName = $targetClass::tableName();
         $conditionsWithTableName = [];
