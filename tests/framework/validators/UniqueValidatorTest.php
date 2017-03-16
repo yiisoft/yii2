@@ -332,7 +332,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];
         $this->assertEquals($expected, $result);
 
-        // Add table prefix for column name.
+        // Add table prefix for column name
         $model = Profile::findOne(1);
         $attribute = 'id';
         $targetAttribute = 'id';
@@ -341,7 +341,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertEquals($expected, $result);
     }
 
-    public function testGetTargetClassFilledPropertyTargetClass()
+    public function testGetTargetClassWithFilledTargetClassProperty()
     {
         $validator = new UniqueValidator(['targetClass' => Profile::className()]);
         $model = new FakedValidationModel();
@@ -350,7 +350,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertEquals(Profile::className(), $actualTargetClass);
     }
 
-    public function testGetTargetClassNotFilledPropertyTargetClass()
+    public function testGetTargetClassWithNotFilledTargetClassProperty()
     {
         $validator = new UniqueValidator();
         $model = new FakedValidationModel();
