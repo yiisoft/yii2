@@ -89,11 +89,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             $response = new Response();
         }
 
-        if ($exception instanceof HttpException) {
-            $response->setStatusCode($exception->statusCode);
-        } else {
-            $response->setStatusCode(500);
-        }
+        $response->setStatusCodeByException($exception);
 
         $useErrorView = $response->format === Response::FORMAT_HTML && (!YII_DEBUG || $exception instanceof UserException);
 
