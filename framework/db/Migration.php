@@ -180,11 +180,13 @@ class Migration extends Component implements MigrationInterface
      * This method executes the specified SQL statement using [[db]].
      * @param string $sql the SQL statement to be executed
      * @param array $params input parameters (name => value) for the SQL execution.
+     * @param int $printSqlLength length of the string that will be printed on the screen.
      * See [[Command::execute()]] for more details.
      */
-    public function execute($sql, $params = [])
+    public function execute($sql, $params = [], $printSqlLength = 0)
     {
-        echo "    > execute SQL: $sql ...";
+        $sqlPrint = ($printSqlLength === 0 || strlen($sql) <= $printSqlLength) ? $sql : substr($sql, 0, $printSqlLength) . "(...hidden)";
+        echo "    > execute SQL: $sqlPrint ...";
         $time = microtime(true);
         $this->db->createCommand($sql)->bindValues($params)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
