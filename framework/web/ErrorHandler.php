@@ -474,6 +474,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * @return bool if simple HTML should be rendered
+     * @since 2.0.12
      */
     protected function shouldRenderSimpleHtml()
     {
