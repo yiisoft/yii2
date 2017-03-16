@@ -275,7 +275,8 @@ window.yii = (function ($) {
 
             var pairs = $.grep(url.substring(pos + 1).split('#')[0].split('&'), function (value) {
                 return value !== '';
-            }), params = {};
+            });
+            var params = {};
 
             for (var i = 0, len = pairs.length; i < len; i++) {
                 var pair = pairs[i].split('=');
