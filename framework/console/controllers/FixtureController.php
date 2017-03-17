@@ -9,7 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\helpers\Console;
@@ -488,7 +488,7 @@ class FixtureController extends Controller
     {
         try {
             return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
-        } catch (InvalidParamException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new InvalidConfigException('Invalid fixture namespace: "' . $this->namespace . '". Please, check your FixtureController::namespace parameter');
         }
     }
