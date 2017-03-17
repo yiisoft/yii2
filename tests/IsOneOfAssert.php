@@ -11,9 +11,9 @@ class IsOneOfAssert extends \PHPUnit_Framework_Constraint
 
     /**
      * IsOneOfAssert constructor.
-     * @param $allowedValues
+     * @param array $allowedValues
      */
-    public function __construct($allowedValues)
+    public function __construct(array $allowedValues)
     {
         parent::__construct();
         $this->allowedValues = $allowedValues;
