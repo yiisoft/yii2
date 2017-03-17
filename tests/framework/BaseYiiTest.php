@@ -100,7 +100,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
-        $this->assertTrue($defaultLogger instanceof Logger);
+        $this->assertInstanceOf(Logger::className(), $defaultLogger);
     }
 
     /**

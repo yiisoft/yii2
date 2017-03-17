@@ -51,7 +51,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
             $db = $this->prepareMasterSlave($masterCount, $slaveCount);
 
-            $this->assertTrue($db->getSlave() instanceof Connection);
+            $this->assertInstanceOf(Connection::className(), $db->getSlave());
             $this->assertTrue($db->getSlave()->isActive);
             $this->assertFalse($db->isActive);
 
@@ -63,7 +63,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $db->createCommand("UPDATE profile SET description='test' WHERE id=1")->execute();
             $this->assertTrue($db->isActive);
             if ($masterCount > 0) {
-                $this->assertTrue($db->getMaster() instanceof Connection);
+                $this->assertInstanceOf(Connection::className(), $db->getMaster());
                 $this->assertTrue($db->getMaster()->isActive);
             } else {
                 $this->assertNull($db->getMaster());
@@ -79,7 +79,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $this->assertFalse($db->isActive);
 
             $customer = Customer::findOne(1);
-            $this->assertTrue($customer instanceof Customer);
+            $this->assertInstanceOf(Customer::className(), $customer);
             $this->assertEquals('user1', $customer->name);
             $this->assertFalse($db->isActive);
 
@@ -87,7 +87,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $customer->save();
             $this->assertTrue($db->isActive);
             $customer = Customer::findOne(1);
-            $this->assertTrue($customer instanceof Customer);
+            $this->assertInstanceOf(Customer::className(), $customer);
             $this->assertEquals('user1', $customer->name);
             $result = $db->useMaster(function () {
                 return Customer::findOne(1)->name;
@@ -114,8 +114,8 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $hit_masters[$db->getMaster()->dsn] = true;
         }
 
-        $this->assertEquals($mastersCount, count($hit_masters), 'all masters hit');
-        $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
+        $this->assertCount($mastersCount, $hit_masters, 'all masters hit');
+        $this->assertCount($slavesCount, $hit_slaves, 'all slaves hit');
     }
 
     public function testMastersSequential()
@@ -136,9 +136,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $hit_masters[$db->getMaster()->dsn] = true;
         }
 
-        $this->assertEquals(1, count($hit_masters), 'same master hit');
+        $this->assertCount(1, $hit_masters, 'same master hit');
         // slaves are always random
-        $this->assertEquals($slavesCount, count($hit_slaves), 'all slaves hit');
+        $this->assertCount($slavesCount, $hit_slaves, 'all slaves hit');
     }
 
     public function testRestoreMasterAfterException()

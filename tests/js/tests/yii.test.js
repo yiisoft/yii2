@@ -739,6 +739,8 @@ describe('yii', function () {
     describe('getQueryParams method', function () {
         withData({
             'no query parameters': ['/posts/index', {}],
+            // https://github.com/yiisoft/yii2/issues/13738
+            'question mark, no query parameters': ['/posts/index?', {}],
             'query parameters': ['/posts/index?foo=1&bar=2', {foo: '1', bar: '2'}],
             'query parameter with multiple values (not array)': ['/posts/index?foo=1&foo=2', {'foo': ['1', '2']}],
             'query parameter with multiple values (array)': ['/posts/index?foo[]=1&foo[]=2', {'foo[]': ['1', '2']}],

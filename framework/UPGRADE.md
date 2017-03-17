@@ -56,6 +56,9 @@ Upgrade from Yii 2.0.11
 * `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
   indicating whether the timestamp has date information or it is just time value.
 
+* `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
+  in case of `format` being set to `boolean`.
+
 
 Upgrade from Yii 2.0.10
 -----------------------

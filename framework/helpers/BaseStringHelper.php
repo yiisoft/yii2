@@ -319,7 +319,7 @@ class BaseStringHelper
      *
      * @param string $input
      * @return string
-     * @since 2.0.11
+     * @since 2.0.12
      */
     public static function base64UrlEncode($input)
     {
@@ -332,7 +332,7 @@ class BaseStringHelper
      *
      * @param string $input
      * @return string
-     * @since 2.0.11
+     * @since 2.0.12
      */
     public static function base64UrlDecode($input)
     {
