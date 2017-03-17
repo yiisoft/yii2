@@ -18,4 +18,9 @@ require_once(__DIR__ . '/../framework/Yii.php');
 
 Yii::setAlias('@yiiunit', __DIR__);
 
+if (!class_exists('PHPUnit_Framework_TestCase') && class_exists('PHPUnit\Framework\TestCase')) {
+    // compatibility with PHPUnit 6.x
+    class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase {}
+}
+
 require_once(__DIR__ . '/TestCase.php');
