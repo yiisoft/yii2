@@ -73,6 +73,11 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     public $messageConfig = [];
     /**
+     * @var array the configuration that should be applied to any newly created message template.
+     * @since 2.1
+     */
+    public $templateConfig = [];
+    /**
      * @var string the default class name of the new message instances created by [[createMessage()]]
      */
     public $messageClass = BaseMessage::class;
@@ -148,8 +153,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         return Yii::createObject($config);
     }
 
-    private $_message;
-
     /**
      * Creates a new message instance and optionally composes its body content via view rendering.
      *
@@ -177,44 +180,8 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             return $message;
         }
 
-        if (!array_key_exists('message', $params)) {
-            $params['message'] = $message;
-        }
+        $this->createTemplate($message)->compose($view, $params);
 
-        $this->_message = $message;
-
-        if (is_array($view)) {
-            if (isset($view['html'])) {
-                $html = $this->render($view['html'], $params, $this->htmlLayout);
-            }
-            if (isset($view['text'])) {
-                $text = $this->render($view['text'], $params, $this->textLayout);
-            }
-        } else {
-            $html = $this->render($view, $params, $this->htmlLayout);
-        }
-
-
-        $this->_message = null;
-
-        if (isset($html)) {
-            $message->setHtmlBody($html);
-        }
-        if (isset($text)) {
-            $message->setTextBody($text);
-        } elseif (isset($html)) {
-            if (preg_match('~<body[^>]*>(.*?)</body>~is', $html, $match)) {
-                $html = $match[1];
-            }
-            // remove style and script
-            $html = preg_replace('~<((style|script))[^>]*>(.*?)</\1>~is', '', $html);
-            // strip all HTML tags and decoded HTML entities
-            $text = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, Yii::$app ? Yii::$app->charset : 'UTF-8');
-            // improve whitespace
-            $text = preg_replace("~^[ \t]+~m", '', trim($text));
-            $text = preg_replace('~\R\R+~mu', "\n\n", $text);
-            $message->setTextBody($text);
-        }
         return $message;
     }
 
@@ -232,6 +199,32 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             $config['class'] = $this->messageClass;
         }
         $config['mailer'] = $this;
+        return Yii::createObject($config);
+    }
+
+    /**
+     * Creates new message view template.
+     * The newly created instance will be initialized with the configuration specified by [[templateConfig]].
+     * @param MessageInterface $message mail message instance.
+     * @return Template message template instance.
+     * @throws InvalidConfigException
+     * @since 2.1
+     */
+    protected function createTemplate($message)
+    {
+        $config = $this->templateConfig;
+        if (!array_key_exists('class', $config)) {
+            $config['class'] = Template::class;
+        }
+        if (!array_key_exists('view', $config)) {
+            $config['view'] = $this->getView();
+        }
+
+        $config['viewPath'] = $this->getViewPath();
+        $config['htmlLayout'] = $this->htmlLayout;
+        $config['textLayout'] = $this->textLayout;
+        $config['message'] = $message;
+
         return Yii::createObject($config);
     }
 
@@ -286,24 +279,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         }
 
         return $successCount;
-    }
-
-    /**
-     * Renders the specified view with optional parameters and layout.
-     * The view will be rendered using the [[view]] component.
-     * @param string $view the view name or the path alias of the view file.
-     * @param array $params the parameters (name-value pairs) that will be extracted and made available in the view file.
-     * @param string|bool $layout layout view name or path alias. If false, no layout will be applied.
-     * @return string the rendering result.
-     */
-    public function render($view, $params = [], $layout = false)
-    {
-        $output = $this->getView()->render($view, $params, $this);
-        if ($layout !== false) {
-            return $this->getView()->render($layout, ['content' => $output, 'message' => $this->_message], $this);
-        } else {
-            return $output;
-        }
     }
 
     /**
