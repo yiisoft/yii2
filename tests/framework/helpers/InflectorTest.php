@@ -260,7 +260,7 @@ class InflectorTest extends TestCase
             'Контакты' => ['Kontakty'],
 
             // Ukrainian
-            'Українська: ґанок, європа' => ['Ukrainsʹka: ganok, evropa'],
+            'Українська: ґанок, європа' => ['Ukrainsʹka: ganok, evropa', 'Ukrains\'ka: ganok, evropa'],
 
             // Serbian
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
@@ -303,7 +303,7 @@ class InflectorTest extends TestCase
             'Контакты' => ['Kontakty'],
 
             // Ukrainian
-            'Українська: ґанок, європа' => ['Ukrainska: ganok, evropa'],
+            'Українська: ґанок, європа' => ['Ukrainska: ganok, evropa', 'Ukrains\'ka: ganok, evropa'],
 
             // Serbian
             'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
