@@ -456,12 +456,13 @@ class BaseYii
      *
      * @param string $token token for the code block
      * @param string $category the category of this log message
+     * @param mixed $context arbitrary data that can be used by profiler event listeners
      * @see endProfile()
      */
-    public static function beginProfile($token, $category = 'application')
+    public static function beginProfile($token, $category = 'application', $context = null)
     {
         if (static::$app !== null) {
-            static::$app->getProfiler()->begin($token, $category);
+            static::$app->getProfiler()->begin($token, $category, $context);
         } else {
             static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
         }
@@ -472,12 +473,13 @@ class BaseYii
      * This has to be matched with a previous call to [[beginProfile]] with the same category name.
      * @param string $token token for the code block
      * @param string $category the category of this log message
+     * @param mixed $context arbitrary data that can be used by profiler event listeners
      * @see beginProfile()
      */
-    public static function endProfile($token, $category = 'application')
+    public static function endProfile($token, $category = 'application', $context = null)
     {
         if (static::$app !== null) {
-            static::$app->getProfiler()->end($token, $category);
+            static::$app->getProfiler()->end($token, $category, $context);
         } else {
             static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
         }

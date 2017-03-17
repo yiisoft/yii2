@@ -9,6 +9,8 @@ namespace yii\log;
 
 use Yii;
 use yii\base\Component;
+use yii\base\Profiler;
+use yii\base\ProfilerEvent;
 
 /**
  * Logger records logged messages in memory and sends them to different targets if [[dispatcher]] is set.
@@ -126,6 +128,15 @@ class Logger extends Component
             // ensure "flush()" is called last when there are multiple shutdown functions
             register_shutdown_function([$this, 'flush'], true);
         });
+
+        if (Yii::$app !== null) {
+            Yii::$app->on(Profiler::EVENT_BEGIN, function(ProfilerEvent $event) {
+                $this->log($event->token, Logger::LEVEL_PROFILE_BEGIN, $event->category);
+            });
+            Yii::$app->on(Profiler::EVENT_END, function(ProfilerEvent $event) {
+                $this->log($event->token, Logger::LEVEL_PROFILE_END, $event->category);
+            });
+        }
     }
 
     /**
