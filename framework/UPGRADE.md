@@ -50,6 +50,14 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.x
+----------------------
+
+* Following new methods have been added to `yii\i18n\MessageInterface` `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()`
+  providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
+  creating your own mailer solution.
+
+
 Upgrade from Yii 2.0.11
 -----------------------
 

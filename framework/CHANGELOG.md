@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 -----------------------
 
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
+- Enh #12385: Methods `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()` have been added to `yii\i18n\MessageInterface` allowing setup of custom message headers (klimov-paul)
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
 - Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)
 - Enh #13006: Added a `/` to the `yii\captcha\Captcha::$captchaAction` string to work correctly in a module also (boehsermoe)
