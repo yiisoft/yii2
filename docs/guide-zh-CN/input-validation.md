@@ -519,7 +519,7 @@ class LoginForm extends Model
 
 ### 自己实现客户端验证 <span id="implementing-client-side-validation"></span>
 
-要穿件一个支持客户端验证的验证器，你需要实现
+要创建一个支持客户端验证的验证器，你需要实现
 [[yii\validators\Validator::clientValidateAttribute()]] 方法，
 用于返回一段用于运行客户端验证的 JavaScript 代码。
 在这段 JavaScript 代码中，你可以使用以下预定义的变量：

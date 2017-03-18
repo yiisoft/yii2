@@ -166,9 +166,9 @@ $post = Yii::$app->db->createCommand('SELECT * FROM post WHERE id=:id AND status
 一个参数占位符应该是以冒号开头的字符串。
 之后你可以调用下面绑定参数的方法来绑定参数值：
 
-* [[yii\db\Command::bindValue()|bindValue()]]: 绑定一个参数值
-* [[yii\db\Command::bindValues()|bindValues()]]: 在一次调用中绑定多个参数值
-* [[yii\db\Command::bindParam()|bindParam()]]: 与 [[yii\db\Command::bindValue()|bindValue()]] 相似，但是也支持绑定参数引用。
+* [[yii\db\Command::bindValue()|bindValue()]]：绑定一个参数值
+* [[yii\db\Command::bindValues()|bindValues()]]：在一次调用中绑定多个参数值
+* [[yii\db\Command::bindParam()|bindParam()]]：与 [[yii\db\Command::bindValue()|bindValue()]] 相似，但是也支持绑定参数引用。
 
 下面的例子展示了几个可供选择的绑定参数的方法：
 
@@ -641,20 +641,20 @@ $rows = Yii::$app->db->useMaster(function ($db) {
 Yii DAO 提供了一套完整的方法来让你操纵数据库模式，
 如创建表、从表中删除一列，等等。这些方法罗列如下：
 
-* [[yii\db\Command::createTable()|createTable()]]: 创建一张表
-* [[yii\db\Command::renameTable()|renameTable()]]: 重命名一张表
-* [[yii\db\Command::dropTable()|dropTable()]]: 删除一张表
-* [[yii\db\Command::truncateTable()|truncateTable()]]: 删除一张表中的所有行
-* [[yii\db\Command::addColumn()|addColumn()]]: 增加一列
-* [[yii\db\Command::renameColumn()|renameColumn()]]: 重命名一列
-* [[yii\db\Command::dropColumn()|dropColumn()]]: 删除一列
-* [[yii\db\Command::alterColumn()|alterColumn()]]: 修改一列
-* [[yii\db\Command::addPrimaryKey()|addPrimaryKey()]]: 增加主键
-* [[yii\db\Command::dropPrimaryKey()|dropPrimaryKey()]]: 删除主键
-* [[yii\db\Command::addForeignKey()|addForeignKey()]]: 增加一个外键
-* [[yii\db\Command::dropForeignKey()|dropForeignKey()]]: 删除一个外键
-* [[yii\db\Command::createIndex()|createIndex()]]: 增加一个索引
-* [[yii\db\Command::dropIndex()|dropIndex()]]: 删除一个索引
+* [[yii\db\Command::createTable()|createTable()]]：创建一张表
+* [[yii\db\Command::renameTable()|renameTable()]]：重命名一张表
+* [[yii\db\Command::dropTable()|dropTable()]]：删除一张表
+* [[yii\db\Command::truncateTable()|truncateTable()]]：删除一张表中的所有行
+* [[yii\db\Command::addColumn()|addColumn()]]：增加一列
+* [[yii\db\Command::renameColumn()|renameColumn()]]：重命名一列
+* [[yii\db\Command::dropColumn()|dropColumn()]]：删除一列
+* [[yii\db\Command::alterColumn()|alterColumn()]]：修改一列
+* [[yii\db\Command::addPrimaryKey()|addPrimaryKey()]]：增加主键
+* [[yii\db\Command::dropPrimaryKey()|dropPrimaryKey()]]：删除主键
+* [[yii\db\Command::addForeignKey()|addForeignKey()]]：增加一个外键
+* [[yii\db\Command::dropForeignKey()|dropForeignKey()]]：删除一个外键
+* [[yii\db\Command::createIndex()|createIndex()]]：增加一个索引
+* [[yii\db\Command::dropIndex()|dropIndex()]]：删除一个索引
 
 这些方法可以如下地使用：
 
