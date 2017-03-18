@@ -17,7 +17,6 @@ class ImageExtentionModelTest extends TestCase
 
     public function testGetImageExtensionReturnImagick()
     {
-        /* @var $imageModel ImageExtentionModel|\Prophecy\Prophecy\ObjectProphecy */
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
             ->setMethods(['getLoadedExtensions', 'existsPNGImagickFormats'])
             ->getMock();
@@ -35,7 +34,6 @@ class ImageExtentionModelTest extends TestCase
 
     public function testGetImageExtensionReturnGD()
     {
-        /* @var $imageModel ImageExtentionModel|\Prophecy\Prophecy\ObjectProphecy */
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
             ->setMethods(['getLoadedExtensions', 'isFreeTypeSupportGD'])
             ->getMock();
@@ -55,7 +53,6 @@ class ImageExtentionModelTest extends TestCase
 
     public function testGetImageExtensionGenerateInvalidConfigException()
     {
-        /* @var $imageModel ImageExtentionModel|\Prophecy\Prophecy\ObjectProphecy */
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
             ->setMethods(['getLoadedExtensions'])
             ->getMock();
@@ -72,7 +69,6 @@ class ImageExtentionModelTest extends TestCase
 
     public function testExistsPNGImagickFormatSupported()
     {
-        /* @var $imageModel ImageExtentionModel|\Prophecy\Prophecy\ObjectProphecy */
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
             ->setMethods(['getImagickFormats'])
             ->getMock();
@@ -88,7 +84,6 @@ class ImageExtentionModelTest extends TestCase
 
     public function testExistsPNGImagickFormatNotSupported()
     {
-        /* @var $imageModel ImageExtentionModel|\Prophecy\Prophecy\ObjectProphecy */
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
             ->setMethods(['getImagickFormats'])
             ->getMock();
@@ -104,7 +99,6 @@ class ImageExtentionModelTest extends TestCase
 
     public function testIsFreeTypeSupportGDSupported()
     {
-        /* @var $imageModel ImageExtentionModel|\Prophecy\Prophecy\ObjectProphecy */
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
             ->setMethods(['getGDInfo'])
             ->getMock();
@@ -120,7 +114,6 @@ class ImageExtentionModelTest extends TestCase
 
     public function testIsFreeTypeSupportGDNotSupported()
     {
-        /* @var $imageModel ImageExtentionModel|\Prophecy\Prophecy\ObjectProphecy */
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
             ->setMethods(['getGDInfo'])
             ->getMock();
