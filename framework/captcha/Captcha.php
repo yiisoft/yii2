@@ -164,18 +164,9 @@ class Captcha extends InputWidget
      */
     public static function checkRequirements()
     {
-        if (extension_loaded('imagick')) {
-            $imagickFormats = (new \Imagick())->queryFormats('PNG');
-            if (in_array('PNG', $imagickFormats, true)) {
-                return 'imagick';
-            }
-        }
-        if (extension_loaded('gd')) {
-            $gdInfo = gd_info();
-            if (!empty($gdInfo['FreeType Support'])) {
-                return 'gd';
-            }
-        }
-        throw new InvalidConfigException('Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.');
+        /* @var $imageModel ImageExtentionModel */
+        $imageModel = Yii::createObject(ImageExtentionModel::className());
+
+        return $imageModel->getImageExtension();
     }
 }
