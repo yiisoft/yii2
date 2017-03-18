@@ -88,7 +88,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 Often you need to get a column of values from array of data rows or objects. Common example is getting a list of IDs.
 
 ```php
-$data = [
+$array = [
     ['id' => '123', 'data' => 'abc'],
     ['id' => '345', 'data' => 'def'],
 ];
@@ -116,7 +116,7 @@ object, or an anonymous function that must return the value that will be used as
 The `$groups` attribute is an array of keys, that will be used to group the input array into one or more sub-arrays
 based on keys specified.
 
-If the `$key` attribute or its value for the particular element is null and `$groups` is not defined, the array
+If the `$key` attribute or its value for the particular element is `null` and `$groups` is not defined, the array
 element will be discarded. Otherwise, if `$groups` is specified, array element will be added to the result array
 without any key.
 
@@ -131,7 +131,7 @@ $array = [
 $result = ArrayHelper::index($array, 'id');
 ```
 
-The result will be an associative array, where the key is the value of `id` attribute
+The result will be an associative array, where the key is the value of `id` attribute:
 
 ```php
 [
@@ -141,7 +141,7 @@ The result will be an associative array, where the key is the value of `id` attr
 ]
 ```
 
-Anonymous function, passed as a `$key`, gives the same result.
+Anonymous function, passed as a `$key`, gives the same result:
 
 ```php
 $result = ArrayHelper::index($array, function ($element) {
@@ -209,7 +209,7 @@ $array = [
     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
-);
+];
 
 $result = ArrayHelper::map($array, 'id', 'name');
 // the result is:
@@ -303,21 +303,68 @@ Encoding will use application charset and could be changed via third argument.
 
 ## Merging Arrays <span id="merging-arrays"></span>
 
+You can use [[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] to merge two or more arrays into one recursively.
+If each array has an element with the same string key value, the latter will overwrite the former
+(different from [array_merge_recursive()](http://php.net/manual/en/function.array-merge-recursive.php)).
+Recursive merging will be conducted if both arrays have an element of array type and are having the same key.
+For integer-keyed elements, the elements from the latter array will be appended to the former array.
+You can use [[yii\helpers\UnsetArrayValue]] object to unset value from previous array or
+[[yii\helpers\ReplaceArrayValue]] to force replace former value instead of recursive merging.
+
+For example:
+
 ```php
-  /**
-    * Merges two or more arrays into one recursively.
-    * If each array has an element with the same string key value, the latter
-    * will overwrite the former (different from array_merge_recursive).
-    * Recursive merging will be conducted if both arrays have an element of array
-    * type and are having the same key.
-    * For integer-keyed elements, the elements from the latter array will
-    * be appended to the former array.
-    * @param array $a array to be merged to
-    * @param array $b array to be merged from. You can specify additional
-    * arrays via third argument, fourth argument etc.
-    * @return array the merged array (the original arrays are not changed.)
-    */
-    public static function merge($a, $b)
+$array1 = [
+    'name' => 'Yii',
+    'version' => '1.1',
+    'ids' => [
+        1,
+    ],
+    'validDomains' => [
+        'example.com',
+        'www.example.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+        'dev' => 'dev@example.com',
+    ],
+];
+
+$array2 = [
+    'version' => '2.0',
+    'ids' => [
+        2,
+    ],
+    'validDomains' => new \yii\helpers\ReplaceArrayValue([
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ]),
+    'emails' => [
+        'dev' => new \yii\helpers\UnsetArrayValue(),
+    ],
+];
+
+$result = ArrayHelper::merge($array1, $array2);
+```
+
+The result will be:
+
+```php
+[
+    'name' => 'Yii',
+    'version' => '2.0',
+    'ids' => [
+        1,
+        2,
+    ],
+    'validDomains' => [
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+    ],
+]
 ```
 
 
@@ -351,7 +398,7 @@ Each mapping array contains a set of mappings. Each mapping could be:
 - A key-value pair of desired array key name and model column name to take value from.
 - A key-value pair of desired array key name and a callback which returns value.
 
-The result of conversion above will be:
+The result of conversion above for single model will be:
 
 
 ```php
@@ -371,16 +418,16 @@ It is possible to provide default way of converting object to array for a specif
 Often you need to check if an element is in an array or a set of elements is a subset of another.
 While PHP offers `in_array()`, this does not support subsets or `\Traversable` objects.
 
-To aid these kinds of tests, [[yii\base\ArrayHelper]] provides [[yii\base\ArrayHelper::isIn()|isIn()]]
-and [[yii\base\ArrayHelper::isSubset()|isSubset()]] with the same signature as [[in_array()]].
+To aid these kinds of tests, [[yii\helpers\ArrayHelper]] provides [[yii\helpers\ArrayHelper::isIn()|isIn()]]
+and [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] with the same signature as
+[in_array()](http://php.net/manual/en/function.in-array.php).
 
 ```php
 // true
 ArrayHelper::isIn('a', ['a']);
 // true
-ArrayHelper::isIn('a', new(ArrayObject['a']));
+ArrayHelper::isIn('a', new ArrayObject(['a']));
 
 // true 
-ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
-
+ArrayHelper::isSubset(new ArrayObject(['a', 'c']), new ArrayObject(['a', 'b', 'c']));
 ```

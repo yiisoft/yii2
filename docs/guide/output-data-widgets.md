@@ -24,13 +24,37 @@ A typical usage of DetailView is as follows:
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title attribute (in plain text)
-        'description:html',    // description attribute formatted as HTML
-        [                      // the owner name of the model
+        'title',                                           // title attribute (in plain text)
+        'description:html',                                // description attribute formatted as HTML
+        [                                                  // the owner name of the model
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
         ],
-        'created_at:datetime', // creation date formatted as datetime
+        'created_at:datetime',                             // creation date formatted as datetime
+    ],
+]);
+```
+
+Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of models,
+[[yii\widgets\DetailView|DetailView]] processes just one. So most of the time there is no need for using closure since
+`$model` is the only one model for display and available in view as a variable.
+
+However some cases can make using of closure useful. For example when `visible` is specified and you want to prevent
+`value` calculations in case it evaluates to `false`:
+
+```php
+echo DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        [
+            'attribute' => 'owner',
+            'value' => function ($model) {
+                return $model->owner->name;
+            },
+            'visible' => \Yii::$app->user->can('posts.owner.view'),
+        ],
     ],
 ]);
 ```
@@ -272,7 +296,7 @@ Available properties you can configure are:
   the callback should be the same as that of [[yii\grid\ActionColumn::createUrl()]]. If this property is not set,
   button URLs will be created using [[yii\grid\ActionColumn::createUrl()]].
 - [[yii\grid\ActionColumn::visibleButtons|visibleButtons]] is an array of visibility conditions for each button.
-  The array keys are the button names (without curly brackets), and the values are the boolean true/false or the
+  The array keys are the button names (without curly brackets), and the values are the boolean `true`/`false` or the
   anonymous function. When the button name is not specified in this array it will be shown by default.
   The callbacks must use the following signature:
 
@@ -343,8 +367,8 @@ For filtering data, the GridView needs a [model](structure-models.md) that repre
 usually taken from the filter fields in the GridView table.
 A common practice when using [active records](db-active-record.md) is to create a search Model class
 that provides needed functionality (it can be generated for you by [Gii](start-gii.md)). This class defines the validation
-rules for the search and provides a `search()` method that will return the data provider with an
-adjusted query that respects the search criteria.
+rules to show filter controls on the GridView table and to provide a `search()` method that will return the data 
+provider with an adjusted query that processes the search criteria.
 
 To add the search capability for the `Post` model, we can create a `PostSearch` model like the following example:
 
@@ -360,7 +384,7 @@ use yii\data\ActiveDataProvider;
 class PostSearch extends Post
 {
     public function rules()
-    {
+    { 
         // only fields in rules() are searchable
         return [
             [['id'], 'integer'],
@@ -700,7 +724,7 @@ echo GridView::widget([
 ### Using GridView with Pjax
 
 The [[yii\widgets\Pjax|Pjax]] widget allows you to update a certain section of a
-page instead of reloading the entire page. You can use it to to update only the
+page instead of reloading the entire page. You can use it to update only the
 [[yii\grid\GridView|GridView]] content when using filters.
 
 ```php

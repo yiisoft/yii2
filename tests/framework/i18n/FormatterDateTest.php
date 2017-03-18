@@ -3,7 +3,6 @@
 namespace yiiunit\framework\i18n;
 
 use yii\i18n\Formatter;
-use Yii;
 use yiiunit\TestCase;
 use DateTime;
 use DateInterval;
@@ -205,7 +204,11 @@ class FormatterDateTest extends TestCase
         $value = time();
         $this->assertSame("$value", $this->formatter->asTimestamp($value));
         $this->assertSame("$value", $this->formatter->asTimestamp((string) $value));
+        $this->assertSame("$value", $this->formatter->asTimestamp(date('Y-m-d H:i:s', $value)));
 
+        $value = -time();
+        $this->assertSame("$value", $this->formatter->asTimestamp($value));
+        $this->assertSame("$value", $this->formatter->asTimestamp((string) $value));
         $this->assertSame("$value", $this->formatter->asTimestamp(date('Y-m-d H:i:s', $value)));
 
         // empty input
@@ -433,7 +436,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('5 months', $this->formatter->asDuration($interval_5_months));
         $this->assertSame('1 year', $this->formatter->asDuration($interval_1_year));
         $this->assertSame('12 years', $this->formatter->asDuration($interval_12_years));
-        
+
         // Pass a numeric value
         $this->assertSame('0 seconds', $this->formatter->asDuration(0));
         $this->assertSame('1 second', $this->formatter->asDuration(1));
@@ -545,7 +548,7 @@ class FormatterDateTest extends TestCase
         $utc = new \DateTimeZone('UTC');
         $berlin = new \DateTimeZone('Europe/Berlin');
         $result = [];
-        foreach($this->provideTimezones() as $tz) {
+        foreach ($this->provideTimezones() as $tz) {
             $result[] = [$tz[0], 1407674460,                          1388580060];
             $result[] = [$tz[0], '2014-08-10 12:41:00',               '2014-01-01 12:41:00'];
             $result[] = [$tz[0], '2014-08-10 12:41:00 UTC',           '2014-01-01 12:41:00 UTC'];
@@ -619,6 +622,10 @@ class FormatterDateTest extends TestCase
         }
     }
 
+    public function testIntlTimezoneInputNonDefault()
+    {
+        $this->testTimezoneInputNonDefault();
+    }
 
     /**
      * Test timezones with input date and time in other timezones
@@ -667,10 +674,15 @@ class FormatterDateTest extends TestCase
     }
 
 
+    public function testIntlDateOnlyValues()
+    {
+        $this->testDateOnlyValues();
+    }
+
     public function testDateOnlyValues()
     {
         date_default_timezone_set('Pacific/Kiritimati');
-        // timzones with exactly 24h difference, ensure this test does not fail on a certain time
+        // timezones with exactly 24h difference, ensure this test does not fail on a certain time
         $this->formatter->defaultTimeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->formatter->timeZone = 'Pacific/Honolulu'; // always UTC-10
 
@@ -682,6 +694,33 @@ class FormatterDateTest extends TestCase
         $this->formatter->defaultTimeZone = 'Pacific/Honolulu'; // always UTC-10
         $this->formatter->timeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->assertSame('2014-08-01', $this->formatter->asDate('2014-08-01', 'yyyy-MM-dd'));
+    }
+
+    public function testIntlTimeOnlyValues()
+    {
+        return $this->testTimeOnlyValues();
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/13343
+     *
+     * Prevent timezone conversion for time-only values.
+     */
+    public function testTimeOnlyValues()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+        $this->formatter->timeZone = 'Europe/Zurich'; // UTC+1 (DST UTC+2)
+
+        // time-only value, do not convert
+        $this->assertSame('12:00:00', $this->formatter->asTime('12:00', 'HH:mm:ss'));
+        $this->assertSame('12:00:00', $this->formatter->asTime('12:00:00', 'HH:mm:ss'));
+        // full info, convert
+        $this->assertSame('13:00:00', $this->formatter->asTime('07.01.2017 12:00:00', 'HH:mm:ss'));
+        $this->assertSame('14:00:00', $this->formatter->asTime('29.06.2017 12:00:00', 'HH:mm:ss'));
+
+        // timezone conversion expected with asDatetime() and asDate() with time-only value
+        $this->assertNotSame('12:00:00', $this->formatter->asDatetime('12:00:00', 'HH:mm:ss'));
+        $this->assertNotSame('12:00:00', $this->formatter->asDate('12:00:00', 'HH:mm:ss'));
     }
 
     /**
@@ -730,6 +769,10 @@ class FormatterDateTest extends TestCase
         $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
     }
 
+    public function testIntlInputUnixTimestamp()
+    {
+        $this->testInputUnixTimestamp();
+    }
 
     public function testInputUnixTimestamp()
     {

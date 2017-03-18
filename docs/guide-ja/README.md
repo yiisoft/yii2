@@ -114,7 +114,6 @@ All Rights Reserved.
 * [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
 * [暗号化](security-cryptography.md)
-* [ビューのセキュリティ](structure-views.md#security)
 * [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
 * [ベストプラクティス](security-best-practices.md)
 
@@ -179,14 +178,14 @@ RESTful ウェブサービス
 ウィジェット
 ------------
 
-* GridView: **未定** デモページへリンク
-* ListView: **未定** デモページへリンク
-* DetailView: **未定** デモページへリンク
-* ActiveForm: **未定** デモページへリンク
-* Pjax: **未定** デモページへリンク
-* Menu: **未定** デモページへリンク
-* LinkPager: **未定** デモページへリンク
-* LinkSorter: **未定** デモページへリンク
+* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Bootstrap ウィジェット](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ja/README.md)
 * [jQuery UI ウィジェット](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/README.md)
 

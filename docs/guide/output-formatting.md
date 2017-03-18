@@ -21,7 +21,7 @@ echo $formatter->asEmail('cebe@example.com');
 echo $formatter->asBoolean(true); 
 // it also handles display of null values:
 
-// output: (Not set)
+// output: (not set)
 echo $formatter->asDate(null); 
 ```
 

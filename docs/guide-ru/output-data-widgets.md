@@ -26,13 +26,15 @@ DetailView использует свойство [[yii\widgets\DetailView::$attr
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title свойство (обычный текст)
-        'description:html',    // description свойство, как HTML
-        [                      // name свойство зависимой модели owner
+        'title',                                           // title свойство (обычный текст)
+        'description:html',                                // description свойство, как HTML
+        [                                                  // name свойство зависимой модели owner
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // настройка HTML атрибутов для тега, соответсвующего value
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // настройка HTML атрибутов для тега, соответсвующего label
         ],
-        'created_at:datetime', // дата создания в формате datetime
+        'created_at:datetime',                             // дата создания в формате datetime
     ],
 ]);
 ```
@@ -145,15 +147,15 @@ echo GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        // Simple columns defined by the data contained in $dataProvider.
-        // Data from the model's column will be used.
+        // Обычные поля определенные данными содержащимися в $dataProvider.
+        // Будут использованы данные из полей модели.
         'id',
         'username',
-        // More complex one.
+        // Более сложный пример.
         [
-            'class' => 'yii\grid\DataColumn', // can be omitted, as it is the default
+            'class' => 'yii\grid\DataColumn', // может быть опущено, поскольку является значением по умолчанию
             'value' => function ($data) {
-                return $data->name; // $data['name'] for array data, e.g. using SqlDataProvider.
+                return $data->name; // $data['name'] для массивов, например, при использовании SqlDataProvider.
             },
         ],
     ],
@@ -265,7 +267,7 @@ echo GridView::widget([
       // возвращаем HTML код для кнопки
   }
   ```
-  где, `$url` - это URL, который будет повешен на как ссылка на кнопку, `$model` - это объект модели для текущей строки и
+  где, `$url` - это URL, который будет повешен как ссылка на кнопку, `$model` - это объект модели для текущей строки и
   `$key` - это ключ для модели из провайдера данных.
 
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] замыкание, которое создаёт URL используя информацию из модели. Вид
@@ -360,7 +362,7 @@ class PostSearch extends Post
 {
     public function rules()
     {
-        // only fields in rules() are searchable
+        // только поля определенные в rules() будут доступны для поиска
         return [
             [['id'], 'integer'],
             [['title', 'creation_date'], 'safe'],
@@ -381,12 +383,12 @@ class PostSearch extends Post
             'query' => $query,
         ]);
 
-        // load the search form data and validate
+        // загружаем данные формы поиска и производим валидацию
         if (!($this->load($params) && $this->validate())) {
             return $dataProvider;
         }
 
-        // adjust the query by adding the filters
+        // изменяем запрос добавляя в его фильтрацию
         $query->andFilterWhere(['id' => $this->id]);
         $query->andFilterWhere(['like', 'title', $this->title])
               ->andFilterWhere(['like', 'creation_date', $this->creation_date]);
@@ -519,10 +521,10 @@ $dataProvider = new ActiveDataProvider([
     'query' => $query,
 ]);
 
-// join with relation `author` that is a relation to the table `users`
-// and set the table alias to be `author`
+// присоединяем зависимость `author` которая является связью с таблицей `users`
+// и устанавливаем алиас таблицы в значение `author`
 $query->joinWith(['author' => function($query) { $query->from(['author' => 'users']); }]);
-// enable sorting for the related column
+// добавляем сортировку по колонке из зависимости
 $dataProvider->sort->attributes['author.name'] = [
     'asc' => ['author.name' => SORT_ASC],
     'desc' => ['author.name' => SORT_DESC],
@@ -537,7 +539,7 @@ $dataProvider->sort->attributes['author.name'] = [
 ```php
 public function attributes()
 {
-    // add related fields to searchable attributes
+    // делаем поле зависимости доступным для поиска
     return array_merge(parent::attributes(), ['author.name']);
 }
 
@@ -556,7 +558,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы.
+> Info: В коде, что выше, используется такая же строка, как и имя зависимости и псевдонима таблицы.
 > Однако, когда ваш псевдоним и имя связи различаются, вы должны обратить внимание, где вы используете псевдоним,
 > а где имя связи. Простым правилом для этого является использование псевдонима в каждом месте, которое используется
 > для построения запроса к базе данных, и имя связи во всех других определениях, таких как `attributes()`, `rules()` и т.д.
@@ -635,7 +637,7 @@ class UserView extends ActiveRecord
     public function rules()
     {
         return [
-            // define here your rules
+            // здесь определяйте ваши правила
         ];
     }
 
@@ -645,7 +647,7 @@ class UserView extends ActiveRecord
     public static function attributeLabels()
     {
         return [
-            // define here your attribute labels
+            // здесь определяйте ваши метки атрибутов
         ];
     }
 
@@ -653,7 +655,7 @@ class UserView extends ActiveRecord
 }
 ```
 
-Полсе этого вы можете использовать UserView в модели поиска, без каких либо дополнительных условий по сортировки и фильтрации.
+После этого вы можете использовать UserView в модели поиска, без каких-либо дополнительных условий по сортировке и фильтрации.
 Все атрибуты будут работать из коробки. Но такая реализация имеет свои плюсы и минусы:
 
 - вам не надо определять условия сортировок и фильтраций. Всё работает из коробки;
@@ -666,7 +668,7 @@ class UserView extends ActiveRecord
 Вы можете использовать больше одной GridView на одной странице. Для этого нужно внести некоторые дополнительные настройки
 для того, чтобы они друг другу не мешали.
 При использовании нескольких экземпляров GridView вы должны настроить различные имена параметров для сортировки и ссылки
-для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальный сортировку и разбиение на страницы.
+для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальную сортировку и разбиение на страницы.
 Сделать это возможно через настройку [[yii\data\Sort::sortParam|sortParam]] и [[yii\data\Pagination::pageParam|pageParam]]
 свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [[yii\data\BaseDataProvider::$pagination|pagination]]
 

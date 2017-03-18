@@ -247,7 +247,7 @@ amigable. El resto de propiedades son opcionales. Sin embargo, la anterior confi
 
 * [[yii\web\UrlManager::showScriptName|showScriptName]]: esta propiedad determina si el script de entrada debe ser 
   incluido en las URLs generadas. Por ejemplo, en lugar de crear una URL `/index.php/post/100`, estableciendo la 
-  propiedad con valor true, la URL que se generará sera `/post/100`.
+  propiedad con valor `true`, la URL que se generará sera `/post/100`.
 * [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: esta propiedad determina si se habilita la 
   conversión de petición estricta, si se habilita, la URL solicitada tiene que encajar al menos con uno de las 
   [[yii\web\UrlManager::rules|rules]] para poder ser tratada como una petición valida, o se lanzará una 
@@ -351,8 +351,8 @@ Cuando se usen las reglas para convertir URLs:
 - `/index.php/post/100` se convierte en la ruta `post/view` y el parámetro `id` cuyo valor es 100 usando la segunda 
   regla;
 - `/index.php/posts/php` provocara una [[yii\web\NotFoundHttpException]] cuando 
-  [[yii\web\UrlManager::enableStrictParsing]] sea true, ya que no coincide ninguno de los parámetros . Si 
-  [[yii\web\UrlManager::enableStrictParsing]] es false (valor predeterminado), se devolverá como ruta la parte de 
+  [[yii\web\UrlManager::enableStrictParsing]] sea `true`, ya que no coincide ninguno de los parámetros . Si 
+  [[yii\web\UrlManager::enableStrictParsing]] es `false` (valor predeterminado), se devolverá como ruta la parte de 
   información `posts/php`.
 
 Y cuando las se usen las reglas para crear URLs:

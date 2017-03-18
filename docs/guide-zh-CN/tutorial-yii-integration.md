@@ -176,7 +176,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// register Yii 2 autoloader via Yii 1
+// 通过 Yii 1 注册 Yii 2 的类自动加载器
 Yii::registerAutoloader(['Yii', 'autoload']);
 // create the dependency injection container
 Yii::$container = new yii\di\Container;

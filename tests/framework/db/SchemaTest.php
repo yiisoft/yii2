@@ -4,14 +4,11 @@ namespace yiiunit\framework\db;
 
 use PDO;
 use yii\caching\FileCache;
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\Schema;
 
-/**
- * @group db
- * @group mysql
- */
-class SchemaTest extends DatabaseTestCase
+abstract class SchemaTest extends DatabaseTestCase
 {
     public function pdoAttributesProvider()
     {
@@ -27,7 +24,7 @@ class SchemaTest extends DatabaseTestCase
     public function testGetTableNames($pdoAttributes)
     {
         $connection = $this->getConnection();
-        foreach($pdoAttributes as $name => $value) {
+        foreach ($pdoAttributes as $name => $value) {
             $connection->pdo->setAttribute($name, $value);
         }
         /* @var $schema Schema */
@@ -50,7 +47,7 @@ class SchemaTest extends DatabaseTestCase
     public function testGetTableSchemas($pdoAttributes)
     {
         $connection = $this->getConnection();
-        foreach($pdoAttributes as $name => $value) {
+        foreach ($pdoAttributes as $name => $value) {
             $connection->pdo->setAttribute($name, $value);
         }
         /* @var $schema Schema */
@@ -104,7 +101,7 @@ class SchemaTest extends DatabaseTestCase
 
         $schema->refreshTableSchema('type');
         $refreshedTable = $schema->getTableSchema('type', false);
-        $this->assertFalse($noCacheTable === $refreshedTable);
+        $this->assertNotSame($noCacheTable, $refreshedTable);
     }
 
     public function testCompositeFk()
@@ -115,10 +112,10 @@ class SchemaTest extends DatabaseTestCase
         $table = $schema->getTableSchema('composite_fk');
 
         $this->assertCount(1, $table->foreignKeys);
-        $this->assertTrue(isset($table->foreignKeys[0]));
-        $this->assertEquals('order_item', $table->foreignKeys[0][0]);
-        $this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
+        $this->assertTrue(isset($table->foreignKeys['FK_composite_fk_order_item']));
+        $this->assertEquals('order_item', $table->foreignKeys['FK_composite_fk_order_item'][0]);
+        $this->assertEquals('order_id', $table->foreignKeys['FK_composite_fk_order_item']['order_id']);
+        $this->assertEquals('item_id', $table->foreignKeys['FK_composite_fk_order_item']['item_id']);
     }
 
     public function testGetPDOType()
@@ -221,11 +218,11 @@ class SchemaTest extends DatabaseTestCase
             ],
             'enum_col' => [
                 'type' => 'string',
-                'dbType' => "enum('a','B')",
+                'dbType' => "enum('a','B','c,D')",
                 'phpType' => 'string',
                 'allowNull' => true,
                 'autoIncrement' => false,
-                'enumValues' => ['a', 'B'],
+                'enumValues' => ['a', 'B','c,D'],
                 'size' => null,
                 'precision' => null,
                 'scale' => null,
@@ -342,6 +339,19 @@ class SchemaTest extends DatabaseTestCase
         ];
     }
 
+    public function testNegativeDefaultValues()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('negative_default_values');
+        $this->assertEquals(-123, $table->getColumn('smallint_col')->defaultValue);
+        $this->assertEquals(-123, $table->getColumn('int_col')->defaultValue);
+        $this->assertEquals(-123, $table->getColumn('bigint_col')->defaultValue);
+        $this->assertEquals(-12345.6789, $table->getColumn('float_col')->defaultValue);
+        $this->assertEquals(-33.22, $table->getColumn('numeric_col')->defaultValue);
+    }
+
     public function testColumnSchema()
     {
         $columns = $this->getExpectedColumns();
@@ -354,7 +364,7 @@ class SchemaTest extends DatabaseTestCase
         sort($colNames);
         $this->assertEquals($expectedColNames, $colNames);
 
-        foreach($table->columns as $name => $column) {
+        foreach ($table->columns as $name => $column) {
             $expected = $columns[$name];
             $this->assertSame($expected['dbType'], $column->dbType, "dbType of column $name does not match. type is $column->type, dbType is $column->dbType.");
             $this->assertSame($expected['phpType'], $column->phpType, "phpType of column $name does not match. type is $column->type, dbType is $column->dbType.");
@@ -372,5 +382,48 @@ class SchemaTest extends DatabaseTestCase
                 $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
             }
         }
+    }
+
+    public function testColumnSchemaDbTypecastWithEmptyCharType()
+    {
+        $columnSchema = new ColumnSchema(['type' => Schema::TYPE_CHAR]);
+        $this->assertSame('', $columnSchema->dbTypecast(''));
+    }
+
+    public function testFindUniqueIndexes()
+    {
+        $db = $this->getConnection();
+
+        try {
+            $db->createCommand()->dropTable('uniqueIndex')->execute();
+        } catch (\Exception $e) {
+        }
+        $db->createCommand()->createTable('uniqueIndex', [
+            'somecol' => 'string',
+            'someCol2' => 'string',
+        ])->execute();
+
+        /* @var $schema Schema */
+        $schema = $db->schema;
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([], $uniqueIndexes);
+
+        $db->createCommand()->createIndex('somecolUnique', 'uniqueIndex', 'somecol', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+        ], $uniqueIndexes);
+
+        // create another column with upper case letter that fails postgres
+        // see https://github.com/yiisoft/yii2/issues/10613
+        $db->createCommand()->createIndex('someCol2Unique', 'uniqueIndex', 'someCol2', true)->execute();
+
+        $uniqueIndexes = $schema->findUniqueIndexes($schema->getTableSchema('uniqueIndex', true));
+        $this->assertEquals([
+            'somecolUnique' => ['somecol'],
+            'someCol2Unique' => ['someCol2'],
+        ], $uniqueIndexes);
     }
 }

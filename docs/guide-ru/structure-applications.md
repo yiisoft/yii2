@@ -66,7 +66,7 @@ $config = require(__DIR__ . '/../config/web.php');
 Свойство [[yii\base\Application::basePath|basePath]] часто используется для указания других важных путей (например, путь к 
 директории runtime, используемой приложением). По этой причине, псевдоним пути `@app` предустановлен и содержит данный путь.
 Производные пути могут быть получены с использованием этого псевдонима пути (например, `@app/runtime` указывает на
-времененную директорию runtime).
+временную директорию runtime).
 
 
 ### Важные свойства <span id="important-properties"></span>
@@ -190,7 +190,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Данное свойство является наиболее важным. Оно позволяет вам зарегистрировать список именованных компонентов, называемых
-[компоненты приложения](#structure-application-components.md), которые Вы можете использовать в других местах.
+[компоненты приложения](structure-application-components.md), которые Вы можете использовать в других местах.
 Например,
 
 ```php
@@ -228,12 +228,10 @@ if (YII_ENV_DEV) {
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]
@@ -591,7 +589,7 @@ $width = \Yii::$app->params['thumbnail.size'][0];
 Когда [входной скрипт](structure-entry-scripts.md) выполняется для обработки запроса, приложение
 будет развиваться согласно следующему жизненному циклу:
 
-1. Входной скрипт загружает конфигурацию приложения в качества массива;
+1. Входной скрипт загружает конфигурацию приложения в качестве массива;
 2. Входной скрипт создаёт новый объект приложения:
   * Вызывается метод [[yii\base\Application::preInit()|preInit()]], который настраивает некоторые 
     жизненно важные свойства приложения, такие как [[yii\base\Application::basePath|basePath]];

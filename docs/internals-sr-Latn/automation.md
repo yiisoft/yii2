@@ -13,3 +13,6 @@ Postoje taskovi koji se rade automatski kada radite sa Yii frejmvorkom:
   Pokrenite `./build/build php-doc/fix` kako bi ih ispravili.
   Proverite izmene pre njihovog komitovanja zato što se mogu desiti neželjene promene zato što komanda nije idealna.
   Možete koristiti `git add -p` kako bi pregledali izmene.
+
+- Ažuriranje Mime Type Magic fajla (`framework/helpers/mimeTypes.php`) iz Apache HTTPd repozitorijuma.
+  Pokrenite `./build/build mime-type` kako bi ažurirali falj.

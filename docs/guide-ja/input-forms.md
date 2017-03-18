@@ -1,6 +1,8 @@
 フォームを作成する
 ==================
 
+アクティブレコードに基づくフォーム : ActiveForm
+-----------------------------------------------
 Yii においてフォームを使用するときは、主として [[yii\widgets\ActiveForm]] による方法を使います。
 フォームがモデルに基づくものである場合はこの方法を選ぶべきです。
 これに加えて、[[yii\helpers\Html]] にはいくつかの有用なメソッドがあり、どんなフォームでも、ボタンやヘルプテキストを追加するのには、通常、それらのメソッドを使います。
@@ -50,12 +52,14 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 ```
 
+### `begin()` と `end()` で囲む <span id="wrapping-with-begin-and-end"></span>
 上記のコードでは、[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] がフォームのインスタンスを作成するとともに、フォームの開始をマークしています。
 [[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] と [[yii\widgets\ActiveForm::end()|ActiveForm::end()]] の間に置かれた全てのコンテントが HTML の `<form>` タグによって囲まれます。
 どのウィジェットでも同じですが、ウィジェットをどのように構成すべきかに関するオプションを指定するために、`begin` メソッドに配列を渡すことが出来ます。
 この例では、追加の CSS クラスと要素を特定するための ID が渡されて、`<form>` の開始タグに適用されています。
 利用できるオプションの全ては [[yii\widgets\ActiveForm]] の API ドキュメントに記されていますので参照してください。
 
+### ActiveField <span id="activefield"></span>.
 フォームの中では、フォームの要素を作成するために、ActiveForm ウィジェットの [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドが呼ばれています。
 このメソッドは、フォームの要素だけでなく、そのラベルも作成し、適用できる JavaScript の検証メソッドがあれば、それも追加します。
 [[yii\widgets\ActiveForm::field()|ActiveForm::field()]] メソッドは、[[yii\widgets\ActiveField]] のインスタンスを返します。
@@ -112,26 +116,75 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 > }
 > ```
 
-ドロップダウンリストを作る <span id="creating-activeform-dropdownlist"></span>
+リストを作る <span id="creating-activeform-lists"></span>
 --------------------------
 
-ActiveForm の [dropDownList()](http://www.yiiframework.com/doc-2.0/yii-widgets-activefield.html#dropDownList()-detail)
-メソッドを使ってドロップダウンリストを作ることが出来ます。
+三種類のリストがあります:
+* ドロップダウンリスト
+* ラジオリスト
+* チェックボックスリスト
+
+リストを作るためには、項目の配列を準備しなければなりません。これは、手作業でやることも出来ます。
 
 ```php
-use app\models\ProductCategory;
+$items = [
+    1 => '項目 1', 
+    2 => '項目 2'
+]
+```
 
-/* @var $this yii\web\View */
+または、DB から取得することも出来ます。
+
+```php
+$items = Category::find()
+        ->select(['id', 'label'])
+        ->indexBy('id')
+        ->column();
+```
+
+このような `$items` が、いろんなリストウィジェットによって処理されるべきものとなります。
+フォームのフィールドの値(および現在アクティブな項目)は、`$model` の属性の現在の値に従って自動的に設定されます。
+
+#### ドロップダウンリストを作る <span id="creating-activeform-dropdownlist"></span>
+
+ActiveField の [[\yii\widgets\ActiveField::dropDownList()]] メソッドを使って、ドロップダウンリストを作ることが出来ます。
+
+```php
 /* @var $form yii\widgets\ActiveForm */
-/* @var $model app\models\Product */
 
-echo $form->field($model, 'product_category')->dropdownList(
-    ProductCategory::find()->select(['category_name', 'id'])->indexBy('id')->column(),
-    ['prompt'=>'カテゴリを選択してください']
+echo $form->field($model, 'category')->dropdownList([
+        1 => '項目 1', 
+        2 => '項目 2'
+    ],
+    ['prompt'=>'カテゴリーを選択してください']
 );
 ```
 
-モデルのフィールドの値は、前もって自動的に選択されます。
+#### ラジオリストを作る <span id="creating-activeform-radioList"></span>
+
+ActiveField の [[\yii\widgets\ActiveField::radioList()]] メソッドを使ってラジオリストを作ることが出来ます。
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->radioList([
+    1 => 'ラジオ 1', 
+    2 => 'ラジオ 2'
+]);
+```
+
+#### チェックボックスリストを作る <span id="creating-activeform-checkboxList"></span>
+
+ActiveField の [[\yii\widgets\ActiveField::checkboxList()]] メソッドを使ってチェックボックスリストを作ることが出来ます。
+
+```php
+/* @var $form yii\widgets\ActiveForm */
+
+echo $form->field($model, 'category')->checkboxList([
+    1 => 'チェックボックス 1', 
+    2 => 'チェックボックス 2'
+]);
+```
 
 
 Pjax を使う <span id="working-with-pjax"></span>
@@ -167,13 +220,13 @@ Pjax::end();
 #### 送信ボタンの値とファイルのアップロード
 
 `jQuery.serializeArray()` については、
-[[https://github.com/jquery/jquery/issues/2321|ファイル]] および
-[[https://github.com/jquery/jquery/issues/2321|送信ボタンの値]]
+[ファイル](https://github.com/jquery/jquery/issues/2321) および
+[送信ボタンの値](https://github.com/jquery/jquery/issues/2321)
 を扱うときに問題があることが知られています。
-これは解決される見込みがなく、HTML5 で導入された `FormData` クラスの使用に乗り換えるべく、廃止予定となっています。
+この問題は解決される見込みがなく、関数自体も HTML5 で導入された `FormData` クラスによって置き換えられるべきものとして、廃止予定となっています。
 
-このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する公式なサポートは、ひとえに
-`FormData` クラスに対する [[https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility|ブラウザのサポート]] に依存するということを意味します。
+このことは、すなわち、ajax または [[yii\widgets\Pjax|Pjax]] ウィジェットを使う場合、ファイルと送信ボタンの値に対する唯一の公式なサポートは、
+`FormData` クラスに対する [ブラウザのサポート](https://developer.mozilla.org/en-US/docs/Web/API/FormData#Browser_compatibility) に依存しているということを意味します。
 
 
 さらに読むべき文書 <span id="further-reading"></span>

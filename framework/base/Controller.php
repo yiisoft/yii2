@@ -12,6 +12,8 @@ use Yii;
 /**
  * Controller is the base class for classes containing controller logic.
  *
+ * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
  * @property Module[] $modules All ancestor modules that this controller is located within. This property is
  * read-only.
  * @property string $route The route (module ID, controller ID and action ID) of the current request. This
@@ -41,7 +43,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $id;
     /**
-     * @var Module $module the module that this controller belongs to.
+     * @var Module the module that this controller belongs to.
      */
     public $module;
     /**
@@ -162,7 +164,9 @@ class Controller extends Component implements ViewContextInterface
             }
         }
 
-        $this->action = $oldAction;
+        if ($oldAction !== null) {
+            $this->action = $oldAction;
+        }
 
         return $result;
     }
@@ -184,9 +188,8 @@ class Controller extends Component implements ViewContextInterface
             return $this->runAction($route, $params);
         } elseif ($pos > 0) {
             return $this->module->runAction($route, $params);
-        } else {
-            return Yii::$app->runAction(ltrim($route, '/'), $params);
         }
+        return Yii::$app->runAction(ltrim($route, '/'), $params);
     }
 
     /**
@@ -261,7 +264,7 @@ class Controller extends Component implements ViewContextInterface
      * ```
      *
      * @param Action $action the action to be executed.
-     * @return boolean whether the action should continue to run.
+     * @return bool whether the action should continue to run.
      */
     public function beforeAction($action)
     {
@@ -391,9 +394,8 @@ class Controller extends Component implements ViewContextInterface
         $layoutFile = $this->findLayoutFile($this->getView());
         if ($layoutFile !== false) {
             return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
-        } else {
-            return $content;
         }
+        return $content;
     }
 
     /**
@@ -473,7 +475,7 @@ class Controller extends Component implements ViewContextInterface
     /**
      * Finds the applicable layout file.
      * @param View $view the view object to render the layout file.
-     * @return string|boolean the layout file path, or false if layout is not needed.
+     * @return string|bool the layout file path, or false if layout is not needed.
      * Please refer to [[render()]] on how to specify this parameter.
      * @throws InvalidParamException if an invalid path alias is used to specify the layout.
      */

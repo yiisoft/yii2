@@ -1,23 +1,27 @@
 <?php
+
 namespace yiiunit\framework\db\cubrid;
 
 use yii\db\cubrid\ColumnSchemaBuilder;
 use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Cubrid
+ * @group db
+ * @group cubrid
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    public $driverName = 'cubrid';
+
     /**
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @return ColumnSchemaBuilder
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 
     /**
@@ -31,6 +35,9 @@ class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
             ]],
             ['integer(10) UNSIGNED', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
+            ]],
+            ['integer(10) COMMENT \'test\'', Schema::TYPE_INTEGER, 10, [
+                ['comment', 'test']
             ]],
         ];
     }

@@ -64,7 +64,7 @@ wszystkie [klasy kontrolerów](structure-controllers.md).
 
 Poniższy schemat pokazuje statyczną strukturę aplikacji.
 
-![Statyczna struktura aplikacji](../guide/images/application-structure.png)
+![Statyczna struktura aplikacji](images/application-structure.png)
 
 Każda aplikacja zawiera skrypt wejściowy `web/index.php`, który jest jedynym publicznie dostępnym skryptem PHP w aplikacji.
 Skrypt wejściowy pobiera przychodzące żądanie i tworzy instancję [aplikacji](structure-applications.md) do przetworzenia tego żądania.
@@ -78,7 +78,7 @@ Cykl życia żądania <span id="request-lifecycle"></span>
 
 Poniższy schemat pokazuje jak aplikacja przetwarza żądania.
 
-![Cykl życia żądania](../guide/images/request-lifecycle.png)
+![Cykl życia żądania](images/request-lifecycle.png)
 
 1. Użytkownik tworzy zapytanie do [skryptu wejściowego](structure-entry-scripts.md) `web/index.php`.
 2. Skrypy wejściowy ładuje [konfigurację](concept-configurations.md) aplikacji oraz tworzy instancję [aplikacji](structure-applications.md) w celu przetworzenia żądania.

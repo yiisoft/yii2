@@ -130,6 +130,26 @@ $config = [
 
 アプリケーションの `components` プロパティ構成の詳細については、 [アプリケーション](structure-applications.md) セクションと [サービスロケータ](concept-service-locator.md) セクションにあります。
 
+バージョン 2.0.11 以降では、アプリケーション構成で `container` プロパティを使って [依存注入コンテナ](concept-di-container.md) を構成することがサポートされています。
+
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // 依存注入コンテナのシングルトンの構成
+        ]
+    ]
+];
+```
+
+`definitions` と `singletons` の構成情報配列に使用できる値とその実例についてさらに知るためには、
+[依存注入コンテナ](concept-di-container.md)の記事の [高度な実際の使用方法](concept-di-container.md#advanced-practical-usage) の節を読んでください。
 
 ### ウィジェットの構成 <span id="widget-configurations"></span>
 
@@ -240,10 +260,10 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 `YII_ENV` を次のいずれかの値と定義することができます:
 
-- `prod`: 本番環境。定数 `YII_ENV_PROD` は true と評価されます。
+- `prod`: 本番環境。定数 `YII_ENV_PROD` が `true` と評価されます。
   とくに定義しない場合、これが `YII_ENV` のデフォルト値です。
-- `dev`: 開発環境。定数 `YII_ENV_DEV` は true と評価されます。
-- `test`: テスト環境。定数 `YII_ENV_TEST` は true と評価されます。
+- `dev`: 開発環境。定数 `YII_ENV_DEV` が `true` と評価されます。
+- `test`: テスト環境。定数 `YII_ENV_TEST` が `true` と評価されます。
 
 これらの環境定数を使用すると、現在の環境に基づいて条件付きで構成情報を指定することもできます。
 たとえば、アプリケーション構成情報には、開発環境での [デバッグツールバーとデバッガ](tool-debugger.md)

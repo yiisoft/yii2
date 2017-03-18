@@ -102,6 +102,41 @@ class ModelTest extends TestCase
         $this->assertEquals('', $model->firstName);
     }
 
+    public function testLoadMultiple()
+    {
+        $data = [
+            ['firstName' => 'Thomas', 'lastName' => 'Anderson'],
+            ['firstName' => 'Agent', 'lastName' => 'Smith'],
+        ];
+
+        Speaker::$formName = '';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertTrue(Speaker::loadMultiple([$neo, $smith], $data));
+        $this->assertEquals('Thomas', $neo->firstName);
+        $this->assertEquals('Smith', $smith->lastName);
+
+        Speaker::$formName = 'Speaker';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertTrue(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Speaker'));
+        $this->assertEquals('Thomas', $neo->firstName);
+        $this->assertEquals('Smith', $smith->lastName);
+
+        Speaker::$formName = 'Speaker';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertFalse(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Morpheus'));
+        $this->assertEquals('', $neo->firstName);
+        $this->assertEquals('', $smith->lastName);
+    }
+
     public function testActiveAttributes()
     {
         // by default mass assignment doesn't work at all
@@ -135,7 +170,7 @@ class ModelTest extends TestCase
         $model->scenario = Model::SCENARIO_DEFAULT;
         $this->assertEquals(['account_id', 'user_id'], $model->safeAttributes());
         $this->assertEquals(['account_id', 'user_id'], $model->activeAttributes());
-        $model->scenario = 'update'; // not exsisting scenario
+        $model->scenario = 'update'; // not existing scenario
         $this->assertEquals([], $model->safeAttributes());
         $this->assertEquals([], $model->activeAttributes());
 
@@ -321,6 +356,7 @@ class ModelTest extends TestCase
 
         // isset
         $this->assertFalse(isset($speaker['firstName']));
+        $this->assertFalse(isset($speaker['unExistingField']));
 
         // set
         $speaker['firstName'] = 'Qiang';
@@ -397,6 +433,20 @@ class ModelTest extends TestCase
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
     }
+
+    /**
+     * Ensure 'safe' validator works for write-only properties.
+     * Normal validator can not work here though.
+     */
+    public function testValidateWriteOnly()
+    {
+        $model = new WriteOnlyModel();
+
+        $model->setAttributes(['password' => 'test'], true);
+        $this->assertEquals('test', $model->passwordHash);
+
+        $this->assertTrue($model->validate());
+    }
 }
 
 class ComplexModel1 extends Model
@@ -420,5 +470,22 @@ class ComplexModel2 extends Model
             [['name', 'description'], 'filter', 'filter' => 'trim'],
             [['is_disabled'], 'boolean', 'on' => 'administration'],
         ];
+    }
+}
+
+class WriteOnlyModel extends Model
+{
+    public $passwordHash;
+
+    public function rules()
+    {
+        return [
+            [['password'], 'safe'],
+        ];
+    }
+
+    public function setPassword($pw)
+    {
+        $this->passwordHash = $pw;
     }
 }

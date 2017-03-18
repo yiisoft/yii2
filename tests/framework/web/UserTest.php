@@ -34,7 +34,7 @@ use yiiunit\TestCase;
 class UserTest extends TestCase
 {
     /**
-     * @var integer virtual time to be returned by mocked time() function.
+     * @var int virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;
@@ -97,7 +97,7 @@ class UserTest extends TestCase
         $this->assertFalse(Yii::$app->user->can('doSomething'));
 
     }
-    
+
     public function testCookieCleanup()
     {
         global $cookiesMock;
@@ -126,17 +126,17 @@ class UserTest extends TestCase
         $cookie->value = 'junk';
         $cookiesMock->add($cookie);
         Yii::$app->user->getIdentity();
-        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
         Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user1');
-        $this->assertFalse(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+        $this->assertNotEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
         Yii::$app->user->login(UserIdentity::findIdentity('user2'),0);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user2');
-        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
     }
 
     /**
@@ -151,8 +151,8 @@ class UserTest extends TestCase
         }
 
         $_SERVER = $server;
-        Yii::$app->set('response',['class' => 'yii\web\Response']);
-        Yii::$app->set('request',[
+        Yii::$app->set('response', ['class' => 'yii\web\Response']);
+        Yii::$app->set('request', [
             'class' => 'yii\web\Request',
             'scriptFile' => __DIR__ .'/index.php',
             'scriptUrl' => '/index.php',
@@ -177,7 +177,7 @@ class UserTest extends TestCase
         ];
         $this->mockWebApplication($appConfig);
 
-        
+
         $user = Yii::$app->user;
 
         $this->reset();
@@ -354,7 +354,7 @@ class MockResponse extends \yii\web\Response
     public function getCookies()
     {
         global $cookiesMock;
-      
+
         return $cookiesMock;
     }
 }

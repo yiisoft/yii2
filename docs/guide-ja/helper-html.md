@@ -42,7 +42,7 @@ Yii はそのような手助けを Html ヘルパの形式で提供します。
 オプションは多くの Html ヘルパのメソッドとさまざまなウィジェットで使用されます。
 その全ての場合において、いくつか追加の処理がなされることを知っておいてください。
 
-- 値が null である場合は、対応する属性はレンダリングされません。
+- 値が `null` である場合は、対応する属性はレンダリングされません。
 - 値が真偽値である属性は、[真偽値属性 (boolean attributes)](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes) として扱われます。
 - 属性の値は [[yii\helpers\Html::encode()|Html::encode()]] を使って HTML エンコードされます。
 - 属性の値が配列である場合は、次のように処理されます。
@@ -273,7 +273,7 @@ $decodedUserName = Html::decode($userName);
 
 ```php
 <?= Html::label('ユーザ名', 'username', ['class' => 'label username']) ?>
-<?= Html::activeLabel($user, 'username', ['class' => 'label username'])
+<?= Html::activeLabel($user, 'username', ['class' => 'label username']) ?>
 ```
 
 一つまたは複数のモデルから取得したエラーを要約として表示するためには、次のコードを使うことが出来ます。

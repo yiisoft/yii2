@@ -48,6 +48,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapeCharacter = '\\';
 
     /**
      * Generates a batch INSERT SQL statement.
@@ -70,6 +74,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows)
     {
+        if (empty($rows)) {
+            return '';
+        }
+
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
@@ -102,6 +110,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             }
             $values[] = implode(', ', $vs);
         }
+        if (empty($values)) {
+            return '';
+        }
 
         foreach ($columns as $i => $name) {
             $columns[$i] = $schema->quoteColumnName($name);
@@ -126,20 +137,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $db = $this->db;
         $table = $db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {
+            $tableName = $db->quoteTableName($tableName);
             if ($value === null) {
-                $key = reset($table->primaryKey);
-                $tableName = $db->quoteTableName($tableName);
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
                 $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
-                    return $db->createCommand("SELECT MAX('$key') FROM $tableName")->queryScalar();
+                    return $db->createCommand("SELECT MAX($key) FROM $tableName")->queryScalar();
                 });
             } else {
                 $value = (int) $value - 1;
             }
-            try {
-                $db->createCommand("UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'")->execute();
-            } catch (Exception $e) {
-                // it's possible that sqlite_sequence does not exist
-            }
+
+            return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
         } else {
@@ -149,7 +157,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Enables or disables integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      * @param string $schema the schema of the tables. Meaningless for SQLite.
      * @param string $table the table name. Meaningless for SQLite.
      * @return string the SQL statement for checking integrity

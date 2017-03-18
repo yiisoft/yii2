@@ -25,7 +25,7 @@ abstract class ManagerTestCase extends TestCase
     public function testCreateRole()
     {
         $role = $this->auth->createRole('admin');
-        $this->assertTrue($role instanceof Role);
+        $this->assertInstanceOf(Role::className(), $role);
         $this->assertEquals(Item::TYPE_ROLE, $role->type);
         $this->assertEquals('admin', $role->name);
     }
@@ -33,7 +33,7 @@ abstract class ManagerTestCase extends TestCase
     public function testCreatePermission()
     {
         $permission = $this->auth->createPermission('edit post');
-        $this->assertTrue($permission instanceof Permission);
+        $this->assertInstanceOf(Permission::className(), $permission);
         $this->assertEquals(Item::TYPE_PERMISSION, $permission->type);
         $this->assertEquals('edit post', $permission->name);
     }
@@ -182,6 +182,16 @@ abstract class ManagerTestCase extends TestCase
                 'blablabla' => false,
                 null => false,
             ],
+            'guest' => [
+                // all actions denied for guest (user not exists)
+                'createPost' => false,
+                'readPost' => false,
+                'updatePost' => false,
+                'deletePost' => false,
+                'updateAnyPost' => false,
+                'blablabla' => false,
+                null => false,
+            ],
         ];
 
         $params = ['authorID' => 'author B'];
@@ -223,6 +233,9 @@ abstract class ManagerTestCase extends TestCase
         $updateAnyPost->description = 'update any post';
         $this->auth->add($updateAnyPost);
 
+        $withoutChildren = $this->auth->createRole('withoutChildren');
+        $this->auth->add($withoutChildren);
+
         $reader = $this->auth->createRole('reader');
         $this->auth->add($reader);
         $this->auth->addChild($reader, $readPost);
@@ -253,7 +266,7 @@ abstract class ManagerTestCase extends TestCase
         $expectedPermissions = ['createPost', 'updatePost', 'readPost', 'updateAnyPost'];
         $this->assertEquals(count($expectedPermissions), count($permissions));
         foreach ($expectedPermissions as $permissionName) {
-            $this->assertTrue($permissions[$permissionName] instanceof Permission);
+            $this->assertInstanceOf(Permission::className(), $permissions[$permissionName]);
         }
     }
 
@@ -264,7 +277,7 @@ abstract class ManagerTestCase extends TestCase
         $expectedPermissions = ['deletePost', 'createPost', 'updatePost', 'readPost'];
         $this->assertEquals(count($expectedPermissions), count($permissions));
         foreach ($expectedPermissions as $permissionName) {
-            $this->assertTrue($permissions[$permissionName] instanceof Permission);
+            $this->assertInstanceOf(Permission::className(), $permissions[$permissionName]);
         }
     }
 
@@ -276,16 +289,44 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->assign($reader, 123);
 
         $roles = $this->auth->getRolesByUser('reader A');
-        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertInstanceOf(Role::className(), reset($roles));
         $this->assertEquals($roles['reader']->name, 'reader');
 
         $roles = $this->auth->getRolesByUser(0);
-        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertInstanceOf(Role::className(), reset($roles));
         $this->assertEquals($roles['reader']->name, 'reader');
 
         $roles = $this->auth->getRolesByUser(123);
-        $this->assertTrue(reset($roles) instanceof Role);
+        $this->assertInstanceOf(Role::className(), reset($roles));
         $this->assertEquals($roles['reader']->name, 'reader');
+
+        $this->assertContains('myDefaultRole', array_keys($roles));
+    }
+
+    public function testGetChildRoles()
+    {
+        $this->prepareData();
+
+        $roles = $this->auth->getChildRoles('withoutChildren');
+        $this->assertCount(1, $roles);
+        $this->assertInstanceOf(Role::className(), reset($roles));
+        $this->assertSame(reset($roles)->name, 'withoutChildren');
+
+        $roles = $this->auth->getChildRoles('reader');
+        $this->assertCount(1, $roles);
+        $this->assertInstanceOf(Role::className(), reset($roles));
+        $this->assertSame(reset($roles)->name, 'reader');
+
+        $roles = $this->auth->getChildRoles('author');
+        $this->assertCount(2, $roles);
+        $this->assertArrayHasKey('author', $roles);
+        $this->assertArrayHasKey('reader', $roles);
+
+        $roles = $this->auth->getChildRoles('admin');
+        $this->assertCount(3, $roles);
+        $this->assertArrayHasKey('admin', $roles);
+        $this->assertArrayHasKey('author', $roles);
+        $this->assertArrayHasKey('reader', $roles);
     }
 
     public function testAssignMultipleRoles()
@@ -321,9 +362,9 @@ abstract class ManagerTestCase extends TestCase
 
         $this->auth = $this->createManager();
 
-        $this->assertEquals(0, count($this->auth->getAssignments(0)));
-        $this->assertEquals(1, count($this->auth->getAssignments(42)));
-        $this->assertEquals(2, count($this->auth->getAssignments(1337)));
+        $this->assertCount(0, $this->auth->getAssignments(0));
+        $this->assertCount(1, $this->auth->getAssignments(42));
+        $this->assertCount(2, $this->auth->getAssignments(1337));
     }
 
     public function testGetAssignmentsByRole()
@@ -450,5 +491,23 @@ abstract class ManagerTestCase extends TestCase
         $role->ruleName = 'all_rule';
         $auth->update('Reader', $role);
         $this->assertTrue($auth->checkAccess($userId, 'AdminPost', ['action' => 'print']));
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/10176
+     * https://github.com/yiisoft/yii2/issues/12681
+     */
+    public function testRuleWithPrivateFields()
+    {
+        $auth = $this->auth;
+
+        $auth->removeAll();
+
+        $rule = new ActionRule();
+        $auth->add($rule);
+
+        /** @var ActionRule $rule */
+        $rule = $this->auth->getRule('action_rule');
+        $this->assertInstanceOf(ActionRule::className(), $rule);
     }
 }

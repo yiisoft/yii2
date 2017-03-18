@@ -9,6 +9,7 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Expression;
 
 /**
  * QueryBuilder is the query builder for MS SQL Server databases (version 2008 and above).
@@ -28,22 +29,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_UBIGPK => 'bigint IDENTITY PRIMARY KEY',
         Schema::TYPE_CHAR => 'nchar(1)',
         Schema::TYPE_STRING => 'nvarchar(255)',
-        Schema::TYPE_TEXT => 'ntext',
+        Schema::TYPE_TEXT => 'nvarchar(max)',
         Schema::TYPE_SMALLINT => 'smallint',
         Schema::TYPE_INTEGER => 'int',
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
         Schema::TYPE_DOUBLE => 'float',
-        Schema::TYPE_DECIMAL => 'decimal',
+        Schema::TYPE_DECIMAL => 'decimal(18,0)',
         Schema::TYPE_DATETIME => 'datetime',
-        Schema::TYPE_TIMESTAMP => 'timestamp',
+        Schema::TYPE_TIMESTAMP => 'datetime',
         Schema::TYPE_TIME => 'time',
         Schema::TYPE_DATE => 'date',
-        Schema::TYPE_BINARY => 'binary(1)',
+        Schema::TYPE_BINARY => 'varbinary(max)',
         Schema::TYPE_BOOLEAN => 'bit',
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapingReplacements = [
+        '%' => '[%]',
+        '_' => '[_]',
+        '[' => '[[]',
+        ']' => '[]]',
+        '\\' => '[\\]',
+    ];
 
     /**
      * @inheritdoc
@@ -65,9 +76,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2012 or newer.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -92,9 +103,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * Builds the ORDER BY/LIMIT/OFFSET clauses for SQL SERVER 2005 to 2008.
      * @param string $sql the existing SQL (without ORDER BY/LIMIT/OFFSET)
-     * @param array $orderBy the order by columns. See [[Query::orderBy]] for more details on how to specify this parameter.
-     * @param integer $limit the limit number. See [[Query::limit]] for more details.
-     * @param integer $offset the offset number. See [[Query::offset]] for more details.
+     * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
+     * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
+     * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
     protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
@@ -165,25 +176,57 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds a SQL statement for enabling or disabling integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
-     * @return string the SQL statement for checking integrity
+     * Creates a SQL statement for resetting the sequence value of a table's primary key.
+     * The sequence will be reset such that the primary key of the next new row inserted
+     * will have the specified value or 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
      * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     */
+    public function resetSequence($tableName, $value = null)
+    {
+        $table = $this->db->getTableSchema($tableName);
+        if ($table !== null && $table->sequenceName !== null) {
+            $tableName = $this->db->quoteTableName($tableName);
+            if ($value === null) {
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
+            } else {
+                $value = (int) $value;
+            }
+
+            return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
+        } elseif ($table === null) {
+            throw new InvalidParamException("Table not found: $tableName");
+        } else {
+            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
+        }
+    }
+
+    /**
+     * Builds a SQL statement for enabling or disabling integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
+     * @param string $schema the schema of the tables.
+     * @param string $table the table name.
+     * @return string the SQL statement for checking integrity
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        if ($schema !== '') {
-            $table = "{$schema}.{$table}";
-        }
-        $table = $this->db->quoteTableName($table);
-        if ($this->db->getTableSchema($table) === null) {
-            throw new InvalidParamException("Table not found: $table");
-        }
         $enable = $check ? 'CHECK' : 'NOCHECK';
+        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
+        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $tableNames = array_diff($tableNames, $viewNames);
+        $command = '';
 
-        return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+        foreach ($tableNames as $tableName) {
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
+            $command .= "ALTER TABLE $tableName $enable CONSTRAINT ALL; ";
+        }
+
+        return $command;
     }
 
     /**
@@ -236,17 +279,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         /* @var $model \yii\db\ActiveRecord */
         $model = new $modelClass;
         $schema = $model->getTableSchema();
-        $columns = array_keys($schema->columns);
-        return $columns;
+        return array_keys($schema->columns);
     }
 
     /**
-     * @var boolean whether MSSQL used is old.
+     * @var bool whether MSSQL used is old.
      */
     private $_oldMssql;
 
     /**
-     * @return boolean whether the version of the MSSQL being used is older than 2012.
+     * @return bool whether the version of the MSSQL being used is older than 2012.
      * @throws \yii\base\InvalidConfigException
      * @throws \yii\db\Exception
      */
@@ -312,5 +354,42 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function selectExists($rawSql)
     {
         return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
+
+    /**
+     * Normalizes data to be saved into the table, performing extra preparations and type converting, if necessary.
+     * @param string $table the table that data will be saved into.
+     * @param array $columns the column data (name => value) to be saved into the table.
+     * @return array normalized columns
+     */
+    private function normalizeTableRowData($table, $columns, &$params)
+    {
+        if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
+            $columnSchemas = $tableSchema->columns;
+            foreach ($columns as $name => $value) {
+                // @see https://github.com/yiisoft/yii2/issues/12599
+                if (isset($columnSchemas[$name]) && $columnSchemas[$name]->type === Schema::TYPE_BINARY && $columnSchemas[$name]->dbType === 'varbinary' && is_string($value)) {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $columns[$name] = new Expression("CONVERT(VARBINARY, $phName)", [$phName => $value]);
+                }
+            }
+        }
+        return $columns;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insert($table, $columns, &$params)
+    {
+        return parent::insert($table, $this->normalizeTableRowData($table, $columns, $params), $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function update($table, $columns, $condition, &$params)
+    {
+        return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
     }
 }

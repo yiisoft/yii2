@@ -129,40 +129,29 @@ class ValidatorTest extends TestCase
 
     public function testValidateWithEmpty()
     {
-        $val = new TestValidator([
-            'attributes' => [
-                'attr_runMe1',
-                'attr_runMe2',
-                'attr_empty1',
-                'attr_empty2'
-            ],
-            'skipOnEmpty' => true,
-        ]);
-        $model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
-        $val->validateAttributes($model);
-        $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
-        $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
-        $this->assertFalse($val->isAttributeValidated('attr_empty1'));
-        $this->assertFalse($val->isAttributeValidated('attr_empty2'));
+        $model = $this->getTestModel(['attr_empty1' => '', 'attr_empty2' => ' ']);
+        $attributes = ['attr_runMe1', 'attr_runMe2', 'attr_empty1', 'attr_empty2'];
+
+        $validator = new TestValidator(['attributes' => $attributes, 'skipOnEmpty' => false]);
+        $validator->validateAttributes($model);
+
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe2'));
+        $this->assertTrue($validator->isAttributeValidated('attr_empty1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_empty2'));
+
+
+        $validator = new TestValidator(['attributes' => $attributes, 'skipOnEmpty' => true]);
+        $validator->validateAttributes($model);
+
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_runMe2'));
+        $this->assertFalse($validator->isAttributeValidated('attr_empty1'));
+        $this->assertTrue($validator->isAttributeValidated('attr_empty2'));
+
         $model->attr_empty1 = 'not empty anymore';
-        $val->validateAttributes($model);
-        $this->assertTrue($val->isAttributeValidated('attr_empty1'));
-        $this->assertFalse($val->isAttributeValidated('attr_empty2'));
-        $val = new TestValidator([
-            'attributes' => [
-                'attr_runMe1',
-                'attr_runMe2',
-                'attr_empty1',
-                'attr_empty2'
-            ],
-            'skipOnEmpty' => false,
-        ]);
-        $model = $this->getTestModel(['attr_empty1' => '', 'attr_emtpy2' => ' ']);
-        $val->validateAttributes($model);
-        $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
-        $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
-        $this->assertTrue($val->isAttributeValidated('attr_empty1'));
-        $this->assertTrue($val->isAttributeValidated('attr_empty2'));
+        $validator->validateAttributes($model);
+        $this->assertTrue($validator->isAttributeValidated('attr_empty1'));
     }
 
     public function testIsEmpty()
@@ -187,12 +176,39 @@ class ValidatorTest extends TestCase
         $val->validate('abc');
     }
 
+    public function testValidateAttribute()
+    {
+        // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
+
+        $model = new FakedValidationModel();
+        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val->validateAttribute($model, 'val_attr_a');
+        $args = $model->getInlineValArgs();
+
+        $this->assertCount(3, $args);
+        $this->assertEquals('val_attr_a', $args[0]);
+        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
+    }
+
     public function testClientValidateAttribute()
     {
         $val = new TestValidator();
         $this->assertNull(
             $val->clientValidateAttribute($this->getTestModel(), 'attr_runMe1', [])
         ); //todo pass a view instead of array
+
+        // Access to validator in inline validation (https://github.com/yiisoft/yii2/issues/6242)
+
+        $model = new FakedValidationModel();
+        $val = TestValidator::createValidator('inlineVal', $model, ['val_attr_a'], ['params' => ['foo' => 'bar']]);
+        $val->clientValidate = 'clientInlineVal';
+        $args = $val->clientValidateAttribute($model, 'val_attr_a', null);
+
+        $this->assertCount(3, $args);
+        $this->assertEquals('val_attr_a', $args[0]);
+        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertInstanceOf(InlineValidator::className(), $args[2]);
     }
 
     public function testIsActive()
@@ -224,5 +240,19 @@ class ValidatorTest extends TestCase
         $val->addError($m, 'attr_msg_val', '{attribute}::{value}::{param}', ['param' => 'param_value']);
         $errors = $m->getErrors('attr_msg_val');
         $this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
+    }
+
+    public function testGetActiveValidatorsForSafeAttributes()
+    {
+        $model = $this->getTestModel();
+        $validators = $model->getActiveValidators('safe_attr');
+        $is_found = false;
+        foreach ($validators as $v) {
+            if ($v instanceof NumberValidator) {
+                $is_found = true;
+                break;
+            }
+        }
+        $this->assertTrue($is_found);
     }
 }

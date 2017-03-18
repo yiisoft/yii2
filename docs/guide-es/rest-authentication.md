@@ -33,7 +33,7 @@ Para activar la autenticación para tus APIs, sigue los pasos siguientes:
 3. Implementa [[yii\web\IdentityInterface::findIdentityByAccessToken()]] en tu [[yii\web\User::identityClass|clase de identidad de usuarios]].
 
 El paso 1 no es necesario pero sí recomendable para las APIs RESTful, pues son sin estado (stateless).
-Cuando [[yii\web\User::enableSession|enableSession]] es false, el estado de autenticación del usuario puede NO persistir entre peticiones usando sesiones.
+Cuando [[yii\web\User::enableSession|enableSession]] es `false`, el estado de autenticación del usuario puede NO persistir entre peticiones usando sesiones.
 Si embargo, la autenticación será realizada para cada petición, lo que se consigue en los pasos 2 y 3.
 
 > Tip:Puedes configurar [[yii\web\User::enableSession|enableSession]] del componente de la aplicación `user` en la configuración

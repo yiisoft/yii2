@@ -235,7 +235,7 @@ class DateValidatorTest extends TestCase
     public function timestampFormatProvider()
     {
         $return = [];
-        foreach($this->provideTimezones() as $appTz) {
+        foreach ($this->provideTimezones() as $appTz) {
             foreach ($this->provideTimezones() as $tz) {
                 $return[] = ['yyyy-MM-dd', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
                 // regardless of timezone, a simple date input should always result in 00:00:00 time
@@ -555,7 +555,7 @@ class DateValidatorTest extends TestCase
      * returns true if the version of ICU is old and has a bug that makes it
      * impossible to parse two digit years properly.
      * see http://bugs.icu-project.org/trac/ticket/9836
-     * @return boolean
+     * @return bool
      */
     private function checkOldIcuBug()
     {

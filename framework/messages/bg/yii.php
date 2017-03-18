@@ -16,7 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array (
+return [
   '(not set)' => '(не е попълнено)',
   'An internal server error occurred.' => 'Възникна вътрешна грешка в сървъра.',
   'Are you sure you want to delete this item?' => 'Сигурни ли сте, че искате да изтриете записа?',
@@ -71,7 +71,7 @@ return array (
   '{attribute} is not a valid email address.' => 'Полето "{attribute}" съдържа невалиден email адрес.',
   '{attribute} must be "{requiredValue}".' => 'Полето "{attribute}" трябва да съдържа "{requiredValue}".',
   '{attribute} must be a number.' => 'Полето "{attribute}" съдържа невалиден номер.',
-  '{attribute} must be a string.' => 'Полето "{attribute}" трябва съдържа текст.',
+  '{attribute} must be a string.' => 'Полето "{attribute}" трябва да съдържа текст.',
   '{attribute} must be an integer.' => 'Полето "{attribute}" трябва да съдържа цяло число.',
   '{attribute} must be either "{true}" or "{false}".' => 'Полето "{attribute}"  трябва да бъде "{true}" или "{false}".',
   '{attribute} must be greater than "{compareValue}".' => 'Полето "{attribute}" трябва да е по-голямо от "{compareValue}".',
@@ -103,4 +103,4 @@ return array (
   '{n} MB' => '{n} МБ',
   '{n} PB' => '{n} ПБ',
   '{n} TB' => '{n} ТБ',
-);
+];

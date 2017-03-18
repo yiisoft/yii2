@@ -10,8 +10,7 @@ Yii uses a [[yii\data\Pagination]] object to represent the information about a p
   is usually much more than the number of data items needed to display on a single page.
 * [[yii\data\Pagination::$pageSize|page size]] specifies how many data items each page contains. The default
   value is 20.
-* [[yii\data\Pagination::$page|current page]] gives the current page number (zero-based). The default value
-  value is 0, meaning the first page.
+* [[yii\data\Pagination::$page|current page]] gives the current page number (zero-based). The default value is 0, meaning the first page.
 
 With a fully specified [[yii\data\Pagination]] object, you can retrieve and display data partially. For example,
 if you are fetching data from a database, you can specify the `OFFSET` and `LIMIT` clause of the DB query with

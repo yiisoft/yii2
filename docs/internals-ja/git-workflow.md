@@ -1,8 +1,8 @@
 Yii 2 寄稿者のための Git ワークフロー
 =====================================
 
-Yii の開発に寄稿したい、ですって? すばらしい! 
-ただし、あなたの修正案が速やかに採用されるチャンスを増やすために、以下のステップを踏むようにしてください。
+で、Yii の開発に貢献したい、と。すばらしい。 
+でも、あなたの修正案が速やかに採用されるチャンスを増やすために、以下のステップを踏むようにしてください。
 あなたが git と github については初めてだという場合は、最初に [github help](http://help.github.com/) や [try git](https://try.github.com) を精査したり、[git internal data model](http://nfarina.com/post/9868516270/git-is-simpler) についていくらか学習したりする必要があるかもしれません。
 
 あなたの開発環境を準備する
@@ -19,6 +19,8 @@ git clone git@github.com:YOUR-GITHUB-USERNAME/yii2.git
 
 Linux において、GitHub で GIT を設定するのに問題が生じたり、"Permission Denied (publickey)" のようなエラーが発生したりする場合は、[setup your GIT installation to work with GitHub](http://help.github.com/linux-set-up-git/) に従ってください。
 
+> Tip: あなたが Git に精通していない場合は、素晴らしい無料の [プロ Git ブック](https://git-scm.com/book/en/v2) を読むことをお勧めします。
+
 ### 2. メインの Yii リポジトリを "upstream" という名前でリモートとして追加する
 
 Yii をクローンしたディレクトリ、通常は "yii2" に入って、以下のコマンドを打ち込みます。
@@ -27,22 +29,30 @@ Yii をクローンしたディレクトリ、通常は "yii2" に入って、�
 git remote add upstream git://github.com/yiisoft/yii2.git
 ```
 
-### 3. テスト環境を準備する
+### 3. テスト環境を準備する <span id="prepare-the-test-environment"></span
 
 以下のステップは、翻訳またはドキュメントだけに取り組みたい場合は、必要ではありません。
 
-- `composer update` を実行して、依存パッケージをインストールします ([composer をグローバルにインストール](https://getcomposer.org/doc/00-intro.md#globally) したものと仮定しています)。
+- `composer install` を実行して、依存パッケージをインストールします ([composer をグローバルにインストール](https://getcomposer.org/doc/00-intro.md#globally) したものと仮定しています)。
 
-> Note: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:~1.1.1"` を実行する必要があります。
+> Note: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:^1.2.0"` を実行する必要があります。
+JavaScript を扱おうとしている場合は、
 
-- `php build/build dev/app basic` を実行して、ベーシックアプリケーションをクローンし、その依存パッケージをインストールします。
+- `npm install` を実行して JavaScript テストツール群とその依存ライブラリをインストールします
+([Node.js と NPM のインストール](https://nodejs.org/en/download/package-manager/) は完了しているものとします)。
+
+> Note: JavaScript のテストが依存している [jsdom](https://github.com/tmpvar/jsdom) ライブラリは、Node.js 4 以降を必要とします。
+  Node.js 6 または 7 を使用することをより強く推奨します。
+
+  - `php build/build dev/app basic <fork>` を実行し、ベーシックアプリケーションをクローンし、ベーシックアプリケーションのための composer 依存パッケージをインストールします
+  ここで `<fork>` は、`git@github.com:my_nickname/yii2-app-basic.git` のような、あなたのレポジトリのフォークの URL です。
+  あなたがコアフレームワークの貢献者である場合は、フォークの指定を省略しても構いません。
   このコマンドは外部 composer パッケージは通常どおりインストールしますが、yii2 レポジトリは現在チェックアウトされているものをリンクします。
   これで、インストールされる全てのコードについて、一つのインスタンスを持つことになります。
   
-  必要であれば、アドバンストアプリケーションについても同様にします: `php build/build dev/app advanced`。
+  必要であれば、アドバンストアプリケーションについても同様にします: `php build/build dev/app advanced <fork>`。
   
-  このコマンドは後日、依存パッケージを更新するためにも使用されます。
-  このコマンドは内部的に `composer update` を実行します。
+  このコマンドは後日、依存パッケージを更新するためにも使用されます。このコマンドは内部的に `composer update` を実行します。
 
 > Note: デフォルトの git レポジトリの Url を使うため、SSH 経由で github からクローンすることになります。
 > `build` コマンドに `--useHttp` フラグを追加すれば、代りに HTTP を使うことが出来ます。
@@ -63,20 +73,24 @@ phpunit をグローバルにインストールしていない場合は、代り
 例えば、バリデータと redis のためのテストだけを走らせるためには、`phpunit --group=validators,redis` とします。
 利用できるグループのリストを取得するためには、`phpunit --list-groups` を実行してください。
 
+JavaScript の単体テストは、レポジトリのルートディレクトリで `npm test` を走らせることによって実行することが出来ます。
+
 ### エクステンション
 
 エクステンションに取り組むためには、エクステンションのレポジトリをクローンする必要があります。
 私たちは、あなたに代ってそれをするコマンドを作っています。
 
 ```
-php build/build dev/ext <extension-name>
+php build/build dev/ext <extension-name> <fork>
 ```
 
 ここで `<extension-name>` がエクステンションの名前、例えば `redis` です。
+そして `<fork>` は、`git@github.com:my_nickname/yii2-redis.git` のような、あなたのエクステンションのフォークの URL です。
+あなたがコアフレームワークの貢献者である場合は、フォークの指定を省略しても構いません。
 
 エクステンションをアプリケーションテンプレートのどちらかでテストしたい場合は、通常そうするように、アプリケーションの `composer.json` にそれを追加するだけです。
-例えば、ベーシックアプリケーションの `require` セクションに `"yiisoft/yii2-redis": "*"` を追加します。
-`php build/build dev/app basic` を実行すると、エクステンションとその依存パッケージがインストールされ、`extensions/redis` に対するシンボリックリンクが作成されます。
+例えば、ベーシックアプリケーションの `require` セクションに `"yiisoft/yii2-redis": "~2.0.0"` を追加します。
+`php build/build dev/app basic <fork>` を実行すると、エクステンションとその依存パッケージがインストールされ、`extensions/redis` に対するシンボリックリンクが作成されます。
 こうすることで、composer の vendor ディレクトリではなく、直接に yii2 のレポジトリで作業をすることが出来るようになります。
 
 > Note: デフォルトの git レポジトリの Url を使うため、SSH 経由で github からクローンすることになります。

@@ -141,8 +141,12 @@ public function prepareDataProvider()
  */
 public function checkAccess($action, $model = null, $params = [])
 {
-    // check if the user can access $action and $model
-    // throw ForbiddenHttpException if access should be denied
+    // 检查用户能否访问 $action 和 $model
+    // 访问被拒绝应抛出ForbiddenHttpException 
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

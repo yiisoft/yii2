@@ -61,10 +61,11 @@ class FileHelperTest extends TestCase
             if ($handle = opendir($dirName)) {
                 while (false !== ($entry = readdir($handle))) {
                     if ($entry != '.' && $entry != '..') {
-                        if (is_dir($dirName . DIRECTORY_SEPARATOR . $entry) === true) {
-                            $this->removeDir($dirName . DIRECTORY_SEPARATOR . $entry);
+                        $item = $dirName . DIRECTORY_SEPARATOR . $entry;
+                        if (is_dir($item) === true && !is_link($item)) {
+                            $this->removeDir($item);
                         } else {
-                            unlink($dirName . DIRECTORY_SEPARATOR . $entry);
+                            unlink($item);
                         }
                     }
                 }
@@ -112,7 +113,7 @@ class FileHelperTest extends TestCase
 
     /**
      * Asserts that file has specific permission mode.
-     * @param integer $expectedMode expected file permission mode.
+     * @param int $expectedMode expected file permission mode.
      * @param string  $fileName     file name.
      * @param string  $message      error message
      */
@@ -162,7 +163,7 @@ class FileHelperTest extends TestCase
         foreach ($files as $name => $content) {
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
             $this->assertFileExists($fileName);
-            $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+            $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
         }
     }
 
@@ -199,7 +200,7 @@ class FileHelperTest extends TestCase
                 } else {
                     $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
                     $this->assertFileExists($fileName);
-                    $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+                    $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
                 }
             }
         };
@@ -240,7 +241,7 @@ class FileHelperTest extends TestCase
                 $this->assertFileNotExists($fileName);
             } else {
                 $this->assertFileExists($fileName);
-                $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+                $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
             }
         }
     }
@@ -329,6 +330,22 @@ class FileHelperTest extends TestCase
         FileHelper::copyDirectory(
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
+        );
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/10710
+     */
+    public function testCopyDirWithSameName()
+    {
+        $this->createFileStructure([
+            'data' => [],
+            'data-backup' => []
+        ]);
+
+        FileHelper::copyDirectory(
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
+            $this->testFilePath . DIRECTORY_SEPARATOR . 'data-backup'
         );
     }
 
@@ -494,6 +511,58 @@ class FileHelperTest extends TestCase
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $passedFileName], $foundFiles);
+    }
+
+    /**
+     * @depends testFindFiles
+     */
+    public function testFindFilesRecursiveWithSymLink()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+                'theDir' => [
+                    'file1' => 'abc',
+                    'file2' => 'def',
+                ],
+                'symDir' => ['symlink', 'theDir'],
+            ],
+        ]);
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
+
+        $expected = [
+            $dirName . DIRECTORY_SEPARATOR . 'symDir' . DIRECTORY_SEPARATOR . 'file1',
+            $dirName . DIRECTORY_SEPARATOR . 'symDir' . DIRECTORY_SEPARATOR . 'file2',
+            $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file1',
+            $dirName . DIRECTORY_SEPARATOR . 'theDir' . DIRECTORY_SEPARATOR . 'file2',
+        ];
+        $result = FileHelper::findFiles($dirName);
+        sort($result);
+        $this->assertEquals($expected, $result);
+    }
+
+    /**
+     * @depends testFindFiles
+     */
+    public function testFindFilesNotRecursive()
+    {
+        $dirName = 'test_dir';
+        $this->createFileStructure([
+            $dirName => [
+                'theDir' => [
+                    'file1' => 'abc',
+                    'file2' => 'def',
+                ],
+                'symDir' => ['symlink', 'theDir'],
+                'file3' => 'root'
+            ],
+        ]);
+        $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
+
+        $expected = [
+            $dirName . DIRECTORY_SEPARATOR . 'file3',
+        ];
+        $this->assertEquals($expected, FileHelper::findFiles($dirName, ['recursive' => false]));
     }
 
     /**
@@ -711,7 +780,7 @@ class FileHelperTest extends TestCase
         foreach ($dataFiles as $name => $content) {
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
             $this->assertFileExists($fileName);
-            $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+            $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
         }
     }
 }

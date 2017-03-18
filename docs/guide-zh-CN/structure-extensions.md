@@ -39,7 +39,7 @@
     "require": {
         // ... other dependencies
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -141,7 +141,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 
     // package dependencies
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -414,6 +414,8 @@ Yii 提供了下列核心扩展，由 Yii 开发团队开发和维护。这些�
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   提供了一个基于页面的代码生成器，具有高可扩展性，并能用来快速生成模型、
   表单、模块、CRUD等。
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   提供了基于 [Imagine](http://imagine.readthedocs.org/) 的常用图像处理功能。
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):

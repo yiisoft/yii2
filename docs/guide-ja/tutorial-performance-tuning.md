@@ -13,7 +13,7 @@ PHP 環境を正しく構成することは非常に重要です。
 
 - 最新の安定した PHP バージョンを使うこと。
 使用する PHP のメジャーリリースを上げると、顕著なパフォーマンスの改善がもたらされることがあります。
-- [Opcache](http://php.net/opcache) (PHP 5.5 以降) または [APC](http://ru2.php.net/apc) (PHP 5.4 以前) を使って、バイトコードキャッシュを有効にすること。
+- [Opcache](http://php.net/opcache) (PHP 5.5 以降) または [APC](http://php.net/apc) (PHP 5.4) を使って、バイトコードキャッシュを有効にすること。
   バイトコードキャッシュによって、リクエストが入ってくるたびに PHP スクリプトを解析してインクルードする時間の浪費を避けることが出来ます。
 - [`realpath()` キャッシュをチューニングする](https://github.com/samdark/realpath_cache_tuner).
 
@@ -29,7 +29,7 @@ Yii は、`YII_DEBUG` という名前の定数の値を使って、デバッグ�
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info: `YII_DEBUG` のデフォルト値は false です。
+> Info: `YII_DEBUG` のデフォルト値は `false` です。
   従って、アプリケーションコードの他のどこかでこのデフォルト値を変更していないと確信できるなら、単に上記の行を削除してデバッグモードを無効にしても構いません。
 
 ## キャッシュのテクニックを使う <span id="using-caching"></span>
@@ -198,5 +198,10 @@ composer dumpautoload -o
 次のプロファイリングツールが役に立つでしょう。
 
 - [Yii のデバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
-- [XDebug プロファイラ](http://xdebug.org/docs/profiler)
+- [Blackfire](https://blackfire.io/)
 - [XHProf](http://www.php.net/manual/ja/book.xhprof.php)
+- [XDebug プロファイラ](http://xdebug.org/docs/profiler)
+
+## Prepare application for scaling
+
+何をやっても助けにならないときは、あなたのアプリケーションをスケーラブルにすることを試みましょう。良い導入記事が [Configuring a Yii 2 Application for an Autoscaling Stack (Yii 2 アプリケーションを自動スケール環境のために構成する)](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md) の中で提供されています。更に詳しく知りたい場合は [Web apps performance and scaling (ウェブアプリのパフォーマンスとスケーリング)](http://thehighload.com/) を参照して下さい。

@@ -141,7 +141,7 @@ class EachValidatorTest extends TestCase
         $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two']]);
         $validator->validateAttribute($model, 'attr_one');
         $this->assertNotEmpty($model->getErrors('attr_one'));
-        $this->assertEquals(3, count($model->attr_one));
+        $this->assertCount(3, $model->attr_one);
 
         $model = FakedValidationModel::createWithAttributes([
             'attr_one' => [
@@ -154,5 +154,27 @@ class EachValidatorTest extends TestCase
         $validator = new EachValidator(['rule' => ['compare', 'compareAttribute' => 'attr_two', 'operator' => '!=']]);
         $validator->validateAttribute($model, 'attr_one');
         $this->assertEmpty($model->getErrors('attr_one'));
+    }
+
+    /**
+     * @depends testValidate
+     */
+    public function testStopOnFirstError()
+    {
+        $model = FakedValidationModel::createWithAttributes([
+            'attr_one' => [
+                'one', 2, 'three'
+            ],
+        ]);
+        $validator = new EachValidator(['rule' => ['integer']]);
+
+        $validator->stopOnFirstError = true;
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertCount(1, $model->getErrors('attr_one'));
+
+        $model->clearErrors();
+        $validator->stopOnFirstError = false;
+        $validator->validateAttribute($model, 'attr_one');
+        $this->assertCount(2, $model->getErrors('attr_one'));
     }
 }

@@ -136,7 +136,7 @@ class m150101_185401_create_news_table extends Migration
 
 La clase de migración de base de datos [[yii\db\Migration]] expone una conexión a la base de datos mediante la propiedad [[yii\db\Migration::db|db]].
 Puedes utilizar esto para manipular el esquema de la base de datos utilizando métodos como se describen en
-[Trabajando con Esquemas de Base de Datos](db-dao.md#working-with-database-schema-).
+[Trabajando con Esquemas de Base de Datos](db-dao.md#database-schema).
 
 En vez de utilizar tipos físicos, al crear tablas o columnas deberías utilizar los *tipos abstractos*
 así las migraciones son independientes de algún DBMS específico. La clase [[yii\db\Schema]] define
@@ -147,7 +147,7 @@ serán traducidos a los tipos físicos correspondientes. En el caso de MySQL, `T
 en `int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY`, mientras `TYPE_STRING` se vuelve `varchar(255)`.
 
 Puedes agregar restricciones adicionales al utilizar tipos abstractos. En el ejemplo anterior, ` NOT NULL` es agregado
-a `Schema::TYPE_STRING` para especificar que la columna no puede ser null.
+a `Schema::TYPE_STRING` para especificar que la columna no puede ser `null`.
 
 > Info: El mapeo entre tipos abstractos y tipos físicos es especificado en
   la propiedad [[yii\db\QueryBuilder::$typeMap|$typeMap]] en cada clase concreta `QueryBuilder`.
@@ -185,14 +185,14 @@ Existe una lista de todos los métodos disponibles para la definición de tipos 
 
 Desde la versión 2.0.7 la consola provee una manera muy conveniente de generar migraciones.
 
-Si el nombre de la migración tiene una forma especial, por ejemplo `create_xxx` o `drop_xxx` entonces el archivo de la migración generada
+Si el nombre de la migración tiene una forma especial, por ejemplo `create_xxx_table` o `drop_xxx_table` entonces el archivo de la migración generada
 contendrá código extra, en este caso para crear/eliminar tablas.
 A continuación se describen todas estas variantes.
 
 ### Crear Tabla
 
 ```php
-yii migrate/create create_post
+yii migrate/create create_post_table
 ```
 
 esto genera
@@ -201,7 +201,7 @@ esto genera
 /**
  * Handles the creation for table `post`.
  */
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -226,7 +226,7 @@ class m150811_220037_create_post extends Migration
 Para crear las columnas en ese momento, las puedes especificar vía la opción `--fields`.
 
 ```php
-yii migrate/create create_post --fields="title:string,body:text"
+yii migrate/create create_post_table --fields="title:string,body:text"
 ```
 
 genera
@@ -235,7 +235,7 @@ genera
 /**
  * Handles the creation for table `post`.
  */
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -263,7 +263,7 @@ class m150811_220037_create_post extends Migration
 Puedes especificar más parámetros para las columnas.
 
 ```php
-yii migrate/create create_post --fields="title:string(12):notNull:unique,body:text"
+yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
 ```
 
 genera
@@ -272,7 +272,7 @@ genera
 /**
  * Handles the creation for table `post`.
  */
-class m150811_220037_create_post extends Migration
+class m150811_220037_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -304,7 +304,7 @@ class m150811_220037_create_post extends Migration
 Desde 2.0.8 el generador soporta claves foráneas utilizando la palabra clave `foreignKey`.
 
 ```php
-yii migrate/create create_post --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
+yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
 ```
 
 genera
@@ -317,7 +317,7 @@ genera
  * - `user`
  * - `category`
  */
-class m160328_040430_create_post extends Migration
+class m160328_040430_create_post_table extends Migration
 {
     /**
      * @inheritdoc
@@ -422,13 +422,13 @@ una columna llamada `author_id` con una clave foránea a la tabla `user` mientra
 ### Eliminar Tabla
 
 ```php
-yii migrate/create drop_post --fields="title:string(12):notNull:unique,body:text"
+yii migrate/create drop_post_table --fields="title:string(12):notNull:unique,body:text"
 ```
 
 genera
 
 ```php
-class m150811_220037_drop_post extends Migration
+class m150811_220037_drop_post_table extends Migration
 {
     public function up()
     {
@@ -448,19 +448,19 @@ class m150811_220037_drop_post extends Migration
 
 ### Agregar Columna
 
-Si el nombre de la migración está en la forma `add_xxx_to_yyy` entonces el archivo generado contendrá
+Si el nombre de la migración está en la forma `add_xxx_column_to_yyy_table` entonces el archivo generado contendrá
 las declaraciones `addColumn` y `dropColumn` necesarias.
 
 Para agregar una columna:
 
 ```php
-yii migrate/create add_position_to_post --fields="position:integer"
+yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ```
 
 genera
 
 ```php
-class m150811_220037_add_position_to_post extends Migration
+class m150811_220037_add_position_column_to_post_table extends Migration
 {
     public function up()
     {
@@ -476,17 +476,17 @@ class m150811_220037_add_position_to_post extends Migration
 
 ### Eliminar Columna
 
-Si el nombre de la migración está en la forma `drop_xxx_from_yyy` entonces el archivo generado contendrá
+Si el nombre de la migración está en la forma `drop_xxx_column_from_yyy_table` entonces el archivo generado contendrá
 las declaraciones `addColumn` y `dropColumn` necesarias.
 
 ```php
-yii migrate/create drop_position_from_post --fields="position:integer"
+yii migrate/create drop_position_column_from_post_table --fields="position:integer"
 ```
 
 genera
 
 ```php
-class m150811_220037_drop_position_from_post extends Migration
+class m150811_220037_drop_position_column_from_post_table extends Migration
 {
     public function up()
     {
@@ -502,11 +502,11 @@ class m150811_220037_drop_position_from_post extends Migration
 
 ### Agregar Tabla de Unión
 
-Si el nombre de la migración está en la forma `create_junction_xxx_and_yyy` entonces se generará el código necesario
+Si el nombre de la migración está en la forma `create_junction_table_for_xxx_and_yyy_tables` entonces se generará el código necesario
 para una tabla de unión.
 
 ```php
-yii migrate/create create_junction_post_and_tag --fields="created_at:dateTime"
+yii migrate/create create_junction_table_for_post_and_tag_tables --fields="created_at:dateTime"
 ```
 
 genera
@@ -519,7 +519,7 @@ genera
  * - `post`
  * - `tag`
  */
-class m160328_041642_create_junction_post_and_tag extends Migration
+class m160328_041642_create_junction_table_for_post_and_tag_tables extends Migration
 {
     /**
      * @inheritdoc
@@ -818,9 +818,9 @@ Hay varias maneras de personalizar el comando de migración.
 
 El comando de migración trae algunas opciones de línea de comandos que pueden ser utilizadas para personalizar su comportamiento:
 
-* `interactive`: boolean (por defecto true), especificar si se debe ejecutar la migración en modo interactivo.
-  Cuando se indica true, se le pedirá confirmación al usuario antes de ejecutar ciertas acciones.
-  Puedes querer definirlo como false si el comando está siendo utilizado como un proceso de fondo.
+* `interactive`: boolean (por defecto `true`), especificar si se debe ejecutar la migración en modo interactivo.
+  Cuando se indica `true`, se le pedirá confirmación al usuario antes de ejecutar ciertas acciones.
+  Puedes querer definirlo como `false` si el comando está siendo utilizado como un proceso de fondo.
 
 * `migrationPath`: string (por defecto `@app/migrations`), especifica el directorio que contiene todos los archivos
   de clase de las migraciones. Este puede ser especificado tanto como una ruta a un directorio un [alias](concept-aliases.md) de ruta.
@@ -843,13 +843,13 @@ El comando de migración trae algunas opciones de línea de comandos que pueden 
         'drop_table' => '@yii/views/dropTableMigration.php',
         'add_column' => '@yii/views/addColumnMigration.php',
         'drop_column' => '@yii/views/dropColumnMigration.php',
-        'create_junction' => '@yii/views/createJunctionMigration.php'
+        'create_junction' => '@yii/views/createTableMigration.php'
   ]`), especifica los templates utilizados para generar las migraciones. Ver "[Generar Migraciones](#generating-migrations)"
   para más detalles.
 
 * `fields`: array de strings de definiciones de columna utilizado por el código de migración. Por defecto `[]`. El formato de cada
   definición es `COLUMN_NAME:COLUMN_TYPE:COLUMN_DECORATOR`. Por ejemplo, `--fields=name:string(12):notNull` produce
-  una columna string de tamaño 12 que es not null.
+  una columna string de tamaño 12 que es not `null`.
 
 El siguiente ejemplo muestra cómo se pueden utilizar estas opciones.
 

@@ -10,16 +10,21 @@ namespace yii\db\pgsql;
 use yii\db\Expression;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
+use yii\db\ViewFinderTrait;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
+ *
+ * @property string[] $viewNames All view names in the database. This property is read-only.
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
 class Schema extends \yii\db\Schema
 {
+    use ViewFinderTrait;
+
     /**
      * @var string the default schema used for the current session.
      */
@@ -160,7 +165,6 @@ class Schema extends \yii\db\Schema
         $this->resolveTableNames($table, $name);
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
-
             return $table;
         } else {
             return null;
@@ -202,14 +206,25 @@ INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
 WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
 ORDER BY c.relname
 SQL;
-        $command = $this->db->createCommand($sql, [':schemaName' => $schema]);
-        $rows = $command->queryAll();
-        $names = [];
-        foreach ($rows as $row) {
-            $names[] = $row['table_name'];
-        }
+        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
+    }
 
-        return $names;
+    /**
+     * @inheritdoc
+     */
+    protected function findViewNames($schema = '')
+    {
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
+        }
+        $sql = <<<SQL
+SELECT c.relname AS table_name
+FROM pg_class c
+INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
+WHERE ns.nspname = :schemaName AND c.relkind = 'v'
+ORDER BY c.relname
+SQL;
+        return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
     }
 
     /**
@@ -218,7 +233,6 @@ SQL;
      */
     protected function findConstraints($table)
     {
-
         $tableName = $this->quoteValue($table->name);
         $tableSchema = $this->quoteValue($table->schemaName);
 
@@ -252,6 +266,9 @@ SQL;
 
         $constraints = [];
         foreach ($this->db->createCommand($sql)->queryAll() as $constraint) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+                $constraint = array_change_key_case($constraint, CASE_LOWER);
+            }
             if ($constraint['foreign_table_schema'] !== $this->defaultSchema) {
                 $foreignTable = $constraint['foreign_table_schema'] . '.' . $constraint['foreign_table_name'];
             } else {
@@ -266,8 +283,8 @@ SQL;
             }
             $constraints[$name]['columns'][$constraint['column_name']] = $constraint['foreign_column_name'];
         }
-        foreach ($constraints as $constraint) {
-            $table->foreignKeys[] = array_merge([$constraint['tableName']], $constraint['columns']);
+        foreach ($constraints as $name => $constraint) {
+            $table->foreignKeys[$name] = array_merge([$constraint['tableName']], $constraint['columns']);
         }
     }
 
@@ -320,7 +337,16 @@ SQL;
 
         $rows = $this->getUniqueIndexInformation($table);
         foreach ($rows as $row) {
-            $uniqueIndexes[$row['indexname']][] = $row['columnname'];
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+                $row = array_change_key_case($row, CASE_LOWER);
+            }
+            $column = $row['columnname'];
+            if (!empty($column) && $column[0] === '"') {
+                // postgres will quote names that are not lowercase-only
+                // https://github.com/yiisoft/yii2/issues/10613
+                $column = substr($column, 1, -1);
+            }
+            $uniqueIndexes[$row['indexname']][] = $column;
         }
 
         return $uniqueIndexes;
@@ -329,7 +355,7 @@ SQL;
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {
@@ -395,6 +421,9 @@ SQL;
             return false;
         }
         foreach ($columns as $column) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_UPPER) {
+                $column = array_change_key_case($column, CASE_LOWER);
+            }
             $column = $this->loadColumnSchema($column);
             $table->columns[$column->name] = $column;
             if ($column->isPrimaryKey) {
@@ -412,7 +441,7 @@ SQL;
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
-                } elseif (preg_match('/^(.*?)::/', $column->defaultValue, $matches)) {
+                } elseif (preg_match('/^(?:\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
                     if ($matches[1] === 'NULL') {
                         $column->defaultValue = null;
                     } else {

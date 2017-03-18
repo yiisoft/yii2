@@ -56,7 +56,7 @@ http://hostname/index.php?r=gii
 ],
 ```
 
-![Gii](../guide/images/start-gii.png)
+![Gii](images/start-gii.png)
 
 
 Generowanie klasy Active Record <span id="generating-ar"></span>
@@ -67,7 +67,7 @@ Aby użyć Gii do wygenerowania klasy Active Record, wybierz "Model Generator" z
 * Table Name: `country`
 * Model Class: `Country`
 
-![Generator modeli](../guide/images/start-gii-model.png)
+![Generator modeli](images/start-gii-model.png)
 
 Następnie kliknij przycisk "Preview". Powinieneś zauważyć na liście plik `models/Country.php`, który zostanie utworzony. Możesz kliknąć w nazwę pliku aby zobaczyć podgląd 
 jego zawartości.
@@ -75,7 +75,7 @@ jego zawartości.
 Podczas używania Gii, jeśli posiadałeś już utworzony plik o tej samej nazwie i będziesz chciał go nadpisać, kliknij w przycisk `diff` obok nazwy pliku, aby zobaczyć różnice w kodzie 
 pomiędzy wygenerowanym, a już istniejącym plikiem.
 
-![Podgląd generatora modeli](../guide/images/start-gii-model-preview.png)
+![Podgląd generatora modeli](images/start-gii-model-preview.png)
 
 Podczas nadpisywania istniejącego już pliku musisz zaznaczyć opcję "overwrite", a następnie kliknąć przycisk "Generate". Jeśli tworzysz nowy plik, wystarczy kliknięcie "Generate".
 
@@ -93,11 +93,11 @@ Aby utworzyć funkcjonalność CRUD używając Gii, wybierz na stronie głównej
 * Search Model Class: `app\models\CountrySearch`
 * Controller Class: `app\controllers\CountryController`
 
-![Generator CRUD](../guide/images/start-gii-crud.png)
+![Generator CRUD](images/start-gii-crud.png)
 
 Następnie kliknij przycisk "Preview". Zobaczysz listę plików, które zostaną wygenerowane, tak jak pokazano niżej.
 
-![Podgląd generatora CRUD](../guide/images/start-gii-crud-preview.png)
+![Podgląd generatora CRUD](images/start-gii-crud-preview.png)
 
 Jeśli wcześniej utworzyłeś pliki `controllers/CountryController.php` oraz `views/country/index.php` (w sekcji baz danych tego poradnika), zaznacz opcję "overwrite", aby je zastąpić 
 (poprzednia wersja nie posiada pełnego wsparcia CRUD). 
@@ -116,9 +116,9 @@ Zobaczysz tabelę prezentującą kraje z bazy danych. Możesz sortować tabelę,
 Dla każdego wyświetlanego kraju możesz zobaczyć jego szczegóły, zaktualizować go lub usunąć.
 Możesz również kliknąć przycisk "Create Country", aby przejść do formularza tworzenia nowego państwa.
 
-![Siatka danych krajów](../guide/images/start-gii-country-grid.png)
+![Siatka danych krajów](images/start-gii-country-grid.png)
 
-![Aktualizacja kraju](../guide/images/start-gii-country-update.png)
+![Aktualizacja kraju](images/start-gii-country-update.png)
 
 Poniżej przedstawiamy listę plików wygenerowanych przez Gii, gdybyś chciał zbadać jak zostały zaimplementowane powyższe funkcjonalności (lub je edytować):
 

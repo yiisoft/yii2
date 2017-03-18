@@ -33,7 +33,7 @@ if (YII_ENV_DEV) {
 上記の構成情報は、[開発環境](concept-configurations.md#environment-constants) において、アプリケーションは `gii` という名前のモジュールをインクルードすべきこと、そして `gii` は [[yii\gii\Module]] というクラスであることを記述しています。
 
 アプリケーションの [エントリスクリプト](structure-entry-scripts.md) である `web/index.php` をチェックすると、次の行があることに気付くでしょう。
-これは本質的には `YII_ENV_DEV` を true に設定するものです。
+これは本質的には `YII_ENV_DEV` を `true` に設定するものです。
 
 ```php
 defined('YII_ENV') or define('YII_ENV', 'dev');

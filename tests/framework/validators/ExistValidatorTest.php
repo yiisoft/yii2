@@ -12,13 +12,8 @@ use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
 
-/**
- * @group validators
- */
-class ExistValidatorTest extends DatabaseTestCase
+abstract class ExistValidatorTest extends DatabaseTestCase
 {
-    protected $driverName = 'mysql';
-
     public function setUp()
     {
         parent::setUp();
@@ -139,6 +134,9 @@ class ExistValidatorTest extends DatabaseTestCase
 
         // validate new record
         $m = new OrderItem(['order_id' => 1, 'item_id' => 2]);
+        $val->validateAttribute($m, 'order_id');
+        $this->assertFalse($m->hasErrors('order_id'));
+        $m = new OrderItem(['order_id' => 2, 'item_id' => 5]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
         $m = new OrderItem(['order_id' => 10, 'item_id' => 2]);

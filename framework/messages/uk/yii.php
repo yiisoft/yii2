@@ -96,7 +96,7 @@ return [
     '{delta, plural, =1{1 month} other{# months}}' => '{delta, plural, one{# місяць} few{# місяця} many{# місяців} other{# місяців}}',
     '{delta, plural, =1{1 second} other{# seconds}}' => '{delta, plural, one{# секунда} few{# секунди} many{# секунд} other{# секунд}}',
     '{delta, plural, =1{1 year} other{# years}}' => '{delta, plural, one{# рік} few{# роки} many{# років} other{# років}}',
-    '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{день} one{день} few{# дні} many{# днів} other{# дні}} тому',
+    '{delta, plural, =1{a day} other{# days}} ago' => '{delta, plural, =1{день} one{# день} few{# дні} many{# днів} other{# дні}} тому',
     '{delta, plural, =1{a minute} other{# minutes}} ago' => '{delta, plural, =1{хвилину} one{# хвилину} few{# хвилини} many{# хвилин} other{# хвилини}} тому',
     '{delta, plural, =1{a month} other{# months}} ago' => '{delta, plural, =1{місяць} one{# місяць} few{# місяці} many{# місяців} other{# місяці}} тому',
     '{delta, plural, =1{a second} other{# seconds}} ago' => '{delta, plural, =1{секунду} one{# секунду} few{# секунди} many{# секунд} other{# секунди}} тому',

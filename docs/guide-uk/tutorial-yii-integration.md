@@ -84,7 +84,7 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 Якщо стороння система використовує управління залежностями Composer, ви можете встановити Yii за допомогою наступних команд:
 
 ```bash
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
+    composer global require "fxp/composer-asset-plugin:^1.2.0"
     composer require yiisoft/yii2
     composer install
 ```
@@ -179,7 +179,7 @@ class Yii extends \yii\BaseYii
 }
 
 Yii::$classMap = include($yii2path . '/classes.php');
-// реєстрація автозавантажувача Yii2 через Yii1
+// реєстрація автозавантажувача Yii 2 через Yii 1
 Yii::registerAutoloader(['Yii', 'autoload']);
 // створення контейнера впровадження залежностей
 Yii::$container = new yii\di\Container;

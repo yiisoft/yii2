@@ -1,23 +1,27 @@
 <?php
+
 namespace yiiunit\framework\db\oci;
 
 use yii\db\oci\ColumnSchemaBuilder;
 use yii\db\Schema;
-use \yiiunit\framework\db\ColumnSchemaBuilderTest as BaseColumnSchemaBuilderTest;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for Oracle
+ * @group db
+ * @group oci
  */
-class ColumnSchemaBuilderTest extends BaseColumnSchemaBuilderTest
+class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderTest
 {
+    public $driverName = 'oci';
+
     /**
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @return ColumnSchemaBuilder
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 
     /**

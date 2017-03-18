@@ -51,6 +51,7 @@ class BaseInflector
         '/us$/i' => 'uses',
         '/(alias)$/i' => '\1es',
         '/(ax|cris|test)is$/i' => '\1es',
+        '/(currenc)y$/' => '\1ies',
         '/s$/' => 's',
         '/^$/' => '',
         '/$/' => 's',
@@ -97,6 +98,7 @@ class BaseInflector
         '/(n)ews$/i' => '\1\2ews',
         '/(n)etherlands$/i' => '\1\2etherlands',
         '/eaus$/' => 'eau',
+        '/(currenc)ies$/' => '\1y',
         '/^(.*us)$/' => '\\1',
         '/s$/i' => '',
     ];
@@ -132,6 +134,7 @@ class BaseInflector
         'octopus' => 'octopuses',
         'opus' => 'opuses',
         'ox' => 'oxen',
+        'pasta' => 'pasta',
         'penis' => 'penises',
         'sex' => 'sexes',
         'soliloquy' => 'soliloquies',
@@ -326,7 +329,7 @@ class BaseInflector
      * Converts an underscored or CamelCase word into a English
      * sentence.
      * @param string $words
-     * @param boolean $ucAll whether to set all words to uppercase
+     * @param bool $ucAll whether to set all words to uppercase
      * @return string
      */
     public static function titleize($words, $ucAll = false)
@@ -354,7 +357,7 @@ class BaseInflector
      * Converts a CamelCase name into space-separated words.
      * For example, 'PostTag' will be converted to 'Post Tag'.
      * @param string $name the string to be converted
-     * @param boolean $ucwords whether to capitalize the first letter in each word
+     * @param bool $ucwords whether to capitalize the first letter in each word
      * @return string the resulting words
      */
     public static function camel2words($name, $ucwords = true)
@@ -374,7 +377,7 @@ class BaseInflector
      * For example, 'PostTag' will be converted to 'post-tag'.
      * @param string $name the string to be converted
      * @param string $separator the character used to concatenate the words in the ID
-     * @param boolean|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
+     * @param bool|string $strict whether to insert a separator between two consecutive uppercase chars, defaults to false
      * @return string the resulting ID
      */
     public static function camel2id($name, $separator = '-', $strict = false)
@@ -413,7 +416,7 @@ class BaseInflector
     /**
      * Returns a human-readable string from $word
      * @param string $word the string to humanize
-     * @param boolean $ucAll whether to set all words to uppercase or not
+     * @param bool $ucAll whether to set all words to uppercase or not
      * @return string
      */
     public static function humanize($word, $ucAll = false)
@@ -459,7 +462,7 @@ class BaseInflector
      *
      * @param string $string An arbitrary string to convert
      * @param string $replacement The replacement to use for spaces
-     * @param boolean $lowercase whether to return the string in lowercase or not. Defaults to `true`.
+     * @param bool $lowercase whether to return the string in lowercase or not. Defaults to `true`.
      * @return string The converted string.
      */
     public static function slug($string, $replacement = '-', $lowercase = true)
@@ -480,8 +483,8 @@ class BaseInflector
      * of the helper.
      *
      * @param string $string input string
-     * @param string|\Transliterator $transliterator either a [[Transliterator]] or a string
-     * from which a [[Transliterator]] can be built.
+     * @param string|\Transliterator $transliterator either a [[\Transliterator]] or a string
+     * from which a [[\Transliterator]] can be built.
      * @return string
      * @since 2.0.7 this method is public.
      */
@@ -499,7 +502,7 @@ class BaseInflector
     }
 
     /**
-     * @return boolean if intl extension is loaded
+     * @return bool if intl extension is loaded
      */
     protected static function hasIntl()
     {
@@ -518,7 +521,7 @@ class BaseInflector
 
     /**
      * Converts number to its ordinal English form. For example, converts 13 to 13th, 2 to 2nd ...
-     * @param integer $number the number to get its ordinal value
+     * @param int $number the number to get its ordinal value
      * @return string
      */
     public static function ordinalize($number)
@@ -566,8 +569,11 @@ class BaseInflector
      * @return string the generated sentence
      * @since 2.0.1
      */
-    public static function sentence(array $words, $twoWordsConnector = ' and ', $lastWordConnector = null, $connector = ', ')
+    public static function sentence(array $words, $twoWordsConnector = null, $lastWordConnector = null, $connector = ', ')
     {
+        if ($twoWordsConnector === null) {
+            $twoWordsConnector = Yii::t('yii', ' and ');
+        }
         if ($lastWordConnector === null) {
             $lastWordConnector = $twoWordsConnector;
         }

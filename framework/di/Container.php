@@ -89,6 +89,8 @@ use yii\helpers\ArrayHelper;
  * $lister = new UserLister($finder);
  * ```
  *
+ * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
+ *
  * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
  * definition or instance). This property is read-only.
  *
@@ -143,6 +145,7 @@ class Container extends Component
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     public function get($class, $params = [], $config = [])
     {
@@ -278,7 +281,7 @@ class Container extends Component
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
      * @param string $class class name, interface name or alias name
-     * @return boolean whether the container has the definition of the specified name..
+     * @return bool whether the container has the definition of the specified name..
      * @see set()
      */
     public function has($class)
@@ -289,8 +292,8 @@ class Container extends Component
     /**
      * Returns a value indicating whether the given name corresponds to a registered singleton.
      * @param string $class class name, interface name or alias name
-     * @param boolean $checkInstance whether to check if the singleton has been instantiated.
-     * @return boolean whether the given name corresponds to a registered singleton. If `$checkInstance` is true,
+     * @param bool $checkInstance whether to check if the singleton has been instantiated.
+     * @return bool whether the given name corresponds to a registered singleton. If `$checkInstance` is true,
      * the method should return a value indicating whether the singleton has been instantiated.
      */
     public function hasSingleton($class, $checkInstance = false)
@@ -353,6 +356,7 @@ class Container extends Component
      * @param array $params constructor parameters
      * @param array $config configurations to be applied to the new instance
      * @return object the newly created instance of the specified class
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     protected function build($class, $params, $config)
     {
@@ -364,6 +368,9 @@ class Container extends Component
         }
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
+        if (!$reflection->isInstantiable()) {
+            throw new NotInstantiableException($reflection->name);
+        }
         if (empty($config)) {
             return $reflection->newInstanceArgs($dependencies);
         }
@@ -480,6 +487,7 @@ class Container extends Component
      * This can be either a list of parameters, or an associative array representing named function parameters.
      * @return mixed the callback return value.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      * @since 2.0.7
      */
     public function invoke(callable $callback, $params = [])
@@ -501,6 +509,7 @@ class Container extends Component
      * @param array $params The array of parameters for the function, can be either numeric or associative.
      * @return array The resolved dependencies.
      * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      * @since 2.0.7
      */
     public function resolveCallableDependencies(callable $callback, $params = [])
@@ -527,7 +536,17 @@ class Container extends Component
                 } elseif (isset(Yii::$app) && Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
                     $args[] = $obj;
                 } else {
-                    $args[] = $this->get($className);
+                    // If the argument is optional we catch not instantiable exceptions
+                    try {
+                        $args[] = $this->get($className);
+                    } catch (NotInstantiableException $e) {
+                        if ($param->isDefaultValueAvailable()) {
+                            $args[] = $param->getDefaultValue();
+                        } else {
+                            throw $e;
+                        }
+                    }
+
                 }
             } elseif ($associative && isset($params[$name])) {
                 $args[] = $params[$name];
@@ -546,5 +565,85 @@ class Container extends Component
             $args[] = $value;
         }
         return $args;
+    }
+
+    /**
+     * Registers class definitions within this container.
+     *
+     * @param array $definitions array of definitions. There are two allowed formats of array.
+     * The first format:
+     *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
+     *    as a first argument `$class`.
+     *  - value: the definition associated with `$class`. Possible values are described in
+     *    [[set()]] documentation for the `$definition` parameter. Will be passed to the [[set()]] method
+     *    as the second argument `$definition`.
+     *
+     * Example:
+     * ```php
+     * $container->setDefinitions([
+     *     'yii\web\Request' => 'app\components\Request',
+     *     'yii\web\Response' => [
+     *         'class' => 'app\components\Response',
+     *         'format' => 'json'
+     *     ],
+     *     'foo\Bar' => function () {
+     *         $qux = new Qux;
+     *         $foo = new Foo($qux);
+     *         return new Bar($foo);
+     *     }
+     * ]);
+     * ```
+     *
+     * The second format:
+     *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
+     *    as a first argument `$class`.
+     *  - value: array of two elements. The first element will be passed the [[set()]] method as the
+     *    second argument `$definition`, the second one — as `$params`.
+     *
+     * Example:
+     * ```php
+     * $container->setDefinitions([
+     *     'foo\Bar' => [
+     *          ['class' => 'app\Bar'],
+     *          [Instance::of('baz')]
+     *      ]
+     * ]);
+     * ```
+     *
+     * @see set() to know more about possible values of definitions
+     * @since 2.0.11
+     */
+    public function setDefinitions(array $definitions)
+    {
+        foreach ($definitions as $class => $definition) {
+            if (count($definition) === 2 && array_values($definition) === $definition) {
+                $this->set($class, $definition[0], $definition[1]);
+                continue;
+            }
+
+            $this->set($class, $definition);
+        }
+    }
+
+    /**
+     * Registers class definitions as singletons within this container by calling [[setSingleton()]]
+     *
+     * @param array $singletons array of singleton definitions. See [[setDefinitions()]]
+     * for allowed formats of array.
+     *
+     * @see setDefinitions() for allowed formats of $singletons parameter
+     * @see setSingleton() to know more about possible values of definitions
+     * @since 2.0.11
+     */
+    public function setSingletons(array $singletons)
+    {
+        foreach ($singletons as $class => $definition) {
+            if (count($definition) === 2 && array_values($definition) === $definition) {
+                $this->setSingleton($class, $definition[0], $definition[1]);
+                continue;
+            }
+
+            $this->setSingleton($class, $definition);
+        }
     }
 }

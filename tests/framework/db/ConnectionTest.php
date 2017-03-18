@@ -5,11 +5,7 @@ namespace yiiunit\framework\db;
 use yii\db\Connection;
 use yii\db\Transaction;
 
-/**
- * @group db
- * @group mysql
- */
-class ConnectionTest extends DatabaseTestCase
+abstract class ConnectionTest extends DatabaseTestCase
 {
 
     public function testConstruct()
@@ -31,7 +27,7 @@ class ConnectionTest extends DatabaseTestCase
 
         $connection->open();
         $this->assertTrue($connection->isActive);
-        $this->assertTrue($connection->pdo instanceof \PDO);
+        $this->assertInstanceOf('\\PDO', $connection->pdo);
 
         $connection->close();
         $this->assertFalse($connection->isActive);

@@ -9,7 +9,7 @@ or an extended class. The three main features that components provide to other c
 * [Behaviors](concept-behaviors.md)
  
 Separately and combined, these features make Yii classes much more customizable and easier to use. For example,
-the included [[yii\jui\DatePicker|date picker widget]], a user interface component, can be used in a [view](structure-view.md)
+the included [[yii\jui\DatePicker|date picker widget]], a user interface component, can be used in a [view](structure-views.md)
 to generate an interactive date picker:
 
 ```php
@@ -38,7 +38,7 @@ these conventions:
 - If you override the constructor, specify a `$config` parameter as the constructor's *last* parameter, and then pass this parameter
   to the parent constructor.
 - Always call the parent constructor *at the end* of your overriding constructor.
-- If you override the [[yii\base\Object::init()]] method, make sure you call the parent implementation of `init` *at the beginning* of your `init` method.
+- If you override the [[yii\base\Object::init()]] method, make sure you call the parent implementation of `init()` *at the beginning* of your `init()` method.
 
 For example:
 

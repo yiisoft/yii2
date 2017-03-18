@@ -2,14 +2,12 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\db\Schema;
 
-/**
- * @group db
- * @group mysql
- */
-class QueryTest extends DatabaseTestCase
+abstract class QueryTest extends DatabaseTestCase
 {
     public function testSelect()
     {
@@ -59,9 +57,8 @@ class QueryTest extends DatabaseTestCase
         $this->assertEquals([':id' => 1, ':name' => 'something', ':age' => '30'], $query->params);
     }
 
-    public function testFilterWhere()
+    public function testFilterWhereWithHashFormat()
     {
-        // should work with hash format
         $query = new Query;
         $query->filterWhere([
             'id' => 0,
@@ -75,8 +72,10 @@ class QueryTest extends DatabaseTestCase
 
         $query->orFilterWhere(['name' => '']);
         $this->assertEquals(['id' => 0], $query->where);
+    }
 
-        // should work with operator format
+    public function testFilterWhereWithOperatorFormat()
+    {
         $query = new Query;
         $condition = ['like', 'name', 'Alex'];
         $query->filterWhere($condition);
@@ -94,9 +93,6 @@ class QueryTest extends DatabaseTestCase
         $query->andFilterWhere(['not in', 'id', []]);
         $this->assertEquals($condition, $query->where);
 
-        $query->andFilterWhere(['not in', 'id', []]);
-        $this->assertEquals($condition, $query->where);
-
         $query->andFilterWhere(['like', 'id', '']);
         $this->assertEquals($condition, $query->where);
 
@@ -108,6 +104,61 @@ class QueryTest extends DatabaseTestCase
 
         $query->andFilterWhere(['or not like', 'id', null]);
         $this->assertEquals($condition, $query->where);
+
+        $query->andFilterWhere(['or', ['eq', 'id', null], ['eq', 'id', []]]);
+        $this->assertEquals($condition, $query->where);
+    }
+
+    public function testFilterHavingWithHashFormat()
+    {
+        $query = new Query;
+        $query->filterHaving([
+            'id' => 0,
+            'title' => '   ',
+            'author_ids' => [],
+        ]);
+        $this->assertEquals(['id' => 0], $query->having);
+
+        $query->andFilterHaving(['status' => null]);
+        $this->assertEquals(['id' => 0], $query->having);
+
+        $query->orFilterHaving(['name' => '']);
+        $this->assertEquals(['id' => 0], $query->having);
+    }
+
+    public function testFilterHavingWithOperatorFormat()
+    {
+        $query = new Query;
+        $condition = ['like', 'name', 'Alex'];
+        $query->filterHaving($condition);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['between', 'id', null, null]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->orFilterHaving(['not between', 'id', null, null]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['in', 'id', []]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['not in', 'id', []]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['like', 'id', '']);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['or like', 'id', '']);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['not like', 'id', '   ']);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['or not like', 'id', null]);
+        $this->assertEquals($condition, $query->having);
+
+        $query->andFilterHaving(['or', ['eq', 'id', null], ['eq', 'id', []]]);
+        $this->assertEquals($condition, $query->having);
     }
 
     public function testFilterRecursively()
@@ -185,6 +236,22 @@ class QueryTest extends DatabaseTestCase
         $this->assertEquals(5, $query->offset);
     }
 
+    public function testLimitOffsetWithExpression()
+    {
+        $query = (new Query())->from('customer')->select('id')->orderBy('id');
+        $query
+            ->limit(new Expression('1 + 1'))
+            ->offset(new Expression('1 + 0'));
+
+        $result = $query->column($this->getConnection());
+
+        $this->assertCount(2, $result);
+
+        $this->assertNotContains(1, $result);
+        $this->assertContains(2, $result);
+        $this->assertContains(3, $result);
+    }
+
     public function testUnion()
     {
         $connection = $this->getConnection();
@@ -200,7 +267,7 @@ class QueryTest extends DatabaseTestCase
             );
         $result = $query->all($connection);
         $this->assertNotEmpty($result);
-        $this->assertSame(4, count($result));
+        $this->assertCount(4, $result);
     }
 
     public function testOne()
@@ -238,6 +305,23 @@ class QueryTest extends DatabaseTestCase
             ->indexBy('id')
             ->column($db);
         $this->assertEquals([3 => 'user3', 2 => 'user2', 1 => 'user1'], $result);
+
+        // https://github.com/yiisoft/yii2/issues/12649
+        $result = (new Query)->from('customer')
+            ->select(['name', 'id'])
+            ->orderBy(['id' => SORT_DESC])
+            ->indexBy(function ($row) {
+                return $row['id'] * 2;
+            })
+            ->column($db);
+        $this->assertEquals([6 => 'user3', 4 => 'user2', 2 => 'user1'], $result);
+
+        $result = (new Query)->from('customer')
+            ->select(['name'])
+            ->indexBy('name')
+            ->orderBy(['id' => SORT_DESC])
+            ->column($db);
+        $this->assertEquals(['user3' => 'user3', 'user2' => 'user2', 'user1' => 'user1'], $result);
     }
 
     public function testCount()
@@ -252,10 +336,15 @@ class QueryTest extends DatabaseTestCase
 
         $count = (new Query)->select('[[status]], COUNT([[id]])')->from('customer')->groupBy('status')->count('*', $db);
         $this->assertEquals(2, $count);
+
+        // testing that orderBy() should be ignored here as it does not affect the count anyway.
+        $count = (new Query)->from('customer')->orderBy('status')->count('*', $db);
+        $this->assertEquals(3, $count);
     }
 
     /**
-     * @depends testFilterWhere
+     * @depends testFilterWhereWithHashFormat
+     * @depends testFilterWhereWithOperatorFormat
      */
     public function testAndFilterCompare()
     {
@@ -276,11 +365,11 @@ class QueryTest extends DatabaseTestCase
         $query->andFilterCompare('name', 'Doe', 'like');
         $this->assertEquals($condition, $query->where);
 
-        $condition = ['and', $condition, ['>', 'rating', '9']];
+        $condition[] = ['>', 'rating', '9'];
         $query->andFilterCompare('rating', '>9');
         $this->assertEquals($condition, $query->where);
 
-        $condition = ['and', $condition, ['<=', 'value', '100']];
+        $condition[] = ['<=', 'value', '100'];
         $query->andFilterCompare('value', '<=100');
         $this->assertEquals($condition, $query->where);
     }
@@ -300,5 +389,144 @@ class QueryTest extends DatabaseTestCase
 
         $count = (new Query)->from('customer')->having(['status' => 2])->count('*', $db);
         $this->assertEquals(1, $count);
+    }
+
+    public function testEmulateExecution()
+    {
+        $db = $this->getConnection();
+
+        $this->assertGreaterThan(0, (new Query())->from('customer')->count('*', $db));
+
+        $rows = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->all($db);
+        $this->assertSame([], $rows);
+
+        $row = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->one($db);
+        $this->assertFalse($row);
+
+        $exists = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->exists($db);
+        $this->assertFalse($exists);
+
+        $count = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->count('*', $db);
+        $this->assertSame(0, $count);
+
+        $sum = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->sum('id', $db);
+        $this->assertSame(0, $sum);
+
+        $sum = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->average('id', $db);
+        $this->assertSame(0, $sum);
+
+        $max = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->max('id', $db);
+        $this->assertNull($max);
+
+        $min = (new Query())
+            ->from('customer')
+            ->emulateExecution()
+            ->min('id', $db);
+        $this->assertNull($min);
+
+        $scalar = (new Query())
+            ->select(['id'])
+            ->from('customer')
+            ->emulateExecution()
+            ->scalar($db);
+        $this->assertNull($scalar);
+
+        $column = (new Query())
+            ->select(['id'])
+            ->from('customer')
+            ->emulateExecution()
+            ->column($db);
+        $this->assertSame([], $column);
+    }
+
+    /**
+     * @param Connection $db
+     * @param string $tableName
+     * @param string $columnName
+     * @param array $condition
+     * @param string $operator
+     * @return int
+     */
+    protected function countLikeQuery(Connection $db, $tableName, $columnName, array $condition, $operator = 'or')
+    {
+        $whereCondition = [$operator];
+        foreach ($condition as $value) {
+            $whereCondition[] = ['like', $columnName, $value];
+        }
+        $result = (new Query())
+            ->from($tableName)
+            ->where($whereCondition)
+            ->count('*', $db);
+        if (is_numeric($result)) {
+            $result = (int) $result;
+        }
+        return $result;
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13745
+     */
+    public function testMultipleLikeConditions()
+    {
+        $db = $this->getConnection();
+        $tableName = 'like_test';
+        $columnName = 'col';
+
+        if($db->getSchema()->getTableSchema($tableName) !== null){
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            $columnName => $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+        ])->execute();
+        $db->createCommand()->batchInsert($tableName, ['col'], [
+            ['test0'],
+            ['test\1'],
+            ['test\2'],
+            ['foo%'],
+            ['%bar'],
+            ['%baz%'],
+        ])->execute();
+
+        // Basic tests
+        $this->assertSame(1, $this->countLikeQuery($db, $tableName, $columnName, ['test0']));
+        $this->assertSame(2, $this->countLikeQuery($db, $tableName, $columnName, ['test\\']));
+        $this->assertSame(0, $this->countLikeQuery($db, $tableName, $columnName, ['test%']));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, ['%']));
+
+        // Multiple condition tests
+        $this->assertSame(2, $this->countLikeQuery($db, $tableName, $columnName, [
+            'test0',
+            'test\1',
+        ]));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, [
+            'test0',
+            'test\1',
+            'test\2',
+        ]));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, [
+            'foo',
+            '%ba',
+        ]));
     }
 }

@@ -80,7 +80,7 @@ function function_name($event) {
 
 ひとつのイベントには、ひとつだけでなく複数のハンドラをアタッチすることができます。イベントがトリガされると、アタッチされたハンドラは、
 それらがイベントにアタッチされた順序どおりに呼び出されます。あるハンドラがその後に続くハンドラの呼び出しを停止する必要がある場合は、
-`$event` パラメータの [[yii\base\Event::handled]] プロパティを true に設定します:
+`$event` パラメータの [[yii\base\Event::handled]] プロパティを `true` に設定します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -90,7 +90,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 
 デフォルトでは、新たに接続されたハンドラは、イベントの既存のハンドラのキューに追加されます。その結果、
 イベントがトリガされたとき、そのハンドラは一番最後に呼び出されます。もし、そのハンドラが最初に呼び出されるよう、
-ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に false を渡します:
+ハンドラのキューの先頭に新しいハンドラを挿入したい場合は、[[yii\base\Component::on()]] を呼び出とき、4番目のパラメータ `$append` に `false` を渡します:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -184,7 +184,7 @@ $foo->off(Foo::EVENT_HELLO, $anonymousFunction);
 一般的には、イベントにアタッチされたときどこかに保存してある場合を除き、無名関数を取り外そうとはしないでください。
 上記の例は、無名関数は変数 `$anonymousFunction` として保存されていたものとしています。
 
-イベントからすべてのハンドラを取り外すには、単純に、第 2 パラメータを指定せずに [[yii\base\Component::off()]] を呼び出します。
+イベントから *すべて* のハンドラを取り外すには、単純に、第 2 パラメータを指定せずに [[yii\base\Component::off()]] を呼び出します。
 
 ```php
 $foo->off(Foo::EVENT_HELLO);
@@ -227,7 +227,7 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // "app\models\Foo" を表示
+    var_dump($event->sender);  // "null" を表示
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
@@ -258,6 +258,8 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 例えば、次のようなインタフェイスを作ります。
 
 ```php
+namespace app\interfaces;
+
 interface DanceEventInterface
 {
     const EVENT_DANCE = 'dance';
@@ -289,22 +291,26 @@ class Developer extends Component implements DanceEventInterface
 これらのクラスのどれかによってトリガされた `EVENT_DANCE` を扱うためには、インターフェイスの名前を最初の引数にして [[yii\base\Event::on()|Event::on()]] を呼びます。
 
 ```php
-Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace($event->sender->className . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
-})
+Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace(get_class($event->sender) . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
+});
 ```
 
 これらのクラスのイベントをトリガすることも出来ます。
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+// trigger event for Dog class
+Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+
+// trigger event for Developer class
+Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
 ただし、このインタフェイスを実装する全クラスのイベントをトリガすることは出来ない、ということに注意して下さい。
 
 ```php
 // これは動かない
-Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // エラー
+Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 イベントハンドラをデタッチするためには、[[yii\base\Event::off()|Event::off()]] を呼びます。
@@ -312,10 +318,10 @@ Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // エ�
 
 ```php
 // $handler をデタッチ
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
 
 // DanceEventInterface::EVENT_DANCE の全てのハンドラをデタッチ
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 

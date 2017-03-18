@@ -2,12 +2,12 @@
 /**
  * @author Bennet Klarhoelter <boehsermoe@me.com>
  */
+
 namespace yiiunit\framework\widgets;
+
 use yii\base\Arrayable;
 use yii\base\ArrayableTrait;
-use yii\base\DynamicModel;
-use yii\base\Object;
-use yii\widgets\ActiveForm;
+use yii\base\Model;
 use yii\widgets\DetailView;
 
 /**
@@ -25,11 +25,155 @@ class DetailViewTest extends \yiiunit\TestCase
         $this->mockWebApplication();
     }
 
+    public function testAttributeValue()
+    {
+        $model = new ModelMock();
+        $model->id = 'id';
+
+        $this->detailView = new PublicDetailView([
+            'model' => $model,
+            'template' => '{label}:{value}',
+            'attributes' => [
+                'id',
+                [
+                    'attribute' => 'id',
+                    'value' => 1,
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => '1',
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => $model->getDisplayedId(),
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => function ($model) {
+                        return $model->getDisplayedId();
+                    },
+                ],
+            ],
+        ]);
+
+        $this->assertEquals('Id:id', $this->detailView->renderAttribute($this->detailView->attributes[0], 0));
+        $this->assertEquals('Id:1', $this->detailView->renderAttribute($this->detailView->attributes[1], 1));
+        $this->assertEquals('Id:1', $this->detailView->renderAttribute($this->detailView->attributes[2], 2));
+        $this->assertEquals('Id:Displayed id', $this->detailView->renderAttribute($this->detailView->attributes[3], 3));
+        $this->assertEquals('Id:Displayed id', $this->detailView->renderAttribute($this->detailView->attributes[4], 4));
+        $this->assertEquals(2, $model->getDisplayedIdCallCount());
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13243
+     */
+    public function testUnicodeAttributeNames()
+    {
+        $model = new UnicodeAttributesModelMock();
+        $model->ИдентификаторТовара = 'A00001';
+        $model->το_αναγνωριστικό_του = 'A00002';
+
+        $this->detailView = new PublicDetailView([
+            'model' => $model,
+            'template' => '{label}:{value}',
+            'attributes' => [
+                'ИдентификаторТовара',
+                'το_αναγνωριστικό_του',
+            ],
+        ]);
+
+        $this->assertEquals(
+            'ИдентификаторТовара:A00001',
+            $this->detailView->renderAttribute($this->detailView->attributes[0], 0)
+        );
+        $this->assertEquals(
+            'το αναγνωριστικό του:A00002',
+            $this->detailView->renderAttribute($this->detailView->attributes[1], 1)
+        );
+    }
+
+    public function testAttributeVisible()
+    {
+        $model = new ModelMock();
+        $model->id = 'id';
+
+        $this->detailView = new PublicDetailView([
+            'model' => $model,
+            'template' => '{label}:{value}',
+            'attributes' => [
+                [
+                    'attribute' => 'id',
+                    'value' => $model->getDisplayedId(),
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => $model->getDisplayedId(),
+                    'visible' => false,
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => $model->getDisplayedId(),
+                    'visible' => true,
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => function ($model) {
+                        return $model->getDisplayedId();
+                    },
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => function ($model) {
+                        return $model->getDisplayedId();
+                    },
+                    'visible' => false,
+                ],
+                [
+                    'attribute' => 'id',
+                    'value' => function ($model) {
+                        return $model->getDisplayedId();
+                    },
+                    'visible' => true,
+                ],
+            ],
+        ]);
+
+        $this->assertEquals([
+            0 => [
+                'attribute' => 'id',
+                'format' => 'text',
+                'label' => 'Id',
+                'value' => 'Displayed id',
+            ],
+            2 => [
+                'attribute' => 'id',
+                'format' => 'text',
+                'label' => 'Id',
+                'value' => 'Displayed id',
+                'visible' => true,
+            ],
+            3 => [
+                'attribute' => 'id',
+                'format' => 'text',
+                'label' => 'Id',
+                'value' => 'Displayed id',
+            ],
+            5 => [
+                'attribute' => 'id',
+                'format' => 'text',
+                'label' => 'Id',
+                'value' => 'Displayed id',
+                'visible' => true,
+            ]
+        ], $this->detailView->attributes);
+        $this->assertEquals(5, $model->getDisplayedIdCallCount());
+    }
+
     public function testRelationAttribute()
     {
-        $model = new ObjectMock();
+        $model = new ModelMock();
         $model->id = 'model';
-        $model->related = new ObjectMock();
+        $model->related = new ModelMock();
         $model->related->id = 'related';
 
         $this->detailView = new PublicDetailView([
@@ -105,7 +249,7 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ];
 
-        $model = new ObjectMock();
+        $model = new ModelMock();
         $model->id = 1;
         $model->text = 'I`m an object';
 
@@ -144,6 +288,30 @@ class DetailViewTest extends \yiiunit\TestCase
 
         $this->assertEquals($expectedValue, $this->detailView->attributes);
     }
+
+    public function testOptionsTags()
+    {
+        $expectedValue = '<tr><th tooltip="Tooltip">Text</th><td class="bg-red">I`m an array</td></tr>';
+
+        $this->detailView = new PublicDetailView([
+            'model' => [
+                'text' => 'I`m an array',
+            ],
+            'attributes' => [
+                [
+                    'attribute' => 'text',
+                    'label' => 'Text',
+                    'contentOptions' => ['class' => 'bg-red'],
+                    'captionOptions' => ['tooltip' => 'Tooltip'],
+                ],
+            ],
+        ]);
+
+        foreach ($this->detailView->attributes as $index=>$attribute) {
+            $a = $this->detailView->renderAttribute($attribute, $index);
+            $this->assertEquals($expectedValue, $a);
+        }
+    }
 }
 
 /**
@@ -161,12 +329,13 @@ class ArrayableMock implements Arrayable
 /**
  * Helper Class
  */
-class ObjectMock extends Object
+class ModelMock extends Model
 {
     public $id;
     public $text;
 
     private $_related;
+    private $_displayedIdCallCount = 0;
 
     public function getRelated()
     {
@@ -177,6 +346,35 @@ class ObjectMock extends Object
     {
         $this->_related = $related;
     }
+
+    public function getDisplayedId()
+    {
+        $this->_displayedIdCallCount++;
+
+        return "Displayed $this->id";
+    }
+
+    public function getDisplayedIdCallCount()
+    {
+        return $this->_displayedIdCallCount;
+    }
+}
+
+/**
+ * Used for testing attributes containing non-English characters
+ */
+class UnicodeAttributesModelMock extends Model
+{
+    /**
+     * Product's ID (Russian)
+     * @var mixed
+     */
+    public $ИдентификаторТовара;
+    /**
+     * ID (Greek)
+     * @var mixed
+     */
+    public $το_αναγνωριστικό_του;
 }
 
 class PublicDetailView extends DetailView

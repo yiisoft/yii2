@@ -48,7 +48,19 @@ Yii は次のリレーショナルデータベースに対して、アクティ�
 ## アクティブレコードクラスを宣言する <span id="declaring-ar-classes"></span>
 
 まずは、[[yii\db\ActiveRecord]] を拡張してアクティブレコードクラスを宣言するところから始めましょう。
-すべてのアクティブレコードクラスはデータベーステーブルと関連付けられますので、このクラスの中で [[yii\db\ActiveRecord::tableName()|tableName()]] メソッドをオーバーライドして、どのテーブルにこのクラスが関連付けられるかを指定しなければなりません。
+
+### テーブル名を設定する
+
+デフォルトでは、すべてのアクティブレコードクラスはデータベーステーブルと関連付けられます。
+[[yii\db\ActiveRecord::tableName()|tableName()]] メソッドが、クラス名を [[yii\helpers\Inflector::camel2id()]] によって変換して、テーブル名を返します。
+テーブル名がこの規約に従っていない場合は、このメソッドをオーバライドすることが出来ます。
+
+同時に、デフォルトの [[yii\db\Connection::$tablePrefix|tablePrefix]] を適用することも可能です。
+例えば、[[yii\db\Connection::$tablePrefix|tablePrefix]] が `tbl_` である場合は、`Customer` は `tbl_customer` になり、`OrderItem` は`tbl_order_item` になります。
+
+テーブル名が `{{%TableName}}` という形式で与えられた場合は、パーセント記号 `%` がテーブルプレフィックスに置き換えられます。
+例えば、`{{%post}}` は `{{tbl_post}}` となります。
+テーブル名を囲む二重波括弧は、[テーブル名を囲む引用符号](db-dao.md#quoting-table-and-column-names) となります。
 
 次の例では、`customer` というデータベーステーブルのための `Customer` という名前のアクティブレコードクラスを宣言しています。
 
@@ -67,10 +79,12 @@ class Customer extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'customer';
+        return '{{customer}}';
     }
 }
 ```
+
+### アクティブレコードは「モデル」と呼ばれる
 
 アクティブレコードのインスタンスは [モデル](structure-models.md) であると見なされます。
 この理由により、私たちは通常 `app\models` 名前空間 (あるいはモデルクラスを保管するための他の名前空間) の下にアクティブレコードクラスを置きます。
@@ -354,7 +368,7 @@ public function save($runValidation = true, $attributeNames = null)
 
 [[yii\db\ActiveRecord::save()|save()]] を呼ぶと、デフォルトでは [[yii\db\ActiveRecord::validate()|validate()]] が自動的に呼ばれます。
 検証が通った時だけ、実際にデータが保存されます。
-検証が通らなかった時は単に false が返され、[[yii\db\ActiveRecord::errors|errors]] プロパティをチェックして検証エラーメッセージを取得することが出来ます。
+検証が通らなかった時は単に `false` が返され、[[yii\db\ActiveRecord::errors|errors]] プロパティをチェックして検証エラーメッセージを取得することが出来ます。
 
 > Tip: データが検証を必要としないことが確実である場合 (例えば、データが信頼できるソースに由来するものである場合) は、検証をスキップするために `save(false)` を呼ぶことが出来ます。
 
@@ -429,6 +443,27 @@ $customer->loadDefaultValues();
 ```
 
 
+### 属性の型キャスト <span id="attributes-typecasting"></span>
+
+[[yii\db\ActiveRecord]] は、クエリの結果を投入されるときに、[データベーステーブルスキーマ](db-dao.md#database-schema)
+からの情報を使って、自動的な型キャストを実行します。これによって、整数として宣言されているテーブルカラムから取得されるデータを
+アクティブレコードのインスタンスでも PHP の integer として投入し、
+真偽値として宣言されているデータを boolean として投入することが出来るようになっています。
+しかしながら、型キャストのメカニズムには、いくつかの制約があります。
+
+* 浮動小数点数値は変換されず、文字列として表されます。そうしないと精度が失われるおそれがあるからです。
+* 整数値の変換は、あなたが使っているオペレーティングシステムの整数の大きさに依存します。具体的に言うと、
+  'unsigned integer' または 'big integer' として宣言されたカラムの値は、64-bit オペレーティングシステムでのみ PHP の integer に変換されます。
+  32-bit オペレーティングシステムでは、文字列として表されます。
+
+属性の型キャストは、アクティブレコードのインスタンスにクエリの結果から値を投入するときだけしか実行されないことに注意してください。
+HTTP リクエストから値をロードしたり、プロパティにアクセスして直接に値を設定したりするときには、自動的な変換は行われません。
+また、アクティブレコードのデータ保存のための SQL 文を準備する際にもテーブルスキーマが使用されて、値が正しい型でクエリにバインドされることを保証します。
+しかし、アクティブレコードのインスタンスの属性値は保存の過程において変換されることはありません。
+
+> Tip: アクティブレコードのバリデーションや保存の際の属性型キャストを楽にするために
+[[yii\behaviors\AttributeTypecastBehavior]] を使うことが出来ます。
+
 ### 複数の行を更新する <span id="updating-multiple-rows"></span>
 
 上述のメソッドは、すべて、個別のアクティブレコードインスタンスに対して作用し、個別のテーブル行を挿入したり更新したりするものです。
@@ -500,11 +535,11 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 [[yii\db\ActiveRecord::save()|save()]] を呼んでアクティブレコードインスタンスを挿入または更新する場合は、次のライフサイクルを経ます。
 
 1. [[yii\db\ActiveRecord::beforeValidate()|beforeValidate()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_VALIDATE|EVENT_BEFORE_VALIDATE]] イベントをトリガ。
-   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合、残りのステップはスキップされる。
+   このメソッドが `false` を返すか、[[yii\base\ModelEvent::isValid]] が `false` であった場合、残りのステップはスキップされる。
 2. データ検証を実行。データ検証が失敗した場合、3 より後のステップはスキップされる。
 3. [[yii\db\ActiveRecord::afterValidate()|afterValidate()]]: [[yii\db\ActiveRecord::EVENT_AFTER_VALIDATE|EVENT_AFTER_VALIDATE]] イベントをトリガ。
 4. [[yii\db\ActiveRecord::beforeSave()|beforeSave()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_INSERT|EVENT_BEFORE_INSERT]] または [[yii\db\ActiveRecord::EVENT_BEFORE_UPDATE|EVENT_BEFORE_UPDATE]] イベントをトリガ。
-   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合、残りのステップはスキップされる。
+   このメソッドが `false` を返すか、[[yii\base\ModelEvent::isValid]] が `false` であった場合、残りのステップはスキップされる。
 5. 実際のデータの挿入または更新を実行。
 6. [[yii\db\ActiveRecord::afterSave()|afterSave()]]: [[yii\db\ActiveRecord::EVENT_AFTER_INSERT|EVENT_AFTER_INSERT]] または [[yii\db\ActiveRecord::EVENT_AFTER_UPDATE|EVENT_AFTER_UPDATE]] イベントをトリガ。
    
@@ -514,7 +549,7 @@ Customer::deleteAll(['status' => Customer::STATUS_INACTIVE]);
 [[yii\db\ActiveRecord::delete()|delete()]] を呼んでアクティブレコードインスタンスを削除する際は、次のライフサイクルを経ます。
 
 1. [[yii\db\ActiveRecord::beforeDelete()|beforeDelete()]]: [[yii\db\ActiveRecord::EVENT_BEFORE_DELETE|EVENT_BEFORE_DELETE]] イベントをトリガ。
-   このメソッドが false を返すか、[[yii\base\ModelEvent::isValid]] が false であった場合は、残りのステップはスキップされる。
+   このメソッドが `false` を返すか、[[yii\base\ModelEvent::isValid]] が `false` であった場合は、残りのステップはスキップされる。
 2. 実際のデータの削除を実行。
 3. [[yii\db\ActiveRecord::afterDelete()|afterDelete()]]: [[yii\db\ActiveRecord::EVENT_AFTER_DELETE|EVENT_AFTER_DELETE]] イベントをトリガ。
 
@@ -559,8 +594,16 @@ try {
 } catch(\Exception $e) {
     $transaction->rollBack();
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
+    throw $e;
 }
 ```
+
+> Note: 上記のコードでは、PHP 5.x と PHP 7.x との互換性のために、二つの
+> catch ブロックを持っています。`\Exception` は PHP 7.0 以降では、
+> [`\Throwable` インターフェイス](http://php.net/manual/ja/class.throwable.php) を実装しています。
+> 従って、あなたのアプリケーションが PHP 7.0 以上しか使わない場合は、`\Exception` の部分を省略することが出来ます。
 
 第二の方法は、トランザクションのサポートが必要な DB 操作を [[yii\db\ActiveRecord::transactions()]] メソッドに列挙するという方法です。
 
@@ -718,7 +761,7 @@ $orders = $customer->orders;
   名前は大文字と小文字を区別することに注意してください。
 
 リレーションが [[yii\db\ActiveRecord::hasMany()|hasMany()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスの配列が返されます。
-リレーションが [[yii\db\ActiveRecord::hasOne()|hasOne()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスか、関連付けられたデータが見つからないときは null が返されます。
+リレーションが [[yii\db\ActiveRecord::hasOne()|hasOne()]] によって宣言されている場合は、このリレーションプロパティにアクセスすると、関連付けられたアクティブレコードインスタンスか、関連付けられたデータが見つからないときは `null` が返されます。
 
 リレーションプロパティに最初にアクセスしたときは、上記の例で示されているように、SQL 文が実行されます。
 その同じプロパティに再びアクセスしたときは、SQL 文を再実行することなく、以前の結果が返されます。
@@ -944,7 +987,7 @@ $customers = Customer::find()->with([
 >
 > ```php
 > $orders = Order::find()->select(['id', 'amount'])->with('customer')->all();
-> // この場合、$orders[0]->customer は常に null になります。
+> // この場合、$orders[0]->customer は常に `null` になります。
 > // 問題を修正するためには、次のようにしなければなりません。
 > $orders = Order::find()->select(['id', 'amount', 'customer_id'])->with('customer')->all();
 > ```
@@ -992,7 +1035,7 @@ $customers = Customer::find()
 指定したい結合タイプが `INNER JOIN` である場合は、代りに、[[yii\db\ActiveQuery::innerJoinWith()|innerJoinWith()]] を呼ぶだけで済ませることが出来ます。
 
 デフォルトでは、[[yii\db\ActiveQuery::joinWith()|joinWith()]] を呼ぶと、リレーションのデータが [イーガーロード](#lazy-eager-loading) されます。
-リレーションのデータを読み取りたくない場合は、第二のパラメータ `$eagerLoading` を false に指定することが出来ます。
+リレーションのデータを読み取りたくない場合は、第二のパラメータ `$eagerLoading` を `false` に指定することが出来ます。
 
 [[yii\db\ActiveQuery::with()|with()]] と同じように、一つまたは複数のリレーションを結合したり、リレーションクエリをその場でカスタマイズしたり、ネストされたリレーションを結合したりすることが出来ます。
 また、[[yii\db\ActiveQuery::with()|with()]] と [[yii\db\ActiveQuery::joinWith()|joinWith()]] を混ぜて使用することも出来ます。
@@ -1050,6 +1093,17 @@ $query->joinWith([
 ```php
 // orders リレーションを JOIN し、結果を orders.id でソートする
 $query->joinWith(['orders o'])->orderBy('o.id');
+```
+
+上記の文法が動作するのは単純なリレーションの場合です。ネストされたリレーションを結合する
+(例えば、`$query->joinWith(['orders.product'])` ) ときに、中間テーブルのエイリアスが必要になった場合は、
+次の例のように、joinWith の呼び出しをネストさせる必要があります。
+
+```php
+$query->joinWith(['orders o' => function($q) {
+        $q->joinWith('product p');
+    }])
+    ->where('o.amount > 100');
 ```
 
 ### 逆リレーション <span id="inverse-relations"></span>
@@ -1172,10 +1226,10 @@ $customer = Customer::find()->with('orders')->where(['id' => 123])->one();
 $customer->unlink('orders', $customer->orders[0]);
 ```
 
-デフォルトでは、[[yii\db\ActiveRecord::unlink()|unlink()]] メソッドは、既存のリレーションを指定している外部キーの値を null に設定します。
-ただし、`$delete` パラメータを true にしてメソッドに渡して、その外部キーを含むテーブル行を削除するという方法を選ぶことも出来ます。
+デフォルトでは、[[yii\db\ActiveRecord::unlink()|unlink()]] メソッドは、既存のリレーションを指定している外部キーの値を `null` に設定します。
+ただし、`$delete` パラメータを `true` にしてメソッドに渡して、その外部キーを含むテーブル行を削除するという方法を選ぶことも出来ます。
 
-リレーションに中間テーブルが含まれている場合は、[[yii\db\ActiveRecord::unlink()|unlink()]] を呼ぶと、中間テーブルにある外部キーがクリアされるか、または、`$delete` が true であるときは、中間テーブルにある対応する行が削除されるかします。
+リレーションに中間テーブルが含まれている場合は、[[yii\db\ActiveRecord::unlink()|unlink()]] を呼ぶと、中間テーブルにある外部キーがクリアされるか、または、`$delete` が `true` であるときは、中間テーブルにある対応する行が削除されるかします。
 
 
 ## DBMS 間のリレーション <span id="cross-database-relations"></span> 
@@ -1233,10 +1287,10 @@ $customers = Customer::find()->with('comments')->all();
 例えば、
  
 ```php
+// file Comment.php
 namespace app\models;
 
 use yii\db\ActiveRecord;
-use yii\db\ActiveQuery;
 
 class Comment extends ActiveRecord
 {
@@ -1245,38 +1299,51 @@ class Comment extends ActiveRecord
         return new CommentQuery(get_called_class());
     }
 }
-
-class CommentQuery extends ActiveQuery
-{
-    // ...
-}
 ```
 
-このようにすると、`Comment` のクエリを実行したり (例えば `find()` や `findOne()` を呼んだり) リレーションを定義したり (例えば `hasOne()` を定義したり) する際には、いつでも、`AcctiveQuery` の代りに `CommentQuery` のインスタンスを使用することになります。
+このようにすると、`Comment` のクエリを実行したり (例えば `find()` や `findOne()` を呼んだり)、`Comment` とのリレーションを定義したり (例えば `hasOne()` を定義したり) する際には、いつでも、`AcctiveQuery` の代りに `CommentQuery` のインスタンスを使用することになります。
 
-> Tip: 大きなプロジェクトでは、アクティブレコードクラスをクリーンに保つことが出来るように、クエリ関連のコードのほとんどをカスタマイズされたクエリクラスに保持することが推奨されます。
-
-クエリクラスは、さまざまのクリエイティブな方法によってカスタマイズして、あなたのクエリ構築の体験を向上させることが出来ます。
-例えば、カスタマイズされたクエリクラスにおいて、新しいクエリ構築メソッドを定義することが出来ます。
+さて、`CommentQuery` クラスを定義しなければならない訳ですが、このクラスをさまざまな創造的方法でカスタマイズして、
+あなたのクエリ構築作業を楽しいものにすることが出来ます。例えば、
 
 ```php
+// file CommentQuery.php
+namespace app\models;
+
+use yii\db\ActiveQuery;
+
 class CommentQuery extends ActiveQuery
 {
+    // デフォルトで条件を追加 (省略可)
+    public function init()
+    {
+        $this->andOnCondition(['deleted' => false]);
+        parent::init();
+    }
+
+    // ... ここにカスタマイズしたクエリメソッドを追加 ...
+
     public function active($state = true)
     {
-        return $this->andWhere(['active' => $state]);
+        return $this->andOnCondition(['active' => $state]);
     }
 }
 ```
 
-> Note: 新しいクエリ構築メソッドを定義する場合は、通常は、既存の条件が上書きされないように、[[yii\db\ActiveQuery::where()|where()]] ではなく、[[yii\db\ActiveQuery::andWhere()|andWhere()]] または [[yii\db\ActiveQuery::orWhere()|orWhere()]] を呼んで条件を追加しなければなりません。
+> Note: 新しいクエリ構築メソッドを定義するときには、通常は、既存のどの条件も上書きしないように、
+[[yii\db\ActiveQuery::onCondition()|onCondition()]] ではなく、
+[[yii\db\ActiveQuery::andOnCondition()|andOnCondition()]] または [[yii\db\ActiveQuery::orOnCondition()|orOnCondition()]]
+を呼んで条件を追加しなければなりません。
 
-このようにすると、次のようにクエリ構築のコードを書くことが出来るようになります。
- 
+このようにすると、次のようなクエリ構築のコードを書くことが出来るようになります。
+
 ```php
 $comments = Comment::find()->active()->all();
 $inactiveComments = Comment::find()->active(false)->all();
 ```
+
+
+> Tip: 大きなプロジェクトでは、アクティブレコードクラスをクリーンに保つことが出来るように、クエリ関連のコードのほとんどをカスタマイズされたクエリクラスに保持することが推奨されます。
 
 この新しいクエリ構築メソッドは、`Comment` に関するリレーションを定義するときや、リレーショナルクエリを実行するときにも使用することが出来ます。
 
@@ -1292,7 +1359,14 @@ class Customer extends \yii\db\ActiveRecord
 $customers = Customer::find()->with('activeComments')->all();
 
 // あるいは、また
- 
+class Customer extends \yii\db\ActiveRecord
+{
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['customer_id' => 'id']);
+    }
+}
+
 $customers = Customer::find()->with([
     'comments' => function($q) {
         $q->active();
@@ -1310,12 +1384,12 @@ $customers = Customer::find()->with([
 アクティブレコードのインスタンスにクエリ結果からデータが投入されるときは、受け取ったデータセットのカラムの値が対応する属性に入れられます。
 
 クエリ結果から追加のカラムや値を取得して、アクティブレコードの内部に格納することが出来ます。
-例えば、ホテルの客室の情報を含む 'room' という名前のテーブルがあるとしましょう。
-そして、全ての客室のデータは 'length' (長さ)、'width' (幅)、'height' (高さ) というフィールドを使って、部屋の幾何学的なサイズに関する情報を格納しているとします。
+例えば、ホテルの客室の情報を含む `room` という名前のテーブルがあるとしましょう。
+そして、全ての客室のデータは `length` (長さ)、`width` (幅)、`height` (高さ) というフィールドを使って、部屋の幾何学的なサイズに関する情報を格納しているとします。
 空いている全ての部屋の一覧を容積の降順で取得する必要がある場合を考えて見てください。
 レコードをその値で並べ替える必要があるので、PHP を使って容積を計算することは出来ません。
-しかし、同時に、一覧には 'volume' (容積) も表示したいでしょう。
-目的を達するためには、'Room' アクティブレコードクラスにおいて追加のフィールドを宣言し、'volume' の値を格納する必要があります。
+しかし、同時に、一覧には `volume` (容積) も表示したいでしょう。
+目的を達するためには、`Room` アクティブレコードクラスにおいて追加のフィールドを宣言し、`volume` の値を格納する必要があります。
 
 ```php
 class Room extends \yii\db\ActiveRecord
@@ -1332,7 +1406,7 @@ class Room extends \yii\db\ActiveRecord
 $rooms = Room::find()
     ->select([
         '{{room}}.*', // 全てのカラムを選択
-        '([[length]] * [[width]].* [[height]]) AS volume', // 容積を計算
+        '([[length]] * [[width]] * [[height]]) AS volume', // 容積を計算
     ])
     ->orderBy('volume DESC') // 並べ替えを適用
     ->all();
@@ -1344,7 +1418,7 @@ foreach ($rooms as $room) {
 
 追加のフィールドが選択できることは、集計クエリに対して特に有効に機能します。
 注文の数とともに顧客の一覧を表示する必要がある場合を想定してください。
-まず初めに、`Customer` クラスの中で、'orders' リレーションと、注文数を格納するための追加のフィールドを宣言しなければなりません。
+まず初めに、`Customer` クラスの中で、`orders` リレーションと、注文数を格納するための追加のフィールドを宣言しなければなりません。
 
 ```php
 class Customer extends \yii\db\ActiveRecord
@@ -1374,7 +1448,8 @@ $customers = Customer::find()
 ```
 
 この方法を使うことの短所の一つは、情報が SQL クエリでロードされていない場合には、それを別途計算しなければならない、ということです。
-このことは、また、新しく保存したレコードも追加のフィールドについては情報を持っていないことになることを意味します。
+従って、追加のセレクト文を持たない通常のクエリによって特定のレコードを読み出した場合には、追加のフィールドの実際の値を返すことは不可能になります。
+同じことが新しく保存されたレコードでも起こります。
 
 ```php
 $room = new Room();
@@ -1382,7 +1457,7 @@ $room->length = 100;
 $room->width = 50;
 $room->height = 2;
 
-$room->volume; // まだ指定されていないため、この値は null になります。
+$room->volume; // まだ指定されていないため、この値は `null` になります。
 ```
 
 [[yii\db\BaseActiveRecord::__get()|__get()]] と [[yii\db\BaseActiveRecord::__set()|__set()]] のマジックメソッドを使用すれば、プロパティの動作をエミュレートすることが出来ます。
@@ -1418,18 +1493,18 @@ class Room extends \yii\db\ActiveRecord
 
 このようにすると、SELECT クエリによって容積が提供されていない場合に、モデルの他の属性を使って容積を自動的に計算することが出来ます。
 
-この手法は、リレーショナルデータに依存する追加のフィールドに対しても、同じように使用する事が出来ます。
+集約フィールドも、同じように、定義されたリレーションを使って計算することが出来ます。
 
 ```php
 class Customer extends \yii\db\ActiveRecord
 {
     private $_ordersCount;
-    
+
     public function setOrdersCount($count)
     {
         $this->_ordersCount = (int) $count;
     }
-    
+
     public function getOrdersCount()
     {
         if ($this->isNewRecord) {
@@ -1437,7 +1512,7 @@ class Customer extends \yii\db\ActiveRecord
         }
         
         if ($this->_ordersCount === null) {
-            $this->setOrdersCount(count($this->orders));
+            $this->setOrdersCount(count($this->orders)); // 要求に応じてリレーションから集約を計算
         }
 
         return $this->_ordersCount;
@@ -1450,4 +1525,55 @@ class Customer extends \yii\db\ActiveRecord
         return $this->hasMany(Order::className(), ['customer_id' => 'id']);
     }
 }
+```
+
+このコードでは、'ordersCount' が 'select' 文に存在する場合は、`Customer::ordersCount` はクエリの結果によって投入されます。
+そうでない場合は、要求に応じて、`Customer::orders` リレーションを使って計算されます。
+
+マジックメソッドによってプロパティをエミュレートする手法は、ある種のリレーショナルデータ、特に集約のショートカットを作成するためにも使用することが出来ます。
+例えば、
+
+```php
+class Customer extends \yii\db\ActiveRecord
+{
+    /**
+     * 読み出し専用の集約データの仮想プロパティを定義
+     */
+    public function getOrdersCount()
+    {
+        if ($this->isNewRecord) {
+            return null; // プライマリキーが null の場合のリレーショナルクエリを防止
+        }
+        
+        return empty($this->ordersAggregation) ? 0 : $this->ordersAggregation[0]['counted'];
+    }
+
+    /**
+     * 通常の 'orders' リレーションを宣言
+     */
+    public function getOrders()
+    {
+        return $this->hasMany(Order::className(), ['customer_id' => 'id']);
+    }
+
+    /**
+     * 集約データを提供する新しいリレーションを 'orders' を元にして宣言
+     */
+    public function getOrdersAggregation()
+    {
+        return $this->getOrders()
+            ->select(['customer_id', 'counted' => 'count(*)'])
+            ->groupBy('customer_id')
+            ->asArray(true);
+    }
+
+    // ...
+}
+
+foreach (Customer::find()->with('ordersAggregation')->all() as $customer) {
+    echo $customer->ordersCount; // イーガーローディングにより、追加のクエリなしに、リレーションから集約データを出力
+}
+
+$customer = Customer::findOne($pk);
+$customer->ordersCount; // レイジーロードされたリレーションから集約データを出力
 ```

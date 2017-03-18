@@ -100,7 +100,15 @@
          *  - jqXHR: a jqXHR object
          *  - textStatus: the status of the request ("success", "notmodified", "error", "timeout", "abort", or "parsererror").
          */
-        ajaxComplete: 'ajaxComplete'
+        ajaxComplete: 'ajaxComplete',
+        /**
+         * afterInit event is triggered after yii activeForm init.
+         * The signature of the event handler should be:
+         *     function (event)
+         * where
+         *  - event: an Event object.
+         */
+        afterInit: 'afterInit'
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveForm::getClientOptions() as well
@@ -124,7 +132,9 @@
         // the URL for performing AJAX-based validation. If not set, it will use the the form's action
         validationUrl: undefined,
         // whether to scroll to first visible error after validation.
-        scrollToError: true
+        scrollToError: true,
+        // offset in pixels that should be added when scrolling to the first error.
+        scrollToErrorOffset: 0
     };
 
     // NOTE: If you change any of these defaults, make sure you update yii\widgets\ActiveField::getClientOptions() as well
@@ -158,7 +168,9 @@
         // whether the validation is cancelled by beforeValidateAttribute event handler
         cancelled: false,
         // the value of the input
-        value: undefined
+        value: undefined,
+        // whether to update aria-invalid attribute after validation
+        updateAriaInvalid: true
     };
 
 
@@ -202,7 +214,7 @@
                     attributes: attributes,
                     submitting: false,
                     validated: false,
-                    target: $form.attr('target')
+                    options: getFormOptions($form)
                 });
 
                 /**
@@ -217,6 +229,8 @@
                     });
                     $form.on('submit.yiiActiveForm', methods.submitForm);
                 }
+                var event = $.Event(events.afterInit);
+                $form.trigger(event);
             });
         },
 
@@ -282,17 +296,22 @@
         },
 
         // validate all applicable inputs in the form
-        validate: function () {
+        validate: function (forceValidate) {
+            if (forceValidate) {
+                $(this).data('yiiActiveForm').submitting = true;
+            }
+
             var $form = $(this),
                 data = $form.data('yiiActiveForm'),
                 needAjaxValidation = false,
                 messages = {},
                 deferreds = deferredArray(),
-                submitting = data.submitting;
+                submitting = data.submitting && !forceValidate;
 
-            if (submitting) {
+            if (data.submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
+
                 if (event.result === false) {
                     data.submitting = false;
                     submitFinalize($form);
@@ -302,6 +321,7 @@
 
             // client-side validation
             $.each(data.attributes, function () {
+                this.$form = $form;
                 if (!$(this.input).is(":disabled")) {
                     this.cancelled = false;
                     // perform validation only if the form is being submitted or if an attribute is pending validation
@@ -335,7 +355,7 @@
                         delete messages[i];
                     }
                 }
-                if ($.isEmptyObject(messages) && needAjaxValidation) {
+                if (needAjaxValidation && ($.isEmptyObject(messages) || data.submitting)) {
                     var $button = data.submitObject,
                         extData = '&' + data.settings.ajaxParam + '=' + $form.attr('id');
                     if ($button && $button.length && $button.attr('name')) {
@@ -542,6 +562,47 @@
         return array;
     };
 
+    var buttonOptions = ['action', 'target', 'method', 'enctype'];
+
+    /**
+     * Returns current form options
+     * @param $form
+     * @returns object Object with button of form options
+     */
+    var getFormOptions = function ($form) {
+        var attributes = {};
+        for (var i = 0; i < buttonOptions.length; i++) {
+            attributes[buttonOptions[i]] = $form.attr(buttonOptions[i]);
+        }
+        return attributes;
+    };
+
+    /**
+     * Applies temporary form options related to submit button
+     * @param $form the form jQuery object
+     * @param $button the button jQuery object
+     */
+    var applyButtonOptions = function ($form, $button) {
+        for (var i = 0; i < buttonOptions.length; i++) {
+            var value = $button.attr('form' + buttonOptions[i]);
+            if (value) {
+                $form.attr(buttonOptions[i], value);
+            }
+        }
+    };
+
+    /**
+     * Restores original form options
+     * @param $form the form jQuery object
+     */
+    var restoreButtonOptions = function ($form) {
+        var data = $form.data('yiiActiveForm');
+
+        for (var i = 0; i < buttonOptions.length; i++) {
+            $form.attr(buttonOptions[i], data.options[buttonOptions[i]] || null);
+        }
+    };
+
     /**
      * Updates the error messages and the input containers for all applicable attributes
      * @param $form the form jQuery object
@@ -550,6 +611,10 @@
      */
     var updateInputs = function ($form, messages, submitting) {
         var data = $form.data('yiiActiveForm');
+
+        if (data === undefined) {
+            return false;
+        }
 
         if (submitting) {
             var errorAttributes = [];
@@ -567,7 +632,12 @@
                 if (data.settings.scrollToError) {
                     var top = $form.find($.map(errorAttributes, function(attribute) {
                         return attribute.input;
-                    }).join(',')).first().closest(':visible').offset().top;
+                    }).join(',')).first().closest(':visible').offset().top - data.settings.scrollToErrorOffset;
+                    if (top < 0) {
+                        top = 0;
+                    } else if (top > $(document).height()) {
+                        top = $(document).height();
+                    }
                     var wtop = $(window).scrollTop();
                     if (top < wtop || top > wtop + $(window).height()) {
                         $(window).scrollTop(top);
@@ -576,14 +646,13 @@
                 data.submitting = false;
             } else {
                 data.validated = true;
-                var buttonTarget = data.submitObject ? data.submitObject.attr('formtarget') : null;
-                if (buttonTarget) {
-                    // set target attribute to form tag before submit
-                    $form.attr('target', buttonTarget);
+                if (data.submitObject) {
+                    applyButtonOptions($form, data.submitObject);
                 }
                 $form.submit();
-                // restore original target attribute value
-                $form.attr('target', data.target);
+                if (data.submitObject) {
+                    restoreButtonOptions($form);
+                }
             }
         } else {
             $.each(data.attributes, function () {
@@ -640,6 +709,7 @@
             hasError = messages[attribute.id].length > 0;
             var $container = $form.find(attribute.container);
             var $error = $container.find(attribute.error);
+            updateAriaInvalid($form, attribute, hasError);
             if (hasError) {
                 if (attribute.encodeError) {
                     $error.text(messages[attribute.id][0]);
@@ -708,4 +778,9 @@
         }
     };
 
+    var updateAriaInvalid = function ($form, attribute, hasError) {
+        if (attribute.updateAriaInvalid) {
+            $form.find(attribute.input).attr('aria-invalid', hasError ? 'true' : 'false');
+        }
+    }
 })(window.jQuery);

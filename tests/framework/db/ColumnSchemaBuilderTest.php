@@ -1,32 +1,22 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
 
 namespace yiiunit\framework\db;
 
-
 use yii\db\ColumnSchemaBuilder;
-use yii\db\Exception;
 use yii\db\Expression;
 use yii\db\Schema;
 use yiiunit\TestCase;
 
-/**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder
- */
-class ColumnSchemaBuilderTest extends TestCase
+abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
 {
     /**
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @return ColumnSchemaBuilder
      */
     public function getColumnSchemaBuilder($type, $length = null)
     {
-        return new ColumnSchemaBuilder($type, $length);
+        return new ColumnSchemaBuilder($type, $length, $this->getConnection());
     }
 
     /**
@@ -35,8 +25,8 @@ class ColumnSchemaBuilderTest extends TestCase
     public function typesProvider()
     {
         return [
-            ['integer', Schema::TYPE_INTEGER, null, [
-                ['unsigned'],
+            ['integer NULL DEFAULT NULL', Schema::TYPE_INTEGER, null, [
+                ['unsigned'], ['null'],
             ]],
             ['integer(10)', Schema::TYPE_INTEGER, 10, [
                 ['unsigned'],
@@ -46,6 +36,9 @@ class ColumnSchemaBuilderTest extends TestCase
             ]],
             ['timestamp() WITH TIME ZONE DEFAULT NOW()', 'timestamp() WITH TIME ZONE', null, [
                 ['defaultValue', new Expression('NOW()')]
+            ]],
+            ['integer(10)', Schema::TYPE_INTEGER, 10, [
+                ['comment', 'test']
             ]],
         ];
     }
@@ -61,7 +54,7 @@ class ColumnSchemaBuilderTest extends TestCase
     /**
      * @param string $expected
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @param array $calls
      */
     public function checkBuildString($expected, $type, $length, $calls)

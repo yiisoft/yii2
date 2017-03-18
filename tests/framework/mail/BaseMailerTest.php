@@ -285,7 +285,7 @@ TEXT
         $this->assertTrue($mailer->send($message));
         $file = Yii::getAlias($mailer->fileTransportPath) . '/message.txt';
         $this->assertTrue(is_file($file));
-        $this->assertEquals($message->toString(), file_get_contents($file));
+        $this->assertStringEqualsFile($file, $message->toString());
     }
 
     public function testBeforeSendEvent()
