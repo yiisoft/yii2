@@ -62,7 +62,7 @@ class ImageExtentionModelTest extends TestCase
             ->willReturn([]);
 
 
-        $this->setExpectedException(InvalidConfigException::class);
+        $this->setExpectedException('yii\base\InvalidConfigException');
 
         $imageModel->getImageExtension();
     }
