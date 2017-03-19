@@ -15,7 +15,7 @@ class ImageExtentionModel extends Object
     const GD = 'gd';
 
     /**
-     * Returned used
+     * Returned used image module.
      * @return string
      * @throws InvalidConfigException
      */
