@@ -5,12 +5,20 @@ namespace yii\captcha;
 use yii\base\InvalidConfigException;
 use yii\base\Object;
 
+/**
+ * Image library name for generate captcha.
+ */
 class ImageExtentionModel extends Object
 {
     const IMAGICK = 'imagick';
     
     const GD = 'gd';
 
+    /**
+     * Returned used
+     * @return string
+     * @throws InvalidConfigException
+     */
     public function getImageExtension()
     {
         $extensions = $this->getLoadedExtensions();
@@ -27,6 +35,7 @@ class ImageExtentionModel extends Object
     }
 
     /**
+     * Is supported png in Imagick.
      * @return bool
      */
     protected function existsPNGImagickFormats()
@@ -37,6 +46,7 @@ class ImageExtentionModel extends Object
     }
 
     /**
+     * Is supported FreeType in GD.
      * @return bool
      */
     protected function isFreeTypeSupportGD()

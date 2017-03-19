@@ -4,7 +4,6 @@ namespace yii\captcha;
 
 use yiiunit\TestCase;
 use yii\captcha\ImageExtentionModel;
-use yii\base\InvalidConfigException;
 
 class ImageExtentionModelTest extends TestCase
 {
@@ -32,6 +31,23 @@ class ImageExtentionModelTest extends TestCase
         $this->assertEquals(ImageExtentionModel::IMAGICK, $extension);
     }
 
+    public function testGetImageExtensionAvaibleImagickNotSupportenPNGGenerateInvalidConfigException()
+    {
+        $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
+            ->setMethods(['getLoadedExtensions', 'existsPNGImagickFormats'])
+            ->getMock();
+        $imageModel->expects($this->any())
+            ->method('getLoadedExtensions')
+            ->willReturn([ImageExtentionModel::IMAGICK]);
+        $imageModel->expects($this->any())
+            ->method('existsPNGImagickFormats')
+            ->willReturn(false);
+
+        $this->setExpectedException('yii\base\InvalidConfigException');
+
+        $imageModel->getImageExtension();
+    }
+
     public function testGetImageExtensionReturnGD()
     {
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
@@ -51,6 +67,23 @@ class ImageExtentionModelTest extends TestCase
         $this->assertEquals(ImageExtentionModel::GD, $extension);
     }
 
+    public function testGetImageExtensionAvaibleGDNotSupportedFreeTypeGenerateInvalidConfigException()
+    {
+        $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
+            ->setMethods(['getLoadedExtensions', 'isFreeTypeSupportGD'])
+            ->getMock();
+        $imageModel->expects($this->any())
+            ->method('getLoadedExtensions')
+            ->willReturn([ImageExtentionModel::GD]);
+        $imageModel->expects($this->any())
+            ->method('isFreeTypeSupportGD')
+            ->willReturn(false);
+
+        $this->setExpectedException('yii\base\InvalidConfigException');
+
+        $imageModel->getImageExtension();
+    }
+
     public function testGetImageExtensionGenerateInvalidConfigException()
     {
         $imageModel = $this->getMockBuilder(ImageExtentionModel::className())
@@ -60,7 +93,6 @@ class ImageExtentionModelTest extends TestCase
         $imageModel->expects($this->any())
             ->method('getLoadedExtensions')
             ->willReturn([]);
-
 
         $this->setExpectedException('yii\base\InvalidConfigException');
 
