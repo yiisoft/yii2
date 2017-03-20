@@ -166,8 +166,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
 
-
-
-
-
+    /**
+     * Asserts that value is one of expected values
+     *
+     * @param mixed $actual
+     * @param array $expected
+     * @param string $message
+     */
+    public function assertIsOneOf($actual, array $expected, $message = '')
+    {
+        self::assertThat($actual, new IsOneOfAssert($expected), $message);
+    }
 }

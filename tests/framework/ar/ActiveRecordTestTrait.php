@@ -732,7 +732,7 @@ trait ActiveRecordTestTrait
         $this->assertCount(1, $customer->ordersWithNullFK);
         $orderWithNullFK = $orderWithNullFKClass::findOne(3);
 
-        $this->assertEquals(3,$orderWithNullFK->id);
+        $this->assertEquals(3, $orderWithNullFK->id);
         $this->assertNull($orderWithNullFK->customer_id);
 
         // has many with delete

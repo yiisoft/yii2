@@ -44,9 +44,14 @@ Yii Framework 2 Change Log
 - Bug #13670: Fixed alias option from console when it includes `-` or `_` in option name (pana1990)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 - Enh #13695: `\yii\web\Response::setStatusCode()` method now returns the Response object itself (kyle-mccarthy)
+- Bug #13707: Fixed `\yii\web\ErrorHandler` and `\yii\web\ErrorAction` not setting correct response code to response object before rendering error view (samdark)
 - Enh #13698: `yii\grid\DataColumn` filter is automatically generated as dropdown list in case of `format` set to `boolean` (bizley)
 - Enh #13254: Core validators no longer require Yii::$app to be set (sammousa)
-
+- Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
+- Bug #10372: Fixed console controller including complex typed arguments in help (sammousa)
+- Bug #13738: Fixed `getQueryParams()` method in `yii.js` to correctly parse URL with question mark and no query parameters (vladdnepr)
+- Bug #13776: Fixed setting precision and scale for decimal columns in MSSQL (arturf)
+- Bug #13704: Fixed `yii\validators\UniqueValidator` to prefix attribute name with model's database table name (vladis84)
 
 2.0.11.2 February 08, 2017
 --------------------------

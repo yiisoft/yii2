@@ -1077,7 +1077,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(5, $itemClass::find()->count());
         $order->unlinkAll('booksWithNullFKViaTable', false);        
         $this->assertCount(0, $order->booksWithNullFKViaTable);
-        $this->assertEquals(2,$orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
+        $this->assertEquals(2, $orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
         $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());
         $this->assertEquals(5, $itemClass::find()->count());
     }
