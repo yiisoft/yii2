@@ -57,11 +57,10 @@ Upgrade from Yii 2.0.x
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
 
-* During mail view rendering `$message` variable is no longer set by default to be an instance of `yii\mail\MessageInterface`,
-  it will be available via `$this->context->message` expression instead.
+* During mail view rendering the `$message` variable is no longer set by default to be an instance of `yii\mail\MessageInterface`. Instead it is available via `$this->context->message` expression.
 
-* Method `yii\mail\BaseMailer::render()` has been removed. Make sure you do not use it anywhere in your program.
-  Mail view rendering now is encapsulated into `yii\mail\Template` class.
+* `yii\mail\BaseMailer::render()` method has been removed. Make sure you do not use it anywhere in your program.
+  Mail view rendering is now encapsulated into `yii\mail\Template` class.
 
 
 Upgrade from Yii 2.0.11
