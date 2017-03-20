@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.1.0 under development
 -----------------------
 
+- Enh #9260: Mail view rendering encapsulated into `yii\mail\Template` class allowing rendering in isolation and access to `yii\mail\MessageInterface` instance via `$this->context->message` inside the view (klimov-paul)
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12385: Methods `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()` have been added to `yii\i18n\MessageInterface` allowing setup of custom message headers (klimov-paul)
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
