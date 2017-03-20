@@ -182,7 +182,7 @@ class QueryBuilder extends \yii\base\Object
     protected function prepareInsertSelectSubQuery($columns, $schema)
     {
         if (!is_array($columns->select) || empty($columns->select) || in_array('*', $columns->select)) {
-            throw new InvalidParamException('Expected select query object with enumerated (named) parameters');
+            throw new InvalidArgumentException('Expected select query object with enumerated (named) parameters');
         }
 
         list ($values, ) = $this->build($columns);
