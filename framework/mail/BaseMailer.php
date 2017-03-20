@@ -180,7 +180,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             return $message;
         }
 
-        $this->createTemplate($message)->compose($view, $params);
+        $this->createTemplate($view)->compose($message, $params);
 
         return $message;
     }
@@ -205,12 +205,12 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     /**
      * Creates new message view template.
      * The newly created instance will be initialized with the configuration specified by [[templateConfig]].
-     * @param MessageInterface $message mail message instance.
+     * @param string|array $viewName view name for the template.
      * @return Template message template instance.
      * @throws InvalidConfigException
      * @since 2.1
      */
-    protected function createTemplate($message)
+    protected function createTemplate($viewName)
     {
         $config = $this->templateConfig;
         if (!array_key_exists('class', $config)) {
@@ -223,7 +223,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         $config['viewPath'] = $this->getViewPath();
         $config['htmlLayout'] = $this->htmlLayout;
         $config['textLayout'] = $this->textLayout;
-        $config['message'] = $message;
+        $config['viewName'] = $viewName;
 
         return Yii::createObject($config);
     }
