@@ -236,7 +236,7 @@ class Request extends \yii\base\Request
     {
         $host = $this->getUserHost();
         // Don't use getUserIP here since that depends on using headers.
-        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        $ip = $this->getUserIP(false);
         foreach($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
             if (!is_array($trustedHeaders)) {
                 $hostRegex = $trustedHeaders;
@@ -300,7 +300,7 @@ class Request extends \yii\base\Request
             return strtoupper($_POST[$this->methodParam]);
         }
 
-        if ($this->headers->get('X-Http-Method-Override') !== null) {
+        if ($this->headers->has('X-Http-Method-Override')) {
             return strtoupper($this->headers->get('X-Http-Method-Override'));
         }
 
@@ -393,7 +393,7 @@ class Request extends \yii\base\Request
      */
     public function getIsPjax()
     {
-        return $this->getIsAjax() && $this->headers->get('X-Pjax') !== null;
+        return $this->getIsAjax() && $this->headers->has('X-Pjax');
     }
 
     /**
@@ -622,7 +622,7 @@ class Request extends \yii\base\Request
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if ($this->headers->get('Host') !== null) {
+            if ($this->headers->has('Host')) {
                 $this->_hostInfo = $http . '://' . $this->headers->get('Host');
             } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
@@ -902,7 +902,7 @@ class Request extends \yii\base\Request
      */
     protected function resolveRequestUri()
     {
-        if ($this->headers->get('X-Rewrite-Url') !== null) { // IIS
+        if ($this->headers->has('X-Rewrite-Url')) { // IIS
             $requestUri = $this->headers->get('X-Rewrite-Url');
         } elseif (isset($_SERVER['REQUEST_URI'])) {
             $requestUri = $_SERVER['REQUEST_URI'];
@@ -965,7 +965,7 @@ class Request extends \yii\base\Request
      */
     public function getReferrer()
     {
-        $this->headers->get('Referer');
+        return $this->headers->get('Referer');
     }
 
     /**
@@ -979,13 +979,17 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user IP address.
+     * @param bool $useHeaders whether to consider headers, set to false if you need the remote IP of the connection not
+     * the client.
      * @return string|null user IP address, null if not available
      */
-    public function getUserIP()
+    public function getUserIP($useHeaders = true)
     {
-        foreach($this->ipHeaders as $ipHeader) {
-            if ($this->headers->get($ipHeader) !== null) {
-                return trim(explode(',', $this->headers->get($ipHeader))[0]);
+        if ($useHeaders) {
+            foreach ($this->ipHeaders as $ipHeader) {
+                if ($this->headers->has($ipHeader)) {
+                    return trim(explode(',', $this->headers->get($ipHeader))[0]);
+                }
             }
         }
 
@@ -1161,7 +1165,7 @@ class Request extends \yii\base\Request
     public function getAcceptableLanguages()
     {
         if ($this->_languages === null) {
-            if ($this->headers->get('Accept-Language') !== null) {
+            if ($this->headers->get('Accept-Language')) {
                 $this->_languages = array_keys($this->parseAcceptHeader($this->headers->get('Accept-Language')));
             } else {
                 $this->_languages = [];
@@ -1301,7 +1305,7 @@ class Request extends \yii\base\Request
      */
     public function getETags()
     {
-        if ($this->headers->get('If-None-Match') !== null) {
+        if ($this->headers->has('If-None-Match')) {
             return preg_split('/[\s,]+/', str_replace('-gzip', '', $this->headers->get('If-None-Match')), -1, PREG_SPLIT_NO_EMPTY);
         } else {
             return [];
