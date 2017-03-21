@@ -171,18 +171,16 @@ class ActiveRecord extends BaseActiveRecord
     {
         $query = static::find();
 
-        if (!ArrayHelper::isAssociative($condition)) {
+        if (!is_array($condition)) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
-                $pk = $primaryKey[0];
-                if (!empty($query->join) || !empty($query->joinWith)) {
-                    $pk = static::tableName() . '.' . $pk;
-                }
-                $condition = [$pk => $condition];
+                $condition = [$primaryKey[0] => $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
+        } elseif (!is_array($condition) || (!ArrayHelper::isAssociative($condition) && count($condition) != 3)) {
+            throw new InvalidConfigException('"' . get_called_class() . '" invalid condition passed.');
         }
 
         return $query->andWhere($condition);
