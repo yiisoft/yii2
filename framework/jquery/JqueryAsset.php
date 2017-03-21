@@ -5,7 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\jquery;
+
+use yii\web\AssetBundle;
 
 /**
  * This asset bundle provides the [jQuery](http://jquery.com/) JavaScript library.
@@ -15,7 +17,13 @@ namespace yii\web;
  */
 class JqueryAsset extends AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public $sourcePath = '@bower/jquery/dist';
+    /**
+     * @inheritdoc
+     */
     public $js = [
         'jquery.js',
     ];
