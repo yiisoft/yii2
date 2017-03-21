@@ -189,7 +189,12 @@ class Migration extends Component implements MigrationInterface
      */
     public function execute($sql, $params = [])
     {
-        $sqlPrint = ($this->printSqlLength === 0 || strlen($sql) <= $this->printSqlLength) ? $sql : substr($sql, 0, $this->printSqlLength) . "[...hidden]";
+        $sqlPrint = $sql;
+
+        if ($this->printSqlLength !== 0 && mb_strlen($sql) > $this->printSqlLength) {
+            $sqlPrint = mb_substr($sql, 0, $this->printSqlLength) . "[...hidden]";
+        }
+
         echo "    > execute SQL: $sqlPrint ...";
         $time = microtime(true);
         $this->db->createCommand($sql)->bindValues($params)->execute();
