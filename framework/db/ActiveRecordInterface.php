@@ -177,6 +177,12 @@ interface ActiveRecordInterface
      *
      * // the above code is equivalent to:
      * $customer = Customer::find()->where(['age' => 30, 'status' => 1])->one();
+     *
+     * // find the first customer whose age is > 18
+     * $customer = Customer::findOne(['>', 'age', 18]);
+     *
+     * // the above code is equivalent to:
+     * $customer = Customer::find()->where(['>', 'age', 18])->one();
      * ```
      *
      * @param mixed $condition primary key value or a set of column values
