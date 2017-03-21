@@ -163,25 +163,32 @@ class Request extends \yii\base\Request
      */
     public $parsers = [];
     /**
-     * @var array The configuration for trusting security related header.
-     * The array key is a regular expression for matching the hostname.
-     * The value is a list of headers to trust.
-     * Example 1: trust all headers from domains ending in '.trusted.com'
-     * Example 2: trust just the x-forwarded-for header from domains ending in '.partial.com'
-     * ```
+     * @var array The configuration for trusted security related headers.
+     * An array key is a regular expression for matching a hostname.
+     * A value is a list of headers to trust.
+     *
+     * For example, to trust all headers from domains ending in '.trusted.com' use the following:
+     *
+     * ```php
      * [
      *     '/^.*\.trusted\.com$/',
-     *     '/^.*\.partial\.com$/' => ['X-Forwarded-For']
+     * ```
      *
+     * To trust just the x-forwarded-for header from domains ending in '.partial.com' use:
+     *
+     * ```
+     *     // ...
+     *     '/^.*\.partial\.com$/' => ['X-Forwarded-For']
      * ]
      * ```
-     * The default value trusts all headers from all hosts (to not break BC).
+
+     * Default is to trusts all headers from all hosts.
      */
     public $trustedHostConfig = [
         '//'
     ];
     /**
-     * Lists the headers that are subject to the trusted host configuration.
+     * Lists headers that are subject to the trusted host configuration.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
      * @var array
      */
@@ -240,14 +247,14 @@ class Request extends \yii\base\Request
     {
         $host = $this->getUserHost();
         $ip = $this->getRemoteIP();
-        foreach($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
+        foreach ($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
             if (!is_array($trustedHeaders)) {
                 $hostRegex = $trustedHeaders;
                 $trustedHeaders = $this->secureHeaders;
             }
 
             if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
-                foreach($this->secureHeaders as $secureHeader) {
+                foreach ($this->secureHeaders as $secureHeader) {
                     if (!in_array($secureHeader, $trustedHeaders)) {
                         unset($headers[$secureHeader]);
                     }
