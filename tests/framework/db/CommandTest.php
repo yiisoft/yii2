@@ -433,7 +433,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
      */
     public function testInsertSelectFailed($invalidSelectColumns)
