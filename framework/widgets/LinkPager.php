@@ -122,6 +122,11 @@ class LinkPager extends Widget
      * @var bool Hide widget when only one page exist.
      */
     public $hideOnSinglePage = true;
+    /**
+     * @var boolean turns on|off the <a> tag for the active pager item. It is recommended to set it to false
+     * for the sake of Search Engines Optimisation. Defaults to false.
+     */
+    public $activeLinkable = false;
 
 
     /**
@@ -234,6 +239,11 @@ class LinkPager extends Widget
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;
+
+        // turn off link for active item
+        if ($active && !$this->activeLinkable) {
+            return Html::tag('li', Html::tag('span', $label, $linkOptions), $options);
+        }
 
         return Html::tag('li', Html::a($label, $this->pagination->createUrl($page), $linkOptions), $options);
     }
