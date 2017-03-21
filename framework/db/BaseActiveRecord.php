@@ -136,7 +136,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
-        } elseif (!is_array($condition) || (!!ArrayHelper::isAssociative($condition) && count($condition) != 3)) {
+        } elseif (!is_array($condition) || (!ArrayHelper::isAssociative($condition) && count($condition) != 3)) {
             throw new InvalidConfigException('"' . get_called_class() . '" invalid condition passed.');
         }
 
