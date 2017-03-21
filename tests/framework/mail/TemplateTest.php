@@ -1,9 +1,4 @@
 <?php
-/**
- * @link http://quartsoft.com/
- * @copyright Copyright &copy; 2015 QuartSoft ltd.
- * @license http://www.quartsoft.com/license/
- */
 
 namespace yiiunit\framework\mail;
 
