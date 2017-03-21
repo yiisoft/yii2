@@ -321,9 +321,7 @@ class RequestTest extends TestCase
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
                 'REMOTE_ADDR' => '192.169.0.1'
-            ], false],
-
-//            [['HTTP_HOST']]
+            ], false]
         ];
     }
 

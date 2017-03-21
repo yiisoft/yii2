@@ -263,9 +263,6 @@ class Request extends \yii\base\Request
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            // Check hosts.
-            
-            
             $this->_headers = new HeaderCollection;
             if (function_exists('getallheaders')) {
                 $headers = getallheaders();
@@ -937,8 +934,7 @@ class Request extends \yii\base\Request
     public function getIsSecureConnection()
     {
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-            || $this->headers->get('X-Forwarded-Proto', null) === 'https';
-
+            || strcasecmp($this->headers->get('X-Forwarded-Proto'), 'https') === 0;
     }
 
     /**
