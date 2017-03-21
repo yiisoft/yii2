@@ -191,7 +191,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $url = null;
 
         $shouldGenerateLink = true;
-        if ($method !== null) {
+        if ($method !== null  && substr_compare($method, '{closure}', -9) !== 0) {
             $reflection = new \ReflectionMethod($class, $method);
             $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
         }
