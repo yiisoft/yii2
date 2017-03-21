@@ -192,6 +192,10 @@ class Request extends \yii\base\Request
         'Front-End-Https',
     ];
 
+    /**
+     * @var string[] List of headers where proxies store the real client IP, it's not advisable to put untrusted headers
+     * here.
+     */
     public $ipHeaders = [
         'X-Forwarded-For'
     ];
@@ -235,8 +239,7 @@ class Request extends \yii\base\Request
     protected function filterHeaders(array $headers)
     {
         $host = $this->getUserHost();
-        // Don't use getUserIP here since that depends on using headers.
-        $ip = $this->getUserIP(false);
+        $ip = $this->getRemoteIP();
         foreach($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
             if (!is_array($trustedHeaders)) {
                 $hostRegex = $trustedHeaders;
@@ -975,20 +978,26 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user IP address.
-     * @param bool $useHeaders whether to consider headers, set to false if you need the remote IP of the connection not
-     * the client.
+     * The IP is determined using headers and / or `$_SERVER` variables.
      * @return string|null user IP address, null if not available
      */
-    public function getUserIP($useHeaders = true)
+    public function getUserIP()
     {
-        if ($useHeaders) {
-            foreach ($this->ipHeaders as $ipHeader) {
-                if ($this->headers->has($ipHeader)) {
-                    return trim(explode(',', $this->headers->get($ipHeader))[0]);
-                }
+        foreach ($this->ipHeaders as $ipHeader) {
+            if ($this->headers->has($ipHeader)) {
+                return trim(explode(',', $this->headers->get($ipHeader))[0]);
             }
         }
+        return $this->getRemoteIP();
+    }
 
+    /**
+     * Returns the IP on the other end of this connection.
+     * This is always the next hop, any headers are ignored.
+     * @return string|null remote IP address, null if not available.
+     */
+    public function getRemoteIP()
+    {
         return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
 
