@@ -9,28 +9,23 @@ namespace yii\mail;
 
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
-use yii\base\ViewContextInterface;
-use yii\web\View;
 
 /**
  * BaseMailer serves as a base class that implements the basic functions required by [[MailerInterface]].
  *
  * Concrete child classes should may focus on implementing the [[sendMessage()]] method.
  *
- * @see BaseMessage
- *
  * For more details and usage information on BaseMailer, see the [guide article on mailing](guide:tutorial-mailing).
  *
- * @property View $view View instance. Note that the type of this property differs in getter and setter. See
- * [[getView()]] and [[setView()]] for details.
- * @property string $viewPath The directory that contains the view files for composing mail messages Defaults
- * to '@app/mail'.
+ * @see BaseMessage
+ *
+ * @property Composer $composer Message composer instance. Note that the type of this property differs in getter and setter. See
+ * [[getComposer()]] and [[setComposer()]] for details.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0
  */
-abstract class BaseMailer extends Component implements MailerInterface, ViewContextInterface
+abstract class BaseMailer extends Component implements MailerInterface
 {
     /**
      * @event MailEvent an event raised right before send.
@@ -42,20 +37,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      */
     const EVENT_AFTER_SEND = 'afterSend';
 
-    /**
-     * @var string|bool HTML layout view name. This is the layout used to render HTML mail body.
-     * The property can take the following values:
-     *
-     * - a relative view name: a view file relative to [[viewPath]], e.g., 'layouts/html'.
-     * - a path alias: an absolute view file path specified as a path alias, e.g., '@app/mail/html'.
-     * - a boolean false: the layout is disabled.
-     */
-    public $htmlLayout = 'layouts/html';
-    /**
-     * @var string|bool text layout view name. This is the layout used to render TEXT mail body.
-     * Please refer to [[htmlLayout]] for possible values that this property can take.
-     */
-    public $textLayout = 'layouts/text';
     /**
      * @var array the configuration that should be applied to any newly created
      * email message instance by [[createMessage()]] or [[compose()]]. Any valid property defined
@@ -72,11 +53,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * ```
      */
     public $messageConfig = [];
-    /**
-     * @var array the configuration that should be applied to any newly created message template.
-     * @since 2.1
-     */
-    public $templateConfig = [];
     /**
      * @var string the default class name of the new message instances created by [[createMessage()]]
      */
@@ -105,52 +81,34 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     public $fileTransportCallback;
 
     /**
-     * @var \yii\base\View|array view instance or its array configuration.
+     * @var Composer|array|string|callable message composer.
+     * @since 2.1
      */
-    private $_view = [];
-    /**
-     * @var string the directory containing view files for composing mail messages.
-     */
-    private $_viewPath;
+    private $_composer;
 
 
     /**
-     * @param array|View $view view instance or its array configuration that will be used to
-     * render message bodies.
-     * @throws InvalidConfigException on invalid argument.
+     * @return Composer message composer instance.
+     * @since 2.1
      */
-    public function setView($view)
+    public function getComposer()
     {
-        if (!is_array($view) && !is_object($view)) {
-            throw new InvalidConfigException('"' . get_class($this) . '::view" should be either object or configuration array, "' . gettype($view) . '" given.');
+        if (!is_object($this->_composer) || $this->_composer instanceof \Closure) {
+            if (is_array($this->_composer) && !isset($this->_composer['class'])) {
+                $this->_composer['class'] = Composer::class;
+            }
+            $this->_composer = Yii::createObject($this->_composer);
         }
-        $this->_view = $view;
+        return $this->_composer;
     }
 
     /**
-     * @return View view instance.
+     * @param Composer|array|string|callable $composer message composer instance or DI compatible configuration.
+     * @since 2.1
      */
-    public function getView()
+    public function setComposer($composer)
     {
-        if (!is_object($this->_view)) {
-            $this->_view = $this->createView($this->_view);
-        }
-
-        return $this->_view;
-    }
-
-    /**
-     * Creates view instance from given configuration.
-     * @param array $config view configuration.
-     * @return View view instance.
-     */
-    protected function createView(array $config)
-    {
-        if (!array_key_exists('class', $config)) {
-            $config['class'] = View::class;
-        }
-
-        return Yii::createObject($config);
+        $this->_composer = $composer;
     }
 
     /**
@@ -180,7 +138,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             return $message;
         }
 
-        $this->createTemplate($view)->compose($message, $params);
+        $this->getComposer()->compose($message, $view, $params);
 
         return $message;
     }
@@ -199,32 +157,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
             $config['class'] = $this->messageClass;
         }
         $config['mailer'] = $this;
-        return Yii::createObject($config);
-    }
-
-    /**
-     * Creates new message view template.
-     * The newly created instance will be initialized with the configuration specified by [[templateConfig]].
-     * @param string|array $viewName view name for the template.
-     * @return Template message template instance.
-     * @throws InvalidConfigException
-     * @since 2.1
-     */
-    protected function createTemplate($viewName)
-    {
-        $config = $this->templateConfig;
-        if (!array_key_exists('class', $config)) {
-            $config['class'] = Template::class;
-        }
-        if (!array_key_exists('view', $config)) {
-            $config['view'] = $this->getView();
-        }
-
-        $config['viewPath'] = $this->getViewPath();
-        $config['htmlLayout'] = $this->htmlLayout;
-        $config['textLayout'] = $this->textLayout;
-        $config['viewName'] = $viewName;
-
         return Yii::createObject($config);
     }
 
@@ -318,27 +250,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         $time = microtime(true);
 
         return date('Ymd-His-', $time) . sprintf('%04d', (int) (($time - (int) $time) * 10000)) . '-' . sprintf('%04d', mt_rand(0, 10000)) . '.eml';
-    }
-
-    /**
-     * @return string the directory that contains the view files for composing mail messages
-     * Defaults to '@app/mail'.
-     */
-    public function getViewPath()
-    {
-        if ($this->_viewPath === null) {
-            $this->setViewPath('@app/mail');
-        }
-        return $this->_viewPath;
-    }
-
-    /**
-     * @param string $path the directory that contains the view files for composing mail messages
-     * This can be specified as an absolute path or a path alias.
-     */
-    public function setViewPath($path)
-    {
-        $this->_viewPath = Yii::getAlias($path);
     }
 
     /**

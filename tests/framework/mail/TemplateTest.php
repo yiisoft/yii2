@@ -7,8 +7,12 @@ use yii\base\View;
 use yii\helpers\FileHelper;
 use yii\mail\BaseMessage;
 use yii\mail\Template;
+use yiiunit\data\mail\TestMessage;
 use yiiunit\TestCase;
 
+/**
+ * @group mail
+ */
 class TemplateTest extends TestCase
 {
     public function setUp()
@@ -38,32 +42,7 @@ class TemplateTest extends TestCase
      */
     protected function createMessage()
     {
-        return $this->getMock(BaseMessage::class, [
-            'getCharset',
-            'setCharset',
-            'getFrom',
-            'setFrom',
-            'getTo',
-            'setTo',
-            'getReplyTo',
-            'setReplyTo',
-            'getCc',
-            'setCc',
-            'getBcc',
-            'setBcc',
-            'getSubject',
-            'setSubject',
-            'setTextBody',
-            'setHtmlBody',
-            'attach',
-            'attachContent',
-            'embed',
-            'embedContent',
-            'addHeader',
-            'setHeader',
-            'getHeader',
-            'setHeaders',
-        ]);
+        return new TestMessage();
     }
 
     /**
@@ -132,5 +111,99 @@ class TemplateTest extends TestCase
 
         $renderResult = $template->render($viewName, [], $layoutName);
         $this->assertEquals('Begin Layout ' . $viewFileContent . ' End Layout', $renderResult);
+    }
+
+    /**
+     * @depends testRenderLayout
+     */
+    public function testCompose()
+    {
+        $template = $this->createTemplate();
+
+        $template->htmlLayout = false;
+        $template->textLayout = false;
+
+        $htmlViewName = 'test_html_view';
+        $htmlViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $htmlViewName . '.php';
+        $htmlViewFileContent = 'HTML <b>view file</b> content';
+        file_put_contents($htmlViewFileName, $htmlViewFileContent);
+
+        $textViewName = 'test_text_view';
+        $textViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $textViewName . '.php';
+        $textViewFileContent = 'Plain text view file content';
+        file_put_contents($textViewFileName, $textViewFileContent);
+
+        $template->viewName = [
+            'html' => $htmlViewName,
+            'text' => $textViewName,
+        ];
+        $message = new TestMessage();
+        $template->compose($message);
+        $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
+        $this->assertEquals($textViewFileContent, $message->_textBody, 'Unable to render text!');
+
+        $message = new TestMessage();
+        $template->viewName = $htmlViewName;
+        $template->compose($message);
+        $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html by direct view!');
+        $this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
+    }
+
+    public function htmlAndPlainProvider()
+    {
+        return [
+            [
+                'HTML <b>view file</b> content <a href="http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef">http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef</a>',
+                'HTML view file content http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef',
+            ],
+            [
+                <<<HTML
+<html><head><style type="text/css">.content{color: #112345;}</style><title>TEST</title></head>
+<body>
+    <style type="text/css">.content{color: #112345;}</style>
+    <p> First paragraph
+    second line
+
+     <a href="http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef">http://yiifresh.com/index.php?r=site%2Freset-password&amp;token=abcdef</a>
+
+     </p><script type="text/javascript">alert("hi")</script>
+
+<p>Test Lorem ipsum...</p>
+</body>
+</html>
+HTML
+                ,<<<TEXT
+First paragraph
+second line
+
+http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef
+
+Test Lorem ipsum...
+TEXT
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider htmlAndPlainProvider
+     * @depends testCompose
+     *
+     * @param string $htmlViewFileContent
+     * @param string $expectedTextRendering
+     */
+    public function testComposePlainTextFallback($htmlViewFileContent, $expectedTextRendering)
+    {
+        $template = $this->createTemplate();
+
+        $htmlViewName = 'test_html_view' . sha1($htmlViewFileContent); // hash is needed to generate different view files to ensure it works on HHVM
+        $htmlViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $htmlViewName . '.php';
+        file_put_contents($htmlViewFileName, $htmlViewFileContent);
+
+        $template->viewName = $htmlViewName;
+
+        $message = new TestMessage();
+        $template->compose($message);
+        $this->assertEqualsWithoutLE($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
+        $this->assertEqualsWithoutLE($expectedTextRendering, $message->_textBody, 'Unable to render text!');
     }
 }
