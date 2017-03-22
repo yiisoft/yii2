@@ -404,7 +404,7 @@ class User extends Component
      * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
      * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
      * @return Response the redirection response if [[loginUrl]] is set
-     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
+     * @throws UnauthorizedHttpException the "Unauthorized" HTTP exception if [[loginUrl]] is not set or a redirect is
      * not applicable.
      */
     public function loginRequired($checkAjax = true, $checkAcceptHeader = true)
@@ -424,7 +424,7 @@ class User extends Component
                 return Yii::$app->getResponse()->redirect($this->loginUrl);
             }
         }
-        throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
+        throw new UnauthorizedHttpException(Yii::t('yii', 'Login Required'));
     }
 
     /**
