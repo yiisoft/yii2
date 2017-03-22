@@ -13,7 +13,7 @@ namespace yii\jquery;
  * @see \yii\web\View
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @author Paul Klimov <pklimov@quartsoft.com>
+ * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1
  */
 class View extends \yii\web\View
