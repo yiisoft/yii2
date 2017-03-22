@@ -9,6 +9,7 @@ namespace yii\db;
 
 use yii\base\Component;
 use yii\di\Instance;
+use yii\helpers\StringHelper;
 
 /**
  * Migration is the base class for representing a database migration.
@@ -64,8 +65,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * @var int length of the string that will be printed on the screen.
      */
-    public $printSqlLength = 0;
-
+    public $printSqlLength;
 
     /**
      * Initializes the migration.
@@ -191,8 +191,8 @@ class Migration extends Component implements MigrationInterface
     {
         $sqlPrint = $sql;
 
-        if ($this->printSqlLength !== 0 && mb_strlen($sql) > $this->printSqlLength) {
-            $sqlPrint = mb_substr($sql, 0, $this->printSqlLength) . "[...hidden]";
+        if ($this->printSqlLength !== null) {
+            $sqlPrint = StringHelper::truncate($sql, $this->printSqlLength, '[...hidden]');
         }
 
         echo "    > execute SQL: $sqlPrint ...";
