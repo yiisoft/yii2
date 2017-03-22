@@ -53,7 +53,6 @@ Yii Framework 2 Change Log
 - Bug #13738: Fixed `getQueryParams()` method in `yii.js` to correctly parse URL with question mark and no query parameters (vladdnepr)
 - Bug #13776: Fixed setting precision and scale for decimal columns in MSSQL (arturf)
 - Bug #13704: Fixed `yii\validators\UniqueValidator` to prefix attribute name with model's database table name (vladis84)
-- Bug #13813: Fixed PHP 7 compatibiltiy by adding support for passing instances of `Error` to the `yii\web\Response::setStatusCodeByException()` (Kolyunya)
 - Enh #13823: Refactored migrations template (Kolyunya)
 - Bug #13822: Fixed `yii\web\User::loginRequired()` to throw an `UnauthorizedHttpException` instead of a `ForbiddenHttpException` (Kolyunya)
 
