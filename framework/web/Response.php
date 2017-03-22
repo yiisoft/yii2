@@ -216,6 +216,7 @@ class Response extends \yii\base\Response
         431 => 'Request Header Fields Too Large',
         449 => 'Retry With',
         450 => 'Blocked by Windows Parental Controls',
+        451 => 'Unavailable For Legal Reasons',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway or Proxy Error',
