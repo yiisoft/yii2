@@ -409,7 +409,9 @@ class Request extends \yii\base\Request
      */
     public function getIsFlash()
     {
-        return in_array($this->headers->get('User-Agent'), ['Shockwave', 'Flash'], true);
+        $userAgent = $this->headers->get('User-Agent', '');
+        return stripos($userAgent, 'Shockwave') !== false
+            || stripos($userAgent, 'Falsh') !== false;
     }
 
     private $_rawBody;
@@ -944,7 +946,7 @@ class Request extends \yii\base\Request
     public function getIsSecureConnection()
     {
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-            || strcasecmp($this->headers->get('X-Forwarded-Proto'), 'https') === 0;
+            || strcasecmp($this->headers->get('X-Forwarded-Proto', ''), 'https') === 0;
     }
 
     /**
