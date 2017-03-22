@@ -16,12 +16,12 @@ use yii\db\Migration;
 
 class <?= $className ?> extends Migration
 {
-    public function up()
+    public function safeUp()
     {
 
     }
 
-    public function down()
+    public function safeDown()
     {
         echo "<?= $className ?> cannot be reverted.\n";
 
@@ -29,13 +29,13 @@ class <?= $className ?> extends Migration
     }
 
     /*
-    // Use safeUp/safeDown to run migration code within a transaction.
-    public function safeUp()
+    // Use up()/down() to run migration code without a transaction.
+    public function up()
     {
 
     }
 
-    public function safeDown()
+    public function down()
     {
         echo "<?= $className ?> cannot be reverted.\n";
 
