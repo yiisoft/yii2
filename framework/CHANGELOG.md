@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Bug #13776: Fixed setting precision and scale for decimal columns in MSSQL (arturf)
 - Bug #13704: Fixed `yii\validators\UniqueValidator` to prefix attribute name with model's database table name (vladis84)
 - Enh #13823: Refactored migrations template (Kolyunya)
+- Bug #13822: Fixed `yii\web\User::loginRequired()` to throw an `UnauthorizedHttpException` instead of a `ForbiddenHttpException` (Kolyunya)
 
 2.0.11.2 February 08, 2017
 --------------------------
