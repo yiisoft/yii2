@@ -293,13 +293,13 @@ class Response extends \yii\base\Response
 
     /**
      * Sets the response status code based on the exception.
-     * @param \Exception $e
+     * @param \Exception|\Error $e
      * @throws InvalidParamException if the status code is invalid.
      * @return $this the response object itself
      *
      * @since 2.0.12
      */
-    public function setStatusCodeByException(\Exception $e)
+    public function setStatusCodeByException($e)
     {
         if ($e instanceof HttpException) {
             $this->setStatusCode($e->statusCode);
