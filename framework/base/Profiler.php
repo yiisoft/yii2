@@ -26,28 +26,17 @@ class Profiler extends Component
 {
 
     /**
-     * @event Event an event that is triggered when profiling should be started
-     */
-    const EVENT_BEGIN = 'beginProfile';
-    /**
-     * @event Event an event that is triggered when profiling should be ended
-     */
-    const EVENT_END = 'endProfile';
-
-    /**
      * Marks the beginning of a code block for profiling.
      * This has to be matched with a call to [[end()]] with the same category name.
      * The begin- and end- calls must also be properly nested.
      *
      * @param string $token token for the code block
      * @param string $category the category of this profiler message (used for logging)
-     * @param mixed $context arbitrary data that can be used by profiler event listeners
      * @see end()
      */
-    public function begin($token, $category = 'application', $context = null)
+    public function begin($token, $category = 'application')
     {
-        $event = new ProfilerEvent(compact('token', 'category', 'context'));
-        Yii::$app->trigger(static::EVENT_BEGIN, $event);
+        Yii::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
     }
 
     /**
@@ -56,13 +45,11 @@ class Profiler extends Component
      *
      * @param string $token token for the code block
      * @param string $category the category of this log message
-     * @param mixed $context arbitrary data that can be used by profiler event listeners
      * @see begin()
      */
-    public function end($token, $category = 'application', $context = null)
+    public function end($token, $category = 'application')
     {
-        $event = new ProfilerEvent(compact('token', 'category', 'context'));
-        Yii::$app->trigger(static::EVENT_END, $event);
+        Yii::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
     }
 
 }
