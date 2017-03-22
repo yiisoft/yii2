@@ -438,7 +438,7 @@ abstract class Schema extends Object
      */
     public function setTransactionIsolationLevel($level)
     {
-        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level;")->execute();
+        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level")->execute();
     }
 
     /**

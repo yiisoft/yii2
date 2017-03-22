@@ -82,11 +82,11 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertTrue($reader instanceof DataReader);
+        $this->assertInstanceOf(DataReader::className(), $reader);
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
-        $this->assertEquals(3, count($rows));
+        $this->assertCount(3, $rows);
         $row = $rows[2];
         $this->assertEquals(3, $row['id']);
         $this->assertEquals('user3', $row['name']);
@@ -141,7 +141,7 @@ abstract class CommandTest extends DatabaseTestCase
         if (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             $this->markTestSkipped('HHVMs PgSQL implementation has some specific behavior that breaks some parts of this test.');
         }
-        
+
         $db = $this->getConnection();
 
         // bindParam
@@ -296,6 +296,15 @@ SQL;
             []
         );
         $this->assertEquals(0, $command->execute());
+    }
+
+    public function testBatchInsertWithYield()
+    {
+        if (version_compare(PHP_VERSION, '5.5', '<')) {
+            $this->markTestSkipped('The yield function is only supported with php 5.5 =< version');
+        } else {
+            include __DIR__ . '/testBatchInsertWithYield.php';
+        }
     }
 
     public function testInsert()
@@ -454,7 +463,7 @@ SQL;
         $db = $this->getConnection();
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
 
-        switch($this->driverName){
+        switch ($this->driverName) {
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
             break;
@@ -522,7 +531,7 @@ SQL;
     {
         $db = $this->getConnection();
 
-        if($db->getSchema()->getTableSchema('testCreateTable') !== null){
+        if ($db->getSchema()->getTableSchema('testCreateTable') !== null) {
             $db->createCommand()->dropTable('testCreateTable')->execute();
         }
 
@@ -536,13 +545,13 @@ SQL;
 
     public function testAlterTable()
     {
-        if ($this->driverName === 'sqlite'){
+        if ($this->driverName === 'sqlite') {
             $this->markTestSkipped('Sqlite does not support alterTable');
         }
 
         $db = $this->getConnection();
 
-        if($db->getSchema()->getTableSchema('testAlterTable') !== null){
+        if ($db->getSchema()->getTableSchema('testAlterTable') !== null) {
             $db->createCommand()->dropTable('testAlterTable')->execute();
         }
 
@@ -559,7 +568,6 @@ SQL;
         ], $records);
     }
 
-
     public function testDropTable()
     {
         $db = $this->getConnection();
@@ -575,10 +583,10 @@ SQL;
         $db = $this->getConnection();
 
         $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
-        $this->assertEquals(2, count($rows));
+        $this->assertCount(2, $rows);
         $db->createCommand()->truncateTable('animal')->execute();
         $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
-        $this->assertEquals(0, count($rows));
+        $this->assertCount(0, $rows);
     }
 
     public function testRenameTable()
@@ -588,7 +596,7 @@ SQL;
         $fromTableName = 'type';
         $toTableName = 'new_type';
 
-        if($db->getSchema()->getTableSchema($toTableName) !== null){
+        if ($db->getSchema()->getTableSchema($toTableName) !== null) {
             $db->createCommand()->dropTable($toTableName)->execute();
         }
 

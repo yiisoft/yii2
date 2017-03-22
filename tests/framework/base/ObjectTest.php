@@ -60,7 +60,7 @@ class ObjectTest extends TestCase
 
     public function testGetProperty()
     {
-        $this->assertTrue('default' === $this->object->Text);
+        $this->assertSame('default', $this->object->Text);
         $this->setExpectedException('yii\base\UnknownPropertyException');
         $value2 = $this->object->Caption;
     }
@@ -83,15 +83,15 @@ class ObjectTest extends TestCase
     public function testIsset()
     {
         $this->assertTrue(isset($this->object->Text));
-        $this->assertFalse(empty($this->object->Text));
+        $this->assertNotEmpty($this->object->Text);
 
         $this->object->Text = '';
         $this->assertTrue(isset($this->object->Text));
-        $this->assertTrue(empty($this->object->Text));
+        $this->assertEmpty($this->object->Text);
 
         $this->object->Text = null;
         $this->assertFalse(isset($this->object->Text));
-        $this->assertTrue(empty($this->object->Text));
+        $this->assertEmpty($this->object->Text);
 
         $this->assertFalse(isset($this->object->unknownProperty));
         $this->assertTrue(empty($this->object->unknownProperty));
@@ -101,7 +101,7 @@ class ObjectTest extends TestCase
     {
         unset($this->object->Text);
         $this->assertFalse(isset($this->object->Text));
-        $this->assertTrue(empty($this->object->Text));
+        $this->assertEmpty($this->object->Text);
     }
 
     public function testUnsetReadOnlyProperty()
@@ -128,7 +128,7 @@ class ObjectTest extends TestCase
 
     public function testObjectProperty()
     {
-        $this->assertTrue($this->object->object instanceof NewObject);
+        $this->assertInstanceOf(NewObject::className(), $this->object->object);
         $this->assertEquals('object text', $this->object->object->text);
         $this->object->object->text = 'new text';
         $this->assertEquals('new text', $this->object->object->text);

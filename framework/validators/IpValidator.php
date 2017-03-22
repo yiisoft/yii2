@@ -527,7 +527,7 @@ class IpValidator extends Validator
      */
     private function getIpParsePattern()
     {
-        return '/^(' . preg_quote(static::NEGATION_CHAR) . '?)(.+?)(\/(\d+))?$/';
+        return '/^(' . preg_quote(static::NEGATION_CHAR, '/') . '?)(.+?)(\/(\d+))?$/';
     }
 
     /**
@@ -606,7 +606,7 @@ class IpValidator extends Validator
             'hasSubnet' => $this->hasSubnet,
         ];
         foreach ($messages as &$message) {
-            $message = Yii::$app->getI18n()->format($message, [
+            $message = $this->formatMessage($message, [
                 'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language);
         }

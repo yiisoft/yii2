@@ -19,6 +19,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 {
     use SchemaBuilderTrait;
 
+    /**
+     * @var string ` ESCAPE 'char'` part of a LIKE condition SQL.
+     */
+    protected $likeEscapeCharSql = '';
+    /**
+     * @var array map of values to their replacements in LIKE query params.
+     */
+    protected $likeParameterReplacements = [];
+
     public function getDb()
     {
         return $this->getConnection(false, false);
@@ -28,9 +37,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      * @throws \Exception
      * @return QueryBuilder
      */
-    protected function getQueryBuilder()
+    protected function getQueryBuilder($reset = true, $open = false)
     {
-        $connection = $this->getConnection(true, false);
+        $connection = $this->getConnection($reset, $open);
 
         \Yii::$container->set('db', $connection);
 
@@ -290,7 +299,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(10,0) CHECK (value > 5.6)',
                     'sqlite' => 'decimal(10,0) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
-                    'sqlsrv' => 'decimal CHECK (value > 5.6)',
+                    'sqlsrv' => 'decimal(18,0) CHECK (value > 5.6)',
                     'cubrid' => 'decimal(10,0) CHECK (value > 5.6)',
                 ],
             ],
@@ -302,7 +311,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(10,0) NOT NULL',
                     'sqlite' => 'decimal(10,0) NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
-                    'sqlsrv' => 'decimal NOT NULL',
+                    'sqlsrv' => 'decimal(18,0) NOT NULL',
                     'cubrid' => 'decimal(10,0) NOT NULL',
                 ],
             ],
@@ -314,7 +323,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(12,4) CHECK (value > 5.6)',
                     'sqlite' => 'decimal(12,4) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
-                    'sqlsrv' => 'decimal CHECK (value > 5.6)',
+                    'sqlsrv' => 'decimal(12,4) CHECK (value > 5.6)',
                     'cubrid' => 'decimal(12,4) CHECK (value > 5.6)',
                 ],
             ],
@@ -326,7 +335,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(12,4)',
                     'sqlite' => 'decimal(12,4)',
                     'oci' => 'NUMBER',
-                    'sqlsrv' => 'decimal',
+                    'sqlsrv' => 'decimal(12,4)',
                     'cubrid' => 'decimal(12,4)',
                 ],
             ],
@@ -338,7 +347,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(10,0)',
                     'sqlite' => 'decimal(10,0)',
                     'oci' => 'NUMBER',
-                    'sqlsrv' => 'decimal',
+                    'sqlsrv' => 'decimal(18,0)',
                     'cubrid' => 'decimal(10,0)',
                 ],
             ],
@@ -1038,28 +1047,6 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [ ['or like', 'name', []], '0=1', [] ],
             [ ['or not like', 'name', []], '', [] ],
 
-            // simple like
-            [ ['like', 'name', 'heyho'], '[[name]] LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['not like', 'name', 'heyho'], '[[name]] NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or like', 'name', 'heyho'], '[[name]] LIKE :qp0', [':qp0' => '%heyho%'] ],
-            [ ['or not like', 'name', 'heyho'], '[[name]] NOT LIKE :qp0', [':qp0' => '%heyho%'] ],
-
-            // like for many values
-            [ ['like', 'name', ['heyho', 'abc']], '[[name]] LIKE :qp0 AND [[name]] LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['not like', 'name', ['heyho', 'abc']], '[[name]] NOT LIKE :qp0 AND [[name]] NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or like', 'name', ['heyho', 'abc']], '[[name]] LIKE :qp0 OR [[name]] LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-            [ ['or not like', 'name', ['heyho', 'abc']], '[[name]] NOT LIKE :qp0 OR [[name]] NOT LIKE :qp1', [':qp0' => '%heyho%', ':qp1' => '%abc%'] ],
-
-            // like with Expression
-            [ ['like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['not like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] NOT LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['or like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['or not like', 'name', new Expression('CONCAT("test", colname, "%")')], '[[name]] NOT LIKE CONCAT("test", colname, "%")', [] ],
-            [ ['like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] LIKE CONCAT("test", colname, "%") AND [[name]] LIKE :qp0', [':qp0' => '%abc%'] ],
-            [ ['not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] NOT LIKE CONCAT("test", colname, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%abc%'] ],
-            [ ['or like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] LIKE CONCAT("test", colname, "%") OR [[name]] LIKE :qp0', [':qp0' => '%abc%'] ],
-            [ ['or not like', 'name', [new Expression('CONCAT("test", colname, "%")'), 'abc']], '[[name]] NOT LIKE CONCAT("test", colname, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%abc%'] ],
-
             // not
             [ ['not', 'name'], 'NOT (name)', [] ],
 
@@ -1158,7 +1145,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         }
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1206,7 +1193,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ];
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1243,25 +1230,25 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $qb = $this->getQueryBuilder();
         $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, ['id'])->execute();
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(1, count($tableSchema->primaryKey));
+        $this->assertCount(1, $tableSchema->primaryKey);
 
         // DROP
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(0, count($tableSchema->primaryKey));
+        $this->assertCount(0, $tableSchema->primaryKey);
 
         // ADD (2 columns)
         $qb = $this->getQueryBuilder();
         $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, 'id, field1')->execute();
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(2, count($tableSchema->primaryKey));
+        $this->assertCount(2, $tableSchema->primaryKey);
 
         // DROP (2 columns)
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(0, count($tableSchema->primaryKey));
+        $this->assertCount(0, $tableSchema->primaryKey);
     }
 
     public function existsParamsProvider()
@@ -1477,7 +1464,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([
             'id' => 1,
             'abc' => 'abc',
-        ],$params);
+        ], $params);
 
         // simple subquery
         $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
@@ -1681,5 +1668,58 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $expected = "ALTER TABLE [[comment]] COMMENT ''";
         $sql = $qb->dropCommentFromTable('comment');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
+    }
+
+    public function likeConditionProvider()
+    {
+        $conditions = [
+            // simple like
+            [ ['like', 'name', 'foo%'], '[[name]] LIKE :qp0', [':qp0' => '%foo\%%'] ],
+            [ ['not like', 'name', 'foo%'], '[[name]] NOT LIKE :qp0', [':qp0' => '%foo\%%'] ],
+            [ ['or like', 'name', 'foo%'], '[[name]] LIKE :qp0', [':qp0' => '%foo\%%'] ],
+            [ ['or not like', 'name', 'foo%'], '[[name]] NOT LIKE :qp0', [':qp0' => '%foo\%%'] ],
+
+            // like for many values
+            [ ['like', 'name', ['foo%', '[abc]']], '[[name]] LIKE :qp0 AND [[name]] LIKE :qp1', [':qp0' => '%foo\%%', ':qp1' => '%[abc]%'] ],
+            [ ['not like', 'name', ['foo%', '[abc]']], '[[name]] NOT LIKE :qp0 AND [[name]] NOT LIKE :qp1', [':qp0' => '%foo\%%', ':qp1' => '%[abc]%'] ],
+            [ ['or like', 'name', ['foo%', '[abc]']], '[[name]] LIKE :qp0 OR [[name]] LIKE :qp1', [':qp0' => '%foo\%%', ':qp1' => '%[abc]%'] ],
+            [ ['or not like', 'name', ['foo%', '[abc]']], '[[name]] NOT LIKE :qp0 OR [[name]] NOT LIKE :qp1', [':qp0' => '%foo\%%', ':qp1' => '%[abc]%'] ],
+
+            // like with Expression
+            [ ['like', 'name', new Expression('CONCAT("test", name, "%")')], '[[name]] LIKE CONCAT("test", name, "%")', [] ],
+            [ ['not like', 'name', new Expression('CONCAT("test", name, "%")')], '[[name]] NOT LIKE CONCAT("test", name, "%")', [] ],
+            [ ['or like', 'name', new Expression('CONCAT("test", name, "%")')], '[[name]] LIKE CONCAT("test", name, "%")', [] ],
+            [ ['or not like', 'name', new Expression('CONCAT("test", name, "%")')], '[[name]] NOT LIKE CONCAT("test", name, "%")', [] ],
+            [ ['like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] LIKE CONCAT("test", name, "%") AND [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%'] ],
+            [ ['not like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] NOT LIKE CONCAT("test", name, "%") AND [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%'] ],
+            [ ['or like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] LIKE CONCAT("test", name, "%") OR [[name]] LIKE :qp0', [':qp0' => '%\\\ab\_c%'] ],
+            [ ['or not like', 'name', [new Expression('CONCAT("test", name, "%")'), '\ab_c']], '[[name]] NOT LIKE CONCAT("test", name, "%") OR [[name]] NOT LIKE :qp0', [':qp0' => '%\\\ab\_c%'] ],
+        ];
+
+        // adjust dbms specific escaping
+        foreach ($conditions as $i => $condition) {
+            $conditions[$i][1] = $this->replaceQuotes($condition[1]);
+            if (!empty($this->likeEscapeCharSql)) {
+                preg_match_all('/(?P<condition>LIKE.+?)( AND| OR|$)/', $conditions[$i][1], $matches, PREG_SET_ORDER);
+                foreach ($matches as $match) {
+                    $conditions[$i][1] = str_replace($match['condition'], $match['condition'] . $this->likeEscapeCharSql, $conditions[$i][1]);
+                }
+            }
+            foreach ($conditions[$i][2] as $name => $value) {
+                $conditions[$i][2][$name] = strtr($conditions[$i][2][$name], $this->likeParameterReplacements);
+            }
+        }
+        return $conditions;
+    }
+
+    /**
+     * @dataProvider likeConditionProvider
+     */
+    public function testBuildLikeCondition($condition, $expected, $expectedParams)
+    {
+        $query = (new Query())->where($condition);
+        list($sql, $params) = $this->getQueryBuilder()->build($query);
+        $this->assertEquals('SELECT *' . (empty($expected) ? '' : ' WHERE ' . $this->replaceQuotes($expected)), $sql);
+        $this->assertEquals($expectedParams, $params);
     }
 }

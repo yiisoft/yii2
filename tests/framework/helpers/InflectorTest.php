@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\helpers;
 
-use Yii;
 use yii\helpers\Inflector;
 use yiiunit\TestCase;
 
@@ -31,6 +30,7 @@ class InflectorTest extends TestCase
             'test' => 'tests',
             'car' => 'cars',
             'netherlands' => 'netherlands',
+            'currency' => 'currencies',
         ];
 
         foreach ($testData as $testIn => $testOut) {
@@ -59,6 +59,7 @@ class InflectorTest extends TestCase
             'tests' => 'test',
             'cars' => 'car',
             'Netherlands' => 'Netherlands',
+            'currencies' => 'currency',
         ];
         foreach ($testData as $testIn => $testOut) {
             $this->assertEquals($testOut, Inflector::singularize($testIn));
@@ -241,37 +242,37 @@ class InflectorTest extends TestCase
         // Some test strings are from https://github.com/bergie/midgardmvc_helper_urlize. Thank you, Henri Bergius!
         $data = [
             // Korean
-            '해동검도' => 'haedong-geomdo',
+            '해동검도' => ['haedong-geomdo'],
             // Hiragana
-            'ひらがな' => 'hiragana',
+            'ひらがな' => ['hiragana'],
             // Georgian
-            'საქართველო' => 'sakartvelo',
+            'საქართველო' => ['sakartvelo'],
             // Arabic
-            'العربي' => 'alʿrby',
-            'عرب' => 'ʿrb',
+            'العربي' => ['alʿrby'],
+            'عرب' => ['ʿrb'],
             // Hebrew
-            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'ʻiberiyt',
+            'עִבְרִית' => ['\'iberiyt', 'ʻiberiyt'],
             // Turkish
-            'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
+            'Sanırım hepimiz aynı şeyi düşünüyoruz.' => ['Sanirim hepimiz ayni seyi dusunuyoruz.'],
 
             // Russian
-            'недвижимость' => 'nedvizimostʹ',
-            'Контакты' => 'Kontakty',
+            'недвижимость' => ['nedvizimost\'', 'nedvizimostʹ'],
+            'Контакты' => ['Kontakty'],
 
             // Ukrainian
-            'Українська: ґанок, європа' => 'Ukrainsʹka: ganok, evropa',
+            'Українська: ґанок, європа' => ['Ukrainsʹka: ganok, evropa', 'Ukrains\'ka: ganok, evropa'],
 
             // Serbian
-            'Српска: ђ, њ, џ!' => 'Srpska: d, n, d!',
+            'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => '¿Espanol?',
+            '¿Español?' => ['¿Espanol?'],
             // Chinese
-            '美国' => 'mei guo',
+            '美国' => ['mei guo'],
         ];
 
-        foreach ($data as $source => $expected) {
-            $this->assertEquals($expected, Inflector::transliterate($source, Inflector::TRANSLITERATE_MEDIUM));
+        foreach ($data as $source => $allowed) {
+            $this->assertIsOneOf(Inflector::transliterate($source, Inflector::TRANSLITERATE_MEDIUM), $allowed);
         }
     }
 
@@ -284,37 +285,37 @@ class InflectorTest extends TestCase
         // Some test strings are from https://github.com/bergie/midgardmvc_helper_urlize. Thank you, Henri Bergius!
         $data = [
             // Korean
-            '해동검도' => 'haedong-geomdo',
+            '해동검도' => ['haedong-geomdo'],
             // Hiragana
-            'ひらがな' => 'hiragana',
+            'ひらがな' => ['hiragana'],
             // Georgian
-            'საქართველო' => 'sakartvelo',
+            'საქართველო' => ['sakartvelo'],
             // Arabic
-            'العربي' => 'alrby',
-            'عرب' => 'rb',
+            'العربي' => ['alrby'],
+            'عرب' => ['rb'],
             // Hebrew
-            'עִבְרִית' => version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=') ? '\'iberiyt' : 'iberiyt',
+            'עִבְרִית' => ['\'iberiyt', 'iberiyt'],
             // Turkish
-            'Sanırım hepimiz aynı şeyi düşünüyoruz.' => 'Sanirim hepimiz ayni seyi dusunuyoruz.',
+            'Sanırım hepimiz aynı şeyi düşünüyoruz.' => ['Sanirim hepimiz ayni seyi dusunuyoruz.'],
 
             // Russian
-            'недвижимость' => 'nedvizimost',
-            'Контакты' => 'Kontakty',
+            'недвижимость' => ['nedvizimost\'', 'nedvizimost'],
+            'Контакты' => ['Kontakty'],
 
             // Ukrainian
-            'Українська: ґанок, європа' => 'Ukrainska: ganok, evropa',
+            'Українська: ґанок, європа' => ['Ukrainska: ganok, evropa', 'Ukrains\'ka: ganok, evropa'],
 
             // Serbian
-            'Српска: ђ, њ, џ!' => 'Srpska: d, n, d!',
+            'Српска: ђ, њ, џ!' => ['Srpska: d, n, d!'],
 
             // Spanish
-            '¿Español?' => 'Espanol?',
+            '¿Español?' => ['Espanol?'],
             // Chinese
-            '美国' => 'mei guo',
+            '美国' => ['mei guo'],
         ];
 
-        foreach ($data as $source => $expected) {
-            $this->assertEquals($expected, Inflector::transliterate($source, Inflector::TRANSLITERATE_LOOSE));
+        foreach ($data as $source => $allowed) {
+            $this->assertIsOneOf(Inflector::transliterate($source, Inflector::TRANSLITERATE_LOOSE), $allowed);
         }
     }
 

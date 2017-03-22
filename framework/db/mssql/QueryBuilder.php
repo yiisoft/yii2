@@ -35,7 +35,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_BIGINT => 'bigint',
         Schema::TYPE_FLOAT => 'float',
         Schema::TYPE_DOUBLE => 'float',
-        Schema::TYPE_DECIMAL => 'decimal',
+        Schema::TYPE_DECIMAL => 'decimal(18,0)',
         Schema::TYPE_DATETIME => 'datetime',
         Schema::TYPE_TIMESTAMP => 'datetime',
         Schema::TYPE_TIME => 'time',
@@ -45,6 +45,16 @@ class QueryBuilder extends \yii\db\QueryBuilder
         Schema::TYPE_MONEY => 'decimal(19,4)',
     ];
 
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapingReplacements = [
+        '%' => '[%]',
+        '_' => '[_]',
+        '[' => '[[]',
+        ']' => '[]]',
+        '\\' => '[\\]',
+    ];
 
     /**
      * @inheritdoc
@@ -168,25 +178,57 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * Creates a SQL statement for resetting the sequence value of a table's primary key.
+     * The sequence will be reset such that the primary key of the next new row inserted
+     * will have the specified value or 1.
+     * @param string $tableName the name of the table whose primary key sequence will be reset
+     * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
+     * the next new row's primary key will have a value 1.
+     * @return string the SQL statement for resetting sequence
+     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     */
+    public function resetSequence($tableName, $value = null)
+    {
+        $table = $this->db->getTableSchema($tableName);
+        if ($table !== null && $table->sequenceName !== null) {
+            $tableName = $this->db->quoteTableName($tableName);
+            if ($value === null) {
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
+                $value = "(SELECT COALESCE(MAX({$key}),0) FROM {$tableName})+1";
+            } else {
+                $value = (int) $value;
+            }
+
+            return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
+        } elseif ($table === null) {
+            throw new InvalidParamException("Table not found: $tableName");
+        } else {
+            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
+        }
+    }
+
+    /**
      * Builds a SQL statement for enabling or disabling integrity check.
      * @param bool $check whether to turn on or off the integrity check.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @param string $table the table name. Defaults to empty string, meaning that no table will be changed.
+     * @param string $schema the schema of the tables.
+     * @param string $table the table name.
      * @return string the SQL statement for checking integrity
-     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        if ($schema !== '') {
-            $table = "{$schema}.{$table}";
-        }
-        $table = $this->db->quoteTableName($table);
-        if ($this->db->getTableSchema($table) === null) {
-            throw new InvalidArgumentException("Table not found: $table");
-        }
         $enable = $check ? 'CHECK' : 'NOCHECK';
+        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
+        $viewNames = $this->db->getSchema()->getViewNames($schema);
+        $tableNames = array_diff($tableNames, $viewNames);
+        $command = '';
 
-        return "ALTER TABLE {$table} {$enable} CONSTRAINT ALL";
+        foreach ($tableNames as $tableName) {
+            $tableName = $this->db->quoteTableName("{$schema}.{$tableName}");
+            $command .= "ALTER TABLE $tableName $enable CONSTRAINT ALL; ";
+        }
+
+        return $command;
     }
 
     /**

@@ -14,6 +14,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     protected $driverName = 'sqlite';
 
+    protected $likeEscapeCharSql = " ESCAPE '\\'";
+
     public function columnTypes()
     {
         return array_merge(parent::columnTypes(), [
@@ -107,5 +109,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
+    }
+
+    public function testResetSequence()
+    {
+        $qb = $this->getQueryBuilder(true, true);
+
+        $expected = "UPDATE sqlite_sequence SET seq='5' WHERE name='item'";
+        $sql = $qb->resetSequence('item');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "UPDATE sqlite_sequence SET seq='3' WHERE name='item'";
+        $sql = $qb->resetSequence('item', 4);
+        $this->assertEquals($expected, $sql);
     }
 }

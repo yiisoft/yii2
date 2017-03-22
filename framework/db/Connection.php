@@ -713,18 +713,34 @@ class Connection extends Component
                 $transaction->commit();
             }
         } catch (\Exception $e) {
-            if ($transaction->isActive && $transaction->level === $level) {
-                $transaction->rollBack();
-            }
+            $this->rollbackTransactionOnLevel($transaction, $level);
             throw $e;
         } catch (\Throwable $e) {
-            if ($transaction->isActive && $transaction->level === $level) {
-                $transaction->rollBack();
-            }
+            $this->rollbackTransactionOnLevel($transaction, $level);
             throw $e;
         }
 
         return $result;
+    }
+
+    /**
+     * Rolls back given [[Transaction]] object if it's still active and level match.
+     * In some cases rollback can fail, so this method is fail safe. Exception thrown
+     * from rollback will be caught and just logged with [[\Yii::error()]].
+     * @param Transaction $transaction Transaction object given from [[beginTransaction()]].
+     * @param int $level Transaction level just after [[beginTransaction()]] call.
+     */
+    private function rollbackTransactionOnLevel($transaction, $level)
+    {
+        if ($transaction->isActive && $transaction->level === $level) {
+            // https://github.com/yiisoft/yii2/pull/13347
+            try {
+                $transaction->rollBack();
+            } catch (\Exception $e) {
+                \Yii::error($e, __METHOD__);
+                // hide this exception to be able to continue throwing original exception outside
+            }
+        }
     }
 
     /**

@@ -132,4 +132,18 @@ class ControllerTest extends TestCase
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
     }
+
+
+    /**
+     * Tests if action help does not include (class) type hinted arguments.
+     * @see #10372
+     */
+    public function testHelpSkipsTypeHintedArguments()
+     {
+         $controller = new FakeController('fake', Yii::$app);
+         $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
+
+         $this->assertArrayNotHasKey('typedArgument', $help);
+         $this->assertArrayHasKey('simpleArgument', $help);
+     }
 }
