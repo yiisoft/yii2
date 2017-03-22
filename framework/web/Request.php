@@ -200,7 +200,8 @@ class Request extends \yii\base\Request
     ];
 
     /**
-     * @var string[] List of headers where proxies store the real client IP, it's not advisable to put untrusted headers
+     * @see $trustedHostConfig
+     * @var string[] List of headers where proxies store the real client IP, it's not advisable to put insecure headers
      * here.
      */
     public $ipHeaders = [
