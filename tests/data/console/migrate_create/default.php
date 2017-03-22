@@ -20,13 +20,17 @@ class {$class} extends Migration
     }
 
     /*
-    // Use safeUp/safeDown to run migration code within a transaction
+    // Use safeUp/safeDown to run migration code within a transaction.
     public function safeUp()
     {
+
     }
 
     public function safeDown()
     {
+        echo "{$class} cannot be reverted.\\n";
+
+        return false;
     }
     */
 }

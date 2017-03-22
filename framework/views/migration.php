@@ -29,13 +29,17 @@ class <?= $className ?> extends Migration
     }
 
     /*
-    // Use safeUp/safeDown to run migration code within a transaction
+    // Use safeUp/safeDown to run migration code within a transaction.
     public function safeUp()
     {
+
     }
 
     public function safeDown()
     {
+        echo "<?= $className ?> cannot be reverted.\n";
+
+        return false;
     }
     */
 }
