@@ -106,7 +106,7 @@ class ActiveField extends \yii\widgets\ActiveField
                 }
 
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
-                if ($js != '') {
+                if ($js == '') {
                     $js = $this->form->getClientValidatorBuilder()->build($validator, $this->model, $attribute, $this->form->getView());
                 }
 

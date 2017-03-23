@@ -111,7 +111,7 @@ class ActiveForm extends \yii\widgets\ActiveForm
     /**
      * @var ClientValidatorBuilder|array|string|callable client validator builder.
      */
-    private $_clientValidatorBuilder;
+    private $_clientValidatorBuilder = [];
 
 
     /**

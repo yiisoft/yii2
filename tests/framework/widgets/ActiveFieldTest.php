@@ -29,7 +29,11 @@ class ActiveFieldTest extends \yiiunit\TestCase
      * @var ActiveForm
      */
     private $helperForm;
+    /**
+     * @var string
+     */
     private $attributeName = 'attributeName';
+
 
     protected function setUp()
     {
@@ -45,7 +49,7 @@ class ActiveFieldTest extends \yiiunit\TestCase
 
         $this->helperModel = new ActiveFieldTestModel(['attributeName']);
         ob_start();
-        $this->helperForm = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        $this->helperForm = ActiveForm::begin(['action' => '/something']);
         ActiveForm::end();
         ob_end_clean();
 
@@ -336,77 +340,6 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
     }
 
-    public function testGetClientOptionsReturnEmpty()
-    {
-        // setup: we want the real deal here!
-        $this->activeField->setClientOptionsEmpty(false);
-
-        // expected empty
-        $actualValue = $this->activeField->getClientOptions();
-        $this->assertTrue(empty($actualValue) === true);
-    }
-
-    public function testGetClientOptionsWithActiveAttributeInScenario()
-    {
-        $this->activeField->setClientOptionsEmpty(false);
-
-        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
-        $this->activeField->form->enableClientValidation = false;
-
-        // expected empty
-        $actualValue = $this->activeField->getClientOptions();
-        $this->assertTrue(empty($actualValue) === true);
-
-    }
-
-    public function testGetClientOptionsClientValidation()
-    {
-        $this->activeField->setClientOptionsEmpty(false);
-
-        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
-        $this->activeField->enableClientValidation = true;
-        $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {return true;}";
-        $this->assertEquals($expectedJsExpression, $actualValue['validate']);
-
-        $this->assertTrue(!isset($actualValue['validateOnChange']));
-        $this->assertTrue(!isset($actualValue['validateOnBlur']));
-        $this->assertTrue(!isset($actualValue['validateOnType']));
-        $this->assertTrue(!isset($actualValue['validationDelay']));
-        $this->assertTrue(!isset($actualValue['enableAjaxValidation']));
-
-        $this->activeField->validateOnChange = $expectedValidateOnChange = false;
-        $this->activeField->validateOnBlur = $expectedValidateOnBlur = false;
-        $this->activeField->validateOnType = $expectedValidateOnType = true;
-        $this->activeField->validationDelay = $expectedValidationDelay = 100;
-        $this->activeField->enableAjaxValidation = $expectedEnableAjaxValidation = true;
-
-        $actualValue = $this->activeField->getClientOptions();
-
-        $this->assertTrue($expectedValidateOnChange === $actualValue['validateOnChange']);
-        $this->assertTrue($expectedValidateOnBlur === $actualValue['validateOnBlur']);
-        $this->assertTrue($expectedValidateOnType === $actualValue['validateOnType']);
-        $this->assertTrue($expectedValidationDelay === $actualValue['validationDelay']);
-        $this->assertTrue($expectedEnableAjaxValidation === $actualValue['enableAjaxValidation']);
-    }
-
-    public function testGetClientOptionsValidatorWhenClientSet()
-    {
-        $this->activeField->setClientOptionsEmpty(false);
-        $this->activeField->enableAjaxValidation = true;
-        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
-
-        foreach($this->activeField->model->validators as $validator) {
-            $validator->whenClient = "function (attribute, value) { return 'yii2' == 'yii2'; }"; // js
-        }
-
-        $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {if ((function (attribute, value) "
-            . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
-
-        $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
-    }
-
     /**
      * @see https://github.com/yiisoft/yii2/issues/8779
      */
@@ -414,36 +347,6 @@ EOD;
     {
         $this->activeField->fileInput();
         $this->assertEquals('multipart/form-data', $this->activeField->form->options['enctype']);
-    }
-
-    /**
-     * @link https://github.com/yiisoft/yii2/issues/7627
-     */
-    public function testGetClientOptionsWithCustomInputId()
-    {
-        $this->activeField->setClientOptionsEmpty(false);
-
-        $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
-        $this->activeField->inputOptions['id'] = 'custom-input-id';
-        $this->activeField->textInput();
-        $actualValue = $this->activeField->getClientOptions();
-
-        $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-input-id',
-            'input' => '#custom-input-id',
-        ], $actualValue);
-
-        $this->activeField->textInput(['id' => 'custom-textinput-id']);
-        $actualValue = $this->activeField->getClientOptions();
-
-        $this->assertArraySubset([
-            'id' => 'activefieldtestmodel-attributename',
-            'name' => $this->attributeName,
-            'container' => '.field-custom-textinput-id',
-            'input' => '#custom-textinput-id',
-        ], $actualValue);
     }
 
     public function testAriaAttributes()
@@ -572,20 +475,6 @@ class ActiveFieldExtend extends ActiveField
     public function getClientOptions()
     {
         return ($this->getClientOptionsEmpty) ? [] : parent::getClientOptions();
-    }
-}
-
-class TestValidator extends \yii\validators\Validator
-{
-
-    public function clientValidateAttribute($object, $attribute, $view)
-    {
-        return "return true;";
-    }
-
-    public function setWhenClient($js)
-    {
-        $this->whenClient = $js;
     }
 }
 
