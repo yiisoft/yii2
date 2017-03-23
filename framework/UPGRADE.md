@@ -57,6 +57,14 @@ Upgrade from Yii 2.0.x
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
 
+* Classes `yii\widgets\ActiveForm`, `yii\widgets\ActiveField`, `yii\grid\GridView`, `yii\captcha\Captcha`, `yii\web\View`
+  have been refactored to be more generic without including any 'JQuery' support and client-side processing (validation, automatic submit etc.).
+  You should use `yii\jquery\*` package classes instead, to make old code function as before. E.g. use `yii\jquery\ActiveForm` instead
+  of `yii\widgets\ActiveForm`, `yii\jquery\GridView` instead of `yii\grid\GridView` and so on.
+
+* Assets `yii\web\JqueryAsset`, `yii\web\YiiAsset`, `yii\validators\ValidationAsset`, `yii\captcha\CaptchaAsset` have been
+  moved under `yii\jquery\*` namespace. Make sure you refer to the new full-qualified names of this classes.
+
 
 Upgrade from Yii 2.0.11
 -----------------------
