@@ -8,6 +8,7 @@
 namespace yii\jquery;
 
 use yii\base\Object;
+use yii\captcha\CaptchaValidator;
 use yii\helpers\Json;
 use yii\validators\BooleanValidator;
 use yii\validators\CompareValidator;
@@ -124,6 +125,12 @@ class ClientValidatorBuilder extends Object
             }
             $options = $validator->getClientOptions($model, $attribute);
             return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
+        }
+
+        if ($validator instanceof CaptchaValidator) {
+            ValidationAsset::register($view);
+            $options = $validator->getClientOptions($model, $attribute);
+            return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
         }
 
         return null;
