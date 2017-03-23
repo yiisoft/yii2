@@ -300,9 +300,14 @@ class ActiveRecord extends BaseActiveRecord
      * @inheritdoc
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */
-    public static function find()
+    public static function find($id=null)
     {
-        return Yii::createObject(ActiveQuery::class, [get_called_class()]);
+        //THis bullshit function should return single instance on passing a numberic value
+        $n =  Yii::createObject(ActiveQuery::class, [get_called_class()]);
+        if($id != null && is_numeric($id)){
+            return $n->where(['id'=>$id])->one();
+        }
+        return $n;
     }
 
     /**
