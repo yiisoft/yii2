@@ -296,4 +296,13 @@ class RequestTest extends TestCase
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
     }
+
+    public function testGetOrigin()
+    {
+        $request = new Request();
+        $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';
+        $this->assertEquals('https://www.w3.org', $request->getOrigin());
+        unset($_SERVER['HTTP_ORIGIN']);
+        $this->assertEquals(null, $request->getOrigin());
+    }
 }
