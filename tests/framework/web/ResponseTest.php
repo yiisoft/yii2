@@ -135,17 +135,13 @@ class ResponseTest extends \yiiunit\TestCase
 
     public function dataProviderSetStatusCodeByException()
     {
-        return [
+        $data = [
             [
                 new Exception(),
                 500,
             ],
             [
                 new RuntimeException(),
-                500,
-            ],
-            [
-                new Error(),
                 500,
             ],
             [
@@ -169,5 +165,14 @@ class ResponseTest extends \yiiunit\TestCase
                 200,
             ],
         ];
+
+        if (class_exists('Error')) {
+            $data[] = [
+                new Error(),
+                500,
+            ];
+        }
+
+        return $data;
     }
 }
