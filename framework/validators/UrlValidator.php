@@ -10,7 +10,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\web\JsExpression;
-use yii\helpers\Json;
 
 /**
  * UrlValidator validates that the attribute value is a valid http or https URL.
@@ -106,20 +105,6 @@ class UrlValidator extends Validator
         }
 
         return [$this->message, []];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**

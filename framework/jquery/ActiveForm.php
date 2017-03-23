@@ -7,6 +7,7 @@
 
 namespace yii\jquery;
 
+use Yii;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
@@ -15,6 +16,9 @@ use yii\helpers\Url;
  * via underlying jQuery component.
  *
  * @see ActiveField
+ *
+ * @property ClientValidatorBuilder $clientValidatorBuilder client validator builder instance. Note that the type of this property differs in getter and setter. See
+ * [[getClientValidatorBuilder()]] and [[setClientValidatorBuilder()]] for details.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
@@ -104,6 +108,33 @@ class ActiveForm extends \yii\widgets\ActiveForm
      */
     public $attributes = [];
 
+    /**
+     * @var ClientValidatorBuilder|array|string|callable client validator builder.
+     */
+    private $_clientValidatorBuilder;
+
+
+    /**
+     * @return ClientValidatorBuilder client validator builder instance
+     */
+    public function getClientValidatorBuilder()
+    {
+        if (!is_object($this->_clientValidatorBuilder) || $this->_clientValidatorBuilder instanceof \Closure) {
+            if (is_array($this->_clientValidatorBuilder) && !isset($this->_clientValidatorBuilder['class'])) {
+                $this->_clientValidatorBuilder['class'] = ClientValidatorBuilder::class;
+            }
+            $this->_clientValidatorBuilder = Yii::createObject($this->_clientValidatorBuilder);
+        }
+        return $this->_clientValidatorBuilder;
+    }
+
+    /**
+     * @param array|callable|string|ClientValidatorBuilder $clientValidatorBuilder client validator builder instance or DI compatible configuration.
+     */
+    public function setClientValidatorBuilder($clientValidatorBuilder)
+    {
+        $this->_clientValidatorBuilder = $clientValidatorBuilder;
+    }
 
     /**
      * Runs the widget.

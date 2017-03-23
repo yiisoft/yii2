@@ -101,8 +101,16 @@ class ActiveField extends \yii\widgets\ActiveField
             $validators = [];
             foreach ($this->model->getActiveValidators($attribute) as $validator) {
                 /* @var $validator \yii\validators\Validator */
+                if (!$validator->enableClientValidation) {
+                    continue;
+                }
+
                 $js = $validator->clientValidateAttribute($this->model, $attribute, $this->form->getView());
-                if ($validator->enableClientValidation && $js != '') {
+                if ($js != '') {
+                    $js = $this->form->getClientValidatorBuilder()->build($validator, $this->model, $attribute, $this->form->getView());
+                }
+
+                if ($js != '') {
                     if ($validator->whenClient !== null) {
                         $js = "if (({$validator->whenClient})(attribute, value)) { $js }";
                     }

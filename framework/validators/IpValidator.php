@@ -585,17 +585,6 @@ class IpValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getClientOptions($model, $attribute)
     {
         $messages = [

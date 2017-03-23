@@ -63,17 +63,6 @@ class RegularExpressionValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.regularExpression(value, messages, ' . Json::htmlEncode($options) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function getClientOptions($model, $attribute)
     {
         $pattern = Html::escapeJsRegularExpression($this->pattern);

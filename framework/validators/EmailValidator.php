@@ -10,7 +10,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\web\JsExpression;
-use yii\helpers\Json;
 
 /**
  * EmailValidator validates that the attribute value is a valid email address.
@@ -102,20 +101,6 @@ class EmailValidator extends Validator
         }
 
         return $valid ? null : [$this->message, []];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
     }
 
     /**
