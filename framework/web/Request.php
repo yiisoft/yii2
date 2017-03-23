@@ -905,6 +905,15 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Returns the URL origin.
+     * @return string|null URL origin, null if not available
+     */
+    public function getOrigin()
+    {
+        return isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
+    }
+
+    /**
      * Returns the user agent.
      * @return string|null user agent, null if not available
      */
