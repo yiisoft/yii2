@@ -174,11 +174,9 @@ class RequestTest extends TestCase
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $request->setBodyParams([]);
-            //$request->headers->remove(Request::CSRF_HEADER);
-            unset($_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))]);
+            $request->headers->remove(Request::CSRF_HEADER);
             $this->assertFalse($request->validateCsrfToken());
-            //$request->headers->add(Request::CSRF_HEADER, $token);
-            $_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))] = $token;
+            $request->headers->add(Request::CSRF_HEADER, $token);
             $this->assertTrue($request->validateCsrfToken());
         }
 
@@ -295,5 +293,27 @@ class RequestTest extends TestCase
 
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
+    }
+
+    public function testMasking()
+    {
+        $this->mockWebApplication();
+        $request = new Request();
+        $rc = new \ReflectionClass($request);
+
+        $mask = $rc->getMethod('maskCsrfToken');
+        $mask->setAccessible(true);
+        $unmask = $rc->getMethod('unmaskCsrfToken');
+        $unmask->setAccessible(true);
+
+        foreach([
+            'SimpleToken',
+            'Token with special characters: %d1    5"',
+            "Token with UTF8 character: †"
+        ] as $token) {
+            $this->assertEquals($token, $unmask->invoke($request, $mask->invoke($request, $token)));
+        }
+
+
     }
 }
