@@ -70,6 +70,7 @@ use yii\helpers\StringHelper;
  * read-only.
  * @property string $rawBody The request body.
  * @property string|null $referrer URL referrer, null if not available. This property is read-only.
+ * @property string|null $origin URL origin, null if not available. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property int $securePort Port number for secure requests.
