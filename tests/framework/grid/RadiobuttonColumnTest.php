@@ -17,6 +17,7 @@ use yiiunit\TestCase;
 /**
  * Class RadiobuttonColumnTest
  * @package yiiunit\framework\grid
+ * @group grid
  * @since 2.0.11
  */
 class RadiobuttonColumnTest extends TestCase

@@ -411,7 +411,7 @@ class PhpManager extends BaseManager
     {
         $role = $this->getRole($roleName);
 
-        if (is_null($role)) {
+        if ($role === null) {
             throw new InvalidArgumentException("Role \"$roleName\" not found.");
         }
 

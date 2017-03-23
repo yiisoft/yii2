@@ -27,10 +27,10 @@ class InstanceTest extends TestCase
         $className = Component::class;
         $instance = Instance::of($className);
 
-        $this->assertTrue($instance instanceof Instance);
-        $this->assertTrue($instance->get($container) instanceof Component);
-        $this->assertTrue(Instance::ensure($instance, $className, $container) instanceof Component);
-        $this->assertTrue($instance->get($container) !== Instance::ensure($instance, $className, $container));
+        $this->assertInstanceOf('\\yii\\di\\Instance', $instance);
+        $this->assertInstanceOf(Component::className(), $instance->get($container));
+        $this->assertInstanceOf(Component::className(), Instance::ensure($instance, $className, $container));
+        $this->assertNotSame($instance->get($container), Instance::ensure($instance, $className, $container));
     }
 
     public function testEnsure()
@@ -41,9 +41,9 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertTrue(Instance::ensure('db', 'yii\db\Connection', $container) instanceof Connection);
-        $this->assertTrue(Instance::ensure(new Connection, 'yii\db\Connection', $container) instanceof Connection);
-        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container) instanceof Connection);
+        $this->assertInstanceOf(Connection::className(), Instance::ensure('db', 'yii\db\Connection', $container));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection, 'yii\db\Connection', $container));
+        $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
     }
 
     /**
@@ -74,9 +74,9 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertTrue(Instance::ensure('db', null, $container) instanceof Connection);
-        $this->assertTrue(Instance::ensure(new Connection, null, $container) instanceof Connection);
-        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container) instanceof Connection);
+        $this->assertInstanceOf(Connection::className(), Instance::ensure('db', null, $container));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection, null, $container));
+        $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container));
     }
 
     public function testEnsure_MinimalSettings()
@@ -86,10 +86,9 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertTrue(Instance::ensure('db') instanceof Connection);
-        $this->assertTrue(Instance::ensure(new Connection) instanceof Connection);
-        $this->assertTrue(Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']) instanceof Connection);
-
+        $this->assertInstanceOf(Connection::className(), Instance::ensure('db'));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
         Yii::$container = new Container;
     }
 
@@ -132,7 +131,7 @@ class InstanceTest extends TestCase
 
         $container = Instance::of('db');
 
-        $this->assertTrue($container->get() instanceof Connection);
+        $this->assertInstanceOf(Connection::className(), $container->get());
 
         $this->destroyApplication();
     }
@@ -155,5 +154,32 @@ class InstanceTest extends TestCase
         $this->assertInstanceOf('yii\caching\DbCache', $cache = Yii::$container->get('cache'));
         $this->assertInstanceOf('yii\db\Connection', $db = $cache->db);
         $this->assertEquals('sqlite:path/to/file.db', $db->dsn);
+    }
+
+    public function testRestoreAfterVarExport()
+    {
+        $instance = Instance::of('something');
+        $export = var_export($instance, true);
+
+        $this->assertRegExp(<<<'PHP'
+@yii\\di\\Instance::__set_state\(array\(
+\s+'id' => 'something',
+\)\)@
+PHP
+        , $export);
+
+        $this->assertEquals($instance, Instance::__set_state([
+            'id' => 'something',
+        ]));
+    }
+
+    public function testRestoreAfterVarExportRequiresId()
+    {
+        $this->setExpectedException(
+            'yii\base\InvalidConfigException',
+            'Failed to instantiate class "Instance". Required parameter "id" is missing'
+        );
+
+        Instance::__set_state([]);
     }
 }

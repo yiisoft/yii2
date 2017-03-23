@@ -424,7 +424,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         $validators = [];
         $scenario = $this->getScenario();
         foreach ($this->getValidators() as $validator) {
-            if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
+            if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->getAttributeNames(), true))) {
                 $validators[] = $validator;
             }
         }

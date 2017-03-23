@@ -140,7 +140,8 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $configFileName = $this->configFileName;
         $out = $this->runMessageControllerAction('config', [$configFileName]);
-        $this->assertTrue(file_exists($configFileName), "Unable to create config file from template. Command output:\n\n" . $out);
+        $this->assertFileExists($configFileName,
+            "Unable to create config file from template. Command output:\n\n" . $out);
     }
 
     public function testConfigFileNotExist()
@@ -177,7 +178,8 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
         $out .= $this->runMessageControllerAction('extract', [$this->configFileName]);
 
-        $this->assertTrue(strpos($out, 'Nothing to save') !== false, "Controller should respond with \"Nothing to save\" if there's nothing to update. Command output:\n\n" . $out);
+        $this->assertNotFalse(strpos($out, 'Nothing to save'),
+            "Controller should respond with \"Nothing to save\" if there's nothing to update. Command output:\n\n" . $out);
     }
 
     /**
@@ -280,8 +282,12 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $messages = $this->loadMessages($category);
-        $this->assertTrue($zeroMessageContent === $messages[$zeroMessage], "Message content \"0\" is lost. Command output:\n\n" . $out);
-        $this->assertTrue($falseMessageContent === $messages[$falseMessage], "Message content \"false\" is lost. Command output:\n\n" . $out);
+        $this->assertSame($zeroMessageContent,
+            $messages[$zeroMessage],
+            "Message content \"0\" is lost. Command output:\n\n" . $out);
+        $this->assertSame($falseMessageContent,
+            $messages[$falseMessage],
+            "Message content \"false\" is lost. Command output:\n\n" . $out);
     }
 
     /**

@@ -131,4 +131,17 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         return $data;
     }
+
+    public function testResetSequence()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "SELECT SETVAL('\"item_id_seq\"',(SELECT COALESCE(MAX(\"id\"),0) FROM \"item\")+1,false)";
+        $sql = $qb->resetSequence('item');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "SELECT SETVAL('\"item_id_seq\"',4,false)";
+        $sql = $qb->resetSequence('item', 4);
+        $this->assertEquals($expected, $sql);
+    }
 }

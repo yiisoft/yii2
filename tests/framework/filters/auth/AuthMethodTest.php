@@ -47,9 +47,9 @@ class AuthMethodTest extends TestCase
         $controller = new Controller('test', Yii::$app);
         return new Action('index', $controller, $config);
     }
-    
+
     // Tests :
-    
+
     public function testBeforeAction()
     {
         $action = $this->createAction();

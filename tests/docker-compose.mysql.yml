@@ -1,0 +1,15 @@
+version: '2'
+services:
+
+  php:
+    depends_on:
+      - mysql
+
+  mysql:
+    image: ${DOCKER_MYSQL_IMAGE}
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=yiitest
+      - MYSQL_USER=travis
+      - MYSQL_PASSWORD=travis
+

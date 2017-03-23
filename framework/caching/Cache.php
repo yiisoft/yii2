@@ -522,7 +522,7 @@ abstract class Cache extends Component implements \ArrayAccess
 
         $value = call_user_func($closure, $this);
         if (!$this->set($key, $value, $duration, $dependency)) {
-            Yii::warning('Failed to set cache value for key ' . json_encode($value), __METHOD__);
+            Yii::warning('Failed to set cache value for key ' . json_encode($key), __METHOD__);
         }
 
         return $value;

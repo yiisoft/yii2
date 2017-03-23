@@ -472,7 +472,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Session open handler.
      * This method should be overridden if [[useCustomStorage]] returns true.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $savePath session save path
      * @param string $sessionName session name
      * @return bool whether session is opened successfully
@@ -485,7 +485,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Session close handler.
      * This method should be overridden if [[useCustomStorage]] returns true.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @return bool whether session is closed successfully
      */
     public function closeSession()
@@ -496,7 +496,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Session read handler.
      * This method should be overridden if [[useCustomStorage]] returns true.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return string the session data
      */
@@ -508,7 +508,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Session write handler.
      * This method should be overridden if [[useCustomStorage]] returns true.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
      * @return bool whether session write is successful
@@ -521,7 +521,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Session destroy handler.
      * This method should be overridden if [[useCustomStorage]] returns true.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return bool whether session is destroyed successfully
      */
@@ -533,7 +533,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Session GC (garbage collection) handler.
      * This method should be overridden if [[useCustomStorage]] returns true.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
      * @return bool whether session is GCed successfully
      */

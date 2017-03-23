@@ -10,6 +10,9 @@ use yiiunit\framework\console\controllers\EchoMigrateController;
 
 /**
  * DbManagerTestCase
+ * @group db
+ * @group rbac
+ * @group mysql
  */
 abstract class DbManagerTestCase extends ManagerTestCase
 {

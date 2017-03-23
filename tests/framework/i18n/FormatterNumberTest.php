@@ -264,13 +264,9 @@ class FormatterNumberTest extends TestCase
         // default russian currency symbol
         $this->formatter->locale = 'ru-RU';
         $this->formatter->currencyCode = null;
-        if (version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=')) {
-            $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123'));
-        } else {
-            $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
-        }
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123,00 ₽', '123,00 руб.']);
         $this->formatter->currencyCode = 'RUB';
-        $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123,00 ₽', '123,00 руб.']);
 
         // custom currency symbol
         $this->formatter->currencyCode = null;
@@ -279,16 +275,19 @@ class FormatterNumberTest extends TestCase
         ];
         $this->assertSame('123,00 ₽', $this->formatter->asCurrency('123'));
         $this->formatter->numberFormatterSymbols = [
-            NumberFormatter::CURRENCY_SYMBOL => '&#8381;',
+            NumberFormatter::CURRENCY_SYMBOL => 'RUR',
         ];
-        $this->assertSame('123,00 &#8381;', $this->formatter->asCurrency('123'));
+        $this->assertSame('123,00 RUR', $this->formatter->asCurrency('123'));
+
+        /* See https://github.com/yiisoft/yii2/issues/13629
         // setting the currency code overrides the symbol
         $this->formatter->currencyCode = 'RUB';
-        $this->assertSame('123,00 руб.', $this->formatter->asCurrency('123'));
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123,00 ₽', '123,00 руб.']);
         $this->formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '₽'];
         $this->assertSame('123,00 $', $this->formatter->asCurrency('123', 'USD'));
         $this->formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '₽'];
         $this->assertSame('123,00 €', $this->formatter->asCurrency('123', 'EUR'));
+        */
 
         // custom separators
         $this->formatter->locale = 'de-DE';
@@ -342,11 +341,8 @@ class FormatterNumberTest extends TestCase
 
         $this->formatter->locale = 'ru-RU';
         $this->formatter->currencyCode = null;
-        if (version_compare(INTL_ICU_DATA_VERSION, '57.1', '>=')) {
-            $this->assertSame('123 ₽', $this->formatter->asCurrency('123'));
-        } else {
-            $this->assertSame('123 руб.', $this->formatter->asCurrency('123'));
-        }
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123 ₽', '123 руб.']);
+
         $this->formatter->numberFormatterSymbols = [
             NumberFormatter::CURRENCY_SYMBOL => '&#8381;',
         ];
@@ -354,7 +350,7 @@ class FormatterNumberTest extends TestCase
 
         $this->formatter->numberFormatterSymbols = [];
         $this->formatter->currencyCode = 'RUB';
-        $this->assertSame('123 руб.', $this->formatter->asCurrency('123'));
+        $this->assertIsOneOf($this->formatter->asCurrency('123'), ['123 ₽', '123 руб.']);
     }
 
     /**
