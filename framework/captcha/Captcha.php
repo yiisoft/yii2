@@ -100,10 +100,10 @@ class Captcha extends InputWidget
 
     /**
      * Renders the widget.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
-        $this->registerClientScript();
         if ($this->hasModel()) {
             $input = Html::activeTextInput($this->model, $this->attribute, $this->options);
         } else {
@@ -116,44 +116,10 @@ class Captcha extends InputWidget
             $route = [$route, 'v' => uniqid()];
         }
         $image = Html::img($route, $this->imageOptions);
-        echo strtr($this->template, [
+        return strtr($this->template, [
             '{input}' => $input,
             '{image}' => $image,
         ]);
-    }
-
-    /**
-     * Registers the needed JavaScript.
-     */
-    public function registerClientScript()
-    {
-        $options = $this->getClientOptions();
-        $options = empty($options) ? '' : Json::htmlEncode($options);
-        $id = $this->imageOptions['id'];
-        $view = $this->getView();
-        CaptchaAsset::register($view);
-        $view->registerJs("jQuery('#$id').yiiCaptcha($options);");
-    }
-
-    /**
-     * Returns the options for the captcha JS widget.
-     * @return array the options
-     */
-    protected function getClientOptions()
-    {
-        $route = $this->captchaAction;
-        if (is_array($route)) {
-            $route[CaptchaAction::REFRESH_GET_VAR] = 1;
-        } else {
-            $route = [$route, CaptchaAction::REFRESH_GET_VAR => 1];
-        }
-
-        $options = [
-            'refreshUrl' => Url::toRoute($route),
-            'hashKey' => 'yiiCaptcha/' . trim($route[0], '/'),
-        ];
-
-        return $options;
     }
 
     /**
