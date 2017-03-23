@@ -89,7 +89,11 @@ class Request extends \yii\base\Request
      * The name of the HTTP header for sending CSRF token.
      */
     const CSRF_HEADER = 'X-CSRF-Token';
-
+    /**
+    * The length of the CSRF token mask.
+    * @deprecated 2.0.13 The mask length is now equal to the token length.
+    */
+    const CSRF_MASK_LENGTH = 8;
     /**
      * @var bool whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
      * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
