@@ -294,26 +294,4 @@ class RequestTest extends TestCase
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
     }
-
-    public function testMasking()
-    {
-        $this->mockWebApplication();
-        $request = new Request();
-        $rc = new \ReflectionClass($request);
-
-        $mask = $rc->getMethod('maskCsrfToken');
-        $mask->setAccessible(true);
-        $unmask = $rc->getMethod('unmaskCsrfToken');
-        $unmask->setAccessible(true);
-
-        foreach([
-            'SimpleToken',
-            'Token with special characters: %d1    5"',
-            "Token with UTF8 character: †"
-        ] as $token) {
-            $this->assertEquals($token, $unmask->invoke($request, $mask->invoke($request, $token)));
-        }
-
-
-    }
 }

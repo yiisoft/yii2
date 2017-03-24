@@ -338,4 +338,31 @@ class BaseStringHelper
     {
         return base64_decode(strtr($input, '-_', '+/'));
     }
+
+    /**
+     * @param string $token An unmasked token.
+     * @return string A masked token.
+     * @since 2.0.13
+     */
+    public static function maskCsrfToken($token)
+    {
+        // Mask always equal length (in bytes) to token.
+        $mask = Yii::$app->security->generateRandomKey(strlen($token));
+        return static::base64UrlEncode($mask . ($mask ^ $token));
+    }
+
+    /**
+     * @param $maskedToken A masked token.
+     * @return string An unmasked token, or an empty string in case of invalid token format.
+     * @since 2.0.13
+     */
+    public static function unmaskCsrfToken($maskedToken)
+    {
+        $decoded = static::base64UrlDecode($maskedToken);
+        $length = strlen($decoded) / 2;
+        if (!is_int($length)) {
+            return "";
+        }
+        return substr($decoded, $length, $length) ^ substr($decoded, 0, $length);
+    }
 }

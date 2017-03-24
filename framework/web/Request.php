@@ -1325,7 +1325,7 @@ class Request extends \yii\base\Request
             if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
                 $token = $this->generateCsrfToken();
             }
-            $this->_csrfToken = $this->maskCsrfToken($token);
+            $this->_csrfToken = StringHelper::maskCsrfToken($token);
         }
 
         return $this->_csrfToken;
@@ -1359,31 +1359,6 @@ class Request extends \yii\base\Request
             Yii::$app->getSession()->set($this->csrfParam, $token);
         }
         return $token;
-    }
-
-    /**
-     * @param string $token An unmasked token.
-     * @return string A masked token.
-     */
-    protected function maskCsrfToken($token)
-    {
-        // Mask always equal length (in bytes) to token.
-        $mask = Yii::$app->security->generateRandomKey(strlen($token));
-        return StringHelper::base64UrlEncode($mask . ($mask ^ $token));
-    }
-
-    /**
-     * @param $maskedToken A masked token.
-     * @return string An unmasked token, or an empty string in case of invalid token format.
-     */
-    protected function unmaskCsrfToken($maskedToken)
-    {
-        $decoded = StringHelper::base64UrlDecode($maskedToken);
-        $length = strlen($decoded) / 2;
-        if (!is_int($length)) {
-            return "";
-        }
-       return substr($decoded, $length, $length) ^ substr($decoded, 0, $length);
     }
 
     /**
@@ -1454,6 +1429,6 @@ class Request extends \yii\base\Request
             return false;
         }
 
-        return $this->unmaskCsrfToken($token) === $this->unmaskCsrfToken($trueToken);
+        return StringHelper::unmaskCsrfToken($token) === StringHelper::unmaskCsrfToken($trueToken);
     }
 }
