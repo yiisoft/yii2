@@ -1221,7 +1221,7 @@ class BaseHtml
             foreach ($model->getErrors() as $errors) {
                 foreach ($errors as $error) {
                     $line = $encode ? Html::encode($error) : $error;
-                    if (!in_array($line, $lines)) {
+                    if (!in_array($line, $lines, true)) {
                         $lines[] = $line;
                     }
                     if (!$showAllErrors) {
