@@ -61,6 +61,9 @@ Upgrade from Yii 2.0.11
 
 * `yii\web\User::loginRequired()` now throws an `UnauthorizedHttpException` instead of a `ForbiddenHttpException`.
   Check and adjust your try-catch blocks.
+  
+* The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
+  `$params`.
 
 
 Upgrade from Yii 2.0.10
