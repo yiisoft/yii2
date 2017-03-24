@@ -56,7 +56,7 @@ Yii Framework 2 Change Log
 - Enh #13823: Refactored migrations template (Kolyunya)
 - Bug #13822: Fixed `yii\web\User::loginRequired()` to throw an `UnauthorizedHttpException` instead of a `ForbiddenHttpException` (Kolyunya)
 - Enh #13845: `mt_rand()` is used instead of `rand()` in `yii\captcha\CaptchaAction` (kalessil)
-- Enh #13814: Mysql unique index names can contain spaces (df2)
+- Enh #13814: MySQL unique index names can now contain spaces (df2)
 
 2.0.11.2 February 08, 2017
 --------------------------
