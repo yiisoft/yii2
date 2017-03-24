@@ -359,7 +359,7 @@ class BaseStringHelper
     public static function unmaskCsrfToken($maskedToken)
     {
         $decoded = static::base64UrlDecode($maskedToken);
-        $length = strlen($decoded) / 2;
+        $length = static::byteLength($decoded) / 2;
         if (!is_int($length)) {
             return "";
         }
