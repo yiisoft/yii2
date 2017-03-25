@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.12 under development
 --------------------------
-
+- Bug #13842: Fixed ambiguous error sql while using unique validator (vladis84)
 - Enh #13820: Add new HTTP status code 451 (yyxx9988)
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
