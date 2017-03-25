@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\console\widgets;
 
@@ -8,36 +13,88 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 
 /**
- * Class Table
+ * Table display a table in console.
+ *
+ * For example,
+ *
+ * ```php
+ * $table = new Table();
+ *
+ * echo $table->setHeader(['test1', 'test2', 'test3'])
+ *            ->setRows([
+ *               ['col1', 'col2', 'col3'],
+ *               ['col1', 'col2', 'col3']
+ *      ])->render();
+ * ```
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.12
  */
 class Table extends Object
 {
+    /**
+     * @var array table headers
+     */
     private $_headers = [];
+    /**
+     * @var array table rows
+     */
     private $_rows = [];
+    /**
+     * @var array table chars
+     */
     private $_chars = [
-        'top' => '═', 'top-mid' => '╤', 'top-left' => '╔',
-        'top-right' => '╗', 'bottom' => '═', 'bottom-mid' => '╧',
-        'bottom-left' => '╚', 'bottom-right' => '╝', 'left' => '║',
-        'left-mid' => '╟', 'mid' => '─', 'mid-mid' => '┼',
-        'right' => '║', 'right-mid' => '╢', 'middle' => '│',
+        'top' => '═',
+        'top-mid' => '╤',
+        'top-left' => '╔',
+        'top-right' => '╗',
+        'bottom' => '═',
+        'bottom-mid' => '╧',
+        'bottom-left' => '╚',
+        'bottom-right' => '╝',
+        'left' => '║',
+        'left-mid' => '╟',
+        'mid' => '─',
+        'mid-mid' => '┼',
+        'right' => '║',
+        'right-mid' => '╢',
+        'middle' => '│',
     ];
+    /**
+     * @var array table column widths
+     */
     private $_columnWidths = [];
 
+    /**
+     * Set table headers
+     *
+     * @param array $headers table headers
+     * @return $this
+     */
     public function setHeaders(array $headers)
     {
         $this->_headers = $headers;
         return $this;
     }
 
+    /**
+     * Set table rows
+     *
+     * @param array $rows table rows
+     * @return $this
+     */
     public function setRows(array $rows)
     {
         $this->_rows = $rows;
         return $this;
     }
 
+    /**
+     * Set table chars
+     *
+     * @param array $chars table chars
+     * @return $this
+     */
     public function setChars(array $chars)
     {
         $this->_chars = $chars;
@@ -45,8 +102,6 @@ class Table extends Object
     }
 
     /**
-     * Renders table to output.
-     *
      * @return string the generated table
      */
     public function render()
@@ -87,6 +142,14 @@ class Table extends Object
         return $buffer;
     }
 
+    /**
+     * @param array $row
+     * @param $spanLeft
+     * @param $spanMiddle
+     * @param $spanRight
+     * @return string the generated row
+     * @see \yii\console\widgets\Table::render()
+     */
     protected function renderRows(array $row, $spanLeft, $spanMiddle, $spanRight)
     {
         $size = $this->_columnWidths;
@@ -118,6 +181,14 @@ class Table extends Object
         return $buffer;
     }
 
+    /**
+     * @param $spanLeft
+     * @param $spanMid
+     * @param $spanMidMid
+     * @param $spanRight
+     * @return string the generated separator row
+     * @see \yii\console\widgets\Table::render()
+     */
     protected function renderSeparator($spanLeft, $spanMid, $spanMidMid, $spanRight)
     {
         $separator = $spanLeft;
@@ -131,6 +202,11 @@ class Table extends Object
         return $separator;
     }
 
+    /**
+     * Calculate the size of rows to draw anchor of columns in console
+     *
+     * @see \yii\console\widgets\Table::render()
+     */
     protected function calculateSizeRows()
     {
         $this->_columnWidths = $columns = [];
@@ -152,7 +228,7 @@ class Table extends Object
 
         if ($totalWidth > $screenWidth) {
             foreach ($this->_columnWidths as $j => $width) {
-                $this->_columnWidths[$j] = intval($width * $relativeWidth);
+                $this->_columnWidths[$j] = (int)($width * $relativeWidth);
                 if ($j == count($this->_columnWidths)) {
                     $this->_columnWidths = $totalWidth;
                 }
