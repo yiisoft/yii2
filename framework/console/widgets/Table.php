@@ -235,7 +235,5 @@ class Table extends Object
                 $totalWidth -= $this->_columnWidths[$j];
             }
         }
-
-        $this->_columnWidths;
     }
 }
