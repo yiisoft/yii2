@@ -20,7 +20,7 @@ class GridViewAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $sourcePath = '@yii/assets';
+    public $sourcePath = '@yii/jquery/assets';
     /**
      * @inheritdoc
      */

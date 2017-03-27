@@ -213,10 +213,7 @@ class GridView extends BaseListView
      * as GET parameters to this URL.
      */
     public $filterUrl;
-    /**
-     * @var string additional jQuery selector for selecting filter input fields
-     */
-    public $filterSelector;
+    
     /**
      * @var string whether the filters should be displayed in the grid view. Valid values include:
      *
