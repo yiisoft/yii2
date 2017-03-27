@@ -9,7 +9,6 @@ namespace yii\captcha;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\validators\ValidationAsset;
 use yii\validators\Validator;
 
 /**
@@ -79,39 +78,5 @@ class CaptchaValidator extends Validator
             }
         }
         throw new InvalidConfigException('Invalid CAPTCHA action ID: ' . $this->captchaAction);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $captcha = $this->createCaptchaAction();
-        $code = $captcha->getVerifyCode(false);
-        $hash = $captcha->generateValidationHash($this->caseSensitive ? $code : strtolower($code));
-        $options = [
-            'hash' => $hash,
-            'hashKey' => 'yiiCaptcha/' . $captcha->getUniqueId(),
-            'caseSensitive' => $this->caseSensitive,
-            'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        return $options;
     }
 }

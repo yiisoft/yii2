@@ -25,7 +25,7 @@ class ActiveFormTest extends \yiiunit\TestCase
 
         $model = new DynamicModel(['name']);
         ob_start();
-        $form = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['action' => '/something']);
         ActiveForm::end();
         ob_end_clean();
 
@@ -60,7 +60,7 @@ EOF
         $model = new DynamicModel(['categories']);
         $model->categories = 1;
         ob_start();
-        $form = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['action' => '/something']);
         ActiveForm::end();
         ob_end_clean();
 
@@ -84,7 +84,7 @@ EOF
 
         $model = new DynamicModel(['name']);
 
-        $form = ActiveForm::begin(['id' => 'someform', 'action' => '/someform', 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['id' => 'someform', 'action' => '/someform']);
         echo "\n" . $form->field($model, 'name') . "\n";
         ActiveForm::end();
 

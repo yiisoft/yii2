@@ -98,45 +98,4 @@ class RangeValidator extends Validator
         }
         parent::validateAttribute($model, $attribute);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        if ($this->range instanceof \Closure) {
-            $this->range = call_user_func($this->range, $model, $attribute);
-        }
-
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $range = [];
-        foreach ($this->range as $value) {
-            $range[] = (string) $value;
-        }
-        $options = [
-            'range' => $range,
-            'not' => $this->not,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->allowArray) {
-            $options['allowArray'] = 1;
-        }
-
-        return $options;
-    }
 }

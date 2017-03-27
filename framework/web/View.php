@@ -68,12 +68,12 @@ class View extends \yii\base\View
     const POS_END = 3;
     /**
      * The location of registered JavaScript code block.
-     * This means the JavaScript code block will be enclosed within `jQuery(document).ready()`.
+     * This means the JavaScript code block will be executed when HTML document composition is ready.
      */
     const POS_READY = 4;
     /**
      * The location of registered JavaScript code block.
-     * This means the JavaScript code block will be enclosed within `jQuery(window).load()`.
+     * This means the JavaScript code block will be executed when HTML page is completely loaded.
      */
     const POS_LOAD = 5;
     /**
@@ -439,9 +439,6 @@ class View extends \yii\base\View
     {
         $key = $key ?: md5($js);
         $this->js[$position][$key] = $js;
-        if ($position === self::POS_READY || $position === self::POS_LOAD) {
-            JqueryAsset::register($this);
-        }
     }
 
     /**
@@ -569,15 +566,41 @@ class View extends \yii\base\View
                 $lines[] = Html::script(implode("\n", $this->js[self::POS_END]), ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_READY])) {
-                $js = "jQuery(document).ready(function () {\n" . implode("\n", $this->js[self::POS_READY]) . "\n});";
+                $js = $this->wrapOnReadyJs(implode("\n", $this->js[self::POS_READY]));
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
             if (!empty($this->js[self::POS_LOAD])) {
-                $js = "jQuery(window).on('load', function () {\n" . implode("\n", $this->js[self::POS_LOAD]) . "\n});";
+                $js = $this->wrapOnLoadJs(implode("\n", $this->js[self::POS_LOAD]));
                 $lines[] = Html::script($js, ['type' => 'text/javascript']);
             }
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
+    }
+
+    /**
+     * Wraps provided JavaScript code in the expression, which provides its execution on 'page is ready' event.
+     * Child class may override this method, providing better implementation, which may rely on particular JavaScript
+     * framework like JQuery.
+     * @param string $js raw JavaScript code.
+     * @return string composed JavaScript code.
+     * @since 2.1
+     */
+    protected function wrapOnReadyJs($js)
+    {
+        return "document.addEventListener('DOMContentLoaded', function(event) {\n" . $js . "\n});";
+    }
+
+    /**
+     * Wraps provided JavaScript code in the expression, which provides its execution on 'page has been loaded' event.
+     * Child class may override this method, providing better implementation, which may rely on particular JavaScript
+     * framework like JQuery.
+     * @param string $js raw JavaScript code.
+     * @return string composed JavaScript code.
+     * @since 2.1
+     */
+    protected function wrapOnLoadJs($js)
+    {
+        return "window.addEventListener('load', function () {\n" . $js . "\n});";
     }
 }

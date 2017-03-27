@@ -525,7 +525,7 @@ class IpValidator extends Validator
      * Used to get the Regexp pattern for initial IP address parsing
      * @return string
      */
-    private function getIpParsePattern()
+    public function getIpParsePattern()
     {
         return '/^(' . preg_quote(static::NEGATION_CHAR, '/') . '?)(.+?)(\/(\d+))?$/';
     }
@@ -580,51 +580,5 @@ class IpValidator extends Validator
             }
             return $result;
         }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        ValidationAsset::register($view);
-        $options = $this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $messages = [
-            'ipv6NotAllowed' => $this->ipv6NotAllowed,
-            'ipv4NotAllowed' => $this->ipv4NotAllowed,
-            'message' => $this->message,
-            'noSubnet' => $this->noSubnet,
-            'hasSubnet' => $this->hasSubnet,
-        ];
-        foreach ($messages as &$message) {
-            $message = $this->formatMessage($message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language);
-        }
-
-        $options = [
-            'ipv4Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv4Pattern)),
-            'ipv6Pattern' => new JsExpression(Html::escapeJsRegularExpression($this->ipv6Pattern)),
-            'messages' => $messages,
-            'ipv4' => (bool) $this->ipv4,
-            'ipv6' => (bool) $this->ipv6,
-            'ipParsePattern' => new JsExpression(Html::escapeJsRegularExpression($this->getIpParsePattern())),
-            'negation' => $this->negation,
-            'subnet' => $this->subnet,
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        return $options;
     }
 }
