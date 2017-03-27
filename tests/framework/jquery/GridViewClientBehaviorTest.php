@@ -6,14 +6,14 @@ use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\GridView;
 use yii\jquery\GridViewAsset;
-use yii\jquery\GridViewBehavior;
+use yii\jquery\GridViewClientBehavior;
 use yii\web\View;
 use yiiunit\TestCase;
 
 /**
  * @group jquery
  */
-class GridViewBehaviorTest extends TestCase
+class GridViewClientBehaviorTest extends TestCase
 {
     protected function setUp()
     {
@@ -58,7 +58,7 @@ class GridViewBehaviorTest extends TestCase
             ),
             'filterUrl' => 'http://example.com/filter',
             'as jquery' => [
-                'class' => GridViewBehavior::class
+                'class' => GridViewClientBehavior::class
             ],
         ]);
 
