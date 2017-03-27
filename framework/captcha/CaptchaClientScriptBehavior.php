@@ -13,14 +13,14 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
- * CaptchaClientBehavior is a behavior for [[Captcha]] widget, which allows refreshing CAPTCHA image on click via
+ * CaptchaClientScriptBehavior is a behavior for [[Captcha]] widget, which allows refreshing CAPTCHA image on click via
  * underlying jQuery plugin.
  *
  * Usage example:
  * 
  * ```php
  * <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, [
- *     'as clientSide' => \yii\captcha\CaptchaClientBehavior::class,
+ *     'as clientSide' => \yii\captcha\CaptchaClientScriptBehavior::class,
  *     // configure additional widget properties here
  * ]) ?>
  * ```
@@ -33,7 +33,7 @@ use yii\helpers\Url;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1
  */
-class CaptchaClientBehavior extends Behavior
+class CaptchaClientScriptBehavior extends Behavior
 {
     /**
      * @inheritdoc

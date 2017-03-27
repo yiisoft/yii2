@@ -14,15 +14,15 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
- * GridViewClientBehavior is a behavior for [[\yii\grid\GridView]] widget, which allows automatic filter submission via jQuery component.
+ * GridViewClientScriptBehavior is a behavior for [[\yii\grid\GridView]] widget, which allows automatic filter submission via jQuery component.
  *
  * A basic usage looks like the following:
  *
  * ```php
  * <?= yii\grid\GridView::widget([
  *     'dataProvider' => $dataProvider,
- *     'as jquery' => [
- *         'class' => yii\jquery\GridViewClientBehavior::class
+ *     'as clientScript' => [
+ *         'class' => yii\jquery\GridViewClientScriptBehavior::class
  *     ],
  *     'columns' => [
  *         'id',
@@ -42,7 +42,7 @@ use yii\helpers\Url;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1
  */
-class GridViewClientBehavior extends Behavior
+class GridViewClientScriptBehavior extends Behavior
 {
     /**
      * @var string additional jQuery selector for selecting filter input fields

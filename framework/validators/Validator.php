@@ -422,13 +422,13 @@ class Validator extends Component
     }
 
     /**
-     * Formats a mesage using the I18N, or simple strtr if `\Yii::$app` is not available.
+     * Formats a message using the I18N, or simple strtr if `\Yii::$app` is not available.
      * @param string $message
      * @param array $params
      * @since 2.0.12
      * @return string
      */
-    protected function formatMessage($message, $params)
+    public function formatMessage($message, $params)
     {
         if (Yii::$app !== null) {
             return \Yii::$app->getI18n()->format($message, $params, Yii::$app->language);

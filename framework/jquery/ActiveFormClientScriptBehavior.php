@@ -11,7 +11,20 @@ use Yii;
 use yii\helpers\Json;
 
 /**
- * ActiveFormClientScriptBehavior
+ * ActiveFormClientScriptBehavior is a behavior for [[\yii\widgets\ActiveForm]], which allows composition
+ * of the client-side and AJAX form validation via underlying JQuery plugin.
+ *
+ * Usage example:
+ *
+ * ```php
+ * <?php $form = \yii\widgets\ActiveForm::begin([
+ *     'id' => 'example-form',
+ *     'as clientScript' => \yii\jquery\ActiveFormClientScriptBehavior::class,
+ *     // ...
+ * ]); ?>
+ * ...
+ * <?php \yii\widgets\ActiveForm::end(); ?>
+ * ```
  *
  * @see \yii\widgets\ActiveForm
  * @see \yii\widgets\ActiveFormClientScriptBehavior

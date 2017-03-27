@@ -15,7 +15,8 @@ use yii\helpers\Url;
 use yii\web\JsExpression;
 
 /**
- * ActiveFormClientScriptBehavior
+ * ActiveFormClientScriptBehavior is a base behavior for [[ActiveForm]], which allows composition of the client-side form validation.
+ * Particular JavaScript-associated library should provide extension of this class, implementing [[registerClientScript()]] method.
  *
  * @property ActiveForm $owner the owner of this behavior.
  *
