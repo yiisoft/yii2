@@ -5,8 +5,9 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\jquery;
+namespace yii\captcha;
 
+use yii\jquery\YiiAsset;
 use yii\web\AssetBundle;
 
 /**
@@ -20,7 +21,7 @@ class CaptchaAsset extends AssetBundle
     /**
      * @inheritdoc
      */
-    public $sourcePath = '@yii/jquery/assets';
+    public $sourcePath = '@yii/captcha/assets';
     /**
      * @inheritdoc
      */

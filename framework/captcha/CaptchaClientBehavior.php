@@ -5,42 +5,56 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\jquery;
+namespace yii\captcha;
 
-use yii\captcha\CaptchaAction;
+use yii\base\Behavior;
+use yii\base\Widget;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
- * Captcha is an enhanced version of [[\yii\captcha\Captcha]], which allows refreshing CAPTCHA image on click via
+ * CaptchaClientBehavior is a behavior for [[Captcha]] widget, which allows refreshing CAPTCHA image on click via
  * underlying jQuery plugin.
  *
- * @see \yii\captcha\Captcha
+ * Usage example:
+ * 
+ * ```php
+ * <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, [
+ *     'as clientSide' => \yii\captcha\CaptchaClientBehavior::class,
+ *     // configure additional widget properties here
+ * ]) ?>
+ * ```
+ *
+ * @see Captcha
+ *
+ * @property Captcha $owner the owner of this behavior.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1
  */
-class Captcha extends \yii\captcha\Captcha
+class CaptchaClientBehavior extends Behavior
 {
     /**
-     * Renders the widget.
+     * @inheritdoc
      */
-    public function run()
+    public function events()
     {
-        $this->registerClientScript();
-        return parent::run();
+        return [
+            Widget::EVENT_BEFORE_RUN => 'beforeRun'
+        ];
     }
 
     /**
-     * Registers the needed JavaScript.
+     * Handles [[Widget::EVENT_BEFORE_RUN]] event, registering related client script.
+     * @param \yii\base\Event $event event instance.
      */
-    public function registerClientScript()
+    public function beforeRun($event)
     {
         $options = $this->getClientOptions();
         $options = empty($options) ? '' : Json::htmlEncode($options);
-        $id = $this->imageOptions['id'];
-        $view = $this->getView();
+        $id = $this->owner->imageOptions['id'];
+        $view = $this->owner->getView();
         CaptchaAsset::register($view);
         $view->registerJs("jQuery('#$id').yiiCaptcha($options);");
     }
@@ -51,7 +65,7 @@ class Captcha extends \yii\captcha\Captcha
      */
     protected function getClientOptions()
     {
-        $route = $this->captchaAction;
+        $route = $this->owner->captchaAction;
         if (is_array($route)) {
             $route[CaptchaAction::REFRESH_GET_VAR] = 1;
         } else {
