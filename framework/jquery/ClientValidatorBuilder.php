@@ -7,20 +7,8 @@
 
 namespace yii\jquery;
 
+use Yii;
 use yii\base\Object;
-use yii\captcha\CaptchaValidator;
-use yii\helpers\Json;
-use yii\validators\BooleanValidator;
-use yii\validators\CompareValidator;
-use yii\validators\EmailValidator;
-use yii\validators\FilterValidator;
-use yii\validators\IpValidator;
-use yii\validators\NumberValidator;
-use yii\validators\RangeValidator;
-use yii\validators\RegularExpressionValidator;
-use yii\validators\RequiredValidator;
-use yii\validators\StringValidator;
-use yii\validators\UrlValidator;
 
 /**
  * ClientValidatorBuilder performs composition of the JavaScript code used for model attribute client validation.
@@ -39,6 +27,33 @@ use yii\validators\UrlValidator;
 class ClientValidatorBuilder extends Object
 {
     /**
+     * @var array client validator class map in format: [server-side-validator-class => client-side-validator].
+     * Client side validator should be specified as an instance of [[\yii\validators\client\ClientValidator]] or
+     * its DI compatible configuration.
+     *
+     * Class map respects validators inheritance, e.g. if you specify map for `ParentValidator` it will be used for
+     * `ChildValidator` in case it extends `ParentValidator`. In case maps for both `ParentValidator` and `ChildValidator`
+     * are specified the first value will take precedence.
+     */
+    public $clientValidatorMap = [
+        \yii\validators\BooleanValidator::class => \yii\jquery\validators\client\BooleanValidator::class,
+        \yii\validators\CompareValidator::class => \yii\jquery\validators\client\CompareValidator::class,
+        \yii\validators\EmailValidator::class => \yii\jquery\validators\client\EmailValidator::class,
+        \yii\validators\FilterValidator::class => \yii\jquery\validators\client\FilterValidator::class,
+        \yii\validators\IpValidator::class => \yii\jquery\validators\client\IpValidator::class,
+        \yii\validators\NumberValidator::class => \yii\jquery\validators\client\NumberValidator::class,
+        \yii\validators\RangeValidator::class => \yii\jquery\validators\client\RangeValidator::class,
+        \yii\validators\RegularExpressionValidator::class => \yii\jquery\validators\client\RegularExpressionValidator::class,
+        \yii\validators\RequiredValidator::class => \yii\jquery\validators\client\RequiredValidator::class,
+        \yii\validators\StringValidator::class => \yii\jquery\validators\client\StringValidator::class,
+        \yii\validators\UrlValidator::class => \yii\jquery\validators\client\UrlValidator::class,
+        \yii\validators\ImageValidator::class => \yii\jquery\validators\client\ImageValidator::class,
+        \yii\validators\FileValidator::class => \yii\jquery\validators\client\FileValidator::class,
+        \yii\captcha\CaptchaValidator::class => \yii\captcha\CaptchaClientValidator::class,
+    ];
+
+
+    /**
      * Builds the JavaScript needed for performing client-side validation for given validator.
      * @param \yii\validators\Validator $validator validator to be built.
      * @param \yii\base\Model $model the data model being validated.
@@ -49,90 +64,13 @@ class ClientValidatorBuilder extends Object
      */
     public function build($validator, $model, $attribute, $view)
     {
-        if ($validator instanceof BooleanValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.boolean(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-        }
-
-        if ($validator instanceof CompareValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.compare(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-        }
-
-        if ($validator instanceof EmailValidator) {
-            ValidationAsset::register($view);
-            if ($validator->enableIDN) {
-                PunycodeAsset::register($view);
+        foreach ($this->clientValidatorMap as $serverSideValidatorClass => $clientSideValidator) {
+            if ($validator instanceof $serverSideValidatorClass) {
+                /* @var $clientValidator \yii\validators\client\ClientValidator */
+                $clientValidator = Yii::createObject($clientSideValidator);
+                return $clientValidator->build($validator, $model, $attribute, $view);
             }
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.email(value, messages, ' . Json::htmlEncode($options) . ');';
         }
-
-        if ($validator instanceof FilterValidator) {
-            if ($validator->filter !== 'trim') {
-                return null;
-            }
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'value = yii.validation.trim($form, attribute, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-        }
-
-        if ($validator instanceof IpValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
-        }
-
-        if ($validator instanceof NumberValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.number(value, messages, ' . Json::htmlEncode($options) . ');';
-        }
-
-        if ($validator instanceof RangeValidator) {
-            if ($validator->range instanceof \Closure) {
-                $validator->range = call_user_func($validator->range, $model, $attribute);
-            }
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.range(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-        }
-
-        if ($validator instanceof RegularExpressionValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.regularExpression(value, messages, ' . Json::htmlEncode($options) . ');';
-        }
-
-        if ($validator instanceof RequiredValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.required(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-        }
-
-        if ($validator instanceof StringValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-        }
-
-        if ($validator instanceof UrlValidator) {
-            ValidationAsset::register($view);
-            if ($validator->enableIDN) {
-                PunycodeAsset::register($view);
-            }
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
-        }
-
-        if ($validator instanceof CaptchaValidator) {
-            ValidationAsset::register($view);
-            $options = $validator->getClientOptions($model, $attribute);
-            return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
-        }
-
         return null;
     }
 }

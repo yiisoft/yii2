@@ -59,25 +59,4 @@ class RegularExpressionValidator extends Validator
 
         return $valid ? null : [$this->message, []];
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $pattern = Html::escapeJsRegularExpression($this->pattern);
-
-        $options = [
-            'pattern' => new JsExpression($pattern),
-            'not' => $this->not,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-
-        return $options;
-    }
 }

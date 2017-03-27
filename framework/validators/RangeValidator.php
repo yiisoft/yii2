@@ -98,30 +98,4 @@ class RangeValidator extends Validator
         }
         parent::validateAttribute($model, $attribute);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $range = [];
-        foreach ($this->range as $value) {
-            $range[] = (string) $value;
-        }
-        $options = [
-            'range' => $range,
-            'not' => $this->not,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->allowArray) {
-            $options['allowArray'] = 1;
-        }
-
-        return $options;
-    }
 }

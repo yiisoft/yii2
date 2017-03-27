@@ -67,28 +67,4 @@ class BooleanValidator extends Validator
 
         return null;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $options = [
-            'trueValue' => $this->trueValue,
-            'falseValue' => $this->falseValue,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-                'true' => $this->trueValue === true ? 'true' : $this->trueValue,
-                'false' => $this->falseValue === false ? 'false' : $this->falseValue,
-            ]),
-        ];
-        if ($this->skipOnEmpty) {
-            $options['skipOnEmpty'] = 1;
-        }
-        if ($this->strict) {
-            $options['strict'] = 1;
-        }
-
-        return $options;
-    }
 }
