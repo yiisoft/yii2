@@ -25,6 +25,15 @@ use yii\helpers\Html;
 class ActiveForm extends Widget
 {
     /**
+     * @event ActiveFieldEvent an event raised right before rendering an ActiveField.
+     */
+    const EVENT_BEFORE_FIELD_RENDER = 'beforeFieldRender';
+    /**
+     * @event ActionEvent an event raised right after rendering an ActiveField.
+     */
+    const EVENT_AFTER_FIELD_RENDER = 'afterFieldRender';
+
+    /**
      * @var array|string the form action URL. This parameter will be processed by [[\yii\helpers\Url::to()]].
      * @see method for specifying the HTTP method for this form.
      */
@@ -90,6 +99,70 @@ class ActiveForm extends Widget
      * @var string the CSS class that is added to a field container when the associated attribute is successfully validated.
      */
     public $successCssClass = 'has-success';
+    /**
+     * @var string the CSS class that is added to a field container when the associated attribute is being validated.
+     */
+    public $validatingCssClass = 'validating';
+    /**
+     * @var bool whether to enable client-side data validation.
+     * If [[ActiveField::enableClientValidation]] is set, its value will take precedence for that input field.
+     */
+    public $enableClientValidation = true;
+    /**
+     * @var bool whether to enable AJAX-based data validation.
+     * If [[ActiveField::enableAjaxValidation]] is set, its value will take precedence for that input field.
+     */
+    public $enableAjaxValidation = false;
+    /**
+     * @var array|string the URL for performing AJAX-based validation. This property will be processed by
+     * [[Url::to()]]. Please refer to [[Url::to()]] for more details on how to configure this property.
+     * If this property is not set, it will take the value of the form's action attribute.
+     */
+    public $validationUrl;
+    /**
+     * @var bool whether to perform validation when the form is submitted.
+     */
+    public $validateOnSubmit = true;
+    /**
+     * @var bool whether to perform validation when the value of an input field is changed.
+     * If [[ActiveField::validateOnChange]] is set, its value will take precedence for that input field.
+     */
+    public $validateOnChange = true;
+    /**
+     * @var bool whether to perform validation when an input field loses focus.
+     * If [[ActiveField::$validateOnBlur]] is set, its value will take precedence for that input field.
+     */
+    public $validateOnBlur = true;
+    /**
+     * @var bool whether to perform validation while the user is typing in an input field.
+     * If [[ActiveField::validateOnType]] is set, its value will take precedence for that input field.
+     * @see validationDelay
+     */
+    public $validateOnType = false;
+    /**
+     * @var int number of milliseconds that the validation should be delayed when the user types in the field
+     * and [[validateOnType]] is set `true`.
+     * If [[ActiveField::validationDelay]] is set, its value will take precedence for that input field.
+     */
+    public $validationDelay = 500;
+    /**
+     * @var string the name of the GET parameter indicating the validation request is an AJAX request.
+     */
+    public $ajaxParam = 'ajax';
+    /**
+     * @var string the type of data that you're expecting back from the server.
+     */
+    public $ajaxDataType = 'json';
+    /**
+     * @var bool whether to scroll to the first error after validation.
+     * @since 2.0.6
+     */
+    public $scrollToError = true;
+    /**
+     * @var int offset in pixels that should be added when scrolling to the first error.
+     * @since 2.0.11
+     */
+    public $scrollToErrorOffset = 0;
 
     /**
      * @var ActiveField[] the ActiveField objects that are currently active
@@ -303,5 +376,29 @@ class ActiveForm extends Widget
         }
 
         return $result;
+    }
+
+    /**
+     * This method is invoked right before an ActiveField is rendered.
+     * The method will trigger the [[EVENT_BEFORE_FIELD_RENDER]] event.
+     * @param ActiveField $field active field to be rendered.
+     * @since 2.1
+     */
+    public function beforeFieldRender($field)
+    {
+        $event = new ActiveFieldEvent($field);
+        $this->trigger(self::EVENT_BEFORE_FIELD_RENDER, $event);
+    }
+
+    /**
+     * This method is invoked right after an ActiveField is rendered.
+     * The method will trigger the [[EVENT_AFTER_FIELD_RENDER]] event.
+     * @param ActiveField $field active field to be rendered.
+     * @since 2.1
+     */
+    public function afterFieldRender($field)
+    {
+        $event = new ActiveFieldEvent($field);
+        $this->trigger(self::EVENT_AFTER_FIELD_RENDER, $event);
     }
 }

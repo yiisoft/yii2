@@ -96,6 +96,49 @@ class ActiveField extends Component
      */
     public $hintOptions = ['class' => 'hint-block'];
     /**
+     * @var bool whether to enable client-side data validation.
+     * If not set, it will take the value of [[ActiveForm::enableClientValidation]].
+     */
+    public $enableClientValidation;
+    /**
+     * @var bool whether to enable AJAX-based data validation.
+     * If not set, it will take the value of [[ActiveForm::enableAjaxValidation]].
+     */
+    public $enableAjaxValidation;
+    /**
+     * @var bool whether to perform validation when the value of the input field is changed.
+     * If not set, it will take the value of [[ActiveForm::validateOnChange]].
+     */
+    public $validateOnChange;
+    /**
+     * @var bool whether to perform validation when the input field loses focus.
+     * If not set, it will take the value of [[ActiveForm::validateOnBlur]].
+     */
+    public $validateOnBlur;
+    /**
+     * @var bool whether to perform validation while the user is typing in the input field.
+     * If not set, it will take the value of [[ActiveForm::validateOnType]].
+     * @see validationDelay
+     */
+    public $validateOnType;
+    /**
+     * @var int number of milliseconds that the validation should be delayed when the user types in the field
+     * and [[validateOnType]] is set `true`.
+     * If not set, it will take the value of [[ActiveForm::validationDelay]].
+     */
+    public $validationDelay;
+    /**
+     * @var array the jQuery selectors for selecting the container, input and error tags.
+     * The array keys should be `container`, `input`, and/or `error`, and the array values
+     * are the corresponding selectors. For example, `['input' => '#my-input']`.
+     *
+     * The container selector is used under the context of the form, while the input and the error
+     * selectors are used under the context of the container.
+     *
+     * You normally do not need to set this property as the default selectors should work well for most cases.
+     */
+    public $selectors = [];
+    /**
      * @var array different parts of the field (e.g. input, label). This will be used together with
      * [[template]] to generate the final field HTML code. The keys are the token names in [[template]],
      * while the values are the corresponding HTML code. Valid tokens include `{input}`, `{label}` and `{error}`.
@@ -182,6 +225,8 @@ class ActiveField extends Component
      */
     public function begin()
     {
+        $this->form->beforeFieldRender($this);
+
         $inputID = $this->getInputId();
         $attribute = Html::getAttributeName($this->attribute);
         $options = $this->options;
@@ -205,7 +250,9 @@ class ActiveField extends Component
      */
     public function end()
     {
-        return Html::endTag(ArrayHelper::keyExists('tag', $this->options) ? $this->options['tag'] : 'div');
+        $html = Html::endTag(ArrayHelper::keyExists('tag', $this->options) ? $this->options['tag'] : 'div');
+        $this->form->afterFieldRender($this);
+        return $html;
     }
 
     /**
@@ -693,11 +740,31 @@ class ActiveField extends Component
     }
 
     /**
+     * Checks if client validation enabled for the field
+     * @return bool
+     * @since 2.0.11
+     */
+    public function isClientValidationEnabled()
+    {
+        return $this->enableClientValidation || $this->enableClientValidation === null && $this->form->enableClientValidation;
+    }
+
+    /**
+     * Checks if ajax validation enabled for the field
+     * @return bool
+     * @since 2.0.11
+     */
+    public function isAjaxValidationEnabled()
+    {
+        return $this->enableAjaxValidation || $this->enableAjaxValidation === null && $this->form->enableAjaxValidation;
+    }
+
+    /**
      * Returns the HTML `id` of the input element of this form field.
      * @return string the input id.
      * @since 2.0.7
      */
-    protected function getInputId()
+    public function getInputId()
     {
         return $this->_inputId ?: Html::getInputId($this->model, $this->attribute);
     }

@@ -4,8 +4,10 @@ namespace yiiunit\framework\jquery;
 
 use Yii;
 use yii\base\DynamicModel;
-use yii\jquery\ActiveField;
-use yii\jquery\ActiveForm;
+use yii\jquery\ActiveFormAsset;
+use yii\jquery\ActiveFormClientScriptBehavior;
+use yii\widgets\ActiveField;
+use yii\widgets\ActiveForm;
 use yiiunit\TestCase;
 use yii\web\View;
 use yii\web\AssetManager;
@@ -13,7 +15,7 @@ use yii\web\AssetManager;
 /**
  * @group jquery
  */
-class ActiveFieldTest extends TestCase
+class ActiveFormClientScriptBehaviorTest extends TestCase
 {
     /**
      * @var ActiveField
@@ -40,35 +42,39 @@ class ActiveFieldTest extends TestCase
         $_SERVER['SCRIPT_FILENAME'] = "index.php";
         $_SERVER['SCRIPT_NAME'] = "index.php";
 
-        $this->mockWebApplication();
+        $this->mockWebApplication([
+            'components' => [
+                'assetManager' => [
+                    'basePath' => '@testWebRoot/assets',
+                    'baseUrl' => '@testWeb/assets',
+                    'bundles' => [
+                        ActiveFormAsset::class => [
+                            'sourcePath' => null,
+                            'basePath' => null,
+                            'baseUrl' => 'http://example.com/assets',
+                            'depends' => [],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
 
         Yii::setAlias('@testWeb', '/');
         Yii::setAlias('@testWebRoot', '@yiiunit/data/web');
 
         $this->helperModel = new DynamicModel(['attributeName']);
         ob_start();
-        $this->helperForm = ActiveForm::begin(['action' => '/something', 'enableClientScript' => false]);
+        $this->helperForm = ActiveForm::begin([
+            'action' => '/something',
+            'as clientScript' => ActiveFormClientScriptBehavior::class
+        ]);
         ActiveForm::end();
         ob_end_clean();
 
         $this->activeField = new ActiveField();
         $this->activeField->form = $this->helperForm;
-        $this->activeField->form->setView($this->getView());
         $this->activeField->model = $this->helperModel;
         $this->activeField->attribute = $this->attributeName;
-    }
-
-    /**
-     * @return View test view instance.
-     */
-    protected function getView()
-    {
-        $view = new View();
-        $view->setAssetManager(new AssetManager([
-            'basePath' => '@testWebRoot/assets',
-            'baseUrl' => '@testWeb/assets',
-        ]));
-        return $view;
     }
 
     /**
@@ -77,7 +83,7 @@ class ActiveFieldTest extends TestCase
     protected function getActiveFieldClientOptions()
     {
         // invoke protected method :
-        return $this->invokeMethod($this->activeField, 'getClientOptions');
+        return $this->invokeMethod($this->activeField->form->getBehavior('clientScript'), 'getFieldClientOptions', [$this->activeField]);
     }
 
     // Tests :
