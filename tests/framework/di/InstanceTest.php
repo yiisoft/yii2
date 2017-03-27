@@ -103,7 +103,6 @@ class InstanceTest extends TestCase
         $this->setExpectedException('yii\base\InvalidConfigException', '"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
 
         Instance::ensure('db', 'yii\base\Widget', $container);
-        Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\base\Widget', $container);
     }
 
     public function testExceptionInvalidDataType()
