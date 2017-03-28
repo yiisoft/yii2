@@ -96,6 +96,17 @@ class BaseHtml
      */
     public static $dataAttributes = ['data', 'data-ng', 'ng'];
 
+    /**
+     * Counter to make each input with guaranteed unique ID
+     * @var int
+     */
+    protected static $inputIdCounter = 0;
+
+    /**
+     * Salt to guarantee uniqueness for input IDs in cross-ajax requests
+     * @var string
+     */
+    protected static $inputIdSalt;
 
     /**
      * Encodes special characters into HTML entities.
@@ -2180,7 +2191,12 @@ class BaseHtml
     public static function getInputId($model, $attribute)
     {
         $name = strtolower(static::getInputName($model, $attribute));
-        return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
+        $id = str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
+        if (empty(static::$inputIdSalt)) {
+            static::$inputIdSalt = \yii::$app->security->generateRandomString();
+        }
+        static::$inputIdCounter++;
+        return "jsinput-$id-" . static::$inputIdSalt . '-' . static::$inputIdCounter;
     }
 
     /**
