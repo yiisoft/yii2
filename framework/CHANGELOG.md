@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 --------------------------
 
 - Enh Added: Refactor Captcha widget (vladis84)
+- Enh #13820: Add new HTTP status code 451 (yyxx9988)
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
@@ -53,6 +54,9 @@ Yii Framework 2 Change Log
 - Bug #13738: Fixed `getQueryParams()` method in `yii.js` to correctly parse URL with question mark and no query parameters (vladdnepr)
 - Bug #13776: Fixed setting precision and scale for decimal columns in MSSQL (arturf)
 - Bug #13704: Fixed `yii\validators\UniqueValidator` to prefix attribute name with model's database table name (vladis84)
+- Enh #13823: Refactored migrations template (Kolyunya)
+- Bug #13822: Fixed `yii\web\User::loginRequired()` to throw an `UnauthorizedHttpException` instead of a `ForbiddenHttpException` (Kolyunya)
+- Enh #13845: `mt_rand()` is used instead of `rand()` in `yii\captcha\CaptchaAction` (kalessil)
 
 2.0.11.2 February 08, 2017
 --------------------------
