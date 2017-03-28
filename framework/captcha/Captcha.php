@@ -13,6 +13,7 @@ use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\InputWidget;
+use yii\captcha\drivers\DriverFactory;
 
 /**
  * Captcha renders a CAPTCHA image and an input field that takes user-entered verification code.
@@ -164,9 +165,15 @@ class Captcha extends InputWidget
      */
     public static function checkRequirements()
     {
-        /* @var $imageModel ImageExtentionModel */
-        $imageModel = Yii::createObject(ImageExtentionModel::className());
+        /* @var $driverFactory DriverFactory */
+        $driverFactory = Yii::createObject(DriverFactory::className());
+        $captchaDriver = $driverFactory->make();
 
-        return $imageModel->getImageExtension();
+        if (!$captchaDriver->checkRequirements()) {
+            $errors = join('. ', $captchaDriver->getErrors());
+            throw new InvalidConfigException($errors);
+        }
+
+        return $captchaDriver->getName();
     }
 }
