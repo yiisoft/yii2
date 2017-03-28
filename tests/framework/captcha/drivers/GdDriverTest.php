@@ -9,6 +9,12 @@ use yii\captcha\drivers\DriverFactory;
 
 class GdDriverTest extends TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        if (!extension_loaded('gd')) {
+            static::markTestSkipped('GD extensions are required.');
+        }
+    }
 
     public function testGetName()
     {

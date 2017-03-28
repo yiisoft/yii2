@@ -9,6 +9,13 @@ use yii\captcha\drivers\DriverFactory;
 
 class ImagickDriverTest extends TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        if (!extension_loaded('imagick')) {
+            static::markTestSkipped('Imagick extensions are required.');
+        }
+    }
+
     public function testGetName()
     {
         $driver = new ImagickDriver();
