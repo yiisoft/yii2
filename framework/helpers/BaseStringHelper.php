@@ -340,29 +340,33 @@ class BaseStringHelper
     }
 
     /**
+     * Masks a token to make it uncompressible.
+     * This does not secure the token since the encryption key is prepended to the result.
      * @param string $token An unmasked token.
      * @return string A masked token.
      * @since 2.0.13
      */
-    public static function maskCsrfToken($token)
+    public static function maskToken($token)
     {
         // Mask always equal length (in bytes) to token.
-        $mask = Yii::$app->security->generateRandomKey(strlen($token));
+        $mask = Yii::$app->security->generateRandomKey(static::byteLength($token));
         return static::base64UrlEncode($mask . ($mask ^ $token));
     }
 
     /**
+     * Unmasks a token previously masked by `maskToken`.
      * @param $maskedToken A masked token.
      * @return string An unmasked token, or an empty string in case of invalid token format.
      * @since 2.0.13
      */
-    public static function unmaskCsrfToken($maskedToken)
+    public static function unmaskToken($maskedToken)
     {
         $decoded = static::base64UrlDecode($maskedToken);
         $length = static::byteLength($decoded) / 2;
+        // Check if the masked token has an even length.
         if (!is_int($length)) {
             return "";
         }
-        return substr($decoded, $length, $length) ^ substr($decoded, 0, $length);
+        return static::byteSubstr($decoded, $length, $length) ^ static::byteSubstr($decoded, 0, $length);
     }
 }

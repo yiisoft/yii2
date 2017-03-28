@@ -304,7 +304,7 @@ class StringHelperTest extends TestCase
      */
     public function testMasking($unmaskedToken)
     {
-        $this->assertEquals($unmaskedToken, StringHelper::unmaskCsrfToken(StringHelper::maskCsrftoken($unmaskedToken)));
+        $this->assertEquals($unmaskedToken, StringHelper::unmaskToken(StringHelper::maskToken($unmaskedToken)));
     }
 
     public function maskProvider() {

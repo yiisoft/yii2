@@ -1325,7 +1325,7 @@ class Request extends \yii\base\Request
             if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
                 $token = $this->generateCsrfToken();
             }
-            $this->_csrfToken = StringHelper::maskCsrfToken($token);
+            $this->_csrfToken = StringHelper::maskToken($token);
         }
 
         return $this->_csrfToken;
@@ -1429,6 +1429,6 @@ class Request extends \yii\base\Request
             return false;
         }
 
-        return StringHelper::unmaskCsrfToken($token) === StringHelper::unmaskCsrfToken($trueToken);
+        return StringHelper::unmaskToken($token) === StringHelper::unmaskToken($trueToken);
     }
 }
