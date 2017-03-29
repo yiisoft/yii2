@@ -57,6 +57,7 @@ Yii Framework 2 Change Log
 - Enh #13823: Refactored migrations template (Kolyunya)
 - Enh #13845: `mt_rand()` is used instead of `rand()` in `yii\captcha\CaptchaAction` (kalessil)
 - Enh #13883: `\yii\data\SqlDataProvider` now provides automatic fallback for the case when `totalCount` is not specified (SamMousa)
+- Enh #13376: Data provider now automatically sets an ID so there is no need to set it manually in case multiple data providers are used with pagination (SamMousa)
 
 2.0.11.2 February 08, 2017
 --------------------------
