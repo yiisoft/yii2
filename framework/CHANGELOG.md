@@ -103,6 +103,7 @@ Yii Framework 2 Change Log
 - Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly) 
 - Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 - Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
+- Bug #13846: Fixed `Query::count()` issue with `orderBy` (Alex-Code)
 
 2.0.11.2 February 08, 2017
 --------------------------
