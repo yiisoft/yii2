@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\SecurityHelper;
 use yii\helpers\StringHelper;
 
 /**
@@ -1325,7 +1326,7 @@ class Request extends \yii\base\Request
             if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
                 $token = $this->generateCsrfToken();
             }
-            $this->_csrfToken = StringHelper::maskToken($token);
+            $this->_csrfToken = SecurityHelper::maskToken($token);
         }
 
         return $this->_csrfToken;
@@ -1429,6 +1430,6 @@ class Request extends \yii\base\Request
             return false;
         }
 
-        return StringHelper::unmaskToken($token) === StringHelper::unmaskToken($trueToken);
+        return SecurityHelper::unmaskToken($token) === SecurityHelper::unmaskToken($trueToken);
     }
 }
