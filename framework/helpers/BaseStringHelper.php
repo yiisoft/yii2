@@ -341,7 +341,8 @@ class BaseStringHelper
 
     /**
      * Masks a token to make it uncompressible.
-     * This does not secure the token since the encryption key is prepended to the result.
+     * Applies random mask to a token and prepends mask used to the result making the string always unique.
+     * Used to mitigate BREACH attack by randomizing how token is outputted on each request.
      * @param string $token An unmasked token.
      * @return string A masked token.
      * @since 2.0.13
