@@ -1394,12 +1394,12 @@ class Request extends \yii\base\Request
      * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
      * is among GET, HEAD or OPTIONS.
      *
-     * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
+     * @param string $clientSuppliedToken the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.
      * This parameter is available since version 2.0.4.
      * @return bool whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
-    public function validateCsrfToken($token = null)
+    public function validateCsrfToken($clientSuppliedToken = null)
     {
         $method = $this->getMethod();
         // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
@@ -1409,8 +1409,8 @@ class Request extends \yii\base\Request
 
         $trueToken = $this->getCsrfToken();
 
-        if ($token !== null) {
-            return $this->validateCsrfTokenInternal($token, $trueToken);
+        if ($clientSuppliedToken !== null) {
+            return $this->validateCsrfTokenInternal($clientSuppliedToken, $trueToken);
         } else {
             return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
                 || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
@@ -1420,16 +1420,16 @@ class Request extends \yii\base\Request
     /**
      * Validates CSRF token
      *
-     * @param string $token The masked client-supplied token.
+     * @param string $clientSuppliedToken The masked client-supplied token.
      * @param string $trueToken The masked true token.
      * @return bool
      */
-    private function validateCsrfTokenInternal($token, $trueToken)
+    private function validateCsrfTokenInternal($clientSuppliedToken, $trueToken)
     {
-        if (!is_string($token)) {
+        if (!is_string($clientSuppliedToken)) {
             return false;
         }
 
-        return SecurityHelper::unmaskToken($token) === SecurityHelper::unmaskToken($trueToken);
+        return SecurityHelper::unmaskToken($clientSuppliedToken) === SecurityHelper::unmaskToken($trueToken);
     }
 }
