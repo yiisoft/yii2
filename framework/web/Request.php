@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\StringHelper;
 
 /**
  * The web Request class represents an HTTP request
@@ -91,6 +90,7 @@ class Request extends \yii\base\Request
     const CSRF_HEADER = 'X-CSRF-Token';
     /**
      * The length of the CSRF token mask.
+     * @deprecated 2.0.12 The mask length is now equal to the token length.
      */
     const CSRF_MASK_LENGTH = 8;
 
@@ -1325,11 +1325,7 @@ class Request extends \yii\base\Request
             if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
                 $token = $this->generateCsrfToken();
             }
-            // the mask doesn't need to be very random
-            $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, static::CSRF_MASK_LENGTH);
-            // The + sign may be decoded as blank space later, which will fail the validation
-            $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
+            $this->_csrfToken = Yii::$app->security->maskToken($token);
         }
 
         return $this->_csrfToken;
@@ -1350,12 +1346,12 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Generates  an unmasked random token used to perform CSRF validation.
+     * Generates an unmasked random token used to perform CSRF validation.
      * @return string the random token for CSRF validation.
      */
     protected function generateCsrfToken()
     {
-        $token = Yii::$app->getSecurity()->generateRandomString();
+        $token = Yii::$app->getSecurity()->generateRandomKey();
         if ($this->enableCsrfCookie) {
             $cookie = $this->createCsrfCookie($token);
             Yii::$app->getResponse()->getCookies()->add($cookie);
@@ -1366,32 +1362,11 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns the XOR result of two strings.
-     * If the two strings are of different lengths, the shorter one will be padded to the length of the longer one.
-     * @param string $token1
-     * @param string $token2
-     * @return string the XOR result
-     */
-    private function xorTokens($token1, $token2)
-    {
-        $n1 = StringHelper::byteLength($token1);
-        $n2 = StringHelper::byteLength($token2);
-        if ($n1 > $n2) {
-            $token2 = str_pad($token2, $n1, $token2);
-        } elseif ($n1 < $n2) {
-            $token1 = str_pad($token1, $n2, $n1 === 0 ? ' ' : $token1);
-        }
-
-        return $token1 ^ $token2;
-    }
-
-    /**
      * @return string the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
      */
     public function getCsrfTokenFromHeader()
     {
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
-        return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
+        return $this->headers->get(static::CSRF_HEADER);
     }
 
     /**
@@ -1418,12 +1393,12 @@ class Request extends \yii\base\Request
      * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
      * is among GET, HEAD or OPTIONS.
      *
-     * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
+     * @param string $clientSuppliedToken the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.
      * This parameter is available since version 2.0.4.
      * @return bool whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
-    public function validateCsrfToken($token = null)
+    public function validateCsrfToken($clientSuppliedToken = null)
     {
         $method = $this->getMethod();
         // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
@@ -1431,10 +1406,10 @@ class Request extends \yii\base\Request
             return true;
         }
 
-        $trueToken = $this->loadCsrfToken();
+        $trueToken = $this->getCsrfToken();
 
-        if ($token !== null) {
-            return $this->validateCsrfTokenInternal($token, $trueToken);
+        if ($clientSuppliedToken !== null) {
+            return $this->validateCsrfTokenInternal($clientSuppliedToken, $trueToken);
         } else {
             return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
                 || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
@@ -1444,25 +1419,18 @@ class Request extends \yii\base\Request
     /**
      * Validates CSRF token
      *
-     * @param string $token
-     * @param string $trueToken
+     * @param string $clientSuppliedToken The masked client-supplied token.
+     * @param string $trueToken The masked true token.
      * @return bool
      */
-    private function validateCsrfTokenInternal($token, $trueToken)
+    private function validateCsrfTokenInternal($clientSuppliedToken, $trueToken)
     {
-        if (!is_string($token)) {
+        if (!is_string($clientSuppliedToken)) {
             return false;
         }
 
-        $token = base64_decode(str_replace('.', '+', $token));
-        $n = StringHelper::byteLength($token);
-        if ($n <= static::CSRF_MASK_LENGTH) {
-            return false;
-        }
-        $mask = StringHelper::byteSubstr($token, 0, static::CSRF_MASK_LENGTH);
-        $token = StringHelper::byteSubstr($token, static::CSRF_MASK_LENGTH, $n - static::CSRF_MASK_LENGTH);
-        $token = $this->xorTokens($mask, $token);
+        $security = Yii::$app->security;
 
-        return $token === $trueToken;
+        return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
     }
 }

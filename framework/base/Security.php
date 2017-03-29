@@ -706,4 +706,36 @@ class Security extends Component
         }
         return $diff === 0;
     }
+
+    /**
+     * Masks a token to make it uncompressible.
+     * Applies a random mask to the token and prepends the mask used to the result making the string always unique.
+     * Used to mitigate BREACH attack by randomizing how token is outputted on each request.
+     * @param string $token An unmasked token.
+     * @return string A masked token.
+     * @since 2.0.12
+     */
+    public function maskToken($token)
+    {
+        // The number of bytes in a mask is always equal to the number of bytes in a token.
+        $mask = $this->generateRandomKey(StringHelper::byteLength($token));
+        return StringHelper::base64UrlEncode($mask . ($mask ^ $token));
+    }
+
+    /**
+     * Unmasks a token previously masked by `maskToken`.
+     * @param string $maskedToken A masked token.
+     * @return string An unmasked token, or an empty string in case of token format is invalid.
+     * @since 2.0.12
+     */
+    public function unmaskToken($maskedToken)
+    {
+        $decoded = StringHelper::base64UrlDecode($maskedToken);
+        $length = StringHelper::byteLength($decoded) / 2;
+        // Check if the masked token has an even length.
+        if (!is_int($length)) {
+            return '';
+        }
+        return StringHelper::byteSubstr($decoded, $length, $length) ^ StringHelper::byteSubstr($decoded, 0, $length);
+    }
 }

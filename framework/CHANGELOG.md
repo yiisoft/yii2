@@ -59,6 +59,7 @@ Yii Framework 2 Change Log
 - Enh #13883: `\yii\data\SqlDataProvider` now provides automatic fallback for the case when `totalCount` is not specified (SamMousa)
 - Enh #13376: Data provider now automatically sets an ID so there is no need to set it manually in case multiple data providers are used with pagination (SamMousa)
 - Enh #13369: Added ability to render current `yii\widgets\LinkPager` page disabled (aquy)
+- Enh #13837: Refactored masking of CSRF tokens (sammousa)
 
 2.0.11.2 February 08, 2017
 --------------------------
