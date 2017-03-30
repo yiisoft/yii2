@@ -38,8 +38,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     private static $counter = 0;
     /**
      * @var string an ID that uniquely identifies the data provider among all data providers.
-     * If not provided one is automatically generated.
-     * The first data provider will have an empty ID, the rest will have an ID like: "dp-1", "dp-2"...
+     * Generated automatically the following way in case it is not set:
+     *
+     * - First data provider ID is empty.
+     * - Second an all subsequent data provider IDs are: "dp-1", "dp-2", etc.
      */
     public $id;
 
@@ -48,7 +50,10 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     private $_keys;
     private $_models;
     private $_totalCount;
-
+    
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
