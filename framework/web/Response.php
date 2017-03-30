@@ -394,10 +394,12 @@ class Response extends \yii\base\Response
             }
             $validationKey = $request->cookieValidationKey;
         }
+        /** @var Cookie $cookie */
         foreach ($this->getCookies() as $cookie) {
-            $value = $cookie->value;
             if ($cookie->expire != 1  && isset($validationKey)) {
-                $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
+                $value = Yii::$app->getSecurity()->hashData($cookie->toDataString(), $validationKey);
+            } else {
+                $value = $cookie->value;
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
         }
