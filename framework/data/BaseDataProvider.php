@@ -33,8 +33,7 @@ use yii\base\InvalidParamException;
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
     /**
-     * This counts the number of data providers on the current page. Used to generate unique IDs.
-     * @var int
+     * @var int Number of data providers on the current page. Used to generate unique IDs.
      */
     private static $counter = 0;
     /**
