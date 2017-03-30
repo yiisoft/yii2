@@ -20,7 +20,8 @@ class BaseDataProviderTest extends TestCase
 
 }
 
-class ConcreteDataProvider extends BaseDataProvider {
+class ConcreteDataProvider extends BaseDataProvider
+{
 
     /**
      * Prepares the data models that will be made available in the current page.
