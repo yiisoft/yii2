@@ -10,6 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
+use yii\validators\IpValidator;
 
 /**
  * The web Request class represents an HTTP request
@@ -94,6 +95,12 @@ class Request extends \yii\base\Request
      */
     const CSRF_MASK_LENGTH = 8;
 
+    const HEADER_FORWARDED  = 'forwarded';
+    const HEADER_USER_IP    = 'user_ip';
+    const HEADER_USER_HOST  = 'user_host';
+    const HEADER_USER_PROTO = 'user_proto';
+    const HEADER_USER_PORT  = 'user_port';
+
     /**
      * @var bool whether to enable CSRF (Cross-Site Request Forgery) validation. Defaults to true.
      * When CSRF validation is enabled, forms submitted to an Yii Web application must be originated
@@ -162,6 +169,37 @@ class Request extends \yii\base\Request
      * @see getBodyParams()
      */
     public $parsers = [];
+    /**
+     * @var array List of trusted IP addresses or valid IpValidator config used for validating proxy's IP
+     *
+     * ```
+     * [
+     *     '127.0.0.1',
+     *     '10.1.2.3',
+     * ]
+     * ```
+     *
+     * ```
+     * [
+     *     'ranges' => [
+     *         '127.0.0.1',
+     *         '10.1.2.3',
+     *     ],
+     * ]
+     *
+     * @see yii\validators\IpValidator
+     */
+    public $trustedProxies = [];
+    /**
+     * @var array Keys for headers that can be trusted when using trusted proxies
+     */
+    public $trustedHeaders = [
+        self::HEADER_FORWARDED  => 'forwarded',
+        self::HEADER_USER_IP    => 'x-forwarded-for',
+        self::HEADER_USER_HOST  => 'x-forwarded-host',
+        self::HEADER_USER_PROTO => 'x-forwarded-proto',
+        self::HEADER_USER_PORT  => 'x-forwarded-port',
+    ];
 
     /**
      * @var CookieCollection Collection of request cookies.
@@ -919,7 +957,19 @@ class Request extends \yii\base\Request
      */
     public function getUserIP()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+
+        if (!$this->isFromTrustedProxy()) {
+            return $ip;
+        }
+
+        if (isset($this->trustedHeaders[self::HEADER_USER_IP]) && $this->headers->has($this->trustedHeaders[self::HEADER_USER_IP])) {
+            // Forwarded ip can be in format "client ip, proxy1, proxy2"
+            $ips = explode(',', str_replace(' ', '', $this->headers->get($this->trustedHeaders[self::HEADER_USER_IP])));
+            return $ips[0];
+        }
+
+        return $ip;
     }
 
     /**
@@ -928,7 +978,19 @@ class Request extends \yii\base\Request
      */
     public function getUserHost()
     {
-        return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
+        $host = isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
+
+        if (!$this->isFromTrustedProxy()) {
+            return $host;
+        }
+
+        if (isset($this->trustedHeaders[self::HEADER_USER_HOST]) && $this->headers->has($this->trustedHeaders[self::HEADER_USER_HOST])) {
+            // Forwarded host can be in format "host:port"
+            $host = explode(':', $this->headers->get($this->trustedHeaders[self::HEADER_USER_HOST]));
+            return $host[0];
+        }
+
+        return $host;
     }
 
     /**
@@ -1464,5 +1526,29 @@ class Request extends \yii\base\Request
         $token = $this->xorTokens($mask, $token);
 
         return $token === $trueToken;
+    }
+
+    /**
+     * Check if REMOTE_ADDR can be trusted when [trustedProxies] is defined.
+     *
+     * @return boolean
+     */
+    private function isFromTrustedProxy()
+    {
+        if (empty($this->trustedProxies)) {
+            return false;
+        }
+
+        // Convert trusted proxies defined as list of IPs to valid IpValidator config
+        if (isset($this->trustedProxies[0])) {
+            $this->trustedProxies = [
+                'ranges' => $this->trustedProxies,
+            ];
+        }
+
+        $ipValidator = new IpValidator($this->trustedProxies);
+        $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+
+        return $ipValidator->validate($ip);
     }
 }
