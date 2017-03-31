@@ -855,21 +855,39 @@ class BaseConsole
      *
      * @param string $prompt the prompt message
      * @param array $options Key-value array of options to choose from
+     * @param bool $displayList whether or not to initially display the option list
      *
      * @return string An option character the user chose
      */
-    public static function select($prompt, $options = [])
+    public static function select($prompt, $options = [], $displayList=false)
     {
+        $errorCount = 0;
+        if ($displayList) {
+            goto displayList;
+        }
+
         top:
-        static::stdout("$prompt [" . implode(',', array_keys($options)) . ',?]: ');
+        if ($displayList) {
+            if ($errorCount > 4) {
+                $errorCount = 0;
+                goto displayList;
+            }
+            static::stdout("$prompt : ");
+        } else {
+            static::stdout("$prompt [" . implode(',', array_keys($options)) . ',?]: ');
+        }
         $input = static::stdin();
         if ($input === '?') {
+            displayList:
             foreach ($options as $key => $value) {
                 static::output(" $key - $value");
             }
-            static::output(' ? - Show help');
+            if (!$displayList) {
+                static::output(' ? - Show help');
+            }
             goto top;
         } elseif (!array_key_exists($input, $options)) {
+            $errorCount++;
             goto top;
         }
 
