@@ -62,9 +62,8 @@ Upgrade from Yii 2.0.x
 * `yii\mail\BaseMailer::render()` method has been removed. Make sure you do not use it anywhere in your program.
   Mail view rendering is now encapsulated into `yii\mail\Template` class.
 
-* Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been removed from `yii\mail\BaseMailer`.
-  These properties have been moved to `yii\mail\Composer` class, which now encapsulates message composition.
-  Its instance setup is available via `yii\mail\BaseMailer::$composer` - use it to control view rendering parameters.
+* Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
+  which now encapsulates message composition.
 
 
 Upgrade from Yii 2.0.11

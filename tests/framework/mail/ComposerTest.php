@@ -13,8 +13,6 @@ use yiiunit\TestCase;
  */
 class ComposerTest extends TestCase
 {
-    // Tests :
-
     public function testSetupView()
     {
         $composer = new Composer();

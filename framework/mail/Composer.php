@@ -26,17 +26,13 @@ use yii\web\View;
 class Composer extends Object
 {
     /**
-     * @var string|bool HTML layout view name. This is the layout used to render HTML mail body.
-     * The property can take the following values:
-     *
-     * - a relative view name: a view file relative to [[viewPath]], e.g., 'layouts/html'.
-     * - a path alias: an absolute view file path specified as a path alias, e.g., '@app/mail/html'.
-     * - a boolean false: the layout is disabled.
+     * @var string|bool HTML layout view name.
+     * See [[Template::$htmlLayout]] for detailed documentation.
      */
     public $htmlLayout = 'layouts/html';
     /**
-     * @var string|bool text layout view name. This is the layout used to render TEXT mail body.
-     * Please refer to [[htmlLayout]] for possible values that this property can take.
+     * @var string|bool text layout view name.
+     * See [[Template::$textLayout]] for detailed documentation.
      */
     public $textLayout = 'layouts/text';
     /**
@@ -119,7 +115,7 @@ class Composer extends Object
      * The newly created instance will be initialized with the configuration specified by [[templateConfig]].
      * @param string|array $viewName view name for the template.
      * @return Template message template instance.
-     * @throws InvalidConfigException
+     * @throws InvalidConfigException if the [[templateConfig]] is invalid.
      */
     protected function createTemplate($viewName)
     {

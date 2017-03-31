@@ -54,7 +54,7 @@ class Template extends Object implements ViewContextInterface
      *
      * - a relative view name: a view file relative to [[viewPath]], e.g., 'layouts/html'.
      * - a path alias: an absolute view file path specified as a path alias, e.g., '@app/mail/html'.
-     * - a boolean false: the layout is disabled.
+     * - a bool false: the layout is disabled.
      */
     public $htmlLayout = false;
     /**
