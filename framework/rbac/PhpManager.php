@@ -701,7 +701,6 @@ class PhpManager extends BaseManager
         $this->saveItems();
 
         return true;
-
     }
 
     /**

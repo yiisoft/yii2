@@ -639,7 +639,6 @@ class DbManager extends BaseManager
             $data = stream_get_contents($data);
         }
         return unserialize($data);
-
     }
 
     /**
@@ -657,7 +656,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $data = $row['data'];
             if (is_resource($data)) {
-               $data = stream_get_contents($data);
+                $data = stream_get_contents($data);
             }
             $rules[$row['name']] = unserialize($data);
         }
@@ -974,7 +973,7 @@ class DbManager extends BaseManager
 
         $data = $this->cache->get($this->cacheKey);
         if (is_array($data) && isset($data[0], $data[1], $data[2])) {
-            list ($this->items, $this->rules, $this->parents) = $data;
+            list($this->items, $this->rules, $this->parents) = $data;
             return;
         }
 

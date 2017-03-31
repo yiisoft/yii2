@@ -40,14 +40,12 @@ class Utf8Controller extends Controller
         }
 
         foreach ($files as $file) {
-
             $content = file_get_contents($file);
             $chars = preg_split('//u', $content, null, PREG_SPLIT_NO_EMPTY);
 
             $line = 1;
             $pos = 0;
             foreach ($chars as $c) {
-
                 $ord = $this->unicodeOrd($c);
 
                 $pos++;
@@ -78,10 +76,8 @@ class Utf8Controller extends Controller
 //                    $this->found("NON ASCII CHARARCTER", $c, $line, $pos, $file);
 //                    continue;
 //                }
-
             }
         }
-
     }
 
     private $_foundFiles = [];
@@ -112,14 +108,14 @@ class Utf8Controller extends Controller
         $h = ord($c{0});
         if ($h <= 0x7F) {
             return $h;
-        } else if ($h < 0xC2) {
+        } elseif ($h < 0xC2) {
             return false;
-        } else if ($h <= 0xDF) {
+        } elseif ($h <= 0xDF) {
             return ($h & 0x1F) << 6 | (ord($c{1}) & 0x3F);
-        } else if ($h <= 0xEF) {
+        } elseif ($h <= 0xEF) {
             return ($h & 0x0F) << 12 | (ord($c{1}) & 0x3F) << 6
                                      | (ord($c{2}) & 0x3F);
-        } else if ($h <= 0xF4) {
+        } elseif ($h <= 0xF4) {
             return ($h & 0x0F) << 18 | (ord($c{1}) & 0x3F) << 12
                                      | (ord($c{2}) & 0x3F) << 6
                                      | (ord($c{3}) & 0x3F);

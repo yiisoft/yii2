@@ -66,7 +66,7 @@ class SluggableBehavior extends AttributeBehavior
     public $slugAttribute = 'slug';
     /**
      * @var string|array|null the attribute or list of attributes whose value will be converted into a slug
-     * or `null` meaning that the `$value` property will be used to generate a slug. 
+     * or `null` meaning that the `$value` property will be used to generate a slug.
      */
     public $attribute;
     /**

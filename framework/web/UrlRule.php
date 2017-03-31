@@ -487,7 +487,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param string $string
      * @return string
      */
-    private function trimSlashes($string) {
+    private function trimSlashes($string)
+    {
         if (strpos($string, '//') === 0) {
             return '//' . trim($string, '/');
         }
