@@ -41,7 +41,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * Generated automatically the following way in case it is not set:
      *
      * - First data provider ID is empty.
-     * - Second an all subsequent data provider IDs are: "dp-1", "dp-2", etc.
+     * - Second and all subsequent data provider IDs are: "dp-1", "dp-2", etc.
      */
     public $id;
 
