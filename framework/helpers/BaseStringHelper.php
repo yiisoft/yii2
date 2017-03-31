@@ -338,4 +338,36 @@ class BaseStringHelper
     {
         return base64_decode(strtr($input, '-_', '+/'));
     }
+
+    /**
+     * Masks a token to make it uncompressible.
+     * Applies random mask to a token and prepends mask used to the result making the string always unique.
+     * Used to mitigate BREACH attack by randomizing how token is outputted on each request.
+     * @param string $token An unmasked token.
+     * @return string A masked token.
+     * @since 2.0.13
+     */
+    public static function maskToken($token)
+    {
+        // Mask always equal length (in bytes) to token.
+        $mask = Yii::$app->security->generateRandomKey(static::byteLength($token));
+        return static::base64UrlEncode($mask . ($mask ^ $token));
+    }
+
+    /**
+     * Unmasks a token previously masked by `maskToken`.
+     * @param $maskedToken A masked token.
+     * @return string An unmasked token, or an empty string in case of invalid token format.
+     * @since 2.0.13
+     */
+    public static function unmaskToken($maskedToken)
+    {
+        $decoded = static::base64UrlDecode($maskedToken);
+        $length = static::byteLength($decoded) / 2;
+        // Check if the masked token has an even length.
+        if (!is_int($length)) {
+            return "";
+        }
+        return static::byteSubstr($decoded, $length, $length) ^ static::byteSubstr($decoded, 0, $length);
+    }
 }

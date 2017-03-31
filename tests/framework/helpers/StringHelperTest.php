@@ -298,4 +298,20 @@ class StringHelperTest extends TestCase
             ['Это закодированная строка', '0K3RgtC-INC30LDQutC-0LTQuNGA0L7QstCw0L3QvdCw0Y8g0YHRgtGA0L7QutCw'],
         ];
     }
+
+    /**
+     * @dataProvider maskProvider
+     */
+    public function testMasking($unmaskedToken)
+    {
+        $this->assertEquals($unmaskedToken, StringHelper::unmaskToken(StringHelper::maskToken($unmaskedToken)));
+    }
+
+    public function maskProvider() {
+        return [
+            ['SimpleToken'],
+            ['Token with special characters: %d1    5"'],
+            ["Token with UTF8 character: †"]
+        ];
+    }
 }

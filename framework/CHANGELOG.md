@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Bug #13704: Fixed `yii\validators\UniqueValidator` to prefix attribute name with model's database table name (vladis84)
 - Enh #13823: Refactored migrations template (Kolyunya)
 - Enh #13845: `mt_rand()` is used instead of `rand()` in `yii\captcha\CaptchaAction` (kalessil)
+- Enh #13837: Refactored masking of CSRF tokens, masking functions have been moved to `yii\helpers\StringHelper` (sammousa)
 
 2.0.11.2 February 08, 2017
 --------------------------
