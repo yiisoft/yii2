@@ -296,4 +296,53 @@ class RequestTest extends TestCase
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
     }
+
+    public function isSecureServerDataProvider() {
+        return [
+            [['HTTPS' => 1], true],
+            [['HTTPS' => 'on'], true],
+            [['HTTPS' => 0], false],
+            [['HTTPS' => 'off'], false],
+            [[], false],
+            [['HTTP_X_FORWARDED_PROTO' => 'https'], false],
+            [['HTTP_X_FORWARDED_PROTO' => 'http'], false],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_HOST' => 'test.com'
+            ], true],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_HOST' => 'othertest.com'
+            ], false],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_ADDR' => '192.168.0.1'
+            ], true],
+            [[
+                'HTTP_X_FORWARDED_PROTO' => 'https',
+                'REMOTE_ADDR' => '192.169.0.1'
+            ], false]
+        ];
+    }
+
+    /**
+     * @dataProvider isSecureServerDataProvider
+     */
+    public function testGetIsSecureConnection($server, $expected)
+    {
+        $original = $_SERVER;
+        $request = new Request([
+            'trustedHostConfig' => [
+                '/^test.com$/',
+                '/^192\.168/'
+            ]
+        ]);
+        $_SERVER = $server;
+
+        $this->assertEquals($expected, $request->getIsSecureConnection());
+        $_SERVER = $original;
+
+    }
+
+
 }

@@ -626,10 +626,11 @@ class Response extends \yii\base\Response
      */
     protected function getHttpRange($fileSize)
     {
-        if (!isset($_SERVER['HTTP_RANGE']) || $_SERVER['HTTP_RANGE'] === '-') {
+        $rangeHeader = Yii::$app->getRequest()->getHeaders()->get('Range', '-');
+        if ($rangeHeader === '-') {
             return [0, $fileSize - 1];
         }
-        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $_SERVER['HTTP_RANGE'], $matches)) {
+        if (!preg_match('/^bytes=(\d*)-(\d*)$/', $rangeHeader, $matches)) {
             return false;
         }
         if ($matches[1] === '') {
