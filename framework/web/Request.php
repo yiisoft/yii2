@@ -911,7 +911,7 @@ class Request extends \yii\base\Request
      */
     public function getOrigin()
     {
-        return $this->getHeaders()->get('HTTP_ORIGIN');
+        return $this->getHeaders()->get('origin');
     }
 
     /**
