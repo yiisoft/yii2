@@ -111,10 +111,10 @@ trait ActiveQueryTrait
      */
     protected function createModels($rows)
     {
-        $models = [];
         if ($this->asArray) {
             return $rows;
         } else {
+            $models = [];
             /* @var $class ActiveRecord */
             $class = $this->modelClass;
             foreach ($rows as $row) {
@@ -123,8 +123,8 @@ trait ActiveQueryTrait
                 $modelClass::populateRecord($model, $row);
                 $models[] = $model;
             }
+            return $models;
         }
-        return $models;
     }
 
     /**
