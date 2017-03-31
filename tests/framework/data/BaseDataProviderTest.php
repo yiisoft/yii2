@@ -22,30 +22,16 @@ class BaseDataProviderTest extends TestCase
 
 class ConcreteDataProvider extends BaseDataProvider
 {
-
-    /**
-     * Prepares the data models that will be made available in the current page.
-     * @return array the available data models
-     */
     protected function prepareModels()
     {
         return [];
     }
 
-    /**
-     * Prepares the keys associated with the currently available data models.
-     * @param array $models the available data models
-     * @return array the keys
-     */
     protected function prepareKeys($models)
     {
         return [];
     }
 
-    /**
-     * Returns a value indicating the total number of data models in this data provider.
-     * @return int total number of data models in this data provider.
-     */
     protected function prepareTotalCount()
     {
         return 0;
