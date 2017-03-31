@@ -137,24 +137,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals(['user3', 'user2', 'user1'], Customer::find()->orderBy(['[[name]]' => SORT_DESC])->select('[[name]]')->column());
     }
 
-    public function findOne()
-    {
-        // find by pk
-        $customer = Customer::findOne(1);
-        $this->assertInstanceOf(Customer::className(), $customer);
-        $this->assertEquals(1, $customer->id);
-
-        // find by associative array
-        $customer = Customer::findOne(['id' => 1]);
-        $this->assertInstanceOf(Customer::className(), $customer);
-        $this->assertEquals(1, $customer->id);
-
-        // find by complex query
-        $customer = Customer::findOne(['=', 'id', 1]);
-        $this->assertInstanceOf(Customer::className(), $customer);
-        $this->assertEquals(1, $customer->id);
-    }
-
     public function testFindBySql()
     {
         // find one

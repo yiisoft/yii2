@@ -128,7 +128,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $query = static::find();
 
-        if (!is_array($condition)) {
+        $isConditionArray = is_array($condition);
+        if (!$isConditionArray || ($isConditionArray && !ArrayHelper::isAssociative($condition) && count($condition) < 3)) {
             // query by primary key
             $primaryKey = static::primaryKey();
             if (isset($primaryKey[0])) {
@@ -136,10 +137,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
-        } elseif (!is_array($condition) || (!ArrayHelper::isAssociative($condition) && count($condition) != 3)) {
-            throw new InvalidConfigException('"' . get_called_class() . '" invalid condition passed.');
         }
-
         return $query->andWhere($condition);
     }
 

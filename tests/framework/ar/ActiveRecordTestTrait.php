@@ -101,6 +101,14 @@ trait ActiveRecordTestTrait
         $customer = $customerClass::findOne(['name' => 'user5']);
         $this->assertNull($customer);
 
+        // find by complex query
+        $customer = Customer::findOne(['=', 'id', 1]);
+        $this->assertInstanceOf(Customer::className(), $customer);
+        $this->assertEquals(1, $customer->id);
+        $customer = Customer::findOne(['>', 'id', 1]);
+        $this->assertInstanceOf(Customer::className(), $customer);
+        $this->assertEquals(2, $customer->id);
+
         // find by attributes
         $customer = $customerClass::find()->where(['name' => 'user2'])->one();
         $this->assertInstanceOf($customerClass, $customer);
