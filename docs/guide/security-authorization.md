@@ -312,7 +312,7 @@ class m170124_084304_init_rbac extends Migration
 }
 ```
 
-> If you don't want to hardcode what users have certain roles, don't put `->assign()` calls in migrations. Instead,
+> If you don't want to hardcode which users have certain roles, don't put `->assign()` calls in migrations. Instead,
   create either UI or console command to manage assignments.
 
 After applying migration using `yii migrate` we'll get the following hierarchy:
