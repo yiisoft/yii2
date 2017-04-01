@@ -189,9 +189,9 @@ class Request extends \yii\base\Request
                 $this->_queryParams = $params + $this->_queryParams;
             }
             return [$route, $this->getQueryParams()];
-        } else {
-            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
+
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
     }
 
     /**
@@ -459,9 +459,9 @@ class Request extends \yii\base\Request
     {
         if ($name === null) {
             return $this->getBodyParams();
-        } else {
-            return $this->getBodyParam($name, $defaultValue);
         }
+
+        return $this->getBodyParam($name, $defaultValue);
     }
 
     private $_queryParams;
@@ -504,9 +504,9 @@ class Request extends \yii\base\Request
     {
         if ($name === null) {
             return $this->getQueryParams();
-        } else {
-            return $this->getQueryParam($name, $defaultValue);
         }
+
+        return $this->getQueryParam($name, $defaultValue);
     }
 
     /**
@@ -689,11 +689,13 @@ class Request extends \yii\base\Request
     {
         if (isset($this->_scriptFile)) {
             return $this->_scriptFile;
-        } elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
-            return $_SERVER['SCRIPT_FILENAME'];
-        } else {
-            throw new InvalidConfigException('Unable to determine the entry script file path.');
         }
+
+        if (isset($_SERVER['SCRIPT_FILENAME'])) {
+            return $_SERVER['SCRIPT_FILENAME'];
+        }
+
+        throw new InvalidConfigException('Unable to determine the entry script file path.');
     }
 
     /**
@@ -1073,7 +1075,9 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER['CONTENT_TYPE'])) {
             return $_SERVER['CONTENT_TYPE'];
-        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+        }
+
+        if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             //fix bug https://bugs.php.net/bug.php?id=66606
             return $_SERVER['HTTP_CONTENT_TYPE'];
         }
@@ -1166,23 +1170,31 @@ class Request extends \yii\base\Request
             $b = $b['q'];
             if ($a[2] > $b[2]) {
                 return -1;
-            } elseif ($a[2] < $b[2]) {
-                return 1;
-            } elseif ($a[1] === $b[1]) {
-                return $a[0] > $b[0] ? 1 : -1;
-            } elseif ($a[1] === '*/*') {
-                return 1;
-            } elseif ($b[1] === '*/*') {
-                return -1;
-            } else {
-                $wa = $a[1][strlen($a[1]) - 1] === '*';
-                $wb = $b[1][strlen($b[1]) - 1] === '*';
-                if ($wa xor $wb) {
-                    return $wa ? 1 : -1;
-                } else {
-                    return $a[0] > $b[0] ? 1 : -1;
-                }
             }
+
+            if ($a[2] < $b[2]) {
+                return 1;
+            }
+
+            if ($a[1] === $b[1]) {
+                return $a[0] > $b[0] ? 1 : -1;
+            }
+
+            if ($a[1] === '*/*') {
+                return 1;
+            }
+
+            if ($b[1] === '*/*') {
+                return -1;
+            }
+
+            $wa = $a[1][strlen($a[1]) - 1] === '*';
+            $wb = $b[1][strlen($b[1]) - 1] === '*';
+            if ($wa xor $wb) {
+                return $wa ? 1 : -1;
+            }
+
+            return $a[0] > $b[0] ? 1 : -1;
         });
 
         $result = [];
@@ -1234,9 +1246,9 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
             return preg_split('/[\s,]+/', str_replace('-gzip', '', $_SERVER['HTTP_IF_NONE_MATCH']), -1, PREG_SPLIT_NO_EMPTY);
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**
@@ -1340,9 +1352,8 @@ class Request extends \yii\base\Request
     {
         if ($this->enableCsrfCookie) {
             return $this->getCookies()->getValue($this->csrfParam);
-        } else {
-            return Yii::$app->getSession()->get($this->csrfParam);
         }
+        return Yii::$app->getSession()->get($this->csrfParam);
     }
 
     /**
@@ -1410,10 +1421,10 @@ class Request extends \yii\base\Request
 
         if ($clientSuppliedToken !== null) {
             return $this->validateCsrfTokenInternal($clientSuppliedToken, $trueToken);
-        } else {
-            return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
-                || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
         }
+
+        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
+            || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
     }
 
     /**
