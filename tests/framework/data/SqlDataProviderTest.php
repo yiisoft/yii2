@@ -19,7 +19,7 @@ class SqlDataProviderTest extends DatabaseTestCase
     {
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer`',
-            'db' => $this->getConnection()
+            'db' => $this->getConnection(),
         ]);
         $this->assertEquals(3, count($dataProvider->getModels()));
     }
@@ -28,7 +28,7 @@ class SqlDataProviderTest extends DatabaseTestCase
     {
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer`',
-            'db' => $this->getConnection()
+            'db' => $this->getConnection(),
         ]);
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
