@@ -260,19 +260,18 @@ Building authorization data is all about the following tasks:
 
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
 
-If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a
-[console command](tutorial-console.md#create-command) that will initialize authorization data once via APIs offered by `authManager`:
+If your permissions hierarchy is meant to be changed by developers only, you can use [migrations](db-migrations.md)
+to initialize and modify it via APIs offered by `authManager`.
+
+Create new migration using `./yii migrate/create init_rbac` then impement creating a hierarchy:
 
 ```php
 <?php
-namespace app\commands;
+use yii\db\Migration;
 
-use Yii;
-use yii\console\Controller;
-
-class RbacController extends Controller
+class m170124_084304_init_rbac extends Migration
 {
-    public function actionInit()
+    public function up()
     {
         $auth = Yii::$app->authManager;
 
@@ -303,13 +302,20 @@ class RbacController extends Controller
         $auth->assign($author, 2);
         $auth->assign($admin, 1);
     }
+    
+    public function down()
+    {
+        $auth = Yii::$app->authManager;
+
+        $auth->removeAll();
+    }
 }
 ```
 
-> Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
-  and change namespace to `console\controllers`.
+> If you don't want to hardcode what users have certain roles, don't put `->assign()` calls in migrations. Instead,
+  create either UI or console command to manage assignments.
 
-After executing the command with `yii rbac/init` we'll get the following hierarchy:
+After applying migration using `yii migrate` we'll get the following hierarchy:
 
 ![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
 
