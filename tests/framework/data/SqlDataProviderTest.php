@@ -32,7 +32,4 @@ class SqlDataProviderTest extends DatabaseTestCase
         ]);
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
-
-
-
 }
