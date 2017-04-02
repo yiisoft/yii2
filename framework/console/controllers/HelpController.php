@@ -249,21 +249,50 @@ class HelpController extends Controller
             }
         }
 
-        $controllerPath = $module->getControllerPath();
-        if (is_dir($controllerPath)) {
-            $files = scandir($controllerPath);
-            foreach ($files as $file) {
-                if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
-                    $controllerClass = $module->controllerNamespace . '\\' . substr(basename($file), 0, -4);
-                    if ($this->validateControllerClass($controllerClass)) {
-                        $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
-                    }
+        return array_merge($commands, $this->recursiveScanForControllers($module));
+    }
+    
+    /**
+     * If module has a valid controller path, search recursively and return the available commands
+     * @param \yii\base\Module $module the module instance $module
+     * @param array $folders Subfolders, used by recursion call
+     * @return array the available command names
+     */
+    protected function recursiveScanForControllers($module, $folders = [])
+    {
+        $path = $module->getControllerPath();
+        if (!is_dir($path)) {
+            return [];
+        }
+        
+        $prefix = $module instanceof Application ? '' : $module->getUniqueId() . '/';
+        $namespace = $module->controllerNamespace . '\\';
+        foreach ($folders as $folder) {
+            $path .= DIRECTORY_SEPARATOR . $folder;
+            $prefix .= $folder . '/';
+            $namespace .= $folder . '\\';
+        }
+        
+        $commands = [];
+        foreach (scandir($path) as $file) {
+            if (!empty($file) && substr_compare($file, 'Controller.php', -14, 14) === 0) {
+                $controllerClass = $namespace . substr(basename($file), 0, -4);
+                if ($this->validateControllerClass($controllerClass)) {
+                    $commands[] = $prefix . Inflector::camel2id(substr(basename($file), 0, -14));
                 }
+                continue;
+            }
+            
+            $filename = $path . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($filename) && !in_array($file, ['.', '..'])) {
+                $folders[] = $file;
+                $commands = array_merge($commands, $this->recursiveScanForControllers($module, $folders));
             }
         }
-
+        
         return $commands;
     }
+
 
     /**
      * Validates if the given class is a valid console controller class.

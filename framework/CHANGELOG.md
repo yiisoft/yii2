@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 - Enh #13369: Added ability to render current `yii\widgets\LinkPager` page disabled (aquy)
 - Enh #13837: Refactored masking of CSRF tokens (sammousa)
 - Enh #13560: Refactored `\yii\widgets\FragmentCache::getCachedContent()`, added tests (Kolyunya)
+- Enh #13902: Console command completion in folders (Sarke)
 
 2.0.11.2 February 08, 2017
 --------------------------
