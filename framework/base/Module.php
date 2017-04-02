@@ -305,7 +305,7 @@ class Module extends ServiceLocator
     /**
      * Returns current module version.
      * If version is not explicitly set, [[defaultVersion()]] method will be used to determine its value.
-     * @return string the version of this module.
+     * @return string|callable the version of this module.
      * @since 2.0.11
      */
     public function getVersion()
@@ -342,7 +342,7 @@ class Module extends ServiceLocator
     /**
      * Returns default module version.
      * Child class may override this method to provide more specific version detection.
-     * @return string the version of this module.
+     * @return string|callable the version of this module.
      * @since 2.0.11
      */
     protected function defaultVersion()
@@ -606,7 +606,7 @@ class Module extends ServiceLocator
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
      * @param string $id the controller ID.
-     * @return Controller the newly created controller instance, or `null` if the controller ID is invalid.
+     * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
      */
