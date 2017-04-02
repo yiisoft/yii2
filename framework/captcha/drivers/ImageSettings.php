@@ -3,6 +3,7 @@
 namespace yii\captcha\drivers;
 
 use yii\base\Object;
+use yii\base\InvalidConfigException;
 
 /**
  * Params image for generate captcha.

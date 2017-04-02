@@ -2,10 +2,12 @@
 
 namespace yii\captcha\drivers;
 
+use yii\base\Object;
+
 /**
  * Renders the CAPTCHA image based on the code using ImageMagick library.
  */
-class ImagickDriver extends Driver
+class ImagickDriver extends Object implements DriverInterface
 {
     /**
      * {@inheritdoc}
@@ -47,22 +49,23 @@ class ImagickDriver extends Driver
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getError()
     {
-        return DriverFactory::IMAGICK;
-    }
 
-    public function checkRequirements()
-    {
-        $imagickFormats = $this->getImagickFormats();
-
-        $result = in_array('PNG', $imagickFormats, true);
-
-        if (!$result) {
-            $this->addError('ImageMagick PHP extension with PNG support is required');
+        if ($this->isAvailableImagick() && in_array('PNG', $this->getImagickFormats(), true)) {
+            return null;
         }
 
-        return $result;
+        return 'Not available ImageMagick  extension or ImageMagick extension without PNG support is required';
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return string[]
+     */
+    protected function isAvailableImagick()
+    {
+        return extension_loaded('imagick');
     }
 
     /**

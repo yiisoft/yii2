@@ -48,8 +48,6 @@ use yii\captcha\drivers\ImageSettings;
  */
 class CaptchaAction extends Action
 {
-    use \yii\captcha\drivers\ImageSettingsTrait;
-    
     /**
      * The name of the GET parameter indicating whether the CAPTCHA image should be regenerated.
      */
@@ -66,11 +64,6 @@ class CaptchaAction extends Action
      */
     public $minLength = 6;
 
-    /**
-     * @var int the maximum length for randomly generated word. Defaults to 7.
-     */
-    public $maxLength = 7;
-   
     /**
      * @var int the maximum length for randomly generated word. Defaults to 7.
      */
@@ -96,7 +89,7 @@ class CaptchaAction extends Action
      * Image generate settings.
      * @var \yii\captcha\drivers\ImageSettings
      */
-    private $imageSettings;
+    private $_imageSettings;
 
     /**
      * Initializes the action.
@@ -104,7 +97,7 @@ class CaptchaAction extends Action
      */
     public function init()
     {
-        $this->imageSettings = new ImageSettings();
+        $this->_imageSettings = new ImageSettings();
     }
 
     /**
@@ -235,16 +228,11 @@ class CaptchaAction extends Action
      */
     protected function renderImage($code)
     {
-        /* @var $driverFactory DriverFactory */
-        $driverFactory = Yii::createObject(DriverFactory::className());
-        $captchaDriver = $driverFactory->make();
+        /* @var $factory DriverFactory */
+        $factory = Yii::createObject(DriverFactory::className());
+        $captchaDriver = $factory->make($this->imageLibrary);
 
-        if (!$captchaDriver->checkRequirements()) {
-            $errors = join('. ', $captchaDriver->getErrors());
-            throw new InvalidConfigException($errors);
-        }
-
-        return $captchaDriver->renderCaptcha($code, $this->imageSettings);
+        return $captchaDriver->renderCaptcha($code, $this->_imageSettings);
     }
 
     /**
@@ -260,5 +248,38 @@ class CaptchaAction extends Action
             ->set('Content-type', 'image/png');
     }
 
+    public function setWidth($width)
+    {
+        $this->_imageSettings->width = (int) $width;
+    }
 
+    public function setHeight($height)
+    {
+        $this->_imageSettings->height = (int) $height;
+    }
+
+    public function setPadding($padding)
+    {
+        $this->_imageSettings->padding = (int) $padding;
+    }
+
+    public function setBackColor($backColor)
+    {
+        $this->_imageSettings->backColor = (int) $backColor;
+    }
+
+    public function setForeColor($foreColor)
+    {
+        $this->_imageSettings->foreColor = (int) $foreColor;
+    }
+
+    public function setOffset($offset)
+    {
+        $this->_imageSettings->offset = (int) $offset;
+    }
+
+    public function setFontFile($fontFile)
+    {
+        $this->_imageSettings->fontFile = $fontFile;
+    }
 }

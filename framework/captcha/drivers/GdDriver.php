@@ -2,10 +2,12 @@
 
 namespace yii\captcha\drivers;
 
+use yii\base\Object;
+
 /**
  * Renders the CAPTCHA image based on the code using GD library.
  */
-class GdDriver extends Driver
+class GdDriver extends Object implements DriverInterface
 {
     /**
      * {@inheritdoc}
@@ -62,30 +64,27 @@ class GdDriver extends Driver
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getError()
     {
-        return DriverFactory::GD;
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function checkRequirements()
-    {
-        $gdInfo = $this->getGDInfo();
-
-        $result = in_array('FreeType Support', $gdInfo);
-
-        if (!$result) {
-            $this->addError('Either GD PHP extension with FreeType support');
+        if ($this->isAvailableGd() && in_array('FreeType Support', $this->getGDInfo())) {
+            return null;
         }
 
-        return $result;
+        return 'Not available GD  extension or either GD without FreeType support';
     }
 
     /**
      * @codeCoverageIgnore
-     * @return []
+     * @return string[]
+     */
+    protected function isAvailableGd()
+    {
+        return extension_loaded('gd');
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return string[]
      */
     protected function getGDInfo()
     {

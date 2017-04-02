@@ -2,9 +2,9 @@
 
 namespace yii\captcha;
 
+use Yii;
 use yii\captcha\Captcha;
 use yiiunit\TestCase;
-use yii\captcha\drivers\DriverFactory;
 use yii\captcha\drivers\GdDriver;
 
 class CaptchaTest extends TestCase
@@ -14,6 +14,14 @@ class CaptchaTest extends TestCase
         parent::setUp();
 
         $this->mockApplication();
+
+        $fakeGdDriver = $this->getMockBuilder(GdDriver::className())
+            ->setMethods(['getError'])
+            ->getMock();
+        $fakeGdDriver->expects($this->any())
+            ->method('getError')
+            ->willReturn(null);
+        Yii::$container->setSingleton(GdDriver::className(), $fakeGdDriver);
     }
 
     /**
@@ -23,7 +31,7 @@ class CaptchaTest extends TestCase
     public function testInitFilledOptionsId()
     {
         $initValues = [
-            'name' => 'captcha',
+            'name'    => 'captcha',
             'options' => [
                 'id' => 'captcha-id'
             ]
@@ -45,48 +53,18 @@ class CaptchaTest extends TestCase
         $this->assertStringEndsWith('-image', $captcha->imageOptions['id']);
     }
 
-    public function testCheckRequirementsAvailableSupportedImageLibrary()
+    public function testCheckRequirementsNotAvailableSupportedImageLibrary()
     {
-        $fakeDriverFactory = $this->getMockBuilder(DriverFactory::className())
-            ->setMethods(['make'])
+        $fakeGdDriver = $this->getMockBuilder(GdDriver::className())
+            ->setMethods(['getError'])
             ->getMock();
-
-        $gdDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getGDInfo'])
-            ->getMock();
-        $gdDriver->expects(self::any())
-            ->method('getGDInfo')
-            ->willReturn(['FreeType Support']);
-
-        $fakeDriverFactory->expects($this->any())
-            ->method('make')
-            ->willReturn($gdDriver);
-        \Yii::$container->set(DriverFactory::className(), $fakeDriverFactory);
-
-        $actualDriverName = Captcha::checkRequirements();
-
-        $this->assertEquals(DriverFactory::GD, $actualDriverName);
-    }
-
-    public function testCheckRequirementsImageLibraryNotCheckRequirements()
-    {
-        $fakeDriverFactory = $this->getMockBuilder(DriverFactory::className())
-            ->setMethods(['make'])
-            ->getMock();
-
-        $gdDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getGDInfo'])
-            ->getMock();
-        $gdDriver->expects(self::any())
-            ->method('getGDInfo')
-            ->willReturn([]);
-
-        $fakeDriverFactory->expects($this->any())
-            ->method('make')
-            ->willReturn($gdDriver);
-        \Yii::$container->set(DriverFactory::className(), $fakeDriverFactory);
+        $fakeGdDriver->expects($this->any())
+            ->method('getError')
+            ->willReturn('Error have for GD');
+        \Yii::$container->setSingleton(GdDriver::className(), $fakeGdDriver);
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
-        Captcha::checkRequirements();
+
+        new Captcha();
     }
 }

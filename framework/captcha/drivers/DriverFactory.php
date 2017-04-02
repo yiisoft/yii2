@@ -2,6 +2,7 @@
 
 namespace yii\captcha\drivers;
 
+use Yii;
 use yii\base\Object;
 use yii\base\InvalidConfigException;
 
@@ -10,66 +11,58 @@ use yii\base\InvalidConfigException;
  */
 class DriverFactory extends Object
 {
-    const IMAGICK = 'imagick';
+    /**
+     * Drivers list implement.
+     * Driver implement DriverInterface.
+     * @var array
+     */
+    public $drivers = [
+        self::IMAGICK => 'yii\captcha\drivers\ImagickDriver',
+        self::GD      => 'yii\captcha\drivers\GdDriver',
+    ];
 
+    const IMAGICK = 'imagick';
     const GD = 'gd';
 
     /**
      * Creates driver for captcha.
-     * @param type $driverName
-     * @return \yii\captcha\drivers\Driver
+     * @param string $driverName
+     * @return \yii\captcha\drivers\DriverInterface
      * @throws InvalidConfigException
      */
     public function make($driverName = null)
     {
-        if (!$driverName) {
-            $driverName = $this->getAvailableDriverName();
-        }
-        
-        $driver = null;
-        
-        switch ($driverName) {
-            case self::IMAGICK:
-                $driver = new ImagickDriver();
-                break;
-            
-            case self::GD:
-                $driver = new GdDriver();
-                break;
+        $drivers = $this->drivers;
 
-            default:
-                throw new InvalidConfigException("Defined library '{$driverName}' is not supported");
+        if (isset($drivers[$driverName])) {
+            return $this->buildDriver($drivers[$driverName]);
+        } elseif ($driverName) {
+            throw new InvalidConfigException("Defined library '{$driverName}' is not supported");
         }
-        
+
+        $errors = [];
+        foreach ($drivers as $driverClass) {
+            try {
+                return $this->buildDriver($driverClass);
+            }
+            catch (InvalidConfigException $exception) {
+                $errors[] = $exception->getMessage();
+            }
+        }
+
+        throw new InvalidConfigException('Unable to use Captcha: ' . implode(', ', $errors));
+    }
+
+    private function buildDriver($driverClass)
+    {
+        /* @var $driver DriverInterface */
+        $driver = Yii::createObject($driverClass);
+        $error = $driver->getError();
+
+        if ($error) {
+            throw new InvalidConfigException($error);
+        }
+
         return $driver;
-    }
-
-    /**
-     * Returned used image module.
-     * @return string
-     * @throws InvalidConfigException
-     */
-    protected function getAvailableDriverName()
-    {
-        $driverName = null;
-
-        $extensions = $this->getLoadedExtensions();
-
-        if (in_array(self::IMAGICK, $extensions)) {
-            $driverName = self::IMAGICK;
-        } elseif (in_array(self::GD, $extensions)) {
-            $driverName = self::GD;
-        }
-
-        return $driverName;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     * @return []
-     */
-    protected function getLoadedExtensions()
-    {
-        return get_loaded_extensions();
     }
 }

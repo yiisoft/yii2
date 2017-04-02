@@ -92,7 +92,7 @@ class Captcha extends InputWidget
     {
         parent::init();
 
-        static::checkRequirements();
+        $this->checkRequirements();
 
         if (!isset($this->imageOptions['id'])) {
             $this->imageOptions['id'] = $this->options['id'] . '-image';
@@ -156,24 +156,16 @@ class Captcha extends InputWidget
 
         return $options;
     }
-
+    
     /**
      * Checks if there is graphic extension available to generate CAPTCHA images.
      * This method will check the existence of ImageMagick and GD extensions.
-     * @return string the name of the graphic extension, either "imagick" or "gd".
      * @throws InvalidConfigException if neither ImageMagick nor GD is installed.
      */
-    public static function checkRequirements()
+    private function checkRequirements()
     {
-        /* @var $driverFactory DriverFactory */
-        $driverFactory = Yii::createObject(DriverFactory::className());
-        $captchaDriver = $driverFactory->make();
-
-        if (!$captchaDriver->checkRequirements()) {
-            $errors = join('. ', $captchaDriver->getErrors());
-            throw new InvalidConfigException($errors);
-        }
-
-        return $captchaDriver->getName();
+        /* @var $factory DriverFactory */
+        $factory = Yii::createObject(DriverFactory::className());
+        $factory->make();
     }
 }
