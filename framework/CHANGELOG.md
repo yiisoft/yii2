@@ -61,6 +61,7 @@ Yii Framework 2 Change Log
 - Enh #13369: Added ability to render current `yii\widgets\LinkPager` page disabled (aquy)
 - Enh #13837: Refactored masking of CSRF tokens (sammousa)
 - Enh #13560: Refactored `\yii\widgets\FragmentCache::getCachedContent()`, added tests (Kolyunya)
+- Bug #13901: Fixed passing unused parameter to `formatMessage()` call in `\yii\validators\IpValidator` (Kolyunya)
 
 2.0.11.2 February 08, 2017
 --------------------------
