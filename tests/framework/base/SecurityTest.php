@@ -1251,6 +1251,25 @@ TEXT;
     {
         $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
     }
+
+    /**
+     * @dataProvider maskProvider
+     */
+    public function testMasking($unmaskedToken)
+    {
+        $this->assertEquals($unmaskedToken, $this->security->unmaskToken($this->security->maskToken($unmaskedToken)));
+    }
+
+    /**
+     * @return array
+     */
+    public function maskProvider() {
+        return [
+            ['SimpleToken'],
+            ['Token with special characters: %d1    5"'],
+            ['Token with UTF8 character: †']
+        ];
+    }
 }
 
 } // closing namespace yiiunit\framework\base;
