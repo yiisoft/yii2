@@ -17,11 +17,11 @@ class ImagickDriverTest extends TestCase
 
     public function testRenderCaptcha()
     {
-        if (!extension_loaded('imagick')) {
-            static::markTestSkipped('Imagick extensions are required.');
+        $imagickDriver = new ImagickDriver();
+        if ($error = $imagickDriver->getError()) {
+            static::markTestSkipped($error);
         }
 
-        $imagickDriver = new ImagickDriver();
         $imageSettings = new ImageSettings();
 
         $image = $imagickDriver->renderCaptcha('test render', $imageSettings);

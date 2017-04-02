@@ -17,11 +17,11 @@ class GdDriverTest extends TestCase
 
     public function testRenderCaptcha()
     {
-        if (!extension_loaded('gd')) {
-            static::markTestSkipped('GD extensions are required.');
+        $gdDriver = new GdDriver();
+        if ($error = $gdDriver->getError()) {
+            static::markTestSkipped($error);
         }
 
-        $gdDriver = new GdDriver();
         $imageSettings = new ImageSettings();
 
         $image = $gdDriver->renderCaptcha('test render', $imageSettings);
