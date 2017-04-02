@@ -163,7 +163,7 @@ class Security extends Component
      * @param string $data data to be encrypted
      * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
-     * @param string $info context/application specific information, e.g. a user ID
+     * @param string|null $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
      *
      * @return string the encrypted data
@@ -214,7 +214,7 @@ class Security extends Component
      * @param string $data encrypted data to be decrypted.
      * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the decryption password or key
-     * @param string $info context/application specific information, @see encrypt()
+     * @param string|null $info context/application specific information, @see encrypt()
      *
      * @return bool|string the decrypted data or false on authentication failure
      * @throws InvalidConfigException on OpenSSL not loaded
@@ -280,7 +280,7 @@ class Security extends Component
             }
             return $outputKey;
         }
-        
+
         $test = @hash_hmac($algo, '', '', true);
         if (!$test) {
             throw new InvalidParamException('Failed to generate HMAC with hash algorithm: ' . $algo);
@@ -409,7 +409,7 @@ class Security extends Component
      * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
      * of lowercase hex digits only.
      * hex digits will be generated.
-     * @return string the real data with the hash stripped off. False if the data is tampered.
+     * @return string|false the real data with the hash stripped off. False if the data is tampered.
      * @throws InvalidConfigException when HMAC generation fails.
      * @see hashData()
      */
