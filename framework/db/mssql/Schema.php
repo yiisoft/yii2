@@ -253,16 +253,22 @@ class Schema extends \yii\db\Schema
 
         $sql = <<<SQL
 SELECT
-    [t1].[column_name], [t1].[is_nullable], [t1].[data_type], [t1].[column_default],
-    COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
-    CONVERT(VARCHAR, [t2].[value]) AS comment
+ [t1].[column_name],
+ [t1].[is_nullable],
+ [t1].[data_type],
+ [t1].[column_default],
+ COLUMNPROPERTY(OBJECT_ID([t1].[table_schema] + '.' + [t1].[table_name]), [t1].[column_name], 'IsIdentity') AS is_identity,
+ (
+    SELECT CONVERT(VARCHAR, [t2].[value])
+		FROM [sys].[extended_properties] AS [t2]
+		WHERE
+			[t2].[class] = 1 AND
+			[t2].[class_desc] = 'OBJECT_OR_COLUMN' AND
+			[t2].[name] = 'MS_Description' AND
+			[t2].[major_id] = OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[table_name]) AND
+			[t2].[minor_id] = COLUMNPROPERTY(OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[TABLE_NAME]), [t1].[COLUMN_NAME], 'ColumnID')
+ ) as comment
 FROM {$columnsTableName} AS [t1]
-LEFT OUTER JOIN [sys].[extended_properties] AS [t2] ON
-    [t2].[minor_id] = COLUMNPROPERTY(OBJECT_ID([t1].[TABLE_SCHEMA] + '.' + [t1].[TABLE_NAME]), [t1].[COLUMN_NAME], 'ColumnID') AND
-    OBJECT_NAME([t2].[major_id]) = [t1].[table_name] AND
-    [t2].[class] = 1 AND
-    [t2].[class_desc] = 'OBJECT_OR_COLUMN' AND
-    [t2].[name] = 'MS_Description'
 WHERE {$whereSql}
 SQL;
 
