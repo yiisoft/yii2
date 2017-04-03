@@ -174,11 +174,9 @@ class RequestTest extends TestCase
         foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $request->setBodyParams([]);
-            //$request->headers->remove(Request::CSRF_HEADER);
-            unset($_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))]);
+            $request->headers->remove(Request::CSRF_HEADER);
             $this->assertFalse($request->validateCsrfToken());
-            //$request->headers->add(Request::CSRF_HEADER, $token);
-            $_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))] = $token;
+            $request->headers->add(Request::CSRF_HEADER, $token);
             $this->assertTrue($request->validateCsrfToken());
         }
 

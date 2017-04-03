@@ -73,7 +73,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Renders the exception.
-     * @param \Exception $exception the exception to be rendered.
+     * @param \Exception|\Error $exception the exception to be rendered.
      */
     protected function renderException($exception)
     {
@@ -126,7 +126,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Converts an exception into an array.
-     * @param \Exception $exception the exception being converted
+     * @param \Exception|\Error $exception the exception being converted
      * @return array the array representation of the exception.
      */
     protected function convertExceptionToArray($exception)

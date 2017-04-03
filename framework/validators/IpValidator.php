@@ -608,7 +608,7 @@ class IpValidator extends Validator
         foreach ($messages as &$message) {
             $message = $this->formatMessage($message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language);
+            ]);
         }
 
         $options = [
