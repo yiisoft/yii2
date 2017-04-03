@@ -9,6 +9,7 @@ namespace yii\db;
 
 use Yii;
 use yii\base\Component;
+use yii\helpers\ArrayHelper;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -228,12 +229,7 @@ class Query extends Component implements QueryInterface
         }
         $result = [];
         foreach ($rows as $row) {
-            if (is_string($this->indexBy)) {
-                $key = $row[$this->indexBy];
-            } else {
-                $key = call_user_func($this->indexBy, $row);
-            }
-            $result[$key] = $row;
+            $result[ArrayHelper::getValue($row, $this->indexBy)] = $row;
         }
         return $result;
     }
