@@ -183,6 +183,7 @@ class Request extends \yii\base\Request
      * ```
 
      * Default is to trusts all headers from all hosts.
+     * @since 2.0.13
      */
     public $trustedHostConfig = [
         '//'
@@ -191,6 +192,7 @@ class Request extends \yii\base\Request
      * Lists headers that are subject to the trusted host configuration.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
      * @var array
+     * @since 2.0.13
      */
     public $secureHeaders = [
         'X-Forwarded-For',
@@ -203,6 +205,7 @@ class Request extends \yii\base\Request
      * @see $trustedHostConfig
      * @var string[] List of headers where proxies store the real client IP, it's not advisable to put insecure headers
      * here.
+     * @since 2.0.13
      */
     public $ipHeaders = [
         'X-Forwarded-For'
@@ -241,7 +244,7 @@ class Request extends \yii\base\Request
     /**
      * Filters headers according to the trusted host config.
      * @param array $headers
-     * @since 2.0.12
+     * @since 2.0.13
      * @return array The filtered list of headers.
      */
     protected function filterHeaders(array $headers)
@@ -991,6 +994,7 @@ class Request extends \yii\base\Request
     /**
      * Returns the user IP address.
      * The IP is determined using headers and / or `$_SERVER` variables.
+     * @since 2.0.13
      * @return string|null user IP address, null if not available
      */
     public function getUserIP()
