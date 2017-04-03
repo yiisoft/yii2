@@ -1439,4 +1439,16 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // Make sure that only links were removed, the items were not removed
         $this->assertEquals(3, $itemClass::find()->where(['category_id' => 2])->count());
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/pull/13891
+     */
+    public function testIndexByAfterLoadingRelations()
+    {
+        $orderClass = $this->getOrderClass();
+
+        $this->assertNotEmpty($orderClass::find()->with('customer')->indexBy('customer.id')->all());
+    }
+
+
 }
