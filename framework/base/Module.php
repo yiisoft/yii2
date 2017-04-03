@@ -305,7 +305,7 @@ class Module extends ServiceLocator
     /**
      * Returns current module version.
      * If version is not explicitly set, [[defaultVersion()]] method will be used to determine its value.
-     * @return string|callable the version of this module.
+     * @return string the version of this module.
      * @since 2.0.11
      */
     public function getVersion()
@@ -342,7 +342,7 @@ class Module extends ServiceLocator
     /**
      * Returns default module version.
      * Child class may override this method to provide more specific version detection.
-     * @return string|callable the version of this module.
+     * @return string the version of this module.
      * @since 2.0.11
      */
     protected function defaultVersion()

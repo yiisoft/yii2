@@ -566,7 +566,7 @@ class Component extends Object
 
     /**
      * Returns all behaviors attached to this component.
-     * @return Behavior[]|null list of behaviors attached to this component
+     * @return Behavior[] list of behaviors attached to this component
      */
     public function getBehaviors()
     {
