@@ -342,5 +342,132 @@ class RequestTest extends TestCase
 
     }
 
+    public function getUserIPDataProvider() {
+        return [
+            [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
+                    'REMOTE_ADDR' => '192.168.0.1'
+                ],
+                '123.123.123.123'
+            ], [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
+                    'REMOTE_ADDR' => '192.169.1.1'
+                ],
+                '192.169.1.1'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getUserIPDataProvider
+     */
+    public function testGetUserIP($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request([
+            'trustedHostConfig' => [
+                '/^192\.168/'
+            ],
+
+        ]);
+
+        $this->assertEquals($expected, $request->getUserIP());
+        $_SERVER = $original;
+
+    }
+
+    public function getMethodDataProvider() {
+        return [
+            [
+                [
+                    'REQUEST_METHOD' => 'DEFAULT',
+                    'HTTP_X-HTTP-METHOD-OVERRIDE' => 'OVERRIDE'
+                ],
+                'OVERRIDE'
+            ], [
+                [
+                    'REQUEST_METHOD' => 'DEFAULT',
+                ],
+                'DEFAULT'
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getMethodDataProvider
+     */
+    public function testGetMethod($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request();
+
+        $this->assertEquals($expected, $request->getMethod());
+        $_SERVER = $original;
+    }
+
+    public function getIsAjaxDataProvider() {
+        return [
+            [
+                [
+
+                ],
+                false
+            ], [
+                [
+                    'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
+                ],
+                true
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getIsAjaxDataProvider
+     */
+    public function testGetIsAjax($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request();
+
+        $this->assertEquals($expected, $request->getIsAjax());
+        $_SERVER = $original;
+    }
+
+    public function getIsPjaxDataProvider() {
+        return [
+            [
+                [
+
+                ],
+                false
+            ], [
+                [
+                    'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
+                    'HTTP_X_PJAX' => 'any value',
+                ],
+                true
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getIsPjaxDataProvider
+     */
+    public function testGetIsPjax($server, $expected)
+    {
+        $original = $_SERVER;
+        $_SERVER = $server;
+        $request = new Request();
+
+        $this->assertEquals($expected, $request->getIsPjax());
+        $_SERVER = $original;
+    }
 
 }
