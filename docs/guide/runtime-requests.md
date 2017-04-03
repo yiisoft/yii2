@@ -137,3 +137,8 @@ and [[yii\web\Request::userIP|userIP]], respectively. For example,
 $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
+
+## Trusted proxies & headers
+
+You should not blindly trust headers provided by proxies unless you explicitly trust the proxy. Since 2.0.13 Yii supports configuring trusted proxies.
+See [[yii\web\Request::trustedHostConfig|trustedHostConfig]], [[yii\web\Request::secureHeaders|secureHeaders]] and [[yii\web\Request::ipHeaders|ipHeaders]]. 
