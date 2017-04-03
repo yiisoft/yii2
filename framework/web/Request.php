@@ -1286,9 +1286,13 @@ class Request extends \yii\base\Request
                 if ($data === false) {
                     continue;
                 }
-
-                if (($cookie = Cookie::fromDataString($data)) !== null && $cookie->name === $name) {
-                    $cookies[$name] = $cookie;
+                $data = @unserialize($data);
+                if (is_array($data) && isset($data[0], $data[1]) && $data[0] === $name) {
+                    $cookies[$name] = new Cookie([
+                        'name' => $name,
+                        'value' => $data[1],
+                        'expire' => null,
+                    ]);
                 }
             }
         } else {

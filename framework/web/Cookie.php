@@ -7,8 +7,6 @@
 
 namespace yii\web;
 
-use yii\base\InvalidConfigException;
-
 /**
  * Cookie represents information related with a cookie, such as [[name]], [[value]], [[domain]], etc.
  *
@@ -66,36 +64,5 @@ class Cookie extends \yii\base\Object
     public function __toString()
     {
         return (string) $this->value;
-    }
-
-    /**
-     * Unserializes a cookie received by the client.
-     * @param string $data
-     * @return self|null
-     */
-    public static function fromDataString($data)
-    {
-        if (($unserialized = json_decode($data, true)) !== false) {
-            $result = new self();
-            $result->name = $unserialized[0];
-            $result->value = $unserialized[1];
-            $result->expire = 0;
-            return $result;
-        }
-    }
-
-    /**
-     * Unserializes a cookie received by the client.
-     * @return string
-     */
-    public function toDataString()
-    {
-        if (!isset($this->name)) {
-            throw new InvalidConfigException("Cookie serialization requires a name.");
-        }
-        return json_encode([
-            $this->name,
-            $this->value
-        ]);
     }
 }
