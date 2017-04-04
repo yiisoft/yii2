@@ -127,7 +127,7 @@ class MigrateController extends BaseMigrateController
      */
     public $db = 'db';
     /**
-     * @var string the comment the table being created.
+     * @var string the comment for the table being created.
      * @since 2.0.14
      */
     public $comment = '';
