@@ -16,7 +16,7 @@ use yii\db\TableSchema;
 /**
  * Schema is the class for retrieving metadata from an Oracle database
  *
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

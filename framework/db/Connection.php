@@ -111,22 +111,22 @@ use yii\caching\Cache;
  * ```
  *
  * @property string $driverName Name of the DB driver.
- * @property bool $isActive Whether the DB connection is established. This property is read-only.
- * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
+ * @property-read bool $isActive Whether the DB connection is established. This property is read-only.
+ * @property-read string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
- * @property Connection $master The currently active master connection. `null` is returned if there is no
+ * @property-read Connection $master The currently active master connection. `null` is returned if there is no
  * master available. This property is read-only.
- * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
+ * @property-read PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
- * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
+ * @property-read QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
  * read-only.
- * @property Schema $schema The schema information for the database opened by this connection. This property
+ * @property-read Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
- * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
+ * @property-read Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
- * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
+ * @property-read PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
  * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
- * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
+ * @property-read Transaction $transaction The currently active transaction. Null if no active transaction. This
  * property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

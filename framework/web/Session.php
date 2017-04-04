@@ -45,26 +45,26 @@ use yii\base\InvalidParamException;
  *
  * For more details and usage information on Session, see the [guide article on sessions](guide:runtime-sessions-cookies).
  *
- * @property array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
+ * @property-read array $allFlashes Flash messages (key => message or key => [message1, message2]). This property
  * is read-only.
- * @property array $cookieParams The session cookie parameters. This property is read-only.
- * @property int $count The number of session variables. This property is read-only.
- * @property string $flash The key identifying the flash message. Note that flash messages and normal session
+ * @property-read array $cookieParams The session cookie parameters. This property is read-only.
+ * @property-read int $count The number of session variables. This property is read-only.
+ * @property-write string $flash The key identifying the flash message. Note that flash messages and normal session
  * variables share the same name space. If you have a normal session variable using the same name, its value will
  * be overwritten by this method. This property is write-only.
  * @property float $gCProbability The probability (percentage) that the GC (garbage collection) process is
  * started on every session initialization, defaults to 1 meaning 1% chance.
  * @property bool $hasSessionId Whether the current request has sent the session ID.
  * @property string $id The current session ID.
- * @property bool $isActive Whether the session has started. This property is read-only.
- * @property SessionIterator $iterator An iterator for traversing the session variables. This property is
+ * @property-read bool $isActive Whether the session has started. This property is read-only.
+ * @property-read SessionIterator $iterator An iterator for traversing the session variables. This property is
  * read-only.
  * @property string $name The current session name.
  * @property string $savePath The current session save path, defaults to '/tmp'.
  * @property int $timeout The number of seconds after which data will be seen as 'garbage' and cleaned up. The
  * default value is 1440 seconds (or the value of "session.gc_maxlifetime" set in php.ini).
  * @property bool|null $useCookies The value indicating whether cookies should be used to store session IDs.
- * @property bool $useCustomStorage Whether to use custom storage. This property is read-only.
+ * @property-read bool $useCustomStorage Whether to use custom storage. This property is read-only.
  * @property bool $useTransparentSessionID Whether transparent sid support is enabled or not, defaults to
  * false.
  *

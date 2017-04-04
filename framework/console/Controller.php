@@ -27,11 +27,11 @@ use yii\helpers\Console;
  * where `<route>` is a route to a controller action and the params will be populated as properties of a command.
  * See [[options()]] for details.
  *
- * @property string $help This property is read-only.
- * @property string $helpSummary This property is read-only.
- * @property array $passedOptionValues The properties corresponding to the passed options. This property is
+ * @property-read string $help This property is read-only.
+ * @property-read string $helpSummary This property is read-only.
+ * @property-read array $passedOptionValues The properties corresponding to the passed options. This property is
  * read-only.
- * @property array $passedOptions The names of the options passed during execution. This property is
+ * @property-read array $passedOptions The names of the options passed during execution. This property is
  * read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

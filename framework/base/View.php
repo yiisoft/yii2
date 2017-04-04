@@ -20,7 +20,7 @@ use yii\widgets\FragmentCache;
  *
  * For more details and usage information on View, see the [guide article on views](guide:structure-views).
  *
- * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
+ * @property-read string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
