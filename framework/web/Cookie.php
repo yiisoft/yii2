@@ -8,6 +8,8 @@
 namespace yii\web;
 
 use yii\base\InvalidConfigException;
+use yii\base\InvalidParamException;
+use yii\helpers\Json;
 
 /**
  * Cookie represents information related with a cookie, such as [[name]], [[value]], [[domain]], etc.
@@ -70,24 +72,25 @@ class Cookie extends \yii\base\Object
 
     /**
      * Unserializes a cookie received by the client.
-     * @param string $data json encoded cookie value
+     * @param string $data JSON encoded cookie value
      * @return self|null
+     * @throws InvalidParamException if the data is not valid JSON
      * @since 2.0.12
      */
     public static function fromDataString($data)
     {
-        if (($unserialized = json_decode($data, true)) !== false) {
-            $result = new self();
-            $result->name = $unserialized[0];
-            $result->value = $unserialized[1];
-            $result->expire = 0;
-            return $result;
-        }
+        $unserialized = JSON::decode($data, true);
+        return \Yii::createObject([
+            'class' => get_called_class(),
+            'name' => $unserialized[0],
+            'value' => $unserialized[1],
+            'expire' => 0
+        ]);
     }
 
     /**
      * Unserializes a cookie received by the client.
-     * @return string the json encoded value of the cookie
+     * @return string the JSON encoded value of the cookie
      * @throws InvalidConfigException if cookie does not have a name
      * @since 2.0.12
      */
@@ -96,7 +99,7 @@ class Cookie extends \yii\base\Object
         if (!isset($this->name)) {
             throw new InvalidConfigException("Cookie serialization requires a name.");
         }
-        return json_encode([
+        return JSON::encode([
             $this->name,
             $this->value
         ]);

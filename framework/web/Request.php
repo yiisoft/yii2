@@ -1299,7 +1299,7 @@ class Request extends \yii\base\Request
                     continue;
                 }
 
-                if (($cookie = Cookie::fromDataString($data)) !== null && $cookie->name === $name) {
+                if (($cookie = Cookie::fromDataString($data)) && $cookie->name === $name) {
                     $cookies[$name] = $cookie;
                 }
             }
