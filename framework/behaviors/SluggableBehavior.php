@@ -268,6 +268,7 @@ class SluggableBehavior extends AttributeBehavior
      *
      * @param string $slugPart One of attributes that is used for slug generation.
      * @return bool whether $slugPart empty or not.
+     * @since 2.0.12
      */
     protected function isEmpty($slugPart)
     {
