@@ -1448,8 +1448,10 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $orderClass = $this->getOrderClass();
 
         $this->assertNotEmpty($orderClass::find()->with('customer')->indexBy(function($order) {
-            return $order->product->id;
+            return isset($order->product->id) ? $order->product->id : null;
         })->all());
+
+        $this->assertNotEmpty($orderClass::find()->with('customer')->indexBy('product.id')->all());
     }
 
 
