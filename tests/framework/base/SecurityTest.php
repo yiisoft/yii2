@@ -1251,6 +1251,42 @@ TEXT;
     {
         $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
     }
+
+    /**
+     * @dataProvider maskProvider
+     */
+    public function testMasking($unmaskedToken)
+    {
+        $maskedToken = $this->security->maskToken($unmaskedToken);
+        $this->assertGreaterThan(mb_strlen($unmaskedToken, '8bit') * 2, mb_strlen($maskedToken, '8bit'));
+        $this->assertEquals($unmaskedToken, $this->security->unmaskToken($maskedToken));
+    }
+
+    public function testUnMaskingInvalidStrings()
+    {
+        $this->assertEquals('', $this->security->unmaskToken(''));
+        $this->assertEquals('', $this->security->unmaskToken('1'));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testMaskingInvalidStrings()
+    {
+        $this->security->maskToken('');
+    }
+
+    /**
+     * @return array
+     */
+    public function maskProvider() {
+        return [
+            ['1'],
+            ['SimpleToken'],
+            ['Token with special characters: %d1    5"'],
+            ['Token with UTF8 character: †']
+        ];
+    }
 }
 
 } // closing namespace yiiunit\framework\base;
