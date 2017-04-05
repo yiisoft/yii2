@@ -65,7 +65,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * @var int length of the string that will be printed on the screen.
      */
-    public $printSqlLength;
+    public $printedSqlLength;
 
     /**
      * Initializes the migration.
@@ -189,13 +189,13 @@ class Migration extends Component implements MigrationInterface
      */
     public function execute($sql, $params = [])
     {
-        $sqlPrint = $sql;
+        $printedSql = $sql;
 
-        if ($this->printSqlLength !== null) {
-            $sqlPrint = StringHelper::truncate($sql, $this->printSqlLength, '[...hidden]');
+        if ($this->printedSqlLength !== null) {
+            $printedSql = StringHelper::truncate($sql, $this->printedSqlLength, '[... hidden]');
         }
 
-        echo "    > execute SQL: $sqlPrint ...";
+        echo "    > execute SQL: $printedSql ...";
         $time = microtime(true);
         $this->db->createCommand($sql)->bindValues($params)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
