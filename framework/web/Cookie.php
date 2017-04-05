@@ -70,8 +70,9 @@ class Cookie extends \yii\base\Object
 
     /**
      * Unserializes a cookie received by the client.
-     * @param string $data
+     * @param string $data json encoded cookie value
      * @return self|null
+     * @since 2.0.12
      */
     public static function fromDataString($data)
     {
@@ -86,7 +87,9 @@ class Cookie extends \yii\base\Object
 
     /**
      * Unserializes a cookie received by the client.
-     * @return string
+     * @return string the json encoded value of the cookie
+     * @throws InvalidConfigException if cookie does not have a name
+     * @since 2.0.12
      */
     public function toDataString()
     {
