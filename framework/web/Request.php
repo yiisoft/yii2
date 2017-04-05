@@ -1388,7 +1388,8 @@ class Request extends \yii\base\Request
         $options = $this->csrfCookie;
         $options['name'] = $this->csrfParam;
         $options['value'] = $token;
-        return new Cookie($options);
+        $options['class'] = Cookie::className();
+        return Yii::createObject($options);
     }
 
     /**
