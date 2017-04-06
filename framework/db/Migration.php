@@ -191,7 +191,6 @@ class Migration extends Component implements MigrationInterface
     public function execute($sql, $params = [])
     {
         $printedSql = $sql;
-
         if ($this->printedSqlLength !== null) {
             $printedSql = StringHelper::truncate($sql, $this->printedSqlLength, '[... hidden]');
         }
