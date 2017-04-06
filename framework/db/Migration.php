@@ -63,7 +63,8 @@ class Migration extends Component implements MigrationInterface
     public $db = 'db';
 
     /**
-     * @var int length of the string that will be printed on the screen.
+     * @var int length of the printed SQL. Useful for reduction of long statements and making console output more 
+     * compact and readable.
      */
     public $printedSqlLength;
 
