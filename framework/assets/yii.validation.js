@@ -277,8 +277,8 @@ yii.validation = (function ($) {
             }
 
             if (options.type === 'number') {
-                value = parseFloat(value);
-                compareValue = parseFloat(compareValue);
+                value = value ? parseFloat(value) : 0;
+                compareValue = compareValue ? parseFloat(compareValue) : 0;
             }
             switch (options.operator) {
                 case '==':
