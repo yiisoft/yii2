@@ -74,6 +74,6 @@ class ContentDecorator extends Widget
         $params = $this->params;
         $params['content'] = ob_get_clean();
         // render under the existing context
-        echo $this->view->renderFile($this->viewFile, $params);
+        echo $this->view->render($this->viewFile, $params);
     }
 }
