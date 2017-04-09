@@ -13,6 +13,7 @@ use yii\base\ActionFilter;
 use yii\di\Instance;
 use yii\web\User;
 use yii\web\ForbiddenHttpException;
+use yii\base\InvalidConfigException;
 
 /**
  * AccessControl provides simple access control based on a set of rules.
@@ -101,6 +102,10 @@ class AccessControl extends ActionFilter
                 $this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
             }
         }
+
+        if ($this->denyCallback !== null && !is_callable($this->denyCallback)) {
+            throw new InvalidConfigException('AccessControl property denyCallback is not function');
+        }
     }
 
     /**
@@ -113,26 +118,29 @@ class AccessControl extends ActionFilter
     {
         $user = $this->user;
         $request = Yii::$app->getRequest();
+
         /* @var $rule AccessRule */
         foreach ($this->rules as $rule) {
-            if ($allow = $rule->allows($action, $user, $request)) {
+            $allow = $rule->allows($action, $user, $request);
+
+            if ($allow) {
                 return true;
             } elseif ($allow === false) {
-                if (isset($rule->denyCallback)) {
-                    call_user_func($rule->denyCallback, $rule, $action);
-                } elseif ($this->denyCallback !== null) {
-                    call_user_func($this->denyCallback, $rule, $action);
-                } else {
-                    $this->denyAccess($user);
-                }
-                return false;
+                return $this->execDenyCallback($user, $rule, $action);
             }
         }
-        if ($this->denyCallback !== null) {
-            call_user_func($this->denyCallback, null, $action);
-        } else {
+
+        return $this->execDenyCallback($user, null, $action);
+    }
+
+    private function execDenyCallback($user, $rule, $action)
+    {
+        if ($this->denyCallback === null) {
             $this->denyAccess($user);
+        } else {
+            call_user_func($this->denyCallback, $rule, $action);
         }
+
         return false;
     }
 
