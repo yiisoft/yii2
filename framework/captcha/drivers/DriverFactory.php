@@ -6,9 +6,6 @@ use Yii;
 use yii\base\Object;
 use yii\base\InvalidConfigException;
 
-/**
- *
- */
 class DriverFactory extends Object
 {
     /**
