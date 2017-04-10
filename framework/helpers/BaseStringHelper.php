@@ -45,6 +45,23 @@ class BaseStringHelper
     {
         return mb_substr($string, $start, $length === null ? mb_strlen($string, '8bit') : $length, '8bit');
     }
+    
+    /**
+     * Returns given string with first character uppercased
+     * @param string $string
+     * @param string $encoding
+     * @return string
+     */
+    public static function ucfirst($string, $encoding = null)
+    {
+        if (!$encoding) {
+            $encoding = \mb_internal_encoding();
+        }
+        $strlen = mb_strlen($string, $encoding);
+        $firstChar = mb_substr($string, 0, 1, $encoding);
+        $then = mb_substr($string, 1, $strlen - 1, $encoding);
+        return mb_strtoupper($firstChar, $encoding) . $then;
+    }
 
     /**
      * Returns the trailing name component of a path.
