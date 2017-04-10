@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Html;
 use yii\base\Widget;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -75,6 +76,16 @@ class LinkPager extends Widget
      */
     public $disabledPageCssClass = 'disabled';
     /**
+     * @var array the options for the disabled tag to be generated inside the disabled list element.
+     * In order to customize the html tag, please use the tag key.
+     *
+     * ```php
+     * $disabledListItemSubTagOptions = ['tag' => 'div', 'class' => 'disabled-div'];
+     * ```
+     * @since 2.0.11
+     */
+    public $disabledListItemSubTagOptions = [];
+    /**
      * @var int maximum number of page buttons that can be displayed. Defaults to 10.
      */
     public $maxButtonCount = 10;
@@ -111,6 +122,11 @@ class LinkPager extends Widget
      * @var bool Hide widget when only one page exist.
      */
     public $hideOnSinglePage = true;
+    /**
+     * @var bool whether to render current page button as disabled.
+     * @since 2.0.12
+     */
+    public $disableCurrentPageButton = false;
 
 
     /**
@@ -179,7 +195,7 @@ class LinkPager extends Widget
         // internal pages
         list($beginPage, $endPage) = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; ++$i) {
-            $buttons[] = $this->renderPageButton($i + 1, $i, null, false, $i == $currentPage);
+            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
         }
 
         // next page
@@ -217,8 +233,9 @@ class LinkPager extends Widget
         }
         if ($disabled) {
             Html::addCssClass($options, $this->disabledPageCssClass);
+            $tag = ArrayHelper::remove($this->disabledListItemSubTagOptions, 'tag', 'span');
 
-            return Html::tag('li', Html::tag('span', $label), $options);
+            return Html::tag('li', Html::tag($tag, $label, $this->disabledListItemSubTagOptions), $options);
         }
         $linkOptions = $this->linkOptions;
         $linkOptions['data-page'] = $page;

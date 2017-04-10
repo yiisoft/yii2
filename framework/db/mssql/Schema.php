@@ -8,6 +8,7 @@
 namespace yii\db\mssql;
 
 use yii\db\ColumnSchema;
+use yii\db\ViewFinderTrait;
 
 /**
  * Schema is the class for retrieving metadata from a MS SQL Server databases (version 2008 and above).
@@ -17,6 +18,8 @@ use yii\db\ColumnSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    use ViewFinderTrait;
+
     /**
      * @var string the default schema used for the current session.
      */
@@ -362,6 +365,7 @@ SQL;
         // http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
         $sql = <<<SQL
 SELECT
+    [rc].[constraint_name] AS [fk_name],
     [kcu1].[column_name] AS [fk_column_name],
     [kcu2].[table_name] AS [uq_table_name],
     [kcu2].[column_name] AS [uq_column_name]
@@ -382,9 +386,10 @@ SQL;
             ':tableName' => $table->name,
             ':schemaName' => $table->schemaName,
         ])->queryAll();
+
         $table->foreignKeys = [];
         foreach ($rows as $row) {
-            $table->foreignKeys[] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
+            $table->foreignKeys[$row['fk_name']] = [$row['uq_table_name'], $row['fk_column_name'] => $row['uq_column_name']];
         }
     }
 
@@ -403,6 +408,25 @@ SQL;
 SELECT [t].[table_name]
 FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
+ORDER BY [t].[table_name]
+SQL;
+
+        return $this->db->createCommand($sql, [':schema' => $schema])->queryColumn();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function findViewNames($schema = '')
+    {
+        if ($schema === '') {
+            $schema = $this->defaultSchema;
+        }
+
+        $sql = <<<SQL
+SELECT [t].[table_name]
+FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
+WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'VIEW'
 ORDER BY [t].[table_name]
 SQL;
 

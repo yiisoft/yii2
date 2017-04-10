@@ -131,7 +131,7 @@ $array = [
 $result = ArrayHelper::index($array, 'id');
 ```
 
-The result will be an associative array, where the key is the value of `id` attribute
+The result will be an associative array, where the key is the value of `id` attribute:
 
 ```php
 [
@@ -141,7 +141,7 @@ The result will be an associative array, where the key is the value of `id` attr
 ]
 ```
 
-Anonymous function, passed as a `$key`, gives the same result.
+Anonymous function, passed as a `$key`, gives the same result:
 
 ```php
 $result = ArrayHelper::index($array, function ($element) {
@@ -398,7 +398,7 @@ Each mapping array contains a set of mappings. Each mapping could be:
 - A key-value pair of desired array key name and model column name to take value from.
 - A key-value pair of desired array key name and a callback which returns value.
 
-The result of conversion above will be:
+The result of conversion above for single model will be:
 
 
 ```php

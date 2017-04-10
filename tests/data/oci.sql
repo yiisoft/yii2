@@ -22,6 +22,7 @@ BEGIN EXECUTE IMMEDIATE 'DROP TABLE "document"'; EXCEPTION WHEN OTHERS THEN IF S
 BEGIN EXECUTE IMMEDIATE 'DROP VIEW "animal_view"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_main"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP TABLE "validator_ref"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
+BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END; --
 
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "profile_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
 BEGIN EXECUTE IMMEDIATE 'DROP SEQUENCE "customer_SEQ"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -2289 THEN RAISE; END IF; END;--
@@ -191,6 +192,13 @@ CREATE SEQUENCE "document_SEQ";
 
 CREATE VIEW "animal_view" AS SELECT * FROM "animal";
 
+CREATE TABLE "bit_values" (
+  "id" integer not null,
+  "val" char(1) NOT NULL,
+  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
+  CONSTRAINT "bit_values_val" CHECK ("val" IN ('1','0'))
+);
+
 /**
  * (Postgres-)Database Schema for validator tests
  */
@@ -255,6 +263,11 @@ CREATE TRIGGER "animal_TRG" BEFORE INSERT ON "animal" FOR EACH ROW BEGIN <<COLUM
 END COLUMN_SEQUENCES;
 END;
 /
+CREATE TRIGGER "document_TRG" BEFORE INSERT ON "document" FOR EACH ROW BEGIN <<COLUMN_SEQUENCES>> BEGIN
+  IF INSERTING AND :NEW."id" IS NULL THEN SELECT "document_SEQ".NEXTVAL INTO :NEW."id" FROM SYS.DUAL; END IF;
+END COLUMN_SEQUENCES;
+END;
+/
 
 /* TRIGGERS */
 
@@ -313,23 +326,6 @@ INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (4, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (5, 'ref_to_4', 4);
 INSERT INTO "validator_ref" ("id", "a_field", "ref") VALUES (6, 'ref_to_5', 5);
 
-/* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
-
-BEGIN EXECUTE IMMEDIATE 'DROP TABLE "bit_values"'; EXCEPTION WHEN OTHERS THEN IF SQLCODE != -942 THEN RAISE; END IF; END;--
-
-CREATE TABLE [dbo].[] (
-    [id] [int] IDENTITY(1,1) NOT NULL,
-	[val] [bit] NOT NULL,
-	CONSTRAINT [PK_bit_values] PRIMARY KEY CLUSTERED (
-		[id] ASC
-	) ON [PRIMARY]
-);
-
-CREATE TABLE "bit_values" (
-  "id" integer not null,
-  "val" char(1) NOT NULL,
-  CONSTRAINT "bit_values_PK" PRIMARY KEY ("id") ENABLE,
-  CONSTRAINT "bit_values_val" CHECK (val IN ('1','0'))
-);
-
-INSERT INTO "bit_values" ("id", "val") VALUES (1, '0'), (2, '1');
+INSERT INTO "bit_values" ("id", "val")
+  SELECT 1, '0' FROM SYS.DUAL
+  UNION ALL SELECT 2, '1' FROM SYS.DUAL;

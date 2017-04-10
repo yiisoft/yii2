@@ -12,8 +12,7 @@ Yii 2 コアフレームワークコードスタイル
   しかし、コアコードや公式エクステンションに対して実際に寄稿する場合には、それらを英語で書く必要があります。
 
 
-1. 概要
--------
+## 1. 概要
 
 全体として、私たちは [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) 互換のスタイルを使っていますので、
 [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) に適用されることは、すべて私たちのコードスタイルにも適用されます。
@@ -29,8 +28,7 @@ Yii 2 コアフレームワークコードスタイル
 - プロパティ名は private である場合はアンダースコアで始まらなければならない。
 - `else if` ではなく常に `elseif` を使用すること。
 
-2. ファイル
------------
+## 2. ファイル
 
 ### 2.1. PHP タグ
 
@@ -43,13 +41,11 @@ Yii 2 コアフレームワークコードスタイル
 
 PHP コードは BOM 無しの UTF-8 のみを使わなければなりません。
 
-3. クラス名
------------
+## 3. クラス名
 
 クラス名は `StudlyCaps` で宣言されなければなりません。例えば、`Controller`、`Model`。
 
-4. クラス
----------
+## 4. クラス
 
 ここで "クラス" という用語はあらゆるクラスとインタフェイスを指すものとします。
 
@@ -143,11 +139,31 @@ class Foo
 }
 ```
 
-### 4.4 Doc ブロック
+### 4.4 PHPDoc ブロック
 
-`@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
-`Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
-型付きの配列に対しては `ClassName[]` を使います。
+ - `@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
+   `Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
+ - 型付きの配列に対しては `ClassName[]` を使います。
+ - PHPDoc の最初の行には、メソッドの目的を記述しなければなりません。
+ - メソッドが何かをチェックする (たとえば、`isActive`, `hasClass` など) ものである場合は、
+   最初の行は `Checks whether` で始まらなければなりません。
+ - `@return` は、厳密に何が返されるのかを明示的に記述しなければなりません。
+
+```php
+/**
+ * Checks whether the IP is in subnet range
+ *
+ * @param string $ip an IPv4 or IPv6 address
+ * @param int $cidr the CIDR lendth
+ * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
+ * @return bool whether the IP is in subnet range
+ */
+ private function inRange($ip, $cidr, $range)
+ {
+   // ...
+ }
+```
+
 
 ### 4.5 コンストラクタ
 

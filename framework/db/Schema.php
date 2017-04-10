@@ -74,7 +74,6 @@ abstract class Schema extends Object
     public $exceptionMap = [
         'SQLSTATE[23' => 'yii\db\IntegrityException',
     ];
-
     /**
      * @var string column schema class
      * @since 2.0.11
@@ -439,7 +438,7 @@ abstract class Schema extends Object
      */
     public function setTransactionIsolationLevel($level)
     {
-        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level;")->execute();
+        $this->db->createCommand("SET TRANSACTION ISOLATION LEVEL $level")->execute();
     }
 
     /**

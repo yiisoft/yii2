@@ -192,11 +192,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param string|array $condition the conditions that will be put in the WHERE part of the DELETE SQL.
      * Please refer to [[Query::where()]] on how to specify this parameter.
-     * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows deleted
-     * @throws NotSupportedException if not overrided
+     * @throws NotSupportedException if not overridden.
      */
-    public static function deleteAll($condition = '', $params = [])
+    public static function deleteAll($condition = null)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported.');
     }
@@ -1443,6 +1442,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (!empty($viaRelation->where)) {
                 $condition = ['and', $condition, $viaRelation->where];
             }
+            if (!empty($viaRelation->on)) {
+                $condition = ['and', $condition, $viaRelation->on];
+            }
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 if ($delete) {
@@ -1476,6 +1478,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
                 if (!empty($relation->where)) {
                     $condition = ['and', $condition, $relation->where];
+                }
+                if (!empty($relation->on)) {
+                    $condition = ['and', $condition, $relation->on];
                 }
                 if ($delete) {
                     $relatedModel::deleteAll($condition);

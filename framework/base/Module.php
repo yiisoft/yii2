@@ -32,8 +32,9 @@ use yii\di\ServiceLocator;
  * @property string $layoutPath The root directory of layout files. Defaults to "[[viewPath]]/layouts".
  * @property array $modules The modules (indexed by their IDs).
  * @property string $uniqueId The unique ID of the module. This property is read-only.
+ * @property string $version The version of this module. Note that the type of this property differs in getter
+ * and setter. See [[getVersion()]] and [[setVersion()]] for details.
  * @property string $viewPath The root directory of view files. Defaults to "[[basePath]]/views".
- * @property string|callable $version The version of this module.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -391,9 +392,8 @@ class Module extends ServiceLocator
             $module = $this->getModule(substr($id, 0, $pos));
 
             return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
-        } else {
-            return isset($this->_modules[$id]);
         }
+        return isset($this->_modules[$id]);
     }
 
     /**
@@ -467,9 +467,8 @@ class Module extends ServiceLocator
             }
 
             return $modules;
-        } else {
-            return $this->_modules;
         }
+        return $this->_modules;
     }
 
     /**
@@ -527,10 +526,10 @@ class Module extends ServiceLocator
             }
 
             return $result;
-        } else {
-            $id = $this->getUniqueId();
-            throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
         }
+
+        $id = $this->getUniqueId();
+        throw new InvalidRouteException('Unable to resolve the request "' . ($id === '' ? $route : $id . '/' . $route) . '".');
     }
 
     /**
@@ -607,7 +606,7 @@ class Module extends ServiceLocator
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
      * @param string $id the controller ID.
-     * @return Controller the newly created controller instance, or `null` if the controller ID is invalid.
+     * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
      */
@@ -640,9 +639,8 @@ class Module extends ServiceLocator
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**

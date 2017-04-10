@@ -13,6 +13,7 @@ use yiiunit\TestCase;
  * @see MigrateController
  *
  * @group console
+ * @group db
  */
 class MigrateControllerTest extends TestCase
 {
@@ -93,6 +94,14 @@ class MigrateControllerTest extends TestCase
 
             $this->assertCommandCreatedFile('create_title_pk', $migrationName, $table, [
                 'fields' => 'title:primaryKey,body:text:notNull,price:money(11,2)',
+            ]);
+
+            $this->assertCommandCreatedFile('create_unsigned_pk', $migrationName, $table, [
+                'fields' => 'brand_id:primaryKey:unsigned',
+            ]);
+
+            $this->assertCommandCreatedFile('create_unsigned_big_pk', $migrationName, $table, [
+                'fields' => 'brand_id:bigPrimaryKey:unsigned',
             ]);
 
             $this->assertCommandCreatedFile('create_id_pk', $migrationName, $table, [

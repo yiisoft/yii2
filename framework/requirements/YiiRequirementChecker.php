@@ -386,7 +386,7 @@ class YiiRequirementChecker
      */
     function getServerInfo()
     {
-        return isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';;
+        return isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
     }
 
     /**
@@ -395,6 +395,6 @@ class YiiRequirementChecker
      */
     function getNowDate()
     {
-        return @strftime('%Y-%m-%d %H:%M', time());;
+        return @strftime('%Y-%m-%d %H:%M', time());
     }
 }

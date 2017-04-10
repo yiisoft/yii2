@@ -46,8 +46,8 @@ use yii\rbac\CheckAccessInterface;
  * ]
  * ```
  *
- * @property string|int $id The unique identifier for the user. If `null`, it means the user is a guest.
- * This property is read-only.
+ * @property string|int $id The unique identifier for the user. If `null`, it means the user is a guest. This
+ * property is read-only.
  * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
  * user. `null` is returned if the user is not logged in (not authenticated).
  * @property bool $isGuest Whether the current user is a guest. This property is read-only.
@@ -226,7 +226,7 @@ class User extends Component
      * - the identity information will be stored in session and be available in the next requests
      * - in case of `$duration == 0`: as long as the session remains active or till the user closes the browser
      * - in case of `$duration > 0`: as long as the session remains active or as long as the cookie
-     *  remains valid by it's `$duration` in seconds when [[enableAutoLogin]] is set `true`.
+     *   remains valid by it's `$duration` in seconds when [[enableAutoLogin]] is set `true`.
      *
      * If [[enableSession]] is `false`:
      * - the `$duration` parameter will be ignored
@@ -742,7 +742,7 @@ class User extends Component
      * You may override this method to return a different auth manager instance if needed.
      * @return \yii\rbac\ManagerInterface
      * @since 2.0.6
-     * @deprecated Deprecated since version 2.0.9, to be removed in 2.1. Use `getAccessChecker()` instead.
+     * @deprecated since version 2.0.9, to be removed in 2.1. Use [[getAccessChecker()]] instead.
      */
     protected function getAuthManager()
     {

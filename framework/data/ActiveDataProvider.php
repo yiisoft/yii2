@@ -7,7 +7,6 @@
 
 namespace yii\data;
 
-use Yii;
 use yii\db\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
@@ -105,6 +104,9 @@ class ActiveDataProvider extends BaseDataProvider
         $query = clone $this->query;
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
+            if ($pagination->totalCount === 0) {
+                return [];
+            }
             $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
         if (($sort = $this->getSort()) !== false) {

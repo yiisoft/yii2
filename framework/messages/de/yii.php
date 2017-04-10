@@ -17,7 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'The combination {values} of {attributes} has already been taken.' => 'Die Kombination {values} für {attributes} wird bereits verwendet.',
+    ' and ' => ' und ',
     '(not set)' => '(nicht gesetzt)',
     'An internal server error occurred.' => 'Es ist ein interner Serverfehler aufgetreten.',
     'Are you sure you want to delete this item?' => 'Wollen Sie diesen Eintrag wirklich löschen?',
@@ -38,6 +38,7 @@ return [
     'Please upload a file.' => 'Bitte laden Sie eine Datei hoch.',
     'Powered by {yii}' => 'Basiert auf {yii}',
     'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.' => 'Zeige <b>{begin, number}-{end, number}</b> von <b>{totalCount, number}</b> {totalCount, plural, one{Eintrag} other{Einträgen}}.',
+    'The combination {values} of {attributes} has already been taken.' => 'Die Kombination {values} für {attributes} wird bereits verwendet.',
     'The file "{file}" is not an image.' => 'Die Datei "{file}" ist kein Bild.',
     'The file "{file}" is too big. Its size cannot exceed {formattedLimit}.' => 'Die Datei "{file}" ist zu groß. Es sind maximal {formattedLimit} erlaubt.',
     'The file "{file}" is too small. Its size cannot be smaller than {formattedLimit}.' => 'Die Datei "{file}" ist zu klein. Es sind mindestens {formattedLimit} erforderlich.',

@@ -88,7 +88,7 @@ trait ActiveRelationTrait
      *    public function getOrderItems() {
      *        return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
      *    }
-     * 
+     *
      *    public function getItems() {
      *        return $this->hasMany(Item::className(), ['id' => 'item_id'])
      *                    ->via('orderItems');
@@ -397,7 +397,7 @@ trait ActiveRelationTrait
      * Indexes buckets by column name.
      *
      * @param array $buckets
-     * @var string|callable $column the name of the column by which the query results should be indexed by.
+     * @param string|callable $indexBy the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given row data.
      * @return array
      */
@@ -464,6 +464,9 @@ trait ActiveRelationTrait
                     }
                 }
             }
+            if (empty($values)) {
+                $this->emulateExecution();
+            }
         } else {
             // composite keys
 
@@ -478,6 +481,9 @@ trait ActiveRelationTrait
                     $v[$attribute] = $model[$link];
                 }
                 $values[] = $v;
+                if (empty($v)) {
+                    $this->emulateExecution();
+                }
             }
         }
         $this->andWhere(['in', $attributes, array_unique($values, SORT_REGULAR)]);

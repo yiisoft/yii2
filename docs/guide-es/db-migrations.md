@@ -136,7 +136,7 @@ class m150101_185401_create_news_table extends Migration
 
 La clase de migración de base de datos [[yii\db\Migration]] expone una conexión a la base de datos mediante la propiedad [[yii\db\Migration::db|db]].
 Puedes utilizar esto para manipular el esquema de la base de datos utilizando métodos como se describen en
-[Trabajando con Esquemas de Base de Datos](db-dao.md#working-with-database-schema-).
+[Trabajando con Esquemas de Base de Datos](db-dao.md#database-schema).
 
 En vez de utilizar tipos físicos, al crear tablas o columnas deberías utilizar los *tipos abstractos*
 así las migraciones son independientes de algún DBMS específico. La clase [[yii\db\Schema]] define

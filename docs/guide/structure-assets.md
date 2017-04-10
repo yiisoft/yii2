@@ -349,9 +349,9 @@ return [
 
 You can also disable *all* asset bundles by setting [[yii\web\AssetManager::bundles]] as `false`.
 
-Keep in mind that customization made via [[yii\web\AssetManager::bundles]] applied at the creation of the asset bundle, e.g.
-at object constructor stage. Thus any adjustments, which are made to the bundle object after that, will override the mapping,
-which has been setup at [[yii\web\AssetManager::bundles]] level. In particular: adjustments made inside [[yii\web\AssetBundle::init()]]
+Keep in mind that customization made via [[yii\web\AssetManager::bundles]] is applied at the creation of the asset bundle, e.g.
+at object constructor stage. Thus any adjustments made to the bundle object after that will override the mapping setup at [[yii\web\AssetManager::bundles]] level.
+In particular: adjustments made inside [[yii\web\AssetBundle::init()]]
 method or over the registered bundle object will take precedence over `AssetManager` configuration.
 Here are the examples, where mapping set via [[yii\web\AssetManager::bundles]] makes no effect:
 
@@ -490,6 +490,7 @@ be referenced in your application or extension code.
 
 - [[yii\web\YiiAsset]]: It mainly includes the `yii.js` file which implements a mechanism of organizing JavaScript code
   in modules. It also provides special support for `data-method` and `data-confirm` attributes and other useful features.
+  More information about `yii.js` can be found in the [Client Scripts Section](output-client-scripts.md#yii.js).
 - [[yii\web\JqueryAsset]]: It includes the `jquery.js` file from the jQuery Bower package.
 - [[yii\bootstrap\BootstrapAsset]]: It includes the CSS file from the Twitter Bootstrap framework.
 - [[yii\bootstrap\BootstrapPluginAsset]]: It includes the JavaScript file from the Twitter Bootstrap framework for
@@ -675,7 +676,7 @@ return [
 That is, the asset bundle configuration array is saved in `assets-prod.php` for production mode, and
 `assets-dev.php` for non-production mode.
 
-> Note: this asset combining mechanism is based on ability of [[yii\web\AssetManager::bundles]] to override the properties
+> Note: this asset combining mechanism is based on the ability of [[yii\web\AssetManager::bundles]] to override the properties
   of the registered asset bundles. However, as it already has been said above, this ability does not cover asset bundle
   adjustments, which are performed at [[yii\web\AssetBundle::init()]] method or after bundle is registered. You should
   avoid usage of such dynamic bundles during the asset combining.
@@ -760,7 +761,7 @@ the last subsection.
   [[yii\web\AssetManager::assetMap]] and want this customization to be applied for the compression source files,
   you should include these options to the `assetManager` section inside asset command configuration file.
 
-> Note: while specifying the compression source, you should avoid usage of the asset bundles, which parameters may be
+> Note: while specifying the compression source, you should avoid the use of asset bundles whose parameters may be
   adjusted dynamically (e.g. at `init()` method or after registration), since they may work incorrectly after compression.
 
 

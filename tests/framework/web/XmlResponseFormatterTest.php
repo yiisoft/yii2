@@ -19,11 +19,12 @@ use yiiunit\framework\web\stubs\ModelStub;
 class XmlResponseFormatterTest extends FormatterTest
 {
     /**
+     * @param array $options
      * @return XmlResponseFormatter
      */
-    protected function getFormatterInstance()
+    protected function getFormatterInstance($options = [])
     {
-        return new XmlResponseFormatter();
+        return new XmlResponseFormatter($options);
     }
 
     private $xmlHead = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -74,21 +75,21 @@ class XmlResponseFormatterTest extends FormatterTest
     public function formatTraversableObjectDataProvider()
     {
         $expectedXmlForStack = '';
-        
+
         $postsStack = new \SplStack();
-        
+
         $postsStack->push(new Post(915, 'record1'));
         $expectedXmlForStack = '<Post><id>915</id><title>record1</title></Post>' .
           $expectedXmlForStack;
-        
+
         $postsStack->push(new Post(456, 'record2'));
         $expectedXmlForStack = '<Post><id>456</id><title>record2</title></Post>' .
           $expectedXmlForStack;
-        
+
         $data = [
             [$postsStack, "<response>$expectedXmlForStack</response>\n"]
         ];
-        
+
         return $this->addXmlHead($data);
     }
 
@@ -115,5 +116,39 @@ class XmlResponseFormatterTest extends FormatterTest
                 "<response><ModelStub><id>123</id><title>abc</title></ModelStub></response>\n"
             ]
         ]);
+    }
+
+    public function testCustomRootTag()
+    {
+        $rootTag = 'custom';
+        $formatter = $this->getFormatterInstance([
+            'rootTag' => $rootTag,
+        ]);
+
+        $this->response->data = 1;
+        $formatter->format($this->response);
+        $this->assertEquals($this->xmlHead . "<$rootTag>1</$rootTag>\n", $this->response->content);
+    }
+
+    public function testRootTagRemoval()
+    {
+        $formatter = $this->getFormatterInstance([
+            'rootTag' => null,
+        ]);
+
+        $this->response->data = 1;
+        $formatter->format($this->response);
+        $this->assertEquals($this->xmlHead . "1\n", $this->response->content);
+    }
+
+    public function testNoObjectTags()
+    {
+        $formatter = $this->getFormatterInstance([
+            'useObjectTags' => false,
+        ]);
+
+        $this->response->data = new Post(123, 'abc');
+        $formatter->format($this->response);
+        $this->assertEquals($this->xmlHead . "<response><id>123</id><title>abc</title></response>\n", $this->response->content);
     }
 }

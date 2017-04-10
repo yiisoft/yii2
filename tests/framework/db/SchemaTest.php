@@ -24,7 +24,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testGetTableNames($pdoAttributes)
     {
         $connection = $this->getConnection();
-        foreach($pdoAttributes as $name => $value) {
+        foreach ($pdoAttributes as $name => $value) {
             $connection->pdo->setAttribute($name, $value);
         }
         /* @var $schema Schema */
@@ -47,7 +47,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testGetTableSchemas($pdoAttributes)
     {
         $connection = $this->getConnection();
-        foreach($pdoAttributes as $name => $value) {
+        foreach ($pdoAttributes as $name => $value) {
             $connection->pdo->setAttribute($name, $value);
         }
         /* @var $schema Schema */
@@ -101,7 +101,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
         $schema->refreshTableSchema('type');
         $refreshedTable = $schema->getTableSchema('type', false);
-        $this->assertFalse($noCacheTable === $refreshedTable);
+        $this->assertNotSame($noCacheTable, $refreshedTable);
     }
 
     public function testCompositeFk()
@@ -112,10 +112,10 @@ abstract class SchemaTest extends DatabaseTestCase
         $table = $schema->getTableSchema('composite_fk');
 
         $this->assertCount(1, $table->foreignKeys);
-        $this->assertTrue(isset($table->foreignKeys[0]));
-        $this->assertEquals('order_item', $table->foreignKeys[0][0]);
-        $this->assertEquals('order_id', $table->foreignKeys[0]['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys[0]['item_id']);
+        $this->assertTrue(isset($table->foreignKeys['FK_composite_fk_order_item']));
+        $this->assertEquals('order_item', $table->foreignKeys['FK_composite_fk_order_item'][0]);
+        $this->assertEquals('order_id', $table->foreignKeys['FK_composite_fk_order_item']['order_id']);
+        $this->assertEquals('item_id', $table->foreignKeys['FK_composite_fk_order_item']['item_id']);
     }
 
     public function testGetPDOType()
@@ -218,11 +218,11 @@ abstract class SchemaTest extends DatabaseTestCase
             ],
             'enum_col' => [
                 'type' => 'string',
-                'dbType' => "enum('a','B')",
+                'dbType' => "enum('a','B','c,D')",
                 'phpType' => 'string',
                 'allowNull' => true,
                 'autoIncrement' => false,
-                'enumValues' => ['a', 'B'],
+                'enumValues' => ['a', 'B','c,D'],
                 'size' => null,
                 'precision' => null,
                 'scale' => null,
@@ -364,7 +364,7 @@ abstract class SchemaTest extends DatabaseTestCase
         sort($colNames);
         $this->assertEquals($expectedColNames, $colNames);
 
-        foreach($table->columns as $name => $column) {
+        foreach ($table->columns as $name => $column) {
             $expected = $columns[$name];
             $this->assertSame($expected['dbType'], $column->dbType, "dbType of column $name does not match. type is $column->type, dbType is $column->dbType.");
             $this->assertSame($expected['phpType'], $column->phpType, "phpType of column $name does not match. type is $column->type, dbType is $column->dbType.");
@@ -396,7 +396,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
         try {
             $db->createCommand()->dropTable('uniqueIndex')->execute();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
         }
         $db->createCommand()->createTable('uniqueIndex', [
             'somecol' => 'string',

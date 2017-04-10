@@ -245,6 +245,10 @@ return [
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
+異なる名前空間のマイグレーションを扱う方法の詳細については
+[分離されたマイグレーション](db-migrations.md#separated-migrations) の節を参照して下さい。
+
+
 これで `authManager` は `\Yii::$app->authManager` によってアクセスすることが出来るようになります。
 
 
@@ -306,7 +310,7 @@ class RbacController extends Controller
 ```
 
 > Note: アドバンストテンプレートを使おうとするときは、`RbacController` を `console/controllers`
-ディレクトリの中に置いて、名前空間を `console/controllers` に変更する必要があります。
+ディレクトリの中に置いて、名前空間を `console\controllers` に変更する必要があります。
 
 `yii rbac/init` によってコマンドを実行した後には、次の権限階層が得られます。
 

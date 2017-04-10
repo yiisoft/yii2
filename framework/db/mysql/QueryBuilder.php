@@ -185,6 +185,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
+    protected function hasLimit($limit)
+    {
+        // In MySQL limit argument must be nonnegative integer constant
+        return ctype_digit((string) $limit);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function hasOffset($offset)
+    {
+        // In MySQL offset argument must be nonnegative integer constant
+        $offset = (string) $offset;
+        return ctype_digit($offset) && $offset !== '0';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function insert($table, $columns, &$params)
     {
         $schema = $this->db->getSchema();
@@ -195,30 +214,38 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         $names = [];
         $placeholders = [];
-        foreach ($columns as $name => $value) {
-            $names[] = $schema->quoteColumnName($name);
-            if ($value instanceof Expression) {
-                $placeholders[] = $value->expression;
-                foreach ($value->params as $n => $v) {
-                    $params[$n] = $v;
-                }
-            } else {
-                $phName = self::PARAM_PREFIX . count($params);
-                $placeholders[] = $phName;
-                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
-            }
-        }
-        if (empty($names) && $tableSchema !== null) {
-            $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
-            foreach ($columns as $name) {
+        $values = ' DEFAULT VALUES';
+        if ($columns instanceof \yii\db\Query) {
+            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+        } else {
+            foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
-                $placeholders[] = 'DEFAULT';
+                if ($value instanceof Expression) {
+                    $placeholders[] = $value->expression;
+                    foreach ($value->params as $n => $v) {
+                        $params[$n] = $v;
+                    }
+                } elseif ($value instanceof \yii\db\Query) {
+                    list($sql, $params) = $this->build($value, $params);
+                    $placeholders[] = "($sql)";
+                } else {
+                    $phName = self::PARAM_PREFIX . count($params);
+                    $placeholders[] = $phName;
+                    $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
+                }
+            }
+            if (empty($names) && $tableSchema !== null) {
+                $columns = !empty($tableSchema->primaryKey) ? $tableSchema->primaryKey : [reset($tableSchema->columns)->name];
+                foreach ($columns as $name) {
+                    $names[] = $schema->quoteColumnName($name);
+                    $placeholders[] = 'DEFAULT';
+                }
             }
         }
 
         return 'INSERT INTO ' . $schema->quoteTableName($table)
             . (!empty($names) ? ' (' . implode(', ', $names) . ')' : '')
-            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : ' DEFAULT VALUES');
+            . (!empty($placeholders) ? ' VALUES (' . implode(', ', $placeholders) . ')' : $values);
     }
 
     /**

@@ -9,7 +9,6 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\StringHelper;
 
 /**
  * The web Request class represents an HTTP request
@@ -44,13 +43,13 @@ use yii\helpers\StringHelper;
  * @property array $eTags The entity tags. This property is read-only.
  * @property HeaderCollection $headers The header collection. This property is read-only.
  * @property string|null $hostInfo Schema and hostname part (with port number if needed) of the request URL
- * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+ * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set. See
+ * [[getHostInfo()]] for security related notes on this property.
  * @property string|null $hostName Hostname part of the request URL (e.g. `www.yiiframework.com`). This
  * property is read-only.
  * @property bool $isAjax Whether this is an AJAX (XMLHttpRequest) request. This property is read-only.
  * @property bool $isDelete Whether this is a DELETE request. This property is read-only.
- * @property bool $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is
- * read-only.
+ * @property bool $isFlash Whether this is an Adobe Flash or Adobe Flex request. This property is read-only.
  * @property bool $isGet Whether this is a GET request. This property is read-only.
  * @property bool $isHead Whether this is a HEAD request. This property is read-only.
  * @property bool $isOptions Whether this is a OPTIONS request. This property is read-only.
@@ -75,7 +74,7 @@ use yii\helpers\StringHelper;
  * @property int $securePort Port number for secure requests.
  * @property string $serverName Server name, null if not available. This property is read-only.
  * @property int|null $serverPort Server port number, null if not available. This property is read-only.
- * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
+ * @property string $url The currently requested relative URL. Note that the URI returned may be URL-encoded depending on the client.
  * @property string|null $userAgent User agent, null if not available. This property is read-only.
  * @property string|null $userHost User host name, null if not available. This property is read-only.
  * @property string|null $userIP User IP address, null if not available. This property is read-only.
@@ -91,6 +90,7 @@ class Request extends \yii\base\Request
     const CSRF_HEADER = 'X-CSRF-Token';
     /**
      * The length of the CSRF token mask.
+     * @deprecated 2.0.12 The mask length is now equal to the token length.
      */
     const CSRF_MASK_LENGTH = 8;
 
@@ -189,9 +189,9 @@ class Request extends \yii\base\Request
                 $this->_queryParams = $params + $this->_queryParams;
             }
             return [$route, $this->getQueryParams()];
-        } else {
-            throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
+
+        throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
     }
 
     /**
@@ -459,9 +459,9 @@ class Request extends \yii\base\Request
     {
         if ($name === null) {
             return $this->getBodyParams();
-        } else {
-            return $this->getBodyParam($name, $defaultValue);
         }
+
+        return $this->getBodyParam($name, $defaultValue);
     }
 
     private $_queryParams;
@@ -504,9 +504,9 @@ class Request extends \yii\base\Request
     {
         if ($name === null) {
             return $this->getQueryParams();
-        } else {
-            return $this->getQueryParam($name, $defaultValue);
         }
+
+        return $this->getQueryParam($name, $defaultValue);
     }
 
     /**
@@ -529,9 +529,27 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the schema and host part of the current request URL.
+     *
      * The returned URL does not have an ending slash.
-     * By default this is determined based on the user request information.
+     *
+     * By default this value is based on the user request information. This method will
+     * return the value of `$_SERVER['HTTP_HOST']` if it is available or `$_SERVER['SERVER_NAME']` if not.
+     * You may want to check out the [PHP documentation](http://php.net/manual/en/reserved.variables.server.php)
+     * for more information on these variables.
+     *
      * You may explicitly specify it by setting the [[setHostInfo()|hostInfo]] property.
+     *
+     * > Warning: Dependent on the server configuration this information may not be
+     * > reliable and [may be faked by the user sending the HTTP request](https://www.acunetix.com/vulnerabilities/web/host-header-attack).
+     * > If the webserver is configured to serve the same site independent of the value of
+     * > the `Host` header, this value is not reliable. In such situations you should either
+     * > fix your webserver configuration or explicitly set the value by setting the [[setHostInfo()|hostInfo]] property.
+     * > If you don't have access to the server configuration, you can setup [[\yii\filters\HostControl]] filter at
+     * > application level in order to protect against such kind of attack.
+     *
+     * @property string|null schema and hostname part (with port number if needed) of the request URL
+     * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
+     * See [[getHostInfo()]] for security related notes on this property.
      * @return string|null schema and hostname part (with port number if needed) of the request URL
      * (e.g. `http://www.yiiframework.com`), null if can't be obtained from `$_SERVER` and wasn't set.
      * @see setHostInfo()
@@ -560,6 +578,7 @@ class Request extends \yii\base\Request
      * This setter is provided in case the schema and hostname cannot be determined
      * on certain Web servers.
      * @param string|null $value the schema and host part of the application URL. The trailing slashes will be removed.
+     * @see getHostInfo() for security related notes on this property.
      */
     public function setHostInfo($value)
     {
@@ -570,6 +589,10 @@ class Request extends \yii\base\Request
     /**
      * Returns the host part of the current request URL.
      * Value is calculated from current [[getHostInfo()|hostInfo]] property.
+     *
+     * > Warning: The content of this value may not be reliable, dependent on the server
+     * > configuration. Please refer to [[getHostInfo()]] for more information.
+     *
      * @return string|null hostname part of the request URL (e.g. `www.yiiframework.com`)
      * @see getHostInfo()
      * @since 2.0.10
@@ -666,11 +689,13 @@ class Request extends \yii\base\Request
     {
         if (isset($this->_scriptFile)) {
             return $this->_scriptFile;
-        } elseif (isset($_SERVER['SCRIPT_FILENAME'])) {
-            return $_SERVER['SCRIPT_FILENAME'];
-        } else {
-            throw new InvalidConfigException('Unable to determine the entry script file path.');
         }
+
+        if (isset($_SERVER['SCRIPT_FILENAME'])) {
+            return $_SERVER['SCRIPT_FILENAME'];
+        }
+
+        throw new InvalidConfigException('Unable to determine the entry script file path.');
     }
 
     /**
@@ -783,7 +808,7 @@ class Request extends \yii\base\Request
      * Returns the currently requested relative URL.
      * This refers to the portion of the URL that is after the [[hostInfo]] part.
      * It includes the [[queryString]] part if any.
-     * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
+     * @return string the currently requested relative URL. Note that the URI returned may be URL-encoded depending on the client.
      * @throws InvalidConfigException if the URL cannot be determined due to unusual server configuration
      */
     public function getUrl()
@@ -811,7 +836,7 @@ class Request extends \yii\base\Request
      * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
      * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
      * @return string|bool the request URI portion for the currently requested URL.
-     * Note that the URI returned is URL-encoded.
+     * Note that the URI returned may be URL-encoded depending on the client.
      * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
      */
     protected function resolveRequestUri()
@@ -1050,7 +1075,9 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER['CONTENT_TYPE'])) {
             return $_SERVER['CONTENT_TYPE'];
-        } elseif (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
+        }
+
+        if (isset($_SERVER['HTTP_CONTENT_TYPE'])) {
             //fix bug https://bugs.php.net/bug.php?id=66606
             return $_SERVER['HTTP_CONTENT_TYPE'];
         }
@@ -1143,23 +1170,31 @@ class Request extends \yii\base\Request
             $b = $b['q'];
             if ($a[2] > $b[2]) {
                 return -1;
-            } elseif ($a[2] < $b[2]) {
-                return 1;
-            } elseif ($a[1] === $b[1]) {
-                return $a[0] > $b[0] ? 1 : -1;
-            } elseif ($a[1] === '*/*') {
-                return 1;
-            } elseif ($b[1] === '*/*') {
-                return -1;
-            } else {
-                $wa = $a[1][strlen($a[1]) - 1] === '*';
-                $wb = $b[1][strlen($b[1]) - 1] === '*';
-                if ($wa xor $wb) {
-                    return $wa ? 1 : -1;
-                } else {
-                    return $a[0] > $b[0] ? 1 : -1;
-                }
             }
+
+            if ($a[2] < $b[2]) {
+                return 1;
+            }
+
+            if ($a[1] === $b[1]) {
+                return $a[0] > $b[0] ? 1 : -1;
+            }
+
+            if ($a[1] === '*/*') {
+                return 1;
+            }
+
+            if ($b[1] === '*/*') {
+                return -1;
+            }
+
+            $wa = $a[1][strlen($a[1]) - 1] === '*';
+            $wb = $b[1][strlen($b[1]) - 1] === '*';
+            if ($wa xor $wb) {
+                return $wa ? 1 : -1;
+            }
+
+            return $a[0] > $b[0] ? 1 : -1;
         });
 
         $result = [];
@@ -1211,9 +1246,9 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER['HTTP_IF_NONE_MATCH'])) {
             return preg_split('/[\s,]+/', str_replace('-gzip', '', $_SERVER['HTTP_IF_NONE_MATCH']), -1, PREG_SPLIT_NO_EMPTY);
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**
@@ -1302,11 +1337,7 @@ class Request extends \yii\base\Request
             if ($regenerate || ($token = $this->loadCsrfToken()) === null) {
                 $token = $this->generateCsrfToken();
             }
-            // the mask doesn't need to be very random
-            $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-.';
-            $mask = substr(str_shuffle(str_repeat($chars, 5)), 0, static::CSRF_MASK_LENGTH);
-            // The + sign may be decoded as blank space later, which will fail the validation
-            $this->_csrfToken = str_replace('+', '.', base64_encode($mask . $this->xorTokens($token, $mask)));
+            $this->_csrfToken = Yii::$app->security->maskToken($token);
         }
 
         return $this->_csrfToken;
@@ -1321,18 +1352,17 @@ class Request extends \yii\base\Request
     {
         if ($this->enableCsrfCookie) {
             return $this->getCookies()->getValue($this->csrfParam);
-        } else {
-            return Yii::$app->getSession()->get($this->csrfParam);
         }
+        return Yii::$app->getSession()->get($this->csrfParam);
     }
 
     /**
-     * Generates  an unmasked random token used to perform CSRF validation.
+     * Generates an unmasked random token used to perform CSRF validation.
      * @return string the random token for CSRF validation.
      */
     protected function generateCsrfToken()
     {
-        $token = Yii::$app->getSecurity()->generateRandomString();
+        $token = Yii::$app->getSecurity()->generateRandomKey();
         if ($this->enableCsrfCookie) {
             $cookie = $this->createCsrfCookie($token);
             Yii::$app->getResponse()->getCookies()->add($cookie);
@@ -1343,32 +1373,11 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns the XOR result of two strings.
-     * If the two strings are of different lengths, the shorter one will be padded to the length of the longer one.
-     * @param string $token1
-     * @param string $token2
-     * @return string the XOR result
-     */
-    private function xorTokens($token1, $token2)
-    {
-        $n1 = StringHelper::byteLength($token1);
-        $n2 = StringHelper::byteLength($token2);
-        if ($n1 > $n2) {
-            $token2 = str_pad($token2, $n1, $token2);
-        } elseif ($n1 < $n2) {
-            $token1 = str_pad($token1, $n2, $n1 === 0 ? ' ' : $token1);
-        }
-
-        return $token1 ^ $token2;
-    }
-
-    /**
      * @return string the CSRF token sent via [[CSRF_HEADER]] by browser. Null is returned if no such header is sent.
      */
     public function getCsrfTokenFromHeader()
     {
-        $key = 'HTTP_' . str_replace('-', '_', strtoupper(static::CSRF_HEADER));
-        return isset($_SERVER[$key]) ? $_SERVER[$key] : null;
+        return $this->headers->get(static::CSRF_HEADER);
     }
 
     /**
@@ -1395,12 +1404,12 @@ class Request extends \yii\base\Request
      * Note that the method will NOT perform CSRF validation if [[enableCsrfValidation]] is false or the HTTP method
      * is among GET, HEAD or OPTIONS.
      *
-     * @param string $token the user-provided CSRF token to be validated. If null, the token will be retrieved from
+     * @param string $clientSuppliedToken the user-provided CSRF token to be validated. If null, the token will be retrieved from
      * the [[csrfParam]] POST field or HTTP header.
      * This parameter is available since version 2.0.4.
      * @return bool whether CSRF token is valid. If [[enableCsrfValidation]] is false, this method will return true.
      */
-    public function validateCsrfToken($token = null)
+    public function validateCsrfToken($clientSuppliedToken = null)
     {
         $method = $this->getMethod();
         // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
@@ -1408,38 +1417,31 @@ class Request extends \yii\base\Request
             return true;
         }
 
-        $trueToken = $this->loadCsrfToken();
+        $trueToken = $this->getCsrfToken();
 
-        if ($token !== null) {
-            return $this->validateCsrfTokenInternal($token, $trueToken);
-        } else {
-            return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
-                || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
+        if ($clientSuppliedToken !== null) {
+            return $this->validateCsrfTokenInternal($clientSuppliedToken, $trueToken);
         }
+
+        return $this->validateCsrfTokenInternal($this->getBodyParam($this->csrfParam), $trueToken)
+            || $this->validateCsrfTokenInternal($this->getCsrfTokenFromHeader(), $trueToken);
     }
 
     /**
      * Validates CSRF token
      *
-     * @param string $token
-     * @param string $trueToken
+     * @param string $clientSuppliedToken The masked client-supplied token.
+     * @param string $trueToken The masked true token.
      * @return bool
      */
-    private function validateCsrfTokenInternal($token, $trueToken)
+    private function validateCsrfTokenInternal($clientSuppliedToken, $trueToken)
     {
-        if (!is_string($token)) {
+        if (!is_string($clientSuppliedToken)) {
             return false;
         }
 
-        $token = base64_decode(str_replace('.', '+', $token));
-        $n = StringHelper::byteLength($token);
-        if ($n <= static::CSRF_MASK_LENGTH) {
-            return false;
-        }
-        $mask = StringHelper::byteSubstr($token, 0, static::CSRF_MASK_LENGTH);
-        $token = StringHelper::byteSubstr($token, static::CSRF_MASK_LENGTH, $n - static::CSRF_MASK_LENGTH);
-        $token = $this->xorTokens($mask, $token);
+        $security = Yii::$app->security;
 
-        return $token === $trueToken;
+        return $security->unmaskToken($clientSuppliedToken) === $security->unmaskToken($trueToken);
     }
 }

@@ -16,7 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array (
+return [
   '(not set)' => '(ikke defineret)',
   'An internal server error occurred.' => 'Der opstod en intern server fejl.',
   'Are you sure you want to delete this item?' => 'Er du sikker på, at du vil slette dette element?',
@@ -103,4 +103,4 @@ return array (
   '{n} MB' => '{n} MB',
   '{n} PB' => '{n} PB',
   '{n} TB' => '{n} TB',
-);
+];

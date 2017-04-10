@@ -73,7 +73,15 @@ class DetailView extends Widget
      * - `label`: the label associated with the attribute. If this is not specified, it will be generated from the attribute name.
      * - `value`: the value to be displayed. If this is not specified, it will be retrieved from [[model]] using the attribute name
      *   by calling [[ArrayHelper::getValue()]]. Note that this value will be formatted into a displayable text
-     *   according to the `format` option.
+     *   according to the `format` option. Since version 2.0.11 it can be defined as closure with the following
+     *   parameters:
+     *
+     *   ```php
+     *   function ($model, $widget)
+     *   ```
+     *
+     *   `$model` refers to displayed model and `$widget` is an instance of `DetailView` widget.
+     *
      * - `format`: the type of the value that determines how the value would be formatted into a displayable text.
      *   Please refer to [[Formatter]] for supported types.
      * - `visible`: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
@@ -197,7 +205,7 @@ class DetailView extends Widget
 
         foreach ($this->attributes as $i => $attribute) {
             if (is_string($attribute)) {
-                if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
+                if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
                     throw new InvalidConfigException('The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
                 }
                 $attribute = [
@@ -229,6 +237,10 @@ class DetailView extends Widget
                 }
             } elseif (!isset($attribute['label']) || !array_key_exists('value', $attribute)) {
                 throw new InvalidConfigException('The attribute configuration requires the "attribute" element to determine the value and display label.');
+            }
+
+            if ($attribute['value'] instanceof \Closure) {
+                $attribute['value'] = call_user_func($attribute['value'], $this->model, $this);
             }
 
             $this->attributes[$i] = $attribute;

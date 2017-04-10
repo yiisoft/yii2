@@ -43,7 +43,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $id;
     /**
-     * @var Module $module the module that this controller belongs to.
+     * @var Module the module that this controller belongs to.
      */
     public $module;
     /**
@@ -164,7 +164,9 @@ class Controller extends Component implements ViewContextInterface
             }
         }
 
-        $this->action = $oldAction;
+        if ($oldAction !== null) {
+            $this->action = $oldAction;
+        }
 
         return $result;
     }
@@ -186,9 +188,8 @@ class Controller extends Component implements ViewContextInterface
             return $this->runAction($route, $params);
         } elseif ($pos > 0) {
             return $this->module->runAction($route, $params);
-        } else {
-            return Yii::$app->runAction(ltrim($route, '/'), $params);
         }
+        return Yii::$app->runAction(ltrim($route, '/'), $params);
     }
 
     /**
@@ -211,7 +212,7 @@ class Controller extends Component implements ViewContextInterface
      * where `Xyz` stands for the action ID. If found, an [[InlineAction]] representing that
      * method will be created and returned.
      * @param string $id the action ID.
-     * @return Action the newly created action instance. Null if the ID doesn't resolve into any action.
+     * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.
      */
     public function createAction($id)
     {
@@ -393,9 +394,8 @@ class Controller extends Component implements ViewContextInterface
         $layoutFile = $this->findLayoutFile($this->getView());
         if ($layoutFile !== false) {
             return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
-        } else {
-            return $content;
         }
+        return $content;
     }
 
     /**

@@ -21,6 +21,7 @@ use Yii;
  * @property string $basePath The root directory of the application.
  * @property \yii\caching\Cache $cache The cache application component. Null if the component is not enabled.
  * This property is read-only.
+ * @property array $container Values given in terms of name-value pairs. This property is write-only.
  * @property \yii\db\Connection $db The database connection. This property is read-only.
  * @property \yii\web\ErrorHandler|\yii\console\ErrorHandler $errorHandler The error handler application
  * component. This property is read-only.
@@ -244,6 +245,12 @@ abstract class Application extends Module
             unset($config['timeZone']);
         } elseif (!ini_get('date.timezone')) {
             $this->setTimeZone('UTC');
+        }
+
+        if (isset($config['container'])) {
+            $this->setContainer($config['container']);
+
+            unset($config['container']);
         }
 
         // merge core components with custom components
@@ -651,5 +658,16 @@ abstract class Application extends Module
         } else {
             exit($status);
         }
+    }
+
+    /**
+     * Configures [[Yii::$container]] with the $config
+     *
+     * @param array $config values given in terms of name-value pairs
+     * @since 2.0.11
+     */
+    public function setContainer($config)
+    {
+        Yii::configure(Yii::$container, $config);
     }
 }

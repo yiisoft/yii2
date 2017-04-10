@@ -113,6 +113,20 @@ class UrlValidator extends Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
+        ValidationAsset::register($view);
+        if ($this->enableIDN) {
+            PunycodeAsset::register($view);
+        }
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         if (strpos($this->pattern, '{schemes}') !== false) {
             $pattern = str_replace('{schemes}', '(' . implode('|', $this->validSchemes) . ')', $this->pattern);
         } else {
@@ -121,9 +135,9 @@ class UrlValidator extends Validator
 
         $options = [
             'pattern' => new JsExpression($pattern),
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language),
+            ]),
             'enableIDN' => (bool) $this->enableIDN,
         ];
         if ($this->skipOnEmpty) {
@@ -133,11 +147,6 @@ class UrlValidator extends Validator
             $options['defaultScheme'] = $this->defaultScheme;
         }
 
-        ValidationAsset::register($view);
-        if ($this->enableIDN) {
-            PunycodeAsset::register($view);
-        }
-
-        return 'yii.validation.url(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }

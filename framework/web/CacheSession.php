@@ -71,7 +71,7 @@ class CacheSession extends Session
 
     /**
      * Session read handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return string the session data
      */
@@ -84,7 +84,7 @@ class CacheSession extends Session
 
     /**
      * Session write handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
      * @return bool whether session write is successful
@@ -96,13 +96,18 @@ class CacheSession extends Session
 
     /**
      * Session destroy handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return bool whether session is destroyed successfully
      */
     public function destroySession($id)
     {
-        return $this->cache->delete($this->calculateKey($id));
+        $cacheId = $this->calculateKey($id);
+        if ($this->cache->exists($cacheId) === false) {
+            return true;
+        }
+
+        return $this->cache->delete($cacheId);
     }
 
     /**
