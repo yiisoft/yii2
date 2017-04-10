@@ -25,7 +25,5 @@ class CookieTest extends \yiiunit\TestCase
         $this->assertInstanceOf(Cookie::className(), $result);
         $this->assertEquals($cookie->value, $result->value);
         $this->assertEquals($cookie->name, $result->name);
-
     }
-
 }
