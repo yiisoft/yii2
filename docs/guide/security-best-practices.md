@@ -195,17 +195,18 @@ namespace app\components;
 
 use yii\base\Action;
 
-class HelloWorldAction extends Action
+class ContactAction extends Action
 {
-    public function init()
-    {
-        parent::init();
-        \Yii::$app->controller->enableCsrfValidation = false;
-    }
-
     public function run()
     {
-        return "Hello World";
+          $model = new ContactForm();
+          $request = Yii::$app->request;
+          if ($request->referrer === 'yiipowered.com'
+              && $model->load($request->post())
+              && $model->validate()
+          ) {
+              $model->sendEmail();
+          }
     }
 }
 ```
