@@ -7,13 +7,10 @@
 
 namespace yii\captcha;
 
-use Yii;
-use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\widgets\InputWidget;
-use yii\captcha\drivers\DriverFactory;
 
 /**
  * Captcha renders a CAPTCHA image and an input field that takes user-entered verification code.
@@ -92,8 +89,6 @@ class Captcha extends InputWidget
     {
         parent::init();
 
-        $this->checkRequirements();
-
         if (!isset($this->imageOptions['id'])) {
             $this->imageOptions['id'] = $this->options['id'] . '-image';
         }
@@ -155,17 +150,5 @@ class Captcha extends InputWidget
         ];
 
         return $options;
-    }
-    
-    /**
-     * Checks if there is graphic extension available to generate CAPTCHA images.
-     * This method will check the existence of ImageMagick and GD extensions.
-     * @throws InvalidConfigException if neither ImageMagick nor GD is installed.
-     */
-    private function checkRequirements()
-    {
-        /* @var $factory DriverFactory */
-        $factory = Yii::createObject(DriverFactory::className());
-        $factory->make();
     }
 }

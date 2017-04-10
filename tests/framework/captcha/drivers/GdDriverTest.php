@@ -18,8 +18,8 @@ class GdDriverTest extends TestCase
     public function testRenderCaptcha()
     {
         $gdDriver = new GdDriver();
-        if ($error = $gdDriver->getError()) {
-            static::markTestSkipped($error);
+        if (!$gdDriver->checkRequirements()) {
+            static::markTestSkipped($gdDriver->getError());
         }
 
         $imageSettings = new ImageSettings();
@@ -32,7 +32,7 @@ class GdDriverTest extends TestCase
         $this->assertEquals('image/png', $size['mime']);
     }
 
-    public function testGetErrorAvailableGdAndFreeTypeSupport()
+    public function testCheckRequirementsAvailableGdAndFreeTypeSupport()
     {
         /* @var $fakeDriver PHPUnit_Framework_MockObject_MockObject|GdDriver */
         $fakeDriver = $this->getMockBuilder(GdDriver::className())
@@ -45,11 +45,11 @@ class GdDriverTest extends TestCase
             ->method('getGDInfo')
             ->willReturn(['FreeType Support']);
 
-        $error = $fakeDriver->getError();
-        $this->assertNull($error);
+        $isChecked = $fakeDriver->checkRequirements();
+        $this->assertTrue($isChecked);
     }
 
-    public function testGetErrorUnavailableGdAndFreeTypeSupport()
+    public function testCheckRequirementsUnavailableGdAndFreeTypeSupport()
     {
         /* @var $fakeDriver PHPUnit_Framework_MockObject_MockObject|GdDriver */
         $fakeDriver = $this->getMockBuilder(GdDriver::className())
@@ -62,11 +62,11 @@ class GdDriverTest extends TestCase
             ->method('getGDInfo')
             ->willReturn(['FreeType Support']);
 
-        $error = $fakeDriver->getError();
-        $this->assertEquals('Not available GD  extension or either GD without FreeType support', $error);
+        $isChecked = $fakeDriver->checkRequirements();
+        $this->assertFalse($isChecked);
     }
 
-    public function testGetErrorAvailableGdAndFreeTypeNotSupport()
+    public function testCheckRequirementsAvailableGdAndFreeTypeNotSupport()
     {
         /* @var $fakeDriver PHPUnit_Framework_MockObject_MockObject|GdDriver */
         $fakeDriver = $this->getMockBuilder(GdDriver::className())
@@ -74,12 +74,12 @@ class GdDriverTest extends TestCase
             ->getMock();
         $fakeDriver->expects(self::any())
             ->method('isAvailableGd')
-            ->willReturn(false);
+            ->willReturn(true);
         $fakeDriver->expects(self::any())
             ->method('getGDInfo')
             ->willReturn(['FreeType Not Support']);
 
-        $error = $fakeDriver->getError();
-        $this->assertEquals('Not available GD  extension or either GD without FreeType support', $error);
+        $isChecked = $fakeDriver->checkRequirements();
+        $this->assertFalse($isChecked);
     }
 }

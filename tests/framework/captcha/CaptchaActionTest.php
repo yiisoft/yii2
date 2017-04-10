@@ -21,11 +21,11 @@ class CaptchaActionTest extends TestCase
     public function testRenderImageLibraryEqualsGD()
     {
         $fakeDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getError', 'renderCaptcha'])
+            ->setMethods(['checkRequirements', 'renderCaptcha'])
             ->getMock();
         $fakeDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn(null);
+            ->method('checkRequirements')
+            ->willReturn(true);
         $fakeDriver->expects($this->any())
             ->method('renderCaptcha')
             ->willReturn('test code');
@@ -42,19 +42,19 @@ class CaptchaActionTest extends TestCase
     public function testRenderImageLibraryEqualsNull()
     {
         $fakeImagickDriver = $this->getMockBuilder(ImagickDriver::className())
-            ->setMethods(['getError'])
+            ->setMethods(['checkRequirements'])
             ->getMock();
         $fakeImagickDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn('Imagick not supported');
+            ->method('checkRequirements')
+            ->willReturn(false);
         Yii::$container->setSingleton(ImagickDriver::className(), $fakeImagickDriver);
 
         $fakeGdDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getError', 'renderCaptcha'])
+            ->setMethods(['checkRequirements', 'renderCaptcha'])
             ->getMock();
         $fakeGdDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn(null);
+            ->method('checkRequirements')
+            ->willReturn(true);
         $fakeGdDriver->expects($this->any())
             ->method('renderCaptcha')
             ->willReturn('test code');

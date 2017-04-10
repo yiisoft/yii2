@@ -20,12 +20,11 @@ class DriverFactoryTest extends TestCase
     public function testMakeFilledParamValueGD()
     {
         $fakeDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getError'])
-            ->disableOriginalConstructor()
+            ->setMethods(['checkRequirements'])
             ->getMock();
         $fakeDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn(null);
+            ->method('checkRequirements')
+            ->willReturn(true);
 
         Yii::$container->set(GdDriver::className(), $fakeDriver);
 
@@ -46,12 +45,11 @@ class DriverFactoryTest extends TestCase
     public function testMakeNotFilledParamAvailableImagick()
     {
         $fakeDriver = $this->getMockBuilder(ImagickDriver::className())
-            ->setMethods(['getError'])
-            ->disableOriginalConstructor()
+            ->setMethods(['checkRequirements'])
             ->getMock();
         $fakeDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn(null);
+            ->method('checkRequirements')
+            ->willReturn(true);
         Yii::$container->set(ImagickDriver::className(), $fakeDriver);
 
         $factory = new DriverFactory();
@@ -63,46 +61,44 @@ class DriverFactoryTest extends TestCase
     public function testMakeNotFilledParamAvailableGD()
     {   
         $fakeImagickDriver = $this->getMockBuilder(ImagickDriver::className())
-            ->setMethods(['getError'])
+            ->setMethods(['checkRequirements'])
             ->getMock();
         $fakeImagickDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn('Error have for Imagick');
+            ->method('checkRequirements')
+            ->willReturn(false);
         Yii::$container->set(GdDriver::className(), $fakeImagickDriver);
 
         $fakeGdDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getError'])
-            ->disableOriginalConstructor()
+            ->setMethods(['checkRequirements'])
             ->getMock();
         $fakeGdDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn(null);
+            ->method('checkRequirements')
+            ->willReturn(true);
         Yii::$container->set(GdDriver::className(), $fakeGdDriver);
 
         $factory = new DriverFactory();
         $driverCaptcha = $factory->make();
 
-        $this->assertInstanceOf(ImagickDriver::className(), $driverCaptcha);
+        $this->assertInstanceOf(GdDriver::className(), $driverCaptcha);
     }
 
     public function testMakeNotFilledParamNotAvailableImageExtentions()
     {
         $fakeImagickDriver = $this->getMockBuilder(ImagickDriver::className())
-            ->setMethods(['getError'])
+            ->setMethods(['checkRequirements'])
             ->getMock();
         $fakeImagickDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn('Error have for Imagick');
+            ->method('checkRequirements')
+            ->willReturn(false);
         Yii::$container->set(ImagickDriver::className(), $fakeImagickDriver);
 
         $fakeGdDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getError'])
+            ->setMethods(['checkRequirements'])
             ->getMock();
         $fakeGdDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn('Error have for GD');
+            ->method('checkRequirements')
+            ->willReturn(false);
         Yii::$container->set(GdDriver::className(), $fakeGdDriver);
-
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
         $factory = new DriverFactory();

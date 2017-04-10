@@ -64,12 +64,16 @@ class GdDriver extends Object implements DriverInterface
     /**
      * {@inheritdoc}
      */
+    public function checkRequirements()
+    {
+        return $this->isAvailableGd() && in_array('FreeType Support', $this->getGDInfo());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getError()
     {
-        if ($this->isAvailableGd() && in_array('FreeType Support', $this->getGDInfo())) {
-            return null;
-        }
-
         return 'Not available GD  extension or either GD without FreeType support';
     }
 

@@ -49,13 +49,16 @@ class ImagickDriver extends Object implements DriverInterface
     /**
      * {@inheritdoc}
      */
+    public function checkRequirements()
+    {
+        return $this->isAvailableImagick() && in_array('PNG', $this->getImagickFormats(), true);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getError()
     {
-
-        if ($this->isAvailableImagick() && in_array('PNG', $this->getImagickFormats(), true)) {
-            return null;
-        }
-
         return 'Not available ImageMagick  extension or ImageMagick extension without PNG support is required';
     }
 

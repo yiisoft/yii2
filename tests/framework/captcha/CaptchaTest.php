@@ -5,7 +5,6 @@ namespace yii\captcha;
 use Yii;
 use yii\captcha\Captcha;
 use yiiunit\TestCase;
-use yii\captcha\drivers\GdDriver;
 
 class CaptchaTest extends TestCase
 {
@@ -14,14 +13,6 @@ class CaptchaTest extends TestCase
         parent::setUp();
 
         $this->mockApplication();
-
-        $fakeGdDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getError'])
-            ->getMock();
-        $fakeGdDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn(null);
-        Yii::$container->setSingleton(GdDriver::className(), $fakeGdDriver);
     }
 
     /**
@@ -51,20 +42,5 @@ class CaptchaTest extends TestCase
         $captcha = new Captcha($initValues);
 
         $this->assertStringEndsWith('-image', $captcha->imageOptions['id']);
-    }
-
-    public function testCheckRequirementsNotAvailableSupportedImageLibrary()
-    {
-        $fakeGdDriver = $this->getMockBuilder(GdDriver::className())
-            ->setMethods(['getError'])
-            ->getMock();
-        $fakeGdDriver->expects($this->any())
-            ->method('getError')
-            ->willReturn('Error have for GD');
-        \Yii::$container->setSingleton(GdDriver::className(), $fakeGdDriver);
-
-        $this->setExpectedException('\yii\base\InvalidConfigException');
-
-        new Captcha();
     }
 }

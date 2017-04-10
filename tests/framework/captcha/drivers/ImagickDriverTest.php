@@ -18,8 +18,8 @@ class ImagickDriverTest extends TestCase
     public function testRenderCaptcha()
     {
         $imagickDriver = new ImagickDriver();
-        if ($error = $imagickDriver->getError()) {
-            static::markTestSkipped($error);
+        if (!$imagickDriver->checkRequirements()) {
+            static::markTestSkipped($imagickDriver->checkRequirements());
         }
 
         $imageSettings = new ImageSettings();
@@ -32,7 +32,7 @@ class ImagickDriverTest extends TestCase
         $this->assertEquals('image/png', $size['mime']);
     }
 
-    public function testGetErrorAvailableImagickAndAvailablePNG()
+    public function testCheckRequirementsAvailableImagickAndAvailablePNG()
     {
         /* @var $fakeDriver PHPUnit_Framework_MockObject_MockObject|ImagickDriver */
         $fakeDriver = $this->getMockBuilder(ImagickDriver::className())
@@ -45,11 +45,11 @@ class ImagickDriverTest extends TestCase
             ->method('getImagickFormats')
             ->willReturn(['PNG']);
 
-        $error = $fakeDriver->getError();
-        $this->assertNull($error);
+        $isChecked = $fakeDriver->checkRequirements();
+        $this->assertTrue($isChecked);
     }
 
-    public function testGetErrorUnavailableImagickAndAvailablePNG()
+    public function testCheckRequirementsUnavailableImagickAndAvailablePNG()
     {
         /* @var $fakeDriver PHPUnit_Framework_MockObject_MockObject|ImagickDriver */
         $fakeDriver = $this->getMockBuilder(ImagickDriver::className())
@@ -62,11 +62,11 @@ class ImagickDriverTest extends TestCase
             ->method('getImagickFormats')
             ->willReturn(['PNG']);
 
-        $error = $fakeDriver->getError();
-        $this->assertEquals('Not available ImageMagick  extension or ImageMagick extension without PNG support is required', $error);
+        $isChecked = $fakeDriver->checkRequirements();
+        $this->assertFalse($isChecked);
     }
 
-    public function testGetErrorAvailableImagickAndUnavailablePNG()
+    public function testCheckRequirementsAvailableImagickAndUnavailablePNG()
     {
         /* @var $fakeDriver PHPUnit_Framework_MockObject_MockObject|ImagickDriver */
         $fakeDriver = $this->getMockBuilder(ImagickDriver::className())
@@ -74,12 +74,12 @@ class ImagickDriverTest extends TestCase
             ->getMock();
         $fakeDriver->expects(self::any())
             ->method('isAvailableImagick')
-            ->willReturn(false);
+            ->willReturn(true);
         $fakeDriver->expects(self::any())
             ->method('getImagickFormats')
             ->willReturn(['Unavailable PNG']);
 
-        $error = $fakeDriver->getError();
-        $this->assertEquals('Not available ImageMagick  extension or ImageMagick extension without PNG support is required', $error);
+        $isChecked = $fakeDriver->checkRequirements();
+        $this->assertFalse($isChecked);
     }
 }

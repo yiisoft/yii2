@@ -57,9 +57,9 @@ class DriverFactory extends Object
     {
         /* @var $driver DriverInterface */
         $driver = Yii::createObject($driverClass);
-        $error = $driver->getError();
 
-        if ($error) {
+        if (!$driver->checkRequirements()) {
+            $error = $driver->getError();
             throw new InvalidConfigException($error);
         }
 
