@@ -18,7 +18,7 @@ class CookieTest extends \yiiunit\TestCase
         $cookie->name = "test";
         $cookie->value = [
             'a' => 'b',
-            'c' => 5
+            'c' => 5,
         ];
 
         $result = Cookie::fromDataString($cookie->toDataString());
