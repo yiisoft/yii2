@@ -72,7 +72,7 @@ class GdDriver extends Object implements DriverInterface
     /**
      * {@inheritdoc}
      */
-    public function getError()
+    public function getRequirementsError()
     {
         return 'Not available GD  extension or either GD without FreeType support';
     }

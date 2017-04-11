@@ -20,5 +20,5 @@ interface DriverInterface
     /**
      * @return string|null
      */
-    public function getError();
+    public function getRequirementsError();
 }

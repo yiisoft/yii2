@@ -19,7 +19,7 @@ class GdDriverTest extends TestCase
     {
         $gdDriver = new GdDriver();
         if (!$gdDriver->checkRequirements()) {
-            static::markTestSkipped($gdDriver->getError());
+            static::markTestSkipped($gdDriver->getRequirementsError());
         }
 
         $imageSettings = new ImageSettings();

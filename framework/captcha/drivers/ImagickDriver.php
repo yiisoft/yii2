@@ -57,7 +57,7 @@ class ImagickDriver extends Object implements DriverInterface
     /**
      * {@inheritdoc}
      */
-    public function getError()
+    public function getRequirementsError()
     {
         return 'Not available ImageMagick  extension or ImageMagick extension without PNG support is required';
     }
