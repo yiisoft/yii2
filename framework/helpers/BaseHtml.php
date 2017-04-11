@@ -12,6 +12,7 @@ use yii\base\InvalidParamException;
 use yii\db\ActiveRecordInterface;
 use yii\validators\StringValidator;
 use yii\web\Request;
+use yii\web\ContentSecurityPolicy;
 use yii\base\Model;
 
 /**
@@ -197,6 +198,10 @@ class BaseHtml
      */
     public static function style($content, $options = [])
     {
+        $csp = Yii::$app->csp;
+        if ($csp instanceof ContentSecurityPolicy && $csp->addNonceStyle) {
+            $options = $csp->populateStyleTagOptions($options);
+        }
         return static::tag('style', $content, $options);
     }
 
@@ -211,6 +216,10 @@ class BaseHtml
      */
     public static function script($content, $options = [])
     {
+        $csp = Yii::$app->csp;
+        if ($csp instanceof ContentSecurityPolicy && $csp->addNonceScript) {
+            $options = $csp->populateScriptTagOptions($options);
+        }
         return static::tag('script', $content, $options);
     }
 
@@ -232,6 +241,10 @@ class BaseHtml
      */
     public static function cssFile($url, $options = [])
     {
+        $csp = Yii::$app->csp;
+        if ($csp instanceof ContentSecurityPolicy && $csp->addNonceStyle) {
+            $options = $csp->populateStyleTagOptions($options);
+        }
         if (!isset($options['rel'])) {
             $options['rel'] = 'stylesheet';
         }
@@ -266,6 +279,10 @@ class BaseHtml
      */
     public static function jsFile($url, $options = [])
     {
+        $csp = Yii::$app->csp;
+        if ($csp instanceof ContentSecurityPolicy && $csp->addNonceScript) {
+            $options = $csp->populateScriptTagOptions($options);
+        }
         $options['src'] = Url::to($url);
         if (isset($options['condition'])) {
             $condition = $options['condition'];
