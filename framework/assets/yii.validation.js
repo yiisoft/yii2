@@ -367,6 +367,10 @@ yii.validation = (function ($) {
             return [];
         }
 
+        if (typeof $(attribute.input, attribute.$form).get(0) === "undefined") {
+            return [];
+        }
+
         var files = $(attribute.input, attribute.$form).get(0).files;
         if (!files) {
             messages.push(options.message);
