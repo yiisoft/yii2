@@ -63,6 +63,7 @@ Yii Framework 2 Change Log
 - Enh #13560: Refactored `\yii\widgets\FragmentCache::getCachedContent()`, added tests (Kolyunya)
 - Bug #13901: Fixed passing unused parameter to `formatMessage()` call in `\yii\validators\IpValidator` (Kolyunya)
 - Enh #13945: Removed Courier New from error page fonts list since it looks bad on Linux (samdark)
+- Bug #13961: RBAC Rules: PostgreSQL: PHP Warning "unserialize() expects parameter 1 to be string, resource given" was fixed (vsguts)
 
 2.0.11.2 February 08, 2017
 --------------------------
