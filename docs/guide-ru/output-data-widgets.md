@@ -607,7 +607,7 @@ CREATE OR REPLACE VIEW vw_user_info AS
     WHERE user.id = user_profile.user_id
 ```
 
-Теперь необходимо создать ActiveRecord, которая будет отображение данных из этого вида:
+Теперь необходимо создать ActiveRecord, который будет отображать данные из этого вида:
 
 ```php
 
@@ -650,8 +650,6 @@ class UserView extends ActiveRecord
             // здесь определяйте ваши метки атрибутов
         ];
     }
-
-
 }
 ```
 
