@@ -134,6 +134,7 @@ class ContentSecurityPolicy extends Component
     }
 
     /**
+     * Set the csp header
      * @param Response $response
      */
     public function run(Response $response)
@@ -160,6 +161,11 @@ class ContentSecurityPolicy extends Component
         $response->headers->set('Content-Security-Policy',$header);
     }
 
+    /**
+     * add CSP attributes to the HtmlHelper Tag $options
+     * @param $options[]
+     * @return $options[]
+     */
     public function populateStyleTagOptions($options)
     {
         if (!isset($options[self::CSP_TAG_ATTRIBUTE])) {
@@ -168,6 +174,11 @@ class ContentSecurityPolicy extends Component
         return $options;
     }
 
+    /**
+     * add CSP attributes to the HtmlHelper Tag $options
+     * @param  $options[]
+     * @return $options[]
+     */
     public function populateScriptTagOptions($options)
     {
         if (!isset($options[self::CSP_TAG_ATTRIBUTE])) {
@@ -176,6 +187,9 @@ class ContentSecurityPolicy extends Component
         return $options;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
