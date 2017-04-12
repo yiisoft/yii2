@@ -607,7 +607,7 @@ CREATE OR REPLACE VIEW vw_user_info AS
     WHERE user.id = user_profile.user_id
 ```
 
-Теперь необходимо создать ActiveRecord, который будет отображать данные из этого вида:
+Теперь вам необходимо создать ActiveRecord, через который будут доступны данные из вида выше:
 
 ```php
 
