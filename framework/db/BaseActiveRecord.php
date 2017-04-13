@@ -371,7 +371,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function hasOne($class, $link)
     {
         /* @var $class ActiveRecordInterface */
-        /* @var $query ActiveQuery */
+        /* @var $query ActiveQueryInterface */
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
@@ -412,7 +412,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function hasMany($class, $link)
     {
         /* @var $class ActiveRecordInterface */
-        /* @var $query ActiveQuery */
+        /* @var $query ActiveQueryInterface */
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
