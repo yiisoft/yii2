@@ -208,6 +208,8 @@ trait FixtureTrait
                     $stack[] = [$name, $class, $fixture, false];
                 } elseif ($instances[$index] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
+                } else {
+                    continue;
                 }
             } elseif (is_callable($fixture, true)) {
                 $fixture = Yii::createObject($fixture);
@@ -218,6 +220,8 @@ trait FixtureTrait
                     $stack[] = [$index, $class, $fixture, false];
                 } elseif ($instances[$index] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
+                } else {
+                    continue;
                 }
             } elseif (is_array($fixture) && isset($fixture['class'])) {
                 isset($index) || $index = $class;
@@ -227,9 +231,11 @@ trait FixtureTrait
                     $stack[] = [$index, get_class($fixture), $fixture, false];
                 } elseif ($instances[$index] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
+                } else {
+                    continue;
                 }
             } else {
-                break;
+                continue;
             }
             foreach ($fixture->depends as $dep) {
                 // need to use the configuration provided in test case
