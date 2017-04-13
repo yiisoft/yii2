@@ -33,7 +33,7 @@ namespace PHPUnit\Framework {
              */
             public function expectExceptionMessageRegExp($messageRegExp)
             {
-                $this->setExpectedExceptionRegExp($messageRegExp);
+                $this->setExpectedExceptionRegExp($this->getExpectedException(), $messageRegExp);
             }
         }
     }
