@@ -205,7 +205,7 @@ class QueryBuilder extends \yii\base\Object
      * Prepare select-subquery and field names for INSERT INTO ... SELECT SQL statement.
      *
      * @param \yii\db\Query $columns Object, which represents select query.
-     * @param \yii\db\Schema $schema Schema object to qoute column name.
+     * @param \yii\db\Schema $schema Schema object to quote column name.
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
      * @return array
