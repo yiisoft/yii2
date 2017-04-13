@@ -361,7 +361,7 @@ abstract class Application extends Module
     public function setBasePath($path)
     {
         parent::setBasePath($path);
-        Yii::setAlias('@app', $this->getBasePath());
+        Yii::setAlias('@app', $this->getBasePath(), false);
     }
 
     /**
