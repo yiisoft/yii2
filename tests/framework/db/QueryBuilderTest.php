@@ -1036,6 +1036,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             }
         }
         $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
+        $this->assertNotEmpty($qb->db->getTableSchema('column_type_table', true));
     }
 
     public function conditionProvider()

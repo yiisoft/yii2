@@ -36,7 +36,8 @@ class EmailTargetTest extends TestCase
      */
     public function testInitWithOptionTo()
     {
-        new EmailTarget(['mailer' => $this->mailer, 'message'=> ['to' => 'developer1@example.com']]);
+        $target = new EmailTarget(['mailer' => $this->mailer, 'message'=> ['to' => 'developer1@example.com']]);
+        $this->assertTrue(is_object($target)); // should be no exception during `init()`
     }
 
     /**

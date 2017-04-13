@@ -297,8 +297,8 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testIsItemActive()
+    /*public function testIsItemActive()
     {
         // TODO: implement test of protected method isItemActive()
-    }
+    }*/
 }

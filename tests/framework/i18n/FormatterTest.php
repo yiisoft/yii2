@@ -135,10 +135,10 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asParagraphs(null));
     }
 
-    public function testAsHtml()
+    /*public function testAsHtml()
     {
         // todo: dependency on HtmlPurifier
-    }
+    }*/
 
     public function testAsEmail()
     {
