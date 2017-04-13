@@ -74,6 +74,13 @@ class BehaviorTest extends TestCase
         $this->mockApplication();
     }
 
+    protected function tearDown()
+    {
+        parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
+    }
+
     public function testAttachAndAccessingWithName()
     {
         BarBehavior::$attachCount = 0;
