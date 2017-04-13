@@ -155,7 +155,7 @@ trait FixtureTrait
     /**
      * Creates the specified fixture instances.
      * All dependent fixtures will also be created.
-     * @param array $fixtures the fixtures to be created. You may provide fixture names or fixture configurations.
+     * @param array $fixtures the fixtures to be created. You may provide fixture names, closure, Fixture or fixture configurations.
      * If this parameter is not provided, the fixtures specified in [[globalFixtures()]] and [[fixtures()]] will be created.
      * @return Fixture[] the created fixture instances
      * @throws InvalidConfigException if fixtures are not properly configured or if a circular dependency among
@@ -164,47 +164,85 @@ trait FixtureTrait
     protected function createFixtures(array $fixtures)
     {
         // normalize fixture configurations
-        $config = [];  // configuration provided in test case
-        $aliases = [];  // class name => alias or class name
+        $aliases = [];  // index or class name => index
+        $stack = [];
         foreach ($fixtures as $name => $fixture) {
-            if (!is_array($fixture)) {
+            if (is_string($fixture)) {
                 $class = ltrim($fixture, '\\');
                 $fixtures[$name] = ['class' => $class];
-                $aliases[$class] = is_int($name) ? $class : $name;
-            } elseif (isset($fixture['class'])) {
+                array_unshift($stack, [$name, $class, $fixtures[$name]]);
+            } elseif (is_array($fixture) && isset($fixture['class'])) {
                 $class = ltrim($fixture['class'], '\\');
-                $config[$class] = $fixture;
-                $aliases[$class] = $name;
+                array_unshift($stack, [$name, $class, $fixture]);
+            } elseif (is_callable($fixture, true)) {
+                array_unshift($stack, [$name, null, $fixture]);
+            } elseif ($fixture instanceof Fixture) {
+                $class = get_class($fixture);
+                array_unshift($stack, [$name, $class, $fixture, true]);
+            } elseif (is_array($fixture)) {
+                throw new InvalidConfigException('Fixture configuration must be an array containing a "class" element.');
             } else {
-                throw new InvalidConfigException("You must specify 'class' for the fixture '$name'.");
+                throw new InvalidConfigException('Unsupported configuration type: ' . gettype($fixture));
+            }
+            $aliases[$name] = $name;
+            if (isset($class) && array_key_exists($class, $aliases)) {
+                $aliases[$class] = $name;
             }
         }
 
         // create fixture instances
         $instances = [];
-        $stack = array_reverse($fixtures);
-        while (($fixture = array_pop($stack)) !== null) {
-            if ($fixture instanceof Fixture) {
-                $class = get_class($fixture);
-                $name = isset($aliases[$class]) ? $aliases[$class] : $class;
-                unset($instances[$name]);  // unset so that the fixture is added to the last in the next line
-                $instances[$name] = $fixture;
-            } else {
-                $class = ltrim($fixture['class'], '\\');
-                $name = isset($aliases[$class]) ? $aliases[$class] : $class;
-                if (!isset($instances[$name])) {
-                    $instances[$name] = false;
-                    $stack[] = $fixture = Yii::createObject($fixture);
-                    foreach ($fixture->depends as $dep) {
-                        // need to use the configuration provided in test case
-                        $stack[] = isset($config[$dep]) ? $config[$dep] : ['class' => $dep];
-                    }
-                } elseif ($instances[$name] === false) {
+        while ((list($name, $class, $fixture, $preload) = array_pop($stack)) !== null) {
+            $index = $name;
+            if ($fixture instanceof Fixture && !$preload) {
+                isset($class) || $class = get_class($fixture);
+                isset($index) || $index = $class;
+                unset($instances[$index]);  // unset so that the fixture is added to the last in the next line
+                $instances[$index] = $fixture;
+                break;
+            }
+            if ($fixture instanceof Fixture) { //Preload
+                isset($index) || $index = $class;
+                if (!isset($instances[$index])) {
+                    $instances[$index] = false;
+                    $stack[] = [$name, $class, $fixture];
+                } elseif ($instances[$index] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
                 }
+            } elseif (is_callable($fixture, true)) {
+                $fixture = Yii::createObject($fixture);
+                $class = get_class($fixture);
+                isset($index) || $index = $class;
+                if (!isset($instances[$index])) {
+                    $instances[$index] = false;
+                    $stack[] = [$index, $class, $fixture];
+                } elseif ($instances[$index] === false) {
+                    throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
+                }
+            } elseif (is_array($fixture) && isset($fixture['class'])) {
+                isset($index) || $index = $class;
+                if (!isset($instances[$index])) {
+                    $instances[$index] = false;
+                    $fixture = Yii::createObject($fixture);
+                    $stack[] = [$index, get_class($fixture), $fixture];
+                } elseif ($instances[$index] === false) {
+                    throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
+                }
+            } else {
+                break;
             }
+            foreach ($fixture->depends as $dep) {
+                // need to use the configuration provided in test case
+                if ($aliases[$dep]) {
+                    $stack[] = [$aliases[$dep], null, $fixtures[$aliases[$dep]]];
+                } else {
+                    $stack[] = [null, $dep, ['class' => $dep]];
+                }
+            }
+
         }
 
         return $instances;
     }
+
 }
