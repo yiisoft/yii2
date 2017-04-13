@@ -25,6 +25,11 @@ namespace PHPUnit\Framework {
              */
             public function expectExceptionMessage($message)
             {
+                $parentClassMethods = get_class_methods(get_parent_class($this));
+                if (in_array('expectExceptionMessage', $parentClassMethods)) {
+                    parent::expectExceptionMessage($message);
+                    return;
+                }
                 $this->setExpectedException($this->getExpectedException(), $message);
             }
 
@@ -33,6 +38,11 @@ namespace PHPUnit\Framework {
              */
             public function expectExceptionMessageRegExp($messageRegExp)
             {
+                $parentClassMethods = get_class_methods(get_parent_class($this));
+                if (in_array('expectExceptionMessageRegExp', $parentClassMethods)) {
+                    parent::expectExceptionMessageRegExp($messageRegExp);
+                    return;
+                }
                 $this->setExpectedExceptionRegExp($this->getExpectedException(), $messageRegExp);
             }
         }
