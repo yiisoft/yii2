@@ -185,7 +185,7 @@ trait FixtureTrait
                 throw new InvalidConfigException('Unsupported configuration type: ' . gettype($fixture));
             }
             $aliases[$name] = $name;
-            if (isset($class) && array_key_exists($class, $aliases)) {
+            if (isset($class) && !array_key_exists($class, $aliases)) {
                 $aliases[$class] = $name;
             }
         }
