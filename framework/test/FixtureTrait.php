@@ -170,12 +170,12 @@ trait FixtureTrait
             if (is_string($fixture)) {
                 $class = ltrim($fixture, '\\');
                 $fixtures[$name] = ['class' => $class];
-                array_unshift($stack, [$name, $class, $fixtures[$name]]);
+                array_unshift($stack, [$name, $class, $fixtures[$name], false]);
             } elseif (is_array($fixture) && isset($fixture['class'])) {
                 $class = ltrim($fixture['class'], '\\');
-                array_unshift($stack, [$name, $class, $fixture]);
+                array_unshift($stack, [$name, $class, $fixture, false]);
             } elseif (is_callable($fixture, true)) {
-                array_unshift($stack, [$name, null, $fixture]);
+                array_unshift($stack, [$name, null, $fixture, false]);
             } elseif ($fixture instanceof Fixture) {
                 $class = get_class($fixture);
                 array_unshift($stack, [$name, $class, $fixture, true]);
@@ -199,13 +199,13 @@ trait FixtureTrait
                 isset($index) || $index = $class;
                 unset($instances[$index]);  // unset so that the fixture is added to the last in the next line
                 $instances[$index] = $fixture;
-                break;
+                continue;
             }
             if ($fixture instanceof Fixture) { //Preload
                 isset($index) || $index = $class;
                 if (!isset($instances[$index])) {
                     $instances[$index] = false;
-                    $stack[] = [$name, $class, $fixture];
+                    $stack[] = [$name, $class, $fixture, false];
                 } elseif ($instances[$index] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
                 }
@@ -215,7 +215,7 @@ trait FixtureTrait
                 isset($index) || $index = $class;
                 if (!isset($instances[$index])) {
                     $instances[$index] = false;
-                    $stack[] = [$index, $class, $fixture];
+                    $stack[] = [$index, $class, $fixture, false];
                 } elseif ($instances[$index] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
                 }
@@ -224,7 +224,7 @@ trait FixtureTrait
                 if (!isset($instances[$index])) {
                     $instances[$index] = false;
                     $fixture = Yii::createObject($fixture);
-                    $stack[] = [$index, get_class($fixture), $fixture];
+                    $stack[] = [$index, get_class($fixture), $fixture, false];
                 } elseif ($instances[$index] === false) {
                     throw new InvalidConfigException("A circular dependency is detected for fixture '$class'.");
                 }
@@ -234,9 +234,9 @@ trait FixtureTrait
             foreach ($fixture->depends as $dep) {
                 // need to use the configuration provided in test case
                 if ($aliases[$dep]) {
-                    $stack[] = [$aliases[$dep], null, $fixtures[$aliases[$dep]]];
+                    $stack[] = [$aliases[$dep], null, $fixtures[$aliases[$dep]], false];
                 } else {
-                    $stack[] = [null, $dep, ['class' => $dep]];
+                    $stack[] = [null, $dep, ['class' => $dep], false];
                 }
             }
 
