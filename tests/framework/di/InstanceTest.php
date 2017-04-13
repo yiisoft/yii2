@@ -51,8 +51,9 @@ class InstanceTest extends TestCase
      */
     public function testEnsure_NonExistingComponentException()
     {
-        $container = new Container;
-        $this->setExpectedExceptionRegExp('yii\base\InvalidConfigException', '/^Failed to instantiate component or class/i');
+        $container = new Container();
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
         Instance::ensure('cache', 'yii\cache\Cache', $container);
     }
 
@@ -61,8 +62,9 @@ class InstanceTest extends TestCase
      */
     public function testEnsure_NonExistingClassException()
     {
-        $container = new Container;
-        $this->setExpectedExceptionRegExp('yii\base\InvalidConfigException', '/^Failed to instantiate component or class/i');
+        $container = new Container();
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
         Instance::ensure('yii\cache\DoesNotExist', 'yii\cache\Cache', $container);
     }
 

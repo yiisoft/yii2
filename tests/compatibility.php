@@ -27,6 +27,14 @@ namespace PHPUnit\Framework {
             {
                 $this->setExpectedException($this->getExpectedException(), $message);
             }
+
+            /**
+             * @param string $messageRegExp
+             */
+            public function expectExceptionMessageRegExp($messageRegExp)
+            {
+                $this->setExpectedExceptionRegExp($messageRegExp);
+            }
         }
     }
 }
