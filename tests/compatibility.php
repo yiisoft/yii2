@@ -1,12 +1,16 @@
 <?php
 /*
- * Ensures compatibility with PHPUnit 6.x
+ * Ensures compatibility with PHPUnit < 6.x
  */
 
-if (!class_exists('PHPUnit_Framework_Constraint') && class_exists('PHPUnit\Framework\Constraint\Constraint')) {
-    abstract class PHPUnit_Framework_Constraint extends \PHPUnit\Framework\Constraint\Constraint {}
+namespace PHPUnit\Framework\Constraint {
+    if (!class_exists('PHPUnit\Framework\Constraint\Constraint') && class_exists('PHPUnit_Framework_Constraint')) {
+        abstract class Constraint extends \PHPUnit_Framework_Constraint {}
+    }
 }
 
-if (!class_exists('PHPUnit_Framework_TestCase') && class_exists('PHPUnit\Framework\TestCase')) {
-    abstract class PHPUnit_Framework_TestCase extends \PHPUnit\Framework\TestCase {}
+namespace PHPUnit\Framework {
+    if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
+        abstract class TestCase extends \PHPUnit_Framework_TestCase {}
+    }
 }
