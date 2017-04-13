@@ -7,6 +7,7 @@ use yii\base\View;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
 use yii\helpers\FileHelper;
+use yii\mail\MessageInterface;
 use yiiunit\TestCase;
 
 /**
@@ -446,4 +447,12 @@ class Message extends BaseMessage
         $this->mailer = $mailer;
         return $s;
     }
+
+    public function addHeader($name, $value) {}
+
+    public function setHeader($name, $value) {}
+
+    public function getHeader($name) {}
+
+    public function setHeaders($headers) {}
 }

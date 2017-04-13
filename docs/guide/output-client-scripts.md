@@ -95,7 +95,7 @@ A CSS file can be registered using the following:
 
 ```php
 $this->registerCssFile("@web/css/themes/black-and-white.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [BootstrapAsset::class],
     'media' => 'print',
 ], 'css-print-theme');
 ```

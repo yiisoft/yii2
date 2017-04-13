@@ -56,7 +56,7 @@ ID を指定しない場合は、JS コードそれ自身が ID として扱わ�
 ```php
 $this->registerJsFile(
     '@web/js/main.js',
-    ['depends' => [\yii\web\JqueryAsset::className()]]
+    ['depends' => [\yii\web\JqueryAsset::class]]
 );
 ```
 

@@ -18,7 +18,7 @@ class AuthMethodTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className()
+                    'identityClass' => UserIdentity::class
                 ],
             ]
         ]);
@@ -31,7 +31,7 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMock(AuthMethod::className(), ['authenticate']);
+        $filter = $this->getMock(AuthMethod::class, ['authenticate']);
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
 
         return $filter;
@@ -64,7 +64,7 @@ class AuthMethodTest extends TestCase
 
     public function testIsOptional()
     {
-        $reflection = new \ReflectionClass(AuthMethod::className());
+        $reflection = new \ReflectionClass(AuthMethod::class);
         $method = $reflection->getMethod('isOptional');
         $method->setAccessible(true);
 

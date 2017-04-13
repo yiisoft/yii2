@@ -27,7 +27,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
                 'id' => 'Migrator',
                 'basePath' => '@yiiunit',
                 'controllerMap' => [
-                    'migrate' => EchoMigrateController::className(),
+                    'migrate' => EchoMigrateController::class,
                 ],
                 'components' => [
                     'db' => static::getConnection(),
@@ -76,7 +76,6 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     }
 
     /**
-     * @throws \yii\base\InvalidParamException
      * @throws \yii\db\Exception
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection

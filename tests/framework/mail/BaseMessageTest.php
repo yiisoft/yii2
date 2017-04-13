@@ -5,6 +5,7 @@ namespace yiiunit\framework\mail;
 use Yii;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
+use yii\mail\MessageInterface;
 use yiiunit\TestCase;
 
 /**
@@ -150,4 +151,12 @@ class TestMessage extends BaseMessage
     {
         return get_class($this);
     }
+
+    public function addHeader($name, $value) {}
+
+    public function setHeader($name, $value) {}
+
+    public function getHeader($name) {}
+
+    public function setHeaders($headers) {}
 }

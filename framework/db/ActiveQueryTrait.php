@@ -125,11 +125,12 @@ trait ActiveQueryTrait
                 $models[$key] = $row;
             }
         } else {
-            /* @var $class ActiveRecord */
+            /* @var $class BaseActiveRecord */
             $class = $this->modelClass;
             if ($this->indexBy === null) {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
+                    /* @var $modelClass BaseActiveRecord */
                     $modelClass = get_class($model);
                     $modelClass::populateRecord($model, $row);
                     $models[] = $model;
@@ -137,6 +138,7 @@ trait ActiveQueryTrait
             } else {
                 foreach ($rows as $row) {
                     $model = $class::instantiate($row);
+                    /* @var $modelClass BaseActiveRecord */
                     $modelClass = get_class($model);
                     $modelClass::populateRecord($model, $row);
                     if (is_string($this->indexBy)) {
