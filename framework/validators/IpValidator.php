@@ -221,7 +221,6 @@ class IpValidator extends Validator
         if (!$this->ipv4 && !$this->ipv6) {
             throw new InvalidConfigException('Both IPv4 and IPv6 checks can not be disabled at the same time');
         }
-        
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be a valid IP address.');
         }
