@@ -38,6 +38,8 @@ class ComponentTest extends TestCase
     {
         parent::tearDown();
         $this->component = null;
+        gc_enable();
+        gc_collect_cycles();
     }
 
     public function testClone()

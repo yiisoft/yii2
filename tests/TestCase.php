@@ -2,6 +2,7 @@
 
 namespace yiiunit;
 
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -10,6 +11,16 @@ use yii\helpers\ArrayHelper;
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     public static $params;
+
+    /**
+     * Clean up after test case.
+     */
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+        $logger = Yii::getLogger();
+        $logger->flush();
+    }
 
     /**
      * Returns a test configuration param from /data/config.php

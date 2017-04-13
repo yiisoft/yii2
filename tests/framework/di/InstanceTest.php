@@ -21,9 +21,15 @@ use yiiunit\TestCase;
  */
 class InstanceTest extends TestCase
 {
+    protected function tearDown()
+    {
+        parent::tearDown();
+        Yii::$container = new Container();
+    }
+
     public function testOf()
     {
-        $container = new Container;
+        $container = new Container();
         $className = Component::className();
         $instance = Instance::of($className);
 
@@ -35,7 +41,7 @@ class InstanceTest extends TestCase
 
     public function testEnsure()
     {
-        $container = new Container;
+        $container = new Container();
         $container->set('db', [
             'class' => 'yii\db\Connection',
             'dsn' => 'test',
@@ -70,7 +76,7 @@ class InstanceTest extends TestCase
 
     public function testEnsure_WithoutType()
     {
-        $container = new Container;
+        $container = new Container();
         $container->set('db', [
             'class' => 'yii\db\Connection',
             'dsn' => 'test',

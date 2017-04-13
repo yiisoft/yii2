@@ -67,9 +67,10 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
-     * @return BaseManager
+     * @return \yii\rbac\BaseManager
      */
-    protected function mockAuthManager() {
+    protected function mockAuthManager()
+    {
         $auth = new MockAuthManager();
         // add "createPost" permission
         $createPost = $auth->createPermission('createPost');
@@ -179,7 +180,6 @@ class AccessRuleTest extends \yiiunit\TestCase
         $user->accessChecker = $auth;
         $this->assertEquals($expected, $rule->allows($action, $user, $request));
     }
-
 
     public function testMatchVerb()
     {
@@ -334,5 +334,4 @@ class AccessRuleTest extends \yiiunit\TestCase
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
     }
-
 }
