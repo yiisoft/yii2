@@ -11,6 +11,22 @@ namespace PHPUnit\Framework\Constraint {
 
 namespace PHPUnit\Framework {
     if (!class_exists('PHPUnit\Framework\TestCase') && class_exists('PHPUnit_Framework_TestCase')) {
-        abstract class TestCase extends \PHPUnit_Framework_TestCase {}
+        abstract class TestCase extends \PHPUnit_Framework_TestCase {
+            /**
+             * @param string $exception
+             */
+            public function expectException($exception)
+            {
+                $this->setExpectedException($exception);
+            }
+
+            /**
+             * @param string $message
+             */
+            public function expectExceptionMessage($message)
+            {
+                $this->setExpectedException($this->getExpectedException(), $message);
+            }
+        }
     }
 }

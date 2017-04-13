@@ -71,7 +71,7 @@ abstract class CommandTest extends DatabaseTestCase
         $this->assertEquals(1, $command->queryScalar());
 
         $command = $db->createCommand('bad SQL');
-        $this->setExpectedException('\yii\db\Exception');
+        $this->expectException('\yii\db\Exception');
         $command->execute();
     }
 
@@ -132,7 +132,7 @@ abstract class CommandTest extends DatabaseTestCase
         $this->assertFalse($command->queryScalar());
 
         $command = $db->createCommand('bad SQL');
-        $this->setExpectedException('\yii\db\Exception');
+        $this->expectException('\yii\db\Exception');
         $command->query();
     }
 
@@ -649,7 +649,7 @@ SQL;
 
     public function testIntegrityViolation()
     {
-        $this->setExpectedException('\yii\db\IntegrityException');
+        $this->expectException('\yii\db\IntegrityException');
 
         $db = $this->getConnection();
 

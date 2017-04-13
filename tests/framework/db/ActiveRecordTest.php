@@ -1172,7 +1172,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $record = Document::findOne(1);
         $record->content = 'Rewrite attempt content';
         $record->version = 0;
-        $this->setExpectedException('yii\db\StaleObjectException');
+        $this->expectException('yii\db\StaleObjectException');
         $record->save(false);
     }
 

@@ -70,15 +70,18 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
 
-        $mailTarget = $this->getMock('yii\\log\\EmailTarget', ['formatMessage'], [
-            [
-                'mailer' => $this->mailer,
-                'message'=> [
-                    'to' => 'developer@example.com',
-                    'subject' => 'Hello world'
+        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
+            ->setMethods(['formatMessage'])
+            ->setConstructorArgs([
+                [
+                    'mailer' => $this->mailer,
+                    'message'=> [
+                        'to' => 'developer@example.com',
+                        'subject' => 'Hello world'
+                    ]
                 ]
-            ]
-        ]);
+            ])
+            ->getMock();
 
         $mailTarget->messages = $messages;
         $mailTarget->expects($this->exactly(2))->method('formatMessage')->willReturnMap(
@@ -111,14 +114,17 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
 
-        $mailTarget = $this->getMock('yii\\log\\EmailTarget', ['formatMessage'], [
-            [
-                'mailer' => $this->mailer,
-                'message'=> [
-                    'to' => 'developer@example.com',
+        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
+            ->setMethods(['formatMessage'])
+            ->setConstructorArgs([
+                [
+                    'mailer' => $this->mailer,
+                    'message'=> [
+                        'to' => 'developer@example.com',
+                    ]
                 ]
-            ]
-        ]);
+            ])
+            ->getMock();
 
         $mailTarget->messages = $messages;
         $mailTarget->expects($this->exactly(2))->method('formatMessage')->willReturnMap(

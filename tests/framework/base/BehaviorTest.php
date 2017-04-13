@@ -141,7 +141,7 @@ class BehaviorTest extends TestCase
     {
         $bar = new BarClass();
         $behavior = new BarBehavior();
-        $this->setExpectedException('yii\base\UnknownMethodException');
+        $this->expectException('yii\base\UnknownMethodException');
 
         $this->assertFalse($bar->hasMethod('nomagicBehaviorMethod'));
         $bar->attachBehavior('bar', $behavior);

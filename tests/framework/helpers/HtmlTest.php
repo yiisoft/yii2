@@ -1309,7 +1309,7 @@ EOD;
     public function testAttributeNameValidation($name, $expected)
     {
         if (!isset($expected)) {
-            $this->setExpectedException('yii\base\InvalidParamException');
+            $this->expectException('yii\base\InvalidParamException');
             Html::getAttributeName($name);
         } else {
             $this->assertEquals($expected, Html::getAttributeName($name));
@@ -1323,7 +1323,7 @@ EOD;
      */
     public function testAttributeNameException($name)
     {
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Html::getAttributeName($name);
     }
 }
