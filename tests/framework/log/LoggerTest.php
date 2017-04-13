@@ -68,7 +68,7 @@ class LoggerTest extends TestCase
         $this->assertEquals('application', $this->logger->messages[0][2]);
         $this->assertEquals([
             'file' => __FILE__,
-            'line' => 62,
+            'line' => 64,
             'function' => 'log',
             'class' => get_class($this->logger),
             'type' => '->'
