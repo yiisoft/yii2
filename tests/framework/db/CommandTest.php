@@ -359,7 +359,7 @@ SQL;
             ->where([
                 'and',
                 ['<>', 'name', 'foo'],
-                ['status' => [0, 1, 2, 3]]
+                ['status' => [0, 1, 2, 3]],
             ]);
 
         $command = $db->createCommand();
@@ -413,7 +413,7 @@ SQL;
             ->where([
                 'and',
                 ['<>', 'name', 'foo'],
-                ['status' => [0, 1, 2, 3]]
+                ['status' => [0, 1, 2, 3]],
             ]);
 
         $command = $db->createCommand();
