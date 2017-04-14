@@ -61,26 +61,35 @@ class RateLimiter extends ActionFilter
      */
     public $response;
 
+    public function init()
+    {
+        if (!$this->user && Yii::$app->getUser()) {
+            $this->user = Yii::$app->getUser()->getIdentity(false);
+        }
+
+        if (!$this->request) {
+           $this->request = Yii::$app->getRequest();
+        }
+
+        if (!$this->response) {
+            $this->response = Yii::$app->getResponse();
+        }
+    }
 
     /**
      * @inheritdoc
      */
     public function beforeAction($action)
     {
-        $user = $this->user ? : (Yii::$app->getUser() ? Yii::$app->getUser()->getIdentity(false) : null);
-        if ($user instanceof RateLimitInterface) {
+        if ($this->user instanceof RateLimitInterface) {
             Yii::trace('Check rate limit', __METHOD__);
-            $this->checkRateLimit(
-                $user,
-                $this->request ? : Yii::$app->getRequest(),
-                $this->response ? : Yii::$app->getResponse(),
-                $action
-            );
-        } elseif ($user) {
+            $this->checkRateLimit($this->user, $this->request, $this->response, $action);
+        } elseif ($this->user) {
             Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.', __METHOD__);
         } else {
             Yii::info('Rate limit skipped: user not logged in.', __METHOD__);
         }
+
         return true;
     }
 
