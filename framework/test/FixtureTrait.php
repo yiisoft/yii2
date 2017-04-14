@@ -178,6 +178,7 @@ trait FixtureTrait
                 array_unshift($stack, [$name, null, $fixture, false]);
             } elseif ($fixture instanceof Fixture) {
                 $class = get_class($fixture);
+                $class = preg_replace('/[^@\d\w\/\.-_]/', '', $class);//anonymous class name to array key
                 array_unshift($stack, [$name, $class, $fixture, true]);
             } elseif (is_array($fixture)) {
                 throw new InvalidConfigException('Fixture configuration must be an array containing a "class" element.');
