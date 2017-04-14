@@ -37,22 +37,7 @@ class RateLimiterTest extends TestCase
 
         $this->mockWebApplication($config);
     }
-
-    public function testInitFilledUser()
-    {
-        $rateLimiter = new RateLimiter(['user' => 'User']);
-
-        $this->assertEquals('User', $rateLimiter->user);
-    }
-
-    public function testInitNotFilledUserAndEmptyGetUser()
-    {
-        Yii::$app->set('user', function() {});
-        $rateLimiter = new RateLimiter();
-
-        $this->assertNull($rateLimiter->user);
-    }
-
+    
     public function testInitFilledRequest()
     {
         $rateLimiter = new RateLimiter(['request' => 'Request']);
