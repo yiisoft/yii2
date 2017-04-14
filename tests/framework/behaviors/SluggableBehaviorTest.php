@@ -59,6 +59,8 @@ class SluggableBehaviorTest extends TestCase
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :

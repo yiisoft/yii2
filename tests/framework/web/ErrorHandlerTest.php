@@ -25,7 +25,9 @@ class ErrorHandlerTest extends TestCase
        {
            /** @var ErrorHandler $handler */
            $handler = Yii::$app->getErrorHandler();
+           ob_start(); // suppress response output
            $this->invokeMethod($handler, 'renderException', [new NotFoundHttpException('This message is displayed to end user')]);
+           ob_get_clean();
            $out = Yii::$app->response->data;
            $this->assertEquals('Code: 404
 Message: This message is displayed to end user
