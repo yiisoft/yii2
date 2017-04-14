@@ -201,7 +201,7 @@ class BaseYii
      * alias translation by [[getAlias()]].
      * @param string $path the path corresponding to the alias. If this is null, the alias will
      * be removed. Trailing '/' and '\' characters will be trimmed. This can be
-     * @param boolean $overwrite the overwrite allow to overwrite the alliance if it is set, or skip if the alias is already set
+     * @param boolean $overwrite the overwrite allow to overwrite the alias if it is set, or skip if the alias is already set
      *
      * - a directory or a file path (e.g. `/tmp`, `/tmp/main.txt`)
      * - a URL (e.g. `http://www.yiiframework.com`)
