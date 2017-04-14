@@ -358,39 +358,38 @@ SQL;
      */
     protected function findForeignKeys($table)
     {
-        $referentialConstraintsTableName = 'INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS';
-        $keyColumnUsageTableName = 'INFORMATION_SCHEMA.KEY_COLUMN_USAGE';
-        if ($table->catalogName !== null) {
-            $referentialConstraintsTableName = $table->catalogName . '.' . $referentialConstraintsTableName;
-            $keyColumnUsageTableName = $table->catalogName . '.' . $keyColumnUsageTableName;
+        $object = $table->name;
+        if ($table->schemaName !== null) {
+            $object = $table->schemaName . '.' . $object;
         }
-        $referentialConstraintsTableName = $this->quoteTableName($referentialConstraintsTableName);
-        $keyColumnUsageTableName = $this->quoteTableName($keyColumnUsageTableName);
+        if ($table->catalogName !== null) {
+            $object = $table->catalogName . '.' . $object;
+        }
 
         // please refer to the following page for more details:
         // http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
         $sql = <<<SQL
 SELECT
-    [rc].[constraint_name] AS [fk_name],
-    [kcu1].[column_name] AS [fk_column_name],
-    [kcu2].[table_name] AS [uq_table_name],
-    [kcu2].[column_name] AS [uq_column_name]
-FROM {$referentialConstraintsTableName} AS [rc]
-JOIN {$keyColumnUsageTableName} AS [kcu1] ON
-    [kcu1].[constraint_catalog] = [rc].[constraint_catalog] AND
-    [kcu1].[constraint_schema] = [rc].[constraint_schema] AND
-    [kcu1].[constraint_name] = [rc].[constraint_name]
-JOIN {$keyColumnUsageTableName} AS [kcu2] ON
-    [kcu2].[constraint_catalog] = [rc].[constraint_catalog] AND
-    [kcu2].[constraint_schema] = [rc].[constraint_schema] AND
-    [kcu2].[constraint_name] = [rc].[unique_constraint_name] AND
-    [kcu2].[ordinal_position] = [kcu1].[ordinal_position]
-WHERE [kcu1].[table_name] = :tableName AND [kcu1].[table_schema] = :schemaName
+	[fk].[name] AS [fk_name],
+	[cp].[name] AS [fk_column_name],
+	OBJECT_NAME([fk].[referenced_object_id]) AS [uq_table_name],
+	[cr].[name] AS [uq_column_name]
+FROM
+	[sys].[foreign_keys] AS [fk]
+	INNER JOIN [sys].[foreign_key_columns] AS [fkc] ON
+		[fk].[object_id] = [fkc].[constraint_object_id]
+	INNER JOIN [sys].[columns] AS [cp] ON
+		[fk].[parent_object_id] = [cp].[object_id] AND
+		[fkc].[parent_column_id] = [cp].[column_id]
+	INNER JOIN [sys].[columns] AS [cr] ON
+		[fk].[referenced_object_id] = [cr].[object_id] AND
+		[fkc].[referenced_column_id] = [cr].[column_id]
+WHERE
+	[fk].[parent_object_id] = OBJECT_ID(:object)
 SQL;
 
         $rows = $this->db->createCommand($sql, [
-            ':tableName' => $table->name,
-            ':schemaName' => $table->schemaName,
+            ':object' => $object,
         ])->queryAll();
 
         $table->foreignKeys = [];
