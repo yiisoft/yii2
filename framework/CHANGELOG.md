@@ -67,7 +67,8 @@ Yii Framework 2 Change Log
 - Enh #13945: Removed Courier New from error page fonts list since it looks bad on Linux (samdark)
 - Bug #13961: RBAC Rules: PostgreSQL: PHP Warning "unserialize() expects parameter 1 to be string, resource given" was fixed (vsguts)
 - Enh #13976: Disabled IPv6 check on `\yii\validators\IpValidator` as it turns out it is not needed for inet_* methods to work (mikk150)
-- Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire) 
+- Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
+- Enh #13911: Significantly enhanced MSSQL schema reading performance (paulzi, WebdevMerlion)
 
 2.0.11.2 February 08, 2017
 --------------------------
