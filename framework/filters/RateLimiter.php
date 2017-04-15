@@ -77,7 +77,7 @@ class RateLimiter extends ActionFilter
      */
     public function beforeAction($action)
     {
-        if (!$this->user && Yii::$app->getUser()) {
+        if ($this->user === null && Yii::$app->getUser()) {
             $this->user = Yii::$app->getUser()->getIdentity(false);
         }
 

@@ -12,6 +12,9 @@ use yii\web\Response;
 use yii\log\Logger;
 use yii\filters\RateLimiter;
 
+/**
+ *  @group filters
+ */
 class RateLimiterTest extends TestCase
 {
     protected function setUp()
@@ -102,6 +105,9 @@ class RateLimiterTest extends TestCase
 
         $this->assertContains('Rate limit skipped: user not logged in.', Yii::getLogger()->messages);
         $this->assertTrue($result);
+
+        Yii::$container->setSingleton(User::className(), null);
+        Yii::$container->setSingleton(UserIdentity::className(), null);
     }
 
     public function testCheckRateLimitTooManyRequests()
