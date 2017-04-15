@@ -6,6 +6,7 @@ use Yii;
 use yiiunit\TestCase;
 use Prophecy\Argument;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yii\web\User;
 use yii\web\Request;
 use yii\web\Response;
 use yii\log\Logger;
@@ -17,14 +18,6 @@ class RateLimiterTest extends TestCase
     {
         parent::setUp();
 
-        $config = [
-            'components' => [
-                'user' => [
-                    'identityClass' => UserIdentity::className(),
-                ]
-            ]
-        ];
-
         /* @var $logger Logger|\Prophecy\ObjectProphecy */
         $logger = $this->prophesize(Logger::className());
         $logger
@@ -35,7 +28,11 @@ class RateLimiterTest extends TestCase
 
         Yii::$container->setSingleton(Logger::className(), $logger->reveal());
 
-        $this->mockWebApplication($config);
+        $this->mockWebApplication();
+    }
+    protected function tearDown()
+    {
+        parent::tearDown();
     }
     
     public function testInitFilledRequest()
@@ -95,6 +92,8 @@ class RateLimiterTest extends TestCase
 
     public function testBeforeActionEmptyUser()
     {
+        $user = new User(['identityClass' => UserIdentity::className()]);
+        Yii::$container->setSingleton(User::className(), $user);
         $rateLimiter = new RateLimiter();
 
         $result = $rateLimiter->beforeAction('test');
