@@ -94,6 +94,7 @@ class RateLimiterTest extends TestCase
     public function testBeforeActionEmptyUser()
     {
         $user = new User(['identityClass' => UserIdentity::className()]);
+        Yii::$app->set('user', $user);
         Yii::$container->setSingleton(User::className(), $user);
         $rateLimiter = new RateLimiter();
 
