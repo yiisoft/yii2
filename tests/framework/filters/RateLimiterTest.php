@@ -26,13 +26,14 @@ class RateLimiterTest extends TestCase
                 $logger->messages = $parameters;
             });
 
-        Yii::$container->setSingleton(Logger::className(), $logger->reveal());
+        Yii::setLogger($logger->reveal());
 
         $this->mockWebApplication();
     }
     protected function tearDown()
     {
         parent::tearDown();
+        Yii::setLogger(null);
     }
     
     public function testInitFilledRequest()
