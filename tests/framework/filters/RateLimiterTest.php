@@ -98,16 +98,12 @@ class RateLimiterTest extends TestCase
     {
         $user = new User(['identityClass' => UserIdentity::className()]);
         Yii::$app->set('user', $user);
-        Yii::$container->setSingleton(User::className(), $user);
         $rateLimiter = new RateLimiter();
 
         $result = $rateLimiter->beforeAction('test');
 
         $this->assertContains('Rate limit skipped: user not logged in.', Yii::getLogger()->messages);
         $this->assertTrue($result);
-
-        Yii::$container->setSingleton(User::className(), null);
-        Yii::$container->setSingleton(UserIdentity::className(), null);
     }
 
     public function testCheckRateLimitTooManyRequests()
