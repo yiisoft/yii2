@@ -64,10 +64,14 @@ class Table extends Object
      * @var array table column widths
      */
     private $_columnWidths = [];
-    
+    /**
+     * @var integer screen size
+     */
     private $_screenSize;
-    
-    const LIST_PREFIX = '• ';
+    /**
+     * @var string list prefix
+     */
+    private $_listPrefix = '• ';
 
     /**
      * Set table headers
@@ -104,15 +108,28 @@ class Table extends Object
         $this->_chars = $chars;
         return $this;
     }
-    
+
     /**
     * Set screen width
     *
-    * @param int $width screen width 
+    * @param int $width screen width
     * @return $this
     */
-    public function setScreenSize($width){
-        $this->_screenSize=$width;
+    public function setScreenSize($width)
+    {
+        $this->_screenSize = $width;
+        return $this;
+    }
+
+    /**
+     * Set list prefix
+     *
+     * @param string $listPrefix list prefix
+     * @return $this
+     */
+    public function setListPrefix($listPrefix)
+    {
+        $this->_listPrefix = $listPrefix;
         return $this;
     }
 
@@ -168,55 +185,53 @@ class Table extends Object
     protected function renderRows(array $row, $spanLeft, $spanMiddle, $spanRight)
     {
         $size = $this->_columnWidths;
-        $rowsPerCell = array_map(
-            function ($size, $columnWidth) {
-                if (is_array($columnWidth)){
-                    $rows=0;
-                    foreach ($columnWidth as $width){
+        $rowsPerCell = array_map(function ($size, $columnWidth) {
+                if (is_array($columnWidth)) {
+                    $rows = 0;
+                    foreach ($columnWidth as $width) {
                         $rows+=ceil($width / ($size-2));
                     }
                     return $rows;
                 }
                 return ceil($columnWidth / ($size-2));
-            }, 
-            $size, array_map(
-                function($val){
-                    if (is_array($val)){
+            },
+            $size, array_map(function($val) {
+                    if (is_array($val)) {
                         $encodings=array_fill(0, count($val), Yii::$app->charset);
                         return array_map('mb_strwidth', $val, $encodings);
                     }
                     return mb_strwidth($val, Yii::$app->charset);
-                }, 
+                },
                 $row
             )
         );
         $buffer = '';
-        $arrayPointer=0;
-        $finalChunk="";
+        $arrayPointer = 0;
+        $finalChunk = '';
         for ($i = 0; $i < max($rowsPerCell); $i++) {
-            $prefix='';
+            $prefix = '';
             $buffer .= $spanLeft . ' ';
             foreach ($row as $index => $cell) {
                 if ($index != 0) {
                     $buffer .= $spanMiddle . ' ';
                 }
-                if (is_array($cell)){
-                    if (!$finalChunk){
-                        $start=($size[$index] * 0) - (0 * 2);
-                        $prefix=self::LIST_PREFIX;
-                    }else{
-                        $start=mb_strwidth($finalChunk, Yii::$app->charset);
+                if (is_array($cell)) {
+                    if (!$finalChunk) {
+                        $start = ($size[$index] * 0) - (0 * 2);
+                        $prefix = $this->_listPrefix;
+                    } else {
+                        $start = mb_strwidth($finalChunk, Yii::$app->charset);
                     }
                     $chunk = mb_substr($cell[$arrayPointer], $start, $size[$index] - 4 , Yii::$app->charset);
-                    $finalChunk.=$chunk;
-                   if ($finalChunk==$cell[$arrayPointer]){
+                    $finalChunk .= $chunk;
+                   if ($finalChunk == $cell[$arrayPointer]) {
                         $arrayPointer++;
-                        $finalChunk="";
+                        $finalChunk = '';
                     }
-                }else{
+                } else {
                     $chunk = mb_substr($cell, ($size[$index] * $i) - ($i * 2) , $size[$index] - 2 , Yii::$app->charset);
                 }
-                $chunk=$prefix.$chunk; 
+                $chunk = $prefix.$chunk;
                 $repeat = $size[$index]  - mb_strwidth($chunk, Yii::$app->charset)-1;
                 $buffer .= $chunk;
                 if ($repeat >= 0) {
@@ -269,7 +284,7 @@ class Table extends Object
             $columnWidth = max(array_map(function($val){
                 if (is_array($val)){
                     $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth(self::LIST_PREFIX, Yii::$app->charset);
+                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
                 }else{
                     return mb_strwidth($val, Yii::$app->charset);
                 }
@@ -290,14 +305,16 @@ class Table extends Object
             }
         }
     }
-    
+
     /**
-    * Getting screen size
-    */
-   
-    protected function getScreenSize(){
-        if (!$this->_screenSize){
-           $this->_screenSize=Console::getScreenSize()[0];
+     * Getting screen size
+     *
+     * @return int screen size
+     */
+    protected function getScreenSize()
+    {
+        if (!$this->_screenSize) {
+           $this->_screenSize = Console::getScreenSize()[0];
         }
         return $this->_screenSize;
     }
