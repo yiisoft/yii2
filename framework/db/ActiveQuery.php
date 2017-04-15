@@ -330,14 +330,16 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     protected function queryScalar($selectExpression, $db)
     {
-        if ($this->sql === null) {
-            return parent::queryScalar($selectExpression, $db);
-        }
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
         if ($db === null) {
             $db = $modelClass::getDb();
         }
+
+        if ($this->sql === null) {
+            return parent::queryScalar($selectExpression, $db);
+        }
+
         return (new Query)->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)

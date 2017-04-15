@@ -202,7 +202,8 @@ function foo($model, $attribute) {
 ```
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section. Default value from database
+  schema could be loaded via [loadDefaultValues()](db-active-record.md#default-attribute-values) method of the model.
 
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
@@ -676,3 +677,6 @@ This validator checks if the input value is a valid URL.
   Defaults to `false`. Note that in order to use IDN validation you have to install and enable the `intl` PHP
   extension, otherwise an exception would be thrown.
 
+> Note: The validator checks that URL scheme and host part is correct. It does NOT check the remaining parts of a URL
+and is NOT designed to protect against XSS or any other attacks. See [Security best practices](security-best-practices.md)
+article to learn more about threats prevention when developing applications.

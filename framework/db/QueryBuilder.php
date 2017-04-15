@@ -65,7 +65,22 @@ class QueryBuilder extends \yii\base\Object
         'EXISTS' => 'buildExistsCondition',
         'NOT EXISTS' => 'buildExistsCondition',
     ];
-
+    /**
+     * @var array map of chars to their replacements in LIKE conditions.
+     * By default it's configured to escape `%`, `_` and `\` with `\`.
+     * @since 2.0.12.
+     */
+    protected $likeEscapingReplacements = [
+        '%' => '\%',
+        '_' => '\_',
+        '\\' => '\\\\',
+    ];
+    /**
+     * @var string|null character used to escape special characters in LIKE conditions.
+     * By default it's assumed to be `\`.
+     * @since 2.0.12
+     */
+    protected $likeEscapeCharacter;
 
     /**
      * Constructor.
@@ -205,7 +220,7 @@ class QueryBuilder extends \yii\base\Object
         $values = ' ' . $values;
         foreach ($columns->select as $title => $field) {
             if (is_string($title)) {
-                $names[] = $title;
+                $names[] = $schema->quoteColumnName($title);
             } else if (preg_match('/^(.*?)(?i:\s+as\s+|\s+)([\w\-_\.]+)$/', $field, $matches)) {
                 $names[] = $schema->quoteColumnName($matches[2]);
             } else {
@@ -267,6 +282,9 @@ class QueryBuilder extends \yii\base\Object
                 $vs[] = $value;
             }
             $values[] = '(' . implode(', ', $vs) . ')';
+        }
+        if (empty($values)) {
+            return '';
         }
 
         foreach ($columns as $i => $name) {
@@ -961,7 +979,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasLimit($limit)
     {
-        return ctype_digit((string) $limit);
+        return ($limit instanceof Expression) || ctype_digit((string) $limit);
     }
 
     /**
@@ -971,8 +989,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function hasOffset($offset)
     {
-        $offset = (string) $offset;
-        return ctype_digit($offset) && $offset !== '0';
+        return ($offset instanceof Expression) || ctype_digit((string) $offset) && (string) $offset !== '0';
     }
 
     /**
@@ -1357,7 +1374,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidParamException("Operator '$operator' requires two operands.");
         }
 
-        $escape = isset($operands[2]) ? $operands[2] : ['%' => '\%', '_' => '\_', '\\' => '\\\\'];
+        $escape = isset($operands[2]) ? $operands[2] : $this->likeEscapingReplacements;
         unset($operands[2]);
 
         if (!preg_match('/^(AND |OR |)(((NOT |))I?LIKE)/', $operator, $matches)) {
@@ -1392,7 +1409,11 @@ class QueryBuilder extends \yii\base\Object
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = empty($escape) ? $value : ('%' . strtr($value, $escape) . '%');
             }
-            $parts[] = "$column $operator $phName";
+            $escapeSql = '';
+            if ($this->likeEscapeCharacter !== null) {
+                $escapeSql = " ESCAPE '{$this->likeEscapeCharacter}'";
+            }
+            $parts[] = "{$column} {$operator} {$phName}{$escapeSql}";
         }
 
         return implode($andor, $parts);

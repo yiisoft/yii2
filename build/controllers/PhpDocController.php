@@ -167,12 +167,12 @@ class PhpDocController extends Controller
                 'tests/',
                 'vendor/',
             ];
-            foreach($extensionExcept as $ext => $paths) {
-                foreach($paths as $path) {
+            foreach ($extensionExcept as $ext => $paths) {
+                foreach ($paths as $path) {
                     $except[] = "/extensions/$ext$path";
                 }
             }
-        } elseif (preg_match('~extensions/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+        } elseif (preg_match('~extensions/([\w-]+)[\\\\/]?$~', $root, $matches)) {
 
             $extensionPath = dirname(rtrim($root, '\\/'));
             $this->setUpExtensionAliases($extensionPath);
@@ -184,7 +184,7 @@ class PhpDocController extends Controller
             }
 
             if (isset($extensionExcept[$extension])) {
-                foreach($extensionExcept[$extension] as $path) {
+                foreach ($extensionExcept[$extension] as $path) {
                     $except[] = $path;
                 }
             }
@@ -196,7 +196,7 @@ class PhpDocController extends Controller
 //            if ($extension === 'composer') {
 //                return [];
 //            }
-        } elseif (preg_match('~apps/([\w\d-]+)[\\\\/]?$~', $root, $matches)) {
+        } elseif (preg_match('~apps/([\w-]+)[\\\\/]?$~', $root, $matches)) {
 
             $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
@@ -255,7 +255,7 @@ class PhpDocController extends Controller
         $namespace = false;
         $namespaceLine = '';
         $contentAfterNamespace = false;
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             $line = trim($line);
             if (!empty($line)) {
                 if (strncmp($line, 'namespace', 9) === 0) {
@@ -269,7 +269,7 @@ class PhpDocController extends Controller
         }
 
         if ($namespace !== false && $contentAfterNamespace !== false) {
-            while($contentAfterNamespace > 0) {
+            while ($contentAfterNamespace > 0) {
                 array_shift($lines);
                 $contentAfterNamespace--;
             }
@@ -297,7 +297,7 @@ class PhpDocController extends Controller
         $listIndent = '';
         $tag = false;
         $indent = '';
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if (preg_match('~^(\s*)/\*\*$~', $line, $matches)) {
                 $docBlock = true;
                 $indent = $matches[1];
@@ -348,8 +348,8 @@ class PhpDocController extends Controller
     {
         return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function($matches) {
             $types = explode('|', $matches[2]);
-            foreach($types as $i => $type) {
-                switch($type){
+            foreach ($types as $i => $type) {
+                switch ($type) {
                     case 'integer': $types[$i] = 'int'; break;
                     case 'boolean': $types[$i] = 'bool'; break;
                 }
@@ -367,7 +367,7 @@ class PhpDocController extends Controller
         // remove blank lines between properties
         $skip = true;
         $level = 0;
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if (strpos($line, 'class ') !== false) {
                 $skip = false;
             }
@@ -402,7 +402,7 @@ class PhpDocController extends Controller
         $skip = true;
         $level = 0; // track array properties
         $property = '';
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             if (strpos($line, 'class ') !== false) {
                 $skip = false;
             }
@@ -428,10 +428,10 @@ class PhpDocController extends Controller
                 $endofPrivate = $i;
                 $property = 'Private';
                 $level = 0;
-            } elseif (substr($line,0 , 6) === 'const ') {
+            } elseif (substr($line, 0, 6) === 'const ') {
                 $endofConst = $i;
                 $property = false;
-            } elseif (substr($line,0 , 4) === 'use ') {
+            } elseif (substr($line, 0, 4) === 'use ') {
                 $endofUse = $i;
                 $property = false;
             } elseif (!empty($line) && $line[0] === '*') {
@@ -447,7 +447,7 @@ class PhpDocController extends Controller
         }
 
         $endofAll = false;
-        foreach(['Private', 'Protected', 'Public', 'Const', 'Use'] as $var) {
+        foreach (['Private', 'Protected', 'Public', 'Const', 'Use'] as $var) {
             if (${'endof'.$var} !== false) {
                 $endofAll = ${'endof'.$var};
                 break;
@@ -456,7 +456,7 @@ class PhpDocController extends Controller
 
 //        $this->checkPropertyOrder($lineInfo);
         $result = [];
-        foreach($lines as $i => $line) {
+        foreach ($lines as $i => $line) {
             $result[] = $line;
             if (!($propertiesOnly && $i === $endofAll)) {
                 if ($i === $endofUse || $i === $endofConst || $i === $endofPublic ||
@@ -753,7 +753,7 @@ class PhpDocController extends Controller
         // example: yii\di\ServiceLocator setComponents() is not recognized in the whole but in
         // a part of the class.
         $parts = $split ? explode("\n\n", $subject) : [$subject];
-        foreach($parts as $part) {
+        foreach ($parts as $part) {
             preg_match_all($pattern . 'suU', $part, $matches, PREG_SET_ORDER);
             foreach ($matches as &$set) {
                 foreach ($set as $i => $match)

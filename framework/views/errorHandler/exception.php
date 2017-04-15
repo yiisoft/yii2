@@ -239,7 +239,7 @@ h1,h2,h3,p,img,ul li{
     line-height: 20px;
     font-size: 12px;
     margin-top: 1px;
-    font-family: Consolas, Courier New, monospace;
+    font-family: Consolas, monospace;
 }
 .call-stack ul li .code pre{
     position: relative;
@@ -247,7 +247,7 @@ h1,h2,h3,p,img,ul li{
     left: 50px;
     line-height: 20px;
     font-size: 12px;
-    font-family: Consolas, Courier New, monospace;
+    font-family: Consolas, monospace;
     display: inline;
 }
 @-moz-document url-prefix() {
@@ -272,7 +272,7 @@ h1,h2,h3,p,img,ul li{
 .request .code pre{
     font-size: 14px;
     line-height: 18px;
-    font-family: Consolas, Courier New, monospace;
+    font-family: Consolas, monospace;
     display: inline;
     word-wrap: break-word;
 }
@@ -378,13 +378,7 @@ body.mousedown pre {
     </div>
 
     <div class="call-stack">
-        <ul>
-            <?= $handler->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, [], 1) ?>
-            <?php for ($i = 0, $trace = $exception->getTrace(), $length = count($trace); $i < $length; ++$i): ?>
-                <?= $handler->renderCallStackItem(@$trace[$i]['file'] ?: null, @$trace[$i]['line'] ?: null,
-                    @$trace[$i]['class'] ?: null, @$trace[$i]['function'] ?: null, @$trace[$i]['args'] ?: [], $i + 2) ?>
-            <?php endfor; ?>
-        </ul>
+        <?= $handler->renderCallStack($exception) ?>
     </div>
 
     <div class="request">

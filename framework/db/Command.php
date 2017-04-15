@@ -66,7 +66,7 @@ class Command extends Component
     public $pdoStatement;
     /**
      * @var int the default fetch mode for this command.
-     * @see http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php
+     * @see http://www.php.net/manual/en/pdostatement.setfetchmode.php
      */
     public $fetchMode = \PDO::FETCH_ASSOC;
     /**
@@ -365,7 +365,7 @@ class Command extends Component
     /**
      * Executes the SQL statement and returns the first row of the result.
      * This method is best used when only the first row of result is needed for a query.
-     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://www.php.net/manual/en/function.PDOStatement-setFetchMode.php)
+     * @param int $fetchMode the result fetch mode. Please refer to [PHP manual](http://php.net/manual/en/pdostatement.setfetchmode.php)
      * for valid fetch modes. If this parameter is null, the value set in [[fetchMode]] will be used.
      * @return array|false the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.

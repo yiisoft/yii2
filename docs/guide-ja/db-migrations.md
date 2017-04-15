@@ -183,7 +183,7 @@ class m150101_185401_create_news_table extends Migration
 
 ### テーブルの作成
 
-```php
+```
 yii migrate/create create_post_table
 ``` 
 
@@ -217,7 +217,7 @@ class m150811_220037_create_post_table extends Migration
 
 テーブルのフィールドも直接に生成したい場合は、`--fields` オプションでフィールドを指定します。
  
-```php
+```
 yii migrate/create create_post_table --fields="title:string,body:text"
 ``` 
 
@@ -254,7 +254,7 @@ class m150811_220037_create_post_table extends Migration
 
 さらに多くのフィールド・パラメータを指定することも出来ます。
 
-```php
+```
 yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
@@ -296,7 +296,7 @@ class m150811_220037_create_post_table extends Migration
 
 バージョン 2.0.8 からは、`foreignKey` キーワードを使って外部キーを生成することができます。
 
-```php
+```
 yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey,title:string,body:text"
 ```
 
@@ -417,7 +417,7 @@ class m160328_040430_create_post_table extends Migration
 
 ### テーブルを削除する
 
-```php
+```
 yii migrate/create drop_post_table --fields="title:string(12):notNull:unique,body:text"
 ``` 
 
@@ -448,7 +448,7 @@ class m150811_220037_drop_post_table extends Migration
 
 カラムを追加するためには、次のようにします。
 
-```php
+```
 yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ```
 
@@ -469,11 +469,17 @@ class m150811_220037_add_position_column_to_post_table extends Migration
 }
 ```
 
+次のようにして複数のカラムを指定することも出来ます。
+
+```
+yii migrate/create add_xxx_column_yyy_column_to_zzz_table --fields="xxx:integer,yyy:text"
+```
+
 ### カラムを削除する
 
 マイグレーションの名前が `drop_xxx_column_from_yyy_table` の形式である場合、ファイルの内容は、必要となる `addColumn` と `dropColumn` を含むことになります。
 
-```php
+```
 yii migrate/create drop_position_column_from_post_table --fields="position:integer"
 ```
 
@@ -498,7 +504,7 @@ class m150811_220037_drop_position_column_from_post_table extends Migration
 
 マイグレーションの名前が `create_junction_table_for_xxx_and_yyy_tables` の形式である場合は、中間テーブルを作成するのに必要となるコードが生成されます。
 
-```php
+```
 yii migrate/create create_junction_table_for_post_and_tag_tables --fields="created_at:dateTime"
 ```
 

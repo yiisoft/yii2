@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Enh #13820: Add new HTTP status code 451 (yyxx9988)
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
@@ -53,6 +54,18 @@ Yii Framework 2 Change Log
 - Bug #13776: Fixed setting precision and scale for decimal columns in MSSQL (arturf)
 - Bug #13704: Fixed `yii\validators\UniqueValidator` to prefix attribute name with model's database table name (vladis84)
 - Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990)
+- Enh #13770: Added support for `yii\widgets\Menu` item classes definition in the form of an array (Kolyunya)
+- Enh #13823: Refactored migrations template (Kolyunya)
+- Enh #13845: `mt_rand()` is used instead of `rand()` in `yii\captcha\CaptchaAction` (kalessil)
+- Enh #13883: `\yii\data\SqlDataProvider` now provides automatic fallback for the case when `totalCount` is not specified (SamMousa)
+- Enh #13376: Data provider now automatically sets an ID so there is no need to set it manually in case multiple data providers are used with pagination (SamMousa)
+- Enh #13369: Added ability to render current `yii\widgets\LinkPager` page disabled (aquy)
+- Enh #13837: Refactored masking of CSRF tokens (sammousa)
+- Enh #13560: Refactored `\yii\widgets\FragmentCache::getCachedContent()`, added tests (Kolyunya)
+- Bug #13901: Fixed passing unused parameter to `formatMessage()` call in `\yii\validators\IpValidator` (Kolyunya)
+- Enh #13945: Removed Courier New from error page fonts list since it looks bad on Linux (samdark)
+- Bug #13961: RBAC Rules: `PostgreSQL: PHP Warning "unserialize() expects parameter 1 to be string, resource given` was fixed (vsguts)
+- Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire) 
 
 2.0.11.2 February 08, 2017
 --------------------------
