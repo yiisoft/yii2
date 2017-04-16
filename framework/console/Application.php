@@ -8,6 +8,7 @@
 namespace yii\console;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidRouteException;
 
 // define STDIN, STDOUT and STDERR if the PHP SAPI did not define them (e.g. creating console application in web env)
@@ -139,9 +140,14 @@ class Application extends \yii\base\Application
      * Handles the specified request.
      * @param Request $request the request to be handled
      * @return Response the resulting response
+     * @throws InvalidConfigException
      */
     public function handleRequest($request)
     {
+        if (!$request instanceof Request) {
+            throw new InvalidConfigException('Request component in console application config should be instance of \yii\console\Request');
+        }
+
         list ($route, $params) = $request->resolve();
         $this->requestedRoute = $route;
         $result = $this->runAction($route, $params);
