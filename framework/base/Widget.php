@@ -24,7 +24,7 @@ use ReflectionClass;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Widget extends Component implements ViewContextInterface
+abstract class Widget extends Component implements ViewContextInterface
 {
     /**
      * @event Event an event that is triggered when the widget is initialized via [[init()]].
