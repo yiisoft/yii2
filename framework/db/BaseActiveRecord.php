@@ -1226,12 +1226,13 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param ActiveRecordInterface $model the model to be linked with the current one.
-     * @param array $extraColumns additional column values to be saved into the junction table.
+     * @param array|ActiveRecord $modelOrExtraColumns additional column values to be saved into the junction table,
+     * or the model of the junction table.
      * This parameter is only meaningful for a relationship involving a junction table
      * (i.e., a relation set with [[ActiveRelationTrait::via()]] or [[ActiveQuery::viaTable()]].)
      * @throws InvalidCallException if the method is unable to link two models.
      */
-    public function link($name, $model, $extraColumns = [])
+    public function link($name, $model, $modelOrExtraColumns = [])
     {
         $relation = $this->getRelation($name);
 
@@ -1256,21 +1257,34 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             foreach ($relation->link as $a => $b) {
                 $columns[$b] = $model->$a;
             }
-            foreach ($extraColumns as $k => $v) {
-                $columns[$k] = $v;
-            }
-            if (is_array($relation->via)) {
-                /* @var $viaClass ActiveRecordInterface */
-                /* @var $record ActiveRecordInterface */
-                $record = new $viaClass();
-                foreach ($columns as $column => $value) {
-                    $record->$column = $value;
+            if (!is_array($modelOrExtraColumns) && is_object($modelOrExtraColumns) && method_exists($modelOrExtraColumns, 'tableName')){ //Check to see if we have been passed an 'ActiveRecord' object.
+                if (isset($viaTable) && $modelOrExtraColumns->tableName() === $viaTable || isset($viaClass) && $viaClass === $modelOrExtraColumns::className()){//Check to see if the object is for the expected table.
+                    foreach ($columns as $column => $value){
+                        $modelOrExtraColumns->$column = $value;
+                    }
+                    $modelOrExtraColumns->save();
+                }else{
+                    throw new InvalidCallException('Unable to link models: the junction model is invalid.');
                 }
-                $record->insert(false);
-            } else {
-                /* @var $viaTable string */
-                static::getDb()->createCommand()
-                    ->insert($viaTable, $columns)->execute();
+            }elseif (is_array($modelOrExtraColumns)){
+                foreach ($modelOrExtraColumns as $k => $v) {
+                    $columns[$k] = $v;
+                }
+                if (is_array($relation->via)) {
+                    /* @var $viaClass ActiveRecordInterface */
+                    /* @var $record ActiveRecordInterface */
+                    $record = new $viaClass();
+                    foreach ($columns as $column => $value) {
+                        $record->$column = $value;
+                    }
+                    $record->insert(false);
+                } else {
+                    /* @var $viaTable string */
+                    static::getDb()->createCommand()
+                        ->insert($viaTable, $columns)->execute();
+                }
+            }else{
+                throw new InvalidCallException('Unable to link models: your junction data is invalid.  Provide a junction model, or an array of additional values for insert.');
             }
         } else {
             $p1 = $model->isPrimaryKey(array_keys($relation->link));
