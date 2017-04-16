@@ -226,7 +226,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      */
     protected function executeRule($user, $item, $params)
     {
-        if ($item->ruleName === null) {
+        if (empty($item->ruleName)) {
             return true;
         }
         $rule = $this->getRule($item->ruleName);
