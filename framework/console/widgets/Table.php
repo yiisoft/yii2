@@ -189,15 +189,15 @@ class Table extends Object
                 if (is_array($columnWidth)) {
                     $rows = 0;
                     foreach ($columnWidth as $width) {
-                        $rows+=ceil($width / ($size-2));
+                        $rows += ceil($width / ($size - 2));
                     }
                     return $rows;
                 }
-                return ceil($columnWidth / ($size-2));
+                return ceil($columnWidth / ($size - 2));
             },
             $size, array_map(function($val) {
                     if (is_array($val)) {
-                        $encodings=array_fill(0, count($val), Yii::$app->charset);
+                        $encodings = array_fill(0, count($val), Yii::$app->charset);
                         return array_map('mb_strwidth', $val, $encodings);
                     }
                     return mb_strwidth($val, Yii::$app->charset);
@@ -278,7 +278,7 @@ class Table extends Object
 
         for ($i = 0, $size = count($this->_headers); $i < $size; $i++) {
             $columns[] = ArrayHelper::getColumn($this->_rows, $i);
-            array_push($columns[$i], $this->_headers[$i]);
+            $columns[$i][] = $this->_headers[$i];
         }
         foreach ($columns as $column) {
             $columnWidth = max(array_map(function($val){
@@ -298,7 +298,7 @@ class Table extends Object
         if ($totalWidth > $screenWidth) {
             foreach ($this->_columnWidths as $j => $width) {
                 $this->_columnWidths[$j] = (int)($width * $relativeWidth);
-                if ($j == count($this->_columnWidths)) {
+                if ($j === count($this->_columnWidths)) {
                     $this->_columnWidths = $totalWidth;
                 }
                 $totalWidth -= $this->_columnWidths[$j];
