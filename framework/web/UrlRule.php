@@ -368,7 +368,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @param array $params the parameters
      * @return string|bool the created URL, or `false` if this rule cannot be used for creating this URL.
      */
-    public function createUrl($manager, $route, $params)
+    public function createUrl($manager, $route, &$params)
     {
         if ($this->mode === self::PARSING_ONLY) {
             return false;

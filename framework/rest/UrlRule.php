@@ -242,7 +242,7 @@ class UrlRule extends CompositeUrlRule
     /**
      * @inheritdoc
      */
-    public function createUrl($manager, $route, $params)
+    public function createUrl($manager, $route, &$params)
     {
         foreach ($this->controller as $urlName => $controller) {
             if (strpos($route, $controller) !== false) {
