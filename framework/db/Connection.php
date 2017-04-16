@@ -189,6 +189,7 @@ class Connection extends Component
      * @var bool whether to enable schema caching.
      * Note that in order to enable truly schema caching, a valid cache component as specified
      * by [[schemaCache]] must be enabled and [[enableSchemaCache]] must be set true.
+     * If only [[enableSchemaCache]] is valid $schema will be cached per [[\yii\db\Connection]] object (simply said, it will be acquired only once during [[\yii\db\Connection]] life cycle)
      * @see schemaCacheDuration
      * @see schemaCacheExclude
      * @see schemaCache
@@ -750,7 +751,7 @@ class Connection extends Component
      */
     public function getSchema()
     {
-        if ($this->_schema !== null) {
+        if ($this->enableSchemaCache && $this->_schema !== null) {
             return $this->_schema;
         } else {
             $driver = $this->getDriverName();
