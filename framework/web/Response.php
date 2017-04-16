@@ -229,7 +229,14 @@ class Response extends \yii\base\Response
         510 => 'Not Extended',
         511 => 'Network Authentication Required',
     ];
-
+    /**
+     * @param integer $code status code
+     * @return string translated corresponding text of an HTTP status
+     */
+    public static function httpStatus($code)
+    {
+        return isset(self::$httpStatuses[$code]) ? Yii::t('yii', self::$httpStatuses[$code]) : Yii::t('yii', 'Error');
+    }
     /**
      * @var int the HTTP status code to send with the response.
      */
