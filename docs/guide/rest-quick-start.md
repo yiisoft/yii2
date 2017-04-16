@@ -27,15 +27,17 @@ and you have already created the [active record](db-active-record.md) class `app
 First, create a [controller](structure-controllers.md) class `app\controllers\UserController` as follows:
 
 ```php
-namespace app\controllers;
+<?php
+    namespace app\controllers;
 
-use yii\rest\ActiveController;
+    use yii\rest\ActiveController;
 
-class UserController extends ActiveController
-{
-    public $modelClass = 'app\models\User';
-}
+    class UserController extends ActiveController
+    {
+        public $modelClass = 'app\models\User';
+    }
 ```
+Save the file as inside your app root directory as `controller\UserController.php`.
 
 The controller class extends from [[yii\rest\ActiveController]], which implements a common set of RESTful actions.
 By specifying [[yii\rest\ActiveController::modelClass|modelClass]]
