@@ -26,6 +26,12 @@ use yii\web\JsExpression;
 class ActiveField extends Component
 {
     /**
+     * A template for functions like sprintf() etc. that is
+     * used for generating js field validation code
+     */
+    const FIELD_JS_VALIDATION_TEMPLATE = 'function (attribute, value, messages, deferred, $form) { %s }';
+
+    /**
      * @var ActiveForm the form that this field is associated with.
      */
     public $form;
@@ -799,7 +805,7 @@ class ActiveField extends Component
         }
 
         if (!empty($validators)) {
-            $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
+            $options['validate'] = new JsExpression( sprintf(self::FIELD_JS_VALIDATION_TEMPLATE,implode('',$validators)) );
         }
 
         if ($this->addAriaAttributes === false) {
