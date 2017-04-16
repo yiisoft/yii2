@@ -387,7 +387,10 @@ class Command extends Component
     {
         $result = $this->queryInternal('fetchColumn', 0);
         if (is_resource($result) && get_resource_type($result) === 'stream') {
-            return stream_get_contents($result);
+            $result = stream_get_contents($result);
+        }
+        if (is_null($result)) {
+            return false;
         } else {
             return $result;
         }
