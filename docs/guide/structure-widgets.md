@@ -13,7 +13,7 @@ use yii\jui\DatePicker;
 <?= DatePicker::widget(['name' => 'date']) ?>
 ```
 
-There are a good number of widgets bundled with Yii, such as [[yii\widgets\ActiveForm|active form]],
+There is a good number of widgets bundled with Yii, such as [[yii\widgets\ActiveForm|active form]],
 [[yii\widgets\Menu|menu]], [jQuery UI widgets](widget-jui.md), [Twitter Bootstrap widgets](widget-bootstrap.md).
 In the following, we will introduce the basic knowledge about widgets. Please refer to the class API documentation
 if you want to learn about the usage of a particular widget.
