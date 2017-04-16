@@ -220,6 +220,8 @@ class UrlRule extends Object implements UrlRuleInterface
             ']' => '\\]',
             '(' => '\\(',
             ')' => '\\)',
+            '{' => '(?:',
+            '}?' => ')?',
         ];
 
         $tr2 = [];
