@@ -119,6 +119,11 @@ class DetailView extends Widget
      * instance. If this property is not set, the `formatter` application component will be used.
      */
     public $formatter;
+    /**
+     * @var boolean whether to show the $attribute when formatting a `null` value.
+     * @see Formatter::$nullDisplay
+     */
+    public $hideNullAttributes = false;
 
 
     /**
@@ -154,7 +159,9 @@ class DetailView extends Widget
         $rows = [];
         $i = 0;
         foreach ($this->attributes as $attribute) {
-            $rows[] = $this->renderAttribute($attribute, $i++);
+            if ($this->hideNullAttributes === false || $attribute['value'] !== null) {
+                $rows[] = $this->renderAttribute($attribute, $i++);
+            }
         }
 
         $options = $this->options;
