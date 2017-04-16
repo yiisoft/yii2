@@ -49,9 +49,13 @@ use yii\db\BaseActiveRecord;
  * }
  * ```
  *
+ * When retrieving the model, the related user model is available from [[$model->createdByUser]] and
+ * [[$model->UpdatedByUser]]
+ *
  * @author Luciano Baraglia <luciano.baraglia@gmail.com>
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
+ * @author Arno Slatius <a.slatius@gmail.com>
  * @since 2.0
  */
 class BlameableBehavior extends AttributeBehavior
@@ -72,6 +76,16 @@ class BlameableBehavior extends AttributeBehavior
      * In case, when the property is `null`, the value of `Yii::$app->user->id` will be used as the value.
      */
     public $value;
+    /**
+    * @var string the user class to use for the IDs.
+    * Defaults to user application components class
+    */
+    public $userClass;
+    /**
+    * @var string the ID attribute to use in the relation to the user model.
+    * Defaults to 'id'
+    */
+    public $userIdColumn = 'id';
 
 
     /**
@@ -86,6 +100,9 @@ class BlameableBehavior extends AttributeBehavior
                 BaseActiveRecord::EVENT_BEFORE_INSERT => [$this->createdByAttribute, $this->updatedByAttribute],
                 BaseActiveRecord::EVENT_BEFORE_UPDATE => $this->updatedByAttribute,
             ];
+        }
+        if (empty($this->userClass)) {
+            $this->userClass = Yii::$app->get('user', false)->identityClass;
         }
     }
 
@@ -102,5 +119,21 @@ class BlameableBehavior extends AttributeBehavior
         }
 
         return parent::getValue($event);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery relation for the creator user model
+     */
+    public function getCreatedByUser()
+    {
+        return $this->owner->hasOne($this->userClass, [$this->userIdColumn => $this->createdByAttribute]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery relation for the updater user model
+     */
+    public function getUpdatedByUser()
+    {
+        return  $this->owner->hasOne($this->userClass, [$this->userIdColumn => $this->updatedByAttribute]);
     }
 }
