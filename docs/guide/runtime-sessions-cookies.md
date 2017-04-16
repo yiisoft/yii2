@@ -204,6 +204,20 @@ echo $session->getFlash('postDeleted');
 $result = $session->hasFlash('postDeleted');
 ```
 
+Flash message can be shown using [Alert](http://www.yiiframework.com/doc-2.0/yii-bootstrap-alert.html)  bootstrap component.
+For example:
+
+```php
+$session = Yii::$app->session;
+
+echo Alert::widget([
+    'options' => [
+        'class' => 'alert-info',
+    ],
+    'body' => $session->getFlash('postDeleted'),
+]);
+```
+
 Like regular session data, you can store arbitrary data as flash data.
 
 When you call [[yii\web\Session::setFlash()]], it will overwrite any existing flash data that has the same name.
