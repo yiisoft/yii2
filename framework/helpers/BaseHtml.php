@@ -1862,7 +1862,7 @@ class BaseHtml
                     $html .= " $name='" . Json::htmlEncode($value) . "'";
                 }
             } elseif ($value !== null) {
-                $html .= " $name=\"" . static::encode($value) . '"';
+                $html .= " $name=\"" . (strtolower($name) === 'src' ? $value : static::encode($value)) . '"';
             }
         }
 
