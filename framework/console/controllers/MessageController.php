@@ -32,7 +32,7 @@ use yii\i18n\GettextPoFile;
  *    yii message/config /path/to/myapp/messages/config.php
  * 2. Edit the created config file, adjusting it for your web application needs.
  * 3. Run the 'message/extract' command, using created config:
- *    yii message /path/to/myapp/messages/config.php
+ *    yii message/extract /path/to/myapp/messages/config.php
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
