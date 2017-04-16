@@ -88,7 +88,7 @@ class I18N extends Component
         $messageSource = $this->getMessageSource($category);
         $translation = $messageSource->translate($category, $message, $language);
         if ($translation === false) {
-            return $this->format($message, $params, $messageSource->sourceLanguage);
+            return $this->format($message, $params, $language);
         } else {
             return $this->format($translation, $params, $language);
         }
