@@ -369,7 +369,7 @@ class Sort extends Object
         }
         $params[$this->sortParam] = $this->createSortParam($attribute);
         $params[0] = $this->route === null ? Yii::$app->controller->getRoute() : $this->route;
-        $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
+        $urlManager = $this->getUrlManager;
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
         } else {
@@ -421,5 +421,17 @@ class Sort extends Object
     public function hasAttribute($name)
     {
         return isset($this->attributes[$name]);
+    }
+    
+    /**
+     * @return \yii\web\UrlManager
+     */
+    public function getUrlManager()
+    {
+        if ($this->urlManager === null) {
+            $this->urlManager = Yii::$app->getUrlManager();
+        }
+        
+        return $this->urlManager;
     }
 }
