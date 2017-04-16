@@ -138,7 +138,7 @@ You can use your browser to access the installed Yii application with the follow
 http://localhost:8080/
 ```
 
-![Successful Installation of Yii](images/start-app-installed.png)
+<img alt="Successful Installation of Yii" src="images/start-app-installed.png" style="max-width: 100%" />
 
 You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
