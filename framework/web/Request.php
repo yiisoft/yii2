@@ -940,6 +940,14 @@ class Request extends \yii\base\Request
     {
         return isset($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : null;
     }
+    
+    /**
+     * @return string Digest sent via HTTP authentication, null if the username is not given
+     */
+    public function getAuthDigest()
+    {
+        return isset($_SERVER['PHP_AUTH_DIGEST']) ? $_SERVER['PHP_AUTH_DIGEST'] : null;
+    }
 
     /**
      * @return string|null the password sent via HTTP authentication, null if the password is not given
