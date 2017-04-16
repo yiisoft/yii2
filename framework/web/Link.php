@@ -10,7 +10,7 @@ namespace yii\web;
 use yii\base\Object;
 
 /**
- * Link represents a link object as defined in [JSON Hypermedia API Language](https://tools.ietf.org/html/draft-kelly-json-hal-03).
+ * Link represents a link object as defined in [JSON Hypermedia API Language](https://tools.ietf.org/html/draft-kelly-json-hal-06).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -51,6 +51,10 @@ class Link extends Object
      * @var string the language of the target resource
      */
     public $hreflang;
+    /**
+     * @var string a URL that provides further information about this link about to be deprecated
+     */
+    public $deprecation;
 
 
     /**
