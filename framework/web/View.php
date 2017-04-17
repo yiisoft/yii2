@@ -486,6 +486,49 @@ class View extends \yii\base\View
     }
 
     /**
+     *
+     * Registers a JS code block defining a variable. The name of variable will be
+     * used as key, preventing duplicated variable names.
+     *
+     * @param string $name Name of variable
+     * @param array|string $value Value of variable. If array an object will be created
+     * @param int $position the position at which the JS script tag should be inserted
+     * in a page. The possible values are:
+     *
+     * - [[POS_HEAD]]: in the head section
+     * - [[POS_BEGIN]]: at the beginning of the body section
+     * - [[POS_END]]: at the end of the body section
+     * - [[POS_LOAD]]: enclosed within jQuery(window).load().
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     * - [[POS_READY]]: enclosed within jQuery(document).ready(). This is the default value.
+     *   Note that by using this position, the method will automatically register the jQuery js file.
+     *
+     * @param string $key the key that identifies the JS code block. If null, it will use
+     * $js as the key. If two JS code blocks are registered with the same key, the latter
+     * will overwrite the former.
+     *
+     * @throws InvalidConfigException If variable name does not match ECMA requirements.
+     */
+    public function registerJsVar($name,$value,$position=self::POS_HEAD)
+    {
+        $validator=new \yii\validators\RegularExpressionValidator([
+            'pattern'=>'/^[^a-zA-Z_]+|[^a-zA-Z_0-9]+/',
+        ]);
+
+        if($validator->validate($name))
+            throw new InvalidConfigException('Variable name must be in a valid ECMAscript format ');
+
+        if(is_array($value)){
+            $val=\yii\helpers\Json::encode($value);
+            $js=sprintf('var %s=%s',$name,$val);
+        }else {
+            $js=sprintf('var %s="%s"',$name,$value);
+        }
+
+        $this->registerJs($js,$position,strval($name));
+    }
+
+    /**
      * Renders the content to be inserted in the head section.
      * The content is rendered using the registered meta tags, link tags, CSS/JS code blocks and files.
      * @return string the rendered content
