@@ -58,10 +58,7 @@ Upgrade from Yii 2.0.11
 
 * `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
   in case of `format` being set to `boolean`.
-
-* `yii\web\User::loginRequired()` now throws an `UnauthorizedHttpException` instead of a `ForbiddenHttpException`.
-  Check and adjust your try-catch blocks.
-  
+ 
 * The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
   `$params`.
 
