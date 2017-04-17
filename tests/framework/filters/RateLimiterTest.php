@@ -5,7 +5,7 @@ namespace yiiunit\framework\filters;
 use Yii;
 use yiiunit\TestCase;
 use Prophecy\Argument;
-use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\framework\filters\stubs\RateLimit;
 use yii\web\User;
 use yii\web\Request;
 use yii\web\Response;
@@ -69,14 +69,11 @@ class RateLimiterTest extends TestCase
 
     public function testBeforeActionUserInstanceOfRateLimitInterface()
     {
-        /* @var $rateLimiter RateLimiter|PHPUnit_Framework_MockObject_MockObject */
-        $rateLimiter = $this->getMockBuilder(RateLimiter::className())
-            ->setMethods(['checkRateLimit'])
-            ->getMock();
-        $rateLimiter->expects(self::at(0))
-            ->method('checkRateLimit')
-            ->willReturn(true);
-        $rateLimiter->user = new UserIdentity;
+        $rateLimiter = new RateLimiter();
+        $rateLimit = new RateLimit();
+        $rateLimit->setAllowance([1, time()])
+            ->setRateLimit([1, 1]);
+        $rateLimiter->user = $rateLimit;
 
         $result = $rateLimiter->beforeAction('test');
 
@@ -96,7 +93,7 @@ class RateLimiterTest extends TestCase
 
     public function testBeforeActionEmptyUser()
     {
-        $user = new User(['identityClass' => UserIdentity::className()]);
+        $user = new User(['identityClass' => RateLimit::className()]);
         Yii::$app->set('user', $user);
         $rateLimiter = new RateLimiter();
 
@@ -108,30 +105,24 @@ class RateLimiterTest extends TestCase
 
     public function testCheckRateLimitTooManyRequests()
     {
-        /* @var $user UserIdentity|\Prophecy\ObjectProphecy */
-        $user = $this->prophesize(UserIdentity::className());
-        $user->getRateLimit(Argument::any(), Argument::any())
-            ->willReturn([1, 1]);
-        $user->loadAllowance(Argument::any(), Argument::any())
-            ->willReturn([1, time() + 2]);
-        $user->saveAllowance(Argument::any(), Argument::any(), Argument::any(), Argument::any())
-            ->willReturn(null);
+        /* @var $rateLimit UserIdentity|\Prophecy\ObjectProphecy */
+        $rateLimit = new RateLimit;
+        $rateLimit
+            ->setRateLimit([1, 1])
+            ->setAllowance([1, time() + 2]);
         $rateLimiter = new RateLimiter();
 
         $this->setExpectedException('yii\web\TooManyRequestsHttpException');
-        $rateLimiter->checkRateLimit($user->reveal(), Yii::$app->request, Yii::$app->response, 'testAction');
+        $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 
     public function testCheckRateaddRateLimitHeaders()
     {
         /* @var $user UserIdentity|\Prophecy\ObjectProphecy */
-        $user = $this->prophesize(UserIdentity::className());
-        $user->getRateLimit(Argument::any(), Argument::any())
-            ->willReturn([1, 1]);
-        $user->loadAllowance(Argument::any(), Argument::any())
-            ->willReturn([1, time()]);
-        $user->saveAllowance(Argument::any(), Argument::any(), Argument::any(), Argument::any())
-            ->willReturn(null);
+        $rateLimit = new RateLimit;
+        $rateLimit
+            ->setRateLimit([1, 1])
+            ->setAllowance([1, time()]);
         $rateLimiter = $this->getMockBuilder(RateLimiter::className())
             ->setMethods(['addRateLimitHeaders'])
             ->getMock();
@@ -139,7 +130,7 @@ class RateLimiterTest extends TestCase
             ->method('addRateLimitHeaders')
             ->willReturn(null);
 
-        $rateLimiter->checkRateLimit($user->reveal(), Yii::$app->request, Yii::$app->response, 'testAction');
+        $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 
     public function testAddRateLimitHeadersDisabledRateLimitHeaders()

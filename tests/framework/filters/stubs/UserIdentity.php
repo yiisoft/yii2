@@ -4,7 +4,6 @@ namespace yiiunit\framework\filters\stubs;
 
 use yii\base\Component;
 use yii\base\NotSupportedException;
-use yii\filters\RateLimitInterface;
 use yii\web\IdentityInterface;
 
 /**
@@ -12,7 +11,7 @@ use yii\web\IdentityInterface;
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7
  */
-class UserIdentity extends Component implements IdentityInterface, RateLimitInterface
+class UserIdentity extends Component implements IdentityInterface
 {
     private static $ids = [
         'user1',
@@ -63,20 +62,5 @@ class UserIdentity extends Component implements IdentityInterface, RateLimitInte
     public function validateAuthKey($authKey)
     {
         throw new NotSupportedException();
-    }
-
-    public function getRateLimit($request, $action)
-    {
-
-    }
-
-    public function loadAllowance($request, $action)
-    {
-        
-    }
-
-    public function saveAllowance($request, $action, $allowance, $timestamp)
-    {
-
     }
 }
