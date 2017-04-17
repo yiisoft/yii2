@@ -324,8 +324,8 @@
                 this.$form = $form;
                 if (!$(this.input).is(":disabled")) {
                     this.cancelled = false;
-                    // perform validation only if the form is being submitted or if an attribute is pending validation
-                    if (data.submitting || this.status === 2 || this.status === 3) {
+                    // perform validation only if the form is being submitted, an attribute has not yet been touched or is pending validation
+                    if (data.submitting || this.status === 0 || this.status === 2 || this.status === 3) {
                         var msg = messages[this.id];
                         if (msg === undefined) {
                             msg = [];
@@ -656,7 +656,7 @@
             }
         } else {
             $.each(data.attributes, function () {
-                if (!this.cancelled && (this.status === 2 || this.status === 3)) {
+                if (!this.cancelled && (this.status === 0 || this.status === 2 || this.status === 3)) {
                     updateInput($form, this, messages);
                 }
             });
