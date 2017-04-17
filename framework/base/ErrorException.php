@@ -19,6 +19,8 @@ use Yii;
  */
 class ErrorException extends \ErrorException
 {
+    const E_HHVM_FATAL_ERROR = 16777217;
+
     /**
      * This constant represents a fatal error in the HHVM engine.
      *
