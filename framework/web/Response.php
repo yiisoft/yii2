@@ -434,6 +434,7 @@ class Response extends \yii\base\Response
             }
             fclose($this->stream);
         }
+        return;
     }
 
     /**
