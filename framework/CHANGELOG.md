@@ -55,6 +55,7 @@ Yii Framework 2 Change Log
 - Bug #13704: Fixed `yii\validators\UniqueValidator` to prefix attribute name with model's database table name (vladis84)
 - Enh #13770: Added support for `yii\widgets\Menu` item classes definition in the form of an array (Kolyunya)
 - Enh #13823: Refactored migrations template (Kolyunya)
+- Bug #13807: Fixed `yii\db\QueryBuilder` to inherit subquery params when building a `INSERT INTO ... SELECT` query (sergeymakinen)
 - Enh #13845: `mt_rand()` is used instead of `rand()` in `yii\captcha\CaptchaAction` (kalessil)
 - Enh #13883: `\yii\data\SqlDataProvider` now provides automatic fallback for the case when `totalCount` is not specified (SamMousa)
 - Enh #13376: Data provider now automatically sets an ID so there is no need to set it manually in case multiple data providers are used with pagination (SamMousa)
