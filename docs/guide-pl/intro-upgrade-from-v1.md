@@ -513,4 +513,5 @@ Zapoznaj się z sekcją dotyczącą [ID kontrolerów](structure-controllers.md#c
 Korzystanie z Yii 1.1 i 2.x jednocześnie
 ----------------------------------------
 
-Jeśli chciałbyś skorzystać z kodu napisanego dla Yii 1.1 w aplikacji Yii 2.0, prosimy o zapoznanie się z sekcją [Praca z kodem zewnętrznym](tutorial-yii-integration.md).
+Jeśli chciałbyś skorzystać z kodu napisanego dla Yii 1.1 w aplikacji Yii 2.0, 
+prosimy o zapoznanie się z sekcją [Używanie Yii 1.1 i 2.0 razem](tutorial-yii-integration.md#using-both-yii2-yii1).

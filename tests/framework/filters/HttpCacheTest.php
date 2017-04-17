@@ -22,7 +22,7 @@ class HttpCacheTest extends \yiiunit\TestCase
 
     public function testDisabled()
     {
-        $httpCache = new HttpCache;
+        $httpCache = new HttpCache();
         $this->assertTrue($httpCache->beforeAction(null));
         $httpCache->enabled=false;
         $this->assertTrue($httpCache->beforeAction(null));
@@ -30,7 +30,7 @@ class HttpCacheTest extends \yiiunit\TestCase
 
     public function testEmptyPragma()
     {
-        $httpCache = new HttpCache;
+        $httpCache = new HttpCache();
         $httpCache->etagSeed = function($action, $params) {
             return '';
         };
@@ -45,7 +45,7 @@ class HttpCacheTest extends \yiiunit\TestCase
      */
     public function testValidateCache()
     {
-        $httpCache = new HttpCache;
+        $httpCache = new HttpCache();
         $method = new \ReflectionMethod($httpCache, 'validateCache');
         $method->setAccessible(true);
 
@@ -75,7 +75,7 @@ class HttpCacheTest extends \yiiunit\TestCase
      */
     public function testGenerateEtag()
     {
-        $httpCache = new HttpCache;
+        $httpCache = new HttpCache();
         $httpCache->weakEtag = false;
 
         $httpCache->etagSeed = function($action, $params) {
