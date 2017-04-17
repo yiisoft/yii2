@@ -223,7 +223,7 @@ class DbManager extends BaseManager
      */
     protected function getItem($name)
     {
-        if (empty($name)) {
+        if (is_null($name)) {
             return null;
         }
 
