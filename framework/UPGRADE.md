@@ -22,7 +22,7 @@ Before upgrading, make sure you have a global installation of the latest version
 as well as a stable version of Composer:
 
     composer self-update
-    composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+    composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
 
@@ -275,7 +275,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.3.1"
   ```
 
   You also need to add the following code to your project's `composer.json` file:
