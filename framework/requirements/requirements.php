@@ -103,6 +103,7 @@ return array(
         'condition' => defined('AF_INET6'),
         'by' => 'IPv6 expansion in <a href="http://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html">IpValidator</a>',
         'memo' => 'When <a href="http://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html#$expandIPv6-detail">IpValidator::expandIPv6</a>
-        property is set to <code>true</code>, PHP must support IPv6 protocol stack.'
+        property is set to <code>true</code>, PHP must support IPv6 protocol stack. Currently PHP constant <code>AF_INET6</code> is not defined
+        and IPv6 is probably unsupported.'
     )
 );
