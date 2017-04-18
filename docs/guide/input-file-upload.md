@@ -46,7 +46,7 @@ class UploadForm extends Model
 
 In the code above, the `imageFile` attribute is used to keep the uploaded file instance. It is associated with
 a `file` validation rule which uses [[yii\validators\FileValidator]] to ensure a file with extension name `png` or `jpg`
-is uploaded. The `upload()` method will perform the validation and save the uploaded file on the server.
+is uploaded. The `upload()` method will perform the validation and save the uploaded file on the server. 
 
 The `file` validator allows you to check file extensions, size, MIME type, etc. Please refer to
 the [Core Validators](tutorial-core-validators.md#file) section for more details.
@@ -55,6 +55,12 @@ the [Core Validators](tutorial-core-validators.md#file) section for more details
   implemented via [[yii\validators\ImageValidator]] which verifies if an attribute has received a valid image 
   that can be then either saved or processed using the [Imagine Extension](https://github.com/yiisoft/yii2-imagine).
 
+If you need to validate your model after use of `saveAs` method, especially with the `image` validator, you need to add `false` paramether to `saveAs`, because this method deletes an uploaded file during saving by default and validator will give out an error.
+For example,
+
+```php
+$this->imageFile->saveAs('uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension, false);
+```
 
 ## Rendering File Input <span id="rendering-file-input"></span>
 
