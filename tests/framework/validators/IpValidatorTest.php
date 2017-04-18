@@ -13,10 +13,6 @@ class IpValidatorTest extends TestCase
 {
     protected function setUp()
     {
-        if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The environment does not support IPv6.');
-        }
-
         parent::setUp();
         $this->mockApplication();
     }
