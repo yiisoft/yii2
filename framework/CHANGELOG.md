@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 --------------------------
 
 - Enh #13820: Add new HTTP status code 451 (yyxx9988)
+- Bug #5442: Fixed problem on load fixture dependencies with database related tests
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
@@ -66,7 +67,7 @@ Yii Framework 2 Change Log
 - Enh #13945: Removed Courier New from error page fonts list since it looks bad on Linux (samdark)
 - Bug #13961: RBAC Rules: PostgreSQL: PHP Warning "unserialize() expects parameter 1 to be string, resource given" was fixed (vsguts)
 - Enh #13976: Disabled IPv6 check on `\yii\validators\IpValidator` as it turns out it is not needed for inet_* methods to work (mikk150)
-- Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire) 
+- Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
 
 2.0.11.2 February 08, 2017
 --------------------------
@@ -1817,4 +1818,3 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
-
