@@ -27,7 +27,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection->open();
         $this->assertTrue($connection->isActive);
-        $this->assertTrue($connection->pdo instanceof \PDO);
+        $this->assertInstanceOf('\\PDO', $connection->pdo);
 
         $connection->close();
         $this->assertFalse($connection->isActive);
@@ -35,7 +35,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection = new Connection;
         $connection->dsn = 'unknown::memory:';
-        $this->setExpectedException('yii\db\Exception');
+        $this->expectException('yii\db\Exception');
         $connection->open();
     }
 
@@ -151,6 +151,8 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
+
+        $this->assertTrue(true); // should not be any exception so far
     }
 
     /**

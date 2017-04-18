@@ -7,7 +7,7 @@ Yii 默认支持以下数据库 (DBMS):
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): 版本 >= 8.4
 - [CUBRID](http://www.cubrid.org/): 版本 >= 9.3 . (由于PHP PDO 扩展的一个[bug](http://jira.cubrid.org/browse/APIS-658)  引用值会无效,所以你需要在 CUBRID的客户端和服务端都使用 9.3 )
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): 版本>=2005.

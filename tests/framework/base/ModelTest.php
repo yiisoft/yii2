@@ -102,6 +102,41 @@ class ModelTest extends TestCase
         $this->assertEquals('', $model->firstName);
     }
 
+    public function testLoadMultiple()
+    {
+        $data = [
+            ['firstName' => 'Thomas', 'lastName' => 'Anderson'],
+            ['firstName' => 'Agent', 'lastName' => 'Smith'],
+        ];
+
+        Speaker::$formName = '';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertTrue(Speaker::loadMultiple([$neo, $smith], $data));
+        $this->assertEquals('Thomas', $neo->firstName);
+        $this->assertEquals('Smith', $smith->lastName);
+
+        Speaker::$formName = 'Speaker';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertTrue(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Speaker'));
+        $this->assertEquals('Thomas', $neo->firstName);
+        $this->assertEquals('Smith', $smith->lastName);
+
+        Speaker::$formName = 'Speaker';
+        $neo = new Speaker();
+        $neo->setScenario('test');
+        $smith = new Speaker();
+        $smith->setScenario('test');
+        $this->assertFalse(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Morpheus'));
+        $this->assertEquals('', $neo->firstName);
+        $this->assertEquals('', $smith->lastName);
+    }
+
     public function testActiveAttributes()
     {
         // by default mass assignment doesn't work at all
@@ -392,8 +427,8 @@ class ModelTest extends TestCase
 
     public function testCreateValidators()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException',
-            'Invalid validation rule: a rule must specify both attribute names and validator type.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Invalid validation rule: a rule must specify both attribute names and validator type.');
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
@@ -445,7 +480,7 @@ class WriteOnlyModel extends Model
     public function rules()
     {
         return [
-            [['password'],'safe'],
+            [['password'], 'safe'],
         ];
     }
 

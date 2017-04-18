@@ -90,7 +90,7 @@ class BaseStringHelper
             return '';
         }
     }
-    
+
     /**
      * Truncates a string to the number of characters specified.
      *
@@ -107,14 +107,14 @@ class BaseStringHelper
         if ($asHtml) {
             return static::truncateHtml($string, $length, $suffix, $encoding ?: Yii::$app->charset);
         }
-        
+
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
             return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
         } else {
             return $string;
         }
     }
-    
+
     /**
      * Truncates a string to the number of words specified.
      *
@@ -138,7 +138,7 @@ class BaseStringHelper
             return $string;
         }
     }
-    
+
     /**
      * Truncate a string while preserving the HTML.
      *
@@ -157,13 +157,13 @@ class BaseStringHelper
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
         $totalCount = 0;
+        $depth = 0;
         $truncated = [];
         foreach ($tokens as $token) {
             if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
-                if ($totalCount < $count) {
-                    $openTokens[$token->name] = isset($openTokens[$token->name]) ? $openTokens[$token->name] + 1 : 1;
-                    $truncated[] = $token;
-                }
+                $openTokens[$depth] = $token->name;
+                $truncated[] = $token;
+                ++$depth;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
@@ -176,14 +176,21 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                if (!empty($openTokens[$token->name])) {
-                    $openTokens[$token->name]--;
+                if ($token->name === $openTokens[$depth-1]) {
+                    --$depth;
+                    unset($openTokens[$depth]);
                     $truncated[] = $token;
                 }
             } elseif ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
                 $truncated[] = $token;
             }
-            if (0 === $openTokens && $totalCount >= $count) {
+            if ($totalCount >= $count) {
+                if (0 < count($openTokens)) {
+                    krsort($openTokens);
+                    foreach ($openTokens as $name) {
+                        $truncated[] = new \HTMLPurifier_Token_End($name);
+                    }
+                }
                 break;
             }
         }
@@ -304,5 +311,34 @@ class BaseStringHelper
         }
 
         return $value;
+    }
+
+    /**
+     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     *
+     * > Note: Base 64 padding `=` may be at the end of the returned string.
+     * > `=` is not transparent to URL encoding.
+     *
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input the string to encode.
+     * @return string encoded string.
+     * @since 2.0.12
+     */
+    public static function base64UrlEncode($input)
+    {
+        return strtr(base64_encode($input), '+/', '-_');
+    }
+
+    /**
+     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     *
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input encoded string.
+     * @return string decoded string.
+     * @since 2.0.12
+     */
+    public static function base64UrlDecode($input)
+    {
+        return base64_decode(strtr($input, '-_', '+/'));
     }
 }
