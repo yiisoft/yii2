@@ -61,7 +61,8 @@ class ControllerTest extends TestCase
 
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
-        $this->setExpectedException('yii\console\Exception', $message);
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
     }
 
@@ -132,4 +133,18 @@ class ControllerTest extends TestCase
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
     }
+
+
+    /**
+     * Tests if action help does not include (class) type hinted arguments.
+     * @see #10372
+     */
+    public function testHelpSkipsTypeHintedArguments()
+     {
+         $controller = new FakeController('fake', Yii::$app);
+         $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
+
+         $this->assertArrayNotHasKey('typedArgument', $help);
+         $this->assertArrayHasKey('simpleArgument', $help);
+     }
 }

@@ -59,6 +59,8 @@ class SluggableBehaviorTest extends TestCase
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :
@@ -78,7 +80,7 @@ class SluggableBehaviorTest extends TestCase
     public function testSlugSeveralAttributes()
     {
         $model = new ActiveRecordSluggable();
-        $model->getBehavior('sluggable')->attribute = array('name', 'category_id');
+        $model->getBehavior('sluggable')->attribute = ['name', 'category_id'];
 
         $model->name = 'test';
         $model->category_id = 10;

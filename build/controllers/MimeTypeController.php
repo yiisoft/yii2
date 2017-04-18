@@ -39,14 +39,14 @@ class MimeTypeController extends Controller
             $this->stdout("done.\n", Console::FG_GREEN);
             $this->stdout("generating file $outFile...");
             $mimeMap = [];
-            foreach(explode("\n", $content) as $line) {
+            foreach (explode("\n", $content) as $line) {
                 $line = trim($line);
                 if (empty($line) || $line[0] == '#') { // skip comments and empty lines
                     continue;
                 }
                 $parts = preg_split('/\s+/', $line);
                 $mime = array_shift($parts);
-                foreach($parts as $ext) {
+                foreach ($parts as $ext) {
                     if (!empty($ext)) {
                         $mimeMap[$ext] = $mime;
                     }

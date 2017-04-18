@@ -13,13 +13,14 @@ Yii は下記の DBMS のサポートを内蔵しています。
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): バージョン 8.4 以上。
 - [CUBRID](http://www.cubrid.org/): バージョン 9.3 以上。
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): バージョン 2008 以上。
 
 > Note: PHP 7 用の pdo_oci の新しいバージョンは、現在、ソースコードとしてのみ存在します。
-  [コミュニティによる説明](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268) に従って、コンパイルしてください。
+  [コミュニティによる説明](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268) に従ってコンパイルするか、
+  または、[PDO エミュレーションレイヤ](https://github.com/taq/pdooci) を使って下さい。
 
 ## DB 接続を作成する <span id="creating-db-connections"></span>
 

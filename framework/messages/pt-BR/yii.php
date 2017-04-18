@@ -91,6 +91,7 @@ return [
     'You can upload at most {limit, number} {limit, plural, one{file} other{files}}.' => 'Você pode fazer o upload de, no máximo, {limit, number} {limit, plural, one{arquivo} other{arquivos}}.',
     'the input value' => 'o valor de entrada',
     '{attribute} "{value}" has already been taken.' => '{attribute} "{value}" já foi utilizado.',
+    'The combination {values} of {attributes} has already been taken.' => 'A combinação {values} de {attributes} já foi utilizado.',
     '{attribute} cannot be blank.' => '"{attribute}" não pode ficar em branco.',
     '{attribute} contains wrong subnet mask.' => '{attribute} contém a máscara de sub-rede errado.',
     '{attribute} is invalid.' => '"{attribute}" é inválido.',
@@ -118,4 +119,5 @@ return [
     '{attribute} should contain at most {max, number} {max, plural, one{character} other{characters}}.' => '"{attribute}" deve conter no máximo {max, number} {max, plural, one{caractere} other{caracteres}}.',
     '{attribute} should contain {length, number} {length, plural, one{character} other{characters}}.' => '"{attribute}" deve conter {length, number} {length, plural, one{caractere} other{caracteres}}.',
     '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} deve ser igual a "{compareValueOrAttribute}".',
+    ' and ' => ' e ',
 ];

@@ -443,23 +443,31 @@ EOD;
 
         if (empty($obsolete)) {
             $this->stdout("Nothing obsoleted...skipped.\n");
-        } else {
-            if ($removeUnused) {
-                $db->createCommand()
-                   ->delete($sourceMessageTable, ['in', 'id', $obsolete])
-                   ->execute();
-                $this->stdout("deleted.\n");
-            } elseif ($markUnused) {
-                $db->createCommand()
-                   ->update(
-                       $sourceMessageTable,
-                       ['message' => new \yii\db\Expression("CONCAT('@@',message,'@@')")],
-                       ['in', 'id', $obsolete]
-                   )->execute();
-                $this->stdout("updated.\n");
-            } else {
-                $this->stdout("kept untouched.\n");
+            return;
+        }
+
+        if ($removeUnused) {
+            $db->createCommand()
+               ->delete($sourceMessageTable, ['in', 'id', $obsolete])
+               ->execute();
+            $this->stdout("deleted.\n");
+        } elseif ($markUnused) {
+            $rows = (new Query)
+                ->select(['id', 'message'])
+                ->from($sourceMessageTable)
+                ->where(['in', 'id', $obsolete])
+                ->all($db);
+
+            foreach ($rows as $row) {
+                $db->createCommand()->update(
+                    $sourceMessageTable,
+                    ['message' => '@@' . $row['message'] . '@@'],
+                    ['id' => $row['id']]
+                )->execute();
             }
+            $this->stdout("updated.\n");
+        } else {
+            $this->stdout("kept untouched.\n");
         }
     }
 
@@ -526,11 +534,11 @@ EOD;
                         if (isset($buffer[0][0], $buffer[1], $buffer[2][0]) && $buffer[0][0] === T_CONSTANT_ENCAPSED_STRING && $buffer[1] === ',' && $buffer[2][0] === T_CONSTANT_ENCAPSED_STRING) {
                             // is valid call we can extract
                             $category = stripcslashes($buffer[0][1]);
-                            $category = mb_substr($category, 1, mb_strlen($category) - 2);
+                            $category = mb_substr($category, 1, -1);
 
                             if (!$this->isCategoryIgnored($category, $ignoreCategories)) {
                                 $message = stripcslashes($buffer[2][1]);
-                                $message = mb_substr($message, 1, mb_strlen($message) - 2);
+                                $message = mb_substr($message, 1, -1);
 
                                 $messages[$category][] = $message;
                             }

@@ -75,11 +75,6 @@ phpunit をグローバルにインストールしていない場合は、代り
 
 JavaScript の単体テストは、レポジトリのルートディレクトリで `npm test` を走らせることによって実行することが出来ます。
 
-> Note: タイムアウトエラー、例えば `Error: timeout of 2000ms exceeded. Ensure the done() callback is being called in this test.` になる場合は、
-  タイムアウトになる時間を延ばすことが出来ます。
-  `npm test -- --timeout 30000`
-  (`--` を忘れないように。追加の引数を渡すために必要です)。
-
 ### エクステンション
 
 エクステンションに取り組むためには、エクステンションのレポジトリをクローンする必要があります。

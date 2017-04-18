@@ -386,7 +386,7 @@ class YiiRequirementChecker
      */
     function getServerInfo()
     {
-        return isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';;
+        return isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
     }
 
     /**

@@ -96,7 +96,7 @@ class SecurityTest extends TestCase
         $data = 'known data';
         $key = 'secret';
         $hashedData = $this->security->hashData($data, $key);
-        $this->assertFalse($data === $hashedData);
+        $this->assertNotSame($data, $hashedData);
         $this->assertEquals($data, $this->security->validateData($hashedData, $key));
         $hashedData[strlen($hashedData) - 1] = 'A';
         $this->assertFalse($this->security->validateData($hashedData, $key));
@@ -118,14 +118,14 @@ class SecurityTest extends TestCase
         $key = 'secret';
 
         $encryptedData = $this->security->encryptByPassword($data, $key);
-        $this->assertFalse($data === $encryptedData);
+        $this->assertNotSame($data, $encryptedData);
         $decryptedData = $this->security->decryptByPassword($encryptedData, $key);
         $this->assertEquals($data, $decryptedData);
 
         $tampered = $encryptedData;
         $tampered[20] = ~$tampered[20];
         $decryptedData = $this->security->decryptByPassword($tampered, $key);
-        $this->assertTrue(false === $decryptedData);
+        $this->assertFalse($decryptedData);
     }
 
     public function testEncryptByKey()
@@ -134,7 +134,7 @@ class SecurityTest extends TestCase
         $key = $this->security->generateRandomKey(80);
 
         $encryptedData = $this->security->encryptByKey($data, $key);
-        $this->assertFalse($data === $encryptedData);
+        $this->assertNotSame($data, $encryptedData);
         $decryptedData = $this->security->decryptByKey($encryptedData, $key);
         $this->assertEquals($data, $decryptedData);
 
@@ -145,10 +145,10 @@ class SecurityTest extends TestCase
         $tampered = $encryptedData;
         $tampered[20] = ~$tampered[20];
         $decryptedData = $this->security->decryptByKey($tampered, $key);
-        $this->assertTrue(false === $decryptedData);
+        $this->assertFalse($decryptedData);
 
         $decryptedData = $this->security->decryptByKey($encryptedData, $key, $key . "\0");
-        $this->assertTrue(false === $decryptedData);
+        $this->assertFalse($decryptedData);
     }
 
     /**
@@ -887,7 +887,8 @@ TEXT;
     {
         static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
         static::$fopen = false;
-        $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+        $this->expectException('yii\base\Exception');
+        $this->expectExceptionMessage('Unable to generate a random key');
 
         $this->security->generateRandomKey(42);
     }
@@ -899,7 +900,8 @@ TEXT;
     {
         static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
         static::$fread = false;
-        $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+        $this->expectException('yii\base\Exception');
+        $this->expectExceptionMessage('Unable to generate a random key');
 
         $this->security->generateRandomKey(42);
     }
@@ -933,7 +935,8 @@ TEXT;
         }
         // there is no /dev/urandom on windows so we expect this to fail
         if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false ) {
-            $this->setExpectedException('yii\base\Exception', 'Unable to generate a random key');
+            $this->expectException('yii\base\Exception');
+            $this->expectExceptionMessage('Unable to generate a random key');
         }
         // Function mcrypt_create_iv() is deprecated since PHP 7.1
         if (version_compare(PHP_VERSION, '7.1.0alpha', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
@@ -951,7 +954,7 @@ TEXT;
             $this->assertInternalType('string', $key2);
             $this->assertEquals($length, strlen($key2));
             if ($length >= 7) { // avoid random test failure, short strings are likely to collide
-                $this->assertTrue($key1 != $key2);
+                $this->assertNotEquals($key1, $key2);
             }
         }
 
@@ -963,7 +966,7 @@ TEXT;
         $key2 = $this->security->generateRandomKey($length);
         $this->assertInternalType('string', $key2);
         $this->assertEquals($length, strlen($key2));
-        $this->assertTrue($key1 != $key2);
+        $this->assertNotEquals($key1, $key2);
 
         // force /dev/urandom reading loop to deal with chunked data
         // the above test may have read everything in one run.
@@ -1250,6 +1253,42 @@ TEXT;
     public function testCompareStrings($expected, $actual)
     {
         $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
+    }
+
+    /**
+     * @dataProvider maskProvider
+     */
+    public function testMasking($unmaskedToken)
+    {
+        $maskedToken = $this->security->maskToken($unmaskedToken);
+        $this->assertGreaterThan(mb_strlen($unmaskedToken, '8bit') * 2, mb_strlen($maskedToken, '8bit'));
+        $this->assertEquals($unmaskedToken, $this->security->unmaskToken($maskedToken));
+    }
+
+    public function testUnMaskingInvalidStrings()
+    {
+        $this->assertEquals('', $this->security->unmaskToken(''));
+        $this->assertEquals('', $this->security->unmaskToken('1'));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     */
+    public function testMaskingInvalidStrings()
+    {
+        $this->security->maskToken('');
+    }
+
+    /**
+     * @return array
+     */
+    public function maskProvider() {
+        return [
+            ['1'],
+            ['SimpleToken'],
+            ['Token with special characters: %d1    5"'],
+            ['Token with UTF8 character: †']
+        ];
     }
 }
 

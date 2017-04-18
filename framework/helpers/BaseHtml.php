@@ -24,6 +24,12 @@ use yii\base\Model;
  */
 class BaseHtml
 {
+
+    /**
+     * @var string Regular expression used for attribute name validation.
+     * @since 2.0.12
+     */
+    public static $attributeRegex = '/(^|.*\])([\w\.\+]+)(\[.*|$)/u';
     /**
      * @var array list of void elements (element name => 1)
      * @see http://www.w3.org/TR/html-markup/syntax.html#void-element
@@ -59,6 +65,8 @@ class BaseHtml
 
         'href',
         'src',
+        'srcset',
+        'form',
         'action',
         'method',
 
@@ -430,11 +438,23 @@ class BaseHtml
      * the attributes of the resulting tag. The values will be HTML-encoded using [[encode()]].
      * If a value is null, the corresponding attribute will not be rendered.
      * See [[renderTagAttributes()]] for details on how attributes are being rendered.
-     * @return string the generated image tag
+     *
+     * Since version 2.0.12 It is possible to pass the `srcset` option as an array which keys are
+     * descriptors and values are URLs. All URLs will be processed by [[Url::to()]].
+     * @return string the generated image tag.
      */
     public static function img($src, $options = [])
     {
         $options['src'] = Url::to($src);
+
+        if (isset($options['srcset']) && is_array($options['srcset'])) {
+            $srcset = [];
+            foreach ($options['srcset'] as $descriptor => $url) {
+                $srcset[] = Url::to($url) . ' ' . $descriptor;
+            }
+            $options['srcset'] = implode(',', $srcset);
+        }
+
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
@@ -730,7 +750,11 @@ class BaseHtml
         $value = array_key_exists('value', $options) ? $options['value'] : '1';
         if (isset($options['uncheck'])) {
             // add a hidden field so that if the checkbox is not selected, it still submits a value
-            $hidden = static::hiddenInput($name, $options['uncheck']);
+            $hiddenOptions = [];
+            if (isset($options['form'])) {
+                $hiddenOptions['form'] = $options['form'];
+            }
+            $hidden = static::hiddenInput($name, $options['uncheck'], $hiddenOptions);
             unset($options['uncheck']);
         } else {
             $hidden = '';
@@ -1197,7 +1221,7 @@ class BaseHtml
             foreach ($model->getErrors() as $errors) {
                 foreach ($errors as $error) {
                     $line = $encode ? Html::encode($error) : $error;
-                    if (array_search($line, $lines) === false) {
+                    if (!in_array($line, $lines, true)) {
                         $lines[] = $line;
                     }
                     if (!$showAllErrors) {
@@ -1465,9 +1489,13 @@ class BaseHtml
         }
         if (!array_key_exists('uncheck', $options)) {
             $options['uncheck'] = '0';
+        } elseif ($options['uncheck'] === false) {
+            unset($options['uncheck']);
         }
         if (!array_key_exists('label', $options)) {
             $options['label'] = static::encode($model->getAttributeLabel(static::getAttributeName($attribute)));
+        } elseif ($options['label'] === false) {
+            unset($options['label']);
         }
 
         $checked = "$value" === "{$options['value']}";
@@ -2051,7 +2079,7 @@ class BaseHtml
      */
     public static function getAttributeName($attribute)
     {
-        if (preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (preg_match(static::$attributeRegex, $attribute, $matches)) {
             return $matches[2];
         } else {
             throw new InvalidParamException('Attribute name must contain word characters only.');
@@ -2074,7 +2102,7 @@ class BaseHtml
      */
     public static function getAttributeValue($model, $attribute)
     {
-        if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $attribute = $matches[2];
@@ -2124,7 +2152,7 @@ class BaseHtml
     public static function getInputName($model, $attribute)
     {
         $formName = $model->formName();
-        if (!preg_match('/(^|.*\])([\w\.]+)(\[.*|$)/', $attribute, $matches)) {
+        if (!preg_match(static::$attributeRegex, $attribute, $matches)) {
             throw new InvalidParamException('Attribute name must contain word characters only.');
         }
         $prefix = $matches[1];

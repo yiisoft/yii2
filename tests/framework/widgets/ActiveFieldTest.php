@@ -342,7 +342,7 @@ EOD;
 
         // expected empty
         $actualValue = $this->activeField->getClientOptions();
-        $this->assertTrue(empty($actualValue) === true);
+        $this->assertEmpty($actualValue);
     }
 
     public function testGetClientOptionsWithActiveAttributeInScenario()
@@ -354,7 +354,7 @@ EOD;
 
         // expected empty
         $actualValue = $this->activeField->getClientOptions();
-        $this->assertTrue(empty($actualValue) === true);
+        $this->assertEmpty($actualValue);
 
     }
 
@@ -368,11 +368,11 @@ EOD;
         $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {return true;}";
         $this->assertEquals($expectedJsExpression, $actualValue['validate']);
 
-        $this->assertTrue(!isset($actualValue['validateOnChange']));
-        $this->assertTrue(!isset($actualValue['validateOnBlur']));
-        $this->assertTrue(!isset($actualValue['validateOnType']));
-        $this->assertTrue(!isset($actualValue['validationDelay']));
-        $this->assertTrue(!isset($actualValue['enableAjaxValidation']));
+        $this->assertNotTrue(isset($actualValue['validateOnChange']));
+        $this->assertNotTrue(isset($actualValue['validateOnBlur']));
+        $this->assertNotTrue(isset($actualValue['validateOnType']));
+        $this->assertNotTrue(isset($actualValue['validationDelay']));
+        $this->assertNotTrue(isset($actualValue['enableAjaxValidation']));
 
         $this->activeField->validateOnChange = $expectedValidateOnChange = false;
         $this->activeField->validateOnBlur = $expectedValidateOnBlur = false;
@@ -382,11 +382,11 @@ EOD;
 
         $actualValue = $this->activeField->getClientOptions();
 
-        $this->assertTrue($expectedValidateOnChange === $actualValue['validateOnChange']);
-        $this->assertTrue($expectedValidateOnBlur === $actualValue['validateOnBlur']);
-        $this->assertTrue($expectedValidateOnType === $actualValue['validateOnType']);
-        $this->assertTrue($expectedValidationDelay === $actualValue['validationDelay']);
-        $this->assertTrue($expectedEnableAjaxValidation === $actualValue['enableAjaxValidation']);
+        $this->assertSame($expectedValidateOnChange, $actualValue['validateOnChange']);
+        $this->assertSame($expectedValidateOnBlur, $actualValue['validateOnBlur']);
+        $this->assertSame($expectedValidateOnType, $actualValue['validateOnType']);
+        $this->assertSame($expectedValidationDelay, $actualValue['validationDelay']);
+        $this->assertSame($expectedEnableAjaxValidation, $actualValue['enableAjaxValidation']);
     }
 
     public function testGetClientOptionsValidatorWhenClientSet()
@@ -395,7 +395,7 @@ EOD;
         $this->activeField->enableAjaxValidation = true;
         $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
 
-        foreach($this->activeField->model->validators as $validator) {
+        foreach ($this->activeField->model->validators as $validator) {
             $validator->whenClient = "function (attribute, value) { return 'yii2' == 'yii2'; }"; // js
         }
 

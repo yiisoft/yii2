@@ -50,6 +50,22 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.11
+-----------------------
+
+* `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
+  indicating whether the timestamp has date information or it is just time value.
+
+* `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
+  in case of `format` being set to `boolean`.
+ 
+* The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
+  `$params`.
+
+* The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
+  If you extend this method, make sure to adjust your code.
+
+
 Upgrade from Yii 2.0.10
 -----------------------
 
@@ -59,7 +75,7 @@ Upgrade from Yii 2.0.10
 
 * `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
   If you extend from these classes and override these methods, you must make them public as well.
-  
+
 * `yii\widgets\MaskedInput` inputmask dependency was updated to `~3.3.3`.
   [See its changelog for details](https://github.com/RobinHerbots/Inputmask/blob/3.x/CHANGELOG.md).
 
