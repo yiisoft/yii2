@@ -117,7 +117,7 @@ abstract class Cache extends Component implements \ArrayAccess
         } elseif ($this->serializer === null) {
             $value = unserialize($value);
         } else {
-            $value = call_user_func($this->serializer[1], $value);
+            $value = call_user_func($this->serializer[1], $key, $value);
         }
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
@@ -189,7 +189,7 @@ abstract class Cache extends Component implements \ArrayAccess
                     $results[$key] = $values[$newKey];
                 } else {
                     $value = $this->serializer === null ? unserialize($values[$newKey])
-                        : call_user_func($this->serializer[1], $values[$newKey]);
+                        : call_user_func($this->serializer[1], $key, $values[$newKey]);
 
                     if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
                         $results[$key] = $value[0];
@@ -228,7 +228,7 @@ abstract class Cache extends Component implements \ArrayAccess
         if ($this->serializer === null) {
             $value = serialize([$value, $dependency]);
         } elseif ($this->serializer !== false) {
-            $value = call_user_func($this->serializer[0], [$value, $dependency]);
+            $value = call_user_func($this->serializer[0], [$key, $value, $dependency]);
         }
         $key = $this->buildKey($key);
 
@@ -277,7 +277,7 @@ abstract class Cache extends Component implements \ArrayAccess
             if ($this->serializer === null) {
                 $value = serialize([$value, $dependency]);
             } elseif ($this->serializer !== false) {
-                $value = call_user_func($this->serializer[0], [$value, $dependency]);
+                $value = call_user_func($this->serializer[0], [$key, $value, $dependency]);
             }
 
             $key = $this->buildKey($key);
@@ -327,7 +327,7 @@ abstract class Cache extends Component implements \ArrayAccess
             if ($this->serializer === null) {
                 $value = serialize([$value, $dependency]);
             } elseif ($this->serializer !== false) {
-                $value = call_user_func($this->serializer[0], [$value, $dependency]);
+                $value = call_user_func($this->serializer[0], [$key, $value, $dependency]);
             }
 
             $key = $this->buildKey($key);
@@ -357,7 +357,7 @@ abstract class Cache extends Component implements \ArrayAccess
         if ($this->serializer === null) {
             $value = serialize([$value, $dependency]);
         } elseif ($this->serializer !== false) {
-            $value = call_user_func($this->serializer[0], [$value, $dependency]);
+            $value = call_user_func($this->serializer[0], [$key, $value, $dependency]);
         }
         $key = $this->buildKey($key);
 
