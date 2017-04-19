@@ -204,7 +204,7 @@ class TimestampBehaviorTest extends TestCase
         $model->touch('created_at');
     }
     
-    public function testTouchNotNewRecord()
+    public function testTouchigNotNewRecord()
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
