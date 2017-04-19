@@ -7,6 +7,34 @@ use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
 use yii\data\Sort;
 
+class Post1
+{
+    public $id = 23;
+    public $title = 'tt';
+}
+
+class Post2 extends Object
+{
+    public $id = 123;
+    public $content = 'test';
+    private $secret = 's';
+    public function getSecret()
+    {
+        return $this->secret;
+    }
+}
+
+class Post3 extends Object
+{
+    public $id = 33;
+    /** @var Object */
+    public $subObject;
+
+    public function init()
+    {
+        $this->subObject = new Post2();
+    }
+}
 
 /**
  * @group helpers
