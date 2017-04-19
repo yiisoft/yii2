@@ -7,34 +7,6 @@ use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
 use yii\data\Sort;
 
-class Post1
-{
-    public $id = 23;
-    public $title = 'tt';
-}
-
-class Post2 extends Object
-{
-    public $id = 123;
-    public $content = 'test';
-    private $secret = 's';
-    public function getSecret()
-    {
-        return $this->secret;
-    }
-}
-
-class Post3 extends Object
-{
-    public $id = 33;
-    /** @var Object */
-    public $subObject;
-
-    public function init()
-    {
-        $this->subObject = new Post2();
-    }
-}
 
 /**
  * @group helpers
@@ -957,5 +929,19 @@ class ArrayHelperTest extends TestCase
         ]);
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
+    }
+
+    public function testIsEmpty()
+    {
+        //should be true
+        $this->assertTrue(ArrayHelper::isEmpty([]));
+        $this->assertTrue(ArrayHelper::isEmpty(['']));
+        $this->assertTrue(ArrayHelper::isEmpty([0 => [], 1 => []]));
+        $this->assertTrue(ArrayHelper::isEmpty([0 => [], 1 => []]));
+        //should be false, as it's non-empty  or not an array
+        $this->assertFalse(ArrayHelper::isEmpty('this is string'));
+        $this->assertFalse(ArrayHelper::isEmpty(new static()));
+        $this->assertFalse(ArrayHelper::isEmpty(['x', 'y']));
+        $this->assertFalse(ArrayHelper::isEmpty(['x', 'test' => []]));
     }
 }
