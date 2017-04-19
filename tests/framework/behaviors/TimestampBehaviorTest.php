@@ -189,7 +189,7 @@ class TimestampBehaviorTest extends TestCase
         $this->assertEquals(date('Y'), $model->updated_at);
     }
     
-    public function testTouchIsNewRecordGenerateException()
+    public function testTouchingNewRecordGeneratesException()
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
