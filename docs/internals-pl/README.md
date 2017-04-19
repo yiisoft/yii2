@@ -17,7 +17,6 @@ Dokumentacja
 ------------
 
 - [Status tłumaczeń](translation-status.md) - które z dokumentów są gotowe do przetłumaczenia.
-- [Ekipy tłumaczące](translation-teams.md)
 - [Cykl tworzenia tłumaczenia](translation-workflow.md)
 
 
