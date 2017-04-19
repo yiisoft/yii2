@@ -89,7 +89,7 @@ This will allow you to theme `@app/widgets/currency/views/index.php` into `@app/
 
 Sometimes you may want to define a basic theme which contains a basic look and feel of the application, and then
 based on the current holiday, you may want to vary the look and feel slightly. You can achieve this goal using
-theme inheritance which is done by mapping a single view path to multiple targets. For example,
+theme inheritance which is done by mapping a single view path to multiple targets. For example:
 
 ```php
 'pathMap' => [
