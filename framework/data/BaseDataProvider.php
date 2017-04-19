@@ -122,6 +122,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     public function setModels($models)
     {
         $this->_models = $models;
+        
+        $this->prepare(true);
     }
 
     /**
