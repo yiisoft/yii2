@@ -12,6 +12,8 @@ use yii\base\Action;
 use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\web\Response;
+use yii\captcha\drivers\DriverFactory;
+use yii\captcha\drivers\ImageSettings;
 
 /**
  * CaptchaAction renders a CAPTCHA image.
@@ -32,6 +34,14 @@ use yii\web\Response;
  * 3. In the controller view, insert a [[Captcha]] widget in the form.
  *
  * @property string $verifyCode The verification code. This property is read-only.
+ * @property int $width The width of the generated CAPTCHA image. Defaults to 120.
+ * @property int $height The  of the generated CAPTCHA image. Defaults to 50
+ * @property int $padding Padding around the text. Defaults to 2.
+ * @property int $backColor The background color. For example, 0x55FF00. Defaults to 0xFFFFFF, meaning white color.
+ * @property int $foreColor The font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
+ * @property bool $transparent Whether to use transparent background. Defaults to false.
+ * @property int $offset The offset between characters. Defaults to -2. You can adjust this property in order to decrease or increase the readability of the captcha.
+ * @property string $fontFile The TrueType font file. This can be either a file path or path alias.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -48,48 +58,17 @@ class CaptchaAction extends Action
      * A value less than or equal to 0 means the test is unlimited (available since version 1.1.2).
      */
     public $testLimit = 3;
-    /**
-     * @var int the width of the generated CAPTCHA image. Defaults to 120.
-     */
-    public $width = 120;
-    /**
-     * @var int the height of the generated CAPTCHA image. Defaults to 50.
-     */
-    public $height = 50;
-    /**
-     * @var int padding around the text. Defaults to 2.
-     */
-    public $padding = 2;
-    /**
-     * @var int the background color. For example, 0x55FF00.
-     * Defaults to 0xFFFFFF, meaning white color.
-     */
-    public $backColor = 0xFFFFFF;
-    /**
-     * @var int the font color. For example, 0x55FF00. Defaults to 0x2040A0 (blue color).
-     */
-    public $foreColor = 0x2040A0;
-    /**
-     * @var bool whether to use transparent background. Defaults to false.
-     */
-    public $transparent = false;
+
     /**
      * @var int the minimum length for randomly generated word. Defaults to 6.
      */
     public $minLength = 6;
+
     /**
      * @var int the maximum length for randomly generated word. Defaults to 7.
      */
     public $maxLength = 7;
-    /**
-     * @var int the offset between characters. Defaults to -2. You can adjust this property
-     * in order to decrease or increase the readability of the captcha.
-     */
-    public $offset = -2;
-    /**
-     * @var string the TrueType font file. This can be either a file path or path alias.
-     */
-    public $fontFile = '@yii/captcha/SpicyRice.ttf';
+   
     /**
      * @var string the fixed verification code. When this property is set,
      * [[getVerifyCode()]] will always return the value of this property.
@@ -98,6 +77,7 @@ class CaptchaAction extends Action
      * If not set, it means the verification code will be randomly generated.
      */
     public $fixedVerifyCode;
+
     /**
      * @var string the rendering library to use. Currently supported only 'gd' and 'imagick'.
      * If not set, library will be determined automatically.
@@ -105,6 +85,11 @@ class CaptchaAction extends Action
      */
     public $imageLibrary;
 
+    /**
+     * Image generate settings.
+     * @var \yii\captcha\drivers\ImageSettings
+     */
+    private $_imageSettings;
 
     /**
      * Initializes the action.
@@ -112,10 +97,7 @@ class CaptchaAction extends Action
      */
     public function init()
     {
-        $this->fontFile = Yii::getAlias($this->fontFile);
-        if (!is_file($this->fontFile)) {
-            throw new InvalidConfigException("The font file does not exist: {$this->fontFile}");
-        }
+        $this->_imageSettings = new ImageSettings();
     }
 
     /**
@@ -246,109 +228,11 @@ class CaptchaAction extends Action
      */
     protected function renderImage($code)
     {
-        if (isset($this->imageLibrary)) {
-            $imageLibrary = $this->imageLibrary;
-        } else {
-            $imageLibrary = Captcha::checkRequirements();
-        }
-        if ($imageLibrary === 'gd') {
-            return $this->renderImageByGD($code);
-        } elseif ($imageLibrary === 'imagick') {
-            return $this->renderImageByImagick($code);
-        } else {
-            throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
-        }
-    }
+        /* @var $factory DriverFactory */
+        $factory = Yii::createObject(DriverFactory::className());
+        $captchaDriver = $factory->make($this->imageLibrary);
 
-    /**
-     * Renders the CAPTCHA image based on the code using GD library.
-     * @param string $code the verification code
-     * @return string image contents in PNG format.
-     */
-    protected function renderImageByGD($code)
-    {
-        $image = imagecreatetruecolor($this->width, $this->height);
-
-        $backColor = imagecolorallocate(
-            $image,
-            (int) ($this->backColor % 0x1000000 / 0x10000),
-            (int) ($this->backColor % 0x10000 / 0x100),
-            $this->backColor % 0x100
-        );
-        imagefilledrectangle($image, 0, 0, $this->width - 1, $this->height - 1, $backColor);
-        imagecolordeallocate($image, $backColor);
-
-        if ($this->transparent) {
-            imagecolortransparent($image, $backColor);
-        }
-
-        $foreColor = imagecolorallocate(
-            $image,
-            (int) ($this->foreColor % 0x1000000 / 0x10000),
-            (int) ($this->foreColor % 0x10000 / 0x100),
-            $this->foreColor % 0x100
-        );
-
-        $length = strlen($code);
-        $box = imagettfbbox(30, 0, $this->fontFile, $code);
-        $w = $box[4] - $box[0] + $this->offset * ($length - 1);
-        $h = $box[1] - $box[5];
-        $scale = min(($this->width - $this->padding * 2) / $w, ($this->height - $this->padding * 2) / $h);
-        $x = 10;
-        $y = round($this->height * 27 / 40);
-        for ($i = 0; $i < $length; ++$i) {
-            $fontSize = (int) (mt_rand(26, 32) * $scale * 0.8);
-            $angle = mt_rand(-10, 10);
-            $letter = $code[$i];
-            $box = imagettftext($image, $fontSize, $angle, $x, $y, $foreColor, $this->fontFile, $letter);
-            $x = $box[2] + $this->offset;
-        }
-
-        imagecolordeallocate($image, $foreColor);
-
-        ob_start();
-        imagepng($image);
-        imagedestroy($image);
-
-        return ob_get_clean();
-    }
-
-    /**
-     * Renders the CAPTCHA image based on the code using ImageMagick library.
-     * @param string $code the verification code
-     * @return string image contents in PNG format.
-     */
-    protected function renderImageByImagick($code)
-    {
-        $backColor = $this->transparent ? new \ImagickPixel('transparent') : new \ImagickPixel('#' . str_pad(dechex($this->backColor), 6, 0, STR_PAD_LEFT));
-        $foreColor = new \ImagickPixel('#' . str_pad(dechex($this->foreColor), 6, 0, STR_PAD_LEFT));
-
-        $image = new \Imagick();
-        $image->newImage($this->width, $this->height, $backColor);
-
-        $draw = new \ImagickDraw();
-        $draw->setFont($this->fontFile);
-        $draw->setFontSize(30);
-        $fontMetrics = $image->queryFontMetrics($draw, $code);
-
-        $length = strlen($code);
-        $w = (int) $fontMetrics['textWidth'] - 8 + $this->offset * ($length - 1);
-        $h = (int) $fontMetrics['textHeight'] - 8;
-        $scale = min(($this->width - $this->padding * 2) / $w, ($this->height - $this->padding * 2) / $h);
-        $x = 10;
-        $y = round($this->height * 27 / 40);
-        for ($i = 0; $i < $length; ++$i) {
-            $draw = new \ImagickDraw();
-            $draw->setFont($this->fontFile);
-            $draw->setFontSize((int) (mt_rand(26, 32) * $scale * 0.8));
-            $draw->setFillColor($foreColor);
-            $image->annotateImage($draw, $x, $y, mt_rand(-10, 10), $code[$i]);
-            $fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
-            $x += (int) $fontMetrics['textWidth'] + $this->offset;
-        }
-
-        $image->setImageFormat('png');
-        return $image->getImageBlob();
+        return $captchaDriver->renderCaptcha($code, $this->_imageSettings);
     }
 
     /**
@@ -362,5 +246,40 @@ class CaptchaAction extends Action
             ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
             ->set('Content-Transfer-Encoding', 'binary')
             ->set('Content-type', 'image/png');
+    }
+
+    public function setWidth($width)
+    {
+        $this->_imageSettings->width = (int) $width;
+    }
+
+    public function setHeight($height)
+    {
+        $this->_imageSettings->height = (int) $height;
+    }
+
+    public function setPadding($padding)
+    {
+        $this->_imageSettings->padding = (int) $padding;
+    }
+
+    public function setBackColor($backColor)
+    {
+        $this->_imageSettings->backColor = (int) $backColor;
+    }
+
+    public function setForeColor($foreColor)
+    {
+        $this->_imageSettings->foreColor = (int) $foreColor;
+    }
+
+    public function setOffset($offset)
+    {
+        $this->_imageSettings->offset = (int) $offset;
+    }
+
+    public function setFontFile($fontFile)
+    {
+        $this->_imageSettings->fontFile = $fontFile;
     }
 }

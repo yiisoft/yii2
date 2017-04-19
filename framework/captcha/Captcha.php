@@ -7,8 +7,6 @@
 
 namespace yii\captcha;
 
-use Yii;
-use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -91,8 +89,6 @@ class Captcha extends InputWidget
     {
         parent::init();
 
-        static::checkRequirements();
-
         if (!isset($this->imageOptions['id'])) {
             $this->imageOptions['id'] = $this->options['id'] . '-image';
         }
@@ -154,28 +150,5 @@ class Captcha extends InputWidget
         ];
 
         return $options;
-    }
-
-    /**
-     * Checks if there is graphic extension available to generate CAPTCHA images.
-     * This method will check the existence of ImageMagick and GD extensions.
-     * @return string the name of the graphic extension, either "imagick" or "gd".
-     * @throws InvalidConfigException if neither ImageMagick nor GD is installed.
-     */
-    public static function checkRequirements()
-    {
-        if (extension_loaded('imagick')) {
-            $imagickFormats = (new \Imagick())->queryFormats('PNG');
-            if (in_array('PNG', $imagickFormats, true)) {
-                return 'imagick';
-            }
-        }
-        if (extension_loaded('gd')) {
-            $gdInfo = gd_info();
-            if (!empty($gdInfo['FreeType Support'])) {
-                return 'gd';
-            }
-        }
-        throw new InvalidConfigException('Either GD PHP extension with FreeType support or ImageMagick PHP extension with PNG support is required.');
     }
 }
