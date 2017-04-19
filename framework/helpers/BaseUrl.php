@@ -399,6 +399,11 @@ class BaseUrl
      *
      * // /index.php?r=post%2Fview&id=100&src=google
      * echo Url::current(['id' => 100]);
+     * 
+     * // index.php?r=post%2Findex&PostSearchForm%5Bid%5D=100&PostSearchForm%5Bsrc%5D=google for attributes of SearchModel
+     * echo Url::current([
+     *     $searchModel->formName() => ['id' => 100, 'src' => 'google'],
+     * ]);
      * ```
      *
      * Note that if you're replacing array parameters with `[]` at the end you should specify `$params` as nested arrays.
