@@ -66,11 +66,11 @@ class RateLimiter extends ActionFilter
      */
     public function init()
     {
-        if (!$this->request) {
+        if ($this->request === null) {
            $this->request = Yii::$app->getRequest();
         }
 
-        if (!$this->response) {
+        if ($this->response === null) {
             $this->response = Yii::$app->getResponse();
         }
     }
