@@ -515,15 +515,11 @@ class View extends \yii\base\View
             'pattern'=>'/^[^a-zA-Z_]+|[^a-zA-Z_0-9]+/',
         ]);
 
-        if($validator->validate($name))
+        if($validator->validate($name) || empty($name))
             throw new InvalidConfigException('Variable name must be in a valid ECMAscript format ');
 
-        if(is_array($value)){
-            $val=\yii\helpers\Json::htmlEncode($value);
-            $js=sprintf('var %s=%s',$name,$val);
-        }else {
-            $js=sprintf('var %s="%s"',$name,$value);
-        }
+        $val = \yii\helpers\Json::htmlEncode($value);
+        $js=sprintf('var %s=%s',$name,$val);
 
         $this->registerJs($js,$position,strval($name));
     }
