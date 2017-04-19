@@ -53,6 +53,22 @@ class BaseYiiTest extends TestCase
 
         Yii::setAlias('@some/alias', '/www');
         $this->assertEquals('/www', Yii::getAlias('@some/alias'));
+
+        Yii::setAlias('@yii', '/yii/framework');
+        Yii::setAlias('@yii', '/test', false);
+        $this->assertEquals('/yii/framework', Yii::getAlias('@yii'));
+
+        Yii::setAlias('@yii', '/yii/framework');
+        Yii::setAlias('@yii', '/www');
+        $this->assertEquals('/www', Yii::getAlias('@yii'));
+
+        Yii::setAlias('@some/alias', '/some/www');
+        Yii::setAlias('@some/alias', '/www', false);
+        $this->assertEquals('/some/www', Yii::getAlias('@some/alias'));
+
+        Yii::setAlias('@some/alias', '/some/www');
+        Yii::setAlias('@some/alias', '/www');
+        $this->assertEquals('/www', Yii::getAlias('@some/alias'));
     }
 
     public function testGetVersion()
