@@ -84,8 +84,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * Builds a SQL statement for create indexes in tables.
      * @see https://bugs.mysql.com/bug.php?id=48875
+     * 
+     * @param string $name
+     * @param string $table
+     * @param array $columns
+     * @param boolean $unique
+     * @return string
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {
@@ -162,7 +168,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * Limit.
+     * @param integer $limit
+     * @param integer $offset
+     * @return string
      */
     public function buildLimit($limit, $offset)
     {
@@ -183,7 +192,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * Builds a SQL statement for insert.
+     * @param string $table
+     * @param array $columns
+     * @param array $params
+     * @return string the SQL statement for insert.
      */
     protected function hasLimit($limit)
     {
@@ -249,8 +262,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
-     * @since 2.0.8
+     * Add a comment to a column.
+     * @param string $table
+     * @param string $column
+     * @param string $comment
+     * @return string
      */
     public function addCommentOnColumn($table, $column, $comment)
     {
@@ -265,8 +281,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
-     * @since 2.0.8
+     * Add a comment to a table.
+     * @param string $table
+     * @param string $comment
+     * @return string
      */
     public function addCommentOnTable($table, $comment)
     {
@@ -274,8 +292,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
-     * @since 2.0.8
+     * Drop a comment from a column.
+     * @param string $table
+     * @param string $column
+     * @return string
      */
     public function dropCommentFromColumn($table, $column)
     {
@@ -283,8 +303,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
-     * @since 2.0.8
+     * Drop a comment from a table.
+     * @param string $table
+     * @return string
      */
     public function dropCommentFromTable($table)
     {
