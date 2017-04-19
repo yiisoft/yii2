@@ -882,4 +882,20 @@ class BaseArrayHelper
 
         return $result;
     }
+
+    /**
+     * check if array| array values  is empty or not
+     * examples : -
+     * -  empty array: $array =>[]
+     * - empty values of array $array = > [ 0=>[] ,1=> [] ]
+     *
+     * @param array $array
+     *
+     * @return bool
+     * @author Ahmed Farag <ahmedfaragmostafa@gmail.com>
+     */
+    public static function isEmpty($array)
+    {
+        return is_array($array) ? empty(array_filter($array)) : false;
+    }
 }
