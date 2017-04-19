@@ -519,7 +519,7 @@ class View extends \yii\base\View
             throw new InvalidConfigException('Variable name must be in a valid ECMAscript format ');
 
         if(is_array($value)){
-            $val=\yii\helpers\Json::encode($value);
+            $val=\yii\helpers\Json::htmlEncode($value);
             $js=sprintf('var %s=%s',$name,$val);
         }else {
             $js=sprintf('var %s="%s"',$name,$value);
