@@ -190,6 +190,41 @@ class TimestampBehaviorTest extends TestCase
         $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertEquals(date('Y'), $model->updated_at);
     }
+    
+    public function testTouchingNewRecordGeneratesException()
+    {
+        ActiveRecordTimestamp::$behaviors = [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'value' => new Expression("strftime('%Y')"),
+            ],
+        ];        
+        $model = new ActiveRecordTimestamp();
+        
+        $this->setExpectedException('yii\base\InvalidCallException');
+        
+        $model->touch('created_at');
+    }
+    
+    public function testTouchigNotNewRecord()
+    {
+        ActiveRecordTimestamp::$behaviors = [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'value' => new Expression("strftime('%Y')"),
+            ],
+        ];
+        $model = new ActiveRecordTimestamp();
+        $enforcedTime = date('Y') - 1;
+        $model->created_at = $enforcedTime;
+        $model->updated_at = $enforcedTime;
+        $model->save(false);
+        $expectedCreatedAt = new Expression("strftime('%Y')");
+        
+        $model->touch('created_at');
+
+        $this->assertEquals($expectedCreatedAt, $model->created_at);
+    }
 }
 
 /**
