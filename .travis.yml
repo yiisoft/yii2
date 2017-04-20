@@ -79,7 +79,6 @@ matrix:
         # disable xdebug for performance in composer
         - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
         - travis_retry composer self-update && composer --version
-        - travis_retry composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
         - travis_retry composer install --prefer-dist --no-interaction
       before_script:
         - node --version
@@ -118,7 +117,6 @@ install:
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
