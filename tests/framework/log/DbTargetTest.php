@@ -143,7 +143,7 @@ abstract class DbTargetTest extends TestCase
 
     public function testTransactionRollBack()
     {
-        $db = $this->getConnection();
+        $db = self::getConnection();
         $logger = Yii::getLogger();
 
         $tx = $db->beginTransaction();
@@ -162,7 +162,7 @@ abstract class DbTargetTest extends TestCase
         $tx->rollBack();
 
         $query = (new Query())->select('COUNT(*)')->from(self::$logTable)->where(['category' => 'test', 'message' => 'test']);
-        $count = $query->createCommand(self::getConnection())->queryScalar();
+        $count = $query->createCommand($db)->queryScalar();
         static::assertEquals(1, $count);
     }
 }
