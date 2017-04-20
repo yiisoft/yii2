@@ -295,7 +295,7 @@ change this behavior with config or command options. You can exclude some fixtur
 
 To load fixture, run the following command:
 
-At the moment this fucntion works this way, it clears the data before inserting fixtures. Anytime it resets the table.
+> Note: Prior to loading data unload sequence is executed. Usually that results in cleaning up all the existing data inserted by previous fixture executions.
 
 ```
 yii fixture/load <fixture_name>
@@ -334,8 +334,6 @@ yii fixture User --globalFixtures='some\name\space\Custom'
 
 Unloading fixtures
 ------------------
-
-This function does not clear the data at the moment. Because this function on discussing by developers.
 
 To unload fixture, run the following command:
 
