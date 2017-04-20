@@ -62,7 +62,7 @@ class RateLimiter extends ActionFilter
     public $response;
 
     /**
-     * {inheritdoc}
+     * @inheritdoc
      */
     public function init()
     {
