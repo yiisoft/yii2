@@ -337,11 +337,11 @@ class BaseYii
     public static function createObject($type, array $params = [])
     {
         if (is_string($type)) {
-            return static::$container->get($type, $params);
+            return static::$container->get($type, $params, [], true);
         } elseif (is_array($type) && isset($type['class'])) {
             $class = $type['class'];
             unset($type['class']);
-            return static::$container->get($class, $params, $type);
+            return static::$container->get($class, $params, $type, true);
         } elseif (is_callable($type, true)) {
             return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
