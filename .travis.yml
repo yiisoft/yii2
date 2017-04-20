@@ -139,9 +139,9 @@ before_script:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
-  # enable code coverage on PHP 5.6, only one PHP version needs to generate coverage data
+  # enable code coverage on PHP 7.1, only one PHP version needs to generate coverage data
   - |
-    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+    if [ $TRAVIS_PHP_VERSION = '7.1' ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
 
@@ -157,7 +157,7 @@ script:
 
 after_script:
   - |
-    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+    if [ $TRAVIS_PHP_VERSION = '7.1' ]; then
       travis_retry wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi
