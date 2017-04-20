@@ -57,6 +57,6 @@ git clone git@github.com:yiisoft/yii2-app-basic.git
 Тепер ви можете створювати проекти, використовуючи свій шаблон:
 
 ```
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.3.1"
 composer create-project --prefer-dist --stability=dev mysoft/yii2-app-coolone new-project
 ```
