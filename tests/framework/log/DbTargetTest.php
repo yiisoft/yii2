@@ -161,7 +161,7 @@ abstract class DbTargetTest extends TestCase
 
         $tx->rollBack();
 
-        $query = (new Query())->select('COUNT(*)')->from(self::$logTable)->where(['category' => 'test', 'name' => 'test']);
+        $query = (new Query())->select('COUNT(*)')->from(self::$logTable)->where(['category' => 'test', 'message' => 'test']);
         $count = $query->createCommand(self::getConnection())->queryScalar();
         static::assertEquals(1, $count);
     }
