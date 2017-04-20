@@ -340,7 +340,7 @@ class UrlRuleTest extends TestCase
      */
     public function testCreateUrl($rule, $tests)
     {
-        foreach($tests as $test) {
+        foreach ($tests as $test) {
             list($params, $expected) = $test;
 
             $this->mockWebApplication();

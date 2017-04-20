@@ -11,6 +11,8 @@ use yii\console\controllers\CacheController;
  * @see CacheController
  *
  * @group console
+ * @group db
+ * @group mysql
  */
 class CacheControllerTest extends TestCase
 {
@@ -56,7 +58,7 @@ class CacheControllerTest extends TestCase
             ],
         ]);
 
-        if(isset($config['fixture'])) {
+        if (isset($config['fixture'])) {
             Yii::$app->db->open();
             $lines = explode(';', file_get_contents($config['fixture']));
             foreach ($lines as $line) {

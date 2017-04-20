@@ -71,7 +71,7 @@ abstract class CommandTest extends DatabaseTestCase
         $this->assertEquals(1, $command->queryScalar());
 
         $command = $db->createCommand('bad SQL');
-        $this->setExpectedException('\yii\db\Exception');
+        $this->expectException('\yii\db\Exception');
         $command->execute();
     }
 
@@ -82,11 +82,11 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertTrue($reader instanceof DataReader);
+        $this->assertInstanceOf(DataReader::className(), $reader);
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
-        $this->assertEquals(3, count($rows));
+        $this->assertCount(3, $rows);
         $row = $rows[2];
         $this->assertEquals(3, $row['id']);
         $this->assertEquals('user3', $row['name']);
@@ -132,7 +132,7 @@ abstract class CommandTest extends DatabaseTestCase
         $this->assertFalse($command->queryScalar());
 
         $command = $db->createCommand('bad SQL');
-        $this->setExpectedException('\yii\db\Exception');
+        $this->expectException('\yii\db\Exception');
         $command->query();
     }
 
@@ -336,7 +336,7 @@ SQL;
     public function testInsertSelect()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -350,11 +350,17 @@ SQL;
 
         $query = new \yii\db\Query();
         $query->select([
-                    '{{customer}}.email as name',
-                    'name as email',
-                    'address',
+                    '{{customer}}.[[email]] as name',
+                    '[[name]] as email',
+                    '[[address]]',
                 ]
-        )->from('{{customer}}');
+        )
+            ->from('{{customer}}')
+            ->where([
+                'and',
+                ['<>', 'name', 'foo'],
+                ['status' => [0, 1, 2, 3]],
+            ]);
 
         $command = $db->createCommand();
         $command->insert(
@@ -362,8 +368,8 @@ SQL;
             $query
         )->execute();
 
-        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryAll();
         $this->assertEquals([
             [
                 'email' => 't1@example.com',
@@ -384,7 +390,7 @@ SQL;
     public function testInsertSelectAlias()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -398,11 +404,17 @@ SQL;
 
         $query = new \yii\db\Query();
         $query->select([
-                'email' => '{{customer}}.email',
+                'email' => '{{customer}}.[[email]]',
                 'address' => 'name',
                 'name' => 'address',
             ]
-        )->from('{{customer}}');
+        )
+            ->from('{{customer}}')
+            ->where([
+                'and',
+                ['<>', 'name', 'foo'],
+                ['status' => [0, 1, 2, 3]],
+            ]);
 
         $command = $db->createCommand();
         $command->insert(
@@ -410,8 +422,8 @@ SQL;
             $query
         )->execute();
 
-        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryAll();
         $this->assertEquals([
             [
                 'email' => 't1@example.com',
@@ -463,7 +475,7 @@ SQL;
         $db = $this->getConnection();
         $db->createCommand('DELETE FROM {{order_with_null_fk}}')->execute();
 
-        switch($this->driverName){
+        switch ($this->driverName) {
             case 'pgsql':
                 $expression = "EXTRACT(YEAR FROM TIMESTAMP 'now')";
             break;
@@ -531,7 +543,7 @@ SQL;
     {
         $db = $this->getConnection();
 
-        if($db->getSchema()->getTableSchema('testCreateTable') !== null){
+        if ($db->getSchema()->getTableSchema('testCreateTable') !== null) {
             $db->createCommand()->dropTable('testCreateTable')->execute();
         }
 
@@ -545,13 +557,13 @@ SQL;
 
     public function testAlterTable()
     {
-        if ($this->driverName === 'sqlite'){
+        if ($this->driverName === 'sqlite') {
             $this->markTestSkipped('Sqlite does not support alterTable');
         }
 
         $db = $this->getConnection();
 
-        if($db->getSchema()->getTableSchema('testAlterTable') !== null){
+        if ($db->getSchema()->getTableSchema('testAlterTable') !== null) {
             $db->createCommand()->dropTable('testAlterTable')->execute();
         }
 
@@ -583,10 +595,10 @@ SQL;
         $db = $this->getConnection();
 
         $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
-        $this->assertEquals(2, count($rows));
+        $this->assertCount(2, $rows);
         $db->createCommand()->truncateTable('animal')->execute();
         $rows = $db->createCommand('SELECT * FROM {{animal}}')->queryAll();
-        $this->assertEquals(0, count($rows));
+        $this->assertCount(0, $rows);
     }
 
     public function testRenameTable()
@@ -596,7 +608,7 @@ SQL;
         $fromTableName = 'type';
         $toTableName = 'new_type';
 
-        if($db->getSchema()->getTableSchema($toTableName) !== null){
+        if ($db->getSchema()->getTableSchema($toTableName) !== null) {
             $db->createCommand()->dropTable($toTableName)->execute();
         }
 
@@ -649,7 +661,7 @@ SQL;
 
     public function testIntegrityViolation()
     {
-        $this->setExpectedException('\yii\db\IntegrityException');
+        $this->expectException('\yii\db\IntegrityException');
 
         $db = $this->getConnection();
 

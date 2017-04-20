@@ -50,8 +50,8 @@ class UploadedFileTest extends TestCase
         $productImage = UploadedFile::getInstance(new ModelStub(), 'prod_image');
         $vendorImage = VendorImage::getInstance(new ModelStub(), 'vendor_image');
 
-        $this->assertTrue($productImage instanceof UploadedFile);
-        $this->assertTrue($vendorImage instanceof VendorImage);
+        $this->assertInstanceOf(UploadedFile::className(), $productImage);
+        $this->assertInstanceOf(VendorImage::className(), $vendorImage);
     }
 
     public function testGetInstances()
@@ -60,11 +60,11 @@ class UploadedFileTest extends TestCase
         $vendorImages = VendorImage::getInstances(new ModelStub(), 'vendor_images');
 
         foreach ($productImages as $productImage) {
-            $this->assertTrue($productImage instanceof UploadedFile);
+            $this->assertInstanceOf(UploadedFile::className(), $productImage);
         }
 
         foreach ($vendorImages as $vendorImage) {
-            $this->assertTrue($vendorImage instanceof VendorImage);
+            $this->assertInstanceOf(VendorImage::className(), $vendorImage);
         }
     }
 }

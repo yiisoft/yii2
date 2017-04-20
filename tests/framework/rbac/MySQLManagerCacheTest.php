@@ -6,8 +6,9 @@ use yii\rbac\DbManager;
 
 /**
  * MySQLManagerCacheTest
- * @group db
  * @group rbac
+ * @group db
+ * @group mysql
  */
 class MySQLManagerCacheTest extends MySQLManagerTest
 {

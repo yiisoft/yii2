@@ -52,8 +52,11 @@ class BooleanValidator extends Validator
      */
     protected function validateValue($value)
     {
-        $valid = !$this->strict && ($value == $this->trueValue || $value == $this->falseValue)
-                 || $this->strict && ($value === $this->trueValue || $value === $this->falseValue);
+        if ($this->strict) {
+            $valid = $value === $this->trueValue || $value === $this->falseValue;
+        } else {
+            $valid = $value == $this->trueValue || $value == $this->falseValue;
+        }
 
         if (!$valid) {
             return [$this->message, [
@@ -84,11 +87,11 @@ class BooleanValidator extends Validator
         $options = [
             'trueValue' => $this->trueValue,
             'falseValue' => $this->falseValue,
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
                 'true' => $this->trueValue === true ? 'true' : $this->trueValue,
                 'false' => $this->falseValue === false ? 'false' : $this->falseValue,
-            ], Yii::$app->language),
+            ]),
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
