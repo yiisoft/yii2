@@ -112,7 +112,7 @@ addons:
 
 install:
   - |
-    if [[ $TRAVIS_PHP_VERSION != '5.6' && $TRAVIS_PHP_VERSION != hhv* ]]; then
+    if [[ $TRAVIS_PHP_VERSION != '7.1' && $TRAVIS_PHP_VERSION != hhv* ]]; then
         # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
