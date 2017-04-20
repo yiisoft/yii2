@@ -143,17 +143,22 @@ class Container extends Component
      * they appear in the constructor declaration. If you want to skip some parameters, you should index the remaining
      * ones with the integers that represent their positions in the constructor parameter list.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
+     * @param bool $forceCreation forces object creation for objects, which wasn't defined in container
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
-    public function get($class, $params = [], $config = [])
+    public function get($class, $params = [], $config = [], $forceCreation = false)
     {
         if (isset($this->_singletons[$class])) {
             // singleton
             return $this->_singletons[$class];
         } elseif (!isset($this->_definitions[$class])) {
-            return $this->build($class, $params, $config);
+            $instance = $this->build($class, $params, $config);;
+            if (!$forceCreation) {
+                $this->_singletons[$class] = $instance;
+            }
+            return $instance;
         }
 
         $definition = $this->_definitions[$class];
