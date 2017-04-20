@@ -6,6 +6,7 @@ Yii Framework 2 Change Log
 
 - Bug #13362: Fixed return value of `yii\caching\MemCache::setValues()`  (masterklavi)
 - Enh #13963: Added tests for yii\behaviors\TimestampBehavior (vladis84)
+- Bug #13890: DbTarget log transaction bug (shirase)
 - Enh #13820: Add new HTTP status code 451 (yyxx9988)
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
