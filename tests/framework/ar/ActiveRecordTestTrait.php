@@ -169,6 +169,8 @@ trait ActiveRecordTestTrait
 
     public function testFindScalar()
     {
+        throw new \Exception('The test is not being used');
+
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
