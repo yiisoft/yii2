@@ -352,7 +352,7 @@ class FileValidator extends Validator
     {
         $extension = mb_strtolower($file->extension, 'UTF-8');
 
-        if ($this->checkExtensionByMimeType) {
+        if ($this->checkExtensionByMimeType && empty($this->mimeTypes)) {
 
             $mimeType = FileHelper::getMimeType($file->tempName, null, false);
             if ($mimeType === null) {
