@@ -44,7 +44,7 @@ class AccessRule extends Component
      */
     public $controllers;
     /**
-     * @var array list of roles that this rule applies to. Two special roles are recognized, and
+     * @var array|string list of roles or single role that this rule applies to. Two special roles are recognized, and
      * they are checked via [[User::isGuest]]:
      *
      * - `?`: matches a guest user (not authenticated yet)
@@ -147,6 +147,10 @@ class AccessRule extends Component
         if (empty($this->roles)) {
             return true;
         }
+
+        if(is_string($this->roles))
+            $this->roles = [$this->roles];
+
         foreach ($this->roles as $role) {
             if ($role === '?') {
                 if ($user->getIsGuest()) {
