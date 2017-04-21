@@ -167,7 +167,7 @@ class Controller extends \yii\base\Controller
             }
             return true;
         }
-        
+
         return false;
     }
 
@@ -189,8 +189,8 @@ class Controller extends \yii\base\Controller
      * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`)
      *   [[Url::to()]] will be used to convert the array into a URL.
      *
-     * Any relative URL will be converted into an absolute one by prepending it with the host info
-     * of the current request.
+     * Any relative URL that starts with a single forward slash "/" will be converted
+     * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>

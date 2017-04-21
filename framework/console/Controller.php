@@ -265,7 +265,7 @@ class Controller extends \yii\base\Controller
      *         return false;
      *     }
      *     return true;
-     * });
+     * }]);
      * ```
      *
      * @return string the user input
@@ -281,6 +281,16 @@ class Controller extends \yii\base\Controller
 
     /**
      * Asks user to confirm by typing y or n.
+     *
+     * A typical usage looks like the following:
+     *
+     * ```php
+     * if ($this->confirm("Are you sure?")) {
+     *     echo "user typed yes\n";
+     * } else {
+     *     echo "user typed no\n";
+     * }
+     * ```
      *
      * @param string $message to echo out before waiting for user input
      * @param bool $default this value is returned if no selection is made.
@@ -457,6 +467,9 @@ class Controller extends \yii\base\Controller
 
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
+            if ($reflection->getClass() !== null) {
+                continue;
+            }
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';
             if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {

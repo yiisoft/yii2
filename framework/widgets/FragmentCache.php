@@ -105,7 +105,7 @@ class FragmentCache extends Widget
             echo $content;
         } elseif ($this->cache instanceof Cache) {
             array_pop($this->getView()->cacheStack);
-            
+
             $content = ob_get_clean();
             if ($content === false || $content === '') {
                 return;
@@ -134,25 +134,33 @@ class FragmentCache extends Widget
      */
     public function getCachedContent()
     {
-        if ($this->_content === null) {
-            $this->_content = false;
-            if ($this->cache instanceof Cache) {
-                $key = $this->calculateKey();
-                $data = $this->cache->get($key);
-                if (is_array($data) && count($data) === 2) {
-                    list ($content, $placeholders) = $data;
-                    if (is_array($placeholders) && count($placeholders) > 0) {
-                        if (empty($this->getView()->cacheStack)) {
-                            // outermost cache: replace placeholder with dynamic content
-                            $content = $this->updateDynamicContent($content, $placeholders);
-                        }
-                        foreach ($placeholders as $name => $statements) {
-                            $this->getView()->addDynamicPlaceholder($name, $statements);
-                        }
-                    }
-                    $this->_content = $content;
-                }
-            }
+        if ($this->_content !== null) {
+            return $this->_content;
+        }
+
+        $this->_content = false;
+
+        if (!($this->cache instanceof Cache)) {
+            return $this->_content;
+        }
+
+        $key = $this->calculateKey();
+        $data = $this->cache->get($key);
+        if (!is_array($data) || count($data) !== 2) {
+            return $this->_content;
+        }
+
+        list ($this->_content, $placeholders) = $data;
+        if (!is_array($placeholders) || count($placeholders) === 0) {
+            return $this->_content;
+        }
+
+        if (empty($this->getView()->cacheStack)) {
+            // outermost cache: replace placeholder with dynamic content
+            $this->_content = $this->updateDynamicContent($this->_content, $placeholders);
+        }
+        foreach ($placeholders as $name => $statements) {
+            $this->getView()->addDynamicPlaceholder($name, $statements);
         }
 
         return $this->_content;

@@ -74,7 +74,7 @@ use yii\widgets\ActiveForm;
 Należy pamiętać, aby dodać opcję `enctype` do formularza, przez co plik będzie mógł być prawidłowo przesłany.
 Wywołanie `fileInput()` spowoduje wyrenderowanie tagu `<input type="file">`, który pozwala użytkownikowi na wybranie oraz przesłanie pliku.
 
-> Tip: od wersji 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] dodaje automatycznie opcję `enctype` do formularza, kiedy pole typu 'file input' jest używane.
+> Tip: od wersji 2.0.8, [[yii\widgets\ActiveField::fileInput|fileInput]] dodaje automatycznie opcję `enctype` do formularza, kiedy pole typu 'file input' jest używane.
 
 ## Implementacja kontrolera <span id="wiring-up"></span>
 

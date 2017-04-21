@@ -9,8 +9,9 @@ use yiiunit\framework\db\DatabaseTestCase;
  * Class PgsqlMutexTest
  *
  * @group mutex
+ * @group db
  * @group pgsql
- * 
+ *
  * @package yiiunit\framework\mutex
  */
 class PgsqlMutexTest extends DatabaseTestCase

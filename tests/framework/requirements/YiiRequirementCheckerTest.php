@@ -42,7 +42,7 @@ class YiiRequirementCheckerTest extends TestCase
         $checkResult = $requirementsChecker->check($requirements)->getResult();
         $summary = $checkResult['summary'];
 
-        $this->assertEquals(count($requirements), $summary['total'], 'Wrong summary total!');
+        $this->assertCount($summary['total'], $requirements, 'Wrong summary total!');
         $this->assertEquals(1, $summary['errors'], 'Wrong summary errors!');
         $this->assertEquals(1, $summary['warnings'], 'Wrong summary warnings!');
 
@@ -121,7 +121,7 @@ class YiiRequirementCheckerTest extends TestCase
 
         $mergedRequirements = array_merge($requirements1, $requirements2);
 
-        $this->assertEquals(count($mergedRequirements), $checkResult['summary']['total'], 'Wrong total checks count!');
+        $this->assertCount($checkResult['summary']['total'], $mergedRequirements, 'Wrong total checks count!');
         foreach ($mergedRequirements as $key => $mergedRequirement) {
             $this->assertEquals($mergedRequirement['name'], $checkResult['requirements'][$key]['name'], 'Wrong requirements list!');
         }

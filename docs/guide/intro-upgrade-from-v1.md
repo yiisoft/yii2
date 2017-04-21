@@ -536,5 +536,5 @@ Using Yii 1.1 and 2.x together
 ------------------------------
 
 If you have legacy Yii 1.1 code that you want to use together with Yii 2.0, please refer to
-the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md) section.
+the [Using Yii 1.1 and 2.0 Together](tutorial-yii-integration.md#using-both-yii2-yii1) section.
 

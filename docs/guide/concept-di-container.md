@@ -336,7 +336,9 @@ You can still override the value set via DI container, though:
 echo \yii\widgets\LinkPager::widget(['maxButtonCount' => 20]);
 ```
 
-> Tip: no matter which value type it is, it will be overwritten so be careful with option arrays. They won't be merged.
+> Note: Properties given in the widget call will always override the definition in the DI container.
+> Even if you specify an array, e.g. `'options' => ['id' => 'mypager']` these will not be merged
+> with other options but replace them.
 
 Another example is to take advantage of the automatic constructor injection of the DI container.
 Assume your controller class depends on some other objects, such as a hotel booking service. You
@@ -378,7 +380,7 @@ Say we work on API application and have:
 - `app\components\Request` class that extends `yii\web\Request` and provides additional functionality
 - `app\components\Response` class that extends `yii\web\Response` and should have `format` property 
   set to `json` on creation
-- `app\storage\FileStorage` and `app\storage\DocumentsReader` classes the implement some logic on
+- `app\storage\FileStorage` and `app\storage\DocumentsReader` classes that implement some logic on
   working with documents that are located in some file storage:
   
   ```php
@@ -430,10 +432,10 @@ $reader = $container->get('app\storage\DocumentsReader);
 ```
 
 > Tip: Container may be configured in declarative style using application configuration since version 2.0.11. 
-Check out the [Application Configurations](concept-service-locator.md#application-configurations) subsection of
+Check out the [Application Configurations](concept-configurations.md#application-configurations) subsection of
 the [Configurations](concept-configurations.md) guide article.
 
-Everything works, but in case we need to create create `DocumentWriter` class, 
+Everything works, but in case we need to create `DocumentWriter` class, 
 we shall copy-paste the line that creates `FileStorage` object, that is not the smartest way, obviously.
 
 As described in the [Resolving Dependencies](#resolving-dependencies) subsection, [[yii\di\Container::set()|set()]]
@@ -442,7 +444,7 @@ a third argument. To set the constructor parameters, you may use the following c
 
  - `key`: class name, interface name or alias name. The key will be passed to the
  [[yii\di\Container::set()|set()]] method as a first argument `$class`.
- - `value`: array of two elements. The first element will be passed the [[yii\di\Container::set()|set()]] method as the
+ - `value`: array of two elements. The first element will be passed to the [[yii\di\Container::set()|set()]] method as the
  second argument `$definition`, the second one — as `$params`.
 
 Let's modify our example:
@@ -468,7 +470,7 @@ $reader = $container->get('app\storage\DocumentsReader);
 ```
 
 You might notice `Instance::of('tempFileStorage')` notation. It means, that the [[yii\di\Container|Container]]
-will implicitly provide dependency, registered with `tempFileStorage` name and pass it as the first argument 
+will implicitly provide a dependency registered with the name of `tempFileStorage` and pass it as the first argument 
 of `app\storage\DocumentsWriter` constructor.
 
 > Note: [[yii\di\Container::setDefinitions()|setDefinitions()]] and [[yii\di\Container::setSingletons()|setSingletons()]]
@@ -502,7 +504,7 @@ $container->setDefinitions([
     ]
 ]);
 
-$reader = $container->get('app\storage\DocumentsReader); 
+$reader = $container->get('app\storage\DocumentsReader');
 ```
 
 When to Register Dependencies <span id="when-to-register-dependencies"></span>
@@ -512,7 +514,7 @@ Because dependencies are needed when new objects are being created, their regist
 as early as possible. The following are the recommended practices:
 
 * If you are the developer of an application, you can register your dependencies using application configuration.
-  Please, read the [Application Configurations](concept-service-locator.md#application-configurations) subsection of 
+  Please, read the [Application Configurations](concept-configurations.md#application-configurations) subsection of 
   the [Configurations](concept-configurations.md) guide article.
 * If you are the developer of a redistributable [extension](structure-extensions.md), you can register dependencies
   in the bootstrapping class of the extension.

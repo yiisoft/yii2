@@ -81,6 +81,20 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $columns;
     }
 
+    public function testCompositeFk()
+    {
+        /* @var $schema Schema */
+        $schema = $this->getConnection()->schema;
+
+        $table = $schema->getTableSchema('composite_fk');
+
+        $this->assertCount(1, $table->foreignKeys);
+        $this->assertTrue(isset($table->foreignKeys['fk_composite_fk_order_item']));
+        $this->assertEquals('order_item', $table->foreignKeys['fk_composite_fk_order_item'][0]);
+        $this->assertEquals('order_id', $table->foreignKeys['fk_composite_fk_order_item']['order_id']);
+        $this->assertEquals('item_id', $table->foreignKeys['fk_composite_fk_order_item']['item_id']);
+    }
+
     public function testGetPDOType()
     {
         $values = [
@@ -110,15 +124,15 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('bool_values');
-        $this->assertSame(true, $table->getColumn('default_true')->defaultValue);
-        $this->assertSame(false, $table->getColumn('default_false')->defaultValue);
+        $this->assertTrue($table->getColumn('default_true')->defaultValue);
+        $this->assertFalse($table->getColumn('default_false')->defaultValue);
     }
 
     public function testFindSchemaNames()
     {
         $schema = $this->getConnection()->schema;
 
-        $this->assertEquals(3, count($schema->getSchemaNames()));
+        $this->assertCount(3, $schema->getSchemaNames());
     }
 
     public function bigintValueProvider()

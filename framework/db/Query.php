@@ -408,19 +408,6 @@ class Query extends Component implements QueryInterface
             return null;
         }
 
-        $select = $this->select;
-        $limit = $this->limit;
-        $offset = $this->offset;
-
-        $this->select = [$selectExpression];
-        $this->limit = null;
-        $this->offset = null;
-        $command = $this->createCommand($db);
-
-        $this->select = $select;
-        $this->limit = $limit;
-        $this->offset = $offset;
-
         if (
             !$this->distinct
             && empty($this->groupBy)
@@ -428,11 +415,24 @@ class Query extends Component implements QueryInterface
             && empty($this->union)
             && empty($this->orderBy)
         ) {
+            $select = $this->select;
+            $limit = $this->limit;
+            $offset = $this->offset;
+
+            $this->select = [$selectExpression];
+            $this->limit = null;
+            $this->offset = null;
+            $command = $this->createCommand($db);
+
+            $this->select = $select;
+            $this->limit = $limit;
+            $this->offset = $offset;
+
             return $command->queryScalar();
         } else {
             return (new Query)->select([$selectExpression])
                 ->from(['c' => $this])
-                ->createCommand($command->db)
+                ->createCommand($db)
                 ->queryScalar();
         }
     }

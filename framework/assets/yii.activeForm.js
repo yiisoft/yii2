@@ -107,7 +107,7 @@
          *     function (event)
          * where
          *  - event: an Event object.
-         */        
+         */
         afterInit: 'afterInit'
     };
 
