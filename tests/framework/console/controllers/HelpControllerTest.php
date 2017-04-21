@@ -27,7 +27,10 @@ class HelpControllerTest extends TestCase
      */
     protected function createController()
     {
-        $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
+        $module = $this->getMockBuilder('yii\\base\\Module')
+            ->setMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
         return new BufferedHelpController('help', $module);
     }
 

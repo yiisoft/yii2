@@ -987,7 +987,11 @@ class DbManager extends BaseManager
         $query = (new Query)->from($this->ruleTable);
         $this->rules = [];
         foreach ($query->all($this->db) as $row) {
-            $this->rules[$row['name']] = unserialize($row['data']);
+            $data = $row['data'];
+            if (is_resource($data)) {
+                $data = stream_get_contents($data);
+            }
+            $this->rules[$row['name']] = unserialize($data);
         }
 
         $query = (new Query)->from($this->itemChildTable);
