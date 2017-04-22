@@ -292,6 +292,14 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
+
+        // undefined IP
+        $_SERVER['REMOTE_ADDR'] = null;
+        $rule->ips = ['192.168.*'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
     }
 
     public function testMatchIPWildcard()
