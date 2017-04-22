@@ -301,6 +301,20 @@ class Component extends Object
     }
 
     /**
+     * This method is called before the object is destroyed.
+     * It removes all behaviors because they are no longer needed.
+     */
+    public function __destruct()
+    {
+        if (empty($this->_behaviors)) {
+          return;
+        }
+        foreach ($this->_behaviors as $name => $behavior) {
+            unset($this->_behaviors[$name]);
+        }
+    }
+
+    /**
      * Returns a value indicating whether a property is defined for this component.
      * A property is defined if:
      *
