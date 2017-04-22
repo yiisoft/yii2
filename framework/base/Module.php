@@ -142,7 +142,7 @@ class Module extends ServiceLocator
      *
      * @since 2.0.11
      */
-    private $_version;
+    protected $_version;
 
 
     /**
