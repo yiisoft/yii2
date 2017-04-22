@@ -20,7 +20,7 @@ use yii\helpers\Console;
  * ```php
  * $table = new Table();
  *
- * echo $table->setHeader(['test1', 'test2', 'test3'])
+ * echo $table->setHeaders(['test1', 'test2', 'test3'])
  *            ->setRows([
  *               ['col1', 'col2', 'col3'],
  *               ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']]
@@ -176,9 +176,9 @@ class Table extends Object
 
     /**
      * @param array $row
-     * @param $spanLeft
-     * @param $spanMiddle
-     * @param $spanRight
+     * @param string $spanLeft
+     * @param string $spanMiddle
+     * @param string $spanRight
      * @return string the generated row
      * @see \yii\console\widgets\Table::render()
      */
@@ -206,27 +206,29 @@ class Table extends Object
             )
         );
         $buffer = '';
-        $arrayPointer = 0;
-        $finalChunk = '';
-        for ($i = 0; $i < max($rowsPerCell); $i++) {
-            $prefix = '';
+        for ($i = 0, $max = max($rowsPerCell); $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
             foreach ($row as $index => $cell) {
-                if ($index != 0) {
+                $prefix = '';
+                if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
                 }
                 if (is_array($cell)) {
-                    if (!$finalChunk) {
-                        $start = ($size[$index] * 0) - (0 * 2);
+                    if (empty($finalChunk[$index])) {
+                        $finalChunk[$index] = '';
+                        $start = 0;
                         $prefix = $this->_listPrefix;
+                        if (!isset($arrayPointer[$index])) {
+                            $arrayPointer[$index] = 0;
+                        }
                     } else {
-                        $start = mb_strwidth($finalChunk, Yii::$app->charset);
+                        $start = mb_strwidth($finalChunk[$index], Yii::$app->charset);
                     }
-                    $chunk = mb_substr($cell[$arrayPointer], $start, $size[$index] - 4 , Yii::$app->charset);
-                    $finalChunk .= $chunk;
-                   if ($finalChunk == $cell[$arrayPointer]) {
-                        $arrayPointer++;
-                        $finalChunk = '';
+                    $chunk = mb_substr($cell[$arrayPointer[$index]], $start, $size[$index] - 4 , Yii::$app->charset);
+                    $finalChunk[$index] .= $chunk;
+                    if ($finalChunk[$index] === $cell[$arrayPointer[$index]] && isset($cell[$arrayPointer[$index] + 1])) {
+                        $arrayPointer[$index]++;
+                        $finalChunk[$index] = '';
                     }
                 } else {
                     $chunk = mb_substr($cell, ($size[$index] * $i) - ($i * 2) , $size[$index] - 2 , Yii::$app->charset);
@@ -245,10 +247,10 @@ class Table extends Object
     }
 
     /**
-     * @param $spanLeft
-     * @param $spanMid
-     * @param $spanMidMid
-     * @param $spanRight
+     * @param string $spanLeft
+     * @param string $spanMid
+     * @param string $spanMidMid
+     * @param string $spanRight
      * @return string the generated separator row
      * @see \yii\console\widgets\Table::render()
      */
