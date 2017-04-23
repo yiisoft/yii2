@@ -26,10 +26,10 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
-                list ($route, $params, $expected) = $test;
+                [$route, $params, $expected] = $test;
                 $url = $rule->createUrl($manager, $route, $params);
                 $this->assertSame($expected, $url, "Test#$i-$j: $name");
             }
@@ -45,7 +45,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -68,7 +68,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -99,7 +99,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -128,7 +128,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -157,7 +157,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -185,7 +185,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -214,7 +214,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -275,7 +275,7 @@ class UrlRuleTest extends TestCase
     {
         $suites = $this->getTestsForToString();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $test) = $suite;
+            [$name, $config, $test] = $suite;
             $rule = new UrlRule($config);
             $this->assertEquals($rule->__toString(), $test, "Test#$i: $name");
         }

@@ -23,9 +23,9 @@ class UrlRuleTest extends TestCase
     {
         $suites = $this->getTestsForControllerNamePluralization();
         foreach ($suites as $i => $suite) {
-            list ($name, $tests) = $suite;
+            [$name, $tests] = $suite;
             foreach ($tests as $j => $test) {
-                list ($config, $expected) = $test;
+                [$config, $expected] = $test;
                 $rule = new UrlRule($config);
                 $this->assertEquals($expected, $rule->controller, "Test#$i-$j: $name");
             }
@@ -38,7 +38,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD',]);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            [$name, $config, $tests] = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -341,7 +341,7 @@ class UrlRuleTest extends TestCase
     public function testCreateUrl($rule, $tests)
     {
         foreach ($tests as $test) {
-            list($params, $expected) = $test;
+            [$params, $expected] = $test;
 
             $this->mockWebApplication();
             Yii::$app->set('request', new Request(['hostInfo' => 'http://api.example.com', 'scriptUrl' => '/index.php']));

@@ -161,7 +161,7 @@ class QueryBuilder extends \yii\base\Object
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            [$names, $values] = $this->prepareInsertSelectSubQuery($columns, $schema);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -171,7 +171,7 @@ class QueryBuilder extends \yii\base\Object
                         $params[$n] = $v;
                     }
                 } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
+                    [$sql, $params] = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
@@ -200,7 +200,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidArgumentException('Expected select query object with enumerated (named) parameters');
         }
 
-        list ($values, ) = $this->build($columns);
+        [$values, ] = $this->build($columns);
         $names = [];
         $values = ' ' . $values;
         foreach ($columns->select as $title => $field) {
@@ -758,7 +758,7 @@ class QueryBuilder extends \yii\base\Object
                 }
                 $params = array_merge($params, $column->params);
             } elseif ($column instanceof Query) {
-                list($sql, $params) = $this->build($column, $params);
+                [$sql, $params] = $this->build($column, $params);
                 $columns[$i] = "($sql) AS " . $this->db->quoteColumnName($i);
             } elseif (is_string($i)) {
                 if (strpos($column, '(') === false) {
@@ -810,7 +810,7 @@ class QueryBuilder extends \yii\base\Object
                 throw new Exception('A join clause must be specified as an array of join type, join table, and optionally join condition.');
             }
             // 0:join type, 1:join table, 2:on-condition (optional)
-            list ($joinType, $table) = $join;
+            [$joinType, $table] = $join;
             $tables = $this->quoteTableNames((array) $table, $params);
             $table = reset($tables);
             $joins[$i] = "$joinType $table";
@@ -836,7 +836,7 @@ class QueryBuilder extends \yii\base\Object
     {
         foreach ($tables as $i => $table) {
             if ($table instanceof Query) {
-                list($sql, $params) = $this->build($table, $params);
+                [$sql, $params] = $this->build($table, $params);
                 $tables[$i] = "($sql) " . $this->db->quoteTableName($i);
             } elseif (is_string($i)) {
                 if (strpos($table, '(') === false) {
@@ -998,7 +998,7 @@ class QueryBuilder extends \yii\base\Object
         foreach ($unions as $i => $union) {
             $query = $union['query'];
             if ($query instanceof Query) {
-                list($unions[$i]['query'], $params) = $this->build($query, $params);
+                [$unions[$i]['query'], $params] = $this->build($query, $params);
             }
 
             $result .= 'UNION ' . ($union['all'] ? 'ALL ' : '') . '( ' . $unions[$i]['query'] . ' ) ';
@@ -1172,7 +1172,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidArgumentException("Operator '$operator' requires three operands.");
         }
 
-        list($column, $value1, $value2) = $operands;
+        [$column, $value1, $value2] = $operands;
 
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
@@ -1217,7 +1217,7 @@ class QueryBuilder extends \yii\base\Object
             throw new Exception("Operator '$operator' requires two operands.");
         }
 
-        list($column, $values) = $operands;
+        [$column, $values] = $operands;
 
         if ($column === []) {
             // no columns to test against
@@ -1284,7 +1284,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected function buildSubqueryInCondition($operator, $columns, $values, &$params)
     {
-        list($sql, $params) = $this->build($values, $params);
+        [$sql, $params] = $this->build($values, $params);
         if (is_array($columns)) {
             foreach ($columns as $i => $col) {
                 if (strpos($col, '(') === false) {
@@ -1374,7 +1374,7 @@ class QueryBuilder extends \yii\base\Object
         $not = !empty($matches[3]);
         $operator = $matches[2];
 
-        list($column, $values) = $operands;
+        [$column, $values] = $operands;
 
         if (!is_array($values)) {
             $values = [$values];
@@ -1420,7 +1420,7 @@ class QueryBuilder extends \yii\base\Object
     public function buildExistsCondition($operator, $operands, &$params)
     {
         if ($operands[0] instanceof Query) {
-            list($sql, $params) = $this->build($operands[0], $params);
+            [$sql, $params] = $this->build($operands[0], $params);
             return "$operator ($sql)";
         } else {
             throw new InvalidArgumentException('Subquery for EXISTS operator must be a Query object.');
@@ -1441,7 +1441,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidArgumentException("Operator '$operator' requires two operands.");
         }
 
-        list($column, $value) = $operands;
+        [$column, $value] = $operands;
 
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
@@ -1455,7 +1455,7 @@ class QueryBuilder extends \yii\base\Object
             }
             return "$column $operator {$value->expression}";
         } elseif ($value instanceof Query) {
-            list($sql, $params) = $this->build($value, $params);
+            [$sql, $params] = $this->build($value, $params);
             return "$column $operator ($sql)";
         } else {
             $phName = self::PARAM_PREFIX . count($params);

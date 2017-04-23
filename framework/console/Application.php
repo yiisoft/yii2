@@ -142,7 +142,7 @@ class Application extends \yii\base\Application
      */
     public function handleRequest($request)
     {
-        list($route, $params) = $request->resolve();
+        [$route, $params] = $request->resolve();
         $this->requestedRoute = $route;
         $result = $this->runAction($route, $params);
         if ($result instanceof Response) {

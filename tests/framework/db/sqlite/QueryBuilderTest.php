@@ -106,7 +106,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ->where(['and', 'w > 0', 'x < 2'])
             ->union($secondQuery)
             ->union($thirdQuery, TRUE);
-        list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $queryParams] = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);
     }

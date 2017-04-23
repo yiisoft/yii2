@@ -278,7 +278,7 @@ class Logger extends Component
         $stack = [];
 
         foreach ($messages as $i => $log) {
-            list($token, $level, $category, $timestamp, $traces) = $log;
+            [$token, $level, $category, $timestamp, $traces] = $log;
             $memory = isset($log[5]) ? $log[5] : 0;
             $log[6] = $i;
             if ($level == Logger::LEVEL_PROFILE_BEGIN) {

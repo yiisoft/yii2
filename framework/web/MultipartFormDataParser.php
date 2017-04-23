@@ -141,7 +141,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             if (empty($bodyPart)) {
                 continue;
             }
-            list($headers, $value) = preg_split("/\\R\\R/", $bodyPart, 2);
+            [$headers, $value] = preg_split("/\\R\\R/", $bodyPart, 2);
             $headers = $this->parseHeaders($headers);
 
             if (!isset($headers['content-disposition']['name'])) {
@@ -208,7 +208,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
                 continue;
             }
 
-            list($headerName, $headerValue) = explode(':', $headerPart, 2);
+            [$headerName, $headerValue] = explode(':', $headerPart, 2);
             $headerName = strtolower(trim($headerName));
             $headerValue = trim($headerValue);
 
@@ -221,7 +221,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
                     if (strpos($part, '=') === false) {
                         $headers[$headerName][] = $part;
                     } else {
-                        list($name, $value) = explode('=', $part, 2);
+                        [$name, $value] = explode('=', $part, 2);
                         $name = strtolower(trim($name));
                         $value = trim(trim($value), '"');
                         $headers[$headerName][$name] = $value;

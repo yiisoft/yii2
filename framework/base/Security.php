@@ -180,7 +180,7 @@ class Security extends Component
             throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
+        [$blockSize, $keySize] = $this->allowedCiphers[$this->cipher];
 
         $keySalt = $this->generateRandomKey($keySize);
         if ($passwordBased) {
@@ -230,7 +230,7 @@ class Security extends Component
             throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
+        [$blockSize, $keySize] = $this->allowedCiphers[$this->cipher];
 
         $keySalt = StringHelper::byteSubstr($data, 0, $keySize);
         if ($passwordBased) {

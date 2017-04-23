@@ -207,7 +207,7 @@ trait ActiveRelationTrait
         } elseif (is_array($this->via)) {
             // via relation
             /* @var $viaQuery ActiveRelationTrait|ActiveQueryTrait */
-            list($viaName, $viaQuery) = $this->via;
+            [$viaName, $viaQuery] = $this->via;
             if ($viaQuery->asArray === null) {
                 // inherit asArray from primary query
                 $viaQuery->asArray($this->asArray);

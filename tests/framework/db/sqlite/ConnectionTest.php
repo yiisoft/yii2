@@ -47,7 +47,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $counts = [[0, 2], [1, 2], [2, 2]];
 
         foreach ($counts as $count) {
-            list($masterCount, $slaveCount) = $count;
+            [$masterCount, $slaveCount] = $count;
 
             $db = $this->prepareMasterSlave($masterCount, $slaveCount);
 

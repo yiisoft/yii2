@@ -517,7 +517,7 @@ class Module extends ServiceLocator
         $parts = $this->createController($route);
         if (is_array($parts)) {
             /* @var $controller Controller */
-            list($controller, $actionID) = $parts;
+            [$controller, $actionID] = $parts;
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
             $result = $controller->runAction($actionID, $params);
@@ -567,7 +567,7 @@ class Module extends ServiceLocator
         }
 
         if (strpos($route, '/') !== false) {
-            list($id, $route) = explode('/', $route, 2);
+            [$id, $route] = explode('/', $route, 2);
         } else {
             $id = $route;
             $route = '';

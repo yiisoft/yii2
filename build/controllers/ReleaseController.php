@@ -841,7 +841,7 @@ class ReleaseController extends Controller
     {
         foreach ($this->getChangelogs($what) as $file) {
             // split the file into relevant parts
-            list($start, $changelog, $end) = $this->splitChangelog($file, $version);
+            [$start, $changelog, $end] = $this->splitChangelog($file, $version);
             $changelog = $this->resortChangelog($changelog);
             file_put_contents($file, implode("\n", array_merge($start, $changelog, $end)));
         }
