@@ -305,6 +305,7 @@ class View extends Component
             $this->trigger(self::EVENT_AFTER_RENDER, $event);
             $output = $event->output;
         }
+        $output = trim($output);
     }
 
     /**
