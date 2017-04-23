@@ -457,6 +457,7 @@ class AssetController extends Controller
     protected function saveTargets($targets, $bundleFile)
     {
         $array = [];
+        $bundles = $this->loadBundles($this->bundles);
         foreach ($targets as $name => $target) {
             if (isset($this->targets[$name])) {
                 $array[$name] = array_merge($this->targets[$name], [
@@ -472,8 +473,11 @@ class AssetController extends Controller
                 if ($this->isBundleExternal($target)) {
                     $array[$name] = $this->composeBundleConfig($target);
                 } else {
+                    $bundle = $bundles[$name];
                     $array[$name] = [
                         'sourcePath' => null,
+                        'baseUrl' => $bundle->baseUrl,
+                        'basePath' => $bundle->basePath,
                         'js' => [],
                         'css' => [],
                         'depends' => $target->depends,
