@@ -279,7 +279,7 @@ class Logger extends Component
 
         foreach ($messages as $i => $log) {
             [$token, $level, $category, $timestamp, $traces] = $log;
-            $memory = isset($log[5]) ? $log[5] : 0;
+            $memory = $log[5] ?? 0;
             $log[6] = $i;
             if ($level == Logger::LEVEL_PROFILE_BEGIN) {
                 $stack[] = $log;
@@ -293,7 +293,7 @@ class Logger extends Component
                         'level' => count($stack),
                         'duration' => $timestamp - $last[3],
                         'memory' => $memory,
-                        'memoryDiff' => $memory - (isset($last[5]) ? $last[5] : 0),
+                        'memoryDiff' => $memory - ($last[5] ?? 0),
                     ];
                 }
             }
