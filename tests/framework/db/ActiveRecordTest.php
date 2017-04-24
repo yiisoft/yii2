@@ -141,7 +141,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         // find one
         $customer = Customer::findBySql('SELECT * FROM {{customer}} ORDER BY [[id]] DESC')->one();
-        $this->assertInstanceOf(Customer::className(), $customer);
+        $this->assertInstanceOf(Customer::class, $customer);
         $this->assertEquals('user3', $customer->name);
 
         // find all
@@ -150,7 +150,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         // find with parameter binding
         $customer = Customer::findBySql('SELECT * FROM {{customer}} WHERE [[id]]=:id', [':id' => 2])->one();
-        $this->assertInstanceOf(Customer::className(), $customer);
+        $this->assertInstanceOf(Customer::class, $customer);
         $this->assertEquals('user2', $customer->name);
     }
 
@@ -1116,7 +1116,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         // https://github.com/yiisoft/yii2/issues/4938
         $category = Category::findOne(2);
-        $this->assertInstanceOf(Category::className(), $category);
+        $this->assertInstanceOf(Category::class, $category);
         $this->assertEquals(3, $category->getItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->distinct(true)->count());

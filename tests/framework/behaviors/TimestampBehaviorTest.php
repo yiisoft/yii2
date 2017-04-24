@@ -193,7 +193,7 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];        
@@ -208,7 +208,7 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
