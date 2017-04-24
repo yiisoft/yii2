@@ -21,28 +21,34 @@ use yiiunit\TestCase;
  */
 class InstanceTest extends TestCase
 {
+    protected function tearDown()
+    {
+        parent::tearDown();
+        Yii::$container = new Container();
+    }
+
     public function testOf()
     {
-        $container = new Container;
+        $container = new Container();
         $className = Component::class;
         $instance = Instance::of($className);
 
         $this->assertInstanceOf('\\yii\\di\\Instance', $instance);
-        $this->assertInstanceOf(Component::className(), $instance->get($container));
-        $this->assertInstanceOf(Component::className(), Instance::ensure($instance, $className, $container));
+        $this->assertInstanceOf(Component::class, $instance->get($container));
+        $this->assertInstanceOf(Component::class, Instance::ensure($instance, $className, $container));
         $this->assertNotSame($instance->get($container), Instance::ensure($instance, $className, $container));
     }
 
     public function testEnsure()
     {
-        $container = new Container;
+        $container = new Container();
         $container->set('db', [
             'class' => 'yii\db\Connection',
             'dsn' => 'test',
         ]);
 
-        $this->assertInstanceOf(Connection::className(), Instance::ensure('db', 'yii\db\Connection', $container));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection, 'yii\db\Connection', $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure('db', 'yii\db\Connection', $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection, 'yii\db\Connection', $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
     }
 
@@ -51,8 +57,9 @@ class InstanceTest extends TestCase
      */
     public function testEnsure_NonExistingComponentException()
     {
-        $container = new Container;
-        $this->setExpectedExceptionRegExp('yii\base\InvalidConfigException', '/^Failed to instantiate component or class/i');
+        $container = new Container();
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
         Instance::ensure('cache', 'yii\cache\Cache', $container);
     }
 
@@ -61,21 +68,22 @@ class InstanceTest extends TestCase
      */
     public function testEnsure_NonExistingClassException()
     {
-        $container = new Container;
-        $this->setExpectedExceptionRegExp('yii\base\InvalidConfigException', '/^Failed to instantiate component or class/i');
+        $container = new Container();
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
         Instance::ensure('yii\cache\DoesNotExist', 'yii\cache\Cache', $container);
     }
 
     public function testEnsure_WithoutType()
     {
-        $container = new Container;
+        $container = new Container();
         $container->set('db', [
             'class' => 'yii\db\Connection',
             'dsn' => 'test',
         ]);
 
-        $this->assertInstanceOf(Connection::className(), Instance::ensure('db', null, $container));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection, null, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure('db', null, $container));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection, null, $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container));
     }
 
@@ -86,9 +94,9 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->assertInstanceOf(Connection::className(), Instance::ensure('db'));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
+        $this->assertInstanceOf(Connection::class, Instance::ensure('db'));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(new Connection));
+        $this->assertInstanceOf(Connection::class, Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
         Yii::$container = new Container;
     }
 
@@ -100,7 +108,8 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->setExpectedException('yii\base\InvalidConfigException', '"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
 
         Instance::ensure('db', 'yii\base\Widget', $container);
         Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\base\Widget', $container);
@@ -108,13 +117,15 @@ class InstanceTest extends TestCase
 
     public function testExceptionInvalidDataType()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure(new Connection, 'yii\base\Widget');
     }
 
     public function testExceptionComponentIsNotSpecified()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'The required component is not specified.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The required component is not specified.');
         Instance::ensure('');
     }
 
@@ -131,7 +142,7 @@ class InstanceTest extends TestCase
 
         $container = Instance::of('db');
 
-        $this->assertInstanceOf(Connection::className(), $container->get());
+        $this->assertInstanceOf(Connection::class, $container->get());
 
         $this->destroyApplication();
     }
@@ -175,10 +186,8 @@ PHP
 
     public function testRestoreAfterVarExportRequiresId()
     {
-        $this->setExpectedException(
-            'yii\base\InvalidConfigException',
-            'Failed to instantiate class "Instance". Required parameter "id" is missing'
-        );
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Failed to instantiate class "Instance". Required parameter "id" is missing');
 
         Instance::__set_state([]);
     }

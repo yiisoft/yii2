@@ -49,7 +49,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         foreach ($counts as [$masterCount, $slaveCount]) {
             $db = $this->prepareMasterSlave($masterCount, $slaveCount);
 
-            $this->assertInstanceOf(Connection::className(), $db->getSlave());
+            $this->assertInstanceOf(Connection::class, $db->getSlave());
             $this->assertTrue($db->getSlave()->isActive);
             $this->assertFalse($db->isActive);
 
@@ -61,7 +61,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $db->createCommand("UPDATE profile SET description='test' WHERE id=1")->execute();
             $this->assertTrue($db->isActive);
             if ($masterCount > 0) {
-                $this->assertInstanceOf(Connection::className(), $db->getMaster());
+                $this->assertInstanceOf(Connection::class, $db->getMaster());
                 $this->assertTrue($db->getMaster()->isActive);
             } else {
                 $this->assertNull($db->getMaster());
@@ -77,7 +77,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $this->assertFalse($db->isActive);
 
             $customer = Customer::findOne(1);
-            $this->assertInstanceOf(Customer::className(), $customer);
+            $this->assertInstanceOf(Customer::class, $customer);
             $this->assertEquals('user1', $customer->name);
             $this->assertFalse($db->isActive);
 
@@ -85,7 +85,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             $customer->save();
             $this->assertTrue($db->isActive);
             $customer = Customer::findOne(1);
-            $this->assertInstanceOf(Customer::className(), $customer);
+            $this->assertInstanceOf(Customer::class, $customer);
             $this->assertEquals('user1', $customer->name);
             $result = $db->useMaster(function () {
                 return Customer::findOne(1)->name;

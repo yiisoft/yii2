@@ -141,7 +141,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         // find one
         $customer = Customer::findBySql('SELECT * FROM {{customer}} ORDER BY [[id]] DESC')->one();
-        $this->assertInstanceOf(Customer::className(), $customer);
+        $this->assertInstanceOf(Customer::class, $customer);
         $this->assertEquals('user3', $customer->name);
 
         // find all
@@ -150,7 +150,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         // find with parameter binding
         $customer = Customer::findBySql('SELECT * FROM {{customer}} WHERE [[id]]=:id', [':id' => 2])->one();
-        $this->assertInstanceOf(Customer::className(), $customer);
+        $this->assertInstanceOf(Customer::class, $customer);
         $this->assertEquals('user2', $customer->name);
     }
 
@@ -577,11 +577,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testJoinWithVia()
     {
         Order::getDb()->getQueryBuilder()->separator = "\n";
-        Order::find()->joinWith('itemsInOrder1')->joinWith([
+        $rows = Order::find()->joinWith('itemsInOrder1')->joinWith([
             'items' => function ($q) {
                 $q->orderBy('item.id');
             },
         ])->all();
+        $this->assertNotEmpty($rows);
     }
 
     public function aliasMethodProvider()
@@ -1115,7 +1116,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         // https://github.com/yiisoft/yii2/issues/4938
         $category = Category::findOne(2);
-        $this->assertInstanceOf(Category::className(), $category);
+        $this->assertInstanceOf(Category::class, $category);
         $this->assertEquals(3, $category->getItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->count());
         $this->assertEquals(1, $category->getLimitedItems()->distinct(true)->count());
@@ -1172,7 +1173,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $record = Document::findOne(1);
         $record->content = 'Rewrite attempt content';
         $record->version = 0;
-        $this->setExpectedException('yii\db\StaleObjectException');
+        $this->expectException('yii\db\StaleObjectException');
         $record->save(false);
     }
 

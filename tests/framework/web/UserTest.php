@@ -17,7 +17,7 @@ namespace yiiunit\framework\web;
 use yii\base\NotSupportedException;
 use yii\base\Component;
 use yii\rbac\PhpManager;
-use yii\web\UnauthorizedHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
 use yii\web\IdentityInterface;
@@ -226,7 +226,7 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
         try {
             $user->loginRequired();
-        } catch (UnauthorizedHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {}
         $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
@@ -263,12 +263,12 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
         try {
             $user->loginRequired();
-        } catch (UnauthorizedHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {}
         $this->assertNotEquals('json-only', $user->getReturnUrl());
 
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
-        $this->setExpectedException('yii\\web\\UnauthorizedHttpException');
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         $user->loginRequired();
     }
 
@@ -291,7 +291,7 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
-        $this->setExpectedException('yii\\web\\UnauthorizedHttpException');
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
 

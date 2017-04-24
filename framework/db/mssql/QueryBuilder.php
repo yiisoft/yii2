@@ -217,7 +217,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
         $enable = $check ? 'CHECK' : 'NOCHECK';
-        $schema = $schema ? $schema : $this->db->getSchema()->defaultSchema;
+        $schema = $schema ?: $this->db->getSchema()->defaultSchema;
         $tableNames = $this->db->getTableSchema($table) ? [$table] : $this->db->getSchema()->getTableNames($schema);
         $viewNames = $this->db->getSchema()->getViewNames($schema);
         $tableNames = array_diff($tableNames, $viewNames);

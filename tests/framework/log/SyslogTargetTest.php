@@ -50,7 +50,9 @@ namespace yiiunit\framework\log {
          */
         protected function setUp()
         {
-            $this->syslogTarget = $this->getMock('yii\\log\\SyslogTarget', ['getMessagePrefix']);
+            $this->syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
+                ->setMethods(['getMessagePrefix'])
+                ->getMock();
         }
 
         /**
@@ -70,8 +72,9 @@ namespace yiiunit\framework\log {
                 ['profile begin message', Logger::LEVEL_PROFILE_BEGIN],
                 ['profile end message', Logger::LEVEL_PROFILE_END],
             ];
-            $syslogTarget = $this
-                ->getMock('yii\\log\\SyslogTarget', ['openlog', 'syslog', 'formatMessage', 'closelog']);
+            $syslogTarget = $this->getMockBuilder('yii\\log\\SyslogTarget')
+                ->setMethods(['openlog', 'syslog', 'formatMessage', 'closelog'])
+                ->getMock();
 
             $syslogTarget->identity = $identity;
             $syslogTarget->options = $options;

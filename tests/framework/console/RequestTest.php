@@ -140,7 +140,8 @@ class RequestTest extends TestCase
     public function testResolve($params, $expected, $expectedException = null)
     {
         if (isset($expectedException)) {
-            $this->setExpectedException($expectedException[0], $expectedException[1]);
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
         }
 
         $request = new Request();

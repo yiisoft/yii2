@@ -84,6 +84,12 @@
         "phpunit/phpunit": "~4.4",
         "cebe/indent": "~1.0.2"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "suggest": {
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
     },

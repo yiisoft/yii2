@@ -55,7 +55,10 @@ abstract class BaseMessageControllerTest extends TestCase
      */
     protected function createMessageController()
     {
-        $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
+        $module = $this->getMockBuilder('yii\\base\\Module')
+            ->setMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
         $messageController = new MessageControllerMock('message', $module);
         $messageController->interactive = false;
 
@@ -146,7 +149,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
     public function testConfigFileNotExist()
     {
-        $this->setExpectedException('yii\\console\\Exception');
+        $this->expectException('yii\\console\\Exception');
         $this->runMessageControllerAction('extract', ['not_existing_file.php']);
     }
 

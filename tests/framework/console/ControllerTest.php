@@ -61,7 +61,8 @@ class ControllerTest extends TestCase
 
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
-        $this->setExpectedException('yii\console\Exception', $message);
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
     }
 

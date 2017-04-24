@@ -38,7 +38,7 @@ abstract class ErrorHandler extends Component
      */
     public $memoryReserveSize = 262144;
     /**
-     * @var \Exception the exception that is being handled currently.
+     * @var \Exception|null the exception that is being handled currently.
      */
     public $exception;
 

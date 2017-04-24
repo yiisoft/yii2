@@ -28,6 +28,12 @@ use yii\validators\NumberValidator;
  */
 class ContainerTest extends TestCase
 {
+    protected function tearDown()
+    {
+        parent::tearDown();
+        Yii::$container = new Container();
+    }
+
     public function testDefault()
     {
         $namespace = __NAMESPACE__ . '\stubs';
