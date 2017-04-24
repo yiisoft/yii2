@@ -411,7 +411,7 @@ class IpValidator extends Validator
      * @param string $ip the original IPv6
      * @return string the expanded IPv6
      */
-    private function expandIPv6($ip)
+    public static function expandIPv6($ip)
     {
         $hex = unpack('H*hex', inet_pton($ip));
         return substr(preg_replace('/([a-f0-9]{4})/i', '$1:', $hex['hex']), 0, -1);
@@ -511,7 +511,7 @@ class IpValidator extends Validator
      * @param string $ip
      * @return int
      */
-    private function getIpVersion($ip)
+    private static function getIpVersion($ip)
     {
         return strpos($ip, ':') === false ? 4 : 6;
     }
@@ -533,17 +533,17 @@ class IpValidator extends Validator
      * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
      * @return bool
      */
-    private function inRange($ip, $cidr, $range)
+    public static function inRange($ip, $cidr, $range)
     {
-        $ipVersion = $this->getIpVersion($ip);
-        $binIp = $this->ip2bin($ip);
+        $ipVersion = static::getIpVersion($ip);
+        $binIp = static::ip2bin($ip);
 
         $parts = explode('/', $range);
         $net = array_shift($parts);
         $range_cidr = array_shift($parts);
 
 
-        $netVersion = $this->getIpVersion($net);
+        $netVersion = static::getIpVersion($net);
         if ($ipVersion !== $netVersion) {
             return false;
         }
@@ -551,7 +551,7 @@ class IpValidator extends Validator
             $range_cidr = $netVersion === 4 ? static::IPV4_ADDRESS_LENGTH : static::IPV6_ADDRESS_LENGTH;
         }
 
-        $binNet = $this->ip2bin($net);
+        $binNet = static::ip2bin($net);
         return substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr;
     }
 
@@ -561,9 +561,9 @@ class IpValidator extends Validator
      * @param string $ip
      * @return string bits as a string
      */
-    private function ip2bin($ip)
+    private static function ip2bin($ip)
     {
-        if ($this->getIpVersion($ip) === 4) {
+        if (static::getIpVersion($ip) === 4) {
             return str_pad(base_convert(ip2long($ip), 10, 2), static::IPV4_ADDRESS_LENGTH, '0', STR_PAD_LEFT);
         } else {
             $unpack = unpack('A16', inet_pton($ip));
