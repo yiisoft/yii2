@@ -155,7 +155,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            [, $alias] = $this->getTableNameAndAlias();
+            $alias = $this->getTableNameAndAlias()[1];
             $this->select = ["$alias.*"];
         }
 
@@ -437,8 +437,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->join = [];
 
         $model = new $this->modelClass;
-        foreach ($this->joinWith as $config) {
-            [$with, $eagerLoading, $joinType] = $config;
+        foreach ($this->joinWith as [$with, $eagerLoading, $joinType]) {
             $this->joinWithRelations($model, $with, $joinType);
 
             if (is_array($eagerLoading)) {
@@ -780,7 +779,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            [$tableName, ] = $this->getTableNameAndAlias();
+            $tableName = $this->getTableNameAndAlias()[0];
             $this->from = [$alias => $tableName];
         } else {
             /* @var $modelClass ActiveRecord */

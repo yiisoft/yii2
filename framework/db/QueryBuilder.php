@@ -200,7 +200,7 @@ class QueryBuilder extends \yii\base\Object
             throw new InvalidArgumentException('Expected select query object with enumerated (named) parameters');
         }
 
-        [$values, ] = $this->build($columns);
+        $values = $this->build($columns)[0];
         $names = [];
         $values = ' ' . $values;
         foreach ($columns->select as $title => $field) {

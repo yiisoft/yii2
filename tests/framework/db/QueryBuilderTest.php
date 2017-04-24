@@ -1008,7 +1008,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         foreach ($this->columnTypes() as $item) {
             [$column, $builder, $expected] = $item;
-            $expectedColumnSchemaBuilder = isset($item[3]) ? $item[3] : $column;
+            $expectedColumnSchemaBuilder = $item[3] ?? $column;
 
             $this->assertEquals($expected, $qb->getColumnType($column));
             $this->assertEquals($expected, $qb->getColumnType($builder));
@@ -1024,8 +1024,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         }
         $columns = [];
         $i = 0;
-        foreach ($this->columnTypes() as $item) {
-            [$column, $builder, $expected] = $item;
+        foreach ($this->columnTypes() as [$column, $builder, $expected]) {
             if (!(strncmp($column, Schema::TYPE_PK, 2) === 0 ||
                   strncmp($column, Schema::TYPE_UPK, 3) === 0 ||
                   strncmp($column, Schema::TYPE_BIGPK, 5) === 0 ||

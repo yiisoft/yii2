@@ -22,8 +22,7 @@ class GroupUrlRuleTest extends TestCase
     {
         $manager = new UrlManager(['cache' => null]);
         $suites = $this->getTestsForCreateUrl();
-        foreach ($suites as $i => $suite) {
-            [$name, $config, $tests] = $suite;
+        foreach ($suites as $i => [$name, $config, $tests]) {
             $rule = new GroupUrlRule($config);
             foreach ($tests as $j => $test) {
                 [$route, $params, $expected] = $test;
@@ -38,13 +37,11 @@ class GroupUrlRuleTest extends TestCase
         $manager = new UrlManager(['cache' => null]);
         $request = new Request(['hostInfo' => 'http://en.example.com']);
         $suites = $this->getTestsForParseRequest();
-        foreach ($suites as $i => $suite) {
-            [$name, $config, $tests] = $suite;
+        foreach ($suites as $i => [$name, $config, $tests]) {
             $rule = new GroupUrlRule($config);
             foreach ($tests as $j => $test) {
-                $request->pathInfo = $test[0];
-                $route = $test[1];
-                $params = isset($test[2]) ? $test[2] : [];
+                [$request->pathInfo, $route] = $test;
+                $params = $test[2] ?? [];
                 $result = $rule->parseRequest($manager, $request);
                 if ($route === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
