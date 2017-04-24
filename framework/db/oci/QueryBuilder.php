@@ -194,7 +194,7 @@ EOD;
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);

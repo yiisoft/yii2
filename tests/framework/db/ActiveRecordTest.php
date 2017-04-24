@@ -577,11 +577,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testJoinWithVia()
     {
         Order::getDb()->getQueryBuilder()->separator = "\n";
-        Order::find()->joinWith('itemsInOrder1')->joinWith([
+        $rows = Order::find()->joinWith('itemsInOrder1')->joinWith([
             'items' => function ($q) {
                 $q->orderBy('item.id');
             },
         ])->all();
+        $this->assertNotEmpty($rows);
     }
 
     public function aliasMethodProvider()
@@ -1172,7 +1173,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $record = Document::findOne(1);
         $record->content = 'Rewrite attempt content';
         $record->version = 0;
-        $this->setExpectedException('yii\db\StaleObjectException');
+        $this->expectException('yii\db\StaleObjectException');
         $record->save(false);
     }
 

@@ -315,10 +315,13 @@ class BaseStringHelper
 
     /**
      * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
-     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
-     * @param string $input
-     * @return string
+     * > Note: Base 64 padding `=` may be at the end of the returned string.
+     * > `=` is not transparent to URL encoding.
+     *
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input the string to encode.
+     * @return string encoded string.
      * @since 2.0.12
      */
     public static function base64UrlEncode($input)
@@ -328,10 +331,10 @@ class BaseStringHelper
 
     /**
      * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
-     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
-     * @param string $input
-     * @return string
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input encoded string.
+     * @return string decoded string.
      * @since 2.0.12
      */
     public static function base64UrlDecode($input)

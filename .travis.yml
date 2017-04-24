@@ -78,7 +78,6 @@ matrix:
         # disable xdebug for performance in composer
         - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
         - travis_retry composer self-update && composer --version
-        - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
         - travis_retry composer install --prefer-dist --no-interaction
       before_script:
         - node --version
@@ -112,12 +111,11 @@ addons:
 
 install:
   - |
-    if [[ $TRAVIS_PHP_VERSION != '5.6' && $TRAVIS_PHP_VERSION != hhv* ]]; then
+    if [[ $TRAVIS_PHP_VERSION != '7.1' && $TRAVIS_PHP_VERSION != hhv* ]]; then
         # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
         phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
   - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   # core framework:
   - travis_retry composer install --prefer-dist --no-interaction
@@ -140,9 +138,9 @@ before_script:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
-  # enable code coverage on PHP 5.6, only one PHP version needs to generate coverage data
+  # enable code coverage on PHP 7.1, only one PHP version needs to generate coverage data
   - |
-    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+    if [ $TRAVIS_PHP_VERSION = '7.1' ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
 
@@ -158,7 +156,7 @@ script:
 
 after_script:
   - |
-    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+    if [ $TRAVIS_PHP_VERSION = '7.1' ]; then
       travis_retry wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi

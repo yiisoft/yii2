@@ -47,7 +47,7 @@ class FormatterTest extends TestCase
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'date'));
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'DATE'));
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
-        $this->setExpectedException('\yii\base\InvalidArgumentException');
+        $this->expectException('\yii\base\InvalidArgumentException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
     }
 
@@ -135,10 +135,10 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asParagraphs(null));
     }
 
-    public function testAsHtml()
+    /*public function testAsHtml()
     {
         // todo: dependency on HtmlPurifier
-    }
+    }*/
 
     public function testAsEmail()
     {

@@ -82,7 +82,7 @@ instalar Yii , e iniciar  Yii.
 Si el sistema de terceros usa Composer para manejar sus dependencias, simplemente ejecuta estos comandos
 para instalar Yii:
 
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.3.1"
     composer require yiisoft/yii2
     composer install
 

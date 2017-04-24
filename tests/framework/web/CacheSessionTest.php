@@ -30,7 +30,7 @@ class CacheSessionTest extends \yiiunit\TestCase
 
     public function testInvalidCache()
     {
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         new CacheSession(['cache' => 'invalid']);
     }
 

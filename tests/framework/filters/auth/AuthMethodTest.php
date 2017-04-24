@@ -31,7 +31,9 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMock(AuthMethod::class, ['authenticate']);
+        $filter = $this->getMockBuilder(AuthMethod::class)
+            ->setMethods(['authenticate'])
+            ->getMock();
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
 
         return $filter;
@@ -58,7 +60,7 @@ class AuthMethodTest extends TestCase
         $this->assertTrue($filter->beforeAction($action));
 
         $filter = $this->createFilter(function () {return null;});
-        $this->setExpectedException('yii\web\UnauthorizedHttpException');
+        $this->expectException('yii\web\UnauthorizedHttpException');
         $this->assertTrue($filter->beforeAction($action));
     }
 
