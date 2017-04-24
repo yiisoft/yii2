@@ -35,7 +35,10 @@ class UrlRuleTest extends TestCase
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);
-        $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD',]);
+        $request = new Request([
+            'hostInfo' => 'http://en.example.com',
+            'methodParam' => '_METHOD',
+        ]);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list ($name, $config, $tests) = $suite;
@@ -131,6 +134,7 @@ class UrlRuleTest extends TestCase
                     ['posts', 'post/options', [], 'POST'],
                 ],
             ],
+
             [
                 'extra patterns',
                 ['controller' => 'post', 'extraPatterns' => ['POST new' => 'create',],],
@@ -154,6 +158,45 @@ class UrlRuleTest extends TestCase
                     ['posts/1338', 'post/view', ['id' => 1338]],
                 ],
             ],
+            [
+                'Prefix with parameters',
+                [
+                    'controller' => 'post',
+                    'pluralize' => false,
+                    'prefix' => 'newspaper/<newspaper_id:\d+>/',
+                ],
+                [
+                    ['newspaper/abc/post', false],
+                    [
+                        'newspaper/1/post',
+                        'post/index',
+                        ['newspaper_id' => 1]
+                    ],
+                    [
+                        'newspaper/1/post/2',
+                        'post/view',
+                        ['newspaper_id' => 1, 'id' => 2],
+                    ],
+                    [
+                        'newspaper/1/post',
+                        'post/create',
+                        ['newspaper_id' => 1],
+                        'POST',
+                    ],
+                    [
+                        'newspaper/1/post/2',
+                        'post/update',
+                        ['newspaper_id' => 1, 'id' => 2],
+                        'PATCH',
+                    ],
+                    [
+                        'newspaper/1/post/2',
+                        'post/delete',
+                        ['newspaper_id' => 1, 'id' => 2],
+                        'DELETE',
+                    ],
+                ]
+            ]
         ];
     }
 
@@ -340,19 +383,23 @@ class UrlRuleTest extends TestCase
      */
     public function testCreateUrl($rule, $tests)
     {
+        $this->mockWebApplication();
+        Yii::$app->set('request', new Request([
+            'hostInfo' => 'http://api.example.com',
+            'scriptUrl' => '/index.php'
+        ]));
+        $manager = new UrlManager([
+            'cache' => null,
+        ]);
+        $rule = new UrlRule($rule);
+
         foreach ($tests as $test) {
             list($params, $expected) = $test;
-
-            $this->mockWebApplication();
-            Yii::$app->set('request', new Request(['hostInfo' => 'http://api.example.com', 'scriptUrl' => '/index.php']));
-            $route = array_shift($params);
-
-            $manager = new UrlManager([
-                'cache' => null,
-            ]);
-            $rule = new UrlRule($rule);
-            $this->assertEquals($expected, $rule->createUrl($manager, $route, $params));
+            $this->assertEquals($expected, $rule->createUrl(
+                $manager,
+                array_shift($params), // route
+                $params
+            ));
         }
     }
-
 }
