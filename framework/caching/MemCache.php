@@ -315,7 +315,7 @@ class MemCache extends Cache
             $expire = $duration > 0 ? $duration + time() : 0;
 
             // Memcached::setMulti() returns boolean
-            // @see http://php.net/manual/ru/memcached.setmulti.php
+            // @see http://php.net/manual/en/memcached.setmulti.php
             return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
         } else {
             return parent::setValues($data, $duration);
