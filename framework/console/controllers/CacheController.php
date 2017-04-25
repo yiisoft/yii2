@@ -100,7 +100,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' => $this->isApcCache($class) ? false : Yii::$app->get($name)->flush(),
+                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
             ];
         }
 
@@ -124,7 +124,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' => $this->isApcCache($class) ? false : Yii::$app->get($name)->flush(),
+                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
             ];
         }
 
@@ -179,10 +179,10 @@ class CacheController extends Controller
         $this->stdout("The following caches were found in the system:\n\n", Console::FG_YELLOW);
 
         foreach ($caches as $name => $class) {
-            if ($this->isApcCache($class)) {
-                $this->stdout("\t* $name ($class) - can not be flushed via console\n", Console::FG_YELLOW);
-            } else {
+            if ($this->canBeFlushed($class)) {
                 $this->stdout("\t* $name ($class)\n", Console::FG_GREEN);
+            } else {
+                $this->stdout("\t* $name ($class) - can not be flushed via console\n", Console::FG_YELLOW);
             }
         }
 
@@ -288,12 +288,12 @@ class CacheController extends Controller
     }
 
     /**
-     * Checks if it's APC cache
+     * Checks if cache of a certain class can be flushed
      * @param string $className class name.
      * @return bool
      */
-    private function isApcCache($className)
+    private function canBeFlushed($className)
     {
-        return is_a($className, ApcCache::className(), true);
+        return !is_a($className, ApcCache::className(), true) || php_sapi_name() !== "cli";
     }
 }
