@@ -42,6 +42,11 @@ EXPECTED;
                 ['testcontent21', 'testcontent22', 'testcontent23']
             ])->render()
         );
+    }
+
+    public function testTableWithFullwidthChars()
+    {
+        $table = new Table();
 
         // test fulwidth chars
         // @see https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
@@ -62,6 +67,11 @@ EXPECTED;
                 ['testcontent２１', 'testcontent２２', 'testcontent２３']
             ])->render()
         );
+    }
+
+    public function testLists()
+    {
+        $table = new Table();
 
         $expected = <<<EXPECTED
 ╔═══════════════╤═══════════════╤══════════════╗
@@ -81,6 +91,11 @@ EXPECTED;
                 ['testcontent21', 'testcontent22', ['col1', 'col2']]
             ])->render()
         );
+    }
+
+    public function testListPrefix()
+    {
+        $table = new Table();
 
         $expected = <<<EXPECTED
 ╔═══════════════╤═══════════════╤══════════════╗
@@ -100,8 +115,11 @@ EXPECTED;
                 ['testcontent21', 'testcontent22', ['col1', 'col2']]
             ])->setListPrefix('* ')->render()
         );
+    }
 
-
+    public function testCustomChars()
+    {
+        $table = new Table();
 
         $expected = <<<EXPECTED
 *++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
