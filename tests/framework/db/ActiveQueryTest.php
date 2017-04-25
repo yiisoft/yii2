@@ -231,4 +231,82 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertInstanceOf('yii\db\ActiveQuery', $result);
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
+
+    public function testGetTableNames_notFilledFrom()
+    {
+        $query = new ActiveQuery(Profile::className());
+
+        $tableNames = $query->getFromTableNames();
+
+        $this->assertEquals([Profile::tableName()], $tableNames);
+    }
+
+    public function testGetTableNames_isFromArray()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = ['prf' => 'profile', 'usr' => 'user'];
+
+        $tableNames = $query->getFromTableNames();
+
+        $this->assertEquals(['profile', 'user'], $tableNames);
+    }
+
+    public function testGetTableNames_isFromString()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = 'profile AS \'prf\', user "usr", `order`, "customer"';
+
+        $tableNames = $query->getFromTableNames();
+
+        $this->assertEquals(['profile', 'user', '`order`', '"customer"'], $tableNames);
+    }
+
+    public function testGetTableNames_isFromObject_generateException()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = new \stdClass;
+
+        $this->setExpectedException('\yii\base\InvalidConfigException');
+
+        $query->getFromTableNames();
+    }
+
+    public function testGetTablesAlias_notFilledFrom()
+    {
+        $query = new ActiveQuery(Profile::className());
+
+        $tablesAlias = $query->getFromAliases();
+
+        $this->assertEquals([Profile::tableName()], $tablesAlias);
+    }
+
+    public function testGetTablesAlias_isFromArray()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = ['prf' => 'profile', 'usr' => 'user'];
+
+        $tablesAlias = $query->getFromAliases();
+
+        $this->assertEquals(['prf', 'usr'], $tablesAlias);
+    }
+
+    public function testGetTablesAlias_isFromString()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = 'profile AS \'prf\', user "usr", service srv, order';
+
+        $tablesAlias = $query->getFromAliases();
+
+        $this->assertEquals(['prf', 'usr', 'srv', 'order'], $tablesAlias);
+    }
+
+    public function testGetTablesAlias_isFromObject_generateException()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = new \stdClass;
+
+        $this->setExpectedException('\yii\base\InvalidConfigException');
+
+        $query->getFromAliases();
+    }
 }

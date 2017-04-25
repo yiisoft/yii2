@@ -250,11 +250,14 @@ class UniqueValidator extends Validator
 
         // Add table prefix for column
         $targetClass = $this->getTargetClass($model);
+
+        /** @var ActiveRecord $targetClass */
         $query = $targetClass::find();
-        $tableAlias = ActiveQueryHelper::getTablesAlias($query)[0];
+        $tableAliases = $query->getFromAliases();
+        $primaryTableAlias = $tableAliases[0];
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$tableAlias}.{$columnName}";
+            $prefixedColumn = "{$primaryTableAlias}.{$columnName}";
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
 

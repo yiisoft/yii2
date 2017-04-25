@@ -148,10 +148,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->from)) {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
-            $this->from = [$tableName];
+            $this->from = [$this->getPrimaryTableName()];
         }
 
         if (empty($this->select) && !empty($this->join)) {
@@ -559,9 +556,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function getTableNameAndAlias()
     {
         if (empty($this->from)) {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
+            $tableName = $this->getPrimaryTableName();
         } else {
             $tableName = '';
             foreach ($this->from as $alias => $tableName) {
@@ -783,9 +778,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             list($tableName, ) = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
+            $tableName = $this->getPrimaryTableName();
 
             foreach ($this->from as $key => $table) {
                 if ($table === $tableName) {
@@ -795,5 +788,90 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * Table names based on from
+     * @return string[] table names
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.12
+     */
+    public function getFromTableNames()
+    {
+        $tableNames = [];
+
+        if (empty($this->from)) {
+            $tableNames[] = $this->getPrimaryTableName();
+        } elseif (is_array($this->from)) {
+            $tableNames = array_values($this->from);
+        } elseif (is_string($this->from)) {
+            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            throw new InvalidConfigException(gettype($this->from). ' in $from is not supported.');
+        }
+
+        // Clean up table names
+        foreach ($tableNames as &$tableName) {
+            $tableName = preg_replace('/^(\w+)\s*.*$/', '$1', $tableName);
+        }
+
+        return $tableNames;
+    }
+
+    /**
+     * @return string[] table aliases based on from
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.12
+     */
+    public function getFromAliases()
+    {
+        $tablesAlias = [];
+
+        if (empty($this->from)) {
+            return [$this->getPrimaryTableName()];
+        }
+
+        if (is_string($this->from)) {
+           $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+        } elseif (is_array($this->from)) {
+            $tableNames = $this->from;
+        } else {
+            throw new InvalidConfigException(gettype($this->from). ' in $from is not supported.');
+        }
+
+        foreach ($tableNames as $alias => $tableName) {
+            if (is_string($alias)) {
+                $tablesAlias[] = $alias;
+            } else {
+                $tablesAlias[] = $this->getAliasFromTableName($tableName);
+            }
+        }
+
+        return $tablesAlias;
+    }
+
+    /**
+     * Getting alias from table name
+     * Input string may contain alias already specified
+     *
+     * @param string $tableName
+     * @return string
+     * @since 2.0.12
+     */
+    private function getAliasFromTableName($tableName)
+    {
+        $cleanedUpTableName = preg_replace('/\'|\"|`|as/u', '', trim($tableName));
+        return preg_replace('/^.+\s+(\w+)$/', '$1', $cleanedUpTableName);
+    }
+
+    /**
+     * @return string primary table name
+     * @since 2.0.12
+     */
+    protected function getPrimaryTableName()
+    {
+        /* @var $modelClass ActiveRecord */
+        $modelClass = $this->modelClass;
+        return $modelClass::tableName();
     }
 }

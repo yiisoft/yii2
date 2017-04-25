@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 --------------------------
 
 - Bug #13694: `yii\widgets\Pjax` now sends `X-Pjax-Url` header with response to fix redirect (wleona3, Faryshta)
+- Bug #13842: Fixed ambiguous table SQL error while using unique validator (vladis84, samdark)
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
 - Bug #13362: Fixed return value of `yii\caching\MemCache::setValues()`  (masterklavi)
 - Enh #13963: Added tests for yii\behaviors\TimestampBehavior (vladis84)
