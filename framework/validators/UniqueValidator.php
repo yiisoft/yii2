@@ -14,7 +14,6 @@ use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
-use yii\helpers\ActiveQueryHelper;
 
 /**
  * UniqueValidator validates that the attribute value is unique in the specified database table.
