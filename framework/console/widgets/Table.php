@@ -20,7 +20,7 @@ use yii\helpers\Console;
  * ```php
  * $table = new Table();
  *
- * echo $table->setHeader(['test1', 'test2', 'test3'])
+ * echo $table->setHeaders(['test1', 'test2', 'test3'])
  *            ->setRows([
  *               ['col1', 'col2', 'col3'],
  *               ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']]
@@ -110,11 +110,11 @@ class Table extends Object
     }
 
     /**
-     * Set screen width
-     *
-     * @param int $width screen width
-     * @return $this
-     */
+    * Set screen width
+    *
+    * @param int $width screen width
+    * @return $this
+    */
     public function setScreenSize($width)
     {
         $this->_screenSize = $width;
@@ -138,14 +138,14 @@ class Table extends Object
      */
     public function render()
     {
-        $this->calculateRowsSize();
+        $this->calculateSizeRows();
         $buffer = $this->renderSeparator(
             $this->_chars['top-left'],
             $this->_chars['top-mid'],
             $this->_chars['top'],
             $this->_chars['top-right']
         );
-        $buffer .= $this->renderRow($this->_headers,
+        $buffer .= $this->renderRows($this->_headers,
             $this->_chars['left'],
             $this->_chars['middle'],
             $this->_chars['right']
@@ -158,7 +158,7 @@ class Table extends Object
                 $this->_chars['mid'],
                 $this->_chars['right-mid']
             );
-            $buffer .= $this->renderRow($row,
+            $buffer .= $this->renderRows($row,
                 $this->_chars['left'],
                 $this->_chars['middle'],
                 $this->_chars['right']);
@@ -176,44 +176,65 @@ class Table extends Object
 
     /**
      * @param array $row
-     * @param $spanLeft
-     * @param $spanMiddle
-     * @param $spanRight
+     * @param string $spanLeft
+     * @param string $spanMiddle
+     * @param string $spanRight
      * @return string the generated row
      * @see \yii\console\widgets\Table::render()
      */
-    protected function renderRow(array $row, $spanLeft, $spanMiddle, $spanRight)
+    protected function renderRows(array $row, $spanLeft, $spanMiddle, $spanRight)
     {
         $size = $this->_columnWidths;
-
+        $rowsPerCell = array_map(function ($size, $columnWidth) {
+                if (is_array($columnWidth)) {
+                    $rows = 0;
+                    foreach ($columnWidth as $width) {
+                        $rows += ceil($width / ($size - 2));
+                    }
+                    return $rows;
+                }
+                return ceil($columnWidth / ($size - 2));
+            },
+            $size, array_map(function($val) {
+                    if (is_array($val)) {
+                        $encodings = array_fill(0, count($val), Yii::$app->charset);
+                        return array_map('mb_strwidth', $val, $encodings);
+                    }
+                    return mb_strwidth($val, Yii::$app->charset);
+                },
+                $row
+            )
+        );
         $buffer = '';
-        $arrayPointer = 0;
-        $finalChunk = '';
-        for ($i = 0, $max = $this->calculateRowHeight($row); $i < $max; $i++) {
-            $prefix = '';
+        for ($i = 0, $max = max($rowsPerCell); $i < $max; $i++) {
             $buffer .= $spanLeft . ' ';
             foreach ($row as $index => $cell) {
-                if ($index != 0) {
+                $prefix = '';
+                if ($index !== 0) {
                     $buffer .= $spanMiddle . ' ';
                 }
                 if (is_array($cell)) {
-                    if (!$finalChunk) {
-                        $start = ($size[$index] * 0) - (0 * 2);
+                    if (empty($finalChunk[$index])) {
+                        $finalChunk[$index] = '';
+                        $start = 0;
                         $prefix = $this->_listPrefix;
+                        if (!isset($arrayPointer[$index])) {
+                            $arrayPointer[$index] = 0;
+                        }
                     } else {
-                        $start = mb_strwidth($finalChunk, Yii::$app->charset);
+                        $start = mb_strwidth($finalChunk[$index], Yii::$app->charset);
                     }
-                    $chunk = mb_substr($cell[$arrayPointer], $start, $size[$index] - 4, Yii::$app->charset);
-                    $finalChunk .= $chunk;
-                    if ($finalChunk == $cell[$arrayPointer]) {
-                        $arrayPointer++;
-                        $finalChunk = '';
+                    $chunk = mb_substr($cell[$arrayPointer[$index]], $start, $size[$index] - 4 , Yii::$app->charset);
+                    $finalChunk[$index] .= $chunk;
+                    if ($finalChunk[$index] === $cell[$arrayPointer[$index]] && isset($cell[$arrayPointer[$index] + 1])) {
+                        $arrayPointer[$index]++;
+                        $finalChunk[$index] = '';
                     }
                 } else {
-                    $chunk = mb_substr($cell, ($size[$index] * $i) - ($i * 2), $size[$index] - 2, Yii::$app->charset);
+                    $chunk = mb_substr($cell, ($size[$index] * $i) - ($i * 2) , $size[$index] - 2 , Yii::$app->charset);
                 }
-                $chunk = $prefix . $chunk;
-                $repeat = $size[$index] - mb_strwidth($chunk, Yii::$app->charset) - 1;
+                $chunk = $prefix.$chunk;
+                $repeat = $size[$index]  - mb_strwidth($chunk, Yii::$app->charset)-1;
                 $buffer .= $chunk;
                 if ($repeat >= 0) {
                     $buffer .= str_repeat(' ', $repeat);
@@ -226,10 +247,10 @@ class Table extends Object
     }
 
     /**
-     * @param $spanLeft
-     * @param $spanMid
-     * @param $spanMidMid
-     * @param $spanRight
+     * @param string $spanLeft
+     * @param string $spanMid
+     * @param string $spanMidMid
+     * @param string $spanRight
      * @return string the generated separator row
      * @see \yii\console\widgets\Table::render()
      */
@@ -237,7 +258,7 @@ class Table extends Object
     {
         $separator = $spanLeft;
         foreach ($this->_columnWidths as $index => $rowSize) {
-            if ($index !== 0) {
+            if ($index != 0) {
                 $separator .= $spanMid;
             }
             $separator .= str_repeat($spanMidMid, $rowSize);
@@ -251,24 +272,25 @@ class Table extends Object
      *
      * @see \yii\console\widgets\Table::render()
      */
-    protected function calculateRowsSize()
+    protected function calculateSizeRows()
     {
         $this->_columnWidths = $columns = [];
         $totalWidth = 0;
-        $screenWidth = $this->getScreenSize() - 3;
+        $screenWidth = $this->screenSize - 3;
 
-        foreach ($this->_headers as $i => $header) {
+        for ($i = 0, $size = count($this->_headers); $i < $size; $i++) {
             $columns[] = ArrayHelper::getColumn($this->_rows, $i);
             $columns[$i][] = $this->_headers[$i];
         }
         foreach ($columns as $column) {
-            $columnWidth = max(array_map(function ($val) {
-                    if (is_array($val)) {
-                        $encodings = array_fill(0, count($val), Yii::$app->charset);
-                        return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
-                    }
+            $columnWidth = max(array_map(function($val){
+                if (is_array($val)){
+                    $encodings = array_fill(0, count($val), Yii::$app->charset);
+                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
+                }else{
                     return mb_strwidth($val, Yii::$app->charset);
-                }, $column)) + 2;
+                }
+            }, $column)) + 2;
             $this->_columnWidths[] = $columnWidth;
             $totalWidth += $columnWidth;
         }
@@ -287,36 +309,6 @@ class Table extends Object
     }
 
     /**
-     * Calculate the height of row
-     *
-     * @param array $row
-     * @return integer maximum row per cell
-     * @see \yii\console\widgets\Table::render()
-     */
-    protected function calculateRowHeight($row)
-    {
-        $rowsPerCell = array_map(function ($size, $columnWidth) {
-            if (is_array($columnWidth)) {
-                $rows = 0;
-                foreach ($columnWidth as $width) {
-                    $rows += ceil($width / ($size - 2));
-                }
-                return $rows;
-            }
-            return ceil($columnWidth / ($size - 2));
-        }, $this->_columnWidths, array_map(function ($val) {
-                if (is_array($val)) {
-                    $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return array_map('mb_strwidth', $val, $encodings);
-                }
-                return mb_strwidth($val, Yii::$app->charset);
-            }, $row)
-        );
-
-        return max($rowsPerCell);
-    }
-
-    /**
      * Getting screen size
      *
      * @return int screen size
@@ -324,7 +316,7 @@ class Table extends Object
     protected function getScreenSize()
     {
         if (!$this->_screenSize) {
-            $this->_screenSize = Console::getScreenSize()[0];
+           $this->_screenSize = Console::getScreenSize()[0];
         }
         return $this->_screenSize;
     }
