@@ -94,6 +94,7 @@ Yii Framework 2 Change Log
 2.0.11 February 01, 2017
 ------------------------
 
+- Bug #10346: Fix DOMException: Invalid Character Error in XmlResponseFormatter::buildXml() (sasha-ch)
 - Bug #4113: Error page stacktrace was generating links to private methods which are not part of the API docs (samdark)
 - Bug #7727: Fixed `yii\helpers\StringHelper::truncateHtml()` leaving extra tags (developeruz)
 - Bug #9305: Fixed MSSQL `Schema::TYPE_TIMESTAMP` to be 'datetime' instead of 'timestamp', which is just an incremental number (nkovacs)

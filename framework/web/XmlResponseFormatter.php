@@ -10,6 +10,7 @@ namespace yii\web;
 use DOMDocument;
 use DOMElement;
 use DOMText;
+use DOMException;
 use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\StringHelper;
@@ -94,11 +95,11 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
                 if (is_int($name) && is_object($value)) {
                     $this->buildXml($element, $value);
                 } elseif (is_array($value) || is_object($value)) {
-                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
+                    $child = new DOMElement($this->getElementName($name));
                     $element->appendChild($child);
                     $this->buildXml($child, $value);
                 } else {
-                    $child = new DOMElement(is_int($name) ? $this->itemTag : $name);
+                    $child = new DOMElement($this->getElementName($name));
                     $element->appendChild($child);
                     $child->appendChild(new DOMText($this->formatScalarValue($value)));
                 }
@@ -142,5 +143,29 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         }
 
         return (string) $value;
+    }
+
+    /**
+     * @param mixed $name
+     * @return string
+     */
+    protected function getElementName($name)
+    {
+        return (empty($name) || is_int($name) || !$this->isValidXmlName($name)) ? $this->itemTag : $name;
+    }
+
+    /**
+     * @param mixed $name
+     * @return bool
+     * @see http://stackoverflow.com/questions/2519845/how-to-check-if-string-is-a-valid-xml-element-name/2519943#2519943
+     */
+    protected function isValidXmlName($name)
+    {
+        try {
+            new DOMElement($name);
+            return true;
+        } catch (DOMException $e) {
+            return false;
+        }
     }
 }
