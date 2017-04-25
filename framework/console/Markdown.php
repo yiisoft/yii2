@@ -54,7 +54,7 @@ class Markdown extends \cebe\markdown\Parser
     }
 
     /**
-	 * Render a paragraph block
+     * Render a paragraph block
      *
      * @param string $block
      * @return string

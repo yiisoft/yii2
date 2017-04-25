@@ -27,12 +27,13 @@ trait QueryTrait
      */
     public $where;
     /**
-     * @var int maximum number of records to be returned. If not set or less than 0, it means no limit.
+     * @var int|Expression maximum number of records to be returned. May be an instance of [[Expression]].
+     * If not set or less than 0, it means no limit.
      */
     public $limit;
     /**
-     * @var int zero-based offset from where the records are to be returned. If not set or
-     * less than 0, it means starting from the beginning.
+     * @var int|Expression zero-based offset from where the records are to be returned.
+     * May be an instance of [[Expression]]. If not set or less than 0, it means starting from the beginning.
      */
     public $offset;
     /**
@@ -45,7 +46,7 @@ trait QueryTrait
      */
     public $orderBy;
     /**
-     * @var string|callable $column the name of the column by which the query results should be indexed by.
+     * @var string|callable the name of the column by which the query results should be indexed by.
      * This can also be a callable (e.g. anonymous function) that returns the index value based on the given
      * row data. For more details, see [[indexBy()]]. This property is only used by [[QueryInterface::all()|all()]].
      */
@@ -375,7 +376,7 @@ trait QueryTrait
 
     /**
      * Sets the LIMIT part of the query.
-     * @param int $limit the limit. Use null or negative value to disable limit.
+     * @param int|Expression|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit)
@@ -386,7 +387,7 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     * @param int $offset the offset. Use null or negative value to disable offset.
+     * @param int|Expression|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset)
@@ -401,7 +402,7 @@ trait QueryTrait
      * and so on, will return empty or false values.
      * You should use this method in case your program logic indicates query should not return any results, like
      * in case you set false where condition like `0=1`.
-     * @param boolean $value whether to prevent query execution.
+     * @param bool $value whether to prevent query execution.
      * @return $this the query object itself.
      * @since 2.0.11
      */

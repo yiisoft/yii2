@@ -22,7 +22,7 @@ $db->createCommand('INSERT INTO `customer` (`name`) VALUES (:name)', [
 O Yii fornece suporte Active Record para os seguintes bancos de dados relacionais:
 
 * MySQL 4.1 ou superior: via [[yii\db\ActiveRecord]]
-* PostgreSQL 7.3 ou superior: via [[yii\db\ActiveRecord]]
+* PostgreSQL 8.4 ou superior: via [[yii\db\ActiveRecord]]
 * SQLite 2 e 3: via [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2008 ou superior: via [[yii\db\ActiveRecord]]
 * Oracle: via [[yii\db\ActiveRecord]]

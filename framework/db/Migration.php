@@ -26,6 +26,10 @@ use yii\di\Instance;
  * [[safeDown()]] so that if anything wrong happens during the upgrading or downgrading,
  * the whole migration can be reverted in a whole.
  *
+ * Note that some DB queries in some DBMS cannot be put into a transaction. For some examples,
+ * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
+ * you should still implement `up()` and `down()`, instead.
+ *
  * Migration provides a set of convenient methods for manipulating database data and schema.
  * For example, the [[insert()]] method can be used to easily insert a row of data into
  * a database table; the [[createTable()]] method can be used to create a database table.
@@ -95,15 +99,16 @@ class Migration extends Component implements MigrationInterface
         try {
             if ($this->safeUp() === false) {
                 $transaction->rollBack();
-
                 return false;
             }
             $transaction->commit();
         } catch (\Exception $e) {
-            echo 'Exception: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
-            echo $e->getTraceAsString() . "\n";
+            $this->printException($e);
             $transaction->rollBack();
-
+            return false;
+        } catch (\Throwable $e) {
+            $this->printException($e);
+            $transaction->rollBack();
             return false;
         }
 
@@ -123,19 +128,29 @@ class Migration extends Component implements MigrationInterface
         try {
             if ($this->safeDown() === false) {
                 $transaction->rollBack();
-
                 return false;
             }
             $transaction->commit();
         } catch (\Exception $e) {
-            echo 'Exception: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
-            echo $e->getTraceAsString() . "\n";
+            $this->printException($e);
             $transaction->rollBack();
-
+            return false;
+        } catch (\Throwable $e) {
+            $this->printException($e);
+            $transaction->rollBack();
             return false;
         }
 
         return null;
+    }
+
+    /**
+     * @param \Throwable|\Exception $e
+     */
+    private function printException($e)
+    {
+        echo 'Exception: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
+        echo $e->getTraceAsString() . "\n";
     }
 
     /**
@@ -144,6 +159,11 @@ class Migration extends Component implements MigrationInterface
      * be enclosed within a DB transaction.
      * Child classes may implement this method instead of [[up()]] if the DB logic
      * needs to be within a transaction.
+     *
+     * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
+     * you should still implement `up()` and `down()`, instead.
+     *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
@@ -157,6 +177,11 @@ class Migration extends Component implements MigrationInterface
      * be enclosed within a DB transaction.
      * Child classes may implement this method instead of [[down()]] if the DB logic
      * needs to be within a transaction.
+     *
+     * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
+     * you should still implement `up()` and `down()`, instead.
+     *
      * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */

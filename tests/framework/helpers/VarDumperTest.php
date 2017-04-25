@@ -26,7 +26,7 @@ class VarDumperTest extends TestCase
         $exportResult = VarDumper::export($incompleteObj);
         $this->assertContains("nonExistingClass", $exportResult);
     }
-    
+
     public function testDumpObject()
     {
         $obj = new \StdClass();

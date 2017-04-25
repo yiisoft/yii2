@@ -67,7 +67,7 @@ use yii\widgets\ActiveForm;
 
 Il est important de se rappeler que vous devez ajouter l'option `enctype` au formulaire afin que le fichier soit proprement chargé sur le serveur. L'appel de `fileInput()` rend une balise `<input type="file">` qui permet à l'utilisateur de sélectionner un fichier à charger sur le serveur.
 
-> Tip: depuis la version 2.0.8, [[yii\web\widgets\ActiveField::fileInput|fileInput]] ajoute l'option `enctype` au formulaire automatiquement lorsqu'un champ d'entrée de fichier est utilisé. 
+> Tip: depuis la version 2.0.8, [[yii\widgets\ActiveField::fileInput|fileInput]] ajoute l'option `enctype` au formulaire automatiquement lorsqu'un champ d'entrée de fichier est utilisé.
 
 ## Câblage <span id="wiring-up"></span>
 

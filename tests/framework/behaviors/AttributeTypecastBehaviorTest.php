@@ -49,6 +49,8 @@ class AttributeTypecastBehaviorTest extends TestCase
     {
         parent::tearDown();
         AttributeTypecastBehavior::clearAutoDetectedAttributeTypes();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :
@@ -68,7 +70,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('123', $model->name);
         $this->assertSame(58, $model->amount);
         $this->assertSame(100.8, $model->price);
-        $this->assertSame(true, $model->isActive);
+        $this->assertTrue($model->isActive);
         $this->assertSame('callback: foo', $model->callback);
     }
 
@@ -100,7 +102,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('', $model->name);
         $this->assertSame(0, $model->amount);
         $this->assertSame(0.0, $model->price);
-        $this->assertSame(false, $model->isActive);
+        $this->assertFalse($model->isActive);
         $this->assertSame('callback: ', $model->callback);
     }
 

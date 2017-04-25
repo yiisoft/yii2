@@ -190,6 +190,20 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
+     * Returns defaultRoles as array of Role objects
+     * @since 2.0.12
+     * @return Role[] default roles. The array is indexed by the role names
+     */
+    public function getDefaultRoles()
+    {
+        $result = [];
+        foreach ($this->defaultRoles as $roleName) {
+            $result[$roleName] = $this->createRole($roleName);
+        }
+        return $result;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getPermissions()
@@ -221,5 +235,17 @@ abstract class BaseManager extends Component implements ManagerInterface
         } else {
             throw new InvalidConfigException("Rule not found: {$item->ruleName}");
         }
+    }
+
+    /**
+     * Checks whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     *
+     * @param Assignment[] $assignments array of user's assignments
+     * @return bool whether array of $assignments is empty and [[defaultRoles]] property is empty as well
+     * @since 2.0.11
+     */
+    protected function hasNoAssignments(array $assignments)
+    {
+        return empty($assignments) && empty($this->defaultRoles);
     }
 }
