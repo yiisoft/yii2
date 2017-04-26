@@ -256,7 +256,7 @@ if (isset($cookies['language'])) ...
 
 ### 发送 Cookies <span id="sending-cookies"></span>
 
-You can send cookies to end users using the following code:
+
 可使用如下代码发送cookie到终端用户：
 
 ```php
