@@ -82,7 +82,7 @@ use Yii;
  * ```php
  * [
  *     'as tree' => [
- *         'class' => 'Tree',
+ *         'class' => Tree::class,
  *     ],
  * ]
  * ```
@@ -418,7 +418,7 @@ class Component extends Object
      *
      * ```php
      * 'behaviorName' => [
-     *     'class' => 'BehaviorClass',
+     *     'class' => BehaviorClass::class,
      *     'property1' => 'value1',
      *     'property2' => 'value2',
      * ]

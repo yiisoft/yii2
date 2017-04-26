@@ -130,24 +130,13 @@ class UrlManager extends Component
      * @var array the default configuration of URL rules. Individual rule configurations
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
      */
-    public $ruleConfig = ['class' => 'yii\web\UrlRule'];
+    public $ruleConfig = ['class' => UrlRule::class];
     /**
-     * @var UrlNormalizer|array|string|false the configuration for [[UrlNormalizer]] used by this UrlManager.
-     * The default value is `false`, which means normalization will be skipped.
-     * If you wish to enable URL normalization, you should configure this property manually.
-     * For example:
-     *
-     * ```php
-     * [
-     *     'class' => 'yii\web\UrlNormalizer',
-     *     'collapseSlashes' => true,
-     *     'normalizeTrailingSlash' => true,
-     * ]
-     * ```
-     *
+     * @var UrlNormalizer|array|false the configuration for [[UrlNormalizer]] used by this UrlManager.
+     * If `false` normalization will be skipped.
      * @since 2.0.10
      */
-    public $normalizer = false;
+    public $normalizer = ['class' => UrlNormalizer::class];
 
     /**
      * @var string the cache key for cached rules
@@ -171,7 +160,7 @@ class UrlManager extends Component
         if ($this->normalizer !== false) {
             $this->normalizer = Yii::createObject($this->normalizer);
             if (!$this->normalizer instanceof UrlNormalizer) {
-                throw new InvalidConfigException('`' . get_class($this) . '::normalizer` should be an instance of `' . UrlNormalizer::className() . '` or its DI compatible configuration.');
+                throw new InvalidConfigException('`' . get_class($this) . '::normalizer` should be an instance of `' . UrlNormalizer::class . '` or its DI compatible configuration.');
             }
         }
 

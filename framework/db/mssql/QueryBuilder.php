@@ -7,7 +7,7 @@
 
 namespace yii\db\mssql;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;
 
@@ -59,17 +59,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)
     {
         if (!$this->hasOffset($offset) && !$this->hasLimit($limit)) {
-            $orderBy = $this->buildOrderBy($orderBy);
+            $orderBy = $this->buildOrderBy($orderBy, $params);
             return $orderBy === '' ? $sql : $sql . $this->separator . $orderBy;
         }
 
         if ($this->isOldMssql()) {
-            return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
+            return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset, $params);
         } else {
-            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
+            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset, $params);
         }
     }
 
@@ -79,11 +79,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
      * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
      * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
+     * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
-    protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    protected function newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)
     {
-        $orderBy = $this->buildOrderBy($orderBy);
+        $orderBy = $this->buildOrderBy($orderBy, $params);
         if ($orderBy === '') {
             // ORDER BY clause is required when FETCH and OFFSET are in the SQL
             $orderBy = 'ORDER BY (SELECT NULL)';
@@ -106,11 +107,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param array $orderBy the order by columns. See [[\yii\db\Query::orderBy]] for more details on how to specify this parameter.
      * @param int $limit the limit number. See [[\yii\db\Query::limit]] for more details.
      * @param int $offset the offset number. See [[\yii\db\Query::offset]] for more details.
+     * @param array $params the binding parameters to be populated
      * @return string the SQL completed with ORDER BY/LIMIT/OFFSET (if any)
      */
-    protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    protected function oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)
     {
-        $orderBy = $this->buildOrderBy($orderBy);
+        $orderBy = $this->buildOrderBy($orderBy, $params);
         if ($orderBy === '') {
             // ROW_NUMBER() requires an ORDER BY clause
             $orderBy = 'ORDER BY (SELECT NULL)';

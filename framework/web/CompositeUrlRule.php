@@ -52,7 +52,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
                 Yii::trace([
                     'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                     'match' => $result !== false,
-                    'parent' => self::className()
+                    'parent' => self::class
                 ], __METHOD__);
             }
             if ($result !== false) {

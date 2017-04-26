@@ -11,8 +11,8 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\di\Instance;
-use yii\web\User;
 use yii\web\ForbiddenHttpException;
+use yii\web\User;
 
 /**
  * AccessControl provides simple access control based on a set of rules.
@@ -31,7 +31,7 @@ use yii\web\ForbiddenHttpException;
  * {
  *     return [
  *         'access' => [
- *             'class' => \yii\filters\AccessControl::className(),
+ *             'class' => \yii\filters\AccessControl::class,
  *             'only' => ['create', 'update'],
  *             'rules' => [
  *                 // deny all POST requests
@@ -79,7 +79,7 @@ class AccessControl extends ActionFilter
      * @var array the default configuration of access rules. Individual rule configurations
      * specified via [[rules]] will take precedence when the same property of the rule is configured.
      */
-    public $ruleConfig = ['class' => 'yii\filters\AccessRule'];
+    public $ruleConfig = ['class' => AccessRule::class];
     /**
      * @var array a list of access rule objects or configuration arrays for creating the rule objects.
      * If a rule is specified via a configuration array, it will be merged with [[ruleConfig]] first
@@ -87,21 +87,6 @@ class AccessControl extends ActionFilter
      * @see ruleConfig
      */
     public $rules = [];
-
-
-    /**
-     * Initializes the [[rules]] array by instantiating rule objects from configurations.
-     */
-    public function init()
-    {
-        parent::init();
-        $this->user = Instance::ensure($this->user, User::className());
-        foreach ($this->rules as $i => $rule) {
-            if (is_array($rule)) {
-                $this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
-            }
-        }
-    }
 
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
@@ -111,10 +96,13 @@ class AccessControl extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $user = $this->user;
+        $user = $this->user = Instance::ensure($this->user, User::class);
         $request = Yii::$app->getRequest();
         /* @var $rule AccessRule */
-        foreach ($this->rules as $rule) {
+        foreach ($this->rules as $key => $rule) {
+            if (!is_object($rule)) {
+                $rule = $this->rules[$key] = Yii::createObject(array_merge($this->ruleConfig, $rule));
+            }
             if ($allow = $rule->allows($action, $user, $request)) {
                 return true;
             } elseif ($allow === false) {

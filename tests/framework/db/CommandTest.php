@@ -82,7 +82,7 @@ abstract class CommandTest extends DatabaseTestCase
         // query
         $sql = 'SELECT * FROM {{customer}}';
         $reader = $db->createCommand($sql)->query();
-        $this->assertInstanceOf(DataReader::className(), $reader);
+        $this->assertInstanceOf(DataReader::class, $reader);
 
         // queryAll
         $rows = $db->createCommand('SELECT * FROM {{customer}}')->queryAll();
@@ -454,7 +454,7 @@ SQL;
      * Test INSERT INTO ... SELECT SQL statement with wrong query object
      *
      * @dataProvider invalidSelectColumns
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
      */
     public function testInsertSelectFailed($invalidSelectColumns)

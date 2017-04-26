@@ -38,9 +38,9 @@ class ContainerTest extends TestCase
     {
         $namespace = __NAMESPACE__ . '\stubs';
         $QuxInterface = "$namespace\\QuxInterface";
-        $Foo = Foo::className();
-        $Bar = Bar::className();
-        $Qux = Qux::className();
+        $Foo = Foo::class;
+        $Bar = Bar::class;
+        $Qux = Qux::class;
 
         // automatic wiring
         $container = new Container;
@@ -79,7 +79,7 @@ class ContainerTest extends TestCase
         $container = new Container;
         $container->set($QuxInterface, $Qux);
         $container->set('foo', function (Container $c, $params, $config) {
-            return $c->get(Foo::className());
+            return $c->get(Foo::class);
         });
         $foo = $container->get('foo');
         $this->assertInstanceOf($Foo, $foo);
@@ -237,8 +237,8 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->setDefinitions([
-            'model.order' => Order::className(),
-            Cat::className() => Type::className(),
+            'model.order' => Order::class,
+            Cat::class => Type::class,
             'test\TraversableInterface' => [
                 ['class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']]
@@ -249,8 +249,8 @@ class ContainerTest extends TestCase
         ]);
         $container->setDefinitions([]);
 
-        $this->assertInstanceOf(Order::className(), $container->get('model.order'));
-        $this->assertInstanceOf(Type::className(), $container->get(Cat::className()));
+        $this->assertInstanceOf(Order::class, $container->get('model.order'));
+        $this->assertInstanceOf(Type::class, $container->get(Cat::class));
 
         $traversable = $container->get('test\TraversableInterface');
         $this->assertInstanceOf('yiiunit\data\base\TraversableObject', $traversable);
@@ -263,7 +263,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->setSingletons([
-            'model.order' => Order::className(),
+            'model.order' => Order::class,
             'test\TraversableInterface' => [
                 ['class' => 'yiiunit\data\base\TraversableObject'],
                 [['item1', 'item2']]

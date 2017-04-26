@@ -7,7 +7,7 @@
 
 namespace yii\db\oci;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -64,9 +64,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)
     {
-        $orderBy = $this->buildOrderBy($orderBy);
+        $orderBy = $this->buildOrderBy($orderBy, $params);
         if ($orderBy !== '') {
             $sql .= $this->separator . $orderBy;
         }
@@ -140,7 +140,7 @@ EOD;
     {
         $tableSchema = $this->db->getTableSchema($table);
         if ($tableSchema === null) {
-            throw new InvalidParamException("Unknown table: $table");
+            throw new InvalidArgumentException("Unknown table: $table");
         }
         if ($tableSchema->sequenceName === null) {
             return '';

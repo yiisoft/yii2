@@ -12,7 +12,7 @@ class BaseDataProviderTest extends TestCase
 {
     public function testGenerateId()
     {
-        $rc = new \ReflectionClass(BaseDataProvider::className());
+        $rc = new \ReflectionClass(BaseDataProvider::class);
         $rp = $rc->getProperty('counter');
         $rp->setAccessible(true);
         $rp->setValue(null);

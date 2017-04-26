@@ -77,33 +77,13 @@ if ($data === false) {
 
 Yii 支持一系列缓存存储器，概况如下：
 
-* [[yii\caching\ApcCache]]：使用 PHP [APC](http://php.net/manual/en/book.apc.php) 扩展。这个选项可以
-  认为是集中式应用程序环境中（例如：单一服务器，
-  没有独立的负载均衡器等）最快的缓存方案。
-* [[yii\caching\DbCache]]：使用一个数据库的表存储缓存数据。要使用这个缓存，你必须
-  创建一个与 [[yii\caching\DbCache::cacheTable]] 对应的表。
-* [[yii\caching\DummyCache]]: 仅作为一个缓存占位符，不实现任何真正的缓存功能。
-  这个组件的目的是为了简化那些需要查询缓存有效性的代码。
-  例如，在开发中如果服务器没有实际的缓存支持，用它配置
-  一个缓存组件。一个真正的缓存服务启用后，可以再切换为使用相应的缓存组件。
-  两种条件下你都可以使用同样的代码 
-  `Yii::$app->cache->get($key)` 尝试从缓存中取回数据而不用担心
-  `Yii::$app->cache` 可能是 `null`。
-* [[yii\caching\FileCache]]：使用标准文件存储缓存数据。这个特别适用于
-  缓存大块数据，例如一个整页的内容。
-* [[yii\caching\MemCache]]：使用 PHP [memcache](http://php.net/manual/en/book.memcache.php) 
-  和 [memcached]( http://php.net/manual/en/book.memcached.php) 扩展。
-  这个选项被看作分布式应用环境中（例如：多台服务器，
-  有负载均衡等）最快的缓存方案。
-* [[yii\redis\Cache]]：实现了一个基于 [Redis](http://redis.io/) 键值对存储器
-  的缓存组件（需要 redis 2.6.12 及以上版本的支持 ）。
-* [[yii\caching\WinCache]]：使用 PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)
- （[另可参考](http://php.net/manual/en/book.wincache.php) ）扩展。
-* [[yii\caching\XCache]]：使用 PHP [XCache](http://xcache.lighttpd.net/)扩展。
-* [[yii\caching\ZendDataCache]]：使用 
-  [Zend Data Cache](http://files.zend.com/help/Zend-Server-6/zend-server.htm#data_cache_component.htm) 
-  作为底层缓存媒介。
-
+* [[yii\caching\ApcCache]]：使用 PHP [APC](http://php.net/manual/en/book.apc.php) 扩展。这个选项可以认为是集中式应用程序环境中（例如：单一服务器，没有独立的负载均衡器等）最快的缓存方案。
+* [[yii\caching\DbCache]]：使用一个数据库的表存储缓存数据。要使用这个缓存，你必须创建一个与 [[yii\caching\DbCache::cacheTable]] 对应的表。
+* [[yii\caching\DummyCache]]: 仅作为一个缓存占位符，不实现任何真正的缓存功能。这个组件的目的是为了简化那些需要查询缓存有效性的代码。例如，在开发中如果服务器没有实际的缓存支持，用它配置一个缓存组件。一个真正的缓存服务启用后，可以再切换为使用相应的缓存组件。两种条件下你都可以使用同样的代码 `Yii::$app->cache->get($key)` 尝试从缓存中取回数据而不用担心 `Yii::$app->cache` 可能是 `null`。
+* [[yii\caching\FileCache]]：使用标准文件存储缓存数据。这个特别适用于缓存大块数据，例如一个整页的内容。
+* [[yii\caching\MemCache]]：使用 PHP [memcache](http://php.net/manual/en/book.memcache.php) 和 [memcached](http://php.net/manual/en/book.memcached.php) 扩展。这个选项被看作分布式应用环境中（例如：多台服务器，有负载均衡等）最快的缓存方案。
+* [[yii\redis\Cache]]：实现了一个基于 [Redis](http://redis.io/) 键值对存储器的缓存组件（需要 redis 2.6.12 及以上版本的支持 ）。
+* [[yii\caching\WinCache]]：使用 PHP [WinCache](http://iis.net/downloads/microsoft/wincache-extension)（[另可参考](http://php.net/manual/en/book.wincache.php)）扩展.
 
 > Tip: 你可以在同一个应用程序中使用不同的缓存存储器。一个常见的策略是使用基于内存的缓存存储器
   存储小而常用的数据（例如：统计数据），使用基于文件

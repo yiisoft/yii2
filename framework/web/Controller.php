@@ -195,11 +195,17 @@ class Controller extends \yii\base\Controller
      * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
      * for details about HTTP status code
+     *
+     * @param boolean $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to false,
+     * meaning a `Location` header will be sent, which when received as an AJAX/PJAX response, may NOT cause
+     * browser redirection. If this is true, the current request is an AJAX or PJAX request, then calling this method
+     * will cause the browser to redirect to the given URL.
+     * Takes effect only when request header `X-Ie-Redirect-Compatibility` is absent.
      * @return Response the current response object
      */
-    public function redirect($url, $statusCode = 302)
+    public function redirect($url, $statusCode = 302, $checkAjax = true)
     {
-        return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
+        return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode, $checkAjax);
     }
 
     /**

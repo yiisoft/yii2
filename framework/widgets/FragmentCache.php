@@ -43,7 +43,7 @@ class FragmentCache extends Widget
      *
      * ```php
      * [
-     *     'class' => 'yii\caching\DbDependency',
+     *     'class' => \yii\caching\DbDependency::class,
      *     'sql' => 'SELECT MAX(updated_at) FROM post',
      * ]
      * ```
@@ -84,7 +84,7 @@ class FragmentCache extends Widget
     {
         parent::init();
 
-        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::className()) : null;
+        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::class) : null;
 
         if ($this->cache instanceof Cache && $this->getCachedContent() === false) {
             $this->getView()->cacheStack[] = $this;
@@ -98,17 +98,18 @@ class FragmentCache extends Widget
      * Content displayed before this method call and after [[init()]]
      * will be captured and saved in cache.
      * This method does nothing if valid content is already found in cache.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
         if (($content = $this->getCachedContent()) !== false) {
-            echo $content;
+            return $content;
         } elseif ($this->cache instanceof Cache) {
             array_pop($this->getView()->cacheStack);
 
             $content = ob_get_clean();
             if ($content === false || $content === '') {
-                return;
+                return '';
             }
             if (is_array($this->dependency)) {
                 $this->dependency = Yii::createObject($this->dependency);
@@ -119,8 +120,9 @@ class FragmentCache extends Widget
             if (empty($this->getView()->cacheStack) && !empty($this->dynamicPlaceholders)) {
                 $content = $this->updateDynamicContent($content, $this->dynamicPlaceholders);
             }
-            echo $content;
+            return $content;
         }
+        return '';
     }
 
     /**
