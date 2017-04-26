@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
-- Bug (#13848) Fixed behavior, when have not been throws exception when passing `$type` parameter into `Instance::ensure` method, when `$reference` object isn't instance of `$type` (c-jonua)
+- Bug #13848: `yii\di\Instance::ensure()` wasn't throwing an exception when `$type` is specified and `$reference` object isn't instance of `$type` (c-jonua)
 - Enh #13820: Add new HTTP status code 451 (yyxx9988)
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
