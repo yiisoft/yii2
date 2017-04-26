@@ -791,7 +791,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * Table names based on from
+     * Table names based on [[from]]
      * @return string[] table names
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.12
@@ -807,7 +807,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         } elseif (is_string($this->from)) {
             $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
         } else {
-            throw new InvalidConfigException(gettype($this->from). ' in $from is not supported.');
+            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
 
         // Clean up table names
@@ -819,7 +819,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * @return string[] table aliases based on from
+     * @return string[] table aliases based on [[from]]
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.12
      */
@@ -832,11 +832,11 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (is_string($this->from)) {
-           $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
         } elseif (is_array($this->from)) {
             $tableNames = $this->from;
         } else {
-            throw new InvalidConfigException(gettype($this->from). ' in $from is not supported.');
+            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
 
         foreach ($tableNames as $alias => $tableName) {
