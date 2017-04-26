@@ -217,4 +217,40 @@ abstract class ConnectionTest extends DatabaseTestCase
             $this->assertNotNull($db->transaction);
         });
     }
+
+    public function testEnableQueryLog()
+    {
+        $connection = $this->getConnection();
+        if ($connection->getTableSchema('qlog1', true) !== null) {
+            $connection->createCommand()->dropTable('qlog1')->execute();
+        }
+        if ($connection->getTableSchema('qlog2', true) !== null) {
+            $connection->createCommand()->dropTable('qlog2')->execute();
+        }
+
+        // enabled
+        $connection->enableQueryLog = true;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog1', ['id' => 'pk'])->execute();
+        $this->assertCount(3, \Yii::getLogger()->messages);
+        $this->assertNotNull($connection->getTableSchema('qlog1', true));
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand('SELECT * FROM qlog1')->queryAll();
+        $this->assertCount(3, \Yii::getLogger()->messages);
+
+        // disabled
+        $connection->enableQueryLog = false;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog2', ['id' => 'pk'])->execute();
+        $this->assertNotNull($connection->getTableSchema('qlog2', true));
+        $this->assertCount(0, \Yii::getLogger()->messages);
+        $connection->createCommand('SELECT * FROM qlog2')->queryAll();
+        $this->assertCount(0, \Yii::getLogger()->messages);
+
+
+
+    }
 }

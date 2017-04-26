@@ -829,9 +829,12 @@ class Command extends Component
     {
         $sql = $this->getSql();
 
-        $rawSql = $this->getRawSql();
-
-        Yii::info($rawSql, __METHOD__);
+        $log = $this->db->enableQueryLog;
+        if ($log) {
+            $rawSql = $this->getRawSql();
+            Yii::info($rawSql, __METHOD__);
+            $token = $rawSql;
+        }
 
         if ($sql == '') {
             return 0;
@@ -839,20 +842,19 @@ class Command extends Component
 
         $this->prepare(false);
 
-        $token = $rawSql;
         try {
-            Yii::beginProfile($token, __METHOD__);
+            $log && Yii::beginProfile($token, __METHOD__);
 
             $this->pdoStatement->execute();
             $n = $this->pdoStatement->rowCount();
 
-            Yii::endProfile($token, __METHOD__);
+            $log && Yii::endProfile($token, __METHOD__);
 
             $this->refreshTableSchema();
 
             return $n;
         } catch (\Exception $e) {
-            Yii::endProfile($token, __METHOD__);
+            $log && Yii::endProfile($token, __METHOD__);
             throw $this->db->getSchema()->convertException($e, $rawSql);
         }
     }
@@ -868,9 +870,12 @@ class Command extends Component
      */
     protected function queryInternal($method, $fetchMode = null)
     {
-        $rawSql = $this->getRawSql();
-
-        Yii::info($rawSql, 'yii\db\Command::query');
+        $log = $this->db->enableQueryLog;
+        if ($log) {
+            $rawSql = $this->getRawSql();
+            Yii::info($rawSql, 'yii\db\Command::query');
+            $token = $rawSql;
+        }
 
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
@@ -883,7 +888,7 @@ class Command extends Component
                     $fetchMode,
                     $this->db->dsn,
                     $this->db->username,
-                    $rawSql,
+                    isset($rawSql) ? $rawSql : $this->getRawSql(),
                 ];
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
@@ -895,9 +900,8 @@ class Command extends Component
 
         $this->prepare(true);
 
-        $token = $rawSql;
         try {
-            Yii::beginProfile($token, 'yii\db\Command::query');
+            $log && Yii::beginProfile($token, 'yii\db\Command::query');
 
             $this->pdoStatement->execute();
 
@@ -911,10 +915,10 @@ class Command extends Component
                 $this->pdoStatement->closeCursor();
             }
 
-            Yii::endProfile($token, 'yii\db\Command::query');
+            $log && Yii::endProfile($token, 'yii\db\Command::query');
         } catch (\Exception $e) {
-            Yii::endProfile($token, 'yii\db\Command::query');
-            throw $this->db->getSchema()->convertException($e, $rawSql);
+            $log && Yii::endProfile($token, 'yii\db\Command::query');
+            throw $this->db->getSchema()->convertException($e, isset($rawSql) ? $rawSql : $this->getRawSql());
         }
 
         if (isset($cache, $cacheKey, $info)) {
