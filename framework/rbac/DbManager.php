@@ -15,6 +15,7 @@ use yii\db\Expression;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
 use yii\di\Instance;
+use yii\helpers\ArrayHelper;
 
 /**
  * DbManager represents an authorization manager that stores authorization information in database.
@@ -101,6 +102,11 @@ class DbManager extends BaseManager
      */
     protected $parents;
 
+    /**
+     * @var array the map for user assigments
+     */
+    protected $assignments = [];
+
 
     /**
      * Initializes the application component.
@@ -120,7 +126,12 @@ class DbManager extends BaseManager
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        $assignments = $this->getAssignments($userId);
+        $assignments = ArrayHelper::getValue($this->assignments, $userId);
+
+        if ($assignments === null) {
+            $assignments = $this->getAssignments($userId);
+            $this->assignments[$userId] = $assignments;
+        }
 
         if ($this->hasNoAssignments($assignments)) {
             return false;
@@ -958,6 +969,7 @@ class DbManager extends BaseManager
 
     public function invalidateCache()
     {
+        $this->assignments = [];
         if ($this->cache !== null) {
             $this->cache->delete($this->cacheKey);
             $this->items = null;
