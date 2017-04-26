@@ -10,7 +10,8 @@
    通过 [[yii\rest\Serializer]] 来完成。
 3. 通过内容协商步骤将数组转换成字符串。
    [[yii\web\ResponseFormatterInterface|response formatters]] 通过
-   [[yii\web\Response::formatters|response]] 应用程序组件来注册完成。
+   [[yii\web\Response::formatters|response]] 
+   [应用程序组件]((structure-application-components.md))来注册完成。
 
 
 ## 内容协商 <span id="content-negotiation"></span>

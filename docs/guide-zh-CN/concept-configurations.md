@@ -135,7 +135,7 @@ echo Menu::widget([
 
 上述代码创建了一个小部件 `Menu` 并将其 `activateItems` 属性初始化为 false。`item` 属性也配置成了将要显示的菜单条目。
 
-请注意，代码中已经给出了类名 `yii\widgets\Menu'，配置数组**不应该**再包含 `class` 键。
+请注意，代码中已经给出了类名 `yii\widgets\Menu`，配置数组**不应该**再包含 `class` 键。
 
 
 ## 配置文件 <span id="configuration-files"></span>
