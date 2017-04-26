@@ -796,7 +796,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.12
      */
-    public function getFromTableNames()
+    public function getTableNamesUsedInFrom()
     {
         $tableNames = [];
 
@@ -823,7 +823,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.12
      */
-    public function getFromAliases()
+    public function getAliasesUsedInFrom()
     {
         $tablesAlias = [];
 

@@ -236,7 +236,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         $query = new ActiveQuery(Profile::className());
 
-        $tableNames = $query->getFromTableNames();
+        $tableNames = $query->getTableNamesUsedInFrom();
 
         $this->assertEquals([Profile::tableName()], $tableNames);
     }
@@ -246,7 +246,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(null);
         $query->from = ['prf' => 'profile', 'usr' => 'user'];
 
-        $tableNames = $query->getFromTableNames();
+        $tableNames = $query->getTableNamesUsedInFrom();
 
         $this->assertEquals(['profile', 'user'], $tableNames);
     }
@@ -256,7 +256,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(null);
         $query->from = 'profile AS \'prf\', user "usr", `order`, "customer"';
 
-        $tableNames = $query->getFromTableNames();
+        $tableNames = $query->getTableNamesUsedInFrom();
 
         $this->assertEquals(['profile', 'user', '`order`', '"customer"'], $tableNames);
     }
@@ -268,14 +268,14 @@ abstract class ActiveQueryTest extends DatabaseTestCase
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 
-        $query->getFromTableNames();
+        $query->getTableNamesUsedInFrom();
     }
 
     public function testGetTablesAlias_notFilledFrom()
     {
         $query = new ActiveQuery(Profile::className());
 
-        $tablesAlias = $query->getFromAliases();
+        $tablesAlias = $query->getAliasesUsedInFrom();
 
         $this->assertEquals([Profile::tableName()], $tablesAlias);
     }
@@ -285,7 +285,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(null);
         $query->from = ['prf' => 'profile', 'usr' => 'user'];
 
-        $tablesAlias = $query->getFromAliases();
+        $tablesAlias = $query->getAliasesUsedInFrom();
 
         $this->assertEquals(['prf', 'usr'], $tablesAlias);
     }
@@ -295,7 +295,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(null);
         $query->from = 'profile AS \'prf\', user "usr", service srv, order';
 
-        $tablesAlias = $query->getFromAliases();
+        $tablesAlias = $query->getAliasesUsedInFrom();
 
         $this->assertEquals(['prf', 'usr', 'srv', 'order'], $tablesAlias);
     }
@@ -307,6 +307,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 
-        $query->getFromAliases();
+        $query->getAliasesUsedInFrom();
     }
 }
