@@ -14,6 +14,14 @@ use yiiunit\framework\web\Post;
  */
 class JsonTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testEncode()
     {
         // basic data encoding

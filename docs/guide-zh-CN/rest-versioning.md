@@ -1,14 +1,18 @@
 版本
 ==========
 
-你的API应该是版本化的。不像你完全控制在客户端和服务器端Web应用程序代码, 对于API，您通常没有对API的客户端代码的控制权。
-因此，应该尽可能的保持向后兼容性(BC)，如果一些不能向后兼容的变化必须引入
-APIs，你应该增加版本号。你可以参考[Semantic Versioning](http://semver.org/)
-有关设计的API的版本号的详细信息。
+A good API is *versioned*: changes and new features are implemented in new versions of the API instead of continually altering just one version. Unlike Web applications, with which you have full control of both the client-side and server-side
+code, APIs are meant to be used by clients beyond your control. For this reason, backward
+compatibility (BC) of the APIs should be maintained whenever possible. If a change that may break BC is necessary, you should introduce it in new version of the API, and bump up the version number. Existing clients can continue to use the old, working version of the API; and new or upgraded clients can get the new functionality in the new API version. 
 
-关于如何实现API版本，一个常见的做法是在API的URL中嵌入版本号。
-例如，`http://example.com/v1/users`代表`/users`版本1的API. 另一种API版本化的方法最近用的非常多的是把版本号放入HTTP请求头，通常是通过`Accept`头，
-如下：
+> Tip: Refer to [Semantic Versioning](http://semver.org/)
+for more information on designing API version numbers.
+
+关于如何实现API版本，一个常见的做法是在API的URL中嵌入版本号。例如，`http://example.com/v1/users`代表`/users`版本1的API. 
+另一种API版本化的方法最近用的非常多的是把版本号放入HTTP请求头，通常是通过`Accept`头，如下：
+
+Another method of API versioning,
+which has gained momentum recently, is to put the version number in the HTTP request headers. This is typically done through the `Accept` header:
 
 ```
 // 通过参数
@@ -49,6 +53,7 @@ api/
             models/
                 User.php
                 Post.php
+            Module.php
         v2/
             controllers/
                 UserController.php
@@ -56,6 +61,7 @@ api/
             models/
                 User.php
                 Post.php
+            Module.php
 ```
 
 你的应用程序配置应该这样：

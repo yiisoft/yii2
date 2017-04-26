@@ -44,7 +44,9 @@ class ArrayHelperTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testToArray()
@@ -267,6 +269,7 @@ class ArrayHelperTest extends TestCase
         $sort = new Sort([
             'attributes' => ['name', 'age'],
             'defaultOrder' => ['name' => SORT_ASC],
+            'params' => [],
         ]);
         $orders = $sort->getOrders();
 
@@ -284,6 +287,7 @@ class ArrayHelperTest extends TestCase
         $sort = new Sort([
             'attributes' => ['name', 'age'],
             'defaultOrder' => ['name' => SORT_ASC, 'age' => SORT_DESC],
+            'params' => [],
         ]);
         $orders = $sort->getOrders();
 

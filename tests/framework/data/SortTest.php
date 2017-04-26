@@ -225,4 +225,36 @@ class SortTest extends TestCase
 
         $this->assertEquals('<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>', $sort->link('age'));
     }
+
+    public function testParseSortParam()
+    {
+        $sort = new CustomSort([
+            'attributes' => [
+                'age',
+                'name'
+            ],
+            'params' => [
+                'sort' => [
+                    ['field' => 'age', 'dir' => 'asc'],
+                    ['field' => 'name', 'dir' => 'desc']
+                ]
+            ],
+            'enableMultiSort' => true
+        ]);
+
+        $this->assertEquals(SORT_ASC, $sort->getAttributeOrder('age'));
+        $this->assertEquals(SORT_DESC, $sort->getAttributeOrder('name'));
+    }
+}
+
+class CustomSort extends Sort
+{
+    protected function parseSortParam($params)
+    {
+        $attributes = [];
+        foreach ($params as $item) {
+            $attributes[] = ($item['dir'] == 'desc') ? '-' . $item['field'] : $item['field'];
+        }
+        return $attributes;
+    }
 }

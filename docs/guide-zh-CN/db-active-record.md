@@ -1,22 +1,20 @@
 Active Record
 =============
 
-> Note: 该章节还在开发中。
-
 [Active Record](http://zh.wikipedia.org/wiki/Active_Record) （活动记录，以下简称AR）提供了一个面向对象的接口，
 用以访问数据库中的数据。一个 AR 类关联一张数据表，
 每个 AR 对象对应表中的一行，对象的属性（即 AR 的特性Attribute）映射到数据行的对应列。
 一条活动记录（AR对象）对应数据表的一行，AR对象的属性则映射该行的相应列。
-您可以直接以面向对象的方式来操纵数据表中的数据，妈妈再不用担心我需要写原生 SQL 语句啦。
+您可以直接以面向对象的方式来操纵数据表中的数据，
+妈妈再不用担心我需要写原生 SQL 语句啦。
 
-例如，假定 `Customer` AR 类关联着 `customer` 表，且该类的 `name` 属性代表 `customer` 表的 `name` 列。
+例如，假定 `Customer` AR 类关联着 `customer` 表，
+且该类的 `name` 属性代表 `customer` 表的 `name` 列。
 你可以写以下代码来哉 `customer` 表里插入一行新的记录:
-
-用 AR 而不是原生的 SQL 语句去执行数据库查询，可以调用直观方法来实现相同目标。如，调用 [[yii\db\ActiveRecord::save()|save()]] 方法将执行插入或更新轮询，将在该 AR 类关联的数据表新建或更新一行数据：
 
 ```php
 $customer = new Customer();
-$customer->name = '李狗蛋';
+$customer->name = 'Qiang';
 $customer->save();  // 一行新数据插入 customer 表
 ```
 
@@ -25,7 +23,7 @@ $customer->save();  // 一行新数据插入 customer 表
 
 ```php
 $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
-    ':name' => '李狗蛋',
+    ':name' => 'Qiang',
 ])->execute();
 ```
 
@@ -36,9 +34,13 @@ $db->createCommand('INSERT INTO customer (name) VALUES (:name)', [
 * SQLite 2 和 3：通过 [[yii\db\ActiveRecord]]
 * Microsoft SQL Server 2010 及以上：通过 [[yii\db\ActiveRecord]]
 * Oracle: 通过 [[yii\db\ActiveRecord]]
-* CUBRID 9.1 及以上：通过 [[yii\db\ActiveRecord]]
+* CUBRID 9.1 及以上：通过 [[yii\db\ActiveRecord]] (Note that due to a [bug](http://jira.cubrid.org/browse/APIS-658) in
+  the cubrid PDO extension, quoting of values will not work, so you need CUBRID 9.3 as the client as well as the server)
 * Sphinx：通过 [[yii\sphinx\ActiveRecord]]，需求 `yii2-sphinx` 扩展
 * ElasticSearch：通过 [[yii\elasticsearch\ActiveRecord]]，需求 `yii2-elasticsearch` 扩展
+
+Additionally, Yii also supports using Active Record with the following NoSQL databases:
+
 * Redis 2.6.12 及以上：通过 [[yii\redis\ActiveRecord]]，需求 `yii2-redis` 扩展
 * MongoDB 1.3.0 及以上：通过 [[yii\mongodb\ActiveRecord]]，需求 `yii2-mongodb` 扩展
 
@@ -87,7 +89,7 @@ $email = $customer->email;
 要改变列值，只要给关联属性赋新值并保存对象即可：
 
 ```php
-$customer->email = '哪吒@example.com';
+$customer->email = 'james@example.com';
 $customer->save();
 ```
 
@@ -429,7 +431,7 @@ class Customer extends \yii\db\ActiveRecord
 `hasMany()` 返回 [[yii\db\ActiveQuery]] 对象，该对象允许你通过
 [[yii\db\ActiveQuery]] 方法定制查询。
 
-如上声明后，执行`$customer->bigOrders` 就返回
+如上声明后，执行 `$customer->bigOrders` 就返回
 总额大于100的订单。使用以下代码更改设定值：
 
 ```php

@@ -1,35 +1,80 @@
 多模型的复合表单
 ==================================
 
-在复杂的用户界面可能会发生，用户在表单中填写数据
-后将其保存在数据库的不同表中。yii形式的表单与单模型表单相比
-可以让你用更加简单的方法来创建。
+When dealing with some complex data, it is possible that you may need to use multiple different models to collect
+the user input. For example, assuming the user login information is stored in the `user` table while the user profile
+information is stored in the `profile` table, you may want to collect the input data about a user through a `User` model 
+and a `Profile` model. With the Yii model and form support, you can solve this problem in a way that is not much
+different from handling a single model.
 
-与一个模型一样，你遵循以下模式用于服务端验证：
+In the following, we will show how you can create a form that would allow you to collect data for both `User` and `Profile`
+models.
 
-1. 实例化模型类
-2. 用输入数据填充模型属性
-3. 验证所有模型
-4. 如果所有模型验证通过，则保存它们
-5. 如果验证失败或没有提交数据，传递所有模型对象到视图显示表单
+First, the controller action for collecting the user and profile data can be written as follows, 
 
-在下文中我们展示了一个在表单中使用多模型的例子... TBD
+```php
+namespace app\controllers;
 
-多模型实例
----------------
+use Yii;
+use yii\base\Model;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use app\models\User;
+use app\models\Profile;
 
-> Note: This section is under development.
->
-> It has no content yet.
+class UserController extends Controller
+{
+    public function actionUpdate($id)
+    {
+        $user = User::findOne($id);
+        $profile = Profile::findOne($id);
+        
+        if (!isset($user, $profile)) {
+            throw new NotFoundHttpException("The user was not found.");
+        }
+        
+        $user->scenario = 'update';
+        $profile->scenario = 'update';
+        
+        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
+                $user->save(false);
+                $profile->save(false);
+                return $this->redirect(['user/view', 'id' => $id]);
+            }
+        }
+        
+        return $this->render('update', [
+            'user' => $user,
+            'profile' => $profile,
+        ]);
+    }
+}
+```
 
-TBD
+In the `update` action, we first load the `$user` and `$profile` models to be updated from the database. We then call 
+[[yii\base\Model::load()]] to populate these two models with the user input. If successful we will validate
+the two models and save them. Otherwise we will render the `update` view which has the following content:
 
-Dependend models
-----------------
+```php
+<?php
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
+$form = ActiveForm::begin([
+    'id' => 'user-update-form',
+    'options' => ['class' => 'form-horizontal'],
+]) ?>
+    <?= $form->field($user, 'username') ?>
 
-> Note: This section is under development.
->
-> It has no content yet.
+    ...other input fields...
+    
+    <?= $form->field($profile, 'website') ?>
 
-TBD
+    <?= Html::submitButton('Update', ['class' => 'btn btn-primary']) ?>
+<?php ActiveForm::end() ?>
+```
+
+As you can see, in the `update` view you would render input fields using two models `$user` and `$profile`.

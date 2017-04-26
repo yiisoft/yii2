@@ -33,7 +33,13 @@ class FileHelperTest extends TestCase
              */
             $this->markTestInComplete('Unit tests runtime directory should be local!');
         }
+
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
     }
+
 
     public function tearDown()
     {

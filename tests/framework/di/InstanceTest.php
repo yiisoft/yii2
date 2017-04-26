@@ -112,7 +112,6 @@ class InstanceTest extends TestCase
         $this->expectExceptionMessage('"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
 
         Instance::ensure('db', 'yii\base\Widget', $container);
-        Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\base\Widget', $container);
     }
 
     public function testExceptionInvalidDataType()
@@ -190,5 +189,13 @@ PHP
         $this->expectExceptionMessage('Failed to instantiate class "Instance". Required parameter "id" is missing');
 
         Instance::__set_state([]);
+    }
+
+    public function testExceptionInvalidDataTypeInArray()
+    {
+        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        Instance::ensure([
+            'class' => Connection::className(),
+        ], 'yii\base\Widget');
     }
 }
