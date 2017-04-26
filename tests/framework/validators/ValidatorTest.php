@@ -240,17 +240,27 @@ class ValidatorTest extends TestCase
         $this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
     }
 
+    public function testGetAttributeNames()
+    {
+        $validator = new TestValidator();
+        $validator->attributes = ['id', 'name', '!email'];
+        $this->assertEquals(['id', 'name', 'email'], $validator->getAttributeNames());
+    }
+
+    /**
+     * @depends  testGetAttributeNames
+     */
     public function testGetActiveValidatorsForSafeAttributes()
     {
         $model = $this->getTestModel();
         $validators = $model->getActiveValidators('safe_attr');
-        $is_found = false;
+        $isFound = false;
         foreach ($validators as $v) {
             if ($v instanceof NumberValidator) {
-                $is_found = true;
+                $isFound = true;
                 break;
             }
         }
-        $this->assertTrue($is_found);
+        $this->assertTrue($isFound);
     }
 }

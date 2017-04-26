@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 --------------------------
 
 - Enh #13226: `yii cache` command now warns about the fact that it's not able to flush APC cache from console (samdark)
+- Bug #11719: Fixed `yii\db\Connection::$enableQueryCache` caused infinite loop when the same connection was used for `yii\caching\DbCache` (michaelarnauts)
 - Bug #10346: Fixed "DOMException: Invalid Character Error" in `yii\web\XmlResponseFormatter::buildXml()` (sasha-ch)
 - Bug #13694: `yii\widgets\Pjax` now sends `X-Pjax-Url` header with response to fix redirect (wleona3, Faryshta)
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
@@ -15,7 +16,7 @@ Yii Framework 2 Change Log
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
-- Bug #13087: Fixed getting active validators for safe attribute (developeruz)
+- Bug #13087: Fixed getting active validators for safe attribute (developeruz, klimov-paul)
 - Bug #13571: Fix `yii\db\mssql\QueryBuilder::checkIntegrity` for all tables (boboldehampsink)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Enh #13243: Added support for unicode attribute names in `yii\widgets\DetailView` (arogachev)
@@ -35,6 +36,7 @@ Yii Framework 2 Change Log
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
 - Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
+- Enh #13179: Added `yii\data\Sort::parseSortParam` allowing to customize sort param in descendant class (leandrogehlen)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
 - Enh #13523: Plural rule for pasta (developeruz)
