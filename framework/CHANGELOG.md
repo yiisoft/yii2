@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
+- Bug #9669: AssetManager and `FileHelper::copyDirectory()` were copying empty directories when using `only` or `except` options. Added an option to disable this (cebe)
 - Bug #10346: Fixed "DOMException: Invalid Character Error" in `yii\web\XmlResponseFormatter::buildXml()` (sasha-ch)
 - Bug #10372: Fixed console controller including complex typed arguments in help (sammousa)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)

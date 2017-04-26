@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use Yii;
+use yii\helpers\FileHelper;
 use yii\web\View;
 use yii\web\AssetBundle;
 use yii\web\AssetManager;
@@ -27,6 +28,24 @@ class AssetBundleTest extends \yiiunit\TestCase
         Yii::setAlias('@testAssetsPath', '@webroot/assets');
         Yii::setAlias('@testAssetsUrl', '@web/assets');
         Yii::setAlias('@testSourcePath', '@webroot/assetSources');
+
+        // clean up assets directory
+        $handle = opendir($dir = Yii::getAlias('@testAssetsPath'));
+        if ($handle === false) {
+            throw new \Exception("Unable to open directory: $dir");
+        }
+        while (($file = readdir($handle)) !== false) {
+            if ($file === '.' || $file === '..' || $file === '.gitignore') {
+                continue;
+            }
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path)) {
+                FileHelper::removeDirectory($path);
+            } else {
+                unlink($path);
+            }
+        }
+        closedir($handle);
     }
 
     /**
@@ -105,12 +124,11 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle = TestSourceAsset::register($view);
         $bundle->publish($am);
 
-        $this->assertTrue(is_dir($bundle->basePath));
+        $this->assertFalse(is_dir($bundle->basePath));
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileNotExists($publishedFile);
         }
-        $this->assertTrue(rmdir($bundle->basePath));
     }
 
     public function testSourcesPublish_AssetBeforeCopy()
@@ -126,12 +144,11 @@ class AssetBundleTest extends \yiiunit\TestCase
         ];
         $bundle->publish($am);
 
-        $this->assertTrue(is_dir($bundle->basePath));
+        $this->assertFalse(is_dir($bundle->basePath));
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileNotExists($publishedFile);
         }
-        $this->assertTrue(rmdir($bundle->basePath));
     }
 
     public function testSourcesPublish_publishOptions_Only()
