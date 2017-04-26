@@ -37,7 +37,7 @@ The following steps are not necessary if you want to work only on translations o
 
 - run `composer install` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.2.0"`
+> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.3.1"`
 
 If you are going to work with JavaScript:
 
@@ -66,7 +66,7 @@ The following steps are optional.
 ### Unit tests
 
 You can execute unit tests by running `phpunit` in the repo root directory. If you do not have phpunit installed globally
-you can run `php vendor/bin/phpunit` instead.
+you can run `php vendor/bin/phpunit` or `vendor/bin/phpunit.bat` in case of execution from the Windows OS.
 
 Some tests require additional databases to be set up and configured. You can create `tests/data/config.local.php` to override
 settings that are configured in `tests/data/config.php`.

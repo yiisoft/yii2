@@ -115,9 +115,9 @@ class AccessRule extends Component
             && $this->matchCustom($action)
         ) {
             return $this->allow ? true : false;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -165,7 +165,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param string $ip the IP address
+     * @param string|null $ip the IP address
      * @return bool whether the rule applies to the IP address
      */
     protected function matchIP($ip)
@@ -174,7 +174,14 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' || $rule === $ip || (($pos = strpos($rule, '*')) !== false && !strncmp($ip, $rule, $pos))) {
+            if ($rule === '*' ||
+                $rule === $ip ||
+                (
+                    $ip !== null &&
+                    ($pos = strpos($rule, '*')) !== false &&
+                    strncmp($ip, $rule, $pos) === 0
+                )
+            ) {
                 return true;
             }
         }

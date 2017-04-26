@@ -33,7 +33,13 @@ class FileHelperTest extends TestCase
              */
             $this->markTestInComplete('Unit tests runtime directory should be local!');
         }
+
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
     }
+
 
     public function tearDown()
     {
@@ -163,7 +169,7 @@ class FileHelperTest extends TestCase
         foreach ($files as $name => $content) {
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
             $this->assertFileExists($fileName);
-            $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+            $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
         }
     }
 
@@ -200,7 +206,7 @@ class FileHelperTest extends TestCase
                 } else {
                     $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
                     $this->assertFileExists($fileName);
-                    $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+                    $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
                 }
             }
         };
@@ -241,7 +247,7 @@ class FileHelperTest extends TestCase
                 $this->assertFileNotExists($fileName);
             } else {
                 $this->assertFileExists($fileName);
-                $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+                $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
             }
         }
     }
@@ -293,7 +299,7 @@ class FileHelperTest extends TestCase
             $dirName => [],
         ]);
 
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
 
         $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_dir';
         FileHelper::copyDirectory($dirName, $dirName);
@@ -309,7 +315,7 @@ class FileHelperTest extends TestCase
             'backup' => ['data' => []]
         ]);
 
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
 
         FileHelper::copyDirectory(
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup',
@@ -331,6 +337,7 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
         );
+        $this->assertTrue(file_exists($this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'));
     }
 
     /**
@@ -780,7 +787,7 @@ class FileHelperTest extends TestCase
         foreach ($dataFiles as $name => $content) {
             $fileName = $dstDirName . DIRECTORY_SEPARATOR . $name;
             $this->assertFileExists($fileName);
-            $this->assertEquals($content, file_get_contents($fileName), 'Incorrect file content!');
+            $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
         }
     }
 }

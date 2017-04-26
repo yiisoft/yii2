@@ -35,7 +35,7 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 - `composer install` を実行して、依存パッケージをインストールします ([composer をグローバルにインストール](https://getcomposer.org/doc/00-intro.md#globally) したものと仮定しています)。
 
-> Note: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:^1.2.0"` を実行する必要があります。
+> Note: `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` というようなエラーが生ずる場合は、`composer global require "fxp/composer-asset-plugin:^1.3.1"` を実行する必要があります。
 JavaScript を扱おうとしている場合は、
 
 - `npm install` を実行して JavaScript テストツール群とその依存ライブラリをインストールします
@@ -74,11 +74,6 @@ phpunit をグローバルにインストールしていない場合は、代り
 利用できるグループのリストを取得するためには、`phpunit --list-groups` を実行してください。
 
 JavaScript の単体テストは、レポジトリのルートディレクトリで `npm test` を走らせることによって実行することが出来ます。
-
-> Note: タイムアウトエラー、例えば `Error: timeout of 2000ms exceeded. Ensure the done() callback is being called in this test.` になる場合は、
-  タイムアウトになる時間を延ばすことが出来ます。
-  `npm test -- --timeout 30000`
-  (`--` を忘れないように。追加の引数を渡すために必要です)。
 
 ### エクステンション
 

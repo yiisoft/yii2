@@ -216,6 +216,7 @@ class Response extends \yii\base\Response
         431 => 'Request Header Fields Too Large',
         449 => 'Retry With',
         450 => 'Blocked by Windows Parental Controls',
+        451 => 'Unavailable For Legal Reasons',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway or Proxy Error',
@@ -271,6 +272,7 @@ class Response extends \yii\base\Response
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidParamException if the status code is invalid.
+     * @return $this the response object itself
      */
     public function setStatusCode($value, $text = null)
     {
@@ -286,6 +288,24 @@ class Response extends \yii\base\Response
         } else {
             $this->statusText = $text;
         }
+        return $this;
+    }
+
+    /**
+     * Sets the response status code based on the exception.
+     * @param \Exception|\Error $e the exception object.
+     * @throws InvalidParamException if the status code is invalid.
+     * @return $this the response object itself
+     * @since 2.0.12
+     */
+    public function setStatusCodeByException($e)
+    {
+        if ($e instanceof HttpException) {
+            $this->setStatusCode($e->statusCode);
+        } else {
+            $this->setStatusCode(500);
+        }
+        return $this;
     }
 
     /**
@@ -795,8 +815,8 @@ class Response extends \yii\base\Response
      *   Note that the route is with respect to the whole application, instead of relative to a controller or module.
      *   [[Url::to()]] will be used to convert the array into a URL.
      *
-     * Any relative URL will be converted into an absolute one by prepending it with the host info
-     * of the current request.
+     * Any relative URL that starts with a single forward slash "/" will be converted
+     * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
      * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>

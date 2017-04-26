@@ -477,7 +477,7 @@ class DbManager extends BaseManager
             ->andWhere(['a.user_id' => (string) $userId])
             ->andWhere(['b.type' => Item::TYPE_ROLE]);
 
-        $roles = [];
+        $roles = $this->getDefaultRoleInstances();
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
@@ -491,7 +491,7 @@ class DbManager extends BaseManager
     {
         $role = $this->getRole($roleName);
 
-        if (is_null($role)) {
+        if ($role === null) {
             throw new InvalidParamException("Role \"$roleName\" not found.");
         }
 
@@ -999,7 +999,11 @@ class DbManager extends BaseManager
         $query = (new Query)->from($this->ruleTable);
         $this->rules = [];
         foreach ($query->all($this->db) as $row) {
-            $this->rules[$row['name']] = unserialize($row['data']);
+            $data = $row['data'];
+            if (is_resource($data)) {
+                $data = stream_get_contents($data);
+            }
+            $this->rules[$row['name']] = unserialize($data);
         }
 
         $query = (new Query)->from($this->itemChildTable);

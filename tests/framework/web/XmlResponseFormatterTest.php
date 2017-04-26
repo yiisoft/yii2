@@ -69,27 +69,37 @@ class XmlResponseFormatterTest extends FormatterTest
                 'c' => [2, '<>'],
                 false,
             ], "<response><a>1</a><b>abc</b><c><item>2</item><item>&lt;&gt;</item></c><item>false</item></response>\n"],
+
+            // Checks if empty keys and keys not valid in XML are processed.
+            // See https://github.com/yiisoft/yii2/pull/10346/
+            [[
+                '' => 1,
+                '2015-06-18' => '2015-06-18',
+                'b:c' => 'b:c',
+                'a b c' => 'a b c',
+                'äøñ' => 'äøñ'
+            ], "<response><item>1</item><item>2015-06-18</item><item>b:c</item><item>a b c</item><äøñ>äøñ</äøñ></response>\n"],
         ]);
     }
 
     public function formatTraversableObjectDataProvider()
     {
         $expectedXmlForStack = '';
-        
+
         $postsStack = new \SplStack();
-        
+
         $postsStack->push(new Post(915, 'record1'));
         $expectedXmlForStack = '<Post><id>915</id><title>record1</title></Post>' .
           $expectedXmlForStack;
-        
+
         $postsStack->push(new Post(456, 'record2'));
         $expectedXmlForStack = '<Post><id>456</id><title>record2</title></Post>' .
           $expectedXmlForStack;
-        
+
         $data = [
             [$postsStack, "<response>$expectedXmlForStack</response>\n"]
         ];
-        
+
         return $this->addXmlHead($data);
     }
 

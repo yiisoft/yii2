@@ -46,8 +46,11 @@ class NumberValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
         $this->oldLocale = setlocale(LC_NUMERIC, 0);
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit()
@@ -237,7 +240,7 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = 0;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-        $this->assertEquals(1, count($model->getErrors('attr_number')));
+        $this->assertCount(1, $model->getErrors('attr_number'));
         $msgs = $model->getErrors('attr_number');
         $this->assertSame('attr_number is to small.', $msgs[0]);
     }

@@ -205,7 +205,7 @@ class DetailView extends Widget
 
         foreach ($this->attributes as $i => $attribute) {
             if (is_string($attribute)) {
-                if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
+                if (!preg_match('/^([^:]+)(:(\w*))?(:(.*))?$/', $attribute, $matches)) {
                     throw new InvalidConfigException('The attribute must be specified in the format of "attribute", "attribute:format" or "attribute:format:label"');
                 }
                 $attribute = [
