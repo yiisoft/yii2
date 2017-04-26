@@ -11,7 +11,7 @@ Yii Framework 2 Change Log
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Enh #13243: Added support for unicode attribute names in `yii\widgets\DetailView` (arogachev)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
-- Bug #13086, #13656: Fixed bug with optional params at the beginning of pattern in `yii\web\UrlRule` (rob006)
+- Bug #13086, #13656: Fixed bug with optional parameters at the beginning of pattern in `yii\web\UrlRule` (rob006)
 - Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
 - Bug #13340: Fixed `yii\db\Connection::useMaster()` - Exception within callback completely disables slaves (Vovan-VE)
 - Bug #13343: Fixed `yii\i18n\Formatter::asTime()` to process time-only values without time zone conversion (bizley)
