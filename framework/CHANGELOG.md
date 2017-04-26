@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Bug #14052: Fixed processing parse errors on PHP 7 since these are instances of `\ParseError` (samdark)
 - Bug #13790: Fixed error in `\yii\widgets\MaskedInput` JavaScript by raising version required (samdark)
 - Bug #14033: Fixed `yii\filters\AccessRule::matchIp()` erroring in case IP is not defined under HHVM (Kolyunya)
 - Bug #13848: `yii\di\Instance::ensure()` wasn't throwing an exception when `$type` is specified and `$reference` object isn't instance of `$type` (c-jonua)

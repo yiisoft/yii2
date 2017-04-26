@@ -306,11 +306,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Renders call stack.
-     * @param \Exception $exception exception to get call stack from
+     * @param \Exception|\ParseError $exception exception to get call stack from
      * @return string HTML content of the rendered call stack.
      * @since 2.0.12
      */
-    public function renderCallStack(\Exception $exception)
+    public function renderCallStack($exception)
     {
         $out = '<ul>';
         $out .= $this->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, [], 1);
