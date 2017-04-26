@@ -125,6 +125,15 @@ trait FixtureTrait
     }
 
     /**
+     * Initialize the fixtures
+     */
+    public function initFixtures()
+    {
+        $this->unloadFixtures();
+        $this->loadFixtures();
+    }
+
+    /**
      * Returns the fixture objects as specified in [[globalFixtures()]] and [[fixtures()]].
      * @return Fixture[] the loaded fixtures for the current test case
      */
