@@ -182,6 +182,9 @@ class UrlRule extends Object implements UrlRuleInterface
         $this->preparePattern();
     }
 
+    /**
+     * Process [[$pattern]] on rule initialization.
+     */
     private function preparePattern()
     {
         $this->pattern = $this->trimSlashes($this->pattern);
@@ -220,6 +223,13 @@ class UrlRule extends Object implements UrlRuleInterface
         $this->translatePattern(true);
     }
 
+    /**
+     * Prepares [[$pattern]] on rule initialization - replace parameter names by placeholders.
+     *
+     * @param bool $allowAppendSlash Defines position of slash in the param pattern in [[$pattern]].
+     * If `false` slash will be placed at the beginning of param pattern. If `true` slash position will be detected
+     * depending on non-optional pattern part.
+     */
     private function translatePattern($allowAppendSlash)
     {
         $tr = [
