@@ -136,9 +136,8 @@ class DbCache extends Cache
             $this->db->enableQueryCache = true;
 
             return $result;
-        } else {
-            return $query->createCommand($this->db)->queryScalar();
         }
+        return $query->createCommand($this->db)->queryScalar();
     }
 
     /**
@@ -200,9 +199,8 @@ class DbCache extends Cache
             $this->gc();
 
             return true;
-        } else {
-            return $this->addValue($key, $value, $duration);
         }
+        return $this->addValue($key, $value, $duration);
     }
 
     /**
