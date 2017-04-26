@@ -177,7 +177,12 @@ class ActiveDataProvider extends BaseDataProvider
         parent::setSort($value);
         if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
             /* @var $model Model */
-            $model = new $this->query->modelClass();
+            if (is_subclass_of($this->query->modelClass, 'yii\db\ActiveRecordInterface')) {
+                $modelClass = $this->query->modelClass;
+                $model = $modelClass::instantiate();
+            } else {
+                $model = new $this->query->modelClass();
+            }
             if (empty($sort->attributes)) {
                 foreach ($model->attributes() as $attribute) {
                     $sort->attributes[$attribute] = [

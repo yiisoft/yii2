@@ -76,6 +76,9 @@ Upgrade from Yii 2.0.11
 * Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
   assets manually, please adjust it. 
 
+* The usage of `yii\db\BaseActiveRecord::instantiate()` was changed to more general `instantiate($row = [])`. The method is called
+  everywhere in framework internal code instead of `new $modelClass()` and can receive empty `$row` array in this cases.
+
 Upgrade from Yii 2.0.10
 -----------------------
 

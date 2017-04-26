@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #13787: Added `yii\db\Migration::$maxSqlOutputLength` that allows limiting number of characters for outputting SQL (thiagotalma)
 - Enh #13824: Support extracting concatenated strings in `yii message` (developeruz)
+- Enh #14078: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
