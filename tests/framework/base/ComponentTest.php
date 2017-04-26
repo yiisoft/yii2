@@ -38,6 +38,8 @@ class ComponentTest extends TestCase
     {
         parent::tearDown();
         $this->component = null;
+        gc_enable();
+        gc_collect_cycles();
     }
 
     public function testClone()
@@ -96,7 +98,7 @@ class ComponentTest extends TestCase
     public function testGetProperty()
     {
         $this->assertSame('default', $this->component->Text);
-        $this->setExpectedException('yii\base\UnknownPropertyException');
+        $this->expectException('yii\base\UnknownPropertyException');
         $value2 = $this->component->Caption;
     }
 
@@ -105,7 +107,7 @@ class ComponentTest extends TestCase
         $value = 'new value';
         $this->component->Text = $value;
         $this->assertEquals($value, $this->component->Text);
-        $this->setExpectedException('yii\base\UnknownPropertyException');
+        $this->expectException('yii\base\UnknownPropertyException');
         $this->component->NewMember = $value;
     }
 
@@ -130,7 +132,7 @@ class ComponentTest extends TestCase
 
     public function testCallUnknownMethod()
     {
-        $this->setExpectedException('yii\base\UnknownMethodException');
+        $this->expectException('yii\base\UnknownMethodException');
         $this->component->unknownMethod();
     }
 
@@ -150,7 +152,7 @@ class ComponentTest extends TestCase
 
     public function testUnsetReadonly()
     {
-        $this->setExpectedException('yii\base\InvalidCallException');
+        $this->expectException('yii\base\InvalidCallException');
         unset($this->component->object);
     }
 
@@ -244,7 +246,7 @@ class ComponentTest extends TestCase
 
         $this->assertSame($behavior, $component->detachBehavior('a'));
         $this->assertFalse($component->hasProperty('p'));
-        $this->setExpectedException('yii\base\UnknownMethodException');
+        $this->expectException('yii\base\UnknownMethodException');
         $component->test();
 
         $p = 'as b';
@@ -305,10 +307,8 @@ class ComponentTest extends TestCase
 
     public function testSetReadOnlyProperty()
     {
-        $this->setExpectedException(
-            '\yii\base\InvalidCallException',
-            'Setting read-only property: yiiunit\framework\base\NewComponent::object'
-        );
+        $this->expectException('\yii\base\InvalidCallException');
+        $this->expectExceptionMessage('Setting read-only property: yiiunit\framework\base\NewComponent::object');
         $this->component->object = 'z';
     }
 
@@ -336,10 +336,8 @@ class ComponentTest extends TestCase
 
     public function testWriteOnlyProperty()
     {
-        $this->setExpectedException(
-            '\yii\base\InvalidCallException',
-            'Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly'
-        );
+        $this->expectException('\yii\base\InvalidCallException');
+        $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewComponent::writeOnly');
         $this->component->writeOnly;
     }
 

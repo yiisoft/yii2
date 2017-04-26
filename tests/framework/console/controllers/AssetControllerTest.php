@@ -67,7 +67,10 @@ class AssetControllerTest extends TestCase
      */
     protected function createAssetController()
     {
-        $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
+        $module = $this->getMockBuilder('yii\\base\\Module')
+            ->setMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
         $assetController = new AssetControllerMock('asset', $module);
         $assetController->interactive = false;
         $assetController->jsCompressor = 'cp {from} {to}';
@@ -436,7 +439,8 @@ EOL;
 
         // Assert :
         $expectedExceptionMessage = ": {$namespace}\AssetA -> {$namespace}\AssetB -> {$namespace}\AssetC -> {$namespace}\AssetA";
-        $this->setExpectedException('yii\console\Exception', $expectedExceptionMessage);
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage($expectedExceptionMessage);
 
         // When :
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);

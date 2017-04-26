@@ -139,7 +139,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateAttributeAttributeNotInTableException()
     {
-        $this->setExpectedException('yii\db\Exception');
+        $this->expectException('yii\db\Exception');
         $val = new UniqueValidator();
         $m = new ValidatorTestMainModel();
         $val->validateAttribute($m, 'testMainVal');
