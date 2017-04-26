@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Enh #13226: `yii cache` command now warns about the fact that it's not able to flush APC cache from console (samdark)
 - Bug #11719: Fixed `yii\db\Connection::$enableQueryCache` caused infinite loop when the same connection was used for `yii\caching\DbCache` (michaelarnauts)
 - Bug #10346: Fixed "DOMException: Invalid Character Error" in `yii\web\XmlResponseFormatter::buildXml()` (sasha-ch)
 - Bug #13694: `yii\widgets\Pjax` now sends `X-Pjax-Url` header with response to fix redirect (wleona3, Faryshta)
