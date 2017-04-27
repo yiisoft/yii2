@@ -70,14 +70,14 @@ class DevController extends Controller
             return 1;
         }
 
-        foreach($this->extensions as $ext => $repo) {
+        foreach ($this->extensions as $ext => $repo) {
             $ret = $this->actionExt($ext);
             if ($ret !== 0) {
                 return $ret;
             }
         }
 
-        foreach($this->apps as $app => $repo) {
+        foreach ($this->apps as $app => $repo) {
             $ret = $this->actionApp($app);
             if ($ret !== 0) {
                 return $ret;
@@ -107,7 +107,7 @@ class DevController extends Controller
         asort($dirs);
 
         $oldcwd = getcwd();
-        foreach($dirs as $dir) {
+        foreach ($dirs as $dir) {
             $displayDir = substr($dir, strlen($base));
             $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
             chdir($dir);
@@ -252,7 +252,7 @@ class DevController extends Controller
             $this->unlink($link);
         }
         $extensions = $this->findDirs("$dir/vendor/yiisoft");
-        foreach($extensions as $ext) {
+        foreach ($extensions as $ext) {
             if (is_link($link = "$dir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing symlink $link.\n");
                 $this->unlink($link);
@@ -276,7 +276,7 @@ class DevController extends Controller
             symlink("$base/framework", $link);
         }
         $extensions = $this->findDirs("$dir/vendor/yiisoft");
-        foreach($extensions as $ext) {
+        foreach ($extensions as $ext) {
             if (is_dir($link = "$dir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing dir $link.\n");
                 FileHelper::removeDirectory($link);
@@ -359,7 +359,7 @@ class DevController extends Controller
         }
         closedir($handle);
 
-        foreach($list as $i => $e) {
+        foreach ($list as $i => $e) {
             if ($e === 'composer') { // skip composer to not break composer update
                 unset($list[$i]);
             }

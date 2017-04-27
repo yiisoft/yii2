@@ -12,7 +12,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'oci';
 
-    protected $likeEscapeCharSql = " ESCAPE '\\'";
+    protected $likeEscapeCharSql = " ESCAPE '!'";
+    protected $likeParameterReplacements = [
+        '\%' => '!%',
+        '\_' => '!_',
+        '!' => '!!',
+    ];
 
     /**
      * this is not used as a dataprovider for testGetColumnType to speed up the test
@@ -69,5 +74,16 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             .'CREATE SEQUENCE "item_SEQ" START WITH 4 INCREMENT BY 1 NOMAXVALUE NOCACHE';
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
+    }
+
+    public function likeConditionProvider()
+    {
+        /*
+         * Different pdo_oci8 versions may or may not implement PDO::quote(), so
+         * yii\db\Schema::quoteValue() may or may not quote \.
+         */
+        $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
+        $this->likeParameterReplacements[$encodedBackslash] = '\\';
+        return parent::likeConditionProvider();
     }
 }

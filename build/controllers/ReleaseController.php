@@ -105,7 +105,7 @@ class ReleaseController extends Controller
         }
 
         if ($this->update) {
-            foreach($items as $item) {
+            foreach ($items as $item) {
                 $this->stdout("fetching tags for $item...");
                 if ($item === 'framework') {
                     $this->gitFetchTags("{$this->basePath}");
@@ -126,7 +126,7 @@ class ReleaseController extends Controller
         // print version table
         $w = $this->minWidth(array_keys($versions));
         $this->stdout(str_repeat(' ', $w + 2) . "Current Version  Next Version\n", Console::BOLD);
-        foreach($versions as $ext => $version) {
+        foreach ($versions as $ext => $version) {
             $this->stdout($ext . str_repeat(' ', $w + 3 - mb_strlen($ext)) . $version . "");
             $this->stdout(str_repeat(' ', 17 - mb_strlen($version)) . $nextVersions[$ext] . "\n");
         }
@@ -136,7 +136,7 @@ class ReleaseController extends Controller
     private function minWidth($a)
     {
         $w = 1;
-        foreach($a as $s) {
+        foreach ($a as $s) {
             if (($l = mb_strlen($s)) > $w) {
                 $w = $l;
             }
@@ -199,7 +199,7 @@ class ReleaseController extends Controller
         if ($this->version !== null) {
             // if a version is explicitly given
             $newVersions = [];
-            foreach($versions as $k => $v) {
+            foreach ($versions as $k => $v) {
                 $newVersions[$k] = $this->version;
             }
         } else {
@@ -230,7 +230,7 @@ class ReleaseController extends Controller
             return 1;
         }
 
-        foreach($what as $ext) {
+        foreach ($what as $ext) {
             if ($ext === 'framework') {
                 $this->releaseFramework("{$this->basePath}/framework", $newVersions['framework']);
             } elseif (strncmp('app-', $ext, 4) === 0) {
@@ -264,7 +264,7 @@ class ReleaseController extends Controller
         $versions = $this->getCurrentVersions($what);
 
         $this->stdout("You are about to generate packages for the following things:\n\n");
-        foreach($what as $ext) {
+        foreach ($what as $ext) {
             if (strncmp('app-', $ext, 4) === 0) {
                 $this->stdout(" - ");
                 $this->stdout(substr($ext, 4), Console::FG_RED);
@@ -289,7 +289,7 @@ class ReleaseController extends Controller
             return 1;
         }
 
-        foreach($what as $ext) {
+        foreach ($what as $ext) {
             if ($ext === 'framework') {
                 throw new Exception('Can not package framework.');
             } elseif (strncmp('app-', $ext, 4) === 0) {
@@ -334,7 +334,7 @@ class ReleaseController extends Controller
 
     protected function printWhat(array $what, $newVersions, $versions)
     {
-        foreach($what as $ext) {
+        foreach ($what as $ext) {
             if (strncmp('app-', $ext, 4) === 0) {
                 $this->stdout(" - ");
                 $this->stdout(substr($ext, 4), Console::FG_RED);
@@ -353,7 +353,7 @@ class ReleaseController extends Controller
 
     protected function printWhatUrls(array $what, $oldVersions)
     {
-        foreach($what as $ext) {
+        foreach ($what as $ext) {
             if ($ext === 'framework') {
                 $this->stdout("framework:    https://github.com/yiisoft/yii2-framework/compare/{$oldVersions[$ext]}...master\n");
                 $this->stdout("app-basic:    https://github.com/yiisoft/yii2-app-basic/compare/{$oldVersions[$ext]}...master\n");
@@ -372,7 +372,7 @@ class ReleaseController extends Controller
      */
     protected function validateWhat(array $what, $limit = [], $ensureGitClean = true)
     {
-        foreach($what as $w) {
+        foreach ($what as $w) {
             if (strncmp('app-', $w, 4) === 0) {
                 if (!empty($limit) && !in_array('app', $limit)) {
                     throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
@@ -460,7 +460,7 @@ class ReleaseController extends Controller
             $this->runGit("git diff --color", $frameworkPath);
             $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
             $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
-        } while(!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
+        } while (!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
 
         $this->stdout("\n\n");
         $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
@@ -581,7 +581,7 @@ class ReleaseController extends Controller
             $this->runGit("git diff --color", $path);
             $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
             $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
-        } while(!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
+        } while (!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
 
         $this->stdout("\n\n");
         $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
@@ -633,7 +633,7 @@ class ReleaseController extends Controller
     protected function setAppAliases($app, $path)
     {
         $this->_oldAlias = Yii::getAlias('@app');
-        switch($app) {
+        switch ($app) {
             case 'basic':
                 Yii::setAlias('@app', $path);
                 break;
@@ -699,7 +699,7 @@ class ReleaseController extends Controller
             $this->runGit("git diff --color", $path);
             $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
             $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
-        } while(!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
+        } while (!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
 
         $this->stdout("\n\n");
         $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
@@ -825,7 +825,7 @@ class ReleaseController extends Controller
     {
         $headline = "\n$version under development\n";
         $headline .= str_repeat('-', strlen($headline) - 2) . "\n\n- no changes in this release.\n";
-        foreach($this->getChangelogs($what) as $file) {
+        foreach ($this->getChangelogs($what) as $file) {
             $lines = explode("\n", file_get_contents($file));
             $hl = [
                 array_shift($lines),
@@ -839,7 +839,7 @@ class ReleaseController extends Controller
 
     protected function resortChangelogs($what, $version)
     {
-        foreach($this->getChangelogs($what) as $file) {
+        foreach ($this->getChangelogs($what) as $file) {
             // split the file into relevant parts
             list($start, $changelog, $end) = $this->splitChangelog($file, $version);
             $changelog = $this->resortChangelog($changelog);
@@ -860,7 +860,7 @@ class ReleaseController extends Controller
         $end = [];
 
         $state = 'start';
-        foreach($lines as $l => $line) {
+        foreach ($lines as $l => $line) {
             // starting from the changelogs headline
             if (isset($lines[$l-2]) && strpos($lines[$l-2], $version) !== false &&
                 isset($lines[$l-1]) && strncmp($lines[$l-1], '---', 3) === 0) {
@@ -886,7 +886,7 @@ class ReleaseController extends Controller
     protected function resortChangelog($changelog)
     {
         // cleanup whitespace
-        foreach($changelog as $i => $line) {
+        foreach ($changelog as $i => $line) {
             $changelog[$i] = rtrim($line);
         }
         $changelog = array_filter($changelog);
@@ -926,7 +926,7 @@ class ReleaseController extends Controller
     protected function getExtensionChangelogs($what)
     {
         return array_filter(glob($this->basePath . '/extensions/*/CHANGELOG.md'), function($elem) use ($what) {
-            foreach($what as $ext) {
+            foreach ($what as $ext) {
                 if (strpos($elem, "extensions/$ext/CHANGELOG.md") !== false) {
                     return true;
                 }
@@ -979,7 +979,7 @@ class ReleaseController extends Controller
 
     protected function sed($pattern, $replace, $files)
     {
-        foreach((array) $files as $file) {
+        foreach ((array) $files as $file) {
             file_put_contents($file, preg_replace($pattern, $replace, file_get_contents($file)));
         }
     }
@@ -987,7 +987,7 @@ class ReleaseController extends Controller
     protected function getCurrentVersions(array $what)
     {
         $versions = [];
-        foreach($what as $ext) {
+        foreach ($what as $ext) {
             if ($ext === 'framework') {
                 chdir("{$this->basePath}/framework");
             } elseif (strncmp('app-', $ext, 4) === 0) {
@@ -1011,13 +1011,13 @@ class ReleaseController extends Controller
 
     protected function getNextVersions(array $versions, $type)
     {
-        foreach($versions as $k => $v) {
+        foreach ($versions as $k => $v) {
             if (empty($v)) {
                 $versions[$k] = '2.0.0';
                 continue;
             }
             $parts = explode('.', $v);
-            switch($type) {
+            switch ($type) {
                 case self::MINOR:
                     $parts[1]++;
                     $parts[2] = 0;
