@@ -111,6 +111,7 @@ class ActiveForm extends Widget
      * This property must be set `true` if you want to support client validation and/or AJAX validation, or if you
      * want to take advantage of the `yii.activeForm` plugin. When this is `false`, the form will not generate
      * any JavaScript.
+     * @see registerClientScript
      */
     public $enableClientScript = true;
     /**
@@ -205,16 +206,16 @@ class ActiveForm extends Widget
         echo $content;
 
         if ($this->enableClientScript) {
-            $this->registerJs();
+            $this->registerClientScript();
         }
 
         echo Html::endForm();
     }
-    
+
     /**
      * This registers the necessary JavaScript code.
      */
-    public function registerJs()
+    public function registerClientScript()
     {
         $id = $this->options['id'];
         $options = Json::htmlEncode($this->getClientOptions());

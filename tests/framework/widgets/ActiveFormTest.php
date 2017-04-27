@@ -6,6 +6,7 @@
 namespace yiiunit\framework\widgets;
 
 use yii\base\DynamicModel;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
 /**
@@ -89,7 +90,6 @@ EOF
         ActiveForm::end();
 
         $content = ob_get_clean();
-        //ob_end_clean();
 
         $this->assertEquals($obLevel, ob_get_level(), 'Output buffers not closed correctly.');
 
@@ -105,5 +105,27 @@ EOF
 HTML
 , $content);
 
+    }
+
+    public function testRegisterClientScript()
+    {
+        $this->mockWebApplication();
+        $_SERVER['REQUEST_URI'] = 'http://example.com/';
+
+        $model = new DynamicModel(['name']);
+        $model->addRule(['name'], 'required');
+
+        $view = $this->getMock(View::className());
+        $view->method('registerJs')->with($this->equalTo("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
+        $view->method('registerAssetBundle')->willReturn(true);
+
+        $form = ActiveForm::begin(['view' => $view, 'validateOnSubmit' => false]);
+        $form->field($model, 'name');
+        $form::end();
+
+        // Disable clientScript will not call `View->registerJs()`
+        $form = ActiveForm::begin(['view' => $view, 'enableClientScript' => false]);
+        $form->field($model, 'name');
+        $form::end();
     }
 }
