@@ -332,6 +332,9 @@ EOD;
         return parent::buildLikeCondition($operator, $operands, $params);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildInCondition($operator, $operands, &$params)
     {
         $splitCondition = $this->splitInCondition($operator, $operands, $params);
