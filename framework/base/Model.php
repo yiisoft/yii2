@@ -708,9 +708,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * The default implementation will log a warning message if YII_DEBUG is on.
      * It does nothing otherwise.
      * @param string $name the unsafe attribute name
-     * @param mixed $value the attribute value
      */
-    public function onUnsafeAttribute($name, $value)
+    public function onUnsafeAttribute($name)
     {
         if (YII_DEBUG) {
             Yii::trace("Failed to set unsafe attribute '$name' in '" . get_class($this) . "'.", __METHOD__);
