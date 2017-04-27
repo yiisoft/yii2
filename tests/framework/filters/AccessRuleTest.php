@@ -5,7 +5,6 @@ namespace yiiunit\framework\filters;
 use Yii;
 use yii\base\Action;
 use yii\filters\AccessRule;
-use yii\filters\HttpCache;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\User;
@@ -21,8 +20,8 @@ class AccessRuleTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $this->mockWebApplication();
     }
@@ -42,7 +41,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
-     * @param string optional user id
+     * @param string $userid optional user id
      * @return User
      */
     protected function mockUser($userid = null)
@@ -288,6 +287,14 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
         $_SERVER['REMOTE_ADDR'] = '::123';
         $rule->ips = ['::1'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        // undefined IP
+        $_SERVER['REMOTE_ADDR'] = null;
+        $rule->ips = ['192.168.*'];
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
