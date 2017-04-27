@@ -9,6 +9,7 @@ namespace yii\filters;
 
 use yii\base\Component;
 use yii\base\Action;
+use yii\base\InvalidConfigException;
 use yii\web\User;
 use yii\web\Request;
 use yii\base\Controller;
@@ -147,6 +148,10 @@ class AccessRule extends Component
         if (empty($this->roles)) {
             return true;
         }
+
+        if(!is_array($this->roles))
+            throw new InvalidConfigException('The "roles" configuration option needs to be an array.');
+
         foreach ($this->roles as $role) {
             if ($role === '?') {
                 if ($user->getIsGuest()) {
