@@ -236,15 +236,16 @@ class View extends \yii\base\View
 
     /**
      * Clears up the registered meta tags, link tags, css/js scripts and files.
+     * @return void
      */
     public function clear()
     {
-        $this->metaTags = null;
-        $this->linkTags = null;
-        $this->css = null;
-        $this->cssFiles = null;
-        $this->js = null;
-        $this->jsFiles = null;
+        $this->metaTags = [];
+        $this->linkTags = [];
+        $this->css = [];
+        $this->cssFiles = [];
+        $this->js = [];
+        $this->jsFiles = [];
         $this->assetBundles = [];
     }
 
