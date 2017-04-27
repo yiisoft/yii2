@@ -13,7 +13,9 @@ class EmailValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValue()
@@ -114,7 +116,7 @@ class EmailValidatorTest extends TestCase
             'ipetrov@gmail.com',
             'Ivan Petrov <ipetrov@gmail.com>',
         ];
-        foreach($emails as $email) {
+        foreach ($emails as $email) {
             $this->assertTrue($validator->validate($email),"Email: '$email' failed to validate(checkDNS=true, allowName=true)");
         }
     }

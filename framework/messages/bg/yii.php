@@ -16,7 +16,7 @@
  *
  * NOTE: this file must be saved in UTF-8 encoding.
  */
-return array (
+return [
   '(not set)' => '(не е попълнено)',
   'An internal server error occurred.' => 'Възникна вътрешна грешка в сървъра.',
   'Are you sure you want to delete this item?' => 'Сигурни ли сте, че искате да изтриете записа?',
@@ -103,4 +103,4 @@ return array (
   '{n} MB' => '{n} МБ',
   '{n} PB' => '{n} ПБ',
   '{n} TB' => '{n} ТБ',
-);
+];

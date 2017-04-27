@@ -91,6 +91,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     public function testAutoincrementDisabled()
     {
         $table = $this->getConnection(false)->schema->getTableSchema('order', true);
-        $this->assertSame(false, $table->columns['id']->autoIncrement);
+        $this->assertFalse($table->columns['id']->autoIncrement);
     }
 }

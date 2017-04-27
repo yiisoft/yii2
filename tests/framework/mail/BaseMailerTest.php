@@ -285,14 +285,16 @@ TEXT
         $this->assertTrue($mailer->send($message));
         $file = Yii::getAlias($mailer->fileTransportPath) . '/message.txt';
         $this->assertTrue(is_file($file));
-        $this->assertEquals($message->toString(), file_get_contents($file));
+        $this->assertStringEqualsFile($file, $message->toString());
     }
 
     public function testBeforeSendEvent()
     {
         $message = new Message();
 
-        $mailerMock = $this->getMockBuilder('yiiunit\framework\mail\Mailer')->setMethods(['beforeSend', 'afterSend'])->getMock();
+        $mailerMock = $this->getMockBuilder('yiiunit\framework\mail\Mailer')
+            ->setMethods(['beforeSend', 'afterSend'])
+            ->getMock();
         $mailerMock->expects($this->once())->method('beforeSend')->with($message)->will($this->returnValue(true));
         $mailerMock->expects($this->once())->method('afterSend')->with($message, true);
         $mailerMock->send($message);

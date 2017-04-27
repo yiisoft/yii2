@@ -5,6 +5,7 @@ namespace yiiunit\framework\db;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
+use yii\db\Schema;
 
 abstract class QueryTest extends DatabaseTestCase
 {
@@ -167,9 +168,9 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['and', ['id' => 1]], $query->where);
     }
 
-    public function testJoin()
+    /*public function testJoin()
     {
-    }
+    }*/
 
     public function testGroup()
     {
@@ -266,7 +267,7 @@ abstract class QueryTest extends DatabaseTestCase
             );
         $result = $query->all($connection);
         $this->assertNotEmpty($result);
-        $this->assertSame(4, count($result));
+        $this->assertCount(4, $result);
     }
 
     public function testOne()
@@ -406,13 +407,13 @@ abstract class QueryTest extends DatabaseTestCase
             ->from('customer')
             ->emulateExecution()
             ->one($db);
-        $this->assertSame(false, $row);
+        $this->assertFalse($row);
 
         $exists = (new Query())
             ->from('customer')
             ->emulateExecution()
             ->exists($db);
-        $this->assertSame(false, $exists);
+        $this->assertFalse($exists);
 
         $count = (new Query())
             ->from('customer')
@@ -436,20 +437,20 @@ abstract class QueryTest extends DatabaseTestCase
             ->from('customer')
             ->emulateExecution()
             ->max('id', $db);
-        $this->assertSame(null, $max);
+        $this->assertNull($max);
 
         $min = (new Query())
             ->from('customer')
             ->emulateExecution()
             ->min('id', $db);
-        $this->assertSame(null, $min);
+        $this->assertNull($min);
 
         $scalar = (new Query())
             ->select(['id'])
             ->from('customer')
             ->emulateExecution()
             ->scalar($db);
-        $this->assertSame(null, $scalar);
+        $this->assertNull($scalar);
 
         $column = (new Query())
             ->select(['id'])
@@ -457,5 +458,75 @@ abstract class QueryTest extends DatabaseTestCase
             ->emulateExecution()
             ->column($db);
         $this->assertSame([], $column);
+    }
+
+    /**
+     * @param Connection $db
+     * @param string $tableName
+     * @param string $columnName
+     * @param array $condition
+     * @param string $operator
+     * @return int
+     */
+    protected function countLikeQuery(Connection $db, $tableName, $columnName, array $condition, $operator = 'or')
+    {
+        $whereCondition = [$operator];
+        foreach ($condition as $value) {
+            $whereCondition[] = ['like', $columnName, $value];
+        }
+        $result = (new Query())
+            ->from($tableName)
+            ->where($whereCondition)
+            ->count('*', $db);
+        if (is_numeric($result)) {
+            $result = (int) $result;
+        }
+        return $result;
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13745
+     */
+    public function testMultipleLikeConditions()
+    {
+        $db = $this->getConnection();
+        $tableName = 'like_test';
+        $columnName = 'col';
+
+        if($db->getSchema()->getTableSchema($tableName) !== null){
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            $columnName => $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+        ])->execute();
+        $db->createCommand()->batchInsert($tableName, ['col'], [
+            ['test0'],
+            ['test\1'],
+            ['test\2'],
+            ['foo%'],
+            ['%bar'],
+            ['%baz%'],
+        ])->execute();
+
+        // Basic tests
+        $this->assertSame(1, $this->countLikeQuery($db, $tableName, $columnName, ['test0']));
+        $this->assertSame(2, $this->countLikeQuery($db, $tableName, $columnName, ['test\\']));
+        $this->assertSame(0, $this->countLikeQuery($db, $tableName, $columnName, ['test%']));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, ['%']));
+
+        // Multiple condition tests
+        $this->assertSame(2, $this->countLikeQuery($db, $tableName, $columnName, [
+            'test0',
+            'test\1',
+        ]));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, [
+            'test0',
+            'test\1',
+            'test\2',
+        ]));
+        $this->assertSame(3, $this->countLikeQuery($db, $tableName, $columnName, [
+            'foo',
+            '%ba',
+        ]));
     }
 }

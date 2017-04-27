@@ -47,7 +47,15 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    protected $likeEscapeCharacter = '\\';
+    protected $likeEscapeCharacter = '!';
+    /**
+     * @inheritdoc
+     */
+    protected $likeEscapingReplacements = [
+        '%' => '!%',
+        '_' => '!_',
+        '!' => '!!',
+    ];
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.

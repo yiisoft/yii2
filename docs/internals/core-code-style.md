@@ -7,8 +7,7 @@ what suits you better.
 
 You can get a config for CodeSniffer here: https://github.com/yiisoft/yii2-coding-standards
 
-1. Overview
------------
+## 1. Overview
 
 Overall we're using [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)
 compatible style so everything that applies to
@@ -26,8 +25,7 @@ style as well.
 - Property names MUST start with an initial underscore if they are private.
 - Always use `elseif` instead of `else if`.
 
-2. Files
---------
+## 2. Files
 
 ### 2.1. PHP Tags
 
@@ -40,13 +38,11 @@ style as well.
 
 PHP code MUST use only UTF-8 without BOM.
 
-3. Class Names
---------------
+## 3. Class Names
 
 Class names MUST be declared in `StudlyCaps`. For example, `Controller`, `Model`.
 
-4. Classes
-----------
+## 4. Classes
 
 The term "class" refers to all classes and interfaces here.
 

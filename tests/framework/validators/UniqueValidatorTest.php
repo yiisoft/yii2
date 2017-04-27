@@ -16,11 +16,13 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
         ActiveRecord::$db = $this->getConnection();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testAssureMessageSetOnInit()
@@ -139,7 +141,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateAttributeAttributeNotInTableException()
     {
-        $this->setExpectedException('yii\db\Exception');
+        $this->expectException('yii\db\Exception');
         $val = new UniqueValidator();
         $m = new ValidatorTestMainModel();
         $val->validateAttribute($m, 'testMainVal');
@@ -331,6 +333,32 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];
         $this->assertEquals($expected, $result);
+
+        // Add table prefix for column name
+        $model = Profile::findOne(1);
+        $attribute = 'id';
+        $targetAttribute = 'id';
+        $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
+        $expected = [Profile::tableName() . '.' . $attribute => $model->id];
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testGetTargetClassWithFilledTargetClassProperty()
+    {
+        $validator = new UniqueValidator(['targetClass' => Profile::className()]);
+        $model = new FakedValidationModel();
+        $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
+
+        $this->assertEquals(Profile::className(), $actualTargetClass);
+    }
+
+    public function testGetTargetClassWithNotFilledTargetClassProperty()
+    {
+        $validator = new UniqueValidator();
+        $model = new FakedValidationModel();
+        $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
+
+        $this->assertEquals(FakedValidationModel::className(), $actualTargetClass);
     }
 
     public function testPrepareQuery()
@@ -338,7 +366,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $schema = $this->getConnection()->schema;
 
         $model = new ValidatorTestMainModel();
-        $query = $this->invokeMethod(new UniqueValidator(), 'prepareQuery', [$model,['val_attr_b' => 'test value a']]);
+        $query = $this->invokeMethod(new UniqueValidator(), 'prepareQuery', [$model, ['val_attr_b' => 'test value a']]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE {$schema->quoteColumnName('val_attr_b')}=:qp0";
         $this->assertEquals($expected, $query->createCommand()->getSql());
 

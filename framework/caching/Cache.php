@@ -541,7 +541,7 @@ abstract class Cache extends Component implements \ArrayAccess
 
     /**
      * Method combines both [[set()]] and [[get()]] methods to retrieve value identified by a $key,
-     * or to store the result of $closure execution if there is no cache available for the $key.
+     * or to store the result of $callable execution if there is no cache available for the $key.
      *
      * Usage example:
      *
@@ -556,25 +556,25 @@ abstract class Cache extends Component implements \ArrayAccess
      *
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
-     * @param \Closure $closure the closure that will be used to generate a value to be cached.
-     * In case $closure returns `false`, the value will not be cached.
+     * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
+     * In case $callable returns `false`, the value will not be cached.
      * @param int $duration default duration in seconds before the cache will expire. If not set,
      * [[defaultDuration]] value will be used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.
-     * @return mixed result of $closure execution
+     * @return mixed result of $callable execution
      * @since 2.0.11
      */
-    public function getOrSet($key, \Closure $closure, $duration = null, $dependency = null)
+    public function getOrSet($key, $callable, $duration = null, $dependency = null)
     {
         if (($value = $this->get($key)) !== false) {
             return $value;
         }
 
-        $value = call_user_func($closure, $this);
+        $value = call_user_func($callable, $this);
         if (!$this->set($key, $value, $duration, $dependency)) {
-            Yii::warning('Failed to set cache value for key ' . json_encode($value), __METHOD__);
+            Yii::warning('Failed to set cache value for key ' . json_encode($key), __METHOD__);
         }
 
         return $value;

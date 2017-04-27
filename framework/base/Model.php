@@ -849,7 +849,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public static function loadMultiple($models, $data, $formName = null)
     {
         if ($formName === null) {
-            /* @var $first Model */
+            /* @var $first Model|false */
             $first = reset($models);
             if ($first === false) {
                 return false;

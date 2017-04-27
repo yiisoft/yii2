@@ -427,8 +427,8 @@ class ModelTest extends TestCase
 
     public function testCreateValidators()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException',
-            'Invalid validation rule: a rule must specify both attribute names and validator type.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Invalid validation rule: a rule must specify both attribute names and validator type.');
 
         $invalid = new InvalidRulesModel();
         $invalid->createValidators();
@@ -480,7 +480,7 @@ class WriteOnlyModel extends Model
     public function rules()
     {
         return [
-            [['password'],'safe'],
+            [['password'], 'safe'],
         ];
     }
 
