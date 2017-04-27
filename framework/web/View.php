@@ -103,32 +103,32 @@ class View extends \yii\base\View
      * @var array the registered meta tags.
      * @see registerMetaTag()
      */
-    public $metaTags;
+    public $metaTags = [];
     /**
      * @var array the registered link tags.
      * @see registerLinkTag()
      */
-    public $linkTags;
+    public $linkTags = [];
     /**
      * @var array the registered CSS code blocks.
      * @see registerCss()
      */
-    public $css;
+    public $css = [];
     /**
      * @var array the registered CSS files.
      * @see registerCssFile()
      */
-    public $cssFiles;
+    public $cssFiles = [];
     /**
      * @var array the registered JS code blocks
      * @see registerJs()
      */
-    public $js;
+    public $js = [];
     /**
      * @var array the registered JS files.
      * @see registerJsFile()
      */
-    public $jsFiles;
+    public $jsFiles = [];
 
     private $_assetManager;
 
