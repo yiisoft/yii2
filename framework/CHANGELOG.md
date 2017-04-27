@@ -74,6 +74,7 @@ Yii Framework 2 Change Log
 - Enh #13976: Disabled IPv6 check on `\yii\validators\IpValidator` as it turns out it is not needed for inet_* methods to work (mikk150)
 - Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
 - Enh #13911: Significantly enhanced MSSQL schema reading performance (paulzi, WebdevMerlion)
+- Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly) 
 
 2.0.11.2 February 08, 2017
 --------------------------

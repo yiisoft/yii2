@@ -809,16 +809,33 @@ SQL;
     {
         $db = $this->getConnection(false);
         $tableName = 'test';
+        $fkName = 'test_fk';
+
+        $this->assertNull($db->getSchema()->getTableSchema($tableName));
 
         $db->createCommand()->createTable($tableName, [
             'id' => 'pk',
+            'fk' => 'int',
             'name' => 'string',
         ])->execute();
         $initialSchema = $db->getSchema()->getTableSchema($tableName);
+        $this->assertNotNull($initialSchema);
 
         $db->createCommand()->addColumn($tableName, 'value', 'integer')->execute();
         $newSchema = $db->getSchema()->getTableSchema($tableName);
         $this->assertNotEquals($initialSchema, $newSchema);
+
+        $db->createCommand()->addForeignKey($fkName, $tableName, 'fk', $tableName, 'id')->execute();
+        $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
+
+        $db->createCommand()->dropForeignKey($fkName, $tableName)->execute();
+        $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
+
+        $db->createCommand()->addCommentOnColumn($tableName, 'id', 'Test comment')->execute();
+        $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
+
+        $db->createCommand()->dropCommentFromColumn($tableName, 'id')->execute();
+        $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
 
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
