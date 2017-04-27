@@ -6,6 +6,7 @@
 namespace yiiunit\framework\widgets;
 
 use yii\base\DynamicModel;
+use yii\base\Widget;
 use yii\web\View;
 use yii\widgets\ActiveForm;
 
@@ -116,8 +117,12 @@ HTML
         $model->addRule(['name'], 'required');
 
         $view = $this->getMock(View::className());
-        $view->method('registerJs')->with($this->equalTo("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
+        $view->method('registerJs')->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
         $view->method('registerAssetBundle')->willReturn(true);
+
+        Widget::$counter = 0;
+        ob_start();
+        ob_implicit_flush(false);
 
         $form = ActiveForm::begin(['view' => $view, 'validateOnSubmit' => false]);
         $form->field($model, 'name');
@@ -127,5 +132,6 @@ HTML
         $form = ActiveForm::begin(['view' => $view, 'enableClientScript' => false]);
         $form->field($model, 'name');
         $form::end();
+        ob_get_clean();
     }
 }
