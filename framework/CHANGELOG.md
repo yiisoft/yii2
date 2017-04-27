@@ -84,6 +84,7 @@ Yii Framework 2 Change Log
 - Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
 - Enh #13911: Significantly enhanced MSSQL schema reading performance (paulzi, WebdevMerlion)
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
+- Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 
 2.0.11.2 February 08, 2017
 --------------------------
