@@ -14,6 +14,7 @@ use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
+use yii\helpers\ActiveQueryHelper;
 
 /**
  * UniqueValidator validates that the attribute value is unique in the specified database table.
@@ -249,14 +250,18 @@ class UniqueValidator extends Validator
 
         // Add table prefix for column
         $targetClass = $this->getTargetClass($model);
-        $tableName = $targetClass::tableName();
-        $conditionsWithTableName = [];
+
+        /** @var ActiveRecord $targetClass */
+        $query = $targetClass::find();
+        $tableAliases = $query->getFromAliases();
+        $primaryTableAlias = $tableAliases[0];
+        $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumnName = "{$tableName}.$columnName";
-            $conditionsWithTableName[$prefixedColumnName] = $columnValue;
+            $prefixedColumn = "{$primaryTableAlias}.{$columnName}";
+            $prefixedConditions[$prefixedColumn] = $columnValue;
         }
 
-        return $conditionsWithTableName;
+        return $prefixedConditions;
     }
 
     /**
