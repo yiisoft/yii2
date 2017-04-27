@@ -62,6 +62,9 @@ Upgrade from Yii 2.0.11
 * `yii\web\User::loginRequired()` now throws an `UnauthorizedHttpException` instead of a `ForbiddenHttpException`.
   Check and adjust your try-catch blocks.
 
+* `yii\filters\AccessControl` now can be used without `user` component.  
+  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
+  matching a role throws `yii\base\InvalidConfigException`.
 
 Upgrade from Yii 2.0.10
 -----------------------
