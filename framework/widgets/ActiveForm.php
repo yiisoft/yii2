@@ -7,14 +7,16 @@
 
 namespace yii\widgets;
 
+use Closure;
 use Yii;
 use yii\base\InvalidCallException;
-use yii\base\Widget;
 use yii\base\Model;
+use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
+use yii\web\View;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -49,7 +51,7 @@ class ActiveForm extends Widget
     public $method = 'post';
     /**
      * @var array the HTML attributes (name-value pairs) for the form tag.
-     * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
+     * @see Html::renderTagAttributes() for details on how attributes are being rendered.
      */
     public $options = [];
     /**
@@ -58,7 +60,7 @@ class ActiveForm extends Widget
      */
     public $fieldClass = 'yii\widgets\ActiveField';
     /**
-     * @var array|\Closure the default configuration used by [[field()]] when creating a new field object.
+     * @var array|Closure the default configuration used by [[field()]] when creating a new field object.
      * This can be either a configuration array or an anonymous function returning a configuration array.
      * If the latter, the signature should be as follows:
      *
@@ -210,7 +212,7 @@ class ActiveForm extends Widget
             $attributes = Json::htmlEncode($this->attributes);
             $view = $this->getView();
             ActiveFormAsset::register($view);
-            $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);");
+            $view->registerJs("jQuery('#$id').yiiActiveForm($attributes, $options);", View::POS_READY, 'activeform', View::MERGE_APPEND);
         }
 
         echo Html::endForm();
@@ -289,7 +291,7 @@ class ActiveForm extends Widget
     public function field($model, $attribute, $options = [])
     {
         $config = $this->fieldConfig;
-        if ($config instanceof \Closure) {
+        if ($config instanceof Closure) {
             $config = call_user_func($config, $model, $attribute);
         }
         if (!isset($config['class'])) {
