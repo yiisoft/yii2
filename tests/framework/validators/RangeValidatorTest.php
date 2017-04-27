@@ -14,12 +14,15 @@ class RangeValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testInitException()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'The "range" property must be set.');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('The "range" property must be set.');
         new RangeValidator(['range' => 'not an array']);
     }
 

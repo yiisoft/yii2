@@ -74,7 +74,7 @@ use yii\base\InvalidConfigException;
  * @property int $securePort Port number for secure requests.
  * @property string $serverName Server name, null if not available. This property is read-only.
  * @property int|null $serverPort Server port number, null if not available. This property is read-only.
- * @property string $url The currently requested relative URL. Note that the URI returned is URL-encoded.
+ * @property string $url The currently requested relative URL. Note that the URI returned may be URL-encoded depending on the client.
  * @property string|null $userAgent User agent, null if not available. This property is read-only.
  * @property string|null $userHost User host name, null if not available. This property is read-only.
  * @property string|null $userIP User IP address, null if not available. This property is read-only.
@@ -808,7 +808,7 @@ class Request extends \yii\base\Request
      * Returns the currently requested relative URL.
      * This refers to the portion of the URL that is after the [[hostInfo]] part.
      * It includes the [[queryString]] part if any.
-     * @return string the currently requested relative URL. Note that the URI returned is URL-encoded.
+     * @return string the currently requested relative URL. Note that the URI returned may be URL-encoded depending on the client.
      * @throws InvalidConfigException if the URL cannot be determined due to unusual server configuration
      */
     public function getUrl()
@@ -836,7 +836,7 @@ class Request extends \yii\base\Request
      * This refers to the portion that is after the [[hostInfo]] part. It includes the [[queryString]] part if any.
      * The implementation of this method referenced Zend_Controller_Request_Http in Zend Framework.
      * @return string|bool the request URI portion for the currently requested URL.
-     * Note that the URI returned is URL-encoded.
+     * Note that the URI returned may be URL-encoded depending on the client.
      * @throws InvalidConfigException if the request URI cannot be determined due to unusual server configuration
      */
     protected function resolveRequestUri()
