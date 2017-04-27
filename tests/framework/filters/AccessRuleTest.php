@@ -194,7 +194,7 @@ class AccessRuleTest extends \yiiunit\TestCase
             'roles' => ['@'],
         ]);
 
-        $this->setExpectedException('yii\base\InvalidConfigException');
+        $this->expectException('yii\base\InvalidConfigException');
         $rule->allows($action, false, $request);
     }
 
