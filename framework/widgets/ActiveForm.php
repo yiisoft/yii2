@@ -214,6 +214,7 @@ class ActiveForm extends Widget
 
     /**
      * This registers the necessary JavaScript code.
+     * @since 2.0.12
      */
     public function registerClientScript()
     {

@@ -48,6 +48,7 @@ Yii Framework 2 Change Log
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
 - Bug #14033: Fixed `yii\filters\AccessRule::matchIp()` erroring in case IP is not defined under HHVM (Kolyunya)
 - Bug #14052: Fixed processing parse errors on PHP 7 since these are instances of `\ParseError` (samdark)
+- Bug #14074: Fixed default value of `yii\console\controllers\FixtureController::$globalFixtures` to contain valid class name (lynicidn)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
 - Enh #13179: Added `yii\data\Sort::parseSortParam` allowing to customize sort param in descendant class (leandrogehlen)
