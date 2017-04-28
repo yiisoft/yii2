@@ -435,6 +435,9 @@ The above rule can be used to parse or create any of the following URLs:
 
 Without using optional parameters, you would have to create 4 rules to achieve the same result.
 
+> Note: If [[yii\web\UrlRule::$pattern|pattern]] contains only optional parameters and slashes, first parameter could be omitted 
+  only if all other parameters are omitted.
+
 
 ### Rules with Server Names <span id="rules-with-server-names"></span>
 

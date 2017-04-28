@@ -13,6 +13,7 @@ Yii Framework 2 Change Log
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
 - Bug #11719: Fixed `yii\db\Connection::$enableQueryCache` caused infinite loop when the same connection was used for `yii\caching\DbCache` (michaelarnauts)
 - Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
+- Bug #13086, #13656: Fixed bug with optional parameters at the beginning of pattern in `yii\web\UrlRule` (rob006)
 - Bug #13087: Fixed getting active validators for safe attribute (developeruz, klimov-paul)
 - Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
 - Bug #13340: Fixed `yii\db\Connection::useMaster()` - exception within callback completely disables slaves (Vovan-VE)
