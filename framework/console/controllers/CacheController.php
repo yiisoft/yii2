@@ -9,8 +9,8 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\caching\ApcCache;
+use yii\caching\CacheInterface;
 use yii\console\Controller;
-use yii\caching\Cache;
 use yii\helpers\Console;
 use yii\console\Exception;
 
@@ -265,7 +265,7 @@ class CacheController extends Controller
                 continue;
             }
 
-            if ($component instanceof Cache) {
+            if ($component instanceof CacheInterface) {
                 $caches[$name] = get_class($component);
             } elseif (is_array($component) && isset($component['class']) && $this->isCacheClass($component['class'])) {
                 $caches[$name] = $component['class'];
@@ -284,7 +284,7 @@ class CacheController extends Controller
      */
     private function isCacheClass($className)
     {
-        return is_subclass_of($className, Cache::className());
+        return is_subclass_of($className, 'yii\caching\CacheInterface');
     }
 
     /**

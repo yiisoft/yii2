@@ -85,6 +85,7 @@ Yii Framework 2 Change Log
 - Enh #13994: Refactored `yii\filters\RateLimiter`. Added tests (vladis84)
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
+- Enh: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
 
 
 2.0.11.2 February 08, 2017

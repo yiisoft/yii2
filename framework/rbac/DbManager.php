@@ -8,7 +8,7 @@
 namespace yii\rbac;
 
 use Yii;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\db\Expression;
@@ -62,7 +62,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
+     * @var CacheInterface|array|string the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
@@ -111,7 +111,7 @@ class DbManager extends BaseManager
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
         if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, Cache::className());
+            $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
         }
     }
 
@@ -968,7 +968,7 @@ class DbManager extends BaseManager
 
     public function loadFromCache()
     {
-        if ($this->items !== null || !$this->cache instanceof Cache) {
+        if ($this->items !== null || !$this->cache instanceof CacheInterface) {
             return;
         }
 
