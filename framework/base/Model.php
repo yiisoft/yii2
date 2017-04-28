@@ -71,6 +71,14 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      * @event Event an event raised at the end of [[validate()]]
      */
     const EVENT_AFTER_VALIDATE = 'afterValidate';
+    /**
+     * @event Event an event raised at the beginning of [[setAttributes()]]
+     */
+    const EVENT_BEFORE_LOAD = 'beforeLoad';
+    /**
+     * @event Event an event raised at the end of [[setAttributes()]]
+     */
+    const EVENT_AFTER_LOAD = 'afterLoad';
 
     /**
      * @var array validation errors (attribute name => array of errors)
@@ -693,6 +701,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         if (is_array($values)) {
             $attributes = array_flip($safeOnly ? $this->safeAttributes() : $this->attributes());
+            $this->beforeLoad();
             foreach ($values as $name => $value) {
                 if (isset($attributes[$name])) {
                     $this->$name = $value;
@@ -700,7 +709,30 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                     $this->onUnsafeAttribute($name, $value);
                 }
             }
+            $this->afterLoad();
         }
+    }
+
+    /**
+     * This method is invoked before load attributes starts.
+     * The default implementation raises a `beforeLoad` event.
+     * You may override this method to do preliminary checks before validation.
+     * Make sure the parent implementation is invoked so that the event can be raised.
+     */
+    public function beforeLoad()
+    {
+        $this->trigger(self::EVENT_BEFORE_LOAD);
+    }
+
+    /**
+     * This method is invoked after load attributes ends.
+     * The default implementation raises an `afterLoad` event.
+     * You may override this method to do postprocessing after validation.
+     * Make sure the parent implementation is invoked so that the event can be raised.
+     */
+    public function afterLoad()
+    {
+        $this->trigger(self::EVENT_AFTER_LOAD);
     }
 
     /**
