@@ -167,23 +167,6 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->hasAttribute(42));
     }
 
-    public function testFindScalar()
-    {
-        /* @var $customerClass \yii\db\ActiveRecordInterface */
-        $customerClass = $this->getCustomerClass();
-
-        /* @var $this TestCase|ActiveRecordTestTrait */
-        // query scalar
-        $customerName = $customerClass::find()->where(['id' => 2])->scalar('name');
-        $this->assertEquals('user2', $customerName);
-        $customerName = $customerClass::find()->where(['status' => 2])->scalar('name');
-        $this->assertEquals('user3', $customerName);
-        $customerName = $customerClass::find()->where(['status' => 2])->scalar('noname');
-        $this->assertNull($customerName);
-        $customerId = $customerClass::find()->where(['status' => 2])->scalar('id');
-        $this->assertEquals(3, $customerId);
-    }
-
     public function testFindColumn()
     {
         /* @var $customerClass \yii\db\ActiveRecordInterface */

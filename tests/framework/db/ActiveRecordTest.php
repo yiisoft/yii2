@@ -120,6 +120,14 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // query scalar
         $customerName = Customer::find()->where(['[[id]]' => 2])->select('[[name]]')->scalar();
         $this->assertEquals('user2', $customerName);
+        $customerName = Customer::find()->where(['[[status]]' => 2])->select('[[name]]')->scalar();
+        $this->assertEquals('user3', $customerName);
+
+        $customerClass = $this->getCustomerClass();
+        $customerId = $customerClass::find()->where(['[[status]]' => 2])->select([])->scalar();
+        $this->assertEquals(3, $customerId);
+        $customerId = Customer::find()->where(['[[status]]' => 2])->select('[[id]]')->scalar();
+        $this->assertEquals(3, $customerId);
     }
 
     public function testFindExists()
