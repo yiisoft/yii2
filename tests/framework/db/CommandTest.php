@@ -807,6 +807,10 @@ SQL;
 
     public function testAutoRefreshTableSchema()
     {
+        if ($this->driverName === 'sqlite') {
+            $this->markTestSkipped('Sqlite does not support addForeignKey');
+        }
+
         $db = $this->getConnection(false);
         $tableName = 'test';
         $fkName = 'test_fk';
