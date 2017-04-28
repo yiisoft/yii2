@@ -283,7 +283,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
     {
         if (empty($rows)) {
             return '';

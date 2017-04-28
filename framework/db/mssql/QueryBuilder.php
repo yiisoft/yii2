@@ -392,4 +392,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
+    {
+        return parent::batchInsert($table, $columns, $rows, false, false);
+    }
 }

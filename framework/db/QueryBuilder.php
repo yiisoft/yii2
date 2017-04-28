@@ -253,9 +253,11 @@ class QueryBuilder extends \yii\base\Object
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
+     * @param boolean $ignore whether to excute insert ignore into, only support MySQL
+     * @param boolean $replace whether to excute `repace into` instead of `insert into` , only support MySQL
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
     {
         if (empty($rows)) {
             return '';
@@ -294,7 +296,15 @@ class QueryBuilder extends \yii\base\Object
             $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
+        $prefix =  "INSERT INTO ";
+        if($ignore){
+            $prefix = "INSERT IGNORE INTO ";
+        }
+        if($replace){
+            $prefix =  "REPLACE INTO ";
+        }
+
+        return $prefix . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 

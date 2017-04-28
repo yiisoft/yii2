@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.12 under development
 --------------------------
+- Enh #14035: Support `INSERT IGNOTE INTO` or `REPLACE INTO` for MySQL while execute batchInsert
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
 - Bug #13362: Fixed return value of `yii\caching\MemCache::setValues()`  (masterklavi)
 - Enh #13963: Added tests for yii\behaviors\TimestampBehavior (vladis84)

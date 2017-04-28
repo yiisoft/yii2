@@ -322,4 +322,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         return null;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
+    {
+        return parent::batchInsert($table, $columns, $rows, $ignore, $replace);
+    }
 }

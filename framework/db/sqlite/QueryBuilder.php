@@ -70,9 +70,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
+     * @param boolean $ignore whether to excute insert ignore into, not support for sqlite
+     * @param boolean $replace whether to excute `repace into` instead of `insert into` , not support for sqlite
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
     {
         if (empty($rows)) {
             return '';
@@ -82,7 +84,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
         if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows);
+            return parent::batchInsert($table, $columns, $rows, false, false);
         }
 
         $schema = $this->db->getSchema();

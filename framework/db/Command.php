@@ -455,11 +455,13 @@ class Command extends Component
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
+     * @param boolean $ignore whether to excute insert ignore into, only support MySQL
+     * @param boolean $replace whether to excute `repace into` instead of `insert into` , only support MySQL
      * @return $this the command object itself
      */
-    public function batchInsert($table, $columns, $rows)
+    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
     {
-        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows);
+        $sql = $this->db->getQueryBuilder()->batchInsert($table, $columns, $rows, $ignore, $replace);
 
         return $this->setSql($sql);
     }
