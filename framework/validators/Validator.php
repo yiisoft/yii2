@@ -47,6 +47,8 @@ use yii\base\NotSupportedException;
  * - `ip`: [[IpValidator]]
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
+ * 
+ * @property array $attributeNames cleaned attribute names without the `!` character at the beginning. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -101,11 +103,6 @@ class Validator extends Component
      * please specify them as an array; for single attribute, you may use either a string or an array.
      */
     public $attributes = [];
-    /**
-     * @var array cleaned attribute names. Contains attribute names without `!` character at the beginning
-     * @since 2.0.12
-     */
-    private $_attributeNames = [];
     /**
      * @var string the user-defined error message. It may contain the following placeholders which
      * will be replaced accordingly by the validator:
@@ -238,7 +235,6 @@ class Validator extends Component
         $this->attributes = (array) $this->attributes;
         $this->on = (array) $this->on;
         $this->except = (array) $this->except;
-        $this->setAttributeNames((array)$this->attributes);
     }
 
     /**
@@ -356,7 +352,7 @@ class Validator extends Component
      * @param string $attribute the name of the attribute to be validated.
      * @param \yii\web\View $view the view object that is going to be used to render views or view files
      * containing a model form with this validator applied.
-     * @return string the client-side validation script. Null if the validator does not support
+     * @return string|null the client-side validation script. Null if the validator does not support
      * client-side validation.
      * @see getClientOptions()
      * @see \yii\widgets\ActiveForm::enableClientValidation
@@ -459,23 +455,13 @@ class Validator extends Component
 
     /**
      * Returns cleaned attribute names without the `!` character at the beginning
-     * @return array
+     * @return array attribute names.
      * @since 2.0.12
      */
     public function getAttributeNames()
     {
-        return $this->_attributeNames;
-    }
-
-    /**
-     * Saves attribute names without `!` character at the beginning
-     * @param array $attributeNames
-     * @since 2.0.12
-     */
-    private function setAttributeNames($attributeNames)
-    {
-        $this->_attributeNames = array_map(function($attribute) {
+        return array_map(function($attribute) {
             return ltrim($attribute, '!');
-        }, $attributeNames);
+        }, $this->attributes);
     }
 }
