@@ -807,10 +807,6 @@ SQL;
 
     public function testAutoRefreshTableSchema()
     {
-        if ($this->driverName === 'sqlite') {
-            $this->markTestSkipped('Sqlite does not support addForeignKey');
-        }
-
         $db = $this->getConnection(false);
         $tableName = 'test';
         $fkName = 'test_fk';
@@ -829,17 +825,19 @@ SQL;
         $newSchema = $db->getSchema()->getTableSchema($tableName);
         $this->assertNotEquals($initialSchema, $newSchema);
 
-        $db->createCommand()->addForeignKey($fkName, $tableName, 'fk', $tableName, 'id')->execute();
-        $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
+        if ($this->driverName === 'sqlite') {
+            $db->createCommand()->addForeignKey($fkName, $tableName, 'fk', $tableName, 'id')->execute();
+            $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
 
-        $db->createCommand()->dropForeignKey($fkName, $tableName)->execute();
-        $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
+            $db->createCommand()->dropForeignKey($fkName, $tableName)->execute();
+            $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
 
-        $db->createCommand()->addCommentOnColumn($tableName, 'id', 'Test comment')->execute();
-        $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
+            $db->createCommand()->addCommentOnColumn($tableName, 'id', 'Test comment')->execute();
+            $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
 
-        $db->createCommand()->dropCommentFromColumn($tableName, 'id')->execute();
-        $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
+            $db->createCommand()->dropCommentFromColumn($tableName, 'id')->execute();
+            $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
+        }
 
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
