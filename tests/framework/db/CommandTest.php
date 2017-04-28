@@ -825,7 +825,7 @@ SQL;
         $newSchema = $db->getSchema()->getTableSchema($tableName);
         $this->assertNotEquals($initialSchema, $newSchema);
 
-        if ($this->driverName === 'sqlite') {
+        if ($this->driverName !== 'sqlite') {
             $db->createCommand()->addForeignKey($fkName, $tableName, 'fk', $tableName, 'id')->execute();
             $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
 
