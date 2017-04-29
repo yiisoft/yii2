@@ -342,26 +342,6 @@ class View extends \yii\base\View
     }
 
     /**
-     * Registers csrf meta tags.
-     *
-     * For example, csrf meta tags can be added like the following:
-     *
-     * ```php
-     * $view->registerCsrfMetaTags();
-     * ```
-     *
-     * will result in the meta tags `<meta name="csrf-param" content="_csrf-frontend">`
-     * and `<meta name="csrf-token" content="tTNpWKpdy-bx8ZmIq9R1N72G3dJdNefxXI3KGlSTLIixHzttlXskzoeHsjognf7Oa3jvOjQzpK1y8IP3XGkzZA==">`
-     *
-     * @param bool $dynamic determines if the csrf tags should be rendered dynamically.
-     * If used in conjunction with cache this should be set to be true, to retrieve a new csrf token for each request.
-     */
-    public function registerCsrfMetaTags($dynamic = false)
-    {
-        $this->metaTags['csrf_meta_tags'] = ($dynamic === false) ? Html::csrfMetaTags() : $this->renderDynamic('return yii\helpers\Html::csrfMetaTags();');
-    }
-
-    /**
      * Registers a link tag.
      *
      * For example, a link tag for a custom [favicon](http://www.w3.org/2005/10/howto-favicon)
