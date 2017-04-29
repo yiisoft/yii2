@@ -199,6 +199,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
     {
+        if($ignore){
+            throw new Exception("INSERT IGNORE is not supported for Cubrid");
+        }
+        if($replace){
+            throw new Exception("REPLACE INTO is not supported for Cubrid");
+        }
         return parent::batchInsert($table, $columns, $rows, false, false);
     }
 }

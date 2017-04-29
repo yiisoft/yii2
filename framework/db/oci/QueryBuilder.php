@@ -246,11 +246,19 @@ EOD;
      * @param boolean $ignore whether to excute insert ignore into, not support for oci
      * @param boolean $replace whether to excute `repace into` instead of `insert into` , not support for oci
      * @return string the batch INSERT SQL statement
+     * @throws Exception
      */
     public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
     {
         if (empty($rows)) {
             return '';
+        }
+
+        if($ignore){
+            throw new Exception("INSERT IGNORE is not supported for Oracle");
+        }
+        if($replace){
+            throw new Exception("REPLACE INTO is not supported for Oracle");
         }
 
         $schema = $this->db->getSchema();

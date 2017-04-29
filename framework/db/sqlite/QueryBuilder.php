@@ -70,8 +70,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
-     * @param boolean $ignore whether to excute insert ignore into, not support for sqlite
-     * @param boolean $replace whether to excute `repace into` instead of `insert into` , not support for sqlite
+     * @param boolean $ignore whether to excute insert ignore into
+     * @param boolean $replace whether to excute `repace into` instead of `insert into`
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
@@ -80,11 +80,12 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return '';
         }
 
+
         // SQLite supports batch insert natively since 3.7.11
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
         if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows, false, false);
+            return parent::batchInsert($table, $columns, $rows, $ignore, $replace);
         }
 
         $schema = $this->db->getSchema();
@@ -120,8 +121,20 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $columns[$i] = $schema->quoteColumnName($name);
         }
 
-        return 'INSERT INTO ' . $schema->quoteTableName($table)
+        return $this->getBatchInsertCommand($ignore,$replace) . $schema->quoteTableName($table)
         . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getBatchInsertCommand($ignore = false, $replace = false)
+    {
+        if($ignore){
+            return 'INSERT OR IGNORE INTO ';
+        }else{
+            return parent::getBatchInsertCommand($ignore, $replace);
+        }
     }
 
     /**

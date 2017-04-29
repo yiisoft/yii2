@@ -123,4 +123,46 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
     }
+
+    public function batchInsertIgnoreProvider(){
+        return [
+            [
+                'customer',
+                ['id','email', 'name', 'address'],
+                [[1,'test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine']],
+                $this->replaceQuotes("INSERT OR IGNORE INTO [[customer]] ([[id]], [[email]], [[name]], [[address]]) VALUES (1, 'test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine')")
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider batchInsertIgnoreProvider
+     */
+    public function testBatchInsertIgnore($table, $columns, $value, $expected){
+        $queryBuilder = $this->getQueryBuilder();
+
+        $sql = $queryBuilder->batchInsert($table, $columns, $value,true);
+        $this->assertEquals($expected, $sql);
+    }
+
+    public function batchInsertReplaceProvider(){
+        return [
+            [
+                'customer',
+                ['id', 'email', 'name', 'address'],
+                [[1, 'test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine']],
+                $this->replaceQuotes("REPLACE INTO [[customer]] ([[id]], [[email]], [[name]], [[address]]) VALUES (1, 'test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine')")
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider batchInsertReplaceProvider
+     */
+    public function testBatchInsertReplace($table, $columns, $value, $expected){
+        $queryBuilder = $this->getQueryBuilder();
+
+        $sql = $queryBuilder->batchInsert($table, $columns, $value,false,true);
+        $this->assertEquals($expected, $sql);
+    }
 }
