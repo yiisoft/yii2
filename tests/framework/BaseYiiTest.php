@@ -53,6 +53,23 @@ class BaseYiiTest extends TestCase
 
         Yii::setAlias('@some/alias', '/www');
         $this->assertEquals('/www', Yii::getAlias('@some/alias'));
+
+        $alias = Yii::getAlias('/not_alias');
+        $this->assertEquals('/not_alias', $alias);
+    }
+
+    public function testIsAliasParamIsAlias()
+    {
+        $isAlias = Yii::isAlias('@yii');
+
+        $this->assertTrue($isAlias);
+    }
+
+    public function testIsAliasParamNotAlias()
+    {
+        $isAlias = Yii::isAlias('yii');
+
+        $this->assertFalse($isAlias);
     }
 
     public function testGetVersion()

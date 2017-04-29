@@ -79,6 +79,101 @@ class ModuleTest extends TestCase
         $this->assertNotNull(Yii::$app->controller->action);
         $this->assertEquals('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
     }
+
+    public function testFindLayoutFileFilledLayoutParamString()
+    {        
+        $module = $this->makeTestModule();
+        $expected = $module->layoutPath . DIRECTORY_SEPARATOR . 'baseLayout.php';
+
+        $actual = $module->findLayoutFile('baseLayout', 'php');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFindLayoutFileFilledLayoutParamFalse()
+    {
+        $module = $this->makeTestModule();
+
+        $actual = $module->findLayoutFile(false, 'php');
+
+        $this->assertFalse($actual);
+    }
+
+    public function testFindLayoutFileInModule()
+    {
+        $parentModule = $this->makeTestModule('parent', null, ['layoutPath' => '@app/framework/layouts']);
+        $childModule  = $this->makeTestModule('child', $parentModule);
+        $expected = $childModule->layoutPath . DIRECTORY_SEPARATOR . 'main.php';
+
+        $actual = $childModule->findLayoutFile(null, 'php');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFindLayoutFileInParentModule()
+    {
+        $parentModule = $this->makeTestModule('parent', null, ['layoutPath' => '@app/framework/layouts']);
+        $childModule  = $this->makeTestModule('child' , $parentModule, ['layout' => null]);
+        $expected = $parentModule->layoutPath . DIRECTORY_SEPARATOR . 'main.php';
+
+        $actual = $childModule->findLayoutFile(null, 'php');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFindLayoutFileAliasPathLayout()
+    {
+        $module = $this->makeTestModule();
+        $expected = $module->layoutPath . DIRECTORY_SEPARATOR . 'main.php';
+
+        $actual = $module->findLayoutFile('@app/framework/base/fixtures/main', 'php');
+        
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFindLayoutFileAbsolutePathLayout()
+    {
+        $module = $this->makeTestModule();
+        $expected = $module->layoutPath . DIRECTORY_SEPARATOR . 'main.php';
+
+        $actual = $module->findLayoutFile('/main', 'php');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFindLayoutFileExtensionTpl()
+    {
+        $module = $this->makeTestModule();
+        $expected = $module->layoutPath . DIRECTORY_SEPARATOR . 'main.tpl';
+
+        $actual = $module->findLayoutFile('main', 'tpl');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testFindLayoutViewExtensionPHP5AndFileNotExists()
+    {
+        $module = $this->makeTestModule();
+        $expected = $module->layoutPath . DIRECTORY_SEPARATOR . 'main.php';
+
+        $actual = $module->findLayoutFile(null, 'php5');
+
+        $this->assertEquals($expected, $actual);
+    }
+
+    private function makeTestModule($name = 'test', \yii\base\Module $parent = null, array $config = [])
+    {
+        $config = array_merge(
+            [
+                'layout'     => 'main',
+                'layoutPath' => '@app/framework/base/fixtures',
+                'viewPath'   => '@app/framework/base/fixtures',
+            ],
+            $config
+        );
+
+        return new TestModule($name, $parent, $config);
+    }
 }
 
 class TestModule extends \yii\base\Module
