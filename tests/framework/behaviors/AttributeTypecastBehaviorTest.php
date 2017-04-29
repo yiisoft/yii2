@@ -49,6 +49,8 @@ class AttributeTypecastBehaviorTest extends TestCase
     {
         parent::tearDown();
         AttributeTypecastBehavior::clearAutoDetectedAttributeTypes();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :

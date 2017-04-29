@@ -239,7 +239,7 @@ h1,h2,h3,p,img,ul li{
     line-height: 20px;
     font-size: 12px;
     margin-top: 1px;
-    font-family: Consolas, Courier New, monospace;
+    font-family: Consolas, monospace;
 }
 .call-stack ul li .code pre{
     position: relative;
@@ -247,7 +247,7 @@ h1,h2,h3,p,img,ul li{
     left: 50px;
     line-height: 20px;
     font-size: 12px;
-    font-family: Consolas, Courier New, monospace;
+    font-family: Consolas, monospace;
     display: inline;
 }
 @-moz-document url-prefix() {
@@ -272,7 +272,7 @@ h1,h2,h3,p,img,ul li{
 .request .code pre{
     font-size: 14px;
     line-height: 18px;
-    font-family: Consolas, Courier New, monospace;
+    font-family: Consolas, monospace;
     display: inline;
     word-wrap: break-word;
 }
