@@ -4,8 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 - Enh Refactored yii\base\Module. Added tests (vladis84)
-- Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
-- Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
+- Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
 - Bug #10346: Fixed "DOMException: Invalid Character Error" in `yii\web\XmlResponseFormatter::buildXml()` (sasha-ch)
