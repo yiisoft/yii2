@@ -38,7 +38,7 @@ Poniższe kroki nie są wymagane, jeśli chcesz pracować tylko nad tłumaczenia
 
 - uruchom `composer install`, aby zainstalować wymagane zależności (zakładając, że masz [composera zainstalowanego globalnie](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: Jeśli otrzymujesz błędu typu `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` (`Problem 1 Wymagany pakiet bower-asset/jquery nie mógł być znaleziony w jakiejkolwiek wersji, być może w nazwie pakietu jest literówka.`), musisz uruchomić komendę `composer global require "fxp/composer-asset-plugin:^1.2.0"`
+> Note: Jeśli otrzymujesz błędu typu `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` (`Problem 1 Wymagany pakiet bower-asset/jquery nie mógł być znaleziony w jakiejkolwiek wersji, być może w nazwie pakietu jest literówka.`), musisz uruchomić komendę `composer global require "fxp/composer-asset-plugin:^1.3.1"`
 
 Jeśli zamierzasz pracować z JavaScript:
 

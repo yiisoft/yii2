@@ -16,11 +16,13 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
         ActiveRecord::$db = $this->getConnection();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testAssureMessageSetOnInit()
@@ -139,7 +141,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateAttributeAttributeNotInTableException()
     {
-        $this->setExpectedException('yii\db\Exception');
+        $this->expectException('yii\db\Exception');
         $val = new UniqueValidator();
         $m = new ValidatorTestMainModel();
         $val->validateAttribute($m, 'testMainVal');

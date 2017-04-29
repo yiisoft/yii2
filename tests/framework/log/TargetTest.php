@@ -138,7 +138,8 @@ class TargetTest extends TestCase
         $target->setLevels(['trace']);
         $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
 
-        $this->setExpectedException('yii\\base\\InvalidConfigException', 'Unrecognized level: unknown level');
+        $this->expectException('yii\\base\\InvalidConfigException');
+        $this->expectExceptionMessage('Unrecognized level: unknown level');
         $target->setLevels(['info', 'unknown level']);
     }
 
@@ -156,7 +157,8 @@ class TargetTest extends TestCase
         $target->setLevels(Logger::LEVEL_TRACE);
         $this->assertEquals(Logger::LEVEL_TRACE, $target->getLevels());
 
-        $this->setExpectedException('yii\\base\\InvalidConfigException', 'Incorrect 128 value');
+        $this->expectException('yii\\base\\InvalidConfigException');
+        $this->expectExceptionMessage('Incorrect 128 value');
         $target->setLevels(128);
     }
 }

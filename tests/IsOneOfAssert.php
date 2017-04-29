@@ -5,7 +5,7 @@ namespace yiiunit;
 /**
  * IsOneOfAssert asserts that the value is one of the expected values.
  */
-class IsOneOfAssert extends \PHPUnit_Framework_Constraint
+class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
 {
     private $allowedValues;
 
