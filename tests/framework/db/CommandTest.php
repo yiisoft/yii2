@@ -841,6 +841,7 @@ SQL;
         $db->createCommand()->createTable('testCreateViewTable', ['id' => Schema::TYPE_PK, 'bar' => Schema::TYPE_INTEGER])->execute();
         $db->createCommand()->insert('testCreateViewTable', ['bar' => 1])->execute();
 
+        $db->createCommand()->dropView('testCreateView')->execute();
         $db->createCommand()->createView('testCreateView', $subquery)->execute();
         $records = $db->createCommand('SELECT [[bar]] FROM {{testCreateView}};')->queryAll();
         $this->assertEquals([['bar' => 1]], $records);
