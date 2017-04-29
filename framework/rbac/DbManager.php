@@ -466,7 +466,7 @@ class DbManager extends BaseManager
             ->andWhere(['a.user_id' => (string) $userId])
             ->andWhere(['b.type' => Item::TYPE_ROLE]);
 
-        $roles = $this->getDefaultRoles();
+        $roles = $this->getDefaultRoleInstances();
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }

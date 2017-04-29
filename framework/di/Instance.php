@@ -116,7 +116,12 @@ class Instance
                 $container = Yii::$container;
             }
             unset($reference['class']);
-            return $container->get($class, [], $reference);
+            $component = $container->get($class, [], $reference);
+            if ($type === null || $component instanceof $type) {
+                return $component;
+            } else {
+                throw new InvalidConfigException('Invalid data type: ' . $class .'. ' . $type . ' is expected.');
+            }
         } elseif (empty($reference)) {
             throw new InvalidConfigException('The required component is not specified.');
         }

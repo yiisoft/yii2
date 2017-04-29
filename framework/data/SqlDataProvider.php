@@ -163,6 +163,9 @@ class SqlDataProvider extends BaseDataProvider
      */
     protected function prepareTotalCount()
     {
-        return (new Query())->from(['sub' => "({$this->sql})"])->count('*', $this->db);
+        return (new Query([
+            'from' => ['sub' => "({$this->sql})"],
+            'params' => $this->params
+        ]))->count('*', $this->db);
     }
 }

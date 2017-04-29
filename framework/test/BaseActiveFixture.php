@@ -65,10 +65,8 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
         $row = $this->data[$name];
         /* @var $modelClass \yii\db\ActiveRecord */
         $modelClass = $this->modelClass;
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass;
         $keys = [];
-        foreach ($model->primaryKey() as $key) {
+        foreach ($modelClass::primaryKey() as $key) {
             $keys[$key] = isset($row[$key]) ? $row[$key] : null;
         }
 

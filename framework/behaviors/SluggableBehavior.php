@@ -138,17 +138,17 @@ class SluggableBehavior extends AttributeBehavior
      */
     protected function getValue($event)
     {
-        if ($this->attribute !== null) {
-            if ($this->isNewSlugNeeded()) {
-                $slugParts = [];
-                foreach ((array) $this->attribute as $attribute) {
-                    $slugParts[] = ArrayHelper::getValue($this->owner, $attribute);
-                }
+        if (!$this->isNewSlugNeeded()) {
+            return $this->owner->{$this->slugAttribute};
+        }
 
-                $slug = $this->generateSlug($slugParts);
-            } else {
-                return $this->owner->{$this->slugAttribute};
+        if ($this->attribute !== null) {
+            $slugParts = [];
+            foreach ((array) $this->attribute as $attribute) {
+                $slugParts[] = ArrayHelper::getValue($this->owner, $attribute);
             }
+
+            $slug = $this->generateSlug($slugParts);
         } else {
             $slug = parent::getValue($event);
         }
@@ -171,6 +171,10 @@ class SluggableBehavior extends AttributeBehavior
 
         if ($this->immutable) {
             return false;
+        }
+
+        if ($this->attribute === null) {
+            return true;
         }
 
         foreach ((array)$this->attribute as $attribute) {

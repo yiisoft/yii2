@@ -14,8 +14,9 @@ use yiiunit\TestCase;
  */
 class FileValidatorTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
+        parent::setUp();
         $this->mockApplication();
     }
 
