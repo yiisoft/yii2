@@ -236,7 +236,6 @@ class View extends \yii\base\View
 
     /**
      * Clears up the registered meta tags, link tags, css/js scripts and files.
-     * @return void
      */
     public function clear()
     {
