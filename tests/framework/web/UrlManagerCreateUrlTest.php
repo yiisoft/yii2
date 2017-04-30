@@ -674,4 +674,26 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals('http://example.fr/search?param1=value1', $url);
     }
 
+    public function testCreateUrlCache()
+    {
+        $manager = $this->getUrlManager([
+            'rules' => [
+                'user/<name:[\w-]+>' => 'user/show',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
+        ], false);
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+
+        // same, but with reversed order of URL creation
+        $manager = $this->getUrlManager([
+            'rules' => [
+                'user/<name:[\w-]+>' => 'user/show',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
+            ],
+        ], false);
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+    }
+
 }

@@ -371,22 +371,17 @@ class UrlManager extends Component
             }
 
             $url = $this->getUrlFromCache($cacheKey, $route, $params);
-
             if ($url === false) {
-                $cacheable = true;
+                /* @var $rule UrlRule */
                 foreach ($this->rules as $rule) {
-                    /* @var $rule UrlRule */
-                    if (!empty($rule->defaults) && $rule->mode !== UrlRule::PARSING_ONLY) {
-                        // if there is a rule with default values involved, the matching result may not be cached
-                        $cacheable = false;
+                    $url = $rule->createUrl($this, $route, $params);
+                    if (method_exists($rule, 'isCacheable') && $rule->isCacheable()) {
+                        $this->setRuleToCache($cacheKey, $rule);
                     }
-                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-                        if ($cacheable) {
-                            $this->setRuleToCache($cacheKey, $rule);
-                        }
+                    if ($url !== false) {
                         break;
                     }
-                }
+                 }
             }
 
             if ($url !== false) {

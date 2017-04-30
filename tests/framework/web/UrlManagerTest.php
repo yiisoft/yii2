@@ -4,7 +4,6 @@ namespace yiiunit\framework\web;
 use Yii;
 use yii\web\Request;
 use yii\web\UrlManager;
-use yii\web\UrlNormalizer;
 use yiiunit\TestCase;
 
 /**
@@ -237,33 +236,5 @@ class UrlManagerTest extends TestCase
         $result = $manager->parseRequest($request);
         $this->assertEquals(['site/index', []], $result);
         $this->assertEquals(5, $request->getQueryParam('id'));
-    }
-
-    public function testCreateUrlCache()
-    {
-        $manager = new UrlManager([
-            'rules' => [
-                'user/<name:[\w-]+>' => 'user/show',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-            ],
-            'enablePrettyUrl' => true,
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-        ]);
-        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
-        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
-
-        // same, but with reversed order of URL creation
-        $manager = new UrlManager([
-            'rules' => [
-                'user/<name:[\w-]+>' => 'user/show',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
-            ],
-            'enablePrettyUrl' => true,
-            'baseUrl' => '/',
-            'scriptUrl' => '',
-        ]);
-        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
-        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
     }
 }

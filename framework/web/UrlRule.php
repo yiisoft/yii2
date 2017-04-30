@@ -38,6 +38,12 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     const CREATION_ONLY = 2;
 
+    const CREATE_STATUS_PARING_ONLY = 'parsing-only';
+    const CREATE_STATUS_ROUTE_MISMATCH = 'route-mismatch';
+    const CREATE_STATUS_MISSING_PARAM = 'missing-param';
+    const CREATE_STATUS_PARAMS_MISMATCH = 'params-mismatch';
+    const CREATE_STATUS_SUCCESS = 'success';
+
     /**
      * @var string the name of this rule. If not set, it will use [[pattern]] as the name.
      */
@@ -108,6 +114,11 @@ class UrlRule extends Object implements UrlRuleInterface
      * @since 2.0.7
      */
     protected $placeholders = [];
+    /**
+     * @var string|null status of URL creation after last [[createUrl()]] call.
+     * @since 2.0.12
+     */
+    protected $createStatus;
 
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -419,7 +430,9 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
+        $this->createStatus = null;
         if ($this->mode === self::PARSING_ONLY) {
+            $this->createStatus = static::CREATE_STATUS_PARING_ONLY;
             return false;
         }
 
@@ -437,6 +450,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     }
                 }
             } else {
+                $this->createStatus  = static::CREATE_STATUS_ROUTE_MISMATCH;
                 return false;
             }
         }
@@ -453,6 +467,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
                     $params[$name] = '';
                 } else {
+                    $this->createStatus = static::CREATE_STATUS_MISSING_PARAM;
                     return false;
                 }
             }
@@ -462,6 +477,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     $tr["<$name>"] = '';
                 }
             } elseif (!isset($this->_paramRules[$name])) {
+                $this->createStatus = static::CREATE_STATUS_PARAMS_MISMATCH;
                 return false;
             }
         }
@@ -472,6 +488,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 $tr["<$name>"] = $this->encodeParams ? urlencode($params[$name]) : $params[$name];
                 unset($params[$name]);
             } elseif (!isset($this->defaults[$name]) || isset($params[$name])) {
+                $this->createStatus = static::CREATE_STATUS_PARAMS_MISMATCH;
                 return false;
             }
         }
@@ -494,7 +511,24 @@ class UrlRule extends Object implements UrlRuleInterface
             $url .= '?' . $query;
         }
 
+        $this->createStatus = static::CREATE_STATUS_SUCCESS;
         return $url;
+    }
+
+    /**
+     * Returns the value indicating whether rule should be cached in [[UrlManager]] internal cache.
+     *
+     * @return bool
+     * @since 2.0.12
+     * @see UrlManager::getUrlFromCache()
+     * @see UrlManager::setRuleToCache()
+     */
+    public function isCacheable() {
+        return in_array($this->createStatus, [
+            static::CREATE_STATUS_PARAMS_MISMATCH,
+            static::CREATE_STATUS_MISSING_PARAM,
+            static::CREATE_STATUS_SUCCESS,
+        ]);
     }
 
     /**
