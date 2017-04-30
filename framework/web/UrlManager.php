@@ -271,7 +271,7 @@ class UrlManager extends Component
                     Yii::trace([
                         'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                         'match' => $result !== false,
-                        'parent' => null
+                        'parent' => null,
                     ], __METHOD__);
                 }
                 if ($result !== false) {
@@ -372,16 +372,22 @@ class UrlManager extends Component
 
             $url = $this->getUrlFromCache($cacheKey, $route, $params);
             if ($url === false) {
+                $cacheable = true;
                 /* @var $rule UrlRule */
                 foreach ($this->rules as $rule) {
                     $url = $rule->createUrl($this, $route, $params);
-                    if (method_exists($rule, 'isCacheable') && $rule->isCacheable()) {
-                        $this->setRuleToCache($cacheKey, $rule);
+                    if ($cacheable) {
+                        $ruleCacheable = $this->canBeCached($rule);
+                        if ($ruleCacheable) {
+                            $this->setRuleToCache($cacheKey, $rule);
+                        } elseif ($ruleCacheable === null) {
+                            $cacheable = false;
+                        }
                     }
                     if ($url !== false) {
                         break;
                     }
-                 }
+                }
             }
 
             if ($url !== false) {
@@ -419,6 +425,28 @@ class UrlManager extends Component
             }
 
             return $url . $anchor;
+        }
+    }
+
+    /**
+     * Returns the value indicating whether result of [[createUrl()]] of rule should be cached in internal cache.
+     *
+     * @param UrlRuleInterface $rule
+     * @return bool|null `true` if result should be cached, `false` if not, `null` if rule does not provide info about
+     * create URL status.
+     * @since 2.0.12
+     * @see getUrlFromCache()
+     * @see setRuleToCache()
+     * @see UrlRule::$createStatus
+     */
+    protected function canBeCached(UrlRuleInterface $rule)
+    {
+        if (isset($rule->createStatus)) {
+            return in_array($rule->createStatus, [
+                UrlRule::CREATE_STATUS_PARAMS_MISMATCH,
+                UrlRule::CREATE_STATUS_MISSING_PARAM,
+                UrlRule::CREATE_STATUS_SUCCESS,
+            ], true);
         }
     }
 

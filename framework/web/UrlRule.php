@@ -118,7 +118,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var string|null status of URL creation after last [[createUrl()]] call.
      * @since 2.0.12
      */
-    protected $createStatus;
+    public $createStatus;
 
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.
@@ -450,7 +450,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     }
                 }
             } else {
-                $this->createStatus  = static::CREATE_STATUS_ROUTE_MISMATCH;
+                $this->createStatus = static::CREATE_STATUS_ROUTE_MISMATCH;
                 return false;
             }
         }
@@ -513,22 +513,6 @@ class UrlRule extends Object implements UrlRuleInterface
 
         $this->createStatus = static::CREATE_STATUS_SUCCESS;
         return $url;
-    }
-
-    /**
-     * Returns the value indicating whether rule should be cached in [[UrlManager]] internal cache.
-     *
-     * @return bool
-     * @since 2.0.12
-     * @see UrlManager::getUrlFromCache()
-     * @see UrlManager::setRuleToCache()
-     */
-    public function isCacheable() {
-        return in_array($this->createStatus, [
-            static::CREATE_STATUS_PARAMS_MISMATCH,
-            static::CREATE_STATUS_MISSING_PARAM,
-            static::CREATE_STATUS_SUCCESS,
-        ]);
     }
 
     /**
