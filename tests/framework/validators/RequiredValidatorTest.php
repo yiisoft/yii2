@@ -13,7 +13,9 @@ class RequiredValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValueWithDefaults()
@@ -47,12 +49,12 @@ class RequiredValidatorTest extends TestCase
         $m = FakedValidationModel::createWithAttributes(['attr_val' => null]);
         $val->validateAttribute($m, 'attr_val');
         $this->assertTrue($m->hasErrors('attr_val'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_val')), 'blank') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_val')), 'blank'));
         $val = new RequiredValidator(['requiredValue' => 55]);
         $m = FakedValidationModel::createWithAttributes(['attr_val' => 56]);
         $val->validateAttribute($m, 'attr_val');
         $this->assertTrue($m->hasErrors('attr_val'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_val')), 'must be') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_val')), 'must be'));
         $val = new RequiredValidator(['requiredValue' => 55]);
         $m = FakedValidationModel::createWithAttributes(['attr_val' => 55]);
         $val->validateAttribute($m, 'attr_val');

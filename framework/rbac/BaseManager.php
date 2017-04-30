@@ -190,6 +190,20 @@ abstract class BaseManager extends Component implements ManagerInterface
     }
 
     /**
+     * Returns defaultRoles as array of Role objects
+     * @since 2.0.12
+     * @return Role[] default roles. The array is indexed by the role names
+     */
+    public function getDefaultRoleInstances()
+    {
+        $result = [];
+        foreach ($this->defaultRoles as $roleName) {
+            $result[$roleName] = $this->createRole($roleName);
+        }
+        return $result;
+    }
+
+    /**
      * @inheritdoc
      */
     public function getPermissions()

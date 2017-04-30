@@ -7,7 +7,6 @@ use yii\base\InvalidConfigException;
 use yii\base\UserException;
 use yii\web\Controller;
 use yii\web\ErrorAction;
-use yii\web\Request;
 use yiiunit\TestCase;
 
 /**
@@ -18,16 +17,15 @@ class ErrorActionTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-
-        $this->mockApplication([
-            'components' => [
-                'request' => [
-                    'class' => Request::className(),
-                ],
-            ],
-        ]);
+        $this->mockWebApplication();
     }
 
+    /**
+     * Creates a controller instance
+     *
+     * @param array $actionConfig
+     * @return TestController
+     */
     public function getController($actionConfig = [])
     {
         return new TestController('test', Yii::$app, ['layout' => false, 'actionConfig' => $actionConfig]);
@@ -38,6 +36,7 @@ class ErrorActionTest extends TestCase
         Yii::$app->getErrorHandler()->exception = new InvalidConfigException('This message will not be shown to the user');
 
         $this->assertEquals('Name: Invalid Configuration
+Code: 500
 Message: An internal server error occurred.
 Exception: yii\base\InvalidConfigException', $this->getController()->runAction('error'));
     }
@@ -47,6 +46,7 @@ Exception: yii\base\InvalidConfigException', $this->getController()->runAction('
         Yii::$app->getErrorHandler()->exception = new UserException('User can see this error message');
 
         $this->assertEquals('Name: Exception
+Code: 500
 Message: User can see this error message
 Exception: yii\base\UserException', $this->getController()->runAction('error'));
     }
@@ -63,6 +63,7 @@ Exception: yii\base\UserException', $this->getController()->runAction('error'));
         Yii::$app->getErrorHandler()->exception = new \InvalidArgumentException('This message will not be shown to the user');
 
         $this->assertEquals('Name: Error
+Code: 500
 Message: An internal server error occurred.
 Exception: InvalidArgumentException', $this->getController()->runAction('error'));
     }
@@ -77,6 +78,7 @@ Exception: InvalidArgumentException', $this->getController()->runAction('error')
         ]);
 
         $this->assertEquals('Name: Oops...
+Code: 500
 Message: The system is drunk
 Exception: InvalidArgumentException', $controller->runAction('error'));
     }
@@ -84,6 +86,7 @@ Exception: InvalidArgumentException', $controller->runAction('error'));
     public function testNoExceptionInHandler()
     {
         $this->assertEquals('Name: Not Found (#404)
+Code: 404
 Message: Page not found.
 Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('error'));
     }
@@ -95,7 +98,9 @@ Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('er
 
         // Unset view name. Class should try to load view that matches action name by default
         $action->view = null;
-        $this->setExpectedExceptionRegExp('yii\base\ViewNotFoundException', '#The view file does not exist: .*?views/test/error.php#');
+        $ds = preg_quote(DIRECTORY_SEPARATOR, '\\');
+        $this->expectException('yii\base\ViewNotFoundException');
+        $this->expectExceptionMessageRegExp('#The view file does not exist: .*?views' . $ds . 'test' . $ds . 'error.php#');
         $this->invokeMethod($action, 'renderHtmlResponse');
     }
 

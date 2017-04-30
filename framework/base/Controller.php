@@ -43,7 +43,7 @@ class Controller extends Component implements ViewContextInterface
      */
     public $id;
     /**
-     * @var Module $module the module that this controller belongs to.
+     * @var Module the module that this controller belongs to.
      */
     public $module;
     /**
@@ -212,7 +212,7 @@ class Controller extends Component implements ViewContextInterface
      * where `Xyz` stands for the action ID. If found, an [[InlineAction]] representing that
      * method will be created and returned.
      * @param string $id the action ID.
-     * @return Action the newly created action instance. Null if the ID doesn't resolve into any action.
+     * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.
      */
     public function createAction($id)
     {

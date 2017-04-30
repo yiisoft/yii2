@@ -7,7 +7,6 @@
 
 namespace yii\mutex;
 
-use Yii;
 use yii\base\Component;
 
 /**

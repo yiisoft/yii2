@@ -295,6 +295,8 @@ change this behavior with config or command options. You can exclude some fixtur
 
 To load fixture, run the following command:
 
+> Note: Prior to loading data unload sequence is executed. Usually that results in cleaning up all the existing data inserted by previous fixture executions.
+
 ```
 yii fixture/load <fixture_name>
 ```

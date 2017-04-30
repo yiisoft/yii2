@@ -205,7 +205,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * ```php
      * $models = Customer::find()->where('status = 2')->all();
-     * foreach($models as $model) {
+     * foreach ($models as $model) {
      *     $model->status = 1;
      *     $model->update(false); // skipping validation as no user input is involved
      * }
@@ -276,7 +276,7 @@ class ActiveRecord extends BaseActiveRecord
      *
      * ```php
      * $models = Customer::find()->where('status = 3')->all();
-     * foreach($models as $model) {
+     * foreach ($models as $model) {
      *     $model->delete();
      * }
      * ```
@@ -288,7 +288,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return int the number of rows deleted
      */
-    public static function deleteAll($condition = '', $params = [])
+    public static function deleteAll($condition = null, $params = [])
     {
         $command = static::getDb()->createCommand();
         $command->delete(static::tableName(), $condition, $params);

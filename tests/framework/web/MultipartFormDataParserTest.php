@@ -18,10 +18,10 @@ class MultipartFormDataParserTest extends TestCase
         $boundary = '---------------------------22472926011618';
         $contentType = 'multipart/form-data; boundary=' . $boundary;
         $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"title\"\r\n\r\ntest-title";
-        $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"Item[name]\"\r\n\r\ntest-name";
-        $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"someFile\"; filename=\"some-file.txt\"\nContent-Type: text/plain\r\n\r\nsome file content";
-        $rawBody .= "--{$boundary}\nContent-Disposition: form-data; name=\"Item[file]\"; filename=\"item-file.txt\"\nContent-Type: text/plain\r\n\r\nitem file content";
-        $rawBody .= "--{$boundary}--";
+        $rawBody .= "\r\n--{$boundary}\nContent-Disposition: form-data; name=\"Item[name]\"\r\n\r\ntest-name";
+        $rawBody .= "\r\n--{$boundary}\nContent-Disposition: form-data; name=\"someFile\"; filename=\"some-file.txt\"\nContent-Type: text/plain\r\n\r\nsome file content";
+        $rawBody .= "\r\n--{$boundary}\nContent-Disposition: form-data; name=\"Item[file]\"; filename=\"item-file.txt\"\nContent-Type: text/plain\r\n\r\nitem file content";
+        $rawBody .= "\r\n--{$boundary}--";
 
         $bodyParams = $parser->parse($rawBody, $contentType);
 
@@ -33,18 +33,18 @@ class MultipartFormDataParserTest extends TestCase
         ];
         $this->assertEquals($expectedBodyParams, $bodyParams);
 
-        $this->assertFalse(empty($_FILES['someFile']));
+        $this->assertNotEmpty($_FILES['someFile']);
         $this->assertEquals(UPLOAD_ERR_OK, $_FILES['someFile']['error']);
         $this->assertEquals('some-file.txt', $_FILES['someFile']['name']);
         $this->assertEquals('text/plain', $_FILES['someFile']['type']);
-        $this->assertEquals('some file content', file_get_contents($_FILES['someFile']['tmp_name']));
+        $this->assertStringEqualsFile($_FILES['someFile']['tmp_name'], 'some file content');
 
-        $this->assertFalse(empty($_FILES['Item']));
-        $this->assertFalse(empty($_FILES['Item']['name']['file']));
+        $this->assertNotEmpty($_FILES['Item']);
+        $this->assertNotEmpty($_FILES['Item']['name']['file']);
         $this->assertEquals(UPLOAD_ERR_OK, $_FILES['Item']['error']['file']);
         $this->assertEquals('item-file.txt', $_FILES['Item']['name']['file']);
         $this->assertEquals('text/plain', $_FILES['Item']['type']['file']);
-        $this->assertEquals('item file content', file_get_contents($_FILES['Item']['tmp_name']['file']));
+        $this->assertStringEqualsFile($_FILES['Item']['tmp_name']['file'], 'item file content');
     }
 
     /**

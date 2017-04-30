@@ -14,7 +14,9 @@ class UrlValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValue()
@@ -111,7 +113,7 @@ class UrlValidatorTest extends TestCase
         $obj->attr_url = 'google.de';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertFalse($obj->hasErrors('attr_url'));
-        $this->assertTrue(stripos($obj->attr_url, 'http') !== false);
+        $this->assertNotFalse(stripos($obj->attr_url, 'http'));
         $obj = new FakedValidationModel;
         $obj->attr_url = 'gttp;/invalid string';
         $val->validateAttribute($obj, 'attr_url');

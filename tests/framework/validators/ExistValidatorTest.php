@@ -14,10 +14,12 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class ExistValidatorTest extends DatabaseTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
         ActiveRecord::$db = $this->getConnection();
     }
 
@@ -134,6 +136,9 @@ abstract class ExistValidatorTest extends DatabaseTestCase
 
         // validate new record
         $m = new OrderItem(['order_id' => 1, 'item_id' => 2]);
+        $val->validateAttribute($m, 'order_id');
+        $this->assertFalse($m->hasErrors('order_id'));
+        $m = new OrderItem(['order_id' => 2, 'item_id' => 5]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
         $m = new OrderItem(['order_id' => 10, 'item_id' => 2]);

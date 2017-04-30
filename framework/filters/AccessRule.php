@@ -31,8 +31,16 @@ class AccessRule extends Component
      */
     public $actions;
     /**
-     * @var array list of the controller IDs that this rule applies to. Each controller ID is prefixed with the module ID (if any).
-     * The comparison is case-sensitive. If not set or empty, it means this rule applies to all controllers.
+     * @var array list of the controller IDs that this rule applies to.
+     *
+     * The comparison uses [[\yii\base\Controller::uniqueId]], so each controller ID is prefixed
+     * with the module ID (if any). For a `product` controller in the application, you would specify
+     * this property like `['product']` and if that controller is located in a `shop` module, this
+     * would be `['shop/product']`.
+     *
+     * The comparison is case-sensitive.
+     *
+     * If not set or empty, it means this rule applies to all controllers.
      */
     public $controllers;
     /**
@@ -107,9 +115,9 @@ class AccessRule extends Component
             && $this->matchCustom($action)
         ) {
             return $this->allow ? true : false;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -157,7 +165,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param string $ip the IP address
+     * @param string|null $ip the IP address
      * @return bool whether the rule applies to the IP address
      */
     protected function matchIP($ip)
@@ -166,7 +174,14 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' || $rule === $ip || (($pos = strpos($rule, '*')) !== false && !strncmp($ip, $rule, $pos))) {
+            if ($rule === '*' ||
+                $rule === $ip ||
+                (
+                    $ip !== null &&
+                    ($pos = strpos($rule, '*')) !== false &&
+                    strncmp($ip, $rule, $pos) === 0
+                )
+            ) {
                 return true;
             }
         }

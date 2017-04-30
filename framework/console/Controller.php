@@ -265,7 +265,7 @@ class Controller extends \yii\base\Controller
      *         return false;
      *     }
      *     return true;
-     * });
+     * }]);
      * ```
      *
      * @return string the user input
@@ -467,6 +467,9 @@ class Controller extends \yii\base\Controller
 
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
+            if ($reflection->getClass() !== null) {
+                continue;
+            }
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';
             if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {

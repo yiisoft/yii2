@@ -9,7 +9,7 @@
 * [ビヘイビア](concept-behaviors.md)
 
 個々にでも、組み合わせでも、これらの機能は Yii のクラスのカスタマイズ性と使いやすさをとても高めてくれます。たとえば、[[yii\jui\DatePicker|日付選択]] を行うユーザインターフェース·コンポーネントは、
-対話型の日付選択UIを生成するとき、[ビュー](structure-view.md) で次のように使用することができます:
+対話型の日付選択UIを生成するとき、[ビュー](structure-views.md) で次のように使用することができます:
 
 ```php
 use yii\jui\DatePicker;
