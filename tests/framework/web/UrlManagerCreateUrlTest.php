@@ -2,7 +2,10 @@
 
 namespace yiiunit\framework\web;
 
+use Yii;
 use yii\web\UrlManager;
+use yii\web\UrlRule;
+use yiiunit\framework\web\stubs\CachedUrlRule;
 use yiiunit\TestCase;
 
 /**
@@ -676,24 +679,70 @@ class UrlManagerCreateUrlTest extends TestCase
 
     public function testCreateUrlCache()
     {
+        /* @var $rules CachedUrlRule[] */
+        $rules = [
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => 'user/show',
+                'pattern' => 'user/<name:[\w-]+>',
+            ]),
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => '<controller>/<action>',
+                'pattern' => '<controller:\w+>/<action:\w+>',
+            ]),
+        ];
         $manager = $this->getUrlManager([
-            'rules' => [
-                'user/<name:[\w-]+>' => 'user/show',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
-            ],
+            'rules' => $rules,
         ], false);
-        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
-        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
 
-        // same, but with reversed order of URL creation
-        $manager = $this->getUrlManager([
-            'rules' => [
-                'user/<name:[\w-]+>' => 'user/show',
-                '<controller:\w+>/<action:\w+>' => '<controller>/<action>'
-            ],
-        ], false);
-        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
         $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateStatus());
+        $this->assertEquals(1, $rules[0]->createCounter);
+        $this->assertEquals(0, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateStatus());
+        $this->assertEquals(3, $rules[0]->createCounter);
+        $this->assertEquals(1, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/profile?name=rob006', $manager->createUrl(['user/profile', 'name' => 'rob006']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_ROUTE_MISMATCH, $rules[0]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateStatus());
+        $this->assertEquals(4, $rules[0]->createCounter);
+        $this->assertEquals(2, $rules[1]->createCounter);
+    }
+
+    public function testUrlCreateCacheWithParameterMismatch()
+    {
+        /* @var $rules CachedUrlRule[] */
+        $rules = [
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => 'user/show',
+                'pattern' => 'user/<name:[\w-]+>',
+            ]),
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => '<controller>/<action>',
+                'pattern' => '<controller:\w+>/<action:\w+>',
+            ]),
+        ];
+        $manager = $this->getUrlManager([
+            'rules' => $rules,
+        ], false);
+
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateStatus());
+        $this->assertEquals(1, $rules[0]->createCounter);
+        $this->assertEquals(1, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateStatus());
+        $this->assertEquals(2, $rules[0]->createCounter);
+        $this->assertEquals(1, $rules[1]->createCounter);
     }
 
 }
