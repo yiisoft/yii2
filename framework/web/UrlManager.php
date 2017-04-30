@@ -444,7 +444,6 @@ class UrlManager extends Component
         if (isset($rule->createStatus)) {
             return in_array($rule->createStatus, [
                 UrlRule::CREATE_STATUS_PARAMS_MISMATCH,
-                UrlRule::CREATE_STATUS_MISSING_PARAM,
                 UrlRule::CREATE_STATUS_SUCCESS,
             ], true);
         }

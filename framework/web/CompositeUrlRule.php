@@ -24,6 +24,12 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      */
     protected $rules = [];
 
+    /**
+     * @var string|null status of URL creation after last [[createUrl()]] call.
+     * @since 2.0.12
+     */
+    public $createStatus;
+
 
     /**
      * Creates the URL rules that should be contained within this composite rule.
@@ -46,7 +52,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     public function parseRequest($manager, $request)
     {
         foreach ($this->rules as $rule) {
-            /* @var $rule \yii\web\UrlRule */
+            /* @var $rule UrlRule */
             $result = $rule->parseRequest($manager, $request);
             if (YII_DEBUG) {
                 Yii::trace([
@@ -68,10 +74,16 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
+        $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
         foreach ($this->rules as $rule) {
-            /* @var $rule \yii\web\UrlRule */
+            /* @var $rule UrlRule */
             if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
+                $this->createStatus = UrlRule::CREATE_STATUS_SUCCESS;
                 return $url;
+            } elseif ($this->createStatus === null || !isset($rule->createStatus)) {
+                $this->createStatus = null;
+            } elseif ($rule->createStatus === UrlRule::CREATE_STATUS_PARAMS_MISMATCH) {
+                $this->createStatus = UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
             }
         }
 

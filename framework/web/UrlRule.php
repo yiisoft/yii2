@@ -40,7 +40,6 @@ class UrlRule extends Object implements UrlRuleInterface
 
     const CREATE_STATUS_PARING_ONLY = 'parsing-only';
     const CREATE_STATUS_ROUTE_MISMATCH = 'route-mismatch';
-    const CREATE_STATUS_MISSING_PARAM = 'missing-param';
     const CREATE_STATUS_PARAMS_MISMATCH = 'params-mismatch';
     const CREATE_STATUS_SUCCESS = 'success';
 
@@ -467,7 +466,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
                     $params[$name] = '';
                 } else {
-                    $this->createStatus = static::CREATE_STATUS_MISSING_PARAM;
+                    $this->createStatus = static::CREATE_STATUS_PARAMS_MISMATCH;
                     return false;
                 }
             }

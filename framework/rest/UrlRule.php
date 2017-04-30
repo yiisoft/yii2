@@ -226,7 +226,7 @@ class UrlRule extends CompositeUrlRule
                         Yii::trace([
                             'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                             'match' => $result !== false,
-                            'parent' => self::className()
+                            'parent' => self::className(),
                         ], __METHOD__);
                     }
                     if ($result !== false) {
@@ -244,12 +244,18 @@ class UrlRule extends CompositeUrlRule
      */
     public function createUrl($manager, $route, $params)
     {
+        $this->createStatus = \yii\web\UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
         foreach ($this->controller as $urlName => $controller) {
             if (strpos($route, $controller) !== false) {
                 foreach ($this->rules[$urlName] as $rule) {
                     /* @var $rule \yii\web\UrlRule */
                     if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
+                        $this->createStatus = \yii\web\UrlRule::CREATE_STATUS_SUCCESS;
                         return $url;
+                    } elseif ($this->createStatus === null || !isset($rule->createStatus)) {
+                        $this->createStatus = null;
+                    } elseif ($rule->createStatus === \yii\web\UrlRule::CREATE_STATUS_PARAMS_MISMATCH) {
+                        $this->createStatus = \yii\web\UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
                     }
                 }
             }
