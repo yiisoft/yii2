@@ -99,7 +99,13 @@ class Theme extends Component
      */
     public function setBaseUrl($url)
     {
-        $this->_baseUrl = rtrim(Yii::getAlias($url), '/');
+        $baseUrl = null;
+        
+        if ($url !== null) {
+            $baseUrl = rtrim(Yii::getAlias($url), '/');
+        }
+
+        $this->_baseUrl = $baseUrl;
     }
 
     private $_basePath;
@@ -132,31 +138,54 @@ class Theme extends Component
      */
     public function applyTo($path)
     {
-        $pathMap = $this->pathMap;
-        if (empty($pathMap)) {
-            if (($basePath = $this->getBasePath()) === null) {
-                throw new InvalidConfigException('The "basePath" property must be set.');
-            }
-            $pathMap = [Yii::$app->getBasePath() => [$basePath]];
+        $pathMap = $this->preparePathMap();
+
+        if ($this->pathMap === null && $this->getBasePath() === null) {
+            throw new InvalidConfigException('The "basePath" property must be set.');
         }
 
-        $path = FileHelper::normalizePath($path);
+        $normalizedPath = FileHelper::normalizePath($path);
 
-        foreach ($pathMap as $from => $tos) {
-            $from = FileHelper::normalizePath(Yii::getAlias($from)) . DIRECTORY_SEPARATOR;
-            if (strpos($path, $from) === 0) {
-                $n = strlen($from);
-                foreach ((array) $tos as $to) {
-                    $to = FileHelper::normalizePath(Yii::getAlias($to)) . DIRECTORY_SEPARATOR;
-                    $file = $to . substr($path, $n);
-                    if (is_file($file)) {
-                        return $file;
-                    }
+        foreach ($pathMap as $basePath => $themePaths) {
+            if (strpos($normalizedPath, $basePath) !== 0) {
+                continue;
+            }
+
+            $viewPath = substr($normalizedPath, mb_strlen($basePath));
+
+            foreach ($themePaths as $themePath) {
+                $file = $themePath . $viewPath;
+                if (is_file($file)) {
+                    return $file;
                 }
             }
         }
 
         return $path;
+    }
+
+    private function preparePathMap()
+    {
+        $pathMap = $this->pathMap;
+
+        if (empty($this->pathMap)) {
+            $pathMap = [Yii::$app->getBasePath() => [$this->getBasePath()]];
+        }
+
+        $result = [];
+
+        foreach ($pathMap as $basePath => $themePaths) {
+            $normalizedBasePath = FileHelper::normalizePath(Yii::getAlias($basePath)) . DIRECTORY_SEPARATOR;
+
+            $result[$normalizedBasePath] = array_map(
+                function($themePath) {
+                    return FileHelper::normalizePath(Yii::getAlias($themePath)) . DIRECTORY_SEPARATOR;
+                },
+                (array) $themePaths
+            );
+        }
+
+        return $result;
     }
 
     /**
@@ -178,7 +207,7 @@ class Theme extends Component
      * Converts a relative file path into an absolute one using [[basePath]].
      * @param string $path the relative file path to be converted.
      * @return string the absolute file path
-     * @throws InvalidConfigException if [[baseUrl]] is not set
+     * @throws InvalidConfigException if [[basePath]] is not set
      */
     public function getPath($path)
     {
