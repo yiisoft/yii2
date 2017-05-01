@@ -58,13 +58,19 @@ matrix:
       env: TASK_TESTS_PHP=0 TASK_TESTS_CS=1
       services:
       addons:
+
     # run tests coverage on PHP 7.1
     - php: 7.1
       env: TASK_TESTS_COVERAGE=1
+
     - php: 7.0
+
     - php: 5.6
+
     - php: 5.5
+
     - php: 5.4
+
     # Test against HHVM 3.12 LTS version by using trusty
     - php: hhvm-3.12
       sudo: true
@@ -80,6 +86,7 @@ matrix:
             - mysql-client-5.6
       services:
         - mysql
+
     # test against the latest HHVM version by using a newer image
     - php: hhvm
       sudo: true
@@ -97,6 +104,9 @@ matrix:
       services:
         - mysql
         - postgresql
+
+    - php: nightly
+
     # have a separate branch for javascript tests
     - language: node_js
       node_js: 6
@@ -171,7 +181,7 @@ before_script:
 script:
   - |
     if [ $TASK_TESTS_CS == 1 ]; then
-      if ! grep -rlI $'\xEF\xBB\xBF' framework/ ; then echo "no utf8 BOM found"; else echo "found utf8 BOM in some files. See above."; exit 1; fi
+      vendor/bin/php-cs-fixer --diff --dry-run -v fix
     fi
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then
