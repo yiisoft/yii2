@@ -106,7 +106,7 @@ class DbManager extends BaseManager
     protected $parents;
 
     /**
-     * @var array the map for user assigments
+     * @var array the map for user assigments (userId => list of assigments)
      */
     protected $assignments = [];
 
