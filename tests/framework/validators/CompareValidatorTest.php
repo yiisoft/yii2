@@ -198,7 +198,6 @@ class CompareValidatorTest extends TestCase
                 $val->validateAttribute($model, 'attr_test');
                 $this->assertEquals($test[1], !$model->hasErrors('attr_test'));
             }
-
         }
     }
 

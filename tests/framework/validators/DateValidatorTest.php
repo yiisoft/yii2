@@ -160,7 +160,6 @@ class DateValidatorTest extends TestCase
         $model = FakedValidationModel::createWithAttributes(['attr_date' => []]);
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
-
     }
 
     /**
@@ -493,7 +492,8 @@ class DateValidatorTest extends TestCase
         }
     }
 
-    public function testIntlValidateAttributeRange() {
+    public function testIntlValidateAttributeRange()
+    {
         $this->testValidateAttributeRange();
     }
 

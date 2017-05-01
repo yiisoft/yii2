@@ -432,13 +432,21 @@ class Message extends BaseMessage
         return $this;
     }
 
-    public function attachContent($content, array $options = []) {}
+    public function attachContent($content, array $options = [])
+    {
+    }
 
-    public function attach($fileName, array $options = []) {}
+    public function attach($fileName, array $options = [])
+    {
+    }
 
-    public function embed($fileName, array $options = []) {}
+    public function embed($fileName, array $options = [])
+    {
+    }
 
-    public function embedContent($content, array $options = []) {}
+    public function embedContent($content, array $options = [])
+    {
+    }
 
     public function toString()
     {

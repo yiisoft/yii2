@@ -28,5 +28,4 @@ class Dog extends Animal
 
         $record->does = 'bark';
     }
-
 }

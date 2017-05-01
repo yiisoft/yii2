@@ -493,7 +493,7 @@ abstract class QueryTest extends DatabaseTestCase
         $tableName = 'like_test';
         $columnName = 'col';
 
-        if($db->getSchema()->getTableSchema($tableName) !== null){
+        if ($db->getSchema()->getTableSchema($tableName) !== null) {
             $db->createCommand()->dropTable($tableName)->execute();
         }
         $db->createCommand()->createTable($tableName, [

@@ -48,8 +48,7 @@ class FilterValidatorTest extends TestCase
         $val->skipOnEmpty = true;
         $val->validateAttribute($m, 'attr_empty2');
         $this->assertNotNull($m->attr_empty2);
-        $val->filter = function($value) {
-
+        $val->filter = function ($value) {
             return implode(',', $value);
         };
         $val->skipOnArray = false;

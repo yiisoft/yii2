@@ -15,5 +15,4 @@ class FirstFixture extends Fixture
     {
         FixtureStorage::$firstFixtureData = [];
     }
-
 }

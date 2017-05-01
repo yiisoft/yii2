@@ -31,5 +31,4 @@ class PgsqlMutexTest extends DatabaseTestCase
             'db' => $this->getConnection(),
         ]);
     }
-
 }

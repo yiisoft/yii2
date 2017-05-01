@@ -6,7 +6,6 @@ use yii\test\Fixture;
 
 class GlobalFixture extends Fixture
 {
-
     public function load()
     {
         FixtureStorage::$globalFixturesData[] = 'some data set for global fixture';
@@ -16,5 +15,4 @@ class GlobalFixture extends Fixture
     {
         FixtureStorage::$globalFixturesData = [];
     }
-
 }

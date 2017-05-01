@@ -4,7 +4,8 @@
  */
 
 namespace yii\log {
-    function microtime($get_as_float) {
+    function microtime($get_as_float)
+    {
         if (\yiiunit\framework\log\DispatcherTest::$microtimeIsMocked) {
             return \yiiunit\framework\log\DispatcherTest::microtime(func_get_args());
         } else {
@@ -39,14 +40,14 @@ namespace yiiunit\framework\log {
         /**
          * @var bool
          */
-        static $microtimeIsMocked = false;
+        public static $microtimeIsMocked = false;
 
         /**
          * Array of static functions
          *
          * @var array
          */
-        static $functions = [];
+        public static $functions = [];
 
         protected function setUp()
         {
@@ -251,7 +252,8 @@ namespace yiiunit\framework\log {
          * @param $arguments
          * @return mixed
          */
-        public static function __callStatic($name, $arguments) {
+        public static function __callStatic($name, $arguments)
+        {
             if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
                 $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
                 return forward_static_call(static::$functions[$name], $arguments);

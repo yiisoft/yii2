@@ -6,5 +6,4 @@ use yii\web\UploadedFile;
 
 class VendorImage extends UploadedFile
 {
-
 }

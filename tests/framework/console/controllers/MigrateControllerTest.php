@@ -132,7 +132,7 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_' . $table . '_table', $table);
         }
         // @see https://github.com/yiisoft/yii2/issues/11461
-        $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', 'test',  [
+        $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', 'test', [
             'fields' => 'title:string(10):notNull:unique:defaultValue(",te,st"),
              body:text:notNull:defaultValue(",test"),
              test:custom(11,2,"s"):notNull',

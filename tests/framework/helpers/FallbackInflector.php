@@ -3,7 +3,6 @@
 
 namespace yiiunit\framework\helpers;
 
-
 use yii\helpers\BaseInflector;
 
 /**

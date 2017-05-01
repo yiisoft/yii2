@@ -4,7 +4,6 @@ namespace yiiunit\data\console\controllers\fixtures;
 
 class FixtureStorage
 {
-
     public static $globalFixturesData = [];
 
     public static $firstFixtureData = [];
@@ -17,5 +16,4 @@ class FixtureStorage
         static::$firstFixtureData = [];
         static::$secondFixtureData = [];
     }
-
 }

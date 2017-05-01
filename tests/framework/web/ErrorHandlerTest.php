@@ -22,17 +22,17 @@ class ErrorHandlerTest extends TestCase
     }
 
     public function testCorrectResponseCodeInErrorView()
-       {
-           /** @var ErrorHandler $handler */
+    {
+        /** @var ErrorHandler $handler */
            $handler = Yii::$app->getErrorHandler();
-           ob_start(); // suppress response output
+        ob_start(); // suppress response output
            $this->invokeMethod($handler, 'renderException', [new NotFoundHttpException('This message is displayed to end user')]);
-           ob_get_clean();
-           $out = Yii::$app->response->data;
-           $this->assertEquals('Code: 404
+        ob_get_clean();
+        $out = Yii::$app->response->data;
+        $this->assertEquals('Code: 404
 Message: This message is displayed to end user
 Exception: yii\web\NotFoundHttpException', $out);
-       }
+    }
 }
 
 class ErrorHandler extends \yii\web\ErrorHandler

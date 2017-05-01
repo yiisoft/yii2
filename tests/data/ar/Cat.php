@@ -28,5 +28,4 @@ class Cat extends Animal
 
         $record->does = 'meow';
     }
-
 }

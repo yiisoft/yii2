@@ -442,7 +442,8 @@ SQL;
      * Data provider for testInsertSelectFailed
      * @return array
      */
-    public function invalidSelectColumns() {
+    public function invalidSelectColumns()
+    {
         return [
             [[]],
             ['*'],

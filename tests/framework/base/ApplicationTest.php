@@ -31,5 +31,4 @@ class ApplicationTest extends TestCase
 
 class DispatcherMock extends Dispatcher
 {
-
 }

@@ -5,7 +5,8 @@
 namespace yiiunit\framework\i18n {
     use yiiunit\TestCase;
 
-    class IntlTestHelper {
+    class IntlTestHelper
+    {
         public static $enableIntl;
 
         /**

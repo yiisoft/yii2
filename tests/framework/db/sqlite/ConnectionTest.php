@@ -106,7 +106,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $hit_slaves = $hit_masters = [];
 
-        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = true;
 
@@ -128,7 +128,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $hit_slaves = $hit_masters = [];
 
-        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = false;
 

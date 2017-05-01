@@ -10,7 +10,6 @@ use yiiunit\TestCase;
  */
 class GettextPoFileTest extends TestCase
 {
-
     protected function setUp()
     {
         parent::setUp();

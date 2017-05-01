@@ -175,7 +175,7 @@ RESULT;
         $slave = new \StdClass();
         $master->slave = $slave;
         $slave->master = $master;
-        $master->function = function() {return true;};
+        $master->function = function () {return true;};
 
         $exportResult = VarDumper::export($master);
         $this->assertNotEmpty($exportResult);

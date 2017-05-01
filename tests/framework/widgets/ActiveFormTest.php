@@ -52,7 +52,6 @@ EOF
 </div>
 EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test']));
-
     }
 
     public function testIssue5356()
@@ -105,7 +104,6 @@ EOF
 </form>
 HTML
 , $content);
-
     }
 
     public function testRegisterClientScript()

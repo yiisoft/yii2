@@ -9,7 +9,7 @@ namespace yiiunit\framework\mutex;
  */
 trait MutexTestTrait
 {
-    static $mutexName = 'testname';
+    public static $mutexName = 'testname';
 
     /**
      * @return Mutex

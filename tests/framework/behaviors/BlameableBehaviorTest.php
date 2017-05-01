@@ -150,7 +150,6 @@ class BlameableBehaviorTest extends TestCase
         $this->assertEquals(20, $model->created_by);
         $this->assertEquals(20, $model->updated_by);
     }
-
 }
 
 /**

@@ -140,7 +140,8 @@ class AccessRuleTest extends \yiiunit\TestCase
      *           test user id
      *           expected match result (true, false, null)
      */
-    public function matchRoleProvider() {
+    public function matchRoleProvider()
+    {
         return [
             ['create', true, 'user1', true],
             ['create', true, 'user2', true],
@@ -162,7 +163,8 @@ class AccessRuleTest extends \yiiunit\TestCase
      * @param string $userid the userid to check
      * @param boolean $expected the expected result or null
      */
-    public function testMatchRole($actionid, $allow, $userid, $expected) {
+    public function testMatchRole($actionid, $allow, $userid, $expected)
+    {
         $action = $this->mockAction();
         $auth = $this->mockAuthManager();
         $request = $this->mockRequest();

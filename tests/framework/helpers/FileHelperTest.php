@@ -2,6 +2,7 @@
 
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
+
 /**
  * Unit test for [[yii\helpers\FileHelper]]
  * @see FileHelper
@@ -142,7 +143,6 @@ class FileHelperTest extends TestCase
         $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_perms';
         $this->assertTrue(FileHelper::createDirectory($dirName, 0700, false));
         $this->assertFileMode(0700, $dirName);
-
     }
 
     /**

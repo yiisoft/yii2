@@ -4,6 +4,7 @@ namespace yiiunit\framework\helpers;
 
 use yiiunit\TestCase;
 use yii\helpers\Markdown;
+
 /**
  * Description of MarkdownTest
  *

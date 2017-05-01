@@ -15,5 +15,4 @@ class SecondFixture extends Fixture
     {
         FixtureStorage::$secondFixtureData = [];
     }
-
 }

@@ -33,5 +33,4 @@ class PjaxTest extends TestCase
         parent::setUp();
         $this->mockWebApplication();
     }
-
 }

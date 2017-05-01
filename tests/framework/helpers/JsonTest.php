@@ -189,7 +189,7 @@ class JsonModel extends Model implements \JsonSerializable
 {
     public $data = ['json' => 'serializable'];
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return $this->data;
     }

@@ -150,7 +150,7 @@ class FragmentCache extends Widget
             return $this->_content;
         }
 
-        list ($this->_content, $placeholders) = $data;
+        list($this->_content, $placeholders) = $data;
         if (!is_array($placeholders) || count($placeholders) === 0) {
             return $this->_content;
         }

@@ -77,5 +77,4 @@ class LinkSorterTest extends DatabaseTestCase
         $this->assertNotFalse(strpos($actualHtml,
             '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>'));
     }
-
 }

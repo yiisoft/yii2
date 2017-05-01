@@ -210,7 +210,6 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = new \stdClass();
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-
     }
 
     public function testValidateAttributeWithLocaleWhereDecimalPointIsComma()

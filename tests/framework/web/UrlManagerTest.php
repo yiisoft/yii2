@@ -37,7 +37,7 @@ class UrlManagerTest extends TestCase
         // trigger an exception here in case it gets called
         $config['baseUrl'] = null;
         $this->mockApplication();
-        Yii::$app->set('request', function() {
+        Yii::$app->set('request', function () {
             $this->fail('Request component should not be accessed by UrlManager with current settings.');
         });
 

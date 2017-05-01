@@ -172,7 +172,6 @@ SQL;
      */
     protected function getTableSequenceName($tableName)
     {
-
         $sequenceNameSql = <<<SQL
 SELECT
     UD.REFERENCED_NAME AS SEQUENCE_NAME

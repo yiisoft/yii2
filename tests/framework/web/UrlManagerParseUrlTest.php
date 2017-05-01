@@ -337,7 +337,4 @@ class UrlManagerParseUrlTest extends TestCase
 
         unset($_SERVER['REQUEST_METHOD']);
     }
-
-
-
 }

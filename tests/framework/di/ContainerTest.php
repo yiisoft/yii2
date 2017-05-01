@@ -20,7 +20,6 @@ use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
 use yii\validators\NumberValidator;
 
-
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -134,21 +133,21 @@ class ContainerTest extends TestCase
         ]);
 
         // use component of application
-        $callback = function($param, stubs\QuxInterface $qux, Bar $bar) {
+        $callback = function ($param, stubs\QuxInterface $qux, Bar $bar) {
             return [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
         };
         $result = Yii::$container->invoke($callback, ['D426']);
         $this->assertEquals(['D426', true, 'belongApp', 'independent'], $result);
 
         // another component of application
-        $callback = function($param, stubs\QuxInterface $qux2, $other = 'default') {
+        $callback = function ($param, stubs\QuxInterface $qux2, $other = 'default') {
             return [$param, $qux2 instanceof Qux, $qux2->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['M2792684']);
         $this->assertEquals(['M2792684', true, 'belongAppQux2', 'default'], $result);
 
         // component not belong application
-        $callback = function($param, stubs\QuxInterface $notBelongApp, $other) {
+        $callback = function ($param, stubs\QuxInterface $notBelongApp, $other) {
             return [$param, $notBelongApp instanceof Qux, $notBelongApp->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['MDM', 'not_default']);
@@ -194,7 +193,7 @@ class ContainerTest extends TestCase
                 ],
             ]
         ]);
-        $closure = function($a, $x = 5, $b) {
+        $closure = function ($a, $x = 5, $b) {
             return $a > $b;
         };
         $this->assertFalse(Yii::$container->invoke($closure, ['b' => 5, 'a' => 1]));
@@ -215,7 +214,7 @@ class ContainerTest extends TestCase
                 ],
             ]
         ]);
-        $closure = function($a, $b) {
+        $closure = function ($a, $b) {
             return $a > $b;
         };
         $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['b' => 5, 'a' => 1]));
@@ -227,7 +226,7 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         // Test optional unresolvable dependency.
-        $closure = function(QuxInterface $test = null) {
+        $closure = function (QuxInterface $test = null) {
             return $test;
         };
         $this->assertNull($container->invoke($closure));

@@ -312,7 +312,7 @@ class ArrayHelperTest extends TestCase
             '- Bug: test4',
         ];
         $i = 0;
-        ArrayHelper::multisort($changelog, function($line) use (&$i) {
+        ArrayHelper::multisort($changelog, function ($line) use (&$i) {
             if (preg_match('/^- (Enh|Bug)( #\d+)?: .+$/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
@@ -502,7 +502,8 @@ class ArrayHelperTest extends TestCase
         ], $result);
     }
 
-    public function testIndexGroupBy() {
+    public function testIndexGroupBy()
+    {
         $array = [
             ['id' => '123', 'data' => 'abc'],
             ['id' => '345', 'data' => 'def'],
@@ -868,7 +869,6 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::isIn(['a'], new \ArrayObject([['a'], 'b'])));
         $this->assertFalse(ArrayHelper::isIn('a', new \ArrayObject([['a'], 'b'])));
         $this->assertFalse(ArrayHelper::isIn('a', [['a'], 'b']));
-
     }
 
     public function testIsInStrict()

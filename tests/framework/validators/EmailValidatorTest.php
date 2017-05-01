@@ -117,7 +117,7 @@ class EmailValidatorTest extends TestCase
             'Ivan Petrov <ipetrov@gmail.com>',
         ];
         foreach ($emails as $email) {
-            $this->assertTrue($validator->validate($email),"Email: '$email' failed to validate(checkDNS=true, allowName=true)");
+            $this->assertTrue($validator->validate($email), "Email: '$email' failed to validate(checkDNS=true, allowName=true)");
         }
     }
 

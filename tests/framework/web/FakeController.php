@@ -23,5 +23,4 @@ class FakeController extends Controller
     public function actionAksi1($fromGet, $other = 'default')
     {
     }
-
 }

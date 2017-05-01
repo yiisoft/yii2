@@ -13,8 +13,8 @@ namespace yii\base {
      *
      * This function overrides function_exists from the root namespace in yii\base.
      */
-    function function_exists($name) {
-
+    function function_exists($name)
+    {
         if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
             return \yiiunit\framework\base\SecurityTest::$functions[$name];
         }
@@ -26,13 +26,15 @@ namespace yii\base {
      *
      * This function overrides fopen and fread from the root namespace in yii\base.
      */
-    function fopen($filename, $mode) {
+    function fopen($filename, $mode)
+    {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return \yiiunit\framework\base\SecurityTest::$fopen;
         }
         return \fopen($filename, $mode);
     }
-    function fread($handle, $length) {
+    function fread($handle, $length)
+    {
         if (\yiiunit\framework\base\SecurityTest::$fread !== null) {
             return \yiiunit\framework\base\SecurityTest::$fread;
         }
@@ -934,7 +936,7 @@ TEXT;
             }
         }
         // there is no /dev/urandom on windows so we expect this to fail
-        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false ) {
+        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false) {
             $this->expectException('yii\base\Exception');
             $this->expectExceptionMessage('Unable to generate a random key');
         }
@@ -1282,7 +1284,8 @@ TEXT;
     /**
      * @return array
      */
-    public function maskProvider() {
+    public function maskProvider()
+    {
         return [
             ['1'],
             ['SimpleToken'],
@@ -1293,4 +1296,3 @@ TEXT;
 }
 
 } // closing namespace yiiunit\framework\base;
-

@@ -23,9 +23,9 @@ class UrlRuleTest extends TestCase
     {
         $suites = $this->getTestsForControllerNamePluralization();
         foreach ($suites as $i => $suite) {
-            list ($name, $tests) = $suite;
+            list($name, $tests) = $suite;
             foreach ($tests as $j => $test) {
-                list ($config, $expected) = $test;
+                list($config, $expected) = $test;
                 $rule = new UrlRule($config);
                 $this->assertEquals($expected, $rule->controller, "Test#$i-$j: $name");
             }
@@ -38,7 +38,7 @@ class UrlRuleTest extends TestCase
         $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD',]);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+            list($name, $config, $tests) = $suite;
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
                 $request->pathInfo = $test[0];
@@ -354,5 +354,4 @@ class UrlRuleTest extends TestCase
             $this->assertEquals($expected, $rule->createUrl($manager, $route, $params));
         }
     }
-
 }

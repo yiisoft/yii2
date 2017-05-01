@@ -431,7 +431,7 @@ class UrlManagerCreateUrlTest extends TestCase
      */
     public function testWithEmptyPattern($method, $showScriptName, $prefix, $config)
     {
-        $assertations = function($manager) use ($method, $prefix) {
+        $assertations = function ($manager) use ($method, $prefix) {
             // match first rule
             $url = $manager->$method(['front/site/index']);
             $this->assertEquals("$prefix/", $url);
@@ -548,7 +548,6 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals("$prefix/post/index?page=1#testhash", $manager->createUrl($urlParams));
         $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
-
     }
 
     /**
@@ -673,5 +672,4 @@ class UrlManagerCreateUrlTest extends TestCase
         $url = $manager->createUrl(['products/search', 'lang' => 'fr', 'slug' => 'search', 'param1' => 'value1']);
         $this->assertEquals('http://example.fr/search?param1=value1', $url);
     }
-
 }

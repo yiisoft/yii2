@@ -122,7 +122,7 @@ class HostControlTest extends TestCase
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $this->denyCallBackCalled = false;
-        $filter->denyCallback = function() {
+        $filter->denyCallback = function () {
             $this->denyCallBackCalled = true;
         };
 
@@ -137,7 +137,7 @@ class HostControlTest extends TestCase
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];
         $filter->fallbackHostInfo = 'http://yiiframework.com';
-        $filter->denyCallback = function() {};
+        $filter->denyCallback = function () {};
 
         $controller = new Controller('test', Yii::$app);
         $action = new Action('test', $controller);

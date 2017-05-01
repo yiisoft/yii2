@@ -149,7 +149,6 @@ class RequestTest extends TestCase
             $request->setBodyParams([$request->csrfParam => $token]);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     /**
@@ -179,7 +178,6 @@ class RequestTest extends TestCase
             $request->headers->add(Request::CSRF_HEADER, $token);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     public function testResolve()

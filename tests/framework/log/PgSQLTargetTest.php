@@ -3,7 +3,6 @@
 
 namespace yiiunit\framework\log;
 
-
 /**
  * @group db
  * @group pgsql

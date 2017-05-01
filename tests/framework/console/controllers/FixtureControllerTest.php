@@ -185,7 +185,6 @@ class FixtureControllerTest extends TestCase
 
 class FixtureConsoledController extends FixtureController
 {
-
     public function stdout($string)
     {
     }

@@ -58,5 +58,4 @@ class ViewTest extends TestCase
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
         $this->assertContains('<link href="/baseUrl/css/somefile.css" rel="stylesheet"></head>', $html);
     }
-
 }

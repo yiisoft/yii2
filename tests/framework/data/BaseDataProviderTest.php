@@ -20,7 +20,6 @@ class BaseDataProviderTest extends TestCase
         $this->assertNull((new ConcreteDataProvider())->id);
         $this->assertNotNull((new ConcreteDataProvider())->id);
     }
-
 }
 
 /**

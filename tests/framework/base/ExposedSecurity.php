@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\framework\base;
 
-
 use yii\base\Security;
 
 /**

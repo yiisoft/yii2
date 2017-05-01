@@ -84,7 +84,8 @@ class FakeController extends Controller
         return $this->testArray;
     }
 
-    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument) {
+    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
+    {
         return $simpleArgument;
     }
 

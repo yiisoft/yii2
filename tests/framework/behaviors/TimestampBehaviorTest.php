@@ -196,7 +196,7 @@ class TimestampBehaviorTest extends TestCase
                 'class' => TimestampBehavior::className(),
                 'value' => new Expression("strftime('%Y')"),
             ],
-        ];        
+        ];
         $model = new ActiveRecordTimestamp();
         
         $this->expectException('yii\base\InvalidCallException');

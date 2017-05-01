@@ -7,7 +7,6 @@ use yii\db\Transaction;
 
 abstract class ConnectionTest extends DatabaseTestCase
 {
-
     public function testConstruct()
     {
         $connection = $this->getConnection(false);
@@ -208,9 +207,9 @@ abstract class ConnectionTest extends DatabaseTestCase
     {
         /** @var Connection $connection */
         $connection = $this->getConnection(true);
-        $connection->transaction(function(Connection $db) {
+        $connection->transaction(function (Connection $db) {
             $this->assertNotNull($db->transaction);
-            $db->transaction(function(Connection $db) {
+            $db->transaction(function (Connection $db) {
                 $this->assertNotNull($db->transaction);
                 $db->transaction->rollBack();
             });

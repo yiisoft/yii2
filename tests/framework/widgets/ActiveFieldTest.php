@@ -78,7 +78,7 @@ EOD;
     {
         // field will be the html of the model's attribute wrapped with the return string below.
         $field = $this->attributeName;
-        $content = function($field) {
+        $content = function ($field) {
             return "<div class=\"custom-container\"> $field </div>";
         };
 
@@ -355,7 +355,6 @@ EOD;
         // expected empty
         $actualValue = $this->activeField->getClientOptions();
         $this->assertEmpty($actualValue);
-
     }
 
     public function testGetClientOptionsClientValidation()
@@ -534,7 +533,6 @@ EOD;
 
         return $view;
     }
-
 }
 
 class ActiveFieldTestModel extends DynamicModel
@@ -576,7 +574,6 @@ class ActiveFieldExtend extends ActiveField
 
 class TestValidator extends \yii\validators\Validator
 {
-
     public function clientValidateAttribute($object, $attribute, $view)
     {
         return "return true;";

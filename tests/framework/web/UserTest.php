@@ -95,7 +95,6 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         $this->assertTrue(Yii::$app->user->isGuest);
         $this->assertFalse(Yii::$app->user->can('doSomething'));
-
     }
 
     public function testCookieCleanup()
@@ -128,12 +127,12 @@ class UserTest extends TestCase
         Yii::$app->user->getIdentity();
         $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
-        Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
+        Yii::$app->user->login(UserIdentity::findIdentity('user1'), 3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user1');
         $this->assertNotEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
-        Yii::$app->user->login(UserIdentity::findIdentity('user2'),0);
+        Yii::$app->user->login(UserIdentity::findIdentity('user2'), 0);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user2');
         $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
@@ -226,7 +225,8 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
         try {
             $user->loginRequired();
-        } catch (ForbiddenHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {
+        }
         $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
@@ -263,7 +263,8 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
         try {
             $user->loginRequired();
-        } catch (ForbiddenHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {
+        }
         $this->assertNotEquals('json-only', $user->getReturnUrl());
 
         $this->reset();
@@ -294,7 +295,6 @@ class UserTest extends TestCase
         $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
-
 }
 
 class UserIdentity extends Component implements IdentityInterface
@@ -346,7 +346,7 @@ class MockRequest extends \yii\web\Request
         global $cookiesMock;
 
         return $cookiesMock;
-   }
+    }
 }
 
 class MockResponse extends \yii\web\Response

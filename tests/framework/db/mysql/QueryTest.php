@@ -1,6 +1,7 @@
 <?php
 
 namespace yiiunit\framework\db\mysql;
+
 use yii\db\Expression;
 use yii\db\Query;
 

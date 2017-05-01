@@ -16,5 +16,4 @@ class OrderItemWithNullFK extends ActiveRecord
     {
         return 'order_item_with_null_fk';
     }
-
 }

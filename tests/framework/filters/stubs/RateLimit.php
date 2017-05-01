@@ -40,5 +40,4 @@ class RateLimit extends Object implements RateLimitInterface
     {
         return [$action, $allowance, $timestamp];
     }
-
 }

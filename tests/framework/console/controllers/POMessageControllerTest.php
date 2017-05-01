@@ -1,7 +1,6 @@
 <?php
 namespace yiiunit\framework\console\controllers;
 
-
 use Yii;
 use yii\helpers\FileHelper;
 use yii\i18n\GettextPoFile;

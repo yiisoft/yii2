@@ -54,5 +54,4 @@ class ArrayFixtureTest extends TestCase
         $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
         $this->_fixture->load();
     }
-
 }

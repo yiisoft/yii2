@@ -1,9 +1,7 @@
 <?php
 namespace yiiunit\framework\console\controllers;
 
-
 use yii\console\controllers\CacheController;
-
 
 /**
  * CacheController that discards output.

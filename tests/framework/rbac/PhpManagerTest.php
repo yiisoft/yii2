@@ -121,7 +121,8 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertTrue($this->auth->update($name, $permission), 'You should be able to update name.');
     }
 
-    public function testUpdateDescription() {
+    public function testUpdateDescription()
+    {
         $this->prepareData();
         $name = 'readPost';
         $permission = $this->auth->getPermission($name);
@@ -153,6 +154,5 @@ class PhpManagerTest extends ManagerTestCase
         $this->assertContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
         $this->auth->remove($role);
         $this->assertNotContains('NewAdmin', file_get_contents($this->getAssignmentFile()));
-
     }
 }

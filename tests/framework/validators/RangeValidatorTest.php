@@ -140,7 +140,5 @@ class RangeValidatorTest extends TestCase
             'allowArray' => false
         ]);
         $this->assertTrue($val->validate('a'));
-
-
     }
 }

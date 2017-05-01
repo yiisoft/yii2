@@ -31,5 +31,4 @@ class MysqlMutexTest extends DatabaseTestCase
             'db' => $this->getConnection(),
         ]);
     }
-
 }

@@ -370,7 +370,6 @@ trait ActiveRecordTestTrait
 
         $customer = $customerClass::find()->offset(3)->one();
         $this->assertNull($customer);
-
     }
 
     public function testFindComplexCondition()
@@ -819,7 +818,7 @@ trait ActiveRecordTestTrait
         $this->assertCount(2, $order->booksWithNullFK);
         $orderItemCount = $orderItemsWithNullFKClass::find()->count();
         $this->assertEquals(5, $itemClass::find()->count());
-        $order->unlinkAll('booksWithNullFK',false);
+        $order->unlinkAll('booksWithNullFK', false);
         $this->afterSave();
         $this->assertCount(0, $order->booksWithNullFK);
         $this->assertEquals(2, $orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
@@ -1267,7 +1266,6 @@ trait ActiveRecordTestTrait
             $itemClass = $this->getItemClass();
             $customer->orderItems = [new $itemClass()];
             $this->fail('setter call above MUST throw Exception');
-
         } catch (\Exception $e) {
             // catch exception "Setting read-only property"
             $this->assertInstanceOf('yii\base\InvalidCallException', $e);
@@ -1279,5 +1277,4 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->canGetProperty('non_existing_property'));
         $this->assertFalse($customer->canSetProperty('non_existing_property'));
     }
-
 }
