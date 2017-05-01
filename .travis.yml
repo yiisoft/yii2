@@ -53,7 +53,7 @@ addons:
 matrix:
   fast_finish: true
   include:
-    # test code style only
+    # test coding standards
     - php: 7.1
       env: TASK_TESTS_PHP=0 TASK_TESTS_CS=1
       services:
@@ -125,10 +125,13 @@ install:
       # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
       phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
+
+  # install composer dependencies
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - |
     if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
+      # remove php-cs-fixer from composer dependencies on hhvm-3.12 - php-cs-fixer requires at least hhvm-3.18
       composer remove friendsofphp/php-cs-fixer --dev
     fi
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
@@ -140,6 +143,7 @@ install:
       tests/data/travis/memcache-setup.sh
       tests/data/travis/imagick-setup.sh
     fi
+
   # setup JS test
   - |
     if [ $TASK_TESTS_JS == 1 ]; then
@@ -183,16 +187,21 @@ before_script:
 
 
 script:
+  # test coding standards
   - |
     if [ $TASK_TESTS_CS == 1 ]; then
-      vendor/bin/php-cs-fixer --diff --dry-run -v fix
-    fi
-  - |
-    if [ $TASK_TESTS_PHP == 1 ]; then
       composer validate --no-check-lock
       cd framework && composer validate --no-check-lock && cd ..
+      vendor/bin/php-cs-fixer --diff --dry-run -v fix
+    fi
+
+  # PHP tests
+  - |
+    if [ $TASK_TESTS_PHP == 1 ]; then
       vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
     fi
+
+  # JS tests
   - |
     if [ $TASK_TESTS_JS == 1 ]; then
       npm test
