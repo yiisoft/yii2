@@ -150,7 +150,7 @@ class AccessRule extends Component
             return true;
         }
         if ($user === false) {
-            throw new InvalidConfigException('The required component is not specified.');
+            throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
         foreach ($this->roles as $role) {
             if ($role === '?') {
