@@ -3,7 +3,6 @@
 
 namespace yiiunit\framework\grid;
 
-
 use yii\grid\ActionColumn;
 
 /**

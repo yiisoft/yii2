@@ -385,5 +385,4 @@ EOD;
 
         return $this->buildCondition(['AND', $condition], $params);
     }
-
 }

@@ -127,7 +127,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    protected function generateSprintfSeries ($pattern, $from, $to) {
+    protected function generateSprintfSeries($pattern, $from, $to)
+    {
         $items = [];
         for ($i = $from; $i <= $to; $i++) {
             $items[] = sprintf($pattern, $i);
