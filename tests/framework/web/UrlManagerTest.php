@@ -4,7 +4,6 @@ namespace yiiunit\framework\web;
 use Yii;
 use yii\web\Request;
 use yii\web\UrlManager;
-use yii\web\UrlNormalizer;
 use yiiunit\TestCase;
 
 /**

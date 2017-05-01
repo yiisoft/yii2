@@ -2,6 +2,8 @@
 
 namespace yiiunit\framework\mutex;
 
+use yii\mutex\Mutex;
+
 /**
  * Class MutexTestTrait
  *

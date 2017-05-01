@@ -8,7 +8,6 @@
 namespace yiiunit\framework\ar;
 
 use yii\base\Event;
-use yii\db\ActiveQueryInterface;
 use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
 use yiiunit\data\ar\Customer;

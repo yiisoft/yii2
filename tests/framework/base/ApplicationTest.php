@@ -4,9 +4,6 @@ namespace yiiunit\framework\base;
 
 use Yii;
 use yii\log\Dispatcher;
-use yiiunit\data\ar\Cat;
-use yiiunit\data\ar\Order;
-use yiiunit\data\ar\Type;
 use yiiunit\TestCase;
 
 /**

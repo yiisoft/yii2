@@ -3,7 +3,6 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecordInterface;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
@@ -22,6 +21,7 @@ use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
+use yiiunit\TestCase;
 
 abstract class ActiveRecordTest extends DatabaseTestCase
 {
