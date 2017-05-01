@@ -10,7 +10,7 @@ namespace yii\filters;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\caching\Dependency;
 use yii\di\Instance;
 use yii\web\Response;
@@ -57,7 +57,7 @@ class PageCache extends ActionFilter
      */
     public $varyByRoute = true;
     /**
-     * @var Cache|array|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
      * After the PageCache object is created, if you want to change this property,
      * you should only assign it with a cache object.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
@@ -156,7 +156,7 @@ class PageCache extends ActionFilter
             return true;
         }
 
-        $this->cache = Instance::ensure($this->cache, Cache::className());
+        $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
 
         if (is_array($this->dependency)) {
             $this->dependency = Yii::createObject($this->dependency);

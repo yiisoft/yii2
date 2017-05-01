@@ -903,7 +903,7 @@ class Command extends Component
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
-                /* @var $cache \yii\caching\Cache */
+                /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,

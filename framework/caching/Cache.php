@@ -51,7 +51,7 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Cache extends Component implements \ArrayAccess
+abstract class Cache extends Component implements CacheInterface
 {
     /**
      * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.

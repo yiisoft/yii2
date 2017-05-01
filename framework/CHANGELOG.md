@@ -11,6 +11,7 @@ Yii Framework 2 Change Log
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
+- Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
 
 2.0.12 June 05, 2017
 --------------------
