@@ -118,7 +118,7 @@ class AccessControlTest extends TestCase
         $this->assertFalse($deny);
     }
 
-    public function testExecDenyCallbackEqualsNullUsedDefaultFunction()
+    public function testExecuteDenyCallbackEqualsNullUsedDefaultFunction()
     {
         $fakeFilter = $this->getMockBuilder(AccessControl::className())
             ->setMethods(['denyAccess'])
@@ -127,10 +127,10 @@ class AccessControlTest extends TestCase
         $fakeFilter->expects(self::at(0))
             ->method('denyAccess');
         
-        $this->invokeMethod($fakeFilter, 'execDenyCallback', [null, null, null]);
+        $this->invokeMethod($fakeFilter, 'executeDenyCallback', [null, null, null]);
     }
 
-    public function testExecDenyCallbackEqualsFunctionUsedFunction()
+    public function testExecuteDenyCallbackEqualsFunctionUsedFunction()
     {
         $executeCallback = false;
         $config = [
@@ -142,7 +142,7 @@ class AccessControlTest extends TestCase
         ];
         $filter = new AccessControl($config);
 
-        $this->invokeMethod($filter, 'execDenyCallback', [null, null, null]);
+        $this->invokeMethod($filter, 'executeDenyCallback', [null, null, null]);
         $this->assertTrue($executeCallback, 'Callback not run');
     }
 

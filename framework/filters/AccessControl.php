@@ -126,14 +126,22 @@ class AccessControl extends ActionFilter
             if ($allow) {
                 return true;
             } elseif ($allow === false) {
-                return $this->execDenyCallback($user, $rule, $action);
+                return $this->executeDenyCallback($user, $rule, $action);
             }
         }
 
-        return $this->execDenyCallback($user, null, $action);
+        return $this->executeDenyCallback($user, null, $action);
     }
 
-    private function execDenyCallback($user, $rule, $action)
+    /**
+     * DenyCallback that will be called if the access should be denied to the current user.
+     * If not set denyCallback, [[denyAccess()]] will be called.
+     * @param User $user
+     * @param AccessRule $rule
+     * @param Action $action the action to be executed
+     * @return false
+     */
+    private function executeDenyCallback($user, $rule, $action)
     {
         if ($this->denyCallback === null) {
             $this->denyAccess($user);

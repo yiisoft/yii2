@@ -3,11 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.12 under development
 --------------------------
-
-- Enh: Test write for `yii\filters\AccessControl` and refactoring (vladis84)
-- Enh #13820: Add new HTTP status code 451 (yyxx9988)
-- Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
-- Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
+- Enh #13963: Refactored for yii\behaviors\TimestampBehavior. Added tests (vladis84)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
