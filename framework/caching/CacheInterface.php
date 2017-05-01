@@ -81,7 +81,6 @@ interface CacheInterface extends \ArrayAccess
      * @return array list of cached values corresponding to the specified keys. The array
      * is returned in terms of (key, value) pairs.
      * If a value is not cached or expired, the corresponding array value will be false.
-     * @since 2.0.7
      */
     public function multiGet($keys);
 
@@ -113,7 +112,6 @@ interface CacheInterface extends \ArrayAccess
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
-     * @since 2.0.7
      */
     public function multiSet($items, $duration = 0, $dependency = null);
 
@@ -141,7 +139,6 @@ interface CacheInterface extends \ArrayAccess
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
-     * @since 2.0.7
      */
     public function multiAdd($items, $duration = 0, $dependency = null);
 
@@ -159,39 +156,6 @@ interface CacheInterface extends \ArrayAccess
      * @return bool whether the flush operation was successful.
      */
     public function flush();
-
-    /**
-     * Returns whether there is a cache entry with a specified key.
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param string $key a key identifying the cached value
-     * @return bool
-     */
-    public function offsetExists($key);
-
-    /**
-     * Retrieves the value from cache with a specified key.
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param string $key a key identifying the cached value
-     * @return mixed the value stored in cache, false if the value is not in the cache or expired.
-     */
-    public function offsetGet($key);
-
-    /**
-     * Stores the value identified by a key into cache.
-     * If the cache already contains such a key, the existing value will be
-     * replaced with the new ones. To add expiration and dependencies, use the [[set()]] method.
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached
-     */
-    public function offsetSet($key, $value);
-
-    /**
-     * Deletes the value with the specified key from cache
-     * This method is required by the interface [[\ArrayAccess]].
-     * @param string $key the key of the value to be deleted
-     */
-    public function offsetUnset($key);
 
     /**
      * Method combines both [[set()]] and [[get()]] methods to retrieve value identified by a $key,
@@ -218,7 +182,6 @@ interface CacheInterface extends \ArrayAccess
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.
      * @return mixed result of $callable execution
-     * @since 2.0.11
      */
     public function getOrSet($key, $callable, $duration = null, $dependency = null);
 }
