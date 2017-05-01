@@ -209,10 +209,43 @@ class SiteController extends Controller
 }
 ```
 
+Disabling CSRF validation in [standalone actions](structure-controllers.md#standalone-actions) must be done in `init()`
+method. Do not place this code into `beforeRun()` method because it won't have effect.
+
+```php
+<?php
+
+namespace app\components;
+
+use yii\base\Action;
+
+class ContactAction extends Action
+{
+    public function init()
+    {
+        parent::init();
+        $this->controller->enableCsrfValidation = false;
+    }
+
+    public function run()
+    {
+          $model = new ContactForm();
+          $request = Yii::$app->request;
+          if ($request->referrer === 'yiipowered.com'
+              && $model->load($request->post())
+              && $model->validate()
+          ) {
+              $model->sendEmail();
+          }
+    }
+}
+```
+
+> Warning: Disabling CSRF will allow any site to send POST requests to your site. It is important to implement extra validation such as checking an IP address or a secret token in this case.
+
 Further reading on the topic:
 
 - <https://www.owasp.org/index.php/CSRF>
-
 
 Avoiding file exposure
 ----------------------

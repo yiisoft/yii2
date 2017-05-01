@@ -35,7 +35,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection = new Connection;
         $connection->dsn = 'unknown::memory:';
-        $this->setExpectedException('yii\db\Exception');
+        $this->expectException('yii\db\Exception');
         $connection->open();
     }
 
@@ -151,6 +151,8 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
         $transaction->commit();
+
+        $this->assertTrue(true); // should not be any exception so far
     }
 
     /**

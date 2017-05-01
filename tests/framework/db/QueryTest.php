@@ -168,9 +168,9 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['and', ['id' => 1]], $query->where);
     }
 
-    public function testJoin()
+    /*public function testJoin()
     {
-    }
+    }*/
 
     public function testGroup()
     {

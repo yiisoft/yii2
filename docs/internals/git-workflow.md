@@ -37,7 +37,7 @@ The following steps are not necessary if you want to work only on translations o
 
 - run `composer install` to install dependencies (assuming you have [composer installed globally](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.2.0"`
+> Note: If you see errors like `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.`, you will need to run `composer global require "fxp/composer-asset-plugin:^1.3.1"`
 
 If you are going to work with JavaScript:
 

@@ -255,6 +255,23 @@ abstract class CacheTestCase extends TestCase
     public function testGetOrSet()
     {
         $cache = $this->prepare();
+
+        $expected = $this->getOrSetCallable($cache);
+        $callable = [$this, 'getOrSetCallable'];
+
+        $this->assertEquals(null, $cache->get('something'));
+        $this->assertEquals($expected, $cache->getOrSet('something', $callable));
+        $this->assertEquals($expected, $cache->get('something'));
+    }
+
+    public function getOrSetCallable($cache)
+    {
+        return get_class($cache);
+    }
+
+    public function testGetOrSetWithDependencies()
+    {
+        $cache = $this->prepare();
         $dependency = new TagDependency(['tags' => 'test']);
 
         $expected = 'SilverFire';

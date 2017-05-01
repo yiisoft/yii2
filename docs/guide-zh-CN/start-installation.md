@@ -22,7 +22,7 @@
 
 Composer 安装后，切换到一个可通过 Web 访问的目录，执行如下命令即可安装 Yii ：
 
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.3.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 第一条命令安装 [Composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)，它是通过 Composer 管理 bower 和 npm 包所必须的，此命令全局生效，一劳永逸。

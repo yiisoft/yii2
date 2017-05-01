@@ -219,7 +219,7 @@ _MSG_
     {
         $pattern = 'Number {'.self::N.', number, percent}';
         $formatter = new FallbackMessageFormatter();
-        $this->setExpectedException('yii\base\NotSupportedException');
+        $this->expectException('yii\base\NotSupportedException');
         $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
     }
 
@@ -227,7 +227,7 @@ _MSG_
     {
         $pattern = 'Number {'.self::N.', number, currency}';
         $formatter = new FallbackMessageFormatter();
-        $this->setExpectedException('yii\base\NotSupportedException');
+        $this->expectException('yii\base\NotSupportedException');
         $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
     }
 }
