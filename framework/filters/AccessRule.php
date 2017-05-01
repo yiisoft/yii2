@@ -102,9 +102,9 @@ class AccessRule extends Component
     /**
      * Checks whether the Web user is allowed to perform the specified action.
      * @param Action $action the action to be performed
-     * @param User|false $user the user object or false in case of detached User component
+     * @param User|false $user the user object or `false` in case of detached User component
      * @param Request $request
-     * @return bool|null true if the user is allowed, false if the user is denied, null if the rule does not apply to the user
+     * @return bool|null `true` if the user is allowed, `false` if the user is denied, `null` if the rule does not apply to the user
      */
     public function allows($action, $user, $request)
     {
