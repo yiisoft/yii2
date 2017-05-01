@@ -31,7 +31,7 @@ use yii\helpers\StringHelper;
  * }
  * ```
  *
- * Because CacheInterface extends the [[\ArrayAccess]] interface, it can be used like an array. For example,
+ * Because Cache implements the [[\ArrayAccess]] interface, it can be used like an array. For example,
  *
  * ```php
  * $cache['foo'] = 'some data';
