@@ -87,7 +87,11 @@ class DbManager extends BaseManager
      * @since 2.0.3
      */
     public $cacheKey = 'rbac';
-
+    /**
+     * @var Whether use assingments cache
+     * @since 2.0.13
+     */
+    public $cacheAssignments = false;
     /**
      * @var Item[] all auth items (name => Item)
      */
@@ -125,11 +129,15 @@ class DbManager extends BaseManager
      */
     public function checkAccess($userId, $permissionName, $params = [])
     {
-        $assignments = isset($this->assignments[$userId]) ? $this->assignments[$userId] : null;
-
-        if ($assignments === null) {
+        if ($this->cacheAssignments === false) {
             $assignments = $this->getAssignments($userId);
-            $this->assignments[$userId] = $assignments;
+        } else {
+            $assignments = isset($this->assignments[$userId]) ? $this->assignments[$userId] : null;
+
+            if ($assignments === null) {
+                $assignments = $this->getAssignments($userId);
+                $this->assignments[$userId] = $assignments;
+            }
         }
 
         if ($this->hasNoAssignments($assignments)) {
