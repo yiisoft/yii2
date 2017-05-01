@@ -697,7 +697,7 @@ class BaseFileHelper
      * @param array $options raw options
      * @return array normalized options
      */
-    private static function normalizeOptions(array $options)
+    protected static function normalizeOptions(array $options)
     {
         if (!array_key_exists('caseSensitive', $options)) {
             $options['caseSensitive'] = true;
