@@ -127,6 +127,10 @@ install:
     fi
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - |
+    if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
+      composer remove friendsofphp/php-cs-fixer --dev
+    fi
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 
   # setup PHP extension
