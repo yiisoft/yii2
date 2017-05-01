@@ -2,7 +2,6 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
-use yii\validators\ValidationAsset;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
