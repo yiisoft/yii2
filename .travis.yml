@@ -56,8 +56,8 @@ matrix:
     # test coding standards
     - php: 7.1
       env: TASK_TESTS_PHP=0 TASK_TESTS_CS=1
+      # overwrite services used for PHP tests
       services:
-      addons:
 
     # run tests coverage on PHP 7.1
     - php: 7.1
@@ -112,9 +112,8 @@ matrix:
       node_js: 6
       env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
       dist: trusty
-      # overwrite php related settings
+      # overwrite services used for PHP tests
       services:
-      addons:
 
   allow_failures:
     - php: nightly
