@@ -88,6 +88,7 @@ Yii Framework 2 Change Log
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 
+- Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 
 2.0.11.2 February 08, 2017
 --------------------------
