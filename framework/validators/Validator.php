@@ -352,7 +352,7 @@ class Validator extends Component
      * @param string $attribute the name of the attribute to be validated.
      * @param \yii\web\View $view the view object that is going to be used to render views or view files
      * containing a model form with this validator applied.
-     * @return string the client-side validation script. Null if the validator does not support
+     * @return string|null the client-side validation script. Null if the validator does not support
      * client-side validation.
      * @see getClientOptions()
      * @see \yii\widgets\ActiveForm::enableClientValidation
