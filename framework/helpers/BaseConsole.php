@@ -561,7 +561,6 @@ class BaseConsole
      *
      * @param string $string String to escape
      *
-     * @access public
      * @return string
      */
     public static function escape($string)

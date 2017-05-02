@@ -127,6 +127,8 @@ class YiiConfig extends Config
 //                'only_untyped' => false,
 //            ],
             'phpdoc_indent' => true,
+//            'phpdoc_inline_tag' => true, // see https://github.com/yiisoft/yii2/issues/11635
+            'phpdoc_no_access' => true,
         ]);
     }
 
