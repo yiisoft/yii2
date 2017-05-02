@@ -120,7 +120,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         $logContent = $this->getLogContentAndDelete();
         if ($errors) {
             $this->fail(
-                join('; ', $errors)
+                implode('; ', $errors)
                 . ($logContent ? ". Shared children log:\n$logContent" : '')
             );
         }
