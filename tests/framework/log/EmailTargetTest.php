@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Dmitriy Makarov <makarov.dmitriy@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;

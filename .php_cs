@@ -16,5 +16,9 @@ return yii\cs\YiisoftConfig::create()
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in(__DIR__)
-    )
-;
+            ->notPath('framework/classes.php')
+            ->notPath('framework/helpers/mimeTypes.php')
+            ->notPath('framework/views/messageConfig.php')
+            // temporary disable messages processing - conflicts with header fixer
+            ->notPath('framework/messages')
+    );
