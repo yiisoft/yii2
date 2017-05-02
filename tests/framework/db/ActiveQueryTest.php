@@ -141,7 +141,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         $query = new ActiveQuery(Customer::className());
         $result = $this->invokeMethod($query, 'getTableNameAndAlias');
-        $this->assertEquals(['customer','customer'], $result);
+        $this->assertEquals(['customer', 'customer'], $result);
     }
 
     public function testGetQueryTableName_from_set()
@@ -149,7 +149,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $options = ['from' => ['alias' => 'customer']];
         $query = new ActiveQuery(Customer::className(), $options);
         $result = $this->invokeMethod($query, 'getTableNameAndAlias');
-        $this->assertEquals(['customer','alias'], $result);
+        $this->assertEquals(['customer', 'alias'], $result);
     }
 
     public function testOnCondition()

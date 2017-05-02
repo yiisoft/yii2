@@ -83,7 +83,7 @@ class DynamicModelTest extends TestCase
         $dynamic->defineAttribute('name');
         $dynamic->defineAttribute('mobile');
         // define rule
-        $dynamic->addRule(['name','mobile'], 'required');
+        $dynamic->addRule(['name', 'mobile'], 'required');
         // define your sample data
         $data = [
             'DynamicModel' => [

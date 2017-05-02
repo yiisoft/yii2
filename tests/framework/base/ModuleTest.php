@@ -26,7 +26,7 @@ class ModuleTest extends TestCase
     {
         $module = new TestModule('test');
         $this->assertEquals('yiiunit\framework\base\controllers', $module->controllerNamespace);
-        $this->assertEquals(__DIR__ . DIRECTORY_SEPARATOR . 'controllers', str_replace(['/','\\'], DIRECTORY_SEPARATOR, $module->controllerPath));
+        $this->assertEquals(__DIR__ . DIRECTORY_SEPARATOR . 'controllers', str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $module->controllerPath));
     }
 
     public function testSetupVersion()

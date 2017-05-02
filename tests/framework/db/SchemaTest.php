@@ -227,7 +227,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'phpType' => 'string',
                 'allowNull' => true,
                 'autoIncrement' => false,
-                'enumValues' => ['a', 'B','c,D'],
+                'enumValues' => ['a', 'B', 'c,D'],
                 'size' => null,
                 'precision' => null,
                 'scale' => null,

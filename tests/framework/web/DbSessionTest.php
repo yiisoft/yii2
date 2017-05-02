@@ -138,7 +138,7 @@ class DbSessionTest extends TestCase
         $this->assertEquals(['base'], $history);
 
         $history = $this->runMigrate('up');
-        $this->assertEquals(['base','session_init'], $history);
+        $this->assertEquals(['base', 'session_init'], $history);
 
         $history = $this->runMigrate('down');
         $this->assertEquals(['base'], $history);
