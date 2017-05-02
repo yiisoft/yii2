@@ -537,7 +537,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->createTable($table, $columns, $options);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -680,7 +680,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->addForeignKey($name, $table, $columns, $refTable, $refColumns, $delete, $update);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -693,7 +693,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropForeignKey($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -771,7 +771,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->addCommentOnColumn($table, $column, $comment);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -801,7 +801,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropCommentFromColumn($table, $column);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**

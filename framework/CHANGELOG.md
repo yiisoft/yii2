@@ -87,6 +87,7 @@ Yii Framework 2 Change Log
 - Enh #13994: Refactored `yii\filters\RateLimiter`. Added tests (vladis84)
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
+- Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly) 
 
 - Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 
