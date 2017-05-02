@@ -271,7 +271,7 @@ class IpValidatorTest extends TestCase
         $validator->ranges = ['2001:db0:1:2::/64'];
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
 
-        $validator->ranges = ['!2001:db0::/32', '2001:db0:1:2::/64', ];
+        $validator->ranges = ['!2001:db0::/32', '2001:db0:1:2::/64'];
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
 
         $validator->subnet = null;

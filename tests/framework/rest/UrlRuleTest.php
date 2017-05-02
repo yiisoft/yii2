@@ -40,7 +40,7 @@ class UrlRuleTest extends TestCase
     public function testParseRequest()
     {
         $manager = new UrlManager(['cache' => null]);
-        $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD',]);
+        $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD']);
         $suites = $this->getTestsForParseRequest();
         foreach ($suites as $i => $suite) {
             list($name, $config, $tests) = $suite;
@@ -81,14 +81,14 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'prefixed route',
-                ['controller' => 'post', 'prefix' => 'admin',],
+                ['controller' => 'post', 'prefix' => 'admin'],
                 [
                     ['admin/posts', 'post/index'],
                 ],
             ],
             [
                 'suffixed route',
-                ['controller' => 'post', 'suffix' => '.json',],
+                ['controller' => 'post', 'suffix' => '.json'],
                 [
                     ['posts.json', 'post/index'],
                     ['posts.json', 'post/create', [], 'POST'],
@@ -118,7 +118,7 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'only selected routes',
-                ['controller' => 'post', 'only' => ['index'],],
+                ['controller' => 'post', 'only' => ['index']],
                 [
                     ['posts', 'post/index'],
                     ['posts/123', false],
@@ -127,7 +127,7 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'except routes',
-                ['controller' => 'post', 'except' => ['delete', 'create'],],
+                ['controller' => 'post', 'except' => ['delete', 'create']],
                 [
                     ['posts', 'post/index'],
                     ['posts/123', 'post/view', ['id' => 123]],
@@ -137,7 +137,7 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'extra patterns',
-                ['controller' => 'post', 'extraPatterns' => ['POST new' => 'create',],],
+                ['controller' => 'post', 'extraPatterns' => ['POST new' => 'create']],
                 [
                     ['posts/new', 'post/create', [], 'POST'],
                     ['posts', 'post/create', [], 'POST'],
@@ -145,14 +145,14 @@ class UrlRuleTest extends TestCase
             ],
             [
                 'extra patterns overwrite patterns',
-                ['controller' => 'post', 'extraPatterns' => ['POST' => 'new',],],
+                ['controller' => 'post', 'extraPatterns' => ['POST' => 'new']],
                 [
                     ['posts', 'post/new', [], 'POST'],
                 ],
             ],
             [
                 'extra patterns rule is higher priority than patterns',
-                ['controller' => 'post', 'extraPatterns' => ['GET 1337' => 'leet',],],
+                ['controller' => 'post', 'extraPatterns' => ['GET 1337' => 'leet']],
                 [
                     ['posts/1337', 'post/leet'],
                     ['posts/1338', 'post/view', ['id' => 1338]],
@@ -193,7 +193,7 @@ class UrlRuleTest extends TestCase
                         'pluralize' => false,
                         'controller' => ['admin/user', 'post'],
                     ],
-                    ['admin/user' => 'admin/user', 'post' => 'post',]
+                    ['admin/user' => 'admin/user', 'post' => 'post']
                 ]
             ]],
         ];

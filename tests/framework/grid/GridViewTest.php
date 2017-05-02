@@ -20,7 +20,7 @@ class GridViewTest extends \yiiunit\TestCase
     public function testGuessColumns()
     {
         $this->mockApplication();
-        $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1',];
+        $row = ['id' => 1, 'name' => 'Name1', 'value' => 'Value1', 'description' => 'Description1'];
 
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider(
@@ -40,7 +40,7 @@ class GridViewTest extends \yiiunit\TestCase
             $this->assertArrayHasKey($column->attribute, $row);
         }
 
-        $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName',],]);
+        $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName']]);
         $row = array_merge($row, ['otherRelation' => (object) $row['relation']]);
 
         $grid = new GridView([
