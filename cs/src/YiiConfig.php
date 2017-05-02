@@ -147,6 +147,7 @@ class YiiConfig extends Config
             'single_blank_line_before_namespace' => true,
             'single_quote' => true,
             'standardize_not_equals' => true,
+            'ternary_operator_spaces' => true,
         ]);
     }
 

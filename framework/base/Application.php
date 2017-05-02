@@ -645,7 +645,7 @@ abstract class Application extends Module
 
         if ($this->state !== self::STATE_SENDING_RESPONSE && $this->state !== self::STATE_END) {
             $this->state = self::STATE_END;
-            $response = $response ? : $this->getResponse();
+            $response = $response ?: $this->getResponse();
             $response->send();
         }
 
