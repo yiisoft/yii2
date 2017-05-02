@@ -166,7 +166,7 @@ class YiiConfig extends Config
      */
     public function mergeRules(array $rules)
     {
-        parent::setRules(ArrayHelper::merge($this->getRules(), $rules));
+        $this->setRules(ArrayHelper::merge($this->getRules(), $rules));
 
         return $this;
     }
