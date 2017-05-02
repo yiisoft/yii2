@@ -11,8 +11,6 @@ use yii\mutex\Mutex;
 
 /**
  * Class MutexTestTrait
- *
- * @package yii\tests\unit\framework\mutex
  */
 trait MutexTestTrait
 {

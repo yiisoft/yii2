@@ -11,7 +11,6 @@ use yii\caching\Dependency;
 
 /**
  * Class MockDependency
- * @package tests\data\cache
  *
  * @author Boudewijn Vahrmeijer <vahrmeijer@gmail.com>
  * @since 2.0.11

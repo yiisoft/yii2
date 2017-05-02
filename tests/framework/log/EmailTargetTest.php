@@ -12,7 +12,6 @@ use yiiunit\TestCase;
 
 /**
  * Class EmailTargetTest
- * @package yiiunit\framework\log
  * @group log
  */
 class EmailTargetTest extends TestCase

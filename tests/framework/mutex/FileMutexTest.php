@@ -14,8 +14,6 @@ use yiiunit\TestCase;
  * Class FileMutexTest
  *
  * @group mutex
- *
- * @package yii\tests\unit\framework\mutex
  */
 class FileMutexTest extends TestCase
 {

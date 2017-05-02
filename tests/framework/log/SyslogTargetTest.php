@@ -33,7 +33,6 @@ namespace yiiunit\framework\log {
     /**
      * Class SyslogTargetTest
      *
-     * @package yiiunit\framework\log
      * @group log
      */
     class SyslogTargetTest extends TestCase
