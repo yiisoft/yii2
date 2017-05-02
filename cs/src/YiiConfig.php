@@ -92,6 +92,7 @@ class YiiConfig extends Config
             'no_unused_imports' => true,
 //            'no_useless_else' => true, // needs more discussion
             'no_useless_return' => true,
+            'no_whitespace_before_comma_in_array' => true,
         ]);
     }
 
