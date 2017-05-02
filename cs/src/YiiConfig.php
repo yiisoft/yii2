@@ -84,6 +84,7 @@ class YiiConfig extends Config
             'no_multiline_whitespace_before_semicolons' => true,
             'no_php4_constructor' => true,
             'no_short_bool_cast' => true,
+            'no_singleline_whitespace_before_semicolons' => true,
         ]);
     }
 
