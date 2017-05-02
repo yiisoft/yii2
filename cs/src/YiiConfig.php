@@ -52,6 +52,9 @@ class YiiConfig extends Config
             'linebreak_after_opening_tag' => true,
             'lowercase_cast' => true,
             'magic_constant_casing' => true,
+//            'mb_str_functions' => true,
+//            'method_separation' => true, // conflicts with current Yii style with double line between properties and methods
+            'modernize_types_casting' => true,
         ]);
     }
 
