@@ -51,6 +51,7 @@ class YiiConfig extends Config
             ],
             'linebreak_after_opening_tag' => true,
             'lowercase_cast' => true,
+            'magic_constant_casing' => true,
         ]);
     }
 
