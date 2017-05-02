@@ -168,8 +168,6 @@ class HelpController extends Controller
         }
 
         $this->stdout("\n");
-
-        return;
     }
 
     /**

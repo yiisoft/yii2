@@ -95,6 +95,5 @@ class ViewStub extends View
 {
     public function registerAssetBundle($name, $position = null)
     {
-        return;
     }
 }
