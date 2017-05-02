@@ -199,7 +199,7 @@ class YiiRequirementChecker
             return false;
         }
 
-        return ((int) $value === 1 || strtolower($value) === 'on');
+        return (int) $value === 1 || strtolower($value) === 'on';
     }
 
     /**
@@ -214,7 +214,7 @@ class YiiRequirementChecker
             return true;
         }
 
-        return (strtolower($value) === 'off');
+        return strtolower($value) === 'off';
     }
 
     /**
@@ -288,7 +288,7 @@ class YiiRequirementChecker
             $maxCheckResult = true;
         }
 
-        return ($minCheckResult && $maxCheckResult);
+        return $minCheckResult && $maxCheckResult;
     }
 
     /**

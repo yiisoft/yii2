@@ -88,6 +88,7 @@ class YiiConfig extends Config
             'no_spaces_around_offset' => true,
             'no_trailing_comma_in_list_call' => true,
             'no_trailing_comma_in_singleline_array' => true,
+            'no_unneeded_control_parentheses' => true,
         ]);
     }
 

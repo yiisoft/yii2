@@ -766,7 +766,7 @@ EOD;
      */
     private function isBundleExternal($bundle)
     {
-        return (empty($bundle->sourcePath) && empty($bundle->basePath));
+        return empty($bundle->sourcePath) && empty($bundle->basePath);
     }
 
     /**
