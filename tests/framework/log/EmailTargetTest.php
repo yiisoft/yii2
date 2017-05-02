@@ -43,7 +43,7 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::init()
+     * @covers \yii\log\EmailTarget::init()
      * @expectedException \yii\base\InvalidConfigException
      * @expectedExceptionMessage The "to" option must be set for EmailTarget::message.
      */
@@ -53,8 +53,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::export()
-     * @covers yii\log\EmailTarget::composeMessage()
+     * @covers \yii\log\EmailTarget::export()
+     * @covers \yii\log\EmailTarget::composeMessage()
      */
     public function testExportWithSubject()
     {
@@ -97,8 +97,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::export()
-     * @covers yii\log\EmailTarget::composeMessage()
+     * @covers \yii\log\EmailTarget::export()
+     * @covers \yii\log\EmailTarget::composeMessage()
      */
     public function testExportWithoutSubject()
     {

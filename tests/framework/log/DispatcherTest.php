@@ -89,7 +89,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::setLogger()
+         * @covers \yii\log\Dispatcher::setLogger()
          */
         public function testSetLogger()
         {
@@ -109,7 +109,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::getTraceLevel()
+         * @covers \yii\log\Dispatcher::getTraceLevel()
          */
         public function testGetTraceLevel()
         {
@@ -119,7 +119,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::setTraceLevel()
+         * @covers \yii\log\Dispatcher::setTraceLevel()
          */
         public function testSetTraceLevel()
         {
@@ -129,7 +129,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::getFlushInterval()
+         * @covers \yii\log\Dispatcher::getFlushInterval()
          */
         public function testGetFlushInterval()
         {
@@ -139,7 +139,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::setFlushInterval()
+         * @covers \yii\log\Dispatcher::setFlushInterval()
          */
         public function testSetFlushInterval()
         {
@@ -149,7 +149,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::dispatch()
+         * @covers \yii\log\Dispatcher::dispatch()
          */
         public function testDispatchWithDisabledTarget()
         {
@@ -165,7 +165,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::dispatch()
+         * @covers \yii\log\Dispatcher::dispatch()
          */
         public function testDispatchWithSuccessTargetCollect()
         {
@@ -185,7 +185,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::dispatch()
+         * @covers \yii\log\Dispatcher::dispatch()
          */
         public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect()
         {
@@ -232,7 +232,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\Dispatcher::init()
+         * @covers \yii\log\Dispatcher::init()
          */
         public function testInitWithCreateTargetObject()
         {

@@ -61,7 +61,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\SyslogTarget::export()
+         * @covers \yii\log\SyslogTarget::export()
          */
         public function testExport()
         {
@@ -163,7 +163,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\SyslogTarget::formatMessage()
+         * @covers \yii\log\SyslogTarget::formatMessage()
          */
         public function testFormatMessageWhereTextIsString()
         {
@@ -180,7 +180,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\SyslogTarget::formatMessage()
+         * @covers \yii\log\SyslogTarget::formatMessage()
          */
         public function testFormatMessageWhereTextIsException()
         {
@@ -198,7 +198,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers yii\log\SyslogTarget::formatMessage()
+         * @covers \yii\log\SyslogTarget::formatMessage()
          */
         public function testFormatMessageWhereTextIsNotStringAndNotThrowable()
         {
