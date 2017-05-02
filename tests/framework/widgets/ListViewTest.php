@@ -155,7 +155,6 @@ HTML
                             'index' => $index,
                             'id' => $model['id'],
                         ],
-
                     ];
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>

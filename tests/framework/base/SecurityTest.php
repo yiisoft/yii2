@@ -43,7 +43,6 @@ namespace yii\base {
         }
         return \fread($handle, $length);
     }
-
 } // closing namespace yii\base;
 
 namespace yiiunit\framework\base {
@@ -1294,5 +1293,4 @@ TEXT;
         ];
     }
 }
-
 } // closing namespace yiiunit\framework\base;

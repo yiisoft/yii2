@@ -1286,8 +1286,6 @@ class UrlRuleTest extends TestCase
                 ],
                 'PUT,POST post/<id:\d+>'
             ],
-
-
         ];
     }
 }

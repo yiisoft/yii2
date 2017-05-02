@@ -26,7 +26,6 @@ class SerializerTest extends TestCase
                     'scriptUrl' => '/index.php',
                 ],
             ],
-
         ], 'yii\web\Application');
 
         TestModel::$fields = ['field1', 'field2'];

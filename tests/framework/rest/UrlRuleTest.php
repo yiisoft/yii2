@@ -114,7 +114,6 @@ class UrlRuleTest extends TestCase
                     ['posts/123', 'post/delete', ['id' => 123], 'DELETE'],
 
                     ['posts/new', false],
-
                 ],
             ],
             [
@@ -197,7 +196,6 @@ class UrlRuleTest extends TestCase
                     ['admin/user' => 'admin/user', 'post' => 'post',]
                 ]
             ]],
-
         ];
     }
 
@@ -336,7 +334,6 @@ class UrlRuleTest extends TestCase
                     [ ['v1/channel/my2', 'id' => 42], false ],
                 ],
             ],
-
         ];
     }
 

@@ -1084,7 +1084,6 @@ EOD;
                     $model->addError('name', 'Error message. Here are even more chars: ""');
                 }
             ],
-
         ];
     }
 

@@ -86,7 +86,6 @@ class DataColumnTest extends \yiiunit\TestCase
                     'filter' => $filterInput,
                 ],
             ],
-
         ]);
         //print_r($grid->columns);exit();
         $dataColumn = $grid->columns[0];

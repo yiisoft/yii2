@@ -63,6 +63,20 @@ class YiiConfig extends Config
             'no_empty_comment' => true,
             'no_empty_phpdoc' => true,
             'no_empty_statement' => true,
+            'no_extra_consecutive_blank_lines' => [
+                'tokens' => [
+                    'break',
+                    'continue',
+//                    'extra', // conflicts with current Yii style with double line between properties and methods
+                    'return',
+                    'throw',
+                    'use',
+                    'use_trait',
+//                    'curly_brace_block', // breaks namespaces blocks
+                    'parenthesis_brace_block',
+                    'square_brace_block',
+                ],
+            ],
         ]);
     }
 

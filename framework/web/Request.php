@@ -1225,10 +1225,11 @@ class Request extends \yii\base\Request
             foreach ($languages as $language) {
                 $normalizedLanguage = str_replace('_', '-', strtolower($language));
 
-                if ($normalizedLanguage === $acceptableLanguage || // en-us==en-us
-                    strpos($acceptableLanguage, $normalizedLanguage . '-') === 0 || // en==en-us
-                    strpos($normalizedLanguage, $acceptableLanguage . '-') === 0) { // en-us==en
-
+                if (
+                    $normalizedLanguage === $acceptableLanguage // en-us==en-us
+                    || strpos($acceptableLanguage, $normalizedLanguage . '-') === 0 // en==en-us
+                    || strpos($normalizedLanguage, $acceptableLanguage . '-') === 0 // en-us==en
+                ) {
                     return $language;
                 }
             }

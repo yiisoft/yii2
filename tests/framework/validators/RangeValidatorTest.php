@@ -116,7 +116,6 @@ class RangeValidatorTest extends TestCase
 
     public function testValidateSubsetArrayable()
     {
-
         // Test in array, values are arrays. IE: ['a'] in [['a'], ['b']]
         $val = new RangeValidator([
             'range' => [['a'], ['b']],

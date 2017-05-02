@@ -1260,7 +1260,6 @@ trait ActiveRecordTestTrait
         $this->assertFalse($customer->canSetProperty('orderItems'));
 
         try {
-
             /* @var $itemClass \yii\db\ActiveRecordInterface */
             $itemClass = $this->getItemClass();
             $customer->orderItems = [new $itemClass()];
