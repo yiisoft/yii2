@@ -122,6 +122,11 @@ class YiiConfig extends Config
             'php_unit_construct' => true,
             'php_unit_dedicate_assert' => true,
             'php_unit_fqcn_annotation' => true,
+//            'php_unit_strict' => true, // needs more attention
+//            'phpdoc_add_missing_param_annotation' => [ // needs more attention
+//                'only_untyped' => false,
+//            ],
+            'phpdoc_indent' => true,
         ]);
     }
 
