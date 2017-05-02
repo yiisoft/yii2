@@ -80,6 +80,7 @@ class YiiConfig extends Config
             'no_leading_import_slash' => true,
             'no_leading_namespace_whitespace' => true,
             'no_mixed_echo_print' => true,
+            'no_multiline_whitespace_around_double_arrow' => true,
         ]);
     }
 
