@@ -8,7 +8,6 @@
 namespace yii\db\sqlite;
 
 use yii\db\Connection;
-use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
 use yii\db\Expression;

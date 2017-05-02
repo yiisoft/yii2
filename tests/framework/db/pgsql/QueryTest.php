@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\db\pgsql;
 
-use yii\db\pgsql\Schema;
 use yii\db\Query;
 
 /**

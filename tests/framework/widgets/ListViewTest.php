@@ -15,7 +15,7 @@ use yiiunit\TestCase;
 /**
  * @group widgets
  */
-class ListViewTest extends \yiiunit\TestCase
+class ListViewTest extends TestCase
 {
     protected function setUp()
     {

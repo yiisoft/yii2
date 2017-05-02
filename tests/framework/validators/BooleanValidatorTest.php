@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\validators;
 
-use yii\base\View;
+use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yii\validators\BooleanValidator;
 use yiiunit\TestCase;
@@ -91,7 +91,7 @@ class BooleanValidatorTest extends TestCase
     }
 }
 
-class ViewStub extends \yii\web\View
+class ViewStub extends View
 {
     public function registerAssetBundle($name, $position = null)
     {

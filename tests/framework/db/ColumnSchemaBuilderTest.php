@@ -10,7 +10,6 @@ namespace yiiunit\framework\db;
 use yii\db\ColumnSchemaBuilder;
 use yii\db\Expression;
 use yii\db\Schema;
-use yiiunit\TestCase;
 
 abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
 {

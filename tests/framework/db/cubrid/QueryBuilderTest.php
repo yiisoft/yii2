@@ -7,8 +7,6 @@
 
 namespace yiiunit\framework\db\cubrid;
 
-use yii\db\Schema;
-
 /**
  * @group db
  * @group cubrid

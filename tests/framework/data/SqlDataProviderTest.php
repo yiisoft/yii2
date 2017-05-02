@@ -7,11 +7,8 @@
 
 namespace yiiunit\framework\data;
 
-use yii\data\ArrayDataProvider;
 use yii\data\SqlDataProvider;
 use yiiunit\framework\db\DatabaseTestCase;
-use yiiunit\framework\db\sqlite\ConnectionTest;
-use yiiunit\TestCase;
 
 /**
  * @group data

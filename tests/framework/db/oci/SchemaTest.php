@@ -7,9 +7,6 @@
 
 namespace yiiunit\framework\db\oci;
 
-use yii\db\Expression;
-use yii\db\oci\Schema;
-
 /**
  * @group db
  * @group oci

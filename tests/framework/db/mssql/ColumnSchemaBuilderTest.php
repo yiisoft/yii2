@@ -8,7 +8,6 @@
 namespace yiiunit\framework\db\mssql;
 
 use yii\db\ColumnSchemaBuilder;
-use yii\db\Schema;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MSSQL

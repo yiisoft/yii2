@@ -11,8 +11,6 @@ use yii\data\ArrayDataProvider;
 use yii\grid\CheckboxColumn;
 use yii\grid\GridView;
 use yii\helpers\FileHelper;
-use yii\i18n\Formatter;
-use yii\web\View;
 use Yii;
 use yiiunit\framework\i18n\IntlTestHelper;
 use yiiunit\TestCase;

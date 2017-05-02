@@ -7,8 +7,6 @@
 
 namespace yiiunit\framework\db\mssql;
 
-use yii\db\Schema;
-
 /**
  * @group db
  * @group mssql
