@@ -25,6 +25,8 @@ class YiiConfig extends Config
     {
         parent::__construct($name);
 
+        $this->setRiskyAllowed(true);
+
         $this->setRules([
             '@PSR2' => true,
             'array_syntax' => [
@@ -38,6 +40,7 @@ class YiiConfig extends Config
             'concat_space' => [
                 'spacing' => 'one',
             ],
+            'dir_constant' => true,
         ]);
     }
 
