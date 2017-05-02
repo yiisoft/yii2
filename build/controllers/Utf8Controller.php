@@ -91,7 +91,7 @@ class Utf8Controller extends Controller
 
         $hexcode = dechex($this->unicodeOrd($char));
         $hexcode = str_repeat('0', max(4 - strlen($hexcode), 0)) . $hexcode;
-    
+
         $this->stdout("  at $line:$pos FOUND $what: 0x$hexcode '$char' http://unicode-table.com/en/$hexcode/\n");
     }
 

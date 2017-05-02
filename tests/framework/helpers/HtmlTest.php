@@ -1175,7 +1175,7 @@ EOD;
         $noCsrfForm = Html::beginForm('/index.php', 'post', ['csrf' => false, 'id' => 'myform']);
         $this->assertEquals('<form id="myform" action="/index.php" method="post">', $noCsrfForm);
     }
-    
+
     /**
      * Data provider for [[testActiveRadio()]]
      * @return array test data
@@ -1205,7 +1205,7 @@ EOD;
             ],
         ];
     }
-    
+
     /**
      * @dataProvider dataProviderActiveRadio
      *
@@ -1219,7 +1219,7 @@ EOD;
         $model->radio = $value;
         $this->assertEquals($expectedHtml, Html::activeRadio($model, 'radio', $options));
     }
-        
+
     /**
      * Data provider for [[testActiveCheckbox()]]
      * @return array test data
@@ -1249,7 +1249,7 @@ EOD;
             ],
         ];
     }
-    
+
     /**
      * @dataProvider dataProviderActiveCheckbox
      *
@@ -1318,7 +1318,7 @@ EOD;
             $this->assertEquals($expected, Html::getAttributeName($name));
         }
     }
-    
+
     /**
      * @dataProvider invalidAttributeNamesProvider
      *

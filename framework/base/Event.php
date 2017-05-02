@@ -214,7 +214,7 @@ class Event extends Object
             if (empty(self::$_events[$name][$class])) {
                 continue;
             }
-            
+
             foreach (self::$_events[$name][$class] as $handler) {
                 $event->data = $handler[1];
                 call_user_func($handler[0], $event);

@@ -43,7 +43,7 @@ class RateLimiterTest extends TestCase
         parent::tearDown();
         Yii::setLogger(null);
     }
-    
+
     public function testInitFilledRequest()
     {
         $rateLimiter = new RateLimiter(['request' => 'Request']);

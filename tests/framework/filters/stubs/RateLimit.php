@@ -24,7 +24,7 @@ class RateLimit extends Object implements RateLimitInterface
     public function setRateLimit($rateLimit)
     {
         $this->_rateLimit = $rateLimit;
-        
+
         return $this;
     }
 
