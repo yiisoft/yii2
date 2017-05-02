@@ -96,6 +96,7 @@ class YiiConfig extends Config
             'no_whitespace_in_blank_line' => true,
 //            'non_printable_character' => true, // breaks Formatter::asCurrency() tests
             'normalize_index_brace' => true,
+            'object_operator_without_whitespace' => true,
         ]);
     }
 
