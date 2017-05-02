@@ -270,7 +270,7 @@ class BaseFileHelper
         if (!isset($options['basePath'])) {
             // this should be done only once
             $options['basePath'] = realpath($src);
-            $options = self::normalizeOptions($options);
+            $options = static::normalizeOptions($options);
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
@@ -396,7 +396,7 @@ class BaseFileHelper
         if (!isset($options['basePath'])) {
             // this should be done only once
             $options['basePath'] = realpath($dir);
-            $options = self::normalizeOptions($options);
+            $options = static::normalizeOptions($options);
         }
         $list = [];
         $handle = opendir($dir);
@@ -696,8 +696,9 @@ class BaseFileHelper
     /**
      * @param array $options raw options
      * @return array normalized options
+     * @since 2.0.12
      */
-    private static function normalizeOptions(array $options)
+    protected static function normalizeOptions(array $options)
     {
         if (!array_key_exists('caseSensitive', $options)) {
             $options['caseSensitive'] = true;
