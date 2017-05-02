@@ -132,6 +132,8 @@ class YiiConfig extends Config
             'phpdoc_no_empty_return' => true,
             'phpdoc_no_package' => true,
             'phpdoc_no_useless_inheritdoc' => true,
+//            'phpdoc_order', // may be useful, but should be configurable: https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/1602
+            'phpdoc_return_self_reference' => true,
         ]);
     }
 
