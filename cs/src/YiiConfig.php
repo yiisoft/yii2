@@ -59,6 +59,7 @@ class YiiConfig extends Config
             'new_with_braces' => true,
             'no_alias_functions' => true,
             'no_blank_lines_after_class_opening' => true,
+            'no_blank_lines_after_phpdoc' => true,
         ]);
     }
 
