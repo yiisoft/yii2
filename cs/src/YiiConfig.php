@@ -119,6 +119,7 @@ class YiiConfig extends Config
                     'class',
                 ],
             ],
+            'php_unit_construct' => true,
         ]);
     }
 

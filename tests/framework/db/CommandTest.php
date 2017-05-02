@@ -21,7 +21,7 @@ abstract class CommandTest extends DatabaseTestCase
 
         // null
         $command = $db->createCommand();
-        $this->assertEquals(null, $command->sql);
+        $this->assertNull($command->sql);
 
         // string
         $sql = 'SELECT * FROM customer';
@@ -58,7 +58,7 @@ abstract class CommandTest extends DatabaseTestCase
         $command = $db->createCommand('SELECT * FROM {{customer}}');
         $this->assertEquals(null, $command->pdoStatement);
         $command->prepare();
-        $this->assertNotEquals(null, $command->pdoStatement);
+        $this->assertNotNull($command->pdoStatement);
         $command->cancel();
         $this->assertEquals(null, $command->pdoStatement);
     }

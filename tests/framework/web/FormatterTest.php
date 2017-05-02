@@ -40,7 +40,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
     {
         $this->response->data = null;
         $this->formatter->format($this->response);
-        $this->assertEquals(null, $this->response->content);
+        $this->assertNull($this->response->content);
     }
 
     /**
