@@ -122,7 +122,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\\web\\UrlRule'
+                        'class' => 'yii\\web\\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',
@@ -202,7 +202,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\\web\\UrlRule'
+                        'class' => 'yii\\web\\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',

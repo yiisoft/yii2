@@ -23,9 +23,9 @@ class AuthMethodTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className()
+                    'identityClass' => UserIdentity::className(),
                 ],
-            ]
+            ],
         ]);
     }
 

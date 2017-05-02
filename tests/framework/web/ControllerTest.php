@@ -88,7 +88,7 @@ class ControllerTest extends TestCase
                     'scriptFile' => __DIR__ . '/index.php',
                     'scriptUrl' => '/index.php',
                 ],
-            ]
+            ],
         ]));
         $this->mockWebApplication(['controller' => $this->controller]);
     }

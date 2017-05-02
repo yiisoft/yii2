@@ -35,7 +35,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_BOOLEAN . ' DEFAULT 1 NOT NULL',
                 $this->boolean()->notNull()->defaultValue(1),
-                'NUMBER(1) DEFAULT 1 NOT NULL'
+                'NUMBER(1) DEFAULT 1 NOT NULL',
             ],
         ]);
     }
@@ -105,7 +105,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 . ' OR ([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) . '))'
                 . ')',
 
-                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
+                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500)),
             ],
             [
                 ['not in', 'id', range(0, 2500)],
@@ -116,7 +116,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) . '))'
                 . ')',
 
-                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
+                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500)),
             ],
             [
                 ['not in', 'id', new TraversableObject(range(0, 2500))],
@@ -127,7 +127,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) . '))'
                 . ')',
 
-                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
+                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500)),
             ],
         ]);
     }

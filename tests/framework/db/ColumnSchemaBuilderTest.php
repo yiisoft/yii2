@@ -36,13 +36,13 @@ abstract class ColumnSchemaBuilderTest extends DatabaseTestCase
                 ['unsigned'],
             ]],
             ['timestamp() WITH TIME ZONE NOT NULL', 'timestamp() WITH TIME ZONE', null, [
-                ['notNull']
+                ['notNull'],
             ]],
             ['timestamp() WITH TIME ZONE DEFAULT NOW()', 'timestamp() WITH TIME ZONE', null, [
-                ['defaultValue', new Expression('NOW()')]
+                ['defaultValue', new Expression('NOW()')],
             ]],
             ['integer(10)', Schema::TYPE_INTEGER, 10, [
-                ['comment', 'test']
+                ['comment', 'test'],
             ]],
         ];
     }

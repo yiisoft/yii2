@@ -192,8 +192,8 @@ class RequestTest extends TestCase
                         'posts' => 'post/list',
                         'post/<id>' => 'post/view',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $request = new Request();

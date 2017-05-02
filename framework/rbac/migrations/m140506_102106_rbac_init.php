@@ -74,7 +74,7 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'updated_at' => $this->integer(),
             'PRIMARY KEY ([[name]])',
             'FOREIGN KEY ([[rule_name]]) REFERENCES ' . $authManager->ruleTable . ' ([[name]])' .
-                $this->buildFkClause('ON DELETE SET NULL', 'ON UPDATE CASCADE')
+                $this->buildFkClause('ON DELETE SET NULL', 'ON UPDATE CASCADE'),
         ], $tableOptions);
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
 

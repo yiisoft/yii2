@@ -43,7 +43,7 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
             ]],
             // comments are ignored
             ['integer(10)', Schema::TYPE_INTEGER, 10, [
-                ['comment', 'test']
+                ['comment', 'test'],
             ]],
         ];
     }

@@ -38,7 +38,7 @@ class FallbackMessageFormatterTest extends TestCase
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
-                ]
+                ],
             ],
 
             [
@@ -47,7 +47,7 @@ class FallbackMessageFormatterTest extends TestCase
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
-                ]
+                ],
             ],
 
             [
@@ -56,39 +56,39 @@ class FallbackMessageFormatterTest extends TestCase
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
-                ]
+                ],
             ],
 
             [
                 'Here is a big number: {' . self::F . ', number}', // pattern
                 'Here is a big number: ' . self::F_VALUE_FORMATTED, // expected
                 [ // params
-                    self::F => self::F_VALUE
-                ]
+                    self::F => self::F_VALUE,
+                ],
             ],
 
             [
                 'Here is a big number: {' . self::F . ', number, integer}', // pattern
                 'Here is a big number: ' . self::F_VALUE_FORMATTED, // expected
                 [ // params
-                    self::F => self::F_VALUE
-                ]
+                    self::F => self::F_VALUE,
+                ],
             ],
 
             [
                 'Here is a big number: {' . self::D . ', number}', // pattern
                 'Here is a big number: ' . self::D_VALUE_FORMATTED, // expected
                 [ // params
-                    self::D => self::D_VALUE
-                ]
+                    self::D => self::D_VALUE,
+                ],
             ],
 
             [
                 'Here is a big number: {' . self::D . ', number, integer}', // pattern
                 'Here is a big number: ' . self::D_VALUE_FORMATTED_INTEGER, // expected
                 [ // params
-                    self::D => self::D_VALUE
-                ]
+                    self::D => self::D_VALUE,
+                ],
             ],
 
             // This one was provided by Aura.Intl. Thanks!
@@ -116,8 +116,8 @@ _MSG_
                     'gender_of_host' => 'male',
                     'num_guests' => 4,
                     'host' => 'ralph',
-                    'guest' => 'beep'
-                ]
+                    'guest' => 'beep',
+                ],
             ],
 
             [
@@ -140,7 +140,7 @@ _MSG_
                     'he' => 'wtf',
                     'she' => 'wtf',
                     'it' => 'wtf',
-                ]
+                ],
             ],
 
             // verify pattern in select message gets replaced

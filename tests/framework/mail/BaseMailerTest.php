@@ -24,7 +24,7 @@ class BaseMailerTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'mailer' => $this->createTestMailComponent(),
-            ]
+            ],
         ]);
         $filePath = $this->getTestFilePath();
         if (!file_exists($filePath)) {
@@ -81,7 +81,7 @@ class BaseMailerTest extends TestCase
             'params' => [
                 'param1' => 'value1',
                 'param2' => 'value2',
-            ]
+            ],
         ];
         $mailer->setView($viewConfig);
         $view = $mailer->getView();
@@ -154,7 +154,7 @@ class BaseMailerTest extends TestCase
         file_put_contents($viewFileName, $viewFileContent);
 
         $params = [
-            'testParam' => 'test output'
+            'testParam' => 'test output',
         ];
         $renderResult = $mailer->render($viewName, $params);
         $this->assertEquals($params['testParam'], $renderResult);

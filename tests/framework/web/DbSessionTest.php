@@ -91,7 +91,7 @@ class DbSessionTest extends TestCase
         $session = new DbSession();
         $session->writeCallback = function ($session) {
             return [
-                'user_id' => 15
+                'user_id' => 15,
             ];
         };
 
@@ -130,7 +130,7 @@ class DbSessionTest extends TestCase
                 'db' => [
                     'class' => Connection::className(),
                     'dsn' => 'sqlite::memory:',
-                ]
+                ],
             ],
         ]);
 

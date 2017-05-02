@@ -68,7 +68,7 @@ class FixtureController extends Controller
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), [
-            'namespace', 'globalFixtures'
+            'namespace', 'globalFixtures',
         ]);
     }
 

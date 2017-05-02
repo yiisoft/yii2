@@ -190,7 +190,7 @@ HTML
         };
         $this->getListView([
             'beforeItem' => $before,
-            'afterItem' => $after
+            'afterItem' => $after,
         ])->run();
 
         $this->expectOutputString(<<<HTML

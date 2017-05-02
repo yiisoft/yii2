@@ -135,8 +135,8 @@ class InstanceTest extends TestCase
                 'db' => [
                     'class' => 'yii\db\Connection',
                     'dsn' => 'test',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $container = Instance::of('db');
@@ -154,7 +154,7 @@ class InstanceTest extends TestCase
         Yii::$container = new Container();
         Yii::$container->set('cache', [
             'class' => 'yii\caching\DbCache',
-            'db' => Instance::of('db')
+            'db' => Instance::of('db'),
         ]);
         Yii::$container->set('db', [
             'class' => 'yii\db\Connection',

@@ -79,7 +79,7 @@ Exception: InvalidArgumentException', $this->getController()->runAction('error')
 
         $controller = $this->getController([
             'defaultName' => 'Oops...',
-            'defaultMessage' => 'The system is drunk'
+            'defaultMessage' => 'The system is drunk',
         ]);
 
         $this->assertEquals('Name: Oops...

@@ -119,21 +119,21 @@ class RangeValidatorTest extends TestCase
         // Test in array, values are arrays. IE: ['a'] in [['a'], ['b']]
         $val = new RangeValidator([
             'range' => [['a'], ['b']],
-            'allowArray' => false
+            'allowArray' => false,
         ]);
         $this->assertTrue($val->validate(['a']));
 
         // Test in array, values are arrays. IE: ['a', 'b'] subset [['a', 'b', 'c']
         $val = new RangeValidator([
             'range' => ['a', 'b', 'c'],
-            'allowArray' => true
+            'allowArray' => true,
         ]);
         $this->assertTrue($val->validate(['a', 'b']));
 
         // Test in array, values are arrays. IE: ['a', 'b'] subset [['a', 'b', 'c']
         $val = new RangeValidator([
             'range' => ['a', 'b', 'c'],
-            'allowArray' => true
+            'allowArray' => true,
         ]);
         $this->assertTrue($val->validate(new \ArrayObject(['a', 'b'])));
 
@@ -141,7 +141,7 @@ class RangeValidatorTest extends TestCase
         // Test range as ArrayObject.
         $val = new RangeValidator([
             'range' => new \ArrayObject(['a', 'b']),
-            'allowArray' => false
+            'allowArray' => false,
         ]);
         $this->assertTrue($val->validate('a'));
     }

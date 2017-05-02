@@ -83,7 +83,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     'scriptFile' => __DIR__ . '/index.php',
                     'scriptUrl' => '/index.php',
                 ],
-            ]
+            ],
         ], $config));
     }
 

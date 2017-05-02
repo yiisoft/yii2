@@ -98,7 +98,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         ob_start();
         $this->response->sendContentAsFile('test', 'test.txt')->send([
-            'mimeType' => 'text/plain'
+            'mimeType' => 'text/plain',
         ]);
         $content = ob_get_clean();
 

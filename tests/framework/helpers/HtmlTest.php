@@ -314,25 +314,25 @@ class HtmlTest extends TestCase
                 '<textarea name="test"></textarea>',
                 'test',
                 null,
-                []
+                [],
             ],
             [
                 '<textarea class="t" name="test">value&lt;&gt;</textarea>',
                 'test',
                 'value<>',
-                ['class' => 't']
+                ['class' => 't'],
             ],
             [
                 '<textarea name="test">value&amp;lt;&amp;gt;</textarea>',
                 'test',
                 'value&lt;&gt;',
-                []
+                [],
             ],
             [
                 '<textarea name="test">value&lt;&gt;</textarea>',
                 'test',
                 'value&lt;&gt;',
-                ['doubleEncode' => false]
+                ['doubleEncode' => false],
             ],
         ];
     }
@@ -423,7 +423,7 @@ EOD;
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems(), [
             'options' => [
-                'value2' => ['selected' => true]
+                'value2' => ['selected' => true],
             ],
         ]));
     }
@@ -543,7 +543,7 @@ EOD;
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['value2'], $this->getDataItems(), [
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, ['value' => $value]));
-            }
+            },
         ]));
 
         $expected = <<<EOD
@@ -554,7 +554,7 @@ EOD;
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, ['value' => $value]));
             },
-            'tag' => false
+            'tag' => false,
         ]));
 
 
@@ -562,7 +562,7 @@ EOD;
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::checkbox($name, $checked, ['value' => $value]));
             },
-            'tag' => false
+            'tag' => false,
         ]));
     }
 
@@ -598,7 +598,7 @@ EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['value2'], $this->getDataItems(), [
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
-            }
+            },
         ]));
 
         $expected = <<<EOD
@@ -609,14 +609,14 @@ EOD;
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
             },
-            'tag' => false
+            'tag' => false,
         ]));
 
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', new \ArrayObject(['value2']), $this->getDataItems(), [
             'item' => function ($index, $label, $name, $checked, $value) {
                 return $index . Html::label($label . ' ' . Html::radio($name, $checked, ['value' => $value]));
             },
-            'tag' => false
+            'tag' => false,
         ]));
     }
 
@@ -644,7 +644,7 @@ EOD;
             'class' => 'test',
             'item' => function ($item, $index) {
                 return "<li class=\"item-$index\">$item</li>";
-            }
+            },
         ]));
 
         $this->assertEquals('<ul class="test"></ul>', Html::ul([], ['class' => 'test']));
@@ -676,7 +676,7 @@ EOD;
             'class' => 'test',
             'item' => function ($item, $index) {
                 return "<li class=\"item-$index\">$item</li>";
-            }
+            },
         ]));
 
         $this->assertEquals('<ol class="test"></ol>', Html::ol([], ['class' => 'test']));
@@ -785,7 +785,7 @@ EOD;
         $this->assertEquals(['class' => 'test test2 test3'], $options);
 
         $options = [
-            'class' => ['test']
+            'class' => ['test'],
         ];
         Html::addCssClass($options, 'test2');
         $this->assertEquals(['class' => ['test', 'test2']], $options);
@@ -795,7 +795,7 @@ EOD;
         $this->assertEquals(['class' => ['test', 'test2', 'test3']], $options);
 
         $options = [
-            'class' => 'test'
+            'class' => 'test',
         ];
         Html::addCssClass($options, ['test1', 'test2']);
         $this->assertEquals(['class' => 'test test1 test2'], $options);
@@ -808,8 +808,8 @@ EOD;
     {
         $options = [
             'class' => [
-                'persistent' => 'test1'
-            ]
+                'persistent' => 'test1',
+            ],
         ];
         Html::addCssClass($options, ['persistent' => 'test2']);
         $this->assertEquals(['persistent' => 'test1'], $options['class']);
@@ -837,7 +837,7 @@ EOD;
         $this->assertEquals([], $options);
 
         $options = [
-            'class' => 'test test1 test2'
+            'class' => 'test test1 test2',
         ];
         Html::removeCssClass($options, ['test1', 'test2']);
         $this->assertEquals(['class' => 'test'], $options);
@@ -885,7 +885,7 @@ EOD;
 
         $options = [
             'style' => [
-                'width' => '100px'
+                'width' => '100px',
             ],
         ];
         Html::addCssStyle($options, ['color' => 'red'], false);
@@ -961,14 +961,14 @@ EOD;
             [
                 '',
                 [
-                    'maxlength' => true
+                    'maxlength' => true,
                 ],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
             ],
             [
                 '',
                 [
-                    'maxlength' => 99
+                    'maxlength' => 99,
                 ],
                 '<input type="text" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
             ],
@@ -1004,14 +1004,14 @@ EOD;
             [
                 '',
                 [
-                    'maxlength' => true
+                    'maxlength' => true,
                 ],
                 '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="100">',
             ],
             [
                 '',
                 [
-                    'maxlength' => 99
+                    'maxlength' => 99,
                 ],
                 '<input type="password" id="htmltestmodel-name" name="HtmlTestModel[name]" value="" maxlength="99">',
             ],
@@ -1038,7 +1038,7 @@ EOD;
             [
                 'ok',
                 [],
-                '<div style="display:none"><p>Please fix the following errors:</p><ul></ul></div>'
+                '<div style="display:none"><p>Please fix the following errors:</p><ul></ul></div>',
             ],
             [
                 'ok',
@@ -1048,7 +1048,7 @@ EOD;
             [
                 str_repeat('long_string', 60),
                 [],
-                '<div><p>Please fix the following errors:</p><ul><li>Name should contain at most 100 characters.</li></ul></div>'
+                '<div><p>Please fix the following errors:</p><ul><li>Name should contain at most 100 characters.</li></ul></div>',
             ],
             [
                 'not_an_integer',
@@ -1057,7 +1057,7 @@ EOD;
                 function ($model) {
                     /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
-                }
+                },
             ],
             [
                 'not_an_integer',
@@ -1066,7 +1066,7 @@ EOD;
                 function ($model) {
                     /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
-                }
+                },
             ],
             [
                 str_repeat('long_string', 60),
@@ -1075,7 +1075,7 @@ EOD;
                 function ($model) {
                     /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
-                }
+                },
             ],
             [
                 'not_an_integer',
@@ -1086,7 +1086,7 @@ EOD;
                     /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
                     $model->addError('name', 'Error message. Here are even more chars: ""');
-                }
+                },
             ],
         ];
     }
@@ -1126,21 +1126,21 @@ EOD;
             [
                 'some text',
                 [
-                    'maxlength' => true
+                    'maxlength' => true,
                 ],
                 '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]" maxlength="500">some text</textarea>',
             ],
             [
                 'some text',
                 [
-                    'maxlength' => 99
+                    'maxlength' => 99,
                 ],
                 '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]" maxlength="99">some text</textarea>',
             ],
             [
                 'some text',
                 [
-                    'value' => 'override text'
+                    'value' => 'override text',
                 ],
                 '<textarea id="htmltestmodel-description" name="HtmlTestModel[description]">override text</textarea>',
             ],
@@ -1190,22 +1190,22 @@ EOD;
             [
                 true,
                 [],
-                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>'
+                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>',
             ],
             [
                 true,
                 ['uncheck' => false],
-                '<label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>'
+                '<label><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked> Radio</label>',
             ],
             [
                 true,
                 ['label' => false],
-                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>'
+                '<input type="hidden" name="HtmlTestModel[radio]" value="0"><input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>',
             ],
             [
                 true,
                 ['uncheck' => false, 'label' => false],
-                '<input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>'
+                '<input type="radio" id="htmltestmodel-radio" name="HtmlTestModel[radio]" value="1" checked>',
             ],
         ];
     }
@@ -1234,22 +1234,22 @@ EOD;
             [
                 true,
                 [],
-                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>'
+                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>',
             ],
             [
                 true,
                 ['uncheck' => false],
-                '<label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>'
+                '<label><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked> Checkbox</label>',
             ],
             [
                 true,
                 ['label' => false],
-                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>'
+                '<input type="hidden" name="HtmlTestModel[checkbox]" value="0"><input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>',
             ],
             [
                 true,
                 ['uncheck' => false, 'label' => false],
-                '<input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>'
+                '<input type="checkbox" id="htmltestmodel-checkbox" name="HtmlTestModel[checkbox]" value="1" checked>',
             ],
         ];
     }
@@ -1290,7 +1290,7 @@ EOD;
             ['[0]test.ööößß.d', 'test.ööößß.d'],
             ['ИІК', 'ИІК'],
             [']ИІК[', 'ИІК'],
-            ['[0]ИІК[0]', 'ИІК']
+            ['[0]ИІК[0]', 'ИІК'],
         ];
     }
 
@@ -1303,7 +1303,7 @@ EOD;
         return [
             ['. ..'],
             ['a +b'],
-            ['a,b']
+            ['a,b'],
         ];
     }
 

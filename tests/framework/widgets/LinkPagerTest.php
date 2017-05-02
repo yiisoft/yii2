@@ -21,9 +21,9 @@ class LinkPagerTest extends \yiiunit\TestCase
         $this->mockApplication([
             'components' => [
                 'urlManager' => [
-                    'scriptUrl' => '/'
-                ]
-            ]
+                    'scriptUrl' => '/',
+                ],
+            ],
         ]);
     }
 
@@ -37,7 +37,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $output = LinkPager::widget([
             'pagination' => $pagination,
             'firstPageLabel' => true,
-            'lastPageLabel' => true
+            'lastPageLabel' => true,
         ]);
 
         static::assertContains('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">1</a></li>', $output);
@@ -46,7 +46,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $output = LinkPager::widget([
             'pagination' => $pagination,
             'firstPageLabel' => 'First',
-            'lastPageLabel' => 'Last'
+            'lastPageLabel' => 'Last',
         ]);
 
         static::assertContains('<li class="first"><a href="/?r=test&amp;page=1" data-page="0">First</a></li>', $output);
@@ -55,7 +55,7 @@ class LinkPagerTest extends \yiiunit\TestCase
         $output = LinkPager::widget([
             'pagination' => $pagination,
             'firstPageLabel' => false,
-            'lastPageLabel' => false
+            'lastPageLabel' => false,
         ]);
 
         static::assertNotContains('<li class="first">', $output);

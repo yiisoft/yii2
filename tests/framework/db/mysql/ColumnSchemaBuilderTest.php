@@ -42,7 +42,7 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
                 ['unsigned'],
             ]],
             ['integer(10) COMMENT \'test\'', Schema::TYPE_INTEGER, 10, [
-                ['comment', 'test']
+                ['comment', 'test'],
             ]],
         ];
     }

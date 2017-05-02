@@ -38,7 +38,7 @@ class MessageFormatterTest extends TestCase
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
-                ]
+                ],
             ],
 
             [
@@ -47,15 +47,15 @@ class MessageFormatterTest extends TestCase
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
-                ]
+                ],
             ],
 
             [
                 'Here is a big number: {' . self::F . ', number}', // pattern
                 'Here is a big number: ' . self::F_VALUE_FORMATTED, // expected
                 [ // params
-                    self::F => self::F_VALUE
-                ]
+                    self::F => self::F_VALUE,
+                ],
             ],
 
 
@@ -63,24 +63,24 @@ class MessageFormatterTest extends TestCase
                 'Here is a big number: {' . self::F . ', number, integer}', // pattern
                 'Here is a big number: ' . self::F_VALUE_FORMATTED, // expected
                 [ // params
-                    self::F => self::F_VALUE
-                ]
+                    self::F => self::F_VALUE,
+                ],
             ],
 
             [
                 'Here is a big number: {' . self::D . ', number}', // pattern
                 'Here is a big number: ' . self::D_VALUE_FORMATTED, // expected
                 [ // params
-                    self::D => self::D_VALUE
-                ]
+                    self::D => self::D_VALUE,
+                ],
             ],
 
             [
                 'Here is a big number: {' . self::D . ', number, integer}', // pattern
                 'Here is a big number: ' . self::D_VALUE_FORMATTED_INTEGER, // expected
                 [ // params
-                    self::D => self::D_VALUE
-                ]
+                    self::D => self::D_VALUE,
+                ],
             ],
 
             // This one was provided by Aura.Intl. Thanks!
@@ -108,10 +108,10 @@ _MSG_
                     'gender_of_host' => 'male',
                     'num_guests' => 4,
                     'host' => 'ralph',
-                    'guest' => 'beep'
+                    'guest' => 'beep',
                 ],
                 defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.8', '<'),
-                'select format is available in ICU > 4.4 and plural format with =X selector is avilable since 4.8'
+                'select format is available in ICU > 4.4 and plural format with =X selector is avilable since 4.8',
             ],
 
             [
@@ -122,7 +122,7 @@ _MSG_
                     'gender' => 'male',
                 ],
                 defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
-                'select format is available in ICU > 4.4'
+                'select format is available in ICU > 4.4',
             ],
 
             // verify pattern in select does not get replaced
@@ -138,7 +138,7 @@ _MSG_
                     'it' => 'wtf',
                 ],
                 defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
-                'select format is available in ICU > 4.4'
+                'select format is available in ICU > 4.4',
             ],
 
             // verify pattern in select message gets replaced
@@ -152,7 +152,7 @@ _MSG_
                     'she' => 'wtf',
                 ],
                 defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.8', '<'),
-                'parameters in select format do not seem to work in ICU < 4.8'
+                'parameters in select format do not seem to work in ICU < 4.8',
             ],
 
             // some parser specific verifications
@@ -166,7 +166,7 @@ _MSG_
                     'she' => 'wtf',
                 ],
                 defined('INTL_ICU_VERSION') && version_compare(INTL_ICU_VERSION, '4.4.2', '<'),
-                'select format is available in ICU > 4.4'
+                'select format is available in ICU > 4.4',
             ],
 
             // formatting a message that contains params but they are not provided.
@@ -192,7 +192,7 @@ _MSG_
                     'totalCount' => 12,
                     'page' => 1,
                     'pageCount' => 2,
-                ]
+                ],
             ],
             [
                 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
@@ -204,7 +204,7 @@ _MSG_
                     'totalCount' => 1,
                     'page' => 1,
                     'pageCount' => 1,
-                ]
+                ],
             ],
             [
                 'Showing <b>{begin, number}-{end, number}</b> of <b>{totalCount, number}</b> {totalCount, plural, one{item} other{items}}.',
@@ -216,19 +216,19 @@ _MSG_
                     'totalCount' => 0,
                     'page' => 1,
                     'pageCount' => 1,
-                ]
+                ],
             ],
             [
                 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
                 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
-                []
+                [],
             ],
             [
                 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
                 'Total <b>1</b> item.',
                 [
                     'count' => 1,
-                ]
+                ],
             ],
             [
                 'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.',
@@ -237,7 +237,7 @@ _MSG_
                     'begin' => 5,
                     'count' => 1,
                     'end' => 10,
-                ]
+                ],
             ],
             [
                 '{0, plural, one {offer} other {offers}}',
@@ -270,7 +270,7 @@ _MSG_
                 self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
                 [ // params
                     0 => self::N_VALUE,
-                ]
+                ],
             ],
 
             [
@@ -278,7 +278,7 @@ _MSG_
                 self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
                 [ // params
                     self::N => self::N_VALUE,
-                ]
+                ],
             ],
 
             [
@@ -286,7 +286,7 @@ _MSG_
                 self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
                 [ // params
                     self::N => self::N_VALUE,
-                ]
+                ],
             ],
 
             [
@@ -295,9 +295,9 @@ _MSG_
                 [
                     0 => 4560,
                     1 => 123,
-                    2 => 37.073
+                    2 => 37.073,
                 ],
-                'en-US'
+                'en-US',
             ],
 
             [
@@ -306,7 +306,7 @@ _MSG_
                 [
                     0 => 4560,
                     1 => 123,
-                    2 => 37.073
+                    2 => 37.073,
                 ],
                 'de',
             ],
@@ -317,9 +317,9 @@ _MSG_
                 [
                     'monkeyCount' => 4560,
                     'trees' => 123,
-                    'monkeysPerTree' => 37.073
+                    'monkeysPerTree' => 37.073,
                 ],
-                'en-US'
+                'en-US',
             ],
 
             [
@@ -328,7 +328,7 @@ _MSG_
                 [
                     'monkeyCount' => 4560,
                     'trees' => 123,
-                    'monkeysPerTree' => 37.073
+                    'monkeysPerTree' => 37.073,
                 ],
                 'de',
             ],

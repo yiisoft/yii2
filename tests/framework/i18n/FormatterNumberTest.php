@@ -315,7 +315,7 @@ class FormatterNumberTest extends TestCase
             NumberFormatter::MAX_FRACTION_DIGITS => 0,
         ]));
         $this->assertSame('100,00 $', $this->formatter->asCurrency(100, 'USD', [
-            NumberFormatter::MAX_FRACTION_DIGITS => 2
+            NumberFormatter::MAX_FRACTION_DIGITS => 2,
         ]));
 
         // null display
@@ -365,10 +365,10 @@ class FormatterNumberTest extends TestCase
     {
         $this->formatter->locale = 'en-US';
         $this->formatter->numberFormatterOptions = [
-            \NumberFormatter::FRACTION_DIGITS => 0
+            \NumberFormatter::FRACTION_DIGITS => 0,
         ];
         $this->formatter->numberFormatterTextOptions = [
-            \NumberFormatter::CURRENCY_CODE => 'EUR'
+            \NumberFormatter::CURRENCY_CODE => 'EUR',
         ];
         $this->assertSame('€100', $this->formatter->asCurrency(100, 'EUR'));
     }

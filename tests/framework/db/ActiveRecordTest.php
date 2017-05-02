@@ -434,7 +434,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $orders = Order::find()->joinWith([
             'customer' => function ($q) {
                 $q->from('customer c');
-            }
+            },
         ])->orderBy('c.id DESC, order.id')->all();
         $this->assertCount(3, $orders);
         $this->assertEquals(2, $orders[0]->id);
@@ -514,7 +514,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // https://github.com/yiisoft/yii2/issues/2880
         $query = Order::findOne(1);
         $customer = $query->getCustomer()->joinWith([
-            'orders' => function ($q) { $q->orderBy([]); }
+            'orders' => function ($q) { $q->orderBy([]); },
         ])->one();
         $this->assertEquals(1, $customer->id);
         $order = Order::find()->joinWith([
@@ -531,7 +531,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
                     $q->joinWith([
                             'category' => function ($q) {
                                 $q->where('{{category}}.[[id]] = 2');
-                            }
+                            },
                         ]);
                 },
             ])->orderBy('order.id')->all();
@@ -565,7 +565,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $customers = Customer::find()->active()->joinWith([
             'orders' => function ($q) {
                 $q->orderBy('order.id');
-            }
+            },
         ])->orderBy('customer.id DESC, order.id')->all();
         $this->assertCount(2, $customers);
         $this->assertEquals(2, $customers[0]->id);

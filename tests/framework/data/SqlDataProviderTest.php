@@ -40,7 +40,7 @@ class SqlDataProviderTest extends DatabaseTestCase
         $dataProvider = new SqlDataProvider([
             'sql' => 'select * from `customer` where id > :minimum',
             'params' => [
-                ':minimum' => -1
+                ':minimum' => -1,
             ],
             'db' => $this->getConnection(),
         ]);

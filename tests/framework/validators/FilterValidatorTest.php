@@ -37,7 +37,7 @@ class FilterValidatorTest extends TestCase
                 'attr_empty1' => '',
                 'attr_empty2' => null,
                 'attr_array' => ['Maria', 'Anna', 'Elizabeth'],
-                'attr_array_skipped' => ['John', 'Bill']
+                'attr_array_skipped' => ['John', 'Bill'],
         ]);
         $val = new FilterValidator(['filter' => 'trim']);
         $val->validateAttribute($m, 'attr_one');

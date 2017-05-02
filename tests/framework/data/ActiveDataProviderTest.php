@@ -48,7 +48,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => Order::find(),
             'pagination' => [
                 'pageSize' => 2,
-            ]
+            ],
         ]);
         $orders = $provider->getModels();
         $this->assertCount(2, $orders);
@@ -71,7 +71,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $customer->getOrders(),
             'pagination' => [
                 'pageSize' => 1,
-            ]
+            ],
         ]);
         $orders = $provider->getModels();
         $this->assertCount(1, $orders);
@@ -95,7 +95,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $order->getItems(),
             'pagination' => [
                 'pageSize' => 2,
-            ]
+            ],
         ]);
         $items = $provider->getModels();
         $this->assertCount(2, $items);
@@ -117,7 +117,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $order->getBooks(),
             'pagination' => [
                 'pageSize' => 1,
-            ]
+            ],
         ]);
         $items = $provider->getModels();
         $this->assertCount(1, $items);
@@ -141,7 +141,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
             'query' => $query->from('order'),
             'pagination' => [
                 'pageSize' => 2,
-            ]
+            ],
         ]);
         $orders = $provider->getModels();
         $this->assertCount(2, $orders);

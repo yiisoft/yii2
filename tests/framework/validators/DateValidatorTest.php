@@ -55,8 +55,8 @@ class DateValidatorTest extends TestCase
             'components' => [
                 'formatter' => [
                     'dateFormat' => 'short',
-                ]
-            ]
+                ],
+            ],
         ]);
         $val = new DateValidator();
         $this->assertTrue($val->validate('31/5/2017'));
@@ -70,8 +70,8 @@ class DateValidatorTest extends TestCase
             'components' => [
                 'formatter' => [
                     'dateFormat' => 'short',
-                ]
-            ]
+                ],
+            ],
         ]);
         $val = new DateValidator();
         $this->assertTrue($val->validate('31.5.2017'));
@@ -290,8 +290,8 @@ class DateValidatorTest extends TestCase
                 'formatter' => [
                     'dateFormat' => 'long',
                     'datetimeFormat' => 'short', // this is the format to be used by the validator by default
-                ]
-            ]
+                ],
+            ],
         ]);
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
         $this->assertTrue($val->validate('31/5/2017 12:30'));
@@ -305,8 +305,8 @@ class DateValidatorTest extends TestCase
                 'formatter' => [
                     'dateFormat' => 'long',
                     'datetimeFormat' => 'short', // this is the format to be used by the validator by default
-                ]
-            ]
+                ],
+            ],
         ]);
         $val = new DateValidator(['type' => DateValidator::TYPE_DATETIME]);
         $this->assertTrue($val->validate('31.5.2017 12:30'));

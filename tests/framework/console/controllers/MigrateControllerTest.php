@@ -94,7 +94,7 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
                     body:text:notNull,
                     price:money(11,2):notNull,
-                    parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')'
+                    parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')',
             ]);
 
             $this->assertCommandCreatedFile('create_title_pk', $migrationName, $table, [
@@ -156,7 +156,7 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('drop_test', $migrationName, $table);
 
             $this->assertCommandCreatedFile('drop_fields', $migrationName, $table, [
-                'fields' => 'body:text:notNull,price:money(11,2)'
+                'fields' => 'body:text:notNull,price:money(11,2)',
             ]);
         }
 
@@ -179,7 +179,7 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:string(10):notNull,
                     body:text:notNull,
                     price:money(11,2):notNull,
-                    created_at:dateTime'
+                    created_at:dateTime',
             ]);
 
             $this->assertCommandCreatedFile('add_columns_fk', $migrationName, $table, [
@@ -214,7 +214,7 @@ class MigrateControllerTest extends TestCase
                 $this->assertCommandCreatedFile('drop_columns_test', $migrationName, $table, [
                     'fields' => 'title:string(10):notNull,body:text:notNull,
                     price:money(11,2):notNull,
-                    created_at:dateTime'
+                    created_at:dateTime',
                 ]);
             }
         }
@@ -240,7 +240,7 @@ class MigrateControllerTest extends TestCase
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
         $this->runMigrateControllerAction('history', [], $controllerConfig);
 

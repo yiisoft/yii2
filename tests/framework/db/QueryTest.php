@@ -502,7 +502,7 @@ abstract class QueryTest extends DatabaseTestCase
             $db->createCommand()->dropTable($tableName)->execute();
         }
         $db->createCommand()->createTable($tableName, [
-            $columnName => $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64)
+            $columnName => $db->getSchema()->createColumnSchemaBuilder(Schema::TYPE_STRING, 64),
         ])->execute();
         $db->createCommand()->batchInsert($tableName, ['col'], [
             ['test0'],

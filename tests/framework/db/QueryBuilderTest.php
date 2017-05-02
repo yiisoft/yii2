@@ -1086,7 +1086,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             'composite in' => [
                 ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
                 '([[id]], [[name]]) IN ((:qp0, :qp1))',
-                [':qp0' => 1, ':qp1' => 'oy']
+                [':qp0' => 1, ':qp1' => 'oy'],
             ],
 
             // in using array objects.
@@ -1100,7 +1100,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     ['id' => 2, 'name' => 'yo'],
                 ])],
                 '([[id]], [[name]]) IN ((:qp0, :qp1), (:qp2, :qp3))',
-                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
             ],
             // exists
             [ ['exists', (new Query())->select('id')->from('users')->where(['active' => 1])], 'EXISTS (SELECT [[id]] FROM [[users]] WHERE [[active]]=:qp0)', [':qp0' => 1] ],
@@ -1257,7 +1257,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         return [
             ['exists', $this->replaceQuotes('SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE EXISTS (SELECT [[1]] FROM [[Website]] [[w]])')],
-            ['not exists', $this->replaceQuotes('SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE NOT EXISTS (SELECT [[1]] FROM [[Website]] [[w]])')]
+            ['not exists', $this->replaceQuotes('SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE NOT EXISTS (SELECT [[1]] FROM [[Website]] [[w]])')],
         ];
     }
 
@@ -1578,43 +1578,43 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 'customer',
                 ['email', 'name', 'address'],
                 [['test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine']],
-                $this->replaceQuotes("INSERT INTO [[customer]] ([[email]], [[name]], [[address]]) VALUES ('test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine')")
+                $this->replaceQuotes("INSERT INTO [[customer]] ([[email]], [[name]], [[address]]) VALUES ('test@example.com', 'silverfire', 'Kyiv {{city}}, Ukraine')"),
             ],
             'escape-danger-chars' => [
                 'customer',
                 ['address'],
                 [["SQL-danger chars are escaped: '); --"]],
-                'expected' => $this->replaceQuotes("INSERT INTO [[customer]] ([[address]]) VALUES ('SQL-danger chars are escaped: \'); --')")
+                'expected' => $this->replaceQuotes("INSERT INTO [[customer]] ([[address]]) VALUES ('SQL-danger chars are escaped: \'); --')"),
             ],
             [
                 'customer',
                 ['address'],
                 [],
-                ''
+                '',
             ],
             [
                 'customer',
                 [],
                 [['no columns passed']],
-                $this->replaceQuotes("INSERT INTO [[customer]] () VALUES ('no columns passed')")
+                $this->replaceQuotes("INSERT INTO [[customer]] () VALUES ('no columns passed')"),
             ],
             'bool-false, bool2-null' => [
                 'type',
                 ['bool_col', 'bool_col2'],
                 [[false, null]],
-                'expected' => $this->replaceQuotes('INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)')
+                'expected' => $this->replaceQuotes('INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)'),
             ],
             [
                 '{{%type}}',
                 ['{{%type}}.[[float_col]]', '[[time]]'],
                 [[null, new Expression('now()')]],
-                'INSERT INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) VALUES (NULL, now())'
+                'INSERT INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) VALUES (NULL, now())',
             ],
             'bool-false, time-now()' => [
                 '{{%type}}',
                 ['{{%type}}.[[bool_col]]', '[[time]]'],
                 [[false, new Expression('now()')]],
-                'expected' => 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())'
+                'expected' => 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())',
             ],
         ];
     }

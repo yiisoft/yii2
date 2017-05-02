@@ -74,7 +74,7 @@ class LoggerTest extends TestCase
             'line' => 67,
             'function' => 'log',
             'class' => get_class($this->logger),
-            'type' => '->'
+            'type' => '->',
         ], $this->logger->messages[0][4][0]);
         $this->assertCount(3, $this->logger->messages[0][4]);
         $this->assertGreaterThanOrEqual($memory, $this->logger->messages[0][5]);
@@ -201,8 +201,8 @@ class LoggerTest extends TestCase
                 'level' => 0,
                 'duration' => 5,
                 'memory' => 2097152,
-                'memoryDiff' => 1048576
-            ]
+                'memoryDiff' => 1048576,
+            ],
         ],
             $this->logger->calculateTimings($messages)
         );
@@ -228,7 +228,7 @@ class LoggerTest extends TestCase
                 'level' => 0,
                 'duration' => 70,
                 'memory' => 4194304,
-                'memoryDiff' => 3145728
+                'memoryDiff' => 3145728,
             ],
             [
                 'info' => 'secondLevel',
@@ -238,8 +238,8 @@ class LoggerTest extends TestCase
                 'level' => 1,
                 'duration' => 40,
                 'memory' => 3145728,
-                'memoryDiff' => 1048576
-            ]
+                'memoryDiff' => 1048576,
+            ],
         ],
             $this->logger->calculateTimings($messages)
         );
@@ -307,7 +307,7 @@ class LoggerTest extends TestCase
                 'trace' => 'trace',
                 'level' => 0,
                 'duration' => 5,
-            ]
+            ],
         ];
         /* @var $logger Logger|\PHPUnit_Framework_MockObject_MockObject */
         $logger = $this->getMockBuilder('yii\log\Logger')
@@ -344,7 +344,7 @@ class LoggerTest extends TestCase
         ];
         $returnValue = [
             'anyKey' => $matchedByCategoryName,
-            $secondCategory
+            $secondCategory,
         ];
         /*
          * Matched by category name
@@ -405,7 +405,7 @@ class LoggerTest extends TestCase
                 'trace' => 'trace',
                 'level' => 0,
                 'duration' => 5,
-            ]
+            ],
         ];
 
         /*

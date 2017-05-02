@@ -278,7 +278,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             'size',
             'error',
             'tmp_name',
-            'tmp_resource'
+            'tmp_resource',
         ];
 
         $nameParts = preg_split('/\\]\\[|\\[/s', $name);

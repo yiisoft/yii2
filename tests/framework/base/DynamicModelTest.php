@@ -89,7 +89,7 @@ class DynamicModelTest extends TestCase
             'DynamicModel' => [
                 'name' => $name = 'your name 2',
                 'mobile' => $mobile = 'my number mobile',
-            ]
+            ],
         ];
         // load data
         $this->assertFalse($dynamic->load([]));

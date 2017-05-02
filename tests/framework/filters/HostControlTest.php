@@ -38,46 +38,46 @@ class HostControlTest extends TestCase
             [
                 null,
                 'example.com',
-                true
+                true,
             ],
             [
                 'example.com',
                 'example.com',
-                true
+                true,
             ],
             [
                 ['example.com'],
                 'example.com',
-                true
+                true,
             ],
             [
                 ['example.com'],
                 'domain.com',
-                false
+                false,
             ],
             [
                 ['*.example.com'],
                 'en.example.com',
-                true
+                true,
             ],
             [
                 ['*.example.com'],
                 'fake.com',
-                false
+                false,
             ],
             [
                 function () {
                     return ['example.com'];
                 },
                 'example.com',
-                true
+                true,
             ],
             [
                 function () {
                     return ['example.com'];
                 },
                 'fake.com',
-                false
+                false,
             ],
         ];
     }

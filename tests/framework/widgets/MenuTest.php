@@ -38,7 +38,7 @@ class MenuTest extends \yiiunit\TestCase
                     'label' => 'Authors & Publications',
                     'url' => '#',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -62,7 +62,7 @@ HTML;
                     'label' => 'Authors & Publications',
                     'url' => '#',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -95,7 +95,7 @@ HTML;
                     'url' => '#',
                     'options' => ['tag' => false],
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -121,7 +121,7 @@ HTML;
                     'url' => '#',
                 ],
             ],
-            'itemOptions' => ['tag' => false]
+            'itemOptions' => ['tag' => false],
         ]);
 
         $expected = <<<HTML
@@ -143,16 +143,16 @@ HTML;
                 [
                     'label' => 'item1',
                     'url' => '#',
-                    'template' => 'label: {label}; url: {url}'
+                    'template' => 'label: {label}; url: {url}',
                 ],
                 [
                     'label' => 'item2',
-                    'template' => 'label: {label}'
+                    'template' => 'label: {label}',
                 ],
                 [
                     'label' => 'item3 (no template)',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -178,18 +178,18 @@ HTML;
                     'template' => 'label: {label}; url: {url}',
                     'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
                         return isset($item, $hasActiveChild, $isItemActive, $widget);
-                    }
+                    },
                 ],
                 [
                     'label' => 'item2',
                     'template' => 'label: {label}',
-                    'active' => false
+                    'active' => false,
                 ],
                 [
                     'label' => 'item3 (no template)',
-                    'active' => 'somestring'
+                    'active' => 'somestring',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML

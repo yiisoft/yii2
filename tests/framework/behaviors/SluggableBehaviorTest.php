@@ -40,8 +40,8 @@ class SluggableBehaviorTest extends TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [

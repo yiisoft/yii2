@@ -278,7 +278,7 @@ class PhpDocController extends Controller
                 ' */',
                 '',
                 $namespaceLine,
-                ''
+                '',
             ], $lines);
         }
     }

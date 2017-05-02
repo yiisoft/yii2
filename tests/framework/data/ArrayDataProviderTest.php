@@ -25,7 +25,7 @@ class ArrayDataProviderTest extends TestCase
     {
         $simpleArray = [
             ['name' => 'zero'],
-            ['name' => 'one']
+            ['name' => 'one'],
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $simpleArray]);
         $this->assertEquals($simpleArray, $dataProvider->getModels());
@@ -48,7 +48,7 @@ class ArrayDataProviderTest extends TestCase
                     ],
                     'defaultOrder' => [
                         'sort' => SORT_ASC,
-                    ]
+                    ],
                 ],
             ]
         );
@@ -60,7 +60,7 @@ class ArrayDataProviderTest extends TestCase
     {
         $simpleArray = [
             ['innerArray' => ['sortField' => 1]],
-            ['innerArray' => ['sortField' => 0]]
+            ['innerArray' => ['sortField' => 0]],
         ];
         $dataProvider = new ArrayDataProvider(
             [
@@ -76,13 +76,13 @@ class ArrayDataProviderTest extends TestCase
                     ],
                     'defaultOrder' => [
                         'sort' => SORT_ASC,
-                    ]
+                    ],
                 ],
             ]
         );
         $sortedArray = [
             ['innerArray' => ['sortField' => 0]],
-            ['innerArray' => ['sortField' => 1]]
+            ['innerArray' => ['sortField' => 1]],
         ];
         $this->assertEquals($sortedArray, $dataProvider->getModels());
     }
@@ -145,7 +145,7 @@ class ArrayDataProviderTest extends TestCase
                     ],
                     'defaultOrder' => [
                         'sort' => SORT_ASC,
-                    ]
+                    ],
                 ],
                 'pagination' => [
                     'pageSize' => 100500,

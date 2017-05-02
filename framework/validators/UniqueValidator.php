@@ -278,7 +278,7 @@ class UniqueValidator extends Validator
         }
         $this->addError($model, $attribute, $this->message, [
             'attributes' => Inflector::sentence($attributeCombo),
-            'values' => implode('-', $valueCombo)
+            'values' => implode('-', $valueCombo),
         ]);
     }
 }

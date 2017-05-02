@@ -58,7 +58,7 @@ class JsonResponseFormatterTest extends FormatterTest
                 'c' => [2, '<>'],
                 true,
             ], '{"a":1,"b":"abc","c":[2,"<>"],"0":true}',
-               "{\n    \"a\": 1,\n    \"b\": \"abc\",\n    \"c\": [\n        2,\n        \"<>\"\n    ],\n    \"0\": true\n}"],
+               "{\n    \"a\": 1,\n    \"b\": \"abc\",\n    \"c\": [\n        2,\n        \"<>\"\n    ],\n    \"0\": true\n}", ],
         ];
     }
 
@@ -84,14 +84,14 @@ class JsonResponseFormatterTest extends FormatterTest
         $postsStack->push(new Post(456, 'record2'));
 
         return [
-            [$postsStack, '{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}']
+            [$postsStack, '{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}'],
         ];
     }
 
     public function formatModelDataProvider()
     {
         return [
-            [new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']), '{"id":123,"title":"abc"}']
+            [new ModelStub(['id' => 123, 'title' => 'abc', 'hidden' => 'hidden']), '{"id":123,"title":"abc"}'],
         ];
     }
 

@@ -133,7 +133,7 @@ class RequestTest extends TestCase
                 'expected' => [],
                 'exception' => [
                     '\yii\console\Exception',
-                    'Parameter "0" is not valid'
+                    'Parameter "0" is not valid',
                 ],
             ],
         ];

@@ -45,7 +45,7 @@ class PageCacheTest extends TestCase
             [[
                 'name' => 'disabled',
                 'properties' => [
-                    'enabled' => false
+                    'enabled' => false,
                 ],
                 'cacheable' => false,
             ]],
@@ -57,64 +57,64 @@ class PageCacheTest extends TestCase
             [[
                 'name' => 'allCookies',
                 'properties' => [
-                    'cacheCookies' => true
+                    'cacheCookies' => true,
                 ],
                 'cookies' => [
                     'test-cookie-1' => true,
                     'test-cookie-2' => true,
-                ]
+                ],
             ]],
             [[
                 'name' => 'someCookies',
                 'properties' => [
-                    'cacheCookies' => ['test-cookie-2']
+                    'cacheCookies' => ['test-cookie-2'],
                 ],
                 'cookies' => [
                     'test-cookie-1' => false,
                     'test-cookie-2' => true,
-                ]
+                ],
             ]],
             [[
                 'name' => 'noCookies',
                 'properties' => [
-                    'cacheCookies' => false
+                    'cacheCookies' => false,
                 ],
                 'cookies' => [
                     'test-cookie-1' => false,
                     'test-cookie-2' => false,
-                ]
+                ],
             ]],
 
             // Headers
             [[
                 'name' => 'allHeaders',
                 'properties' => [
-                    'cacheHeaders' => true
+                    'cacheHeaders' => true,
                 ],
                 'headers' => [
                     'test-header-1' => true,
                     'test-header-2' => true,
-                ]
+                ],
             ]],
             [[
                 'name' => 'someHeaders',
                 'properties' => [
-                    'cacheHeaders' => ['test-header-2']
+                    'cacheHeaders' => ['test-header-2'],
                 ],
                 'headers' => [
                     'test-header-1' => false,
                     'test-header-2' => true,
-                ]
+                ],
             ]],
             [[
                 'name' => 'noHeaders',
                 'properties' => [
-                    'cacheHeaders' => false
+                    'cacheHeaders' => false,
                 ],
                 'headers' => [
                     'test-header-1' => false,
                     'test-header-2' => false,
-                ]
+                ],
             ]],
 
             // All together
@@ -122,7 +122,7 @@ class PageCacheTest extends TestCase
                 'name' => 'someCookiesSomeHeaders',
                 'properties' => [
                     'cacheCookies' => ['test-cookie-2'],
-                    'cacheHeaders' => ['test-header-2']
+                    'cacheHeaders' => ['test-header-2'],
                 ],
                 'cookies' => [
                     'test-cookie-1' => false,
@@ -131,7 +131,7 @@ class PageCacheTest extends TestCase
                 'headers' => [
                     'test-header-1' => false,
                     'test-header-2' => true,
-                ]
+                ],
             ]],
         ];
     }
@@ -154,7 +154,7 @@ class PageCacheTest extends TestCase
         $action = new Action('test', $controller);
         $filter = new PageCache(array_merge([
             'cache' => $cache = new ArrayCache(),
-            'view' => new View()
+            'view' => new View(),
         ], $testCase['properties']));
         $this->assertTrue($filter->beforeAction($action), $testCase['name']);
         // Cookies
@@ -165,7 +165,7 @@ class PageCacheTest extends TestCase
                 Yii::$app->response->cookies->add(new Cookie([
                     'name' => $name,
                     'value' => $value,
-                    'expire' => PHP_INT_MAX
+                    'expire' => PHP_INT_MAX,
                 ]));
                 $cookies[$name] = $value;
             }
@@ -208,7 +208,7 @@ class PageCacheTest extends TestCase
         $action = new Action('test', $controller);
         $filter = new PageCache(array_merge([
             'cache' => $cache,
-            'view' => new View()
+            'view' => new View(),
         ]), $testCase['properties']);
         Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
         $this->assertFalse($filter->beforeAction($action), $testCase['name']);
@@ -253,7 +253,7 @@ class PageCacheTest extends TestCase
         $filter = new PageCache([
             'cache' => $cache = new ArrayCache(),
             'view' => new View(),
-            'duration' => 1
+            'duration' => 1,
         ]);
         $this->assertTrue($filter->beforeAction($action));
         $static = Yii::$app->security->generateRandomString();
@@ -277,7 +277,7 @@ class PageCacheTest extends TestCase
         $action = new Action('test', $controller);
         $filter = new PageCache([
             'cache' => $cache,
-            'view' => new View()
+            'view' => new View(),
         ]);
         Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
         $this->assertTrue($filter->beforeAction($action));
@@ -305,7 +305,7 @@ class PageCacheTest extends TestCase
             $filter = new PageCache([
                 'cache' => $cache = new ArrayCache(),
                 'view' => new View(),
-                'varyByRoute' => $enabled
+                'varyByRoute' => $enabled,
             ]);
             $this->assertTrue($filter->beforeAction($action));
             $static = Yii::$app->security->generateRandomString();
@@ -327,7 +327,7 @@ class PageCacheTest extends TestCase
             $filter = new PageCache([
                 'cache' => $cache,
                 'view' => new View(),
-                'varyByRoute' => $enabled
+                'varyByRoute' => $enabled,
             ]);
             Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
             $this->assertSame($enabled, $filter->beforeAction($action), $enabled);
@@ -358,7 +358,7 @@ class PageCacheTest extends TestCase
             $filter = new PageCache([
                 'cache' => $cache = new ArrayCache(),
                 'view' => new View(),
-                'variations' => $originalVariations
+                'variations' => $originalVariations,
             ]);
             $this->assertTrue($filter->beforeAction($action));
             $static = Yii::$app->security->generateRandomString();
@@ -379,7 +379,7 @@ class PageCacheTest extends TestCase
             $filter = new PageCache([
                 'cache' => $cache,
                 'view' => new View(),
-                'variations' => $testCase
+                'variations' => $testCase,
             ]);
             Yii::$app->params['dynamic'] = $dynamic = Yii::$app->security->generateRandomString();
             $this->assertNotSame($expected, $filter->beforeAction($action), $expected);
@@ -410,7 +410,7 @@ class PageCacheTest extends TestCase
                 'dependency' => [
                     'class' => ExpressionDependency::className(),
                     'expression' => 'Yii::$app->params[\'dependency\']',
-                ]
+                ],
             ]);
             $this->assertTrue($filter->beforeAction($action));
             $static = Yii::$app->security->generateRandomString();

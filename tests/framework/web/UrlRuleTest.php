@@ -497,7 +497,7 @@ class UrlRuleTest extends TestCase
                     'pattern' => '<page>',
                     'route' => 'page/view',
                     'defaults' => ['page' => 'index'],
-                    'suffix' => '/'
+                    'suffix' => '/',
                 ],
                 [
                     ['page/view', ['page' => 'index'], ''],
@@ -1239,7 +1239,7 @@ class UrlRuleTest extends TestCase
                     'pattern' => '',
                     'route' => 'post/index',
                 ],
-                '/'
+                '/',
             ],
             [
                 'multiple params with special chars',
@@ -1247,7 +1247,7 @@ class UrlRuleTest extends TestCase
                     'pattern' => 'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
                     'route' => 'post/index',
                 ],
-                'post/<page-number:\d+>/<per_page:\d+>/<author.login>'
+                'post/<page-number:\d+>/<per_page:\d+>/<author.login>',
             ],
             [
                 'with host info',
@@ -1257,7 +1257,7 @@ class UrlRuleTest extends TestCase
                     'defaults' => ['page' => 1],
                     'host' => 'http://<lang:en|fr>.example.com',
                 ],
-                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>'
+                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
             ],
             [
                 'with host info in pattern',
@@ -1266,25 +1266,25 @@ class UrlRuleTest extends TestCase
                     'route' => 'post/index',
                     'defaults' => ['page' => 1],
                 ],
-                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>'
+                'http://<lang:en|fr>.example.com/post/<page:\d+>/<tag>',
             ],
             [
                 'with verb',
                 [
                     'verb' => ['POST'],
                     'pattern' => 'post/<id:\d+>',
-                    'route' => 'post/index'
+                    'route' => 'post/index',
                 ],
-                'POST post/<id:\d+>'
+                'POST post/<id:\d+>',
             ],
             [
                 'with verbs',
                 [
                     'verb' => ['PUT', 'POST'],
                     'pattern' => 'post/<id:\d+>',
-                    'route' => 'post/index'
+                    'route' => 'post/index',
                 ],
-                'PUT,POST post/<id:\d+>'
+                'PUT,POST post/<id:\d+>',
             ],
         ];
     }

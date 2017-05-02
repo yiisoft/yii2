@@ -212,7 +212,7 @@ class Order extends ActiveRecord
     public function activeAttributes()
     {
         return [
-            0 => 'customer_id'
+            0 => 'customer_id',
         ];
     }
 }

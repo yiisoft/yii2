@@ -83,8 +83,8 @@ class ArrayHelperTest extends TestCase
                 '_content' => 'content',
                 'length' => function ($post) {
                     return strlen($post->content);
-                }
-            ]
+                },
+            ],
         ]));
 
         $object = new Post3();
@@ -110,13 +110,13 @@ class ArrayHelperTest extends TestCase
                 'id', 'subObject',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
-                }
+                },
             ],
             $object->subObject->className() => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
-                }
+                },
             ],
         ]));
 
@@ -132,7 +132,7 @@ class ArrayHelperTest extends TestCase
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
-                }
+                },
             ],
         ]));
     }
@@ -155,18 +155,18 @@ class ArrayHelperTest extends TestCase
             'Bob' => 'Dylan',
             'Michael' => 'Jackson',
             'Mick' => 'Jagger',
-            'Janet' => 'Jackson'
+            'Janet' => 'Jackson',
         ];
 
         $removed = ArrayHelper::removeValue($array, 'Jackson');
 
         $this->assertEquals([
             'Bob' => 'Dylan',
-            'Mick' => 'Jagger'
+            'Mick' => 'Jagger',
         ], $array);
         $this->assertEquals([
             'Michael' => 'Jackson',
-            'Janet' => 'Jackson'
+            'Janet' => 'Jackson',
         ], $removed);
     }
 
@@ -176,7 +176,7 @@ class ArrayHelperTest extends TestCase
             'Bob' => 'Dylan',
             'Michael' => 'Jackson',
             'Mick' => 'Jagger',
-            'Janet' => 'Jackson'
+            'Janet' => 'Jackson',
         ];
 
         $removed = ArrayHelper::removeValue($array, 'Marley');
@@ -185,7 +185,7 @@ class ArrayHelperTest extends TestCase
             'Bob' => 'Dylan',
             'Michael' => 'Jackson',
             'Mick' => 'Jagger',
-            'Janet' => 'Jackson'
+            'Janet' => 'Jackson',
         ], $array);
         $this->assertEquals([], $removed);
     }
@@ -252,7 +252,7 @@ class ArrayHelperTest extends TestCase
         $models = [
             $obj1,
             $obj2,
-            $obj3
+            $obj3,
         ];
 
         $this->assertEquals($obj2, $obj3);
@@ -474,7 +474,7 @@ class ArrayHelperTest extends TestCase
         $array = [
             ['id' => '123', 'data' => 'abc'],
             ['id' => '345', 'data' => 'def'],
-            ['id' => '345', 'data' => 'ghi']
+            ['id' => '345', 'data' => 'ghi'],
         ];
         $result = ArrayHelper::index($array, 'id');
         $this->assertEquals([
@@ -503,7 +503,7 @@ class ArrayHelperTest extends TestCase
             return $element['id'] == '345' ? null : $element['id'];
         });
         $this->assertEquals([
-            '123' => ['id' => '123', 'data' => 'abc']
+            '123' => ['id' => '123', 'data' => 'abc'],
         ], $result);
     }
 
@@ -512,16 +512,16 @@ class ArrayHelperTest extends TestCase
         $array = [
             ['id' => '123', 'data' => 'abc'],
             ['id' => '345', 'data' => 'def'],
-            ['id' => '345', 'data' => 'ghi']
+            ['id' => '345', 'data' => 'ghi'],
         ];
 
         $expected = [
             '123' => [
-                ['id' => '123', 'data' => 'abc']
+                ['id' => '123', 'data' => 'abc'],
             ],
             '345' => [
                 ['id' => '345', 'data' => 'def'],
-                ['id' => '345', 'data' => 'ghi']
+                ['id' => '345', 'data' => 'ghi'],
             ],
         ];
         $result = ArrayHelper::index($array, null, ['id']);
@@ -533,26 +533,26 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals([
             '123' => [
                 'abc' => [
-                    ['id' => '123', 'data' => 'abc']
-                ]
+                    ['id' => '123', 'data' => 'abc'],
+                ],
             ],
             '345' => [
                 'def' => [
-                    ['id' => '345', 'data' => 'def']
+                    ['id' => '345', 'data' => 'def'],
                 ],
                 'ghi' => [
-                    ['id' => '345', 'data' => 'ghi']
-                ]
+                    ['id' => '345', 'data' => 'ghi'],
+                ],
             ],
         ], $result);
 
         $expected = [
             '123' => [
-                'abc' => ['id' => '123', 'data' => 'abc']
+                'abc' => ['id' => '123', 'data' => 'abc'],
             ],
             '345' => [
                 'def' => ['id' => '345', 'data' => 'def'],
-                'ghi' => ['id' => '345', 'data' => 'ghi']
+                'ghi' => ['id' => '345', 'data' => 'ghi'],
             ],
         ];
         $result = ArrayHelper::index($array, 'data', ['id']);
@@ -567,16 +567,16 @@ class ArrayHelperTest extends TestCase
         $expected = [
             '123' => [
                 'abc' => [
-                    'abc' => ['id' => '123', 'data' => 'abc']
-                ]
+                    'abc' => ['id' => '123', 'data' => 'abc'],
+                ],
             ],
             '345' => [
                 'def' => [
-                    'def' => ['id' => '345', 'data' => 'def']
+                    'def' => ['id' => '345', 'data' => 'def'],
                 ],
                 'ghi' => [
-                    'ghi' => ['id' => '345', 'data' => 'ghi']
-                ]
+                    'ghi' => ['id' => '345', 'data' => 'ghi'],
+                ],
             ],
         ];
         $result = ArrayHelper::index($array, 'data', ['id', 'data']);
@@ -698,7 +698,7 @@ class ArrayHelperTest extends TestCase
                     return $array['date'] . $defaultValue;
                 },
                 '31-12-2113test',
-                'test'
+                'test',
             ],
             [['version', '1.0', 'status'], 'released'],
             [['version', '1.0', 'date'], 'defaultValue', 'defaultValue'],
@@ -733,8 +733,8 @@ class ArrayHelperTest extends TestCase
             ],
             'version' => [
                 '1.0' => [
-                    'status' => 'released'
-                ]
+                    'status' => 'released',
+                ],
             ],
         ];
 
@@ -836,7 +836,7 @@ class ArrayHelperTest extends TestCase
             [
                 '<>' => 'a&lt;&gt;b',
                 '23' => true,
-            ]
+            ],
         ];
         $this->assertEquals([
             'abc' => '123',
@@ -846,7 +846,7 @@ class ArrayHelperTest extends TestCase
             [
                 '<>' => 'a<>b',
                 '23' => true,
-            ]
+            ],
         ], ArrayHelper::htmlDecode($array));
         $this->assertEquals([
             'abc' => '123',
@@ -856,7 +856,7 @@ class ArrayHelperTest extends TestCase
             [
                 '<>' => 'a<>b',
                 '23' => true,
-            ]
+            ],
         ], ArrayHelper::htmlDecode($array, false));
     }
 

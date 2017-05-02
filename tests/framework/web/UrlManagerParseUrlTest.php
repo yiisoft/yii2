@@ -333,9 +333,9 @@ class UrlManagerParseUrlTest extends TestCase
             'components' => [
                 'request' => [
                     'hostInfo' => 'http://localhost/',
-                    'baseUrl' => '/app'
-                ]
-            ]
+                    'baseUrl' => '/app',
+                ],
+            ],
         ], \yii\web\Application::className());
         $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();

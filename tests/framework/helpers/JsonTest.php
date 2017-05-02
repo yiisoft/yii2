@@ -61,7 +61,7 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];
@@ -115,7 +115,7 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];

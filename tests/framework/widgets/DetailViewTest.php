@@ -166,7 +166,7 @@ class DetailViewTest extends \yiiunit\TestCase
                 'label' => 'Id',
                 'value' => 'Displayed id',
                 'visible' => true,
-            ]
+            ],
         ], $this->detailView->attributes);
         $this->assertEquals(5, $model->getDisplayedIdCallCount());
     }
@@ -213,13 +213,13 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m arrayable'
+                'value' => 'I`m arrayable',
             ],
         ];
 
@@ -241,13 +241,13 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m an object'
+                'value' => 'I`m an object',
             ],
         ];
 
@@ -269,19 +269,19 @@ class DetailViewTest extends \yiiunit\TestCase
                 'attribute' => 'id',
                 'format' => 'text',
                 'label' => 'Id',
-                'value' => 1
+                'value' => 1,
             ],
             [
                 'attribute' => 'text',
                 'format' => 'text',
                 'label' => 'Text',
-                'value' => 'I`m an array'
+                'value' => 'I`m an array',
             ],
         ];
 
         $model = [
             'id' => 1,
-            'text' => 'I`m an array'
+            'text' => 'I`m an array',
         ];
 
         $this->detailView = new DetailView([

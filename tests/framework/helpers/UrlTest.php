@@ -32,7 +32,7 @@ class UrlTest extends TestCase
                     'class' => 'yii\web\Request',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
-                    'url' => '/base/index.php&r=site%2Fcurrent&id=42'
+                    'url' => '/base/index.php&r=site%2Fcurrent&id=42',
                 ],
                 'urlManager' => [
                     'class' => 'yii\web\UrlManager',

@@ -131,15 +131,15 @@ class FileValidatorTest extends TestCase
                             'error' => UPLOAD_ERR_NO_FILE,
                         ],
                     ]
-                )
+                ),
             ]
         );
         $val->validateAttribute($m, 'attr_files');
         $this->assertFalse($m->hasErrors('attr_files'));
         $m = FakedValidationModel::createWithAttributes([
             'attr_files' => $this->createTestFiles([
-                [''], [''], ['']
-            ])
+                [''], [''], [''],
+            ]),
         ]);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors());
@@ -157,19 +157,19 @@ class FileValidatorTest extends TestCase
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                         [
                             'name' => 'text.txt',
-                            'size' => 1024
+                            'size' => 1024,
                         ],
                     ]
-                )
+                ),
             ]
         );
         $m->setScenario('validateMultipleFiles');
@@ -184,15 +184,15 @@ class FileValidatorTest extends TestCase
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                     ]
-                )
+                ),
             ]
         );
         $m->setScenario('validateMultipleFiles');
@@ -207,7 +207,7 @@ class FileValidatorTest extends TestCase
                             'size' => 1024,
                         ],
                     ]
-                )
+                ),
             ]
         );
         $m->setScenario('validateFile');
@@ -255,7 +255,7 @@ class FileValidatorTest extends TestCase
                     'tempName' => $tempName,
                     'type' => $type,
                     'size' => $size,
-                    'error' => $error
+                    'error' => $error,
                 ]);
             }
             $files[] = new UploadedFile([
@@ -263,7 +263,7 @@ class FileValidatorTest extends TestCase
                 'tempName' => $tempName,
                 'type' => $type,
                 'size' => $size,
-                'error' => $error
+                'error' => $error,
             ]);
         }
 
@@ -283,7 +283,7 @@ class FileValidatorTest extends TestCase
             'tempName' => $filePath,
             'type' => FileHelper::getMimeType($filePath),
             'size' => filesize($filePath),
-            'error' => UPLOAD_ERR_OK
+            'error' => UPLOAD_ERR_OK,
         ]);
     }
 
@@ -395,7 +395,7 @@ class FileValidatorTest extends TestCase
             ['test.png', 'IMAGE/*'],
             ['test.txt', 'text/*'],
             ['test.xml', '*/xml'],
-            ['test.odt', 'application/vnd*']
+            ['test.odt', 'application/vnd*'],
         ];
     }
 

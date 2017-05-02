@@ -125,7 +125,7 @@ class ContainerTest extends TestCase
                     'class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
-            ]
+            ],
         ]);
         Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
             'class' => 'yiiunit\framework\di\stubs\Qux',
@@ -191,7 +191,7 @@ class ContainerTest extends TestCase
                     'class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
-            ]
+            ],
         ]);
         $closure = function ($a, $x = 5, $b) {
             return $a > $b;
@@ -212,7 +212,7 @@ class ContainerTest extends TestCase
                     'class' => 'yiiunit\framework\di\stubs\Qux',
                     'a' => 'belongAppQux2',
                 ],
-            ]
+            ],
         ]);
         $closure = function ($a, $b) {
             return $a > $b;
@@ -240,11 +240,11 @@ class ContainerTest extends TestCase
             Cat::className() => Type::className(),
             'test\TraversableInterface' => [
                 ['class' => 'yiiunit\data\base\TraversableObject'],
-                [['item1', 'item2']]
+                [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
                 return new Qux();
-            }
+            },
         ]);
         $container->setDefinitions([]);
 
@@ -265,11 +265,11 @@ class ContainerTest extends TestCase
             'model.order' => Order::className(),
             'test\TraversableInterface' => [
                 ['class' => 'yiiunit\data\base\TraversableObject'],
-                [['item1', 'item2']]
+                [['item1', 'item2']],
             ],
             'qux.using.closure' => function () {
                 return new Qux();
-            }
+            },
         ]);
         $container->setSingletons([]);
 

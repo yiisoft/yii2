@@ -21,8 +21,8 @@ class BaseMessageTest extends TestCase
     {
         $this->mockApplication([
             'components' => [
-                'mailer' => $this->createTestEmailComponent()
-            ]
+                'mailer' => $this->createTestEmailComponent(),
+            ],
         ]);
     }
 

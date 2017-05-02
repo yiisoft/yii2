@@ -33,8 +33,8 @@ class MultipartFormDataParserTest extends TestCase
         $expectedBodyParams = [
             'title' => 'test-title',
             'Item' => [
-                'name' => 'test-name'
-            ]
+                'name' => 'test-name',
+            ],
         ];
         $this->assertEquals($expectedBodyParams, $bodyParams);
 
@@ -60,7 +60,7 @@ class MultipartFormDataParserTest extends TestCase
         $parser = new MultipartFormDataParser();
 
         $_POST = [
-            'name' => 'value'
+            'name' => 'value',
         ];
 
         $bodyParams = $parser->parse('should not matter', 'multipart/form-data; boundary=---12345');
@@ -79,7 +79,7 @@ class MultipartFormDataParserTest extends TestCase
             'file' => [
                 'name' => 'file.txt',
                 'type' => 'text/plain',
-            ]
+            ],
         ];
 
         $boundary = '---------------------------22472926011618';

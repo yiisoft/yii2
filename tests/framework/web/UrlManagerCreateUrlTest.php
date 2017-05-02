@@ -337,7 +337,7 @@ class UrlManagerCreateUrlTest extends TestCase
                 'pattern' => '<language>',
                 'route' => 'site/index',
                 'defaults' => [
-                    'language' => 'en'
+                    'language' => 'en',
                 ],
             ],
         ];

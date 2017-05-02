@@ -689,7 +689,7 @@ class Formatter extends Component
                 return [
                     $timestamp,
                     !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
-                    !($info['year'] === false && $info['month'] === false && $info['day'] === false)
+                    !($info['year'] === false && $info['month'] === false && $info['day'] === false),
                 ];
             } else {
                 return new DateTime($value, new DateTimeZone($this->defaultTimeZone));

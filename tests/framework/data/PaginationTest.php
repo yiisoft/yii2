@@ -21,7 +21,7 @@ class PaginationTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'urlManager' => [
-                    'scriptUrl' => '/index.php'
+                    'scriptUrl' => '/index.php',
                 ],
             ],
         ]);

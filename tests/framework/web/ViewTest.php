@@ -27,8 +27,8 @@ class ViewTest extends TestCase
                 'request' => [
                     'scriptFile' => __DIR__ . '/baseUrl/index.php',
                     'scriptUrl' => '/baseUrl/index.php',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $view = new View();
@@ -54,8 +54,8 @@ class ViewTest extends TestCase
                 'request' => [
                     'scriptFile' => __DIR__ . '/baseUrl/index.php',
                     'scriptUrl' => '/baseUrl/index.php',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $view = new View();

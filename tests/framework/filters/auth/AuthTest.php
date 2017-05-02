@@ -35,12 +35,12 @@ class AuthTest extends \yiiunit\TestCase
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className()
+                    'identityClass' => UserIdentity::className(),
                 ],
             ],
             'controllerMap' => [
-                'test-auth' => TestAuthController::className()
-            ]
+                'test-auth' => TestAuthController::className(),
+            ],
         ];
 
         $this->mockWebApplication($appConfig);
@@ -130,7 +130,7 @@ class AuthTest extends \yiiunit\TestCase
                 }
 
                 return null;
-            }
+            },
         ];
         $this->authOnly($token, $login, $filter, 'basic-auth');
         $this->authOptional($token, $login, $filter, 'basic-auth');

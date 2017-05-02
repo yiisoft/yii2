@@ -344,7 +344,7 @@ CODE;
         $migrationName = 'testDefaultNamespace';
         $this->runMigrateControllerAction('create', [$migrationName], [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
@@ -356,7 +356,7 @@ CODE;
         $migrationName = 'test_namespace_specify';
         $this->runMigrateControllerAction('create', [$this->migrationNamespace . '\\' . $migrationName], [
             'migrationPath' => $this->migrationPath,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
@@ -367,7 +367,7 @@ CODE;
         $migrationName = 'test_no_namespace';
         $this->runMigrateControllerAction('create', [$migrationName], [
             'migrationPath' => $this->migrationPath,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
@@ -384,7 +384,7 @@ CODE;
 
         $this->runMigrateControllerAction('up', [], [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
 
         $this->assertMigrationHistory([
@@ -405,7 +405,7 @@ CODE;
 
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
         $this->runMigrateControllerAction('up', [], $controllerConfig);
         $this->runMigrateControllerAction('down', [1], $controllerConfig);
@@ -424,7 +424,7 @@ CODE;
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
 
         $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
@@ -446,7 +446,7 @@ CODE;
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
 
         $version = '010101000001';
@@ -464,7 +464,7 @@ CODE;
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
 
         $version = '020202000020';

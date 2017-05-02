@@ -28,7 +28,7 @@ class FileTargetTest extends TestCase
     {
         return [
             [true],
-            [false]
+            [false],
         ];
     }
 
@@ -52,9 +52,9 @@ class FileTargetTest extends TestCase
                     'maxFileSize' => 1024, // 1 MB
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
-                    'rotateByCopy' => $rotateByCopy
-                ]
-            ]
+                    'rotateByCopy' => $rotateByCopy,
+                ],
+            ],
         ]);
 
         // one file

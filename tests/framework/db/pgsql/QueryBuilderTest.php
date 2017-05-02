@@ -23,32 +23,32 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT TRUE',
                 $this->boolean()->notNull()->defaultValue(true),
-                'boolean NOT NULL DEFAULT TRUE'
+                'boolean NOT NULL DEFAULT TRUE',
             ],
             [
                 Schema::TYPE_CHAR . ' CHECK (value LIKE \'test%\')',
                 $this->char()->check('value LIKE \'test%\''),
-                'char(1) CHECK (value LIKE \'test%\')'
+                'char(1) CHECK (value LIKE \'test%\')',
             ],
             [
                 Schema::TYPE_CHAR . '(6) CHECK (value LIKE \'test%\')',
                 $this->char(6)->check('value LIKE \'test%\''),
-                'char(6) CHECK (value LIKE \'test%\')'
+                'char(6) CHECK (value LIKE \'test%\')',
             ],
             [
                 Schema::TYPE_CHAR . '(6)',
                 $this->char(6)->unsigned(),
-                'char(6)'
+                'char(6)',
             ],
             [
                 Schema::TYPE_INTEGER . '(8)',
                 $this->integer(8)->unsigned(),
-                'integer'
+                'integer',
             ],
             [
                 Schema::TYPE_TIMESTAMP . '(4)',
                 $this->timestamp(4),
-                'timestamp(4)'
+                'timestamp(4)',
             ],
         ]);
     }

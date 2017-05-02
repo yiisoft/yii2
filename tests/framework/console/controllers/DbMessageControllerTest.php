@@ -117,7 +117,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
             'languages' => [$this->language],
             'sourcePath' => $this->sourcePath,
             'overwrite' => true,
-            'db' => static::$db
+            'db' => static::$db,
         ];
     }
 
@@ -133,12 +133,12 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         foreach ($messages as $source => $translation) {
             $lastPk = static::$db->schema->insert('source_message', [
                 'category' => $category,
-                'message' => $source
+                'message' => $source,
             ]);
             static::$db->createCommand()->insert('message', [
                 'id' => $lastPk['id'],
                 'language' => $this->language,
-                'translation' => $translation
+                'translation' => $translation,
             ])->execute();
         }
     }

@@ -118,7 +118,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(Customer::className());
         $result = $query->joinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'LEFT JOIN']
+            [['profile'], true, 'LEFT JOIN'],
         ], $result->joinWith);
     }
 
@@ -130,7 +130,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(Customer::className());
         $result = $query->innerJoinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'INNER JOIN']
+            [['profile'], true, 'INNER JOIN'],
         ], $result->joinWith);
     }
 

@@ -79,9 +79,9 @@ class EmailTargetTest extends TestCase
                     'mailer' => $this->mailer,
                     'message' => [
                         'to' => 'developer@example.com',
-                        'subject' => 'Hello world'
-                    ]
-                ]
+                        'subject' => 'Hello world',
+                    ],
+                ],
             ])
             ->getMock();
 
@@ -123,8 +123,8 @@ class EmailTargetTest extends TestCase
                     'mailer' => $this->mailer,
                     'message' => [
                         'to' => 'developer@example.com',
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->getMock();
 

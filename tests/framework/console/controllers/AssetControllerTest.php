@@ -291,7 +291,7 @@ EOL;
         ]);
 
         $bundles = [
-            $assetBundleClassName
+            $assetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
@@ -344,7 +344,7 @@ EOL;
                 '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js',
             ],
             'css' => [
-                '//ajax.googleapis.com/css/libs/jquery/2.1.1/jquery.ui.min.css'
+                '//ajax.googleapis.com/css/libs/jquery/2.1.1/jquery.ui.min.css',
             ],
         ];
         $externalAssetBundleClassName = $this->declareAssetBundleClass($externalAssetConfig);
@@ -367,11 +367,11 @@ EOL;
             'css' => array_keys($cssFiles),
             'js' => array_keys($jsFiles),
             'depends' => [
-                $externalAssetBundleClassName
+                $externalAssetBundleClassName,
             ],
         ]);
         $bundles = [
-            $regularAssetBundleClassName
+            $regularAssetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
@@ -409,33 +409,33 @@ EOL;
             'namespace' => $namespace,
             'class' => 'AssetStart',
             'depends' => [
-                $namespace . '\AssetA'
+                $namespace . '\AssetA',
             ],
         ]);
         $this->declareAssetBundleClass([
             'namespace' => $namespace,
             'class' => 'AssetA',
             'depends' => [
-                $namespace . '\AssetB'
+                $namespace . '\AssetB',
             ],
         ]);
         $this->declareAssetBundleClass([
             'namespace' => $namespace,
             'class' => 'AssetB',
             'depends' => [
-                $namespace . '\AssetC'
+                $namespace . '\AssetC',
             ],
         ]);
         $this->declareAssetBundleClass([
             'namespace' => $namespace,
             'class' => 'AssetC',
             'depends' => [
-                $namespace . '\AssetA'
+                $namespace . '\AssetA',
             ],
         ]);
 
         $bundles = [
-            $namespace . '\AssetStart'
+            $namespace . '\AssetStart',
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
@@ -650,14 +650,14 @@ EOL;
         ]);
 
         $bundles = [
-            $assetBundleClassName
+            $assetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle.php';
 
         // Keep source :
         $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config_no_source_delete.php';
         $this->createCompressConfigFile($configFile, $bundles, [
-            'deleteSource' => false
+            'deleteSource' => false,
         ]);
 
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
@@ -665,7 +665,7 @@ EOL;
         $files = FileHelper::findFiles($this->testAssetsBasePath, [
             'only' => [
                 'test_body.css',
-                'test_alert.js'
+                'test_alert.js',
             ],
         ]);
         $this->assertNotEmpty($files);
@@ -673,7 +673,7 @@ EOL;
         // Delete source :
         $configFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'config_source_delete.php';
         $this->createCompressConfigFile($configFile, $bundles, [
-            'deleteSource' => true
+            'deleteSource' => true,
         ]);
 
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);
@@ -681,7 +681,7 @@ EOL;
         $files = FileHelper::findFiles($this->testAssetsBasePath, [
             'only' => [
                 'test_body.css',
-                'test_alert.js'
+                'test_alert.js',
             ],
         ]);
         $this->assertEmpty($files);
@@ -717,7 +717,7 @@ EOL;
         ]);
 
         $bundles = [
-            $assetBundleClassName
+            $assetBundleClassName,
         ];
         $bundleFile = $this->testFilePath . DIRECTORY_SEPARATOR . 'bundle_override_as_external.php';
 
@@ -728,10 +728,10 @@ EOL;
             'basePath' => null,
             'baseUrl' => null,
             'css' => [
-                '//some.cdn.com/js/override_external.css'
+                '//some.cdn.com/js/override_external.css',
             ],
             'js' => [
-                '//some.cdn.com/js/override_external.js'
+                '//some.cdn.com/js/override_external.js',
             ],
         ];
         $this->createCompressConfigFile($configFile, $bundles, [
@@ -739,7 +739,7 @@ EOL;
                 'bundles' => [
                     $assetBundleClassName => $assetBundleOverrideConfig,
                 ],
-            ]
+            ],
         ]);
 
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);

@@ -38,8 +38,8 @@ class DbMessageSourceTest extends I18NTest
                 'test' => [
                     'class' => $this->getMessageSourceClass(),
                     'db' => static::$db,
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 

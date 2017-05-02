@@ -183,7 +183,7 @@ class DbMessageSource extends MessageSource
                 't1.category' => $category,
                 't2.language' => $fallbackLanguage,
             ])->andWhere([
-                'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language])
+                'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language]),
             ]);
     }
 }

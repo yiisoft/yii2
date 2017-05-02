@@ -1046,7 +1046,7 @@ TEXT;
                 'salt',
                 1,
                 20,
-                '0c60c80f961f0e71f3a9b524af6012062fe037a6'
+                '0c60c80f961f0e71f3a9b524af6012062fe037a6',
             ],
             [
                 'sha1',
@@ -1054,7 +1054,7 @@ TEXT;
                 'salt',
                 2,
                 20,
-                'ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957'
+                'ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957',
             ],
             [
                 'sha1',
@@ -1062,7 +1062,7 @@ TEXT;
                 'salt',
                 4096,
                 20,
-                '4b007901b765489abead49d926f721d065a429c1'
+                '4b007901b765489abead49d926f721d065a429c1',
             ],
             [
                 'sha1',
@@ -1070,7 +1070,7 @@ TEXT;
                 'salt',
                 16777216,
                 20,
-                'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984'
+                'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984',
             ],
             [
                 'sha1',
@@ -1078,7 +1078,7 @@ TEXT;
                 'saltSALTsaltSALTsaltSALTsaltSALTsalt',
                 4096,
                 25,
-                '3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038'
+                '3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038',
             ],
             [
                 'sha1',
@@ -1086,7 +1086,7 @@ TEXT;
                 "sa\0lt",
                 4096,
                 16,
-                '56fa6aa75548099dcc37d7f03425e0c3'
+                '56fa6aa75548099dcc37d7f03425e0c3',
             ],
             [
                 'sha256',
@@ -1094,7 +1094,7 @@ TEXT;
                 'salt',
                 1,
                 20,
-                '120fb6cffcf8b32c43e7225256c4f837a86548c9'
+                '120fb6cffcf8b32c43e7225256c4f837a86548c9',
             ],
             [
                 'sha256',
@@ -1102,7 +1102,7 @@ TEXT;
                 "sa\0lt",
                 4096,
                 32,
-                '89b69d0516f829893c696226650a86878c029ac13ee276509d5ae58b6466a724'
+                '89b69d0516f829893c696226650a86878c029ac13ee276509d5ae58b6466a724',
             ],
             [
                 'sha256',
@@ -1110,7 +1110,7 @@ TEXT;
                 'saltSALTsaltSALTsaltSALTsaltSALTsalt',
                 4096,
                 40,
-                '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9'
+                '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9',
             ],
         ];
     }
@@ -1198,7 +1198,7 @@ TEXT;
                 'L' => 42,
                 'PRK' => '2adccada18779e7c2077ad2eb19d3f3e731385dd',
                 'OKM' => '2c91117204d745f3500d636a62f64f0ab3bae548aa53d423b0d1f27ebba6f5e5673a081d70cce7acfc48',
-            ]
+            ],
         ];
     }
 
@@ -1289,7 +1289,7 @@ TEXT;
             ['1'],
             ['SimpleToken'],
             ['Token with special characters: %d1    5"'],
-            ['Token with UTF8 character: †']
+            ['Token with UTF8 character: †'],
         ];
     }
 }

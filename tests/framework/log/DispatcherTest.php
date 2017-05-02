@@ -210,7 +210,7 @@ namespace yiiunit\framework\log {
                             'time data',
                             [],
                         ]],
-                        true
+                        true,
                     ]
                 );
 
@@ -240,9 +240,9 @@ namespace yiiunit\framework\log {
                 [
                     'targets' => [
                         'syslog' => [
-                            'class' => 'yii\log\SyslogTarget'
-                            ]
-                    ]
+                            'class' => 'yii\log\SyslogTarget',
+                            ],
+                    ],
                 ]
             );
 

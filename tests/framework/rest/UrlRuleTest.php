@@ -168,24 +168,24 @@ class UrlRuleTest extends TestCase
                 'pluralized automatically', [
                 [
                     ['controller' => 'user'],
-                    ['users' => 'user']
+                    ['users' => 'user'],
                 ],
                 [
                     ['controller' => 'admin/user'],
-                    ['admin/users' => 'admin/user']
+                    ['admin/users' => 'admin/user'],
                 ],
                 [
                     ['controller' => ['admin/user', 'post']],
-                    ['admin/users' => 'admin/user', 'posts' => 'post']
+                    ['admin/users' => 'admin/user', 'posts' => 'post'],
                 ],
-            ]],
+            ], ],
             [
                 'explicitly specified', [
                 [
                     ['controller' => ['customer' => 'user']],
-                    ['customer' => 'user']
-                ]
-            ]],
+                    ['customer' => 'user'],
+                ],
+            ], ],
             [
                 'do not pluralize', [
                 [
@@ -193,9 +193,9 @@ class UrlRuleTest extends TestCase
                         'pluralize' => false,
                         'controller' => ['admin/user', 'post'],
                     ],
-                    ['admin/user' => 'admin/user', 'post' => 'post']
-                ]
-            ]],
+                    ['admin/user' => 'admin/user', 'post' => 'post'],
+                ],
+            ], ],
         ];
     }
 

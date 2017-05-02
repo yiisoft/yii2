@@ -21,10 +21,10 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'container' => [
                 'definitions' => [
-                    Dispatcher::className() => DispatcherMock::className()
-                ]
+                    Dispatcher::className() => DispatcherMock::className(),
+                ],
             ],
-            'bootstrap' => ['log']
+            'bootstrap' => ['log'],
         ]);
 
         $this->assertInstanceOf(DispatcherMock::className(), Yii::$app->log);

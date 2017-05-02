@@ -39,8 +39,8 @@ class I18NTest extends TestCase
                 'test' => [
                     'class' => $this->getMessageSourceClass(),
                     'basePath' => '@yiiunit/data/i18n/messages',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -77,8 +77,8 @@ class I18NTest extends TestCase
                         'test' => 'test.php',
                         'foo' => 'test.php',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -113,8 +113,8 @@ class I18NTest extends TestCase
                             'foo' => 'test.php',
                         ],
                     ]
-                )
-            ]
+                ),
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -225,7 +225,7 @@ class I18NTest extends TestCase
     {
         return [
             ['en-GB'],
-            ['en']
+            ['en'],
         ];
     }
 

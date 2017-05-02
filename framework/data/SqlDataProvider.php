@@ -165,7 +165,7 @@ class SqlDataProvider extends BaseDataProvider
     {
         return (new Query([
             'from' => ['sub' => "({$this->sql})"],
-            'params' => $this->params
+            'params' => $this->params,
         ]))->count('*', $this->db);
     }
 }

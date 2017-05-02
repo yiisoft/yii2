@@ -63,7 +63,7 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                      'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                      'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
         $this->mockWebApplication($appConfig);
@@ -155,7 +155,7 @@ class UserTest extends TestCase
             'class' => 'yii\web\Request',
             'scriptFile' => __DIR__ . '/index.php',
             'scriptUrl' => '/index.php',
-            'url' => ''
+            'url' => '',
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
@@ -171,7 +171,7 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
         $this->mockWebApplication($appConfig);
@@ -285,7 +285,7 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
 

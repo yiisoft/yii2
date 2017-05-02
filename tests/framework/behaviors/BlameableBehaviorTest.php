@@ -38,8 +38,8 @@ class BlameableBehaviorTest extends TestCase
                 ],
                 'user' => [
                     'class' => 'yiiunit\framework\behaviors\UserMock',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -136,9 +136,9 @@ class BlameableBehaviorTest extends TestCase
                 'class' => BlameableBehavior::className(),
                 'attributes' => [
                     BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'created_by',
-                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by']
-                ]
-            ]
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by'],
+                ],
+            ],
         ]);
         $model->name = __METHOD__;
 

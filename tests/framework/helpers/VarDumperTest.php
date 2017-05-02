@@ -66,31 +66,31 @@ class VarDumperTest extends TestCase
         $data = [
             [
                 'test string',
-                var_export('test string', true)
+                var_export('test string', true),
             ],
             [
                 75,
-                var_export(75, true)
+                var_export(75, true),
             ],
             [
                 7.5,
-                var_export(7.5, true)
+                var_export(7.5, true),
             ],
             [
                 null,
-                'null'
+                'null',
             ],
             [
                 true,
-                'true'
+                'true',
             ],
             [
                 false,
-                'false'
+                'false',
             ],
             [
                 [],
-                '[]'
+                '[]',
             ],
         ];
 

@@ -31,7 +31,7 @@ class DataColumnTest extends \yiiunit\TestCase
             'dataProvider' => new ArrayDataProvider([
                 'allModels' => [],
                 'totalCount' => 0,
-                'modelClass' => Order::className()
+                'modelClass' => Order::className(),
             ]),
             'columns' => ['customer_id', 'total'],
         ]);
@@ -107,8 +107,8 @@ class DataColumnTest extends \yiiunit\TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
         $columns = [
             'id' => 'pk',
@@ -127,7 +127,7 @@ class DataColumnTest extends \yiiunit\TestCase
                 0 => [
                     'attribute' => 'customer_id',
                     'filter' => $filterInput,
-                ]
+                ],
             ],
             'filterModel' => new Order(),
         ]);
@@ -158,8 +158,8 @@ HTML
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
         $columns = [
             'id' => 'pk',

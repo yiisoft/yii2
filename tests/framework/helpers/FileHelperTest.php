@@ -161,7 +161,7 @@ class FileHelperTest extends TestCase
             'file2.txt' => 'file 2 content',
         ];
         $this->createFileStructure([
-            $srcDirName => $files
+            $srcDirName => $files,
         ]);
 
         $basePath = $this->testFilePath;
@@ -193,7 +193,7 @@ class FileHelperTest extends TestCase
             'file5.txt' => 'file 5 content',
         ];
         $this->createFileStructure([
-            $srcDirName => $structure
+            $srcDirName => $structure,
         ]);
 
         $basePath = $this->testFilePath;
@@ -234,7 +234,7 @@ class FileHelperTest extends TestCase
             'file5.txt' => 'file 5 content',
         ];
         $this->createFileStructure([
-            $srcDirName => $structure
+            $srcDirName => $structure,
         ]);
 
         $basePath = $this->testFilePath;
@@ -317,7 +317,7 @@ class FileHelperTest extends TestCase
     {
         $this->createFileStructure([
             'data' => [],
-            'backup' => ['data' => []]
+            'backup' => ['data' => []],
         ]);
 
         $this->expectException('yii\base\InvalidParamException');
@@ -335,7 +335,7 @@ class FileHelperTest extends TestCase
     {
         $this->createFileStructure([
             'data' => [],
-            'backup' => ['data' => []]
+            'backup' => ['data' => []],
         ]);
 
         FileHelper::copyDirectory(
@@ -352,7 +352,7 @@ class FileHelperTest extends TestCase
     {
         $this->createFileStructure([
             'data' => [],
-            'data-backup' => []
+            'data-backup' => [],
         ]);
 
         FileHelper::copyDirectory(
@@ -397,7 +397,7 @@ class FileHelperTest extends TestCase
             $dirName => [
                 'file' => 'Symlinked file.',
                 'directory' => [
-                    'standard-file-1' => 'Standard file 1.'
+                    'standard-file-1' => 'Standard file 1.',
                 ],
                 'symlinks' => [
                     'standard-file-2' => 'Standard file 2.',
@@ -440,7 +440,7 @@ class FileHelperTest extends TestCase
             $dirName => [
                 'file' => 'Symlinked file.',
                 'directory' => [
-                    'standard-file-1' => 'Standard file 1.'
+                    'standard-file-1' => 'Standard file 1.',
                 ],
                 'symlinks' => [
                     'standard-file-2' => 'Standard file 2.',
@@ -519,7 +519,7 @@ class FileHelperTest extends TestCase
         $options = [
             'filter' => function ($path) use ($passedFileName) {
                 return $passedFileName == basename($path);
-            }
+            },
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $passedFileName], $foundFiles);
@@ -566,7 +566,7 @@ class FileHelperTest extends TestCase
                     'file2' => 'def',
                 ],
                 'symDir' => ['symlink', 'theDir'],
-                'file3' => 'root'
+                'file3' => 'root',
             ],
         ]);
         $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
@@ -663,14 +663,14 @@ class FileHelperTest extends TestCase
 
         $options = [
             'except' => ['*.txt'],
-            'caseSensitive' => false
+            'caseSensitive' => false,
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(0, $foundFiles);
 
         $options = [
             'only' => ['*.txt'],
-            'caseSensitive' => false
+            'caseSensitive' => false,
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(2, $foundFiles);
@@ -776,7 +776,7 @@ class FileHelperTest extends TestCase
             'file2.dat' => 'data file 2 content',
         ];
         $this->createFileStructure([
-            $srcDirName => array_merge($textFiles, $dataFiles)
+            $srcDirName => array_merge($textFiles, $dataFiles),
         ]);
 
         $basePath = $this->testFilePath;

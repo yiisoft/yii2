@@ -27,7 +27,7 @@ class TargetTest extends TestCase
             [['levels' => 0], ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']],
             [
                 ['levels' => Logger::LEVEL_INFO | Logger::LEVEL_WARNING | Logger::LEVEL_ERROR | Logger::LEVEL_TRACE],
-                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+                ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
             ],
             [['levels' => ['error']], ['B', 'G', 'H']],
             [['levels' => Logger::LEVEL_ERROR], ['B', 'G', 'H']],

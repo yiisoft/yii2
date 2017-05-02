@@ -238,7 +238,7 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator([
             'tooSmall' => '{attribute} is to small.',
-            'min' => 5
+            'min' => 5,
         ]);
         $model = new FakedValidationModel();
         $model->attr_number = 0;

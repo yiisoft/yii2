@@ -37,7 +37,7 @@ class FakeController extends Controller
         return array_merge(parent::options($actionID), [
             'test',
             'testArray',
-            'alias'
+            'alias',
         ]);
     }
 
@@ -46,7 +46,7 @@ class FakeController extends Controller
         return [
             't' => 'test',
             'ta' => 'testArray',
-            'a' => 'alias'
+            'a' => 'alias',
         ];
     }
 
