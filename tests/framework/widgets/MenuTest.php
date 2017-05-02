@@ -30,13 +30,13 @@ class MenuTest extends \yiiunit\TestCase
             'items' => [
                 [
                     'encode' => false,
-                    'label'  => '<span class="glyphicon glyphicon-user"></span> Users',
-                    'url'    => '#',
+                    'label' => '<span class="glyphicon glyphicon-user"></span> Users',
+                    'url' => '#',
                 ],
                 [
                     'encode' => true,
-                    'label'  => 'Authors & Publications',
-                    'url'    => '#',
+                    'label' => 'Authors & Publications',
+                    'url' => '#',
                 ],
             ]
         ]);
@@ -54,13 +54,13 @@ HTML;
             'items' => [
                 [
                     'encode' => false,
-                    'label'  => '<span class="glyphicon glyphicon-user"></span> Users',
-                    'url'    => '#',
+                    'label' => '<span class="glyphicon glyphicon-user"></span> Users',
+                    'url' => '#',
                 ],
                 [
                     'encode' => true,
-                    'label'  => 'Authors & Publications',
-                    'url'    => '#',
+                    'label' => 'Authors & Publications',
+                    'url' => '#',
                 ],
             ]
         ]);
@@ -86,13 +86,13 @@ HTML;
             ],
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
+                    'label' => 'item1',
+                    'url' => '#',
                     'options' => ['tag' => 'div'],
                 ],
                 [
-                    'label'  => 'item2',
-                    'url'    => '#',
+                    'label' => 'item2',
+                    'url' => '#',
                     'options' => ['tag' => false],
                 ],
             ]
@@ -113,12 +113,12 @@ HTML;
             ],
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
+                    'label' => 'item1',
+                    'url' => '#',
                 ],
                 [
-                    'label'  => 'item2',
-                    'url'    => '#',
+                    'label' => 'item2',
+                    'url' => '#',
                 ],
             ],
             'itemOptions' => ['tag' => false]
@@ -141,16 +141,16 @@ HTML;
             'labelTemplate' => '',
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
+                    'label' => 'item1',
+                    'url' => '#',
                     'template' => 'label: {label}; url: {url}'
                 ],
                 [
-                    'label'  => 'item2',
+                    'label' => 'item2',
                     'template' => 'label: {label}'
                 ],
                 [
-                    'label'  => 'item3 (no template)',
+                    'label' => 'item3 (no template)',
                 ],
             ]
         ]);
@@ -173,20 +173,20 @@ HTML;
             'labelTemplate' => '',
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
+                    'label' => 'item1',
+                    'url' => '#',
                     'template' => 'label: {label}; url: {url}',
                     'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
                         return isset($item, $hasActiveChild, $isItemActive, $widget);
                     }
                 ],
                 [
-                    'label'  => 'item2',
+                    'label' => 'item2',
                     'template' => 'label: {label}',
                     'active' => false
                 ],
                 [
-                    'label'  => 'item3 (no template)',
+                    'label' => 'item3 (no template)',
                     'active' => 'somestring'
                 ],
             ]

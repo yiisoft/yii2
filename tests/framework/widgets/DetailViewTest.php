@@ -309,7 +309,7 @@ class DetailViewTest extends \yiiunit\TestCase
             ],
         ]);
 
-        foreach ($this->detailView->attributes as $index=>$attribute) {
+        foreach ($this->detailView->attributes as $index => $attribute) {
             $a = $this->detailView->renderAttribute($attribute, $index);
             $this->assertEquals($expectedValue, $a);
         }

@@ -355,7 +355,7 @@ class HtmlTest extends TestCase
             'class' => 'a',
             'value' => null,
             'label' => 'ccc',
-            'labelOptions' => ['class' =>'bbb'],
+            'labelOptions' => ['class' => 'bbb'],
         ]));
         $this->assertEquals('<input type="hidden" name="test" value="0"><label><input type="radio" class="a" name="test" value="2" checked> ccc</label>', Html::radio('test', true, [
             'class' => 'a',
@@ -375,7 +375,7 @@ class HtmlTest extends TestCase
             'class' => 'a',
             'value' => null,
             'label' => 'ccc',
-            'labelOptions' => ['class' =>'bbb'],
+            'labelOptions' => ['class' => 'bbb'],
         ]));
         $this->assertEquals('<input type="hidden" name="test" value="0"><label><input type="checkbox" class="a" name="test" value="2" checked> ccc</label>', Html::checkbox('test', true, [
             'class' => 'a',

@@ -30,6 +30,10 @@ class YiiConfig extends Config
             'array_syntax' => [
                 'syntax' => 'short',
             ],
+            'binary_operator_spaces' => [
+                'align_double_arrow' => false,
+                'align_equals' => false,
+            ],
         ]);
     }
 

@@ -34,11 +34,11 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::init()
+     * @covers \yii\log\EmailTarget::init()
      */
     public function testInitWithOptionTo()
     {
-        $target = new EmailTarget(['mailer' => $this->mailer, 'message'=> ['to' => 'developer1@example.com']]);
+        $target = new EmailTarget(['mailer' => $this->mailer, 'message' => ['to' => 'developer1@example.com']]);
         $this->assertTrue(is_object($target)); // should be no exception during `init()`
     }
 
@@ -78,7 +78,7 @@ class EmailTargetTest extends TestCase
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
-                    'message'=> [
+                    'message' => [
                         'to' => 'developer@example.com',
                         'subject' => 'Hello world'
                     ]
@@ -122,7 +122,7 @@ class EmailTargetTest extends TestCase
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
-                    'message'=> [
+                    'message' => [
                         'to' => 'developer@example.com',
                     ]
                 ]

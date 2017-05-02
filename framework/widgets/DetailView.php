@@ -177,7 +177,7 @@ class DetailView extends Widget
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
                 '{captionOptions}' => $captionOptions,
-                '{contentOptions}' =>  $contentOptions,
+                '{contentOptions}' => $contentOptions,
             ]);
         } else {
             return call_user_func($this->template, $attribute, $index, $this);

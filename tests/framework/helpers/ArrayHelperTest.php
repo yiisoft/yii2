@@ -109,13 +109,13 @@ class ArrayHelperTest extends TestCase
             $object->className() => [
                 'id', 'subObject',
                 'id_plus_1' => function ($post) {
-                    return $post->id+1;
+                    return $post->id + 1;
                 }
             ],
             $object->subObject->className() => [
                 'id',
                 'id_plus_1' => function ($post) {
-                    return $post->id+1;
+                    return $post->id + 1;
                 }
             ],
         ]));
@@ -131,7 +131,7 @@ class ArrayHelperTest extends TestCase
             $object->subObject->className() => [
                 'id',
                 'id_plus_1' => function ($post) {
-                    return $post->id+1;
+                    return $post->id + 1;
                 }
             ],
         ]));

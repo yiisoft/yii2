@@ -529,7 +529,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
                 'items' => function ($q) {
                     $q->orderBy('item.id');
                     $q->joinWith([
-                            'category'=> function ($q) {
+                            'category' => function ($q) {
                                 $q->where('{{category}}.[[id]] = 2');
                             }
                         ]);

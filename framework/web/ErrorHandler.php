@@ -191,7 +191,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $url = null;
 
         $shouldGenerateLink = true;
-        if ($method !== null  && substr_compare($method, '{closure}', -9) !== 0) {
+        if ($method !== null && substr_compare($method, '{closure}', -9) !== 0) {
             $reflection = new \ReflectionMethod($class, $method);
             $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
         }
@@ -419,8 +419,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         foreach ($args as $key => $value) {
             $count++;
-            if ($count>=5) {
-                if ($count>5) {
+            if ($count >= 5) {
+                if ($count > 5) {
                     unset($args[$key]);
                 } else {
                     $args[$key] = '...';

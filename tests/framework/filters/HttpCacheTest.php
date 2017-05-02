@@ -29,7 +29,7 @@ class HttpCacheTest extends \yiiunit\TestCase
     {
         $httpCache = new HttpCache();
         $this->assertTrue($httpCache->beforeAction(null));
-        $httpCache->enabled=false;
+        $httpCache->enabled = false;
         $this->assertTrue($httpCache->beforeAction(null));
     }
 

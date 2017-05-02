@@ -250,7 +250,7 @@ class FileValidator extends Validator
                     ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($value)) {
                     return [$this->wrongExtension, ['file' => $value->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($value)) {
+                } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($value)) {
                     return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 }
                 return null;

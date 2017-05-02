@@ -614,7 +614,7 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['a.[2-8]']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return substr($p, -3)==='a.1';
+            return substr($p, -3) === 'a.1';
         }));
         $this->assertEquals($expect, $foundFiles);
 
@@ -622,7 +622,7 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['*.1']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return substr($p, -3)!=='a.1';
+            return substr($p, -3) !== 'a.1';
         }));
         $this->assertEquals($expect, $foundFiles);
 
@@ -630,7 +630,7 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['/one']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return strpos($p, DIRECTORY_SEPARATOR.'one')===false;
+            return strpos($p, DIRECTORY_SEPARATOR.'one') === false;
         }));
         $this->assertEquals($expect, $foundFiles);
 
@@ -638,9 +638,9 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['?*/a.1']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return substr($p, -11, 10)==='one'.DIRECTORY_SEPARATOR.'two'.DIRECTORY_SEPARATOR.'a.' || (
-                substr($p, -8)!==DIRECTORY_SEPARATOR.'one'.DIRECTORY_SEPARATOR.'a.1' &&
-                substr($p, -10)!==DIRECTORY_SEPARATOR.'three'.DIRECTORY_SEPARATOR.'a.1'
+            return substr($p, -11, 10) === 'one'.DIRECTORY_SEPARATOR.'two'.DIRECTORY_SEPARATOR.'a.' || (
+                substr($p, -8) !== DIRECTORY_SEPARATOR.'one'.DIRECTORY_SEPARATOR.'a.1' &&
+                substr($p, -10) !== DIRECTORY_SEPARATOR.'three'.DIRECTORY_SEPARATOR.'a.1'
             );
         }));
         $this->assertEquals($expect, $foundFiles);

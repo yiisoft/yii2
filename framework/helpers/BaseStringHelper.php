@@ -176,7 +176,7 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                if ($token->name === $openTokens[$depth-1]) {
+                if ($token->name === $openTokens[$depth - 1]) {
                     --$depth;
                     unset($openTokens[$depth]);
                     $truncated[] = $token;

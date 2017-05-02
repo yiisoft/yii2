@@ -860,11 +860,11 @@ class ReleaseController extends Controller
         $state = 'start';
         foreach ($lines as $l => $line) {
             // starting from the changelogs headline
-            if (isset($lines[$l-2]) && strpos($lines[$l-2], $version) !== false &&
-                isset($lines[$l-1]) && strncmp($lines[$l-1], '---', 3) === 0) {
+            if (isset($lines[$l - 2]) && strpos($lines[$l - 2], $version) !== false &&
+                isset($lines[$l - 1]) && strncmp($lines[$l - 1], '---', 3) === 0) {
                 $state = 'changelog';
             }
-            if ($state === 'changelog' && isset($lines[$l+1]) && strncmp($lines[$l+1], '---', 3) === 0) {
+            if ($state === 'changelog' && isset($lines[$l + 1]) && strncmp($lines[$l + 1], '---', 3) === 0) {
                 $state = 'end';
             }
             // add continued lines to the last item to keep them together

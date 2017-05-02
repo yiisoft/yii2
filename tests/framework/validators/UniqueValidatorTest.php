@@ -211,7 +211,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         // Check whether "Description" and "address" aren't equal
         $val = new UniqueValidator([
             'targetClass' => Customer::className(),
-            'targetAttribute' => ['description'=>'address'],
+            'targetAttribute' => ['description' => 'address'],
         ]);
 
         /** @var Profile $m */
@@ -240,7 +240,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator = new UniqueValidator();
 
         /** @var Profile $profileModel */
-        $profileModel = new Profile(['description'=>'profile customer 1']);
+        $profileModel = new Profile(['description' => 'profile customer 1']);
         $validator->validateAttribute($profileModel, 'description');
         $this->assertTrue($profileModel->hasErrors('description'));
 

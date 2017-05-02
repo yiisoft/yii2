@@ -44,7 +44,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
             ],
             'composite in' => [
-                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
                 '(([[id]] = :qp0 AND [[name]] = :qp1))',
                 [':qp0' => 1, ':qp1' => 'oy']
             ],

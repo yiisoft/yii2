@@ -1084,7 +1084,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [ ['in', 'id', [1]], '[[id]]=:qp0', [':qp0' => 1] ],
             [ ['in', 'id', new TraversableObject([1])], '[[id]]=:qp0', [':qp0' => 1] ],
             'composite in' => [
-                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
                 '([[id]], [[name]]) IN ((:qp0, :qp1))',
                 [':qp0' => 1, ':qp1' => 'oy']
             ],
