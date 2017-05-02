@@ -110,7 +110,6 @@ class Breadcrumbs extends Widget
      *     'encode' => false,
      * ]
      * ```
-     *
      */
     public $links = [];
     /**

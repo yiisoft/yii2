@@ -129,7 +129,6 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider dataProviderSetStatusCodeByException
-     *
      */
     public function testSetStatusCodeByException($exception, $statusCode)
     {

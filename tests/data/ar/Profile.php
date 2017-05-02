@@ -12,7 +12,6 @@ namespace yiiunit\data\ar;
  *
  * @property int $id
  * @property string $description
- *
  */
 class Profile extends ActiveRecord
 {
