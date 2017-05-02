@@ -151,6 +151,7 @@ class YiiConfig extends Config
             'ternary_operator_spaces' => true,
             'trailing_comma_in_multiline_array' => true,
             'trim_array_spaces' => true,
+            'unary_operator_spaces' => true,
         ]);
     }
 

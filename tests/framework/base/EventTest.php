@@ -59,7 +59,7 @@ class EventTest extends TestCase
     public function testOff()
     {
         $handler = function ($event) {
-            $this->counter ++;
+            $this->counter++;
         };
         $this->assertFalse(Event::hasHandlers(Post::className(), 'save'));
         Event::on(Post::className(), 'save', $handler);
@@ -77,7 +77,7 @@ class EventTest extends TestCase
             $this->counter += 1;
         });
         Event::on('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT, function ($event) {
-            $this->counter ++;
+            $this->counter++;
         });
         $this->assertTrue(Event::hasHandlers(Post::className(), 'save'));
         $this->assertFalse(Event::hasHandlers(ActiveRecord::className(), 'save'));
