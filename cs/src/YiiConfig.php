@@ -45,6 +45,10 @@ class YiiConfig extends Config
             'function_typehint_space' => true,
             'hash_to_slash_comment' => true,
 //            'heredoc_to_nowdoc' => true,
+//            'include' => true,
+            'is_null' => [
+                'use_yoda_style' => false,
+            ],
         ]);
     }
 

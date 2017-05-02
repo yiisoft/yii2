@@ -62,7 +62,7 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator;
         $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_null($val->max));
+        $this->assertTrue($val->max === null);
         $val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);
         $this->assertTrue(is_string($val->message));
         $this->assertTrue(is_string($val->tooSmall));
