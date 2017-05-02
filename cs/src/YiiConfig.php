@@ -42,6 +42,7 @@ class YiiConfig extends Config
             ],
             'dir_constant' => true,
             'ereg_to_preg' => true,
+            'function_typehint_space' => true,
         ]);
     }
 
