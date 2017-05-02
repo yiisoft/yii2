@@ -55,6 +55,7 @@ class YiiConfig extends Config
 //            'mb_str_functions' => true,
 //            'method_separation' => true, // conflicts with current Yii style with double line between properties and methods
             'modernize_types_casting' => true,
+            'native_function_casing' => true,
         ]);
     }
 
