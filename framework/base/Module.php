@@ -415,7 +415,7 @@ class Module extends ServiceLocator
         }
 
         if (isset($this->_modules[$id])) {
-            if ($this->_modules[$id] instanceof Module) {
+            if ($this->_modules[$id] instanceof self) {
                 return $this->_modules[$id];
             } elseif ($load) {
                 Yii::trace("Loading module: $id", __METHOD__);
@@ -461,7 +461,7 @@ class Module extends ServiceLocator
         if ($loadedOnly) {
             $modules = [];
             foreach ($this->_modules as $module) {
-                if ($module instanceof Module) {
+                if ($module instanceof self) {
                     $modules[] = $module;
                 }
             }

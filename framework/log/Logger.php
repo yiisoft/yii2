@@ -278,9 +278,9 @@ class Logger extends Component
             list($token, $level, $category, $timestamp, $traces) = $log;
             $memory = isset($log[5]) ? $log[5] : 0;
             $log[6] = $i;
-            if ($level == Logger::LEVEL_PROFILE_BEGIN) {
+            if ($level == self::LEVEL_PROFILE_BEGIN) {
                 $stack[] = $log;
-            } elseif ($level == Logger::LEVEL_PROFILE_END) {
+            } elseif ($level == self::LEVEL_PROFILE_END) {
                 if (($last = array_pop($stack)) !== null && $last[0] === $token) {
                     $timings[$last[6]] = [
                         'info' => $last[0],

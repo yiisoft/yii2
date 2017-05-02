@@ -142,6 +142,7 @@ class YiiConfig extends Config
 //            'phpdoc_types' => true, // conflicts with yii\base\Object typehits https://github.com/yiisoft/yii2/pull/12699
             'phpdoc_var_without_name' => true,
             'psr4' => true,
+            'self_accessor' => true,
         ]);
     }
 
