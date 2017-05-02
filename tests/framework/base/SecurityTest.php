@@ -999,10 +999,10 @@ TEXT;
         $tests = [
             "function_exists('random_bytes')",
             "defined('OPENSSL_VERSION_TEXT') ? OPENSSL_VERSION_TEXT : null",
-            "PHP_VERSION_ID",
-            "PHP_OS",
+            'PHP_VERSION_ID',
+            'PHP_OS',
             "function_exists('mcrypt_create_iv') ? bin2hex(mcrypt_create_iv(4, MCRYPT_DEV_URANDOM)) : null",
-            "DIRECTORY_SEPARATOR",
+            'DIRECTORY_SEPARATOR',
             "ini_get('open_basedir')",
         ];
         if (DIRECTORY_SEPARATOR === '/') {
@@ -1222,26 +1222,26 @@ TEXT;
     public function dataProviderCompareStrings()
     {
         return [
-            ["", ""],
-            [false, ""],
-            [null, ""],
-            [0, ""],
-            [0.00, ""],
-            ["", null],
-            ["", false],
-            ["", 0],
-            ["", "\0"],
-            ["\0", ""],
+            ['', ''],
+            [false, ''],
+            [null, ''],
+            [0, ''],
+            [0.00, ''],
+            ['', null],
+            ['', false],
+            ['', 0],
+            ['', "\0"],
+            ["\0", ''],
             ["\0", "\0"],
-            ["0", "\0"],
+            ['0', "\0"],
             [0, "\0"],
-            ["user", "User"],
-            ["password", "password"],
-            ["password", "passwordpassword"],
-            ["password1", "password"],
-            ["password", "password2"],
-            ["", "password"],
-            ["password", ""],
+            ['user', 'User'],
+            ['password', 'password'],
+            ['password', 'passwordpassword'],
+            ['password1', 'password'],
+            ['password', 'password2'],
+            ['', 'password'],
+            ['password', ''],
         ];
     }
 

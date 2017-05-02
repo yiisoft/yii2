@@ -32,7 +32,7 @@ class FileHelperTest extends TestCase
         $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
         mkdir($dir);
         chmod($dir, 0700);
-        if ($this->getMode($dir) !== "0700") {
+        if ($this->getMode($dir) !== '0700') {
             /*
              * Chmod returns true but fileperms does not reflect this.
              * This happens on remote file systems, also has been seen in vagrant mounts.
@@ -715,15 +715,15 @@ class FileHelperTest extends TestCase
         $this->assertEquals("{$ds}b{$ds}c", FileHelper::normalizePath('/a/../b/c'));
         $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a\\b/../..///c'));
         $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
-        $this->assertEquals("c", FileHelper::normalizePath('/a/.\\b/../..//../c'));
+        $this->assertEquals('c', FileHelper::normalizePath('/a/.\\b/../..//../c'));
         $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
 
         // relative paths
-        $this->assertEquals(".", FileHelper::normalizePath('.'));
-        $this->assertEquals(".", FileHelper::normalizePath('./'));
-        $this->assertEquals("a", FileHelper::normalizePath('.\\a'));
+        $this->assertEquals('.', FileHelper::normalizePath('.'));
+        $this->assertEquals('.', FileHelper::normalizePath('./'));
+        $this->assertEquals('a', FileHelper::normalizePath('.\\a'));
         $this->assertEquals("a{$ds}b", FileHelper::normalizePath('./a\\b'));
-        $this->assertEquals(".", FileHelper::normalizePath('./a\\../'));
+        $this->assertEquals('.', FileHelper::normalizePath('./a\\../'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a/../a'));
         $this->assertEquals("..{$ds}..{$ds}b", FileHelper::normalizePath('../..\\a/../b'));

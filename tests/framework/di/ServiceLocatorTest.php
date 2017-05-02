@@ -51,7 +51,7 @@ class ServiceLocatorTest extends TestCase
         // static method
         $container = new ServiceLocator();
         $className = TestClass::className();
-        $container->set($className, [__NAMESPACE__ . "\\Creator", 'create']);
+        $container->set($className, [__NAMESPACE__ . '\\Creator', 'create']);
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
         $this->assertEquals(1, $object->prop1);

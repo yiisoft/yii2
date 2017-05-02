@@ -45,8 +45,8 @@ class RangeValidatorTest extends TestCase
         $this->assertFalse($val->validate(11));
         $this->assertFalse($val->validate(5.5));
         $this->assertTrue($val->validate(10));
-        $this->assertTrue($val->validate("10"));
-        $this->assertTrue($val->validate("5"));
+        $this->assertTrue($val->validate('10'));
+        $this->assertTrue($val->validate('5'));
     }
 
     public function testValidateValueEmpty()
@@ -68,7 +68,7 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate([6, 7, 8, 9, 10]));
         $this->assertFalse($val->validate([0, 1, 2]));
         $this->assertFalse($val->validate([10, 11, 12]));
-        $this->assertTrue($val->validate(["1", "2", "3", 4, 5, 6]));
+        $this->assertTrue($val->validate(['1', '2', '3', 4, 5, 6]));
     }
 
     public function testValidateValueStrict()
@@ -77,17 +77,17 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate(1));
         $this->assertTrue($val->validate(5));
         $this->assertTrue($val->validate(10));
-        $this->assertFalse($val->validate("1"));
-        $this->assertFalse($val->validate("10"));
-        $this->assertFalse($val->validate("5.5"));
+        $this->assertFalse($val->validate('1'));
+        $this->assertFalse($val->validate('10'));
+        $this->assertFalse($val->validate('5.5'));
     }
 
     public function testValidateArrayValueStrict()
     {
         $val = new RangeValidator(['range' => range(1, 10, 1), 'strict' => true]);
         $val->allowArray = true;
-        $this->assertFalse($val->validate(["1", "2", "3", "4", "5", "6"]));
-        $this->assertFalse($val->validate(["1", "2", "3", 4, 5, 6]));
+        $this->assertFalse($val->validate(['1', '2', '3', '4', '5', '6']));
+        $this->assertFalse($val->validate(['1', '2', '3', 4, 5, 6]));
     }
 
     public function testValidateValueNot()
@@ -98,8 +98,8 @@ class RangeValidatorTest extends TestCase
         $this->assertTrue($val->validate(11));
         $this->assertTrue($val->validate(5.5));
         $this->assertFalse($val->validate(10));
-        $this->assertFalse($val->validate("10"));
-        $this->assertFalse($val->validate("5"));
+        $this->assertFalse($val->validate('10'));
+        $this->assertFalse($val->validate('5'));
     }
 
     public function testValidateAttribute()

@@ -48,7 +48,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         ob_start();
         $result = Yii::$app->runAction($route, $params);
-        echo "Result is " . $result;
+        echo 'Result is ' . $result;
         if ($result !== Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {

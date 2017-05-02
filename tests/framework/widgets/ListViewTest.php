@@ -27,7 +27,7 @@ class ListViewTest extends TestCase
     {
         $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
-            'emptyText' => "Nothing at all",
+            'emptyText' => 'Nothing at all',
         ])->run();
 
         $this->expectOutputString('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>');

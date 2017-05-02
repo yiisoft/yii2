@@ -194,13 +194,13 @@ CODE;
         }
         if (!$success) {
             $message .= "\n";
-            $message .= "Expected: " . var_export($expectedMigrations, true) . "\n";
+            $message .= 'Expected: ' . var_export($expectedMigrations, true) . "\n";
 
             $actualMigrations = [];
             foreach ($migrationHistory as $row) {
                 $actualMigrations[] = $row['version'];
             }
-            $message .= "Actual: " . var_export($actualMigrations, true) . "\n";
+            $message .= 'Actual: ' . var_export($actualMigrations, true) . "\n";
         }
         $this->assertTrue($success, $message);
     }

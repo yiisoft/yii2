@@ -86,7 +86,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testRenameTable()
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
-        $this->assertEquals("ALTER TABLE `table_from` RENAME TO `table_to`", $sql);
+        $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
     }
 
     /**
@@ -95,7 +95,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testBuildUnion()
     {
         $expectedQuerySql = $this->replaceQuotes(
-            "SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3"
+            'SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3'
         );
         $query = new Query();
         $secondQuery = new Query();

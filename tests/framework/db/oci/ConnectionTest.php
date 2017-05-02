@@ -25,7 +25,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
 
-        $this->assertEquals(123, $unserialized->createCommand("SELECT 123 FROM DUAL")->queryScalar());
+        $this->assertEquals(123, $unserialized->createCommand('SELECT 123 FROM DUAL')->queryScalar());
     }
 
     public function testQuoteTableName()

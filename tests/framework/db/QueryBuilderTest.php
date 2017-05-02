@@ -938,25 +938,25 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_PK . " FIRST",
+                Schema::TYPE_PK . ' FIRST',
                 $this->primaryKey()->first(),
                 [
-                    'mysql' => "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST",
+                    'mysql' => 'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
                     'postgres' => 'serial NOT NULL PRIMARY KEY',
                     'oci' => 'NUMBER(10) NOT NULL PRIMARY KEY',
                     'sqlsrv' => 'int IDENTITY PRIMARY KEY',
-                    'cubrid' => "int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST",
+                    'cubrid' => 'int NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
                 ],
             ],
             [
-                Schema::TYPE_INTEGER . " FIRST",
+                Schema::TYPE_INTEGER . ' FIRST',
                 $this->integer()->first(),
                 [
-                    'mysql' => "int(11) FIRST",
+                    'mysql' => 'int(11) FIRST',
                     'postgres' => 'integer',
-                    'oci' => "NUMBER(10)",
+                    'oci' => 'NUMBER(10)',
                     'sqlsrv' => 'int',
-                    'cubrid' => "int FIRST",
+                    'cubrid' => 'int FIRST',
                 ],
             ],
             [
@@ -971,14 +971,14 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 ],
             ],
             [
-                Schema::TYPE_INTEGER . " NOT NULL FIRST",
+                Schema::TYPE_INTEGER . ' NOT NULL FIRST',
                 $this->integer()->append('NOT NULL')->first(),
                 [
-                    'mysql' => "int(11) NOT NULL FIRST",
+                    'mysql' => 'int(11) NOT NULL FIRST',
                     'postgres' => 'integer NOT NULL',
-                    'oci' => "NUMBER(10) NOT NULL",
+                    'oci' => 'NUMBER(10) NOT NULL',
                     'sqlsrv' => 'int NOT NULL',
-                    'cubrid' => "int NOT NULL FIRST",
+                    'cubrid' => 'int NOT NULL FIRST',
                 ],
             ],
             [
@@ -1226,7 +1226,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testAddDropPrimaryKey()
     {
         $tableName = 'constraints';
-        $pkeyName = $tableName . "_pkey";
+        $pkeyName = $tableName . '_pkey';
 
         // ADD
         $qb = $this->getQueryBuilder();
@@ -1256,8 +1256,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function existsParamsProvider()
     {
         return [
-            ['exists', $this->replaceQuotes("SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE EXISTS (SELECT [[1]] FROM [[Website]] [[w]])")],
-            ['not exists', $this->replaceQuotes("SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE NOT EXISTS (SELECT [[1]] FROM [[Website]] [[w]])")]
+            ['exists', $this->replaceQuotes('SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE EXISTS (SELECT [[1]] FROM [[Website]] [[w]])')],
+            ['not exists', $this->replaceQuotes('SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE NOT EXISTS (SELECT [[1]] FROM [[Website]] [[w]])')]
         ];
     }
 
@@ -1286,9 +1286,9 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testBuildWhereExistsWithParameters()
     {
         $expectedQuerySql = $this->replaceQuotes(
-            "SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE (EXISTS (SELECT [[1]] FROM [[Website]] [[w]] WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)"
+            'SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE (EXISTS (SELECT [[1]] FROM [[Website]] [[w]] WHERE (w.id = t.website_id) AND (w.merchant_id = :merchant_id))) AND (t.some_column = :some_value)'
         );
-        $expectedQueryParams = [':some_value' => "asd", ':merchant_id' => 6];
+        $expectedQueryParams = [':some_value' => 'asd', ':merchant_id' => 6];
 
         $subQuery = new Query();
         $subQuery->select('1')
@@ -1300,7 +1300,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $query->select('id')
             ->from('TotalExample t')
             ->where(['exists', $subQuery])
-            ->andWhere('t.some_column = :some_value', [':some_value' => "asd"]);
+            ->andWhere('t.some_column = :some_value', [':some_value' => 'asd']);
 
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
@@ -1310,7 +1310,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testBuildWhereExistsWithArrayParameters()
     {
         $expectedQuerySql = $this->replaceQuotes(
-            "SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE (EXISTS (SELECT [[1]] FROM [[Website]] [[w]] WHERE (w.id = t.website_id) AND (([[w]].[[merchant_id]]=:qp0) AND ([[w]].[[user_id]]=:qp1)))) AND ([[t]].[[some_column]]=:qp2)"
+            'SELECT [[id]] FROM [[TotalExample]] [[t]] WHERE (EXISTS (SELECT [[1]] FROM [[Website]] [[w]] WHERE (w.id = t.website_id) AND (([[w]].[[merchant_id]]=:qp0) AND ([[w]].[[user_id]]=:qp1)))) AND ([[t]].[[some_column]]=:qp2)'
         );
         $expectedQueryParams = [':qp0' => 6, ':qp1' => 210, ':qp2' => 'asd'];
 
@@ -1324,7 +1324,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $query->select('id')
             ->from('TotalExample t')
             ->where(['exists', $subQuery])
-            ->andWhere(['t.some_column' => "asd"]);
+            ->andWhere(['t.some_column' => 'asd']);
 
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
@@ -1338,7 +1338,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testBuildUnion()
     {
         $expectedQuerySql = $this->replaceQuotes(
-            "(SELECT [[id]] FROM [[TotalExample]] [[t1]] WHERE (w > 0) AND (x < 2)) UNION ( SELECT [[id]] FROM [[TotalTotalExample]] [[t2]] WHERE w > 5 ) UNION ALL ( SELECT [[id]] FROM [[TotalTotalExample]] [[t3]] WHERE w = 3 )"
+            '(SELECT [[id]] FROM [[TotalExample]] [[t1]] WHERE (w > 0) AND (x < 2)) UNION ( SELECT [[id]] FROM [[TotalTotalExample]] [[t2]] WHERE w > 5 ) UNION ALL ( SELECT [[id]] FROM [[TotalTotalExample]] [[t3]] WHERE w = 3 )'
         );
         $query = new Query();
         $secondQuery = new Query();
@@ -1398,28 +1398,28 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testSelectExpression()
     {
         $query = (new Query())
-            ->select(new Expression("1 AS ab"))
+            ->select(new Expression('1 AS ab'))
             ->from('tablename');
         list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes("SELECT 1 AS ab FROM [[tablename]]");
+        $expected = $this->replaceQuotes('SELECT 1 AS ab FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
         $query = (new Query())
-            ->select(new Expression("1 AS ab"))
-            ->addSelect(new Expression("2 AS cd"))
-            ->addSelect(['ef' => new Expression("3")])
+            ->select(new Expression('1 AS ab'))
+            ->addSelect(new Expression('2 AS cd'))
+            ->addSelect(['ef' => new Expression('3')])
             ->from('tablename');
         list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes("SELECT 1 AS ab, 2 AS cd, 3 AS [[ef]] FROM [[tablename]]");
+        $expected = $this->replaceQuotes('SELECT 1 AS ab, 2 AS cd, 3 AS [[ef]] FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
         $query = (new Query())
-            ->select(new Expression("SUBSTR(name, 0, :len)", [':len' => 4]))
+            ->select(new Expression('SUBSTR(name, 0, :len)', [':len' => 4]))
             ->from('tablename');
         list($sql, $params) = $this->getQueryBuilder()->build($query);
-        $expected = $this->replaceQuotes("SELECT SUBSTR(name, 0, :len) FROM [[tablename]]");
+        $expected = $this->replaceQuotes('SELECT SUBSTR(name, 0, :len) FROM [[tablename]]');
         $this->assertEquals($expected, $sql);
         $this->assertEquals([':len' => 4], $params);
     }
@@ -1468,7 +1468,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ], $params);
 
         // simple subquery
-        $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
+        $subquery = '(SELECT * FROM user WHERE account_id = accounts.id)';
         $query = (new Query())->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM [[user]] WHERE [[active]] = 1) [[activeusers]];
         list($sql, $params) = $this->getQueryBuilder()->build($query);
@@ -1595,26 +1595,26 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [
                 'customer',
                 [],
-                [["no columns passed"]],
+                [['no columns passed']],
                 $this->replaceQuotes("INSERT INTO [[customer]] () VALUES ('no columns passed')")
             ],
             'bool-false, bool2-null' => [
                 'type',
                 ['bool_col', 'bool_col2'],
                 [[false, null]],
-                'expected' => $this->replaceQuotes("INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)")
+                'expected' => $this->replaceQuotes('INSERT INTO [[type]] ([[bool_col]], [[bool_col2]]) VALUES (0, NULL)')
             ],
             [
                 '{{%type}}',
                 ['{{%type}}.[[float_col]]', '[[time]]'],
                 [[null, new Expression('now()')]],
-                "INSERT INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) VALUES (NULL, now())"
+                'INSERT INTO {{%type}} ({{%type}}.[[float_col]], [[time]]) VALUES (NULL, now())'
             ],
             'bool-false, time-now()' => [
                 '{{%type}}',
                 ['{{%type}}.[[bool_col]]', '[[time]]'],
                 [[false, new Expression('now()')]],
-                'expected' => "INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())"
+                'expected' => 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (0, now())'
             ],
         ];
     }

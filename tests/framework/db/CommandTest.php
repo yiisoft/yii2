@@ -48,7 +48,7 @@ abstract class CommandTest extends DatabaseTestCase
 
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals("SELECT `id`, `t`.`name` FROM `customer` t", $command->sql);
+        $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
     }
 
     public function testPrepareCancel()
@@ -487,7 +487,7 @@ SQL;
             break;
             case 'cubrid':
             case 'mysql':
-                $expression = "YEAR(NOW())";
+                $expression = 'YEAR(NOW())';
             break;
             case 'sqlite':
                 $expression = "strftime('%Y')";

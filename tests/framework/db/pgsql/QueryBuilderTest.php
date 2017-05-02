@@ -108,7 +108,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
 
-        $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS NULL";
+        $expected = 'COMMENT ON COLUMN [[comment]].[[text]] IS NULL';
         $sql = $qb->dropCommentFromColumn('comment', 'text');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
@@ -121,7 +121,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
 
-        $expected = "COMMENT ON TABLE [[comment]] IS NULL";
+        $expected = 'COMMENT ON TABLE [[comment]] IS NULL';
         $sql = $qb->dropCommentFromTable('comment');
         $this->assertEquals($this->replaceQuotes($expected), $sql);
     }
@@ -132,7 +132,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $data['escape-danger-chars']['expected'] = "INSERT INTO \"customer\" (\"address\") VALUES ('SQL-danger chars are escaped: ''); --')";
         $data['bool-false, bool2-null']['expected'] = 'INSERT INTO "type" ("bool_col", "bool_col2") VALUES (FALSE, NULL)';
-        $data['bool-false, time-now()']['expected'] = "INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())";
+        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())';
 
         return $data;
     }

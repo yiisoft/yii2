@@ -44,7 +44,7 @@ class LinkSorterTest extends DatabaseTestCase
         ob_start();
         echo ListView::widget([
             'dataProvider' => $dataProvider,
-            'layout' => "{sorter}",
+            'layout' => '{sorter}',
         ]);
         $actualHtml = ob_get_clean();
 
@@ -69,7 +69,7 @@ class LinkSorterTest extends DatabaseTestCase
         ob_start();
         echo ListView::widget([
             'dataProvider' => $dataProvider,
-            'layout' => "{sorter}",
+            'layout' => '{sorter}',
         ]);
         $actualHtml = ob_get_clean();
 

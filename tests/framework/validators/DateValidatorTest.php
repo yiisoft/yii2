@@ -245,7 +245,7 @@ class DateValidatorTest extends TestCase
                 $return[] = ['yyyy-MM-dd HH:mm:ss', '2013-09-13', '2013-09-13 00:00:00', $tz[0], $appTz[0]];
                 $return[] = ['php:Y-m-d', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
                 $return[] = ['php:Y-m-d H:i:s', '2013-09-13', '2013-09-13 00:00:00', $tz[0], $appTz[0]];
-                $return[] = ['php:U', '2013-09-13', "1379030400", $tz[0], $appTz[0]];
+                $return[] = ['php:U', '2013-09-13', '1379030400', $tz[0], $appTz[0]];
                 $return[] = [null, '2013-09-13', 1379030400, $tz[0], $appTz[0]];
             }
         }
@@ -467,21 +467,21 @@ class DateValidatorTest extends TestCase
         }
 
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min]);
-        $date = "1958-01-12";
+        $date = '1958-01-12';
         $this->assertTrue($val->validate($date), "$date is valid");
 
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'max' => '2000-01-01']);
         $date = '2014-09-13';
         $this->assertFalse($val->validate($date), "$date is too big");
-        $date = "1958-01-12";
+        $date = '1958-01-12';
         $this->assertTrue($val->validate($date), "$date is valid");
 
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min, 'max' => '2000-01-01']);
-        $this->assertTrue($val->validate('1999-12-31'), "max -1 day is valid");
-        $this->assertTrue($val->validate('2000-01-01'), "max is inside range");
-        $this->assertTrue($val->validate($min), "min is inside range");
-        $this->assertFalse($val->validate($beforeMin), "min -1 day is invalid");
-        $this->assertFalse($val->validate('2000-01-02'), "max +1 day is invalid");
+        $this->assertTrue($val->validate('1999-12-31'), 'max -1 day is valid');
+        $this->assertTrue($val->validate('2000-01-01'), 'max is inside range');
+        $this->assertTrue($val->validate($min), 'min is inside range');
+        $this->assertFalse($val->validate($beforeMin), 'min -1 day is invalid');
+        $this->assertFalse($val->validate('2000-01-02'), 'max +1 day is invalid');
     }
 
     private function validateModelAttribute($validator, $date, $expected, $message = '')
@@ -528,17 +528,17 @@ class DateValidatorTest extends TestCase
         $this->validateModelAttribute($val, $date, true, "$date is valid");
 
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => $min, 'max' => '2000-01-01']);
-        $this->validateModelAttribute($val, '1999-12-31', true, "max -1 day is valid");
-        $this->validateModelAttribute($val, '2000-01-01', true, "max is inside range");
-        $this->validateModelAttribute($val, $min, true, "min is inside range");
-        $this->validateModelAttribute($val, $beforeMin, false, "min -1 day is invalid");
-        $this->validateModelAttribute($val, '2000-01-02', false, "max +1 day is invalid");
+        $this->validateModelAttribute($val, '1999-12-31', true, 'max -1 day is valid');
+        $this->validateModelAttribute($val, '2000-01-01', true, 'max is inside range');
+        $this->validateModelAttribute($val, $min, true, 'min is inside range');
+        $this->validateModelAttribute($val, $beforeMin, false, 'min -1 day is invalid');
+        $this->validateModelAttribute($val, '2000-01-02', false, 'max +1 day is invalid');
     }
 
     public function testIntlValidateValueRangeOld()
     {
         if ($this->checkOldIcuBug()) {
-            $this->markTestSkipped("ICU is too old.");
+            $this->markTestSkipped('ICU is too old.');
         }
         $date = '14-09-13';
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1920-01-01']);
@@ -548,7 +548,7 @@ class DateValidatorTest extends TestCase
     public function testIntlValidateAttributeRangeOld()
     {
         if ($this->checkOldIcuBug()) {
-            $this->markTestSkipped("ICU is too old.");
+            $this->markTestSkipped('ICU is too old.');
         }
         $date = '14-09-13';
         $val = new DateValidator(['format' => 'yyyy-MM-dd', 'min' => '1920-01-01']);

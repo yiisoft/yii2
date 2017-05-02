@@ -55,7 +55,7 @@ class Utf8Controller extends Controller
                 }
 
                 if ($ord === false) {
-                    $this->found("BROKEN UTF8", $c, $line, $pos, $file);
+                    $this->found('BROKEN UTF8', $c, $line, $pos, $file);
                     continue;
                 }
 
@@ -64,12 +64,12 @@ class Utf8Controller extends Controller
                  || 0x2028 <= $ord && $ord <= 0x202E
                  || 0x205f <= $ord && $ord <= 0x206F
                     ) {
-                    $this->found("UNSUPPORTED SPACE CHARACTER", $c, $line, $pos, $file);
+                    $this->found('UNSUPPORTED SPACE CHARACTER', $c, $line, $pos, $file);
                     continue;
                 }
                 if ($ord < 0x0020 && $ord != 0x000A && $ord != 0x0009 ||
                     0x0080 <= $ord && $ord < 0x009F) {
-                    $this->found("CONTROL CHARARCTER", $c, $line, $pos, $file);
+                    $this->found('CONTROL CHARARCTER', $c, $line, $pos, $file);
                     continue;
                 }
 //                if ($ord > 0x009F) {

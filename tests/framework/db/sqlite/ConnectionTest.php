@@ -73,9 +73,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             } else {
                 $this->assertNull($db->getMaster());
             }
-            $this->assertNotEquals('test', $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar());
+            $this->assertNotEquals('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
             $result = $db->useMaster(function (Connection $db) {
-                return $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar();
+                return $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar();
             });
             $this->assertEquals('test', $result);
 
@@ -198,7 +198,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     public function testAliasDbPath()
     {
         $config = [
-            'dsn' => "sqlite:@yiiunit/runtime/yii2aliastest.sq3",
+            'dsn' => 'sqlite:@yiiunit/runtime/yii2aliastest.sq3',
         ];
         $connection = new Connection($config);
         $connection->open();

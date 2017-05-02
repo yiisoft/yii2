@@ -217,9 +217,9 @@ class FormatterDateTest extends TestCase
         $this->assertSame("$value", $this->formatter->asTimestamp(date('Y-m-d H:i:s', $value)));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asTimestamp(0));
-        $this->assertSame("0", $this->formatter->asTimestamp(false));
-        $this->assertSame("0", $this->formatter->asTimestamp(""));
+        $this->assertSame('0', $this->formatter->asTimestamp(0));
+        $this->assertSame('0', $this->formatter->asTimestamp(false));
+        $this->assertSame('0', $this->formatter->asTimestamp(''));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTimestamp(null));
@@ -282,18 +282,18 @@ class FormatterDateTest extends TestCase
 
     public function testAsRelativeTime()
     {
-        $interval_1_second = new DateInterval("PT1S");
-        $interval_244_seconds = new DateInterval("PT244S");
-        $interval_1_minute = new DateInterval("PT1M");
-        $interval_33_minutes = new DateInterval("PT33M");
-        $interval_1_hour = new DateInterval("PT1H");
-        $interval_6_hours = new DateInterval("PT6H");
-        $interval_1_day = new DateInterval("P1D");
-        $interval_89_days = new DateInterval("P89D");
-        $interval_1_month = new DateInterval("P1M");
-        $interval_5_months = new DateInterval("P5M");
-        $interval_1_year = new DateInterval("P1Y");
-        $interval_12_years = new DateInterval("P12Y");
+        $interval_1_second = new DateInterval('PT1S');
+        $interval_244_seconds = new DateInterval('PT244S');
+        $interval_1_minute = new DateInterval('PT1M');
+        $interval_33_minutes = new DateInterval('PT33M');
+        $interval_1_hour = new DateInterval('PT1H');
+        $interval_6_hours = new DateInterval('PT6H');
+        $interval_1_day = new DateInterval('P1D');
+        $interval_89_days = new DateInterval('P89D');
+        $interval_1_month = new DateInterval('P1M');
+        $interval_5_months = new DateInterval('P5M');
+        $interval_1_year = new DateInterval('P1Y');
+        $interval_12_years = new DateInterval('P12Y');
 
         // Pass a DateInterval
         $this->assertSame('a second ago', $this->formatter->asRelativeTime($interval_1_second));
@@ -394,12 +394,12 @@ class FormatterDateTest extends TestCase
         $this->assertSame('in 28 days', $this->formatter->asRelativeTime($dateThen, $dateNow));
 
         // just now
-        $this->assertSame("just now", $this->formatter->asRelativeTime($t = time(), $t));
-        $this->assertSame("just now", $this->formatter->asRelativeTime(0, 0));
+        $this->assertSame('just now', $this->formatter->asRelativeTime($t = time(), $t));
+        $this->assertSame('just now', $this->formatter->asRelativeTime(0, 0));
 
         // empty input
-        $this->assertSame("just now", $this->formatter->asRelativeTime(false, 0));
-        $this->assertSame("just now", $this->formatter->asRelativeTime("", 0));
+        $this->assertSame('just now', $this->formatter->asRelativeTime(false, 0));
+        $this->assertSame('just now', $this->formatter->asRelativeTime('', 0));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null));
@@ -413,19 +413,19 @@ class FormatterDateTest extends TestCase
 
     public function testAsDuration()
     {
-        $interval_0_seconds = new DateInterval("PT0S");
-        $interval_1_second = new DateInterval("PT1S");
-        $interval_244_seconds = new DateInterval("PT244S");
-        $interval_1_minute = new DateInterval("PT1M");
-        $interval_33_minutes = new DateInterval("PT33M");
-        $interval_1_hour = new DateInterval("PT1H");
-        $interval_6_hours = new DateInterval("PT6H");
-        $interval_1_day = new DateInterval("P1D");
-        $interval_89_days = new DateInterval("P89D");
-        $interval_1_month = new DateInterval("P1M");
-        $interval_5_months = new DateInterval("P5M");
-        $interval_1_year = new DateInterval("P1Y");
-        $interval_12_years = new DateInterval("P12Y");
+        $interval_0_seconds = new DateInterval('PT0S');
+        $interval_1_second = new DateInterval('PT1S');
+        $interval_244_seconds = new DateInterval('PT244S');
+        $interval_1_minute = new DateInterval('PT1M');
+        $interval_33_minutes = new DateInterval('PT33M');
+        $interval_1_hour = new DateInterval('PT1H');
+        $interval_6_hours = new DateInterval('PT6H');
+        $interval_1_day = new DateInterval('P1D');
+        $interval_89_days = new DateInterval('P89D');
+        $interval_1_month = new DateInterval('P1M');
+        $interval_5_months = new DateInterval('P5M');
+        $interval_1_year = new DateInterval('P1Y');
+        $interval_12_years = new DateInterval('P12Y');
 
         // Pass a DateInterval
         $this->assertSame('0 seconds', $this->formatter->asDuration($interval_0_seconds));

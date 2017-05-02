@@ -27,7 +27,7 @@ class DbCacheTest extends CacheTestCase
 
         parent::setUp();
 
-        $this->getConnection()->createCommand("
+        $this->getConnection()->createCommand('
             CREATE TABLE IF NOT EXISTS cache (
                 id char(128) NOT NULL,
                 expire int(11) DEFAULT NULL,
@@ -35,7 +35,7 @@ class DbCacheTest extends CacheTestCase
                 PRIMARY KEY (id),
                 KEY expire (expire)
             );
-        ")->execute();
+        ')->execute();
     }
 
     /**

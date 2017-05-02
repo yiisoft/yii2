@@ -30,7 +30,7 @@ class VarDumperTest extends TestCase
         $incompleteObj = unserialize($serializedObj);
         $dumpResult = VarDumper::dumpAsString($incompleteObj);
         $this->assertContains("__PHP_Incomplete_Class#1\n(", $dumpResult);
-        $this->assertContains("nonExistingClass", $dumpResult);
+        $this->assertContains('nonExistingClass', $dumpResult);
     }
 
     public function testExportIncompleteObject()
@@ -38,7 +38,7 @@ class VarDumperTest extends TestCase
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
         $exportResult = VarDumper::export($incompleteObj);
-        $this->assertContains("nonExistingClass", $exportResult);
+        $this->assertContains('nonExistingClass', $exportResult);
     }
 
     public function testDumpObject()
@@ -52,7 +52,7 @@ class VarDumperTest extends TestCase
         $dumpResult = VarDumper::dumpAsString($obj);
         $this->assertContains("stdClass#1\n(", $dumpResult);
         $this->assertContains("[name] => 'test-name'", $dumpResult);
-        $this->assertContains("[price] => 19", $dumpResult);
+        $this->assertContains('[price] => 19', $dumpResult);
     }
 
     /**

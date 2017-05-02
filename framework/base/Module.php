@@ -638,7 +638,7 @@ class Module extends ServiceLocator
             $controller = Yii::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
-            throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
+            throw new InvalidConfigException('Controller class must extend from \\yii\\base\\Controller.');
         }
         return null;
     }

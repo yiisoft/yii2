@@ -280,9 +280,9 @@ EOL;
             'js/test_alert.js' => "function test() {
                 alert('Test message');
             }",
-            'js/test_sum_ab.js' => "function sumAB(a, b) {
+            'js/test_sum_ab.js' => 'function sumAB(a, b) {
                 return a + b;
-            }",
+            }',
         ];
         $this->createAssetSourceFiles($jsFiles);
         $assetBundleClassName = $this->declareAssetBundleClass([
@@ -547,10 +547,10 @@ EOL;
                 '.published-relative-dir-class {background-image: url(../img/same_relative_dir.png);}',
             ],
             [
-                "img {clip-path: url(#xxx)}",
+                'img {clip-path: url(#xxx)}',
                 '/test/base/path/css',
                 '/test/base/path/assets/output',
-                "img {clip-path: url(#xxx)}",
+                'img {clip-path: url(#xxx)}',
             ],
         ];
     }

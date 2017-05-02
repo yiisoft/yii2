@@ -23,8 +23,8 @@ class ZendDataCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (!function_exists("zend_shm_cache_store")) {
-            $this->markTestSkipped("Zend Data cache not installed. Skipping.");
+        if (!function_exists('zend_shm_cache_store')) {
+            $this->markTestSkipped('Zend Data cache not installed. Skipping.');
         }
 
         if ($this->_cacheInstance === null) {

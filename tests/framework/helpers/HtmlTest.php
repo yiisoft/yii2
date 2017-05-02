@@ -39,13 +39,13 @@ class HtmlTest extends TestCase
 
     public function testEncode()
     {
-        $this->assertEquals("a&lt;&gt;&amp;&quot;&#039;�", Html::encode("a<>&\"'\x80"));
+        $this->assertEquals('a&lt;&gt;&amp;&quot;&#039;�', Html::encode("a<>&\"'\x80"));
         $this->assertEquals('Sam &amp; Dark', Html::encode('Sam & Dark'));
     }
 
     public function testDecode()
     {
-        $this->assertEquals("a<>&\"'", Html::decode("a&lt;&gt;&amp;&quot;&#039;"));
+        $this->assertEquals("a<>&\"'", Html::decode('a&lt;&gt;&amp;&quot;&#039;'));
     }
 
     public function testTag()
@@ -241,7 +241,7 @@ class HtmlTest extends TestCase
     {
         $this->assertEquals('<button type="button">Button</button>', Html::button());
         $this->assertEquals('<button type="button" name="test" value="value">content<></button>', Html::button('content<>', ['name' => 'test', 'value' => 'value']));
-        $this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', ['type' => 'submit', 'name' => 'test', 'value' => 'value', 'class' => "t"]));
+        $this->assertEquals('<button type="submit" class="t" name="test" value="value">content<></button>', Html::button('content<>', ['type' => 'submit', 'name' => 'test', 'value' => 'value', 'class' => 't']));
     }
 
     public function testSubmitButton()
@@ -1275,22 +1275,22 @@ EOD;
     public function validAttributeNamesProvider()
     {
         return [
-            ["asd]asdf.asdfa[asdfa", "asdf.asdfa"],
-            ["a", "a"],
-            ["[0]a", "a"],
-            ["a[0]", "a"],
-            ["[0]a[0]", "a"],
-            ["[0]a.[0]", "a."],
+            ['asd]asdf.asdfa[asdfa', 'asdf.asdfa'],
+            ['a', 'a'],
+            ['[0]a', 'a'],
+            ['a[0]', 'a'],
+            ['[0]a[0]', 'a'],
+            ['[0]a.[0]', 'a.'],
 
             // Unicode checks.
-            ["ä", "ä"],
-            ["ä", "ä"],
-            ["asdf]öáöio..[asdfasdf", "öáöio.."],
-            ["öáöio", "öáöio"],
-            ["[0]test.ööößß.d", "test.ööößß.d"],
-            ["ИІК", "ИІК"],
-            ["]ИІК[", "ИІК"],
-            ["[0]ИІК[0]", "ИІК"]
+            ['ä', 'ä'],
+            ['ä', 'ä'],
+            ['asdf]öáöio..[asdfasdf', 'öáöio..'],
+            ['öáöio', 'öáöio'],
+            ['[0]test.ööößß.d', 'test.ööößß.d'],
+            ['ИІК', 'ИІК'],
+            [']ИІК[', 'ИІК'],
+            ['[0]ИІК[0]', 'ИІК']
         ];
     }
 

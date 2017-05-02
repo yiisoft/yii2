@@ -165,7 +165,7 @@ class FormatterTest extends TestCase
         $value = 'www.yiiframework.com/';
         $this->assertSame("<a href=\"http://$value\">$value</a>", $this->formatter->asUrl($value));
         $value = 'https://www.yiiframework.com/?name=test&value=5"';
-        $this->assertSame("<a href=\"https://www.yiiframework.com/?name=test&amp;value=5&quot;\">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>", $this->formatter->asUrl($value));
+        $this->assertSame('<a href="https://www.yiiframework.com/?name=test&amp;value=5&quot;">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>', $this->formatter->asUrl($value));
         $value = 'http://www.yiiframework.com/';
         $this->assertSame("<a href=\"$value\" target=\"_blank\">$value</a>", $this->formatter->asUrl($value, ['target' => '_blank']));
 
@@ -178,7 +178,7 @@ class FormatterTest extends TestCase
         $value = 'http://sample.com/img.jpg';
         $this->assertSame("<img src=\"$value\" alt=\"\">", $this->formatter->asImage($value));
         $value = 'http://sample.com/img.jpg';
-        $alt = "Hello!";
+        $alt = 'Hello!';
         $this->assertSame("<img src=\"$value\" alt=\"$alt\">", $this->formatter->asImage($value, ['alt' => $alt]));
 
         // null display
@@ -189,8 +189,8 @@ class FormatterTest extends TestCase
     {
         $this->assertSame('Yes', $this->formatter->asBoolean(true));
         $this->assertSame('No', $this->formatter->asBoolean(false));
-        $this->assertSame('Yes', $this->formatter->asBoolean("111"));
-        $this->assertSame('No', $this->formatter->asBoolean(""));
+        $this->assertSame('Yes', $this->formatter->asBoolean('111'));
+        $this->assertSame('No', $this->formatter->asBoolean(''));
         $this->assertSame('No', $this->formatter->asBoolean(0));
 
         // null display

@@ -101,7 +101,7 @@ abstract class ManagerTestCase extends TestCase
         $this->prepareData();
 
         $rule = $this->auth->getRule('isAuthor');
-        $rule->name = "newName";
+        $rule->name = 'newName';
         $rule->reallyReally = false;
         $this->auth->update('isAuthor', $rule);
 
@@ -109,7 +109,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(null, $rule);
 
         $rule = $this->auth->getRule('newName');
-        $this->assertEquals("newName", $rule->name);
+        $this->assertEquals('newName', $rule->name);
         $this->assertEquals(false, $rule->reallyReally);
 
         $rule->reallyReally = true;

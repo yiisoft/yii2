@@ -655,7 +655,7 @@ EOD;
     protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)
     {
         foreach ($messages as $category => $msgs) {
-            $file = str_replace("\\", '/', "$dirName/$category.php");
+            $file = str_replace('\\', '/', "$dirName/$category.php");
             $path = dirname($file);
             FileHelper::createDirectory($path);
             $msgs = array_values(array_unique($msgs));
@@ -776,7 +776,7 @@ EOD;
      */
     protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)
     {
-        $file = str_replace("\\", '/', "$dirName/$catalog.po");
+        $file = str_replace('\\', '/', "$dirName/$catalog.po");
         FileHelper::createDirectory(dirname($file));
         $this->stdout("Saving messages to $file...\n");
 
@@ -869,7 +869,7 @@ EOD;
      */
     protected function saveMessagesToPOT($messages, $dirName, $catalog)
     {
-        $file = str_replace("\\", '/', "$dirName/$catalog.pot");
+        $file = str_replace('\\', '/', "$dirName/$catalog.pot");
         FileHelper::createDirectory(dirname($file));
         $this->stdout("Saving messages to $file...\n");
 

@@ -406,7 +406,7 @@ class Request extends \yii\base\Request
             } elseif (isset($this->parsers['*'])) {
                 $parser = Yii::createObject($this->parsers['*']);
                 if (!($parser instanceof RequestParserInterface)) {
-                    throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+                    throw new InvalidConfigException('The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.');
                 }
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $rawContentType);
             } elseif ($this->getMethod() === 'POST') {

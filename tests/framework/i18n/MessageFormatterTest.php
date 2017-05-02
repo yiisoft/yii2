@@ -21,11 +21,11 @@ class MessageFormatterTest extends TestCase
     const N_VALUE = 42;
     const F = 'f';
     const F_VALUE = 2e+8;
-    const F_VALUE_FORMATTED = "200,000,000";
+    const F_VALUE_FORMATTED = '200,000,000';
     const D = 'd';
     const D_VALUE = 200000000.101;
-    const D_VALUE_FORMATTED = "200,000,000.101";
-    const D_VALUE_FORMATTED_INTEGER = "200,000,000";
+    const D_VALUE_FORMATTED = '200,000,000.101';
+    const D_VALUE_FORMATTED_INTEGER = '200,000,000';
     const SUBJECT = 'сабж';
     const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 
@@ -290,8 +290,8 @@ _MSG_
             ],
 
             [
-                "{0,number,integer} monkeys on {1,number,integer} trees make {2,number} monkeys per tree",
-                "4,560 monkeys on 123 trees make 37.073 monkeys per tree",
+                '{0,number,integer} monkeys on {1,number,integer} trees make {2,number} monkeys per tree',
+                '4,560 monkeys on 123 trees make 37.073 monkeys per tree',
                 [
                     0 => 4560,
                     1 => 123,
@@ -301,8 +301,8 @@ _MSG_
             ],
 
             [
-                "{0,number,integer} Affen auf {1,number,integer} Bäumen sind {2,number} Affen pro Baum",
-                "4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum",
+                '{0,number,integer} Affen auf {1,number,integer} Bäumen sind {2,number} Affen pro Baum',
+                '4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum',
                 [
                     0 => 4560,
                     1 => 123,
@@ -312,8 +312,8 @@ _MSG_
             ],
 
             [
-                "{monkeyCount,number,integer} monkeys on {trees,number,integer} trees make {monkeysPerTree,number} monkeys per tree",
-                "4,560 monkeys on 123 trees make 37.073 monkeys per tree",
+                '{monkeyCount,number,integer} monkeys on {trees,number,integer} trees make {monkeysPerTree,number} monkeys per tree',
+                '4,560 monkeys on 123 trees make 37.073 monkeys per tree',
                 [
                     'monkeyCount' => 4560,
                     'trees' => 123,
@@ -323,8 +323,8 @@ _MSG_
             ],
 
             [
-                "{monkeyCount,number,integer} Affen auf {trees,number,integer} Bäumen sind {monkeysPerTree,number} Affen pro Baum",
-                "4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum",
+                '{monkeyCount,number,integer} Affen auf {trees,number,integer} Bäumen sind {monkeysPerTree,number} Affen pro Baum',
+                '4.560 Affen auf 123 Bäumen sind 37,073 Affen pro Baum',
                 [
                     'monkeyCount' => 4560,
                     'trees' => 123,
@@ -353,8 +353,8 @@ _MSG_
      */
     public function testParseNamedArguments($pattern, $expected, $args, $locale = 'en-US')
     {
-        if (!extension_loaded("intl")) {
-            $this->markTestSkipped("intl not installed. Skipping.");
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl not installed. Skipping.');
         }
 
         $formatter = new MessageFormatter();

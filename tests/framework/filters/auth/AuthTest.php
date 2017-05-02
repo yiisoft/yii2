@@ -29,8 +29,8 @@ class AuthTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $appConfig = [
             'components' => [

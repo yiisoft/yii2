@@ -21,6 +21,6 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals("SELECT `id`, `t`.`name` FROM `customer` t", $command->sql);
+        $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
     }
 }

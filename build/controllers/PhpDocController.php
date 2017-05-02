@@ -270,15 +270,15 @@ class PhpDocController extends Controller
                 $contentAfterNamespace--;
             }
             $lines = array_merge([
-                "<?php",
-                "/**",
-                " * @link http://www.yiiframework.com/",
-                " * @copyright Copyright (c) 2008 Yii Software LLC",
-                " * @license http://www.yiiframework.com/license/",
-                " */",
-                "",
+                '<?php',
+                '/**',
+                ' * @link http://www.yiiframework.com/',
+                ' * @copyright Copyright (c) 2008 Yii Software LLC',
+                ' * @license http://www.yiiframework.com/license/',
+                ' */',
+                '',
                 $namespaceLine,
-                ""
+                ''
             ], $lines);
         }
     }
@@ -616,8 +616,8 @@ class PhpDocController extends Controller
 
     protected function generateClassPropertyDocs($fileName)
     {
-        $phpdoc = "";
-        $file = str_replace("\r", "", str_replace("\t", " ", file_get_contents($fileName, true)));
+        $phpdoc = '';
+        $file = str_replace("\r", '', str_replace("\t", ' ', file_get_contents($fileName, true)));
         $ns = $this->match('#\nnamespace (?<name>[\w\\\\]+);\n#', $file);
         $namespace = reset($ns);
         $namespace = $namespace['name'];

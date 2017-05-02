@@ -908,12 +908,12 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         /** @var $order Order */
         $order = Order::findOne(1);
         $itemsSQL = $order->getOrderitems()->createCommand()->rawSql;
-        $expectedSQL = $this->replaceQuotes("SELECT * FROM [[order_item]] WHERE [[order_id]]=1");
+        $expectedSQL = $this->replaceQuotes('SELECT * FROM [[order_item]] WHERE [[order_id]]=1');
         $this->assertEquals($expectedSQL, $itemsSQL);
 
         $order = Order::findOne(1);
         $itemsSQL = $order->getOrderItems()->joinWith('item')->createCommand()->rawSql;
-        $expectedSQL = $this->replaceQuotes("SELECT [[order_item]].* FROM [[order_item]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] WHERE [[order_item]].[[order_id]]=1");
+        $expectedSQL = $this->replaceQuotes('SELECT [[order_item]].* FROM [[order_item]] LEFT JOIN [[item]] ON [[order_item]].[[item_id]] = [[item]].[[id]] WHERE [[order_item]].[[order_id]]=1');
         $this->assertEquals($expectedSQL, $itemsSQL);
 
         Order::$tableName = null;

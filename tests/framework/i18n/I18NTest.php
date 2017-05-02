@@ -141,8 +141,8 @@ class I18NTest extends TestCase
 
     public function testTranslateParams2()
     {
-        if (!extension_loaded("intl")) {
-            $this->markTestSkipped("intl not installed. Skipping.");
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl not installed. Skipping.');
         }
         $msg = 'His name is {name} and his speed is about {n, number} km/h.';
         $params = [

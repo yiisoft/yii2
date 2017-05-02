@@ -238,15 +238,15 @@ class ArrayHelperTest extends TestCase
     public function testMultisortNestedObjects()
     {
         $obj1 = new \stdClass();
-        $obj1->type = "def";
+        $obj1->type = 'def';
         $obj1->owner = $obj1;
 
         $obj2 = new \stdClass();
-        $obj2->type = "abc";
+        $obj2->type = 'abc';
         $obj2->owner = $obj2;
 
         $obj3 = new \stdClass();
-        $obj3->type = "abc";
+        $obj3->type = 'abc';
         $obj3->owner = $obj3;
 
         $models = [
@@ -921,7 +921,7 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::isTraversable(['a']));
         $this->assertTrue(ArrayHelper::isTraversable(new \ArrayObject(['1'])));
         $this->assertFalse(ArrayHelper::isTraversable(new \stdClass()));
-        $this->assertFalse(ArrayHelper::isTraversable("A,B,C"));
+        $this->assertFalse(ArrayHelper::isTraversable('A,B,C'));
         $this->assertFalse(ArrayHelper::isTraversable(12));
         $this->assertFalse(ArrayHelper::isTraversable(false));
         $this->assertFalse(ArrayHelper::isTraversable(null));

@@ -21,11 +21,11 @@ class FallbackMessageFormatterTest extends TestCase
     const N_VALUE = 42;
     const F = 'f';
     const F_VALUE = 2e+8;
-    const F_VALUE_FORMATTED = "200,000,000";
+    const F_VALUE_FORMATTED = '200,000,000';
     const D = 'd';
     const D_VALUE = 200000000.101;
-    const D_VALUE_FORMATTED = "200,000,000.101";
-    const D_VALUE_FORMATTED_INTEGER = "200,000,000";
+    const D_VALUE_FORMATTED = '200,000,000.101';
+    const D_VALUE_FORMATTED_INTEGER = '200,000,000';
     const SUBJECT = 'сабж';
     const SUBJECT_VALUE = 'Answer to the Ultimate Question of Life, the Universe, and Everything';
 

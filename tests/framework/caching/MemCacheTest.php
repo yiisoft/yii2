@@ -23,8 +23,8 @@ class MemCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (!extension_loaded("memcache")) {
-            $this->markTestSkipped("memcache not installed. Skipping.");
+        if (!extension_loaded('memcache')) {
+            $this->markTestSkipped('memcache not installed. Skipping.');
         }
 
         // check whether memcached is running and skip tests if not.

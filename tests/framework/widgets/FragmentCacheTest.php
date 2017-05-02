@@ -34,13 +34,13 @@ class FragmentCacheTest extends \yiiunit\TestCase
 
         $view = new View();
         $this->assertTrue($view->beginCache('test'));
-        echo "cached fragment";
+        echo 'cached fragment';
         $view->endCache();
 
         ob_start();
         ob_implicit_flush(false);
         $this->assertFalse($view->beginCache('test'));
-        $this->assertEquals("cached fragment", ob_get_clean());
+        $this->assertEquals('cached fragment', ob_get_clean());
 
         ob_end_clean();
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
@@ -54,15 +54,15 @@ class FragmentCacheTest extends \yiiunit\TestCase
 
         $view = new View();
         $this->assertTrue($view->beginCache('test', ['enabled' => false]));
-        echo "cached fragment";
+        echo 'cached fragment';
         $view->endCache();
 
         ob_start();
         ob_implicit_flush(false);
         $this->assertTrue($view->beginCache('test', ['enabled' => false]));
-        echo "cached fragment";
+        echo 'cached fragment';
         $view->endCache();
-        $this->assertEquals("cached fragment", ob_get_clean());
+        $this->assertEquals('cached fragment', ob_get_clean());
 
         ob_end_clean();
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');
@@ -76,15 +76,15 @@ class FragmentCacheTest extends \yiiunit\TestCase
 
         $view = new View();
         $this->assertTrue($view->beginCache('test'));
-        echo "cached fragment";
+        echo 'cached fragment';
         $view->endCache();
 
         ob_start();
         ob_implicit_flush(false);
         $this->assertTrue($view->beginCache('test', ['enabled' => false]));
-        echo "cached fragment other";
+        echo 'cached fragment other';
         $view->endCache();
-        $this->assertEquals("cached fragment other", ob_get_clean());
+        $this->assertEquals('cached fragment other', ob_get_clean());
 
         ob_end_clean();
         $this->assertEquals($expectedLevel, ob_get_level(), 'Output buffer not closed correctly.');

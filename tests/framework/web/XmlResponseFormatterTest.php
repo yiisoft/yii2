@@ -44,7 +44,7 @@ class XmlResponseFormatterTest extends FormatterTest
             ['abc', "<response>abc</response>\n"],
             [true, "<response>true</response>\n"],
             [false, "<response>false</response>\n"],
-            ["<>", "<response>&lt;&gt;</response>\n"],
+            ['<>', "<response>&lt;&gt;</response>\n"],
         ]);
     }
 

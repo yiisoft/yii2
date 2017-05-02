@@ -32,7 +32,7 @@ class JsonResponseFormatterTest extends FormatterTest
             [1, 1],
             ['abc', '"abc"'],
             [true, 'true'],
-            ["<>", '"<>"'],
+            ['<>', '"<>"'],
         ];
     }
 
@@ -40,7 +40,7 @@ class JsonResponseFormatterTest extends FormatterTest
     {
         return [
             // input, json, pretty json
-            [[], "[]", "[]"],
+            [[], '[]', '[]'],
             [[1, 'abc'], '[1,"abc"]', "[\n    1,\n    \"abc\"\n]"],
             [[
                 'a' => 1,
