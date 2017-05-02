@@ -94,6 +94,8 @@ class YiiConfig extends Config
             'no_useless_return' => true,
             'no_whitespace_before_comma_in_array' => true,
             'no_whitespace_in_blank_line' => true,
+//            'non_printable_character' => true, // breaks Formatter::asCurrency() tests
+            'normalize_index_brace' => true,
         ]);
     }
 
