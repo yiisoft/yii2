@@ -34,6 +34,7 @@ class YiiConfig extends Config
                 'align_double_arrow' => false,
                 'align_equals' => false,
             ],
+            'cast_spaces' => true,
         ]);
     }
 

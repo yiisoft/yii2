@@ -97,7 +97,7 @@ class FakeController extends Controller
     public function actionResponse($status = 0)
     {
         $response = new Response();
-        $response->exitStatus = (int)$status;
+        $response->exitStatus = (int) $status;
         return $response;
     }
 }

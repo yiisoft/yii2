@@ -380,7 +380,7 @@ class BaseArrayHelper
     public static function index($array, $key, $groups = [])
     {
         $result = [];
-        $groups = (array)$groups;
+        $groups = (array) $groups;
 
         foreach ($array as $element) {
             $lastArray = &$result;

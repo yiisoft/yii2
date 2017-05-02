@@ -351,7 +351,7 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
         $normalized = false;
         if ($this->hasNormalizer($manager)) {

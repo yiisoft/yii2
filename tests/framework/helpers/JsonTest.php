@@ -122,7 +122,7 @@ class JsonTest extends TestCase
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::htmlEncode($data));
 
         // https://github.com/yiisoft/yii2/issues/957
-        $data = (object)null;
+        $data = (object) null;
         $this->assertSame('{}', Json::htmlEncode($data));
 
         // JsonSerializable

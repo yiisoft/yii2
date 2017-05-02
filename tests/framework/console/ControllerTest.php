@@ -85,13 +85,13 @@ class ControllerTest extends TestCase
         $response = $this->runRequest('fake/status');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/status', (string)$status);
+        $response = $this->runRequest('fake/status', (string) $status);
         $this->assertResponseStatus($status, $response);
 
         $response = $this->runRequest('fake/response');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/response', (string)$status);
+        $response = $this->runRequest('fake/response', (string) $status);
         $this->assertResponseStatus($status, $response);
     }
 

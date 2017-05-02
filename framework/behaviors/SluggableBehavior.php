@@ -177,7 +177,7 @@ class SluggableBehavior extends AttributeBehavior
             return true;
         }
 
-        foreach ((array)$this->attribute as $attribute) {
+        foreach ((array) $this->attribute as $attribute) {
             if ($this->owner->isAttributeChanged($attribute)) {
                 return true;
             }

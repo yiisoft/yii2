@@ -130,7 +130,7 @@ class EmailValidator extends Validator
             'message' => $this->formatMessage($this->message, [
                 'attribute' => $model->getAttributeLabel($attribute),
             ]),
-            'enableIDN' => (bool)$this->enableIDN,
+            'enableIDN' => (bool) $this->enableIDN,
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;

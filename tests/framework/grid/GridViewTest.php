@@ -41,7 +41,7 @@ class GridViewTest extends \yiiunit\TestCase
         }
 
         $row = array_merge($row, ['relation' => ['id' => 1, 'name' => 'RelationName',],]);
-        $row = array_merge($row, ['otherRelation' => (object)$row['relation']]);
+        $row = array_merge($row, ['otherRelation' => (object) $row['relation']]);
 
         $grid = new GridView([
             'dataProvider' => new ArrayDataProvider(

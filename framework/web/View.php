@@ -411,7 +411,7 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -479,7 +479,7 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }

@@ -290,7 +290,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             }
         } else {
             foreach ($fileInfoAttributes as $attribute) {
-                $files[$baseName][$attribute] = (array)$files[$baseName][$attribute];
+                $files[$baseName][$attribute] = (array) $files[$baseName][$attribute];
             }
         }
 
