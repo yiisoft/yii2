@@ -228,7 +228,7 @@ class ComponentTest extends TestCase
 
     public function testStopEvent()
     {
-        $component = new NewComponent;
+        $component = new NewComponent();
         $component->on('click', 'yiiunit\framework\base\globalEventHandler2');
         $component->on('click', [$this->component, 'myEventHandler']);
         $component->raiseEvent();
@@ -238,12 +238,12 @@ class ComponentTest extends TestCase
 
     public function testAttachBehavior()
     {
-        $component = new NewComponent;
+        $component = new NewComponent();
         $this->assertFalse($component->hasProperty('p'));
         $this->assertFalse($component->behaviorCalled);
         $this->assertNull($component->getBehavior('a'));
 
-        $behavior = new NewBehavior;
+        $behavior = new NewBehavior();
         $component->attachBehavior('a', $behavior);
         $this->assertSame($behavior, $component->getBehavior('a'));
         $this->assertTrue($component->hasProperty('p'));
@@ -256,7 +256,7 @@ class ComponentTest extends TestCase
         $component->test();
 
         $p = 'as b';
-        $component = new NewComponent;
+        $component = new NewComponent();
         $component->$p = ['class' => 'NewBehavior'];
         $this->assertSame($behavior, $component->getBehavior('a'));
         $this->assertTrue($component->hasProperty('p'));
@@ -266,11 +266,11 @@ class ComponentTest extends TestCase
 
     public function testAttachBehaviors()
     {
-        $component = new NewComponent;
+        $component = new NewComponent();
         $this->assertNull($component->getBehavior('a'));
         $this->assertNull($component->getBehavior('b'));
 
-        $behavior = new NewBehavior;
+        $behavior = new NewBehavior();
 
         $component->attachBehaviors([
             'a' => $behavior,
@@ -282,8 +282,8 @@ class ComponentTest extends TestCase
 
     public function testDetachBehavior()
     {
-        $component = new NewComponent;
-        $behavior = new NewBehavior;
+        $component = new NewComponent();
+        $behavior = new NewBehavior();
 
         $component->attachBehavior('a', $behavior);
         $this->assertSame($behavior, $component->getBehavior('a'));
@@ -298,8 +298,8 @@ class ComponentTest extends TestCase
 
     public function testDetachBehaviors()
     {
-        $component = new NewComponent;
-        $behavior = new NewBehavior;
+        $component = new NewComponent();
+        $behavior = new NewBehavior();
 
         $component->attachBehavior('a', $behavior);
         $this->assertSame($behavior, $component->getBehavior('a'));
@@ -322,7 +322,7 @@ class ComponentTest extends TestCase
     {
         $this->assertNull($this->component->getBehavior('a'));
 
-        $behavior = new NewBehavior;
+        $behavior = new NewBehavior();
         $this->component->attachBehaviors([
             'a' => $behavior,
         ]);
@@ -379,7 +379,7 @@ class NewComponent extends Component
     public function getObject()
     {
         if (!$this->_object) {
-            $this->_object = new self;
+            $this->_object = new self();
             $this->_object->_text = 'object text';
         }
 
@@ -410,7 +410,7 @@ class NewComponent extends Component
 
     public function raiseEvent()
     {
-        $this->trigger('click', new Event);
+        $this->trigger('click', new Event());
     }
 
     public function setWriteOnly()

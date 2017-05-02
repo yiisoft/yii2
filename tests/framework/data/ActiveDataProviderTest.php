@@ -125,7 +125,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testQuery()
     {
-        $query = new Query;
+        $query = new Query();
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
             'query' => $query->from('order')->orderBy('id'),
@@ -135,7 +135,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertTrue(is_array($orders[0]));
         $this->assertEquals([0, 1, 2], $provider->getKeys());
 
-        $query = new Query;
+        $query = new Query();
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
             'query' => $query->from('order'),
@@ -149,7 +149,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testRefresh()
     {
-        $query = new Query;
+        $query = new Query();
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
             'query' => $query->from('order')->orderBy('id'),
@@ -164,7 +164,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testPaginationBeforeModels()
     {
-        $query = new Query;
+        $query = new Query();
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
             'query' => $query->from('order')->orderBy('id'),
@@ -182,7 +182,7 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
 
     public function testDoesNotPerformQueryWhenHasNoModels()
     {
-        $query = new UnqueryableQueryMock;
+        $query = new UnqueryableQueryMock();
         $provider = new ActiveDataProvider([
             'db' => $this->getConnection(),
             'query' => $query->from('order')->where('0=1'),

@@ -111,7 +111,7 @@ class RateLimiterTest extends TestCase
     public function testCheckRateLimitTooManyRequests()
     {
         /* @var $rateLimit UserIdentity|\Prophecy\ObjectProphecy */
-        $rateLimit = new RateLimit;
+        $rateLimit = new RateLimit();
         $rateLimit
             ->setRateLimit([1, 1])
             ->setAllowance([1, time() + 2]);
@@ -124,7 +124,7 @@ class RateLimiterTest extends TestCase
     public function testCheckRateaddRateLimitHeaders()
     {
         /* @var $user UserIdentity|\Prophecy\ObjectProphecy */
-        $rateLimit = new RateLimit;
+        $rateLimit = new RateLimit();
         $rateLimit
             ->setRateLimit([1, 1])
             ->setAllowance([1, time()]);

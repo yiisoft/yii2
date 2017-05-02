@@ -430,7 +430,7 @@ class Query extends Component implements QueryInterface
 
             return $command->queryScalar();
         } else {
-            return (new Query)->select([$selectExpression])
+            return (new Query())->select([$selectExpression])
                 ->from(['c' => $this])
                 ->createCommand($db)
                 ->queryScalar();

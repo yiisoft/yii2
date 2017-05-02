@@ -27,7 +27,7 @@ class BooleanValidatorTest extends TestCase
 
     public function testValidateValue()
     {
-        $val = new BooleanValidator;
+        $val = new BooleanValidator();
         $this->assertTrue($val->validate(true));
         $this->assertTrue($val->validate(false));
         $this->assertTrue($val->validate('0'));
@@ -50,12 +50,12 @@ class BooleanValidatorTest extends TestCase
 
     public function testValidateAttributeAndError()
     {
-        $obj = new FakedValidationModel;
+        $obj = new FakedValidationModel();
         $obj->attrA = true;
         $obj->attrB = '1';
         $obj->attrC = '0';
         $obj->attrD = [];
-        $val = new BooleanValidator;
+        $val = new BooleanValidator();
         $val->validateAttribute($obj, 'attrA');
         $this->assertFalse($obj->hasErrors('attrA'));
         $val->validateAttribute($obj, 'attrC');
@@ -78,7 +78,7 @@ class BooleanValidatorTest extends TestCase
 
         $this->assertEquals('the input value must be either "true" or "false".', $errorMessage);
 
-        $obj = new FakedValidationModel;
+        $obj = new FakedValidationModel();
         $obj->attrA = true;
         $obj->attrB = '1';
         $obj->attrC = '0';
@@ -86,7 +86,7 @@ class BooleanValidatorTest extends TestCase
 
         $this->assertEquals(
             'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \"true\" or \"false\".","skipOnEmpty":1,"strict":1});',
-            $validator->clientValidateAttribute($obj, 'attrB', new ViewStub)
+            $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
         );
     }
 }

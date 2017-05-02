@@ -56,13 +56,13 @@ class ArrayHelperTest extends TestCase
 
     public function testToArray()
     {
-        $object = new Post1;
+        $object = new Post1();
         $this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object));
-        $object = new Post2;
+        $object = new Post2();
         $this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object));
 
-        $object1 = new Post1;
-        $object2 = new Post2;
+        $object1 = new Post1();
+        $object2 = new Post2();
         $this->assertEquals([
             get_object_vars($object1),
             get_object_vars($object2),
@@ -71,7 +71,7 @@ class ArrayHelperTest extends TestCase
             $object2,
         ]));
 
-        $object = new Post2;
+        $object = new Post2();
         $this->assertEquals([
             'id' => 123,
             'secret' => 's',

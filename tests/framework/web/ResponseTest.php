@@ -27,7 +27,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         parent::setUp();
         $this->mockWebApplication();
-        $this->response = new \yii\web\Response;
+        $this->response = new \yii\web\Response();
     }
 
     public function rightRanges()

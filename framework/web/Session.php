@@ -561,7 +561,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function getIterator()
     {
         $this->open();
-        return new SessionIterator;
+        return new SessionIterator();
     }
 
     /**

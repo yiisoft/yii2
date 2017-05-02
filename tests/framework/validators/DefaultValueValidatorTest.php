@@ -25,9 +25,9 @@ class DefaultValueValidatorTest extends TestCase
 
     public function testValidateAttribute()
     {
-        $val = new DefaultValueValidator;
+        $val = new DefaultValueValidator();
         $val->value = 'test_value';
-        $obj = new \stdclass;
+        $obj = new \stdclass();
         $obj->attrA = 'attrA';
         $obj->attrB = null;
         $obj->attrC = '';

@@ -37,7 +37,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertFalse($connection->isActive);
         $this->assertEquals(null, $connection->pdo);
 
-        $connection = new Connection;
+        $connection = new Connection();
         $connection->dsn = 'unknown::memory:';
         $this->expectException('yii\db\Exception');
         $connection->open();

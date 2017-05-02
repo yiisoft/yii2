@@ -165,7 +165,7 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $query = new Query;
+            $query = new Query();
             $exists = $query->select(['id'])
                 ->from($this->sessionTable)
                 ->where(['id' => $id])

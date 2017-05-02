@@ -26,7 +26,7 @@ class UrlValidatorTest extends TestCase
 
     public function testValidateValue()
     {
-        $val = new UrlValidator;
+        $val = new UrlValidator();
         $this->assertFalse($val->validate('google.de'));
         $this->assertTrue($val->validate('http://google.de'));
         $this->assertTrue($val->validate('https://google.de'));
@@ -101,25 +101,25 @@ class UrlValidatorTest extends TestCase
     public function testValidateLength()
     {
         $url = 'http://' . str_pad('base', 2000, 'url') . '.de';
-        $val = new UrlValidator;
+        $val = new UrlValidator();
         $this->assertFalse($val->validate($url));
     }
 
     public function testValidateAttributeAndError()
     {
-        $obj = new FakedValidationModel;
+        $obj = new FakedValidationModel();
         $obj->attr_url = 'http://google.de';
-        $val = new UrlValidator;
+        $val = new UrlValidator();
         $val->validateAttribute($obj, 'attr_url');
         $this->assertFalse($obj->hasErrors('attr_url'));
         $this->assertSame('http://google.de', $obj->attr_url);
-        $obj = new FakedValidationModel;
+        $obj = new FakedValidationModel();
         $val->defaultScheme = 'http';
         $obj->attr_url = 'google.de';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertFalse($obj->hasErrors('attr_url'));
         $this->assertNotFalse(stripos($obj->attr_url, 'http'));
-        $obj = new FakedValidationModel;
+        $obj = new FakedValidationModel();
         $obj->attr_url = 'gttp;/invalid string';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertTrue($obj->hasErrors('attr_url'));

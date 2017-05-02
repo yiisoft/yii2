@@ -293,7 +293,7 @@ class UrlManagerParseUrlTest extends TestCase
 
     public function testParseRESTRequest()
     {
-        $request = new Request;
+        $request = new Request();
 
         // pretty URL rules
         $manager = new UrlManager([

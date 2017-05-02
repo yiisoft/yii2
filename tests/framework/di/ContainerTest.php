@@ -42,7 +42,7 @@ class ContainerTest extends TestCase
         $Qux = Qux::className();
 
         // automatic wiring
-        $container = new Container;
+        $container = new Container();
         $container->set($QuxInterface, $Qux);
         $foo = $container->get($Foo);
         $this->assertInstanceOf($Foo, $foo);
@@ -52,7 +52,7 @@ class ContainerTest extends TestCase
         $this->assertNotSame($foo, $foo2);
 
         // full wiring
-        $container = new Container;
+        $container = new Container();
         $container->set($QuxInterface, $Qux);
         $container->set($Bar);
         $container->set($Qux);
@@ -63,9 +63,9 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // wiring by closure
-        $container = new Container;
+        $container = new Container();
         $container->set('foo', function () {
-            $qux = new Qux;
+            $qux = new Qux();
             $bar = new Bar($qux);
             return new Foo($bar);
         });
@@ -75,7 +75,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // wiring by closure which uses container
-        $container = new Container;
+        $container = new Container();
         $container->set($QuxInterface, $Qux);
         $container->set('foo', function (Container $c, $params, $config) {
             return $c->get(Foo::className());
@@ -86,7 +86,7 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // predefined constructor parameters
-        $container = new Container;
+        $container = new Container();
         $container->set('foo', $Foo, [Instance::of('bar')]);
         $container->set('bar', $Bar, [Instance::of('qux')]);
         $container->set('qux', $Qux);
@@ -96,14 +96,14 @@ class ContainerTest extends TestCase
         $this->assertInstanceOf($Qux, $foo->bar->qux);
 
         // wiring by closure
-        $container = new Container;
-        $container->set('qux', new Qux);
+        $container = new Container();
+        $container->set('qux', new Qux());
         $qux1 = $container->get('qux');
         $qux2 = $container->get('qux');
         $this->assertSame($qux1, $qux2);
 
         // config
-        $container = new Container;
+        $container = new Container();
         $container->set('qux', $Qux);
         $qux = $container->get('qux', [], ['a' => 2]);
         $this->assertEquals(2, $qux->a);

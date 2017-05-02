@@ -25,7 +25,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
     {
         $db = $this->getConnection();
 
-        $query = (new Query)->from([new Expression('{{%customer}} USE INDEX (primary)')]);
+        $query = (new Query())->from([new Expression('{{%customer}} USE INDEX (primary)')]);
         $row = $query->one($db);
         $this->assertArrayHasKey('id', $row);
         $this->assertArrayHasKey('name', $row);

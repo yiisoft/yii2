@@ -15,7 +15,7 @@ class Creator
 {
     public static function create()
     {
-        return new TestClass;
+        return new TestClass();
     }
 }
 
@@ -62,7 +62,7 @@ class ServiceLocatorTest extends TestCase
     {
         $object = new TestClass();
         $className = TestClass::className();
-        $container = new ServiceLocator;
+        $container = new ServiceLocator();
         $container->set($className, $object);
         $this->assertSame($container->get($className), $object);
     }

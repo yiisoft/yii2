@@ -1432,13 +1432,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
      */
     public function testFromIndexHint()
     {
-        $query = (new Query)->from([new Expression('{{%user}} USE INDEX (primary)')]);
+        $query = (new Query())->from([new Expression('{{%user}} USE INDEX (primary)')]);
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes('SELECT * FROM {{%user}} USE INDEX (primary)');
         $this->assertEquals($expected, $sql);
         $this->assertEmpty($params);
 
-        $query = (new Query)
+        $query = (new Query())
             ->from([new Expression('{{user}} {{t}} FORCE INDEX (primary) IGNORE INDEX FOR ORDER BY (i1)')])
             ->leftJoin(['p' => 'profile'], 'user.id = profile.user_id USE INDEX (i2)');
         list($sql, $params) = $this->getQueryBuilder()->build($query);
@@ -1450,8 +1450,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     public function testFromSubquery()
     {
         // query subquery
-        $subquery = (new Query)->from('user')->where('account_id = accounts.id');
-        $query = (new Query)->from(['activeusers' => $subquery]);
+        $subquery = (new Query())->from('user')->where('account_id = accounts.id');
+        $query = (new Query())->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM [[user]] WHERE [[active]] = 1) [[activeusers]];
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM [[user]] WHERE account_id = accounts.id) [[activeusers]]');
@@ -1459,8 +1459,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEmpty($params);
 
         // query subquery with params
-        $subquery = (new Query)->from('user')->where('account_id = :id', ['id' => 1]);
-        $query = (new Query)->from(['activeusers' => $subquery])->where('abc = :abc', ['abc' => 'abc']);
+        $subquery = (new Query())->from('user')->where('account_id = :id', ['id' => 1]);
+        $query = (new Query())->from(['activeusers' => $subquery])->where('abc = :abc', ['abc' => 'abc']);
         // SELECT * FROM (SELECT * FROM [[user]] WHERE [[active]] = 1) [[activeusers]];
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM [[user]] WHERE account_id = :id) [[activeusers]] WHERE abc = :abc');
@@ -1472,7 +1472,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
 
         // simple subquery
         $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
-        $query = (new Query)->from(['activeusers' => $subquery]);
+        $query = (new Query())->from(['activeusers' => $subquery]);
         // SELECT * FROM (SELECT * FROM [[user]] WHERE [[active]] = 1) [[activeusers]];
         list($sql, $params) = $this->getQueryBuilder()->build($query);
         $expected = $this->replaceQuotes('SELECT * FROM (SELECT * FROM user WHERE account_id = accounts.id) [[activeusers]]');

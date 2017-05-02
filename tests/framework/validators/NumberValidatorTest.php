@@ -60,7 +60,7 @@ class NumberValidatorTest extends TestCase
 
     public function testEnsureMessageOnInit()
     {
-        $val = new NumberValidator;
+        $val = new NumberValidator();
         $this->assertTrue(is_string($val->message));
         $this->assertTrue($val->max === null);
         $val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);

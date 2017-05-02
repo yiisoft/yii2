@@ -42,10 +42,10 @@ class EventTest extends TestCase
             $this->counter += 5;
         });
         $this->assertEquals(0, $this->counter);
-        $post = new Post;
+        $post = new Post();
         $post->save();
         $this->assertEquals(4, $this->counter);
-        $user = new User;
+        $user = new User();
         $user->save();
         $this->assertEquals(7, $this->counter);
         $someClass = new SomeClass();

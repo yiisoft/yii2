@@ -210,7 +210,7 @@ abstract class ManagerTestCase extends TestCase
 
     protected function prepareData()
     {
-        $rule = new AuthorRule;
+        $rule = new AuthorRule();
         $this->auth->add($rule);
 
         $uniqueTrait = $this->auth->createPermission('Fast Metabolism');

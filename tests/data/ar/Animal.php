@@ -43,6 +43,6 @@ class Animal extends ActiveRecord
     public static function instantiate($row)
     {
         $class = $row['type'];
-        return new $class;
+        return new $class();
     }
 }

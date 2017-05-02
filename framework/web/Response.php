@@ -316,7 +316,7 @@ class Response extends \yii\base\Response
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
         }
         return $this->_headers;
     }
@@ -906,7 +906,7 @@ class Response extends \yii\base\Response
     public function getCookies()
     {
         if ($this->_cookies === null) {
-            $this->_cookies = new CookieCollection;
+            $this->_cookies = new CookieCollection();
         }
         return $this->_cookies;
     }

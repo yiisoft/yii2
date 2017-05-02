@@ -220,7 +220,7 @@ class UrlManagerTest extends TestCase
     public function testParseRequest($routeParam)
     {
         $manager = $this->getUrlManager(['routeParam' => $routeParam]);
-        $request = new Request;
+        $request = new Request();
 
         // default setting without 'r' param
         $request->setQueryParams([]);

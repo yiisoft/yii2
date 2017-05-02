@@ -20,7 +20,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
     public function testUnion()
     {
         $connection = $this->getConnection();
-        $query = new Query;
+        $query = new Query();
         $query->select(['id', 'name'])
             ->from('item')
             ->union(

@@ -17,7 +17,7 @@ class RequestTest extends TestCase
 {
     public function testParseAcceptHeader()
     {
-        $request = new Request;
+        $request = new Request();
 
         $this->assertEquals([], $request->parseAcceptHeader(' '));
 

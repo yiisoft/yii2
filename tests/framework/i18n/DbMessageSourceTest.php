@@ -124,7 +124,7 @@ class DbMessageSourceTest extends I18NTest
     public static function getConnection()
     {
         if (static::$db == null) {
-            $db = new Connection;
+            $db = new Connection();
             $db->dsn = static::$database['dsn'];
             if (isset(static::$database['username'])) {
                 $db->username = static::$database['username'];

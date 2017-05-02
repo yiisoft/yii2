@@ -1159,7 +1159,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     public function testSaveEmpty()
     {
-        $record = new NullValues;
+        $record = new NullValues();
         $this->assertTrue($record->save(false));
         $this->assertEquals(1, $record->id);
     }

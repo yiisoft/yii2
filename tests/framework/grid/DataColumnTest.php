@@ -56,7 +56,7 @@ class DataColumnTest extends \yiiunit\TestCase
                 'totalCount' => 0,
             ]),
             'columns' => ['customer_id', 'total'],
-            'filterModel' => new Order,
+            'filterModel' => new Order(),
         ]);
         $labels = [];
         foreach ($grid->columns as $column) {
@@ -130,7 +130,7 @@ class DataColumnTest extends \yiiunit\TestCase
                     'filter' => $filterInput,
                 ]
             ],
-            'filterModel' => new Order,
+            'filterModel' => new Order(),
         ]);
 
         $dataColumn = $grid->columns[0];
@@ -180,7 +180,7 @@ HTML
                     'format' => 'boolean', // does not make sense for this column but should still output proper dropdown list
                 ],
             ],
-            'filterModel' => new Order,
+            'filterModel' => new Order(),
         ]);
 
         $dataColumn = $grid->columns[0];

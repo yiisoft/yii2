@@ -24,7 +24,7 @@ class ObjectTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        $this->object = new NewObject;
+        $this->object = new NewObject();
     }
 
     protected function tearDown()
@@ -181,7 +181,7 @@ class NewObject extends Object
     public function getObject()
     {
         if (!$this->_object) {
-            $this->_object = new self;
+            $this->_object = new self();
             $this->_object->_text = 'object text';
         }
 

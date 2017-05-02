@@ -190,7 +190,7 @@ class Event extends Object
             return;
         }
         if ($event === null) {
-            $event = new static;
+            $event = new static();
         }
         $event->handled = false;
         $event->name = $name;

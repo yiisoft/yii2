@@ -151,7 +151,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
 
-        $customer = new $customerClass;
+        $customer = new $customerClass();
         $this->assertTrue($customer->hasAttribute('id'));
         $this->assertTrue($customer->hasAttribute('email'));
         $this->assertFalse($customer->hasAttribute(0));
@@ -670,7 +670,7 @@ trait ActiveRecordTestTrait
         $this->assertCount(2, $customer->orders);
 
         // has many
-        $order = new $orderClass;
+        $order = new $orderClass();
         $order->total = 100;
         $this->assertTrue($order->isNewRecord);
         $customer->link('orders', $order);
@@ -681,7 +681,7 @@ trait ActiveRecordTestTrait
         $this->assertEquals(2, $order->customer_id);
 
         // belongs to
-        $order = new $orderClass;
+        $order = new $orderClass();
         $order->total = 100;
         $this->assertTrue($order->isNewRecord);
         $customer = $customerClass::findOne(1);
@@ -887,7 +887,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
-        $customer = new $customerClass;
+        $customer = new $customerClass();
         $customer->email = 'user4@example.com';
         $customer->name = 'user4';
         $customer->address = 'address4';
@@ -911,7 +911,7 @@ trait ActiveRecordTestTrait
         /* @var $customerClass \yii\db\ActiveRecordInterface */
         $customerClass = $this->getCustomerClass();
         /* @var $this TestCase|ActiveRecordTestTrait */
-        $customer = new $customerClass;
+        $customer = new $customerClass();
         $customer->id = 1337;
         $customer->email = 'user1337@example.com';
         $customer->name = 'user1337';

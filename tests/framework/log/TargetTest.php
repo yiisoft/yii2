@@ -56,7 +56,7 @@ class TargetTest extends TestCase
     {
         static::$messages = [];
 
-        $logger = new Logger;
+        $logger = new Logger();
         $dispatcher = new Dispatcher([
             'logger' => $logger,
             'targets' => [new TestTarget(array_merge($filter, ['logVars' => []]))],

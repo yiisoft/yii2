@@ -340,7 +340,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return parent::queryScalar($selectExpression, $db);
         }
 
-        return (new Query)->select([$selectExpression])
+        return (new Query())->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
             ->createCommand($db)
@@ -436,7 +436,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        $model = new $this->modelClass;
+        $model = new $this->modelClass();
         foreach ($this->joinWith as $config) {
             list($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations($model, $with, $joinType);
@@ -516,7 +516,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                $primaryModel = new $relation->modelClass;
+                $primaryModel = new $relation->modelClass();
                 $parent = $relation;
                 $prefix = $fullName;
                 $name = $childName;
