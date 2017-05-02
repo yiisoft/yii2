@@ -696,6 +696,7 @@ class BaseFileHelper
     /**
      * @param array $options raw options
      * @return array normalized options
+     * @since 2.0.12
      */
     protected static function normalizeOptions(array $options)
     {
