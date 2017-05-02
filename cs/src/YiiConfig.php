@@ -27,6 +27,9 @@ class YiiConfig extends Config
 
         $this->setRules([
             '@PSR2' => true,
+            'array_syntax' => [
+                'syntax' => 'short',
+            ],
         ]);
     }
 
