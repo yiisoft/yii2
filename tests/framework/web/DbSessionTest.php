@@ -22,7 +22,7 @@ class DbSessionTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        /**
+        /*
          * @todo Optionally do fallback to some other database, however this might be overkill for tests only since
          * sqlite is always available on travis.
          */

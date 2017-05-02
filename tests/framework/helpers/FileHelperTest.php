@@ -33,7 +33,7 @@ class FileHelperTest extends TestCase
         mkdir($dir);
         chmod($dir, 0700);
         if ($this->getMode($dir) !== "0700") {
-            /**
+            /*
              * Chmod returns true but fileperms does not reflect this.
              * This happens on remote file systems, also has been seen in vagrant mounts.
              */

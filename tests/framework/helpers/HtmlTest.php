@@ -1054,7 +1054,8 @@ EOD;
                 'not_an_integer',
                 [],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
-                function ($model) { /** @var $model DynamicModel */
+                function ($model) {
+                    /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
                 }
             ],
@@ -1062,7 +1063,8 @@ EOD;
                 'not_an_integer',
                 ['encode' => false],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: < ></li></ul></div>',
-                function ($model) { /** @var $model DynamicModel */
+                function ($model) {
+                    /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
                 }
             ],
@@ -1070,7 +1072,8 @@ EOD;
                 str_repeat('long_string', 60),
                 [],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li></ul></div>',
-                function ($model) { /** @var $model DynamicModel */
+                function ($model) {
+                    /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
                 }
             ],
@@ -1079,7 +1082,8 @@ EOD;
                 ['showAllErrors' => true],
                 '<div><p>Please fix the following errors:</p><ul><li>Error message. Here are some chars: &lt; &gt;</li>
 <li>Error message. Here are even more chars: &quot;&quot;</li></ul></div>',
-                function ($model) { /** @var $model DynamicModel */
+                function ($model) {
+                    /* @var $model DynamicModel */
                     $model->addError('name', 'Error message. Here are some chars: < >');
                     $model->addError('name', 'Error message. Here are even more chars: ""');
                 }

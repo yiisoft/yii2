@@ -675,7 +675,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // joining sub relations
         $query = Order::find()->innerJoinWith([
             'items i' => function ($q) use ($aliasMethod) {
-                /** @var $q ActiveQuery */
+                /* @var $q ActiveQuery */
                 if ($aliasMethod === 'explicit') {
                     $q->orderBy('{{i}}.[[id]]');
                 } elseif ($aliasMethod === 'querysyntax') {
@@ -685,7 +685,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
                 }
             },
             'items.category c' => function ($q) use ($aliasMethod) {
-                /** @var $q ActiveQuery */
+                /* @var $q ActiveQuery */
                     if ($aliasMethod === 'explicit') {
                         $q->where('{{c}}.[[id]] = 2');
                     } elseif ($aliasMethod === 'querysyntax') {
@@ -772,7 +772,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // join with sub-relation called inside Closure
         $orders = Order::find()->joinWith([
             'items' => function ($q) use ($aliasMethod) {
-                /** @var $q ActiveQuery */
+                /* @var $q ActiveQuery */
                 $q->orderBy('item.id');
                 $q->joinWith(['category c']);
                 if ($aliasMethod === 'explicit') {

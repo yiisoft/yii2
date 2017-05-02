@@ -87,7 +87,7 @@ class OracleMutex extends DbMutex
         $releaseOnCommit = $this->releaseOnCommit ? 'TRUE' : 'FALSE';
         $timeout = abs((int) $timeout);
 
-        /** inside pl/sql scopes pdo binding not working correctly :(  */
+        // inside pl/sql scopes pdo binding not working correctly :(
         $this->db->createCommand(
                 'DECLARE
     handle VARCHAR2(128);

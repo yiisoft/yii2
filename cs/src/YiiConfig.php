@@ -137,6 +137,7 @@ class YiiConfig extends Config
             'phpdoc_scalar' => true,
             'phpdoc_single_line_var_spacing' => true,
 //            'phpdoc_summary' => true, // needs more attention (summary should be separated by blank line from description)
+//            'phpdoc_to_comment' => true, // breaks phpdoc for define('CONSTANT', $value);
         ]);
     }
 
