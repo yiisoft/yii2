@@ -143,6 +143,7 @@ class YiiConfig extends Config
             'phpdoc_var_without_name' => true,
             'psr4' => true,
             'self_accessor' => true,
+            'short_scalar_cast' => true,
         ]);
     }
 

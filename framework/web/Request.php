@@ -1154,7 +1154,7 @@ class Request extends \yii\base\Request
                 if (strpos($param, '=') !== false) {
                     list($key, $value) = explode('=', $param, 2);
                     if ($key === 'q') {
-                        $values['q'][2] = (double) $value;
+                        $values['q'][2] = (float) $value;
                     } else {
                         $values[$key] = $value;
                     }
