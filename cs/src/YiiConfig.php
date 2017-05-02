@@ -77,6 +77,7 @@ class YiiConfig extends Config
                     'square_brace_block',
                 ],
             ],
+            'no_leading_import_slash' => true,
         ]);
     }
 
