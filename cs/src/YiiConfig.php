@@ -62,6 +62,7 @@ class YiiConfig extends Config
             'no_blank_lines_after_phpdoc' => true,
             'no_empty_comment' => true,
             'no_empty_phpdoc' => true,
+            'no_empty_statement' => true,
         ]);
     }
 
