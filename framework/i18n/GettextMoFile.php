@@ -270,6 +270,6 @@ class GettextMoFile extends GettextFile
      */
     protected function writeString($fileHandle, $string)
     {
-        return $this->writeBytes($fileHandle, $string. "\0");
+        return $this->writeBytes($fileHandle, $string . "\0");
     }
 }

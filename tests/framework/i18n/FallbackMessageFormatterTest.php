@@ -33,8 +33,8 @@ class FallbackMessageFormatterTest extends TestCase
     {
         return [
             [
-                '{'.self::SUBJECT.'} is {'.self::N.'}', // pattern
-                self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+                '{' . self::SUBJECT . '} is {' . self::N . '}', // pattern
+                self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
@@ -42,8 +42,8 @@ class FallbackMessageFormatterTest extends TestCase
             ],
 
             [
-                '{'.self::SUBJECT.'} is {'.self::N.', number}', // pattern
-                self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+                '{' . self::SUBJECT . '} is {' . self::N . ', number}', // pattern
+                self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
@@ -51,8 +51,8 @@ class FallbackMessageFormatterTest extends TestCase
             ],
 
             [
-                '{'.self::SUBJECT.'} is {'.self::N.', number, integer}', // pattern
-                self::SUBJECT_VALUE.' is '.self::N_VALUE, // expected
+                '{' . self::SUBJECT . '} is {' . self::N . ', number, integer}', // pattern
+                self::SUBJECT_VALUE . ' is ' . self::N_VALUE, // expected
                 [ // params
                     self::N => self::N_VALUE,
                     self::SUBJECT => self::SUBJECT_VALUE,
@@ -60,32 +60,32 @@ class FallbackMessageFormatterTest extends TestCase
             ],
 
             [
-                'Here is a big number: {'.self::F.', number}', // pattern
-                'Here is a big number: '.self::F_VALUE_FORMATTED, // expected
+                'Here is a big number: {' . self::F . ', number}', // pattern
+                'Here is a big number: ' . self::F_VALUE_FORMATTED, // expected
                 [ // params
                     self::F => self::F_VALUE
                 ]
             ],
 
             [
-                'Here is a big number: {'.self::F.', number, integer}', // pattern
-                'Here is a big number: '.self::F_VALUE_FORMATTED, // expected
+                'Here is a big number: {' . self::F . ', number, integer}', // pattern
+                'Here is a big number: ' . self::F_VALUE_FORMATTED, // expected
                 [ // params
                     self::F => self::F_VALUE
                 ]
             ],
 
             [
-                'Here is a big number: {'.self::D.', number}', // pattern
-                'Here is a big number: '.self::D_VALUE_FORMATTED, // expected
+                'Here is a big number: {' . self::D . ', number}', // pattern
+                'Here is a big number: ' . self::D_VALUE_FORMATTED, // expected
                 [ // params
                     self::D => self::D_VALUE
                 ]
             ],
 
             [
-                'Here is a big number: {'.self::D.', number, integer}', // pattern
-                'Here is a big number: '.self::D_VALUE_FORMATTED_INTEGER, // expected
+                'Here is a big number: {' . self::D . ', number, integer}', // pattern
+                'Here is a big number: ' . self::D_VALUE_FORMATTED_INTEGER, // expected
                 [ // params
                     self::D => self::D_VALUE
                 ]
@@ -188,10 +188,10 @@ _MSG_
 
     public function testInsufficientArguments()
     {
-        $expected = '{'.self::SUBJECT.'} is '.self::N_VALUE;
+        $expected = '{' . self::SUBJECT . '} is ' . self::N_VALUE;
 
         $formatter = new FallbackMessageFormatter();
-        $result = $formatter->fallbackFormat('{'.self::SUBJECT.'} is {'.self::N.'}', [
+        $result = $formatter->fallbackFormat('{' . self::SUBJECT . '} is {' . self::N . '}', [
             self::N => self::N_VALUE,
         ], 'en-US');
 
@@ -200,7 +200,7 @@ _MSG_
 
     public function testNoParams()
     {
-        $pattern = '{'.self::SUBJECT.'} is '.self::N;
+        $pattern = '{' . self::SUBJECT . '} is ' . self::N;
 
         $formatter = new FallbackMessageFormatter();
         $result = $formatter->fallbackFormat($pattern, [], 'en-US');
@@ -217,7 +217,7 @@ _MSG_
 
     public function testUnsupportedPercentException()
     {
-        $pattern = 'Number {'.self::N.', number, percent}';
+        $pattern = 'Number {' . self::N . ', number, percent}';
         $formatter = new FallbackMessageFormatter();
         $this->expectException('yii\base\NotSupportedException');
         $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');
@@ -225,7 +225,7 @@ _MSG_
 
     public function testUnsupportedCurrencyException()
     {
-        $pattern = 'Number {'.self::N.', number, currency}';
+        $pattern = 'Number {' . self::N . ', number, currency}';
         $formatter = new FallbackMessageFormatter();
         $this->expectException('yii\base\NotSupportedException');
         $formatter->fallbackFormat($pattern, [self::N => self::N_VALUE], 'en-US');

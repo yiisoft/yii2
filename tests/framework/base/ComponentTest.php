@@ -336,8 +336,8 @@ class ComponentTest extends TestCase
         $behaviorName = 'foo';
         $this->assertNull($this->component->getBehavior($behaviorName));
         $p = 'as ' . $behaviorName;
-        $this->component->$p = __NAMESPACE__ .  '\NewBehavior';
-        $this->assertSame(__NAMESPACE__ .  '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
+        $this->component->$p = __NAMESPACE__ . '\NewBehavior';
+        $this->assertSame(__NAMESPACE__ . '\NewBehavior', get_class($this->component->getBehavior($behaviorName)));
     }
 
     public function testWriteOnlyProperty()

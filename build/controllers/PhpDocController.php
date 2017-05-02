@@ -408,7 +408,7 @@ class PhpDocController extends Controller
 
             // check for multi line array
             if ($level > 0) {
-                ${'endof'.$property} = $i;
+                ${'endof' . $property} = $i;
             }
 
             $line = trim($line);
@@ -444,8 +444,8 @@ class PhpDocController extends Controller
 
         $endofAll = false;
         foreach (['Private', 'Protected', 'Public', 'Const', 'Use'] as $var) {
-            if (${'endof'.$var} !== false) {
-                $endofAll = ${'endof'.$var};
+            if (${'endof' . $var} !== false) {
+                $endofAll = ${'endof' . $var};
                 break;
             }
         }

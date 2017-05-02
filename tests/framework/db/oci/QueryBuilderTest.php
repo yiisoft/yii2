@@ -72,12 +72,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $qb = $this->getQueryBuilder();
 
         $expected = 'DROP SEQUENCE "item_SEQ";'
-            .'CREATE SEQUENCE "item_SEQ" START WITH 6 INCREMENT BY 1 NOMAXVALUE NOCACHE';
+            . 'CREATE SEQUENCE "item_SEQ" START WITH 6 INCREMENT BY 1 NOMAXVALUE NOCACHE';
         $sql = $qb->resetSequence('item');
         $this->assertEquals($expected, $sql);
 
         $expected = 'DROP SEQUENCE "item_SEQ";'
-            .'CREATE SEQUENCE "item_SEQ" START WITH 4 INCREMENT BY 1 NOMAXVALUE NOCACHE';
+            . 'CREATE SEQUENCE "item_SEQ" START WITH 4 INCREMENT BY 1 NOMAXVALUE NOCACHE';
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
     }
@@ -102,7 +102,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 ' ('
                 . '([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 0, 999)) . '))'
                 . ' OR ([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 1000, 1999)) . '))'
-                . ' OR ([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) .'))'
+                . ' OR ([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) . '))'
                 . ')',
 
                 array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
@@ -113,7 +113,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 '('
                 . '([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 0, 999)) . '))'
                 . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 1000, 1999)) . '))'
-                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) .'))'
+                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) . '))'
                 . ')',
 
                 array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
@@ -124,7 +124,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 '('
                 . '([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 0, 999)) . '))'
                 . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 1000, 1999)) . '))'
-                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) .'))'
+                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) . '))'
                 . ')',
 
                 array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))

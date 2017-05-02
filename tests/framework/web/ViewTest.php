@@ -25,7 +25,7 @@ class ViewTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'request' => [
-                    'scriptFile' => __DIR__ .'/baseUrl/index.php',
+                    'scriptFile' => __DIR__ . '/baseUrl/index.php',
                     'scriptUrl' => '/baseUrl/index.php',
                 ]
             ]
@@ -39,7 +39,7 @@ class ViewTest extends TestCase
         $view = new View();
         $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_BEGIN]);
         $html = $view->render('@yiiunit/data/views/layout.php', ['content' => 'content']);
-        $this->assertContains('<body>'."\n".'<script src="/baseUrl/js/somefile.js"></script>', $html);
+        $this->assertContains('<body>' . "\n" . '<script src="/baseUrl/js/somefile.js"></script>', $html);
 
         $view = new View();
         $view->registerJsFile('@web/js/somefile.js', ['position' => View::POS_END]);
@@ -52,7 +52,7 @@ class ViewTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'request' => [
-                    'scriptFile' => __DIR__ .'/baseUrl/index.php',
+                    'scriptFile' => __DIR__ . '/baseUrl/index.php',
                     'scriptUrl' => '/baseUrl/index.php',
                 ]
             ]

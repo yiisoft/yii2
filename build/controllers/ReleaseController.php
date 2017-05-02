@@ -218,7 +218,7 @@ class ReleaseController extends Controller
             $this->stdout("- are all new `@since` tags for this release version?\n");
         }
         $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
-        $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);
+        $travisUrl = reset($what) === 'framework' ? '' : '-' . reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.org/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
         $this->printWhatUrls($what, $versions);
@@ -374,7 +374,7 @@ class ReleaseController extends Controller
         foreach ($what as $w) {
             if (strncmp('app-', $w, 4) === 0) {
                 if (!empty($limit) && !in_array('app', $limit)) {
-                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                    throw new Exception("Only the following types are allowed: " . implode(', ', $limit) . "\n");
                 }
                 if (!is_dir($appPath = "{$this->basePath}/apps/" . substr($w, 4))) {
                     throw new Exception("Application path does not exist: \"{$appPath}\"\n");
@@ -384,7 +384,7 @@ class ReleaseController extends Controller
                 }
             } elseif ($w === 'framework') {
                 if (!empty($limit) && !in_array('framework', $limit)) {
-                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                    throw new Exception("Only the following types are allowed: " . implode(', ', $limit) . "\n");
                 }
                 if (!is_dir($fwPath = "{$this->basePath}/framework")) {
                     throw new Exception("Framework path does not exist: \"{$this->basePath}/framework\"\n");
@@ -394,7 +394,7 @@ class ReleaseController extends Controller
                 }
             } else {
                 if (!empty($limit) && !in_array('ext', $limit)) {
-                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                    throw new Exception("Only the following types are allowed: " . implode(', ', $limit) . "\n");
                 }
                 if (!is_dir($extPath = "{$this->basePath}/extensions/$w")) {
                     throw new Exception("Extension path for \"$w\" does not exist: \"{$this->basePath}/extensions/$w\"\n");
@@ -813,7 +813,7 @@ class ReleaseController extends Controller
         $v = str_replace('\\-', '[\\- ]', preg_quote($version, '/'));
         $headline = $version . ' ' . date('F d, Y');
         $this->sed(
-            '/'.$v.' under development\n(-+?)\n/',
+            '/' . $v . ' under development\n(-+?)\n/',
             $headline . "\n" . str_repeat('-', strlen($headline)) . "\n",
             $this->getChangelogs($what)
         );

@@ -204,7 +204,7 @@ namespace yiiunit\framework\log {
                     [$this->equalTo('messages'), $this->equalTo(true)],
                     [
                         [[
-                            'Unable to send log via '.get_class($target1).': Exception: some error',
+                            'Unable to send log via ' . get_class($target1) . ': Exception: some error',
                             Logger::LEVEL_WARNING,
                             'yii\log\Dispatcher::dispatch',
                             'time data',

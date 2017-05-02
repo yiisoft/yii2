@@ -32,7 +32,7 @@ class UrlValidatorTest extends TestCase
         $this->assertTrue($val->validate('https://google.de'));
         $this->assertFalse($val->validate('htp://yiiframework.com'));
         $this->assertTrue($val->validate('https://www.google.de/search?q=yii+framework&ie=utf-8&oe=utf-8'
-                                        .'&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
+                                        . '&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
         $this->assertFalse($val->validate('ftp://ftp.ruhr-uni-bochum.de/'));
         $this->assertFalse($val->validate('http://invalid,domain'));
         $this->assertFalse($val->validate('http://example.com,'));

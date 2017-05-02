@@ -153,7 +153,7 @@ class UserTest extends TestCase
         Yii::$app->set('response', ['class' => 'yii\web\Response']);
         Yii::$app->set('request', [
             'class' => 'yii\web\Request',
-            'scriptFile' => __DIR__ .'/index.php',
+            'scriptFile' => __DIR__ . '/index.php',
             'scriptUrl' => '/index.php',
             'url' => ''
         ]);

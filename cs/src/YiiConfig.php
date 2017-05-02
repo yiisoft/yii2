@@ -35,6 +35,9 @@ class YiiConfig extends Config
                 'align_equals' => false,
             ],
             'cast_spaces' => true,
+            'concat_space' => [
+                'spacing' => 'one',
+            ],
         ]);
     }
 
