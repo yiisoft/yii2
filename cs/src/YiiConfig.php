@@ -41,6 +41,7 @@ class YiiConfig extends Config
                 'spacing' => 'one',
             ],
             'dir_constant' => true,
+            'ereg_to_preg' => true,
         ]);
     }
 
