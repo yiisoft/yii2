@@ -18,14 +18,14 @@ function time()
 
 namespace yiiunit\framework\web;
 
-use yii\base\NotSupportedException;
+use Yii;
 use yii\base\Component;
+use yii\base\NotSupportedException;
 use yii\rbac\PhpManager;
-use yii\web\ForbiddenHttpException;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
-use Yii;
 use yiiunit\TestCase;
 
 /**

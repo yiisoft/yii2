@@ -8,11 +8,11 @@
 namespace yiiunit\framework\web;
 
 use yii\web\NotFoundHttpException;
+use yii\web\Request;
 use yii\web\UrlManager;
 use yii\web\UrlNormalizer;
 use yii\web\UrlNormalizerRedirectException;
 use yii\web\UrlRule;
-use yii\web\Request;
 use yiiunit\TestCase;
 
 /**

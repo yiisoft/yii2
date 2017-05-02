@@ -10,9 +10,9 @@ namespace yiiunit\framework\helpers;
 use yii\base\Model;
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
-use yiiunit\TestCase;
 use yii\web\JsExpression;
 use yiiunit\framework\web\Post;
+use yiiunit\TestCase;
 
 /**
  * @group helpers

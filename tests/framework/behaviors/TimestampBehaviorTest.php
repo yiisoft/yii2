@@ -8,11 +8,11 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Connection;
 use yii\db\Expression;
 use yiiunit\TestCase;
-use yii\db\Connection;
-use yii\db\ActiveRecord;
-use yii\behaviors\TimestampBehavior;
 
 /**
  * Unit test for [[\yii\behaviors\TimestampBehavior]].

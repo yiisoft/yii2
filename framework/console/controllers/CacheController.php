@@ -9,10 +9,10 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\caching\ApcCache;
-use yii\console\Controller;
 use yii\caching\Cache;
-use yii\helpers\Console;
+use yii\console\Controller;
 use yii\console\Exception;
+use yii\helpers\Console;
 
 /**
  * Allows you to flush cache.

@@ -7,8 +7,8 @@
 
 namespace yii\base;
 
-use Yii;
 use ReflectionClass;
+use Yii;
 
 /**
  * Widget is the base class for widgets.

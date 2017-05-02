@@ -10,9 +10,9 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\base\Model;
 use yii\web\JsExpression;
 
 /**

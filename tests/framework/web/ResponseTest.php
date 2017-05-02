@@ -7,9 +7,9 @@
 
 namespace yiiunit\framework\web;
 
+use Error;
 use Exception;
 use RuntimeException;
-use Error;
 use yii\helpers\StringHelper;
 use yii\web\HttpException;
 

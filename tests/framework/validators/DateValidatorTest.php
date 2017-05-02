@@ -7,11 +7,11 @@
 
 namespace yiiunit\framework\validators;
 
+use IntlDateFormatter;
 use yii\validators\DateValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\i18n\IntlTestHelper;
 use yiiunit\TestCase;
-use IntlDateFormatter;
 
 /**
  * @group validators

@@ -11,8 +11,8 @@ use Yii;
 use yii\base\ActionFilter;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
-use yii\web\Response;
 use yii\web\Request;
+use yii\web\Response;
 use yii\web\UnsupportedMediaTypeHttpException;
 
 /**

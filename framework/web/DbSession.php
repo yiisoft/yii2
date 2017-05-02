@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**

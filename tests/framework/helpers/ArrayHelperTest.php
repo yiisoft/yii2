@@ -8,9 +8,9 @@
 namespace yiiunit\framework\helpers;
 
 use yii\base\Object;
+use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
-use yii\data\Sort;
 
 class Post1
 {

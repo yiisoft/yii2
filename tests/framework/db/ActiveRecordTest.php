@@ -9,23 +9,23 @@ namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\BitValues;
+use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Document;
-use yiiunit\data\ar\NullValues;
-use yiiunit\data\ar\OrderItem;
-use yiiunit\data\ar\Order;
+use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
+use yiiunit\data\ar\NullValues;
+use yiiunit\data\ar\Order;
+use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\OrderItemWithNullFK;
 use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
-use yiiunit\data\ar\Animal;
-use yiiunit\data\ar\Cat;
-use yiiunit\data\ar\Dog;
 use yiiunit\TestCase;
 
 abstract class ActiveRecordTest extends DatabaseTestCase

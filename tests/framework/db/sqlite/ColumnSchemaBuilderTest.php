@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\db\sqlite;
 
-use yii\db\sqlite\ColumnSchemaBuilder;
 use yii\db\Schema;
+use yii\db\sqlite\ColumnSchemaBuilder;
 
 /**
  * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for SQLite

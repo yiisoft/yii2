@@ -8,8 +8,8 @@
 namespace yii\filters;
 
 use Yii;
-use yii\base\ActionFilter;
 use yii\base\Action;
+use yii\base\ActionFilter;
 
 /**
  * HttpCache implements client-side caching by utilizing the `Last-Modified` and `ETag` HTTP headers.

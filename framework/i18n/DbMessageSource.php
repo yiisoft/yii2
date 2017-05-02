@@ -9,12 +9,12 @@ namespace yii\i18n;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\db\Expression;
-use yii\di\Instance;
-use yii\helpers\ArrayHelper;
 use yii\caching\Cache;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\Query;
+use yii\di\Instance;
+use yii\helpers\ArrayHelper;
 
 /**
  * DbMessageSource extends [[MessageSource]] and represents a message source that stores translated

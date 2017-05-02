@@ -7,9 +7,9 @@
 
 namespace yiiunit\framework\validators;
 
+use yii\validators\BooleanValidator;
 use yii\web\View;
 use yiiunit\data\validators\models\FakedValidationModel;
-use yii\validators\BooleanValidator;
 use yiiunit\TestCase;
 
 /**

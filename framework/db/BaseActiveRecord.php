@@ -7,14 +7,14 @@
 
 namespace yii\db;
 
-use yii\base\InvalidConfigException;
 use yii\base\Event;
-use yii\base\Model;
+use yii\base\InvalidCallException;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
-use yii\base\InvalidCallException;
 use yii\helpers\ArrayHelper;
 
 /**

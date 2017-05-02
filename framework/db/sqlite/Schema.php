@@ -8,9 +8,9 @@
 namespace yii\db\sqlite;
 
 use yii\base\NotSupportedException;
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 use yii\db\Transaction;
 
 /**

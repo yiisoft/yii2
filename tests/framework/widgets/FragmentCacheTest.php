@@ -8,8 +8,8 @@
 namespace yiiunit\framework\widgets;
 
 use Yii;
-use yii\caching\ArrayCache;
 use yii\base\View;
+use yii\caching\ArrayCache;
 
 /**
  * @group widgets

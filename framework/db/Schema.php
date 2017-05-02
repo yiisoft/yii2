@@ -8,9 +8,9 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Object;
-use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
+use yii\base\NotSupportedException;
+use yii\base\Object;
 use yii\caching\Cache;
 use yii\caching\TagDependency;
 

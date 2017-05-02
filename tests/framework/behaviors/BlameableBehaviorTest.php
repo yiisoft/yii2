@@ -10,9 +10,9 @@ namespace yiiunit\framework\behaviors;
 use Yii;
 use yii\base\Object;
 use yii\behaviors\BlameableBehavior;
+use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
-use yii\db\ActiveRecord;
 
 /**
  * Unit test for [[\yii\behaviors\BlameableBehavior]].

@@ -7,9 +7,9 @@
 
 namespace yii\rbac;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
-use Yii;
 use yii\helpers\VarDumper;
 
 /**

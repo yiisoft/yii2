@@ -9,9 +9,9 @@ namespace yiiunit\framework\behaviors;
 
 use Yii;
 use yii\base\DynamicModel;
-use yiiunit\TestCase;
-use yii\db\ActiveRecord;
 use yii\behaviors\AttributeTypecastBehavior;
+use yii\db\ActiveRecord;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\behaviors\AttributeTypecastBehavior]].

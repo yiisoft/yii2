@@ -10,10 +10,10 @@ namespace yii\filters\auth;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
-use yii\web\UnauthorizedHttpException;
-use yii\web\User;
 use yii\web\Request;
 use yii\web\Response;
+use yii\web\UnauthorizedHttpException;
+use yii\web\User;
 
 /**
  * AuthMethod is a base class implementing the [[AuthInterface]] interface.

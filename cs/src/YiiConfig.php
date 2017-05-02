@@ -44,15 +44,15 @@ class YiiConfig extends Config
             'ereg_to_preg' => true,
             'function_typehint_space' => true,
             'hash_to_slash_comment' => true,
-//            'heredoc_to_nowdoc' => true,
-//            'include' => true,
+//            'heredoc_to_nowdoc' => true, // needs more discussion
+//            'include' => true, // needs more discussion
             'is_null' => [
                 'use_yoda_style' => false,
             ],
             'linebreak_after_opening_tag' => true,
             'lowercase_cast' => true,
             'magic_constant_casing' => true,
-//            'mb_str_functions' => true,
+//            'mb_str_functions' => true, // needs more discussion
 //            'method_separation' => true, // conflicts with current Yii style with double line between properties and methods
             'modernize_types_casting' => true,
             'native_function_casing' => true,
@@ -97,6 +97,28 @@ class YiiConfig extends Config
 //            'non_printable_character' => true, // breaks Formatter::asCurrency() tests
             'normalize_index_brace' => true,
             'object_operator_without_whitespace' => true,
+//            'ordered_class_elements' => [ // needs more discussion
+//                'order' => [
+//                    'use_trait',
+//                    'constant_public',
+//                    'constant_protected',
+//                    'constant_private',
+//                    'property_public',
+//                    'property_protected',
+//                    'property_private',
+//                    'construct',
+//                    'destruct',
+//                    'magic',
+//                ],
+//            ],
+            'ordered_imports' => [
+                'sortAlgorithm' => 'alpha',
+                'importsOrder' => [
+                    'const',
+                    'function',
+                    'class',
+                ],
+            ],
         ]);
     }
 

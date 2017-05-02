@@ -11,8 +11,8 @@ use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
 use yii\di\Instance;
-use yii\web\User;
 use yii\web\ForbiddenHttpException;
+use yii\web\User;
 
 /**
  * AccessControl provides simple access control based on a set of rules.

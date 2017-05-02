@@ -9,9 +9,9 @@ namespace yiiunit\framework\mail;
 
 use Yii;
 use yii\base\View;
+use yii\helpers\FileHelper;
 use yii\mail\BaseMailer;
 use yii\mail\BaseMessage;
-use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
 /**

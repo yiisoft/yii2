@@ -9,13 +9,13 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Arrayable;
-use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\i18n\Formatter;
 
 /**
  * DetailView displays the detail of a single data [[model]].

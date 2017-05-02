@@ -7,15 +7,15 @@
 
 namespace yiiunit\framework\filters;
 
-use Yii;
-use yiiunit\TestCase;
 use Prophecy\Argument;
-use yiiunit\framework\filters\stubs\RateLimit;
-use yii\web\User;
+use Yii;
+use yii\filters\RateLimiter;
+use yii\log\Logger;
 use yii\web\Request;
 use yii\web\Response;
-use yii\log\Logger;
-use yii\filters\RateLimiter;
+use yii\web\User;
+use yiiunit\framework\filters\stubs\RateLimit;
+use yiiunit\TestCase;
 
 /**
  *  @group filters

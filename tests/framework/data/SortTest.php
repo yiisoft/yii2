@@ -7,9 +7,9 @@
 
 namespace yiiunit\framework\data;
 
+use yii\data\Sort;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
-use yii\data\Sort;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>

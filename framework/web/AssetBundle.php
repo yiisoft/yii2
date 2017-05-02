@@ -7,10 +7,10 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use Yii;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.

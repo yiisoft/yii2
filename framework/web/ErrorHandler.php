@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Exception;
 use yii\base\ErrorException;
+use yii\base\Exception;
 use yii\base\UserException;
 use yii\helpers\VarDumper;
 

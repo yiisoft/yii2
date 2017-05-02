@@ -9,9 +9,9 @@ namespace yiiunit\framework\ar;
 
 use yii\base\Event;
 use yii\db\BaseActiveRecord;
-use yiiunit\TestCase;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;
+use yiiunit\TestCase;
 
 /**
  * This trait provides unit tests shared by the different AR implementations.

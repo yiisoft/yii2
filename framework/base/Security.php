@@ -7,8 +7,8 @@
 
 namespace yii\base;
 
-use yii\helpers\StringHelper;
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * Security provides a set of methods to handle common security-related tasks.

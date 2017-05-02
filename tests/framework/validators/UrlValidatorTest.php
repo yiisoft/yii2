@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\validators;
 
-use yiiunit\data\validators\models\FakedValidationModel;
 use yii\validators\UrlValidator;
+use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
 /**

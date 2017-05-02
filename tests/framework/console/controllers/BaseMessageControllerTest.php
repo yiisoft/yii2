@@ -8,10 +8,10 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\console\controllers\MessageController;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
-use yii\console\controllers\MessageController;
 
 /**
  * Base for [[\yii\console\controllers\MessageController]] unit tests.

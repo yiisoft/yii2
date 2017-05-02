@@ -10,8 +10,8 @@ namespace yii\validators;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
 

@@ -7,9 +7,9 @@
 
 namespace yii\db\mysql;
 
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 
 /**
  * Schema is the class for retrieving metadata from a MySQL database (version 4.1.x and 5.x).

@@ -18,10 +18,10 @@ namespace yii\log {
 
 namespace yiiunit\framework\log {
 
+    use Yii;
     use yii\base\UserException;
     use yii\log\Dispatcher;
     use yii\log\Logger;
-    use Yii;
     use yiiunit\TestCase;
 
     /**

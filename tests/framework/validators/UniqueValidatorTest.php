@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\validators;
 
-use yii\validators\UniqueValidator;
 use Yii;
+use yii\validators\UniqueValidator;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Order;

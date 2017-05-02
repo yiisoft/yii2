@@ -10,6 +10,7 @@ namespace yiiunit\framework\di;
 use Yii;
 use yii\di\Container;
 use yii\di\Instance;
+use yii\validators\NumberValidator;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\Type;
@@ -18,7 +19,6 @@ use yiiunit\framework\di\stubs\Foo;
 use yiiunit\framework\di\stubs\Qux;
 use yiiunit\framework\di\stubs\QuxInterface;
 use yiiunit\TestCase;
-use yii\validators\NumberValidator;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>

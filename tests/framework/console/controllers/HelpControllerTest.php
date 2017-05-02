@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\console\controllers;
 
-use yii\helpers\Console;
 use yii\console\controllers\HelpController;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**

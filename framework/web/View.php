@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\base\InvalidConfigException;
 
 /**
  * View represents a view object in the MVC pattern.

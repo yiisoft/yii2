@@ -8,8 +8,8 @@
 namespace yii\log;
 
 use Yii;
-use yii\db\Connection;
 use yii\base\InvalidConfigException;
+use yii\db\Connection;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
 

@@ -8,9 +8,9 @@
 namespace yiiunit\framework\test;
 
 use yii\test\ActiveFixture;
-use yiiunit\data\ar\ActiveRecord;
 use yii\test\FixtureTrait;
 use yii\test\InitDbFixture;
+use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\framework\db\DatabaseTestCase;
 

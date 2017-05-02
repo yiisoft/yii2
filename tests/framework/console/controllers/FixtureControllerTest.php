@@ -8,9 +8,9 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
-use yiiunit\TestCase;
-use yiiunit\data\console\controllers\fixtures\FixtureStorage;
 use yii\console\controllers\FixtureController;
+use yiiunit\data\console\controllers\fixtures\FixtureStorage;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\console\controllers\FixtureController]].

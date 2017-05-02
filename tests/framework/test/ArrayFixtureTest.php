@@ -8,8 +8,8 @@
 
 namespace yiiunit\framework\test;
 
-use yiiunit\TestCase;
 use yii\test\ArrayFixture;
+use yiiunit\TestCase;
 
 class ArrayFixtureTest extends TestCase
 {

@@ -7,8 +7,8 @@
 
 namespace yiiunit\framework\data;
 
-use yiiunit\TestCase;
 use yii\data\BaseDataProvider;
+use yiiunit\TestCase;
 
 /**
  * @group data

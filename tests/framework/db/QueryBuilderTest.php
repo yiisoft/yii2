@@ -7,17 +7,17 @@
 
 namespace yiiunit\framework\db;
 
+use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
 use yii\db\Expression;
+use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
+use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
+use yii\db\oci\QueryBuilder as OracleQueryBuilder;
+use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
 use yii\db\Query;
 use yii\db\QueryBuilder;
 use yii\db\Schema;
-use yii\db\mysql\QueryBuilder as MysqlQueryBuilder;
 use yii\db\SchemaBuilderTrait;
 use yii\db\sqlite\QueryBuilder as SqliteQueryBuilder;
-use yii\db\mssql\QueryBuilder as MssqlQueryBuilder;
-use yii\db\pgsql\QueryBuilder as PgsqlQueryBuilder;
-use yii\db\cubrid\QueryBuilder as CubridQueryBuilder;
-use yii\db\oci\QueryBuilder as OracleQueryBuilder;
 use yiiunit\data\base\TraversableObject;
 
 abstract class QueryBuilderTest extends DatabaseTestCase

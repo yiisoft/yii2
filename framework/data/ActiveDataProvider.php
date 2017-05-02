@@ -7,9 +7,9 @@
 
 namespace yii\data;
 
-use yii\db\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
 use yii\db\QueryInterface;
 use yii\di\Instance;

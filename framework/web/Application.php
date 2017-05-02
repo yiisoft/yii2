@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
-use yii\helpers\Url;
 use yii\base\InvalidRouteException;
+use yii\helpers\Url;
 
 /**
  * Application is the base class for all web application classes.

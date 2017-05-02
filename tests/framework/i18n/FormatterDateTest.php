@@ -7,10 +7,10 @@
 
 namespace yiiunit\framework\i18n;
 
+use DateInterval;
+use DateTime;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
-use DateTime;
-use DateInterval;
 
 /**
  * @group i18n

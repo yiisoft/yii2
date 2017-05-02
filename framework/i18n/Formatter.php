@@ -18,8 +18,8 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\FormatConverter;
-use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 
 /**
  * Formatter provides a set of commonly used data formatting methods.

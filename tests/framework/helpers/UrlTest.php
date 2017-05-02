@@ -14,8 +14,8 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\UrlManager;
 use yii\widgets\Menu;
-use yiiunit\TestCase;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\TestCase;
 
 /**
  * UrlTest

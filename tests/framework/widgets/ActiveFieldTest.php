@@ -8,11 +8,11 @@
 namespace yiiunit\framework\widgets;
 
 use Yii;
-use yii\widgets\ActiveField;
 use yii\base\DynamicModel;
-use yii\widgets\ActiveForm;
-use yii\web\View;
 use yii\web\AssetManager;
+use yii\web\View;
+use yii\widgets\ActiveField;
+use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
 
 /**

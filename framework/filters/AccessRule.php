@@ -7,11 +7,11 @@
 
 namespace yii\filters;
 
-use yii\base\Component;
 use yii\base\Action;
-use yii\web\User;
-use yii\web\Request;
+use yii\base\Component;
 use yii\base\Controller;
+use yii\web\Request;
+use yii\web\User;
 
 /**
  * This class represents an access rule defined by the [[AccessControl]] action filter

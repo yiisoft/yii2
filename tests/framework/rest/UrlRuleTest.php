@@ -8,9 +8,9 @@
 namespace yiiunit\framework\rest;
 
 use Yii;
-use yii\web\UrlManager;
 use yii\rest\UrlRule;
 use yii\web\Request;
+use yii\web\UrlManager;
 use yiiunit\TestCase;
 
 /**

@@ -13,9 +13,9 @@ use yii\db\Query;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Item;
+use yiiunit\data\ar\Order;
 use yiiunit\framework\db\DatabaseTestCase;
 use yiiunit\framework\db\UnqueryableQueryMock;
-use yiiunit\data\ar\Order;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
