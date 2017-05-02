@@ -20,7 +20,6 @@ use yii\console\controllers\FixtureController;
  */
 class FixtureControllerTest extends TestCase
 {
-
     /**
      * @var \yiiunit\framework\console\controllers\FixtureConsoledController
      */

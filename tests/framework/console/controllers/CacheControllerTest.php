@@ -21,7 +21,6 @@ use yii\console\controllers\CacheController;
  */
 class CacheControllerTest extends TestCase
 {
-
     /**
      * @var SilencedCacheController
      */

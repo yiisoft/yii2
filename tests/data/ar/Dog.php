@@ -16,7 +16,6 @@ namespace yiiunit\data\ar;
  */
 class Dog extends Animal
 {
-
     /**
      *
      * @param self $record

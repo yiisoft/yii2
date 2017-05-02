@@ -11,7 +11,6 @@ use yii\rbac\PhpManager;
 
 class MockAuthManager extends PhpManager
 {
-
     /**
      * This mock does not persist
      * @inheritdoc

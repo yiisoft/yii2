@@ -24,7 +24,6 @@ use yii\base\Model;
  */
 class BaseHtml
 {
-
     /**
      * @var string Regular expression used for attribute name validation.
      * @since 2.0.12

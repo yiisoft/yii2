@@ -13,7 +13,6 @@ use yii\test\ArrayFixture;
 
 class ArrayFixtureTest extends TestCase
 {
-
     /**
      * @var \yii\test\ArrayFixture
      */
