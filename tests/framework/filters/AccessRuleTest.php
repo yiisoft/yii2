@@ -164,9 +164,9 @@ class AccessRuleTest extends \yiiunit\TestCase
      *
      * @dataProvider matchRoleProvider
      * @param string $actionid the action id
-     * @param boolean $allow whether the rule should allow access
+     * @param bool $allow whether the rule should allow access
      * @param string $userid the userid to check
-     * @param boolean $expected the expected result or null
+     * @param bool $expected the expected result or null
      */
     public function testMatchRole($actionid, $allow, $userid, $expected)
     {

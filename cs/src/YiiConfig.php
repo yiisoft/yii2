@@ -134,6 +134,7 @@ class YiiConfig extends Config
             'phpdoc_no_useless_inheritdoc' => true,
 //            'phpdoc_order', // may be useful, but should be configurable: https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/1602
             'phpdoc_return_self_reference' => true,
+            'phpdoc_scalar' => true,
         ]);
     }
 
