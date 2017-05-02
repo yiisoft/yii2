@@ -779,7 +779,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName, ) = $this->getTableNameAndAlias();
+            list($tableName) = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
             /* @var $modelClass ActiveRecord */
