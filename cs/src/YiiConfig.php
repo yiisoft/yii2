@@ -144,6 +144,7 @@ class YiiConfig extends Config
             'psr4' => true,
             'self_accessor' => true,
             'short_scalar_cast' => true,
+            'single_blank_line_before_namespace' => true,
         ]);
     }
 
