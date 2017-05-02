@@ -96,7 +96,8 @@
     },
     "autoload": {
         "psr-4": {
-            "yii\\": "framework/"
+            "yii\\": "framework/",
+            "yii\\cs\\": "cs/src/"
         }
     },
     "config": {
