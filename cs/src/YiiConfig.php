@@ -135,6 +135,8 @@ class YiiConfig extends Config
 //            'phpdoc_order', // may be useful, but should be configurable: https://github.com/FriendsOfPHP/PHP-CS-Fixer/issues/1602
             'phpdoc_return_self_reference' => true,
             'phpdoc_scalar' => true,
+            'phpdoc_single_line_var_spacing' => true,
+//            'phpdoc_summary' => true, // needs more attention (summary should be separated by blank line from description)
         ]);
     }
 
