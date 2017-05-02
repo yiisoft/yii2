@@ -131,6 +131,7 @@ class YiiConfig extends Config
             'phpdoc_no_access' => true,
             'phpdoc_no_empty_return' => true,
             'phpdoc_no_package' => true,
+            'phpdoc_no_useless_inheritdoc' => true,
         ]);
     }
 
