@@ -42,6 +42,3 @@ phpunit.phar
 # NPM packages
 /node_modules
 .env
-
-# cache of php-cs-fixer
-/.php_cs.cache
