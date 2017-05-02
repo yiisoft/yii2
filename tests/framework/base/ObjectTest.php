@@ -100,7 +100,8 @@ class ObjectTest extends TestCase
         $this->assertEmpty($this->object->Text);
 
         $this->assertFalse(isset($this->object->unknownProperty));
-        $this->assertEmpty($this->object->unknownProperty);
+        $isEmpty = empty($this->object->unknownProperty);
+        $this->assertTrue($isEmpty);
     }
 
     public function testUnset()
