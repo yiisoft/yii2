@@ -49,6 +49,7 @@ class YiiConfig extends Config
             'is_null' => [
                 'use_yoda_style' => false,
             ],
+            'linebreak_after_opening_tag' => true,
         ]);
     }
 
