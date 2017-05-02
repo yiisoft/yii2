@@ -50,6 +50,7 @@ class YiiConfig extends Config
                 'use_yoda_style' => false,
             ],
             'linebreak_after_opening_tag' => true,
+            'lowercase_cast' => true,
         ]);
     }
 
