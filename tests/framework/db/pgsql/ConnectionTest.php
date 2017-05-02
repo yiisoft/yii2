@@ -19,7 +19,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
     public function testConnection()
     {
-        $this->assertTrue(is_object($this->getConnection(true)));
+        $this->assertInternalType('object', $this->getConnection(true));
     }
 
     public function testQuoteValue()

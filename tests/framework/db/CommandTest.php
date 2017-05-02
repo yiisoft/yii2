@@ -207,7 +207,7 @@ SQL;
         } elseif (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
-            $this->assertTrue(is_resource($row['blob_col']));
+            $this->assertInternalType('resource', $row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
@@ -271,7 +271,7 @@ SQL;
         $command = $db->createCommand($sql);
         $command->fetchMode = \PDO::FETCH_OBJ;
         $result = $command->queryOne();
-        $this->assertTrue(is_object($result));
+        $this->assertInternalType('object', $result);
 
         // FETCH_NUM, customized in query method
         $sql = 'SELECT * FROM {{customer}}';

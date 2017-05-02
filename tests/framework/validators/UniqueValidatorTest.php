@@ -33,7 +33,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testAssureMessageSetOnInit()
     {
         $val = new UniqueValidator();
-        $this->assertTrue(is_string($val->message));
+        $this->assertInternalType('string', $val->message);
     }
 
     public function testCustomMessage()

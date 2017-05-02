@@ -68,7 +68,7 @@ class BaseYiiTest extends TestCase
 
     public function testPowered()
     {
-        $this->assertTrue(is_string(Yii::powered()));
+        $this->assertInternalType('string', Yii::powered());
     }
 
     public function testCreateObjectCallable()

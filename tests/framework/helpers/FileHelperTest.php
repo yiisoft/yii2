@@ -342,7 +342,7 @@ class FileHelperTest extends TestCase
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
         );
-        $this->assertTrue(file_exists($this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'));
+        $this->assertFileExists($this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data');
     }
 
     /**
