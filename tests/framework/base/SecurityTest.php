@@ -864,11 +864,11 @@ TEXT;
     public function randomKeyInvalidInputs()
     {
         return [
-            [ 0 ],
-            [ -1 ],
-            [ '0' ],
-            [ '34' ],
-            [ [] ],
+            [0],
+            [-1],
+            ['0'],
+            ['34'],
+            [[]],
         ];
     }
 
@@ -886,7 +886,7 @@ TEXT;
      */
     public function testRandomKeyNoOptions()
     {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fopen = false;
         $this->expectException('yii\base\Exception');
         $this->expectExceptionMessage('Unable to generate a random key');
@@ -899,7 +899,7 @@ TEXT;
      */
     public function testRandomKeyFreadFailure()
     {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fread = false;
         $this->expectException('yii\base\Exception');
         $this->expectExceptionMessage('Unable to generate a random key');
@@ -913,14 +913,14 @@ TEXT;
     public function randomKeyVariants()
     {
         return [
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
         ];
     }
 

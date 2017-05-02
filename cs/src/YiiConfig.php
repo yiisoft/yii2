@@ -149,6 +149,7 @@ class YiiConfig extends Config
             'standardize_not_equals' => true,
             'ternary_operator_spaces' => true,
             'trailing_comma_in_multiline_array' => true,
+            'trim_array_spaces' => true,
         ]);
     }
 
