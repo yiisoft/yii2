@@ -42,23 +42,34 @@ class JsonResponseFormatterTest extends FormatterTest
             // input, json, pretty json
             [[], '[]', '[]'],
             [[1, 'abc'], '[1,"abc"]', "[\n    1,\n    \"abc\"\n]"],
-            [[
-                'a' => 1,
-                'b' => 'abc',
-            ], '{"a":1,"b":"abc"}', "{\n    \"a\": 1,\n    \"b\": \"abc\"\n}"],
-            [[
-                1,
-                'abc',
-                [2, 'def'],
-                true,
-            ], '[1,"abc",[2,"def"],true]', "[\n    1,\n    \"abc\",\n    [\n        2,\n        \"def\"\n    ],\n    true\n]"],
-            [[
-                'a' => 1,
-                'b' => 'abc',
-                'c' => [2, '<>'],
-                true,
-            ], '{"a":1,"b":"abc","c":[2,"<>"],"0":true}',
-               "{\n    \"a\": 1,\n    \"b\": \"abc\",\n    \"c\": [\n        2,\n        \"<>\"\n    ],\n    \"0\": true\n}", ],
+            [
+                [
+                    'a' => 1,
+                    'b' => 'abc',
+                ],
+                '{"a":1,"b":"abc"}',
+                "{\n    \"a\": 1,\n    \"b\": \"abc\"\n}",
+            ],
+            [
+                [
+                    1,
+                    'abc',
+                    [2, 'def'],
+                    true,
+                ],
+                '[1,"abc",[2,"def"],true]',
+                "[\n    1,\n    \"abc\",\n    [\n        2,\n        \"def\"\n    ],\n    true\n]",
+            ],
+            [
+                [
+                    'a' => 1,
+                    'b' => 'abc',
+                    'c' => [2, '<>'],
+                    true,
+                ],
+                '{"a":1,"b":"abc","c":[2,"<>"],"0":true}',
+                "{\n    \"a\": 1,\n    \"b\": \"abc\",\n    \"c\": [\n        2,\n        \"<>\"\n    ],\n    \"0\": true\n}",
+            ],
         ];
     }
 

@@ -165,37 +165,43 @@ class UrlRuleTest extends TestCase
     {
         return [
             [
-                'pluralized automatically', [
-                [
-                    ['controller' => 'user'],
-                    ['users' => 'user'],
-                ],
-                [
-                    ['controller' => 'admin/user'],
-                    ['admin/users' => 'admin/user'],
-                ],
-                [
-                    ['controller' => ['admin/user', 'post']],
-                    ['admin/users' => 'admin/user', 'posts' => 'post'],
-                ],
-            ], ],
-            [
-                'explicitly specified', [
-                [
-                    ['controller' => ['customer' => 'user']],
-                    ['customer' => 'user'],
-                ],
-            ], ],
-            [
-                'do not pluralize', [
+                'pluralized automatically',
                 [
                     [
-                        'pluralize' => false,
-                        'controller' => ['admin/user', 'post'],
+                        ['controller' => 'user'],
+                        ['users' => 'user'],
                     ],
-                    ['admin/user' => 'admin/user', 'post' => 'post'],
+                    [
+                        ['controller' => 'admin/user'],
+                        ['admin/users' => 'admin/user'],
+                    ],
+                    [
+                        ['controller' => ['admin/user', 'post']],
+                        ['admin/users' => 'admin/user', 'posts' => 'post'],
+                    ],
                 ],
-            ], ],
+            ],
+            [
+                'explicitly specified',
+                [
+                    [
+                        ['controller' => ['customer' => 'user']],
+                        ['customer' => 'user'],
+                    ],
+                ],
+            ],
+            [
+                'do not pluralize',
+                [
+                    [
+                        [
+                            'pluralize' => false,
+                            'controller' => ['admin/user', 'post'],
+                        ],
+                        ['admin/user' => 'admin/user', 'post' => 'post'],
+                    ],
+                ],
+            ],
         ];
     }
 
