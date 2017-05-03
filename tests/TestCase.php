@@ -152,7 +152,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         }
         $property = $class->getProperty($propertyName);
         $property->setAccessible(true);
-        $property->setValue($value);
+        $property->setValue($object, $value);
         if ($revoke) {
             $property->setAccessible(false);
         }

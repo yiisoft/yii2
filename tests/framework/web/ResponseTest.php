@@ -5,7 +5,6 @@ namespace yiiunit\framework\web;
 use Exception;
 use RuntimeException;
 use Error;
-use Yii;
 use yii\helpers\StringHelper;
 use yii\web\HttpException;
 

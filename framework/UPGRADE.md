@@ -65,6 +65,9 @@ Upgrade from Yii 2.0.11
 * The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
   If you extend this method, make sure to adjust your code.
 
+* `yii\filters\AccessControl` now can be used without `user` component.  
+  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
+  matching a role throws `yii\base\InvalidConfigException`.
 
 Upgrade from Yii 2.0.10
 -----------------------

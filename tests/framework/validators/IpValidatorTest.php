@@ -2,7 +2,6 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
-use yii\validators\ValidationAsset;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -14,7 +13,8 @@ class IpValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testInitException()
