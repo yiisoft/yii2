@@ -437,15 +437,12 @@ class UrlManager extends Component
      * @since 2.0.12
      * @see getUrlFromCache()
      * @see setRuleToCache()
-     * @see UrlRule::$createStatus
+     * @see UrlRule::getCreateUrlStatus()
      */
     protected function canBeCached(UrlRuleInterface $rule)
     {
         if (method_exists($rule, 'getCreateUrlStatus') && ($status = $rule->getCreateUrlStatus()) !== null) {
-            return in_array($status, [
-                UrlRule::CREATE_STATUS_PARAMS_MISMATCH,
-                UrlRule::CREATE_STATUS_SUCCESS,
-            ], true);
+            return $status === UrlRule::CREATE_STATUS_SUCCESS || $status & UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
         }
     }
 

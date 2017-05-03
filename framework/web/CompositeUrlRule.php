@@ -25,7 +25,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     protected $rules = [];
 
     /**
-     * @var string|null status of the URL creation after the last [[createUrl()]] call.
+     * @var int|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
      */
     protected $createStatus;
@@ -74,7 +74,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
-        $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
+        $this->createStatus = UrlRule::CREATE_STATUS_SUCCESS;
         foreach ($this->rules as $rule) {
             /* @var $rule UrlRule */
             if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
@@ -86,18 +86,22 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
                 || $rule->getCreateUrlStatus() === null
             ) {
                 $this->createStatus = null;
-            } elseif ($rule->getCreateUrlStatus() === UrlRule::CREATE_STATUS_PARAMS_MISMATCH) {
-                $this->createStatus = UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
+            } else {
+                $this->createStatus |= $rule->getCreateUrlStatus();
             }
         }
 
+        if ($this->createStatus === UrlRule::CREATE_STATUS_SUCCESS) {
+            // create status was not changed - there is no rules configured
+            $this->createStatus = UrlRule::CREATE_STATUS_PARSING_ONLY;
+        }
         return false;
     }
 
     /**
      * Returns status of the URL creation after the last [[createUrl()]] call.
      *
-     * @return null|string
+     * @return null|int
      * @since 2.0.12
      */
     public function getCreateUrlStatus() {

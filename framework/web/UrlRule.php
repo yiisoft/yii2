@@ -38,10 +38,10 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     const CREATION_ONLY = 2;
 
-    const CREATE_STATUS_PARSING_ONLY = 'parsing-only';
-    const CREATE_STATUS_ROUTE_MISMATCH = 'route-mismatch';
-    const CREATE_STATUS_PARAMS_MISMATCH = 'params-mismatch';
-    const CREATE_STATUS_SUCCESS = 'success';
+    const CREATE_STATUS_SUCCESS = 0;
+    const CREATE_STATUS_PARSING_ONLY = 1;
+    const CREATE_STATUS_ROUTE_MISMATCH = 2;
+    const CREATE_STATUS_PARAMS_MISMATCH = 4;
 
     /**
      * @var string the name of this rule. If not set, it will use [[pattern]] as the name.
@@ -114,7 +114,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     protected $placeholders = [];
     /**
-     * @var string|null status of the URL creation after the last [[createUrl()]] call.
+     * @var int|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
      */
     public $createStatus;
@@ -517,7 +517,7 @@ class UrlRule extends Object implements UrlRuleInterface
     /**
      * Returns status of the URL creation after the last [[createUrl()]] call.
      *
-     * @return null|string
+     * @return null|int
      * @since 2.0.12
      */
     public function getCreateUrlStatus() {
