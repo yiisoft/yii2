@@ -96,6 +96,12 @@ class Controller extends \yii\web\Controller
      */
     protected function serializeData($data)
     {
-        return Yii::createObject($this->serializer)->serialize($data);
+        if (empty($data)) {
+            Yii::$app->response->setStatusCode(204);
+        } else {
+            $data = Yii::createObject($this->serializer)->serialize($data);
+        }
+
+        return $data;
     }
 }
