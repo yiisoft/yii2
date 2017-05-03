@@ -38,7 +38,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     const CREATION_ONLY = 2;
 
-    const CREATE_STATUS_PARING_ONLY = 'parsing-only';
+    const CREATE_STATUS_PARSING_ONLY = 'parsing-only';
     const CREATE_STATUS_ROUTE_MISMATCH = 'route-mismatch';
     const CREATE_STATUS_PARAMS_MISMATCH = 'params-mismatch';
     const CREATE_STATUS_SUCCESS = 'success';
@@ -431,7 +431,7 @@ class UrlRule extends Object implements UrlRuleInterface
     {
         $this->createStatus = null;
         if ($this->mode === self::PARSING_ONLY) {
-            $this->createStatus = static::CREATE_STATUS_PARING_ONLY;
+            $this->createStatus = static::CREATE_STATUS_PARSING_ONLY;
             return false;
         }
 
