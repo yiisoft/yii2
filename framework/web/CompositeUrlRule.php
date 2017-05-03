@@ -25,10 +25,10 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     protected $rules = [];
 
     /**
-     * @var string|null status of URL creation after last [[createUrl()]] call.
+     * @var string|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
      */
-    public $createStatus;
+    protected $createStatus;
 
 
     /**
@@ -80,13 +80,27 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
             if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
                 $this->createStatus = UrlRule::CREATE_STATUS_SUCCESS;
                 return $url;
-            } elseif ($this->createStatus === null || !isset($rule->createStatus)) {
+            } elseif (
+                $this->createStatus === null
+                || !method_exists($rule, 'getCreateUrlStatus')
+                || $rule->getCreateUrlStatus() === null
+            ) {
                 $this->createStatus = null;
-            } elseif ($rule->createStatus === UrlRule::CREATE_STATUS_PARAMS_MISMATCH) {
+            } elseif ($rule->getCreateUrlStatus() === UrlRule::CREATE_STATUS_PARAMS_MISMATCH) {
                 $this->createStatus = UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Returns status of the URL creation after the last [[createUrl()]] call.
+     *
+     * @return null|string
+     * @since 2.0.12
+     */
+    public function getCreateUrlStatus() {
+        return $this->createStatus;
     }
 }

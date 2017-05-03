@@ -697,19 +697,19 @@ class UrlManagerCreateUrlTest extends TestCase
         ], false);
 
         $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
-        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateUrlStatus());
         $this->assertEquals(1, $rules[0]->createCounter);
         $this->assertEquals(0, $rules[1]->createCounter);
 
         $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
-        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateStatus());
-        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
         $this->assertEquals(3, $rules[0]->createCounter);
         $this->assertEquals(1, $rules[1]->createCounter);
 
         $this->assertEquals('/user/profile?name=rob006', $manager->createUrl(['user/profile', 'name' => 'rob006']));
-        $this->assertEquals(UrlRule::CREATE_STATUS_ROUTE_MISMATCH, $rules[0]->getCreateStatus());
-        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_ROUTE_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
         $this->assertEquals(4, $rules[0]->createCounter);
         $this->assertEquals(2, $rules[1]->createCounter);
     }
@@ -734,13 +734,13 @@ class UrlManagerCreateUrlTest extends TestCase
         ], false);
 
         $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
-        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateStatus());
-        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
         $this->assertEquals(1, $rules[0]->createCounter);
         $this->assertEquals(1, $rules[1]->createCounter);
 
         $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
-        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateUrlStatus());
         $this->assertEquals(2, $rules[0]->createCounter);
         $this->assertEquals(1, $rules[1]->createCounter);
     }

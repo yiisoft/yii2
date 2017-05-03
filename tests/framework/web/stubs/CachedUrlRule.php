@@ -6,7 +6,6 @@ use yii\web\UrlRule;
 
 class CachedUrlRule extends UrlRule
 {
-
     public $createCounter = 0;
 
     public function createUrl($manager, $route, $params)
@@ -14,9 +13,4 @@ class CachedUrlRule extends UrlRule
         $this->createCounter++;
         return parent::createUrl($manager, $route, $params);
     }
-
-    public function getCreateStatus() {
-        return $this->createStatus;
-    }
-
 }

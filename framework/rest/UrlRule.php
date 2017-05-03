@@ -252,9 +252,13 @@ class UrlRule extends CompositeUrlRule
                     if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
                         $this->createStatus = \yii\web\UrlRule::CREATE_STATUS_SUCCESS;
                         return $url;
-                    } elseif ($this->createStatus === null || !isset($rule->createStatus)) {
+                    } elseif (
+                        $this->createStatus === null
+                        || !method_exists($rule, 'getCreateUrlStatus')
+                        || $rule->getCreateUrlStatus() === null
+                    ) {
                         $this->createStatus = null;
-                    } elseif ($rule->createStatus === \yii\web\UrlRule::CREATE_STATUS_PARAMS_MISMATCH) {
+                    } elseif ($rule->getCreateUrlStatus() === \yii\web\UrlRule::CREATE_STATUS_PARAMS_MISMATCH) {
                         $this->createStatus = \yii\web\UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
                     }
                 }

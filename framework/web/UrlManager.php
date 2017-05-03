@@ -441,8 +441,8 @@ class UrlManager extends Component
      */
     protected function canBeCached(UrlRuleInterface $rule)
     {
-        if (isset($rule->createStatus)) {
-            return in_array($rule->createStatus, [
+        if (method_exists($rule, 'getCreateUrlStatus') && ($status = $rule->getCreateUrlStatus()) !== null) {
+            return in_array($status, [
                 UrlRule::CREATE_STATUS_PARAMS_MISMATCH,
                 UrlRule::CREATE_STATUS_SUCCESS,
             ], true);

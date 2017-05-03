@@ -114,7 +114,7 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     protected $placeholders = [];
     /**
-     * @var string|null status of URL creation after last [[createUrl()]] call.
+     * @var string|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
      */
     public $createStatus;
@@ -512,6 +512,16 @@ class UrlRule extends Object implements UrlRuleInterface
 
         $this->createStatus = static::CREATE_STATUS_SUCCESS;
         return $url;
+    }
+
+    /**
+     * Returns status of the URL creation after the last [[createUrl()]] call.
+     *
+     * @return null|string
+     * @since 2.0.12
+     */
+    public function getCreateUrlStatus() {
+        return $this->createStatus;
     }
 
     /**
