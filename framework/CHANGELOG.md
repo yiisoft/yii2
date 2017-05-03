@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
 - Bug #11719: Fixed `yii\db\Connection::$enableQueryCache` caused infinite loop when the same connection was used for `yii\caching\DbCache` (michaelarnauts)
 - Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
+- Bug #13086, #13656: Fixed bug with optional parameters at the beginning of pattern in `yii\web\UrlRule` (rob006)
 - Bug #13087: Fixed getting active validators for safe attribute (developeruz, klimov-paul)
 - Bug #13306: Wildcard in `reloadableScripts` in `yii.js` allows 0 characters (arogachev)
 - Bug #13340: Fixed `yii\db\Connection::useMaster()` - exception within callback completely disables slaves (Vovan-VE)
@@ -92,8 +93,11 @@ Yii Framework 2 Change Log
 - Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
 - Enh #13994: Refactored `yii\filters\RateLimiter`. Added tests (vladis84)
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
+- Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
-
+- Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly) 
+- Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
+- Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
 
 2.0.11.2 February 08, 2017
 --------------------------
