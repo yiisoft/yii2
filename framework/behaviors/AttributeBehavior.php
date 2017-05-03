@@ -81,8 +81,15 @@ class AttributeBehavior extends Behavior
     public $value;
     /**
      * @var array an array of the values indexed by attribute name that will be assigned to the current attributes respectively by attribute name.
-     * Will be assigned if $this->value is NULL
-     * The single value same at @see $value
+     * This property will be used only when [[value]] is `null`
+     * key - attribute name
+     * value - corresponding value
+     * Example:
+     * 'values' => [
+     *   'number' => [$this, 'getNextNumber'],
+     *   'status' => 'updated'
+     * ]
+     * @see value for possible values
      */
     public $values = [];
     /**
