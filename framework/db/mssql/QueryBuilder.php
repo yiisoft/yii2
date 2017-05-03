@@ -56,6 +56,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '\\' => '[\\]',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -173,6 +174,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
             . $this->getColumnType($type);
 
         return $sql;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function addDefaultValue($name, $table, $column, $default)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($default) . ' FOR '
+            . $this->db->quoteColumnName($column);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
     }
 
     /**

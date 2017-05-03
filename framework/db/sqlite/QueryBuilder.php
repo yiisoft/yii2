@@ -53,6 +53,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected $likeEscapeCharacter = '\\';
 
+
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
@@ -295,6 +296,60 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function dropPrimaryKey($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropUnique($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addCheck($name, $table, $check)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addDefaultValue($name, $table, $column, $default)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropDefaultValue($name, $table)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
     }

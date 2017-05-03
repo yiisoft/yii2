@@ -8,6 +8,7 @@
 namespace yii\db\cubrid;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 
 /**
@@ -56,6 +57,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '_' => '!_',
         '!' => '!!',
     ];
+
 
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
@@ -115,6 +117,24 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function selectExists($rawSql)
     {
         return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by CUBRID.
+     */
+    public function addCheck($name, $table, $check)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by CUBRID.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by CUBRID.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by CUBRID.');
     }
 
     /**

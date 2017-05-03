@@ -3,7 +3,6 @@
 namespace yiiunit\framework\db\pgsql;
 
 use yii\db\Expression;
-use yii\db\pgsql\Schema;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Type;
 
@@ -83,7 +82,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     public function testCompositeFk()
     {
-        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('composite_fk');
@@ -109,7 +107,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             [$fp = fopen(__FILE__, 'rb'), \PDO::PARAM_LOB],
         ];
 
-        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
@@ -120,7 +117,6 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     public function testBooleanDefaultValues()
     {
-        /* @var $schema Schema */
         $schema = $this->getConnection()->schema;
 
         $table = $schema->getTableSchema('bool_values');
@@ -193,5 +189,15 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertFalse($column->allowNull);
         $this->assertEquals('numeric', $column->dbType);
         $this->assertEquals(0, $column->defaultValue);
+    }
+
+    public function constraintsProvider()
+    {
+        $result = parent::constraintsProvider();
+        $result['1: check'][2][0]->expression = '(("C_check")::text <> \'\'::text)';
+
+        $result['3: foreign key'][2][0]->foreignSchemaName = 'public';
+        $result['3: index'][2] = [];
+        return $result;
     }
 }

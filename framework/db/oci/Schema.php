@@ -8,10 +8,16 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
+use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Connection;
+use yii\db\Constraint;
+use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
+use yii\db\ForeignKeyConstraint;
+use yii\db\IndexConstraint;
 use yii\db\TableSchema;
+use yii\helpers\ArrayHelper;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database
@@ -24,6 +30,8 @@ use yii\db\TableSchema;
  */
 class Schema extends \yii\db\Schema
 {
+    use ConstraintFinderTrait;
+
     /**
      * @var array map of DB errors and corresponding exceptions
      * If left part is found in DB error message exception class from the right part is used.
@@ -42,6 +50,180 @@ class Schema extends \yii\db\Schema
         if ($this->defaultSchema === null) {
             $this->defaultSchema = strtoupper($this->db->username);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function resolveTableName($name)
+    {
+        $resolvedName = new TableSchema();
+        $parts = explode('.', str_replace('"', '', $name));
+        if (isset($parts[1])) {
+            $resolvedName->schemaName = $parts[0];
+            $resolvedName->name = $parts[1];
+        } else {
+            $resolvedName->schemaName = $this->defaultSchema;
+            $resolvedName->name = $name;
+        }
+        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') .  $resolvedName->name;
+        return $resolvedName;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function findSchemaNames()
+    {
+        $sql = <<<SQL
+SELECT
+    USERNAME
+FROM DBA_USERS U
+WHERE
+    EXISTS (SELECT 1 FROM DBA_OBJECTS O WHERE O.OWNER = U.USERNAME)
+    AND DEFAULT_TABLESPACE NOT IN ('SYSTEM','SYSAUX')
+SQL;
+        return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function findTableNames($schema = '')
+    {
+        if ($schema === '') {
+            $sql = <<<SQL
+SELECT
+    TABLE_NAME
+FROM USER_TABLES
+UNION ALL
+SELECT
+    VIEW_NAME AS TABLE_NAME
+FROM USER_VIEWS
+UNION ALL
+SELECT
+    MVIEW_NAME AS TABLE_NAME
+FROM USER_MVIEWS
+ORDER BY TABLE_NAME
+SQL;
+            $command = $this->db->createCommand($sql);
+        } else {
+            $sql = <<<SQL
+SELECT
+    OBJECT_NAME AS TABLE_NAME
+FROM ALL_OBJECTS
+WHERE
+    OBJECT_TYPE IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
+    AND OWNER = :schema
+ORDER BY OBJECT_NAME
+SQL;
+            $command = $this->db->createCommand($sql, [':schema' => $schema]);
+        }
+
+        $rows = $command->queryAll();
+        $names = [];
+        foreach ($rows as $row) {
+            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
+                $row = array_change_key_case($row, CASE_UPPER);
+            }
+            $names[] = $row['TABLE_NAME'];
+        }
+        return $names;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableSchema($name)
+    {
+        $table = new TableSchema();
+        $this->resolveTableNames($table, $name);
+        if ($this->findColumns($table)) {
+            $this->findConstraints($table);
+            return $table;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTablePrimaryKey($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'primaryKey');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableForeignKeys($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'foreignKeys');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableIndexes($tableName)
+    {
+        static $sql = <<<SQL
+SELECT
+    /*+ PUSH_PRED("ui") PUSH_PRED("uicol") PUSH_PRED("uc") */
+    "ui"."INDEX_NAME" AS "name",
+    "uicol"."COLUMN_NAME" AS "column_name",
+    CASE "ui"."UNIQUENESS" WHEN 'UNIQUE' THEN 1 ELSE 0 END AS "index_is_unique",
+    CASE WHEN "uc"."CONSTRAINT_NAME" IS NOT NULL THEN 1 ELSE 0 END AS "index_is_primary"
+FROM "SYS"."USER_INDEXES" "ui"
+LEFT JOIN "SYS"."USER_IND_COLUMNS" "uicol"
+    ON "uicol"."INDEX_NAME" = "ui"."INDEX_NAME"
+LEFT JOIN "SYS"."USER_CONSTRAINTS" "uc"
+    ON "uc"."OWNER" = "ui"."TABLE_OWNER" AND "uc"."CONSTRAINT_NAME" = "ui"."INDEX_NAME" AND "uc"."CONSTRAINT_TYPE" = 'P'
+WHERE "ui"."TABLE_OWNER" = :schemaName AND "ui"."TABLE_NAME" = :tableName
+ORDER BY "uicol"."COLUMN_POSITION" ASC
+SQL;
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $indexes = $this->db->createCommand($sql, [
+            ':schemaName' => $resolvedName->schemaName,
+            ':tableName' => $resolvedName->name,
+        ])->queryAll();
+        $indexes = $this->normalizePdoRowKeyCase($indexes, true);
+        $indexes = ArrayHelper::index($indexes, null, 'name');
+        $result = [];
+        foreach ($indexes as $name => $index) {
+            $result[] = new IndexConstraint([
+                'isPrimary' => (bool) $index[0]['index_is_primary'],
+                'isUnique' => (bool) $index[0]['index_is_unique'],
+                'name' => $name,
+                'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
+            ]);
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableUniques($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'uniques');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableChecks($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'checks');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableDefaultValues($tableName)
+    {
+        return [];
     }
 
     /**
@@ -74,23 +256,6 @@ class Schema extends \yii\db\Schema
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return new ColumnSchemaBuilder($type, $length, $this->db);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function loadTableSchema($name)
-    {
-        $table = new TableSchema();
-        $this->resolveTableNames($table, $name);
-
-        if ($this->findColumns($table)) {
-            $this->findConstraints($table);
-
-            return $table;
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -321,67 +486,6 @@ SQL;
     }
 
     /**
-     * @inheritdoc
-     */
-    protected function findSchemaNames()
-    {
-        $sql = <<<SQL
-SELECT
-    USERNAME
-FROM DBA_USERS U
-WHERE
-    EXISTS (SELECT 1 FROM DBA_OBJECTS O WHERE O.OWNER = U.USERNAME)
-    AND DEFAULT_TABLESPACE NOT IN ('SYSTEM','SYSAUX')
-SQL;
-        return $this->db->createCommand($sql)->queryColumn();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function findTableNames($schema = '')
-    {
-        if ($schema === '') {
-            $sql = <<<SQL
-SELECT
-    TABLE_NAME
-FROM USER_TABLES
-UNION ALL
-SELECT
-    VIEW_NAME AS TABLE_NAME
-FROM USER_VIEWS
-UNION ALL
-SELECT
-    MVIEW_NAME AS TABLE_NAME
-FROM USER_MVIEWS
-ORDER BY TABLE_NAME
-SQL;
-            $command = $this->db->createCommand($sql);
-        } else {
-            $sql = <<<SQL
-SELECT
-    OBJECT_NAME AS TABLE_NAME
-FROM ALL_OBJECTS
-WHERE
-    OBJECT_TYPE IN ('TABLE', 'VIEW', 'MATERIALIZED VIEW')
-    AND OWNER = :schema
-ORDER BY OBJECT_NAME
-SQL;
-            $command = $this->db->createCommand($sql, [':schema' => $schema]);
-        }
-
-        $rows = $command->queryAll();
-        $names = [];
-        foreach ($rows as $row) {
-            if ($this->db->slavePdo->getAttribute(\PDO::ATTR_CASE) === \PDO::CASE_LOWER) {
-                $row = array_change_key_case($row, CASE_UPPER);
-            }
-            $names[] = $row['TABLE_NAME'];
-        }
-        return $names;
-    }
-
-    /**
      * Returns all unique indexes for the given table.
      * Each array element is of the following structure:
      *
@@ -522,5 +626,89 @@ SQL;
         }
 
         return $result;
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $returnType
+     * @return mixed
+     */
+    private function loadTableConstraints($tableName, $returnType)
+    {
+        static $sql = <<<SQL
+SELECT
+    /*+ PUSH_PRED("uc") PUSH_PRED("uccol") PUSH_PRED("fuc") */
+    "uc"."CONSTRAINT_NAME" AS "name",
+    "uccol"."COLUMN_NAME" AS "column_name",
+    "uc"."CONSTRAINT_TYPE" AS "type",
+    "fuc"."OWNER" AS "foreign_table_schema",
+    "fuc"."TABLE_NAME" AS "foreign_table_name",
+    "fuccol"."COLUMN_NAME" AS "foreign_column_name",
+    "uc"."DELETE_RULE" AS "on_delete",
+    "uc"."SEARCH_CONDITION" AS "check_expr"
+FROM "USER_CONSTRAINTS" "uc"
+INNER JOIN "USER_CONS_COLUMNS" "uccol"
+    ON "uccol"."OWNER" = "uc"."OWNER" AND "uccol"."CONSTRAINT_NAME" = "uc"."CONSTRAINT_NAME"
+LEFT JOIN "USER_CONSTRAINTS" "fuc"
+    ON "fuc"."OWNER" = "uc"."R_OWNER" AND "fuc"."CONSTRAINT_NAME" = "uc"."R_CONSTRAINT_NAME"
+LEFT JOIN "USER_CONS_COLUMNS" "fuccol"
+    ON "fuccol"."OWNER" = "fuc"."OWNER" AND "fuccol"."CONSTRAINT_NAME" = "fuc"."CONSTRAINT_NAME" AND "fuccol"."POSITION" = "uccol"."POSITION"
+WHERE "uc"."OWNER" = :schemaName AND "uc"."TABLE_NAME" = :tableName
+ORDER BY "uccol"."POSITION" ASC
+SQL;
+
+        $resolvedName = $this->resolveTableName($tableName);
+        $constraints = $this->db->createCommand($sql, [
+            ':schemaName' => $resolvedName->schemaName,
+            ':tableName' => $resolvedName->name,
+        ])->queryAll();
+        $constraints = $this->normalizePdoRowKeyCase($constraints, true);
+        $constraints = ArrayHelper::index($constraints, null, ['type', 'name']);
+        $result = [
+            'primaryKey' => null,
+            'foreignKeys' => [],
+            'uniques' => [],
+            'checks' => [],
+        ];
+        foreach ($constraints as $type => $names) {
+            foreach ($names as $name => $constraint) {
+                switch ($type) {
+                    case 'P':
+                        $result['primaryKey'] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'R':
+                        $result['foreignKeys'][] = new ForeignKeyConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'foreignSchemaName' => $constraint[0]['foreign_table_schema'],
+                            'foreignTableName' => $constraint[0]['foreign_table_name'],
+                            'foreignColumnNames' => ArrayHelper::getColumn($constraint, 'foreign_column_name'),
+                            'onDelete' => $constraint[0]['on_delete'],
+                            'onUpdate' => null,
+                        ]);
+                        break;
+                    case 'U':
+                        $result['uniques'][] = new Constraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                        ]);
+                        break;
+                    case 'C':
+                        $result['checks'][] = new CheckConstraint([
+                            'name' => $name,
+                            'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
+                            'expression' => $constraint[0]['check_expr']
+                        ]);
+                        break;
+                }
+            }
+        }
+        foreach ($result as $type => $data) {
+            $this->setTableMetadata($tableName, $type, $data);
+        }
+        return $result[$returnType];
     }
 }

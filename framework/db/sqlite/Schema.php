@@ -8,10 +8,16 @@
 namespace yii\db\sqlite;
 
 use yii\base\NotSupportedException;
+use yii\db\CheckConstraint;
+use yii\db\Constraint;
+use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
+use yii\db\ForeignKeyConstraint;
+use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\db\ColumnSchema;
 use yii\db\Transaction;
+use yii\helpers\ArrayHelper;
 
 /**
  * Schema is the class for retrieving metadata from a SQLite (2/3) database.
@@ -24,6 +30,8 @@ use yii\db\Transaction;
  */
 class Schema extends \yii\db\Schema
 {
+    use ConstraintFinderTrait;
+
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
@@ -58,6 +66,120 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
     ];
 
+    /**
+     * @inheritDoc
+     */
+    protected function findTableNames($schema = '')
+    {
+        $sql = "SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name<>'sqlite_sequence' ORDER BY tbl_name";
+        return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableSchema($name)
+    {
+        $table = new TableSchema;
+        $table->name = $name;
+        $table->fullName = $name;
+
+        if ($this->findColumns($table)) {
+            $this->findConstraints($table);
+
+            return $table;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTablePrimaryKey($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'primaryKey');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableForeignKeys($tableName)
+    {
+        $foreignKeys = $this->db->createCommand('PRAGMA FOREIGN_KEY_LIST (' . $this->quoteValue($tableName) . ')')->queryAll();
+        $foreignKeys = $this->normalizePdoRowKeyCase($foreignKeys, true);
+        $foreignKeys = ArrayHelper::index($foreignKeys, null, 'table');
+        ArrayHelper::multisort($foreignKeys, 'seq', SORT_ASC, SORT_NUMERIC);
+        $result = [];
+        foreach ($foreignKeys as $table => $foreignKey) {
+            $result[] = new ForeignKeyConstraint([
+                'columnNames' => ArrayHelper::getColumn($foreignKey, 'from'),
+                'foreignTableName' => $table,
+                'foreignColumnNames' => ArrayHelper::getColumn($foreignKey, 'to'),
+                'onDelete' => isset($foreignKey[0]['on_delete']) ? $foreignKey[0]['on_delete'] : null,
+                'onUpdate' => isset($foreignKey[0]['on_update']) ? $foreignKey[0]['on_update'] : null,
+            ]);
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableIndexes($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'indexes');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableUniques($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'uniques');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableChecks($tableName)
+    {
+        $sql = $this->db->createCommand('SELECT `sql` FROM `sqlite_master` WHERE name = :tableName', [
+            ':tableName' => $tableName,
+        ])->queryScalar();
+        $code = (new SqlTokenizer($sql))->tokenize();
+        if (!$code[0]->matches('any CREATE any TABLE any()', 0, $firstMatchIndex, $lastMatchIndex)) {
+            return [];
+        }
+
+        $createTableToken = $code[0][$lastMatchIndex - 1];
+        $result = [];
+        $offset = 0;
+        while (true) {
+            if (!$createTableToken->matches('any CHECK()', $offset, $firstMatchIndex, $offset)) {
+                break;
+            }
+
+            $checkSql = $createTableToken[$offset - 1]->getSql();
+            $name = null;
+            if (isset($createTableToken[$firstMatchIndex - 2]) && $createTableToken->matches('CONSTRAINT any', $firstMatchIndex - 2)) {
+                $name = $createTableToken[$firstMatchIndex - 1]->content;
+            }
+            $result[] = new CheckConstraint([
+                'name' => $name,
+                'expression' => $checkSql,
+            ]);
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableDefaultValues($tableName)
+    {
+        return [];
+    }
 
     /**
      * Quotes a table name for use in a query.
@@ -98,38 +220,6 @@ class Schema extends \yii\db\Schema
     public function createColumnSchemaBuilder($type, $length = null)
     {
         return new ColumnSchemaBuilder($type, $length);
-    }
-
-    /**
-     * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @return array all table names in the database. The names have NO schema name prefix.
-     */
-    protected function findTableNames($schema = '')
-    {
-        $sql = "SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name<>'sqlite_sequence' ORDER BY tbl_name";
-
-        return $this->db->createCommand($sql)->queryColumn();
-    }
-
-    /**
-     * Loads the metadata for the specified table.
-     * @param string $name table name
-     * @return TableSchema driver dependent table metadata. Null if the table does not exist.
-     */
-    protected function loadTableSchema($name)
-    {
-        $table = new TableSchema;
-        $table->name = $name;
-        $table->fullName = $name;
-
-        if ($this->findColumns($table)) {
-            $this->findConstraints($table);
-
-            return $table;
-        } else {
-            return null;
-        }
     }
 
     /**
@@ -289,5 +379,46 @@ class Schema extends \yii\db\Schema
             default:
                 throw new NotSupportedException(get_class($this) . ' only supports transaction isolation levels READ UNCOMMITTED and SERIALIZABLE.');
         }
+    }
+
+    /**
+     * @param string $tableName
+     * @param string $returnType
+     * @return mixed
+     */
+    private function loadTableConstraints($tableName, $returnType)
+    {
+        $indexes = $this->db->createCommand('PRAGMA INDEX_LIST (' . $this->quoteValue($tableName) . ')')->queryAll();
+        $indexes = $this->normalizePdoRowKeyCase($indexes, true);
+        $result = [
+            'primaryKey' => null,
+            'indexes' => [],
+            'uniques' => [],
+        ];
+        foreach ($indexes as $index) {
+            $columns = $this->db->createCommand('PRAGMA INDEX_INFO (' . $this->quoteValue($index['name']) . ')')->queryAll();
+            $columns = $this->normalizePdoRowKeyCase($columns, true);
+            ArrayHelper::multisort($columns, 'seqno', SORT_ASC, SORT_NUMERIC);
+            $result['indexes'][] = new IndexConstraint([
+                'isPrimary' => $index['origin'] === 'pk',
+                'isUnique' => (bool) $index['unique'],
+                'name' => $index['name'],
+                'columnNames' => ArrayHelper::getColumn($columns, 'name'),
+            ]);
+            if ($index['origin'] === 'u') {
+                $result['uniques'][] = new Constraint([
+                    'name' => $index['name'],
+                    'columnNames' => ArrayHelper::getColumn($columns, 'name'),
+                ]);
+            } elseif ($index['origin'] === 'pk') {
+                $result['primaryKey'] = new Constraint([
+                    'columnNames' => ArrayHelper::getColumn($columns, 'name'),
+                ]);
+            }
+        }
+        foreach ($result as $type => $data) {
+            $this->setTableMetadata($tableName, $type, $data);
+        }
+        return $result[$returnType];
     }
 }

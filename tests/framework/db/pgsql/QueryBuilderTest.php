@@ -95,6 +95,18 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $this->assertEquals($expected, $sql);
     }
 
+    public function indexesProvider()
+    {
+        $result = parent::indexesProvider();
+        $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+        return $result;
+    }
+
+    public function defaultValuesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping default constraints is not supported in PostgreSQL.');
+    }
+
     public function testCommentColumn()
     {
         $qb = $this->getQueryBuilder();

@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\db\oci;
 
+use yii\db\oci\QueryBuilder;
 use yii\db\oci\Schema;
 use yiiunit\data\base\TraversableObject;
 
@@ -35,6 +36,44 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
+    public function foreignKeysProvider()
+    {
+        $tableName = 'T_constraints_3';
+        $name = 'CN_constraints_3';
+        $pkTableName = 'T_constraints_2';
+        return [
+            'drop' => [
+                "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
+                function (QueryBuilder $qb) use ($tableName, $name) {
+                    return $qb->dropForeignKey($name, $tableName);
+                }
+            ],
+            'add' => [
+                "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]]) ON DELETE CASCADE",
+                function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
+                    return $qb->addForeignKey($name, $tableName, 'C_fk_id_1', $pkTableName, 'C_id_1', 'CASCADE');
+                }
+            ],
+            'add (2 columns)' => [
+                "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]], [[C_fk_id_2]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]], [[C_id_2]]) ON DELETE CASCADE",
+                function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
+                    return $qb->addForeignKey($name, $tableName, 'C_fk_id_1, C_fk_id_2', $pkTableName, 'C_id_1, C_id_2', 'CASCADE');
+                }
+            ],
+        ];
+    }
+
+    public function indexesProvider()
+    {
+        $result = parent::indexesProvider();
+        $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+        return $result;
+    }
+
+    public function testAddDropDefaultValue($sql, \Closure $builder)
+    {
+        $this->markTestSkipped('Adding/dropping default constraints is not supported in Oracle.');
+    }
 
     public function testCommentColumn()
     {

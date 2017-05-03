@@ -29,6 +29,16 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return array_merge(parent::columnTypes(), []);
     }
 
+    public function checksProvider()
+    {
+        $this->markTestSkipped('Adding/dropping check constraints is not supported in CUBRID.');
+    }
+
+    public function defaultValuesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping default constraints is not supported in CUBRID.');
+    }
+
     public function testResetSequence()
     {
         $qb = $this->getQueryBuilder();

@@ -659,6 +659,36 @@ SQL;
     }
     */
 
+    public function testAddDropPrimaryKey()
+    {
+        // @TODO Will be implemented in this PR.
+    }
+
+    public function testAddDropForeignKey()
+    {
+        // @TODO Will be implemented in this PR.
+    }
+
+    public function testCreateDropIndex()
+    {
+        // @TODO Will be implemented in this PR.
+    }
+
+    public function testAddDropUnique()
+    {
+        // @TODO Will be implemented in this PR.
+    }
+
+    public function testAddDropCheck()
+    {
+        // @TODO Will be implemented in this PR.
+    }
+
+    public function testAddDropDefaultValue()
+    {
+        // @TODO Will be implemented in this PR.
+    }
+
     public function testIntegrityViolation()
     {
         $this->expectException('\yii\db\IntegrityException');
