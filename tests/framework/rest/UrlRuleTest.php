@@ -361,10 +361,10 @@ class UrlRuleTest extends TestCase
 
     /**
      * @dataProvider testGetCreateUrlStatusProvider
-     * @param array $rule
+     * @param array $config
      * @param array $tests
      */
-    public function testGetCreateUrlStatus($rule, $tests)
+    public function testGetCreateUrlStatus($config, $tests)
     {
         foreach ($tests as $test) {
             list($params, $expected, $status) = $test;
@@ -376,7 +376,7 @@ class UrlRuleTest extends TestCase
             $manager = new UrlManager([
                 'cache' => null,
             ]);
-            $rule = new UrlRule($rule);
+            $rule = new UrlRule($config);
             $errorMessage = 'Failed test: ' . VarDumper::dumpAsString($test);
             $this->assertSame($expected, $rule->createUrl($manager, $route, $params), $errorMessage);
             $this->assertNotNull($status, $errorMessage);
