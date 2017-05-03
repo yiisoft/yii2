@@ -324,10 +324,26 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * @inheritdoc
+     * Generates a batch INSERT IGNORE SQL statement.
+     *
+     * @param $table
+     * @param $columns
+     * @param $rows
+     * @return string
      */
-    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
-    {
-        return parent::batchInsert($table, $columns, $rows, $ignore, $replace);
+    public function batchInsertIgnore($table, $columns, $rows){
+        return $this->composeBatchInsertCommand($table, $columns, $rows, true);
+    }
+
+    /**
+     * Generates a batch REPLACE INTO SQL statement.
+     *
+     * @param $table
+     * @param $columns
+     * @param $rows
+     * @return string
+     */
+    public function batchInsertReplace($table, $columns, $rows){
+        return $this->composeBatchInsertCommand($table, $columns, $rows, false, true);
     }
 }

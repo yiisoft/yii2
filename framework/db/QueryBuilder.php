@@ -253,12 +253,26 @@ class QueryBuilder extends \yii\base\Object
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
      * @param array $rows the rows to be batch inserted into the table
+     * @return string the batch INSERT SQL statement
+     */
+    public function batchInsert($table, $columns, $rows)
+    {
+        return $this->composeBatchInsertCommand($table,$columns,$rows,false,false);
+    }
+
+
+
+    /**
+     * Compose a batch INSERT SQL statement.
+     *
+     * @param string $table the table that new rows will be inserted into.
+     * @param array $columns the column names
+     * @param array $rows the rows to be batch inserted into the table
      * @param boolean $ignore whether to excute insert ignore into, only support MySQL and Sqlite
      * @param boolean $replace whether to excute `repace into` instead of `insert into` , only support MySQL and Sqlite
      * @return string the batch INSERT SQL statement
      */
-    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
-    {
+    protected function composeBatchInsertCommand($table, $columns, $rows, $ignore = false, $replace = false){
         if (empty($rows)) {
             return '';
         }
@@ -299,7 +313,7 @@ class QueryBuilder extends \yii\base\Object
         $command = $this->getBatchInsertCommand($ignore,$replace);
 
         return $command . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
+            . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
     }
 
     /**
@@ -322,6 +336,7 @@ class QueryBuilder extends \yii\base\Object
 
         return $command;
     }
+
 
     /**
      * Creates an UPDATE SQL statement.

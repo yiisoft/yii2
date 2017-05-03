@@ -8,7 +8,6 @@
 namespace yii\db\pgsql;
 
 use yii\base\InvalidParamException;
-use yii\db\Exception;
 
 /**
  * QueryBuilder is the query builder for PostgreSQL databases.
@@ -284,17 +283,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
+    public function batchInsert($table, $columns, $rows)
     {
         if (empty($rows)) {
             return '';
-        }
-
-        if($ignore){
-            throw new Exception("INSERT IGNORE is not supported for Postgres");
-        }
-        if($replace){
-            throw new Exception("REPLACE INTO is not supported for Postgres");
         }
 
         $schema = $this->db->getSchema();

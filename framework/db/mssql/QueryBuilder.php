@@ -9,7 +9,6 @@ namespace yii\db\mssql;
 
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
-use yii\db\Exception;
 use yii\db\Expression;
 
 /**
@@ -391,19 +390,5 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function update($table, $columns, $condition, &$params)
     {
         return parent::update($table, $this->normalizeTableRowData($table, $columns, $params), $condition, $params);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
-    {
-        if($ignore){
-            throw new Exception("INSERT IGNORE is not supported for MS SQL");
-        }
-        if($replace){
-            throw new Exception("REPLACE INTO is not supported for MS SQL");
-        }
-        return parent::batchInsert($table, $columns, $rows, false, false);
     }
 }

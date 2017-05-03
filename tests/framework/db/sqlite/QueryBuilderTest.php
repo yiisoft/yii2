@@ -141,7 +141,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testBatchInsertIgnore($table, $columns, $value, $expected){
         $queryBuilder = $this->getQueryBuilder();
 
-        $sql = $queryBuilder->batchInsert($table, $columns, $value,true);
+        $sql = $queryBuilder->batchInsertIgnore($table, $columns, $value);
         $this->assertEquals($expected, $sql);
     }
 
@@ -162,7 +162,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testBatchInsertReplace($table, $columns, $value, $expected){
         $queryBuilder = $this->getQueryBuilder();
 
-        $sql = $queryBuilder->batchInsert($table, $columns, $value,false,true);
+        $sql = $queryBuilder->batchInsertReplace($table, $columns, $value);
         $this->assertEquals($expected, $sql);
     }
 }

@@ -466,6 +466,80 @@ class Command extends Component
         return $this->setSql($sql);
     }
 
+
+    /**
+     * Create a batch INSERT IGNORE SQL statement.
+     *
+     * For example,
+     *
+     * ```php
+     * $connection->createCommand()->batchInsertIgnore('user', ['name', 'age'], [
+     *     ['Tom', 30],
+     *     ['Jane', 20],
+     *     ['Linda', 25],
+     * ])->execute();
+     * ```
+     *
+     * The method will properly escape the column names, and quote the values to be inserted.
+     *
+     * Note that the values in each row must match the corresponding column names.
+     *
+     * This method will ignore the duplicated rows violating unique keys.
+     *
+     * Also note that the created command is not executed until [[execute()]] is called.
+     *
+     * @param $table
+     * @param $columns
+     * @param $rows
+     * @return string
+     * @throws Exception
+     */
+    public function batchInsertIgnore($table, $columns, $rows){
+        $queryBuilder = $this->db->getQueryBuilder();
+        if(!method_exists($queryBuilder,'batchInsertIgnore')){
+            throw new Exception("BatchInsertIgnore Is Not Supported");
+        }
+
+        $sql = $queryBuilder->batchInsertIgnore($table, $columns, $rows);
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Create a batch REPLACE INTO SQL statement.
+     *
+     * For example,
+     *
+     * ```php
+     * $connection->createCommand()->batchInsertIgnore('user', ['name', 'age'], [
+     *     ['Tom', 30],
+     *     ['Jane', 20],
+     *     ['Linda', 25],
+     * ])->execute();
+     * ```
+     *
+     * The method will properly escape the column names, and quote the values to be inserted.
+     *
+     * Note that the values in each row must match the corresponding column names.
+     *
+     * This method will replace the existed rows with same unique keys.
+     *
+     * Also note that the created command is not executed until [[execute()]] is called.
+     *
+     * @param $table
+     * @param $columns
+     * @param $rows
+     * @return string
+     * @throws Exception
+     */
+    public function batchInsertReplace($table, $columns, $rows){
+        $queryBuilder = $this->db->getQueryBuilder();
+        if(!method_exists($queryBuilder,'batchInsertReplace')){
+            throw new Exception("BatchInsertReplace Is Not Supported");
+        }
+
+        $sql = $queryBuilder->batchInsertReplace($table, $columns, $rows);
+        return $this->setSql($sql);
+    }
     /**
      * Creates an UPDATE command.
      * For example,

@@ -53,29 +53,35 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected $likeEscapeCharacter = '\\';
 
+
     /**
-     * Generates a batch INSERT SQL statement.
-     * For example,
+     * Generates a batch INSERT IGNORE SQL statement.
      *
-     * ```php
-     * $connection->createCommand()->batchInsert('user', ['name', 'age'], [
-     *     ['Tom', 30],
-     *     ['Jane', 20],
-     *     ['Linda', 25],
-     * ])->execute();
-     * ```
-     *
-     * Note that the values in each row must match the corresponding column names.
-     *
-     * @param string $table the table that new rows will be inserted into.
-     * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
-     * @param boolean $ignore whether to excute insert ignore into
-     * @param boolean $replace whether to excute `repace into` instead of `insert into`
-     * @return string the batch INSERT SQL statement
+     * @param $table
+     * @param $columns
+     * @param $rows
+     * @return string
      */
-    public function batchInsert($table, $columns, $rows, $ignore = false, $replace = false)
-    {
+    public function batchInsertIgnore($table, $columns, $rows){
+        return $this->composeBatchInsertCommand($table, $columns, $rows, true);
+    }
+
+    /**
+     * Generates a batch REPLACE INTO SQL statement.
+     *
+     * @param $table
+     * @param $columns
+     * @param $rows
+     * @return string
+     */
+    public function batchInsertReplace($table, $columns, $rows){
+        return $this->composeBatchInsertCommand($table, $columns, $rows, false, true);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function composeBatchInsertCommand($table, $columns, $rows, $ignore = false, $replace = false){
         if (empty($rows)) {
             return '';
         }
@@ -85,7 +91,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         // http://www.sqlite.org/releaselog/3_7_11.html
         $this->db->open(); // ensure pdo is not null
         if (version_compare($this->db->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION), '3.7.11', '>=')) {
-            return parent::batchInsert($table, $columns, $rows, $ignore, $replace);
+            return parent::composeBatchInsertCommand($table, $columns, $rows, $ignore, $replace);
         }
 
         $schema = $this->db->getSchema();
@@ -122,7 +128,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         return $this->getBatchInsertCommand($ignore,$replace) . $schema->quoteTableName($table)
-        . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
+            . ' (' . implode(', ', $columns) . ') SELECT ' . implode(' UNION SELECT ', $values);
     }
 
     /**
