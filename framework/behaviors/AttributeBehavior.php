@@ -85,10 +85,12 @@ class AttributeBehavior extends Behavior
      * key - attribute name
      * value - corresponding value
      * Example:
+     * ```php
      * 'values' => [
      *   'number' => [$this, 'getNextNumber'],
      *   'status' => 'updated'
      * ]
+     * ```
      * @see value for possible values
      */
     public $values = [];
