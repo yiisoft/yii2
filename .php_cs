@@ -19,6 +19,8 @@ return yii\cs\YiisoftConfig::create()
             ->exclude('docs')
             ->exclude('apps')
             ->exclude('extensions')
+            // requirement checker should work even on PHP 4.3, so it needs special treatment
+            ->exclude('framework/requirements')
             ->notPath('framework/classes.php')
             ->notPath('framework/helpers/mimeTypes.php')
             ->notPath('framework/views/messageConfig.php')
