@@ -37,10 +37,27 @@ class UrlRule extends Object implements UrlRuleInterface
      * Set [[mode]] with this value to mark that this rule is for URL creation only
      */
     const CREATION_ONLY = 2;
-
+    /**
+     * Represents the successful URL generation by last [[createUrl()]] call.
+     * @see $createStatus
+     */
     const CREATE_STATUS_SUCCESS = 0;
+    /**
+     * Represents the unsuccessful URL generation by last [[createUrl()]] call, because rule does not support
+     * creating URLs.
+     * @see $createStatus
+     */
     const CREATE_STATUS_PARSING_ONLY = 1;
+    /**
+     * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched route.
+     * @see $createStatus
+     */
     const CREATE_STATUS_ROUTE_MISMATCH = 2;
+    /**
+     * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched
+     * or missing parameters.
+     * @see $createStatus
+     */
     const CREATE_STATUS_PARAMS_MISMATCH = 4;
 
     /**
@@ -101,6 +118,11 @@ class UrlRule extends Object implements UrlRuleInterface
      * @since 2.0.10
      */
     public $normalizer;
+    /**
+     * @var int|null status of the URL creation after the last [[createUrl()]] call.
+     * @since 2.0.12
+     */
+    public $createStatus;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
@@ -113,11 +135,6 @@ class UrlRule extends Object implements UrlRuleInterface
      * @since 2.0.7
      */
     protected $placeholders = [];
-    /**
-     * @var int|null status of the URL creation after the last [[createUrl()]] call.
-     * @since 2.0.12
-     */
-    public $createStatus;
 
     /**
      * @var string the template for generating a new URL. This is derived from [[pattern]] and is used in generating URL.

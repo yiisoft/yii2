@@ -23,7 +23,6 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      * This property is set in [[init()]] by the return value of [[createRules()]].
      */
     protected $rules = [];
-
     /**
      * @var int|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
@@ -101,7 +100,11 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     /**
      * Returns status of the URL creation after the last [[createUrl()]] call.
      *
+     * For multiple rules statuses will be combined by bitwise `or` operator
+     * (e.g. `UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_PARAMS_MISMATCH`).
+     *
      * @return null|int
+     * @see http://php.net/manual/en/language.operators.bitwise.php
      * @since 2.0.12
      */
     public function getCreateUrlStatus() {
