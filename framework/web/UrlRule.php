@@ -446,7 +446,6 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public function createUrl($manager, $route, $params)
     {
-        $this->createStatus = null;
         if ($this->mode === self::PARSING_ONLY) {
             $this->createStatus = static::CREATE_STATUS_PARSING_ONLY;
             return false;
