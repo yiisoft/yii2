@@ -97,7 +97,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Container extends Component
+class Container extends Component implements \Psr\Container\ContainerInterface
 {
     /**
      * @var array singleton objects indexed by their types
