@@ -965,7 +965,6 @@ return [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationPath' => '@yii/rbac/migrations',
             'migrationTable' => 'migration_rbac',
-            'migrationPath' => null,
         ],
     ],
 ];
