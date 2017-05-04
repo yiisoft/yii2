@@ -375,7 +375,7 @@ class UrlManager extends Component
                 $cacheable = true;
                 /* @var $rule UrlRule */
                 foreach ($this->rules as $rule) {
-                    if (in_array($rule, $this->_ruleCache[$cacheKey])) {
+                    if (in_array($rule, $this->_ruleCache[$cacheKey], true)) {
                         // avoid redundant calls of `UrlRule::createUrl()` for rules checked in `getUrlFromCache()`
                         // @see https://github.com/yiisoft/yii2/issues/14094
                         continue;
