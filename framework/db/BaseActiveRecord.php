@@ -909,12 +909,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function beforeSave($insert)
      * {
-     *     if (parent::beforeSave($insert)) {
-     *         // ...custom code here...
-     *         return true;
-     *     } else {
+     *     if (!parent::beforeSave($insert)) {
      *         return false;
      *     }
+     *
+     *     // ...custom code here...
+     *     return true;
      * }
      * ```
      *
@@ -964,12 +964,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```php
      * public function beforeDelete()
      * {
-     *     if (parent::beforeDelete()) {
-     *         // ...custom code here...
-     *         return true;
-     *     } else {
+     *     if (!parent::beforeDelete()) {
      *         return false;
      *     }
+     *
+     *     // ...custom code here...
+           return true;
      * }
      * ```
      *
