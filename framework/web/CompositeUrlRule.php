@@ -87,7 +87,7 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     }
 
     /**
-     * Iterates through specified rules and call [[createUrl()]] for each of them.
+     * Iterates through specified rules and calls [[createUrl()]] for each of them.
      *
      * @param UrlRuleInterface[] $rules rules to iterate.
      * @param UrlManager $manager the URL manager
@@ -124,7 +124,9 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      * For multiple rules statuses will be combined by bitwise `or` operator
      * (e.g. `UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_PARAMS_MISMATCH`).
      *
-     * @return null|int
+     * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
+     * info about create status.
+     * @see $createStatus
      * @see http://php.net/manual/en/language.operators.bitwise.php
      * @since 2.0.12
      */

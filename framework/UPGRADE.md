@@ -65,8 +65,8 @@ Upgrade from Yii 2.0.11
 * The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
   If you extend this method, make sure to adjust your code.
   
-* `yii\web\UrlManager` now checks if rules implements `getCreateUrlStatus()` method in order to decide whether to use
-  internal cache for `createUrl()` calls. Ensure that all your custom rules implements this method in order to fully 
+* `yii\web\UrlManager` now checks if rules implement `getCreateUrlStatus()` method in order to decide whether to use
+  internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
   benefit from the acceleration provided by this cache.
 
 
