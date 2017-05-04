@@ -74,9 +74,34 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
     public function createUrl($manager, $route, $params)
     {
         $this->createStatus = UrlRule::CREATE_STATUS_SUCCESS;
-        foreach ($this->rules as $rule) {
-            /* @var $rule UrlRule */
-            if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
+        $url = $this->iterateRules($this->rules, $manager, $route, $params);
+        if ($url !== false) {
+            return $url;
+        }
+
+        if ($this->createStatus === UrlRule::CREATE_STATUS_SUCCESS) {
+            // create status was not changed - there is no rules configured
+            $this->createStatus = UrlRule::CREATE_STATUS_PARSING_ONLY;
+        }
+        return false;
+    }
+
+    /**
+     * Iterates through specified rules and call [[createUrl()]] for each of them.
+     *
+     * @param UrlRuleInterface[] $rules rules to iterate.
+     * @param UrlManager $manager the URL manager
+     * @param string $route the route. It should not have slashes at the beginning or the end.
+     * @param array $params the parameters
+     * @return bool|string the created URL, or `false` if none of specified rules cannot be used for creating this URL.
+     * @see createUrl()
+     * @since 2.0.12
+     */
+    protected function iterateRules($rules, $manager, $route, $params) {
+        /* @var $rule UrlRule */
+        foreach ($rules as $rule) {
+            $url = $rule->createUrl($manager, $route, $params);
+            if ($url !== false) {
                 $this->createStatus = UrlRule::CREATE_STATUS_SUCCESS;
                 return $url;
             } elseif (
@@ -90,10 +115,6 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
             }
         }
 
-        if ($this->createStatus === UrlRule::CREATE_STATUS_SUCCESS) {
-            // create status was not changed - there is no rules configured
-            $this->createStatus = UrlRule::CREATE_STATUS_PARSING_ONLY;
-        }
         return false;
     }
 

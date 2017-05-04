@@ -249,20 +249,11 @@ class UrlRule extends CompositeUrlRule
         $this->createStatus = WebUrlRule::CREATE_STATUS_SUCCESS;
         foreach ($this->controller as $urlName => $controller) {
             if (strpos($route, $controller) !== false) {
-                foreach ($this->rules[$urlName] as $rule) {
-                    /* @var $rule WebUrlRule */
-                    if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
-                        $this->createStatus = WebUrlRule::CREATE_STATUS_SUCCESS;
-                        return $url;
-                    } elseif (
-                        $this->createStatus === null
-                        || !method_exists($rule, 'getCreateUrlStatus')
-                        || $rule->getCreateUrlStatus() === null
-                    ) {
-                        $this->createStatus = null;
-                    } else {
-                        $this->createStatus |= $rule->getCreateUrlStatus();
-                    }
+                /* @var $rules UrlRuleInterface[] */
+                $rules = $this->rules[$urlName];
+                $url = $this->iterateRules($rules, $manager, $route, $params);
+                if ($url !== false) {
+                    return $url;
                 }
             } else {
                 $this->createStatus |= WebUrlRule::CREATE_STATUS_ROUTE_MISMATCH;
