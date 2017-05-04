@@ -704,14 +704,21 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
         $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateUrlStatus());
         $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
-        $this->assertEquals(3, $rules[0]->createCounter);
+        $this->assertEquals(2, $rules[0]->createCounter);
         $this->assertEquals(1, $rules[1]->createCounter);
 
         $this->assertEquals('/user/profile?name=rob006', $manager->createUrl(['user/profile', 'name' => 'rob006']));
         $this->assertEquals(UrlRule::CREATE_STATUS_ROUTE_MISMATCH, $rules[0]->getCreateUrlStatus());
         $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
-        $this->assertEquals(4, $rules[0]->createCounter);
+        $this->assertEquals(3, $rules[0]->createCounter);
         $this->assertEquals(2, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/profile?name=John+Doe', $manager->createUrl(['user/profile', 'name' => 'John Doe']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_ROUTE_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
+        // fist rule is skipped - cached rule has precedence
+        $this->assertEquals(3, $rules[0]->createCounter);
+        $this->assertEquals(3, $rules[1]->createCounter);
     }
 
     public function testUrlCreateCacheWithParameterMismatch()
