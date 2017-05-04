@@ -40,7 +40,7 @@ dengan menjalankan `composer self-update`.
 Dengan Komposer diinstal, Anda dapat menginstal Yii dengan menjalankan perintah berikut di bawah folder yang terakses web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.3.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 

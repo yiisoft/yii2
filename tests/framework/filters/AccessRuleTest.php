@@ -5,7 +5,6 @@ namespace yiiunit\framework\filters;
 use Yii;
 use yii\base\Action;
 use yii\filters\AccessRule;
-use yii\filters\HttpCache;
 use yii\web\Controller;
 use yii\web\Request;
 use yii\web\User;
@@ -21,8 +20,8 @@ class AccessRuleTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $this->mockWebApplication();
     }
@@ -42,7 +41,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
-     * @param string optional user id
+     * @param string $userid optional user id
      * @return User
      */
     protected function mockUser($userid = null)
@@ -105,7 +104,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     public function testMatchAction()
     {
         $action = $this->mockAction();
-        $user = $this->mockUser();
+        $user = false;
         $request = $this->mockRequest();
 
         $rule = new AccessRule([
@@ -181,10 +180,28 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertEquals($expected, $rule->allows($action, $user, $request));
     }
 
+    /**
+     * Test that matching role is not possible without User component
+     *
+     * @see https://github.com/yiisoft/yii2/issues/4793
+     */
+    public function testMatchRoleWithoutUser() {
+        $action = $this->mockAction();
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'roles' => ['@'],
+        ]);
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $rule->allows($action, false, $request);
+    }
+
     public function testMatchVerb()
     {
         $action = $this->mockAction();
-        $user = $this->mockUser();
+        $user = false;
 
         $rule = new AccessRule([
             'allow' => true,
@@ -215,7 +232,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     public function testMatchIP()
     {
         $action = $this->mockAction();
-        $user = $this->mockUser();
+        $user = false;
         $request = $this->mockRequest();
 
         $rule = new AccessRule();
@@ -292,12 +309,20 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
         $this->assertNull($rule->allows($action, $user, $request));
+
+        // undefined IP
+        $_SERVER['REMOTE_ADDR'] = null;
+        $rule->ips = ['192.168.*'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
     }
 
     public function testMatchIPWildcard()
     {
         $action = $this->mockAction();
-        $user = $this->mockUser();
+        $user = false;
         $request = $this->mockRequest();
 
         $rule = new AccessRule();

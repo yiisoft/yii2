@@ -2,12 +2,8 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
 use yii\data\ActiveDataProvider;
-use yii\db\Connection;
-use yii\db\Query;
 use yii\widgets\Breadcrumbs;
-use yii\widgets\LinkSorter;
 use yii\widgets\ListView;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Order;

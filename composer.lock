@@ -4,8 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "db4e038c0e8ca747784fb195c82bfdad",
-    "content-hash": "cc4b01a602c948040169ebbc1ac30186",
+    "content-hash": "d33a8eeb49ce13a2e319e70d8d4a2f67",
     "packages": [
         {
             "name": "bower-asset/jquery",
@@ -43,12 +42,12 @@
             "version": "3.2.7",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RobinHerbots/jquery.inputmask.git",
+                "url": "https://github.com/RobinHerbots/Inputmask.git",
                 "reference": "ec7726993217ee7b01023ad4f7f1b6a51446a39d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RobinHerbots/jquery.inputmask/zipball/ec7726993217ee7b01023ad4f7f1b6a51446a39d",
+                "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/ec7726993217ee7b01023ad4f7f1b6a51446a39d",
                 "reference": "ec7726993217ee7b01023ad4f7f1b6a51446a39d",
                 "shasum": ""
             },
@@ -204,7 +203,7 @@
                 "markdown",
                 "markdown-extra"
             ],
-            "time": "2016-09-14 20:40:20"
+            "time": "2016-09-14T20:40:20+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -248,7 +247,7 @@
             "keywords": [
                 "html"
             ],
-            "time": "2016-07-16 12:58:58"
+            "time": "2016-07-16T12:58:58+00:00"
         },
         {
             "name": "yiisoft/yii2-composer",
@@ -298,7 +297,7 @@
                 "extension installer",
                 "yii2"
             ],
-            "time": "2016-12-20 13:26:02"
+            "time": "2016-12-20T13:26:02+00:00"
         }
     ],
     "packages-dev": [
@@ -333,7 +332,7 @@
                 }
             ],
             "description": "a small tool to convert text file indentation",
-            "time": "2014-05-23 14:40:08"
+            "time": "2014-05-23T14:40:08+00:00"
         },
         {
             "name": "doctrine/instantiator",
@@ -387,7 +386,7 @@
                 "constructor",
                 "instantiate"
             ],
-            "time": "2015-06-14 21:17:01"
+            "time": "2015-06-14T21:17:01+00:00"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -436,7 +435,7 @@
                     "email": "mike.vanriel@naenius.com"
                 }
             ],
-            "time": "2015-02-03 12:10:50"
+            "time": "2015-02-03T12:10:50+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -499,7 +498,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2016-11-21 14:58:47"
+            "time": "2016-11-21T14:58:47+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -561,7 +560,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-06 15:47:00"
+            "time": "2015-10-06T15:47:00+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -608,7 +607,7 @@
                 "filesystem",
                 "iterator"
             ],
-            "time": "2016-10-03 07:40:28"
+            "time": "2016-10-03T07:40:28+00:00"
         },
         {
             "name": "phpunit/php-text-template",
@@ -649,7 +648,7 @@
             "keywords": [
                 "template"
             ],
-            "time": "2015-06-21 13:50:34"
+            "time": "2015-06-21T13:50:34+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -693,7 +692,7 @@
             "keywords": [
                 "timer"
             ],
-            "time": "2016-05-12 18:03:57"
+            "time": "2016-05-12T18:03:57+00:00"
         },
         {
             "name": "phpunit/php-token-stream",
@@ -742,7 +741,7 @@
             "keywords": [
                 "tokenizer"
             ],
-            "time": "2016-11-15 14:06:22"
+            "time": "2016-11-15T14:06:22+00:00"
         },
         {
             "name": "phpunit/phpunit",
@@ -814,7 +813,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-12-09 02:45:31"
+            "time": "2016-12-09T02:45:31+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -870,7 +869,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-10-02 06:51:40"
+            "time": "2015-10-02T06:51:40+00:00"
         },
         {
             "name": "sebastian/comparator",
@@ -934,7 +933,7 @@
                 "compare",
                 "equality"
             ],
-            "time": "2016-11-19 09:18:40"
+            "time": "2016-11-19T09:18:40+00:00"
         },
         {
             "name": "sebastian/diff",
@@ -986,7 +985,7 @@
             "keywords": [
                 "diff"
             ],
-            "time": "2015-12-08 07:14:41"
+            "time": "2015-12-08T07:14:41+00:00"
         },
         {
             "name": "sebastian/environment",
@@ -1036,7 +1035,7 @@
                 "environment",
                 "hhvm"
             ],
-            "time": "2016-08-18 05:49:44"
+            "time": "2016-08-18T05:49:44+00:00"
         },
         {
             "name": "sebastian/exporter",
@@ -1103,7 +1102,7 @@
                 "export",
                 "exporter"
             ],
-            "time": "2016-06-17 09:04:28"
+            "time": "2016-06-17T09:04:28+00:00"
         },
         {
             "name": "sebastian/global-state",
@@ -1154,7 +1153,7 @@
             "keywords": [
                 "global state"
             ],
-            "time": "2015-10-12 03:26:01"
+            "time": "2015-10-12T03:26:01+00:00"
         },
         {
             "name": "sebastian/recursion-context",
@@ -1207,7 +1206,7 @@
             ],
             "description": "Provides functionality to recursively process PHP variables",
             "homepage": "http://www.github.com/sebastianbergmann/recursion-context",
-            "time": "2015-11-11 19:50:13"
+            "time": "2015-11-11T19:50:13+00:00"
         },
         {
             "name": "sebastian/version",
@@ -1242,7 +1241,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2015-06-21 13:59:46"
+            "time": "2015-06-21T13:59:46+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -1291,7 +1290,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-01-03 13:49:52"
+            "time": "2017-01-03T13:49:52+00:00"
         }
     ],
     "aliases": [],

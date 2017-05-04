@@ -7,7 +7,6 @@ use yii\base\Object;
 use yii\behaviors\BlameableBehavior;
 use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
-use yii\db\Connection;
 use yii\db\ActiveRecord;
 
 /**
