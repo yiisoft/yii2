@@ -61,7 +61,7 @@ class DbTarget extends Target
     public function export()
     {
         if ($this->db->getTransaction()) {
-            $this->db = clone($this->db);
+            $this->db = clone $this->db;
             $this->db->pdo = null;
             $this->db->open();
         }
