@@ -10,7 +10,6 @@ namespace yii\di;
 use ReflectionClass;
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
 /**

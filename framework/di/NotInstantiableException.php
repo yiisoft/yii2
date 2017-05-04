@@ -8,6 +8,7 @@
 namespace yii\di;
 
 use \yii\base\InvalidConfigException;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * NotInstantiableException represents an exception caused by incorrect dependency injection container
@@ -16,7 +17,7 @@ use \yii\base\InvalidConfigException;
  * @author Sam Mousa <sam@mousa.nl>
  * @since 2.0.9
  */
-class NotInstantiableException extends InvalidConfigException
+class NotInstantiableException extends InvalidConfigException implements NotFoundExceptionInterface
 {
     /**
      * @inheritdoc
