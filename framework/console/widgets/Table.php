@@ -145,12 +145,14 @@ class Table extends Object
             $this->_chars['top'],
             $this->_chars['top-right']
         );
+        // Header
         $buffer .= $this->renderRow($this->_headers,
             $this->_chars['left'],
             $this->_chars['middle'],
             $this->_chars['right']
         );
 
+        // Content
         foreach ($this->_rows as $row) {
             $buffer .= $this->renderSeparator(
                 $this->_chars['left-mid'],
@@ -243,6 +245,7 @@ class Table extends Object
             if ($index !== 0) {
                 $separator .= $spanMid;
             }
+            var_dump($this->_columnWidths);
             $separator .= str_repeat($spanMidMid, $rowSize);
         }
         $separator .= $spanRight . "\n";
