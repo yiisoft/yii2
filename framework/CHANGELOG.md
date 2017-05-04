@@ -44,6 +44,7 @@ Yii Framework 2 Change Log
 - Bug #13790: Fixed error in `\yii\widgets\MaskedInput` JavaScript by raising version required (samdark)
 - Bug #13807: Fixed `yii\db\QueryBuilder` to inherit subquery params when building a `INSERT INTO ... SELECT` query (sergeymakinen)
 - Bug #13848: `yii\di\Instance::ensure()` wasn't throwing an exception when `$type` is specified and `$reference` object isn't instance of `$type` (c-jonua)
+- Bug #13890: DbTarget log transaction bug (shirase)
 - Bug #13901: Fixed passing unused parameter to `formatMessage()` call in `\yii\validators\IpValidator` (Kolyunya)
 - Bug #13961: Fixed `unserialize()` error during RBAC rule retrieving from PostgreSQL DBMS (vsguts)
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)

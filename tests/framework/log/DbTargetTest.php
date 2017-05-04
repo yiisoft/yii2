@@ -140,4 +140,29 @@ abstract class DbTargetTest extends TestCase
         $loggedTime = $query->createCommand(self::getConnection())->queryScalar();
         static::assertEquals($time, $loggedTime);
     }
+
+    public function testTransactionRollBack()
+    {
+        $db = self::getConnection();
+        $logger = Yii::getLogger();
+
+        $tx = $db->beginTransaction();
+
+        $messsageData = [
+            'test',
+            Logger::LEVEL_WARNING,
+            'test',
+            time(),
+            []
+        ];
+
+        $logger->messages[] = $messsageData;
+        $logger->flush(true);
+
+        $tx->rollBack();
+
+        $query = (new Query())->select('COUNT(*)')->from(self::$logTable)->where(['category' => 'test', 'message' => 'test']);
+        $count = $query->createCommand($db)->queryScalar();
+        static::assertEquals(1, $count);
+    }
 }

@@ -60,6 +60,12 @@ class DbTarget extends Target
      */
     public function export()
     {
+        if ($this->db->getTransaction()) {
+            $this->db = clone $this->db;
+            $this->db->pdo = null;
+            $this->db->open();
+        }
+
         $tableName = $this->db->quoteTableName($this->logTable);
         $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
                 VALUES (:level, :category, :log_time, :prefix, :message)";
