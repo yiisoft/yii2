@@ -183,7 +183,7 @@ class Formatter extends Component
     public $thousandSeparator;
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [Numberformatter::setAttribute()](http://php.net/manual/en/numberformatter.setattribute.php) method of all
+     * intl [NumberFormatter::setAttribute()](http://php.net/manual/en/numberformatter.setattribute.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
      * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
      *
@@ -202,7 +202,7 @@ class Formatter extends Component
     public $numberFormatterOptions = [];
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [Numberformatter::setTextAttribute()](http://php.net/manual/en/numberformatter.settextattribute.php) method of all
+     * intl [NumberFormatter::setTextAttribute()](http://php.net/manual/en/numberformatter.settextattribute.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
      * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
      *
@@ -220,7 +220,7 @@ class Formatter extends Component
     public $numberFormatterTextOptions = [];
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [Numberformatter::setSymbol()](http://php.net/manual/en/numberformatter.setsymbol.php) method of all
+     * intl [NumberFormatter::setSymbol()](http://php.net/manual/en/numberformatter.setsymbol.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
      * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
      *
