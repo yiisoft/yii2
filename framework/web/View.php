@@ -129,6 +129,11 @@ class View extends \yii\base\View
      * @see registerJsFile()
      */
     public $jsFiles;
+    /**
+     * @var array the registered JsonLd blocks
+     * @see registerJsonLd()
+     */
+    public $jsonLd;
 
     private $_assetManager;
 
@@ -486,6 +491,20 @@ class View extends \yii\base\View
     }
 
     /**
+     * Registers a JsonLd block.
+     * @param string $jsonLd the JsonLd block to be registered
+     *
+     * @param string $key the key that identifies the JsonLd block. If null, it will use
+     * $jsonLd as the key. If two JsonLd blocks are registered with the same key, the latter
+     * will overwrite the former.
+     */
+    public function registerJsonLd($jsonLd, $key = null)
+    {
+        $key = $key ?: md5($jsonLd);
+        $this->jsonLd[$key] = Html::script($jsonLd, ['type' => 'application/ld+json']);
+    }
+
+    /**
      * Renders the content to be inserted in the head section.
      * The content is rendered using the registered meta tags, link tags, CSS/JS code blocks and files.
      * @return string the rendered content
@@ -529,6 +548,9 @@ class View extends \yii\base\View
         }
         if (!empty($this->js[self::POS_BEGIN])) {
             $lines[] = Html::script(implode("\n", $this->js[self::POS_BEGIN]), ['type' => 'text/javascript']);
+        }
+        if (!empty($this->jsonLd)) {
+            $lines[] = implode("\n", $this->jsonLd);
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
