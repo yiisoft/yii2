@@ -95,6 +95,10 @@ class AttributeBehavior extends Behavior
      */
     public $values = [];
     /**
+     * @var string current processed attribute name. Can be use inside callable item of [[values]].
+     */
+    public $currentAttribute;
+    /**
      * @var bool whether to skip this behavior when the `$owner` has not been
      * modified
      * @since 2.0.8
@@ -170,6 +174,7 @@ class AttributeBehavior extends Behavior
         if (array_key_exists($attribute, $this->values)) {
             $value = $this->value;
             $this->value = $this->values[$attribute];
+            $this->currentAttribute = $attribute;
             $result = $this->getValue($event);
             $this->value = $value;
             return $result;
