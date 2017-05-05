@@ -372,7 +372,6 @@ class UrlManager extends Component
 
             $url = $this->getUrlFromCache($cacheKey, $route, $params);
             if ($url === false) {
-                $cacheable = true;
                 /* @var $rule UrlRule */
                 foreach ($this->rules as $rule) {
                     if (in_array($rule, $this->_ruleCache[$cacheKey], true)) {
@@ -381,13 +380,8 @@ class UrlManager extends Component
                         continue;
                     }
                     $url = $rule->createUrl($this, $route, $params);
-                    if ($cacheable) {
-                        $ruleCacheable = $this->canBeCached($rule);
-                        if ($ruleCacheable) {
-                            $this->setRuleToCache($cacheKey, $rule);
-                        } elseif ($ruleCacheable === null) {
-                            $cacheable = false;
-                        }
+                    if ($this->canBeCached($rule)) {
+                        $this->setRuleToCache($cacheKey, $rule);
                     }
                     if ($url !== false) {
                         break;
@@ -437,8 +431,7 @@ class UrlManager extends Component
      * Returns the value indicating whether result of [[createUrl()]] of rule should be cached in internal cache.
      *
      * @param UrlRuleInterface $rule
-     * @return bool|null `true` if result should be cached, `false` if not, `null` if rule does not provide info about
-     * create URL status.
+     * @return bool `true` if result should be cached, `false` if not.
      * @since 2.0.12
      * @see getUrlFromCache()
      * @see setRuleToCache()
@@ -446,9 +439,12 @@ class UrlManager extends Component
      */
     protected function canBeCached(UrlRuleInterface $rule)
     {
-        if (method_exists($rule, 'getCreateUrlStatus') && ($status = $rule->getCreateUrlStatus()) !== null) {
-            return $status === UrlRule::CREATE_STATUS_SUCCESS || $status & UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
-        }
+        return
+            // if rule does not provide info about create status, we cache it every time to prevent bugs like #13350
+            // @see https://github.com/yiisoft/yii2/pull/13350#discussion_r114873476
+            !method_exists($rule, 'getCreateUrlStatus') || ($status = $rule->getCreateUrlStatus()) === null
+            || $status === UrlRule::CREATE_STATUS_SUCCESS
+            || $status & UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
     }
 
     /**
