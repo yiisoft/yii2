@@ -224,10 +224,13 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Returns all user IDs assigned to the role specified.
      * @param string $roleName
+     * @param bool $recursively whether to search userids recursively.
+     * If it is true, all users assigned roleName role and roleName's all parent
+     * roles will be found.
      * @return array array of user ID strings
      * @since 2.0.7
      */
-    public function getUserIdsByRole($roleName);
+    public function getUserIdsByRole($roleName, $recursively = false);
 
     /**
      * Removes all authorization data, including roles, permissions, rules, and assignments.

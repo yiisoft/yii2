@@ -1008,18 +1008,59 @@ class DbManager extends BaseManager
     /**
      * Returns all role assignment information for the specified role.
      * @param string $roleName
-     * @return string[] the ids. An empty array will be
+     * @param bool $recursively whether to search userids recursively.
+     * If it is true, all users assigned roleName role and roleName's all parent
+     * roles will be found.
+     * @return \string[] the ids. An empty array will be
      * returned if role is not assigned to any user.
      * @since 2.0.7
      */
-    public function getUserIdsByRole($roleName)
+    public function getUserIdsByRole($roleName, $recursively = false)
     {
         if (empty($roleName)) {
             return [];
         }
 
-        return (new Query)->select('[[user_id]]')
+        $roleNames = [$roleName];
+
+        if($recursively){
+            $parentList = $this->getParentList();
+            $this->getParentRecursive($roleName,$parentList,$roleNames);
+        }
+
+        return (new Query)->select('[[user_id]]')->distinct()
             ->from($this->assignmentTable)
-            ->where(['item_name' => $roleName])->column($this->db);
+            ->where(['item_name' => $roleNames])->column($this->db);
+    }
+
+    /**
+     * Returns the parents for every child.
+     * @return array the parents list. Each array key is a child item name,
+     * and the corresponding array value is a list of parent item names.
+     */
+    protected function getParentList(){
+        $query = (new Query)->from($this->itemChildTable);
+        $parents = [];
+        foreach ($query->all($this->db) as $row) {
+            $parents[$row['child']][] = $row['parent'];
+        }
+        return $parents;
+    }
+
+    /**
+     * Recursively finds all parents of the specified item.
+     * @param string $roleName the name of the item whose parents are to be looked for.
+     * @param array $parentList the parent list built via [[getParentList()]]
+     * @param array $result the parents of the specified item (in array)
+     */
+    protected function getParentRecursive($roleName,$parentList,&$result){
+        if(isset($parentList[$roleName])){
+            $roleNames = $parentList[$roleName];
+
+            foreach ($roleNames as $roleName) {
+                $result[] = $roleName;
+                $this->getParentRecursive($roleName,$parentList,$result);
+            }
+        }
     }
 }
