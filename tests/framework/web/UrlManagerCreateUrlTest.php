@@ -721,6 +721,9 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals(3, $rules[1]->createCounter);
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/1335
+     */
     public function testUrlCreateCacheWithParameterMismatch()
     {
         /* @var $rules CachedUrlRule[] */

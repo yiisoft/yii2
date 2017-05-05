@@ -97,14 +97,16 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      * @see createUrl()
      * @since 2.0.12
      */
-    protected function iterateRules($rules, $manager, $route, $params) {
+    protected function iterateRules($rules, $manager, $route, $params)
+    {
         /* @var $rule UrlRule */
         foreach ($rules as $rule) {
             $url = $rule->createUrl($manager, $route, $params);
             if ($url !== false) {
                 $this->createStatus = UrlRule::CREATE_STATUS_SUCCESS;
                 return $url;
-            } elseif (
+            }
+            if (
                 $this->createStatus === null
                 || !method_exists($rule, 'getCreateUrlStatus')
                 || $rule->getCreateUrlStatus() === null
@@ -130,7 +132,8 @@ abstract class CompositeUrlRule extends Object implements UrlRuleInterface
      * @see http://php.net/manual/en/language.operators.bitwise.php
      * @since 2.0.12
      */
-    public function getCreateUrlStatus() {
+    public function getCreateUrlStatus()
+    {
         return $this->createStatus;
     }
 }

@@ -451,7 +451,7 @@ class UrlRule extends Object implements UrlRuleInterface
     public function createUrl($manager, $route, $params)
     {
         if ($this->mode === self::PARSING_ONLY) {
-            $this->createStatus = static::CREATE_STATUS_PARSING_ONLY;
+            $this->createStatus = self::CREATE_STATUS_PARSING_ONLY;
             return false;
         }
 
@@ -469,7 +469,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     }
                 }
             } else {
-                $this->createStatus = static::CREATE_STATUS_ROUTE_MISMATCH;
+                $this->createStatus = self::CREATE_STATUS_ROUTE_MISMATCH;
                 return false;
             }
         }
@@ -486,7 +486,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
                     $params[$name] = '';
                 } else {
-                    $this->createStatus = static::CREATE_STATUS_PARAMS_MISMATCH;
+                    $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
                     return false;
                 }
             }
@@ -496,7 +496,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     $tr["<$name>"] = '';
                 }
             } elseif (!isset($this->_paramRules[$name])) {
-                $this->createStatus = static::CREATE_STATUS_PARAMS_MISMATCH;
+                $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
                 return false;
             }
         }
@@ -507,7 +507,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 $tr["<$name>"] = $this->encodeParams ? urlencode($params[$name]) : $params[$name];
                 unset($params[$name]);
             } elseif (!isset($this->defaults[$name]) || isset($params[$name])) {
-                $this->createStatus = static::CREATE_STATUS_PARAMS_MISMATCH;
+                $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
                 return false;
             }
         }
@@ -530,7 +530,7 @@ class UrlRule extends Object implements UrlRuleInterface
             $url .= '?' . $query;
         }
 
-        $this->createStatus = static::CREATE_STATUS_SUCCESS;
+        $this->createStatus = self::CREATE_STATUS_SUCCESS;
         return $url;
     }
 

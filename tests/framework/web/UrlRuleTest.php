@@ -1367,7 +1367,7 @@ class UrlRuleTest extends TestCase
                     ['post/index', ['page' => 1, 'tag' => 'a', 'sort' => 'YES'], false, UrlRule::CREATE_STATUS_PARAMS_MISMATCH],
                 ],
             ],
-            'paring only' => [
+            'parsing only' => [
                 // rule properties
                 [
                     'pattern' => 'post/<page:\d+>/<tag>/<sort:yes|no>',
