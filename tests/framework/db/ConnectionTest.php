@@ -221,15 +221,15 @@ abstract class ConnectionTest extends DatabaseTestCase
     public function testEnableQueryLog()
     {
         $connection = $this->getConnection();
-        if ($connection->getTableSchema('qlog1', true) !== null) {
-            $connection->createCommand()->dropTable('qlog1')->execute();
-        }
-        if ($connection->getTableSchema('qlog2', true) !== null) {
-            $connection->createCommand()->dropTable('qlog2')->execute();
+        foreach(['qlog1', 'qlog2', 'qlog3', 'qlog4'] as $table) {
+            if ($connection->getTableSchema($table, true) !== null) {
+                $connection->createCommand()->dropTable($table)->execute();
+            }
         }
 
-        // enabled
-        $connection->enableQueryLog = true;
+        // profiling and logging
+        $connection->enableLogging = true;
+        $connection->enableProfiling = true;
 
         \Yii::getLogger()->messages = [];
         $connection->createCommand()->createTable('qlog1', ['id' => 'pk'])->execute();
@@ -240,17 +240,95 @@ abstract class ConnectionTest extends DatabaseTestCase
         $connection->createCommand('SELECT * FROM qlog1')->queryAll();
         $this->assertCount(3, \Yii::getLogger()->messages);
 
-        // disabled
-        $connection->enableQueryLog = false;
+        // profiling only
+        $connection->enableLogging = false;
+        $connection->enableProfiling = true;
 
         \Yii::getLogger()->messages = [];
         $connection->createCommand()->createTable('qlog2', ['id' => 'pk'])->execute();
+        $this->assertCount(2, \Yii::getLogger()->messages);
         $this->assertNotNull($connection->getTableSchema('qlog2', true));
-        $this->assertCount(0, \Yii::getLogger()->messages);
+
+        \Yii::getLogger()->messages = [];
         $connection->createCommand('SELECT * FROM qlog2')->queryAll();
+        $this->assertCount(2, \Yii::getLogger()->messages);
+
+        // logging only
+        $connection->enableLogging = true;
+        $connection->enableProfiling = false;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog3', ['id' => 'pk'])->execute();
+        $this->assertCount(1, \Yii::getLogger()->messages);
+        $this->assertNotNull($connection->getTableSchema('qlog3', true));
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand('SELECT * FROM qlog3')->queryAll();
+        $this->assertCount(1, \Yii::getLogger()->messages);
+
+        // disabled
+        $connection->enableLogging = false;
+        $connection->enableProfiling = false;
+
+        \Yii::getLogger()->messages = [];
+        $connection->createCommand()->createTable('qlog4', ['id' => 'pk'])->execute();
+        $this->assertNotNull($connection->getTableSchema('qlog4', true));
         $this->assertCount(0, \Yii::getLogger()->messages);
+        $connection->createCommand('SELECT * FROM qlog4')->queryAll();
+        $this->assertCount(0, \Yii::getLogger()->messages);
+    }
+
+    public function testExceptionContainsRawQuery()
+    {
+        $connection = $this->getConnection();
+        if ($connection->getTableSchema('qlog1', true) === null) {
+            $connection->createCommand()->createTable('qlog1', ['id' => 'pk'])->execute();
+        }
+        $connection->emulatePrepare = true;
+
+        // profiling and logging
+        $connection->enableLogging = true;
+        $connection->enableProfiling = true;
+        $this->runExceptionTest($connection);
 
 
+        // profiling only
+        $connection->enableLogging = false;
+        $connection->enableProfiling = true;
+        $this->runExceptionTest($connection);
 
+        // logging only
+        $connection->enableLogging = true;
+        $connection->enableProfiling = false;
+        $this->runExceptionTest($connection);
+
+        // disabled
+        $connection->enableLogging = false;
+        $connection->enableProfiling = false;
+        $this->runExceptionTest($connection);
+    }
+
+    /**
+     * @param Connection $connection
+     */
+    private function runExceptionTest($connection)
+    {
+        $thrown = false;
+        try {
+            $connection->createCommand('INSERT INTO qlog1(a) VALUES(:a);', [':a' => 1])->execute();
+        } catch(\yii\db\Exception $e) {
+            $this->assertContains('INSERT INTO qlog1(a) VALUES(1);', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string)$e);
+            $thrown = true;
+        }
+        $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
+
+        $thrown = false;
+        try {
+            $connection->createCommand('SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;', [':a' => 1])->queryAll();
+        } catch(\yii\db\Exception $e) {
+            $this->assertContains('SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string)$e);
+            $thrown = true;
+        }
+        $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
     }
 }
