@@ -126,7 +126,7 @@ class UrlRule extends Object implements UrlRuleInterface
      * @var int|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
      */
-    public $createStatus;
+    protected $createStatus;
 
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
