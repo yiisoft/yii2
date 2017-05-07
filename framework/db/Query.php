@@ -150,7 +150,7 @@ class Query extends Component implements QueryInterface
      * For example,
      *
      * ```php
-     * $query = (new Query)->from('user');
+     * $query = (new Query())->from('user');
      * foreach ($query->batch() as $rows) {
      *     // $rows is an array of 100 or fewer rows from user table
      * }
@@ -178,7 +178,7 @@ class Query extends Component implements QueryInterface
      * only one row of data is returned. For example,
      *
      * ```php
-     * $query = (new Query)->from('user');
+     * $query = (new Query())->from('user');
      * foreach ($query->each() as $row) {
      * }
      * ```
@@ -430,7 +430,7 @@ class Query extends Component implements QueryInterface
 
             return $command->queryScalar();
         } else {
-            return (new Query)->select([$selectExpression])
+            return (new Query())->select([$selectExpression])
                 ->from(['c' => $this])
                 ->createCommand($db)
                 ->queryScalar();
