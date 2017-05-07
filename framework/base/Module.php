@@ -712,16 +712,14 @@ class Module extends ServiceLocator
      */
     private function findLayout()
     {
-        $module  = $this;
+        $module = $this;
 
-        while ($module !== null) {
-
-            if ($module !== null && is_string($module->layout)) {
+        do {
+            if (is_string($module->layout)) {
                 return [$module, $module->layout];
             }
-
-            $module = $module->module;
         }
+        while (($module = $module->module) !== null);
 
         return [null, null];
     }
