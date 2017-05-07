@@ -791,13 +791,7 @@ class FileHelperTest extends TestCase
         }
     }
 
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/9669
-     *
-     * @depends testCopyDirectory
-     * @depends testFindFiles
-     */
-    public function testCopyDirectoryEmptyDirectories()
+    private function setupCopyEmptyDirectoriesTest()
     {
         $srcDirName = 'test_empty_src_dir';
         $this->createFileStructure([
@@ -814,8 +808,21 @@ class FileHelperTest extends TestCase
             ],
         ]);
 
-        $basePath = $this->testFilePath;
-        $srcDirName = $basePath . DIRECTORY_SEPARATOR . $srcDirName;
+        return [
+            $this->testFilePath, // basePath
+            $this->testFilePath . DIRECTORY_SEPARATOR . $srcDirName,
+        ];
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/9669
+     *
+     * @depends testCopyDirectory
+     * @depends testFindFiles
+     */
+    public function testCopyDirectoryEmptyDirectories()
+    {
+        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
 
         // copy with empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir';
@@ -830,6 +837,17 @@ class FileHelperTest extends TestCase
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file2.txt');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
         $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/9669
+     *
+     * @depends testCopyDirectory
+     * @depends testFindFiles
+     */
+    public function testCopyDirectoryNoEmptyDirectories()
+    {
+        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
 
         // copy without empty directories
         $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir2';

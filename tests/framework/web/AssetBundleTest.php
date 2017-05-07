@@ -78,8 +78,6 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertTrue(is_dir($bundle->basePath));
         $this->sourcesPublish_VerifyFiles('css', $bundle);
         $this->sourcesPublish_VerifyFiles('js', $bundle);
-
-        $this->assertTrue(rmdir($bundle->basePath));
     }
 
     private function sourcesPublish_VerifyFiles($type, $bundle)
@@ -89,9 +87,8 @@ class AssetBundleTest extends \yiiunit\TestCase
             $sourceFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileExists($publishedFile);
             $this->assertFileEquals($publishedFile, $sourceFile);
-            $this->assertTrue(unlink($publishedFile));
         }
-        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
+        $this->assertTrue(is_dir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
     }
 
     public function testSourcesPublishedBySymlink()
@@ -109,7 +106,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             }
         ]);
         $bundle = $this->verifySourcesPublishedBySymlink($view);
-        $this->assertTrue(rmdir(dirname($bundle->basePath)));
+        $this->assertTrue(is_dir(dirname($bundle->basePath)));
     }
 
     public function testSourcesPublish_AssetManagerBeforeCopy()
@@ -165,15 +162,15 @@ class AssetBundleTest extends \yiiunit\TestCase
         ]);
         $bundle->publish($am);
 
-        $notNeededFilesDir = $bundle->basePath . DIRECTORY_SEPARATOR . 'css';
+        $notNeededFilesDir = dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->css[0]);
         $this->assertFileNotExists($notNeededFilesDir);
 
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
-            $this->assertTrue(unlink($publishedFile));
+            $this->assertFileExists($publishedFile);
         }
-        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . 'js'));
-        $this->assertTrue(rmdir($bundle->basePath));
+        $this->assertTrue(is_dir(dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->js[0])));
+        $this->assertTrue(is_dir($bundle->basePath));
     }
 
     /**
