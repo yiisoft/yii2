@@ -441,13 +441,30 @@ class BaseYii
      *     \Yii::endProfile('block2');
      * \Yii::endProfile('block1');
      * ```
+     *
+     * Profiler is configured as [[yii\base\Profiler]] by default. You can override it
+     * via application components configuration as follows:
+     *
+     * ```php
+     * 'components' => [
+     *     'profiler' => [
+     *         'class' => 'your\own\Profiler'
+     *     ],
+     *     ...
+     * ]
+     * ```
+     *
      * @param string $token token for the code block
      * @param string $category the category of this log message
      * @see endProfile()
      */
     public static function beginProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+        if (static::$app !== null) {
+            static::$app->getProfiler()->begin($token, $category);
+        } else {
+            static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+        }
     }
 
     /**
@@ -459,7 +476,11 @@ class BaseYii
      */
     public static function endProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
+        if (static::$app !== null) {
+            static::$app->getProfiler()->end($token, $category);
+        } else {
+            static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
+        }
     }
 
     /**

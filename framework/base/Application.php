@@ -29,6 +29,7 @@ use Yii;
  * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
  * @property \yii\log\Dispatcher $log The log dispatcher application component. This property is read-only.
  * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
+ * @property \yii\base\Profiler $profiler The profiler application component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
  * read-only.
@@ -615,6 +616,16 @@ abstract class Application extends Module
     }
 
     /**
+     * Returns the profiler component.
+     * @return \yii\base\Profiler the profiler application component.
+     * @since 2.0.12
+     */
+    public function getProfiler()
+    {
+        return $this->get('profiler');
+    }
+
+    /**
      * Returns the configuration of core application components.
      * @see set()
      */
@@ -629,6 +640,7 @@ abstract class Application extends Module
             'urlManager' => ['class' => 'yii\web\UrlManager'],
             'assetManager' => ['class' => 'yii\web\AssetManager'],
             'security' => ['class' => 'yii\base\Security'],
+            'profiler' => ['class' => 'yii\base\Profiler'],
         ];
     }
 

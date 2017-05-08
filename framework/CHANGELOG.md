@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Enh #13706: Profiling methods extracted from `yii\base\BaseYii` to new `yii\base\Profiler` core component (cronfy)
 - Enh #13820: Add new HTTP status code 451 (yyxx9988)
 - Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
