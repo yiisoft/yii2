@@ -4,6 +4,10 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Enh #13820: Add new HTTP status code 451 (yyxx9988)
+- Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
+- Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
+- Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
@@ -83,6 +87,9 @@ Yii Framework 2 Change Log
 - Enh #13883: `yii\data\SqlDataProvider` now provides automatic fallback for the case when `totalCount` is not specified (SamMousa)
 - Enh #13911: Significantly enhanced MSSQL schema reading performance (paulzi, WebdevMerlion)
 - Enh #13945: Removed Courier New from error page fonts list since it looks bad on Linux (samdark)
+- Bug #13961: RBAC Rules: PostgreSQL: PHP Warning "unserialize() expects parameter 1 to be string, resource given" was fixed (vsguts)
+- Enh #13976: Disabled IPv6 check on `\yii\validators\IpValidator` as it turns out it is not needed for inet_* methods to work (mikk150)
+- Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
 - Enh #13963: Added tests for `yii\behaviors\TimestampBehavior` (vladis84)
 - Enh #13976: Disabled IPv6 check on `\yii\validators\IpValidator` as it turns out it is not needed for `inet_*` methods to work (mikk150)
 - Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
@@ -1843,4 +1850,3 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
-
