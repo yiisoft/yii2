@@ -2,7 +2,9 @@
 
 namespace yiiunit\framework\web;
 
+use Yii;
 use yii\web\UrlManager;
+use yii\web\UrlRule;
 use yiiunit\TestCase;
 
 /**
@@ -42,6 +44,8 @@ use yiiunit\TestCase;
  */
 class UrlManagerCreateUrlTest extends TestCase
 {
+
+
     protected function getUrlManager($config = [], $showScriptName = true)
     {
         // in this test class, all tests have enablePrettyUrl enabled.
@@ -672,6 +676,32 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals('http://example.fr/search', $url);
         $url = $manager->createUrl(['products/search', 'lang' => 'fr', 'slug' => 'search', 'param1' => 'value1']);
         $this->assertEquals('http://example.fr/search?param1=value1', $url);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14094
+     */
+    public function testCreateUrlCache()
+    {
+        /* @var $rules UrlRule[] */
+        $rules = [
+            Yii::createObject([
+                'class' => UrlRule::className(),
+                'route' => 'user/show',
+                'pattern' => 'user/<name:[\w-]+>',
+            ]),
+            Yii::createObject([
+                'class' => UrlRule::className(),
+                'route' => '<controller>/<action>',
+                'pattern' => '<controller:\w+>/<action:\w+>',
+            ]),
+        ];
+        $manager = $this->getUrlManager([
+            'rules' => $rules,
+        ], false);
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+        $this->assertEquals('/user/profile?name=rob006', $manager->createUrl(['user/profile', 'name' => 'rob006']));
     }
 
 }

@@ -375,6 +375,10 @@ class UrlManager extends Component
             if ($url === false) {
                 $cacheable = true;
                 foreach ($this->rules as $rule) {
+                    if(in_array($rule,$this->_ruleCache[$cacheKey])){
+                        continue;
+                    }
+
                     /* @var $rule UrlRule */
                     if (!empty($rule->defaults) && $rule->mode !== UrlRule::PARSING_ONLY) {
                         // if there is a rule with default values involved, the matching result may not be cached
