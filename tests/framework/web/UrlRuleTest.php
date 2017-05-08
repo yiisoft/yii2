@@ -462,6 +462,44 @@ class UrlRuleTest extends TestCase
                 ],
             ],
             [
+                'optional param at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en'],
+                ],
+                [
+                    ['site/category', ['language' => 'en', 'category' => 'books'], 'books'],
+                    ['site/category', ['language' => 'pl', 'category' => 'books'], 'pl/books'],
+                ],
+            ],
+            [
+                'two optional params at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['site/category', ['language' => 'en', 'category' => 'books'], ''],
+                    ['site/category', ['language' => 'en', 'category' => 'games'], 'games'],
+                    ['site/category', ['language' => 'pl', 'category' => 'games'], 'pl/games'],
+                ],
+            ],
+            [
+                'optional param at the beginning with suffix',
+                [
+                    'pattern' => '<page>',
+                    'route' => 'page/view',
+                    'defaults' => ['page' => 'index'],
+                    'suffix' => '/'
+                ],
+                [
+                    ['page/view', ['page' => 'index'], ''],
+                    ['page/view', ['page' => 'news'], 'news/'],
+                ],
+            ],
+            [
                 'consecutive optional params',
                 [
                     'pattern' => 'post/<page:\d+>/<tag>',
@@ -881,6 +919,103 @@ class UrlRuleTest extends TestCase
                     ['post/-a', ['post/index', ['page' => '1', 'tag' => 'a']]],
                     ['post/a', false],
                     ['post-a', false],
+                ],
+            ],
+            [
+                'optional param at the beginning',
+                [
+                    'pattern' => '<language>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en'],
+                ],
+                [
+                    ['books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'two optional params at the beginning',
+                [
+                    'pattern' => '<language:(en|pl)>/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'two optional params at the beginning followed by placeholder',
+                [
+                    'pattern' => '<language:(en|pl)>/<category>/test',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['books/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/books/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'two optional params at the beginning separated by placeholder',
+                [
+                    'pattern' => '<language:(en|pl)>/test/<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/test', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['test/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en/test/books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'three optional params at the beginning separated by placeholder',
+                [
+                    'pattern' => '<language:(en|pl)>/test/<category>/<id:\d+>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books', 'id' => 1],
+                ],
+                [
+                    ['test', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en/test', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['test/books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en/test/books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                ],
+            ],
+            [
+                'two optional params at the beginning separated by dash',
+                [
+                    'pattern' => '<language:(en|pl)>-<category>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books'],
+                ],
+                [
+                    ['-', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en-', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['-books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                    ['en-books', ['site/category', ['language' => 'en', 'category' => 'books']]],
+                ],
+            ],
+            [
+                'three optional params at the beginning separated by dash',
+                [
+                    'pattern' => '<language:(en|pl)>-<category>/<id:\d+>',
+                    'route' => 'site/category',
+                    'defaults' => ['language' => 'en', 'category' => 'books', 'id' => 1],
+                ],
+                [
+                    ['-', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['-books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books/1', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 1]]],
+                    ['en-books/2', ['site/category', ['language' => 'en', 'category' => 'books', 'id' => 2]]],
                 ],
             ],
             [

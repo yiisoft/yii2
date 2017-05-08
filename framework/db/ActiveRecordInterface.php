@@ -162,10 +162,13 @@ interface ActiveRecordInterface
      *  - an associative array of name-value pairs: query by a set of attribute values and return a single record
      *    matching all of them (or `null` if not found). Note that `['id' => 1, 2]` is treated as a non-associative array.
      *
-     * NOTE: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
-     *
      * That this method will automatically call the `one()` method and return an [[ActiveRecordInterface|ActiveRecord]]
-     * instance. For example,
+     * instance.
+     *
+     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
+     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     *
+     * See the following code for usage examples:
      *
      * ```php
      * // find a single customer whose primary key value is 10
@@ -207,10 +210,13 @@ interface ActiveRecordInterface
      *    matching all of them (or an empty array if none was found). Note that `['id' => 1, 2]` is treated as
      *    a non-associative array.
      *
-     * NOTE: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
-     *
      * This method will automatically call the `all()` method and return an array of [[ActiveRecordInterface|ActiveRecord]]
-     * instances. For example,
+     * instances.
+     *
+     * > Note: As this is a short-hand method only, using more complex conditions, like ['!=', 'id', 1] will not work.
+     * > If you need to specify more complex conditions, use [[find()]] in combination with [[ActiveQuery::where()|where()]] instead.
+     *
+     * See the following code for usage examples:
      *
      * ```php
      * // find the customers whose primary key value is 10
