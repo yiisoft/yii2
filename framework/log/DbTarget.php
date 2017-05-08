@@ -61,9 +61,9 @@ class DbTarget extends Target
     public function export()
     {
         if ($this->db->getTransaction()) {
+            // create new database connection, if there is an open transaction
+            // to ensure insert statement is not affected by a rollback
             $this->db = clone $this->db;
-            $this->db->pdo = null;
-            $this->db->open();
         }
 
         $tableName = $this->db->quoteTableName($this->logTable);

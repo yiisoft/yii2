@@ -1080,4 +1080,18 @@ class Connection extends Component
         $this->close();
         return array_keys((array) $this);
     }
+
+    /**
+     * Reset the connection after cloning.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_master = false;
+        $this->_slave = false;
+        $this->pdo = null;
+        $this->_schema = null;
+        $this->_transaction = null;
+    }
 }

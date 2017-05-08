@@ -316,7 +316,7 @@ abstract class ConnectionTest extends DatabaseTestCase
         $thrown = false;
         try {
             $connection->createCommand('INSERT INTO qlog1(a) VALUES(:a);', [':a' => 1])->execute();
-        } catch(\yii\db\Exception $e) {
+        } catch (\yii\db\Exception $e) {
             $this->assertContains('INSERT INTO qlog1(a) VALUES(1);', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string)$e);
             $thrown = true;
         }
@@ -325,10 +325,47 @@ abstract class ConnectionTest extends DatabaseTestCase
         $thrown = false;
         try {
             $connection->createCommand('SELECT * FROM qlog1 WHERE id=:a ORDER BY nonexistingcolumn;', [':a' => 1])->queryAll();
-        } catch(\yii\db\Exception $e) {
+        } catch (\yii\db\Exception $e) {
             $this->assertContains('SELECT * FROM qlog1 WHERE id=1 ORDER BY nonexistingcolumn;', $e->getMessage(), 'Exception message should contain raw SQL query: ' . (string)$e);
             $thrown = true;
         }
         $this->assertTrue($thrown, 'An exception should have been thrown by the command.');
+    }
+
+    /**
+     * Ensure database connection is reset on when a connection is cloned.
+     * Make sure each connection element has its own PDO instance i.e. own connection to the DB.
+     * Also transaction elements should not be shared between two connections.
+     */
+    public function testClone()
+    {
+        $connection = $this->getConnection(true, false);
+        $this->assertNull($connection->transaction);
+        $this->assertNull($connection->pdo);
+        $connection->open();
+        $this->assertNull($connection->transaction);
+        $this->assertNotNull($connection->pdo);
+
+        $conn2 = clone $connection;
+        $this->assertNull($connection->transaction);
+        $this->assertNotNull($connection->pdo);
+
+        $this->assertNull($conn2->transaction);
+        $this->assertNull($conn2->pdo);
+
+        $connection->beginTransaction();
+
+        $this->assertNotNull($connection->transaction);
+        $this->assertNotNull($connection->pdo);
+
+        $this->assertNull($conn2->transaction);
+        $this->assertNull($conn2->pdo);
+
+        $conn3 = clone $connection;
+
+        $this->assertNotNull($connection->transaction);
+        $this->assertNotNull($connection->pdo);
+        $this->assertNull($conn3->transaction);
+        $this->assertNull($conn3->pdo);
     }
 }
