@@ -128,7 +128,7 @@ class BaseYii
      */
     public static function getAlias($alias, $throwException = true)
     {
-        if (strncmp($alias, '@', 1)) {
+        if (!self::isAlias($alias)) {
             // not an alias
             return $alias;
         }
@@ -153,6 +153,15 @@ class BaseYii
         }
 
         return false;
+    }
+
+    /**
+     * @param string $alias
+     * @return bool
+     */
+    public static function isAlias($alias)
+    {
+        return strncmp($alias, '@', 1) === 0;
     }
 
     /**

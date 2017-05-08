@@ -705,4 +705,58 @@ class Module extends ServiceLocator
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
         return $event->result;
     }
+
+    /**
+     * Layout find in parent module.
+     * @return array [module, layout]
+     */
+    private function findLayout()
+    {
+        $module = $this;
+
+        do {
+            if (is_string($module->layout)) {
+                return [$module, $module->layout];
+            }
+        }
+        while (($module = $module->module) !== null);
+
+        return [null, null];
+    }
+
+    /**
+     * Layout find in module.
+     * @param string $layout    Layout name
+     * @param string $layoutExt View default extension
+     * @return boolean|string
+     */
+    public function findLayoutFile($layout, $layoutExt)
+    {
+        $module = $this;
+
+        if ($layout === null) {
+            list($module, $layout) = $this->findLayout();
+        }
+
+        if (!is_string($layout)) {
+            return false;
+        }
+
+        if (Yii::isAlias($layout)) {
+            $file = Yii::getAlias($layout);
+        } else {
+            $file = $module->getLayoutPath() . DIRECTORY_SEPARATOR . ltrim($layout, '/');
+        }
+
+        if (pathinfo($file, PATHINFO_EXTENSION) !== '') {
+            return $file;
+        }
+
+        $path = $file . '.' . $layoutExt;
+        if ($layoutExt !== 'php' && !is_file($path)) {
+            $path = $file . '.php';
+        }
+        
+        return $path;
+    }
 }
