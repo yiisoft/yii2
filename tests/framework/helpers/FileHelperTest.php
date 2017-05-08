@@ -790,4 +790,77 @@ class FileHelperTest extends TestCase
             $this->assertStringEqualsFile($fileName, $content, 'Incorrect file content!');
         }
     }
+
+    private function setupCopyEmptyDirectoriesTest()
+    {
+        $srcDirName = 'test_empty_src_dir';
+        $this->createFileStructure([
+            $srcDirName => [
+                'dir1' => [
+                    'file1.txt' => 'file1',
+                    'file2.txt' => 'file2',
+                ],
+                'dir2' => [
+                    'file1.log' => 'file1',
+                    'file2.log' => 'file2',
+                ],
+                'dir3' => [],
+            ],
+        ]);
+
+        return [
+            $this->testFilePath, // basePath
+            $this->testFilePath . DIRECTORY_SEPARATOR . $srcDirName,
+        ];
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/9669
+     *
+     * @depends testCopyDirectory
+     * @depends testFindFiles
+     */
+    public function testCopyDirectoryEmptyDirectories()
+    {
+        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+
+        // copy with empty directories
+        $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir';
+        FileHelper::copyDirectory($srcDirName, $dstDirName, ['only' => ['*.txt'], 'copyEmptyDirectories' => true]);
+
+        $this->assertFileExists($dstDirName, 'Destination directory does not exist!');
+        $copiedFiles = FileHelper::findFiles($dstDirName);
+        $this->assertCount(2, $copiedFiles, 'wrong files count copied');
+
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1');
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file1.txt');
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file2.txt');
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/9669
+     *
+     * @depends testCopyDirectory
+     * @depends testFindFiles
+     */
+    public function testCopyDirectoryNoEmptyDirectories()
+    {
+        list($basePath, $srcDirName) = $this->setupCopyEmptyDirectoriesTest();
+
+        // copy without empty directories
+        $dstDirName = $basePath . DIRECTORY_SEPARATOR . 'test_empty_dst_dir2';
+        FileHelper::copyDirectory($srcDirName, $dstDirName, ['only' => ['*.txt'], 'copyEmptyDirectories' => false]);
+
+        $this->assertFileExists($dstDirName, 'Destination directory does not exist!');
+        $copiedFiles = FileHelper::findFiles($dstDirName);
+        $this->assertCount(2, $copiedFiles, 'wrong files count copied');
+
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1');
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file1.txt');
+        $this->assertFileExists($dstDirName . DIRECTORY_SEPARATOR . 'dir1' . DIRECTORY_SEPARATOR . 'file2.txt');
+        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir2');
+        $this->assertFileNotExists($dstDirName . DIRECTORY_SEPARATOR . 'dir3');
+    }
 }
