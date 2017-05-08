@@ -376,14 +376,7 @@ class AuthorRule extends Rule
      */
     public function execute($user, $item, $params)
     {
-        if (isset($params['post'])) {
-            $post = $params['post'];
-            if (is_integer($post)) {
-                $post = Post::findOne($post);
-            }
-            return $post->createdBy == $user;
-        }
-        return false;
+        return isset($params['post']) ? $params['post']->createdBy == $user : false;
     }
 }
 ```
@@ -517,7 +510,7 @@ class PostsController extends Controller
                         'actions' => ['update'],
                         'roles' => ['updatePost'],
                         'roleParams' => function() {
-                            return ['post' => Yii::$app->request->get('id')];
+                            return ['post' => Post::findOne(Yii::$app->request->get('id'))];
                         },
                         'allow' => true,
                     ],
