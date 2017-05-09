@@ -236,29 +236,45 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         $query = new ActiveQuery(Profile::className());
 
-        $tableNames = $query->getTableNamesUsedInFrom();
+        $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([Profile::tableName()], $tableNames);
+        $this->assertEquals([
+            Profile::tableName() => Profile::tableName(),
+        ], $tables);
     }
 
     public function testGetTableNames_isFromArray()
     {
         $query = new ActiveQuery(null);
-        $query->from = ['prf' => 'profile', 'usr' => 'user'];
+        $query->from = [
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ];
 
-        $tableNames = $query->getTableNamesUsedInFrom();
+        $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals(['profile', 'user'], $tableNames);
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ], $tables);
     }
 
     public function testGetTableNames_isFromString()
     {
         $query = new ActiveQuery(null);
-        $query->from = 'profile AS \'prf\', user "usr", `order`, "customer"';
+        $query->from = 'profile AS \'prf\', user "usr", `order`, "customer", "a b" as "c d"';
 
-        $tableNames = $query->getTableNamesUsedInFrom();
+        $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals(['profile', 'user', '`order`', '"customer"'], $tableNames);
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'order' => 'order',
+            'customer' => 'customer',
+            'c d' => 'a b',
+        ], $tables);
     }
 
     public function testGetTableNames_isFromObject_generateException()
@@ -268,36 +284,52 @@ abstract class ActiveQueryTest extends DatabaseTestCase
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 
-        $query->getTableNamesUsedInFrom();
+        $query->getTablesUsedInFrom();
     }
 
     public function testGetTablesAlias_notFilledFrom()
     {
         $query = new ActiveQuery(Profile::className());
 
-        $tablesAlias = $query->getAliasesUsedInFrom();
+        $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals([Profile::tableName()], $tablesAlias);
+        $this->assertEquals([
+            Profile::tableName() => Profile::tableName(),
+        ], $tables);
     }
 
     public function testGetTablesAlias_isFromArray()
     {
         $query = new ActiveQuery(null);
-        $query->from = ['prf' => 'profile', 'usr' => 'user'];
+        $query->from = [
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ];
 
-        $tablesAlias = $query->getAliasesUsedInFrom();
+        $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals(['prf', 'usr'], $tablesAlias);
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ], $tables);
     }
 
     public function testGetTablesAlias_isFromString()
     {
         $query = new ActiveQuery(null);
-        $query->from = 'profile AS \'prf\', user "usr", service srv, order';
+        $query->from = 'profile AS \'prf\', user "usr", service srv, order, [a b] [c d]';
 
-        $tablesAlias = $query->getAliasesUsedInFrom();
+        $tables = $query->getTablesUsedInFrom();
 
-        $this->assertEquals(['prf', 'usr', 'srv', 'order'], $tablesAlias);
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'srv' => 'service',
+            'order' => 'order',
+            'c d' => 'a b',
+        ], $tables);
     }
 
     public function testGetTablesAlias_isFromObject_generateException()
@@ -307,6 +339,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 
-        $query->getAliasesUsedInFrom();
+        $query->getTablesUsedInFrom();
     }
 }

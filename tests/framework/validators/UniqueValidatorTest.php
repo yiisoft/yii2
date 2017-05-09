@@ -337,7 +337,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $attribute = 'id';
         $targetAttribute = 'id';
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
-        $expected = [Profile::tableName() . '.' . $attribute => $model->id];
+        $expected = ['{{' . Profile::tableName() . '}}.[[' . $attribute . ']]' => $model->id];
         $this->assertEquals($expected, $result);
     }
 

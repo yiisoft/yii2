@@ -791,77 +791,45 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * Table names based on [[from]]
-     * @return string[] table names
+     * Returns table names used in [[from]] indexed by aliases.
+     * @return string[] table names indexed by aliases
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.12
      */
-    public function getTableNamesUsedInFrom()
+    public function getTablesUsedInFrom()
     {
-        $tableNames = [];
-
         if (empty($this->from)) {
-            $tableNames[] = $this->getPrimaryTableName();
+            $tableNames = [$this->getPrimaryTableName()];
         } elseif (is_array($this->from)) {
-            $tableNames = array_values($this->from);
+            $tableNames = $this->from;
         } elseif (is_string($this->from)) {
             $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
         } else {
             throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
         }
 
-        // Clean up table names
-        foreach ($tableNames as &$tableName) {
-            $tableName = preg_replace('/^(\w+)\s*.*$/', '$1', $tableName);
-        }
-
-        return $tableNames;
-    }
-
-    /**
-     * @return string[] table aliases based on [[from]]
-     * @throws \yii\base\InvalidConfigException
-     * @since 2.0.12
-     */
-    public function getAliasesUsedInFrom()
-    {
-        $tablesAlias = [];
-
-        if (empty($this->from)) {
-            return [$this->getPrimaryTableName()];
-        }
-
-        if (is_string($this->from)) {
-            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
-        } elseif (is_array($this->from)) {
-            $tableNames = $this->from;
-        } else {
-            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
-        }
-
+        // Clean up table names and aliases
+        $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
-            if (is_string($alias)) {
-                $tablesAlias[] = $alias;
-            } else {
-                $tablesAlias[] = $this->getAliasFromTableName($tableName);
+            if (!is_string($alias)) {
+                if (preg_match('~^\s*([\'"`\[].*?[\'"`\]]|\w+)(?:(?:\s+(?:as)?\s*)([\'"`\[].*?[\'"`\]]|\w+))?\s*$~iu', $tableName, $matches)) {
+                    if (isset($matches[1])) {
+                        if (isset($matches[2])) {
+                            list(, $tableName, $alias) = $matches;
+                        } else {
+                            $tableName = $alias = $matches[1];
+                        }
+                    }
+                }
             }
+
+            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
+            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
+
+            $cleanedUpTableNames[$alias] = $tableName;
         }
 
-        return $tablesAlias;
-    }
-
-    /**
-     * Getting alias from table name
-     * Input string may contain alias already specified
-     *
-     * @param string $tableName
-     * @return string
-     * @since 2.0.12
-     */
-    private function getAliasFromTableName($tableName)
-    {
-        $cleanedUpTableName = preg_replace('/\'|\"|`|as/u', '', trim($tableName));
-        return preg_replace('/^.+\s+(\w+)$/', '$1', $cleanedUpTableName);
+        return $cleanedUpTableNames;
     }
 
     /**

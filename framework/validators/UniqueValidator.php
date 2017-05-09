@@ -252,11 +252,11 @@ class UniqueValidator extends Validator
 
         /** @var ActiveRecord $targetClass */
         $query = $targetClass::find();
-        $tableAliases = $query->getAliasesUsedInFrom();
+        $tableAliases = array_keys($query->getTablesUsedInFrom());
         $primaryTableAlias = $tableAliases[0];
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$primaryTableAlias}.{$columnName}";
+            $prefixedColumn = "{{{$primaryTableAlias}}}.[[{$columnName}]]";
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
 
