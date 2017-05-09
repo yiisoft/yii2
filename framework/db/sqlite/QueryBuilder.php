@@ -137,20 +137,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $db = $this->db;
         $table = $db->getTableSchema($tableName);
         if ($table !== null && $table->sequenceName !== null) {
+            $tableName = $db->quoteTableName($tableName);
             if ($value === null) {
-                $key = reset($table->primaryKey);
-                $tableName = $db->quoteTableName($tableName);
+                $key = $this->db->quoteColumnName(reset($table->primaryKey));
                 $value = $this->db->useMaster(function (Connection $db) use ($key, $tableName) {
                     return $db->createCommand("SELECT MAX($key) FROM $tableName")->queryScalar();
                 });
             } else {
                 $value = (int) $value - 1;
             }
-            try {
-                return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
-            } catch (Exception $e) {
-                // it's possible that sqlite_sequence does not exist
-            }
+
+            return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
         } else {

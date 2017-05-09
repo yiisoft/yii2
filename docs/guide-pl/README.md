@@ -147,7 +147,7 @@ Narzędzia wspomagające tworzenie aplikacji
 
 * [Pasek debugowania i debuger](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md)
 * [Generowanie kodu przy użyciu Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md)
-* **TBD** [Generowanie dokumentacji API](https://github.com/yiisoft/yii2-apidoc)
+* [Generowanie dokumentacji API](https://github.com/yiisoft/yii2-apidoc)
 
 
 Testowanie
@@ -179,16 +179,16 @@ Tematy specjalne
 Widżety
 -------
 
-* GridView: **TBD** link to demo page
-* ListView: **TBD** link to demo page
-* DetailView: **TBD** link to demo page
-* ActiveForm: **TBD** link to demo page
-* Pjax: **TBD** link to demo page
-* Menu: **TBD** link to demo page
-* LinkPager: **TBD** link to demo page
-* LinkSorter: **TBD** link to demo page
+* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
 * [Widżety Bootstrapowe](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/README.md)
-* [Widżety Jquery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
+* [Widżety jQuery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md)
 
 
 Klasy pomocnicze

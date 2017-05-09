@@ -3,7 +3,7 @@ The Definitive Guide to Yii 2.0
 
 Các hướng dẫn được phát hành theo [Các điều khoản về tài liệu Yii](http://www.yiiframework.com/doc/terms/).
 
-All Rights Reserved.
+Tất cả bản quyền đã được bảo hộ (All Rights Reserved).
 
 2014 (c) Yii Software LLC.
 
@@ -12,7 +12,7 @@ Giới thiệu
 ------------
 
 * [Về Yii](intro-yii.md)
-* [Nâng cấp lên từ phiên bản 1.1](intro-upgrade-from-v1.md)
+* [Hướng dẫn nâng cấp lên từ phiên bản 1.1](intro-upgrade-from-v1.md)
 
 
 Bắt đầu
@@ -20,11 +20,11 @@ Bắt đầu
 
 * [Cài đặt Yii](start-installation.md)
 * [Thực hiện chạy ứng dụng](start-workflow.md)
-* [Viết lời chào đầu tiên](start-hello.md)
+* [Viết chương trình đầu tiên](start-hello.md)
 * [Làm việc với Forms](start-forms.md)
 * [Làm việc với Databases](start-databases.md)
-* [Sử dụng Gii để sinh code](start-gii.md)
-* [Mức cao hơn](start-looking-ahead.md)
+* [Sử dụng Gii để sinh mã tự động](start-gii.md)
+* [Nâng cao](start-looking-ahead.md)
 
 
 Kiến trúc ứng dụng (Application Structure)
@@ -33,8 +33,8 @@ Kiến trúc ứng dụng (Application Structure)
 * [Tổng quan về kiến trúc ứng dụng](structure-overview.md)
 * [Mục Scripts](structure-entry-scripts.md)
 * [Ứng dụng (Applications)](structure-applications.md)
-* [Thành phần ứng dụng](structure-application-components.md)
-* [Bộ điều khiển (Controllers)](structure-controllers.md)
+* [Các thành phần bên trong ứng dụng](structure-application-components.md)
+* [Controllers](structure-controllers.md)
 * [Models](structure-models.md)
 * [Views](structure-views.md)
 * [Modules](structure-modules.md)
@@ -44,14 +44,14 @@ Kiến trúc ứng dụng (Application Structure)
 * [Phần mở rộng (Extensions)](structure-extensions.md)
 
 
-Yêu cầu xử lý (Handling Requests)
+Xử lý yêu cầu (Handling Requests)
 -----------------
 
 * [Tổng quan](runtime-overview.md)
-* [Bootstrapping](runtime-bootstrapping.md)
-* [Routing và URL Creation](runtime-routing.md)
+* [Khởi động](runtime-bootstrapping.md)
+* [Định tuyến (Routing) và khởi tạo đường dẫn (URL Creation)](runtime-routing.md)
 * [Yêu cầu (Requests)](runtime-requests.md)
-* [Responses](runtime-responses.md)
+* [Kết quả (Responses)](runtime-responses.md)
 * [Sessions và Cookies](runtime-sessions-cookies.md)
 * [Xử lý lỗi (Handling Error)](runtime-handling-errors.md)
 * [Logging](runtime-logging.md)
@@ -77,7 +77,7 @@ Làm việc với Databases
 * [Data Access Objects](db-dao.md): Kết nối cơ sở dữ liệu, truy vấn cơ bản, giao dịch và phương thức hoạt động
 * [Query Builder](db-query-builder.md): Sử dụng một truy vấn đơn giản, các lớp cơ sở dữ liệu trừu tượng
 * [Active Record](db-active-record.md): The Active Record ORM, truy vấn và thao tác với dữ liệu, định nghĩa các mối quan hệ giữa các bảng
-* [Migrations](db-migrations.md): Cung cấp cho đội dự án dễ dàng trong việc quản lý những schema CSDL trong ứng dụng
+* [Migrations](db-migrations.md): Cung cấp cho đội dự án một công cụ dễ dàng trong việc quản lý những schema CSDL trong ứng dụng
 * **TBD** [Sphinx](db-sphinx.md)
 * **TBD** [Redis](db-redis.md)
 * **TBD** [MongoDB](db-mongodb.md)
@@ -171,7 +171,7 @@ Chủ đề năng cao
 * [Tối ưu hiệu năng ứng dụng (Performance Tuning)](tutorial-performance-tuning.md)
 * [Shared Hosting Environment](tutorial-shared-hosting.md)
 * [Template Engines](tutorial-template-engines.md)
-* [Working with Third-Party Code](tutorial-yii-integration.md)
+* [Tích hợp mã nguồn của bên thứ ba (Working with Third-Party Code)](tutorial-yii-integration.md)
 
 
 Widgets

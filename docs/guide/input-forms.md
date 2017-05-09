@@ -12,6 +12,10 @@ to validate its input on the server-side (Check the [Validating Input](input-val
 When creating model-based forms, the first step is to define the model itself. The model can be either based upon
 an [Active Record](db-active-record.md) class, representing some data from the database, or a generic Model class
 (extending from [[yii\base\Model]]) to capture arbitrary input, for example a login form.
+
+> Tip: If the form fields are different from database columns or there are formatting and logic that is specific to that
+> form only, prefer creating a separate model extended from [[yii\base\Model]].
+
 In the following example, we show how a generic model can be used for a login form:
 
 ```php

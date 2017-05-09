@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 /**
  * This is the base class for all yii framework unit tests.
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     public static $params;
 
@@ -166,8 +166,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
 
-
-
-
-
+    /**
+     * Asserts that value is one of expected values
+     *
+     * @param mixed $actual
+     * @param array $expected
+     * @param string $message
+     */
+    public function assertIsOneOf($actual, array $expected, $message = '')
+    {
+        self::assertThat($actual, new IsOneOfAssert($expected), $message);
+    }
 }

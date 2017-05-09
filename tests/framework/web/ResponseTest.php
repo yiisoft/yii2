@@ -2,9 +2,13 @@
 
 namespace yiiunit\framework\web;
 
+use Exception;
+use RuntimeException;
+use Error;
 use Yii;
 use yii\helpers\StringHelper;
 use yiiunit\framework\web\stubs\StreamStub;
+use yii\web\HttpException;
 
 /**
  * @group web
@@ -128,5 +132,58 @@ class ResponseTest extends \yiiunit\TestCase
         $this->response->send();
         $content = ob_get_clean();
         $this->assertEquals($this->generateTestFileContent(), $content);
+    }
+
+    /**
+     * @dataProvider dataProviderSetStatusCodeByException
+     *
+     */
+    public function testSetStatusCodeByException($exception, $statusCode)
+    {
+        $this->response->setStatusCodeByException($exception);
+        $this->assertEquals($statusCode, $this->response->getStatusCode());
+    }
+
+    public function dataProviderSetStatusCodeByException()
+    {
+        $data = [
+            [
+                new Exception(),
+                500,
+            ],
+            [
+                new RuntimeException(),
+                500,
+            ],
+            [
+                new HttpException(500),
+                500,
+            ],
+            [
+                new HttpException(403),
+                403,
+            ],
+            [
+                new HttpException(404),
+                404,
+            ],
+            [
+                new HttpException(301),
+                301,
+            ],
+            [
+                new HttpException(200),
+                200,
+            ],
+        ];
+
+        if (class_exists('Error')) {
+            $data[] = [
+                new Error(),
+                500,
+            ];
+        }
+
+        return $data;
     }
 }

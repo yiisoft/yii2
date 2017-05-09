@@ -237,7 +237,7 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = 0;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-        $this->assertEquals(1, count($model->getErrors('attr_number')));
+        $this->assertCount(1, $model->getErrors('attr_number'));
         $msgs = $model->getErrors('attr_number');
         $this->assertSame('attr_number is to small.', $msgs[0]);
     }
