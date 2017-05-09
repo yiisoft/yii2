@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Bug #14052: Fixed processing parse errors on PHP 7 since these are instances of `\ParseError` (samdark)
 - Bug #14074: Fixed default value of `yii\console\controllers\FixtureController::$globalFixtures` to contain valid class name (lynicidn)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
+- Enh #12528: Added option to disable query logging and profiling in DB command (cebe)
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
 - Enh #13179: Added `yii\data\Sort::parseSortParam` allowing to customize sort param in descendant class (leandrogehlen)
 - Enh #13221: Make `\yii\db\QueryTrait::limit()` and `\yii\db\QueryTrait::offset()` methods work with `\yii\db\Expression` (Ni-san)
