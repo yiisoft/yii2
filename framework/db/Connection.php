@@ -373,7 +373,22 @@ class Connection extends Component
      * @see masters
      */
     public $shuffleMasters = true;
-
+    /**
+     * @var bool whether to enable logging of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableProfiling
+     */
+    public $enableLogging = true;
+    /**
+     * @var bool whether to enable profiling of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableLogging
+     */
+    public $enableProfiling = true;
     /**
      * @var Transaction the currently active transaction
      */
