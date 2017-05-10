@@ -236,7 +236,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 $this->host = $this->pattern;
             }
         } elseif (strpos($this->pattern, '//') === 0) {
-            if (($pos2 = strpos($this->pattern, '/', $pos + 2)) !== false) {
+            if (($pos2 = strpos($this->pattern, '/', 2)) !== false) {
                 $this->host = substr($this->pattern, 0, $pos2);
             } else {
                 $this->host = $this->pattern;
