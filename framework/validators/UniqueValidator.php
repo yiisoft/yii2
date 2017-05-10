@@ -173,7 +173,12 @@ class UniqueValidator extends Validator
             // if current $model is in the database already we can't use exists()
             if ($query instanceof \yii\db\ActiveQuery) {
                 // only select primary key to optimize query
-                $query->select($targetClass::primaryKey());
+                $primaryAlias = array_keys($query->getTablesUsedInFrom())[0];
+                $columns = $targetClass::primaryKey();
+                foreach($columns as $c => $column) {
+                    $columns[$c] = "{{{$primaryAlias}}}.$column";
+                }
+                $query->select($columns);
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
