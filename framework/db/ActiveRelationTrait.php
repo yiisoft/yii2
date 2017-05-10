@@ -435,7 +435,7 @@ trait ActiveRelationTrait
             }
             if (isset($alias)) {
                 foreach ($attributes as $i => $attribute) {
-                    $attributes[$i] = "$alias.$attribute";
+                    $attributes[$i] = "$alias.{{{$attribute}}}";
                 }
             }
         }
