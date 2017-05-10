@@ -21,10 +21,6 @@ use yii\web\ForbiddenHttpException;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
 use yii\web\IdentityInterface;
-use yii\web\UrlManager;
-use yii\web\UrlRule;
-use yii\web\Request;
-use yii\web\Response;
 use Yii;
 use yiiunit\TestCase;
 

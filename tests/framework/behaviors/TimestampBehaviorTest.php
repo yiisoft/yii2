@@ -107,8 +107,6 @@ class TimestampBehaviorTest extends TestCase
      */
     public function testUpdateCleanRecord()
     {
-        $currentTime = time();
-
         ActiveRecordTimestamp::$behaviors = [
             TimestampBehavior::className(),
         ];
@@ -201,12 +199,12 @@ class TimestampBehaviorTest extends TestCase
         ];        
         $model = new ActiveRecordTimestamp();
         
-        $this->setExpectedException('yii\base\InvalidCallException');
+        $this->expectException('yii\base\InvalidCallException');
         
         $model->touch('created_at');
     }
     
-    public function testTouchigNotNewRecord()
+    public function testTouchingNotNewRecord()
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [

@@ -32,4 +32,16 @@ class SqlDataProviderTest extends DatabaseTestCase
         ]);
         $this->assertEquals(3, $dataProvider->getTotalCount());
     }
+
+    public function testTotalCountWithParams()
+    {
+        $dataProvider = new SqlDataProvider([
+            'sql' => 'select * from `customer` where id > :minimum',
+            'params' => [
+                ':minimum' => -1
+            ],
+            'db' => $this->getConnection(),
+        ]);
+        $this->assertEquals(3, $dataProvider->getTotalCount());
+    }
 }

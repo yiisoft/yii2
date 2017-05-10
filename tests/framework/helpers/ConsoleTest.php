@@ -12,6 +12,14 @@ use yiiunit\TestCase;
  */
 class ConsoleTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testStripAnsiFormat()
     {
         ob_start();

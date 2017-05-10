@@ -221,7 +221,7 @@ SQL;
 SELECT c.relname AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
-WHERE ns.nspname = :schemaName AND c.relkind = 'v'
+WHERE ns.nspname = :schemaName AND (c.relkind = 'v' OR c.relkind = 'm')
 ORDER BY c.relname
 SQL;
         return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
