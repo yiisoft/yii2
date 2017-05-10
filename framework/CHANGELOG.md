@@ -493,6 +493,7 @@ Yii Framework 2 Change Log
 - Chg #11283: `yii\db\ActiveRecord::unlink()` is not setting FK to `null` before deleting itself anymore (samdark)
 - Chg: HTMLPurifier dependency updated to `~4.6` (samdark)
 - New #8920: Added `yii\mutex\PgsqlMutex` which implements mutex "lock" mechanism via PgSQL locks (nineinchnick, CSharpRU)
+- Enh: Added typecast functionality to BooleanValidator (zalatov)
 
 
 2.0.7 February 14, 2016

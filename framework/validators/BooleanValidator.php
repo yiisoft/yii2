@@ -34,7 +34,19 @@ class BooleanValidator extends Validator
      * Defaults to false, meaning only the value needs to be matched.
      */
     public $strict = false;
+    /**
+     * @var string the typecast of the attribute value.
+     * When this is not null, the attribute value will typecast to boolean or integer:
+     * - 'int' means typecast to integer
+     * - 'bool' means typecast to boolean
+     * @see constants {{TYPECAST_INT}} or {{TYPECAST_BOOL}}.
+     */
+    public $typecast;
 
+    /** The parameter value that means typecast attribute value to integer. */
+    const TYPECAST_INT = 'int';
+    /** The parameter value that means typecast attribute value to boolean */
+    const TYPECAST_BOOL = 'bool';
 
     /**
      * @inheritdoc
@@ -44,6 +56,25 @@ class BooleanValidator extends Validator
         parent::init();
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be either "{true}" or "{false}".');
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function validateAttribute($model, $attribute) {
+        $result = $this->validateValue($model->$attribute);
+        if (null !== $result) {
+            $this->addError($model, $attribute, $result[0], $result[1]);
+        }
+        else {
+            if (null !== $this->typecast) {
+                $model->$attribute = (bool)$model->$attribute;
+
+                if (static::TYPECAST_INT === $this->typecast) {
+                    $model->$attribute = (false === $model->$attribute ? 0 : 1);
+                }
+            }
         }
     }
 
