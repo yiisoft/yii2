@@ -33,6 +33,7 @@ Yii Framework 2 Change Log
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
 - Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
+- Bug #14042: Fixed ambiguous column name in SELECT in UniqueValidator (cebe)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Enh #13467: `yii\data\ActiveDataProvider` no longer queries models if models count is zero (kLkA, Kolyunya)
