@@ -40,6 +40,15 @@ interface QueryInterface
     public function one($db = null);
 
     /**
+      * Executes the query and returns a first single row of result.
+      * @param Connection $db the database connection used to execute the query.
+      * If this parameter is not given, the `db` application component will be used.
+      * @return array|boolean the first row (in terms of an array) of the query result. False is returned if the query
+      * results in nothing.
+      */
+     public function first($db = null);
+
+    /**
      * Returns the number of records.
      * @param string $q the COUNT expression. Defaults to '*'.
      * @param Connection $db the database connection used to execute the query.
