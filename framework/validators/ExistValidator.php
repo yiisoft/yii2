@@ -151,20 +151,7 @@ class ExistValidator extends Validator
             return $conditions;
         }
 
-        // Add table prefix for column
-        $targetClass = $this->getTargetClass($model);
-
-        /** @var ActiveRecord $targetClass */
-        $query = $targetClass::find();
-        $tableAliases = array_keys($query->getTablesUsedInFrom());
-        $primaryTableAlias = $tableAliases[0];
-        $prefixedConditions = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{{{$primaryTableAlias}}}.[[{$columnName}]]";
-            $prefixedConditions[$prefixedColumn] = $columnValue;
-        }
-
-        return $prefixedConditions;
+        return $this->prefixConditions($model, $conditions);
     }
 
     /**
@@ -217,5 +204,29 @@ class ExistValidator extends Validator
         }
 
         return $query;
+    }
+
+    /**
+     * Prefix conditions with aliases
+     *
+     * @param ActiveRecord $model
+     * @param array $conditions
+     * @return array
+     */
+    private function prefixConditions($model, $conditions)
+    {
+        $targetModelClass = $this->getTargetClass($model);
+
+        /** @var ActiveRecord $targetModelClass */
+        $query = $targetModelClass::find();
+        $tableAliases = array_keys($query->getTablesUsedInFrom());
+        $primaryTableAlias = $tableAliases[0];
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            $prefixedColumn = "{{{$primaryTableAlias}}}.[[{$columnName}]]";
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+
+        return $prefixedConditions;
     }
 }
