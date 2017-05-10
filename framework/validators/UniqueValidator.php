@@ -176,7 +176,7 @@ class UniqueValidator extends Validator
                 $primaryAlias = array_keys($query->getTablesUsedInFrom())[0];
                 $columns = $targetClass::primaryKey();
                 foreach($columns as $c => $column) {
-                    $columns[$c] = "{{{$primaryAlias}}}.$column";
+                    $columns[$c] = "{{{$primaryAlias}}}.[[$column]]";
                 }
                 $query->select($columns);
             }
