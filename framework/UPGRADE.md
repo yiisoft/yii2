@@ -69,6 +69,9 @@ Upgrade from Yii 2.0.11
   internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
   benefit from the acceleration provided by this cache.
 
+* `yii\filters\AccessControl` now can be used without `user` component.  
+  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
+  matching a role throws `yii\base\InvalidConfigException`.
 
 Upgrade from Yii 2.0.10
 -----------------------

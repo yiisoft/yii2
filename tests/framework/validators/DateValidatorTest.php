@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\validators;
 
-use DateTime;
 use yii\validators\DateValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\i18n\IntlTestHelper;

@@ -4,9 +4,11 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
+- Bug #9669: AssetManager and `FileHelper::copyDirectory()` were copying empty directories when using `only` or `except` options. Added an option to disable this (cebe)
 - Bug #10346: Fixed "DOMException: Invalid Character Error" in `yii\web\XmlResponseFormatter::buildXml()` (sasha-ch)
 - Bug #10372: Fixed console controller including complex typed arguments in help (sammousa)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
@@ -45,6 +47,7 @@ Yii Framework 2 Change Log
 - Bug #13790: Fixed error in `\yii\widgets\MaskedInput` JavaScript by raising version required (samdark)
 - Bug #13807: Fixed `yii\db\QueryBuilder` to inherit subquery params when building a `INSERT INTO ... SELECT` query (sergeymakinen)
 - Bug #13848: `yii\di\Instance::ensure()` wasn't throwing an exception when `$type` is specified and `$reference` object isn't instance of `$type` (c-jonua)
+- Bug #13890: `yii\log\DbTarget` log messages where not written when a database transaction was rolled back, added support for cloning a `yii\db\Connection` (shirase, cebe)
 - Bug #13901: Fixed passing unused parameter to `formatMessage()` call in `\yii\validators\IpValidator` (Kolyunya)
 - Bug #13961: Fixed `unserialize()` error during RBAC rule retrieving from PostgreSQL DBMS (vsguts)
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
@@ -54,6 +57,7 @@ Yii Framework 2 Change Log
 - Bug #14094: Fixed bug when single `yii\web\UrlManager::createUrl()` call my result multiple calls of `yii\web\UrlRule::createUrl()` for the same rule (rossoneri)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #11288: Added support for caching of `yii\web\UrlRule::createUrl()` results in `yii\web\UrlManager` for rules with defaults (rob006)
+- Enh #12528: Added option to disable query logging and profiling in DB command (cebe)
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
 - Enh #13179: Added `yii\data\Sort::parseSortParam` allowing to customize sort param in descendant class (leandrogehlen)
 - Enh #13221: Make `\yii\db\QueryTrait::limit()` and `\yii\db\QueryTrait::offset()` methods work with `\yii\db\Expression` (Ni-san)
@@ -61,6 +65,7 @@ Yii Framework 2 Change Log
 - Enh #13240: Client scripts registration in `yii\widgets\ActiverForm` was moved to the separate `registerClientScript()` method (uaoleg, silverfire)
 - Enh #13243: Added support for unicode attribute names in `yii\widgets\DetailView` (arogachev)
 - Enh #13254: Core validators no longer require `Yii::$app` to be set (sammousa)
+- Enh #13260: Added support for sorting by expression to `\yii\data\Sort` (LAV45, klimov-paul)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
 - Enh #13360: Added Dockerized test setup for the framework tests (schmunk42)
 - Enh #13369: Added ability to render current `yii\widgets\LinkPager` page disabled (aquy)
@@ -89,8 +94,12 @@ Yii Framework 2 Change Log
 - Enh #13981: `yii\caching\Cache::getOrSet()` now supports both `Closure` and `callable` (silverfire)
 - Enh #13994: Refactored `yii\filters\RateLimiter`. Added tests (vladis84)
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
+- Enh #14067: `yii\web\View::clear()` sets populated arrays to empty arrays instead of null, also changed default values to empty array (craiglondon)
+- Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
-
+- Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly) 
+- Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
+- Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
 
 2.0.11.2 February 08, 2017
 --------------------------
@@ -230,6 +239,7 @@ Yii Framework 2 Change Log
 - Enh #13268: Added logging of memory usage (bashkarev)
 - Enh #13417: Allow customizing `yii\data\ActiveDataProvider` in `yii\rest\IndexAction` (leandrogehlen)
 - Enh #13453: Select only primary key when counting records in UniqueValidator (developeruz)
+- Enh #13352: Added option to not render empty row in `yii\grid\GridView` when data is empty and `emptyText` set to `false` (arogachev)
 - Enh: Added constants for specifying `yii\validators\CompareValidator::$type` (cebe)
 - Enh: Refactored `yii\web\ErrorAction` to make it reusable (silverfire)
 - Enh: Added support for field `yii\console\controllers\BaseMigrateController::$migrationNamespaces` setup from CLI (schmunk42)
@@ -1841,4 +1851,3 @@ Yii Framework 2 Change Log
 
   - [Smarty View Renderer](https://github.com/yiisoft/yii2-smarty)
   - [Twig View Renderer](https://github.com/yiisoft/yii2-twig)
-

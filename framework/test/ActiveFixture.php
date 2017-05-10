@@ -75,7 +75,6 @@ class ActiveFixture extends BaseActiveFixture
      */
     public function load()
     {
-        $this->resetTable();
         $this->data = [];
         $table = $this->getTableSchema();
         foreach ($this->getData() as $alias => $row) {
@@ -104,6 +103,15 @@ class ActiveFixture extends BaseActiveFixture
         } else {
             return parent::getData();
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function unload()
+    {
+        $this->resetTable();
+        parent::unload();
     }
 
     /**
