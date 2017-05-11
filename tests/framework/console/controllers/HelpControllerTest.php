@@ -2,7 +2,6 @@
 namespace yiiunit\framework\console\controllers;
 
 use yii\helpers\Console;
-use yiiunit\framework\console\controllers\TestTrait;
 use yii\console\controllers\HelpController;
 use yiiunit\TestCase;
 

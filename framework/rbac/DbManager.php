@@ -1008,7 +1008,7 @@ class DbManager extends BaseManager
     /**
      * Returns all role assignment information for the specified role.
      * @param string $roleName
-     * @return Assignment[] the assignments. An empty array will be
+     * @return string[] the ids. An empty array will be
      * returned if role is not assigned to any user.
      * @since 2.0.7
      */

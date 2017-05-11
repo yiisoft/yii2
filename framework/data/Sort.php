@@ -112,6 +112,15 @@ class Sort extends Object
      * ]
      * ```
      *
+     * Since 2.0.12 particular sort direction can be also specified as direct sort expression, like following:
+     *
+     * ```php
+     * 'name' => [
+     *     'asc' => '[[last_name]] ASC NULLS FIRST', // PostgreSQL specific feature
+     *     'desc' => '[[last_name]] DESC NULLS LAST',
+     * ]
+     * ```
+     *
      * The `name` attribute is a composite attribute:
      *
      * - The `name` key represents the attribute name which will appear in the URLs leading
@@ -215,8 +224,12 @@ class Sort extends Object
         foreach ($attributeOrders as $attribute => $direction) {
             $definition = $this->attributes[$attribute];
             $columns = $definition[$direction === SORT_ASC ? 'asc' : 'desc'];
-            foreach ($columns as $name => $dir) {
-                $orders[$name] = $dir;
+            if (is_array($columns) || $columns instanceof \Traversable) {
+                foreach ($columns as $name => $dir) {
+                    $orders[$name] = $dir;
+                }
+            } else {
+                $orders[] = $columns;
             }
         }
 

@@ -9,7 +9,7 @@ var vm = require('vm');
 describe('yii.gridView', function () {
     var yiiGridViewPath = 'framework/assets/yii.gridView.js';
     var yiiPath = 'framework/assets/yii.js';
-    var jQueryPath = 'vendor/bower/jquery/dist/jquery.js';
+    var jQueryPath = 'vendor/bower-asset/jquery/dist/jquery.js';
     var $;
     var $gridView;
     var settings = {
