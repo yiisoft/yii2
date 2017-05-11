@@ -97,6 +97,7 @@ class Validator extends Component
         'unique' => 'yii\validators\UniqueValidator',
         'url' => 'yii\validators\UrlValidator',
         'ip' => 'yii\validators\IpValidator',
+        'immutable' => 'yii\validators\ImmutableValidator',
     ];
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
