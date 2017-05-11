@@ -4,15 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
-- Bug #13694: `yii\widgets\Pjax` now sends `X-Pjax-Url` header with response to fix redirect (wleona3, Faryshta)
 - Bug #13842: Fixed ambiguous table SQL error while using `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` (vladis84, samdark)
-- Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
-- Bug #13362: Fixed return value of `yii\caching\MemCache::setValues()`  (masterklavi)
-- Enh #13963: Added tests for yii\behaviors\TimestampBehavior (vladis84)
-- Enh #13994: Refactored `yii\filters\RateLimiter`. Added tests (vladis84)
-- Enh #13820: Add new HTTP status code 451 (yyxx9988)
-- Bug #13671: Fixed error handler trace to work correctly with XDebug (samdark)
-- Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
@@ -42,8 +34,6 @@ Yii Framework 2 Change Log
 - Bug #13582: PK column in `yii\db\pgsql\QueryBuilder::resetSequence()` was not quoted properly (boboldehampsink)
 - Bug #13592: Fixes `yii\db\oci\Schema::setTransactionIsolationLevel()` in Oracle (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
-- Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
-- Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
 - Bug #14042: Fixed ambiguous column name in SELECT in UniqueValidator (cebe)
 - Bug #13649: Fixes issue where `['uncheck' => false]` and `['label' => false]` options for `ActiveRadio` and `ActiveCheckbox` were ignored (Alex-Code)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
