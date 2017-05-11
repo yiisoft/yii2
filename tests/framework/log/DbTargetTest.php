@@ -37,7 +37,7 @@ abstract class DbTargetTest extends TestCase
                     'db' => static::getConnection(),
                     'log' => [
                         'targets' => [
-                            [
+                            'db' => [
                                 'class' => 'yii\log\DbTarget',
                                 'levels' => ['warning'],
                                 'logTable' => self::$logTable,
@@ -58,9 +58,9 @@ abstract class DbTargetTest extends TestCase
         }
     }
 
-    public static function setUpBeforeClass()
+    public function setUp()
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
         $databases = static::getParam('databases');
         static::$database = $databases[static::$driverName];
         $pdo_database = 'pdo_' . static::$driverName;
@@ -72,20 +72,14 @@ abstract class DbTargetTest extends TestCase
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
     }
 
-    public static function tearDownAfterClass()
+    public function tearDown()
     {
+        self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
         if (static::$db) {
             static::$db->close();
         }
-        Yii::$app = null;
-        parent::tearDownAfterClass();
-    }
-
-    protected function tearDown()
-    {
         parent::tearDown();
-        self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
     }
 
     /**
@@ -158,6 +152,11 @@ abstract class DbTargetTest extends TestCase
 
         $logger->messages[] = $messsageData;
         $logger->flush(true);
+
+        // current db connection should still have a transaction
+        $this->assertNotNull($db->transaction);
+        // log db connection should not have transaction
+        $this->assertNull(Yii::$app->log->targets['db']->db->transaction);
 
         $tx->rollBack();
 
