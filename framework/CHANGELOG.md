@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
+- Bug #13842: Fixed ambiguous table SQL error while using `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` (vladis84, samdark)
 - Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
@@ -33,6 +34,7 @@ Yii Framework 2 Change Log
 - Bug #13582: PK column in `yii\db\pgsql\QueryBuilder::resetSequence()` was not quoted properly (boboldehampsink)
 - Bug #13592: Fixes `yii\db\oci\Schema::setTransactionIsolationLevel()` in Oracle (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
+- Bug #14042: Fixed ambiguous column name in SELECT in UniqueValidator (cebe)
 - Bug #13649: Fixes issue where `['uncheck' => false]` and `['label' => false]` options for `ActiveRadio` and `ActiveCheckbox` were ignored (Alex-Code)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #13670: Fixed alias option from console when it includes `-` or `_` in option name (pana1990)

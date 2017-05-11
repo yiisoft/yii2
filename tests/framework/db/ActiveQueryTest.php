@@ -231,4 +231,114 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertInstanceOf('yii\db\ActiveQuery', $result);
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
+
+    public function testGetTableNames_notFilledFrom()
+    {
+        $query = new ActiveQuery(Profile::className());
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            Profile::tableName() => Profile::tableName(),
+        ], $tables);
+    }
+
+    public function testGetTableNames_isFromArray()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = [
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ];
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ], $tables);
+    }
+
+    public function testGetTableNames_isFromString()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = 'profile AS \'prf\', user "usr", `order`, "customer", "a b" as "c d"';
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'order' => 'order',
+            'customer' => 'customer',
+            'c d' => 'a b',
+        ], $tables);
+    }
+
+    public function testGetTableNames_isFromObject_generateException()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = new \stdClass;
+
+        $this->setExpectedException('\yii\base\InvalidConfigException');
+
+        $query->getTablesUsedInFrom();
+    }
+
+    public function testGetTablesAlias_notFilledFrom()
+    {
+        $query = new ActiveQuery(Profile::className());
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            Profile::tableName() => Profile::tableName(),
+        ], $tables);
+    }
+
+    public function testGetTablesAlias_isFromArray()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = [
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ];
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'a b' => 'c d',
+        ], $tables);
+    }
+
+    public function testGetTablesAlias_isFromString()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = 'profile AS \'prf\', user "usr", service srv, order, [a b] [c d]';
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            'prf' => 'profile',
+            'usr' => 'user',
+            'srv' => 'service',
+            'order' => 'order',
+            'c d' => 'a b',
+        ], $tables);
+    }
+
+    public function testGetTablesAlias_isFromObject_generateException()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = new \stdClass;
+
+        $this->setExpectedException('\yii\base\InvalidConfigException');
+
+        $query->getTablesUsedInFrom();
+    }
 }

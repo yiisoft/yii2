@@ -173,7 +173,12 @@ class UniqueValidator extends Validator
             // if current $model is in the database already we can't use exists()
             if ($query instanceof \yii\db\ActiveQuery) {
                 // only select primary key to optimize query
-                $query->select($targetClass::primaryKey());
+                $primaryAlias = array_keys($query->getTablesUsedInFrom())[0];
+                $columns = $targetClass::primaryKey();
+                foreach($columns as $c => $column) {
+                    $columns[$c] = "{{{$primaryAlias}}}.[[$column]]";
+                }
+                $query->select($columns);
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
@@ -247,16 +252,7 @@ class UniqueValidator extends Validator
             return $conditions;
         }
 
-        // Add table prefix for column
-        $targetClass = $this->getTargetClass($model);
-        $tableName = $targetClass::tableName();
-        $conditionsWithTableName = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumnName = "{$tableName}.$columnName";
-            $conditionsWithTableName[$prefixedColumnName] = $columnValue;
-        }
-
-        return $conditionsWithTableName;
+        return $this->prefixConditions($model, $conditions);
     }
 
     /**
@@ -281,5 +277,29 @@ class UniqueValidator extends Validator
             'attributes' => Inflector::sentence($attributeCombo),
             'values' => implode('-', $valueCombo)
         ]);
+    }
+
+    /**
+     * Prefix conditions with aliases
+     *
+     * @param ActiveRecord $model
+     * @param array $conditions
+     * @return array
+     */
+    private function prefixConditions($model, $conditions)
+    {
+        $targetModelClass = $this->getTargetClass($model);
+
+        /** @var ActiveRecord $targetModelClass */
+        $query = $targetModelClass::find();
+        $tableAliases = array_keys($query->getTablesUsedInFrom());
+        $primaryTableAlias = $tableAliases[0];
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            $prefixedColumn = "{{{$primaryTableAlias}}}.[[{$columnName}]]";
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+
+        return $prefixedConditions;
     }
 }
