@@ -773,7 +773,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if (!isset($scenarios[$scenario])) {
             return [];
         }
-        $attributes = array_unique($scenarios[$scenario]);
+        $attributes = array_values(array_unique($scenarios[$scenario]));
         foreach ($attributes as $i => $attribute) {
             if ($attribute[0] === '!') {
                 $attributes[$i] = substr($attribute, 1);
