@@ -16,11 +16,13 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
         ActiveRecord::$db = $this->getConnection();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testAssureMessageSetOnInit()

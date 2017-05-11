@@ -951,12 +951,14 @@ return [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationNamespaces' => ['app\migrations'],
             'migrationTable' => 'migration_app',
+            'migrationPath' => null,
         ],
         // Migrations for the specific project's module
         'migrate-module' => [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationNamespaces' => ['module\migrations'],
             'migrationTable' => 'migration_module',
+            'migrationPath' => null,
         ],
         // Migrations for the specific extension
         'migrate-rbac' => [
