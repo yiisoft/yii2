@@ -306,7 +306,7 @@
                 needAjaxValidation = false,
                 messages = {},
                 deferreds = deferredArray(),
-                submitting = data.submitting && !forceValidate;
+                submitting = data.submitting;
 
             if (data.submitting) {
                 var event = $.Event(events.beforeValidate);
