@@ -319,7 +319,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     public function testGetTablesAlias_isFromString()
     {
         $query = new ActiveQuery(null);
-        $query->from = 'profile AS \'prf\', user "usr", service srv, order, [a b] [c d]';
+        $query->from = 'profile AS \'prf\', user "usr", service srv, order, [a b] [c d], {{something}} AS myalias';
 
         $tables = $query->getTablesUsedInFrom();
 
@@ -329,6 +329,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
             '{{srv}}' => '{{service}}',
             '{{order}}' => '{{order}}',
             '{{c d}}' => '{{a b}}',
+            '{{myalias}}' => '{{something}}'
         ], $tables);
     }
 
