@@ -239,7 +239,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $tables = $query->getTablesUsedInFrom();
 
         $this->assertEquals([
-            Profile::tableName() => Profile::tableName(),
+            '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
         ], $tables);
     }
 
@@ -247,17 +247,17 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         $query = new ActiveQuery(null);
         $query->from = [
-            'prf' => 'profile',
-            'usr' => 'user',
-            'a b' => 'c d',
+            '{{prf}}' => '{{profile}}',
+            '{{usr}}' => '{{user}}',
+            '{{a b}}' => '{{c d}}',
         ];
 
         $tables = $query->getTablesUsedInFrom();
 
         $this->assertEquals([
-            'prf' => 'profile',
-            'usr' => 'user',
-            'a b' => 'c d',
+            '{{prf}}' => '{{profile}}',
+            '{{usr}}' => '{{user}}',
+            '{{a b}}' => '{{c d}}',
         ], $tables);
     }
 
@@ -269,11 +269,11 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $tables = $query->getTablesUsedInFrom();
 
         $this->assertEquals([
-            'prf' => 'profile',
-            'usr' => 'user',
-            'order' => 'order',
-            'customer' => 'customer',
-            'c d' => 'a b',
+            '{{prf}}' => '{{profile}}',
+            '{{usr}}' => '{{user}}',
+            '{{order}}' => '{{order}}',
+            '{{customer}}' => '{{customer}}',
+            '{{c d}}' => '{{a b}}',
         ], $tables);
     }
 
@@ -294,7 +294,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $tables = $query->getTablesUsedInFrom();
 
         $this->assertEquals([
-            Profile::tableName() => Profile::tableName(),
+            '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
         ], $tables);
     }
 
@@ -302,17 +302,17 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         $query = new ActiveQuery(null);
         $query->from = [
-            'prf' => 'profile',
-            'usr' => 'user',
-            'a b' => 'c d',
+            '{{prf}}' => '{{profile}}',
+            '{{usr}}' => '{{user}}',
+            '{{a b}}' => '{{c d}}',
         ];
 
         $tables = $query->getTablesUsedInFrom();
 
         $this->assertEquals([
-            'prf' => 'profile',
-            'usr' => 'user',
-            'a b' => 'c d',
+            '{{prf}}' => '{{profile}}',
+            '{{usr}}' => '{{user}}',
+            '{{a b}}' => '{{c d}}',
         ], $tables);
     }
 
@@ -324,11 +324,11 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $tables = $query->getTablesUsedInFrom();
 
         $this->assertEquals([
-            'prf' => 'profile',
-            'usr' => 'user',
-            'srv' => 'service',
-            'order' => 'order',
-            'c d' => 'a b',
+            '{{prf}}' => '{{profile}}',
+            '{{usr}}' => '{{user}}',
+            '{{srv}}' => '{{service}}',
+            '{{order}}' => '{{order}}',
+            '{{c d}}' => '{{a b}}',
         ], $tables);
     }
 
@@ -353,7 +353,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $tables = $query->getTablesUsedInFrom();
 
         $this->assertEquals([
-            '%order_item' => '%order_item',
+            '{{%order_item}}' => '{{%order_item}}',
         ], $tables);
     }
 }

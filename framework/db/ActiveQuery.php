@@ -792,6 +792,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
     /**
      * Returns table names used in [[from]] indexed by aliases.
+     * Both aliases and names are enclosed into {{ and }}.
      * @return string[] table names indexed by aliases
      * @throws \yii\base\InvalidConfigException
      * @since 2.0.12
@@ -811,18 +812,18 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         // Clean up table names and aliases
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
-            if (preg_match('~{{(.*?)}}~', $tableName, $matches)) {
-                $alias = $tableName = $matches[1];
-            }
-
             if (!is_string($alias)) {
-                if (preg_match('~^\s*([\'"`\[].*?[\'"`\]]|\w+)(?:(?:\s+(?:as)?\s*)([\'"`\[].*?[\'"`\]]|\w+))?\s*$~iu', $tableName, $matches)) {
+                if (preg_match('~\s*({{.*?}})\s*~', $tableName, $matches)) {
+                    $alias = $tableName = $matches[1];
+                } elseif (preg_match('~^\s*([\'"`\[].*?[\'"`\]]|\w+)(?:(?:\s+(?:as)?\s*)([\'"`\[].*?[\'"`\]]|\w+))?\s*$~iu', $tableName, $matches)) {
                     if (isset($matches[1])) {
                         if (isset($matches[2])) {
                             list(, $tableName, $alias) = $matches;
                         } else {
                             $tableName = $alias = $matches[1];
                         }
+                        $alias = '{{' . $alias . '}}';
+                        $tableName = '{{' . $tableName . '}}';
                     }
                 }
             }

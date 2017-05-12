@@ -223,7 +223,7 @@ class ExistValidator extends Validator
         $primaryTableAlias = $tableAliases[0];
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{{{$primaryTableAlias}}}.[[{$columnName}]]";
+            $prefixedColumn = "{$primaryTableAlias}.[[{$columnName}]]";
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
 
