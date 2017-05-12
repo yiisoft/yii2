@@ -341,4 +341,19 @@ abstract class ActiveQueryTest extends DatabaseTestCase
 
         $query->getTablesUsedInFrom();
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14150
+     */
+    public function testGetTableAliasFromPrefixedTableName()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = '{{%order_item}}';
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            '%order_item' => '%order_item',
+        ], $tables);
+    }
 }

@@ -811,6 +811,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         // Clean up table names and aliases
         $cleanedUpTableNames = [];
         foreach ($tableNames as $alias => $tableName) {
+            if (preg_match('~{{(.*?)}}~', $tableName, $matches)) {
+                $alias = $tableName = $matches[1];
+            }
+
             if (!is_string($alias)) {
                 if (preg_match('~^\s*([\'"`\[].*?[\'"`\]]|\w+)(?:(?:\s+(?:as)?\s*)([\'"`\[].*?[\'"`\]]|\w+))?\s*$~iu', $tableName, $matches)) {
                     if (isset($matches[1])) {
