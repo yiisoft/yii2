@@ -42,11 +42,12 @@ require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
 $config = [
     'id' => 'micro-app',
     'basePath' => __DIR__,
-    'controllerNamespace' => 'app',
+    'controllerNamespace' => 'app\resources', 
 ];
 
 (new yii\web\Application($config))->run();
 ```
+
 >Note that configurations can be in different file or even directory. 
 
 Your project is ready for coding. Although its up to you to decide the project directory structure,as long as you observe namespaces, I suggest you follow closely to what is in Yii templates as pertaining to MVC.
@@ -54,6 +55,8 @@ Your project is ready for coding. Although its up to you to decide the project d
 Create Necessary Directories
 ------------
 Now to demonstrate the use of our "micro framework" we will create simple Rest API for Posts. Create directories `models` and `resources` respectively. I have used `resources` instead of `controllers` to just demonstrate that you are not tied to exact naming used in templates (in case you thought you were). 
+
+>Note that you can easily set what is your [Controllers Namespace](http://www.yiiframework.com/doc-2.0/yii-base-application.html#$controllerNamespace-detail) and much more by setting them in [application configuration](http://www.yiiframework.com/doc-2.0/yii-web-application.html).
 
 Create file `Post.php` in `models` directory. This is the code for the model.
 ```php
