@@ -17,7 +17,6 @@ Documentation
 -------------
 
 - [Translation Status](translation-status.md) - which documents are ready for translation.
-- [Translation teams](translation-teams.md)
 - [Translation workflow](translation-workflow.md)
 
 
