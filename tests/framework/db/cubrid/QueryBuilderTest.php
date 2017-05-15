@@ -51,4 +51,15 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
     }
+
+    public function testCommentColumn()
+    {
+        $version = $this->getQueryBuilder(false)->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        if (version_compare($version, '10.0', '<')) {
+            $this->markTestSkipped('Comments on columns are supported starting with CUBRID 10.0.');
+            return;
+        }
+
+        parent::testCommentColumn();
+    }
 }
