@@ -804,10 +804,10 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$alias}.[[{" . preg_replace(
+            $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . $alias . '\.(.*)$/',
                     "$1",
-                    $columnName) . "}]]";
+                    $columnName) . "]]";
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
         return $prefixedConditions;
