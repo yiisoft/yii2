@@ -122,6 +122,14 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritDoc
+     */
+    public function dropUnique($name, $table)
+    {
+        return $this->dropIndex($name, $table);
+    }
+
+    /**
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by MySQL.
      */
     public function addCheck($name, $table, $check)

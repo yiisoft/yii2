@@ -121,6 +121,23 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * @inheritDoc
+     * @see http://www.cubrid.org/manual/93/en/sql/schema/table.html#drop-index-clause
+     */
+    public function dropIndex($name, $table)
+    {
+        /** @var Schema $schema */
+        $schema = $this->db->getSchema();
+        foreach ($schema->getTableUniques($table) as $unique) {
+            if ($unique->name === $name) {
+                return $this->dropUnique($name, $table);
+            }
+        }
+
+        return 'DROP INDEX ' . $this->db->quoteTableName($name) . ' ON ' . $this->db->quoteTableName($table);
+    }
+
+    /**
+     * @inheritDoc
      * @throws NotSupportedException this is not supported by CUBRID.
      */
     public function addCheck($name, $table, $check)
