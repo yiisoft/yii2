@@ -709,7 +709,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->createIndex($name, $table, $columns, $unique);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -722,7 +722,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropIndex($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -741,7 +741,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->addUnique($name, $table, $columns);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -757,7 +757,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropUnique($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -774,7 +774,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->addCheck($name, $table, $check);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -790,7 +790,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropCheck($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -809,7 +809,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->addDefaultValue($name, $table, $column, $default);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -825,7 +825,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropDefaultValue($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
