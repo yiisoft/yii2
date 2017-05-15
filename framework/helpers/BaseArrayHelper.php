@@ -215,6 +215,32 @@ class BaseArrayHelper
     }
 
     /**
+     * Replace a value by key in an array.
+     * The original value will be returned.
+     * 
+     * $array = ['key1' => 'value1', 'key2' => 'value3'];
+     * ArrayHelper::replaceValue($array, 'key2', 'value2');
+     * //Will return "value3"
+     * //$array now equals ['key1' => 'value1', 'key2' => 'value2']
+     * 
+     * @param array $array the array to replace a value in
+     * @param string $key key name of the array element
+     * @param mixed $value the new value
+     * @return mixed|null the old value.
+     */
+    public static function replaceValue(&$array, $key, $value)
+    {
+        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
+            $replaced = $array[$key];
+            $array[$key] = $value;
+
+            return $replaced;
+        }
+        
+        return null;
+    }
+
+    /**
      * Removes an item from an array and returns the value. If the key does not exist in the array, the default value
      * will be returned instead.
      *
