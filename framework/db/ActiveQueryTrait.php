@@ -119,6 +119,9 @@ trait ActiveQueryTrait
             foreach ($rows as $row) {
                 if (is_string($this->indexBy)) {
                     $key = $row[$this->indexBy];
+                    if(is_object($key)){
+                        $key = strval($key);
+                    }
                 } else {
                     $key = call_user_func($this->indexBy, $row);
                 }

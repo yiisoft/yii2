@@ -18,6 +18,7 @@ Thumbs.db
 
 # composer vendor dir
 /vendor
+composer.lock
 # cubrid install dir
 /cubrid
 

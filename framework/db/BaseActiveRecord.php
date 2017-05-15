@@ -82,7 +82,18 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @since 2.0.8
      */
     const EVENT_AFTER_REFRESH = 'afterRefresh';
-
+    /**
+     * The insert operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     */
+    const SCENARIO_INSERT = 'insert';
+    /**
+     * The update operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     */
+    const SCENARIO_UPDATE = 'update';
+    /**
+     * The delete operation. This is mainly used when overriding [[transactions()]] to specify which operations are transactional.
+     */
+    const SCENARIO_DELETE = 'delete';
     /**
      * @var array attribute values indexed by attribute names
      */
@@ -91,7 +102,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @var array|null old attribute values indexed by attribute names.
      * This is `null` if the record [[isNewRecord|is new]].
      */
-    private $_oldAttributes;
+    private $_changeAttributes;
     /**
      * @var array related models indexed by the relation names
      */
@@ -300,6 +311,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function __set($name, $value)
     {
         if ($this->hasAttribute($name)) {
+            $this->markAttributeDirty($name);
             $this->_attributes[$name] = $value;
         } else {
             parent::__set($name, $value);
@@ -498,7 +510,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function getOldAttributes()
     {
-        return $this->_oldAttributes === null ? [] : $this->_oldAttributes;
+        return $this->_changeAttributes === null ? [] : array_merge($this->_attributes, $this->_changeAttributes);
     }
 
     /**
@@ -509,7 +521,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function setOldAttributes($values)
     {
-        $this->_oldAttributes = $values;
+        $this->_changeAttributes = $values;
     }
 
     /**
@@ -523,7 +535,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function getOldAttribute($name)
     {
-        return isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+        if ($this->_changeAttributes === null) {
+            return null;
+        }
+        return isset($this->_changeAttributes[$name]) ? $this->_changeAttributes[$name] : $this->_attributes[$name];
     }
 
     /**
@@ -535,8 +550,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function setOldAttribute($name, $value)
     {
-        if (isset($this->_oldAttributes[$name]) || $this->hasAttribute($name)) {
-            $this->_oldAttributes[$name] = $value;
+        if (isset($this->_changeAttributes[$name]) || $this->hasAttribute($name)) {
+            $this->_changeAttributes[$name] = $value;
         } else {
             throw new InvalidParamException(get_class($this) . ' has no attribute named "' . $name . '".');
         }
@@ -550,7 +565,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function markAttributeDirty($name)
     {
-        unset($this->_oldAttributes[$name]);
+        if (!$this->getIsNewRecord() && !isset($this->_changeAttributes[$name])) {
+            $this->_changeAttributes[$name] = $this->_attributes[$name];
+        }
     }
 
     /**
@@ -563,14 +580,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function isAttributeChanged($name, $identical = true)
     {
-        if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
+        if (isset($this->_attributes[$name], $this->_changeAttributes[$name])) {
             if ($identical) {
-                return $this->_attributes[$name] !== $this->_oldAttributes[$name];
+                return $this->_attributes[$name] !== $this->_changeAttributes[$name];
             } else {
-                return $this->_attributes[$name] != $this->_oldAttributes[$name];
+                return $this->_attributes[$name] != $this->_changeAttributes[$name];
             }
         } else {
-            return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
+            return isset($this->_attributes[$name]) || isset($this->_changeAttributes[$name]);
         }
     }
 
@@ -590,7 +607,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         $names = array_flip($names);
         $attributes = [];
-        if ($this->_oldAttributes === null) {
+        if ($this->_changeAttributes === null) {
             foreach ($this->_attributes as $name => $value) {
                 if (isset($names[$name])) {
                     $attributes[$name] = $value;
@@ -598,7 +615,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+                if (isset($names[$name]) && (array_key_exists($name, $this->_changeAttributes) && $value !== $this->_changeAttributes[$name])) {
                     $attributes[$name] = $value;
                 }
             }
@@ -732,7 +749,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $rows = static::updateAll($values, $this->getOldPrimaryKey(true));
 
         foreach ($values as $name => $value) {
-            $this->_oldAttributes[$name] = $this->_attributes[$name];
+            unset($this->_changeAttributes[$name]);
         }
 
         return $rows;
@@ -774,8 +791,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
 
         $changedAttributes = [];
         foreach ($values as $name => $value) {
-            $changedAttributes[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
-            $this->_oldAttributes[$name] = $value;
+            if (isset($this->_changeAttributes[$name])) {
+                $changedAttributes[$name] = $this->_changeAttributes[$name];
+                unset($this->_changeAttributes[$name]);
+            }
         }
         $this->afterSave(false, $changedAttributes);
 
@@ -850,7 +869,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if ($lock !== null && !$result) {
                 throw new StaleObjectException('The object being deleted is outdated.');
             }
-            $this->_oldAttributes = null;
+            $this->_changeAttributes = null;
             $this->afterDelete();
         }
 
@@ -863,7 +882,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function getIsNewRecord()
     {
-        return $this->_oldAttributes === null;
+        return $this->_changeAttributes === null;
     }
 
     /**
@@ -873,7 +892,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function setIsNewRecord($value)
     {
-        $this->_oldAttributes = $value ? null : $this->_attributes;
+        $this->_changeAttributes = $value ? null : [];
     }
 
     /**
@@ -1013,7 +1032,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         foreach ($this->attributes() as $name) {
             $this->_attributes[$name] = isset($record->_attributes[$name]) ? $record->_attributes[$name] : null;
         }
-        $this->_oldAttributes = $record->_oldAttributes;
+        $this->_changeAttributes = $record->_changeAttributes;
         $this->_related = [];
         $this->afterRefresh();
 
@@ -1031,6 +1050,59 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         $this->trigger(self::EVENT_AFTER_REFRESH);
     }
+
+    /**
+     * 获取场景，根据
+     * @param null $scenarios
+     * @return string
+     */
+    public function getScenario($scenarios = null)
+    {
+        $scenario = parent::getScenario();
+        if($scenario == self::SCENARIO_DEFAULT){
+            $scenarios = $scenarios ? $scenarios : $this->scenarios();
+            //if user use default,scenario become database operation scenario
+            if ($this->getIsNewRecord() && isset($scenarios[self::SCENARIO_INSERT])) {
+                $this->setScenario(self::SCENARIO_INSERT);
+            } elseif (isset($scenarios[self::SCENARIO_UPDATE])) {
+                $this->setScenario(self::SCENARIO_UPDATE);
+            }
+        }
+        return $scenario;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function validate($attributeNames = null, $clearErrors = true)
+    {
+        if ($clearErrors) {
+            $this->clearErrors();
+        }
+
+        if (!$this->beforeValidate()) {
+            return false;
+        }
+
+        $scenarios = $this->scenarios();
+        $scenario = $this->getScenario($scenarios);
+
+        if (!isset($scenarios[$scenario])) {
+            throw new InvalidParamException("Unknown scenario: $scenario");
+        }
+
+        if ($attributeNames === null) {
+            $attributeNames = $this->activeAttributes();
+        }
+
+        foreach ($this->getActiveValidators() as $validator) {
+            $validator->validateAttributes($this, $attributeNames);
+        }
+
+        return !$this->hasErrors();
+    }
+
 
     /**
      * Returns a value indicating whether the given active record is the same as the current one.
@@ -1098,11 +1170,19 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             throw new Exception(get_class($this) . ' does not have a primary key. You should either define a primary key for the corresponding table or override the primaryKey() method.');
         }
         if (!$asArray && count($keys) === 1) {
-            return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
+            return isset($this->_changeAttributes[$keys[0]])
+                ? $this->_changeAttributes[$keys[0]]
+                : isset($this->_attributes[$keys[0]])
+                    ? $this->_attributes[$keys[0]]
+                    : null;
         } else {
             $values = [];
             foreach ($keys as $name) {
-                $values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+                $values[$name] = isset($this->_changeAttributes[$name])
+                    ? $this->_changeAttributes[$name]
+                    : isset($this->_attributes[$keys[0]])
+                        ? $this->_attributes[$name]
+                        : null;
             }
 
             return $values;
@@ -1133,7 +1213,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 $record->$name = $value;
             }
         }
-        $record->_oldAttributes = $record->_attributes;
+        $record->_changeAttributes = [];
     }
 
     /**
