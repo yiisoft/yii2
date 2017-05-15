@@ -68,10 +68,9 @@ Yii::$classMap['Class2'] = 'path/to/Class2.php';
 
 若这个第三方系统支持 Composer 管理他的依赖文件，你可以直接运行一下命令来安装 Yii：
 
-```
-php composer.phar require yiisoft/yii2-framework:*
-php composer.phar install
-```
+    composer global require "fxp/composer-asset-plugin:^1.3.1"
+    composer require yiisoft/yii2
+    composer install
 
 不然的话，你可以[下载](http://www.yiiframework.com/download/) Yii 的发布包，并把它解压到对应系统的 `BasePath/vendor` 目录内。
 
@@ -96,7 +95,7 @@ new yii\web\Application($yiiConfig); // 千万别在这调用 run() 方法。（
 如果你之前使用 Yii 1，大概你也有正在运行的 Yii 1 应用吧。不必用 Yii 2 重写整个应用，你也可以通过增添对哪些
 Yii 2 独占功能的支持来增强这个系统。下面我们就来详细描述一下具体的实现过程。
 
-> 注意：Yii 2 需要 PHP 5.4+ 的版本。你需要确保你的服务器以及现有应用都可以支持 PHP 5.4。
+> Note: Yii 2 需要 PHP 5.4+ 的版本。你需要确保你的服务器以及现有应用都可以支持 PHP 5.4。
 
 首先，参考前文板块中给出的方法，在已有的应用中安装 Yii 2。
 
@@ -131,7 +130,7 @@ class Yii extends \yii\BaseYii
 
 Yii::$classMap = include($yii2path . '/classes.php');
 
-// 通过 Yii 1 注册 Yii2 的类自动加载器
+// 通过 Yii 1 注册 Yii 2 的类自动加载器
 Yii::registerAutoloader(['Yii', 'autoload']);
 ```
 

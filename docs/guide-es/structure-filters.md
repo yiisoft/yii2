@@ -1,4 +1,4 @@
-﻿Filtros
+Filtros
 =======
 
 Los Filtros (filters) son objetos que se ejecutan antes y/o después de las 
@@ -45,7 +45,7 @@ Una vez hecho, los filtros serán aplicados a *todas* las acciones de controlado
 aplicación, a menos que las propiedades [[yii\base\ActionFilter::only|only]] y [[yii\base\ActionFilter::except|except]]
  sean configuradas como se ha descrito anteriormente.
 
-> Nota: Cuando se declaran filtros en módulos o aplicaciones, deben usarse [rutas](structure-controllers.md#routes) en 
+> Note: Cuando se declaran filtros en módulos o aplicaciones, deben usarse [rutas](structure-controllers.md#routes) en 
   lugar de IDs de acciones en las propiedades [[yii\base\ActionFilter::only|only]] y 
   [[yii\base\ActionFilter::except|except]]. Esto es debido a que los IDs de acciones no pueden especificar acciones 
   dentro del ámbito de un modulo o una aplicación por si mismos.
@@ -226,7 +226,7 @@ use yii\web\Response;
 ];
 ```
 
-> Información: En el caso que el tipo preferido de contenido y el idioma no puedan ser determinados por una petición, 
+> Info: En el caso que el tipo preferido de contenido y el idioma no puedan ser determinados por una petición, 
   será utilizando el primer elemento de formato e idioma de la lista [[formats]] y [[lenguages]].
 
 
@@ -290,8 +290,8 @@ Por favor refiérase a [Caché de Páginas](caching-page.md) para obtener más d
 ### [[yii\filters\RateLimiter|RateLimiter]] <span id="rate-limiter"></span>
 
 RateLimiter implementa un algoritmo de para limitar la tasa de descarga basándose en 
-(leaky bucket algorithm)[http://en.wikipedia.org/wiki/Leaky_bucket]. Este se utiliza sobre todo en la implementación 
-de APIs RESTful. Por favor, refiérase a la sección (limite de tasa)[rest-rate-limiting.md] para obtener más detalles 
+[leaky bucket algorithm](http://en.wikipedia.org/wiki/Leaky_bucket). Este se utiliza sobre todo en la implementación 
+de APIs RESTful. Por favor, refiérase a la sección [limite de tasa](rest-rate-limiting.md) para obtener más detalles 
 acerca de el uso de este filtro.
 
 ### [[yii\filters\VerbFilter|VerbFilter]] <span id="verb-filter"></span>
@@ -322,7 +322,7 @@ public function behaviors()
 
 ### [[yii\filters\Cors|Cors]] <span id="cors"></span>
 
-(CORS)[https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS] es un mecanismo que permite a diferentes 
+[CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS) es un mecanismo que permite a diferentes 
 recursos (por ejemplo: fuentes, JavaScript, etc) de una pagina Web ser solicitados por otro dominio diferente al 
 dominio que esta haciendo la petición. En particular las llamadas AJAX de JavaScript pueden utilizar el mecanismo 
 XMLHttpRequest. De otro modo esta petición de dominio cruzado seria prohibida por los navegadores Web, por la misma 

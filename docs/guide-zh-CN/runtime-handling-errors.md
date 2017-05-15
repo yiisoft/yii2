@@ -61,7 +61,7 @@ throw new NotFoundHttpException();
 当`YII_DEBUG` 为 true (表示在调试模式)，错误处理器会显示异常以及详细的函数调用栈和源代码行数来帮助调试，
 当`YII_DEBUG` 为 false，只有错误信息会被显示以防止应用的敏感信息泄漏。
 
-> 补充: 如果异常是继承 [[yii\base\UserException]]，不管`YII_DEBUG`为何值，函数调用栈信息都不会显示，
+> Info: 如果异常是继承 [[yii\base\UserException]]，不管`YII_DEBUG`为何值，函数调用栈信息都不会显示，
 这是因为这种错误会被认为是用户产生的错误，开发人员不需要去修正。
 
 [[yii\web\ErrorHandler|error handler]] 错误处理器默认使用两个[视图](structure-views.md)显示错误:
@@ -134,7 +134,7 @@ public function actionError()
 * `message`: 错误信息
 * `exception`: 更多详细信息的异常对象，如HTTP 状态码，错误码，错误调用栈等。
 
-> 补充: 如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
+> Info: 如果你使用 [基础应用模板](start-installation.md) 或 [高级应用模板](tutorial-advanced-app.md),
 错误操作和错误视图已经定义好了。
 
 

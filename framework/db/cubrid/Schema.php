@@ -45,10 +45,10 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'datetime' => self::TYPE_DATETIME,
         // String data types
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'char varying' => self::TYPE_STRING,
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nchar varying' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
         // BLOB/CLOB data types
@@ -155,11 +155,10 @@ class Schema extends \yii\db\Schema
             } else {
                 $table->foreignKeys[$key['FK_NAME']] = [
                     $key['PKTABLE_NAME'],
-                    $key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
+                    $key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME'],
                 ];
             }
         }
-        $table->foreignKeys = array_values($table->foreignKeys);
 
         return $table;
     }
@@ -258,7 +257,7 @@ class Schema extends \yii\db\Schema
     /**
      * Determines the PDO type for the given PHP data value.
      * @param mixed $data the data whose PDO type is to be determined
-     * @return integer the PDO type
+     * @return int the PDO type
      * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
@@ -298,5 +297,13 @@ class Schema extends \yii\db\Schema
                 break;
         }
         parent::setTransactionIsolationLevel($level);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }

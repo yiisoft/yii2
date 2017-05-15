@@ -8,6 +8,7 @@
 namespace yii\console\controllers;
 
 use Yii;
+use yii\caching\ApcCache;
 use yii\console\Controller;
 use yii\caching\Cache;
 use yii\helpers\Console;
@@ -31,6 +32,12 @@ use yii\console\Exception;
  * Note that the command uses cache components defined in your console application configuration file. If components
  * configured are different from web application, web application cache won't be cleared. In order to fix it please
  * duplicate web application cache components in console config. You can use any component names.
+ *
+ * APC is not shared between PHP processes so flushing cache from command line has no effect on web.
+ * Flushing web cache could be either done by:
+ *
+ * - Putting a php file under web root and calling it via HTTP
+ * - Using [Cachetool](http://gordalina.github.io/cachetool/)
  *
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @author Mark Jebri <mark.github@yandex.ru>
@@ -65,7 +72,7 @@ class CacheController extends Controller
     public function actionFlush()
     {
         $cachesInput = func_get_args();
-        
+
         if (empty($cachesInput)) {
             throw new Exception('You should specify cache components names');
         }
@@ -93,7 +100,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' =>  Yii::$app->get($name)->flush(),
+                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
             ];
         }
 
@@ -117,7 +124,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' =>  Yii::$app->get($name)->flush(),
+                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
             ];
         }
 
@@ -172,7 +179,11 @@ class CacheController extends Controller
         $this->stdout("The following caches were found in the system:\n\n", Console::FG_YELLOW);
 
         foreach ($caches as $name => $class) {
-            $this->stdout("\t* $name ($class)\n", Console::FG_GREEN);
+            if ($this->canBeFlushed($class)) {
+                $this->stdout("\t* $name ($class)\n", Console::FG_GREEN);
+            } else {
+                $this->stdout("\t* $name ($class) - can not be flushed via console\n", Console::FG_YELLOW);
+            }
         }
 
         $this->stdout("\n");
@@ -225,7 +236,7 @@ class CacheController extends Controller
     /**
      * Prompts user with confirmation if caches should be flushed.
      * @param array $cachesNames
-     * @return boolean
+     * @return bool
      */
     private function confirmFlush($cachesNames)
     {
@@ -250,7 +261,7 @@ class CacheController extends Controller
         $findAll = ($cachesNames === []);
 
         foreach ($components as $name => $component) {
-            if (!$findAll && !in_array($name, $cachesNames)) {
+            if (!$findAll && !in_array($name, $cachesNames, true)) {
                 continue;
             }
 
@@ -269,10 +280,20 @@ class CacheController extends Controller
     /**
      * Checks if given class is a Cache class.
      * @param string $className class name.
-     * @return boolean
+     * @return bool
      */
     private function isCacheClass($className)
     {
         return is_subclass_of($className, Cache::className());
+    }
+
+    /**
+     * Checks if cache of a certain class can be flushed
+     * @param string $className class name.
+     * @return bool
+     */
+    private function canBeFlushed($className)
+    {
+        return !is_a($className, ApcCache::className(), true) || php_sapi_name() !== "cli";
     }
 }

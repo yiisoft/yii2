@@ -18,6 +18,8 @@ use yii\di\Instance;
  * If the query result changes, the dependency is considered as changed.
  * The query is specified via the [[sql]] property.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -47,6 +49,7 @@ class DbDependency extends Dependency
      */
     protected function generateDependencyData($cache)
     {
+        /* @var $db Connection */
         $db = Instance::ensure($this->db, Connection::className());
         if ($this->sql === null) {
             throw new InvalidConfigException('DbDependency::sql must be set.');

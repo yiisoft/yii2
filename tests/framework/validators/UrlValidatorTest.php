@@ -14,7 +14,9 @@ class UrlValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValue()
@@ -28,6 +30,23 @@ class UrlValidatorTest extends TestCase
                                         .'&rls=org.mozilla:de:official&client=firefox-a&gws_rd=cr'));
         $this->assertFalse($val->validate('ftp://ftp.ruhr-uni-bochum.de/'));
         $this->assertFalse($val->validate('http://invalid,domain'));
+        $this->assertFalse($val->validate('http://example.com,'));
+        $this->assertFalse($val->validate('http://example.com*12'));
+        $this->assertTrue($val->validate('http://example.com/*12'));
+        $this->assertTrue($val->validate('http://example.com/?test'));
+        $this->assertTrue($val->validate('http://example.com/#test'));
+        $this->assertTrue($val->validate('http://example.com:80/#test'));
+        $this->assertTrue($val->validate('http://example.com:65535/#test'));
+        $this->assertTrue($val->validate('http://example.com:81/?good'));
+        $this->assertTrue($val->validate('http://example.com?test'));
+        $this->assertTrue($val->validate('http://example.com#test'));
+        $this->assertTrue($val->validate('http://example.com:81#test'));
+        $this->assertTrue($val->validate('http://example.com:81?good'));
+        $this->assertFalse($val->validate('http://example.com,?test'));
+        $this->assertFalse($val->validate('http://example.com:?test'));
+        $this->assertFalse($val->validate('http://example.com:test'));
+        $this->assertFalse($val->validate('http://example.com:123456/test'));
+
         $this->assertFalse($val->validate('http://äüö?=!"§$%&/()=}][{³²€.edu'));
     }
 
@@ -94,7 +113,7 @@ class UrlValidatorTest extends TestCase
         $obj->attr_url = 'google.de';
         $val->validateAttribute($obj, 'attr_url');
         $this->assertFalse($obj->hasErrors('attr_url'));
-        $this->assertTrue(stripos($obj->attr_url, 'http') !== false);
+        $this->assertNotFalse(stripos($obj->attr_url, 'http'));
         $obj = new FakedValidationModel;
         $obj->attr_url = 'gttp;/invalid string';
         $val->validateAttribute($obj, 'attr_url');

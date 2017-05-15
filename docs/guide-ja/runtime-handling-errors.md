@@ -10,7 +10,7 @@ Yii が内蔵している [[yii\web\ErrorHandler|エラーハンドラ]] は、�
 * さまざまなエラーレスポンス形式をサポートしています。
 
 [[yii\web\ErrorHandler|エラーハンドラ]] はデフォルトで有効になっています。
-アプリケーションの [エントリスクリプト](structure-entry-scripts.md) において、定数 `YII_ENABLE_ERROR_HANDLER` を false と定義することによって、これを無効にすることが出来ます。
+アプリケーションの [エントリスクリプト](structure-entry-scripts.md) において、定数 `YII_ENABLE_ERROR_HANDLER` を `false` と定義することによって、これを無効にすることが出来ます。
 
 
 ## エラーハンドラを使用する <span id="using-error-handler"></span>
@@ -59,16 +59,16 @@ throw new NotFoundHttpException();
 ## エラー表示をカスタマイズする <span id="customizing-error-display"></span>
 
 [[yii\web\ErrorHandler|エラーハンドラ]] は、定数 `YII_DEBUG` の値に従って、エラー表示を調整します。
-`YII_DEBUG` が true である (デバッグモードである) 場合は、エラーハンドラは、デバッグがより容易になるように、例外とともに、詳細なコールスタック情報とソースコード行を表示します。
-そして、`YII_DEBUG` が false のときは、アプリケーションに関する公開できない情報の開示を防ぐために、エラーメッセージだけが表示されます。
+`YII_DEBUG` が `true` である (デバッグモードである) 場合は、エラーハンドラは、デバッグがより容易になるように、例外とともに、詳細なコールスタック情報とソースコード行を表示します。
+そして、`YII_DEBUG` が `false` のときは、アプリケーションに関する公開できない情報の開示を防ぐために、エラーメッセージだけが表示されます。
 
-> Info|情報: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
+> Info: 例外が [[yii\base\UserException]] の子孫である場合は、`YII_DEBUG` の値の如何にかかわらず、コールスタックは表示されません。
 これは、この種の例外はユーザの誤操作によって引き起こされるものであり、開発者は何も修正する必要がないと考えられるからです。
 
 デフォルトでは、[[yii\web\ErrorHandler|エラーハンドラ]] は二つの [ビュー](structure-views.md) を使ってエラーを表示します。
 
 * `@yii/views/errorHandler/error.php`: エラーがコールスタック情報なしで表示されるべき場合に使用されます。
-  `YII_DEBUG` が false の場合、これが表示される唯一のビューとなります。
+  `YII_DEBUG` が `false` の場合、これが表示される唯一のビューとなります。
 * `@yii/views/errorHandler/exception.php`: エラーがコールスタック情報と共に表示されるべき場合に使用されます。
 
 エラー表示をカスタマイズするために、エラーハンドラの [[yii\web\ErrorHandler::errorView|errorView]] および [[yii\web\ErrorHandler::exceptionView|exceptionView]] プロパティを構成して、自分自身のビューを使用することが出来ます。
@@ -135,7 +135,14 @@ public function actionError()
 * `message`: エラーメッセージ。
 * `exception`: 例外オブジェクト。これを通じて、更に有用な情報、例えば、HTTP ステータスコード、エラーコード、エラーコールスタックなどにアクセスすることが出来ます。
 
-> Info|情報: あなたが [ベーシックプロジェクトテンプレート](start-installation.md) または [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
+> Info: あなたが [ベーシックプロジェクトテンプレート](start-installation.md) または [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md) を使っている場合は、エラーアクションとエラービューは、既にあなたのために定義されています。
+
+> Note: エラーハンドラの中でリダイレクトする必要がある場合は、次のようにしてください。
+>
+> ```php
+> Yii::$app->getResponse()->redirect($url)->send();
+> return;
+> ```
 
 
 ### エラーのレスポンス形式をカスタマイズする <span id="error-format"></span>

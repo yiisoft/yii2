@@ -14,6 +14,14 @@ use yiiunit\framework\web\Post;
  */
 class JsonTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testEncode()
     {
         // basic data encoding
@@ -31,6 +39,12 @@ class JsonTest extends TestCase
         $data->a = 1;
         $data->b = 2;
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
+
+        // empty data encoding
+        $data = [];
+        $this->assertSame('[]', Json::encode($data));
+        $data = new \stdClass();
+        $this->assertSame('{}', Json::encode($data));
 
         // expression encoding
         $expression = 'function () {}';
@@ -55,6 +69,13 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::encode($data));
+        // @see https://github.com/yiisoft/yii2/issues/12043
+        $data = new JsonModel();
+        $data->data = [];
+        $this->assertSame('[]', Json::encode($data));
+        $data = new JsonModel();
+        $data->data = (object) null;
+        $this->assertSame('{}', Json::encode($data));
     }
 
     public function testHtmlEncode()
@@ -134,7 +155,7 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Json::decode($json);
     }
 
@@ -166,8 +187,10 @@ class JsonTest extends TestCase
 
 class JsonModel extends Model implements \JsonSerializable
 {
+    public $data = ['json' => 'serializable'];
+
     function jsonSerialize()
     {
-        return ['json' => 'serializable'];
+        return $this->data;
     }
 }

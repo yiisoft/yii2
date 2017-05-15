@@ -53,7 +53,7 @@ In particular, the following filters will be executed in the order they are list
 * [[yii\filters\ContentNegotiator|contentNegotiator]]: supports content negotiation, to be explained in
   the [Response Formatting](rest-response-formatting.md) section;
 * [[yii\filters\VerbFilter|verbFilter]]: supports HTTP method validation;
-* [[yii\filters\AuthMethod|authenticator]]: supports user authentication, to be explained in
+* [[yii\filters\auth\AuthMethod|authenticator]]: supports user authentication, to be explained in
   the [Authentication](rest-authentication.md) section;
 * [[yii\filters\RateLimiter|rateLimiter]]: supports rate limiting, to be explained in
   the [Rate Limiting](rest-rate-limiting.md) section.
@@ -75,11 +75,46 @@ public function behaviors()
 }
 ```
 
+### CORS <span id="cors"></span>
+
+Adding the [Cross-Origin Resource Sharing](structure-filters.md#cors) filter to a controller is a bit more complicated
+than adding other filters described above, because the CORS filter has to be applied before authentication methods
+and thus needs a slightly different approach compared to other filters. Also authentication has to be disabled for the
+[CORS Preflight requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#Preflighted_requests)
+so that a browser can safely determine whether a request can be made beforehand without the need for sending
+authentication credentials. The following shows the code that is needed to add the [[yii\filters\Cors]] filter
+to an existing controller that extends from [[yii\rest\ActiveController]]:
+
+```php
+use yii\filters\auth\HttpBasicAuth;
+
+public function behaviors()
+{
+    $behaviors = parent::behaviors();
+
+    // remove authentication filter
+    $auth = $behaviors['authenticator'];
+    unset($behaviors['authenticator']);
+    
+    // add CORS filter
+    $behaviors['corsFilter'] = [
+        'class' => \yii\filters\Cors::className(),
+    ];
+    
+    // re-add authentication filter
+    $behaviors['authenticator'] = $auth;
+    // avoid authentication on CORS-pre-flight requests (HTTP OPTIONS method)
+    $behaviors['authenticator']['except'] = ['options'];
+
+    return $behaviors;
+}
+```
+
 
 ## Extending `ActiveController` <span id="extending-active-controller"></span>
 
 If your controller class extends from [[yii\rest\ActiveController]], you should set
-its [[yii\rest\ActiveController::modelClass||modelClass]] property to be the name of the resource class
+its [[yii\rest\ActiveController::modelClass|modelClass]] property to be the name of the resource class
 that you plan to serve through this controller. The class must extend from [[yii\db\ActiveRecord]].
 
 
@@ -135,7 +170,7 @@ by overriding the [[yii\rest\ActiveController::checkAccess()|checkAccess()]] met
  * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
  *
  * @param string $action the ID of the action to be executed
- * @param \yii\base\Model $model the model to be accessed. If null, it means no specific model is being accessed.
+ * @param \yii\base\Model $model the model to be accessed. If `null`, it means no specific model is being accessed.
  * @param array $params additional parameters
  * @throws ForbiddenHttpException if the user does not have access
  */
@@ -143,6 +178,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // check if the user can access $action and $model
     // throw ForbiddenHttpException if access should be denied
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

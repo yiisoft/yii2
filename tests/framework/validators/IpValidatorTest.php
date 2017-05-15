@@ -2,7 +2,6 @@
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
-use yii\validators\ValidationAsset;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -13,18 +12,15 @@ class IpValidatorTest extends TestCase
 {
     protected function setUp()
     {
-        if (!defined('AF_INET6')) {
-            $this->markTestSkipped('The environment does not support IPv6.');
-        }
-
         parent::setUp();
-        $this->mockApplication();
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testInitException()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException',
-            'Both IPv4 and IPv6 checks can not be disabled at the same time');
+        $this->expectException('yii\base\InvalidConfigException');
+        $this->expectExceptionMessage('Both IPv4 and IPv6 checks can not be disabled at the same time');
         new IpValidator(['ipv4' => false, 'ipv6' => false]);
     }
 
@@ -61,7 +57,7 @@ class IpValidatorTest extends TestCase
     }
 
     public function provideBadIps() {
-        return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false]];
+        return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false], ['bad:forSure']];
     }
 
     /**
@@ -72,6 +68,37 @@ class IpValidatorTest extends TestCase
         $validator = new IpValidator();
 
         $this->assertFalse($validator->validate($badIp));
+    }
+
+    /**
+     * @dataProvider provideBadIps
+     */
+    public function testValidateModelAttributeNotAnIP($badIp)
+    {
+        $validator = new IpValidator();
+        $model = new FakedValidationModel();
+
+        $model->attr_ip = $badIp;
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
+        $model->clearErrors();
+
+
+        $validator->ipv4 = false;
+
+        $model->attr_ip = $badIp;
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
+        $model->clearErrors();
+
+
+        $validator->ipv4 = true;
+        $validator->ipv6 = false;
+
+        $model->attr_ip = $badIp;
+        $validator->validateAttribute($model, 'attr_ip');
+        $this->assertEquals('attr_ip must be a valid IP address.', $model->getFirstError('attr_ip'));
+        $model->clearErrors();
     }
 
     public function testValidateValueIPv4()

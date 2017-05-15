@@ -29,7 +29,7 @@ Yii 支持上述的认证方式，你也可很方便的创建新的认证方式�
 步骤1不是必要的，但是推荐配置，因为RESTful APIs应为无状态的，当[[yii\web\User::enableSession|enableSession]]为false，
 请求中的用户认证状态就不能通过session来保持，每个请求的认证通过步骤2和3来实现。
 
-> 提示: 如果你将RESTful APIs作为应用开发，可以设置应用配置中 `user` 组件的[[yii\web\User::enableSession|enableSession]]，
+> Tip: 如果你将RESTful APIs作为应用开发，可以设置应用配置中 `user` 组件的[[yii\web\User::enableSession|enableSession]]，
   如果将RESTful APIs作为模块开发，可以在模块的 `init()` 方法中增加如下代码，如下所示：
 
 ```php

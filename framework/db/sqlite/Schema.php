@@ -48,7 +48,7 @@ class Schema extends \yii\db\Schema
         'text' => self::TYPE_TEXT,
         'varchar' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'blob' => self::TYPE_BINARY,
         'datetime' => self::TYPE_DATETIME,
         'year' => self::TYPE_DATE,
@@ -92,6 +92,15 @@ class Schema extends \yii\db\Schema
     }
 
     /**
+     * @inheritdoc
+     * @return ColumnSchemaBuilder column schema builder instance
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length);
+    }
+
+    /**
      * Returns all table names in the database.
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
      * @return array all table names in the database. The names have NO schema name prefix.
@@ -126,7 +135,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the table column metadata.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      */
     protected function findColumns($table)
     {

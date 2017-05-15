@@ -47,7 +47,7 @@ class FormatterTest extends TestCase
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'date'));
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'DATE'));
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
-        $this->setExpectedException('\yii\base\InvalidParamException');
+        $this->expectException('\yii\base\InvalidParamException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
     }
 
@@ -135,10 +135,10 @@ class FormatterTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asParagraphs(null));
     }
 
-    public function testAsHtml()
+    /*public function testAsHtml()
     {
         // todo: dependency on HtmlPurifier
-    }
+    }*/
 
     public function testAsEmail()
     {
@@ -190,5 +190,24 @@ class FormatterTest extends TestCase
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asBoolean(null));
+    }
+
+    public function testAsTimestamp()
+    {
+        $this->assertSame('1451606400', $this->formatter->asTimestamp(1451606400));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp(1451606400.1234));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp(1451606400.0000));
+
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400'));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400.1234'));
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('1451606400.0000'));
+
+        $this->assertSame('1451606400', $this->formatter->asTimestamp('2016-01-01 00:00:00'));
+
+        $dateTime = new \DateTime('2016-01-01 00:00:00.000');
+        $this->assertSame('1451606400', $this->formatter->asTimestamp($dateTime));
+
+        $dateTime = new \DateTime('2016-01-01 00:00:00.000', new \DateTimeZone('Europe/Berlin'));
+        $this->assertSame('1451602800', $this->formatter->asTimestamp($dateTime));
     }
 }

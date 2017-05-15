@@ -43,13 +43,14 @@ class Schema extends \yii\db\Schema
         'text' => self::TYPE_TEXT,
         'varchar' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'datetime' => self::TYPE_DATETIME,
         'year' => self::TYPE_DATE,
         'date' => self::TYPE_DATE,
         'time' => self::TYPE_TIME,
         'timestamp' => self::TYPE_TIMESTAMP,
         'enum' => self::TYPE_STRING,
+        'varbinary' => self::TYPE_BINARY,
     ];
 
 
@@ -146,8 +147,8 @@ class Schema extends \yii\db\Schema
             }
             if (!empty($matches[2])) {
                 if ($type === 'enum') {
-                    $values = explode(',', $matches[2]);
-                    foreach ($values as $i => $value) {
+                    preg_match_all("/'[^']*'/", $matches[2], $values);
+                    foreach ($values[0] as $i => $value) {
                         $values[$i] = trim($value, "'");
                     }
                     $column->enumValues = $values;
@@ -188,7 +189,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the metadata of table columns.
      * @param TableSchema $table the table metadata
-     * @return boolean whether the table exists in the database
+     * @return bool whether the table exists in the database
      * @throws \Exception if DB query fails
      */
     protected function findColumns($table)
@@ -243,6 +244,7 @@ class Schema extends \yii\db\Schema
     /**
      * Collects the foreign key column details for the given table.
      * @param TableSchema $table the table metadata
+     * @throws \Exception
      */
     protected function findConstraints($table)
     {
@@ -261,19 +263,21 @@ JOIN information_schema.key_column_usage AS kcu ON
     kcu.constraint_schema = rc.constraint_schema AND
     kcu.constraint_name = rc.constraint_name
 WHERE rc.constraint_schema = database() AND kcu.table_schema = database()
-AND rc.table_name = :tableName AND kcu.table_name = :tableName
+AND rc.table_name = :tableName AND kcu.table_name = :tableName1
 SQL;
 
         try {
-            $rows = $this->db->createCommand($sql, [':tableName' => $table->name])->queryAll();
+            $rows = $this->db->createCommand($sql, [':tableName' => $table->name, ':tableName1' => $table->name])->queryAll();
             $constraints = [];
+
             foreach ($rows as $row) {
                 $constraints[$row['constraint_name']]['referenced_table_name'] = $row['referenced_table_name'];
                 $constraints[$row['constraint_name']]['columns'][$row['column_name']] = $row['referenced_column_name'];
             }
+
             $table->foreignKeys = [];
-            foreach ($constraints as $constraint) {
-                $table->foreignKeys[] = array_merge(
+            foreach ($constraints as $name => $constraint) {
+                $table->foreignKeys[$name] = array_merge(
                     [$constraint['referenced_table_name']],
                     $constraint['columns']
                 );
@@ -346,5 +350,13 @@ SQL;
         }
 
         return $this->db->createCommand($sql)->queryColumn();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
     }
 }

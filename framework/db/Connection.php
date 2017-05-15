@@ -15,11 +15,11 @@ use yii\base\NotSupportedException;
 use yii\caching\Cache;
 
 /**
- * Connection represents a connection to a database via [PDO](php.net/manual/en/book.pdo.php).
+ * Connection represents a connection to a database via [PDO](http://php.net/manual/en/book.pdo.php).
  *
  * Connection works together with [[Command]], [[DataReader]] and [[Transaction]]
  * to provide data access to various DBMS in a common set of APIs. They are a thin wrapper
- * of the [[PDO PHP extension]](php.net/manual/en/book.pdo.php).
+ * of the [PDO PHP extension](http://php.net/manual/en/book.pdo.php).
  *
  * Connection supports database replication and read-write splitting. In particular, a Connection component
  * can be configured with multiple [[masters]] and [[slaves]]. It will do load balancing and failover by choosing
@@ -27,7 +27,7 @@ use yii\caching\Cache;
  * the masters.
  *
  * To establish a DB connection, set [[dsn]], [[username]] and [[password]], and then
- * call [[open()]] to be true.
+ * call [[open()]] to connect to the database server. The current state of the connection can be checked using [[$isActive]].
  *
  * The following example shows how to create a Connection instance and establish
  * the DB connection:
@@ -111,19 +111,21 @@ use yii\caching\Cache;
  * ```
  *
  * @property string $driverName Name of the DB driver.
- * @property boolean $isActive Whether the DB connection is established. This property is read-only.
+ * @property bool $isActive Whether the DB connection is established. This property is read-only.
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
+ * @property Connection $master The currently active master connection. `null` is returned if there is no
+ * master available. This property is read-only.
  * @property PDO $masterPdo The PDO instance for the currently active master connection. This property is
  * read-only.
  * @property QueryBuilder $queryBuilder The query builder for the current DB connection. This property is
  * read-only.
  * @property Schema $schema The schema information for the database opened by this connection. This property
  * is read-only.
- * @property Connection $slave The currently active slave connection. Null is returned if there is slave
+ * @property Connection $slave The currently active slave connection. `null` is returned if there is no slave
  * available and `$fallbackToMaster` is false. This property is read-only.
- * @property PDO $slavePdo The PDO instance for the currently active slave connection. Null is returned if no
- * slave connection is available and `$fallbackToMaster` is false. This property is read-only.
+ * @property PDO $slavePdo The PDO instance for the currently active slave connection. `null` is returned if
+ * no slave connection is available and `$fallbackToMaster` is false. This property is read-only.
  * @property Transaction $transaction The currently active transaction. Null if no active transaction. This
  * property is read-only.
  *
@@ -151,7 +153,7 @@ class Connection extends Component
 
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
-     * Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) on
+     * Please refer to the [PHP manual](http://php.net/manual/en/pdo.construct.php) on
      * the format of the DSN string.
      *
      * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a path alias
@@ -171,7 +173,7 @@ class Connection extends Component
     /**
      * @var array PDO attributes (name => value) that should be set when calling [[open()]]
      * to establish a DB connection. Please refer to the
-     * [PHP manual](http://www.php.net/manual/en/function.PDO-setAttribute.php) for
+     * [PHP manual](http://php.net/manual/en/pdo.setattribute.php) for
      * details about available attributes.
      */
     public $attributes;
@@ -180,10 +182,11 @@ class Connection extends Component
      * This property is mainly managed by [[open()]] and [[close()]] methods.
      * When a DB connection is active, this property will represent a PDO instance;
      * otherwise, it will be null.
+     * @see pdoClass
      */
     public $pdo;
     /**
-     * @var boolean whether to enable schema caching.
+     * @var bool whether to enable schema caching.
      * Note that in order to enable truly schema caching, a valid cache component as specified
      * by [[schemaCache]] must be enabled and [[enableSchemaCache]] must be set true.
      * @see schemaCacheDuration
@@ -192,7 +195,7 @@ class Connection extends Component
      */
     public $enableSchemaCache = false;
     /**
-     * @var integer number of seconds that table metadata can remain valid in cache.
+     * @var int number of seconds that table metadata can remain valid in cache.
      * Use 0 to indicate that the cached data will never expire.
      * @see enableSchemaCache
      */
@@ -210,7 +213,7 @@ class Connection extends Component
      */
     public $schemaCache = 'cache';
     /**
-     * @var boolean whether to enable query caching.
+     * @var bool whether to enable query caching.
      * Note that in order to enable query caching, a valid cache component as specified
      * by [[queryCache]] must be enabled and [[enableQueryCache]] must be set true.
      * Also, only the results of the queries enclosed within [[cache()]] will be cached.
@@ -220,8 +223,7 @@ class Connection extends Component
      */
     public $enableQueryCache = true;
     /**
-     * @var integer the default number of seconds that query results can remain valid in cache.
-     * Use 0 to indicate that the cached data will never expire.
+     * @var int the default number of seconds that query results can remain valid in cache.
      * Defaults to 3600, meaning 3600 seconds, or one hour. Use 0 to indicate that the cached data will never expire.
      * The value of this property will be used when [[cache()]] is called without a cache duration.
      * @see enableQueryCache
@@ -237,14 +239,17 @@ class Connection extends Component
     /**
      * @var string the charset used for database connection. The property is only used
      * for MySQL, PostgreSQL and CUBRID databases. Defaults to null, meaning using default charset
-     * as specified by the database.
+     * as configured by the database.
      *
-     * Note that if you're using GBK or BIG5 then it's highly recommended to
-     * specify charset via DSN like 'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'.
+     * For Oracle Database, the charset must be specified in the [[dsn]], for example for UTF-8 by appending `;charset=UTF-8`
+     * to the DSN string.
+     *
+     * The same applies for if you're using GBK or BIG5 charset with MySQL, then it's highly recommended to
+     * specify charset via [[dsn]] like `'mysql:dbname=mydatabase;host=127.0.0.1;charset=GBK;'`.
      */
     public $charset;
     /**
-     * @var boolean whether to turn on prepare emulation. Defaults to false, meaning PDO
+     * @var bool whether to turn on prepare emulation. Defaults to false, meaning PDO
      * will use the native prepare support if available. For some databases (such as MySQL),
      * this may need to be set true so that PDO can emulate the prepare support to bypass
      * the buggy native prepare support.
@@ -280,11 +285,19 @@ class Connection extends Component
         'cubrid' => 'yii\db\cubrid\Schema', // CUBRID
     ];
     /**
-     * @var string Custom PDO wrapper class. If not set, it will use "PDO" or "yii\db\mssql\PDO" when MSSQL is used.
+     * @var string Custom PDO wrapper class. If not set, it will use [[PDO]] or [[\yii\db\mssql\PDO]] when MSSQL is used.
+     * @see pdo
      */
     public $pdoClass;
     /**
-     * @var boolean whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
+     * @var string the class used to create new database [[Command]] objects. If you want to extend the [[Command]] class,
+     * you may configure this property to use your extended version of the class.
+     * @see createCommand
+     * @since 2.0.7
+     */
+    public $commandClass = 'yii\db\Command';
+    /**
+     * @var bool whether to enable [savepoint](http://en.wikipedia.org/wiki/Savepoint).
      * Note that if the underlying DBMS does not support savepoint, setting this property to be true will have no effect.
      */
     public $enableSavepoint = true;
@@ -295,12 +308,12 @@ class Connection extends Component
      */
     public $serverStatusCache = 'cache';
     /**
-     * @var integer the retry interval in seconds for dead servers listed in [[masters]] and [[slaves]].
+     * @var int the retry interval in seconds for dead servers listed in [[masters]] and [[slaves]].
      * This is used together with [[serverStatusCache]].
      */
     public $serverRetryInterval = 600;
     /**
-     * @var boolean whether to enable read/write splitting by using [[slaves]] to read data.
+     * @var bool whether to enable read/write splitting by using [[slaves]] to read data.
      * Note that if [[slaves]] is empty, read/write splitting will NOT be enabled no matter what value this property takes.
      */
     public $enableSlaves = true;
@@ -335,6 +348,7 @@ class Connection extends Component
      * Note that when this property is not empty, the connection setting (e.g. "dsn", "username") of this object will
      * be ignored.
      * @see masterConfig
+     * @see shuffleMasters
      */
     public $masters = [];
     /**
@@ -353,7 +367,28 @@ class Connection extends Component
      * ```
      */
     public $masterConfig = [];
-
+    /**
+     * @var bool whether to shuffle [[masters]] before getting one.
+     * @since 2.0.11
+     * @see masters
+     */
+    public $shuffleMasters = true;
+    /**
+     * @var bool whether to enable logging of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableProfiling
+     */
+    public $enableLogging = true;
+    /**
+     * @var bool whether to enable profiling of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableLogging
+     */
+    public $enableProfiling = true;
     /**
      * @var Transaction the currently active transaction
      */
@@ -367,6 +402,10 @@ class Connection extends Component
      */
     private $_driverName;
     /**
+     * @var Connection the currently active master connection
+     */
+    private $_master = false;
+    /**
      * @var Connection the currently active slave connection
      */
     private $_slave = false;
@@ -378,7 +417,7 @@ class Connection extends Component
 
     /**
      * Returns a value indicating whether the DB connection is established.
-     * @return boolean whether the DB connection is established
+     * @return bool whether the DB connection is established
      */
     public function getIsActive()
     {
@@ -404,12 +443,12 @@ class Connection extends Component
      *
      * @param callable $callable a PHP callable that contains DB queries which will make use of query cache.
      * The signature of the callable is `function (Connection $db)`.
-     * @param integer $duration the number of seconds that query results can remain valid in the cache. If this is
+     * @param int $duration the number of seconds that query results can remain valid in the cache. If this is
      * not set, the value of [[queryCacheDuration]] will be used instead.
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
-     * @throws \Exception if there is any exception during query
+     * @throws \Exception|\Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see noCache()
@@ -422,6 +461,9 @@ class Connection extends Component
             array_pop($this->_queryCacheInfo);
             return $result;
         } catch (\Exception $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
+        } catch (\Throwable $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
         }
@@ -446,7 +488,7 @@ class Connection extends Component
      * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
      * The signature of the callable is `function (Connection $db)`.
      * @return mixed the return result of the callable
-     * @throws \Exception if there is any exception during query
+     * @throws \Exception|\Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see cache()
@@ -461,13 +503,16 @@ class Connection extends Component
         } catch (\Exception $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
+        } catch (\Throwable $e) {
+            array_pop($this->_queryCacheInfo);
+            throw $e;
         }
     }
 
     /**
      * Returns the current query cache information.
      * This method is used internally by [[Command]].
-     * @param integer $duration the preferred caching duration. If null, it will be ignored.
+     * @param int $duration the preferred caching duration. If null, it will be ignored.
      * @param \yii\caching\Dependency $dependency the preferred caching dependency. If null, it will be ignored.
      * @return array the current query cache information, or null if query cache is not enabled.
      * @internal
@@ -514,7 +559,7 @@ class Connection extends Component
         }
 
         if (!empty($this->masters)) {
-            $db = $this->openFromPool($this->masters, $this->masterConfig);
+            $db = $this->getMaster();
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
@@ -545,6 +590,15 @@ class Connection extends Component
      */
     public function close()
     {
+        if ($this->_master) {
+            if ($this->pdo === $this->_master->pdo) {
+                $this->pdo = null;
+            }
+
+            $this->_master->close();
+            $this->_master = null;
+        }
+
         if ($this->pdo !== null) {
             Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
@@ -604,7 +658,7 @@ class Connection extends Component
         if ($this->emulatePrepare !== null && constant('PDO::ATTR_EMULATE_PREPARES')) {
             $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, $this->emulatePrepare);
         }
-        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'])) {
+        if ($this->charset !== null && in_array($this->getDriverName(), ['pgsql', 'mysql', 'mysqli', 'cubrid'], true)) {
             $this->pdo->exec('SET NAMES ' . $this->pdo->quote($this->charset));
         }
         $this->trigger(self::EVENT_AFTER_OPEN);
@@ -618,7 +672,8 @@ class Connection extends Component
      */
     public function createCommand($sql = null, $params = [])
     {
-        $command = new Command([
+        /** @var Command $command */
+        $command = new $this->commandClass([
             'db' => $this,
             'sql' => $sql,
         ]);
@@ -659,24 +714,48 @@ class Connection extends Component
      * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
-     * @throws \Exception
+     * @throws \Exception|\Throwable if there is any exception during query. In this case the transaction will be rolled back.
      * @return mixed result of callback function
      */
     public function transaction(callable $callback, $isolationLevel = null)
     {
         $transaction = $this->beginTransaction($isolationLevel);
+        $level = $transaction->level;
 
         try {
             $result = call_user_func($callback, $this);
-            if ($transaction->isActive) {
+            if ($transaction->isActive && $transaction->level === $level) {
                 $transaction->commit();
             }
         } catch (\Exception $e) {
-            $transaction->rollBack();
+            $this->rollbackTransactionOnLevel($transaction, $level);
+            throw $e;
+        } catch (\Throwable $e) {
+            $this->rollbackTransactionOnLevel($transaction, $level);
             throw $e;
         }
 
         return $result;
+    }
+
+    /**
+     * Rolls back given [[Transaction]] object if it's still active and level match.
+     * In some cases rollback can fail, so this method is fail safe. Exception thrown
+     * from rollback will be caught and just logged with [[\Yii::error()]].
+     * @param Transaction $transaction Transaction object given from [[beginTransaction()]].
+     * @param int $level Transaction level just after [[beginTransaction()]] call.
+     */
+    private function rollbackTransactionOnLevel($transaction, $level)
+    {
+        if ($transaction->isActive && $transaction->level === $level) {
+            // https://github.com/yiisoft/yii2/pull/13347
+            try {
+                $transaction->rollBack();
+            } catch (\Exception $e) {
+                \Yii::error($e, __METHOD__);
+                // hide this exception to be able to continue throwing original exception outside
+            }
+        }
     }
 
     /**
@@ -713,7 +792,7 @@ class Connection extends Component
     /**
      * Obtains the schema information for the named table.
      * @param string $name table name.
-     * @param boolean $refresh whether to reload the table schema even if it is found in the cache.
+     * @param bool $refresh whether to reload the table schema even if it is found in the cache.
      * @return TableSchema table schema information. Null if the named table does not exist.
      */
     public function getTableSchema($name, $refresh = false)
@@ -725,7 +804,7 @@ class Connection extends Component
      * Returns the ID of the last inserted row or sequence value.
      * @param string $sequenceName name of the sequence object (required by some DBMS)
      * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
+     * @see http://php.net/manual/en/pdo.lastinsertid.php
      */
     public function getLastInsertID($sequenceName = '')
     {
@@ -737,7 +816,7 @@ class Connection extends Component
      * Note that if the parameter is not a string, it will be returned without change.
      * @param string $value string to be quoted
      * @return string the properly quoted string
-     * @see http://www.php.net/manual/en/function.PDO-quote.php
+     * @see http://php.net/manual/en/pdo.quote.php
      */
     public function quoteValue($value)
     {
@@ -824,8 +903,8 @@ class Connection extends Component
      * Returns the PDO instance for the currently active slave connection.
      * When [[enableSlaves]] is true, one of the slaves will be used for read queries, and its PDO instance
      * will be returned by this method.
-     * @param boolean $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
-     * @return PDO the PDO instance for the currently active slave connection. Null is returned if no slave connection
+     * @param bool $fallbackToMaster whether to return a master PDO in case none of the slave connections is available.
+     * @return PDO the PDO instance for the currently active slave connection. `null` is returned if no slave connection
      * is available and `$fallbackToMaster` is false.
      */
     public function getSlavePdo($fallbackToMaster = true)
@@ -851,9 +930,9 @@ class Connection extends Component
 
     /**
      * Returns the currently active slave connection.
-     * If this method is called the first time, it will try to open a slave connection when [[enableSlaves]] is true.
-     * @param boolean $fallbackToMaster whether to return a master connection in case there is no slave connection available.
-     * @return Connection the currently active slave connection. Null is returned if there is slave available and
+     * If this method is called for the first time, it will try to open a slave connection when [[enableSlaves]] is true.
+     * @param bool $fallbackToMaster whether to return a master connection in case there is no slave connection available.
+     * @return Connection the currently active slave connection. `null` is returned if there is no slave available and
      * `$fallbackToMaster` is false.
      */
     public function getSlave($fallbackToMaster = true)
@@ -867,6 +946,23 @@ class Connection extends Component
         }
 
         return $this->_slave === null && $fallbackToMaster ? $this : $this->_slave;
+    }
+
+    /**
+     * Returns the currently active master connection.
+     * If this method is called for the first time, it will try to open a master connection.
+     * @return Connection the currently active master connection. `null` is returned if there is no master available.
+     * @since 2.0.11
+     */
+    public function getMaster()
+    {
+        if ($this->_master === false) {
+            $this->_master = ($this->shuffleMasters)
+                ? $this->openFromPool($this->masters, $this->masterConfig)
+                : $this->openFromPoolSequentially($this->masters, $this->masterConfig);
+        }
+
+        return $this->_master;
     }
 
     /**
@@ -884,25 +980,56 @@ class Connection extends Component
      * @param callable $callback a PHP callable to be executed by this method. Its signature is
      * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
+     * @throws \Exception|\Throwable if there is any exception thrown from the callback
      */
     public function useMaster(callable $callback)
     {
-        $enableSlave = $this->enableSlaves;
-        $this->enableSlaves = false;
-        $result = call_user_func($callback, $this);
-        $this->enableSlaves = $enableSlave;
+        if ($this->enableSlaves) {
+            $this->enableSlaves = false;
+            try {
+                $result = call_user_func($callback, $this);
+            } catch (\Exception $e) {
+                $this->enableSlaves = true;
+                throw $e;
+            } catch (\Throwable $e) {
+                $this->enableSlaves = true;
+                throw $e;
+            }
+            // TODO: use "finally" keyword when miminum required PHP version is >= 5.5
+            $this->enableSlaves = true;
+        } else {
+            $result = call_user_func($callback, $this);
+        }
+
         return $result;
     }
 
     /**
      * Opens the connection to a server in the pool.
      * This method implements the load balancing among the given list of the servers.
+     * Connections will be tried in random order.
      * @param array $pool the list of connection configurations in the server pool
      * @param array $sharedConfig the configuration common to those given in `$pool`.
-     * @return Connection the opened DB connection, or null if no server is available
+     * @return Connection the opened DB connection, or `null` if no server is available
      * @throws InvalidConfigException if a configuration does not specify "dsn"
      */
     protected function openFromPool(array $pool, array $sharedConfig)
+    {
+        shuffle($pool);
+        return $this->openFromPoolSequentially($pool, $sharedConfig);
+    }
+
+    /**
+     * Opens the connection to a server in the pool.
+     * This method implements the load balancing among the given list of the servers.
+     * Connections will be tried in sequential order.
+     * @param array $pool the list of connection configurations in the server pool
+     * @param array $sharedConfig the configuration common to those given in `$pool`.
+     * @return Connection the opened DB connection, or `null` if no server is available
+     * @throws InvalidConfigException if a configuration does not specify "dsn"
+     * @since 2.0.11
+     */
+    protected function openFromPoolSequentially(array $pool, array $sharedConfig)
     {
         if (empty($pool)) {
             return null;
@@ -913,8 +1040,6 @@ class Connection extends Component
         }
 
         $cache = is_string($this->serverStatusCache) ? Yii::$app->get($this->serverStatusCache, false) : $this->serverStatusCache;
-
-        shuffle($pool);
 
         foreach ($pool as $config) {
             $config = array_merge($sharedConfig, $config);
@@ -954,5 +1079,19 @@ class Connection extends Component
     {
         $this->close();
         return array_keys((array) $this);
+    }
+
+    /**
+     * Reset the connection after cloning.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_master = false;
+        $this->_slave = false;
+        $this->pdo = null;
+        $this->_schema = null;
+        $this->_transaction = null;
     }
 }

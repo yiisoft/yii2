@@ -54,8 +54,8 @@ class VerbFilter extends Behavior
      * allowed methods (e.g. GET, HEAD, PUT) as the value.
      * If an action is not listed all request methods are considered allowed.
      *
-     * You can use '*' to stand for all actions. When an action is explicitly
-     * specified, it takes precedence over the specification given by '*'.
+     * You can use `'*'` to stand for all actions. When an action is explicitly
+     * specified, it takes precedence over the specification given by `'*'`.
      *
      * For example,
      *
@@ -82,7 +82,7 @@ class VerbFilter extends Behavior
 
     /**
      * @param ActionEvent $event
-     * @return boolean
+     * @return bool
      * @throws MethodNotAllowedHttpException when the request method is not allowed.
      */
     public function beforeAction($event)

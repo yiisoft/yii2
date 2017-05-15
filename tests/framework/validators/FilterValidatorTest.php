@@ -14,12 +14,13 @@ class FilterValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testAssureExceptionOnInit()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException');
+        $this->expectException('yii\base\InvalidConfigException');
         new FilterValidator();
     }
 

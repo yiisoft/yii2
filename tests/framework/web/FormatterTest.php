@@ -86,4 +86,16 @@ abstract class FormatterTest extends \yiiunit\TestCase
         $this->formatter->format($this->response);
         $this->assertEquals($json, $this->response->content);
     }
+
+    /**
+     * @param mixed  $data the data to be formatted
+     * @param string $expectedResult the expected body
+     * @dataProvider formatModelDataProvider
+     */
+    public function testFormatModels($data, $expectedResult)
+    {
+        $this->response->data = $data;
+        $this->formatter->format($this->response);
+        $this->assertEquals($expectedResult, $this->response->content);
+    }
 }

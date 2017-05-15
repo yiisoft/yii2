@@ -13,6 +13,7 @@ DROP TABLE IF EXISTS "category";
 DROP TABLE IF EXISTS "customer";
 DROP TABLE IF EXISTS "profile";
 DROP TABLE IF EXISTS "null_values";
+DROP TABLE IF EXISTS "negative_default_values";
 DROP TABLE IF EXISTS "type";
 DROP TABLE IF EXISTS "constraints";
 DROP TABLE IF EXISTS "animal";
@@ -54,7 +55,7 @@ CREATE TABLE "item" (
   "name" varchar(128) NOT NULL,
   "category_id" int(11) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_item_category_id" FOREIGN KEY ("category_id") REFERENCES "category" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_item_category_id" FOREIGN KEY ("category_id") REFERENCES "category" ("id")
 );
 
 CREATE TABLE "order" (
@@ -63,7 +64,7 @@ CREATE TABLE "order" (
   "created_at" int(11) NOT NULL,
   "total" decimal(10,0) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_order_customer_id" FOREIGN KEY ("customer_id") REFERENCES "customer" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_order_customer_id" FOREIGN KEY ("customer_id") REFERENCES "customer" ("id")
 );
 
 CREATE TABLE "order_with_null_fk" (
@@ -80,8 +81,8 @@ CREATE TABLE "order_item" (
   "quantity" int(11) NOT NULL,
   "subtotal" decimal(10,0) NOT NULL,
   PRIMARY KEY ("order_id","item_id"),
-  CONSTRAINT "FK_order_item_order_id" FOREIGN KEY ("order_id") REFERENCES "order" ("id") ON DELETE CASCADE,
-  CONSTRAINT "FK_order_item_item_id" FOREIGN KEY ("item_id") REFERENCES "item" ("id") ON DELETE CASCADE
+  CONSTRAINT "FK_order_item_order_id" FOREIGN KEY ("order_id") REFERENCES "order" ("id"),
+  CONSTRAINT "FK_order_item_item_id" FOREIGN KEY ("item_id") REFERENCES "item" ("id")
 );
 
 CREATE TABLE "order_item_with_null_fk" (
@@ -100,6 +101,14 @@ CREATE TABLE null_values (
   PRIMARY KEY (id)
 );
 
+CREATE TABLE "negative_default_values" (
+  smallint_col smallint default '-123',
+  int_col int default '-123',
+  bigint_col bigint default '-123',
+  float_col double default '-12345.6789',
+  numeric_col decimal(5,2) default '-33.22'
+);
+
 
 CREATE TABLE "type" (
   "int_col" int(11) NOT NULL,
@@ -108,7 +117,7 @@ CREATE TABLE "type" (
   "char_col" char(100) NOT NULL,
   "char_col2" varchar(100) DEFAULT 'something',
   "char_col3" string,
-  "enum_col" enum('a','B'),
+  "enum_col" enum('a','B','c,D'),
   "float_col" double NOT NULL,
   "float_col2" double DEFAULT '1.23',
   "blob_col" blob,
@@ -125,7 +134,7 @@ CREATE TABLE "composite_fk" (
   "order_id" int(11) NOT NULL,
   "item_id" int(11) NOT NULL,
   PRIMARY KEY ("id"),
-  CONSTRAINT "FK_composite_fk_order_item" FOREIGN KEY ("order_id","item_id") REFERENCES "order_item" ("order_id","item_id") ON DELETE CASCADE
+  CONSTRAINT "FK_composite_fk_order_item" FOREIGN KEY ("order_id","item_id") REFERENCES "order_item" ("order_id","item_id")
 );
 
 CREATE TABLE "animal" (
@@ -195,12 +204,12 @@ INSERT INTO "document" (title, content, version) VALUES ('Yii 2.0 guide', 'This 
 
 /* bit test, see https://github.com/yiisoft/yii2/issues/9006 */
 
-DROP TABLE IF EXISTS `bit_values` CASCADE;
+DROP TABLE IF EXISTS `bit_values`;
 
 CREATE TABLE `bit_values` (
   `id`      INT(11) NOT NULL AUTO_INCREMENT,
   `val` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+);
 
 INSERT INTO `bit_values` (id, val) VALUES (1, b'0'), (2, b'1');

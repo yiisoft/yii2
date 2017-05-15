@@ -1,7 +1,7 @@
 Приёмочное тестирование
 =======================
 
-> Примечание: Данный раздел находится в разработке.
+> Note: Данный раздел находится в разработке.
 
 - [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
 

@@ -77,11 +77,8 @@ class GroupUrlRule extends CompositeUrlRule
      */
     public function init()
     {
-        if ($this->routePrefix === null) {
-            $this->routePrefix = $this->prefix;
-        }
         $this->prefix = trim($this->prefix, '/');
-        $this->routePrefix = trim($this->routePrefix, '/');
+        $this->routePrefix = $this->routePrefix === null ? $this->prefix : trim($this->routePrefix, '/');
         parent::init();
     }
 
@@ -132,6 +129,7 @@ class GroupUrlRule extends CompositeUrlRule
         if ($this->routePrefix === '' || strpos($route, $this->routePrefix . '/') === 0) {
             return parent::createUrl($manager, $route, $params);
         } else {
+            $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
             return false;
         }
     }

@@ -12,6 +12,14 @@ use yiiunit\TestCase;
  */
 class ConsoleTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testStripAnsiFormat()
     {
         ob_start();
@@ -71,7 +79,7 @@ class ConsoleTest extends TestCase
         $this->assertEquals(str_repeat('a', 25), $output);
     }
 
-/*	public function testScreenSize()
+    /*public function testScreenSize()
     {
         for ($i = 1; $i < 20; $i++) {
             echo implode(', ', Console::getScreenSize(true)) . "\n";

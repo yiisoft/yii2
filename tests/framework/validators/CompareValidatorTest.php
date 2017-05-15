@@ -14,12 +14,14 @@ class CompareValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testValidateValueException()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException');
+        $this->expectException('yii\base\InvalidConfigException');
         $val = new CompareValidator;
         $val->validate('val');
     }
@@ -83,11 +85,11 @@ class CompareValidatorTest extends TestCase
                 [$value + 1, false],
                 [$value - 1, true],
             ],
-            //'non-op' => [
-            //	[$value, false],
-            //	[$value + 1, false],
-            //	[$value - 1, false],
-            //],
+            /*'non-op' => [
+                [$value, false],
+                [$value + 1, false],
+                [$value - 1, false],
+            ],*/
         ];
     }
 

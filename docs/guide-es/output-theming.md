@@ -1,14 +1,14 @@
 Temas
 =====
 
-> Nota: Esta sección está en desarrollo.
+> Note: Esta sección está en desarrollo.
 
 Un tema (theme) es un directorio de archivos y de vistas (views) y layouts. Cada archivo de este directorio 
 sobrescribe el archivo correspondiente de una aplicación cuando se renderiza. Una única aplicación puede usar 
 múltiples temas para que pueden proporcionar experiencias totalmente diferentes. Solo se puede haber un único tema 
 activo.
 
-> Nota: Los temas no están destinados a ser redistribuidos ya que están demasiado ligados a la aplicación. Si se 
+> Note: Los temas no están destinados a ser redistribuidos ya que están demasiado ligados a la aplicación. Si se 
   quiere redistribuir una apariencia personalizada, se puede considerar la opción de 
   [asset bundles](structure-assets.md) de archivos CSS y Javascript.
 

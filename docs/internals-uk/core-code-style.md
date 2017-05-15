@@ -7,8 +7,7 @@
 
 Ви можете отримати конфігурацію для CodeSniffer за посиланням: https://github.com/yiisoft/yii2-coding-standards
 
-1. Загальні положення
----------------------
+## 1. Загальні положення
 
 В основному командою розробників використовується стиль сумісний з [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md),
 тому все, що стосується
@@ -25,8 +24,7 @@
 - Імена приватних властивостей ПОВИННІ починатись з підкреслення.
 - Завжди використовуйте `elseif` замість `else if`.
 
-2. Файли
---------
+## 2. Файли
 
 ### 2.1. Теги PHP
 
@@ -39,13 +37,11 @@
 
 PHP код ПОВИНЕН використовувати лише UTF-8 без BOM.
 
-3. Імена класів
----------------
+## 3. Імена класів
 
 Імена класів ПОВИННІ оголошуватись як `StudlyCaps`. Наприклад: `Controller`, `Model`.
 
-4. Класи
---------
+## 4. Класи
 
 Тут термін "клас" відноситься до всіх класів та інтерфейсів.
 
@@ -134,7 +130,7 @@ class Foo
 
 ### 4.4 Блоки документації PHPDoc (Doc-блоки)
 
-`@param`, `@var`, `@property` та `@return` повинні оголошувати типи як `boolean`, `integer`, `string`, `array` чи `null`. Також можна використовувати імена класів, як наприклад: `Model` або `ActiveRecord`. Для типізованих масивів використовуйте `ClassName[]`.
+`@param`, `@var`, `@property` та `@return` повинні оголошувати типи як `bool`, `int`, `string`, `array` чи `null`. Також можна використовувати імена класів, як наприклад: `Model` або `ActiveRecord`. Для типізованих масивів використовуйте `ClassName[]`.
 
 ### 4.5 Конструктори
 
@@ -354,7 +350,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
     <?php
     /**
      * Returns the errors for all attributes or a single attribute.
-     * @param string $attribute attribute name. Use null to retrieve errors for all attributes.
+     * @param string $attribute attribute name. Use `null` to retrieve errors for all attributes.
      * @property array An array of errors for all attributes. Empty array is returned if no error.
      * The result is a two-dimensional array. See [[getErrors()]] for detailed description.
      * @return array errors for all attributes or the specified attribute. Empty array is returned if no error.
@@ -422,10 +418,10 @@ public function getEventHandlers($name)
 
 Існує додатковий синтаксис для створення перехресних посилань між класами, методами та властивостями у документації:
 
-- `'[[canSetProperty]] ` створить посилання на метод або властивість `canSetProperty` того ж самого класу.
-- `'[[Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` в тому ж самому просторі імен.
-- `'[[yii\base\Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` з простору імен `yii\base`.
-- `'[[Component]]` створить посилання на клас `Component` в тому ж самому просторі імен. Додавання простору імен до імені класу тут також можливе.
+- `[[canSetProperty]]` створить посилання на метод або властивість `canSetProperty` того ж самого класу.
+- `[[Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` в тому ж самому просторі імен.
+- `[[yii\base\Component::canSetProperty]]` створить посилання на метод `canSetProperty` класу `Component` з простору імен `yii\base`.
+- `[[Component]]` створить посилання на клас `Component` в тому ж самому просторі імен. Додавання простору імен до імені класу тут також можливе.
 
 Щоб для одного з вище зазначених посилань вказати мітку відмінну від імені класу чи методу, ви можете використовувати синтаксис, показаний в нижченаведеному прикладі:
 

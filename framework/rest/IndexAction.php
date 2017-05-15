@@ -11,6 +11,10 @@ use Yii;
 use yii\data\ActiveDataProvider;
 
 /**
+ * IndexAction implements the API endpoint for listing multiple models.
+ *
+ * For more details and usage information on IndexAction, see the [guide article on rest controllers](guide:rest-controllers).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -57,7 +61,8 @@ class IndexAction extends Action
         /* @var $modelClass \yii\db\BaseActiveRecord */
         $modelClass = $this->modelClass;
 
-        return new ActiveDataProvider([
+        return Yii::createObject([
+            'class' => ActiveDataProvider::className(),
             'query' => $modelClass::find(),
         ]);
     }

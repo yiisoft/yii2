@@ -16,8 +16,8 @@ echo Html::encode('Test > test');
 ```
 
 > Note: W celu zapewnienia możliwości [dostosowania klas pomocniczych do własnych potrzeb](#customizing-helper-classes), Yii rozdziela każdą z ich wbudowanych wersji 
-  na dwie klasy: podstawę (np. `BaseArrayHelper`) i klasę właściwą (np. `ArrayHelper`). Kiedy chcesz użyć klasy pomocnicznej, powinieneś korzystać wyłącznie z jej właściwej wersji 
-  i nigdy nie używać bezpośrednio podstawy.
+> na dwie klasy: podstawę (np. `BaseArrayHelper`) i klasę właściwą (np. `ArrayHelper`). Kiedy chcesz użyć klasy pomocnicznej, powinieneś korzystać wyłącznie z jej właściwej wersji 
+> i nigdy nie używać bezpośrednio podstawy.
 
 
 Wbudowane klasy pomocnicze
@@ -43,11 +43,11 @@ Poniższe wbudowane klasy pomocnicze dostępne są w każdym wydaniu Yii:
 Dostosowywanie klas pomocniczych do własnych potrzeb <span id="customizing-helper-classes"></span>
 ----------------------------------------------------
 
-Aby zmodyfikować wbudowaną klasę pomocniczną (np. [[yii\helpers\ArrayHelper]]), należy stworzyć nową klasę rozszerzającą odpowiednią podstawę 
-(np. [[yii\helpers\BaseArrayHelper]]) i nazwać ją identycznie jak jej wersja właściwa (np. [[yii\helpers\ArrayHelper]]), łącznie z zachowaniem jej przestrzeni nazw. 
-Ta klasa może następnie zostać użyta do zastąpienia oryginalnej implementacji we frameworku.
+Aby zmodyfikować wbudowaną klasę pomocniczną (np. [[yii\helpers\ArrayHelper|ArrayHelper]]), należy stworzyć nową klasę rozszerzającą odpowiednią podstawę 
+(np. [[yii\helpers\BaseArrayHelper|BaseArrayHelper]]) i nazwać ją identycznie jak jej wersja właściwa (np. [[yii\helpers\ArrayHelper|ArrayHelper]]), łącznie z zachowaniem jej 
+przestrzeni nazw. Ta klasa może następnie zostać użyta do zastąpienia oryginalnej implementacji we frameworku.
 
-Poniższy przykład ilustruje w jaki sposób zmodyfikować metodę [[yii\helpers\ArrayHelper::merge()|merge()]] klasy [[yii\helpers\ArrayHelper]]:
+Poniższy przykład ilustruje w jaki sposób zmodyfikować metodę [[yii\helpers\ArrayHelper::merge()|merge()]] klasy [[yii\helpers\ArrayHelper|ArrayHelper]]:
 
 ```php
 <?php

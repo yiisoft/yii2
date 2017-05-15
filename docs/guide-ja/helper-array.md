@@ -88,7 +88,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 良くある例は、ID のリストの取得です。
 
 ```php
-$data = [
+$array = [
     ['id' => '123', 'data' => 'abc'],
     ['id' => '345', 'data' => 'def'],
 ];
@@ -109,28 +109,89 @@ $result = ArrayHelper::getColumn($array, function ($element) {
 ## 配列を再インデックスする <span id="reindexing-arrays"></span>
 
 指定されたキーに従って配列にインデックスを付けるために、`index` メソッドを使うことが出来ます。
-入力値の配列は、多次元配列であるか、オブジェクトの配列でなければなりません。
-キーは、サブ配列のキーの名前、オブジェクトのプロパティの名前、または、配列要素を与えられてキーの値を返す無名関数とすることが出来ます。
+入力値は、多次元配列であるか、オブジェクトの配列でなければなりません。
+`$key` は、サブ配列のキーの名前、オブジェクトのプロパティの名前、または、キーとして使用される値を返す無名関数とすることが出来ます。
 
-キーの値が null である場合、対応する配列要素は破棄されて、結果には入りません。
+`$groups` 属性はキーの配列であり、入力値の配列を一つまたは複数のサブ配列にグループ化するために使用されます。
+
+特定の要素の `$key` 属性またはその値が `null` であるとき、`$groups` が定義されていない場合は、その要素は破棄されて、結果には入りません。
+そうではなく、`$groups` が指定されている場合は、配列の要素はキー無しで結果の配列に追加されます。
+
 例えば、
 
 ```php
 $array = [
-    ['id' => '123', 'data' => 'abc'],
-    ['id' => '345', 'data' => 'def'],
+    ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+    ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
 ];
 $result = ArrayHelper::index($array, 'id');
-// 結果は次のようになります
-// [
-//     '123' => ['id' => '123', 'data' => 'abc'],
-//     '345' => ['id' => '345', 'data' => 'def'],
-// ]
+```
 
-// 無名関数を使う
+結果は、`id` 属性の値をキーとする連想配列になります。
+
+```php
+[
+    '123' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop'],
+    '345' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+    // 元の配列の2番目の要素は、同じ id であるため、最後の要素によって上書きされます
+]
+```
+
+`$key` として無名関数を渡しても同じ結果になります。
+
+```php
 $result = ArrayHelper::index($array, function ($element) {
     return $element['id'];
 });
+```
+
+`id` を3番目の引数として渡すと、`$array` を `id` によってグループ化することが出来ます。
+
+```php
+$result = ArrayHelper::index($array, null, 'id');
+```
+
+結果は、最初のレベルが `id` でグループ化され、第2のレベルはインデックスされていない連想配列になります。
+
+```php
+[
+    '123' => [
+        ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+    ],
+    '345' => [ // このインデックスを持つ全ての要素が結果の配列に入る
+        ['id' => '345', 'data' => 'def', 'device' => 'tablet'],
+        ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone'],
+    ]
+]
+```
+
+無名関数を配列のグループ化に使うことも出来ます。
+
+```php
+$result = ArrayHelper::index($array, 'data', [function ($element) {
+    return $element['id'];
+}, 'device']);
+```
+
+結果は、最初のレベルが `id` でグループ化され、第2のレベルが `device` でグループ化され、第3のレベルが `data` でインデックスされた連想配列になります。
+
+```php
+[
+    '123' => [
+        'laptop' => [
+            'abc' => ['id' => '123', 'data' => 'abc', 'device' => 'laptop']
+        ]
+    ],
+    '345' => [
+        'tablet' => [
+            'def' => ['id' => '345', 'data' => 'def', 'device' => 'tablet']
+        ],
+        'smartphone' => [
+            'hgi' => ['id' => '345', 'data' => 'hgi', 'device' => 'smartphone']
+        ]
+    ]
+]
 ```
 
 
@@ -146,7 +207,7 @@ $array = [
     ['id' => '123', 'name' => 'aaa', 'class' => 'x'],
     ['id' => '124', 'name' => 'bbb', 'class' => 'x'],
     ['id' => '345', 'name' => 'ccc', 'class' => 'y'],
-);
+];
 
 $result = ArrayHelper::map($array, 'id', 'name');
 // 結果は次のようになります
@@ -241,18 +302,67 @@ $decoded = ArrayHelper::htmlDecode($data);
 
 ## 配列をマージする <span id="merging-arrays"></span>
 
+[[yii\helpers\ArrayHelper::merge()|ArrayHelper::merge()]] を使って、二つまたはそれ以上の配列を再帰的に一つの配列にマージすることが出来ます。
+各配列に同じ文字列のキー値を持つ要素がある場合は、([array_merge_recursive()](http://php.net/manual/ja/function.array-merge-recursive.php) とは違って)後のものが前のものを上書きします。
+両方の配列が、同じキーを持つ配列型の要素を持っている場合は、再帰的なマージが実行されます。
+添字型の要素については、後の配列の要素が前の配列の要素の後に追加されます。
+[[yii\helpers\UnsetArrayValue]] オブジェクトを使って前の配列にある値を非設定に指定したり、
+[[yii\helpers\ReplaceArrayValue]] オブジェクトを使って再帰的なマージでなく前の値の上書きを強制したりすることが出来ます。
+
+例えば、
+
 ```php
-  /**
-    * 二つ以上の配列を再帰的に一つの配列にマージします。
-    * 各配列に同じ文字列のキー値を持つ要素がある場合は、(array_merge_recursive とは違って)
-    * 後のものが前のものを上書きします。
-    * 両方の配列が、同じキーを持つ配列型の要素を持っている場合は、再帰的なマージが実行されます。
-    * 添字型の要素については、後の配列の要素が前の配列の要素の後に追加されます。
-    * @param array $a マージ先の配列
-    * @param array $b マージ元の配列。追加の配列を三番目の引数、四番目の引数、、、として指定可能です。
-    * @return array マージされた配列 (元の配列は変更されません。)
-    */
-    public static function merge($a, $b)
+$array1 = [
+    'name' => 'Yii',
+    'version' => '1.1',
+    'ids' => [
+        1,
+    ],
+    'validDomains' => [
+        'example.com',
+        'www.example.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+        'dev' => 'dev@example.com',
+    ],
+];
+
+$array2 = [
+    'version' => '2.0',
+    'ids' => [
+        2,
+    ],
+    'validDomains' => new \yii\helpers\ReplaceArrayValue([
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ]),
+    'emails' => [
+        'dev' => new \yii\helpers\UnsetArrayValue(),
+    ],
+];
+
+$result = ArrayHelper::merge($array1, $array2);
+```
+
+結果は次のようになります。
+
+```php
+[
+    'name' => 'Yii',
+    'version' => '2.0',
+    'ids' => [
+        1,
+        2,
+    ],
+    'validDomains' => [
+        'yiiframework.com',
+        'www.yiiframework.com',
+    ],
+    'emails' => [
+        'admin' => 'admin@example.com',
+    ],
+]
 ```
 
 
@@ -288,7 +398,7 @@ $data = ArrayHelper::toArray($posts, [
 - キー/値 のペア - 配列のキー名にしたい文字列と、値を取得すべきモデルのカラムの名前。
 - キー/値 のペア - 配列のキー名にしたい文字列と、値を返すコールバック。
 
-変換の結果は以下のようになります。
+単一のモデルに対する上記の変換の結果は以下のようになります。
 
 
 ```php
@@ -307,16 +417,17 @@ $data = ArrayHelper::toArray($posts, [
 ある要素が配列の中に存在するかどうか、また、一連の要素が配列のサブセットであるかどうか、ということを調べる必要がある場合がよくあります。
 PHP は `in_array()` を提供していますが、これはサブセットや `\Traversable` なオブジェクトをサポートしていません。
 
-この種のチェックを助けるために、[[yii\base\ArrayHelper]] は [[yii\base\ArrayHelper::isIn()|isIn()]]
-および [[yii\base\ArrayHelper::isSubset()|isSubset()]] を [[in_array()]] と同じシグニチャで提供しています。
+この種のチェックを助けるために、[[yii\helpers\ArrayHelper]] は [[yii\helpers\ArrayHelper::isIn()|isIn()]]
+および [[yii\helpers\ArrayHelper::isSubset()|isSubset()]] を
+[in_array()](http://php.net/manual/en/function.in-array.php) と同じシグニチャで提供しています。
 
 ```php
 // true
 ArrayHelper::isIn('a', ['a']);
 // true
-ArrayHelper::isIn('a', new(ArrayObject['a']));
+ArrayHelper::isIn('a', new ArrayObject(['a']));
 
-// true 
-ArrayHelper::isSubset(new(ArrayObject['a', 'c']), new(ArrayObject['a', 'b', 'c'])
+// true
+ArrayHelper::isSubset(new ArrayObject(['a', 'c']), new ArrayObject(['a', 'b', 'c']));
 
 ```

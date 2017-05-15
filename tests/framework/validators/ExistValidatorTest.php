@@ -12,17 +12,14 @@ use yiiunit\data\validators\models\ValidatorTestMainModel;
 use yiiunit\data\validators\models\ValidatorTestRefModel;
 use yiiunit\framework\db\DatabaseTestCase;
 
-/**
- * @group validators
- */
-class ExistValidatorTest extends DatabaseTestCase
+abstract class ExistValidatorTest extends DatabaseTestCase
 {
-    protected $driverName = 'mysql';
-
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
         ActiveRecord::$db = $this->getConnection();
     }
 
@@ -141,6 +138,9 @@ class ExistValidatorTest extends DatabaseTestCase
         $m = new OrderItem(['order_id' => 1, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertFalse($m->hasErrors('order_id'));
+        $m = new OrderItem(['order_id' => 2, 'item_id' => 5]);
+        $val->validateAttribute($m, 'order_id');
+        $this->assertFalse($m->hasErrors('order_id'));
         $m = new OrderItem(['order_id' => 10, 'item_id' => 2]);
         $val->validateAttribute($m, 'order_id');
         $this->assertTrue($m->hasErrors('order_id'));
@@ -164,5 +164,25 @@ class ExistValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14150
+     */
+    public function testTargetTableWithAlias()
+    {
+        $oldTableName = OrderItem::$tableName;
+        OrderItem::$tableName = '{{%order_item}}';
+
+        $val = new ExistValidator([
+            'targetClass' => OrderItem::className(),
+            'targetAttribute' => ['id' => 'order_id'],
+        ]);
+
+        $m = new Order(['id' => 1]);
+        $val->validateAttribute($m, 'id');
+        $this->assertFalse($m->hasErrors('id'));
+
+        OrderItem::$tableName = $oldTableName;
     }
 }

@@ -89,6 +89,9 @@ that contains commas to avoid incorrect automatic name quoting. For example,
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing DB expressions in select.
+
 Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
 a [[yii\db\Query]] object. For example,
  
@@ -150,6 +153,9 @@ $subQuery = (new Query())->select('id')->from('user')->where('status=1');
 $query->from(['u' => $subQuery]);
 ```
 
+#### Prefixes
+Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. Implementation instructions
+are in the ["Quoting Tables" section of the "Database Access Objects" guide](guide-db-dao.html#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
@@ -163,13 +169,17 @@ the three formats to specify a `WHERE` condition:
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions. It works as if you are writing a raw SQL. For example,
+String format is best used to specify very simple conditions or if you need to use built-in functions of the DBMS.
+It works as if you are writing a raw SQL. For example,
 
 ```php
 $query->where('status=1');
 
 // or use parameter binding to bind dynamic parameter values
 $query->where('status=:status', [':status' => $status]);
+
+// raw SQL using MySQL YEAR() function on a date field
+$query->where('YEAR(somedate) = 2015');
 ```
 
 Do NOT embed variables directly in the condition like the following, especially if the variable values come from 
@@ -188,6 +198,8 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing conditions in string format. 
 
 #### Hash Format <span id="hash-format"></span>
 
@@ -214,6 +226,9 @@ $userQuery = (new Query())->select('id')->from('user');
 // ...WHERE `id` IN (SELECT `id` FROM `user`)
 $query->where(['id' => $userQuery]);
 ```
+
+Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
 
 
 #### Operator Format <span id="operator-format"></span>
@@ -279,12 +294,15 @@ the operator can be one of the following:
   the `NOT LIKE` predicates.
 
 - `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
-  It will build a `EXISTS (sub-query)` expression.
+  It will build an `EXISTS (sub-query)` expression.
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
 - `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
+
+Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
 
 
 #### Appending Conditions <span id="appending-conditions"></span>
@@ -304,7 +322,7 @@ if (!empty($search)) {
 }
 ```
 
-If `$search` is not empty, the following WHERE condition will be generated:
+If `$search` is not empty, the following `WHERE` condition will be generated:
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
@@ -330,17 +348,37 @@ The only difference between [[yii\db\Query::filterWhere()|filterWhere()]] and [[
 is that the former will ignore empty values provided in the condition in [hash format](#hash-format). So if `$email`
 is empty while `$username` is not, the above code will result in the SQL condition `WHERE username=:username`.
 
-> Info: A value is considered empty if it is null, an empty array, an empty string or a string consisting of whitespaces only.
+> Info: A value is considered empty if it is `null`, an empty array, an empty string or a string consisting of whitespaces only.
 
 Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhere()]], you can use
 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]
 to append additional filter conditions to the existing one.
 
+Additionally, there is [[yii\db\Query::andFilterCompare()]] that can intelligently determine operator based on what's
+in the value:
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+You can also specify operator explicitly:
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
+
+Since Yii 2.0.11 there are similar methods for `HAVING` condition:
+
+- [[yii\db\Query::filterHaving()|filterHaving()]]
+- [[yii\db\Query::andFilterHaving()|andFilterHaving()]]
+- [[yii\db\Query::orFilterHaving()|orFilterHaving()]]
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
 The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL query. For example,
- 
+
 ```php
 // ... ORDER BY `id` ASC, `name` DESC
 $query->orderBy([
@@ -349,7 +387,7 @@ $query->orderBy([
 ]);
 ```
  
-In the above code, the array keys are column names while the array values are the corresponding order-by directions.
+In the above code, the array keys are column names while the array values are the corresponding order by directions.
 The PHP constant `SORT_ASC` specifies ascending sort and `SORT_DESC` descending sort.
 
 If `ORDER BY` only involves simple column names, you can specify it using a string, just like you do when writing 
@@ -423,7 +461,7 @@ $query->having(['status' => 1])
 
 The [[yii\db\Query::limit()|limit()]] and [[yii\db\Query::offset()|offset()]] methods specify the `LIMIT`
 and `OFFSET` fragments of a SQL query. For example,
- 
+
 ```php
 // ... LIMIT 10 OFFSET 20
 $query->limit(10)->offset(20);
@@ -438,14 +476,14 @@ If you specify an invalid limit or offset (e.g. a negative value), it will be ig
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 The [[yii\db\Query::join()|join()]] method specifies the `JOIN` fragment of a SQL query. For example,
- 
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 The [[yii\db\Query::join()|join()]] method takes four parameters:
- 
+
 - `$type`: join type, e.g., `'INNER JOIN'`, `'LEFT JOIN'`.
 - `$table`: the name of the table to be joined.
 - `$on`: optional, the join condition, i.e., the `ON` fragment. Please refer to [where()](#where) for details
@@ -604,6 +642,12 @@ $query = (new \yii\db\Query())
 
 The anonymous function takes a parameter `$row` which contains the current row data and should return a scalar
 value which will be used as the index value for the current row.
+
+> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
+> That means that only those column names can be used that have been part of SELECT in your query.
+> Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call
+> `->indexBy('id')` without table prefix.
 
 
 ### Batch Query <span id="batch-query"></span>

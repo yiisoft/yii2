@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phpunit bootstrap="./tests/bootstrap.php"
+		backupGlobals="true"
 		colors="true"
 		convertErrorsToExceptions="true"
 		convertNoticesToExceptions="true"
@@ -11,6 +12,9 @@
 			</testsuite>
 		</testsuites>
 		<filter>
+            <whitelist>
+                <directory suffix=".php">framework/</directory>
+            </whitelist>
 			<blacklist>
 				<file>framework/helpers/Json.php</file>
 				<file>framework/helpers/StringHelper.php</file>

@@ -22,10 +22,22 @@ class HttpCacheTest extends \yiiunit\TestCase
 
     public function testDisabled()
     {
-        $httpCache = new HttpCache;
+        $httpCache = new HttpCache();
         $this->assertTrue($httpCache->beforeAction(null));
         $httpCache->enabled=false;
         $this->assertTrue($httpCache->beforeAction(null));
+    }
+
+    public function testEmptyPragma()
+    {
+        $httpCache = new HttpCache();
+        $httpCache->etagSeed = function($action, $params) {
+            return '';
+        };
+        $httpCache->beforeAction(null);
+        $response = Yii::$app->getResponse();
+        $this->assertFalse($response->getHeaders()->offsetExists('Pragma'));
+        $this->assertNotSame($response->getHeaders()->get('Pragma'), '');
     }
 
     /**
@@ -33,12 +45,12 @@ class HttpCacheTest extends \yiiunit\TestCase
      */
     public function testValidateCache()
     {
-        $httpCache = new HttpCache;
+        $httpCache = new HttpCache();
         $method = new \ReflectionMethod($httpCache, 'validateCache');
         $method->setAccessible(true);
 
         unset($_SERVER['HTTP_IF_MODIFIED_SINCE'], $_SERVER['HTTP_IF_NONE_MATCH']);
-        $this->assertTrue($method->invoke($httpCache, null, null));
+        $this->assertFalse($method->invoke($httpCache, null, null));
         $this->assertFalse($method->invoke($httpCache, 0, null));
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
 
@@ -63,7 +75,16 @@ class HttpCacheTest extends \yiiunit\TestCase
      */
     public function testGenerateEtag()
     {
-        $httpCache = new HttpCache;
+        $httpCache = new HttpCache();
+        $httpCache->weakEtag = false;
+
+        $httpCache->etagSeed = function($action, $params) {
+            return null;
+        };
+        $httpCache->beforeAction(null);
+        $response = Yii::$app->getResponse();
+        $this->assertFalse($response->getHeaders()->offsetExists('ETag'));
+
         $httpCache->etagSeed = function($action, $params) {
             return '';
         };
@@ -74,6 +95,17 @@ class HttpCacheTest extends \yiiunit\TestCase
 
         $etag = $response->getHeaders()->get('ETag');
         $this->assertStringStartsWith('"', $etag);
+        $this->assertStringEndsWith('"', $etag);
+
+
+        $httpCache->weakEtag = true;
+        $httpCache->beforeAction(null);
+        $response = Yii::$app->getResponse();
+
+        $this->assertTrue($response->getHeaders()->offsetExists('ETag'));
+
+        $etag = $response->getHeaders()->get('ETag');
+        $this->assertStringStartsWith('W/"', $etag);
         $this->assertStringEndsWith('"', $etag);
     }
 }

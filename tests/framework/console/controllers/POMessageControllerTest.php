@@ -18,10 +18,6 @@ class POMessageControllerTest extends BaseMessageControllerTest
     {
         parent::setUp();
 
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('POMessageControllerTest can not run on HHVM because it relies on saving and re-including PHP files which is not supported by HHVM.');
-        }
-
         $this->messagePath = Yii::getAlias('@yiiunit/runtime/test_messages');
         FileHelper::createDirectory($this->messagePath, 0777);
     }

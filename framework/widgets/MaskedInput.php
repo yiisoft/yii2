@@ -29,7 +29,7 @@ use yii\web\View;
  * ]);
  * ```
  *
- * You can also use this widget in an [[yii\widgets\ActiveForm|ActiveForm]] using the [[yii\widgets\ActiveField::widget()|widget()]]
+ * You can also use this widget in an [[ActiveForm]] using the [[ActiveField::widget()|widget()]]
  * method, for example like this:
  *
  * ```php
@@ -178,13 +178,13 @@ class MaskedInput extends InputWidget
         }
         $this->hashPluginOptions($view);
         if (is_array($this->definitions) && !empty($this->definitions)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.definitions, ' . Json::htmlEncode($this->definitions) . ');';
+            $js .= ucfirst(self::PLUGIN_NAME) . '.extendDefinitions(' . Json::htmlEncode($this->definitions) . ');';
         }
         if (is_array($this->aliases) && !empty($this->aliases)) {
-            $js .= '$.extend($.' . self::PLUGIN_NAME . '.defaults.aliases, ' . Json::htmlEncode($this->aliases) . ');';
+            $js .= ucfirst(self::PLUGIN_NAME) . '.extendAliases(' . Json::htmlEncode($this->aliases) . ');';
         }
         $id = $this->options['id'];
-        $js .= '$("#' . $id . '").' . self::PLUGIN_NAME . '(' . $this->_hashVar . ');';
+        $js .= 'jQuery("#' . $id . '").' . self::PLUGIN_NAME . '(' . $this->_hashVar . ');';
         MaskedInputAsset::register($view);
         $view->registerJs($js);
     }
