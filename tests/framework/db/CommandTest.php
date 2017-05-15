@@ -641,52 +641,165 @@ SQL;
     public function testRenameColumn()
     {
     }
-
-    public function testAddForeignKey()
-    {
-    }
-
-    public function testDropForeignKey()
-    {
-    }
-
-    public function testCreateIndex()
-    {
-    }
-
-    public function testDropIndex()
-    {
-    }
     */
 
     public function testAddDropPrimaryKey()
     {
-        // @TODO Will be implemented in this PR.
+        $db = $this->getConnection(false);
+        $tableName = 'test_pk';
+        $name = 'test_pk_constraint';
+        /** @var \yii\db\pgsql\Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            'int1' => 'integer not null',
+            'int2' => 'integer not null',
+        ])->execute();
+
+        $this->assertNull($schema->getTablePrimaryKey($tableName, true));
+        $db->createCommand()->addPrimaryKey($name, $tableName, ['int1'])->execute();
+        $this->assertEquals(['int1'], $schema->getTablePrimaryKey($tableName, true)->columnNames);
+
+        $db->createCommand()->dropPrimaryKey($name, $tableName)->execute();
+        $this->assertNull($schema->getTablePrimaryKey($tableName, true));
+
+        $db->createCommand()->addPrimaryKey($name, $tableName, ['int1', 'int2'])->execute();
+        $this->assertEquals(['int1', 'int2'], $schema->getTablePrimaryKey($tableName, true)->columnNames);
     }
 
     public function testAddDropForeignKey()
     {
-        // @TODO Will be implemented in this PR.
+        $db = $this->getConnection(false);
+        $tableName = 'test_fk';
+        $name = 'test_fk_constraint';
+        /** @var \yii\db\pgsql\Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            'int1' => 'integer not null unique',
+            'int2' => 'integer not null unique',
+            'int3' => 'integer not null unique',
+            'int4' => 'integer not null unique',
+            'unique ([[int1]], [[int2]])',
+            'unique ([[int3]], [[int4]])',
+        ])->execute();
+
+        $this->assertEmpty($schema->getTableForeignKeys($tableName, true));
+        $db->createCommand()->addForeignKey($name, $tableName, ['int1'], $tableName, ['int3'])->execute();
+        $this->assertEquals(['int1'], $schema->getTableForeignKeys($tableName, true)[0]->columnNames);
+        $this->assertEquals(['int3'], $schema->getTableForeignKeys($tableName, true)[0]->foreignColumnNames);
+
+        $db->createCommand()->dropForeignKey($name, $tableName)->execute();
+        $this->assertEmpty($schema->getTableForeignKeys($tableName, true));
+
+        $db->createCommand()->addForeignKey($name, $tableName, ['int1', 'int2'], $tableName, ['int3', 'int4'])->execute();
+        $this->assertEquals(['int1', 'int2'], $schema->getTableForeignKeys($tableName, true)[0]->columnNames);
+        $this->assertEquals(['int3', 'int4'], $schema->getTableForeignKeys($tableName, true)[0]->foreignColumnNames);
     }
 
     public function testCreateDropIndex()
     {
-        // @TODO Will be implemented in this PR.
+        $db = $this->getConnection(false);
+        $tableName = 'test_idx';
+        $name = 'test_idx_constraint';
+        /** @var \yii\db\pgsql\Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            'int1' => 'integer not null',
+            'int2' => 'integer not null',
+        ])->execute();
+
+        $this->assertEmpty($schema->getTableIndexes($tableName, true));
+        $db->createCommand()->createIndex($name, $tableName, ['int1'])->execute();
+        $this->assertEquals(['int1'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertFalse($schema->getTableIndexes($tableName, true)[0]->isUnique);
+
+        $db->createCommand()->dropIndex($name, $tableName)->execute();
+        $this->assertEmpty($schema->getTableIndexes($tableName, true));
+
+        $db->createCommand()->createIndex($name, $tableName, ['int1', 'int2'])->execute();
+        $this->assertEquals(['int1', 'int2'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertFalse($schema->getTableIndexes($tableName, true)[0]->isUnique);
+
+        $db->createCommand()->dropIndex($name, $tableName)->execute();
+        $this->assertEmpty($schema->getTableIndexes($tableName, true));
+
+        $this->assertEmpty($schema->getTableIndexes($tableName, true));
+        $db->createCommand()->createIndex($name, $tableName, ['int1'], true)->execute();
+        $this->assertEquals(['int1'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertTrue($schema->getTableIndexes($tableName, true)[0]->isUnique);
+
+        $db->createCommand()->dropIndex($name, $tableName)->execute();
+        $this->assertEmpty($schema->getTableIndexes($tableName, true));
+
+        $db->createCommand()->createIndex($name, $tableName, ['int1', 'int2'], true)->execute();
+        $this->assertEquals(['int1', 'int2'], $schema->getTableIndexes($tableName, true)[0]->columnNames);
+        $this->assertTrue($schema->getTableIndexes($tableName, true)[0]->isUnique);
     }
 
     public function testAddDropUnique()
     {
-        // @TODO Will be implemented in this PR.
+        $db = $this->getConnection(false);
+        $tableName = 'test_uq';
+        $name = 'test_uq_constraint';
+        /** @var \yii\db\pgsql\Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            'int1' => 'integer not null',
+            'int2' => 'integer not null',
+        ])->execute();
+
+        $this->assertEmpty($schema->getTableUniques($tableName, true));
+        $db->createCommand()->addUnique($name, $tableName, ['int1'])->execute();
+        $this->assertEquals(['int1'], $schema->getTableUniques($tableName, true)[0]->columnNames);
+
+        $db->createCommand()->dropUnique($name, $tableName)->execute();
+        $this->assertEmpty($schema->getTableUniques($tableName, true));
+
+        $db->createCommand()->addUnique($name, $tableName, ['int1', 'int2'])->execute();
+        $this->assertEquals(['int1', 'int2'], $schema->getTableUniques($tableName, true)[0]->columnNames);
     }
 
     public function testAddDropCheck()
     {
-        // @TODO Will be implemented in this PR.
+        $db = $this->getConnection(false);
+        $tableName = 'test_ck';
+        $name = 'test_ck_constraint';
+        /** @var \yii\db\pgsql\Schema $schema */
+        $schema = $db->getSchema();
+
+        if ($schema->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
+        $db->createCommand()->createTable($tableName, [
+            'int1' => 'integer',
+        ])->execute();
+
+        $this->assertEmpty($schema->getTableChecks($tableName, true));
+        $db->createCommand()->addCheck($name, $tableName, '[[int1]] > 1')->execute();
+        $this->assertRegExp('/^.*int1.*>.*1.*$/', $schema->getTableChecks($tableName, true)[0]->expression);
+
+        $db->createCommand()->dropCheck($name, $tableName)->execute();
+        $this->assertEmpty($schema->getTableChecks($tableName, true));
     }
 
     public function testAddDropDefaultValue()
     {
-        // @TODO Will be implemented in this PR.
+        $this->markTestSkipped($this->driverName . ' does not support adding/dropping default value constraints.');
     }
 
     public function testIntegrityViolation()
@@ -840,6 +953,10 @@ SQL;
         $db = $this->getConnection(false);
         $tableName = 'test';
         $fkName = 'test_fk';
+
+        if ($db->getSchema()->getTableSchema($tableName) !== null) {
+            $db->createCommand()->dropTable($tableName)->execute();
+        }
 
         $this->assertNull($db->getSchema()->getTableSchema($tableName));
 

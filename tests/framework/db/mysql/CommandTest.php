@@ -9,4 +9,10 @@ namespace yiiunit\framework\db\mysql;
 class CommandTest extends \yiiunit\framework\db\CommandTest
 {
     public $driverName = 'mysql';
+
+    public function testAddDropCheck()
+    {
+        $this->markTestSkipped('MySQL does not support adding/dropping check constraints.');
+    }
+
 }

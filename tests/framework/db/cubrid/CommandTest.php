@@ -78,4 +78,9 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT "id", "t"."name" FROM "customer" t', $command->sql);
     }
+
+    public function testAddDropCheck()
+    {
+        $this->markTestSkipped('CUBRID does not support adding/dropping check constraints.');
+    }
 }
