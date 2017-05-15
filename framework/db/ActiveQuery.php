@@ -578,6 +578,32 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
+     * Replace the key string ==relationAlias== by aliasName into given conditions
+     * @param string|array $condition the given conditions
+     * @param string $aliasName
+     */
+    private function replaceRelationAlias( $condition, $aliasName )
+    {
+        if (is_int($condition)) {
+            return $condition;
+        } elseif (is_string($condition)) {
+            return str_replace('==relationAlias==', $aliasName, $condition);
+        } elseif (is_array($condition)) {
+            $conditionNew = [];
+            foreach ($condition as $key => $value) {
+                unset($condition[$key]);
+                $key    = self::replaceRelationAlias($key,   $aliasName);
+                $value  = self::replaceRelationAlias($value, $aliasName);
+                $conditionNew[$key] = $value;
+            }
+            $condition = $conditionNew;
+        } elseif ($condition instanceof \yii\db\Expression) {
+            $condition->expression = self::replaceRelationAlias($condition->expression, $aliasName);
+        }
+        return $condition;
+    }
+
+    /**
      * Joins a parent query with a child query.
      * The current query object will be modified accordingly.
      * @param ActiveQuery $parent
@@ -603,18 +629,22 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         list ($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
         list ($childTable, $childAlias) = $child->getTableNameAndAlias();
 
-        if (!empty($child->link)) {
+        $child->on = $this->replaceRelationAlias( $child->on, $childAlias );
 
-            if (strpos($parentAlias, '{{') === false) {
-                $parentAlias = '{{' . $parentAlias . '}}';
+        if (!empty($child->link)) {
+            //automatically quote table aliasName only for the link part (not sure why?)
+            $linkParentAlias = $parentAlias;
+            if (strpos($linkParentAlias, '{{') === false) {
+                $linkParentAlias = '{{' . $linkParentAlias . '}}';
             }
-            if (strpos($childAlias, '{{') === false) {
-                $childAlias = '{{' . $childAlias . '}}';
+            $linkChildAlias = $childAlias;
+            if (strpos($linkChildAlias, '{{') === false) {
+                $linkChildAlias = '{{' . $linkChildAlias . '}}';
             }
 
             $on = [];
             foreach ($child->link as $childColumn => $parentColumn) {
-                $on[] = "$parentAlias.[[$parentColumn]] = $childAlias.[[$childColumn]]";
+                $on[] = "$linkParentAlias.[[$parentColumn]] = $linkChildAlias.[[$childColumn]]";
             }
             $on = implode(' AND ', $on);
             if (!empty($child->on)) {
@@ -626,28 +656,28 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {
-            $this->andWhere($child->where);
+            $this->andWhere( $this->replaceRelationAlias( $child->where, $childAlias ) );
         }
         if (!empty($child->having)) {
-            $this->andHaving($child->having);
+            $this->andHaving( $this->replaceRelationAlias( $child->having, $childAlias ) );
         }
         if (!empty($child->orderBy)) {
-            $this->addOrderBy($child->orderBy);
+            $this->addOrderBy( $this->replaceRelationAlias( $child->orderBy, $childAlias ) );
         }
         if (!empty($child->groupBy)) {
-            $this->addGroupBy($child->groupBy);
+            $this->addGroupBy( $this->replaceRelationAlias( $child->groupBy, $childAlias ) );
         }
         if (!empty($child->params)) {
             $this->addParams($child->params);
         }
         if (!empty($child->join)) {
             foreach ($child->join as $join) {
-                $this->join[] = $join;
+                $this->join[] = $this->replaceRelationAlias( $join, $childAlias );
             }
         }
         if (!empty($child->union)) {
             foreach ($child->union as $union) {
-                $this->union[] = $union;
+                $this->union[] = $this->replaceRelationAlias( $union, $childAlias );
             }
         }
     }
