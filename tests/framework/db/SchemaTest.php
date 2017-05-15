@@ -553,9 +553,18 @@ abstract class SchemaTest extends DatabaseTestCase
         ];
     }
 
+    public function lowercaseConstraintsProvider()
+    {
+        return $this->constraintsProvider();
+    }
+
+    public function uppercaseConstraintsProvider()
+    {
+        return $this->constraintsProvider();
+    }
+
     /**
      * @dataProvider constraintsProvider
-     * @depends testContraintTablesExistance
      */
     public function testTableSchemaConstraints($tableName, $type, $expected)
     {
@@ -564,10 +573,9 @@ abstract class SchemaTest extends DatabaseTestCase
     }
 
     /**
-     * @dataProvider constraintsProvider
-     * @depends testTableSchemaConstraints
+     * @dataProvider uppercaseConstraintsProvider
      */
-    public function testTableSchemaConstraintsWithPdoUpperCase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
     {
         $connection = $this->getConnection(false);
         $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
@@ -576,10 +584,9 @@ abstract class SchemaTest extends DatabaseTestCase
     }
 
     /**
-     * @dataProvider constraintsProvider
-     * @depends testTableSchemaConstraints
+     * @dataProvider lowercaseConstraintsProvider
      */
-    public function testTableSchemaConstraintsWithPdoLowerCase($tableName, $type, $expected)
+    public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
     {
         $connection = $this->getConnection(false);
         $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
@@ -608,7 +615,7 @@ abstract class SchemaTest extends DatabaseTestCase
         foreach ($array as $value) {
             if ($value instanceof Constraint) {
                 $key = (array) $value;
-                unset($key['name']);
+                unset($key['name'], $key['foreignSchemaName']);
                 foreach ($key as $keyName => $keyValue) {
                     if ($keyValue instanceof AnyCaseValue) {
                         $key[$keyName] = $keyValue->value;

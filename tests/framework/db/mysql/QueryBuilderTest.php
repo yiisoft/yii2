@@ -83,6 +83,13 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         return $result;
     }
 
+    public function uniquesProvider()
+    {
+        $result = parent::uniquesProvider();
+        $result['drop'][0] = 'DROP INDEX [[CN_unique]] ON {{T_constraints_1}}';
+        return $result;
+    }
+
     public function checksProvider()
     {
         $this->markTestSkipped('Adding/dropping check constraints is not supported in MySQL.');

@@ -130,7 +130,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'expression' => '"C_id_2" IS NOT NULL',
         ]);
 
-        $result['3: foreign key'][2][0]->foreignSchemaName = 'SYSTEM';
+        $result['3: foreign key'][2][0]->foreignSchemaName = AnyValue::getInstance();
         $result['3: foreign key'][2][0]->onUpdate = null;
         $result['3: index'][2] = [];
         $result['3: check'][2][] = new CheckConstraint([

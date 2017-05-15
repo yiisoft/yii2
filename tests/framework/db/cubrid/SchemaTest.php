@@ -88,20 +88,12 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         return $result;
     }
 
-    /**
-     * @dataProvider constraintsProvider
-     * @depends testTableSchemaConstraints
-     */
-    public function testTableSchemaConstraintsWithPdoUpperCase($tableName, $type, $expected)
+    public function lowercaseConstraintsProvider()
     {
         $this->markTestSkipped('This test hangs on CUBRID.');
     }
 
-    /**
-     * @dataProvider constraintsProvider
-     * @depends testTableSchemaConstraints
-     */
-    public function testTableSchemaConstraintsWithPdoLowerCase($tableName, $type, $expected)
+    public function uppercaseConstraintsProvider()
     {
         $this->markTestSkipped('This test hangs on CUBRID.');
     }
