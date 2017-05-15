@@ -790,29 +790,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         return $this;
     }
 
-
-    /**
-     * Returns conditions with alias
-     * @param array $conditions array of condition, keys to be modified
-     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
-     * @return array
-     */
-    public function applyTableAlias($conditions, $alias = null)
-    {
-        if ($alias === null) {
-            $alias = array_keys($this->getTablesUsedInFrom())[0];
-        }
-        $prefixedConditions = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$alias}.[[" . preg_replace(
-                    '/^' . $alias . '\.(.*)$/',
-                    "$1",
-                    $columnName) . "]]";
-            $prefixedConditions[$prefixedColumn] = $columnValue;
-        }
-        return $prefixedConditions;
-    }
-
     /**
      * Returns table names used in [[from]] indexed by aliases.
      * Both aliases and names are enclosed into {{ and }}.
