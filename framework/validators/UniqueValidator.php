@@ -174,7 +174,7 @@ class UniqueValidator extends Validator
             if ($query instanceof \yii\db\ActiveQuery) {
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
-                $query->select(array_flip($query->applyTableAlias($columnsCondition)));
+                $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
