@@ -290,7 +290,7 @@ class UniqueValidator extends Validator
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
             $prefixedColumn = "{$alias}.[[" . preg_replace(
-                    '/^' . $alias . '\.(.*)$/',
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
                     "$1",
                     $columnName) . "]]";
             $prefixedConditions[$prefixedColumn] = $columnValue;
