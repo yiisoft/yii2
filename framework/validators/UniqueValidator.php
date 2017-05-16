@@ -173,12 +173,8 @@ class UniqueValidator extends Validator
             // if current $model is in the database already we can't use exists()
             if ($query instanceof \yii\db\ActiveQuery) {
                 // only select primary key to optimize query
-                $primaryAlias = array_keys($query->getTablesUsedInFrom())[0];
-                $columns = $targetClass::primaryKey();
-                foreach($columns as $c => $column) {
-                    $columns[$c] = "{$primaryAlias}.[[$column]]";
-                }
-                $query->select($columns);
+                $columnsCondition = array_flip($targetClass::primaryKey());
+                $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
@@ -280,6 +276,29 @@ class UniqueValidator extends Validator
     }
 
     /**
+     * Returns conditions with alias
+     * @param ActiveQuery $query
+     * @param array $conditions array of condition, keys to be modified
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @return array
+     */
+    private function applyTableAlias($query, $conditions, $alias = null)
+    {
+        if ($alias === null) {
+            $alias = array_keys($query->getTablesUsedInFrom())[0];
+        }
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            $prefixedColumn = "{$alias}.[[" . preg_replace(
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    "$1",
+                    $columnName) . "]]";
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+        return $prefixedConditions;
+    }
+
+    /**
      * Prefix conditions with aliases
      *
      * @param ActiveRecord $model
@@ -291,15 +310,6 @@ class UniqueValidator extends Validator
         $targetModelClass = $this->getTargetClass($model);
 
         /** @var ActiveRecord $targetModelClass */
-        $query = $targetModelClass::find();
-        $tableAliases = array_keys($query->getTablesUsedInFrom());
-        $primaryTableAlias = $tableAliases[0];
-        $prefixedConditions = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$primaryTableAlias}.[[{$columnName}]]";
-            $prefixedConditions[$prefixedColumn] = $columnValue;
-        }
-
-        return $prefixedConditions;
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 }
