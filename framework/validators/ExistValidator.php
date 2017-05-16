@@ -218,15 +218,6 @@ class ExistValidator extends Validator
         $targetModelClass = $this->getTargetClass($model);
 
         /** @var ActiveRecord $targetModelClass */
-        $query = $targetModelClass::find();
-        $tableAliases = array_keys($query->getTablesUsedInFrom());
-        $primaryTableAlias = $tableAliases[0];
-        $prefixedConditions = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$primaryTableAlias}.[[{$columnName}]]";
-            $prefixedConditions[$prefixedColumn] = $columnValue;
-        }
-
-        return $prefixedConditions;
+        return $targetModelClass::find()->applyTableAlias($conditions);
     }
 }
