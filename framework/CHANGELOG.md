@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.12 under development
 --------------------------
 
-- Eng #14103: Rbac Manager's `getUserIdsByRole()` can return all userids assigned specific role and its parents
+- Eng #14103: RBAC Manager's `getUserIdsByRole()` can return all userids assigned specific role and its parents (rossoneri)
 - Bug #13842: Fixed ambiguous table SQL error while using `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` (vladis84, samdark)
 - Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
