@@ -117,6 +117,37 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         ], $result->joinWith);
     }
 
+    public function providerApplyTableAlias()
+    {
+        return [
+            [$e = new \yii\db\Expression('NOW()'), null, $e],
+            [$s = ['string condition'], null, $s],
+            ['', null, ''],
+            [['id' => 1, 'name' => 'first'], null, ['{{%' . Customer::tableName() . '}}.[[id]]' => 1, '{{%' . Customer::tableName() . '}}.[[name]]' => 'first']],
+
+            [$e = new \yii\db\Expression('NOW()'), 'alias', $e],
+            [$s = ['string condition'], 'alias', $s],
+            ['', 'alias', ''],
+            [['id' => 1, 'name' => 'first'], 'alias', ['{{%alias}}.[[id]]' => 1, '{{%alias}}.[[name]]' => 'first']],
+
+            [['and', ['id' => 1], ['name' => 'first']], 'alias', [['and', '{{%alias}}.[[id]]' => 1], ['{{%alias}}.[[name]]' => 'first']]],
+
+        ];
+    }
+
+    /**
+     * @param $condition
+     * @param $alias
+     * @param $result
+     * @dataProvider providerApplyTableAlias
+     */
+    public function testApplyTableAlias($condition, $alias, $result)
+    {
+        $query = new ActiveQuery(Customer::className());
+
+        $this->assertEquals($result, $query->applyTableAlias($condition, $alias));
+    }
+
     /**
      * @todo: tests for internal logic of innerJoinWith()
      */

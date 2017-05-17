@@ -10,7 +10,6 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
-use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -208,29 +207,6 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Returns conditions with alias
-     * @param ActiveQuery $query
-     * @param array $conditions array of condition, keys to be modified
-     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
-     * @return array
-     */
-    private function applyTableAlias($query, $conditions, $alias = null)
-    {
-        if ($alias === null) {
-            $alias = array_keys($query->getTablesUsedInFrom())[0];
-        }
-        $prefixedConditions = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$alias}.[[" . preg_replace(
-                    '/^' . preg_quote($alias) . '\.(.*)$/',
-                    "$1",
-                    $columnName) . "]]";
-            $prefixedConditions[$prefixedColumn] = $columnValue;
-        }
-        return $prefixedConditions;
-    }
-
-    /**
      * Prefix conditions with aliases
      *
      * @param ActiveRecord $model
@@ -242,6 +218,6 @@ class ExistValidator extends Validator
         $targetModelClass = $this->getTargetClass($model);
 
         /** @var ActiveRecord $targetModelClass */
-        return $this->applyTableAlias($targetModelClass::find(), $conditions);
+        return $targetModelClass::find()->applyTableAlias($conditions);
     }
 }
