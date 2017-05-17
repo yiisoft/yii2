@@ -373,7 +373,22 @@ class Connection extends Component
      * @see masters
      */
     public $shuffleMasters = true;
-
+    /**
+     * @var bool whether to enable logging of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableProfiling
+     */
+    public $enableLogging = true;
+    /**
+     * @var bool whether to enable profiling of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableLogging
+     */
+    public $enableProfiling = true;
     /**
      * @var Transaction the currently active transaction
      */
@@ -1064,5 +1079,19 @@ class Connection extends Component
     {
         $this->close();
         return array_keys((array) $this);
+    }
+
+    /**
+     * Reset the connection after cloning.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_master = false;
+        $this->_slave = false;
+        $this->pdo = null;
+        $this->_schema = null;
+        $this->_transaction = null;
     }
 }

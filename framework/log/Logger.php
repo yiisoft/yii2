@@ -278,20 +278,22 @@ class Logger extends Component
             list($token, $level, $category, $timestamp, $traces) = $log;
             $memory = isset($log[5]) ? $log[5] : 0;
             $log[6] = $i;
+            $hash = md5($token);
             if ($level == Logger::LEVEL_PROFILE_BEGIN) {
-                $stack[] = $log;
+                $stack[$hash] = $log;
             } elseif ($level == Logger::LEVEL_PROFILE_END) {
-                if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-                    $timings[$last[6]] = [
-                        'info' => $last[0],
-                        'category' => $last[2],
-                        'timestamp' => $last[3],
-                        'trace' => $last[4],
-                        'level' => count($stack),
-                        'duration' => $timestamp - $last[3],
+                if (isset($stack[$hash])) {
+                    $timings[$stack[$hash][6]] = [
+                        'info' => $stack[$hash][0],
+                        'category' => $stack[$hash][2],
+                        'timestamp' => $stack[$hash][3],
+                        'trace' => $stack[$hash][4],
+                        'level' => count($stack) - 1,
+                        'duration' => $timestamp - $stack[$hash][3],
                         'memory' => $memory,
-                        'memoryDiff' => $memory - (isset($last[5]) ? $last[5] : 0),
+                        'memoryDiff' => $memory - (isset($stack[$hash][5]) ? $stack[$hash][5] : 0),
                     ];
+                    unset($stack[$hash]);
                 }
             }
         }

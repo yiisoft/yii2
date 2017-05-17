@@ -165,4 +165,24 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14150
+     */
+    public function testTargetTableWithAlias()
+    {
+        $oldTableName = OrderItem::$tableName;
+        OrderItem::$tableName = '{{%order_item}}';
+
+        $val = new ExistValidator([
+            'targetClass' => OrderItem::className(),
+            'targetAttribute' => ['id' => 'order_id'],
+        ]);
+
+        $m = new Order(['id' => 1]);
+        $val->validateAttribute($m, 'id');
+        $this->assertFalse($m->hasErrors('id'));
+
+        OrderItem::$tableName = $oldTableName;
+    }
 }
