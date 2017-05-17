@@ -1066,16 +1066,12 @@ class QueryBuilder extends \yii\base\Object
             return '';
         }
 
-        if (isset($condition[0])) {
-            if (is_string($condition[0])){ // operator format: operator, operand 1, operand 2, ...
-                $operator = strtoupper($condition[0]);
-                if (is_string($condition[0]) && isset($this->conditionBuilders[$operator])) {
-                    $method = $this->conditionBuilders[$operator];
-                } else {
-                    $method = 'buildSimpleCondition';
-                }
+        if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
+            $operator = strtoupper($condition[0]);
+            if (isset($this->conditionBuilders[$operator])) {
+                $method = $this->conditionBuilders[$operator];
             } else {
-                return $this->buildCondition($condition[0], $params);
+                $method = 'buildSimpleCondition';
             }
             array_shift($condition);
             return $this->$method($operator, $condition, $params);
