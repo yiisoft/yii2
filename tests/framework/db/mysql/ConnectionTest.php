@@ -16,9 +16,10 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
      *
      * @see https://github.com/yiisoft/yii2/issues/14165
      */
-    public function testGetPdoAfterClose(){
+    public function testGetPdoAfterClose()
+    {
         $connection = $this->getConnection();
-        if(!empty($connection->slaves)){
+        if (!empty($connection->slaves)){
             $connection->getSlavePdo(false);
         }
         $connection->close();
@@ -27,7 +28,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertNotFalse($masterPdo);
         $this->assertNotNull($masterPdo);
 
-        if(!empty($connection->slaves)){
+        if (!empty($connection->slaves)){
             $slavePdo = $connection->getSlavePdo(false);
             $this->assertNotFalse($slavePdo);
             $this->assertNotNull($slavePdo);
