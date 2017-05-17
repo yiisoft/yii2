@@ -387,4 +387,31 @@ abstract class ConnectionTest extends DatabaseTestCase
             $this->assertNull($conn3->pdo);
         }
     }
+
+
+    /**
+     * Test whether slave connection is recovered when call getSlavePdo() after close()
+     *
+     * @see https://github.com/yiisoft/yii2/issues/14165
+     */
+    public function testGetPdoAfterClose()
+    {
+        $connection = $this->getConnection();
+        $connection->slaves[] = [
+            'dsn' => $connection->dsn,
+            'username' => $connection->username,
+            'password' => $connection->password,
+        ];
+        $this->assertNotNull($connection->getSlavePdo(false));
+        $connection->close();
+
+        $masterPdo = $connection->getMasterPdo();
+        $this->assertNotFalse($masterPdo);
+        $this->assertNotNull($masterPdo);
+
+        $slavePdo = $connection->getSlavePdo(false);
+        $this->assertNotFalse($slavePdo);
+        $this->assertNotNull($slavePdo);
+        $this->assertNotSame($masterPdo,$slavePdo);
+    }
 }
