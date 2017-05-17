@@ -609,7 +609,7 @@ class User extends Component
         }
 
         /* Ensure any existing identity cookies are removed. */
-        if ($this->enableAutoLogin) {
+        if ($this->enableAutoLogin && ($this->autoRenewCookie || !$identity)) {
             $this->removeIdentityCookie();
         }
 
