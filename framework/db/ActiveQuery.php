@@ -795,7 +795,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      * @param array|string|Expression $condition to be modified. Processed only hash format.
      * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
      * @return array|string|Expression
-     * @since 2.0.12
+     * @since 2.0.13
      */
     public function applyTableAlias($condition, $alias = null)
     {
@@ -811,14 +811,12 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return $condition;
         }
 
+        $prefixedConditions = [];
         if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
-            $prefixedConditions = [$condition[0]];
-            array_shift($condition);
-            foreach ($this->applyTableAlias($condition, $alias) as $key => $value){
-                $prefixedConditions[$key] = $value;
+            foreach ($condition as $key => $value){
+                $prefixedConditions[$key] = $this->applyTableAlias($value, $alias);
             }
         } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-            $prefixedConditions = [];
             foreach ($condition as $columnName => $columnValue) {
                 $prefixedColumn = "{$alias}.[[" . preg_replace(
                         '/^' . preg_quote($alias) . '\.(.*)$/',
