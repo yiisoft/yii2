@@ -596,7 +596,7 @@ class Connection extends Component
             }
 
             $this->_master->close();
-            $this->_master = null;
+            $this->_master = false;
         }
 
         if ($this->pdo !== null) {
