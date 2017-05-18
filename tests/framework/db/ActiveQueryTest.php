@@ -121,12 +121,12 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     {
         return [
             [$e = new \yii\db\Expression('NOW()'), null, $e],
-            [$s = ['string condition'], null, $s],
+            [$s = 'string condition', null, $s],
             ['', null, ''],
             [['id' => 1, 'name' => 'first'], null, ['{{%' . Customer::tableName() . '}}.[[id]]' => 1, '{{%' . Customer::tableName() . '}}.[[name]]' => 'first']],
 
-            [$e = new \yii\db\Expression('NOW()'), 'alias', $e],
-            [$s = ['string condition'], 'alias', $s],
+            [$e, 'alias', $e],
+            [$s, 'alias', $s],
             ['', 'alias', ''],
             [['id' => 1, 'name' => 'first'], 'alias', ['{{%alias}}.[[id]]' => 1, '{{%alias}}.[[name]]' => 'first']],
 
