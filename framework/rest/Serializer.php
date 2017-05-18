@@ -89,6 +89,21 @@ class Serializer extends Component
      * The pagination information as shown in `_links` and `_meta` can be accessed from the response HTTP headers.
      */
     public $collectionEnvelope;
+
+    /**
+     * @var string the name of the envelope (e.g. `_links`) for returning the links objects.
+     * Works only if `collectionEnvelope` is set.
+     * @since 2.0.4
+     */
+    public $linksEnvelope = '_links';
+
+    /**
+     * @var string the name of the envelope (e.g. `_meta`) for returning the pagination object.
+     * Works only if `collectionEnvelope` is set.
+     * @since 2.0.4
+     */
+    public $metaEnvelope = '_meta';
+
     /**
      * @var string the name of the envelope (e.g. `_links`) for returning the links objects.
      * It takes effect only, if `collectionEnvelope` is set.
