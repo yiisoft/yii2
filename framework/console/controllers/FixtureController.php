@@ -428,9 +428,9 @@ class FixtureController extends Controller
      * @see getFixturePath()
      * @param string $fullFixturePath Full fixture path
      * @return string Relative fixture name
-     *
-    */
-    private function getFixtureRelativeName($fullFixturePath) {
+     */
+    private function getFixtureRelativeName($fullFixturePath)
+    {
         // $fixturesPath is normalized to unix format in getFixturesPath()
         $fixturesPath = $this->getFixturePath();
         // normalize $fixture to unix format
@@ -455,7 +455,7 @@ class FixtureController extends Controller
 
         foreach ($fixtures as $fixture) {
             $isNamespaced = (strpos($fixture, '\\') !== false);
-            // replace linux' path backslashes to namespace slashes, in case if $fixture is non-namespaced relative path
+            // replace linux' path slashes to namespace backslashes, in case if $fixture is non-namespaced relative path
             $fixture = str_replace('/', '\\', $fixture);
             $fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
 
