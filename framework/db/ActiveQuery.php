@@ -803,11 +803,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $alias = array_keys($this->getTablesUsedInFrom())[0];
         }
         //like QueryBuilder::buildCondition
-        if ($condition instanceof Expression) {
-            return $condition;
-        } elseif (!is_array($condition)) {
-            return $condition;
-        } elseif (empty($condition)) {
+        if (!is_array($condition) || empty($condition)) {
             return $condition;
         }
 
