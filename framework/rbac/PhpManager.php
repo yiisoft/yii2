@@ -645,6 +645,9 @@ class PhpManager extends BaseManager
     }
 
     /**
+     * @param string $name The name of the item being updated (aka : the 'old' name)
+     * @param Item $item The updated item
+     * @return bool
      * @inheritdoc
      */
     protected function updateItem($name, $item)
