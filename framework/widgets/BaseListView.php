@@ -188,7 +188,7 @@ abstract class BaseListView extends Widget
     {
         $count = $this->dataProvider->getCount();
         if ($count <= 0) {
-            return '';
+            return $this->emptyText;
         }
         $summaryOptions = $this->summaryOptions;
         $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
