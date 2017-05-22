@@ -341,7 +341,7 @@ class BaseConsole
     }
 
     //
-    // Error code constant names, values, and descriptions are taken from
+    // Exit code constant names, values, and descriptions are taken from
     // OpenBSD's sysexits(3) man page http://man.openbsd.org/sysexits
     //
     // The command completed successfully.
