@@ -20,6 +20,26 @@ use yii\db\ColumnSchema;
 class Schema extends \yii\db\Schema
 {
     /**
+     * @var string - MYSQL TINYTEXT data type. 255 bytes (characters)
+     */
+    const TYPE_TINYTEXT = 'tinytext';
+
+    /**
+     * @var string - MYSQL TINYTEXT data type. 65,535 bytes (characters) / 64KB
+     */
+    const TYPE_TEXT = 'text';
+
+    /**
+     * @var string - MYSQL TINYTEXT data type. 16,777,215 bytes (characters) / 16MB
+     */
+    const TYPE_MEDIUMTEXT = 'mediumtext';
+
+    /**
+     * @var string - MYSQL TINYTEXT data type. 4,294,967,295 bytes (characters) / 4GB
+     */
+    const TYPE_LONGTEXT = 'longtext';
+
+    /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      */
     public $typeMap = [
@@ -35,9 +55,9 @@ class Schema extends \yii\db\Schema
         'real' => self::TYPE_FLOAT,
         'decimal' => self::TYPE_DECIMAL,
         'numeric' => self::TYPE_DECIMAL,
-        'tinytext' => self::TYPE_TEXT,
-        'mediumtext' => self::TYPE_TEXT,
-        'longtext' => self::TYPE_TEXT,
+        'tinytext' => self::TYPE_TINYTEXT,
+        'mediumtext' => self::TYPE_MEDIUMTEXT,
+        'longtext' => self::TYPE_LONGTEXT,
         'longblob' => self::TYPE_BINARY,
         'blob' => self::TYPE_BINARY,
         'text' => self::TYPE_TEXT,
