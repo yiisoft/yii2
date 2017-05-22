@@ -221,11 +221,6 @@ class IpValidator extends Validator
         if (!$this->ipv4 && !$this->ipv6) {
             throw new InvalidConfigException('Both IPv4 and IPv6 checks can not be disabled at the same time');
         }
-
-        if (!defined('AF_INET6') && $this->ipv6) {
-            throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
-        }
-
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be a valid IP address.');
         }
@@ -606,9 +601,9 @@ class IpValidator extends Validator
             'hasSubnet' => $this->hasSubnet,
         ];
         foreach ($messages as &$message) {
-            $message = Yii::$app->getI18n()->format($message, [
+            $message = $this->formatMessage($message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language);
+            ]);
         }
 
         $options = [

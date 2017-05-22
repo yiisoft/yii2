@@ -49,7 +49,17 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    protected $likeEscapeCharacter = '\\';
+    protected $likeEscapeCharacter = '!';
+    /**
+     * `\` is initialized in [[buildLikeCondition()]] method since
+     * we need to choose replacement value based on [[\yii\db\Schema::quoteValue()]].
+     * @inheritdoc
+     */
+    protected $likeEscapingReplacements = [
+        '%' => '!%',
+        '_' => '!_',
+        '!' => '!!',
+    ];
 
     /**
      * @inheritdoc
@@ -184,7 +194,7 @@ EOD;
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -306,4 +316,74 @@ EOD;
     {
         return 'COMMENT ON TABLE ' . $this->db->quoteTableName($table) . " IS ''";
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function buildLikeCondition($operator, $operands, &$params)
+    {
+        if (!isset($this->likeEscapingReplacements['\\'])) {
+            /*
+             * Different pdo_oci8 versions may or may not implement PDO::quote(), so
+             * yii\db\Schema::quoteValue() may or may not quote \.
+             */
+            $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
+        }
+        return parent::buildLikeCondition($operator, $operands, $params);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildInCondition($operator, $operands, &$params)
+    {
+        $splitCondition = $this->splitInCondition($operator, $operands, $params);
+        if ($splitCondition !== null) {
+            return $splitCondition;
+        }
+
+        return parent::buildInCondition($operator, $operands, $params);
+    }
+
+    /**
+     * Oracle DBMS does not support more than 1000 parameters in `IN` condition.
+     * This method splits long `IN` condition into series of smaller ones.
+     *
+     * @param string $operator
+     * @param array $operands
+     * @param array $params
+     * @return null|string null when split is not required. Otherwise - built SQL condition.
+     * @throws Exception
+     * @since 2.0.12
+     */
+    protected function splitInCondition($operator, $operands, &$params)
+    {
+        if (!isset($operands[0], $operands[1])) {
+            throw new Exception("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $values) = $operands;
+
+        if ($values instanceof \Traversable) {
+            $values = iterator_to_array($values);
+        }
+
+        if (!is_array($values)) {
+            return null;
+        }
+
+        $maxParameters = 1000;
+        $count = count($values);
+        if ($count <= $maxParameters) {
+            return null;
+        }
+
+        $condition = [($operator === 'IN') ? 'OR' : 'AND'];
+        for ($i = 0; $i < $count; $i += $maxParameters) {
+            $condition[] = [$operator, $column, array_slice($values, $i, $maxParameters)];
+        }
+
+        return $this->buildCondition(['AND', $condition], $params);
+    }
+
 }

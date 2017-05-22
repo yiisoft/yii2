@@ -10,8 +10,6 @@ namespace yiiunit\framework\web;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\Response;
-use yiiunit\framework\web\stubs\Bar;
-use yiiunit\framework\web\stubs\OtherQux;
 use yiiunit\TestCase;
 
 /**

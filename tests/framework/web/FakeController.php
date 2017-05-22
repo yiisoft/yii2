@@ -8,9 +8,6 @@
 namespace yiiunit\framework\web;
 
 use yii\web\Controller;
-use yiiunit\framework\di\stubs\QuxInterface;
-use yiiunit\framework\web\stubs\Bar;
-use yii\validators\EmailValidator;
 
 /**
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>

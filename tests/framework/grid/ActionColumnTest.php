@@ -4,7 +4,6 @@
 namespace yiiunit\framework\grid;
 
 
-use yii\base\Model;
 use yii\grid\ActionColumn;
 
 /**
@@ -69,7 +68,7 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test visible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function($model, $key, $index){return $model['id'] == 1;}
+            'update' => function($model, $key, $index) {return $model['id'] == 1;}
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertContains('update_button', $columnContents);
@@ -83,7 +82,7 @@ class ActionColumnTest extends \yiiunit\TestCase
 
         //test invisible button (condition is callback)
         $column->visibleButtons = [
-            'update' => function($model, $key, $index){return $model['id'] != 1;}
+            'update' => function($model, $key, $index) {return $model['id'] != 1;}
         ];
         $columnContents = $column->renderDataCell(['id' => 1], 1, 0);
         $this->assertNotContains('update_button', $columnContents);

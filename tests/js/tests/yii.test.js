@@ -20,8 +20,8 @@ var StringUtils = {
 
 describe('yii', function () {
     var yiiPath = 'framework/assets/yii.js';
-    var jQueryPath = 'vendor/bower/jquery/dist/jquery.js';
-    var pjaxPath = 'vendor/bower/yii2-pjax/jquery.pjax.js';
+    var jQueryPath = 'vendor/bower-asset/jquery/dist/jquery.js';
+    var pjaxPath = 'vendor/bower-asset/yii2-pjax/jquery.pjax.js';
     var sandbox;
     var $;
     var yii;
@@ -739,6 +739,8 @@ describe('yii', function () {
     describe('getQueryParams method', function () {
         withData({
             'no query parameters': ['/posts/index', {}],
+            // https://github.com/yiisoft/yii2/issues/13738
+            'question mark, no query parameters': ['/posts/index?', {}],
             'query parameters': ['/posts/index?foo=1&bar=2', {foo: '1', bar: '2'}],
             'query parameter with multiple values (not array)': ['/posts/index?foo=1&foo=2', {'foo': ['1', '2']}],
             'query parameter with multiple values (array)': ['/posts/index?foo[]=1&foo[]=2', {'foo[]': ['1', '2']}],

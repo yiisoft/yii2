@@ -157,11 +157,13 @@ class BaseStringHelper
         $tokens = $lexer->tokenizeHTML($string, $config, new \HTMLPurifier_Context());
         $openTokens = [];
         $totalCount = 0;
+        $depth = 0;
         $truncated = [];
         foreach ($tokens as $token) {
             if ($token instanceof \HTMLPurifier_Token_Start) { //Tag begins
-                $openTokens[$token->name] = isset($openTokens[$token->name]) ? $openTokens[$token->name] + 1 : 1;
+                $openTokens[$depth] = $token->name;
                 $truncated[] = $token;
+                ++$depth;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
                     preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
@@ -174,11 +176,9 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                if (!empty($openTokens[$token->name])) {
-                    $openTokens[$token->name]--;
-                    if ($openTokens[$token->name] <= 0) {
-                        unset($openTokens[$token->name]);
-                    }
+                if ($token->name === $openTokens[$depth-1]) {
+                    --$depth;
+                    unset($openTokens[$depth]);
                     $truncated[] = $token;
                 }
             } elseif ($token instanceof \HTMLPurifier_Token_Empty) { //Self contained tags, i.e. <img/> etc.
@@ -186,11 +186,9 @@ class BaseStringHelper
             }
             if ($totalCount >= $count) {
                 if (0 < count($openTokens)) {
-                    foreach (array_reverse($openTokens) as $name => $countTag) {
-                        while ($countTag > 0) {
-                            $truncated[] = new \HTMLPurifier_Token_End($name);
-                            $countTag--;
-                        }
+                    krsort($openTokens);
+                    foreach ($openTokens as $name) {
+                        $truncated[] = new \HTMLPurifier_Token_End($name);
                     }
                 }
                 break;
@@ -317,11 +315,14 @@ class BaseStringHelper
 
     /**
      * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
-     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
-     * @param string $input
-     * @return string
-     * @since 2.0.11
+     * > Note: Base 64 padding `=` may be at the end of the returned string.
+     * > `=` is not transparent to URL encoding.
+     *
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input the string to encode.
+     * @return string encoded string.
+     * @since 2.0.12
      */
     public static function base64UrlEncode($input)
     {
@@ -330,11 +331,11 @@ class BaseStringHelper
 
     /**
      * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
-     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
-     * @param string $input
-     * @return string
-     * @since 2.0.11
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input encoded string.
+     * @return string decoded string.
+     * @since 2.0.12
      */
     public static function base64UrlDecode($input)
     {

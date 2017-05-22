@@ -299,7 +299,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(10,0) CHECK (value > 5.6)',
                     'sqlite' => 'decimal(10,0) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
-                    'sqlsrv' => 'decimal CHECK (value > 5.6)',
+                    'sqlsrv' => 'decimal(18,0) CHECK (value > 5.6)',
                     'cubrid' => 'decimal(10,0) CHECK (value > 5.6)',
                 ],
             ],
@@ -311,7 +311,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(10,0) NOT NULL',
                     'sqlite' => 'decimal(10,0) NOT NULL',
                     'oci' => 'NUMBER NOT NULL',
-                    'sqlsrv' => 'decimal NOT NULL',
+                    'sqlsrv' => 'decimal(18,0) NOT NULL',
                     'cubrid' => 'decimal(10,0) NOT NULL',
                 ],
             ],
@@ -323,7 +323,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(12,4) CHECK (value > 5.6)',
                     'sqlite' => 'decimal(12,4) CHECK (value > 5.6)',
                     'oci' => 'NUMBER CHECK (value > 5.6)',
-                    'sqlsrv' => 'decimal CHECK (value > 5.6)',
+                    'sqlsrv' => 'decimal(12,4) CHECK (value > 5.6)',
                     'cubrid' => 'decimal(12,4) CHECK (value > 5.6)',
                 ],
             ],
@@ -335,7 +335,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(12,4)',
                     'sqlite' => 'decimal(12,4)',
                     'oci' => 'NUMBER',
-                    'sqlsrv' => 'decimal',
+                    'sqlsrv' => 'decimal(12,4)',
                     'cubrid' => 'decimal(12,4)',
                 ],
             ],
@@ -347,7 +347,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                     'postgres' => 'numeric(10,0)',
                     'sqlite' => 'decimal(10,0)',
                     'oci' => 'NUMBER',
-                    'sqlsrv' => 'decimal',
+                    'sqlsrv' => 'decimal(18,0)',
                     'cubrid' => 'decimal(10,0)',
                 ],
             ],
@@ -1036,6 +1036,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             }
         }
         $this->getConnection(false)->createCommand($qb->createTable('column_type_table', $columns))->execute();
+        $this->assertNotEmpty($qb->db->getTableSchema('column_type_table', true));
     }
 
     public function conditionProvider()
@@ -1145,7 +1146,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         }
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1193,7 +1194,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ];
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
         return $conditions;
@@ -1230,25 +1231,25 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $qb = $this->getQueryBuilder();
         $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, ['id'])->execute();
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(1, count($tableSchema->primaryKey));
+        $this->assertCount(1, $tableSchema->primaryKey);
 
         // DROP
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(0, count($tableSchema->primaryKey));
+        $this->assertCount(0, $tableSchema->primaryKey);
 
         // ADD (2 columns)
         $qb = $this->getQueryBuilder();
         $qb->db->createCommand()->addPrimaryKey($pkeyName, $tableName, 'id, field1')->execute();
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(2, count($tableSchema->primaryKey));
+        $this->assertCount(2, $tableSchema->primaryKey);
 
         // DROP (2 columns)
         $qb->db->createCommand()->dropPrimaryKey($pkeyName, $tableName)->execute();
         $qb = $this->getQueryBuilder(); // resets the schema
         $tableSchema = $qb->db->getSchema()->getTableSchema($tableName);
-        $this->assertEquals(0, count($tableSchema->primaryKey));
+        $this->assertCount(0, $tableSchema->primaryKey);
     }
 
     public function existsParamsProvider()
@@ -1464,7 +1465,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $this->assertEquals([
             'id' => 1,
             'abc' => 'abc',
-        ],$params);
+        ], $params);
 
         // simple subquery
         $subquery = "(SELECT * FROM user WHERE account_id = accounts.id)";
@@ -1697,7 +1698,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         ];
 
         // adjust dbms specific escaping
-        foreach($conditions as $i => $condition) {
+        foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
             if (!empty($this->likeEscapeCharSql)) {
                 preg_match_all('/(?P<condition>LIKE.+?)( AND| OR|$)/', $conditions[$i][1], $matches, PREG_SET_ORDER);

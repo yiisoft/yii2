@@ -2,8 +2,6 @@
 
 namespace yiiunit\framework\db\mssql;
 
-use yii\db\Expression;
-use yii\db\mssql\Schema;
 use yii\db\Query;
 
 /**
@@ -14,9 +12,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'sqlsrv';
 
-    protected $likeEscapeCharSql = " ESCAPE '\\'";
     protected $likeParameterReplacements = [
-        '[abc]' => '\[abc\]',
+        '\%' => '[%]',
+        '\_' => '[_]',
+        '[' => '[[]',
+        ']' => '[]]',
+        '\\\\' => '[\\]',
     ];
 
     public function testOffsetLimit()

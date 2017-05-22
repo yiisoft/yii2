@@ -2,12 +2,8 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
 use yii\data\ActiveDataProvider;
-use yii\db\Connection;
-use yii\db\Query;
 use yii\widgets\Breadcrumbs;
-use yii\widgets\LinkSorter;
 use yii\widgets\ListView;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Order;
@@ -47,8 +43,10 @@ class LinkSorterTest extends DatabaseTestCase
         ]);
         $actualHtml = ob_get_clean();
 
-        $this->assertTrue(strpos($actualHtml, '<a href="/index.php?r=site%2Findex&amp;sort=customer_id" data-sort="customer_id">Customer</a>') !== false);
-        $this->assertTrue(strpos($actualHtml, '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>') !== false);
+        $this->assertNotFalse(strpos($actualHtml,
+            '<a href="/index.php?r=site%2Findex&amp;sort=customer_id" data-sort="customer_id">Customer</a>'));
+        $this->assertNotFalse(strpos($actualHtml,
+            '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>'));
     }
 
     public function testLabelsExplicit()
@@ -70,8 +68,10 @@ class LinkSorterTest extends DatabaseTestCase
         ]);
         $actualHtml = ob_get_clean();
 
-        $this->assertFalse(strpos($actualHtml, '<a href="/index.php?r=site%2Findex&amp;sort=customer_id" data-sort="customer_id">Customer</a>') !== false);
-        $this->assertTrue(strpos($actualHtml, '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>') !== false);
+        $this->assertFalse(strpos($actualHtml,
+            '<a href="/index.php?r=site%2Findex&amp;sort=customer_id" data-sort="customer_id">Customer</a>'));
+        $this->assertNotFalse(strpos($actualHtml,
+            '<a href="/index.php?r=site%2Findex&amp;sort=total" data-sort="total">Invoice Total</a>'));
     }
 
 }

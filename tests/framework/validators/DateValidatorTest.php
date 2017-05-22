@@ -2,7 +2,6 @@
 
 namespace yiiunit\framework\validators;
 
-use DateTime;
 use yii\validators\DateValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\framework\i18n\IntlTestHelper;
@@ -235,7 +234,7 @@ class DateValidatorTest extends TestCase
     public function timestampFormatProvider()
     {
         $return = [];
-        foreach($this->provideTimezones() as $appTz) {
+        foreach ($this->provideTimezones() as $appTz) {
             foreach ($this->provideTimezones() as $tz) {
                 $return[] = ['yyyy-MM-dd', '2013-09-13', '2013-09-13', $tz[0], $appTz[0]];
                 // regardless of timezone, a simple date input should always result in 00:00:00 time

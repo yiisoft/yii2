@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use Yii;
+use yii\helpers\FileHelper;
 use yii\web\View;
 use yii\web\AssetBundle;
 use yii\web\AssetManager;
@@ -27,6 +28,24 @@ class AssetBundleTest extends \yiiunit\TestCase
         Yii::setAlias('@testAssetsPath', '@webroot/assets');
         Yii::setAlias('@testAssetsUrl', '@web/assets');
         Yii::setAlias('@testSourcePath', '@webroot/assetSources');
+
+        // clean up assets directory
+        $handle = opendir($dir = Yii::getAlias('@testAssetsPath'));
+        if ($handle === false) {
+            throw new \Exception("Unable to open directory: $dir");
+        }
+        while (($file = readdir($handle)) !== false) {
+            if ($file === '.' || $file === '..' || $file === '.gitignore') {
+                continue;
+            }
+            $path = $dir . DIRECTORY_SEPARATOR . $file;
+            if (is_dir($path)) {
+                FileHelper::removeDirectory($path);
+            } else {
+                unlink($path);
+            }
+        }
+        closedir($handle);
     }
 
     /**
@@ -59,8 +78,6 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertTrue(is_dir($bundle->basePath));
         $this->sourcesPublish_VerifyFiles('css', $bundle);
         $this->sourcesPublish_VerifyFiles('js', $bundle);
-
-        $this->assertTrue(rmdir($bundle->basePath));
     }
 
     private function sourcesPublish_VerifyFiles($type, $bundle)
@@ -70,9 +87,8 @@ class AssetBundleTest extends \yiiunit\TestCase
             $sourceFile = $bundle->sourcePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileExists($publishedFile);
             $this->assertFileEquals($publishedFile, $sourceFile);
-            $this->assertTrue(unlink($publishedFile));
         }
-        $this->assertTrue(rmdir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
+        $this->assertTrue(is_dir($bundle->basePath . DIRECTORY_SEPARATOR . $type));
     }
 
     public function testSourcesPublishedBySymlink()
@@ -90,7 +106,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             }
         ]);
         $bundle = $this->verifySourcesPublishedBySymlink($view);
-        $this->assertTrue(rmdir(dirname($bundle->basePath)));
+        $this->assertTrue(is_dir(dirname($bundle->basePath)));
     }
 
     public function testSourcesPublish_AssetManagerBeforeCopy()
@@ -105,12 +121,11 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle = TestSourceAsset::register($view);
         $bundle->publish($am);
 
-        $this->assertTrue(is_dir($bundle->basePath));
+        $this->assertFalse(is_dir($bundle->basePath));
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileNotExists($publishedFile);
         }
-        $this->assertTrue(rmdir($bundle->basePath));
     }
 
     public function testSourcesPublish_AssetBeforeCopy()
@@ -126,12 +141,36 @@ class AssetBundleTest extends \yiiunit\TestCase
         ];
         $bundle->publish($am);
 
-        $this->assertTrue(is_dir($bundle->basePath));
+        $this->assertFalse(is_dir($bundle->basePath));
         foreach ($bundle->js as $filename) {
             $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
             $this->assertFileNotExists($publishedFile);
         }
-        $this->assertTrue(rmdir($bundle->basePath));
+    }
+
+    public function testSourcesPublish_publishOptions_Only()
+    {
+        $view = $this->getView();
+        $am = $view->assetManager;
+
+        $bundle = new TestSourceAsset([
+            'publishOptions' => [
+                'only' => [
+                    'js/*'
+                ]
+            ],
+        ]);
+        $bundle->publish($am);
+
+        $notNeededFilesDir = dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->css[0]);
+        $this->assertFileNotExists($notNeededFilesDir);
+
+        foreach ($bundle->js as $filename) {
+            $publishedFile = $bundle->basePath . DIRECTORY_SEPARATOR . $filename;
+            $this->assertFileExists($publishedFile);
+        }
+        $this->assertTrue(is_dir(dirname($bundle->basePath . DIRECTORY_SEPARATOR . $bundle->js[0])));
+        $this->assertTrue(is_dir($bundle->basePath));
     }
 
     /**
@@ -165,9 +204,9 @@ class AssetBundleTest extends \yiiunit\TestCase
 
         $this->assertEmpty($view->assetBundles);
         TestSimpleAsset::register($view);
-        $this->assertEquals(1, count($view->assetBundles));
+        $this->assertCount(1, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset'] instanceof AssetBundle);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
 
         $expected = <<<EOF
 123<script src="/js/jquery.js"></script>4
@@ -181,13 +220,13 @@ EOF;
 
         $this->assertEmpty($view->assetBundles);
         TestAssetBundle::register($view);
-        $this->assertEquals(3, count($view->assetBundles));
+        $this->assertCount(3, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetBundle', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle'] instanceof AssetBundle);
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset'] instanceof AssetBundle);
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3'] instanceof AssetBundle);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
         $expected = <<<EOF
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
@@ -226,14 +265,14 @@ EOF;
             TestJqueryAsset::register($view);
         }
         TestAssetBundle::register($view);
-        $this->assertEquals(3, count($view->assetBundles));
+        $this->assertCount(3, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetBundle', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
 
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle'] instanceof AssetBundle);
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset'] instanceof AssetBundle);
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3'] instanceof AssetBundle);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
         $this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions);
         $this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions['position']);
@@ -299,13 +338,13 @@ EOF;
         if ($jqAlreadyRegistered) {
             TestJqueryAsset::register($view);
         }
-        $this->setExpectedException('yii\\base\\InvalidConfigException');
+        $this->expectException('yii\\base\\InvalidConfigException');
         TestAssetBundle::register($view);
     }
 
     public function testCircularDependency()
     {
-        $this->setExpectedException('yii\\base\\InvalidConfigException');
+        $this->expectException('yii\\base\\InvalidConfigException');
         TestAssetCircleA::register($this->getView());
     }
 
@@ -315,9 +354,9 @@ EOF;
 
         $this->assertEmpty($view->assetBundles);
         TestSimpleAsset::register($view);
-        $this->assertEquals(1, count($view->assetBundles));
+        $this->assertCount(1, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
-        $this->assertTrue($view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset'] instanceof AssetBundle);
+        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
         // register TestJqueryAsset which also has the jquery.js
         TestJqueryAsset::register($view);
 

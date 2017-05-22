@@ -59,6 +59,8 @@ class SluggableBehaviorTest extends TestCase
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :
@@ -78,7 +80,7 @@ class SluggableBehaviorTest extends TestCase
     public function testSlugSeveralAttributes()
     {
         $model = new ActiveRecordSluggable();
-        $model->getBehavior('sluggable')->attribute = array('name', 'category_id');
+        $model->getBehavior('sluggable')->attribute = ['name', 'category_id'];
 
         $model->name = 'test';
         $model->category_id = 10;
@@ -165,6 +167,44 @@ class SluggableBehaviorTest extends TestCase
         $model->name = 'test-name';
         $model->save();
         $this->assertEquals('test-name', $model->slug);
+    }
+
+    /**
+     * @depends testSlug
+     */
+    public function testImmutableByAttribute()
+    {
+        $model = new ActiveRecordSluggable();
+        $model->getSluggable()->immutable = true;
+
+        $model->name = 'test name';
+        $model->validate();
+        $this->assertEquals('test-name', $model->slug);
+
+        $model->name = 'another name';
+        $model->validate();
+        $this->assertEquals('test-name', $model->slug);
+    }
+
+    /**
+     * @depends testSlug
+     */
+    public function testImmutableByCallback()
+    {
+        $model = new ActiveRecordSluggable();
+        $model->getSluggable()->immutable = true;
+        $model->getSluggable()->attribute = null;
+        $model->getSluggable()->value = function () use ($model) {
+            return $model->name;
+        };
+
+        $model->name = 'test name';
+        $model->validate();
+        $this->assertEquals('test name', $model->slug);
+
+        $model->name = 'another name';
+        $model->validate();
+        $this->assertEquals('test name', $model->slug);
     }
 }
 

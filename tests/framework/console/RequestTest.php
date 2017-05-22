@@ -28,19 +28,27 @@ class RequestTest extends TestCase
                     '-12345',
                     '--option1',
                     '--option2=testValue',
+                    '--option-3=testValue',
+                    '--option_4=testValue',
                     '-alias1',
                     '-alias2=testValue',
+                    '-alias-3=testValue',
+                    '-alias_4=testValue',
                 ],
                 'expected' => [
                     'route' => 'controller/route',
                     'params' => [
                         'param1',
                         '-12345',
-                        'option1' => '1',
+                        'option1' => true,
                         'option2' => 'testValue',
+                        'option-3' => 'testValue',
+                        'option_4' => 'testValue',
                         '_aliases' => [
                             'alias1' => true,
                             'alias2' => 'testValue',
+                            'alias-3' => 'testValue',
+                            'alias_4' => 'testValue',
                         ],
                     ],
                 ],
@@ -132,7 +140,8 @@ class RequestTest extends TestCase
     public function testResolve($params, $expected, $expectedException = null)
     {
         if (isset($expectedException)) {
-            $this->setExpectedException($expectedException[0], $expectedException[1]);
+            $this->expectException($expectedException[0]);
+            $this->expectExceptionMessage($expectedException[1]);
         }
 
         $request = new Request();

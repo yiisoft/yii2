@@ -12,7 +12,13 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'cubrid';
 
-    protected $likeEscapeCharSql = " ESCAPE '\\'";
+    protected $likeEscapeCharSql = " ESCAPE '!'";
+    protected $likeParameterReplacements = [
+        '\%' => '!%',
+        '\_' => '!_',
+        '\!' => '!!',
+        '\\\\' => '\\',
+    ];
 
     /**
      * this is not used as a dataprovider for testGetColumnType to speed up the test

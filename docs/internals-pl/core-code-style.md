@@ -7,8 +7,7 @@ stosowania go we własnych aplikacjach. Wybierz styl, który najbardziej odpowia
 
 Możesz pobrać gotową konfigurację dla CodeSniffera pod adresem: https://github.com/yiisoft/yii2-coding-standards
 
-1. Omówienie
-------------
+## 1. Omówienie
 
 Używamy przede wszystkim standardu kodowania
 [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md), zatem wszystko, co dotyczy
@@ -26,8 +25,7 @@ kodowania.
 - Nazwy właściwości klasy MUSZĄ zaczynać się podkreślnikiem, jeśli są prywatne.
 - Należy używać `elseif` zamiast `else if`.
 
-2. Pliki
---------
+## 2. Pliki
 
 ### 2.1. Tagi PHP
 
@@ -40,13 +38,11 @@ kodowania.
 
 Kod PHP MUSI używać wyłącznie UTF-8 bez znacznika BOM.
 
-3. Nazwy klas
--------------
+## 3. Nazwy klas
 
 Nazwy klas MUSZĄ być zadeklarowane w formacie `StudlyCaps`. Przykładowo `Controller`, `Model`.
 
-4. Klasy
---------
+## 4. Klasy
 
 Termin "klasa" odnosi się tutaj do wszystkich klas i interfejsów.
 

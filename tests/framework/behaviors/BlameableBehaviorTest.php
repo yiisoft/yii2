@@ -7,7 +7,6 @@ use yii\base\Object;
 use yii\behaviors\BlameableBehavior;
 use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
-use yii\db\Connection;
 use yii\db\ActiveRecord;
 
 /**
@@ -48,18 +47,20 @@ class BlameableBehaviorTest extends TestCase
         $this->getUser()->login(10);
     }
 
+    public function tearDown()
+    {
+        Yii::$app->getDb()->close();
+        parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
+    }
+
     /**
      * @return UserMock
      */
     private function getUser()
     {
         return Yii::$app->get('user');
-    }
-
-    public function tearDown()
-    {
-        Yii::$app->getDb()->close();
-        parent::tearDown();
     }
 
     public function testInsertUserIsGuest()

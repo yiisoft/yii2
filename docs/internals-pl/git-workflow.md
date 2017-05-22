@@ -22,6 +22,8 @@ Jeśli napotkasz na problemy związane z Gitem i GitHubem na systemie operacyjny
 "Permission Denied (publickey)" ("Odmowa dostępu (klucz publiczny)"), musisz odpowiednio 
 [skonfigurować instalację Gita do pracy z GitHubem](http://help.github.com/linux-set-up-git/).
 
+> Tip: jeśli nie jesteś biegły w używaniu Gita, polecamy doskonałą darmową książkę [Pro Git](https://git-scm.com/book/en/v2) (z polskim tłumaczeniem dla [poprzedniej edycji](https://git-scm.com/book/pl/v1).
+
 ### 2. Dodaj główne repozytorium Yii jako dodatkowy zdalny git nazwany "upstream"
 
 Przejdź do folderu, do którego sklonowałeś Yii (zwykle "yii2") i uruchom następującą komendę:
@@ -34,15 +36,24 @@ git remote add upstream git://github.com/yiisoft/yii2.git
 
 Poniższe kroki nie są wymagane, jeśli chcesz pracować tylko nad tłumaczeniami lub dokumentacją.
 
-- uruchom `composer update`, aby zainstalować wymagane zależności (zakładając, że masz [composera zainstalowanego globalnie](https://getcomposer.org/doc/00-intro.md#globally)).
+- uruchom `composer install`, aby zainstalować wymagane zależności (zakładając, że masz [composera zainstalowanego globalnie](https://getcomposer.org/doc/00-intro.md#globally)).
 
-> Note: Jeśli otrzymujesz błędu typu `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` (`Problem 1 Wymagany pakiet bower-asset/jquery nie mógł być znaleziony w jakiejkolwiek wersji, być może w nazwie pakietu jest literówka.`), musisz uruchomić komendę `composer global require "fxp/composer-asset-plugin:^1.2.0"`
+> Note: Jeśli otrzymujesz błędu typu `Problem 1 The requested package bower-asset/jquery could not be found in any version, there may be a typo in the package name.` (`Problem 1 Wymagany pakiet bower-asset/jquery nie mógł być znaleziony w jakiejkolwiek wersji, być może w nazwie pakietu jest literówka.`), musisz uruchomić komendę `composer global require "fxp/composer-asset-plugin:^1.3.1"`
 
-- uruchom komendę `php build/build dev/app basic`, aby sklonować podstawowy szablon projektu aplikacji i zainstaluj dla niego zależności composera.
+Jeśli zamierzasz pracować z JavaScript:
+
+- uruchom `npm install`, aby zainstalować narzędzia testerskie JavaScript i ich zależności (zakładając, że masz [zainstalowane Node.js i NPM]
+(https://nodejs.org/en/download/package-manager/)).
+
+> Note: testy JavaScript są zależne od biblioteki [jsdom](https://github.com/tmpvar/jsdom), która wymaga Node.js 4 lub nowszego.
+Zalecane jest używanie Node.js w wersji 6 lub 7.
+
+- uruchom komendę `php build/build dev/app basic <fork>`, aby sklonować podstawowy szablon projektu aplikacji i zainstaluj dla niego zależności composera.
+  `<fork>` jest URL Twojego forka repozytorium, np. `git@github.com:my_nickname/yii2-app-basic.git`. Jeśli jesteś kontrybutorem głównego kodu frameworka, możesz pominąć wskazywanie forka.
   Komenda ta zainstaluje normalnie pakiety composera, ale jednocześnie podlinkuje folder yii2 do 
   pobranego wcześniej repozytorium, dzięki czemu otrzymasz instalację jednej instacji całego kodu na raz.
   
-  Powtórz ten krok dla zaawansowanego szablonu projektu aplikacji, jeśli chcesz: `php build/build dev/app advanced`.
+  Powtórz ten krok dla zaawansowanego szablonu projektu aplikacji, jeśli chcesz: `php build/build dev/app advanced <fork>`.
   
   Ta komenda służy również do aktualizacji zależności; uruchamia wewnętrznie `composer update`.
 
@@ -56,7 +67,8 @@ Poniższe kroki są opcjonalne.
 ### Testy jednostkowe
 
 Możesz uruchomić testy jednostkowe za pomocą komendy `phpunit` w głównym folderze repozytorium. 
-Jeśli nie posiadasz phpunit zainstalowanego globalnie, użyj zamiast tego komendy `php vendor/bin/phpunit`.
+Jeśli nie posiadasz phpunit zainstalowanego globalnie, użyj zamiast tego komendy `php vendor/bin/phpunit` lub 
+`vendor/bin/phpunit.bat` w przypadku korzystania z systemu Windows.
 
 Niektóre testy wymagają przygotowania i skonfigurowania dodatkowych baz danych. Możesz utworzyć plik `tests/data/config.local.php`, 
 aby nadpisać konfigurację ustawioną w `tests/data/config.php`.
@@ -64,19 +76,22 @@ aby nadpisać konfigurację ustawioną w `tests/data/config.php`.
 Możesz ograniczyć testy do grupy tych, nad którymi akurat pracujesz, np. aby uruchomić tylko testy walidatorów i redisa użyj 
 `phpunit --group=validators,redis`. Możesz zobaczyć listę dostępnych grup po wpisaniu `phpunit --list-groups`. 
 
+Możesz rozpocząć testy jednostkowe JavaScript, uruchamiając `npm test` w głównym folderze repozytorium.
+
 ### Rozszerzenia
 
 Aby pracować nad rozszerzeniami, musisz sklonować ich repozytoria. Stworzyliśmy komendę, która pozwoli Ci to zrobić w prosty sposób:
 
 ```
-php build/build dev/ext <nazwa-rozszerzenia>
+php build/build dev/ext <nazwa-rozszerzenia> <fork>
 ```
 
-Oczywiście zamiast `<nazwa-rozszerzenia>` wpisz konkretną jego nazwę, np. `redis`.
+gdzie `<nazwa-rozszerzenia>` jest poprawną nazwą, np. `redis`, a `<fork>` jest URL forka rozszerzenia np. `git@github.com:my_nickname/yii2-redis.git`. 
+Jeśli jesteś kontrybutorem głównego kodu frameworka, możesz pominąć wskazywanie forka.
 
 Jeśli chcesz przetestować rozszerzenie w jednym z szablonów projektów, po prostu dodaj je do pliku `composer.json` aplikacji 
 w zwyczajowy sposób, np. dodaj `"yiisoft/yii2-redis": "~2.0.0"` do sekcji `require` w podstawowym szablonie aplikacji.
-Uruchomienie `php build/build dev/app basic` zainstaluje rozszerzenie i jego zależności i utworzy symlink do folderu 
+Uruchomienie `php build/build dev/app basic <fork>` zainstaluje rozszerzenie i jego zależności i utworzy symlink do folderu 
 `extensions/redis`, dzięki czemu możesz pracować bezpośrednio w repozytorium yii2, a nie folderze vendorowym composera.
 
 > Note: Również w tym przypadku pamiętaj o fladze `--useHttp`, jak to opisano powyżej.

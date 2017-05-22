@@ -9,7 +9,7 @@ Trzy główne funkcjonalności, które zapewniają komponenty innym klasom to:
 * [Behaviory (zachowania)](concept-behaviors.md)
  
 Wszystkie razem i każda z tych funkcjonalności osobno zapewnia klasom Yii o wiele większą elastyczność i łatwość użycia. Dla przykładu,
-dołączony [[yii\jui\DatePicker|widżet wybierania daty]], komponent interfejsu użytkownika, może być użyty w [widoku](structure-view.md), 
+dołączony [[yii\jui\DatePicker|widżet wybierania daty]], komponent interfejsu użytkownika, może być użyty w [widoku](structure-views.md), 
 aby wygenerować interaktywny kalendarz:
 
 ```php

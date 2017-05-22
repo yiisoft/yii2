@@ -10,9 +10,9 @@ namespace yii\validators;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
 use yii\db\ActiveRecordInterface;
-use yii\db\Query;
 use yii\helpers\Inflector;
 
 /**
@@ -119,7 +119,7 @@ class UniqueValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         /* @var $targetClass ActiveRecordInterface */
-        $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
+        $targetClass = $this->getTargetClass($model);
         $targetAttribute = $this->targetAttribute === null ? $attribute : $this->targetAttribute;
         $rawConditions = $this->prepareConditions($targetAttribute, $model, $attribute);
         $conditions[] = $this->targetAttributeJunction === 'or' ? 'or' : 'and';
@@ -139,6 +139,15 @@ class UniqueValidator extends Validator
                 $this->addError($model, $attribute, $this->message);
             }
         }
+    }
+
+    /**
+     * @param Model $model the data model to be validated
+     * @return string Target class name
+     */
+    private function getTargetClass($model)
+    {
+        return $this->targetClass === null ? get_class($model) : $this->targetClass;
     }
 
     /**
@@ -164,7 +173,8 @@ class UniqueValidator extends Validator
             // if current $model is in the database already we can't use exists()
             if ($query instanceof \yii\db\ActiveQuery) {
                 // only select primary key to optimize query
-                $query->select($targetClass::primaryKey());
+                $columnsCondition = array_flip($targetClass::primaryKey());
+                $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
@@ -173,7 +183,7 @@ class UniqueValidator extends Validator
                 $dbModel = reset($models);
                 $pks = $targetClass::primaryKey();
                 $pk = [];
-                foreach($pks as $pkAttribute) {
+                foreach ($pks as $pkAttribute) {
                     $pk[$pkAttribute] = $dbModel[$pkAttribute];
                 }
                 $exists = ($pk != $model->getOldPrimaryKey(true));
@@ -234,7 +244,11 @@ class UniqueValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        return $conditions;
+        if (!$model instanceof ActiveRecord) {
+            return $conditions;
+        }
+
+        return $this->prefixConditions($model, $conditions);
     }
 
     /**
@@ -247,7 +261,7 @@ class UniqueValidator extends Validator
         $attributeCombo = [];
         $valueCombo = [];
         foreach ($this->targetAttribute as $key => $value) {
-            if(is_int($key)) {
+            if (is_int($key)) {
                 $attributeCombo[] = $model->getAttributeLabel($value);
                 $valueCombo[] = '"' . $model->$value . '"';
             } else {
@@ -259,5 +273,43 @@ class UniqueValidator extends Validator
             'attributes' => Inflector::sentence($attributeCombo),
             'values' => implode('-', $valueCombo)
         ]);
+    }
+
+    /**
+     * Returns conditions with alias
+     * @param ActiveQuery $query
+     * @param array $conditions array of condition, keys to be modified
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @return array
+     */
+    private function applyTableAlias($query, $conditions, $alias = null)
+    {
+        if ($alias === null) {
+            $alias = array_keys($query->getTablesUsedInFrom())[0];
+        }
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            $prefixedColumn = "{$alias}.[[" . preg_replace(
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    "$1",
+                    $columnName) . "]]";
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+        return $prefixedConditions;
+    }
+
+    /**
+     * Prefix conditions with aliases
+     *
+     * @param ActiveRecord $model
+     * @param array $conditions
+     * @return array
+     */
+    private function prefixConditions($model, $conditions)
+    {
+        $targetModelClass = $this->getTargetClass($model);
+
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 }

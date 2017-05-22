@@ -58,7 +58,7 @@ by running `composer self-update`.
 With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.3.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 

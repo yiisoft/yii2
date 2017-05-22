@@ -3,6 +3,7 @@
 namespace yiiunit\framework\db\oci;
 
 use yii\db\oci\Schema;
+use yiiunit\data\base\TraversableObject;
 
 /**
  * @group db
@@ -12,7 +13,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'oci';
 
-    protected $likeEscapeCharSql = " ESCAPE '\\'";
+    protected $likeEscapeCharSql = " ESCAPE '!'";
+    protected $likeParameterReplacements = [
+        '\%' => '!%',
+        '\_' => '!_',
+        '!' => '!!',
+    ];
 
     /**
      * this is not used as a dataprovider for testGetColumnType to speed up the test
@@ -69,5 +75,64 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             .'CREATE SEQUENCE "item_SEQ" START WITH 4 INCREMENT BY 1 NOMAXVALUE NOCACHE';
         $sql = $qb->resetSequence('item', 4);
         $this->assertEquals($expected, $sql);
+    }
+
+    public function likeConditionProvider()
+    {
+        /*
+         * Different pdo_oci8 versions may or may not implement PDO::quote(), so
+         * yii\db\Schema::quoteValue() may or may not quote \.
+         */
+        $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
+        $this->likeParameterReplacements[$encodedBackslash] = '\\';
+        return parent::likeConditionProvider();
+    }
+
+    public function conditionProvider()
+    {
+        return array_merge(parent::conditionProvider(), [
+            [
+                ['in', 'id', range(0, 2500)],
+
+                ' ('
+                . '([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 0, 999)) . '))'
+                . ' OR ([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 1000, 1999)) . '))'
+                . ' OR ([[id]] IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) .'))'
+                . ')',
+
+                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
+            ],
+            [
+                ['not in', 'id', range(0, 2500)],
+
+                '('
+                . '([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 0, 999)) . '))'
+                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 1000, 1999)) . '))'
+                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) .'))'
+                . ')',
+
+                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
+            ],
+            [
+                ['not in', 'id', new TraversableObject(range(0, 2500))],
+
+                '('
+                . '([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 0, 999)) . '))'
+                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 1000, 1999)) . '))'
+                . ' AND ([[id]] NOT IN (' . implode(', ', $this->generateSprintfSeries(':qp%d', 2000, 2500)) .'))'
+                . ')',
+
+                array_flip($this->generateSprintfSeries(':qp%d', 0, 2500))
+            ],
+        ]);
+    }
+
+    protected function generateSprintfSeries ($pattern, $from, $to) {
+        $items = [];
+        for ($i = $from; $i <= $to; $i++) {
+            $items[] = sprintf($pattern, $i);
+        }
+
+        return $items;
     }
 }
