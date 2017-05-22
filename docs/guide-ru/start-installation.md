@@ -199,7 +199,7 @@ server {
 
     location / {
         # Перенаправляем все запросы к несуществующим директориям и файлам на index.php
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ /index.php$is_args$args;
     }
 
     # раскомментируйте строки ниже во избежание обработки Yii обращений к несуществующим статическим файлам
