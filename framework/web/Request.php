@@ -876,7 +876,8 @@ class Request extends \yii\base\Request
     public function getIsSecureConnection()
     {
         return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0;
+            || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0
+            || isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443';
     }
 
     /**
