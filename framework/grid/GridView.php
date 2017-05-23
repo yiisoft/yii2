@@ -525,6 +525,10 @@ class GridView extends BaseListView
             $this->guessColumns();
         }
         foreach ($this->columns as $i => $column) {
+            if ($column === false){
+                unset($this->columns[$i]);
+                continue;
+            }
             if (is_string($column)) {
                 $column = $this->createDataColumn($column);
             } else {
