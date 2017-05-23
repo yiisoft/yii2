@@ -288,12 +288,18 @@ class ContainerTest extends TestCase
         $this->assertSame($foo, $sameFoo);
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testVariadicConstructor()
     {
         $container = new Container();
         $container->get(Variadic::class);
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testVariadicCallable()
     {
         $container = new Container();
