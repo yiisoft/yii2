@@ -276,7 +276,7 @@ yii.validation = (function ($) {
                 compareValue = $('#' + options.compareAttribute).val();
             }
 
-            if (options.type === 'number') {
+            if (['double', 'integer', 'number'].indexOf(options.type) >= 0) {
                 value = parseFloat(value);
                 compareValue = parseFloat(compareValue);
             }
