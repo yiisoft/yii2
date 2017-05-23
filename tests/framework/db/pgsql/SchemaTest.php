@@ -195,6 +195,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals(0, $column->defaultValue);
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/14192
+     */
     public function testTimestampNullDefaultValue()
     {
         $db = $this->getConnection(false);
