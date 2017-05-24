@@ -507,7 +507,7 @@ EOD;
      * @param array $ignoreCategories message categories to ignore.
      * @return array messages.
      */
-    private function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
+    protected function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
     {
         $messages = [];
         $translatorTokensCount = count($translatorTokens);
