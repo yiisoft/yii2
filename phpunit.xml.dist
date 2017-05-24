@@ -29,6 +29,7 @@
 				<directory suffix="Exception.php">framework/base</directory>
 				<directory suffix=".php">framework/db/mssql</directory>
 				<directory suffix=".php">framework/bootstrap</directory>
+				<directory suffix=".php">benchmarks</directory>
 			</blacklist>
 		</filter>
 </phpunit>
