@@ -172,6 +172,15 @@ class GridView extends BaseListView
      * ]
      * ```
      *
+     * Using `false` instead of the configuration for column to simple remove column look like this:
+     *
+     * ```php
+     * [
+     *     $showSerial ? ['class' => SerialColumn::className()] : false,
+     *     \Yii::$app->user->can('adminPermission') ? ['class' => 'yii\grid\ActionColumn'] : false,
+     * ]
+     * ```
+     *
      * When using a [[dataProvider]] with active records, you can also display values from related records,
      * e.g. the `name` attribute of the `author` relation:
      *
