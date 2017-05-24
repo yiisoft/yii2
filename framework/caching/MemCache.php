@@ -95,7 +95,6 @@ class MemCache extends Cache
      * @see http://php.net/manual/en/memcached.setsaslauthdata.php
      */
     public $password;
-
     /**
      * @var \Memcache|\Memcached the Memcache instance
      */
@@ -104,7 +103,11 @@ class MemCache extends Cache
      * @var array list of memcache server configurations
      */
     private $_servers = [];
-
+    /**
+     * @var bool same base memcached protocol incompatible duration great than some value,it use duration second,you
+     * need set true.
+     */
+    public $useDuration = false;
 
     /**
      * Initializes this application component.
@@ -179,7 +182,7 @@ class MemCache extends Cache
         $paramCount = $class->getMethod('addServer')->getNumberOfParameters();
         foreach ($servers as $server) {
             // $timeout is used for memcache versions that do not have $timeoutms parameter
-            $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
+            $timeout = (int)($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
             if ($paramCount === 9) {
                 $cache->addserver(
                     $server->host,
@@ -295,7 +298,11 @@ class MemCache extends Cache
         // Use UNIX timestamp since it doesn't have any limitation
         // @see http://php.net/manual/en/memcache.set.php
         // @see http://php.net/manual/en/memcached.expiration.php
-        $expire = $duration > 0 ? $duration + time() : 0;
+        if ($this->useDuration) {
+            $expire = $duration;
+        } else {
+            $expire = $duration > 0 ? $duration + time() : 0;
+        }
 
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
     }
@@ -312,7 +319,11 @@ class MemCache extends Cache
             // Use UNIX timestamp since it doesn't have any limitation
             // @see http://php.net/manual/en/memcache.set.php
             // @see http://php.net/manual/en/memcached.expiration.php
-            $expire = $duration > 0 ? $duration + time() : 0;
+            if ($this->useDuration) {
+                $expire = $duration;
+            } else {
+                $expire = $duration > 0 ? $duration + time() : 0;
+            }
 
             // Memcached::setMulti() returns boolean
             // @see http://php.net/manual/en/memcached.setmulti.php
