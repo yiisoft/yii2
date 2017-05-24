@@ -400,6 +400,7 @@ class BaseFileHelper
      */
     public static function findFiles($dir, $options = [])
     {
+        $dir = Yii::getAlias($dir);
         if (!is_dir($dir)) {
             throw new InvalidParamException("The dir argument must be a directory: $dir");
         }
