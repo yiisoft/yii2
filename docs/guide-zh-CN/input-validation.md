@@ -160,6 +160,18 @@ return [
 
 如你所见，这些验证规则并不真的对输入数据进行任何验证。而是，对输入数据进行一些处理，然后把它们存回当前被验证的模型特性。
 
+下面的代码示例展示了对用户输入的完整处理，这将确保只将整数值存储在一个属性中：
+```php
+['age', 'trim'],
+['age', 'default', 'value' => null],
+['age', 'integer', 'integerOnly' => true, 'min' => 0],
+['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
+```
+以上代码将对输入执行以下操作：
+1. 从输入值中去除前后空白。
+2. 确保空输入在数据库中存储为`null`；我们区分 `未设置` 值和实际值为 `0` 之间的区别。如果值不允许为`null`，则可以在此处设置另一个默认值。
+3. 如果该值不为空，则验证该值是否为大于0的整数。大多数验证器的 [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] 属性都被设置为`true`。
+4. 确保该值为整数类型，例如将字符串 `'42'` 转换为整数 `42`。在这里，我们将 [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] 设置为 `true`，默认情况下，在 [[yii\validators\FilterValidator|filter]] 验证器里这个属性是 `false`。
 
 ### 处理空输入 <span id="handling-empty-inputs"></span>
 
