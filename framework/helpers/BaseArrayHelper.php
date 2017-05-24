@@ -110,17 +110,14 @@ class BaseArrayHelper
      * You can use [[UnsetArrayValue]] object to unset value from previous array or
      * [[ReplaceArrayValue]] to force replace former value instead of recursive merging.
      * @param array $a array to be merged to
-     * @param array $b array to be merged from. You can specify additional
+     * @param array ...$b array to be merged from. You can specify additional
      * arrays via third argument, fourth argument etc.
      * @return array the merged array (the original arrays are not changed.)
      */
     public static function merge($a, $b)
     {
-        $args = func_get_args();
-        $res = array_shift($args);
-        while (!empty($args)) {
-            $next = array_shift($args);
-            foreach ($next as $k => $v) {
+        $merge = function (array $res, array $b) use (&$merge) {
+            foreach ($b as $k => $v) {
                 if ($v instanceof UnsetArrayValue) {
                     unset($res[$k]);
                 } elseif ($v instanceof ReplaceArrayValue) {
@@ -137,8 +134,13 @@ class BaseArrayHelper
                     $res[$k] = $v;
                 }
             }
-        }
-
+            
+            return $res;
+        };
+        
+        $args = array_slice(func_get_args(), 2);
+        $res = array_reduce($args, $merge, $merge($a, $b));
+        
         return $res;
     }
 
