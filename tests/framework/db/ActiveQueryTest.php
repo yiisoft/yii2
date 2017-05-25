@@ -357,4 +357,19 @@ abstract class ActiveQueryTest extends DatabaseTestCase
             '{{%order_item}}' => '{{%order_item}}',
         ], $tables);
     }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14211
+     */
+    public function testGetTableAliasFromTableNameWithDatabase()
+    {
+        $query = new ActiveQuery(null);
+        $query->from = 'tickets.workflows';
+
+        $tables = $query->getTablesUsedInFrom();
+
+        $this->assertEquals([
+            '{{tickets.workflows}}' => '{{tickets.workflows}}',
+        ], $tables);
+    }
 }

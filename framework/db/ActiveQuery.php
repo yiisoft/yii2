@@ -822,7 +822,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     .*?
     (?:['"`\]]|}})
     |
-    \w+
+    .*?
 )
 (?:
     (?:
@@ -835,7 +835,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         .*?
         (?:['"`\]]|}})
         |
-        \w+
+        .*?
     )
 )?
 \s*
