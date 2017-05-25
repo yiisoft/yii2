@@ -557,7 +557,7 @@ abstract class BaseMigrateController extends Controller
      */
     public function actionCreate($name)
     {
-        if (!preg_match('/^[\w\\\\]+$/', $name)) {
+        if (!preg_match('/^[\w\\]+$/', $name)) {
             throw new Exception('The migration name should contain letters, digits, underscore and/or backslash characters only.');
         }
 
