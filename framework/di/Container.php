@@ -165,7 +165,7 @@ class Container extends Component
             $concrete = $definition['class'];
             unset($definition['class']);
 
-            $config = array_merge($definition, $config);
+            $config = array_replace_recursive($definition, $config);
             $params = $this->mergeParams($class, $params);
 
             if ($concrete === $class) {
