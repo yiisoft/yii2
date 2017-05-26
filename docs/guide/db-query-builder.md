@@ -652,12 +652,11 @@ value which will be used as the index value for the current row.
 
 ### Batch Query <span id="batch-query"></span>
 
-When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable
-because they require loading all data into the memory. To keep the memory requirement low, Yii
-provides the so-called batch query support. A batch query makes use of the data cursor and fetches
-data in batches.
+When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading all data into the memory. To keep the memory requirement low, an `Unbuffered Query`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php) is needed, in this mode, the MySQL Server will hold the result dataset cursor, waiting the client to get them every iter.  **Unless all the dataset have been retrieved, no other query could be done through this connection, and the table may remains locked by MySQL and cannot be written to by other queries according to your actually logic. Please remember these drawbacks**
 
-Batch query can be used like the following:
+ Yii provides the so-called batch query support. A batch query makes use of the data cursor and fetches data in batches, but the `$db` parameter is not the  one that have `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` disabled before `version 2.0.11.2` by default, [and maybe won't ever](https://github.com/yiisoft/yii2/issues/8420), because there is no [`Silver Bullet` ](https://github.com/yiisoft/yii2/issues/8420#issuecomment-295679232) for this (still under discussion for now). Before PHP 5.6, the memory usage of buffered query in drivers does not count towards PHP's memory limit, but it takes the memory actually,  it may  eat all your servers' memory and get your PHP-FPM process killed. It is Suggested that you create a new connection to MySql Server , which the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is set to `false` at you need manually.
+
+Assume that you have a set a connection to `$unbuffered_db` which the `BUFFERED_QUERY` is off. Batch query can be used like the following at a low memory cost of PHP:
 
 ```php
 use yii\db\Query;
@@ -666,27 +665,27 @@ $query = (new Query())
     ->from('user')
     ->orderBy('id');
 
-foreach ($query->batch() as $users) {
+foreach ($query->batch(100,$unbuffered_db) as $users) {
     // $users is an array of 100 or fewer rows from the user table
 }
 
 // or if you want to iterate the row one by one
-foreach ($query->each() as $user) {
+foreach ($query->each(100,$unbuffered_db) as $user) {
     // $user represents one row of data from the user table
 }
 ```
 
-The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object
-which implements the `Iterator` interface and thus can be used in the `foreach` construct.
+The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object which implements the `Iterator` interface and thus can be used in the `foreach` construct.
 During the first iteration, a SQL query is made to the database. Data are then fetched in batches
 in the remaining iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
 You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
 
-Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
-If you process the data and then discard it right away, the batch query can help reduce memory usage.
+Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory in  `UNBUFFERED_QUERY`  mode.
+
+If `BUFFERED_QUERY` not configured properly,  the `batch()` or `each()` method still hold all the dataset in memory, this is be done in the driver level.
 
 If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query
-will still keep the proper index. For example,
+will still keep the proper index. For example:
 
 ```php
 $query = (new \yii\db\Query())
