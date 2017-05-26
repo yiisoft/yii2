@@ -169,6 +169,14 @@ class Container extends Component
             $params = $this->mergeParams($class, $params);
 
             if ($concrete === $class) {
+                $parent = $class;
+                while(($parent = get_parent_class($parent)) !== false){
+                    if(isset($this->_definitions[$parent])){
+                        $definition = $this->_definitions[$parent];
+                        unset($definition['class']);
+                        $config = array_merge($definition, $config);
+                    }
+                }
                 $object = $this->build($class, $params, $config);
             } else {
                 $object = $this->get($concrete, $params, $config);
