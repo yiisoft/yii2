@@ -657,7 +657,7 @@ When working with large amounts of data, methods such as [[yii\db\Query::all()]]
 > Warning: Unless whole data set has been retrieved, no other query could be done through the same connection. The table may remains locked by MySQL and cannot be written to by other queries.
 
 Yii provides the so-called batch query support. A batch query makes use of the data cursor and fetches data in batches, but the `$db` parameter is not the  one that have `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY`
-disabled before `version 2.0.11.2` by default, [and maybe won't ever](https://github.com/yiisoft/yii2/issues/8420) (still under discussion for now), because there is no [`Silver Bullet` ](https://github.com/yiisoft/yii2/issues/8420#issuecomment-295679232) for this.
+disabled before `version 2.0.11.2` by default, [and maybe won't ever](https://github.com/yiisoft/yii2/issues/8420) (still under discussion for now), because there is  [`No Silver Bullet`](https://github.com/yiisoft/yii2/issues/8420#issuecomment-295679232) for this.
 Before PHP 5.6, the memory usage of buffered query in drivers does not count towards PHP's memory limit, but it takes the memory actually,  it may  eat all your servers' memory and get your PHP-FPM 
 process killed. It is Suggested that you create a new connection to MySQL Server , which the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is set to `false` at your need manually.
 
@@ -687,7 +687,7 @@ You can change the batch size by passing the first parameter to the `batch()` or
 
 Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory in `UNBUFFERED_QUERY` mode.
 
-If `BUFFERED_QUERY` not configured properly, the `batch()` or `each()` method still hold all the dataset in PDO's memory, this is be done in the driver level.
+If `BUFFERED_QUERY` not configured properly, the `batch()` or `each()` method still hold all the data set in PDO's memory, this is be done in the driver level.
 
 If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query will still keep the proper index.
 
