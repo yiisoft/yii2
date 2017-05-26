@@ -659,7 +659,7 @@ When working with large amounts of data, methods such as [[yii\db\Query::all()]]
 Yii provides the so-called batch query support. A batch query makes use of the data cursor and fetches data in batches, but the `$db` parameter is not the  one that have `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY`
 disabled before `version 2.0.11.2` by default, [and maybe won't ever](https://github.com/yiisoft/yii2/issues/8420) (still under discussion for now), because there is no [`Silver Bullet` ](https://github.com/yiisoft/yii2/issues/8420#issuecomment-295679232) for this.
 Before PHP 5.6, the memory usage of buffered query in drivers does not count towards PHP's memory limit, but it takes the memory actually,  it may  eat all your servers' memory and get your PHP-FPM 
-process killed. It is Suggested that you create a new connection to MySql Server , which the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is set to `false` at you need manually.
+process killed. It is Suggested that you create a new connection to MySQL Server , which the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is set to `false` at your need manually.
 
 Assume that you have a set a connection to `$unbuffered_db` which the `BUFFERED_QUERY` is off. Batch query can be used like the following at a low memory cost of PHP:
 
