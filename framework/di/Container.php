@@ -265,6 +265,7 @@ class Container extends Component
      *
      * @param string $class class name, interface name or alias name
      * @param mixed $definition the definition associated with `$class`. See [[set()]] for more details.
+     * If `null`, next call to [[get()]] behaves in the same way as if the instance was never created.
      * @param array $params the list of constructor parameters. The parameters will be passed to the class
      * constructor when [[get()]] is called.
      * @return $this the container itself
@@ -272,9 +273,13 @@ class Container extends Component
      */
     public function setSingleton($class, $definition = [], array $params = [])
     {
-        $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
-        $this->_params[$class] = $params;
-        $this->_singletons[$class] = null;
+        if ($definition !== null) {
+            $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
+            $this->_params[$class] = $params;
+            $this->_singletons[$class] = null;
+        } elseif (isset($this->_singletons[$class])) {
+            $this->_singletons[$class] = null;
+        }
         return $this;
     }
 

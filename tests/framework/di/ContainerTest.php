@@ -114,6 +114,39 @@ class ContainerTest extends TestCase
         $this->assertEquals(4, $qux->a);
     }
 
+    public function testSetSingleton()
+    {
+        $namespace = __NAMESPACE__ . '\stubs';
+        $QuxInterface = "$namespace\\QuxInterface";
+        $Qux = Qux::className();
+
+        $container = new Container;
+
+        $container->setSingleton($QuxInterface, null);
+        $this->assertFalse($container->hasSingleton($QuxInterface));
+
+        $container->setSingleton($QuxInterface, $Qux);
+        $this->assertTrue($container->hasSingleton($QuxInterface));
+        $this->assertFalse($container->hasSingleton($QuxInterface, true));
+
+        $qux = $container->get($QuxInterface);
+        $this->assertTrue($qux instanceof $Qux);
+        $this->assertTrue($container->hasSingleton($QuxInterface, true));
+
+        $qux2 = $container->get($QuxInterface);
+        $this->assertTrue($qux === $qux2);
+
+        $container->setSingleton($QuxInterface, null);
+        $this->assertTrue($container->hasSingleton($QuxInterface));
+        $this->assertFalse($container->hasSingleton($QuxInterface, true));
+
+        $qux3 = $container->get($QuxInterface);
+        $this->assertFalse($qux2 === $qux3);
+
+        $qux4 = $container->get($QuxInterface);
+        $this->assertTrue($qux3 === $qux4);
+    }
+
     public function testInvoke()
     {
         $this->mockApplication([
