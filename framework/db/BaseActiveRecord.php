@@ -69,6 +69,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     const EVENT_AFTER_UPDATE = 'afterUpdate';
     /**
+     * @event BeforeUpdateAttributes is an event that is triggered before updateAttributes() is called.
+     */
+    const EVENT_BEFORE_UPDATE_ATTRIBUTES = 'beforeUpdateAttributes';
+    /**
+     * @event AfterUpdateAttributes is an event that is triggered after updateAttributes() has been called.
+     */
+    const EVENT_AFTER_UPDATE_ATTRIBUTES = 'afterUpdateAttributes';
+    /**
      * @event ModelEvent an event that is triggered before deleting a record.
      * You may set [[ModelEvent::isValid]] to be `false` to stop the deletion.
      */
@@ -714,6 +722,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function updateAttributes($attributes)
     {
+        $this->trigger(self::EVENT_BEFORE_UPDATE_ATTRIBUTES);
+
         $attrs = [];
         foreach ($attributes as $name => $value) {
             if (is_int($name)) {
@@ -734,6 +744,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         foreach ($values as $name => $value) {
             $this->_oldAttributes[$name] = $this->_attributes[$name];
         }
+
+        $this->trigger(self::EVENT_AFTER_UPDATE_ATTRIBUTES);
 
         return $rows;
     }
