@@ -652,10 +652,9 @@ value which will be used as the index value for the current row.
 
 ### Batch Query <span id="batch-query"></span>
 
-When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading all data into the memory. To keep the memory requirement low, 
-an [`Unbuffered Query`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php) is needed, in this mode, the MySQL Server will hold the result dataset cursor, waiting the client to get them every iter.
-**Unless all the dataset have been retrieved, no other query could be done through this connection, and the table may remains locked by MySQL and cannot be written to by other queries according to your
-actually logic and design of your project. Please remember these drawbacks**
+When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading all data into the memory. To keep the memory requirement low, an [`Unbuffered Query`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php) is needed. In this mode, the MySQL Server will hold the result data set cursor, waiting the client to get data for every iteration. 
+
+> Warning: Unless whole data set has been retrieved, no other query could be done through the same connection. The table may remains locked by MySQL and cannot be written to by other queries.
 
 Yii provides the so-called batch query support. A batch query makes use of the data cursor and fetches data in batches, but the `$db` parameter is not the  one that have `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY`
 disabled before `version 2.0.11.2` by default, [and maybe won't ever](https://github.com/yiisoft/yii2/issues/8420) (still under discussion for now), because there is no [`Silver Bullet` ](https://github.com/yiisoft/yii2/issues/8420#issuecomment-295679232) for this.
