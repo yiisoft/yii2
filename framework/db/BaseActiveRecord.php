@@ -598,7 +598,15 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
         } else {
             foreach ($this->_attributes as $name => $value) {
-                if (isset($names[$name]) && (!array_key_exists($name, $this->_oldAttributes) || $value !== $this->_oldAttributes[$name])) {
+                if (!array_key_exists($name, $this->_oldAttributes)) {
+                    return true;
+                } elseif (is_numeric($value) && is_numeric($this->_oldAttributes[$name])) {
+                    $dirty = $value != $this->_oldAttributes[$name];
+                } else {
+                    $dirty = $value !== $this->_oldAttributes[$name];
+                }
+
+                if (isset($names[$name]) && $dirty) {
                     $attributes[$name] = $value;
                 }
             }
