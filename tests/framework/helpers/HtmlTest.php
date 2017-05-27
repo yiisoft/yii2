@@ -90,6 +90,7 @@ class HtmlTest extends TestCase
         $this->assertEquals('<link href="/test" rel="stylesheet">', Html::cssFile(''));
         $this->assertEquals("<!--[if IE 9]>\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<![endif]-->", Html::cssFile('http://example.com', ['condition' => 'IE 9']));
         $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<link href="http://example.com" rel="stylesheet">' . "\n<!--<![endif]-->", Html::cssFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
+        $this->assertEquals('<noscript><link href="http://example.com" rel="stylesheet"></noscript>', Html::cssFile('http://example.com', ['noscript' => true]));
     }
 
     public function testJsFile()
@@ -98,6 +99,76 @@ class HtmlTest extends TestCase
         $this->assertEquals('<script src="/test"></script>', Html::jsFile(''));
         $this->assertEquals("<!--[if IE 9]>\n" . '<script src="http://example.com"></script>' . "\n<![endif]-->", Html::jsFile('http://example.com', ['condition' => 'IE 9']));
         $this->assertEquals("<!--[if (gte IE 9)|(!IE)]><!-->\n" . '<script src="http://example.com"></script>' . "\n<!--<![endif]-->", Html::jsFile('http://example.com', ['condition' => '(gte IE 9)|(!IE)']));
+    }
+
+    public function testCsrfMetaTagsDisableCsrfValidation()
+    {
+        $this->mockApplication([
+            'components' => [
+                'request' => [
+                    'class' => 'yii\web\Request',
+                    'enableCsrfValidation' => false,
+                ],
+            ],
+        ]);
+        $this->assertEquals('', Html::csrfMetaTags());
+    }
+    
+    public function testCsrfMetaTagsEnableCsrfValidation()
+    {
+        $this->mockApplication([
+            'components' => [
+                'request' => [
+                    'class' => 'yii\web\Request',
+                    'enableCsrfValidation' => true,
+                    'cookieValidationKey' => 'key',
+                ],
+                'response' => [
+                    'class' => 'yii\web\Response',
+                ],
+            ],
+        ]);
+        $pattern = '<meta name="csrf-param" content="_csrf">%A<meta name="csrf-token" content="%s">';
+        $actual = Html::csrfMetaTags();
+        $this->assertStringMatchesFormat($pattern, $actual);
+    }
+    
+    public function testCsrfMetaTagsEnableCsrfValidationWithoutCookieValidationKey()
+    {
+        $request = $this->getMock('yii\\web\\Request');
+        $request->method('enableCsrfValidation')->willReturn(true);
+        Yii::$app->set('request', $request);
+        $pattern = '<meta name="csrf-param" content="_csrf">%A<meta name="csrf-token">';
+        $actual = Html::csrfMetaTags();
+        $this->assertStringMatchesFormat($pattern, $actual);
+    }
+
+    /**
+     * @dataProvider dataProviderBeginFormSimulateViaPost
+     * 
+     * @param string $expected
+     * @param string $method
+     */
+    public function testBeginFormSimulateViaPost($expected, $method)
+    {
+        $actual = Html::beginForm('/foo', $method);
+        $this->assertStringMatchesFormat($expected, $actual);
+    }
+
+    /**
+     * Data provider for [[testBeginFormSimulateViaPost()]]
+     * @return array test data
+     */
+    public function dataProviderBeginFormSimulateViaPost()
+    {
+        return [
+          ['<form action="/foo" method="GET">', 'GET'],  
+          ['<form action="/foo" method="POST">', 'POST'],  
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="DELETE">', 'DELETE'],  
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="GETFOO">', 'GETFOO'],  
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="POSTFOO">', 'POSTFOO'],  
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="POSTFOOPOST">', 'POSTFOOPOST'],  
+        ];
     }
 
     public function testBeginForm()
@@ -109,6 +180,10 @@ class HtmlTest extends TestCase
             '<input type="hidden" name="title" value="&lt;">',
         ];
         $this->assertEquals('<form action="/example" method="get">' . "\n" . implode("\n", $hiddens), Html::beginForm('/example?id=1&title=%3C', 'get'));
+
+        $expected = '<form action="/foo" method="GET">%A<input type="hidden" name="p" value="">';
+        $actual = Html::beginForm('/foo?p', 'GET');
+        $this->assertStringMatchesFormat($expected, $actual);
     }
 
     public function testEndForm()
@@ -421,6 +496,13 @@ EOD;
                 'value2' => ['selected' => true]
             ],
         ]));
+
+        $expected = <<<EOD
+<select name="test[]" multiple="true" size="4">
+
+</select>
+EOD;
+        $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, [], ['multiple' => 'true']));
     }
 
     public function testListBox()
@@ -644,6 +726,8 @@ EOD;
         ]));
 
         $this->assertEquals('<ul class="test"></ul>', Html::ul([], ['class' => 'test']));
+
+        $this->assertStringMatchesFormat('<foo>%A</foo>', Html::ul([], ['tag' => 'foo']));
     }
 
     public function testOl()
@@ -760,6 +844,13 @@ EOD;
         $this->assertEquals('', Html::renderTagAttributes(['class' => []]));
         $this->assertEquals(' style="width: 100px; height: 200px;"', Html::renderTagAttributes(['style' => ['width' => '100px', 'height' => '200px']]));
         $this->assertEquals('', Html::renderTagAttributes(['style' => []]));
+
+        $attributes = [
+            'data' => [
+                'foo' => [],
+            ],
+        ];
+        $this->assertEquals(' data-foo=\'[]\'', Html::renderTagAttributes($attributes));
     }
 
     public function testAddCssClass()
@@ -1325,6 +1416,125 @@ EOD;
     {
         $this->expectException('yii\base\InvalidParamException');
         Html::getAttributeName($name);
+    }
+
+    public function testActiveFileInput()
+    {
+        $expected = '<input type="hidden" name="foo" value=""><input type="file" id="htmltestmodel-types" name="foo">';
+        $model = new HtmlTestModel();
+        $actual = Html::activeFileInput($model, 'types', ['name' => 'foo']);
+        $this->assertEqualsWithoutLE($expected, $actual);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Attribute name must contain word characters only.
+     */
+    public function testGetAttributeValueInvalidParamException()
+    {
+        $model = new HtmlTestModel();
+        Html::getAttributeValue($model, '-');
+    }
+
+    public function testGetAttributeValue()
+    {
+        $model = new HtmlTestModel();
+    
+        $expected = null;
+        $actual = Html::getAttributeValue($model, 'types');
+        $this->assertSame($expected, $actual);
+    
+        $activeRecord = $this->getMock('yii\\db\\ActiveRecordInterface');
+        $activeRecord->method('getPrimaryKey')->willReturn(1);
+        $model->types = $activeRecord;
+    
+        $expected = 1;
+        $actual = Html::getAttributeValue($model, 'types');
+        $this->assertSame($expected, $actual);
+    
+        $model->types = [
+            $activeRecord,
+        ];
+
+        $expected = [1];
+        $actual = Html::getAttributeValue($model, 'types');
+        $this->assertSame($expected, $actual);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Attribute name must contain word characters only.
+     */
+    public function testGetInputNameInvalidParamExceptionAttribute()
+    {
+        $model = new HtmlTestModel();
+        Html::getInputName($model, '-');
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessageRegExp /(.*)formName\(\) cannot be empty for tabular inputs.$/
+     */
+    public function testGetInputNameInvalidParamExceptionFormName()
+    {
+        $model = $this->getMock('yii\\base\\Model');
+        $model->method('formName')->willReturn('');
+        Html::getInputName($model, '[foo]bar');
+    }
+
+    public function testGetInputName()
+    {
+        $model = $this->getMock('yii\\base\\Model');
+        $model->method('formName')->willReturn('');
+        $expected = 'types';
+        $actual = Html::getInputName($model, 'types');
+        $this->assertSame($expected, $actual);
+    }
+
+
+    public function testEscapeJsRegularExpression()
+    {
+        $expected = '/[a-z0-9-]+/';
+        $actual = Html::escapeJsRegularExpression('([a-z0-9-]+)');
+        $this->assertSame($expected, $actual);
+
+        $expected = '/([a-z0-9-]+)/gim';
+        $actual = Html::escapeJsRegularExpression('/([a-z0-9-]+)/Ugimex');
+        $this->assertSame($expected, $actual);
+    }
+
+    public function testActiveDropDownList()
+    {
+        $expected = <<<HTML
+<input type="hidden" name="HtmlTestModel[types]" value=""><select id="htmltestmodel-types" name="HtmlTestModel[types][]" multiple="true" size="4">
+
+</select>
+HTML;
+        $model = new HtmlTestModel();
+        $actual = Html::activeDropDownList($model, 'types', [], ['multiple' => 'true']);
+        $this->assertEqualsWithoutLE($expected, $actual);
+    }
+
+    public function testActiveCheckboxList()
+    {
+        $model = new HtmlTestModel();
+
+        $expected = <<<HTML
+<input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="radio" name="HtmlTestModel[types]" value="0"> foo</label></div>
+HTML;
+        $actual = Html::activeRadioList($model, 'types', ['foo']);
+        $this->assertEqualsWithoutLE($expected, $actual);
+    }
+
+    public function testActiveRadioList()
+    {
+        $model = new HtmlTestModel();
+
+        $expected = <<<HTML
+<input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="checkbox" name="HtmlTestModel[types][]" value="0"> foo</label></div>
+HTML;
+        $actual = Html::activeCheckboxList($model, 'types', ['foo']);
+        $this->assertEqualsWithoutLE($expected, $actual);
     }
 }
 
