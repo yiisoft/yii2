@@ -652,7 +652,7 @@ value which will be used as the index value for the current row.
 
 ### Batch Query <span id="batch-query"></span>
 
-When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading all data into the memory. To solve the issue Yii provides batch query support. Server holds the result data set cursor, waiting the client to get data for every iteration.
+When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading all data into the memory. To solve the issue Yii provides batch query support. Server holds the result data set cursor, waiting the client to get next batch of data.
 
 > Warning: In order to use it and keep the memory requirement low in case of using MySQL, an [`Unbuffered Query`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php) should be used by setting connection `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` to `false`. Unless whole data set has been retrieved, no other query could be done through the same connection. The table may remain locked by MySQL and cannot be written to by other queries. Thus, new connection should be created for this purpose.
 
