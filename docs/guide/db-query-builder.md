@@ -655,9 +655,9 @@ value which will be used as the index value for the current row.
 When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading all data into the memory. To solve the issue Yii provides batch query support. Server holds the result data set cursor, waiting the client to get data for every iteration.
 
 > Warning: In order to use it and keep the memory requirement low in case of using MySQL, an [`Unbuffered Query`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php) should be used by setting connection `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` to `false`. Unless whole data set has been retrieved, no other query could be done through the same connection. The table may remain locked by MySQL and cannot be written to by other queries. Thus, new connection should be created for this purpose.
-> 
-> Assume that you have set up a connection to `$unbuffered_db` with `BUFFERED_QUERY` set to `false`. Batch query can be used like the following at a low memory cost of PHP:
->
+
+Batch query can be used like the following:
+
 ```php
 use yii\db\Query;
 
@@ -665,16 +665,18 @@ $query = (new Query())
     ->from('user')
     ->orderBy('id');
 
-foreach ($query->batch(100, $unbuffered_db) as $users) {
+foreach ($query->batch(100) as $users) {
     // $users is an array of 100 or fewer rows from the user table
 }
 
 // or if you want to iterate the row one by one
-foreach ($query->each(100, $unbuffered_db) as $user) {
+foreach ($query->each(100) as $user) {
     // $user represents one row of data from the user table
 }
 ```
 
+> Note: In case of MySQL an instance of unbuffered connection should be passed to the second argument of `batch()` calls.
+Assuming that you have set up a connection to `$unbuffered_db` with `BUFFERED_QUERY` set to `false`, it would be `batch(100, $unbuffered_db)`.
 
 The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object which implements the `Iterator` interface and thus can be used in the `foreach` construct.
 During the first iteration, a SQL query is made to the database. Data are then fetched in batches
