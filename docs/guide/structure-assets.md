@@ -206,7 +206,7 @@ the `only` publishing option, only the `fonts` and `css` subdirectories will be 
 ### Bower and NPM Assets installation <span id="bower-npm-assets"></span>
 
 Most JavaScript/CSS packages are managed by [Bower](http://bower.io/) and/or [NPM](https://www.npmjs.org/) package 
-managers. In PHP world we have Composer, that manages or PHP dependencies, but it is possible to load 
+managers. In PHP world we have Composer, that manages PHP dependencies, but it is possible to load
 both Bower and NPM packages using `composer.json` just as PHP packages.
 
 To achieve this, we should configure our composer a bit. There are two options to do that:
@@ -217,8 +217,8 @@ ___
 
 This way will satisfy requirements of the majority of projects, that need NPM or Bower packages.
 
-> Note: Since April 2017 both Basic and Advanced application templates are pre-configured to use asset-packagist
- by default, so you can skip this chapter.
+> Note: Since 2.0.12 both Basic and Advanced application templates are pre-configured to use asset-packagist
+ by default, so you can skip this section.
 
 In the `composer.json` of your project, add the following lines:
 
@@ -248,7 +248,7 @@ Visit [asset-packagist.org](https://asset-packagist.org) to know, how it works.
 
 ##### Using fxp/composer-asset-plugin
 
-Comparing to previous way, this one does not require to change application config. Instead, it 
+Comparing to to using asset-packagist, composer-asset-plugin does not require to change application config. Instead, it
 requires to install a special Composer plugin globally by running the following command:
 
 ```bash
