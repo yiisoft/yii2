@@ -510,6 +510,9 @@
                 }
             });
         }
+        $input.on('forceValidate.yiiActiveForm', function() {
+            validateAttribute($form, attribute, true);
+        });
     };
 
     var unwatchAttribute = function ($form, attribute) {
