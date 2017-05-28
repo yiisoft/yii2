@@ -29,7 +29,13 @@ trait ActiveQueryTrait
      * of [[modelClass]] will be created to represent each record.
      */
     public $asArray;
-
+     /**
+     * Clusure to allow iteration of the collections off [[modelClass]] or [[Array]] if [[asArray]]
+     * property is set to true. it receive one param and return the same parameter having being modified
+     * @param [[modelClass]] or [[Array]] $row of the model object
+     * @return $row the model object itself
+     */
+    public $iterator_callback;
 
     /**
      * Sets the [[asArray]] property.
