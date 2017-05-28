@@ -86,9 +86,9 @@ to the project requirements:
 composer require yiisoft/yii2
 ```
 
-Even if you only want to use the database layer or other non-asset related features of Yii, is required to install
-Bower and NPM assets support. Visit [Bower and NPM Assets installation](structure-assets.md#bower-npm-assets) guide
-article to learn more.
+In case you would like to use only the database abstraction layer or other non-asset related features of Yii,
+you should require a special composer package that prevent Bower and NPM packages installation. See 
+[cebe/assetfree-yii2](https://github.com/cebe/assetfree-yii2) for details.
 
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
