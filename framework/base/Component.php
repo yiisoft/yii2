@@ -451,14 +451,15 @@ class Component extends Object
     /**
      * Attaches an event handler to an event.
      *
-     * The event handler must be a valid PHP callback. The following are
-     * some examples:
+     * The event handler must be a valid PHP callback or array of callbacks.
+     * The following are some examples:
      *
      * ```
      * function ($event) { ... }         // anonymous function
      * [$object, 'handleClick']          // $object->handleClick()
      * ['Page', 'handleClick']           // Page::handleClick()
      * 'handleClick'                     // global function handleClick()
+     * ['handle1', ..., 'handleN']       // array of global functions
      * ```
      *
      * The event handler must be defined with the following signature,
@@ -481,6 +482,21 @@ class Component extends Object
     public function on($name, $handler, $data = null, $append = true)
     {
         $this->ensureBehaviors();
+        if (is_array($handler) && !is_callable($handler)) {
+            foreach ($handler as $single) {
+                $this->_on($name, $single, $data, $append);
+            }
+            return;
+        }
+        $this->_on($name, $handler, $data, $append);
+    }
+
+    /**
+     * Attaches a single event handler to an event.
+     * @see on()
+     */
+    private function _on($name, $handler, $data = null, $append = true)
+    {
         if ($append || empty($this->_events[$name])) {
             $this->_events[$name][] = [$handler, $data];
         } else {
