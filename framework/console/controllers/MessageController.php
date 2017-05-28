@@ -363,13 +363,13 @@ EOD;
     protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)
     {
         $currentMessages = [];
-        $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+        $rows = (new Query())->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
         foreach ($rows as $row) {
             $currentMessages[$row['category']][$row['id']] = $row['message'];
         }
 
         $currentLanguages = [];
-        $rows = (new Query)->select(['language'])->from($messageTable)->groupBy('language')->all($db);
+        $rows = (new Query())->select(['language'])->from($messageTable)->groupBy('language')->all($db);
         foreach ($rows as $row) {
             $currentLanguages[] = $row['language'];
         }
@@ -422,7 +422,7 @@ EOD;
 
         if (!empty($missingLanguages)) {
             $updatedMessages = [];
-            $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+            $rows = (new Query())->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
             foreach ($rows as $row) {
                 $updatedMessages[$row['category']][$row['id']] = $row['message'];
             }
@@ -452,7 +452,7 @@ EOD;
                ->execute();
             $this->stdout("deleted.\n");
         } elseif ($markUnused) {
-            $rows = (new Query)
+            $rows = (new Query())
                 ->select(['id', 'message'])
                 ->from($sourceMessageTable)
                 ->where(['in', 'id', $obsolete])
