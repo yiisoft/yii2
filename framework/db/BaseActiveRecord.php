@@ -969,7 +969,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *     }
      *
      *     // ...custom code here...
-           return true;
+     *     return true;
      * }
      * ```
      *
