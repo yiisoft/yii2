@@ -241,6 +241,45 @@ class LoggerTest extends TestCase
     }
 
     /**
+     * See https://github.com/yiisoft/yii2/issues/14133
+     *
+     * @covers yii\log\Logger::calculateTimings()
+     */
+    public function testCalculateTimingsWithProfileBeginEndAndNestedMixedLevels()
+    {
+        $messages = [
+            ['firstLevel', Logger::LEVEL_PROFILE_BEGIN, 'firstLevelCategory', 10, 'firstTrace', 1048576],
+            ['secondLevel', Logger::LEVEL_PROFILE_BEGIN, 'secondLevelCategory', 15, 'secondTrace', 2097152],
+            ['firstLevel', Logger::LEVEL_PROFILE_END, 'firstLevelCategory', 80, 'firstTrace', 4194304],
+            ['secondLevel', Logger::LEVEL_PROFILE_END, 'secondLevelCategory', 55, 'secondTrace', 3145728],
+        ];
+        $this->assertEquals([
+            [
+                'info' => 'firstLevel',
+                'category' => 'firstLevelCategory',
+                'timestamp' => 10,
+                'trace' => 'firstTrace',
+                'level' => 1,
+                'duration' => 70,
+                'memory' => 4194304,
+                'memoryDiff' => 3145728
+            ],
+            [
+                'info' => 'secondLevel',
+                'category' => 'secondLevelCategory',
+                'timestamp' => 15,
+                'trace' => 'secondTrace',
+                'level' => 0,
+                'duration' => 40,
+                'memory' => 3145728,
+                'memoryDiff' => 1048576
+            ]
+        ],
+            $this->logger->calculateTimings($messages)
+        );
+    }
+
+    /**
      * @covers yii\log\Logger::getElapsedTime()
      */
     public function testGetElapsedTime()
