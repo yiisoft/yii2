@@ -665,17 +665,17 @@ $query = (new Query())
     ->from('user')
     ->orderBy('id');
 
-foreach ($query->batch(100) as $users) {
+foreach ($query->batch() as $users) {
     // $users is an array of 100 or fewer rows from the user table
 }
 
 // or if you want to iterate the row one by one
-foreach ($query->each(100) as $user) {
+foreach ($query->each() as $user) {
     // $user represents one row of data from the user table
 }
 ```
 
-> Note: In case of MySQL an instance of unbuffered connection should be passed to the second argument of `batch()` calls.
+> Note: In case of MySQL an instance of unbuffered connection should be passed to the second argument of `batch()` and `each()` calls.
 Assuming that you have set up a connection to `$unbuffered_db` with `BUFFERED_QUERY` set to `false`, it would be `batch(100, $unbuffered_db)`.
 
 The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object which implements the `Iterator` interface and thus can be used in the `foreach` construct.
