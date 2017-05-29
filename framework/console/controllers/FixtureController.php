@@ -415,10 +415,33 @@ class FixtureController extends Controller
         $foundFixtures = [];
 
         foreach ($files as $fixture) {
-            $foundFixtures[] = basename($fixture, 'Fixture.php');
+            $relativeName = $this->getFixtureRelativeName($fixture);
+            $foundFixtures[] = $relativeName;
         }
 
         return $foundFixtures;
+    }
+
+    /**
+     * Calculates $fixture's name relatively to $templatePath.
+     * Basically, strips getFixturePath() and 'Fixture.php' prefix from fixture's full path
+     * @see getFixturePath()
+     * @param string $fullFixturePath Full fixture path
+     * @return string Relative fixture name
+     */
+    private function getFixtureRelativeName($fullFixturePath)
+    {
+        // $fixturesPath is normalized to unix format in getFixturesPath()
+        $fixturesPath = $this->getFixturePath();
+        // normalize $fixture to unix format
+        $fullFixturePath = str_replace("\\", "/", $fullFixturePath);
+        // strip $fixturesPath from $fixture's full path
+        $relativeName = str_replace($fixturesPath . "/", "", $fullFixturePath);
+        // get fixtures's directory
+        $relativeDir = dirname($relativeName) === '.' ? '' : dirname($relativeName) . '/';
+        // get fixture name relatively to $fixturesPath
+        $relativeName = $relativeDir . basename($fullFixturePath, 'Fixture.php');
+        return $relativeName;
     }
 
     /**
@@ -432,6 +455,8 @@ class FixtureController extends Controller
 
         foreach ($fixtures as $fixture) {
             $isNamespaced = (strpos($fixture, '\\') !== false);
+            // replace linux' path slashes to namespace backslashes, in case if $fixture is non-namespaced relative path
+            $fixture = str_replace('/', '\\', $fixture);
             $fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
 
             if (class_exists($fullClassName)) {
