@@ -271,8 +271,8 @@ will be placed, if you want to publish them using Yii:
 }
 ```
 
-> Note: `fxp/composer-asset-plugin` significantly slows down the `composer update` command 
-  in comparision to asset-packagist.
+> Note: `fxp/composer-asset-plugin` significantly slows down the `composer update` command in comparison
+  to asset-packagist.
  
 ____
  
