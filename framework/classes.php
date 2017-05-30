@@ -35,6 +35,7 @@ return [
   'yii\base\InvalidParamException' => YII2_PATH . '/base/InvalidParamException.php',
   'yii\base\InvalidRouteException' => YII2_PATH . '/base/InvalidRouteException.php',
   'yii\base\InvalidValueException' => YII2_PATH . '/base/InvalidValueException.php',
+  'yii\base\Lazy' => YII2_PATH . '/base/Lazy.php',
   'yii\base\Model' => YII2_PATH . '/base/Model.php',
   'yii\base\ModelEvent' => YII2_PATH . '/base/ModelEvent.php',
   'yii\base\Module' => YII2_PATH . '/base/Module.php',
