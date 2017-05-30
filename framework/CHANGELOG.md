@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Bug #13513: Fixed RBAC migration to work correctly on Oracle DBMS (silverfire)
 - Bug #13537: Fixed `yii\web\CacheSession::destroySession()` to work correctly when session is not written yet (silverfire, papalapa)
 - Bug #13538: Fixed `yii\db\BaseActiveRecord::deleteAll()` changes method signature declared by `yii\db\ActiveRecordInterface::deleteAll()` (klimov-paul)
+- Bug #13551: Fixed `FixtureController` to load fixtures from subdirectories (d1rtyf1ng3rs, silverfire)
 - Bug #13571: Fix `yii\db\mssql\QueryBuilder::checkIntegrity` for all tables (boboldehampsink)
 - Bug #13577: `yii\db\QueryBuilder::truncateTable` should work consistent over all databases (boboldehampsink)
 - Bug #13582: PK column in `yii\db\pgsql\QueryBuilder::resetSequence()` was not quoted properly (boboldehampsink)
