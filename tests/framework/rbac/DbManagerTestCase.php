@@ -105,7 +105,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
     {
         $db = new Connection;
         $db->dsn = static::$database['dsn'];
-        echo "\n" . $db->dsn . "\n";
         if (isset(static::$database['username'])) {
             $db->username = static::$database['username'];
             $db->password = static::$database['password'];
