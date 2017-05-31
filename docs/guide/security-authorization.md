@@ -491,36 +491,34 @@ public function behaviors()
 If all the CRUD operations are managed together then it's a good idea to use a single permission, like `managePost`, and
 check it in [[yii\web\Controller::beforeAction()]].
 
-You can also use rules from the [[yii\filters\AccessControl|AccessControl]] filter. For that you specify the
-[[yii\filters\AccessRule::roleParams|roleParams]] that you need to pass to the [[yii\filters\AccessRule|AccessRule]]:
-
+In the above example, no parameters are passed with the roles specified for accessing an action, but in case of the
+`updatePost` permission, we need to pass a `post` parameter for it to work properly.
+You can pass parameters to [[yii\web\User::can()]] by specifying [[yii\filters\AccessRule::roleParams|roleParams]] on
+the access rule:
 
 ```php
-use yii\filters\AccessControl;
-
-class PostsController extends Controller
-{
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'actions' => ['update'],
-                        'roles' => ['updatePost'],
-                        'roleParams' => function() {
-                            return ['post' => Post::findOne(Yii::$app->request->get('id'))];
-                        },
-                        'allow' => true,
-                    ],
-                ],
-            ],
-        ];
-    }
-}
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => function() {
+        return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+    },
+],
 ```
 
+In the above example, [[yii\filters\AccessRule::roleParams|roleParams]] is a Closure that will be evaluated when
+the access rule is checked, so the model will only be loaded when needed.
+If the creation of role parameters is a simple operation, you may just specify an array, like so:
+
+```php
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+],
+```
 
 ### Using Default Roles <span id="using-default-roles"></span>
 

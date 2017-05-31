@@ -63,10 +63,16 @@ class AccessRule extends Component
      * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
      * user permissions in [[$roles]].
      *
-     * If this is an array, it will be passed directly to [[User::can()]].
+     * If this is an array, it will be passed directly to [[User::can()]]. For example for passing an
+     * ID from the current request, you may use the following:
+     *
+     * ```php
+     * ['postId' => Yii::$app->request->get('id')]
+     * ```
+     *
      * You may also specify a closure that returns an array. This can be used to
-     * evaluate the array values only if they are needed.
-     * This can be used for example like this:
+     * evaluate the array values only if they are needed, for example when a model needs to be
+     * loaded like in the following code:
      *
      * ```php
      * 'rules' => [
@@ -75,7 +81,7 @@ class AccessRule extends Component
      *         'actions' => ['update'],
      *         'roles' => ['updatePost'],
      *         'roleParams' => function($rule) {
-     *             return ['postId' => Yii::$app->request->get('id')];
+     *             return ['post' => Post::findOne(Yii::$app->request->get('id'))];
      *         },
      *     ],
      * ],
