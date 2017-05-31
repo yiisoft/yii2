@@ -1090,8 +1090,11 @@ class Connection extends Component
 
         $this->_master = false;
         $this->_slave = false;
-        $this->pdo = null;
         $this->_schema = null;
         $this->_transaction = null;
+        if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
+            // reset PDO connection, unless its sqlite in-memory, which can only have one connection
+            $this->pdo = null;
+        }
     }
 }

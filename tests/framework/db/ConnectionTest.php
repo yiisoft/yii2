@@ -351,7 +351,12 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($connection->pdo);
 
         $this->assertNull($conn2->transaction);
-        $this->assertNull($conn2->pdo);
+        if ($this->driverName === 'sqlite') {
+            // in-memory sqlite should not reset PDO
+            $this->assertNotNull($conn2->pdo);
+        } else {
+            $this->assertNull($conn2->pdo);
+        }
 
         $connection->beginTransaction();
 
@@ -359,13 +364,23 @@ abstract class ConnectionTest extends DatabaseTestCase
         $this->assertNotNull($connection->pdo);
 
         $this->assertNull($conn2->transaction);
-        $this->assertNull($conn2->pdo);
+        if ($this->driverName === 'sqlite') {
+            // in-memory sqlite should not reset PDO
+            $this->assertNotNull($conn2->pdo);
+        } else {
+            $this->assertNull($conn2->pdo);
+        }
 
         $conn3 = clone $connection;
 
         $this->assertNotNull($connection->transaction);
         $this->assertNotNull($connection->pdo);
         $this->assertNull($conn3->transaction);
-        $this->assertNull($conn3->pdo);
+        if ($this->driverName === 'sqlite') {
+            // in-memory sqlite should not reset PDO
+            $this->assertNotNull($conn3->pdo);
+        } else {
+            $this->assertNull($conn3->pdo);
+        }
     }
 }
