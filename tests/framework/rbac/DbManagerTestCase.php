@@ -22,7 +22,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
     /**
      * @var Connection
      */
-    protected static $db;
+    protected $db;
 
     protected static function runConsoleAction($route, $params = [])
     {
@@ -34,7 +34,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
                     'migrate' => EchoMigrateController::className(),
                 ],
                 'components' => [
-                    'db' => static::getConnection(),
+                    'db' => static::createConnection(),
                     'authManager' => '\yii\rbac\DbManager',
                 ],
             ]);
@@ -67,9 +67,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
     public static function tearDownAfterClass()
     {
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/rbac/migrations/', 'interactive' => false]);
-        if (static::$db) {
-            static::$db->close();
-        }
         Yii::$app = null;
         parent::tearDownAfterClass();
     }
@@ -84,6 +81,10 @@ abstract class DbManagerTestCase extends ManagerTestCase
     {
         parent::tearDown();
         $this->auth->removeAll();
+        if ($this->db && static::$driverName !== 'sqlite') {
+            $this->db->close();
+        }
+        $this->db = null;
     }
 
     /**
@@ -92,24 +93,30 @@ abstract class DbManagerTestCase extends ManagerTestCase
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection
      */
-    public static function getConnection()
+    public function getConnection()
     {
-        if (static::$db == null) {
-            $db = new Connection;
-            $db->dsn = static::$database['dsn'];
-            if (isset(static::$database['username'])) {
-                $db->username = static::$database['username'];
-                $db->password = static::$database['password'];
-            }
-            if (isset(static::$database['attributes'])) {
-                $db->attributes = static::$database['attributes'];
-            }
-            if (!$db->isActive) {
-                $db->open();
-            }
-            static::$db = $db;
+        if ($this->db === null) {
+            $this->db = static::createConnection();
         }
-        return static::$db;
+        return $this->db;
+    }
+
+    public static function createConnection()
+    {
+        $db = new Connection;
+        $db->dsn = static::$database['dsn'];
+        echo "\n" . $db->dsn . "\n";
+        if (isset(static::$database['username'])) {
+            $db->username = static::$database['username'];
+            $db->password = static::$database['password'];
+        }
+        if (isset(static::$database['attributes'])) {
+            $db->attributes = static::$database['attributes'];
+        }
+        if (!$db->isActive) {
+            $db->open();
+        }
+        return $db;
     }
 
     /**
