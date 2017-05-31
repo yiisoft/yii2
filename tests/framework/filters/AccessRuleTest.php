@@ -2,6 +2,7 @@
 
 namespace yiiunit\framework\filters;
 
+use Closure;
 use Yii;
 use yii\base\Action;
 use yii\filters\AccessRule;
@@ -10,6 +11,7 @@ use yii\web\Request;
 use yii\web\User;
 use yiiunit\framework\filters\stubs\MockAuthManager;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\framework\rbac\AuthorRule;
 
 /**
  * @group filters
@@ -81,10 +83,20 @@ class AccessRuleTest extends \yiiunit\TestCase
         $updatePost->description = 'Update post';
         $auth->add($updatePost);
 
+        // add "updateOwnPost" permission
+        $updateOwnPost = $auth->createPermission('updateOwnPost');
+        $updateOwnPost->description = 'Update post';
+        $updateRule = new AuthorRule();
+        $auth->add($updateRule);
+        $updateOwnPost->ruleName = $updateRule->name;
+        $auth->add($updateOwnPost);
+        $auth->addChild($updateOwnPost, $updatePost);
+
         // add "author" role and give this role the "createPost" permission
         $author = $auth->createRole('author');
         $auth->add($author);
         $auth->addChild($author, $createPost);
+        $auth->addChild($author, $updateOwnPost);
 
         // add "admin" role and give this role the "updatePost" permission
         // as well as the permissions of the "author" role
@@ -142,14 +154,34 @@ class AccessRuleTest extends \yiiunit\TestCase
      */
     public function matchRoleProvider() {
         return [
-            ['create', true, 'user1', true],
-            ['create', true, 'user2', true],
-            ['create', true, 'user3', null],
-            ['create', true, 'unknown', null],
-            ['create', false, 'user1', false],
-            ['create', false, 'user2', false],
-            ['create', false, 'user3', null],
-            ['create', false, 'unknown', null],
+            ['create', true,  'user1',   [], true],
+            ['create', true,  'user2',   [], true],
+            ['create', true,  'user3',   [], null],
+            ['create', true,  'unknown', [], null],
+            ['create', false, 'user1',   [], false],
+            ['create', false, 'user2',   [], false],
+            ['create', false, 'user3',   [], null],
+            ['create', false, 'unknown', [], null],
+
+            // user2 is author, can only edit own posts
+            ['update', true,  'user2',   ['authorID' => 'user2'], true],
+            ['update', true,  'user2',   ['authorID' => 'user1'], null],
+            // user1 is admin, can update all posts
+            ['update', true,  'user1',   ['authorID' => 'user1'], true],
+            ['update', true,  'user1',   ['authorID' => 'user2'], true],
+            // unknown user can not edit anything
+            ['update', true,  'unknown', ['authorID' => 'user1'], null],
+            ['update', true,  'unknown', ['authorID' => 'user2'], null],
+
+            // user2 is author, can only edit own posts
+            ['update', true,  'user2',   function() { return ['authorID' => 'user2']; }, true],
+            ['update', true,  'user2',   function() { return ['authorID' => 'user1']; }, null],
+            // user1 is admin, can update all posts
+            ['update', true,  'user1',   function() { return ['authorID' => 'user1']; }, true],
+            ['update', true,  'user1',   function() { return ['authorID' => 'user2']; }, true],
+            // unknown user can not edit anything
+            ['update', true,  'unknown', function() { return ['authorID' => 'user1']; }, null],
+            ['update', true,  'unknown', function() { return ['authorID' => 'user2']; }, null],
         ];
     }
 
@@ -160,17 +192,19 @@ class AccessRuleTest extends \yiiunit\TestCase
      * @param string $actionid the action id
      * @param boolean $allow whether the rule should allow access
      * @param string $userid the userid to check
+     * @param array|Closure $roleParams params for $roleParams
      * @param boolean $expected the expected result or null
      */
-    public function testMatchRole($actionid, $allow, $userid, $expected) {
+    public function testMatchRole($actionid, $allow, $userid, $roleParams, $expected) {
         $action = $this->mockAction();
         $auth = $this->mockAuthManager();
         $request = $this->mockRequest();
 
         $rule = new AccessRule([
             'allow' => $allow,
-            'roles' => ['createPost'],
-            'actions' => ['create'],
+            'roles' => [$actionid === 'create' ? 'createPost' : 'updatePost'],
+            'actions' => [$actionid],
+            'roleParams' => $roleParams,
         ]);
 
         $action->id = $actionid;

@@ -100,6 +100,9 @@ The comparison is case-sensitive. If this option is empty or not set, it means t
    Using other role names will trigger the invocation of [[yii\web\User::can()]], which requires enabling RBAC
    (to be described in the next subsection). If this option is empty or not set, it means this rule applies to all roles.
 
+ * [[yii\filters\AccessRule::roleParams|roleParams]]: specifies the parameters that will be passed to [[yii\web\User::can()]].
+   See the section below describing RBAC rules to see how it can be used. If this option is empty or not set, then no parameters will be passed.
+
  * [[yii\filters\AccessRule::ips|ips]]: specifies which [[yii\web\Request::userIP|client IP addresses]] this rule matches.
 An IP address can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
 For example, '192.168.*' matches all IP addresses in the segment '192.168.'. If this option is empty or not set,
@@ -356,6 +359,7 @@ created previously author cannot edit his own post. Let's fix it. First we need 
 namespace app\rbac;
 
 use yii\rbac\Rule;
+use app\models\Post;
 
 /**
  * Checks if authorID matches user passed via params
@@ -486,6 +490,35 @@ public function behaviors()
 
 If all the CRUD operations are managed together then it's a good idea to use a single permission, like `managePost`, and
 check it in [[yii\web\Controller::beforeAction()]].
+
+In the above example, no parameters are passed with the roles specified for accessing an action, but in case of the
+`updatePost` permission, we need to pass a `post` parameter for it to work properly.
+You can pass parameters to [[yii\web\User::can()]] by specifying [[yii\filters\AccessRule::roleParams|roleParams]] on
+the access rule:
+
+```php
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => function() {
+        return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+    },
+],
+```
+
+In the above example, [[yii\filters\AccessRule::roleParams|roleParams]] is a Closure that will be evaluated when
+the access rule is checked, so the model will only be loaded when needed.
+If the creation of role parameters is a simple operation, you may just specify an array, like so:
+
+```php
+[
+    'allow' => true,
+    'actions' => ['update'],
+    'roles' => ['updatePost'],
+    'roleParams' => ['postId' => Yii::$app->request->get('id')];
+],
+```
 
 ### Using Default Roles <span id="using-default-roles"></span>
 
