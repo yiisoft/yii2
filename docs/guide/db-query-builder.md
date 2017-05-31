@@ -654,7 +654,7 @@ value which will be used as the index value for the current row.
 
 When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading the whole query result into the client's memory. To solve this issue Yii provides batch query support. The server holds the query result, and the client uses a cursor to iterate over the result set one batch at a time.
 
-> Warning: There are known limitations and workarounds for the MySQL implementation of batch queries. See below. 
+> Warning: There are known limitations and workarounds for the MySQL implementation of batch queries. See below.
 
 Batch query can be used like the following:
 
@@ -707,7 +707,7 @@ MySQL implementation of batch queries relies on the PDO driver library. By defau
 
 > Note: When `libmysqlclient` is used (typical of PHP5), PHP's memory limit won't count the memory used for result sets. It may seem that batch queries work correctly, but in reality the whole dataset is loaded into client's memory, and has the potential of using it up.
 
-To disable buffering and reduce client memory requirements PDO connection property `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` can be set to `false`. However, until the whole dataset has been retrieved, no other query can be made through the same connection. This may prevent `ActiveRecord` from making a query to get the table schema when it needs to. If this is not a problem (the table schema is cached already), it is possible to switch the original connection into unbuffered mode, and then back when the batch query is done.
+To disable buffering and reduce client memory requirements, PDO connection property `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` must be set to `false`. However, until the whole dataset has been retrieved, no other query can be made through the same connection. This may prevent `ActiveRecord` from making a query to get the table schema when it needs to. If this is not a problem (the table schema is cached already), it is possible to switch the original connection into unbuffered mode, and then roll back when the batch query is done.
 
 ```php
 Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
@@ -717,7 +717,7 @@ Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 ```
 
-> Note: For the duration of the batch query, the table or parts of it may become locked, delaying or denying write access for other connections. When using unbuffered queries, try to keep the cursor open for as little time as possible. 
+> Note: In the case of MyISAM, for the duration of the batch query, the table may become locked, delaying or denying write access for other connections. When using unbuffered queries, try to keep the cursor open for as little time as possible.
 
 If the schema is not cached, or it is necessary to run other queries while the batch query is being processed, you can create a separate unbuffered connection to the database:
 
@@ -732,10 +732,12 @@ $unbufferedDb->open();
 $unbufferedDb->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
 ```
 
-Queries are created normally. The new connection is used to run batch queries and retrieve results either in batches or one by one:
+If you want to ensure that the `$unbufferedDb` has exactly the same PDO attributes like the original buffered `$db` but the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is `false`, [consider a deep copy of `$db`](https://github.com/yiisoft/yii2/issues/8420#issuecomment-301423833), set it to false manually.
+
+Then, queries are created normally. The new connection is used to run batch queries and retrieve results either in batches or one by one:
 
 ```php
-// getting data in batches of 1000 
+// getting data in batches of 1000
 foreach ($query->batch(1000, $unbufferedDb) as $users) {
     // ...
 }
@@ -747,8 +749,10 @@ foreach ($query->each(1000, $unbufferedDb) as $user) {
 }
 ```
 
-When the connection is no longer necessary, it can be closed:
+When the connection is no longer necessary and the result set has been retrieved, it can be closed:
 
 ```php
 $unbufferedDb->close();
 ```
+
+> Note: unbuffered query uses less memory on the PHP-side, but can increase the load on the MySQL server. It is recommended to design your own code with your production practice for extra massive data, [for example, divide the range for integer keys, loop them with Unbuffered Queries](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).
