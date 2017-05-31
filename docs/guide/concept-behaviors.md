@@ -336,9 +336,6 @@ both have pros and cons. They are more like complements to each other rather tha
 
 ### Reasons to Use Behaviors <span id="pros-for-behaviors"></span>
 
-Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
-can be considered as language-supported copy and paste. They do not support inheritance.
-
 Behaviors can be attached and detached to a component dynamically without requiring modification of the component class.
 To use a trait, you must modify the code of the class using it.
 
@@ -358,3 +355,6 @@ Traits are much more efficient than behaviors as behaviors are objects that take
 
 IDEs are more friendly to traits as they are a native language construct.
 
+A Trait is intended to reduce some limitations of single inheritance by enabling a developer to reuse 
+sets of methods freely in several independent classes living in different class hierarchies.
+Behavior classes, on the other hand, support traditional inheritance only.
