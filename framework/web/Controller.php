@@ -27,6 +27,20 @@ class Controller extends \yii\base\Controller
      */
     public $enableCsrfValidation = true;
     /**
+     * @var bool whether to enable host info validation for the actions in this controller, to protect against
+     * ['host header' attacks](https://www.acunetix.com/vulnerabilities/web/host-header-attack).
+     * Host info validation is enabled only when this property is true and [[\yii\web\Request::$allowedHosts]] is not empty.
+     */
+    public $enableHostInfoValidation = true;
+    /**
+     * @var callable|false a callback that will be called if the current host does not match [[\yii\web\Request::$allowedHosts]].
+     * If not set, [[\yii\web\Request::$invalidHostCallback]] will be called.
+     *
+     * > Note: while implementing your own host deny processing, make sure you avoid usage of the current requested
+     * host name, creation of absolute URL links, caching page parts and so on.
+     */
+    public $invalidHostCallback;
+    /**
      * @var array the parameters bound to the current action.
      */
     public $actionParams = [];
@@ -162,6 +176,9 @@ class Controller extends \yii\base\Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
+            if ($this->enableHostInfoValidation && Yii::$app->getErrorHandler()->exception === null) {
+                Yii::$app->getRequest()->validateHostInfo($this->invalidHostCallback);
+            }
             if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }

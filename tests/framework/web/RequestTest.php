@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\web;
 
+use Yii;
+use yii\base\ExitException;
 use yii\web\Request;
 use yiiunit\TestCase;
 
@@ -15,6 +17,16 @@ use yiiunit\TestCase;
  */
 class RequestTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
+        $_SERVER['SCRIPT_NAME'] = "/index.php";
+
+        $this->mockWebApplication();
+    }
+
     public function testParseAcceptHeader()
     {
         $request = new Request;
@@ -293,5 +305,83 @@ class RequestTest extends TestCase
 
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
+    }
+
+    /**
+     * @dataProvider hostInfoValidationDataProvider
+     *
+     * @param mixed $allowedHosts
+     * @param string $host
+     * @param bool $allowed
+     */
+    public function testHostInfoValidation($allowedHosts, $host, $allowed)
+    {
+        $request = new Request();
+        $request->hostInfo = 'http://' . $host;
+        $request->allowedHosts = $allowedHosts;
+
+        if ($allowed) {
+            $this->assertTrue($request->validateHostInfo());
+        } else {
+            ob_start();
+            ob_implicit_flush(false);
+
+            $isExit = false;
+
+            try {
+                $request->validateHostInfo();
+            } catch (ExitException $e) {
+                $isExit = true;
+            }
+
+            ob_get_clean();
+
+            $this->assertTrue($isExit);
+            $this->assertEquals(404, Yii::$app->response->getStatusCode());
+        }
+    }
+
+
+    /**
+     * @return array test data.
+     */
+    public function hostInfoValidationDataProvider()
+    {
+        return [
+            [
+                ['example.com'],
+                'example.com',
+                true
+            ],
+            [
+                ['example.com'],
+                'domain.com',
+                false
+            ],
+            [
+                ['*.example.com'],
+                'en.example.com',
+                true
+            ],
+            [
+                ['*.example.com'],
+                'fake.com',
+                false
+            ],
+            [
+                function () {
+                    return ['example.com'];
+                },
+                'example.com',
+                true
+            ],
+            [
+                function () {
+                    return ['example.com'];
+                },
+                'fake.com',
+                false
+            ],
+        ];
     }
 }
