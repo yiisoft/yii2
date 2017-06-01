@@ -933,6 +933,11 @@ yii migrate/create 'app\\migrations\\createUserTable'
   contain a namespace, namespaced migration can be applied only via [[yii\console\controllers\MigrateController::migrationNamespaces]]
   property.
 
+Since version 2.0.12 the [[yii\console\controllers\MigrateController::migrationNamespaces|migrationNamespaces]] property
+also accepts [aliases](concept-aliases.md) for specifying directories that contain migrations without a namespace.
+This is mainly added to be used in existing projects which use migrations from different locations. These migrations mainly come
+from external sources, like Yii extensions developed by other developers,
+which can not be changed to use namespaces easily when starting to use the new approach.
 
 ### Separated Migrations <span id="separated-migrations"></span>
 

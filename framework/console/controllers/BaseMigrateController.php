@@ -40,6 +40,7 @@ abstract class BaseMigrateController extends Controller
      *
      * If you have set up [[migrationNamespaces]], you may set this field to `null` in order
      * to disable usage of migrations that are not namespaced.
+     * @see $migrationNamespaces
      */
     public $migrationPath = '@app/migrations';
     /**
@@ -58,7 +59,12 @@ abstract class BaseMigrateController extends Controller
      * ]
      * ```
      *
+     * Since version 2.0.12 you may also specify [aliases](guide:concept-aliases) to directories that contain
+     * migrations without namespace. This is mainly useful to support old extensions that provide migrations
+     * without namespace and to adopt the new feature of namespaced migrations while keeping existing migrations.
+     *
      * @since 2.0.10
+     * @see $migrationPath
      */
     public $migrationNamespaces = [];
     /**
@@ -594,6 +600,9 @@ abstract class BaseMigrateController extends Controller
             if ($this->migrationPath === null) {
                 $migrationNamespaces = $this->migrationNamespaces;
                 $namespace = array_shift($migrationNamespaces);
+                if (strncmp($namespace, '@', 1) === 0) {
+                    $namespace = str_replace('/', '\\', substr($namespace, 1));
+                }
             }
         }
 
@@ -619,7 +628,8 @@ abstract class BaseMigrateController extends Controller
             return $this->migrationPath;
         }
 
-        if (!in_array($namespace, $this->migrationNamespaces, true)) {
+        if (!in_array($namespace, $this->migrationNamespaces, true) &&
+            !in_array('@' . str_replace('\\', '/', $namespace), $this->migrationNamespaces, true)) {
             throw new Exception("Namespace '{$namespace}' not found in `migrationNamespaces`");
         }
 
@@ -634,7 +644,11 @@ abstract class BaseMigrateController extends Controller
      */
     private function getNamespacePath($namespace)
     {
-        return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
+        if (strncmp($namespace, '@', 1) === 0) {
+            return Yii::getAlias($namespace);
+        } else {
+            return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
+        }
     }
 
     /**
@@ -796,7 +810,7 @@ abstract class BaseMigrateController extends Controller
                 $path = $migrationPath . DIRECTORY_SEPARATOR . $file;
                 if (preg_match('/^(m(\d{6}_?\d{6})\D.*?)\.php$/is', $file, $matches) && is_file($path)) {
                     $class = $matches[1];
-                    if (!empty($namespace)) {
+                    if (!empty($namespace) && strncmp($namespace, '@', 1) !== 0) {
                         $class = $namespace . '\\' . $class;
                     }
                     $time = str_replace('_', '', $matches[2]);
