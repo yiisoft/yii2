@@ -13,6 +13,7 @@ use yii\console\Exception;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * BaseMigrateController is the base class for migrate controllers.
@@ -718,6 +719,9 @@ abstract class BaseMigrateController extends Controller
         if (strpos($class, '\\') === false) {
             $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
             require_once($file);
+        } elseif (!class_exists($class, true)) {
+            // if the class with namespace does not exist, try to load it without namespace
+            $class = StringHelper::basename($class);
         }
 
         return new $class();

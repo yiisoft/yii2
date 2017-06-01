@@ -73,6 +73,7 @@ Yii Framework 2 Change Log
 - Enh #13254: Core validators no longer require `Yii::$app` to be set (sammousa)
 - Enh #13260: Added support for sorting by expression to `\yii\data\Sort` (LAV45, klimov-paul)
 - Enh #13278: `yii\caching\DbQueryDependency` created allowing specification of the cache dependency via `yii\db\QueryInterface` (klimov-paul)
+- Enh #13356: Support aliases in `MigrateController::$migrationNamespaces` to load non-namespaced migrations for BC with existing applications and extensions (schmunk42, cebe)
 - Enh #13360: Added Dockerized test setup for the framework tests (schmunk42)
 - Enh #13369: Added ability to render current `yii\widgets\LinkPager` page disabled (aquy)
 - Enh #13376: Data provider now automatically sets an ID so there is no need to set it manually in case multiple data providers are used with pagination (SamMousa)
