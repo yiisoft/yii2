@@ -184,9 +184,20 @@ class MigrateController extends BaseMigrateController
     {
         $class = trim($class, '\\');
         if (strpos($class, '\\') === false) {
-            $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-            require_once($file);
+            if (is_array($this->migrationPath)) {
+                foreach($this->migrationPath as $path) {
+                    $file = $path . DIRECTORY_SEPARATOR . $class . '.php';
+                    if (is_file($file)) {
+                        require_once($file);
+                        break;
+                    }
+                }
+            } else {
+                $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
+                require_once($file);
+            }
         }
+
 
         return new $class(['db' => $this->db]);
     }

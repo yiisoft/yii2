@@ -33,7 +33,7 @@ abstract class BaseMigrateController extends Controller
      */
     public $defaultAction = 'up';
     /**
-     * @var string the directory containing the migration classes. This can be either
+     * @var string|array the directory containing the migration classes. This can be either
      * a [path alias](guide:concept-aliases) or a directory path.
      *
      * Migration classes located at this path should be declared without a namespace.
@@ -41,6 +41,15 @@ abstract class BaseMigrateController extends Controller
      *
      * If you have set up [[migrationNamespaces]], you may set this field to `null` in order
      * to disable usage of migrations that are not namespaced.
+     *
+     * Since version 2.0.12 you may also specify an array of migration paths that should be searched for
+     * migrations to load. This is mainly useful to support old extensions that provide migrations
+     * without namespace and to adopt the new feature of namespaced migrations while keeping existing migrations.
+     *
+     * In general, to load migrations from different locations, [[migrationNamespaces]] is the preferable solution
+     * as the migration name contains the origin of the migration in the history, which is not the case when
+     * using multiple migration paths.
+     *
      * @see $migrationNamespaces
      */
     public $migrationPath = '@app/migrations';
@@ -50,6 +59,7 @@ abstract class BaseMigrateController extends Controller
      * Migration namespaces should be resolvable as a [path alias](guide:concept-aliases) if prefixed with `@`, e.g. if you specify
      * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return
      * the file path to the directory this namespace refers to.
+     * This corresponds with the [autoloading conventions](guide:concept-autoloading) of Yii.
      *
      * For example:
      *
@@ -60,17 +70,13 @@ abstract class BaseMigrateController extends Controller
      * ]
      * ```
      *
-     * Since version 2.0.12 you may also specify [aliases](guide:concept-aliases) to directories that contain
-     * migrations without namespace. This is mainly useful to support old extensions that provide migrations
-     * without namespace and to adopt the new feature of namespaced migrations while keeping existing migrations.
-     *
      * @since 2.0.10
      * @see $migrationPath
      */
     public $migrationNamespaces = [];
     /**
      * @var string the template file for generating new migrations.
-     * This can be either a path alias (e.g. "@app/migrations/template.php")
+     * This can be either a [path alias](guide:concept-aliases) (e.g. "@app/migrations/template.php")
      * or a file path.
      */
     public $templateFile;
@@ -106,7 +112,11 @@ abstract class BaseMigrateController extends Controller
                 $this->migrationNamespaces[$key] = trim($value, '\\');
             }
 
-            if ($this->migrationPath !== null) {
+            if (is_array($this->migrationPath)) {
+                foreach($this->migrationPath as $i => $path) {
+                    $this->migrationPath[$i] = Yii::getAlias($path);
+                }
+            } elseif ($this->migrationPath !== null) {
                 $path = Yii::getAlias($this->migrationPath);
                 if (!is_dir($path)) {
                     if ($action->id !== 'create') {
@@ -601,9 +611,6 @@ abstract class BaseMigrateController extends Controller
             if ($this->migrationPath === null) {
                 $migrationNamespaces = $this->migrationNamespaces;
                 $namespace = array_shift($migrationNamespaces);
-                if (strncmp($namespace, '@', 1) === 0) {
-                    $namespace = str_replace('/', '\\', substr($namespace, 1));
-                }
             }
         }
 
@@ -626,11 +633,10 @@ abstract class BaseMigrateController extends Controller
     private function findMigrationPath($namespace)
     {
         if (empty($namespace)) {
-            return $this->migrationPath;
+            return is_array($this->migrationPath) ? reset($this->migrationPath) : $this->migrationPath;
         }
 
-        if (!in_array($namespace, $this->migrationNamespaces, true) &&
-            !in_array('@' . str_replace('\\', '/', $namespace), $this->migrationNamespaces, true)) {
+        if (!in_array($namespace, $this->migrationNamespaces, true)) {
             throw new Exception("Namespace '{$namespace}' not found in `migrationNamespaces`");
         }
 
@@ -645,11 +651,7 @@ abstract class BaseMigrateController extends Controller
      */
     private function getNamespacePath($namespace)
     {
-        if (strncmp($namespace, '@', 1) === 0) {
-            return Yii::getAlias($namespace);
-        } else {
-            return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
-        }
+        return str_replace('/', DIRECTORY_SEPARATOR, Yii::getAlias('@' . str_replace('\\', '/', $namespace)));
     }
 
     /**
@@ -717,11 +719,18 @@ abstract class BaseMigrateController extends Controller
     {
         $class = trim($class, '\\');
         if (strpos($class, '\\') === false) {
-            $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-            require_once($file);
-        } elseif (!class_exists($class, true)) {
-            // if the class with namespace does not exist, try to load it without namespace
-            $class = StringHelper::basename($class);
+            if (is_array($this->migrationPath)) {
+                foreach($this->migrationPath as $path) {
+                    $file = $path . DIRECTORY_SEPARATOR . $class . '.php';
+                    if (is_file($file)) {
+                        require_once($file);
+                        break;
+                    }
+                }
+            } else {
+                $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
+                require_once($file);
+            }
         }
 
         return new $class();
@@ -794,15 +803,20 @@ abstract class BaseMigrateController extends Controller
         }
 
         $migrationPaths = [];
-        if (!empty($this->migrationPath)) {
-            $migrationPaths[''] = $this->migrationPath;
+        if (is_array($this->migrationPath)) {
+            foreach($this->migrationPath as $path) {
+                $migrationPaths[] = [$path, ''];
+            }
+        } elseif (!empty($this->migrationPath)) {
+            $migrationPaths[] = [$this->migrationPath, ''];
         }
         foreach ($this->migrationNamespaces as $namespace) {
-            $migrationPaths[$namespace] = $this->getNamespacePath($namespace);
+            $migrationPaths[] = [$this->getNamespacePath($namespace), $namespace];
         }
 
         $migrations = [];
-        foreach ($migrationPaths as $namespace => $migrationPath) {
+        foreach ($migrationPaths as $item) {
+            list($migrationPath, $namespace) = $item;
             if (!file_exists($migrationPath)) {
                 continue;
             }
@@ -814,7 +828,7 @@ abstract class BaseMigrateController extends Controller
                 $path = $migrationPath . DIRECTORY_SEPARATOR . $file;
                 if (preg_match('/^(m(\d{6}_?\d{6})\D.*?)\.php$/is', $file, $matches) && is_file($path)) {
                     $class = $matches[1];
-                    if (!empty($namespace) && strncmp($namespace, '@', 1) !== 0) {
+                    if (!empty($namespace)) {
                         $class = $namespace . '\\' . $class;
                     }
                     $time = str_replace('_', '', $matches[2]);

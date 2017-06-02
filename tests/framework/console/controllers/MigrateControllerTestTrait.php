@@ -46,6 +46,8 @@ trait MigrateControllerTestTrait
     public function tearDownMigrationPath()
     {
         FileHelper::removeDirectory($this->migrationPath);
+        FileHelper::removeDirectory(Yii::getAlias('@yiiunit/runtime/app_migrations'));
+        FileHelper::removeDirectory(Yii::getAlias('@yiiunit/runtime/extension_migrations'));
     }
 
     /**
@@ -93,7 +95,7 @@ trait MigrateControllerTestTrait
      * @param string|null $date
      * @return string generated class name
      */
-    protected function createMigration($name, $date = null)
+    protected function createMigration($name, $date = null, $path = null)
     {
         if ($date === null) {
             $date = gmdate('ymd_His');
@@ -115,7 +117,7 @@ class {$class} extends {$baseClass}
     }
 }
 CODE;
-        file_put_contents($this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php', $code);
+        file_put_contents(($path ? Yii::getAlias($path) : $this->migrationPath) . DIRECTORY_SEPARATOR . $class . '.php', $code);
         return $class;
     }
 
@@ -468,5 +470,117 @@ CODE;
         $this->runMigrateControllerAction('to', [$this->migrationNamespace . '\\M' . $version], $controllerConfig);
 
         $this->assertMigrationHistory(['m*_base', $this->migrationNamespace . '\\M*To1']);
+    }
+
+    /**
+     * Test migration with using multiple migration paths and namespaces
+     */
+    public function testCombinedMigrationProcess()
+    {
+        FileHelper::createDirectory(Yii::getAlias('@yiiunit/runtime/app_migrations'));
+        FileHelper::createDirectory(Yii::getAlias('@yiiunit/runtime/extension_migrations'));
+        $controllerConfig = [
+            'migrationPath' => [$appPath = '@yiiunit/runtime/app_migrations', $extensionPath = '@yiiunit/runtime/extension_migrations'],
+            'migrationNamespaces' => [$this->migrationNamespace]
+        ];
+
+        $this->createMigration('app_migration1', '010101_000001', $appPath);
+        $this->createMigration('ext_migration1', '010101_000002', $extensionPath);
+        $this->createMigration('app_migration2', '010101_000003', $appPath);
+        $this->createNamespaceMigration('NsMigration', '010101000004');
+
+        // yii migrate/up 1
+        $this->runMigrateControllerAction('up', [1], $controllerConfig);
+        $this->assertMigrationHistory(['m*_base', 'm010101_000001_app_migration1']);
+
+        // yii migrate/up
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+            'm010101_000002_ext_migration1',
+            'm010101_000003_app_migration2',
+            $this->migrationNamespace . '\\M010101000004NsMigration',
+        ]);
+
+        // yii migrate/to m010101_000002_ext_migration1
+        $this->runMigrateControllerAction('to', ['m010101_000002_ext_migration1'], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+        ]);
+
+        // yii migrate/mark M010101000004NsMigration
+        $this->runMigrateControllerAction('mark', ['m010101_000003_app_migration2'], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+            'm010101_000002_ext_migration1',
+            'm010101_000003_app_migration2',
+        ]);
+
+        // yii migrate/up
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+            'm010101_000002_ext_migration1',
+            'm010101_000003_app_migration2',
+            $this->migrationNamespace . '\\M010101000004NsMigration',
+        ]);
+
+        // yii migrate/redo 2
+        $this->runMigrateControllerAction('redo', [2], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+            'm010101_000002_ext_migration1',
+            'm010101_000003_app_migration2',
+            $this->migrationNamespace . '\\M010101000004NsMigration',
+        ]);
+
+        // yii migrate/down
+        $this->runMigrateControllerAction('down', [], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+            'm010101_000002_ext_migration1',
+            'm010101_000003_app_migration2',
+        ]);
+
+        // yii migrate/redo
+        $this->runMigrateControllerAction('redo', [], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+            'm010101_000002_ext_migration1',
+            'm010101_000003_app_migration2',
+        ]);
+
+        // yii migrate/down 2
+        $this->runMigrateControllerAction('down', [2], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+        ]);
+
+        // yii migrate/create app_migration3
+        $this->runMigrateControllerAction('create', ['app_migration3'], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+        ]);
+
+        // yii migrate/up
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $this->assertMigrationHistory([
+            'm*_base',
+            'm010101_000001_app_migration1',
+            'm010101_000002_ext_migration1',
+            'm010101_000003_app_migration2',
+            $this->migrationNamespace . '\\M010101000004NsMigration',
+            'm*_app_migration3'
+        ]);
+        $this->assertCount(1, FileHelper::findFiles(Yii::getAlias($appPath), ['only'=> ['m*_app_migration3.php']]));
     }
 }
