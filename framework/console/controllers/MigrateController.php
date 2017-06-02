@@ -13,6 +13,7 @@ use yii\db\Query;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
+use yii\helpers\StringHelper;
 
 /**
  * Manages application migrations.
@@ -186,6 +187,12 @@ class MigrateController extends BaseMigrateController
         if (strpos($class, '\\') === false) {
             $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
             require_once($file);
+        } elseif (!class_exists($class, false)) {
+            // detect aliases migration in global namespace
+            require_once(Yii::getAlias('@'.str_replace('\\', '/', $class)).'.php');
+            if (!class_exists($class, false)) {
+                $class = StringHelper::basename($class);
+            }
         }
 
         return new $class(['db' => $this->db]);
