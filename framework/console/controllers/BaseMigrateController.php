@@ -33,7 +33,7 @@ abstract class BaseMigrateController extends Controller
     public $defaultAction = 'up';
     /**
      * @var string the directory containing the migration classes. This can be either
-     * a path alias or a directory path.
+     * a [path alias](guide:concept-aliases) or a directory path.
      *
      * Migration classes located at this path should be declared without a namespace.
      * Use [[migrationNamespaces]] property in case you are using namespaced migrations.
@@ -45,7 +45,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * @var array list of namespaces containing the migration classes.
      *
-     * Migration namespaces should be resolvable as a path alias if prefixed with `@`, e.g. if you specify
+     * Migration namespaces should be resolvable as a [path alias](guide:concept-aliases) if prefixed with `@`, e.g. if you specify
      * the namespace `app\migrations`, the code `Yii::getAlias('@app/migrations')` should be able to return
      * the file path to the directory this namespace refers to.
      *
