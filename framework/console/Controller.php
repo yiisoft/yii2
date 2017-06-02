@@ -312,12 +312,13 @@ class Controller extends \yii\base\Controller
      *
      * @param string $prompt the prompt message
      * @param array $options Key-value array of options to choose from
+     * @param bool $displayList whether or not to initially display the option list
      *
      * @return string An option character the user chose
      */
-    public function select($prompt, $options = [])
+    public function select($prompt, $options = [], $displayList=false)
     {
-        return Console::select($prompt, $options);
+        return Console::select($prompt, $options, $displayList);
     }
 
     /**
