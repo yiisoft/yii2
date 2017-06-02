@@ -68,10 +68,11 @@ class FileValidator extends Validator
      */
     public $maxSize;
     /**
-     * @var int the maximum file count the given attribute can hold.
+     * @var int|Closure the maximum file count the given attribute can hold.
      * Defaults to 1, meaning single file upload. By defining a higher number,
      * multiple uploads become possible. Setting it to `0` means there is no limit on
      * the number of files that can be uploaded simultaneously.
+     * you may define it as closure to calculate the required number of attached files.
      *
      * > Note: The maximum number of files allowed to be uploaded simultaneously is
      * also limited with PHP directive `max_file_uploads`, which defaults to 20.
@@ -185,7 +186,12 @@ class FileValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->maxFiles != 1) {
+        $maxFiles = $this->maxFiles instanceof \Closure? call_user_func($this->maxFiles, $model, $attribute): $this->maxFiles ;
+        
+        if($maxFiles == 0 && $this->maxFiles instanceof \Closure){
+            $this->addError($model, $attribute, $this->tooMany, ['limit' => $maxFiles]);
+        }
+        elseif ($maxFiles != 1) {
             $files = $model->$attribute;
             if (!is_array($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
@@ -201,8 +207,8 @@ class FileValidator extends Validator
             if (empty($files)) {
                 $this->addError($model, $attribute, $this->uploadRequired);
             }
-            if ($this->maxFiles && count($files) > $this->maxFiles) {
-                $this->addError($model, $attribute, $this->tooMany, ['limit' => $this->maxFiles]);
+            if ($maxFiles && count($files) > $maxFiles) {
+                $this->addError($model, $attribute, $this->tooMany, ['limit' => $maxFiles]);
             } else {
                 foreach ($files as $file) {
                     $result = $this->validateValue($file);
@@ -444,11 +450,12 @@ class FileValidator extends Validator
         }
 
         if ($this->maxFiles !== null) {
-            $options['maxFiles'] = $this->maxFiles;
-            $options['tooMany'] = $this->formatMessage($this->tooMany, [
+            $maxFiles = $this->maxFiles instanceof \Closure? call_user_func($this->maxFiles, $model, $attribute): $this->maxFiles ;
+            $options['maxFiles'] = $maxFiles;
+            $options['tooMany'] = Yii::$app->getI18n()->format($this->tooMany, [
                 'attribute' => $label,
-                'limit' => $this->maxFiles,
-            ]);
+                'limit' => $maxFiles,
+            ], Yii::$app->language);
         }
 
         return $options;
