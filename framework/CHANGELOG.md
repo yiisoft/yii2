@@ -103,6 +103,7 @@ Yii Framework 2 Change Log
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
 - Enh #14067: `yii\web\View::clear()` sets populated arrays to empty arrays instead of null, also changed default values to empty array (craiglondon)
 - Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
+- Enh #4999: Added support for wildcards at `yii\filters\AccessRule::$controllers` (klimov-paul)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 - Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly) 
 - Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
