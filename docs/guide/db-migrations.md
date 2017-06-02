@@ -835,9 +835,10 @@ The migration command comes with a few command-line options that can be used to 
   When this is `true`, the user will be prompted before the command performs certain actions.
   You may want to set this to `false` if the command is being used in a background process.
 
-* `migrationPath`: string (defaults to `@app/migrations`), specifies the directory storing all migration
+* `migrationPath`: string|array (defaults to `@app/migrations`), specifies the directory storing all migration
   class files. This can be specified as either a directory path or a path [alias](concept-aliases.md).
-  Note that the directory must exist, or the command may trigger an error.
+  Note that the directory must exist, or the command may trigger an error. Since version 2.0.12 an array can be
+  specified for loading migrations from multiple sources.
 
 * `migrationTable`: string (defaults to `migration`), specifies the name of the database table for storing
   migration history information. The table will be automatically created by the command if it does not exist.

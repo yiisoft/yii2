@@ -717,6 +717,21 @@ abstract class BaseMigrateController extends Controller
      */
     protected function createMigration($class)
     {
+        $this->includeMigrationFile($class);
+        return new $class();
+    }
+
+    /**
+     * Includes the migration file for a given migration class name.
+     *
+     * This function will do nothing on namespaced migrations, which are loaded by
+     * autoloading automatically. It will include the migration file, by searching
+     * [[migrationPath]] for classes without namespace.
+     * @param string $class the migration class name.
+     * @since 2.0.12
+     */
+    protected function includeMigrationFile($class)
+    {
         $class = trim($class, '\\');
         if (strpos($class, '\\') === false) {
             if (is_array($this->migrationPath)) {
@@ -732,8 +747,6 @@ abstract class BaseMigrateController extends Controller
                 require_once($file);
             }
         }
-
-        return new $class();
     }
 
     /**
