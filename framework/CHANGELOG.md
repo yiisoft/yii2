@@ -4,7 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
-- no changes in this release.
+- Bug #14248: `yii\console\controllers\MessageController` no longer outputs colorized filenames when console does not support text colorization (PowerGamer1)
 
 
 2.0.12 June 05, 2017
