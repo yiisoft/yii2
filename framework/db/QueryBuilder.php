@@ -193,6 +193,13 @@ class QueryBuilder extends \yii\base\Object
                     $placeholders[] = $phName;
                     $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
                 }
+            } elseif ($value instanceof \yii\db\Query) {
+                list($sql, $params) = $this->build($value, $params);
+                $placeholders[] = "($sql)";
+            } else {
+                $phName = self::PARAM_PREFIX . count($params);
+                $placeholders[] = $phName;
+                $params[$phName] = !is_array($value) && isset($columnSchemas[$name]) ? $columnSchemas[$name]->dbTypecast($value) : $value;
             }
         }
 
