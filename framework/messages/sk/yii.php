@@ -79,7 +79,7 @@ return [
     '{attribute} must be a string.' => '{attribute} musí byť reťazec.',
     '{attribute} must be a valid IP address.' => '{attribute} musí byť platná IP adresa.',
     '{attribute} must be an IP address with specified subnet.' => '{attribute} musí byť IP adresa so špecifikovanou podsieťou.',
-    '{attribute} must be an integer.' => '{attribute} musí byť integer.',
+    '{attribute} must be an integer.' => '{attribute} musí byť celé číslo.',
     '{attribute} must be either "{true}" or "{false}".' => '{attribute} musí byť "{true}" alebo "{false}".',
     '{attribute} must be equal to "{compareValueOrAttribute}".' => '{attribute} musí byť "{compareValueOrAttribute}".',
     '{attribute} must be greater than "{compareValueOrAttribute}".' => '{attribute} musí byť väčšie ako "{compareValueOrAttribute}".',

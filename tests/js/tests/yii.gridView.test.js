@@ -9,7 +9,7 @@ var vm = require('vm');
 describe('yii.gridView', function () {
     var yiiGridViewPath = 'framework/assets/yii.gridView.js';
     var yiiPath = 'framework/assets/yii.js';
-    var jQueryPath = 'vendor/bower/jquery/dist/jquery.js';
+    var jQueryPath = 'vendor/bower-asset/jquery/dist/jquery.js';
     var $;
     var $gridView;
     var settings = {
@@ -303,6 +303,12 @@ describe('yii.gridView', function () {
         describe('with different urls', function () {
             describe('with no filter data sent', function () {
                 withData({
+                    // https://github.com/yiisoft/yii2/issues/13738
+                    'question mark, no query parameters': [
+                        '/posts/index?',
+                        '/posts/index',
+                        'PostSearch[name]=&PostSearch[category_id]='
+                    ],
                     'query parameters': [
                         '/posts/index?foo=1&bar=2',
                         '/posts/index',

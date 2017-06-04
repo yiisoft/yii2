@@ -87,7 +87,7 @@ class CaptchaAction extends Action
      */
     public $offset = -2;
     /**
-     * @var string the TrueType font file. This can be either a file path or path alias.
+     * @var string the TrueType font file. This can be either a file path or [path alias](guide:concept-aliases).
      */
     public $fontFile = '@yii/captcha/SpicyRice.ttf';
     /**
@@ -297,8 +297,8 @@ class CaptchaAction extends Action
         $x = 10;
         $y = round($this->height * 27 / 40);
         for ($i = 0; $i < $length; ++$i) {
-            $fontSize = (int) (rand(26, 32) * $scale * 0.8);
-            $angle = rand(-10, 10);
+            $fontSize = (int) (mt_rand(26, 32) * $scale * 0.8);
+            $angle = mt_rand(-10, 10);
             $letter = $code[$i];
             $box = imagettftext($image, $fontSize, $angle, $x, $y, $foreColor, $this->fontFile, $letter);
             $x = $box[2] + $this->offset;
@@ -340,9 +340,9 @@ class CaptchaAction extends Action
         for ($i = 0; $i < $length; ++$i) {
             $draw = new \ImagickDraw();
             $draw->setFont($this->fontFile);
-            $draw->setFontSize((int) (rand(26, 32) * $scale * 0.8));
+            $draw->setFontSize((int) (mt_rand(26, 32) * $scale * 0.8));
             $draw->setFillColor($foreColor);
-            $image->annotateImage($draw, $x, $y, rand(-10, 10), $code[$i]);
+            $image->annotateImage($draw, $x, $y, mt_rand(-10, 10), $code[$i]);
             $fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
             $x += (int) $fontMetrics['textWidth'] + $this->offset;
         }

@@ -196,8 +196,109 @@ HTML;
         $this->assertEqualsWithoutLE($expected, $output);
     }
 
-    public function testIsItemActive()
+    public function testItemClassAsArray()
+    {
+        $output = Menu::widget([
+            'route' => 'test/test',
+            'params' => [],
+            'encodeLabels' => true,
+            'activeCssClass' => 'item-active',
+            'items' => [
+                [
+                    'label' => 'item1',
+                    'url' => '#',
+                    'active' => true,
+                    'options' => [
+                        'class' => [
+                            'someclass',
+                        ],
+                    ],
+                ],
+                [
+                    'label' => 'item2',
+                    'url' => '#',
+                    'options' => [
+                        'class' => [
+                            'another-class',
+                            'other--class',
+                            'two classes',
+                        ],
+                    ],
+                ],
+                [
+                    'label' => 'item3',
+                    'url' => '#',
+                ],
+                [
+                    'label' => 'item4',
+                    'url' => '#',
+                    'options' => [
+                        'class' => [
+                            'some-other-class',
+                            'foo_bar_baz_class',
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        $expected = <<<HTML
+<ul><li class="someclass item-active"><a href="#">item1</a></li>
+<li class="another-class other--class two classes"><a href="#">item2</a></li>
+<li><a href="#">item3</a></li>
+<li class="some-other-class foo_bar_baz_class"><a href="#">item4</a></li></ul>
+HTML;
+        $this->assertEqualsWithoutLE($expected, $output);
+    }
+
+    public function testItemClassAsString()
+    {
+        $output = Menu::widget([
+            'route' => 'test/test',
+            'params' => [],
+            'encodeLabels' => true,
+            'activeCssClass' => 'item-active',
+            'items' => [
+                [
+                    'label' => 'item1',
+                    'url' => '#',
+                    'options' => [
+                        'class' => 'someclass',
+                    ],
+                ],
+                [
+                    'label' => 'item2',
+                    'url' => '#',
+                ],
+                [
+                    'label' => 'item3',
+                    'url' => '#',
+                    'options' => [
+                        'class' => 'some classes',
+                    ],
+                ],
+                [
+                    'label' => 'item4',
+                    'url' => '#',
+                    'active' => true,
+                    'options' => [
+                        'class' => 'another-class other--class two classes',
+                    ],
+                ],
+            ],
+        ]);
+
+        $expected = <<<HTML
+<ul><li class="someclass"><a href="#">item1</a></li>
+<li><a href="#">item2</a></li>
+<li class="some classes"><a href="#">item3</a></li>
+<li class="another-class other--class two classes item-active"><a href="#">item4</a></li></ul>
+HTML;
+        $this->assertEqualsWithoutLE($expected, $output);
+    }
+
+    /*public function testIsItemActive()
     {
         // TODO: implement test of protected method isItemActive()
-    }
+    }*/
 }

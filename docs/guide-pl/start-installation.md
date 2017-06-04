@@ -56,7 +56,7 @@ Jeśli jesteś już posiadaczem Composera, upewnij się, że jest on zaktualizow
 Teraz możesz przejść już do instalacji samego Yii, wywołując poniższe komendy w katalogu dostępnym z poziomu sieci web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.3.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 

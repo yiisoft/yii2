@@ -8,7 +8,6 @@
 namespace yiiunit\framework\ar;
 
 use yii\base\Event;
-use yii\db\ActiveQueryInterface;
 use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
 use yiiunit\data\ar\Customer;
@@ -732,7 +731,7 @@ trait ActiveRecordTestTrait
         $this->assertCount(1, $customer->ordersWithNullFK);
         $orderWithNullFK = $orderWithNullFKClass::findOne(3);
 
-        $this->assertEquals(3,$orderWithNullFK->id);
+        $this->assertEquals(3, $orderWithNullFK->id);
         $this->assertNull($orderWithNullFK->customer_id);
 
         // has many with delete

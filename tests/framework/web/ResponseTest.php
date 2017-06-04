@@ -2,8 +2,11 @@
 
 namespace yiiunit\framework\web;
 
-use Yii;
+use Exception;
+use RuntimeException;
+use Error;
 use yii\helpers\StringHelper;
+use yii\web\HttpException;
 
 /**
  * @group web
@@ -71,7 +74,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSendFileWrongRanges($rangeHeader)
     {
-        $this->setExpectedException('yii\web\RangeNotSatisfiableHttpException');
+        $this->expectException('yii\web\RangeNotSatisfiableHttpException');
 
         $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
         $_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
@@ -117,5 +120,58 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals($this->response->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
         $this->assertEquals($this->response->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
         $this->assertEquals($this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+    }
+
+    /**
+     * @dataProvider dataProviderSetStatusCodeByException
+     *
+     */
+    public function testSetStatusCodeByException($exception, $statusCode)
+    {
+        $this->response->setStatusCodeByException($exception);
+        $this->assertEquals($statusCode, $this->response->getStatusCode());
+    }
+
+    public function dataProviderSetStatusCodeByException()
+    {
+        $data = [
+            [
+                new Exception(),
+                500,
+            ],
+            [
+                new RuntimeException(),
+                500,
+            ],
+            [
+                new HttpException(500),
+                500,
+            ],
+            [
+                new HttpException(403),
+                403,
+            ],
+            [
+                new HttpException(404),
+                404,
+            ],
+            [
+                new HttpException(301),
+                301,
+            ],
+            [
+                new HttpException(200),
+                200,
+            ],
+        ];
+
+        if (class_exists('Error')) {
+            $data[] = [
+                new Error(),
+                500,
+            ];
+        }
+
+        return $data;
     }
 }
