@@ -52,7 +52,7 @@ abstract class BaseMigrateController extends Controller
      *
      * @see $migrationNamespaces
      */
-    public $migrationPath = '@app/migrations';
+    public $migrationPath = ['@app/migrations'];
     /**
      * @var array list of namespaces containing the migration classes.
      *
