@@ -62,6 +62,10 @@ Upgrade from Yii 2.0.11
 * The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
   `$params`.
 
+* `yii\base\Object` is now deprecated in favor of `yii\base\BaseObject`. You should use `instanceof \yii\base\BaseObject` 
+  instead of `instanceof \yii\base\Object` and use `yii\base\BaseObject` as a base class wherever possible (note that changing 
+  base class from `yii\base\Object` to `yii\base\BaseObject` may break BC).
+
 * The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
   If you extend this method, make sure to adjust your code.
   
@@ -72,6 +76,7 @@ Upgrade from Yii 2.0.11
 * `yii\filters\AccessControl` now can be used without `user` component.  
   In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
   matching a role throws `yii\base\InvalidConfigException`.
+
 
 Upgrade from Yii 2.0.10
 -----------------------

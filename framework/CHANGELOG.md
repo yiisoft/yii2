@@ -111,6 +111,7 @@ Yii Framework 2 Change Log
 - Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 - Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
 - Bug #13846: Fixed `Query::count()` issue with `orderBy` (Alex-Code)
+- Chg #12699: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` (rob006)
 
 
 2.0.11.2 February 08, 2017
