@@ -412,7 +412,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * Creates a query instance for `has-one` or `has-many` relation.
      * @param string $class the class name of the related record.
      * @param array $link the primary-foreign key constraint.
-     * @param boolean $multiple whether this query represents a relation to more than one record.
+     * @param bool $multiple whether this query represents a relation to more than one record.
      * @return ActiveQueryInterface the relational query object.
      * @since 2.0.12
      * @see hasOne()

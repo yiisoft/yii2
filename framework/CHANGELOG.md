@@ -1,15 +1,15 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.12 under development
---------------------------
+2.0.12 June 05, 2017
+--------------------
 
-- Bug #13842: Fixed ambiguous table SQL error while using `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` (vladis84, samdark)
-- Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #4408: Add support for unicode word characters and `+` character in attribute names (sammousa, kmindi)
+- Bug #5442: Fixed problem on load fixture dependencies with database related tests (leandrogehlen)
 - Bug #7946: Fixed a bug when the `form` attribute was not propagated to the hidden input of the checkbox (Kolyunya)
 - Bug #8120: Fixes LIKE special characters escaping for Cubrid/MSSQL/Oracle/SQLite in `yii\db\QueryBuilder` (sergeymakinen)
 - Bug #9669: AssetManager and `FileHelper::copyDirectory()` were copying empty directories when using `only` or `except` options. Added an option to disable this (cebe)
+- Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 - Bug #10346: Fixed "DOMException: Invalid Character Error" in `yii\web\XmlResponseFormatter::buildXml()` (sasha-ch)
 - Bug #10372: Fixed console controller including complex typed arguments in help (sammousa)
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
@@ -36,7 +36,6 @@ Yii Framework 2 Change Log
 - Bug #13582: PK column in `yii\db\pgsql\QueryBuilder::resetSequence()` was not quoted properly (boboldehampsink)
 - Bug #13592: Fixes `yii\db\oci\Schema::setTransactionIsolationLevel()` in Oracle (sergeymakinen)
 - Bug #13594: Fixes insufficient quoting in `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` (sergeymakinen)
-- Bug #14042: Fixed ambiguous column name in SELECT in UniqueValidator (cebe)
 - Bug #13649: Fixes issue where `['uncheck' => false]` and `['label' => false]` options for `ActiveRadio` and `ActiveCheckbox` were ignored (Alex-Code)
 - Bug #13657: Fixed `yii\helpers\StringHelper::truncateHtml()` skip extra tags at the end (sam002)
 - Bug #13670: Fixed alias option from console when it includes `-` or `_` in option name (pana1990)
@@ -50,16 +49,23 @@ Yii Framework 2 Change Log
 - Bug #13776: Fixed setting precision and scale for decimal columns in MSSQL (arturf)
 - Bug #13790: Fixed error in `\yii\widgets\MaskedInput` JavaScript by raising version required (samdark)
 - Bug #13807: Fixed `yii\db\QueryBuilder` to inherit subquery params when building a `INSERT INTO ... SELECT` query (sergeymakinen)
+- Bug #13842: Fixed ambiguous table SQL error while using `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` (vladis84, samdark)
+- Bug #13846: Fixed `Query::count()` issue with `orderBy` (Alex-Code)
 - Bug #13848: `yii\di\Instance::ensure()` wasn't throwing an exception when `$type` is specified and `$reference` object isn't instance of `$type` (c-jonua)
 - Bug #13890: `yii\log\DbTarget` log messages where not written when a database transaction was rolled back, added support for cloning a `yii\db\Connection` (shirase, cebe)
 - Bug #13901: Fixed passing unused parameter to `formatMessage()` call in `\yii\validators\IpValidator` (Kolyunya)
 - Bug #13961: Fixed `unserialize()` error during RBAC rule retrieving from PostgreSQL DBMS (vsguts, nanodesu88, cebe)
 - Bug #14012: `yii\db\pgsql\Schema::findViewNames()` was skipping materialized views (insolita)
 - Bug #14033: Fixed `yii\filters\AccessRule::matchIp()` erroring in case IP is not defined under HHVM (Kolyunya)
+- Bug #14042: Fixed ambiguous column name in SELECT in UniqueValidator (cebe)
 - Bug #14052: Fixed processing parse errors on PHP 7 since these are instances of `\ParseError` (samdark)
+- Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly)
 - Bug #14074: Fixed default value of `yii\console\controllers\FixtureController::$globalFixtures` to contain valid class name (lynicidn)
 - Bug #14094: Fixed bug when single `yii\web\UrlManager::createUrl()` call my result multiple calls of `yii\web\UrlRule::createUrl()` for the same rule (rossoneri)
 - Bug #14133: Fixed bug when calculating timings with mixed nested profile begin and end in `yii\log\Logger::calculateTimings()` (bizley)
+- Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
+- Enh #4999: Added support for wildcards at `yii\filters\AccessRule::$controllers` (klimov-paul)
+- Enh #5108: `yii\validators\DateValidator` now resets `$timestampAttribute` value on empty validated attribute value (klimov-paul)
 - Enh #8426: `yii\filters\AccessRule` now allows passing parameters to the role checking function (fsateler, cebe, Faryshta)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
 - Enh #11288: Added support for caching of `yii\web\UrlRule::createUrl()` results in `yii\web\UrlManager` for rules with defaults (rob006)
@@ -104,14 +110,8 @@ Yii Framework 2 Change Log
 - Enh #13994: Refactored `yii\filters\RateLimiter`. Added tests (vladis84)
 - Enh #14059: Removed unused AR instantiating for calling of static methods (ElisDN)
 - Enh #14067: `yii\web\View::clear()` sets populated arrays to empty arrays instead of null, also changed default values to empty array (craiglondon)
-- Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
-- Enh #5108: `yii\validators\DateValidator` now resets `$timestampAttribute` value on empty validated attribute value (klimov-paul)
-- Enh #4999: Added support for wildcards at `yii\filters\AccessRule::$controllers` (klimov-paul)
-- Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
-- Bug #14072: Fixed a bug where `\yii\db\Command::createTable()`, `addForeignKey()`, `dropForeignKey()`, `addCommentOnColumn()`, and `dropCommentFromColumn()` weren't refreshing the table cache on `yii\db\Schema` (brandonkelly) 
-- Bug #10305: Oracle SQL queries with `IN` condition and more than 1000 parameters are working now (silverfire)
 - Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
-- Bug #13846: Fixed `Query::count()` issue with `orderBy` (Alex-Code)
+- Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
 
 
 2.0.11.2 February 08, 2017

@@ -47,8 +47,8 @@ use yii\base\NotSupportedException;
  * - `ip`: [[IpValidator]]
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
- * 
- * @property array $attributeNames cleaned attribute names without the `!` character at the beginning. This property is read-only.
+ *
+ * @property array $attributeNames Attribute names. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

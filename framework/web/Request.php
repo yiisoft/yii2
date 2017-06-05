@@ -74,7 +74,8 @@ use yii\base\InvalidConfigException;
  * @property int $securePort Port number for secure requests.
  * @property string $serverName Server name, null if not available. This property is read-only.
  * @property int|null $serverPort Server port number, null if not available. This property is read-only.
- * @property string $url The currently requested relative URL. Note that the URI returned may be URL-encoded depending on the client.
+ * @property string $url The currently requested relative URL. Note that the URI returned may be URL-encoded
+ * depending on the client.
  * @property string|null $userAgent User agent, null if not available. This property is read-only.
  * @property string|null $userHost User host name, null if not available. This property is read-only.
  * @property string|null $userIP User IP address, null if not available. This property is read-only.

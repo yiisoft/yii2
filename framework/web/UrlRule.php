@@ -24,6 +24,9 @@ use yii\base\Object;
  * ]
  * ```
  *
+ * @property null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call. `null`
+ * if rule does not provide info about create status. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -122,12 +125,12 @@ class UrlRule extends Object implements UrlRuleInterface
      * @since 2.0.10
      */
     public $normalizer;
+
     /**
      * @var int|null status of the URL creation after the last [[createUrl()]] call.
      * @since 2.0.12
      */
     protected $createStatus;
-
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
      * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.

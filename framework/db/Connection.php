@@ -389,6 +389,7 @@ class Connection extends Component
      * @see enableLogging
      */
     public $enableProfiling = true;
+
     /**
      * @var Transaction the currently active transaction
      */
