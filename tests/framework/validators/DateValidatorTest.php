@@ -155,11 +155,11 @@ class DateValidatorTest extends TestCase
             1379030400, // 2013-09-13 00:00:00
             $model->attr_timestamp
         );
+        // array value
         $val = new DateValidator(['format' => 'php:Y-m-d']);
-        $model = FakedValidationModel::createWithAttributes(['attr_date' => []]);
+        $model = FakedValidationModel::createWithAttributes(['attr_date' => ['2013-09-13']]);
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
-
     }
 
     /**
@@ -199,10 +199,12 @@ class DateValidatorTest extends TestCase
             1379030400, // 2013-09-13 00:00:00
             $model->attr_timestamp
         );
+        // array value
         $val = new DateValidator(['format' => 'yyyy-MM-dd']);
-        $model = FakedValidationModel::createWithAttributes(['attr_date' => []]);
+        $model = FakedValidationModel::createWithAttributes(['attr_date' => ['2013-09-13']]);
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
+        // invalid format
         $val = new DateValidator(['format' => 'yyyy-MM-dd']);
         $model = FakedValidationModel::createWithAttributes(['attr_date' => '2012-12-12foo']);
         $val->validateAttribute($model, 'attr_date');
@@ -600,5 +602,34 @@ class DateValidatorTest extends TestCase
         $model->attr_date = '2013-09-2013';
         $val->validateAttribute($model, 'attr_date');
         $this->assertTrue($model->hasErrors('attr_date'));
+    }
+
+    /**
+     * @depends testValidateAttributePHPFormat
+     */
+    public function testTimestampAttributeOnEmpty()
+    {
+        $validator = new DateValidator([
+            'format' => 'php:Y/m/d',
+            'timestampAttribute' => 'attr_date',
+            'skipOnEmpty' => false,
+        ]);
+        $model = new FakedValidationModel();
+        $model->attr_date = '';
+        $validator->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+        $this->assertNull($model->attr_date);
+
+        $validator = new DateValidator([
+            'format' => 'php:Y/m/d',
+            'timestampAttribute' => 'attr_timestamp',
+            'skipOnEmpty' => false,
+        ]);
+        $model = new FakedValidationModel();
+        $model->attr_date = '';
+        $model->attr_timestamp = 1379030400;
+        $validator->validateAttribute($model, 'attr_date');
+        $this->assertFalse($model->hasErrors('attr_date'));
+        $this->assertNull($model->attr_timestamp);
     }
 }
