@@ -141,7 +141,65 @@ class AccessRuleTest extends \yiiunit\TestCase
         $this->assertNull($rule->allows($action, $user, $request));
     }
 
-    // TODO test match controller
+    public function testMatchController()
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'controllers' => ['test', 'other'],
+        ]);
+
+        $action->controller->id = 'test';
+        $this->assertTrue($rule->allows($action, $user, $request));
+
+        $action->controller->id = 'other';
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $action->controller->id = 'foreign';
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->allow = false;
+
+        $action->controller->id = 'test';
+        $this->assertFalse($rule->allows($action, $user, $request));
+        $action->controller->id = 'other';
+        $this->assertFalse($rule->allows($action, $user, $request));
+        $action->controller->id = 'foreign';
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
+
+    /**
+     * @depends testMatchController
+     */
+    public function testMatchControllerWildcard()
+    {
+        $action = $this->mockAction();
+        $user = false;
+        $request = $this->mockRequest();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'controllers' => ['module/*', '*/controller'],
+        ]);
+
+        $action->controller->id = 'module/test';
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $action->controller->id = 'any-module/controller';
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $action->controller->id = 'other/other';
+        $this->assertNull($rule->allows($action, $user, $request));
+
+        $rule->allow = false;
+
+        $action->controller->id = 'module/test';
+        $this->assertFalse($rule->allows($action, $user, $request));
+        $action->controller->id = 'any-module/controller';
+        $this->assertFalse($rule->allows($action, $user, $request));
+        $action->controller->id = 'other/other';
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
 
     /**
      * Data provider for testMatchRole

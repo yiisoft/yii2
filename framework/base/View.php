@@ -126,7 +126,7 @@ class View extends Component
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - path alias (e.g. "@app/views/site/index");
+     * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");
      * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
      *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
      * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash.
@@ -154,7 +154,7 @@ class View extends Component
 
     /**
      * Finds the view file based on the given view name.
-     * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
+     * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to [[render()]]
      * on how to specify this parameter.
      * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
      * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
@@ -429,7 +429,7 @@ class View extends Component
      * ```
      *
      * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
-     * This can be specified as either the view file path or path alias.
+     * This can be specified as either the view file path or [path alias](guide:concept-aliases).
      * @param array $params the variables (name => value) to be extracted and made available in the decorative view.
      * @return ContentDecorator the ContentDecorator widget instance
      * @see ContentDecorator

@@ -156,7 +156,7 @@ class Connection extends Component
      * Please refer to the [PHP manual](http://php.net/manual/en/pdo.construct.php) on
      * the format of the DSN string.
      *
-     * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a path alias
+     * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
      * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
      *
      * @see charset

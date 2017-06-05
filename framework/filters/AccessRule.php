@@ -43,6 +43,8 @@ class AccessRule extends Component
      * The comparison is case-sensitive.
      *
      * If not set or empty, it means this rule applies to all controllers.
+     *
+     * Since version 2.0.12 controller IDs can be specified as wildcards, e.g. `module/*`.
      */
     public $controllers;
     /**
@@ -172,7 +174,18 @@ class AccessRule extends Component
      */
     protected function matchController($controller)
     {
-        return empty($this->controllers) || in_array($controller->uniqueId, $this->controllers, true);
+        if (empty($this->controllers)) {
+            return true;
+        }
+
+        $id = $controller->getUniqueId();
+        foreach ($this->controllers as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

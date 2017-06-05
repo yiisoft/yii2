@@ -333,7 +333,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the current session save path.
      * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
-     * @param string $value the current session save path. This can be either a directory name or a path alias.
+     * @param string $value the current session save path. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidParamException if the path is not a valid directory
      */
     public function setSavePath($value)
