@@ -86,6 +86,9 @@ class Formatter extends Component
      *
      * It defaults to `UTC` so you only have to adjust this value if you store datetime values in another time zone in your database.
      *
+     * Note that a UNIX timestamp is always in UTC by its definition. That means that specifying a default time zone different from
+     * UTC has no effect on date values given as UNIX timestamp.
+     *
      * @since 2.0.1
      */
     public $defaultTimeZone = 'UTC';
@@ -466,10 +469,15 @@ class Formatter extends Component
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
-     * - an integer representing a UNIX timestamp
+     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
+     *   for the DateTime object to specify the source time zone.
+     *
+     * The formatter will convert date values according to [[timeZone]] before formatting it.
+     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
+     * Also no conversion will be performed on values that have no time information, e.g. `"2017-06-05"`.
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[dateFormat]] will be used.
@@ -498,10 +506,14 @@ class Formatter extends Component
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
-     * - an integer representing a UNIX timestamp
+     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
+     *   for the DateTime object to specify the source time zone.
+     *
+     * The formatter will convert date values according to [[timeZone]] before formatting it.
+     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[timeFormat]] will be used.
@@ -530,10 +542,14 @@ class Formatter extends Component
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
-     * - an integer representing a UNIX timestamp
+     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
+     *   for the DateTime object to specify the source time zone.
+     *
+     * The formatter will convert date values according to [[timeZone]] before formatting it.
+     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[dateFormat]] will be used.
