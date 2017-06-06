@@ -1264,7 +1264,7 @@ class QueryBuilder extends \yii\base\Object
                 foreach ($value->params as $n => $v) {
                     $params[$n] = $v;
                 }
-            } else {
+            } elseif (is_int($value) === false && is_float($value) === false) {
                 $phName = self::PARAM_PREFIX . count($params);
                 $params[$phName] = $value;
                 $sqlValues[$i] = $phName;
