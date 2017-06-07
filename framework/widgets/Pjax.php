@@ -98,6 +98,14 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
+     * @var bool Reapply stylesheets if the stylesheet is already loaded. 
+     */
+    public $reapplyStyles = false;
+    /**
+     * @var bool Put stylesheets in the HTML head section so that they do not get removed on subsequent PJAX calls. 
+     */
+    public $stylesHead = false;
+    /**
      * @inheritdoc
      * @internal
      */
@@ -128,6 +136,9 @@ class Pjax extends Widget
             if ($view->title !== null) {
                 echo Html::tag('title', Html::encode($view->title));
             }
+            $headers = Yii::$app->response->headers;
+            $headers->set('X-PJAX-Stylesheets-Reapply', $this->reapplyStyles);
+            $headers->set('X-PJAX-Stylesheets-Head', $this->stylesHead);
         } else {
             $options = $this->options;
             $tag = ArrayHelper::remove($options, 'tag', 'div');
@@ -155,11 +166,6 @@ class Pjax extends Widget
 
         $view = $this->getView();
         $view->endBody();
-
-        // Do not re-send css files as it may override the css files that were loaded after them.
-        // This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
-        // It should be removed once pjax supports loading only missing css files
-        $view->cssFiles = null;
 
         $view->endPage(true);
 
