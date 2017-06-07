@@ -80,6 +80,10 @@ class Cors extends ActionFilter
      */
     public $actions = [];
     /**
+     * @var boolean enable response for Preflight Request
+     */
+    public $preflightResponse = true;
+    /**
      * @var array Basic headers handled for the CORS requests.
      */
     public $cors = [
@@ -105,6 +109,10 @@ class Cors extends ActionFilter
         $requestCorsHeaders = $this->extractHeaders();
         $responseCorsHeaders = $this->prepareHeaders($requestCorsHeaders);
         $this->addCorsHeaders($this->response, $responseCorsHeaders);
+
+        if ($this->preflightResponse && $this->request->method === 'OPTIONS') {
+            return false;
+        }
 
         return true;
     }
