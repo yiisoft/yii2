@@ -96,7 +96,37 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * @var array related models indexed by the relation names
      */
     private $_related = [];
+    
+    protected $fields = [];
+    
+    protected $extraFields = [];
+    
 
+    public function getExtraFields(){
+        
+        return $this->extraFields;
+    }
+    
+    public function setExtraFields(array $fields){
+        
+        $this->extraFields = $fields;
+        
+        return $this;
+    }
+    
+    
+    public function getFields(){
+        
+        return $this->fields;
+    }
+    
+    
+    public function setFields(array $fields){
+        
+        $this->fields = $fields;
+        
+        return $this;
+    }
 
     /**
      * @inheritdoc
@@ -1625,9 +1655,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function fields()
     {
+        if($fields = $this->getFields())
+            return $fields;
+        
         $fields = array_keys($this->_attributes);
+        
+        $this->setFields(array_combine($fields, $fields));
 
-        return array_combine($fields, $fields);
+        return $this->getFields();
     }
 
     /**
@@ -1637,9 +1672,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function extraFields()
     {
+        if($fields = $this->getExtraFields())
+            return $fields;
+            
         $fields = array_keys($this->getRelatedRecords());
+            
+        $this->setExtraFields(array_combine($fields, $fields));
 
-        return array_combine($fields, $fields);
+        return $this->getExtraFields();
     }
 
     /**
