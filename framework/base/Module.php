@@ -497,6 +497,13 @@ class Module extends ServiceLocator
      */
     public function setModules($modules)
     {
+        $this->ensureBehaviors();
+        foreach ($this->getBehaviors() as $behavior) {
+            if ($behavior instanceof ModuleBehaviorInterface) {
+                $this->modules = array_replace_recursive($this->modules, $behavior->modules());
+            }
+        }
+        
         foreach ($modules as $id => $module) {
             $this->_modules[$id] = $module;
         }
@@ -571,6 +578,13 @@ class Module extends ServiceLocator
         } else {
             $id = $route;
             $route = '';
+        }
+
+        $this->ensureBehaviors();
+        foreach ($this->getBehaviors() as $behavior) {
+            if ($behavior instanceof ModuleBehaviorInterface) {
+                $this->controllerMap = array_replace_recursive($this->controllerMap, $behavior->controllers());
+            }
         }
 
         // module and controller map take precedence
