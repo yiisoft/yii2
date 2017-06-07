@@ -149,11 +149,6 @@ class UrlManager extends Component
      */
     public $normalizer = false;
 
-    /**
-     * @var string the cache key for cached rules
-     * @since 2.0.8
-     */
-    protected $cacheKey = __CLASS__;
 
     private $_baseUrl;
     private $_scriptUrl;
@@ -194,6 +189,14 @@ class UrlManager extends Component
             $this->rules = $this->buildRules($this->rules);
         }
     }
+
+    /**
+     * return class name suffixed with 
+     **/
+    protected function getCacheKey() {
+        return __CLASS__.'.'.Yii::getAlias('@app');
+    }
+
 
     /**
      * Adds additional URL rules.
