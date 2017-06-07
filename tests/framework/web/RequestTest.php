@@ -294,4 +294,28 @@ class RequestTest extends TestCase
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
     }
+
+    public function testGetSecureConnection()
+    {
+        $request = new Request();
+
+        $_SERVER['HTTPS'] = 'on';
+        $this->assertTrue($request->getIsSecureConnection());
+
+        // Trust HTTPS header over the X_FORWARDED header
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+        $this->assertTrue($request->getIsSecureConnection());
+
+        $_SERVER['HTTPS'] = false;
+        $this->assertFalse($request->getIsSecureConnection());
+
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'http';
+        $this->assertFalse($request->getIsSecureConnection());
+
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+        $this->assertTrue($request->getIsSecureConnection());
+
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https, http';
+        $this->assertTrue($request->getIsSecureConnection());
+    }
 }
