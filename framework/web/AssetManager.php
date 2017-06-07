@@ -438,6 +438,7 @@ class AssetManager extends Component
      * - forceCopy: boolean, whether the directory being published should be copied even if
      *   it is found in the target directory. This option is used only when publishing a directory.
      *   This overrides [[forceCopy]] if set.
+     * - afterPublish: callback, a PHP callback that is called after all files and directories have been copied.
      *
      * @return array the path (directory or file path) and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
@@ -508,6 +509,7 @@ class AssetManager extends Component
      * - forceCopy: boolean, whether the directory being published should be copied even if
      *   it is found in the target directory. This option is used only when publishing a directory.
      *   This overrides [[forceCopy]] if set.
+     * - afterPublish: callback, a PHP callback that is called after all files and directories have been copied.
      *
      * @return string[] the path directory and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
@@ -543,6 +545,9 @@ class AssetManager extends Component
                 $opts['afterCopy'] = $this->afterCopy;
             }
             FileHelper::copyDirectory($src, $dstDir, $opts);
+            if (isset($options['afterPublish'])) {
+                call_user_func($options['afterPublish'], $this, $dstDir);
+            }
         }
 
         return [$dstDir, $this->baseUrl . '/' . $dir];
