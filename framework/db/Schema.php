@@ -384,7 +384,7 @@ abstract class Schema extends Object
      * @throws InvalidCallException if the DB connection is not active
      * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
      */
-    public function getLastInsertID($sequenceName = '')
+    public function getLastInsertID($sequenceName = null)
     {
         if ($this->db->isActive) {
             return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteTableName($sequenceName));
