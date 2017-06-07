@@ -398,6 +398,7 @@ class View extends \yii\base\View
      */
     public function registerCssFile($url, $options = [], $key = null)
     {
+        $url = $this->appendTimestamp($url);
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
 
@@ -465,6 +466,7 @@ class View extends \yii\base\View
      */
     public function registerJsFile($url, $options = [], $key = null)
     {
+        $url = $this->appendTimestamp($url);
         $url = Yii::getAlias($url);
         $key = $key ?: $url;
 
@@ -579,5 +581,21 @@ class View extends \yii\base\View
         }
 
         return empty($lines) ? '' : implode("\n", $lines);
+    }
+
+    /**
+     * Append timestamp if the url starts with the alias 'web' and the configuration is turned on
+     *
+     * @param $url
+     * @return string
+     */
+    public function appendTimestamp($url)
+    {
+        if (Yii::$app->assetManager->appendTimestamp && strncmp($url, '@web/', 5) === 0) {
+            $fileToCacheBust = Yii::getAlias(str_replace('@web', '@webroot', $url));
+            if (($timestamp = @filemtime("$fileToCacheBust")) > 0)
+                $url .= "?v={$timestamp}";
+        }
+        return $url;
     }
 }
