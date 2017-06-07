@@ -179,14 +179,22 @@ abstract class BaseMigrateController extends Controller
 
         $applied = 0;
         if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . '?')) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateUp($migration)) {
-                    $this->stdout("\n$applied from $n " . ($applied === 1 ? 'migration was' : 'migrations were') ." applied.\n", Console::FG_RED);
-                    $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
+            try {
+                foreach ($migrations as $migration) {
+                    if (!$this->migrateUp($migration)) {
+                        $this->stdout("\n$applied from $n " . ($applied === 1 ? 'migration was' : 'migrations were') ." applied.\n", Console::FG_RED);
+                        $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+                        return self::EXIT_CODE_ERROR;
+                    }
+                    $applied++;
                 }
-                $applied++;
+            } catch (\Exception $e) {
+                $this->showSummaryOnError($applied, $n, 'applied');
+                throw $e;
+            } catch (\Throwable $e) {
+                $this->showSummaryOnError($applied, $n, 'applied');
+                throw $e;
             }
 
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') ." applied.\n", Console::FG_GREEN);
@@ -240,14 +248,22 @@ abstract class BaseMigrateController extends Controller
 
         $reverted = 0;
         if ($this->confirm('Revert the above ' . ($n === 1 ? 'migration' : 'migrations') . '?')) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateDown($migration)) {
-                    $this->stdout("\n$reverted from $n " . ($reverted === 1 ? 'migration was' : 'migrations were') ." reverted.\n", Console::FG_RED);
-                    $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
+            try {
+                foreach ($migrations as $migration) {
+                    if (!$this->migrateDown($migration)) {
+                        $this->stdout("\n$reverted from $n " . ($reverted === 1 ? 'migration was' : 'migrations were') ." reverted.\n", Console::FG_RED);
+                        $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+                        return self::EXIT_CODE_ERROR;
+                    }
+                    $reverted++;
                 }
-                $reverted++;
+            } catch (\Exception $e) {
+                $this->showSummaryOnError($reverted, $n, 'reverted');
+                throw $e;
+            } catch (\Throwable $e) {
+                $this->showSummaryOnError($reverted, $n, 'reverted');
+                throw $e;
             }
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') ." reverted.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated down successfully.\n", Console::FG_GREEN);
@@ -301,19 +317,40 @@ abstract class BaseMigrateController extends Controller
         $this->stdout("\n");
 
         if ($this->confirm('Redo the above ' . ($n === 1 ? 'migration' : 'migrations') . '?')) {
-            foreach ($migrations as $migration) {
-                if (!$this->migrateDown($migration)) {
-                    $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
+            $reverted = 0;
+            try {
+                foreach ($migrations as $migration) {
+                    if (!$this->migrateDown($migration)) {
+                        $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+                        return self::EXIT_CODE_ERROR;
+                    }
+                    $reverted++;
                 }
+            } catch (\Exception $e) {
+                $this->showSummaryOnError($reverted, $n, 'reverted');
+                throw $e;
+            } catch (\Throwable $e) {
+                $this->showSummaryOnError($reverted, $n, 'reverted');
+                throw $e;
             }
-            foreach (array_reverse($migrations) as $migration) {
-                if (!$this->migrateUp($migration)) {
-                    $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+            $applied = 0;
+            try {
+                foreach (array_reverse($migrations) as $migration) {
+                    if (!$this->migrateUp($migration)) {
+                        $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
+
+                        return self::EXIT_CODE_ERROR;
+                    }
+                    $applied++;
                 }
+            } catch (\Exception $e) {
+                $this->showSummaryOnError($applied, $n, 'applied');
+                throw $e;
+            } catch (\Throwable $e) {
+                $this->showSummaryOnError($applied, $n, 'applied');
+                throw $e;
             }
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') ." redone.\n", Console::FG_GREEN);
             $this->stdout("\nMigration redone successfully.\n", Console::FG_GREEN);
@@ -802,6 +839,19 @@ abstract class BaseMigrateController extends Controller
         }
 
         throw new Exception("Unable to find the version '$originalVersion'.");
+    }
+
+    /**
+     * Show summary about applied/reverted migrations when an action did interrupted by an error.
+     * @param integer $passedCount Number of successfully applied/reverted migrations.
+     * @param integer $totalCount Total number of migrations touched by an action.
+     * @param string $passedVerb Verb to say what is done for [[$passedCount]] migrations.
+     * @since 2.0.13
+     */
+    protected function showSummaryOnError($passedCount, $totalCount, $passedVerb)
+    {
+        $this->stdout("\n$passedCount from $totalCount " . ($passedCount === 1 ? 'migration was' : 'migrations were') ." $passedVerb.\n", Console::FG_RED);
+        $this->stdout("\nNext one cause an error. The rest of the migrations are skipped.\n", Console::FG_RED);
     }
 
     /**
