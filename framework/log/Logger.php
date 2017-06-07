@@ -278,7 +278,7 @@ class Logger extends Component
             list($token, $level, $category, $timestamp, $traces) = $log;
             $memory = isset($log[5]) ? $log[5] : 0;
             $log[6] = $i;
-            $hash = md5($token);
+            $hash = md5(serialize($token));
             if ($level == Logger::LEVEL_PROFILE_BEGIN) {
                 $stack[$hash] = $log;
             } elseif ($level == Logger::LEVEL_PROFILE_END) {
