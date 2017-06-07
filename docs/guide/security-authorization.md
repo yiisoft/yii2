@@ -275,7 +275,7 @@ use yii\console\Controller;
 
 class RbacController extends Controller
 {
-    public function actionInit()
+    public function actionIndex()
     {
         $auth = Yii::$app->authManager;
 
