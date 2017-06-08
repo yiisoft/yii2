@@ -93,3 +93,5 @@ If your code is hosted at GitHub, you can place the following in your README.md 
 ```
 [![Yii2](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](http://www.yiiframework.com/)
 ```
+### modify history
+- [tsingsun modify](CHANGELOG.md)
