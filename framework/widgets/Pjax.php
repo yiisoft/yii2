@@ -13,6 +13,7 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\Response;
+use yii\web\View;
 
 /**
  * Pjax is a widget integrating the [pjax](https://github.com/yiisoft/jquery-pjax) jQuery plugin.
@@ -98,6 +99,11 @@ class Pjax extends Widget
      */
     public $clientOptions;
     /**
+     * @var bool clear the resources. If set to `true` any resources registered outside the pjax widget's scope will be removed.
+     * This should be set to `false` if your pjax widget is inside the layout view since the layout is rendered after the content.
+     */
+    public $clear = true;
+    /**
      * @inheritdoc
      * @internal
      */
@@ -106,7 +112,6 @@ class Pjax extends Widget
      * @inheritdoc
      */
     public static $autoIdPrefix = 'p';
-
 
     /**
      * @inheritdoc
@@ -121,7 +126,9 @@ class Pjax extends Widget
             ob_start();
             ob_implicit_flush(false);
             $view = $this->getView();
-            $view->clear();
+            if ($this->clear) {
+                $view->clear();
+            }
             $view->beginPage();
             $view->head();
             $view->beginBody();
@@ -146,21 +153,15 @@ class Pjax extends Widget
      */
     public function run()
     {
+        $view = $this->getView();
+        $this->registerClientScript();
         if (!$this->requiresPjax()) {
+            PjaxAsset::register($view);
             echo Html::endTag(ArrayHelper::remove($this->options, 'tag', 'div'));
-            $this->registerClientScript();
-
             return;
         }
-
-        $view = $this->getView();
+        
         $view->endBody();
-
-        // Do not re-send css files as it may override the css files that were loaded after them.
-        // This is a temporary fix for https://github.com/yiisoft/yii2/issues/2310
-        // It should be removed once pjax supports loading only missing css files
-        $view->cssFiles = null;
-
         $view->endPage(true);
 
         $content = ob_get_clean();
@@ -211,11 +212,10 @@ class Pjax extends Widget
             $submitEvent = Json::htmlEncode($this->submitEvent);
             $js .= "\njQuery(document).on($submitEvent, $formSelector, function (event) {jQuery.pjax.submit(event, $options);});";
         }
-        $view = $this->getView();
-        PjaxAsset::register($view);
 
         if ($js !== '') {
-            $view->registerJs($js);
+            $view = $this->getView();
+            $view->registerJs($js, View::POS_READY, 'pjax-init', View::MERGE_PREPEND);
         }
     }
 }
