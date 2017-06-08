@@ -14,4 +14,11 @@ class Document extends ActiveRecord
     {
         return 'version';
     }
+
+    public function scenarios()
+    {
+        return [
+            'test' => ['title', 'content', 'version'],
+        ];
+    }
 }
