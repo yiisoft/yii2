@@ -1261,7 +1261,6 @@ class BaseHtml
      */
     public static function error($model, $attribute, $options = [])
     {
-        $attribute = static::getAttributeName($attribute);
         $error = $model->getFirstError($attribute);
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);

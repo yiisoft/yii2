@@ -241,7 +241,7 @@ class ActiveField extends Component
         if ($this->model->isAttributeRequired($attribute)) {
             $class[] = $this->form->requiredCssClass;
         }
-        if ($this->model->hasErrors($attribute)) {
+        if ($this->model->hasErrors($this->attribute)) {
             $class[] = $this->form->errorCssClass;
         }
         $options['class'] = implode(' ', $class);
