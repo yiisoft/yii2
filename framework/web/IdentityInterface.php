@@ -20,6 +20,11 @@ namespace yii\web;
  *     {
  *         return static::findOne($id);
  *     }
+ * 
+ *     public static function findIdentityByAccessToken($token)
+ *    {
+ *        return static::findOne(['access_token' => $token]);
+ *    }
  *
  *     public static function findIdentityByAccessToken($token, $type = null)
  *     {
