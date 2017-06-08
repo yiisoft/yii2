@@ -174,12 +174,15 @@ class LoggerTest extends TestCase
             ['message2', Logger::LEVEL_PROFILE, 'category', 'time', 'trace', 1048576],
             ['message3', Logger::LEVEL_TRACE, 'category', 'time', 'trace', 1048576],
             ['message4', Logger::LEVEL_WARNING, 'category', 'time', 'trace', 1048576],
+            [['message5', 'message6'], Logger::LEVEL_ERROR, 'category', 'time', 'trace', 1048576],
         ];
         $this->assertEmpty($this->logger->calculateTimings($messages));
     }
 
     /**
      * @covers yii\log\Logger::calculateTimings()
+     *
+     * See https://github.com/yiisoft/yii2/issues/14264
      */
     public function testCalculateTimingsWithProfileBeginEnd()
     {
@@ -190,6 +193,25 @@ class LoggerTest extends TestCase
         $this->assertEquals([
             [
                 'info' => 'token',
+                'category' => 'category',
+                'timestamp' => 10,
+                'trace' => 'trace',
+                'level' => 0,
+                'duration' => 5,
+                'memory' => 2097152,
+                'memoryDiff' => 1048576
+            ]
+        ],
+            $this->logger->calculateTimings($messages)
+        );
+
+        $messages = [
+            'anyKey' => [['a', 'b'], Logger::LEVEL_PROFILE_BEGIN, 'category', 10, 'trace', 1048576],
+            'anyKey2' => [['a', 'b'], Logger::LEVEL_PROFILE_END, 'category', 15, 'trace', 2097152],
+        ];
+        $this->assertEquals([
+            [
+                'info' => ['a', 'b'],
                 'category' => 'category',
                 'timestamp' => 10,
                 'trace' => 'trace',
