@@ -424,11 +424,11 @@ class Command extends Component
      * @param array|\yii\db\Query $columns the column data (name => value) to be inserted into the table or instance
      * of [[yii\db\Query|Query]] to perform INSERT INTO ... SELECT SQL statement.
      * Passing of [[yii\db\Query|Query]] is available since version 2.0.11.
+     * @param array $params the parameters to be bound to the command
      * @return $this the command object itself
      */
-    public function insert($table, $columns)
+    public function insert($table, $columns, $params = [])
     {
-        $params = [];
         $sql = $this->db->getQueryBuilder()->insert($table, $columns, $params);
 
         return $this->setSql($sql)->bindValues($params);
