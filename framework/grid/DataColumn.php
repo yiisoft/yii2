@@ -108,7 +108,7 @@ class DataColumn extends Column
      * render the HTML attributes for the generated filter input fields.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $filterInputOptions = ['class' => 'form-control', 'id' => null];
+    public $filterInputOptions = [];
 
 
     /**
@@ -179,6 +179,9 @@ class DataColumn extends Column
 
         $model = $this->grid->filterModel;
 
+        // The default options the filterCell has
+        $defaultFilterOptions = ['class' => 'form-control', 'id' => null];
+
         if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
             if ($model->hasErrors($this->attribute)) {
                 Html::addCssClass($this->filterOptions, 'has-error');
@@ -187,7 +190,8 @@ class DataColumn extends Column
                 $error = '';
             }
             if (is_array($this->filter)) {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                // Merge the defaultFilterOptions with a default prompt and the user input
+                $options = array_merge($defaultFilterOptions, ['prompt' => ''], $this->filterInputOptions);
                 return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
             } elseif ($this->format === 'boolean') {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
@@ -196,7 +200,7 @@ class DataColumn extends Column
                     $this->grid->formatter->booleanFormat[1],
                 ], $options) . $error;
             } else {
-                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
+                return Html::activeTextInput($model, $this->attribute, array_merge($defaultFilterOptions, $this->filterInputOptions)) . $error;
             }
         } else {
             return parent::renderFilterCellContent();
