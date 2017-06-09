@@ -456,6 +456,20 @@ class FormatterNumberTest extends TestCase
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asOrdinal(null));
     }
 
+    /**
+     * https://github.com/yiisoft/yii2/issues/14278
+     */
+    public function testIntlAsOrdinalDate()
+    {
+        $f = $this->formatter;
+        $this->assertSame('15th', $f->asOrdinal($f->asDate('2017-05-15', 'php:j')));
+        $this->assertSame('1st', $f->asOrdinal($f->asDate('2017-05-01', 'php:j')));
+
+        $f->locale = 'de_DE';
+        $this->assertSame('15.', $f->asOrdinal($f->asDate('2017-05-15', 'php:j')));
+        $this->assertSame('1.', $f->asOrdinal($f->asDate('2017-05-01', 'php:j')));
+    }
+
     public function testIntlAsShortSize()
     {
         $this->formatter->numberFormatterOptions = [
