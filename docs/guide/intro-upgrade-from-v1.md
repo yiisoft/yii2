@@ -449,7 +449,7 @@ $customers = Customer::find()->asArray()->all();
 ```
 
 Another change is that you can't define attribute default values through public properties anymore.
-If you need those, you should set them in the init method of your record class.
+If you need those, you should set them in the `init` method of your record class.
 
 ```php
 public function init()
@@ -498,8 +498,8 @@ class MyBehavior extends Behavior
 ```
 
 
-User and IdentityInterface
---------------------------
+`User` and `IdentityInterface`
+------------------------------
 
 The `CWebUser` class in 1.1 is now replaced by [[yii\web\User]], and there is no more
 `CUserIdentity` class. Instead, you should implement the [[yii\web\IdentityInterface]] which
@@ -527,7 +527,7 @@ the same goal.
 Please refer to the [Url manager docs](runtime-routing.md) section for more details.
 
 An important change in the naming convention for routes is that camel case names of controllers
-and actions are now converted to lower case where each word is separated by a hypen, e.g. the controller
+and actions are now converted to lower case where each word is separated by a hyphen, e.g. the controller
 id for the `CamelCaseController` will be `camel-case`.
 See the section about [controller IDs](structure-controllers.md#controller-ids) and [action IDs](structure-controllers.md#action-ids) for more details.
 
