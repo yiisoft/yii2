@@ -116,11 +116,8 @@ abstract class ErrorHandler extends Component
                 }
                 exit(1);
             }
-        } catch (\Exception $e) {
-            // an other exception could be thrown while displaying the exception
-            $this->handleFallbackExceptionMessage($e, $exception);
         } catch (\Throwable $e) {
-            // additional check for \Throwable introduced in PHP 7
+            // additional check for \Throwable
             $this->handleFallbackExceptionMessage($e, $exception);
         }
 
@@ -129,7 +126,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Handles exception thrown during exception processing in [[handleException()]].
-     * @param \Exception|\Throwable $exception Exception that was thrown during main exception processing.
+     * @param \Throwable $exception Exception that was thrown during main exception processing.
      * @param \Exception $previousException Main exception processed in [[handleException()]].
      * @since 2.0.11
      */
