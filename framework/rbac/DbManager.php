@@ -436,7 +436,7 @@ class DbManager extends BaseManager
     {
         $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::class : Role::class;
 
-        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
+        if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;
         }
 
@@ -466,7 +466,7 @@ class DbManager extends BaseManager
             ->andWhere(['a.user_id' => (string) $userId])
             ->andWhere(['b.type' => Item::TYPE_ROLE]);
 
-        $roles = $this->getDefaultRoles();
+        $roles = $this->getDefaultRoleInstances();
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
@@ -1008,7 +1008,7 @@ class DbManager extends BaseManager
     /**
      * Returns all role assignment information for the specified role.
      * @param string $roleName
-     * @return Assignment[] the assignments. An empty array will be
+     * @return string[] the ids. An empty array will be
      * returned if role is not assigned to any user.
      * @since 2.0.7
      */

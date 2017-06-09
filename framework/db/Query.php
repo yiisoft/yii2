@@ -413,18 +413,20 @@ class Query extends Component implements QueryInterface
             && empty($this->groupBy)
             && empty($this->having)
             && empty($this->union)
-            && empty($this->orderBy)
         ) {
             $select = $this->select;
+            $order = $this->orderBy;
             $limit = $this->limit;
             $offset = $this->offset;
 
             $this->select = [$selectExpression];
+            $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
             $command = $this->createCommand($db);
 
             $this->select = $select;
+            $this->orderBy = $order;
             $this->limit = $limit;
             $this->offset = $offset;
 

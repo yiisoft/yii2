@@ -276,7 +276,7 @@ class Security extends Component
         if (function_exists('hash_hkdf')) {
             $outputKey = hash_hkdf($algo, $inputKey, $length, $info, $salt);
             if ($outputKey === false) {
-                throw new InvalidParamException('Invalid parameters to hash_hkdf()');
+                throw new InvalidArgumentException('Invalid parameters to hash_hkdf()');
             }
             return $outputKey;
         }

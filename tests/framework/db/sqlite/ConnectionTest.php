@@ -202,4 +202,10 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $connection->close();
     }
+
+    public function testExceptionContainsRawQuery()
+    {
+        // This test does not work on sqlite because preparing the failing query fails
+    }
+
 }

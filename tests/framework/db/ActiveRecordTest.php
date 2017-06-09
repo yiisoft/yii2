@@ -3,7 +3,6 @@
 namespace yiiunit\framework\db;
 
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecordInterface;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Category;
@@ -22,6 +21,7 @@ use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
 use yiiunit\data\ar\Animal;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Dog;
+use yiiunit\TestCase;
 
 abstract class ActiveRecordTest extends DatabaseTestCase
 {
@@ -1076,7 +1076,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(2, $order->booksWithNullFKViaTable);
         $orderItemCount = $orderItemsWithNullFKClass::find()->count();
         $this->assertEquals(5, $itemClass::find()->count());
-        $order->unlinkAll('booksWithNullFKViaTable', false);        
+        $order->unlinkAll('booksWithNullFKViaTable', false);
         $this->assertCount(0, $order->booksWithNullFKViaTable);
         $this->assertEquals(2, $orderItemsWithNullFKClass::find()->where(['AND', ['item_id' => [1, 2]], ['order_id' => null]])->count());
         $this->assertEquals($orderItemCount, $orderItemsWithNullFKClass::find()->count());

@@ -10,6 +10,14 @@ use yiiunit\TestCase;
  */
 class VarDumperTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testDumpIncompleteObject()
     {
         $serializedObj = 'O:16:"nonExistingClass":0:{}';

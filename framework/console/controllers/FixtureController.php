@@ -15,7 +15,7 @@ use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
-use yii\test\InitDb;
+use yii\test\InitDbFixture;
 
 /**
  * Manages fixture data loading and unloading.
@@ -58,7 +58,9 @@ class FixtureController extends Controller
      * @var array global fixtures that should be applied when loading and unloading. By default it is set to `InitDbFixture`
      * that disables and enables integrity check, so your data can be safely loaded.
      */
-    public $globalFixtures = [InitDb::class];
+    public $globalFixtures = [
+        InitDbFixture::class,
+    ];
 
 
     /**
@@ -414,10 +416,28 @@ class FixtureController extends Controller
         $foundFixtures = [];
 
         foreach ($files as $fixture) {
-            $foundFixtures[] = basename($fixture, 'Fixture.php');
+            $foundFixtures[] = $this->getFixtureRelativeName($fixture);
         }
 
         return $foundFixtures;
+    }
+
+    /**
+     * Calculates fixture's name
+     * Basically, strips [[getFixturePath()]] and `Fixture.php' suffix from fixture's full path
+     * @see getFixturePath()
+     * @param string $fullFixturePath Full fixture path
+     * @return string Relative fixture name
+     */
+    private function getFixtureRelativeName($fullFixturePath)
+    {
+        $fixturesPath = FileHelper::normalizePath($this->getFixturePath());
+        $fullFixturePath = FileHelper::normalizePath($fullFixturePath);
+
+        $relativeName = substr($fullFixturePath, strlen($fixturesPath)+1);
+        $relativeDir = dirname($relativeName) === '.' ? '' : dirname($relativeName) . DIRECTORY_SEPARATOR;
+
+        return $relativeDir . basename($fullFixturePath, 'Fixture.php');
     }
 
     /**
@@ -431,6 +451,8 @@ class FixtureController extends Controller
 
         foreach ($fixtures as $fixture) {
             $isNamespaced = (strpos($fixture, '\\') !== false);
+            // replace linux' path slashes to namespace backslashes, in case if $fixture is non-namespaced relative path
+            $fixture = str_replace('/', '\\', $fixture);
             $fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
 
             if (class_exists($fullClassName)) {

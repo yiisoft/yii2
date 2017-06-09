@@ -9,6 +9,9 @@ namespace yii\validators;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\Model;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * ExistValidator validates that the attribute value exists in a table.
@@ -137,14 +140,28 @@ class ExistValidator extends Validator
             if ($this->allowArray) {
                 throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
             }
-            $params = [];
+            $conditions = [];
             foreach ($targetAttribute as $k => $v) {
-                $params[$v] = is_int($k) ? $model->$v : $model->$k;
+                $conditions[$v] = is_int($k) ? $model->$v : $model->$k;
             }
         } else {
-            $params = [$targetAttribute => $model->$attribute];
+            $conditions = [$targetAttribute => $model->$attribute];
         }
-        return $params;
+
+        if (!$model instanceof ActiveRecord) {
+            return $conditions;
+        }
+
+        return $this->prefixConditions($model, $conditions);
+    }
+
+    /**
+     * @param Model $model the data model to be validated
+     * @return string Target class name
+     */
+    private function getTargetClass($model)
+    {
+        return $this->targetClass === null ? get_class($model) : $this->targetClass;
     }
 
     /**
@@ -188,5 +205,43 @@ class ExistValidator extends Validator
         }
 
         return $query;
+    }
+
+    /**
+     * Returns conditions with alias
+     * @param ActiveQuery $query
+     * @param array $conditions array of condition, keys to be modified
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @return array
+     */
+    private function applyTableAlias($query, $conditions, $alias = null)
+    {
+        if ($alias === null) {
+            $alias = array_keys($query->getTablesUsedInFrom())[0];
+        }
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            $prefixedColumn = "{$alias}.[[" . preg_replace(
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    "$1",
+                    $columnName) . "]]";
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+        return $prefixedConditions;
+    }
+
+    /**
+     * Prefix conditions with aliases
+     *
+     * @param ActiveRecord $model
+     * @param array $conditions
+     * @return array
+     */
+    private function prefixConditions($model, $conditions)
+    {
+        $targetModelClass = $this->getTargetClass($model);
+
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 }

@@ -66,6 +66,8 @@ use yii\base\InvalidConfigException;
  * marks a relation as inverse of another relation and [[onCondition()]] which adds a condition that
  * is to be added to relational query join condition.
  *
+ * @property string[] $tablesUsedInFrom Table names indexed by aliases. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
@@ -148,10 +150,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->from)) {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
-            $this->from = [$tableName];
+            $this->from = [$this->getPrimaryTableName()];
         }
 
         if (empty($this->select) && !empty($this->join)) {
@@ -559,9 +558,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     private function getTableNameAndAlias()
     {
         if (empty($this->from)) {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
+            $tableName = $this->getPrimaryTableName();
         } else {
             $tableName = '';
             foreach ($this->from as $alias => $tableName) {
@@ -783,9 +780,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             list($tableName, ) = $this->getTableNameAndAlias();
             $this->from = [$alias => $tableName];
         } else {
-            /* @var $modelClass ActiveRecord */
-            $modelClass = $this->modelClass;
-            $tableName = $modelClass::tableName();
+            $tableName = $this->getPrimaryTableName();
 
             foreach ($this->from as $key => $table) {
                 if ($table === $tableName) {
@@ -795,5 +790,94 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * Returns table names used in [[from]] indexed by aliases.
+     * Both aliases and names are enclosed into {{ and }}.
+     * @return string[] table names indexed by aliases
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.12
+     */
+    public function getTablesUsedInFrom()
+    {
+        if (empty($this->from)) {
+            $tableNames = [$this->getPrimaryTableName()];
+        } elseif (is_array($this->from)) {
+            $tableNames = $this->from;
+        } elseif (is_string($this->from)) {
+            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
+        }
+
+        // Clean up table names and aliases
+        $cleanedUpTableNames = [];
+        foreach ($tableNames as $alias => $tableName) {
+            if (!is_string($alias)) {
+                $pattern = <<<PATTERN
+~
+^
+\s*
+(
+    (?:['"`\[]|{{)
+    .*?
+    (?:['"`\]]|}})
+    |
+    .*?
+)
+(?:
+    (?:
+        \s+
+        (?:as)?
+        \s*
+    )
+    (
+       (?:['"`\[]|{{)
+        .*?
+        (?:['"`\]]|}})
+        |
+        .*?
+    )
+)?
+\s*
+$
+~iux
+PATTERN;
+                if (preg_match($pattern, $tableName, $matches)) {
+                    if (isset($matches[1])) {
+                        if (isset($matches[2])) {
+                            list(, $tableName, $alias) = $matches;
+                        } else {
+                            $tableName = $alias = $matches[1];
+                        }
+                        if (strncmp($alias, '{{', 2) !== 0) {
+                            $alias = '{{' . $alias . '}}';
+                        }
+                        if (strncmp($tableName, '{{', 2) !== 0) {
+                            $tableName = '{{' . $tableName . '}}';
+                        }
+                    }
+                }
+            }
+
+            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
+            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
+
+            $cleanedUpTableNames[$alias] = $tableName;
+        }
+
+        return $cleanedUpTableNames;
+    }
+
+    /**
+     * @return string primary table name
+     * @since 2.0.12
+     */
+    protected function getPrimaryTableName()
+    {
+        /* @var $modelClass ActiveRecord */
+        $modelClass = $this->modelClass;
+        return $modelClass::tableName();
     }
 }

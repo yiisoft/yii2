@@ -16,8 +16,6 @@ use yii\db\ViewFinderTrait;
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
- * @property string[] $viewNames All view names in the database. This property is read-only.
- *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */

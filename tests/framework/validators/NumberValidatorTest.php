@@ -46,8 +46,11 @@ class NumberValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
         $this->oldLocale = setlocale(LC_NUMERIC, 0);
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit()

@@ -225,4 +225,63 @@ class SortTest extends TestCase
 
         $this->assertEquals('<a class="asc" href="/index.php?r=site%2Findex&amp;sort=-age%2C-name" data-sort="-age,-name">Age</a>', $sort->link('age'));
     }
+
+    public function testParseSortParam()
+    {
+        $sort = new CustomSort([
+            'attributes' => [
+                'age',
+                'name'
+            ],
+            'params' => [
+                'sort' => [
+                    ['field' => 'age', 'dir' => 'asc'],
+                    ['field' => 'name', 'dir' => 'desc']
+                ]
+            ],
+            'enableMultiSort' => true
+        ]);
+
+        $this->assertEquals(SORT_ASC, $sort->getAttributeOrder('age'));
+        $this->assertEquals(SORT_DESC, $sort->getAttributeOrder('name'));
+    }
+
+    /**
+     * @depends testGetOrders
+     *
+     * @see https://github.com/yiisoft/yii2/pull/13260
+     */
+    public function testGetExpressionOrders()
+    {
+        $sort = new Sort([
+            'attributes' => [
+                'name' => [
+                    'asc' => '[[last_name]] ASC NULLS FIRST',
+                    'desc' => '[[last_name]] DESC NULLS LAST',
+                ],
+            ],
+        ]);
+
+        $sort->params = ['sort' => '-name'];
+        $orders = $sort->getOrders();
+        $this->assertEquals(1, count($orders));
+        $this->assertEquals('[[last_name]] DESC NULLS LAST', $orders[0]);
+
+        $sort->params = ['sort' => 'name'];
+        $orders = $sort->getOrders(true);
+        $this->assertEquals(1, count($orders));
+        $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
+    }
+}
+
+class CustomSort extends Sort
+{
+    protected function parseSortParam($params)
+    {
+        $attributes = [];
+        foreach ($params as $item) {
+            $attributes[] = ($item['dir'] == 'desc') ? '-' . $item['field'] : $item['field'];
+        }
+        return $attributes;
+    }
 }

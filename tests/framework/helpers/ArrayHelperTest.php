@@ -44,11 +44,17 @@ class ArrayHelperTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testToArray()
     {
+        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable->method('toArray')->willReturn([]);
+        $this->assertEquals([], ArrayHelper::toArray($dataArrayable));
+        $this->assertEquals(['foo'], ArrayHelper::toArray('foo'));
         $object = new Post1;
         $this->assertEquals(get_object_vars($object), ArrayHelper::toArray($object));
         $object = new Post2;
@@ -185,6 +191,11 @@ class ArrayHelperTest extends TestCase
 
     public function testMultisort()
     {
+        // empty key
+        $dataEmpty = [];
+        ArrayHelper::multisort($dataEmpty, '');
+        $this->assertEquals([], $dataEmpty);
+
         // single key
         $array = [
             ['name' => 'b', 'age' => 3],
@@ -267,6 +278,7 @@ class ArrayHelperTest extends TestCase
         $sort = new Sort([
             'attributes' => ['name', 'age'],
             'defaultOrder' => ['name' => SORT_ASC],
+            'params' => [],
         ]);
         $orders = $sort->getOrders();
 
@@ -284,6 +296,7 @@ class ArrayHelperTest extends TestCase
         $sort = new Sort([
             'attributes' => ['name', 'age'],
             'defaultOrder' => ['name' => SORT_ASC, 'age' => SORT_DESC],
+            'params' => [],
         ]);
         $orders = $sort->getOrders();
 
@@ -323,6 +336,24 @@ class ArrayHelperTest extends TestCase
             '- Enh: test3',
         ], $changelog);
     }
+    
+    /**
+     * @expectedException \yii\base\InvalidArgumentException
+     */
+    public function testMultisortInvalidArgumentExceptionDirection()
+    {
+        $data = ['foo' => 'bar'];
+        ArrayHelper::multisort($data, ['foo'], []);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidArgumentException
+     */
+    public function testMultisortInvalidArgumentExceptionSortFlag()
+    {
+        $data = ['foo' => 'bar'];
+        ArrayHelper::multisort($data, ['foo'], ['foo'], []);
+    }
 
     public function testMerge()
     {
@@ -354,6 +385,7 @@ class ArrayHelperTest extends TestCase
             'features' => [
                 'debug',
             ],
+            'foo',
         ];
 
         $result = ArrayHelper::merge($a, $b, $c);
@@ -369,6 +401,7 @@ class ArrayHelperTest extends TestCase
                 'gii',
                 'debug',
             ],
+            'foo',
         ];
 
         $this->assertEquals($expected, $result);
@@ -765,6 +798,7 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::isAssociative('test'));
         $this->assertFalse(ArrayHelper::isAssociative([]));
         $this->assertFalse(ArrayHelper::isAssociative([1, 2, 3]));
+        $this->assertFalse(ArrayHelper::isAssociative([1], false));
         $this->assertTrue(ArrayHelper::isAssociative(['name' => 1, 'value' => 'test']));
         $this->assertFalse(ArrayHelper::isAssociative(['name' => 1, 'value' => 'test', 3]));
         $this->assertTrue(ArrayHelper::isAssociative(['name' => 1, 'value' => 'test', 3], false));
@@ -777,6 +811,7 @@ class ArrayHelperTest extends TestCase
         $this->assertTrue(ArrayHelper::isIndexed([1, 2, 3]));
         $this->assertTrue(ArrayHelper::isIndexed([2 => 'a', 3 => 'b']));
         $this->assertFalse(ArrayHelper::isIndexed([2 => 'a', 3 => 'b'], true));
+        $this->assertFalse(ArrayHelper::isIndexed(['a' => 'b'], false));
     }
 
     public function testHtmlEncode()
@@ -957,5 +992,6 @@ class ArrayHelperTest extends TestCase
         ]);
         $this->assertEquals(ArrayHelper::filter($array, ['X']), []);
         $this->assertEquals(ArrayHelper::filter($array, ['X.Y']), []);
+        $this->assertEquals(ArrayHelper::filter($array, ['A.X']), []);
     }
 }

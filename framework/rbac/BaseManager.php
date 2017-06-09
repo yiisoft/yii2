@@ -16,6 +16,9 @@ use yii\base\InvalidArgumentException;
  *
  * For more details and usage information on DbManager, see the [guide article on security authorization](guide:security-authorization).
  *
+ * @property Role[] $defaultRoleInstances Default roles. The array is indexed by the role names. This property
+ * is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -194,7 +197,7 @@ abstract class BaseManager extends Component implements ManagerInterface
      * @since 2.0.12
      * @return Role[] default roles. The array is indexed by the role names
      */
-    public function getDefaultRoles()
+    public function getDefaultRoleInstances()
     {
         $result = [];
         foreach ($this->defaultRoles as $roleName) {

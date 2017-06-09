@@ -44,7 +44,7 @@ class ContentDecorator extends Widget
 {
     /**
      * @var string the view file that will be used to decorate the content enclosed by this widget.
-     * This can be specified as either the view file path or path alias.
+     * This can be specified as either the view file path or [path alias](guide:concept-aliases).
      */
     public $viewFile;
     /**

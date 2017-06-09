@@ -56,6 +56,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '\\' => '[\\]',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -185,7 +186,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @param mixed $value the value for the primary key of the next new row inserted. If this is not set,
      * the next new row's primary key will have a value 1.
      * @return string the SQL statement for resetting sequence
-     * @throws InvalidParamException if the table does not exist or there is no sequence associated with the table.
+     * @throws InvalidArgumentException if the table does not exist or there is no sequence associated with the table.
      */
     public function resetSequence($tableName, $value = null)
     {
@@ -201,9 +202,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
             return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
         } elseif ($table === null) {
-            throw new InvalidParamException("Table not found: $tableName");
+            throw new InvalidArgumentException("Table not found: $tableName");
         } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
+            throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.");
         }
     }
 
@@ -278,9 +279,8 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!$modelClass) {
             return null;
         }
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass;
-        $schema = $model->getTableSchema();
+        /* @var $modelClass \yii\db\ActiveRecord */
+        $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }
 
