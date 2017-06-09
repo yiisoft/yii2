@@ -154,6 +154,8 @@ script:
   - cd framework && composer validate --no-check-lock && cd ..
   # run PHPUnit
   - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+  # spellcheck on docs
+  - cd docs && ./spell-check.sh && cd ..
 
 after_script:
   - |

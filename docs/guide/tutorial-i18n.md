@@ -694,7 +694,7 @@ Open the created file and adjust the parameters to fit your needs. Pay special a
 * `languages`: an array representing what languages your app should be translated to;
 * `messagePath`: path where to store message files, which should match the `i18n`'s `basePath` parameter stated in config.
 
-You may also use './yii message/config' command to dynamically generate configuration file with specified options via cli.
+You may also use the `./yii message/config` command to dynamically generate configuration file with specified options via cli.
 For example, you can set `languages` and `messagePath` parameters like the following:
 
 ```bash
