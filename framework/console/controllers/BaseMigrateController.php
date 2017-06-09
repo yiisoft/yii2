@@ -204,8 +204,8 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/down all # revert all migrations
      * ```
      *
-     * @param int $limit the number of migrations to be reverted. Defaults to 1,
-     * meaning the last applied migration will be reverted.
+     * @param int|string $limit the number of migrations to be reverted. Defaults to 1,
+     * meaning the last applied migration will be reverted. When value is "all", all migrations will be reverted.
      * @throws Exception if the number of the steps specified is less than 1.
      *
      * @return int the status of the action execution. 0 means normal, other values mean abnormal.
@@ -266,8 +266,8 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/redo all # redo all migrations
      * ```
      *
-     * @param int $limit the number of migrations to be redone. Defaults to 1,
-     * meaning the last applied migration will be redone.
+     * @param int|string $limit the number of migrations to be redone. Defaults to 1,
+     * meaning the last applied migration will be redone. When equals "all", all migrations will be redone.
      * @throws Exception if the number of the steps specified is less than 1.
      *
      * @return int the status of the action execution. 0 means normal, other values mean abnormal.
@@ -463,7 +463,7 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/history all # showing the whole history
      * ```
      *
-     * @param int $limit the maximum number of migrations to be displayed.
+     * @param int|string $limit the maximum number of migrations to be displayed.
      * If it is "all", the whole migration history will be displayed.
      * @throws \yii\console\Exception if invalid limit value passed
      */
@@ -507,7 +507,7 @@ abstract class BaseMigrateController extends Controller
      * yii migrate/new all # showing all new migrations
      * ```
      *
-     * @param int $limit the maximum number of new migrations to be displayed.
+     * @param int|string $limit the maximum number of new migrations to be displayed.
      * If it is `all`, all available new migrations will be displayed.
      * @throws \yii\console\Exception if invalid limit value passed
      */
