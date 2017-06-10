@@ -61,6 +61,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '!' => '!!',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -331,4 +332,59 @@ EOD;
         }
         return parent::buildLikeCondition($operator, $operands, $params);
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function buildInCondition($operator, $operands, &$params)
+    {
+        $splitCondition = $this->splitInCondition($operator, $operands, $params);
+        if ($splitCondition !== null) {
+            return $splitCondition;
+        }
+
+        return parent::buildInCondition($operator, $operands, $params);
+    }
+
+    /**
+     * Oracle DBMS does not support more than 1000 parameters in `IN` condition.
+     * This method splits long `IN` condition into series of smaller ones.
+     *
+     * @param string $operator
+     * @param array $operands
+     * @param array $params
+     * @return null|string null when split is not required. Otherwise - built SQL condition.
+     * @throws Exception
+     * @since 2.0.12
+     */
+    protected function splitInCondition($operator, $operands, &$params)
+    {
+        if (!isset($operands[0], $operands[1])) {
+            throw new Exception("Operator '$operator' requires two operands.");
+        }
+
+        list($column, $values) = $operands;
+
+        if ($values instanceof \Traversable) {
+            $values = iterator_to_array($values);
+        }
+
+        if (!is_array($values)) {
+            return null;
+        }
+
+        $maxParameters = 1000;
+        $count = count($values);
+        if ($count <= $maxParameters) {
+            return null;
+        }
+
+        $condition = [($operator === 'IN') ? 'OR' : 'AND'];
+        for ($i = 0; $i < $count; $i += $maxParameters) {
+            $condition[] = [$operator, $column, array_slice($values, $i, $maxParameters)];
+        }
+
+        return $this->buildCondition(['AND', $condition], $params);
+    }
+
 }

@@ -9,7 +9,6 @@ namespace yiiunit\framework\console;
 
 use Yii;
 use yii\base\Module;
-use yii\console\controllers\HelpController;
 use yii\console\Request;
 use yiiunit\TestCase;
 

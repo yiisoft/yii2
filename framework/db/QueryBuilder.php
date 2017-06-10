@@ -82,6 +82,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected $likeEscapeCharacter;
 
+
     /**
      * Constructor.
      * @param Connection $connection the database connection.
@@ -194,7 +195,7 @@ class QueryBuilder extends \yii\base\Object
      * @param array $params the parameters to be bound to the generated SQL statement. These parameters will
      * be included in the result with the additional parameters generated during the query building process.
      * @return array
-     * @throws InvalidParamException if query's select does not contain named parameters only.
+     * @throws InvalidArgumentException if query's select does not contain named parameters only.
      * @since 2.0.11
      */
     protected function prepareInsertSelectSubQuery($columns, $schema, $params = [])

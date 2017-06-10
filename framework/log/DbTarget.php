@@ -60,6 +60,12 @@ class DbTarget extends Target
      */
     public function export()
     {
+        if ($this->db->getTransaction()) {
+            // create new database connection, if there is an open transaction
+            // to ensure insert statement is not affected by a rollback
+            $this->db = clone $this->db;
+        }
+
         $tableName = $this->db->quoteTableName($this->logTable);
         $sql = "INSERT INTO $tableName ([[level]], [[category]], [[log_time]], [[prefix]], [[message]])
                 VALUES (:level, :category, :log_time, :prefix, :message)";

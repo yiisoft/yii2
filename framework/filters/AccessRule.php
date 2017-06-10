@@ -7,8 +7,10 @@
 
 namespace yii\filters;
 
+use Closure;
 use yii\base\Component;
 use yii\base\Action;
+use yii\base\InvalidConfigException;
 use yii\web\User;
 use yii\web\Request;
 use yii\base\Controller;
@@ -41,11 +43,13 @@ class AccessRule extends Component
      * The comparison is case-sensitive.
      *
      * If not set or empty, it means this rule applies to all controllers.
+     *
+     * Since version 2.0.12 controller IDs can be specified as wildcards, e.g. `module/*`.
      */
     public $controllers;
     /**
-     * @var array list of roles that this rule applies to. Two special roles are recognized, and
-     * they are checked via [[User::isGuest]]:
+     * @var array list of roles that this rule applies to (requires properly configured User component).
+     * Two special roles are recognized, and they are checked via [[User::isGuest]]:
      *
      * - `?`: matches a guest user (not authenticated yet)
      * - `@`: matches an authenticated user
@@ -54,8 +58,43 @@ class AccessRule extends Component
      * In this case, [[User::can()]] will be called to check access.
      *
      * If this property is not set or empty, it means this rule applies to all roles.
+     * @see $roleParams
      */
     public $roles;
+    /**
+     * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
+     * user permissions in [[$roles]].
+     *
+     * If this is an array, it will be passed directly to [[User::can()]]. For example for passing an
+     * ID from the current request, you may use the following:
+     *
+     * ```php
+     * ['postId' => Yii::$app->request->get('id')]
+     * ```
+     *
+     * You may also specify a closure that returns an array. This can be used to
+     * evaluate the array values only if they are needed, for example when a model needs to be
+     * loaded like in the following code:
+     *
+     * ```php
+     * 'rules' => [
+     *     [
+     *         'allow' => true,
+     *         'actions' => ['update'],
+     *         'roles' => ['updatePost'],
+     *         'roleParams' => function($rule) {
+     *             return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+     *         },
+     *     ],
+     * ],
+     * ```
+     *
+     * A reference to the [[AccessRule]] instance will be passed to the closure as the first parameter.
+     *
+     * @see $roles
+     * @since 2.0.12
+     */
+    public $roleParams = [];
     /**
      * @var array list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
@@ -101,9 +140,9 @@ class AccessRule extends Component
     /**
      * Checks whether the Web user is allowed to perform the specified action.
      * @param Action $action the action to be performed
-     * @param User $user the user object
+     * @param User|false $user the user object or `false` in case of detached User component
      * @param Request $request
-     * @return bool|null true if the user is allowed, false if the user is denied, null if the rule does not apply to the user
+     * @return bool|null `true` if the user is allowed, `false` if the user is denied, `null` if the rule does not apply to the user
      */
     public function allows($action, $user, $request)
     {
@@ -115,9 +154,9 @@ class AccessRule extends Component
             && $this->matchCustom($action)
         ) {
             return $this->allow ? true : false;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -135,17 +174,32 @@ class AccessRule extends Component
      */
     protected function matchController($controller)
     {
-        return empty($this->controllers) || in_array($controller->uniqueId, $this->controllers, true);
+        if (empty($this->controllers)) {
+            return true;
+        }
+
+        $id = $controller->getUniqueId();
+        foreach ($this->controllers as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * @param User $user the user object
      * @return bool whether the rule applies to the role
+     * @throws InvalidConfigException if User component is detached
      */
     protected function matchRole($user)
     {
         if (empty($this->roles)) {
             return true;
+        }
+        if ($user === false) {
+            throw new InvalidConfigException('The user application component must be available to specify roles in AccessRule.');
         }
         foreach ($this->roles as $role) {
             if ($role === '?') {
@@ -156,8 +210,13 @@ class AccessRule extends Component
                 if (!$user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($user->can($role)) {
-                return true;
+            } else {
+                if (!isset($roleParams)) {
+                    $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+                }
+                if ($user->can($role, $roleParams)) {
+                    return true;
+                }
             }
         }
 
@@ -165,7 +224,7 @@ class AccessRule extends Component
     }
 
     /**
-     * @param string $ip the IP address
+     * @param string|null $ip the IP address
      * @return bool whether the rule applies to the IP address
      */
     protected function matchIP($ip)
@@ -174,7 +233,14 @@ class AccessRule extends Component
             return true;
         }
         foreach ($this->ips as $rule) {
-            if ($rule === '*' || $rule === $ip || (($pos = strpos($rule, '*')) !== false && !strncmp($ip, $rule, $pos))) {
+            if ($rule === '*' ||
+                $rule === $ip ||
+                (
+                    $ip !== null &&
+                    ($pos = strpos($rule, '*')) !== false &&
+                    strncmp($ip, $rule, $pos) === 0
+                )
+            ) {
                 return true;
             }
         }

@@ -132,7 +132,7 @@ class SqlDataProvider extends BaseDataProvider
             $offset = $pagination->getOffset();
         }
 
-        $sql = $this->db->getQueryBuilder()->buildOrderByAndLimit($sql, $orders, $limit, $offset);
+        $sql = $this->db->getQueryBuilder()->buildOrderByAndLimit($sql, $orders, $limit, $offset, $params);
 
         return $this->db->createCommand($sql, $this->params)->queryAll();
     }
@@ -163,6 +163,9 @@ class SqlDataProvider extends BaseDataProvider
      */
     protected function prepareTotalCount()
     {
-        return (new Query())->from(['sub' => "({$this->sql})"])->count('*', $this->db);
+        return (new Query([
+            'from' => ['sub' => "({$this->sql})"],
+            'params' => $this->params
+        ]))->count('*', $this->db);
     }
 }

@@ -28,6 +28,16 @@ class ListViewTest extends \yiiunit\TestCase
         $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $actual);
     }
 
+    public function testEmpty()
+    {
+        $this->getListView([
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+            'emptyText' => false,
+        ])->run();
+
+        $this->expectOutputString('<div id="w0" class="list-view"></div>');
+    }
+
     public function testEmptyListNotShown()
     {
         $actual = $this->getListView([

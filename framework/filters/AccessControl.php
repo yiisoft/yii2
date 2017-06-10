@@ -57,8 +57,9 @@ use yii\web\User;
 class AccessControl extends ActionFilter
 {
     /**
-     * @var User|array|string the user object representing the authentication status or the ID of the user application component.
+     * @var User|array|string|false the user object representing the authentication status or the ID of the user application component.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * Starting from version 2.0.12, you can set it to `false` to explicitly switch this component support off for the filter.
      */
     public $user = 'user';
     /**
@@ -88,6 +89,23 @@ class AccessControl extends ActionFilter
      */
     public $rules = [];
 
+
+    /**
+     * Initializes the [[rules]] array by instantiating rule objects from configurations.
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->user !== false) {
+            $this->user = Instance::ensure($this->user, User::class);
+        }
+        foreach ($this->rules as $i => $rule) {
+            if (is_array($rule)) {
+                $this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
+            }
+        }
+    }
+
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
@@ -96,13 +114,10 @@ class AccessControl extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $user = $this->user = Instance::ensure($this->user, User::class);
+        $user = $this->user;
         $request = Yii::$app->getRequest();
         /* @var $rule AccessRule */
-        foreach ($this->rules as $key => $rule) {
-            if (!is_object($rule)) {
-                $rule = $this->rules[$key] = Yii::createObject(array_merge($this->ruleConfig, $rule));
-            }
+        foreach ($this->rules as $rule) {
             if ($allow = $rule->allows($action, $user, $request)) {
                 return true;
             } elseif ($allow === false) {
@@ -128,12 +143,12 @@ class AccessControl extends ActionFilter
      * Denies the access of the user.
      * The default implementation will redirect the user to the login page if he is a guest;
      * if the user is already logged, a 403 HTTP exception will be thrown.
-     * @param User $user the current user
-     * @throws ForbiddenHttpException if the user is already logged in.
+     * @param User|false $user the current user or boolean `false` in case of detached User component
+     * @throws ForbiddenHttpException if the user is already logged in or in case of detached User component.
      */
     protected function denyAccess($user)
     {
-        if ($user->getIsGuest()) {
+        if ($user !== false && $user->getIsGuest()) {
             $user->loginRequired();
         } else {
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));

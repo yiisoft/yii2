@@ -129,6 +129,7 @@ class GroupUrlRule extends CompositeUrlRule
         if ($this->routePrefix === '' || strpos($route, $this->routePrefix . '/') === 0) {
             return parent::createUrl($manager, $route, $params);
         } else {
+            $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
             return false;
         }
     }

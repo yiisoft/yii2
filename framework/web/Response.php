@@ -53,6 +53,7 @@ use yii\helpers\StringHelper;
  * @property bool $isServerError Whether this response indicates a server error. This property is read-only.
  * @property bool $isSuccessful Whether this response is successful. This property is read-only.
  * @property int $statusCode The HTTP status code to send with the response.
+ * @property \Exception|\Error $statusCodeByException The exception object. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -294,7 +295,7 @@ class Response extends \yii\base\Response
     /**
      * Sets the response status code based on the exception.
      * @param \Exception|\Error $e the exception object.
-     * @throws InvalidParamException if the status code is invalid.
+     * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12
      */

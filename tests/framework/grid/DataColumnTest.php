@@ -7,6 +7,7 @@ use Yii;
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
 use yii\grid\GridView;
+use yii\i18n\Formatter;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Order;
 
@@ -192,5 +193,68 @@ HTML
 </select>
 HTML
             , $result);
+    }
+
+    public function filterOptionsProvider()
+    {
+        return [
+            [
+                false,
+                '<td><input type="text" class="form-control" name="Order[customer_id]"></td>',
+            ],
+            [
+                ['class' => 'form-control'],
+                '<td><input type="text" class="form-control" name="Order[customer_id]"></td>'
+            ],
+            [
+                ['class' => 'form-control', 'data' => ['value' => "1"]],
+                '<td><input type="text" class="form-control" name="Order[customer_id]" data-value="1"></td>'
+            ],
+            [
+                ['class' => ''],
+                '<td><input type="text" class="" name="Order[customer_id]"></td>'
+            ],
+            [
+                ['class' => null],
+                '<td><input type="text" name="Order[customer_id]"></td>'
+            ],
+            [
+                ['class' => 'form-control', 'id' => 'customer_id'],
+                '<td><input type="text" id="customer_id" class="form-control" name="Order[customer_id]"></td>'
+            ],
+            [
+                ['class' => '', 'id' => 'customer_id'],
+                '<td><input type="text" id="customer_id" class="" name="Order[customer_id]"></td>'
+            ],
+            [
+                ['class' => null, 'id' => 'customer_id'],
+                '<td><input type="text" id="customer_id" name="Order[customer_id]"></td>'
+            ],
+        ];
+    }
+
+
+    /**
+     * @dataProvider filterOptionsProvider
+     */
+    public function testFilterInput_Options($options, $expectedHtml)
+    {
+        $this->mockApplication();
+        $column = new DataColumn([
+            'attribute' => 'customer_id',
+            'grid' => new GridView([
+                'filterModel' => new Order,
+                'dataProvider' => new ArrayDataProvider([
+                    'allModels' => [],
+                    'totalCount' => 0,
+                ]),
+            ]),
+        ]);
+        if ($options !== false) {
+            $column->filterInputOptions = $options;
+        }
+
+        $filterCell = $column->renderFilterCell();
+        $this->assertEqualsWithoutLE($expectedHtml, $filterCell);
     }
 }
