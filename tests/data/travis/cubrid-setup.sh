@@ -2,11 +2,6 @@
 #
 # install CUBRID DBMS
 
-if (php --version | grep -i HipHop > /dev/null); then
-    echo "Skipping CUBRID on HHVM"
-    exit 0
-fi
-
 CWD=$(pwd)
 
 # cubrid dbms
