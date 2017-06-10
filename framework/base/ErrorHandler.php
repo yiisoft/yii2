@@ -117,7 +117,7 @@ abstract class ErrorHandler extends Component
                 exit(1);
             }
         } catch (\Throwable $e) {
-            // additional check for \Throwable
+            // another exception could be thrown while displaying the exception
             $this->handleFallbackExceptionMessage($e, $exception);
         }
 
