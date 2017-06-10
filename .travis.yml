@@ -96,8 +96,11 @@ before_script:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
   - psql -U postgres -c 'CREATE DATABASE yiitest;';
 
-  # enable code coverage
-  - PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+  # enable code coverage on PHP 7.1, only one PHP version needs to generate coverage data
+  - |
+      if [ $TRAVIS_PHP_VERSION = '7.1' ]; then
+        PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
+      fi
 
 script:
   # ensure no files contain UTF-8 byte order mark
