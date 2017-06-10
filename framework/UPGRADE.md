@@ -53,12 +53,16 @@ for both A and B.
 Upgrade from Yii 2.0.x
 ----------------------
 
-* PHP requirements were raised to 7.1.
+* PHP requirements were raised to 7.1. Make sure your code is updated accordingly.
 * memcache PECL extension support was dropped. Use memcached PECL extesion instead.
 * Following new methods have been added to `yii\i18n\MessageInterface` `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()`
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
-
+* `::className()` method calls should be replaced with native `::class`.
+* XCache and Zend data cache support was removed. Switch to another caching backends.
+* Rename `InvalidParamException` usage to `InvalidArgumentException`.
+* Moved masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
+  Include it in your composer.json if you use it.
 
 Upgrade from Yii 2.0.11
 -----------------------
