@@ -125,13 +125,13 @@ namespace yiiunit\framework\log {
 
             static::$functions['openlog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(3, $arguments);
-                list($identity, $option, $facility) = $arguments;
+                [$identity, $option, $facility] = $arguments;
                 $syslogTarget->openlog($identity, $option, $facility);
             };
 
             static::$functions['syslog'] = function ($arguments) use ($syslogTarget) {
                 $this->assertCount(2, $arguments);
-                list($priority, $message) = $arguments;
+                [$priority, $message] = $arguments;
                 $syslogTarget->syslog($priority, $message);
             };
 

@@ -134,7 +134,7 @@ class ImageValidator extends FileValidator
             return [$this->notImage, ['file' => $image->name]];
         }
 
-        list($width, $height) = $imageInfo;
+        [$width, $height] = $imageInfo;
 
         if ($width == 0 || $height == 0) {
             return [$this->notImage, ['file' => $image->name]];

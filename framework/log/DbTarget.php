@@ -71,7 +71,7 @@ class DbTarget extends Target
                 VALUES (:level, :category, :log_time, :prefix, :message)";
         $command = $this->db->createCommand($sql);
         foreach ($this->messages as $message) {
-            list($text, $level, $category, $timestamp) = $message;
+            [$text, $level, $category, $timestamp] = $message;
             if (!is_string($text)) {
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
                 if ($text instanceof \Throwable || $text instanceof \Exception) {

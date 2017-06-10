@@ -418,7 +418,7 @@ class Response extends \yii\base\Response
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
-            list ($handle, $begin, $end) = $this->stream;
+            [$handle, $begin, $end] = $this->stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -516,7 +516,7 @@ class Response extends \yii\base\Response
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
         if ($begin != 0 || $end != $contentLength - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$contentLength");
@@ -571,7 +571,7 @@ class Response extends \yii\base\Response
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
         if ($begin != 0 || $end != $fileSize - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$fileSize");

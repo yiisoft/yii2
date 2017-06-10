@@ -68,7 +68,7 @@
         "yiisoft/yii2": "self.version"
     },
     "require": {
-        "php": ">=5.5.0",
+        "php": ">=7.1.0",
         "ext-mbstring": "*",
         "ext-ctype": "*",
         "lib-pcre": "*",
@@ -99,7 +99,7 @@
         }
     },
     "config": {
-        "platform": {"php": "5.5"}
+        "platform": {"php": "7.1"}
     },
     "bin": [
         "framework/yii"

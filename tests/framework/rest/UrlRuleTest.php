@@ -24,10 +24,8 @@ class UrlRuleTest extends TestCase
     public function testInitControllerNamePluralization()
     {
         $suites = $this->getTestsForControllerNamePluralization();
-        foreach ($suites as $i => $suite) {
-            list ($name, $tests) = $suite;
-            foreach ($tests as $j => $test) {
-                list ($config, $expected) = $test;
+        foreach ($suites as $i => [$name, $tests]) {
+            foreach ($tests as $j => [$config, $expected]) {
                 $rule = new UrlRule($config);
                 $this->assertEquals($expected, $rule->controller, "Test#$i-$j: $name");
             }
@@ -39,14 +37,12 @@ class UrlRuleTest extends TestCase
         $manager = new UrlManager(['cache' => null]);
         $request = new Request(['hostInfo' => 'http://en.example.com', 'methodParam' => '_METHOD',]);
         $suites = $this->getTestsForParseRequest();
-        foreach ($suites as $i => $suite) {
-            list ($name, $config, $tests) = $suite;
+        foreach ($suites as $i => [$name, $config, $tests]) {
             $rule = new UrlRule($config);
             foreach ($tests as $j => $test) {
-                $request->pathInfo = $test[0];
-                $route = $test[1];
-                $params = isset($test[2]) ? $test[2] : [];
-                $_POST['_METHOD'] = isset($test[3]) ? $test[3] : 'GET';
+                [$request->pathInfo, $route] = $test;
+                $params = $test[2] ?? [];
+                $_POST['_METHOD'] = $test[3] ?? 'GET';
                 $result = $rule->parseRequest($manager, $request);
                 if ($route === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
@@ -344,9 +340,7 @@ class UrlRuleTest extends TestCase
      */
     public function testCreateUrl($rule, $tests)
     {
-        foreach ($tests as $test) {
-            list($params, $expected) = $test;
-
+        foreach ($tests as [$params, $expected]) {
             $this->mockWebApplication();
             Yii::$app->set('request', new Request(['hostInfo' => 'http://api.example.com', 'scriptUrl' => '/index.php']));
             $route = array_shift($params);

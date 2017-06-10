@@ -194,7 +194,7 @@ class LinkPager extends Widget
         }
 
         // internal pages
-        list($beginPage, $endPage) = $this->getPageRange();
+        [$beginPage, $endPage] = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; ++$i) {
             $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
         }

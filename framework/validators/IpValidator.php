@@ -432,7 +432,7 @@ class IpValidator extends Validator
         }
 
         foreach ($this->ranges as $string) {
-            list($isNegated, $range) = $this->parseNegatedRange($string);
+            [$isNegated, $range] = $this->parseNegatedRange($string);
             if ($this->inRange($ip, $cidr, $range)) {
                 return !$isNegated;
             }
@@ -469,11 +469,11 @@ class IpValidator extends Validator
     {
         $result = [];
         foreach ($ranges as $string) {
-            list($isRangeNegated, $range) = $this->parseNegatedRange($string);
+            [$isRangeNegated, $range] = $this->parseNegatedRange($string);
             if (isset($this->networks[$range])) {
                 $replacements = $this->prepareRanges($this->networks[$range]);
                 foreach ($replacements as &$replacement) {
-                    list($isReplacementNegated, $replacement) = $this->parseNegatedRange($replacement);
+                    [$isReplacementNegated, $replacement] = $this->parseNegatedRange($replacement);
                     $result[] = ($isRangeNegated && !$isReplacementNegated ? static::NEGATION_CHAR : '') . $replacement;
                 }
             } else {

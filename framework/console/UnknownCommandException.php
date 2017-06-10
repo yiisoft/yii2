@@ -71,7 +71,7 @@ class UnknownCommandException extends Exception
             return [];
         }
         /** @var $helpController HelpController */
-        list($helpController, $actionID) = $help;
+        [$helpController, $actionID] = $help;
 
         $availableActions = [];
         $commands = $helpController->getCommands();
@@ -85,7 +85,7 @@ class UnknownCommandException extends Exception
 
             // add all actions of this controller
             /** @var $controller Controller */
-            list($controller, $actionID) = $result;
+            [$controller, $actionID] = $result;
             $actions = $helpController->getActions($controller);
             if (!empty($actions)) {
                 $prefix = $controller->getUniqueId();

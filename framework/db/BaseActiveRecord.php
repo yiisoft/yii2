@@ -1251,7 +1251,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             }
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
-                list($viaName, $viaRelation) = $relation->via;
+                [$viaName, $viaRelation] = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 // unset $viaName so that it can be reloaded to reflect the change
                 unset($this->_related[$viaName]);
@@ -1341,7 +1341,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
-                list($viaName, $viaRelation) = $relation->via;
+                [$viaName, $viaRelation] = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
             } else {
@@ -1436,7 +1436,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($relation->via !== null) {
             if (is_array($relation->via)) {
                 /* @var $viaRelation ActiveQuery */
-                list($viaName, $viaRelation) = $relation->via;
+                [$viaName, $viaRelation] = $relation->via;
                 $viaClass = $viaRelation->modelClass;
                 unset($this->_related[$viaName]);
             } else {

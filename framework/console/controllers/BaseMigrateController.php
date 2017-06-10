@@ -578,7 +578,7 @@ abstract class BaseMigrateController extends Controller
             throw new Exception('The migration name should contain letters, digits, underscore and/or backslash characters only.');
         }
 
-        list($namespace, $className) = $this->generateClassName($name);
+        [$namespace, $className] = $this->generateClassName($name);
         $migrationPath = $this->findMigrationPath($namespace);
 
         $file = $migrationPath . DIRECTORY_SEPARATOR . $className . '.php';

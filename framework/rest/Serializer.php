@@ -255,7 +255,7 @@ class Serializer extends Component
         if ($this->request->getIsHead()) {
             return null;
         } else {
-            list ($fields, $expand) = $this->getRequestedFields();
+            [$fields, $expand] = $this->getRequestedFields();
             return $model->toArray($fields, $expand);
         }
     }
@@ -286,7 +286,7 @@ class Serializer extends Component
      */
     protected function serializeModels(array $models)
     {
-        list ($fields, $expand) = $this->getRequestedFields();
+        [$fields, $expand] = $this->getRequestedFields();
         foreach ($models as $i => $model) {
             if ($model instanceof Arrayable) {
                 $models[$i] = $model->toArray($fields, $expand);

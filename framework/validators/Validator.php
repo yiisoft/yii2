@@ -298,7 +298,7 @@ class Validator extends Component
             return true;
         }
 
-        list($message, $params) = $result;
+        [$message, $params] = $result;
         $params['attribute'] = Yii::t('yii', 'the input value');
         if (is_array($value)) {
             $params['value'] = 'array()';

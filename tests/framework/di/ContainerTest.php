@@ -175,7 +175,7 @@ class ContainerTest extends TestCase
         $myFunc = function (\yii\console\Request $request, \yii\console\Response $response) {
             return [$request, $response];
         };
-        list($request, $response) = Yii::$container->invoke($myFunc);
+        [$request, $response] = Yii::$container->invoke($myFunc);
         $this->assertEquals($request, Yii::$app->request);
         $this->assertEquals($response, Yii::$app->response);
     }

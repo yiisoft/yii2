@@ -154,7 +154,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if (empty($this->select) && !empty($this->join)) {
-            list(, $alias) = $this->getTableNameAndAlias();
+            $alias = $this->getTableNameAndAlias()[1];
             $this->select = ["$alias.*"];
         }
 
@@ -172,7 +172,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             } elseif (is_array($this->via)) {
                 // via relation
                 /* @var $viaQuery ActiveQuery */
-                list($viaName, $viaQuery) = $this->via;
+                [$viaName, $viaQuery] = $this->via;
                 if ($viaQuery->multiple) {
                     $viaModels = $viaQuery->all();
                     $this->primaryModel->populateRelation($viaName, $viaModels);
@@ -315,7 +315,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         }
 
         if ($this->sql === null) {
-            list ($sql, $params) = $db->getQueryBuilder()->build($this);
+            [$sql, $params] = $db->getQueryBuilder()->build($this);
         } else {
             $sql = $this->sql;
             $params = $this->params;
@@ -409,7 +409,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
             if (preg_match('/^(.*?)(?:\s+AS\s+|\s+)(\w+)$/i', $name, $matches)) {
                 // relation is defined with an alias, adjust callback to apply alias
-                list(, $relation, $alias) = $matches;
+                [, $relation, $alias] = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
                     /** @var $query ActiveQuery */
@@ -436,8 +436,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->join = [];
 
         $model = new $this->modelClass;
-        foreach ($this->joinWith as $config) {
-            list ($with, $eagerLoading, $joinType) = $config;
+        foreach ($this->joinWith as [$with, $eagerLoading, $joinType]) {
             $this->joinWithRelations($model, $with, $joinType);
 
             if (is_array($eagerLoading)) {
@@ -602,8 +601,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return;
         }
 
-        list ($parentTable, $parentAlias) = $parent->getTableNameAndAlias();
-        list ($childTable, $childAlias) = $child->getTableNameAndAlias();
+        [$parentTable, $parentAlias] = $parent->getTableNameAndAlias();
+        [$childTable, $childAlias] = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
 
@@ -777,7 +776,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     public function alias($alias)
     {
         if (empty($this->from) || count($this->from) < 2) {
-            list($tableName, ) = $this->getTableNameAndAlias();
+            $tableName = $this->getTableNameAndAlias()[0];
             $this->from = [$alias => $tableName];
         } else {
             $tableName = $this->getPrimaryTableName();

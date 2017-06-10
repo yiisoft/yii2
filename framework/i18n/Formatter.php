@@ -602,7 +602,7 @@ class Formatter extends Component
         $timeZone = $this->timeZone;
         // avoid time zone conversion for date-only and time-only values
         if ($type === 'date' || $type === 'time') {
-            list($timestamp, $hasTimeInfo, $hasDateInfo) = $this->normalizeDatetimeValue($value, true);
+            [$timestamp, $hasTimeInfo, $hasDateInfo] = $this->normalizeDatetimeValue($value, true);
             if ($type === 'date' && !$hasTimeInfo || $type === 'time' && !$hasDateInfo) {
                 $timeZone = $this->defaultTimeZone;
             }
@@ -1188,7 +1188,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+        [$params, $position] = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
@@ -1244,7 +1244,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+        [$params, $position] = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {

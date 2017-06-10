@@ -52,7 +52,7 @@ class PhpDocController extends Controller
         foreach ($files as $file) {
             $result = $this->generateClassPropertyDocs($file);
             if ($result !== false) {
-                list($className, $phpdoc) = $result;
+                [$className, $phpdoc] = $result;
                 if ($this->updateFiles) {
                     if ($this->updateClassPropertyDocs($file, $className, $phpdoc)) {
                         $nFilesUpdated++;
@@ -177,7 +177,7 @@ class PhpDocController extends Controller
             $extensionPath = dirname(rtrim($root, '\\/'));
             $this->setUpExtensionAliases($extensionPath);
 
-            list(, $extension) = $matches;
+            $extension = $matches[1];
             Yii::setAlias("@yii/$extension", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
                 include($autoloadFile);
@@ -201,7 +201,7 @@ class PhpDocController extends Controller
             $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
 
-            list(, $appName) = $matches;
+            $appName = $matches[1];
             Yii::setAlias("@app-$appName", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
                 include($autoloadFile);

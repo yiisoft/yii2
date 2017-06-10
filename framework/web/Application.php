@@ -79,7 +79,7 @@ class Application extends \yii\base\Application
     {
         if (empty($this->catchAll)) {
             try {
-                list ($route, $params) = $request->resolve();
+                [$route, $params] = $request->resolve();
             } catch (UrlNormalizerRedirectException $e) {
                 $url = $e->url;
                 if (is_array($url)) {

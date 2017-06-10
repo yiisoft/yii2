@@ -24,12 +24,12 @@ class ControllerTest extends TestCase
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
 
         $params = ['fromGet' => 'from query params', 'q' => 'd426', 'validator' => 'avaliable'];
-        list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
+        [$fromGet, $other] = $this->controller->bindActionParams($aksi1, $params);
         $this->assertEquals('from query params', $fromGet);
         $this->assertEquals('default', $other);
 
         $params = ['fromGet' => 'from query params', 'q' => 'd426', 'other' => 'avaliable'];
-        list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
+        [$fromGet, $other] = $this->controller->bindActionParams($aksi1, $params);
         $this->assertEquals('from query params', $fromGet);
         $this->assertEquals('avaliable', $other);
 
