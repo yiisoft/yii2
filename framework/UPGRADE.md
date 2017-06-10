@@ -53,6 +53,8 @@ for both A and B.
 Upgrade from Yii 2.0.x
 ----------------------
 
+* PHP requirements were raised to 7.1.
+* memcache PECL extension support was dropped. Use memcached PECL extesion instead.
 * Following new methods have been added to `yii\i18n\MessageInterface` `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()`
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
