@@ -194,4 +194,24 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertEquals('numeric', $column->dbType);
         $this->assertEquals(0, $column->defaultValue);
     }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/14192
+     */
+    public function testTimestampNullDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_default_null') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_default_null')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_default_null', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_default_null');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_default_null');
+        $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
+    }
 }
