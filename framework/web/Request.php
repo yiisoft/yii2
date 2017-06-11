@@ -168,14 +168,14 @@ class Request extends \yii\base\Request
      * An array key is a regular expression for matching a hostname.
      * A value is a list of headers to trust.
      *
-     * For example, to trust all headers from domains ending in '.trusted.com' use the following:
+     * For example, to trust all headers from domains ending in `.trusted.com` use the following:
      *
      * ```php
      * [
      *     '/^.*\.trusted\.com$/',
      * ```
      *
-     * To trust just the x-forwarded-for header from domains ending in '.partial.com' use:
+     * To trust just the `x-forwarded-for` header from domains ending in `.partial.com` use:
      *
      * ```
      *     // ...
@@ -183,7 +183,7 @@ class Request extends \yii\base\Request
      * ]
      * ```
 
-     * Default is to trusts all headers from all hosts.
+     * Default is to trust all headers from all hosts.
      * @since 2.0.13
      */
     public $trustedHostConfig = [
@@ -246,7 +246,7 @@ class Request extends \yii\base\Request
      * Filters headers according to the trusted host config.
      * @param array $headers
      * @since 2.0.13
-     * @return array The filtered list of headers.
+     * @return array filtered headers.
      */
     protected function filterHeaders(array $headers)
     {
@@ -416,7 +416,7 @@ class Request extends \yii\base\Request
     {
         $userAgent = $this->headers->get('User-Agent', '');
         return stripos($userAgent, 'Shockwave') !== false
-            || stripos($userAgent, 'Falsh') !== false;
+            || stripos($userAgent, 'Flash') !== false;
     }
 
     private $_rawBody;
@@ -1012,12 +1012,12 @@ class Request extends \yii\base\Request
      * Returns the IP on the other end of this connection.
      * This is always the next hop, any headers are ignored.
      * @return string|null remote IP address, null if not available.
+     * @since 2.0.13
      */
     public function getRemoteIP()
     {
         return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
     }
-
 
     /**
      * Returns the user host name.
