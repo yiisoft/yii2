@@ -81,6 +81,8 @@
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
+        "phpbench/phpbench": "^1.0@dev",
+        "doctrine/dbal": "^2.5",
         "phpunit/phpunit": "~4.4",
         "cebe/indent": "~1.0.2"
     },

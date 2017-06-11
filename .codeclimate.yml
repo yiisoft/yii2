@@ -18,6 +18,7 @@ ratings:
   - "**.js"
   - "**.php"
 exclude_paths:
+- benchmarks/
 - tests/
 - build/
 - docs/
