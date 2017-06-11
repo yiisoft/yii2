@@ -2,7 +2,10 @@
 
 namespace yiiunit\framework\db;
 
+use PDO;
 use Yii;
+use yii\db\Connection;
+use yii\helpers\Console;
 use yiiunit\data\ar\ActiveRecord;
 use yii\db\Query;
 use yii\db\BatchQueryResult;
@@ -123,5 +126,122 @@ abstract class BatchQueryResultTest extends DatabaseTestCase
         $this->assertCount(1, $customers[0]->orders);
         $this->assertCount(2, $customers[1]->orders);
         $this->assertCount(0, $customers[2]->orders);
+    }
+
+    public function pdoAttributesProvider()
+    {
+        if ($this->driverName === 'mysql') {
+            // try different settings of PDO::MYSQL_ATTR_USE_BUFFERED_QUERY for MySQL
+            return [
+                [[
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true,
+                ]],
+                [[
+                    PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false,
+                ]],
+            ];
+        } else {
+            return [
+                [[]], // no specific attributes
+            ];
+        }
+    }
+
+    /**
+     * @var int defaults to 10 Mio records
+     */
+//    protected static $largeTableCount = 10000000;
+    protected static $largeTableCount = 1000;
+
+    /**
+     * @dataProvider pdoAttributesProvider
+     */
+    public function testBatchHugeTable($pdoAttrs)
+    {
+        $peakMemory = memory_get_peak_usage();
+
+        $db = $this->getConnection(true, false);
+        $this->assertFalse($db->isActive);
+        $db->attributes = $pdoAttrs;
+        $db->open();
+
+        $this->ensureLargeTable($db);
+
+        $query = (new Query)->select('*')->from('customer_large');
+        Console::startProgress($c = 0, static::$largeTableCount, 'Running batch() query... (Memory: ' . memory_get_usage() . ')');
+        foreach($query->batch(100, $db) as $batch) {
+            $this->assertTrue(is_array($batch));
+            $this->assertArrayHasKey('email', reset($batch));
+            $this->assertCount(100, $batch);
+            $c += 100;
+            Console::updateProgress($c, static::$largeTableCount, 'Running batch() query... (Memory: ' . memory_get_usage() . ')');
+        }
+        Console::endProgress(true, false);
+
+        // peak memory should be less than 25MB higher than before
+        $this->assertLessThan($peakMemory + 25 * 1024 * 1024, memory_get_peak_usage());
+        //$peakMemory = memory_get_peak_usage();
+        //echo "batch memory: $peakMemory\n";
+
+        $query = (new Query)->select('*')->from('customer_large');
+        Console::startProgress($c = 0, static::$largeTableCount, 'Running each() query... (Memory: ' . memory_get_usage() . ')');
+        foreach($query->each(100, $db) as $customer) {
+            $this->assertTrue(is_array($customer));
+            $this->assertArrayHasKey('email', $customer);
+            $c++;
+            Console::updateProgress($c, static::$largeTableCount, 'Running each() query... (Memory: ' . memory_get_usage() . ')');
+        }
+        Console::endProgress(true, false);
+
+        // peak memory should be less than 25MB higher than before
+        $this->assertLessThan($peakMemory + 25 * 1024 * 1024, memory_get_peak_usage());
+        //$peakMemory = memory_get_peak_usage();
+        //echo "each() memory: $peakMemory\n";
+
+    }
+
+    protected static $largeTableInsertBatch = 1000;
+
+    /**
+     * @param Connection $db
+     */
+    protected function ensureLargeTable($db)
+    {
+        if ($db->getTableSchema('customer_large', true) === null) {
+            $db->createCommand()->createTable('customer_large', [
+                'id' => 'pk',
+                'email' => 'string(128)',
+                'name' => 'string(64)',
+                'address' => 'string(128)',
+                'status' => 'int NOT NULL',
+            ])->execute();
+        } elseif ((new Query)->from('customer_large')->count('*', $db) === static::$largeTableCount) {
+            return;
+        }
+
+        // clean customer table
+        $db->createCommand()->delete('customer_large')->execute();
+
+        Console::startProgress($i = 0, static::$largeTableCount, 'Creating large table... (Memory: ' . memory_get_usage() . ')');
+        for(; $i < static::$largeTableCount; $i += $j) {
+            $batchRecords = [];
+            for($j = 0; $j < static::$largeTableInsertBatch; ++$j) {
+                $batchRecords[] = ["mail$i.$j@example.com", "customer$i.$j", "address$i.$j", 1];
+            }
+            $db->createCommand()->batchInsert('customer_large', ['email', 'name', 'address', 'status'], $batchRecords)->execute();
+            Console::updateProgress($i, static::$largeTableCount, 'Creating large table... (Memory: ' . memory_get_usage() . ')');
+        }
+        Console::endProgress(true, false);
+        $this->assertEquals($i, (new Query)->from('customer_large')->count('*', $db));
+    }
+
+    public function prepareDatabase($config, $fixture, $open = true)
+    {
+        if ($this->getName(false) === 'testBatchHugeTable') {
+            // do not setup any fixtures
+            return parent::prepareDatabase($config, null, $open);
+        } else {
+            return parent::prepareDatabase($config, $fixture, $open);
+        }
     }
 }
