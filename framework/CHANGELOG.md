@@ -124,6 +124,7 @@ Yii Framework 2 Change Log
 - Enh #14067: `yii\web\View::clear()` sets populated arrays to empty arrays instead of null, also changed default values to empty array (craiglondon)
 - Enh #14098: `yii\helpers\BaseFileHelper::normalizeOptions()` is now protected (brandonkelly)
 - Enh: Added `yii\di\Instance::__set_state()` method to restore object after serialization using `var_export()` function (silvefire)
+- Enh: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
 
 
 2.0.11.2 February 08, 2017
