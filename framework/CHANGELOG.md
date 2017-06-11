@@ -10,6 +10,7 @@ Yii Framework 2 Change Log
 - Enh #13787: Added `yii\db\Migration::$maxSqlOutputLength` that allows limiting number of characters for outputting SQL (thiagotalma)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
+- Enh #13780: Added support for trusted proxies in `yii\web\Request` (sammousa)
 
 2.0.12 June 05, 2017
 --------------------
@@ -110,7 +111,6 @@ Yii Framework 2 Change Log
 - Enh #13820: Add new HTTP status code 451 (yyxx9988)
 - Enh #13823: Refactored migrations template (Kolyunya)
 - Enh #13837: Refactored masking of CSRF tokens (sammousa)
-- Enh #13780: Added support for trusted proxies in `yii\web\Request` (sammousa)
 - Enh #13845: `mt_rand()` is used instead of `rand()` in `yii\captcha\CaptchaAction` (kalessil)
 - Enh #13883: `yii\data\SqlDataProvider` now provides automatic fallback for the case when `totalCount` is not specified (SamMousa)
 - Enh #13911: Significantly enhanced MSSQL schema reading performance (paulzi, WebdevMerlion)
