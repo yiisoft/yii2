@@ -14,8 +14,22 @@ use yiiunit\framework\web\Post;
  */
 class JsonTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testEncode()
     {
+        // Arrayable data encoding
+        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable->method('toArray')->willReturn([]);
+        $actual = Json::encode($dataArrayable);
+        $this->assertSame('{}', $actual);
+        
         // basic data encoding
         $data = '1';
         $this->assertSame('"1"', Json::encode($data));
@@ -137,6 +151,11 @@ class JsonTest extends TestCase
 
     public function testDecode()
     {
+        // empty value
+        $json = '';
+        $actual = Json::decode($json);
+        $this->assertSame(null, $actual);
+
         // basic data decoding
         $json = '"1"';
         $this->assertSame('1', Json::decode($json));
@@ -147,8 +166,18 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Json::decode($json);
+    }
+    
+    
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Invalid JSON data.
+     */
+    public function testDecodeInvalidParamException()
+    {
+        Json::decode([]);
     }
 
     public function testHandleJsonError()

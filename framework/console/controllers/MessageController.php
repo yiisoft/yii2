@@ -482,8 +482,9 @@ EOD;
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])
     {
-        $coloredFileName = Console::ansiFormat($fileName, [Console::FG_CYAN]);
-        $this->stdout("Extracting messages from $coloredFileName...\n");
+        $this->stdout("Extracting messages from ");
+        $this->stdout($fileName, Console::FG_CYAN);
+        $this->stdout("...\n");
 
         $subject = file_get_contents($fileName);
         $messages = [];
@@ -506,7 +507,7 @@ EOD;
      * @param array $ignoreCategories message categories to ignore.
      * @return array messages.
      */
-    private function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
+    protected function extractMessagesFromTokens(array $tokens, array $translatorTokens, array $ignoreCategories)
     {
         $messages = [];
         $translatorTokensCount = count($translatorTokens);

@@ -16,11 +16,13 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class UniqueValidatorTest extends DatabaseTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
         ActiveRecord::$db = $this->getConnection();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testAssureMessageSetOnInit()
@@ -139,7 +141,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
     public function testValidateAttributeAttributeNotInTableException()
     {
-        $this->setExpectedException('yii\db\Exception');
+        $this->expectException('yii\db\Exception');
         $val = new UniqueValidator();
         $m = new ValidatorTestMainModel();
         $val->validateAttribute($m, 'testMainVal');
@@ -337,7 +339,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $attribute = 'id';
         $targetAttribute = 'id';
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
-        $expected = [Profile::tableName() . '.' . $attribute => $model->id];
+        $expected = ['{{' . Profile::tableName() . '}}.[[' . $attribute . ']]' => $model->id];
         $this->assertEquals($expected, $result);
     }
 
@@ -384,5 +386,25 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         }]), 'prepareQuery', [$model, $params]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE ({$schema->quoteColumnName('val_attr_b')}=:qp0) OR (val_attr_a > 0)";
         $this->assertEquals($expected, $query->createCommand()->getSql());
+    }
+
+    /**
+     * Test ambiguous column name in select clause
+     * @see https://github.com/yiisoft/yii2/issues/14042
+     */
+    public function testAmbiguousColumnName()
+    {
+        $validator = new UniqueValidator([
+            'filter' => function($query) {
+                $query->joinWith('items', false);
+            },
+        ]);
+        $model = new Order();
+        $model->id = 42;
+        $model->customer_id = 1;
+        $model->total = 800;
+        $model->save(false);
+        $validator->validateAttribute($model, 'id');
+        $this->assertFalse($model->hasErrors());
     }
 }

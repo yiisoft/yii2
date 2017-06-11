@@ -5,7 +5,6 @@ namespace yiiunit\framework\web;
 use Exception;
 use RuntimeException;
 use Error;
-use Yii;
 use yii\helpers\StringHelper;
 use yii\web\HttpException;
 
@@ -75,7 +74,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSendFileWrongRanges($rangeHeader)
     {
-        $this->setExpectedException('yii\web\RangeNotSatisfiableHttpException');
+        $this->expectException('yii\web\RangeNotSatisfiableHttpException');
 
         $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
         $_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;

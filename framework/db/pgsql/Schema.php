@@ -16,8 +16,6 @@ use yii\db\ViewFinderTrait;
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
  *
- * @property string[] $viewNames All view names in the database. This property is read-only.
- *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
  */
@@ -221,7 +219,7 @@ SQL;
 SELECT c.relname AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
-WHERE ns.nspname = :schemaName AND c.relkind = 'v'
+WHERE ns.nspname = :schemaName AND (c.relkind = 'v' OR c.relkind = 'm')
 ORDER BY c.relname
 SQL;
         return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
