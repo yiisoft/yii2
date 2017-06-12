@@ -8,9 +8,9 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Object;
-use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
+use yii\base\NotSupportedException;
+use yii\base\Object;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
 
@@ -511,7 +511,6 @@ abstract class Schema extends Object
         }
 
         return implode('.', $parts);
-
     }
 
     /**
@@ -631,7 +630,7 @@ abstract class Schema extends Object
                 $exceptionClass = $class;
             }
         }
-        $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+        $message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
         $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
         return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
     }

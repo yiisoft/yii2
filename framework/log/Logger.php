@@ -279,9 +279,9 @@ class Logger extends Component
             $memory = isset($log[5]) ? $log[5] : 0;
             $log[6] = $i;
             $hash = md5(serialize($token));
-            if ($level == Logger::LEVEL_PROFILE_BEGIN) {
+            if ($level == self::LEVEL_PROFILE_BEGIN) {
                 $stack[$hash] = $log;
-            } elseif ($level == Logger::LEVEL_PROFILE_END) {
+            } elseif ($level == self::LEVEL_PROFILE_END) {
                 if (isset($stack[$hash])) {
                     $timings[$stack[$hash][6]] = [
                         'info' => $stack[$hash][0],
@@ -318,7 +318,7 @@ class Logger extends Component
             self::LEVEL_TRACE => 'trace',
             self::LEVEL_PROFILE_BEGIN => 'profile begin',
             self::LEVEL_PROFILE_END => 'profile end',
-            self::LEVEL_PROFILE => 'profile'
+            self::LEVEL_PROFILE => 'profile',
         ];
 
         return isset($levels[$level]) ? $levels[$level] : 'unknown';

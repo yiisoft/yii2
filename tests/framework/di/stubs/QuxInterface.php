@@ -13,5 +13,5 @@ namespace yiiunit\framework\di\stubs;
  */
 interface QuxInterface
 {
-    function quxMethod();
+    public function quxMethod();
 }

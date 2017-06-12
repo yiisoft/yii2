@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\pgsql;
 
@@ -144,7 +149,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             [1389831585],
             [922337203685477580],
             [9223372036854775807],
-            [-9223372036854775808]
+            [-9223372036854775808],
         ];
     }
 

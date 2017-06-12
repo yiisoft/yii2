@@ -10,10 +10,10 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
-use yii\helpers\Inflector;
-use yii\helpers\Url;
 use yii\helpers\FileHelper;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 
 /**
  * The web Response class represents an HTTP response
@@ -317,7 +317,7 @@ class Response extends \yii\base\Response
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
         }
         return $this->_headers;
     }
@@ -396,7 +396,7 @@ class Response extends \yii\base\Response
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
-            if ($cookie->expire != 1  && isset($validationKey)) {
+            if ($cookie->expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
@@ -418,7 +418,7 @@ class Response extends \yii\base\Response
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
-            list ($handle, $begin, $end) = $this->stream;
+            list($handle, $begin, $end) = $this->stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -907,7 +907,7 @@ class Response extends \yii\base\Response
     public function getCookies()
     {
         if ($this->_cookies === null) {
-            $this->_cookies = new CookieCollection;
+            $this->_cookies = new CookieCollection();
         }
         return $this->_cookies;
     }

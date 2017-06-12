@@ -7,8 +7,8 @@
 
 namespace yii\validators;
 
-use yii\base\InvalidConfigException;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 
 /**

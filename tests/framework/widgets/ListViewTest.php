@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\widgets;
 
@@ -10,7 +15,7 @@ use yiiunit\TestCase;
 /**
  * @group widgets
  */
-class ListViewTest extends \yiiunit\TestCase
+class ListViewTest extends TestCase
 {
     protected function setUp()
     {
@@ -22,7 +27,7 @@ class ListViewTest extends \yiiunit\TestCase
     {
         $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
-            'emptyText' => "Nothing at all",
+            'emptyText' => 'Nothing at all',
         ])->run();
 
         $this->expectOutputString('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>');
@@ -160,7 +165,6 @@ HTML
                             'index' => $index,
                             'id' => $model['id'],
                         ],
-
                     ];
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
@@ -196,7 +200,7 @@ HTML
         };
         $this->getListView([
             'beforeItem' => $before,
-            'afterItem' => $after
+            'afterItem' => $after,
         ])->run();
 
         $this->expectOutputString(<<<HTML

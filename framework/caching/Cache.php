@@ -73,7 +73,7 @@ abstract class Cache extends Component implements CacheInterface
      */
     public $serializer;
     /**
-     * @var integer default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
+     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
      * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
      */

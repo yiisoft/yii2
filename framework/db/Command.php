@@ -267,7 +267,7 @@ class Command extends Component
         } else {
             $this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
         }
-        $this->params[$name] =& $value;
+        $this->params[$name] = &$value;
 
         return $this;
     }

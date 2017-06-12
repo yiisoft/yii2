@@ -249,7 +249,7 @@ class PageCache extends ActionFilter
         $data = [
             'cacheVersion' => 1,
             'cacheData' => is_array($beforeCacheResponseResult) ? $beforeCacheResponseResult : null,
-            'content' => ob_get_clean()
+            'content' => ob_get_clean(),
         ];
         if ($data['content'] === false || $data['content'] === '') {
             return;

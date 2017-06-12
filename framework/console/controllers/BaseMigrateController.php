@@ -9,11 +9,10 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\console\Exception;
 use yii\console\Controller;
+use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
-use yii\helpers\StringHelper;
 
 /**
  * BaseMigrateController is the base class for migrate controllers.
@@ -113,7 +112,7 @@ abstract class BaseMigrateController extends Controller
             }
 
             if (is_array($this->migrationPath)) {
-                foreach($this->migrationPath as $i => $path) {
+                foreach ($this->migrationPath as $i => $path) {
                     $this->migrationPath[$i] = Yii::getAlias($path);
                 }
             } elseif ($this->migrationPath !== null) {
@@ -181,7 +180,7 @@ abstract class BaseMigrateController extends Controller
         if ($this->confirm('Apply the above ' . ($n === 1 ? 'migration' : 'migrations') . '?')) {
             foreach ($migrations as $migration) {
                 if (!$this->migrateUp($migration)) {
-                    $this->stdout("\n$applied from $n " . ($applied === 1 ? 'migration was' : 'migrations were') ." applied.\n", Console::FG_RED);
+                    $this->stdout("\n$applied from $n " . ($applied === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_RED);
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
                     return self::EXIT_CODE_ERROR;
@@ -189,7 +188,7 @@ abstract class BaseMigrateController extends Controller
                 $applied++;
             }
 
-            $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') ." applied.\n", Console::FG_GREEN);
+            $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated up successfully.\n", Console::FG_GREEN);
         }
     }
@@ -242,14 +241,14 @@ abstract class BaseMigrateController extends Controller
         if ($this->confirm('Revert the above ' . ($n === 1 ? 'migration' : 'migrations') . '?')) {
             foreach ($migrations as $migration) {
                 if (!$this->migrateDown($migration)) {
-                    $this->stdout("\n$reverted from $n " . ($reverted === 1 ? 'migration was' : 'migrations were') ." reverted.\n", Console::FG_RED);
+                    $this->stdout("\n$reverted from $n " . ($reverted === 1 ? 'migration was' : 'migrations were') . " reverted.\n", Console::FG_RED);
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
                     return self::EXIT_CODE_ERROR;
                 }
                 $reverted++;
             }
-            $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') ." reverted.\n", Console::FG_GREEN);
+            $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " reverted.\n", Console::FG_GREEN);
             $this->stdout("\nMigrated down successfully.\n", Console::FG_GREEN);
         }
     }
@@ -315,7 +314,7 @@ abstract class BaseMigrateController extends Controller
                     return self::EXIT_CODE_ERROR;
                 }
             }
-            $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') ." redone.\n", Console::FG_GREEN);
+            $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " redone.\n", Console::FG_GREEN);
             $this->stdout("\nMigration redone successfully.\n", Console::FG_GREEN);
         }
     }
@@ -735,7 +734,7 @@ abstract class BaseMigrateController extends Controller
         $class = trim($class, '\\');
         if (strpos($class, '\\') === false) {
             if (is_array($this->migrationPath)) {
-                foreach($this->migrationPath as $path) {
+                foreach ($this->migrationPath as $path) {
                     $file = $path . DIRECTORY_SEPARATOR . $class . '.php';
                     if (is_file($file)) {
                         require_once($file);
@@ -817,7 +816,7 @@ abstract class BaseMigrateController extends Controller
 
         $migrationPaths = [];
         if (is_array($this->migrationPath)) {
-            foreach($this->migrationPath as $path) {
+            foreach ($this->migrationPath as $path) {
                 $migrationPaths[] = [$path, ''];
             }
         } elseif (!empty($this->migrationPath)) {

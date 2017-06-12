@@ -9,8 +9,8 @@ namespace yii\web;
 
 use DOMDocument;
 use DOMElement;
-use DOMText;
 use DOMException;
+use DOMText;
 use yii\base\Arrayable;
 use yii\base\Component;
 use yii\helpers\StringHelper;

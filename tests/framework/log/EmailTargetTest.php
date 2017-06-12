@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Dmitriy Makarov <makarov.dmitriy@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
@@ -10,7 +12,6 @@ use yiiunit\TestCase;
 
 /**
  * Class EmailTargetTest
- * @package yiiunit\framework\log
  * @group log
  */
 class EmailTargetTest extends TestCase
@@ -32,16 +33,16 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::init()
+     * @covers \yii\log\EmailTarget::init()
      */
     public function testInitWithOptionTo()
     {
-        $target = new EmailTarget(['mailer' => $this->mailer, 'message'=> ['to' => 'developer1@example.com']]);
-        $this->assertTrue(is_object($target)); // should be no exception during `init()`
+        $target = new EmailTarget(['mailer' => $this->mailer, 'message' => ['to' => 'developer1@example.com']]);
+        $this->assertInternalType('object', $target); // should be no exception during `init()`
     }
 
     /**
-     * @covers yii\log\EmailTarget::init()
+     * @covers \yii\log\EmailTarget::init()
      * @expectedException \yii\base\InvalidConfigException
      * @expectedExceptionMessage The "to" option must be set for EmailTarget::message.
      */
@@ -51,8 +52,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::export()
-     * @covers yii\log\EmailTarget::composeMessage()
+     * @covers \yii\log\EmailTarget::export()
+     * @covers \yii\log\EmailTarget::composeMessage()
      */
     public function testExportWithSubject()
     {
@@ -76,11 +77,11 @@ class EmailTargetTest extends TestCase
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
-                    'message'=> [
+                    'message' => [
                         'to' => 'developer@example.com',
-                        'subject' => 'Hello world'
-                    ]
-                ]
+                        'subject' => 'Hello world',
+                    ],
+                ],
             ])
             ->getMock();
 
@@ -95,8 +96,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::export()
-     * @covers yii\log\EmailTarget::composeMessage()
+     * @covers \yii\log\EmailTarget::export()
+     * @covers \yii\log\EmailTarget::composeMessage()
      */
     public function testExportWithoutSubject()
     {
@@ -120,10 +121,10 @@ class EmailTargetTest extends TestCase
             ->setConstructorArgs([
                 [
                     'mailer' => $this->mailer,
-                    'message'=> [
+                    'message' => [
                         'to' => 'developer@example.com',
-                    ]
-                ]
+                    ],
+                ],
             ])
             ->getMock();
 

@@ -7,14 +7,14 @@
 
 namespace yii\db;
 
-use yii\base\InvalidConfigException;
 use yii\base\Event;
-use yii\base\Model;
+use yii\base\InvalidCallException;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
-use yii\base\InvalidCallException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -934,7 +934,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function beforeSave($insert)
     {
-        $event = new ModelEvent;
+        $event = new ModelEvent();
         $this->trigger($insert ? self::EVENT_BEFORE_INSERT : self::EVENT_BEFORE_UPDATE, $event);
 
         return $event->isValid;
@@ -986,7 +986,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function beforeDelete()
     {
-        $event = new ModelEvent;
+        $event = new ModelEvent();
         $this->trigger(self::EVENT_BEFORE_DELETE, $event);
 
         return $event->isValid;
@@ -1160,7 +1160,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public static function instantiate($row)
     {
-        return new static;
+        return new static();
     }
 
     /**
@@ -1566,7 +1566,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
-                    $relatedModel = new $relation->modelClass;
+                    $relatedModel = new $relation->modelClass();
                 }
             }
 
@@ -1606,7 +1606,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return '';
                     }
-                    $relatedModel = new $relation->modelClass;
+                    $relatedModel = new $relation->modelClass();
                 }
             }
 

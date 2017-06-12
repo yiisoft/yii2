@@ -11,8 +11,8 @@ use Yii;
 use yii\caching\ApcCache;
 use yii\caching\CacheInterface;
 use yii\console\Controller;
-use yii\helpers\Console;
 use yii\console\Exception;
+use yii\helpers\Console;
 
 /**
  * Allows you to flush cache.
@@ -67,7 +67,6 @@ class CacheController extends Controller
      * # flushes caches specified by their id: "first", "second", "third"
      * yii cache/flush first second third
      * ```
-     *
      */
     public function actionFlush()
     {
@@ -213,7 +212,6 @@ class CacheController extends Controller
     }
 
     /**
-     *
      * @param array $caches
      */
     private function notifyFlushed($caches)
@@ -221,7 +219,7 @@ class CacheController extends Controller
         $this->stdout("The following cache components were processed:\n\n", Console::FG_YELLOW);
 
         foreach ($caches as $cache) {
-            $this->stdout("\t* " . $cache['name'] .' (' . $cache['class'] . ')', Console::FG_GREEN);
+            $this->stdout("\t* " . $cache['name'] . ' (' . $cache['class'] . ')', Console::FG_GREEN);
 
             if (!$cache['is_flushed']) {
                 $this->stdout(" - not flushed\n", Console::FG_RED);
@@ -294,6 +292,6 @@ class CacheController extends Controller
      */
     private function canBeFlushed($className)
     {
-        return !is_a($className, ApcCache::className(), true) || php_sapi_name() !== "cli";
+        return !is_a($className, ApcCache::className(), true) || php_sapi_name() !== 'cli';
     }
 }

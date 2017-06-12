@@ -18,8 +18,8 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\FormatConverter;
-use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 
 /**
  * Formatter provides a set of commonly used data formatting methods.
@@ -577,10 +577,10 @@ class Formatter extends Component
      * @var array map of short format names to IntlDateFormatter constant values.
      */
     private $_dateFormats = [
-        'short'  => 3, // IntlDateFormatter::SHORT,
+        'short' => 3, // IntlDateFormatter::SHORT,
         'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long'   => 1, // IntlDateFormatter::LONG,
-        'full'   => 0, // IntlDateFormatter::FULL,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
     ];
 
     /**
@@ -691,7 +691,7 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                $timestamp = new DateTime('@' . (int)$value, new DateTimeZone('UTC'));
+                $timestamp = new DateTime('@' . (int) $value, new DateTimeZone('UTC'));
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
@@ -705,7 +705,7 @@ class Formatter extends Component
                 return [
                     $timestamp,
                     !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
-                    !($info['year'] === false && $info['month'] === false && $info['day'] === false)
+                    !($info['year'] === false && $info['month'] === false && $info['day'] === false),
                 ];
             } else {
                 return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
@@ -872,7 +872,7 @@ class Formatter extends Component
             $valueDateTime = (new DateTime())->setTimestamp(abs($value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strpos($value, 'P-') === 0) {
-            $interval = new DateInterval('P'.substr($value, 2));
+            $interval = new DateInterval('P' . substr($value, 2));
             $isNegative = true;
         } else {
             $interval = new DateInterval($value);

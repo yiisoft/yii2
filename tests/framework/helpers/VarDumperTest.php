@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use yii\helpers\VarDumper;
@@ -24,7 +30,7 @@ class VarDumperTest extends TestCase
         $incompleteObj = unserialize($serializedObj);
         $dumpResult = VarDumper::dumpAsString($incompleteObj);
         $this->assertContains("__PHP_Incomplete_Class#1\n(", $dumpResult);
-        $this->assertContains("nonExistingClass", $dumpResult);
+        $this->assertContains('nonExistingClass', $dumpResult);
     }
 
     public function testExportIncompleteObject()
@@ -32,7 +38,7 @@ class VarDumperTest extends TestCase
         $serializedObj = 'O:16:"nonExistingClass":0:{}';
         $incompleteObj = unserialize($serializedObj);
         $exportResult = VarDumper::export($incompleteObj);
-        $this->assertContains("nonExistingClass", $exportResult);
+        $this->assertContains('nonExistingClass', $exportResult);
     }
 
     public function testDumpObject()
@@ -46,7 +52,7 @@ class VarDumperTest extends TestCase
         $dumpResult = VarDumper::dumpAsString($obj);
         $this->assertContains("stdClass#1\n(", $dumpResult);
         $this->assertContains("[name] => 'test-name'", $dumpResult);
-        $this->assertContains("[price] => 19", $dumpResult);
+        $this->assertContains('[price] => 19', $dumpResult);
     }
 
     /**
@@ -60,31 +66,31 @@ class VarDumperTest extends TestCase
         $data = [
             [
                 'test string',
-                var_export('test string', true)
+                var_export('test string', true),
             ],
             [
                 75,
-                var_export(75, true)
+                var_export(75, true),
             ],
             [
                 7.5,
-                var_export(7.5, true)
+                var_export(7.5, true),
             ],
             [
                 null,
-                'null'
+                'null',
             ],
             [
                 true,
-                'true'
+                'true',
             ],
             [
                 false,
-                'false'
+                'false',
             ],
             [
                 [],
-                '[]'
+                '[]',
             ],
         ];
 
@@ -175,7 +181,7 @@ RESULT;
         $slave = new \StdClass();
         $master->slave = $slave;
         $slave->master = $master;
-        $master->function = function() {return true;};
+        $master->function = function () {return true;};
 
         $exportResult = VarDumper::export($master);
         $this->assertNotEmpty($exportResult);

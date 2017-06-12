@@ -183,7 +183,7 @@ class Request extends \yii\base\Request
     {
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
-            list ($route, $params) = $result;
+            list($route, $params) = $result;
             if ($this->_queryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
             } else {
@@ -203,7 +203,7 @@ class Request extends \yii\base\Request
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
             if (function_exists('getallheaders')) {
                 $headers = getallheaders();
             } elseif (function_exists('http_get_request_headers')) {
@@ -407,7 +407,7 @@ class Request extends \yii\base\Request
             } elseif (isset($this->parsers['*'])) {
                 $parser = Yii::createObject($this->parsers['*']);
                 if (!($parser instanceof RequestParserInterface)) {
-                    throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+                    throw new InvalidConfigException('The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.');
                 }
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $rawContentType);
             } elseif ($this->getMethod() === 'POST') {
@@ -1153,9 +1153,9 @@ class Request extends \yii\base\Request
             ];
             foreach ($params as $param) {
                 if (strpos($param, '=') !== false) {
-                    list ($key, $value) = explode('=', $param, 2);
+                    list($key, $value) = explode('=', $param, 2);
                     if ($key === 'q') {
-                        $values['q'][2] = (double) $value;
+                        $values['q'][2] = (float) $value;
                     } else {
                         $values[$key] = $value;
                     }
@@ -1226,10 +1226,11 @@ class Request extends \yii\base\Request
             foreach ($languages as $language) {
                 $normalizedLanguage = str_replace('_', '-', strtolower($language));
 
-                if ($normalizedLanguage === $acceptableLanguage || // en-us==en-us
-                    strpos($acceptableLanguage, $normalizedLanguage . '-') === 0 || // en==en-us
-                    strpos($normalizedLanguage, $acceptableLanguage . '-') === 0) { // en-us==en
-
+                if (
+                    $normalizedLanguage === $acceptableLanguage // en-us==en-us
+                    || strpos($acceptableLanguage, $normalizedLanguage . '-') === 0 // en==en-us
+                    || strpos($normalizedLanguage, $acceptableLanguage . '-') === 0 // en-us==en
+                ) {
                     return $language;
                 }
             }

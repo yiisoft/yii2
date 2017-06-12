@@ -460,7 +460,7 @@ class Validator extends Component
      */
     public function getAttributeNames()
     {
-        return array_map(function($attribute) {
+        return array_map(function ($attribute) {
             return ltrim($attribute, '!');
         }, $this->attributes);
     }

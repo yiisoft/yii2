@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters;
 
@@ -14,8 +19,8 @@ class HttpCacheTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $this->mockWebApplication();
     }
@@ -24,14 +29,14 @@ class HttpCacheTest extends \yiiunit\TestCase
     {
         $httpCache = new HttpCache();
         $this->assertTrue($httpCache->beforeAction(null));
-        $httpCache->enabled=false;
+        $httpCache->enabled = false;
         $this->assertTrue($httpCache->beforeAction(null));
     }
 
     public function testEmptyPragma()
     {
         $httpCache = new HttpCache();
-        $httpCache->etagSeed = function($action, $params) {
+        $httpCache->etagSeed = function ($action, $params) {
             return '';
         };
         $httpCache->beforeAction(null);
@@ -41,7 +46,7 @@ class HttpCacheTest extends \yiiunit\TestCase
     }
 
     /**
-     * @covers yii\filters\HttpCache::validateCache
+     * @covers \yii\filters\HttpCache::validateCache
      */
     public function testValidateCache()
     {
@@ -71,21 +76,21 @@ class HttpCacheTest extends \yiiunit\TestCase
     }
 
     /**
-     * @covers yii\filters\HttpCache::generateEtag
+     * @covers \yii\filters\HttpCache::generateEtag
      */
     public function testGenerateEtag()
     {
         $httpCache = new HttpCache();
         $httpCache->weakEtag = false;
 
-        $httpCache->etagSeed = function($action, $params) {
+        $httpCache->etagSeed = function ($action, $params) {
             return null;
         };
         $httpCache->beforeAction(null);
         $response = Yii::$app->getResponse();
         $this->assertFalse($response->getHeaders()->offsetExists('ETag'));
 
-        $httpCache->etagSeed = function($action, $params) {
+        $httpCache->etagSeed = function ($action, $params) {
             return '';
         };
         $httpCache->beforeAction(null);

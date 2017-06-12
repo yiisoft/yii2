@@ -103,7 +103,6 @@ class PhpDocController extends Controller
 
         $this->stdout("\nParsed $nFilesTotal files.\n");
         $this->stdout("Updated $nFilesUpdated files.\n");
-
     }
 
     /**
@@ -173,7 +172,6 @@ class PhpDocController extends Controller
                 }
             }
         } elseif (preg_match('~extensions/([\w-]+)[\\\\/]?$~', $root, $matches)) {
-
             $extensionPath = dirname(rtrim($root, '\\/'));
             $this->setUpExtensionAliases($extensionPath);
 
@@ -197,7 +195,6 @@ class PhpDocController extends Controller
 //                return [];
 //            }
         } elseif (preg_match('~apps/([\w-]+)[\\\\/]?$~', $root, $matches)) {
-
             $extensionPath = dirname(dirname(rtrim($root, '\\/'))) . '/extensions';
             $this->setUpExtensionAliases($extensionPath);
 
@@ -211,20 +208,19 @@ class PhpDocController extends Controller
             $except[] = '/vendor/';
             $except[] = '/tests/';
             $except[] = '/docs/';
-
         }
         $root = FileHelper::normalizePath($root);
         $options = [
             'filter' => function ($path) {
-                    if (is_file($path)) {
-                        $file = basename($path);
-                        if ($file[0] < 'A' || $file[0] > 'Z') {
-                            return false;
-                        }
+                if (is_file($path)) {
+                    $file = basename($path);
+                    if ($file[0] < 'A' || $file[0] > 'Z') {
+                        return false;
                     }
+                }
 
-                    return null;
-                },
+                return null;
+            },
             'only' => ['*.php'],
             'except' => array_merge($except, [
                 '.git/',
@@ -274,15 +270,15 @@ class PhpDocController extends Controller
                 $contentAfterNamespace--;
             }
             $lines = array_merge([
-                "<?php",
-                "/**",
-                " * @link http://www.yiiframework.com/",
-                " * @copyright Copyright (c) 2008 Yii Software LLC",
-                " * @license http://www.yiiframework.com/license/",
-                " */",
-                "",
+                '<?php',
+                '/**',
+                ' * @link http://www.yiiframework.com/',
+                ' * @copyright Copyright (c) 2008 Yii Software LLC',
+                ' * @license http://www.yiiframework.com/license/',
+                ' */',
+                '',
                 $namespaceLine,
-                ""
+                '',
             ], $lines);
         }
     }
@@ -346,7 +342,7 @@ class PhpDocController extends Controller
 
     protected function fixParamTypes($line)
     {
-        return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function($matches) {
+        return preg_replace_callback('~@(param|return) ([\w\\|]+)~i', function ($matches) {
             $types = explode('|', $matches[2]);
             foreach ($types as $i => $type) {
                 switch ($type) {
@@ -412,7 +408,7 @@ class PhpDocController extends Controller
 
             // check for multi line array
             if ($level > 0) {
-                ${'endof'.$property} = $i;
+                ${'endof' . $property} = $i;
             }
 
             $line = trim($line);
@@ -448,8 +444,8 @@ class PhpDocController extends Controller
 
         $endofAll = false;
         foreach (['Private', 'Protected', 'Public', 'Const', 'Use'] as $var) {
-            if (${'endof'.$var} !== false) {
-                $endofAll = ${'endof'.$var};
+            if (${'endof' . $var} !== false) {
+                $endofAll = ${'endof' . $var};
                 break;
             }
         }
@@ -531,7 +527,6 @@ class PhpDocController extends Controller
         }
 
         if (trim($oldDoc) != trim($newDoc)) {
-
             $fileContent = explode("\n", file_get_contents($file));
             $start = $ref->getStartLine() - 2;
             $docStart = $start - count(explode("\n", $oldDoc)) + 1;
@@ -621,8 +616,8 @@ class PhpDocController extends Controller
 
     protected function generateClassPropertyDocs($fileName)
     {
-        $phpdoc = "";
-        $file = str_replace("\r", "", str_replace("\t", " ", file_get_contents($fileName, true)));
+        $phpdoc = '';
+        $file = str_replace("\r", '', str_replace("\t", ' ', file_get_contents($fileName, true)));
         $ns = $this->match('#\nnamespace (?<name>[\w\\\\]+);\n#', $file);
         $namespace = reset($ns);
         $namespace = $namespace['name'];
@@ -655,7 +650,6 @@ class PhpDocController extends Controller
 
         $className = null;
         foreach ($classes as &$class) {
-
             $className = $namespace . '\\' . $class['name'];
 
             $gets = $this->match(
@@ -756,9 +750,11 @@ class PhpDocController extends Controller
         foreach ($parts as $part) {
             preg_match_all($pattern . 'suU', $part, $matches, PREG_SET_ORDER);
             foreach ($matches as &$set) {
-                foreach ($set as $i => $match)
-                    if (is_numeric($i) /*&& $i != 0*/)
+                foreach ($set as $i => $match) {
+                    if (is_numeric($i) /*&& $i != 0*/) {
                         unset($set[$i]);
+                    }
+                }
 
                 $sets[] = $set;
             }
@@ -769,8 +765,9 @@ class PhpDocController extends Controller
     protected function fixSentence($str)
     {
         // TODO fix word wrap
-        if ($str == '')
+        if ($str == '') {
             return '';
+        }
         return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
     }
 

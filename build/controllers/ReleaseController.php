@@ -127,10 +127,9 @@ class ReleaseController extends Controller
         $w = $this->minWidth(array_keys($versions));
         $this->stdout(str_repeat(' ', $w + 2) . "Current Version  Next Version\n", Console::BOLD);
         foreach ($versions as $ext => $version) {
-            $this->stdout($ext . str_repeat(' ', $w + 3 - mb_strlen($ext)) . $version . "");
+            $this->stdout($ext . str_repeat(' ', $w + 3 - mb_strlen($ext)) . $version . '');
             $this->stdout(str_repeat(' ', 17 - mb_strlen($version)) . $nextVersions[$ext] . "\n");
         }
-
     }
 
     private function minWidth($a)
@@ -219,7 +218,7 @@ class ReleaseController extends Controller
             $this->stdout("- are all new `@since` tags for this release version?\n");
         }
         $this->stdout("- other issues with code changes?\n\n    git diff -w $gitVersion.. ${gitDir}\n\n");
-        $travisUrl = reset($what) === 'framework' ? '' : '-'.reset($what);
+        $travisUrl = reset($what) === 'framework' ? '' : '-' . reset($what);
         $this->stdout("- are unit tests passing on travis? https://travis-ci.org/yiisoft/yii2$travisUrl/builds\n");
         $this->stdout("- also make sure the milestone on github is complete and no issues or PRs are left open.\n\n");
         $this->printWhatUrls($what, $versions);
@@ -266,15 +265,15 @@ class ReleaseController extends Controller
         $this->stdout("You are about to generate packages for the following things:\n\n");
         foreach ($what as $ext) {
             if (strncmp('app-', $ext, 4) === 0) {
-                $this->stdout(" - ");
+                $this->stdout(' - ');
                 $this->stdout(substr($ext, 4), Console::FG_RED);
-                $this->stdout(" application version ");
+                $this->stdout(' application version ');
             } elseif ($ext === 'framework') {
-                $this->stdout(" - Yii Framework version ");
+                $this->stdout(' - Yii Framework version ');
             } else {
-                $this->stdout(" - ");
+                $this->stdout(' - ');
                 $this->stdout($ext, Console::FG_RED);
-                $this->stdout(" extension version ");
+                $this->stdout(' extension version ');
             }
             $this->stdout($versions[$ext], Console::BOLD);
             $this->stdout("\n");
@@ -323,9 +322,9 @@ class ReleaseController extends Controller
         $version = array_values($this->getNextVersions($this->getCurrentVersions($what), self::PATCH))[0];
         $this->stdout('sorting CHANGELOG of ');
         $this->stdout(reset($what), Console::BOLD);
-        $this->stdout(" for version ");
+        $this->stdout(' for version ');
         $this->stdout($version, Console::BOLD);
-        $this->stdout("...");
+        $this->stdout('...');
 
         $this->resortChangelogs($what, $version);
 
@@ -336,15 +335,15 @@ class ReleaseController extends Controller
     {
         foreach ($what as $ext) {
             if (strncmp('app-', $ext, 4) === 0) {
-                $this->stdout(" - ");
+                $this->stdout(' - ');
                 $this->stdout(substr($ext, 4), Console::FG_RED);
-                $this->stdout(" application version ");
+                $this->stdout(' application version ');
             } elseif ($ext === 'framework') {
-                $this->stdout(" - Yii Framework version ");
+                $this->stdout(' - Yii Framework version ');
             } else {
-                $this->stdout(" - ");
+                $this->stdout(' - ');
                 $this->stdout($ext, Console::FG_RED);
-                $this->stdout(" extension version ");
+                $this->stdout(' extension version ');
             }
             $this->stdout($newVersions[$ext], Console::BOLD);
             $this->stdout(", last release was {$versions[$ext]}\n");
@@ -375,7 +374,7 @@ class ReleaseController extends Controller
         foreach ($what as $w) {
             if (strncmp('app-', $w, 4) === 0) {
                 if (!empty($limit) && !in_array('app', $limit)) {
-                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                    throw new Exception('Only the following types are allowed: ' . implode(', ', $limit) . "\n");
                 }
                 if (!is_dir($appPath = "{$this->basePath}/apps/" . substr($w, 4))) {
                     throw new Exception("Application path does not exist: \"{$appPath}\"\n");
@@ -385,7 +384,7 @@ class ReleaseController extends Controller
                 }
             } elseif ($w === 'framework') {
                 if (!empty($limit) && !in_array('framework', $limit)) {
-                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                    throw new Exception('Only the following types are allowed: ' . implode(', ', $limit) . "\n");
                 }
                 if (!is_dir($fwPath = "{$this->basePath}/framework")) {
                     throw new Exception("Framework path does not exist: \"{$this->basePath}/framework\"\n");
@@ -395,7 +394,7 @@ class ReleaseController extends Controller
                 }
             } else {
                 if (!empty($limit) && !in_array('ext', $limit)) {
-                    throw new Exception("Only the following types are allowed: ".implode(', ', $limit)."\n");
+                    throw new Exception('Only the following types are allowed: ' . implode(', ', $limit) . "\n");
                 }
                 if (!is_dir($extPath = "{$this->basePath}/extensions/$w")) {
                     throw new Exception("Extension path for \"$w\" does not exist: \"{$this->basePath}/extensions/$w\"\n");
@@ -457,10 +456,10 @@ class ReleaseController extends Controller
 
         $this->stdout("\nIn the following you can check the above changes using git diff.\n\n");
         do {
-            $this->runGit("git diff --color", $frameworkPath);
+            $this->runGit('git diff --color', $frameworkPath);
             $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
             $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
-        } while (!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
+        } while (!$this->confirm('Type `yes` to continue, `no` to view git diff again. Continue?'));
 
         $this->stdout("\n\n");
         $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
@@ -471,13 +470,13 @@ class ReleaseController extends Controller
 
         $this->runGit("git commit -S -a -m \"release version $version\"", $frameworkPath);
         $this->runGit("git tag -s $version -m \"version $version\"", $frameworkPath);
-        $this->runGit("git push", $frameworkPath);
-        $this->runGit("git push --tags", $frameworkPath);
+        $this->runGit('git push', $frameworkPath);
+        $this->runGit('git push --tags', $frameworkPath);
 
         $this->stdout("\n\n");
-        $this->stdout("CONGRATULATIONS! You have just released ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout('CONGRATULATIONS! You have just released ', Console::FG_YELLOW, Console::BOLD);
         $this->stdout('framework', Console::FG_RED, Console::BOLD);
-        $this->stdout(" version ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout(' version ', Console::FG_YELLOW, Console::BOLD);
         $this->stdout($version, Console::BOLD);
         $this->stdout("!\n\n", Console::FG_YELLOW, Console::BOLD);
 
@@ -519,10 +518,10 @@ class ReleaseController extends Controller
 
 
         $this->stdout("\n");
-        $this->runGit("git diff --color", $frameworkPath);
+        $this->runGit('git diff --color', $frameworkPath);
         $this->stdout("\n\n");
-        $this->runGit("git commit -a -m \"prepare for next release\"", $frameworkPath);
-        $this->runGit("git push", $frameworkPath);
+        $this->runGit('git commit -a -m "prepare for next release"', $frameworkPath);
+        $this->runGit('git push', $frameworkPath);
 
         $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
 
@@ -544,7 +543,6 @@ class ReleaseController extends Controller
         $this->stdout("- release applications: ./build/build release app-advanced\n");
 
         $this->stdout("\n");
-
     }
 
     protected function releaseApplication($name, $path, $version)
@@ -578,10 +576,10 @@ class ReleaseController extends Controller
 
         $this->stdout("\nIn the following you can check the above changes using git diff.\n\n");
         do {
-            $this->runGit("git diff --color", $path);
+            $this->runGit('git diff --color', $path);
             $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
             $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
-        } while (!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
+        } while (!$this->confirm('Type `yes` to continue, `no` to view git diff again. Continue?'));
 
         $this->stdout("\n\n");
         $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
@@ -592,13 +590,13 @@ class ReleaseController extends Controller
 
         $this->runGit("git commit -S -a -m \"release version $version\"", $path);
         $this->runGit("git tag -s $version -m \"version $version\"", $path);
-        $this->runGit("git push", $path);
-        $this->runGit("git push --tags", $path);
+        $this->runGit('git push', $path);
+        $this->runGit('git push --tags', $path);
 
         $this->stdout("\n\n");
-        $this->stdout("CONGRATULATIONS! You have just released application ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout('CONGRATULATIONS! You have just released application ', Console::FG_YELLOW, Console::BOLD);
         $this->stdout($name, Console::FG_RED, Console::BOLD);
-        $this->stdout(" version ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout(' version ', Console::FG_YELLOW, Console::BOLD);
         $this->stdout($version, Console::BOLD);
         $this->stdout("!\n\n", Console::FG_YELLOW, Console::BOLD);
 
@@ -613,10 +611,10 @@ class ReleaseController extends Controller
         $nextVersion = $this->getNextVersions(["app-$name" => $version], self::PATCH); // TODO support other versions
 
         $this->stdout("\n");
-        $this->runGit("git diff --color", $path);
+        $this->runGit('git diff --color', $path);
         $this->stdout("\n\n");
-        $this->runGit("git commit -a -m \"prepare for next release\"", $path);
-        $this->runGit("git push", $path);
+        $this->runGit('git commit -a -m "prepare for next release"', $path);
+        $this->runGit('git push', $path);
 
         $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
 
@@ -696,10 +694,10 @@ class ReleaseController extends Controller
 
         $this->stdout("\nIn the following you can check the above changes using git diff.\n\n");
         do {
-            $this->runGit("git diff --color", $path);
+            $this->runGit('git diff --color', $path);
             $this->stdout("\n\n\nCheck whether the above diff is okay, if not you may change things as needed before continuing.\n");
             $this->stdout("You may abort the program with Ctrl + C and reset the changes by running `git checkout -- .` in the repo.\n\n");
-        } while (!$this->confirm("Type `yes` to continue, `no` to view git diff again. Continue?"));
+        } while (!$this->confirm('Type `yes` to continue, `no` to view git diff again. Continue?'));
 
         $this->stdout("\n\n");
         $this->stdout("    ****          RELEASE TIME!         ****\n", Console::FG_YELLOW, Console::BOLD);
@@ -710,13 +708,13 @@ class ReleaseController extends Controller
 
         $this->runGit("git commit -S -a -m \"release version $version\"", $path);
         $this->runGit("git tag -s $version -m \"version $version\"", $path);
-        $this->runGit("git push", $path);
-        $this->runGit("git push --tags", $path);
+        $this->runGit('git push', $path);
+        $this->runGit('git push --tags', $path);
 
         $this->stdout("\n\n");
-        $this->stdout("CONGRATULATIONS! You have just released extension ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout('CONGRATULATIONS! You have just released extension ', Console::FG_YELLOW, Console::BOLD);
         $this->stdout($name, Console::FG_RED, Console::BOLD);
-        $this->stdout(" version ", Console::FG_YELLOW, Console::BOLD);
+        $this->stdout(' version ', Console::FG_YELLOW, Console::BOLD);
         $this->stdout($version, Console::BOLD);
         $this->stdout("!\n\n", Console::FG_YELLOW, Console::BOLD);
 
@@ -730,10 +728,10 @@ class ReleaseController extends Controller
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
         $this->stdout("\n");
-        $this->runGit("git diff --color", $path);
+        $this->runGit('git diff --color', $path);
         $this->stdout("\n\n");
-        $this->runGit("git commit -a -m \"prepare for next release\"", $path);
-        $this->runGit("git push", $path);
+        $this->runGit('git commit -a -m "prepare for next release"', $path);
+        $this->runGit('git push', $path);
 
         $this->stdout("\n\nDONE!", Console::FG_YELLOW, Console::BOLD);
 
@@ -815,7 +813,7 @@ class ReleaseController extends Controller
         $v = str_replace('\\-', '[\\- ]', preg_quote($version, '/'));
         $headline = $version . ' ' . date('F d, Y');
         $this->sed(
-            '/'.$v.' under development\n(-+?)\n/',
+            '/' . $v . ' under development\n(-+?)\n/',
             $headline . "\n" . str_repeat('-', strlen($headline)) . "\n",
             $this->getChangelogs($what)
         );
@@ -862,11 +860,11 @@ class ReleaseController extends Controller
         $state = 'start';
         foreach ($lines as $l => $line) {
             // starting from the changelogs headline
-            if (isset($lines[$l-2]) && strpos($lines[$l-2], $version) !== false &&
-                isset($lines[$l-1]) && strncmp($lines[$l-1], '---', 3) === 0) {
+            if (isset($lines[$l - 2]) && strpos($lines[$l - 2], $version) !== false &&
+                isset($lines[$l - 1]) && strncmp($lines[$l - 1], '---', 3) === 0) {
                 $state = 'changelog';
             }
-            if ($state === 'changelog' && isset($lines[$l+1]) && strncmp($lines[$l+1], '---', 3) === 0) {
+            if ($state === 'changelog' && isset($lines[$l + 1]) && strncmp($lines[$l + 1], '---', 3) === 0) {
                 $state = 'end';
             }
             // add continued lines to the last item to keep them together
@@ -892,7 +890,7 @@ class ReleaseController extends Controller
         $changelog = array_filter($changelog);
 
         $i = 0;
-        ArrayHelper::multisort($changelog, function($line) use (&$i) {
+        ArrayHelper::multisort($changelog, function ($line) use (&$i) {
             if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
@@ -925,7 +923,7 @@ class ReleaseController extends Controller
 
     protected function getExtensionChangelogs($what)
     {
-        return array_filter(glob($this->basePath . '/extensions/*/CHANGELOG.md'), function($elem) use ($what) {
+        return array_filter(glob($this->basePath . '/extensions/*/CHANGELOG.md'), function ($elem) use ($what) {
             foreach ($what as $ext) {
                 if (strpos($elem, "extensions/$ext/CHANGELOG.md") !== false) {
                     return true;

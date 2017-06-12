@@ -10,11 +10,11 @@ namespace yii\i18n;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
+use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
-use yii\db\Connection;
-use yii\db\Query;
 
 /**
  * DbMessageSource extends [[MessageSource]] and represents a message source that stores translated
@@ -183,7 +183,7 @@ class DbMessageSource extends MessageSource
                 't1.category' => $category,
                 't2.language' => $fallbackLanguage,
             ])->andWhere([
-                'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language])
+                'NOT IN', 't2.id', (new Query())->select('[[id]]')->from($this->messageTable)->where(['language' => $language]),
             ]);
     }
 }

@@ -123,7 +123,7 @@ class Query extends Component implements QueryInterface
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
-        list ($sql, $params) = $db->getQueryBuilder()->build($this);
+        list($sql, $params) = $db->getQueryBuilder()->build($this);
 
         return $db->createCommand($sql, $params);
     }
@@ -432,7 +432,7 @@ class Query extends Component implements QueryInterface
 
             return $command->queryScalar();
         } else {
-            return (new Query)->select([$selectExpression])
+            return (new self())->select([$selectExpression])
                 ->from(['c' => $this])
                 ->createCommand($db)
                 ->queryScalar();

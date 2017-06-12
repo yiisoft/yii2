@@ -68,7 +68,7 @@ class FixtureController extends Controller
     public function options($actionID)
     {
         return array_merge(parent::options($actionID), [
-            'namespace', 'globalFixtures'
+            'namespace', 'globalFixtures',
         ]);
     }
 
@@ -135,8 +135,8 @@ class FixtureController extends Controller
 
         if (!$foundFixtures) {
             throw new Exception(
-                "No files were found for: \"" . implode(', ', $fixturesInput) . "\".\n" .
-                "Check that files exist under fixtures path: \n\"" . $this->getFixturePath() . "\"."
+                'No files were found for: "' . implode(', ', $fixturesInput) . "\".\n" .
+                "Check that files exist under fixtures path: \n\"" . $this->getFixturePath() . '".'
             );
         }
 
@@ -205,8 +205,8 @@ class FixtureController extends Controller
 
         if (!$foundFixtures) {
             throw new Exception(
-                "No files were found for: \"" . implode(', ', $fixturesInput) . "\".\n" .
-                "Check that files exist under fixtures path: \n\"" . $this->getFixturePath() . "\"."
+                'No files were found for: "' . implode(', ', $fixturesInput) . "\".\n" .
+                "Check that files exist under fixtures path: \n\"" . $this->getFixturePath() . '".'
             );
         }
 
@@ -433,7 +433,7 @@ class FixtureController extends Controller
         $fixturesPath = FileHelper::normalizePath($this->getFixturePath());
         $fullFixturePath = FileHelper::normalizePath($fullFixturePath);
 
-        $relativeName = substr($fullFixturePath, strlen($fixturesPath)+1);
+        $relativeName = substr($fullFixturePath, strlen($fixturesPath) + 1);
         $relativeDir = dirname($relativeName) === '.' ? '' : dirname($relativeName) . DIRECTORY_SEPARATOR;
 
         return $relativeDir . basename($fullFixturePath, 'Fixture.php');

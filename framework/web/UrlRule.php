@@ -385,7 +385,7 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
@@ -545,7 +545,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @see $createStatus
      * @since 2.0.12
      */
-    public function getCreateUrlStatus() {
+    public function getCreateUrlStatus()
+    {
         return $this->createStatus;
     }
 

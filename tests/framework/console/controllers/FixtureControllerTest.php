@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
-use yiiunit\TestCase;
-use yiiunit\data\console\controllers\fixtures\FixtureStorage;
 use yii\console\controllers\FixtureController;
+use yiiunit\data\console\controllers\fixtures\FixtureStorage;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\console\controllers\FixtureController]].
@@ -15,7 +20,6 @@ use yii\console\controllers\FixtureController;
  */
 class FixtureControllerTest extends TestCase
 {
-
     /**
      * @var \yiiunit\framework\console\controllers\FixtureConsoledController
      */
@@ -44,7 +48,7 @@ class FixtureControllerTest extends TestCase
     public function testLoadGlobalFixture()
     {
         $this->_fixtureController->globalFixtures = [
-            '\yiiunit\data\console\controllers\fixtures\Global'
+            '\yiiunit\data\console\controllers\fixtures\Global',
         ];
 
         $this->_fixtureController->actionLoad(['First']);
@@ -56,7 +60,7 @@ class FixtureControllerTest extends TestCase
     public function testUnloadGlobalFixture()
     {
         $this->_fixtureController->globalFixtures = [
-            '\yiiunit\data\console\controllers\fixtures\Global'
+            '\yiiunit\data\console\controllers\fixtures\Global',
         ];
 
         FixtureStorage::$globalFixturesData[] = 'some seeded global fixture data';
@@ -209,7 +213,6 @@ class FixtureControllerTest extends TestCase
 
 class FixtureConsoledController extends FixtureController
 {
-
     public function stdout($string)
     {
     }

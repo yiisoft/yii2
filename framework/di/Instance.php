@@ -120,7 +120,7 @@ class Instance
             if ($type === null || $component instanceof $type) {
                 return $component;
             } else {
-                throw new InvalidConfigException('Invalid data type: ' . $class .'. ' . $type . ' is expected.');
+                throw new InvalidConfigException('Invalid data type: ' . $class . '. ' . $type . ' is expected.');
             }
         } elseif (empty($reference)) {
             throw new InvalidConfigException('The required component is not specified.');

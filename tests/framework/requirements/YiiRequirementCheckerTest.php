@@ -1,6 +1,11 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
-require_once(__DIR__.'/../../../framework/requirements/YiiRequirementChecker.php');
+require_once(__DIR__ . '/../../../framework/requirements/YiiRequirementChecker.php');
 
 use yiiunit\TestCase;
 
@@ -147,12 +152,12 @@ class YiiRequirementCheckerTest extends TestCase
     {
         return [
             ['456', 456],
-            ['5K', 5*1024],
-            ['16KB', 16*1024],
-            ['4M', 4*1024*1024],
-            ['14MB', 14*1024*1024],
-            ['7G', 7*1024*1024*1024],
-            ['12GB', 12*1024*1024*1024],
+            ['5K', 5 * 1024],
+            ['16KB', 16 * 1024],
+            ['4M', 4 * 1024 * 1024],
+            ['14MB', 14 * 1024 * 1024],
+            ['7G', 7 * 1024 * 1024 * 1024],
+            ['12GB', 12 * 1024 * 1024 * 1024],
         ];
     }
 

@@ -196,7 +196,7 @@ class Cors extends ActionFilter
         if (in_array('*', $this->cors[$requestHeaderField])) {
             $responseHeaders[$responseHeaderField] = $this->headerize($requestHeaders[$requestHeaderField]);
         } else {
-            $requestedData = preg_split("/[\\s,]+/", $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
+            $requestedData = preg_split('/[\\s,]+/', $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
             $acceptedData = array_uintersect($requestedData, $this->cors[$requestHeaderField], 'strcasecmp');
             if (!empty($acceptedData)) {
                 $responseHeaders[$responseHeaderField] = implode(', ', $acceptedData);
@@ -228,7 +228,7 @@ class Cors extends ActionFilter
      */
     protected function headerize($string)
     {
-        $headers = preg_split("/[\\s,]+/", $string, -1, PREG_SPLIT_NO_EMPTY);
+        $headers = preg_split('/[\\s,]+/', $string, -1, PREG_SPLIT_NO_EMPTY);
         $headers = array_map(function ($element) {
             return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $element))));
         }, $headers);
