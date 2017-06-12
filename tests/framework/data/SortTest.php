@@ -245,6 +245,33 @@ class SortTest extends TestCase
         $this->assertEquals(SORT_ASC, $sort->getAttributeOrder('age'));
         $this->assertEquals(SORT_DESC, $sort->getAttributeOrder('name'));
     }
+
+    /**
+     * @depends testGetOrders
+     *
+     * @see https://github.com/yiisoft/yii2/pull/13260
+     */
+    public function testGetExpressionOrders()
+    {
+        $sort = new Sort([
+            'attributes' => [
+                'name' => [
+                    'asc' => '[[last_name]] ASC NULLS FIRST',
+                    'desc' => '[[last_name]] DESC NULLS LAST',
+                ],
+            ],
+        ]);
+
+        $sort->params = ['sort' => '-name'];
+        $orders = $sort->getOrders();
+        $this->assertEquals(1, count($orders));
+        $this->assertEquals('[[last_name]] DESC NULLS LAST', $orders[0]);
+
+        $sort->params = ['sort' => 'name'];
+        $orders = $sort->getOrders(true);
+        $this->assertEquals(1, count($orders));
+        $this->assertEquals('[[last_name]] ASC NULLS FIRST', $orders[0]);
+    }
 }
 
 class CustomSort extends Sort

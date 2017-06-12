@@ -28,7 +28,7 @@ function microtime($float = false)
 
 namespace yiiunit\framework\caching;
 
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
@@ -50,7 +50,7 @@ abstract class CacheTestCase extends TestCase
 
 
     /**
-     * @return Cache
+     * @return CacheInterface
      */
     abstract protected function getCacheInstance();
 
@@ -67,7 +67,7 @@ abstract class CacheTestCase extends TestCase
     }
 
     /**
-     * @return Cache
+     * @return CacheInterface
      */
     public function prepare()
     {

@@ -10,7 +10,7 @@ namespace yii\rbac;
 use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -62,7 +62,7 @@ class DbManager extends BaseManager
      */
     public $ruleTable = '{{%auth_rule}}';
     /**
-     * @var Cache|array|string the cache used to improve RBAC performance. This can be one of the following:
+     * @var CacheInterface|array|string the cache used to improve RBAC performance. This can be one of the following:
      *
      * - an application component ID (e.g. `cache`)
      * - a configuration array
@@ -111,7 +111,7 @@ class DbManager extends BaseManager
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
         if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, Cache::className());
+            $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
         }
     }
 
@@ -436,7 +436,7 @@ class DbManager extends BaseManager
     {
         $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
 
-        if (!isset($row['data']) || ($data = @unserialize($row['data'])) === false) {
+        if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;
         }
 
@@ -967,7 +967,7 @@ class DbManager extends BaseManager
 
     public function loadFromCache()
     {
-        if ($this->items !== null || !$this->cache instanceof Cache) {
+        if ($this->items !== null || !$this->cache instanceof CacheInterface) {
             return;
         }
 
@@ -1007,7 +1007,7 @@ class DbManager extends BaseManager
     /**
      * Returns all role assignment information for the specified role.
      * @param string $roleName
-     * @return Assignment[] the assignments. An empty array will be
+     * @return string[] the ids. An empty array will be
      * returned if role is not assigned to any user.
      * @since 2.0.7
      */

@@ -52,6 +52,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected $likeEscapeCharacter = '\\';
 
+
     /**
      * Generates a batch INSERT SQL statement.
      * For example,

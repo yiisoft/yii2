@@ -231,7 +231,7 @@ class Module extends ServiceLocator
     /**
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
-     * @param string $path the root directory of the module. This can be either a directory name or a path alias.
+     * @param string $path the root directory of the module. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidParamException if the directory does not exist.
      */
     public function setBasePath($path)
@@ -294,7 +294,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     * @param string $path the root directory or path alias of layout files.
+     * @param string $path the root directory or [path alias](guide:concept-aliases) of layout files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setLayoutPath($path)

@@ -82,6 +82,7 @@ class QueryBuilder extends \yii\base\Object
      */
     protected $likeEscapeCharacter;
 
+
     /**
      * Constructor.
      * @param Connection $connection the database connection.

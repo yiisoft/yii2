@@ -10,7 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\helpers\Url;
 
 /**
@@ -118,7 +118,7 @@ class UrlManager extends Component
      */
     public $routeParam = 'r';
     /**
-     * @var Cache|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|string the cache object or the application component ID of the cache object.
      * Compiled URL rules will be cached through this cache object, if it is available.
      *
      * After the UrlManager object is created, if you want to change this property,
@@ -181,7 +181,7 @@ class UrlManager extends Component
         if (is_string($this->cache)) {
             $this->cache = Yii::$app->get($this->cache, false);
         }
-        if ($this->cache instanceof Cache) {
+        if ($this->cache instanceof CacheInterface) {
             $cacheKey = $this->cacheKey;
             $hash = md5(json_encode($this->rules));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
@@ -371,19 +371,19 @@ class UrlManager extends Component
             }
 
             $url = $this->getUrlFromCache($cacheKey, $route, $params);
-
             if ($url === false) {
-                $cacheable = true;
+                /* @var $rule UrlRule */
                 foreach ($this->rules as $rule) {
-                    /* @var $rule UrlRule */
-                    if (!empty($rule->defaults) && $rule->mode !== UrlRule::PARSING_ONLY) {
-                        // if there is a rule with default values involved, the matching result may not be cached
-                        $cacheable = false;
+                    if (in_array($rule, $this->_ruleCache[$cacheKey], true)) {
+                        // avoid redundant calls of `UrlRule::createUrl()` for rules checked in `getUrlFromCache()`
+                        // @see https://github.com/yiisoft/yii2/issues/14094
+                        continue;
                     }
-                    if (($url = $rule->createUrl($this, $route, $params)) !== false) {
-                        if ($cacheable) {
-                            $this->setRuleToCache($cacheKey, $rule);
-                        }
+                    $url = $rule->createUrl($this, $route, $params);
+                    if ($this->canBeCached($rule)) {
+                        $this->setRuleToCache($cacheKey, $rule);
+                    }
+                    if ($url !== false) {
                         break;
                     }
                 }
@@ -425,6 +425,26 @@ class UrlManager extends Component
 
             return $url . $anchor;
         }
+    }
+
+    /**
+     * Returns the value indicating whether result of [[createUrl()]] of rule should be cached in internal cache.
+     *
+     * @param UrlRuleInterface $rule
+     * @return bool `true` if result should be cached, `false` if not.
+     * @since 2.0.12
+     * @see getUrlFromCache()
+     * @see setRuleToCache()
+     * @see UrlRule::getCreateUrlStatus()
+     */
+    protected function canBeCached(UrlRuleInterface $rule)
+    {
+        return
+            // if rule does not provide info about create status, we cache it every time to prevent bugs like #13350
+            // @see https://github.com/yiisoft/yii2/pull/13350#discussion_r114873476
+            !method_exists($rule, 'getCreateUrlStatus') || ($status = $rule->getCreateUrlStatus()) === null
+            || $status === UrlRule::CREATE_STATUS_SUCCESS
+            || $status & UrlRule::CREATE_STATUS_PARAMS_MISMATCH;
     }
 
     /**

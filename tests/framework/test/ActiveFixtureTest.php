@@ -14,9 +14,18 @@ use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\framework\db\DatabaseTestCase;
 
+class ProfileFixture extends ActiveFixture
+{
+    public $modelClass = 'yiiunit\data\ar\Profile';
+}
+
 class CustomerFixture extends ActiveFixture
 {
     public $modelClass = 'yiiunit\data\ar\Customer';
+
+    public $depends = [
+        'yiiunit\framework\test\ProfileFixture'
+    ];
 }
 
 class MyDbTestCase
@@ -25,8 +34,7 @@ class MyDbTestCase
 
     public function setUp()
     {
-        $this->unloadFixtures();
-        $this->loadFixtures();
+        $this->initFixtures();        
     }
 
     public function tearDown()
@@ -39,17 +47,15 @@ class MyDbTestCase
             'customers' => CustomerFixture::className(),
         ];
     }
-
-    public function globalFixtures()
-    {
-        return [
-            InitDbFixture::className(),
-        ];
-    }
 }
 
-abstract class ActiveFixtureTest extends DatabaseTestCase
+/**
+ * @group fixture
+ */
+class ActiveFixtureTest extends DatabaseTestCase
 {
+    protected $driverName = 'mysql';
+
     public function setUp()
     {
         parent::setUp();
@@ -68,12 +74,17 @@ abstract class ActiveFixtureTest extends DatabaseTestCase
         $test = new MyDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
+
         $this->assertEquals(CustomerFixture::className(), get_class($fixture));
         $this->assertCount(2, $fixture);
         $this->assertEquals(1, $fixture['customer1']['id']);
         $this->assertEquals('customer1@example.com', $fixture['customer1']['email']);
+        $this->assertEquals(1, $fixture['customer1']['profile_id']);
+
         $this->assertEquals(2, $fixture['customer2']['id']);
         $this->assertEquals('customer2@example.com', $fixture['customer2']['email']);
+        $this->assertEquals(2, $fixture['customer2']['profile_id']);
+
         $test->tearDown();
     }
 
@@ -82,11 +93,16 @@ abstract class ActiveFixtureTest extends DatabaseTestCase
         $test = new MyDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
+
         $this->assertEquals(Customer::className(), get_class($fixture->getModel('customer1')));
         $this->assertEquals(1, $fixture->getModel('customer1')->id);
         $this->assertEquals('customer1@example.com', $fixture->getModel('customer1')->email);
+        $this->assertEquals(1, $fixture['customer1']['profile_id']);
+
         $this->assertEquals(2, $fixture->getModel('customer2')->id);
         $this->assertEquals('customer2@example.com', $fixture->getModel('customer2')->email);
+        $this->assertEquals(2, $fixture['customer2']['profile_id']);
+
         $test->tearDown();
     }
 }

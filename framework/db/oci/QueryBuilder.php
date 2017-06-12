@@ -61,6 +61,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '!' => '!!',
     ];
 
+
     /**
      * @inheritdoc
      */

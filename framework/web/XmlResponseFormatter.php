@@ -169,6 +169,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
      * @param mixed $name
      * @return bool
      * @see http://stackoverflow.com/questions/2519845/how-to-check-if-string-is-a-valid-xml-element-name/2519943#2519943
+     * @since 2.0.12
      */
     protected function isValidXmlName($name)
     {

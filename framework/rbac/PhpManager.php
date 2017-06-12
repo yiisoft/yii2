@@ -38,7 +38,7 @@ class PhpManager extends BaseManager
 {
     /**
      * @var string the path of the PHP script that contains the authorization items.
-     * This can be either a file path or a path alias to the file.
+     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
      * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
      * @see loadFromFile()
      * @see saveToFile()
@@ -46,7 +46,7 @@ class PhpManager extends BaseManager
     public $itemFile = '@app/rbac/items.php';
     /**
      * @var string the path of the PHP script that contains the authorization assignments.
-     * This can be either a file path or a path alias to the file.
+     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
      * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
      * @see loadFromFile()
      * @see saveToFile()
@@ -54,7 +54,7 @@ class PhpManager extends BaseManager
     public $assignmentFile = '@app/rbac/assignments.php';
     /**
      * @var string the path of the PHP script that contains the authorization rules.
-     * This can be either a file path or a path alias to the file.
+     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
      * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
      * @see loadFromFile()
      * @see saveToFile()

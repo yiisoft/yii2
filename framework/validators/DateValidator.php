@@ -266,6 +266,13 @@ class DateValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
+        if ($this->isEmpty($value)) {
+            if ($this->timestampAttribute !== null) {
+                $model->{$this->timestampAttribute} = null;
+            }
+            return;
+        }
+
         $timestamp = $this->parseDateValue($value);
         if ($timestamp === false) {
             if ($this->timestampAttribute === $attribute) {
