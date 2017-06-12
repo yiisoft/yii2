@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\caching\CacheInterface;
 use yii\db\Connection;
+use yii\db\Expression;
 use yii\db\Query;
 use yii\di\Instance;
 use yii\helpers\ArrayHelper;
