@@ -39,7 +39,7 @@ use yii\web\View;
  * ```
  *
  * The masked text field is implemented based on the
- * [jQuery input masked plugin](https://github.com/RobinHerbots/jquery.inputmask).
+ * [jQuery input masked plugin](https://github.com/RobinHerbots/Inputmask).
  *
  * @author Kartik Visweswaran <kartikv2@gmail.com>
  * @since 2.0
@@ -84,7 +84,7 @@ class MaskedInput extends InputWidget
     public $aliases;
     /**
      * @var array the JQuery plugin options for the input mask plugin.
-     * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @see https://github.com/RobinHerbots/Inputmask
      */
     public $clientOptions = [];
     /**
@@ -94,7 +94,7 @@ class MaskedInput extends InputWidget
     public $options = ['class' => 'form-control'];
     /**
      * @var string the type of the input tag. Currently only 'text' and 'tel' are supported.
-     * @see https://github.com/RobinHerbots/jquery.inputmask
+     * @see https://github.com/RobinHerbots/Inputmask
      * @since 2.0.6
      */
     public $type = 'text';

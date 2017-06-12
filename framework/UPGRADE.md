@@ -35,7 +35,7 @@ upgrade might fail when the Yii version you chose has slightly different depende
 Another way to upgrade is to change the `composer.json` file to require the new Yii version and then
 run `composer update` by specifying all packages that are allowed to be updated.
 
-    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
+    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/inputmask
 
 The above command will only update the specified packages and leave the versions of all other dependencies intact.
 This helps to update packages step by step without causing a lot of package version changes that might break in some way.
