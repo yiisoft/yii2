@@ -513,9 +513,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         // https://github.com/yiisoft/yii2/issues/2880
         $query = Order::findOne(1);
-        $customer = $query->getCustomer()->joinWith([
-            'orders' => function ($q) { $q->orderBy([]); },
-        ])->one();
+        $customer = $query->getCustomer()
+            ->joinWith([
+                'orders' => function ($q) {
+                    $q->orderBy([]);
+                },
+            ])
+            ->one();
         $this->assertEquals(1, $customer->id);
         $order = Order::find()->joinWith([
             'items' => function ($q) {
@@ -525,16 +529,19 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         ])->orderBy('order.id')->one();
 
         // join with sub-relation called inside Closure
-        $orders = Order::find()->joinWith([
+        $orders = Order::find()
+            ->joinWith([
                 'items' => function ($q) {
                     $q->orderBy('item.id');
                     $q->joinWith([
-                            'category' => function ($q) {
-                                $q->where('{{category}}.[[id]] = 2');
-                            },
-                        ]);
+                        'category' => function ($q) {
+                            $q->where('{{category}}.[[id]] = 2');
+                        },
+                    ]);
                 },
-            ])->orderBy('order.id')->all();
+            ])
+            ->orderBy('order.id')
+            ->all();
         $this->assertCount(1, $orders);
         $this->assertTrue($orders[0]->isRelationPopulated('items'));
         $this->assertEquals(2, $orders[0]->id);
@@ -671,7 +678,6 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(2, $orders[0]->books);
         $this->assertCount(1, $orders[1]->books);
 
-
         // joining sub relations
         $query = Order::find()->innerJoinWith([
             'items i' => function ($q) use ($aliasMethod) {
@@ -686,13 +692,13 @@ abstract class ActiveRecordTest extends DatabaseTestCase
             },
             'items.category c' => function ($q) use ($aliasMethod) {
                 /* @var $q ActiveQuery */
-                    if ($aliasMethod === 'explicit') {
-                        $q->where('{{c}}.[[id]] = 2');
-                    } elseif ($aliasMethod === 'querysyntax') {
-                        $q->where('{{@category}}.[[id]] = 2');
-                    } elseif ($aliasMethod === 'applyAlias') {
-                        $q->where([$q->applyAlias('category', 'id') => 2]);
-                    }
+                if ($aliasMethod === 'explicit') {
+                    $q->where('{{c}}.[[id]] = 2');
+                } elseif ($aliasMethod === 'querysyntax') {
+                    $q->where('{{@category}}.[[id]] = 2');
+                } elseif ($aliasMethod === 'applyAlias') {
+                    $q->where([$q->applyAlias('category', 'id') => 2]);
+                }
             },
         ]);
         if ($aliasMethod === 'explicit') {
@@ -823,8 +829,16 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // alias is defined in the call to joinWith()
         // without eager loading
         $query = Order::find()
-            ->joinWith(['itemsIndexed books' => function ($q) { $q->onCondition('books.category_id = 1'); }], false)
-            ->joinWith(['itemsIndexed movies' => function ($q) { $q->onCondition('movies.category_id = 2'); }], false)
+            ->joinWith([
+                'itemsIndexed books' => function ($q) {
+                    $q->onCondition('books.category_id = 1');
+                },
+            ], false)
+            ->joinWith([
+                'itemsIndexed movies' => function ($q) {
+                    $q->onCondition('movies.category_id = 2');
+                },
+            ], false)
             ->where(['movies.name' => 'Toy Story']);
         $orders = $query->all();
         $this->assertCount(1, $orders, $query->createCommand()->rawSql . print_r($orders, true));
@@ -832,8 +846,16 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertFalse($orders[0]->isRelationPopulated('itemsIndexed'));
         // with eager loading, only for one relation as it would be overwritten otherwise.
         $query = Order::find()
-            ->joinWith(['itemsIndexed books' => function ($q) { $q->onCondition('books.category_id = 1'); }], false)
-            ->joinWith(['itemsIndexed movies' => function ($q) { $q->onCondition('movies.category_id = 2'); }], true)
+            ->joinWith([
+                'itemsIndexed books' => function ($q) {
+                    $q->onCondition('books.category_id = 1');
+                },
+            ], false)
+            ->joinWith([
+                'itemsIndexed movies' => function ($q) {
+                    $q->onCondition('movies.category_id = 2');
+                },
+            ], true)
             ->where(['movies.name' => 'Toy Story']);
         $orders = $query->all();
         $this->assertCount(1, $orders, $query->createCommand()->rawSql . print_r($orders, true));
@@ -842,8 +864,16 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(3, $orders[0]->itemsIndexed);
         // with eager loading, and the other relation
         $query = Order::find()
-            ->joinWith(['itemsIndexed books' => function ($q) { $q->onCondition('books.category_id = 1'); }], true)
-            ->joinWith(['itemsIndexed movies' => function ($q) { $q->onCondition('movies.category_id = 2'); }], false)
+            ->joinWith([
+                'itemsIndexed books' => function ($q) {
+                    $q->onCondition('books.category_id = 1');
+                },
+            ], true)
+            ->joinWith([
+                'itemsIndexed movies' => function ($q) {
+                    $q->onCondition('movies.category_id = 2');
+                },
+            ], false)
             ->where(['movies.name' => 'Toy Story']);
         $orders = $query->all();
         $this->assertCount(1, $orders, $query->createCommand()->rawSql . print_r($orders, true));
@@ -1130,7 +1160,14 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(2, $orders[0]->orderItems);
         $this->assertCount(3, $orders[1]->orderItems);
         $this->assertCount(1, $orders[2]->orderItems);
-        $orders = Order::find()->with(['orderItems' => function ($q) { $q->indexBy('item_id'); }])->orderBy('id')->all();
+        $orders = Order::find()
+            ->with([
+                'orderItems' => function ($q) {
+                    $q->indexBy('item_id');
+                },
+            ])
+            ->orderBy('id')
+            ->all();
         $this->assertCount(3, $orders);
         $this->assertCount(2, $orders[0]->orderItems);
         $this->assertCount(3, $orders[1]->orderItems);
@@ -1279,9 +1316,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testLinkWhenRelationIsIndexed2()
     {
         $order = Order::find()
-                ->with('orderItems2')
-                ->where(['id' => 1])
-                ->one();
+            ->with('orderItems2')
+            ->where(['id' => 1])
+            ->one();
         $orderItem = new OrderItem([
             'order_id' => $order->id,
             'item_id' => 3,
@@ -1295,9 +1332,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     public function testLinkWhenRelationIsIndexed3()
     {
         $order = Order::find()
-                ->with('orderItems3')
-                ->where(['id' => 1])
-                ->one();
+            ->with('orderItems3')
+            ->where(['id' => 1])
+            ->one();
         $orderItem = new OrderItem([
             'order_id' => $order->id,
             'item_id' => 3,
