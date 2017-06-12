@@ -25,6 +25,6 @@ class FixtureStorage
         static::$firstFixtureData = [];
         static::$secondFixtureData = [];
         static::$subdirFirstFixtureData = [];
-        static::$subdirSecondFixtureData= [];
+        static::$subdirSecondFixtureData = [];
     }
 }

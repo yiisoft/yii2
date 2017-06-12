@@ -400,7 +400,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testAmbiguousColumnName()
     {
         $validator = new UniqueValidator([
-            'filter' => function($query) {
+            'filter' => function ($query) {
                 $query->joinWith('items', false);
             },
         ]);

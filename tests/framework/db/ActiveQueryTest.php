@@ -285,7 +285,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     public function testGetTableNames_isFromObject_generateException()
     {
         $query = new ActiveQuery(null);
-        $query->from = new \stdClass;
+        $query->from = new \stdClass();
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 
@@ -334,14 +334,14 @@ abstract class ActiveQueryTest extends DatabaseTestCase
             '{{srv}}' => '{{service}}',
             '{{order}}' => '{{order}}',
             '{{c d}}' => '{{a b}}',
-            '{{myalias}}' => '{{something}}'
+            '{{myalias}}' => '{{something}}',
         ], $tables);
     }
 
     public function testGetTablesAlias_isFromObject_generateException()
     {
         $query = new ActiveQuery(null);
-        $query->from = new \stdClass;
+        $query->from = new \stdClass();
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 

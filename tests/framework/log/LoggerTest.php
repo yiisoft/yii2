@@ -223,8 +223,8 @@ class LoggerTest extends TestCase
                 'level' => 0,
                 'duration' => 5,
                 'memory' => 2097152,
-                'memoryDiff' => 1048576
-            ]
+                'memoryDiff' => 1048576,
+            ],
         ],
             $this->logger->calculateTimings($messages)
         );
@@ -270,7 +270,7 @@ class LoggerTest extends TestCase
     /**
      * See https://github.com/yiisoft/yii2/issues/14133
      *
-     * @covers yii\log\Logger::calculateTimings()
+     * @covers \yii\log\Logger::calculateTimings()
      */
     public function testCalculateTimingsWithProfileBeginEndAndNestedMixedLevels()
     {
@@ -289,7 +289,7 @@ class LoggerTest extends TestCase
                 'level' => 1,
                 'duration' => 70,
                 'memory' => 4194304,
-                'memoryDiff' => 3145728
+                'memoryDiff' => 3145728,
             ],
             [
                 'info' => 'secondLevel',
@@ -299,8 +299,8 @@ class LoggerTest extends TestCase
                 'level' => 0,
                 'duration' => 40,
                 'memory' => 3145728,
-                'memoryDiff' => 1048576
-            ]
+                'memoryDiff' => 1048576,
+            ],
         ],
             $this->logger->calculateTimings($messages)
         );

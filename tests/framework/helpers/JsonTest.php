@@ -34,7 +34,7 @@ class JsonTest extends TestCase
         $dataArrayable->method('toArray')->willReturn([]);
         $actual = Json::encode($dataArrayable);
         $this->assertSame('{}', $actual);
-        
+
         // basic data encoding
         $data = '1';
         $this->assertSame('"1"', Json::encode($data));
@@ -174,8 +174,7 @@ class JsonTest extends TestCase
         $this->expectException('yii\base\InvalidParamException');
         Json::decode($json);
     }
-    
-    
+
     /**
      * @expectedException \yii\base\InvalidParamException
      * @expectedExceptionMessage Invalid JSON data.

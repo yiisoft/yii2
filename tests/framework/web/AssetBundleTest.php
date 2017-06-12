@@ -156,8 +156,8 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle = new TestSourceAsset([
             'publishOptions' => [
                 'only' => [
-                    'js/*'
-                ]
+                    'js/*',
+                ],
             ],
         ]);
         $bundle->publish($am);

@@ -758,5 +758,4 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals(2, $rules[0]->createCounter);
         $this->assertEquals(1, $rules[1]->createCounter);
     }
-
 }

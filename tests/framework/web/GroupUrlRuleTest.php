@@ -145,7 +145,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\web\UrlRule'
+                        'class' => 'yii\web\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',
@@ -163,7 +163,7 @@ class GroupUrlRuleTest extends TestCase
                 [
                     [
                         'admin/user/logout', [], false,
-                        UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_ROUTE_MISMATCH | UrlRule::CREATE_STATUS_PARAMS_MISMATCH
+                        UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_ROUTE_MISMATCH | UrlRule::CREATE_STATUS_PARAMS_MISMATCH,
                     ],
                 ],
             ],

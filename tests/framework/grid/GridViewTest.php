@@ -9,8 +9,8 @@ namespace yiiunit\framework\grid;
 
 use yii\data\ArrayDataProvider;
 use yii\grid\DataColumn;
-use yii\web\View;
 use yii\grid\GridView;
+use yii\web\View;
 
 /**
  * @author Evgeniy Tkachenko <et.coder@gmail.com>

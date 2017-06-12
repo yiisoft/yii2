@@ -153,7 +153,7 @@ abstract class DbTargetTest extends TestCase
             Logger::LEVEL_WARNING,
             'test',
             time(),
-            []
+            [],
         ];
 
         $logger->messages[] = $messsageData;

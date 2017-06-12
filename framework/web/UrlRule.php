@@ -545,7 +545,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @see $createStatus
      * @since 2.0.12
      */
-    public function getCreateUrlStatus() {
+    public function getCreateUrlStatus()
+    {
         return $this->createStatus;
     }
 

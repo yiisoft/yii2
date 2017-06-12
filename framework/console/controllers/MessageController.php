@@ -482,7 +482,7 @@ EOD;
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])
     {
-        $this->stdout("Extracting messages from ");
+        $this->stdout('Extracting messages from ');
         $this->stdout($fileName, Console::FG_CYAN);
         $this->stdout("...\n");
 

@@ -118,7 +118,7 @@ class HtmlTest extends TestCase
         ]);
         $this->assertEquals('', Html::csrfMetaTags());
     }
-    
+
     public function testCsrfMetaTagsEnableCsrfValidation()
     {
         $this->mockApplication([
@@ -137,7 +137,7 @@ class HtmlTest extends TestCase
         $actual = Html::csrfMetaTags();
         $this->assertStringMatchesFormat($pattern, $actual);
     }
-    
+
     public function testCsrfMetaTagsEnableCsrfValidationWithoutCookieValidationKey()
     {
         $request = $this->getMock('yii\\web\\Request');
@@ -150,7 +150,7 @@ class HtmlTest extends TestCase
 
     /**
      * @dataProvider dataProviderBeginFormSimulateViaPost
-     * 
+     *
      * @param string $expected
      * @param string $method
      */
@@ -167,12 +167,12 @@ class HtmlTest extends TestCase
     public function dataProviderBeginFormSimulateViaPost()
     {
         return [
-          ['<form action="/foo" method="GET">', 'GET'],  
-          ['<form action="/foo" method="POST">', 'POST'],  
-          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="DELETE">', 'DELETE'],  
-          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="GETFOO">', 'GETFOO'],  
-          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="POSTFOO">', 'POSTFOO'],  
-          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="POSTFOOPOST">', 'POSTFOOPOST'],  
+          ['<form action="/foo" method="GET">', 'GET'],
+          ['<form action="/foo" method="POST">', 'POST'],
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="DELETE">', 'DELETE'],
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="GETFOO">', 'GETFOO'],
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="POSTFOO">', 'POSTFOO'],
+          ['<form action="/foo" method="post">%A<input type="hidden" name="_method" value="POSTFOOPOST">', 'POSTFOOPOST'],
         ];
     }
 
@@ -1446,19 +1446,19 @@ EOD;
     public function testGetAttributeValue()
     {
         $model = new HtmlTestModel();
-    
+
         $expected = null;
         $actual = Html::getAttributeValue($model, 'types');
         $this->assertSame($expected, $actual);
-    
+
         $activeRecord = $this->getMock('yii\\db\\ActiveRecordInterface');
         $activeRecord->method('getPrimaryKey')->willReturn(1);
         $model->types = $activeRecord;
-    
+
         $expected = 1;
         $actual = Html::getAttributeValue($model, 'types');
         $this->assertSame($expected, $actual);
-    
+
         $model->types = [
             $activeRecord,
         ];

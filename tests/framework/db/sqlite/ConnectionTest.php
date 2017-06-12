@@ -212,5 +212,4 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     {
         // This test does not work on sqlite because preparing the failing query fails
     }
-
 }
