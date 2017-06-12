@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
@@ -207,7 +212,7 @@ class Order extends ActiveRecord
     public function activeAttributes()
     {
         return [
-            0 => 'customer_id'
+            0 => 'customer_id',
         ];
     }
 }

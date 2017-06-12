@@ -1,10 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\web;
 
 use Yii;
 use yii\web\Request;
 use yii\web\UrlManager;
-use yii\web\UrlNormalizer;
 use yiiunit\TestCase;
 
 /**
@@ -37,7 +42,7 @@ class UrlManagerTest extends TestCase
         // trigger an exception here in case it gets called
         $config['baseUrl'] = null;
         $this->mockApplication();
-        Yii::$app->set('request', function() {
+        Yii::$app->set('request', function () {
             $this->fail('Request component should not be accessed by UrlManager with current settings.');
         });
 
@@ -215,7 +220,7 @@ class UrlManagerTest extends TestCase
     public function testParseRequest($routeParam)
     {
         $manager = $this->getUrlManager(['routeParam' => $routeParam]);
-        $request = new Request;
+        $request = new Request();
 
         // default setting without 'r' param
         $request->setQueryParams([]);

@@ -156,8 +156,12 @@ class MaskedInput extends InputWidget
     {
         $options = $this->clientOptions;
         foreach ($options as $key => $value) {
-            if (!$value instanceof JsExpression && in_array($key, ['oncomplete', 'onincomplete', 'oncleared', 'onKeyUp',
-                    'onKeyDown', 'onBeforeMask', 'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex'], true)
+            if (
+                !$value instanceof JsExpression
+                && in_array($key, [
+                    'oncomplete', 'onincomplete', 'oncleared', 'onKeyUp', 'onKeyDown', 'onBeforeMask',
+                    'onBeforePaste', 'onUnMask', 'isComplete', 'determineActiveMasksetIndex',
+                ], true)
             ) {
                 $options[$key] = new JsExpression($value);
             }

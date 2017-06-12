@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\widgets;
@@ -52,7 +54,6 @@ EOF
 </div>
 EOF
             , (string) $form->field($model, 'name', $o)->input('email', ['required' => 'test']));
-
     }
 
     public function testIssue5356()
@@ -105,7 +106,6 @@ EOF
 </form>
 HTML
 , $content);
-
     }
 
     public function testRegisterClientScript()

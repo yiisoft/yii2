@@ -9,13 +9,13 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Arrayable;
-use yii\i18n\Formatter;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\i18n\Formatter;
 
 /**
  * DetailView displays the detail of a single data [[model]].
@@ -177,7 +177,7 @@ class DetailView extends Widget
                 '{label}' => $attribute['label'],
                 '{value}' => $this->formatter->format($attribute['value'], $attribute['format']),
                 '{captionOptions}' => $captionOptions,
-                '{contentOptions}' =>  $contentOptions,
+                '{contentOptions}' => $contentOptions,
             ]);
         } else {
             return call_user_func($this->template, $attribute, $index, $this);

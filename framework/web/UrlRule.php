@@ -24,6 +24,9 @@ use yii\base\Object;
  * ]
  * ```
  *
+ * @property null|int $createUrlStatus Status of the URL creation after the last [[createUrl()]] call. `null`
+ * if rule does not provide info about create status. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -37,6 +40,32 @@ class UrlRule extends Object implements UrlRuleInterface
      * Set [[mode]] with this value to mark that this rule is for URL creation only
      */
     const CREATION_ONLY = 2;
+    /**
+     * Represents the successful URL generation by last [[createUrl()]] call.
+     * @see $createStatus
+     * @since 2.0.12
+     */
+    const CREATE_STATUS_SUCCESS = 0;
+    /**
+     * Represents the unsuccessful URL generation by last [[createUrl()]] call, because rule does not support
+     * creating URLs.
+     * @see $createStatus
+     * @since 2.0.12
+     */
+    const CREATE_STATUS_PARSING_ONLY = 1;
+    /**
+     * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched route.
+     * @see $createStatus
+     * @since 2.0.12
+     */
+    const CREATE_STATUS_ROUTE_MISMATCH = 2;
+    /**
+     * Represents the unsuccessful URL generation by last [[createUrl()]] call, because of mismatched
+     * or missing parameters.
+     * @see $createStatus
+     * @since 2.0.12
+     */
+    const CREATE_STATUS_PARAMS_MISMATCH = 4;
 
     /**
      * @var string the name of this rule. If not set, it will use [[pattern]] as the name.
@@ -97,6 +126,11 @@ class UrlRule extends Object implements UrlRuleInterface
      */
     public $normalizer;
 
+    /**
+     * @var int|null status of the URL creation after the last [[createUrl()]] call.
+     * @since 2.0.12
+     */
+    protected $createStatus;
     /**
      * @var array list of placeholders for matching parameters names. Used in [[parseRequest()]], [[createUrl()]].
      * On the rule initialization, the [[pattern]] parameters names will be replaced with placeholders.
@@ -205,7 +239,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 $this->host = $this->pattern;
             }
         } elseif (strpos($this->pattern, '//') === 0) {
-            if (($pos2 = strpos($this->pattern, '/', $pos + 2)) !== false) {
+            if (($pos2 = strpos($this->pattern, '/', 2)) !== false) {
                 $this->host = substr($this->pattern, 0, $pos2);
             } else {
                 $this->host = $this->pattern;
@@ -351,7 +385,7 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
@@ -420,6 +454,7 @@ class UrlRule extends Object implements UrlRuleInterface
     public function createUrl($manager, $route, $params)
     {
         if ($this->mode === self::PARSING_ONLY) {
+            $this->createStatus = self::CREATE_STATUS_PARSING_ONLY;
             return false;
         }
 
@@ -437,6 +472,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     }
                 }
             } else {
+                $this->createStatus = self::CREATE_STATUS_ROUTE_MISMATCH;
                 return false;
             }
         }
@@ -453,6 +489,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 if (in_array($name, $this->placeholders) && strcmp($value, '') === 0) {
                     $params[$name] = '';
                 } else {
+                    $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
                     return false;
                 }
             }
@@ -462,6 +499,7 @@ class UrlRule extends Object implements UrlRuleInterface
                     $tr["<$name>"] = '';
                 }
             } elseif (!isset($this->_paramRules[$name])) {
+                $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
                 return false;
             }
         }
@@ -472,6 +510,7 @@ class UrlRule extends Object implements UrlRuleInterface
                 $tr["<$name>"] = $this->encodeParams ? urlencode($params[$name]) : $params[$name];
                 unset($params[$name]);
             } elseif (!isset($this->defaults[$name]) || isset($params[$name])) {
+                $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
                 return false;
             }
         }
@@ -494,7 +533,21 @@ class UrlRule extends Object implements UrlRuleInterface
             $url .= '?' . $query;
         }
 
+        $this->createStatus = self::CREATE_STATUS_SUCCESS;
         return $url;
+    }
+
+    /**
+     * Returns status of the URL creation after the last [[createUrl()]] call.
+     *
+     * @return null|int Status of the URL creation after the last [[createUrl()]] call. `null` if rule does not provide
+     * info about create status.
+     * @see $createStatus
+     * @since 2.0.12
+     */
+    public function getCreateUrlStatus()
+    {
+        return $this->createStatus;
     }
 
     /**

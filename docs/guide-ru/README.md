@@ -102,7 +102,7 @@ All Rights Reserved.
 * [Сортировка](output-sorting.md)
 * [Провайдеры данных](output-data-providers.md)
 * [Виджеты для данных](output-data-widgets.md)
-* [Работа с клиентскими скриптами](output-client-scripts.md)
+* Работа с клиентскими скриптами
 * [Темизация](output-theming.md)
 
 
