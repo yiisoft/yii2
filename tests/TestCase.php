@@ -68,6 +68,10 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             'id' => 'testapp',
             'basePath' => __DIR__,
             'vendorPath' => $this->getVendorPath(),
+            'aliases' => [
+                '@bower' => '@vendor/bower-asset',
+                '@npm'   => '@vendor/npm-asset',
+            ],
             'components' => [
                 'request' => [
                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
@@ -148,7 +152,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         }
         $property = $class->getProperty($propertyName);
         $property->setAccessible(true);
-        $property->setValue($value);
+        $property->setValue($object, $value);
         if ($revoke) {
             $property->setAccessible(false);
         }

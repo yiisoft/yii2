@@ -57,8 +57,9 @@ use yii\web\ForbiddenHttpException;
 class AccessControl extends ActionFilter
 {
     /**
-     * @var User|array|string the user object representing the authentication status or the ID of the user application component.
+     * @var User|array|string|false the user object representing the authentication status or the ID of the user application component.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
+     * Starting from version 2.0.12, you can set it to `false` to explicitly switch this component support off for the filter.
      */
     public $user = 'user';
     /**
@@ -95,7 +96,9 @@ class AccessControl extends ActionFilter
     public function init()
     {
         parent::init();
-        $this->user = Instance::ensure($this->user, User::className());
+        if ($this->user !== false) {
+            $this->user = Instance::ensure($this->user, User::className());
+        }
         foreach ($this->rules as $i => $rule) {
             if (is_array($rule)) {
                 $this->rules[$i] = Yii::createObject(array_merge($this->ruleConfig, $rule));
@@ -140,12 +143,12 @@ class AccessControl extends ActionFilter
      * Denies the access of the user.
      * The default implementation will redirect the user to the login page if he is a guest;
      * if the user is already logged, a 403 HTTP exception will be thrown.
-     * @param User $user the current user
-     * @throws ForbiddenHttpException if the user is already logged in.
+     * @param User|false $user the current user or boolean `false` in case of detached User component
+     * @throws ForbiddenHttpException if the user is already logged in or in case of detached User component.
      */
     protected function denyAccess($user)
     {
-        if ($user->getIsGuest()) {
+        if ($user !== false && $user->getIsGuest()) {
             $user->loginRequired();
         } else {
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));

@@ -336,7 +336,7 @@ SQL;
     public function testInsertSelect()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -350,11 +350,17 @@ SQL;
 
         $query = new \yii\db\Query();
         $query->select([
-                    '{{customer}}.email as name',
-                    'name as email',
-                    'address',
+                    '{{customer}}.[[email]] as name',
+                    '[[name]] as email',
+                    '[[address]]',
                 ]
-        )->from('{{customer}}');
+        )
+            ->from('{{customer}}')
+            ->where([
+                'and',
+                ['<>', 'name', 'foo'],
+                ['status' => [0, 1, 2, 3]],
+            ]);
 
         $command = $db->createCommand();
         $command->insert(
@@ -362,8 +368,8 @@ SQL;
             $query
         )->execute();
 
-        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryAll();
         $this->assertEquals([
             [
                 'email' => 't1@example.com',
@@ -384,7 +390,7 @@ SQL;
     public function testInsertSelectAlias()
     {
         $db = $this->getConnection();
-        $db->createCommand('DELETE FROM {{customer}};')->execute();
+        $db->createCommand('DELETE FROM {{customer}}')->execute();
 
         $command = $db->createCommand();
         $command->insert(
@@ -398,11 +404,17 @@ SQL;
 
         $query = new \yii\db\Query();
         $query->select([
-                'email' => '{{customer}}.email',
+                'email' => '{{customer}}.[[email]]',
                 'address' => 'name',
                 'name' => 'address',
             ]
-        )->from('{{customer}}');
+        )
+            ->from('{{customer}}')
+            ->where([
+                'and',
+                ['<>', 'name', 'foo'],
+                ['status' => [0, 1, 2, 3]],
+            ]);
 
         $command = $db->createCommand();
         $command->insert(
@@ -410,8 +422,8 @@ SQL;
             $query
         )->execute();
 
-        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}};')->queryScalar());
-        $record = $db->createCommand('SELECT email, name, address FROM {{customer}};')->queryAll();
+        $this->assertEquals(2, $db->createCommand('SELECT COUNT(*) FROM {{customer}}')->queryScalar());
+        $record = $db->createCommand('SELECT [[email]], [[name]], [[address]] FROM {{customer}}')->queryAll();
         $this->assertEquals([
             [
                 'email' => 't1@example.com',
@@ -797,16 +809,35 @@ SQL;
     {
         $db = $this->getConnection(false);
         $tableName = 'test';
+        $fkName = 'test_fk';
+
+        $this->assertNull($db->getSchema()->getTableSchema($tableName));
 
         $db->createCommand()->createTable($tableName, [
             'id' => 'pk',
+            'fk' => 'int',
             'name' => 'string',
         ])->execute();
         $initialSchema = $db->getSchema()->getTableSchema($tableName);
+        $this->assertNotNull($initialSchema);
 
         $db->createCommand()->addColumn($tableName, 'value', 'integer')->execute();
         $newSchema = $db->getSchema()->getTableSchema($tableName);
         $this->assertNotEquals($initialSchema, $newSchema);
+
+        if ($this->driverName !== 'sqlite') {
+            $db->createCommand()->addForeignKey($fkName, $tableName, 'fk', $tableName, 'id')->execute();
+            $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
+
+            $db->createCommand()->dropForeignKey($fkName, $tableName)->execute();
+            $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->foreignKeys);
+
+            $db->createCommand()->addCommentOnColumn($tableName, 'id', 'Test comment')->execute();
+            $this->assertNotEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
+
+            $db->createCommand()->dropCommentFromColumn($tableName, 'id')->execute();
+            $this->assertEmpty($db->getSchema()->getTableSchema($tableName)->getColumn('id')->comment);
+        }
 
         $db->createCommand()->dropTable($tableName)->execute();
         $this->assertNull($db->getSchema()->getTableSchema($tableName));

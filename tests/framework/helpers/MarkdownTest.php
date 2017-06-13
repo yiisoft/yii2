@@ -12,6 +12,14 @@ use yii\helpers\Markdown;
  */
 class MarkdownTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testOriginalFlavor()
     {
         $text = <<<TEXT
