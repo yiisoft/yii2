@@ -39,7 +39,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
-                ['testcontent21', 'testcontent22', 'testcontent23']
+                ['testcontent21', 'testcontent22', 'testcontent23'],
             ])->setScreenSize(200)->render()
         );
     }
@@ -64,7 +64,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'ｔｅｓｔ３'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
-                ['testcontent２１', 'testcontent２２', 'testcontent２３']
+                ['testcontent２１', 'testcontent２２', 'testcontent２３'],
             ])->setScreenSize(200)->render()
         );
     }
@@ -88,7 +88,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
-                ['testcontent21', 'testcontent22', ['col1', 'col2']]
+                ['testcontent21', 'testcontent22', ['col1', 'col2']],
             ])->setScreenSize(200)->render()
         );
     }
@@ -135,7 +135,7 @@ EXPECTED;
         $this->assertEqualsWithoutLE($expected, $table->setHeaders(['test1', 'test2', 'test3'])
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
-                ['testcontent_21', 'testcontent__22', 'testcontent___23']
+                ['testcontent_21', 'testcontent__22', 'testcontent___23'],
             ])->setChars([
                 'top' => '+', 'top-mid' => '*', 'top-left' => '*',
                 'top-right' => '*', 'bottom' => '+', 'bottom-mid' => '*',

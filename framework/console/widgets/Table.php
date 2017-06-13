@@ -65,7 +65,7 @@ class Table extends Object
      */
     private $_columnWidths = [];
     /**
-     * @var integer screen size
+     * @var int screen size
      */
     private $_screenSize;
     /**
@@ -270,11 +270,11 @@ class Table extends Object
         foreach ($columns as $column) {
             $columnWidth = max(array_map(function ($val) {
                     if (is_array($val)) {
-                        $encodings = array_fill(0, count($val), Yii::$app->charset);
-                        return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
-                    }
-                    return mb_strwidth($val, Yii::$app->charset);
-                }, $column)) + 2;
+                    $encodings = array_fill(0, count($val), Yii::$app->charset);
+                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
+                }
+                return mb_strwidth($val, Yii::$app->charset);
+            }, $column)) + 2;
             $this->_columnWidths[] = $columnWidth;
             $totalWidth += $columnWidth;
         }
@@ -283,7 +283,7 @@ class Table extends Object
 
         if ($totalWidth > $screenWidth) {
             foreach ($this->_columnWidths as $j => $width) {
-                $this->_columnWidths[$j] = (int)($width * $relativeWidth);
+                $this->_columnWidths[$j] = (int) ($width * $relativeWidth);
                 if ($j === count($this->_columnWidths)) {
                     $this->_columnWidths = $totalWidth;
                 }
@@ -296,7 +296,7 @@ class Table extends Object
      * Calculate the height of row
      *
      * @param array $row
-     * @return integer maximum row per cell
+     * @return int maximum row per cell
      * @see \yii\console\widgets\Table::render()
      */
     protected function calculateRowHeight($row)
@@ -311,11 +311,11 @@ class Table extends Object
             }
             return ceil($columnWidth / ($size - 2));
         }, $this->_columnWidths, array_map(function ($val) {
-                if (is_array($val)) {
-                    $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return array_map('mb_strwidth', $val, $encodings);
-                }
-                return mb_strwidth($val, Yii::$app->charset);
+            if (is_array($val)) {
+                $encodings = array_fill(0, count($val), Yii::$app->charset);
+                return array_map('mb_strwidth', $val, $encodings);
+            }
+            return mb_strwidth($val, Yii::$app->charset);
             }, $row)
         );
 
