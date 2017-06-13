@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
+- Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990)
 
 2.0.12 June 05, 2017
 --------------------
@@ -80,7 +81,6 @@ Yii Framework 2 Change Log
 - Enh #5108: `yii\validators\DateValidator` now resets `$timestampAttribute` value on empty validated attribute value (klimov-paul)
 - Enh #8426: `yii\filters\AccessRule` now allows passing parameters to the role checking function (fsateler, cebe, Faryshta)
 - Enh #8641: Enhanced `yii\console\Request::resolve()` to prevent passing parameters, that begin from digits (silverfire)
-- Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990)
 - Enh #11288: Added support for caching of `yii\web\UrlRule::createUrl()` results in `yii\web\UrlManager` for rules with defaults (rob006)
 - Enh #12528: Added option to disable query logging and profiling in DB command (cebe)
 - Enh #13144: Refactored `yii\db\Query::queryScalar()` (Alex-Code)
