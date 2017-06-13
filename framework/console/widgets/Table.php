@@ -245,7 +245,6 @@ class Table extends Object
             if ($index !== 0) {
                 $separator .= $spanMid;
             }
-            var_dump($this->_columnWidths);
             $separator .= str_repeat($spanMidMid, $rowSize);
         }
         $separator .= $spanRight . "\n";
