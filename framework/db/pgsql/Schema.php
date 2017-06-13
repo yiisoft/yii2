@@ -7,16 +7,14 @@
 
 namespace yii\db\pgsql;
 
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 use yii\db\ViewFinderTrait;
 
 /**
  * Schema is the class for retrieving metadata from a PostgreSQL database
  * (version 9.x and above).
- *
- * @property string[] $viewNames All view names in the database. This property is read-only.
  *
  * @author Gevik Babakhani <gevikb@gmail.com>
  * @since 2.0
@@ -436,16 +434,16 @@ SQL;
                 if ($column->type === 'timestamp' && $column->defaultValue === 'now()') {
                     $column->defaultValue = new Expression($column->defaultValue);
                 } elseif ($column->type === 'boolean') {
-                        $column->defaultValue = ($column->defaultValue === 'true');
+                    $column->defaultValue = ($column->defaultValue === 'true');
                 } elseif (stripos($column->dbType, 'bit') === 0 || stripos($column->dbType, 'varbit') === 0) {
                     $column->defaultValue = bindec(trim($column->defaultValue, 'B\''));
                 } elseif (preg_match("/^'(.*?)'::/", $column->defaultValue, $matches)) {
                     $column->defaultValue = $matches[1];
-                } elseif (preg_match('/^(?:\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
-                    if ($matches[1] === 'NULL') {
+                } elseif (preg_match('/^(\()?(.*?)(?(1)\))(?:::.+)?$/', $column->defaultValue, $matches)) {
+                    if ($matches[2] === 'NULL') {
                         $column->defaultValue = null;
                     } else {
-                        $column->defaultValue = $column->phpTypecast($matches[1]);
+                        $column->defaultValue = $column->phpTypecast($matches[2]);
                     }
                 } else {
                     $column->defaultValue = $column->phpTypecast($column->defaultValue);

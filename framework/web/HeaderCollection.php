@@ -7,9 +7,9 @@
 
 namespace yii\web;
 
+use ArrayIterator;
 use Yii;
 use yii\base\Object;
-use ArrayIterator;
 
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.

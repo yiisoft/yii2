@@ -166,7 +166,7 @@ class BaseStringHelper
                 ++$depth;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
-                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
+                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['', ''];
                     $token->data = $prefixSpace[1] . self::truncateWords(ltrim($token->data), $count - $totalCount, '');
                     $currentCount = self::countWords($token->data);
                 } else {
@@ -176,7 +176,7 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                if ($token->name === $openTokens[$depth-1]) {
+                if ($token->name === $openTokens[$depth - 1]) {
                     --$depth;
                     unset($openTokens[$depth]);
                     $truncated[] = $token;

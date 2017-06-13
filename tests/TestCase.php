@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit;
 
@@ -70,7 +75,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             'vendorPath' => $this->getVendorPath(),
             'aliases' => [
                 '@bower' => '@vendor/bower-asset',
-                '@npm'   => '@vendor/npm-asset',
+                '@npm' => '@vendor/npm-asset',
             ],
             'components' => [
                 'request' => [
@@ -78,7 +83,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
                     'scriptFile' => __DIR__ . '/index.php',
                     'scriptUrl' => '/index.php',
                 ],
-            ]
+            ],
         ], $config));
     }
 

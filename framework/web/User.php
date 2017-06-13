@@ -558,7 +558,7 @@ class User extends Component
         }
         $data = json_decode($value, true);
         if (count($data) == 3) {
-            list ($id, $authKey, $duration) = $data;
+            list($id, $authKey, $duration) = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
