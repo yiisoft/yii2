@@ -262,17 +262,18 @@ class Table extends Object
         $totalWidth = 0;
         $screenWidth = $this->getScreenSize() - 3;
 
-        foreach ($this->_headers as $i => $header) {
+        for ($i = 0, $count = count($this->_headers); $i < $count; $i++) {
             $columns[] = ArrayHelper::getColumn($this->_rows, $i);
             $columns[$i][] = $this->_headers[$i];
         }
+
         foreach ($columns as $column) {
             $columnWidth = max(array_map(function ($val) {
-                    if (is_array($val)) {
-                    $encodings = array_fill(0, count($val), Yii::$app->charset);
-                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
-                }
-                return mb_strwidth($val, Yii::$app->charset);
+                if (is_array($val)) {
+                $encodings = array_fill(0, count($val), Yii::$app->charset);
+                return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
+            }
+            return mb_strwidth($val, Yii::$app->charset);
             }, $column)) + 2;
             $this->_columnWidths[] = $columnWidth;
             $totalWidth += $columnWidth;
@@ -315,7 +316,7 @@ class Table extends Object
                 return array_map('mb_strwidth', $val, $encodings);
             }
             return mb_strwidth($val, Yii::$app->charset);
-            }, $row)
+        }, $row)
         );
 
         return max($rowsPerCell);
