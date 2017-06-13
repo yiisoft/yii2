@@ -40,7 +40,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', 'testcontent23']
-            ])->render()
+            ])->setScreenSize(200)->render()
         );
     }
 
@@ -65,7 +65,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent２１', 'testcontent２２', 'testcontent２３']
-            ])->render()
+            ])->setScreenSize(200)->render()
         );
     }
 
@@ -89,7 +89,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']]
-            ])->render()
+            ])->setScreenSize(200)->render()
         );
     }
 
@@ -113,7 +113,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']]
-            ])->setListPrefix('* ')->render()
+            ])->setScreenSize(200)->setListPrefix('* ')->render()
         );
     }
 
@@ -142,7 +142,7 @@ EXPECTED;
                 'bottom-left' => '*', 'bottom-right' => '*', 'left' => '/',
                 'left-mid' => '*', 'mid' => '+', 'mid-mid' => '*',
                 'right' => '/', 'right-mid' => '*', 'middle' => '/',
-            ])->render()
+            ])->setScreenSize(200)->render()
         );
     }
 }
