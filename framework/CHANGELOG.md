@@ -12,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
+- Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 
 2.0.12 June 05, 2017
 --------------------
