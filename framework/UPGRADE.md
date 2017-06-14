@@ -72,6 +72,9 @@ Upgrade from Yii 2.0.11
 * `yii\filters\AccessControl` now can be used without `user` component.  
   In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
   matching a role throws `yii\base\InvalidConfigException`.
+  
+* Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
+  assets manually, please adjust it. 
 
 Upgrade from Yii 2.0.10
 -----------------------
