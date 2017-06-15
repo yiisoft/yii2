@@ -94,6 +94,30 @@ interface ActiveRecordInterface
     public static function isPrimaryKey($keys);
 
     /**
+     * Find a model by condition array or throw an exception.
+     *
+     * @param  mixed $condition primary key value or a set of column values
+     * @return static[] an array of ActiveRecord instances, or exception if nothing matches.
+     */
+    public static function findAllOrFail($condition);
+
+    /**
+     * Find a model by condition array or return new static. This will not save new model in database. When using this method, if model is not found in database and it is created with the function, the `isNewRecord` property is equal to `true` because model is not saved yet.
+     *
+     * @param  mixed  $condition primary key value or a set of column values
+     * @return static founded model or newly created model.
+     */
+    public static function findOneOrNew($condition);
+
+    /**
+     * Find a model by condition array or create and save new static. This will save newly created model in database. When using this method, the `isNewRecord` property is equal to `false` because either data is saved in database and or it is created and saved by this method.
+     *
+     * @param  mixed  $condition primary key value or a set of column values
+     * @return static|false founded model or newly saved model or false if save failed.
+     */
+    public static function findOneOrCreate($condition);
+    
+    /**
      * Creates an [[ActiveQueryInterface]] instance for query purpose.
      *
      * The returned [[ActiveQueryInterface]] instance can be further customized by calling
