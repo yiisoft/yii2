@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\rest;
 
@@ -21,7 +26,6 @@ class SerializerTest extends TestCase
                     'scriptUrl' => '/index.php',
                 ],
             ],
-
         ], 'yii\web\Application');
 
         TestModel::$fields = ['field1', 'field2'];
@@ -45,7 +49,7 @@ class SerializerTest extends TestCase
             [
                 'field' => 'field2',
                 'message' => 'Multiple error 1',
-            ]
+            ],
         ], $serializer->serialize($model));
     }
 
@@ -142,7 +146,7 @@ class SerializerTest extends TestCase
                 new ArrayDataProvider([
                     'allModels' => [
                         ['id' => 1, 'username' => 'Bob'],
-                        ['id' => 2, 'username' => 'Tom']
+                        ['id' => 2, 'username' => 'Tom'],
                     ],
                     'pagination' => [
                         'route' => '/',
@@ -150,71 +154,71 @@ class SerializerTest extends TestCase
                 ]),
                 [
                     ['id' => 1, 'username' => 'Bob'],
-                    ['id' => 2, 'username' => 'Tom']
-                ]
+                    ['id' => 2, 'username' => 'Tom'],
+                ],
             ],
             [
                 new ArrayDataProvider([
                     'allModels' => [
                         ['id' => 1, 'username' => 'Bob'],
-                        ['id' => 2, 'username' => 'Tom']
+                        ['id' => 2, 'username' => 'Tom'],
                     ],
                     'pagination' => [
                         'route' => '/',
                         'pageSize' => 1,
-                        'page' => 0
+                        'page' => 0,
                     ],
                 ]),
                 [
                     ['id' => 1, 'username' => 'Bob'],
-                ]
+                ],
             ],
             [
                 new ArrayDataProvider([
                     'allModels' => [
                         ['id' => 1, 'username' => 'Bob'],
-                        ['id' => 2, 'username' => 'Tom']
+                        ['id' => 2, 'username' => 'Tom'],
                     ],
                     'pagination' => [
                         'route' => '/',
                         'pageSize' => 1,
-                        'page' => 1
+                        'page' => 1,
                     ],
                 ]),
                 [
-                    ['id' => 2, 'username' => 'Tom']
-                ]
+                    ['id' => 2, 'username' => 'Tom'],
+                ],
             ],
             [
                 new ArrayDataProvider([
                     'allModels' => [
                         'Bob' => ['id' => 1, 'username' => 'Bob'],
-                        'Tom' => ['id' => 2, 'username' => 'Tom']
+                        'Tom' => ['id' => 2, 'username' => 'Tom'],
                     ],
                     'pagination' => [
                         'route' => '/',
                         'pageSize' => 1,
-                        'page' => 1
+                        'page' => 1,
                     ],
                 ]),
                 [
-                    ['id' => 2, 'username' => 'Tom']
-                ]
+                    ['id' => 2, 'username' => 'Tom'],
+                ],
             ],
             [
                 new ArrayDataProvider([
                     'allModels' => [
                         ['id' => 1, 'username' => 'Bob'],
-                        ['id' => 2, 'username' => 'Tom']
+                        ['id' => 2, 'username' => 'Tom'],
                     ],
                     'pagination' => [
                         'route' => '/',
                         'pageSize' => 1,
-                        'page' => 1
+                        'page' => 1,
                     ],
                 ]),
                 [
-                    1 => ['id' => 2, 'username' => 'Tom']
+                    1 => ['id' => 2, 'username' => 'Tom'],
                 ],
                 true,
             ],
@@ -227,11 +231,11 @@ class SerializerTest extends TestCase
                     'pagination' => [
                         'route' => '/',
                         'pageSize' => 1,
-                        'page' => 1
+                        'page' => 1,
                     ],
                 ]),
                 [
-                    'Tom' => ['id' => 2, 'username' => 'Tom']
+                    'Tom' => ['id' => 2, 'username' => 'Tom'],
                 ],
                 true,
             ],

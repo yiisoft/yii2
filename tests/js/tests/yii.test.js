@@ -945,7 +945,6 @@ describe('yii', function () {
 
         describe('with xhr defined', function () {
             var server;
-            var response = {result: 'OK'};
 
             beforeEach(function () {
                 server = sinon.fakeServer.create();

@@ -267,7 +267,7 @@ class Command extends Component
         } else {
             $this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
         }
-        $this->params[$name] =& $value;
+        $this->params[$name] = &$value;
 
         return $this;
     }
@@ -472,6 +472,13 @@ class Command extends Component
      * $connection->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
      * ```
      *
+     * or with using parameter binding for the condition:
+     *
+     * ```php
+     * $minAge = 30;
+     * $connection->createCommand()->update('user', ['status' => 1], 'age > :minAge', [':minAge' => $minAge])->execute();
+     * ```
+     *
      * The method will properly escape the column names and bind the values to be updated.
      *
      * Note that the created command is not executed until [[execute()]] is called.
@@ -496,6 +503,13 @@ class Command extends Component
      *
      * ```php
      * $connection->createCommand()->delete('user', 'status = 0')->execute();
+     * ```
+     *
+     * or with using parameter binding for the condition:
+     *
+     * ```php
+     * $status = 0;
+     * $connection->createCommand()->delete('user', 'status = :status', [':status' => $status])->execute();
      * ```
      *
      * The method will properly escape the table and column names.
@@ -992,7 +1006,7 @@ class Command extends Component
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
-                /* @var $cache \yii\caching\Cache */
+                /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,

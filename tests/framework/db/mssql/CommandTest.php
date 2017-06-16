@@ -1,8 +1,11 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\mssql;
-
-use yii\db\Schema;
 
 /**
  * @group db
@@ -18,7 +21,7 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
 
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals("SELECT [id], [t].[name] FROM [customer] t", $command->sql);
+        $this->assertEquals('SELECT [id], [t].[name] FROM [customer] t', $command->sql);
     }
 
     public function testPrepareCancel()

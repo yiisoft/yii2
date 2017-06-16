@@ -10,8 +10,8 @@ namespace yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
-use yii\log\Logger;
 use yii\di\Container;
+use yii\log\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -62,7 +62,7 @@ class BaseYii
     /**
      * @var array class map used by the Yii autoloading mechanism.
      * The array keys are the class names (without leading backslashes), and the array values
-     * are the corresponding class file paths (or path aliases). This property mainly affects
+     * are the corresponding class file paths (or [path aliases](guide:concept-aliases)). This property mainly affects
      * how [[autoload()]] works.
      * @see autoload()
      */
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.12-dev';
+        return '2.0.13-dev';
     }
 
     /**
@@ -118,6 +118,8 @@ class BaseYii
      * instead of '@foo/bar', because '/' serves as the boundary character.
      *
      * Note, this method does not check if the returned path exists or not.
+     *
+     * See the [guide article on aliases](guide:concept-aliases) for more information.
      *
      * @param string $alias the alias to be translated.
      * @param bool $throwException whether to throw an exception if the given alias is invalid.
@@ -195,6 +197,8 @@ class BaseYii
      * to associate the alias with the path.
      *
      * Any trailing '/' and '\' characters in the given path will be trimmed.
+     *
+     * See the [guide article on aliases](guide:concept-aliases) for more information.
      *
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
      * It may contain the forward slash '/' which serves as boundary character when performing
@@ -470,7 +474,7 @@ class BaseYii
     {
         return \Yii::t('yii', 'Powered by {yii}', [
             'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>'
+                    'Yii Framework') . '</a>',
         ]);
     }
 

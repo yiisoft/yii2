@@ -16,9 +16,7 @@ namespace yiiunit\data\ar;
  */
 class Dog extends Animal
 {
-
     /**
-     *
      * @param self $record
      * @param array $row
      */
@@ -28,5 +26,4 @@ class Dog extends Animal
 
         $record->does = 'bark';
     }
-
 }

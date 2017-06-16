@@ -7,10 +7,9 @@
 
 namespace yii\db\sqlite;
 
-use yii\db\Connection;
-use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -166,7 +165,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys='.(int) $check;
+        return 'PRAGMA foreign_keys=' . (int) $check;
     }
 
     /**

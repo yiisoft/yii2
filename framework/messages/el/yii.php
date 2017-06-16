@@ -17,6 +17,7 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
+    ' and ' => ' και ',
     '(not set)' => '(μη ορισμένο)',
     'An internal server error occurred.' => 'Υπήρξε ένα εσωτερικό σφάλμα του διακομιστή.',
     'Are you sure you want to delete this item?' => 'Είστε σίγουροι για τη διαγραφή του αντικειμένου;',

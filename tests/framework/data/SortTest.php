@@ -7,9 +7,9 @@
 
 namespace yiiunit\framework\data;
 
+use yii\data\Sort;
 use yii\web\UrlManager;
 use yiiunit\TestCase;
-use yii\data\Sort;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -36,7 +36,7 @@ class SortTest extends TestCase
                 ],
             ],
             'params' => [
-                'sort' => 'age,-name'
+                'sort' => 'age,-name',
             ],
             'enableMultiSort' => true,
         ]);
@@ -67,7 +67,7 @@ class SortTest extends TestCase
                 ],
             ],
             'params' => [
-                'sort' => 'age,-name'
+                'sort' => 'age,-name',
             ],
             'enableMultiSort' => true,
         ]);
@@ -97,7 +97,7 @@ class SortTest extends TestCase
                 ],
             ],
             'params' => [
-                'sort' => 'age,-name'
+                'sort' => 'age,-name',
             ],
             'enableMultiSort' => true,
         ]);
@@ -121,7 +121,7 @@ class SortTest extends TestCase
                 ],
             ],
             'params' => [
-                'sort' => 'age,-name'
+                'sort' => 'age,-name',
             ],
             'enableMultiSort' => true,
         ]);
@@ -157,7 +157,7 @@ class SortTest extends TestCase
                 ],
             ],
             'params' => [
-                'sort' => 'age,-name'
+                'sort' => 'age,-name',
             ],
             'enableMultiSort' => true,
             'route' => 'site/index',
@@ -184,7 +184,7 @@ class SortTest extends TestCase
                 ],
             ],
             'params' => [
-                'sort' => 'age,-name'
+                'sort' => 'age,-name',
             ],
             'enableMultiSort' => true,
             'urlManager' => $manager,
@@ -216,7 +216,7 @@ class SortTest extends TestCase
                 ],
             ],
             'params' => [
-                'sort' => 'age,-name'
+                'sort' => 'age,-name',
             ],
             'enableMultiSort' => true,
             'urlManager' => $manager,
@@ -231,15 +231,15 @@ class SortTest extends TestCase
         $sort = new CustomSort([
             'attributes' => [
                 'age',
-                'name'
+                'name',
             ],
             'params' => [
                 'sort' => [
                     ['field' => 'age', 'dir' => 'asc'],
-                    ['field' => 'name', 'dir' => 'desc']
-                ]
+                    ['field' => 'name', 'dir' => 'desc'],
+                ],
             ],
-            'enableMultiSort' => true
+            'enableMultiSort' => true,
         ]);
 
         $this->assertEquals(SORT_ASC, $sort->getAttributeOrder('age'));

@@ -52,7 +52,7 @@ trait QueryTrait
      */
     public $indexBy;
     /**
-     * @var boolean whether to emulate the actual query execution, returning empty or false results.
+     * @var bool whether to emulate the actual query execution, returning empty or false results.
      * @see emulateExecution()
      * @since 2.0.11
      */

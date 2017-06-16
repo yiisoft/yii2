@@ -13,7 +13,6 @@ use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
 

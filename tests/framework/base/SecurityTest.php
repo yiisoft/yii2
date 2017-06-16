@@ -13,8 +13,8 @@ namespace yii\base {
      *
      * This function overrides function_exists from the root namespace in yii\base.
      */
-    function function_exists($name) {
-
+    function function_exists($name)
+    {
         if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
             return \yiiunit\framework\base\SecurityTest::$functions[$name];
         }
@@ -26,13 +26,15 @@ namespace yii\base {
      *
      * This function overrides fopen and fread from the root namespace in yii\base.
      */
-    function fopen($filename, $mode) {
+    function fopen($filename, $mode)
+    {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return \yiiunit\framework\base\SecurityTest::$fopen;
         }
         return \fopen($filename, $mode);
     }
-    function fread($handle, $length) {
+    function fread($handle, $length)
+    {
         if (\yiiunit\framework\base\SecurityTest::$fread !== null) {
             return \yiiunit\framework\base\SecurityTest::$fread;
         }
@@ -41,7 +43,6 @@ namespace yii\base {
         }
         return \fread($handle, $length);
     }
-
 } // closing namespace yii\base;
 
 namespace yiiunit\framework\base {
@@ -863,11 +864,11 @@ TEXT;
     public function randomKeyInvalidInputs()
     {
         return [
-            [ 0 ],
-            [ -1 ],
-            [ '0' ],
-            [ '34' ],
-            [ [] ],
+            [0],
+            [-1],
+            ['0'],
+            ['34'],
+            [[]],
         ];
     }
 
@@ -885,7 +886,7 @@ TEXT;
      */
     public function testRandomKeyNoOptions()
     {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fopen = false;
         $this->expectException('yii\base\Exception');
         $this->expectExceptionMessage('Unable to generate a random key');
@@ -898,7 +899,7 @@ TEXT;
      */
     public function testRandomKeyFreadFailure()
     {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ];
+        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fread = false;
         $this->expectException('yii\base\Exception');
         $this->expectExceptionMessage('Unable to generate a random key');
@@ -912,14 +913,14 @@ TEXT;
     public function randomKeyVariants()
     {
         return [
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true ] ],
-            [ ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false ] ],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
+            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
+            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
         ];
     }
 
@@ -934,7 +935,7 @@ TEXT;
             }
         }
         // there is no /dev/urandom on windows so we expect this to fail
-        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false ) {
+        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false) {
             $this->expectException('yii\base\Exception');
             $this->expectExceptionMessage('Unable to generate a random key');
         }
@@ -998,10 +999,10 @@ TEXT;
         $tests = [
             "function_exists('random_bytes')",
             "defined('OPENSSL_VERSION_TEXT') ? OPENSSL_VERSION_TEXT : null",
-            "PHP_VERSION_ID",
-            "PHP_OS",
+            'PHP_VERSION_ID',
+            'PHP_OS',
             "function_exists('mcrypt_create_iv') ? bin2hex(mcrypt_create_iv(4, MCRYPT_DEV_URANDOM)) : null",
-            "DIRECTORY_SEPARATOR",
+            'DIRECTORY_SEPARATOR',
             "ini_get('open_basedir')",
         ];
         if (DIRECTORY_SEPARATOR === '/') {
@@ -1045,7 +1046,7 @@ TEXT;
                 'salt',
                 1,
                 20,
-                '0c60c80f961f0e71f3a9b524af6012062fe037a6'
+                '0c60c80f961f0e71f3a9b524af6012062fe037a6',
             ],
             [
                 'sha1',
@@ -1053,7 +1054,7 @@ TEXT;
                 'salt',
                 2,
                 20,
-                'ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957'
+                'ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957',
             ],
             [
                 'sha1',
@@ -1061,7 +1062,7 @@ TEXT;
                 'salt',
                 4096,
                 20,
-                '4b007901b765489abead49d926f721d065a429c1'
+                '4b007901b765489abead49d926f721d065a429c1',
             ],
             [
                 'sha1',
@@ -1069,7 +1070,7 @@ TEXT;
                 'salt',
                 16777216,
                 20,
-                'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984'
+                'eefe3d61cd4da4e4e9945b3d6ba2158c2634e984',
             ],
             [
                 'sha1',
@@ -1077,7 +1078,7 @@ TEXT;
                 'saltSALTsaltSALTsaltSALTsaltSALTsalt',
                 4096,
                 25,
-                '3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038'
+                '3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038',
             ],
             [
                 'sha1',
@@ -1085,7 +1086,7 @@ TEXT;
                 "sa\0lt",
                 4096,
                 16,
-                '56fa6aa75548099dcc37d7f03425e0c3'
+                '56fa6aa75548099dcc37d7f03425e0c3',
             ],
             [
                 'sha256',
@@ -1093,7 +1094,7 @@ TEXT;
                 'salt',
                 1,
                 20,
-                '120fb6cffcf8b32c43e7225256c4f837a86548c9'
+                '120fb6cffcf8b32c43e7225256c4f837a86548c9',
             ],
             [
                 'sha256',
@@ -1101,7 +1102,7 @@ TEXT;
                 "sa\0lt",
                 4096,
                 32,
-                '89b69d0516f829893c696226650a86878c029ac13ee276509d5ae58b6466a724'
+                '89b69d0516f829893c696226650a86878c029ac13ee276509d5ae58b6466a724',
             ],
             [
                 'sha256',
@@ -1109,7 +1110,7 @@ TEXT;
                 'saltSALTsaltSALTsaltSALTsaltSALTsalt',
                 4096,
                 40,
-                '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9'
+                '348c89dbcbd32b2f32d814b8116e84cf2b17347ebc1800181c4e2a1fb8dd53e1c635518c7dac47e9',
             ],
         ];
     }
@@ -1197,7 +1198,7 @@ TEXT;
                 'L' => 42,
                 'PRK' => '2adccada18779e7c2077ad2eb19d3f3e731385dd',
                 'OKM' => '2c91117204d745f3500d636a62f64f0ab3bae548aa53d423b0d1f27ebba6f5e5673a081d70cce7acfc48',
-            ]
+            ],
         ];
     }
 
@@ -1221,26 +1222,26 @@ TEXT;
     public function dataProviderCompareStrings()
     {
         return [
-            ["", ""],
-            [false, ""],
-            [null, ""],
-            [0, ""],
-            [0.00, ""],
-            ["", null],
-            ["", false],
-            ["", 0],
-            ["", "\0"],
-            ["\0", ""],
+            ['', ''],
+            [false, ''],
+            [null, ''],
+            [0, ''],
+            [0.00, ''],
+            ['', null],
+            ['', false],
+            ['', 0],
+            ['', "\0"],
+            ["\0", ''],
             ["\0", "\0"],
-            ["0", "\0"],
+            ['0', "\0"],
             [0, "\0"],
-            ["user", "User"],
-            ["password", "password"],
-            ["password", "passwordpassword"],
-            ["password1", "password"],
-            ["password", "password2"],
-            ["", "password"],
-            ["password", ""],
+            ['user', 'User'],
+            ['password', 'password'],
+            ['password', 'passwordpassword'],
+            ['password1', 'password'],
+            ['password', 'password2'],
+            ['', 'password'],
+            ['password', ''],
         ];
     }
 
@@ -1282,15 +1283,14 @@ TEXT;
     /**
      * @return array
      */
-    public function maskProvider() {
+    public function maskProvider()
+    {
         return [
             ['1'],
             ['SimpleToken'],
             ['Token with special characters: %d1    5"'],
-            ['Token with UTF8 character: †']
+            ['Token with UTF8 character: †'],
         ];
     }
 }
-
 } // closing namespace yiiunit\framework\base;
-

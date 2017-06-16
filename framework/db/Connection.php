@@ -12,7 +12,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 
 /**
  * Connection represents a connection to a database via [PDO](http://php.net/manual/en/book.pdo.php).
@@ -156,7 +156,7 @@ class Connection extends Component
      * Please refer to the [PHP manual](http://php.net/manual/en/pdo.construct.php) on
      * the format of the DSN string.
      *
-     * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a path alias
+     * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
      * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
      *
      * @see charset
@@ -207,7 +207,7 @@ class Connection extends Component
      */
     public $schemaCacheExclude = [];
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that
+     * @var CacheInterface|string the cache object or the ID of the cache application component that
      * is used to cache the table metadata.
      * @see enableSchemaCache
      */
@@ -231,7 +231,7 @@ class Connection extends Component
      */
     public $queryCacheDuration = 3600;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component
+     * @var CacheInterface|string the cache object or the ID of the cache application component
      * that is used for query caching.
      * @see enableQueryCache
      */
@@ -302,7 +302,7 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that is used to store
+     * @var CacheInterface|string the cache object or the ID of the cache application component that is used to store
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
      * This is used only when read/write splitting is enabled or [[masters]] is not empty.
      */
@@ -389,6 +389,7 @@ class Connection extends Component
      * @see enableLogging
      */
     public $enableProfiling = true;
+
     /**
      * @var Transaction the currently active transaction
      */
@@ -539,7 +540,7 @@ class Connection extends Component
             } else {
                 $cache = $this->queryCache;
             }
-            if ($cache instanceof Cache) {
+            if ($cache instanceof CacheInterface) {
                 return [$cache, $duration, $dependency];
             }
         }
@@ -1048,7 +1049,7 @@ class Connection extends Component
             }
 
             $key = [__METHOD__, $config['dsn']];
-            if ($cache instanceof Cache && $cache->get($key)) {
+            if ($cache instanceof CacheInterface && $cache->get($key)) {
                 // should not try this dead server now
                 continue;
             }
@@ -1061,7 +1062,7 @@ class Connection extends Component
                 return $db;
             } catch (\Exception $e) {
                 Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
-                if ($cache instanceof Cache) {
+                if ($cache instanceof CacheInterface) {
                     // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
                 }
@@ -1090,8 +1091,11 @@ class Connection extends Component
 
         $this->_master = false;
         $this->_slave = false;
-        $this->pdo = null;
         $this->_schema = null;
         $this->_transaction = null;
+        if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
+            // reset PDO connection, unless its sqlite in-memory, which can only have one connection
+            $this->pdo = null;
+        }
     }
 }

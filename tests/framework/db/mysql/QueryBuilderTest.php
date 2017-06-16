@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\mysql;
 
@@ -22,37 +27,37 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_PK . ' AFTER `col_before`',
                 $this->primaryKey()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`'
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`',
             ],
             [
                 Schema::TYPE_PK . ' FIRST',
                 $this->primaryKey()->first(),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . ' FIRST',
                 $this->primaryKey()->first()->after('col_before'),
-                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+                'int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . '(8) AFTER `col_before`',
                 $this->primaryKey(8)->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`'
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER `col_before`',
             ],
             [
                 Schema::TYPE_PK . '(8) FIRST',
                 $this->primaryKey(8)->first(),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . '(8) FIRST',
                 $this->primaryKey(8)->first()->after('col_before'),
-                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST'
+                'int(8) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST',
             ],
             [
                 Schema::TYPE_PK . " COMMENT 'test' AFTER `col_before`",
                 $this->primaryKey()->comment('test')->after('col_before'),
-                "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`"
+                "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`",
             ],
         ]);
     }

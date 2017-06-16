@@ -7,12 +7,13 @@
 
 namespace yii\filters;
 
-use yii\base\Component;
+use Closure;
 use yii\base\Action;
-use yii\base\InvalidConfigException;
-use yii\web\User;
-use yii\web\Request;
+use yii\base\Component;
 use yii\base\Controller;
+use yii\base\InvalidConfigException;
+use yii\web\Request;
+use yii\web\User;
 
 /**
  * This class represents an access rule defined by the [[AccessControl]] action filter
@@ -42,6 +43,8 @@ class AccessRule extends Component
      * The comparison is case-sensitive.
      *
      * If not set or empty, it means this rule applies to all controllers.
+     *
+     * Since version 2.0.12 controller IDs can be specified as wildcards, e.g. `module/*`.
      */
     public $controllers;
     /**
@@ -55,8 +58,43 @@ class AccessRule extends Component
      * In this case, [[User::can()]] will be called to check access.
      *
      * If this property is not set or empty, it means this rule applies to all roles.
+     * @see $roleParams
      */
     public $roles;
+    /**
+     * @var array|Closure parameters to pass to the [[User::can()]] function for evaluating
+     * user permissions in [[$roles]].
+     *
+     * If this is an array, it will be passed directly to [[User::can()]]. For example for passing an
+     * ID from the current request, you may use the following:
+     *
+     * ```php
+     * ['postId' => Yii::$app->request->get('id')]
+     * ```
+     *
+     * You may also specify a closure that returns an array. This can be used to
+     * evaluate the array values only if they are needed, for example when a model needs to be
+     * loaded like in the following code:
+     *
+     * ```php
+     * 'rules' => [
+     *     [
+     *         'allow' => true,
+     *         'actions' => ['update'],
+     *         'roles' => ['updatePost'],
+     *         'roleParams' => function($rule) {
+     *             return ['post' => Post::findOne(Yii::$app->request->get('id'))];
+     *         },
+     *     ],
+     * ],
+     * ```
+     *
+     * A reference to the [[AccessRule]] instance will be passed to the closure as the first parameter.
+     *
+     * @see $roles
+     * @since 2.0.12
+     */
+    public $roleParams = [];
     /**
      * @var array list of user IP addresses that this rule applies to. An IP address
      * can contain the wildcard `*` at the end so that it matches IP addresses with the same prefix.
@@ -136,7 +174,18 @@ class AccessRule extends Component
      */
     protected function matchController($controller)
     {
-        return empty($this->controllers) || in_array($controller->uniqueId, $this->controllers, true);
+        if (empty($this->controllers)) {
+            return true;
+        }
+
+        $id = $controller->getUniqueId();
+        foreach ($this->controllers as $pattern) {
+            if (fnmatch($pattern, $id)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -161,8 +210,13 @@ class AccessRule extends Component
                 if (!$user->getIsGuest()) {
                     return true;
                 }
-            } elseif ($user->can($role)) {
-                return true;
+            } else {
+                if (!isset($roleParams)) {
+                    $roleParams = $this->roleParams instanceof Closure ? call_user_func($this->roleParams, $this) : $this->roleParams;
+                }
+                if ($user->can($role, $roleParams)) {
+                    return true;
+                }
             }
         }
 
