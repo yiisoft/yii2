@@ -51,19 +51,19 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->dropForeignKey($name, $tableName);
-                }
+                },
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]]) ON DELETE CASCADE",
                 function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
                     return $qb->addForeignKey($name, $tableName, 'C_fk_id_1', $pkTableName, 'C_id_1', 'CASCADE');
-                }
+                },
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]], [[C_fk_id_2]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]], [[C_id_2]]) ON DELETE CASCADE",
                 function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
                     return $qb->addForeignKey($name, $tableName, 'C_fk_id_1, C_fk_id_2', $pkTableName, 'C_id_1, C_id_2', 'CASCADE');
-                }
+                },
             ],
         ];
     }

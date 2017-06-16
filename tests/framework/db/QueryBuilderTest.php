@@ -1232,19 +1232,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->dropPrimaryKey($name, $tableName);
-                }
+                },
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] PRIMARY KEY ([[C_id_1]])",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->addPrimaryKey($name, $tableName, 'C_id_1');
-                }
+                },
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] PRIMARY KEY ([[C_id_1]], [[C_id_2]])",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->addPrimaryKey($name, $tableName, 'C_id_1, C_id_2');
-                }
+                },
             ],
         ];
     }
@@ -1267,19 +1267,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->dropForeignKey($name, $tableName);
-                }
+                },
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]]) ON DELETE CASCADE ON UPDATE CASCADE",
                 function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
                     return $qb->addForeignKey($name, $tableName, 'C_fk_id_1', $pkTableName, 'C_id_1', 'CASCADE', 'CASCADE');
-                }
+                },
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] FOREIGN KEY ([[C_fk_id_1]], [[C_fk_id_2]]) REFERENCES {{{$pkTableName}}} ([[C_id_1]], [[C_id_2]]) ON DELETE CASCADE ON UPDATE CASCADE",
                 function (QueryBuilder $qb) use ($tableName, $name, $pkTableName) {
                     return $qb->addForeignKey($name, $tableName, 'C_fk_id_1, C_fk_id_2', $pkTableName, 'C_id_1, C_id_2', 'CASCADE', 'CASCADE');
-                }
+                },
             ],
         ];
     }
@@ -1302,31 +1302,31 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 "DROP INDEX [[$name1]] ON {{{$tableName}}}",
                 function (QueryBuilder $qb) use ($tableName, $name1) {
                     return $qb->dropIndex($name1, $tableName);
-                }
+                },
             ],
             'create' => [
                 "CREATE INDEX [[$name1]] ON {{{$tableName}}} ([[C_index_1]])",
                 function (QueryBuilder $qb) use ($tableName, $name1) {
                     return $qb->createIndex($name1, $tableName, 'C_index_1');
-                }
+                },
             ],
             'create (2 columns)' => [
                 "CREATE INDEX [[$name2]] ON {{{$tableName}}} ([[C_index_2_1]], [[C_index_2_2]])",
                 function (QueryBuilder $qb) use ($tableName, $name2) {
                     return $qb->createIndex($name2, $tableName, 'C_index_2_1, C_index_2_2');
-                }
+                },
             ],
             'create unique' => [
                 "CREATE UNIQUE INDEX [[$name1]] ON {{{$tableName}}} ([[C_index_1]])",
                 function (QueryBuilder $qb) use ($tableName, $name1) {
                     return $qb->createIndex($name1, $tableName, 'C_index_1', true);
-                }
+                },
             ],
             'create unique (2 columns)' => [
                 "CREATE UNIQUE INDEX [[$name2]] ON {{{$tableName}}} ([[C_index_2_1]], [[C_index_2_2]])",
                 function (QueryBuilder $qb) use ($tableName, $name2) {
                     return $qb->createIndex($name2, $tableName, 'C_index_2_1, C_index_2_2', true);
-                }
+                },
             ],
         ];
     }
@@ -1350,19 +1350,19 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 "ALTER TABLE {{{$tableName1}}} DROP CONSTRAINT [[$name1]]",
                 function (QueryBuilder $qb) use ($tableName1, $name1) {
                     return $qb->dropUnique($name1, $tableName1);
-                }
+                },
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName1}}} ADD CONSTRAINT [[$name1]] UNIQUE ([[C_unique]])",
                 function (QueryBuilder $qb) use ($tableName1, $name1) {
                     return $qb->addUnique($name1, $tableName1, 'C_unique');
-                }
+                },
             ],
             'add (2 columns)' => [
                 "ALTER TABLE {{{$tableName2}}} ADD CONSTRAINT [[$name2]] UNIQUE ([[C_index_2_1]], [[C_index_2_2]])",
                 function (QueryBuilder $qb) use ($tableName2, $name2) {
                     return $qb->addUnique($name2, $tableName2, 'C_index_2_1, C_index_2_2');
-                }
+                },
             ],
         ];
     }
@@ -1384,13 +1384,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->dropCheck($name, $tableName);
-                }
+                },
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] CHECK ([[C_not_null]] > 100)",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->addCheck($name, $tableName, '[[C_not_null]] > 100');
-                }
+                },
             ],
         ];
     }
@@ -1412,13 +1412,13 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->dropDefaultValue($name, $tableName);
-                }
+                },
             ],
             'add' => [
                 "ALTER TABLE {{{$tableName}}} ADD CONSTRAINT [[$name]] DEFAULT 0 FOR [[C_default]]",
                 function (QueryBuilder $qb) use ($tableName, $name) {
                     return $qb->addDefaultValue($name, $tableName, 'C_default', 0);
-                }
+                },
             ],
         ];
     }

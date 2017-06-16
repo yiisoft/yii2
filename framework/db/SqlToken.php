@@ -247,7 +247,7 @@ class SqlToken extends Object implements \ArrayAccess
                     break;
                 }
 
-                if (!$this->tokensMatch($patternToken[$index],$token[$offset])) {
+                if (!$this->tokensMatch($patternToken[$index], $token[$offset])) {
                     continue;
                 }
 

@@ -113,7 +113,7 @@ abstract class SqlTokenizer extends Object
      * @param int $length length of the matched string.
      * @return bool whether there's a whitespace at the current offset.
      */
-    protected abstract function isWhitespace(&$length);
+    abstract protected function isWhitespace(&$length);
 
     /**
      * Returns whether there's a commentary at the current offset.
@@ -121,7 +121,7 @@ abstract class SqlTokenizer extends Object
      * @param int $length length of the matched string.
      * @return bool whether there's a commentary at the current offset.
      */
-    protected abstract function isComment(&$length);
+    abstract protected function isComment(&$length);
 
     /**
      * Returns whether there's an operator at the current offset.
@@ -131,7 +131,7 @@ abstract class SqlTokenizer extends Object
      * @param string $content optional content instead of the matched string.
      * @return bool whether there's an operator at the current offset.
      */
-    protected abstract function isOperator(&$length, &$content);
+    abstract protected function isOperator(&$length, &$content);
 
     /**
      * Returns whether there's an identifier at the current offset.
@@ -141,7 +141,7 @@ abstract class SqlTokenizer extends Object
      * @param string $content optional content instead of the matched string.
      * @return bool whether there's an identifier at the current offset.
      */
-    protected abstract function isIdentifier(&$length, &$content);
+    abstract protected function isIdentifier(&$length, &$content);
 
     /**
      * Returns whether there's a string literal at the current offset.
@@ -151,7 +151,7 @@ abstract class SqlTokenizer extends Object
      * @param string $content optional content instead of the matched string.
      * @return bool whether there's a string literal at the current offset.
      */
-    protected abstract function isStringLiteral(&$length, &$content);
+    abstract protected function isStringLiteral(&$length, &$content);
 
     /**
      * Returns whether the given string is a keyword.
@@ -160,7 +160,7 @@ abstract class SqlTokenizer extends Object
      * @param string $content optional content instead of the matched string.
      * @return bool whether the given string is a keyword.
      */
-    protected abstract function isKeyword($string, &$content);
+    abstract protected function isKeyword($string, &$content);
 
     /**
      * Returns whether the longest common prefix equals to the SQL code of the same length at the current offset.

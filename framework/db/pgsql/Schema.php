@@ -132,7 +132,7 @@ class Schema extends \yii\db\Schema
             $resolvedName->schemaName = $this->defaultSchema;
             $resolvedName->name = $name;
         }
-        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') .  $resolvedName->name;
+        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
         return $resolvedName;
     }
 
@@ -691,7 +691,7 @@ SQL;
                         $result['checks'][] = new CheckConstraint([
                             'name' => $name,
                             'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            'expression' => $constraint[0]['check_expr']
+                            'expression' => $constraint[0]['check_expr'],
                         ]);
                         break;
                 }

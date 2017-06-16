@@ -106,7 +106,7 @@ class Schema extends \yii\db\Schema
             // only schema name and table name passed
             $resolvedName->schemaName = $parts[0];
             $resolvedName->name = $parts[1];
-            $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') .  $resolvedName->name;
+            $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
         } else {
             // only table name passed
             $resolvedName->schemaName = $this->defaultSchema;
@@ -683,14 +683,14 @@ SQL;
                         $result['checks'][] = new CheckConstraint([
                             'name' => $name,
                             'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            'expression' => $constraint[0]['check_expr']
+                            'expression' => $constraint[0]['check_expr'],
                         ]);
                         break;
                     case 'D':
                         $result['defaults'][] = new DefaultConstraint([
                             'name' => $name,
                             'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
-                            'value' => $constraint[0]['default_expr']
+                            'value' => $constraint[0]['default_expr'],
                         ]);
                         break;
                 }

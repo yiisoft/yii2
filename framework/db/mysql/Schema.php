@@ -82,7 +82,7 @@ class Schema extends \yii\db\Schema
             $resolvedName->schemaName = $this->defaultSchema;
             $resolvedName->name = $name;
         }
-        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') .  $resolvedName->name;
+        $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
         return $resolvedName;
     }
 
@@ -104,7 +104,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadTableSchema($name)
     {
-        $table = new TableSchema;
+        $table = new TableSchema();
         $this->resolveTableNames($table, $name);
 
         if ($this->findColumns($table)) {

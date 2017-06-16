@@ -452,7 +452,7 @@ class QueryBuilder extends \yii\base\Object
 
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
             . $this->db->quoteColumnName($name) . ' PRIMARY KEY ('
-            . implode(', ', $columns). ')';
+            . implode(', ', $columns) . ')';
     }
 
     /**
@@ -631,7 +631,7 @@ class QueryBuilder extends \yii\base\Object
         }
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
             . $this->db->quoteColumnName($name) . ' UNIQUE ('
-            . implode(', ', $columns). ')';
+            . implode(', ', $columns) . ')';
     }
 
     /**

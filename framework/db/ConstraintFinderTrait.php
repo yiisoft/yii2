@@ -33,42 +33,42 @@ trait ConstraintFinderTrait
      * @param string $tableName table name.
      * @return Constraint|null primary key for the given table, `null` if the table has no primary key.
      */
-    protected abstract function loadTablePrimaryKey($tableName);
+    abstract protected function loadTablePrimaryKey($tableName);
 
     /**
      * Loads all foreign keys for the given table.
      * @param string $tableName table name.
      * @return ForeignKeyConstraint[] foreign keys for the given table.
      */
-    protected abstract function loadTableForeignKeys($tableName);
+    abstract protected function loadTableForeignKeys($tableName);
 
     /**
      * Loads all indexes for the given table.
      * @param string $tableName table name.
      * @return IndexConstraint[] indexes for the given table.
      */
-    protected abstract function loadTableIndexes($tableName);
+    abstract protected function loadTableIndexes($tableName);
 
     /**
      * Loads all unique constraints for the given table.
      * @param string $tableName table name.
      * @return Constraint[] unique constraints for the given table.
      */
-    protected abstract function loadTableUniques($tableName);
+    abstract protected function loadTableUniques($tableName);
 
     /**
      * Loads all check constraints for the given table.
      * @param string $tableName table name.
      * @return CheckConstraint[] check constraints for the given table.
      */
-    protected abstract function loadTableChecks($tableName);
+    abstract protected function loadTableChecks($tableName);
 
     /**
      * Loads all default value constraints for the given table.
      * @param string $tableName table name.
      * @return DefaultConstraint[] default value constraints for the given table.
      */
-    protected abstract function loadTableDefaultValues($tableName);
+    abstract protected function loadTableDefaultValues($tableName);
 
     /**
      * Obtains the primary key for the named table.

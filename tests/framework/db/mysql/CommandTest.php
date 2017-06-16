@@ -19,5 +19,4 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
     {
         $this->markTestSkipped('MySQL does not support adding/dropping check constraints.');
     }
-
 }

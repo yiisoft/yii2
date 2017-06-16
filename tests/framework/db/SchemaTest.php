@@ -462,14 +462,14 @@ abstract class SchemaTest extends DatabaseTestCase
                 new CheckConstraint([
                     'name' => AnyValue::getInstance(),
                     'columnNames' => ['C_check'],
-                    'expression' => "C_check <> ''"
-                ])
+                    'expression' => "C_check <> ''",
+                ]),
             ]],
             '1: unique' => ['T_constraints_1', 'uniques', [
                 new Constraint([
                     'name' => 'CN_unique',
                     'columnNames' => ['C_unique'],
-                ])
+                ]),
             ]],
             '1: index' => ['T_constraints_1', 'indexes', [
                 new IndexConstraint([
@@ -483,7 +483,7 @@ abstract class SchemaTest extends DatabaseTestCase
                     'columnNames' => ['C_unique'],
                     'isPrimary' => false,
                     'isUnique' => true,
-                ])
+                ]),
             ]],
             '1: default' => ['T_constraints_1', 'defaultValues', []],
 
@@ -495,7 +495,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 new Constraint([
                     'name' => 'CN_constraints_2_multi',
                     'columnNames' => ['C_index_2_1', 'C_index_2_2'],
-                ])
+                ]),
             ]],
             '2: index' => ['T_constraints_2', 'indexes', [
                 new IndexConstraint([
@@ -515,7 +515,7 @@ abstract class SchemaTest extends DatabaseTestCase
                     'columnNames' => ['C_index_2_1', 'C_index_2_2'],
                     'isPrimary' => false,
                     'isUnique' => true,
-                ])
+                ]),
             ]],
             '2: check' => ['T_constraints_2', 'checks', []],
             '2: default' => ['T_constraints_2', 'defaultValues', []],
@@ -529,7 +529,7 @@ abstract class SchemaTest extends DatabaseTestCase
                     'foreignColumnNames' => ['C_id_1', 'C_id_2'],
                     'onDelete' => 'CASCADE',
                     'onUpdate' => 'CASCADE',
-                ])
+                ]),
             ]],
             '3: unique' => ['T_constraints_3', 'uniques', []],
             '3: index' => ['T_constraints_3', 'indexes', [
@@ -551,7 +551,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 new Constraint([
                     'name' => 'CN_constraints_4',
                     'columnNames' => ['C_col_1', 'C_col_2'],
-                ])
+                ]),
             ]],
             '4: check' => ['T_constraints_4', 'checks', []],
             '4: default' => ['T_constraints_4', 'defaultValues', []],

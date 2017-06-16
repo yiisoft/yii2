@@ -79,7 +79,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadTableSchema($name)
     {
-        $table = new TableSchema;
+        $table = new TableSchema();
         $table->name = $name;
         $table->fullName = $name;
 
