@@ -9,6 +9,7 @@ namespace yii\log;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidValueException;
 use yii\di\Instance;
 use yii\mail\MailerInterface;
 
@@ -72,6 +73,7 @@ class EmailTarget extends Target
 
     /**
      * Sends log messages to specified email addresses.
+     * @throws InvalidValueException
      */
     public function export()
     {
@@ -82,7 +84,10 @@ class EmailTarget extends Target
         }
         $messages = array_map([$this, 'formatMessage'], $this->messages);
         $body = wordwrap(implode("\n", $messages), 70);
-        $this->composeMessage($body)->send($this->mailer);
+        $message = $this->composeMessage($body);
+        if (!$message->send($this->mailer)) {
+            throw new InvalidValueException('Unable to export log through email!');
+        }
     }
 
     /**
