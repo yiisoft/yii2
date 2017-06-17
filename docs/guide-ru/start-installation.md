@@ -50,7 +50,7 @@ mv composer.phar /usr/local/bin/composer
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-Эта команда команда устанавливает последнюю стабильную версию Yii в директорию `basic`. Если хотите, можете выбрать другое
+Эта команда устанавливает последнюю стабильную версию Yii в директорию `basic`. Если хотите, можете выбрать другое
 имя директории.
 
 > Info: Если команда `composer create-project` не выполняется нормально, попробуйте обратиться к
