@@ -9,7 +9,9 @@ namespace yii\log;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\base\InvalidValueException;
 use yii\db\Connection;
+use yii\db\Exception;
 use yii\di\Instance;
 use yii\helpers\VarDumper;
 
@@ -57,6 +59,8 @@ class DbTarget extends Target
 
     /**
      * Stores log messages to DB.
+     * @throws Exception
+     * @throws InvalidValueException
      */
     public function export()
     {
@@ -80,13 +84,16 @@ class DbTarget extends Target
                     $text = VarDumper::export($text);
                 }
             }
-            $command->bindValues([
-                ':level' => $level,
-                ':category' => $category,
-                ':log_time' => $timestamp,
-                ':prefix' => $this->getMessagePrefix($message),
-                ':message' => $text,
-            ])->execute();
+            if ($command->bindValues([
+                    ':level' => $level,
+                    ':category' => $category,
+                    ':log_time' => $timestamp,
+                    ':prefix' => $this->getMessagePrefix($message),
+                    ':message' => $text,
+                ])->execute() > 0) {
+                continue;
+            }
+            throw new InvalidValueException('Unable to export log through database!');
         }
     }
 }
