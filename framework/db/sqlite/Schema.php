@@ -9,6 +9,7 @@ namespace yii\db\sqlite;
 
 use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
+use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
@@ -85,11 +86,10 @@ class Schema extends \yii\db\Schema
 
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
-
             return $table;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
