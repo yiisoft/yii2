@@ -61,15 +61,16 @@ class SyslogTarget extends Target
     }
 
     /**
-     * Writes log messages to syslog
-     * @throws InvalidValueException
+     * Writes log messages to syslog.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * @throws LogRuntimeException
      */
     public function export()
     {
         openlog($this->identity, $this->options, $this->facility);
         foreach ($this->messages as $message) {
             if (syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message)) === false) {
-                throw new InvalidValueException('Unable to export log through system log!');
+                throw new LogRuntimeException('Unable to export log through system log!');
             }
         }
         closelog();

@@ -73,7 +73,8 @@ class EmailTarget extends Target
 
     /**
      * Sends log messages to specified email addresses.
-     * @throws InvalidValueException
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
+     * @throws LogRuntimeException
      */
     public function export()
     {
@@ -86,7 +87,7 @@ class EmailTarget extends Target
         $body = wordwrap(implode("\n", $messages), 70);
         $message = $this->composeMessage($body);
         if (!$message->send($this->mailer)) {
-            throw new InvalidValueException('Unable to export log through email!');
+            throw new LogRuntimeException('Unable to export log through email!');
         }
     }
 

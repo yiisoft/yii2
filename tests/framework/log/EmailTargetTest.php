@@ -166,7 +166,7 @@ class EmailTargetTest extends TestCase
             ])
             ->getMock();
 
-        $this->expectException('yii\base\InvalidValueException');
+        $this->expectException('yii\log\LogRuntimeException');
         $mailTarget->export();
     }
 }

@@ -100,8 +100,9 @@ class FileTarget extends Target
 
     /**
      * Writes log messages to a file.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
      * @throws InvalidConfigException if unable to open the log file for writing
-     * @throws InvalidValueException if unable to write the log file
+     * @throws LogRuntimeException if unable to write complete log to file
      */
     public function export()
     {
@@ -121,18 +122,18 @@ class FileTarget extends Target
             @fclose($fp);
             $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
             if ($writeResult === false) {
-                throw new InvalidValueException('Unable to export log through file!');
+                throw new LogRuntimeException('Unable to export log through file!');
             }
             if ($writeResult < strlen($text)) {
-                throw new InvalidValueException("Unable to export whole log through file! Wrote $writeResult out of " . strlen($text) . ' bytes.');
+                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of " . strlen($text) . ' bytes.');
             }
         } else {
             $writeResult = @fwrite($fp, $text);
             if ($writeResult === false) {
-                throw new InvalidValueException('Unable to export log through file!');
+                throw new LogRuntimeException('Unable to export log through file!');
             }
             if ($writeResult < strlen($text)) {
-                throw new InvalidValueException("Unable to export whole log through file! Wrote $writeResult out of " . strlen($text) . ' bytes.');
+                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of " . strlen($text) . ' bytes.');
             }
             @flock($fp, LOCK_UN);
             @fclose($fp);

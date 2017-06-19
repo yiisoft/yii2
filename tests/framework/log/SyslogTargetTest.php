@@ -179,7 +179,7 @@ namespace yiiunit\framework\log {
                 return $syslogTarget->closelog();
             };
 
-            $this->expectException('yii\base\InvalidValueException');
+            $this->expectException('yii\log\LogRuntimeException');
             $syslogTarget->export();
         }
 

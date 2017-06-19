@@ -9,7 +9,6 @@ namespace yii\log;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidValueException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\di\Instance;
@@ -59,8 +58,9 @@ class DbTarget extends Target
 
     /**
      * Stores log messages to DB.
+     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
      * @throws Exception
-     * @throws InvalidValueException
+     * @throws LogRuntimeException
      */
     public function export()
     {
@@ -93,7 +93,7 @@ class DbTarget extends Target
                 ])->execute() > 0) {
                 continue;
             }
-            throw new InvalidValueException('Unable to export log through database!');
+            throw new LogRuntimeException('Unable to export log through database!');
         }
     }
 }
