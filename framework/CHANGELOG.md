@@ -6,12 +6,14 @@ Yii Framework 2 Change Log
 
 - Bug #14248: `yii\console\controllers\MessageController` no longer outputs colorized filenames when console does not support text colorization (PowerGamer1)
 - Bug #14264: Fixed a bug where `yii\log\Logger::calculateTimings()` was not accepting messages with array tokens (bizley)
+- Bug #14307: Fixed PHP warning when `yii\console\UnknownCommandException` is thrown for empty command (rob006)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Enh #13787: Added `yii\db\Migration::$maxSqlOutputLength` that allows limiting number of characters for outputting SQL (thiagotalma)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
+- Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Enh #14298: The default response formatter configs defined by `yii\web\Response::defaultFormatters()` now use the array syntax (brandonkelly)
 
 2.0.12 June 05, 2017

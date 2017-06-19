@@ -79,31 +79,16 @@ frameworks. For example, you may want to use the [[yii\helpers\ArrayHelper]] cla
 [Active Record](db-active-record.md) feature in a third-party system. To achieve this goal, you mainly need to
 take two steps: install Yii, and bootstrap Yii.
 
-If the third-party system uses Composer to manage its dependencies, you can simply run the following commands
-to install Yii:
+If the third-party system uses Composer to manage its dependencies, run the following command to add Yii
+to the project requirements:
 
-    composer global require "fxp/composer-asset-plugin:^1.3.1"
-    composer require yiisoft/yii2
-    composer install
-
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. Even if you only want to use the database
-layer or other non-asset related features of Yii, this is required to install the Yii composer package.
-
-If you want to use the [Asset publishing feature of Yii](structure-assets.md) you should also add the following configuration
-to the `extra` section in your `composer.json`:
-
-```json
-{
-    ...
-    "extra": {
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
-        }
-    }
-}
+```bash
+composer require yiisoft/yii2
 ```
+
+In case you would like to use only the database abstraction layer or other non-asset related features of Yii,
+you should require a special composer package that prevent Bower and NPM packages installation. See 
+[cebe/assetfree-yii2](https://github.com/cebe/assetfree-yii2) for details.
 
 See also the general [section about installing Yii](start-installation.md#installing-via-composer) for more information
 on Composer and solution to possible issues popping up during the installation.
