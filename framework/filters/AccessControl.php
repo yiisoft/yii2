@@ -111,8 +111,7 @@ class AccessControl extends ActionFilter
             $this->denyCallback = function () use ($filter) {
                 $filter->denyAccess($filter->user);
             };
-        }
-        elseif (!is_callable($this->denyCallback)) {
+        } elseif (!is_callable($this->denyCallback)) {
             throw new InvalidConfigException('AccessControl::$denyCallback should be callable sounds better.');
         }
     }
