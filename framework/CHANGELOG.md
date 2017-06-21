@@ -1,7 +1,6 @@
 Yii Framework 2 Change Log
 ==========================
 
-
 2.0.13 under development
 ------------------------
 
