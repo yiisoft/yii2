@@ -53,12 +53,6 @@ addons:
 matrix:
   fast_finish: true
   include:
-    # test coding standards
-    - php: 7.1
-      env: TASK_TESTS_PHP=0 TASK_TESTS_CS=1
-      # overwrite services used for PHP tests
-      services:
-
     # run tests coverage on PHP 7.1
     - php: 7.1
       env: TASK_TESTS_COVERAGE=1
@@ -117,6 +111,11 @@ matrix:
 
   allow_failures:
     - php: nightly
+    # test coding standards
+    - php: 7.1
+      env: TASK_TESTS_PHP=0 TASK_TESTS_CS=1
+      # overwrite services used for PHP tests
+      services:
 
 install:
   - |
