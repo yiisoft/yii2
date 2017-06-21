@@ -12,8 +12,8 @@ namespace yii\db;
  *
  * @property CheckConstraint[][] $schemaChecks Check constraints for all tables in the database.
  * Each array element is an array of [[CheckConstraint]] or its child classes. This property is read-only.
- * @property DefaultConstraint[] $schemaDefaultValues Default value constraints for all tables in the database.
- * Each array element is an array of [[DefaultConstraint]] or its child classes. This property is read-only.
+ * @property DefaultValueConstraint[] $schemaDefaultValues Default value constraints for all tables in the database.
+ * Each array element is an array of [[DefaultValueConstraint]] or its child classes. This property is read-only.
  * @property ForeignKeyConstraint[][] $schemaForeignKeys Foreign keys for all tables in the database. Each
  * array element is an array of [[ForeignKeyConstraint]] or its child classes. This property is read-only.
  * @property IndexConstraint[][] $schemaIndexes Indexes for all tables in the database. Each array element is
@@ -65,8 +65,9 @@ trait ConstraintFinderTrait
 
     /**
      * Loads all default value constraints for the given table.
+     *
      * @param string $tableName table name.
-     * @return DefaultConstraint[] default value constraints for the given table.
+     * @return DefaultValueConstraint[] default value constraints for the given table.
      */
     abstract protected function loadTableDefaultValues($tableName);
 
@@ -194,7 +195,7 @@ trait ConstraintFinderTrait
      * Obtains the default value constraints information for the named table.
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param bool $refresh whether to reload the information even if it is found in the cache.
-     * @return DefaultConstraint[] table default value constraints.
+     * @return DefaultValueConstraint[] table default value constraints.
      */
     public function getTableDefaultValues($name, $refresh = false)
     {
@@ -206,8 +207,8 @@ trait ConstraintFinderTrait
      * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema name.
      * @param bool $refresh whether to fetch the latest available table schemas. If this is false,
      * cached data may be returned if available.
-     * @return DefaultConstraint[] default value constraints for all tables in the database.
-     * Each array element is an array of [[DefaultConstraint]] or its child classes.
+     * @return DefaultValueConstraint[] default value constraints for all tables in the database.
+     * Each array element is an array of [[DefaultValueConstraint]] or its child classes.
      */
     public function getSchemaDefaultValues($schema = '', $refresh = false)
     {

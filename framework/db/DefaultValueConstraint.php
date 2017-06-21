@@ -8,12 +8,12 @@
 namespace yii\db;
 
 /**
- * DefaultConstraint represents the metadata of a table `DEFAULT` constraint.
+ * DefaultValueConstraint represents the metadata of a table `DEFAULT` constraint.
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
  */
-class DefaultConstraint extends Constraint
+class DefaultValueConstraint extends Constraint
 {
     /**
      * @var mixed default value as returned by the DBMS.

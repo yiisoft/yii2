@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\db\mssql;
 
-use yii\db\DefaultConstraint;
+use yii\db\DefaultValueConstraint;
 use yiiunit\framework\db\AnyValue;
 
 /**
@@ -22,7 +22,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     {
         $result = parent::constraintsProvider();
         $result['1: check'][2][0]->expression = '([C_check]<>\'\')';
-        $result['1: default'][2][] = new DefaultConstraint([
+        $result['1: default'][2][] = new DefaultValueConstraint([
             'name' => AnyValue::getInstance(),
             'columnNames' => ['C_default'],
             'value' => '((0))',

@@ -11,7 +11,7 @@ use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderTrait;
-use yii\db\DefaultConstraint;
+use yii\db\DefaultValueConstraint;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\ViewFinderTrait;
@@ -687,7 +687,7 @@ SQL;
                         ]);
                         break;
                     case 'D':
-                        $result['defaults'][] = new DefaultConstraint([
+                        $result['defaults'][] = new DefaultValueConstraint([
                             'name' => $name,
                             'columnNames' => ArrayHelper::getColumn($constraint, 'column_name'),
                             'value' => $constraint[0]['default_expr'],
