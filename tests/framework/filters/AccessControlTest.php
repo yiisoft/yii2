@@ -67,6 +67,13 @@ class AccessControlTest extends TestCase
         $this->assertInstanceOf('\Closure', $filter->denyCallback);
     }
 
+    public function testInitSetDefault()
+    {
+        $filter = new AccessControl(['denyCallback' => function () {}]);
+
+        $this->assertTrue(is_callable($filter->denyCallback));
+    }
+
     public function testBeforeActionAccessRuleAllowReturnTrue()
     {
         /* @var $fakeRule AccessRule|ObjectProphecy */
@@ -101,6 +108,28 @@ class AccessControlTest extends TestCase
         $this->assertFalse($deny);
     }
     
+    public function testBeforeActionAccessRuleDenyAndFilledDenyCallbackReturnFalse()
+    {
+        /* @var $fakeRule AccessRule|ObjectProphecy */
+        $fakeRule = $this->prophesize(AccessRule::className());
+        $isCalledRuleDenyCallback = false;
+        $fakeRule->denyCallback = function () use (&$isCalledRuleDenyCallback) {
+            $isCalledRuleDenyCallback = true;
+        };
+        $fakeRule->allows(Argument::any(), Argument::any(), Argument::any())->willReturn(false);
+        Yii::$container->set(AccessRule::className(), $fakeRule->reveal());
+        $config = [
+            'rules' => [[]],
+            'denyCallback' => function () {},
+        ];
+        $filter = new AccessControl($config);
+
+        $deny = $filter->beforeAction(null);
+
+        $this->assertFalse($deny);
+        $this->assertTrue($isCalledRuleDenyCallback);
+    }
+
     public function testBeforeActionAccessRuleNotSuitableReturnFalse()
     {
         /* @var $fakeRule AccessRule|ObjectProphecy */
@@ -116,34 +145,6 @@ class AccessControlTest extends TestCase
         $deny = $filter->beforeAction(null);
 
         $this->assertFalse($deny);
-    }
-
-    public function testExecuteDenyCallbackEqualsNullUsedDefaultFunction()
-    {
-        $fakeFilter = $this->getMockBuilder(AccessControl::className())
-            ->setMethods(['denyAccess'])
-            ->disableOriginalConstructor()
-            ->getMock();
-        $fakeFilter->expects(self::at(0))
-            ->method('denyAccess');
-        
-        $this->invokeMethod($fakeFilter, 'executeDenyCallback', [null, null, null]);
-    }
-
-    public function testExecuteDenyCallbackEqualsFunctionUsedFunction()
-    {
-        $executeCallback = false;
-        $config = [
-            'rules' => [[]],
-            'denyCallback' => function() use(&$executeCallback) {
-                $executeCallback = true;
-            },
-
-        ];
-        $filter = new AccessControl($config);
-
-        $this->invokeMethod($filter, 'executeDenyCallback', [null, null, null]);
-        $this->assertTrue($executeCallback, 'Callback not run');
     }
 
     public function testDenyAccessUserIsGuest()

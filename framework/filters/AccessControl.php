@@ -106,8 +106,11 @@ class AccessControl extends ActionFilter
             }
         }
 
-        if ($this->denyCallback !== null && !is_callable($this->denyCallback)) {
-            throw new InvalidConfigException('AccessControl property denyCallback is not function');
+        if ($this->denyCallback === null) {
+            $this->denyCallback = [$this, 'denyAccess'];
+        }
+        elseif (!is_callable($this->denyCallback)) {
+            throw new InvalidConfigException('AccessControl::$denyCallback should be callable sounds better.');
         }
     }
 
@@ -129,29 +132,13 @@ class AccessControl extends ActionFilter
             if ($allow) {
                 return true;
             } elseif ($allow === false) {
-                return $this->executeDenyCallback($user, $rule, $action);
+                $denyCallback = isset($rule->denyCallback) ? $rule->denyCallback : $this->denyCallback;
+                call_user_func($denyCallback, $rule, $action);
+                return false;
             }
         }
 
-        return $this->executeDenyCallback($user, null, $action);
-    }
-
-    /**
-     * DenyCallback that will be called if the access should be denied to the current user.
-     * If not set denyCallback, [[denyAccess()]] will be called.
-     * @param User $user
-     * @param AccessRule $rule
-     * @param Action $action the action to be executed
-     * @return false
-     */
-    private function executeDenyCallback($user, $rule, $action)
-    {
-        if ($this->denyCallback === null) {
-            $this->denyAccess($user);
-        } else {
-            call_user_func($this->denyCallback, $rule, $action);
-        }
-
+        call_user_func($this->denyCallback, $rule, $action);
         return false;
     }
 
