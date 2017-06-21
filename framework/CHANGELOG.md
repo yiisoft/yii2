@@ -1,6 +1,9 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.0.12 under development
+--------------------------
+- Enh #13963: Refactored for yii\behaviors\TimestampBehavior. Added tests (vladis84)
 2.0.13 under development
 ------------------------
 
