@@ -112,7 +112,7 @@ class AccessControl extends ActionFilter
                 $filter->denyAccess($filter->user);
             };
         } elseif (!is_callable($this->denyCallback)) {
-            throw new InvalidConfigException('AccessControl::$denyCallback should be callable sounds better.');
+            throw new InvalidConfigException('AccessControl::$denyCallback should be a callable.');
         }
     }
 
