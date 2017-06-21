@@ -69,9 +69,9 @@ class AccessControlTest extends TestCase
 
     public function testInitSetDefault()
     {
-        $filter = new AccessControl(['denyCallback' => function () {}]);
+        $filter = new AccessControl();
 
-        $this->assertTrue(is_callable($filter->denyCallback));
+        $this->assertInstanceOf('\Closure', $filter->denyCallback);
     }
 
     public function testBeforeActionAccessRuleAllowReturnTrue()
