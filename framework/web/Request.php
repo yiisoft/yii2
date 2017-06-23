@@ -1280,6 +1280,21 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Returns \yii\web\UploadedFile instance
+     *
+     * ```php
+     * $file = $request->getFile('name.txt')
+     * ```
+     *
+     * @param string $name Filename
+     * @return null|UploadedFile
+     */
+    public function getFile(string $name)
+    {
+        return UploadedFile::getInstanceByName($name);
+    }
+
+    /**
      * Converts `$_COOKIE` into an array of [[Cookie]].
      * @return array the cookies obtained from request
      * @throws InvalidConfigException if [[cookieValidationKey]] is not set when [[enableCookieValidation]] is true
