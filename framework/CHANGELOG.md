@@ -18,6 +18,7 @@ Yii Framework 2 Change Log
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Enh #14298: The default response formatter configs defined by `yii\web\Response::defaultFormatters()` now use the array syntax (brandonkelly)
 - Bug #14304: Fixed `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` to skip prefixes in case expressions are used (samdark)
+- Bug #14334: Fixed `\yii\db\QueryBuilder::buildNotCondition` loses params when operand is `\yii\db\Expression` (Ni-san)
 - Bug #14341: Fixed regression in error handling introduced by fixing #14264 (samdark)
 
 2.0.12 June 05, 2017
