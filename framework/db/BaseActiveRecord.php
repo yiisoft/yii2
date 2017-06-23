@@ -97,6 +97,55 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     private $_related = [];
 
+    /**
+     * @inheritdoc
+     * @throws InvalidConfigException if there is no primary key defined
+     */
+    public static function findOneOrCreate($condition)
+    {
+        if ( ! is_null($model = static::findOne($condition))) {
+            return $model;
+        }
+
+        if (!ArrayHelper::isAssociative($condition)) {
+            // query by primary key
+            $primaryKey = static::primaryKey();
+            if (isset($primaryKey[0])) {
+                $condition = [$primaryKey[0] => $condition];
+            } else {
+                throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
+            }
+        }
+
+        $model = new static($condition);
+        $model->save();
+        return $model;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function findOneOrNew($condition)
+    {
+        if ( ! is_null($model = static::findOne($condition))) {
+            return $model;
+        }
+        return new static($condition);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws InvalidParamException
+     */
+    public static function findAllOrFail($condition)
+    {
+        if ( ! empty($models = static::findAll($condition))) {
+            return $models;
+        }
+
+        throw new InvalidParamException('Failed to find ' . get_called_class() . ' by condition.');
+    }
+
 
     /**
      * @inheritdoc
