@@ -16,6 +16,7 @@ Yii Framework 2 Change Log
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Enh #14298: The default response formatter configs defined by `yii\web\Response::defaultFormatters()` now use the array syntax (brandonkelly)
+- Bug #14304: Fixed `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` to skip prefixes in case expressions are used (samdark)
 
 2.0.12 June 05, 2017
 --------------------
