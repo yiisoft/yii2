@@ -318,7 +318,7 @@ properties.
 ### Dynamic Asset Bundles <span id="dynamic-asset-bundles"></span>
 
 Being a regular PHP class asset bundle can bear some extra logic related to it and may adjust its internal parameters dynamically.
-For example: you may use som sophisticated JavaScript library, which provides some internationalization packed in separated
+For example: you may use some sophisticated JavaScript library, which provides some internationalization packed in separated
 source files: each per each supported language. Thus you will need to add particular '.js' file to your page in order to
 make library translation work. This can be achieved overriding [[yii\web\AssetBundle::init()]] method:
 
