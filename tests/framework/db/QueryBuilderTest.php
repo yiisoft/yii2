@@ -1125,6 +1125,15 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             // direct conditions
             ['a = CONCAT(col1, col2)', 'a = CONCAT(col1, col2)', []],
             [new Expression('a = CONCAT(col1, :param1)', ['param1' => 'value1']), 'a = CONCAT(col1, :param1)', ['param1' => 'value1']],
+
+            // works correct:
+            [new Expression('any_expression(:a)', [':a' => 1]), 'any_expression(:a)', [':a' => 1]],
+
+            // loses params:
+            [['not', new Expression('any_expression(:a)', [':a' => 1])], 'NOT (any_expression(:a))', [':a' => 1]],
+
+            // workaround (uncomfortable if 'not' is required by dynamic condition):
+            [new Expression('NOT (any_expression(:a))', [':a' => 1]), 'NOT (any_expression(:a))', [':a' => 1]],
         ];
         switch ($this->driverName) {
             case 'sqlsrv':
