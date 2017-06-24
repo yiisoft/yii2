@@ -215,6 +215,26 @@ data filtering.
 As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
 and save them back to the attributes being validated.
 
+A complete processing of user input is shown in the following example code, which will ensure only integer
+values are stored in an attribute:
+
+```php
+['age', 'trim'],
+['age', 'default', 'value' => null],
+['age', 'integer', 'integerOnly' => true, 'min' => 0],
+['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
+```
+
+The above code will perform the following operations on the input:
+
+1. Trim whitespace from the input value.
+2. Make sure empty input is stored as `null` in the database; we differentiate between a value being "not set"
+   and the actual value `0`. If `null` is not allowed you can set another default value here.
+3. Validate that the value is an integer greater than 0 if it is not empty. Normal validators have
+   [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] set to `true`.
+4. Make sure the value is of type integer, e.g. casting a string `'42'` to integer `42`.
+   Here we set [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] to `true`, which is `false` by default
+   on the [[yii\validators\FilterValidator|filter]] validator.
 
 ### Handling Empty Inputs <span id="handling-empty-inputs"></span>
 

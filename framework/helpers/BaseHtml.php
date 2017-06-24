@@ -9,10 +9,10 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\db\ActiveRecordInterface;
 use yii\validators\StringValidator;
 use yii\web\Request;
-use yii\base\Model;
 
 /**
  * BaseHtml provides concrete implementation for [[Html]].
@@ -24,7 +24,6 @@ use yii\base\Model;
  */
 class BaseHtml
 {
-
     /**
      * @var string Regular expression used for attribute name validation.
      * @since 2.0.12

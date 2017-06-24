@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\mail;
 
@@ -16,8 +21,8 @@ class BaseMessageTest extends TestCase
     {
         $this->mockApplication([
             'components' => [
-                'mailer' => $this->createTestEmailComponent()
-            ]
+                'mailer' => $this->createTestEmailComponent(),
+            ],
         ]);
     }
 
@@ -84,49 +89,63 @@ class TestMessage extends BaseMessage
         return '';
     }
 
-    public function setCharset($charset) {}
+    public function setCharset($charset)
+    {
+    }
 
     public function getFrom()
     {
         return '';
     }
 
-    public function setFrom($from) {}
+    public function setFrom($from)
+    {
+    }
 
     public function getReplyTo()
     {
         return '';
     }
 
-    public function setReplyTo($replyTo) {}
+    public function setReplyTo($replyTo)
+    {
+    }
 
     public function getTo()
     {
         return '';
     }
 
-    public function setTo($to) {}
+    public function setTo($to)
+    {
+    }
 
     public function getCc()
     {
         return '';
     }
 
-    public function setCc($cc) {}
+    public function setCc($cc)
+    {
+    }
 
     public function getBcc()
     {
         return '';
     }
 
-    public function setBcc($bcc) {}
+    public function setBcc($bcc)
+    {
+    }
 
     public function getSubject()
     {
         return '';
     }
 
-    public function setSubject($subject) {}
+    public function setSubject($subject)
+    {
+    }
 
     public function setTextBody($text)
     {
@@ -138,13 +157,21 @@ class TestMessage extends BaseMessage
         $this->html = $html;
     }
 
-    public function attachContent($content, array $options = []) {}
+    public function attachContent($content, array $options = [])
+    {
+    }
 
-    public function attach($fileName, array $options = []) {}
+    public function attach($fileName, array $options = [])
+    {
+    }
 
-    public function embed($fileName, array $options = []) {}
+    public function embed($fileName, array $options = [])
+    {
+    }
 
-    public function embedContent($content, array $options = []) {}
+    public function embedContent($content, array $options = [])
+    {
+    }
 
     public function toString()
     {

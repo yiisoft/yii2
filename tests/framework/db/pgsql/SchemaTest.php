@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\pgsql;
 
@@ -144,7 +149,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             [1389831585],
             [922337203685477580],
             [9223372036854775807],
-            [-9223372036854775808]
+            [-9223372036854775808],
         ];
     }
 
@@ -193,5 +198,25 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $this->assertFalse($column->allowNull);
         $this->assertEquals('numeric', $column->dbType);
         $this->assertEquals(0, $column->defaultValue);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/14192
+     */
+    public function testTimestampNullDefaultValue()
+    {
+        $db = $this->getConnection(false);
+        if ($db->schema->getTableSchema('test_timestamp_default_null') !== null) {
+            $db->createCommand()->dropTable('test_timestamp_default_null')->execute();
+        }
+
+        $db->createCommand()->createTable('test_timestamp_default_null', [
+            'id' => 'pk',
+            'timestamp' => 'timestamp DEFAULT NULL',
+        ])->execute();
+
+        $db->schema->refreshTableSchema('test_timestamp_default_null');
+        $tableSchema = $db->schema->getTableSchema('test_timestamp_default_null');
+        $this->assertNull($tableSchema->getColumn('timestamp')->defaultValue);
     }
 }

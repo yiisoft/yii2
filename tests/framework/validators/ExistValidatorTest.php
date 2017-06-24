@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -14,10 +19,12 @@ use yiiunit\framework\db\DatabaseTestCase;
 
 abstract class ExistValidatorTest extends DatabaseTestCase
 {
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
         ActiveRecord::$db = $this->getConnection();
     }
 
@@ -162,5 +169,25 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $m = new Order(['id' => 10]);
         $val->validateAttribute($m, 'id');
         $this->assertTrue($m->hasErrors('id'));
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14150
+     */
+    public function testTargetTableWithAlias()
+    {
+        $oldTableName = OrderItem::$tableName;
+        OrderItem::$tableName = '{{%order_item}}';
+
+        $val = new ExistValidator([
+            'targetClass' => OrderItem::className(),
+            'targetAttribute' => ['id' => 'order_id'],
+        ]);
+
+        $m = new Order(['id' => 1]);
+        $val->validateAttribute($m, 'id');
+        $this->assertFalse($m->hasErrors('id'));
+
+        OrderItem::$tableName = $oldTableName;
     }
 }

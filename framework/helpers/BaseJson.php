@@ -7,8 +7,8 @@
 
 namespace yii\helpers;
 
-use yii\base\InvalidParamException;
 use yii\base\Arrayable;
+use yii\base\InvalidParamException;
 use yii\web\JsExpression;
 
 /**

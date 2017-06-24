@@ -172,7 +172,6 @@ SQL;
      */
     protected function getTableSequenceName($tableName)
     {
-
         $sequenceNameSql = <<<SQL
 SELECT
     UD.REFERENCED_NAME AS SEQUENCE_NAME
@@ -470,9 +469,9 @@ SQL;
      */
     protected function extractColumnSize($column, $dbType, $precision, $scale, $length)
     {
-        $column->size = trim($length) === '' ? null : (int)$length;
-        $column->precision = trim($precision) === '' ? null : (int)$precision;
-        $column->scale = trim($scale) === '' ? null : (int)$scale;
+        $column->size = trim($length) === '' ? null : (int) $length;
+        $column->precision = trim($precision) === '' ? null : (int) $precision;
+        $column->scale = trim($scale) === '' ? null : (int) $scale;
     }
 
     /**
@@ -488,7 +487,7 @@ SQL;
         if (!empty($returnColumns)) {
             $columnSchemas = $tableSchema->columns;
             $returning = [];
-            foreach ((array)$returnColumns as $name) {
+            foreach ((array) $returnColumns as $name) {
                 $phName = QueryBuilder::PARAM_PREFIX . (count($params) + count($returnParams));
                 $returnParams[$phName] = [
                     'column' => $name,

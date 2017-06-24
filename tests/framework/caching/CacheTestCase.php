@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\caching;
 
@@ -23,7 +28,7 @@ function microtime($float = false)
 
 namespace yiiunit\framework\caching;
 
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
@@ -45,7 +50,7 @@ abstract class CacheTestCase extends TestCase
 
 
     /**
-     * @return Cache
+     * @return CacheInterface
      */
     abstract protected function getCacheInstance();
 
@@ -62,7 +67,7 @@ abstract class CacheTestCase extends TestCase
     }
 
     /**
-     * @return Cache
+     * @return CacheInterface
      */
     public function prepare()
     {
@@ -253,6 +258,23 @@ abstract class CacheTestCase extends TestCase
     }
 
     public function testGetOrSet()
+    {
+        $cache = $this->prepare();
+
+        $expected = $this->getOrSetCallable($cache);
+        $callable = [$this, 'getOrSetCallable'];
+
+        $this->assertEquals(null, $cache->get('something'));
+        $this->assertEquals($expected, $cache->getOrSet('something', $callable));
+        $this->assertEquals($expected, $cache->get('something'));
+    }
+
+    public function getOrSetCallable($cache)
+    {
+        return get_class($cache);
+    }
+
+    public function testGetOrSetWithDependencies()
     {
         $cache = $this->prepare();
         $dependency = new TagDependency(['tags' => 'test']);

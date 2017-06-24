@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
@@ -32,11 +37,11 @@ class OrderItem extends ActiveRecord
     // relations used by ::testFindCompositeWithJoin()
     public function getOrderItemCompositeWithJoin()
     {
-        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ])
+        return $this->hasOne(self::className(), ['item_id' => 'item_id', 'order_id' => 'order_id'])
             ->joinWith('item');
     }
     public function getOrderItemCompositeNoJoin()
     {
-        return $this->hasOne(OrderItem::className(), ['item_id' => 'item_id', 'order_id' => 'order_id' ]);
+        return $this->hasOne(self::className(), ['item_id' => 'item_id', 'order_id' => 'order_id']);
     }
 }

@@ -71,7 +71,6 @@ class IpValidator extends Validator
      *  - `localhost`: `127.0.0.0/8', ::1`
      *  - `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
      *  - `system`: `multicast, linklocal, localhost, documentation`
-     *
      */
     public $networks = [
         '*' => ['any'],
@@ -221,11 +220,6 @@ class IpValidator extends Validator
         if (!$this->ipv4 && !$this->ipv6) {
             throw new InvalidConfigException('Both IPv4 and IPv6 checks can not be disabled at the same time');
         }
-
-        if (!defined('AF_INET6') && $this->ipv6) {
-            throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
-        }
-
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be a valid IP address.');
         }

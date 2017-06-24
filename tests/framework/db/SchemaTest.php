@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
@@ -222,7 +227,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 'phpType' => 'string',
                 'allowNull' => true,
                 'autoIncrement' => false,
-                'enumValues' => ['a', 'B','c,D'],
+                'enumValues' => ['a', 'B', 'c,D'],
                 'size' => null,
                 'precision' => null,
                 'scale' => null,
@@ -376,7 +381,7 @@ abstract class SchemaTest extends DatabaseTestCase
             $this->assertSame($expected['precision'], $column->precision, "precision of column $name does not match.");
             $this->assertSame($expected['scale'], $column->scale, "scale of column $name does not match.");
             if (is_object($expected['defaultValue'])) {
-                $this->assertTrue(is_object($column->defaultValue), "defaultValue of column $name is expected to be an object but it is not.");
+                $this->assertInternalType('object', $column->defaultValue, "defaultValue of column $name is expected to be an object but it is not.");
                 $this->assertEquals((string) $expected['defaultValue'], (string) $column->defaultValue, "defaultValue of column $name does not match.");
             } else {
                 $this->assertSame($expected['defaultValue'], $column->defaultValue, "defaultValue of column $name does not match.");
