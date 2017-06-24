@@ -62,6 +62,8 @@ class ActiveFixture extends BaseActiveFixture
         if ($this->modelClass === null && $this->tableName === null) {
             throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
         }
+        $modelClass = $this->modelClass;
+        $this->db = $modelClass::getDb();
     }
 
     /**
