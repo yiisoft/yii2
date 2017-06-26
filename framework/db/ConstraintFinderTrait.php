@@ -8,7 +8,7 @@
 namespace yii\db;
 
 /**
- * ConstraintFinderTrait provides methos for getting a table constraint information.
+ * ConstraintFinderTrait provides methods for getting a table constraint information.
  *
  * @property CheckConstraint[][] $schemaChecks Check constraints for all tables in the database.
  * Each array element is an array of [[CheckConstraint]] or its child classes. This property is read-only.
