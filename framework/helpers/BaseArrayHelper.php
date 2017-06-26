@@ -215,6 +215,75 @@ class BaseArrayHelper
     }
 
     /**
+     * Writes a value to the array at the specified path.
+     * If the array key specified path is missing, then it will be created and it is assigned an appropriate value.
+     * If the key exists, then it will be overwritten.
+     *
+     * ```php
+     *  $array = [
+     *      'key' => [
+     *          'in' => [
+     *              'val1',
+     *              'key' => 'val'
+     *          ]
+     *      ]
+     *  ];
+     * ```
+     *
+     * The result of `ArrayHelper::setValue($array, 'key.in.0', ['arr' => 'val']);` could be like the following:
+     *
+     * ```php
+     *  [
+     *      'key' => [
+     *          'in' => [
+     *              ['arr' => 'val'],
+     *              'key' => 'val'
+     *          ]
+     *      ]
+     *  ]
+     *
+     * ```
+     * The result of `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` could be like the following:
+     *
+     * ```php
+     *  [
+     *      'key' => [
+     *          'in' => [
+     *              'arr' => 'val'
+     *          ]
+     *      ]
+     *  ]
+     * ```
+     *
+     * @param array $array
+     * @param string $key
+     * @param mixed $value
+     * @return array
+     */
+    public static function setValue(array $array, $key, $value)
+    {
+        if (($pos = strpos($key, '.')) !== false) {
+            $left_key = substr($key, 0, $pos);
+            $right_key = substr($key, $pos + 1);
+
+            if (isset($array[$left_key])) {
+                $data = $array[$left_key];
+                if (!is_array($data)) {
+                    $data = [$data];
+                }
+            } else {
+                $data = [];
+            }
+
+            $array[$left_key] = static::setValue($data, $right_key, $value);
+        } else {
+            $array[$key] = $value;
+        }
+
+        return $array;
+    }
+
+    /**
      * Removes an item from an array and returns the value. If the key does not exist in the array, the default value
      * will be returned instead.
      *
