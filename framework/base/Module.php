@@ -705,4 +705,22 @@ class Module extends ServiceLocator
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
         return $event->result;
     }
+
+    /**
+     * Modules support tree traversal for service locator functionality.
+     * @inheritdoc
+     */
+    public function get($id, $throwException = true)
+    {
+        if (!isset($this->module)) {
+            return parent::get($id, $throwException);
+        }
+        try {
+            return parent::get($id, $throwException);
+        } catch (InvalidConfigException $e) {
+            return $this->module->get($id, $throwException);
+        }
+    }
+
+
 }
