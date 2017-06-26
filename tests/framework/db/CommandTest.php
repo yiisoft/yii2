@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
@@ -16,7 +21,7 @@ abstract class CommandTest extends DatabaseTestCase
 
         // null
         $command = $db->createCommand();
-        $this->assertEquals(null, $command->sql);
+        $this->assertNull($command->sql);
 
         // string
         $sql = 'SELECT * FROM customer';
@@ -43,7 +48,7 @@ abstract class CommandTest extends DatabaseTestCase
 
         $sql = 'SELECT [[id]], [[t.name]] FROM {{customer}} t';
         $command = $db->createCommand($sql);
-        $this->assertEquals("SELECT `id`, `t`.`name` FROM `customer` t", $command->sql);
+        $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
     }
 
     public function testPrepareCancel()
@@ -53,7 +58,7 @@ abstract class CommandTest extends DatabaseTestCase
         $command = $db->createCommand('SELECT * FROM {{customer}}');
         $this->assertEquals(null, $command->pdoStatement);
         $command->prepare();
-        $this->assertNotEquals(null, $command->pdoStatement);
+        $this->assertNotNull($command->pdoStatement);
         $command->cancel();
         $this->assertEquals(null, $command->pdoStatement);
     }
@@ -202,7 +207,7 @@ SQL;
         } elseif (defined('HHVM_VERSION') && $this->driverName === 'pgsql') {
             // HHVMs pgsql implementation does not seem to support blob columns correctly.
         } else {
-            $this->assertTrue(is_resource($row['blob_col']));
+            $this->assertInternalType('resource', $row['blob_col']);
             $this->assertEquals($blobCol, stream_get_contents($row['blob_col']));
         }
         $this->assertEquals($numericCol, $row['numeric_col']);
@@ -266,7 +271,7 @@ SQL;
         $command = $db->createCommand($sql);
         $command->fetchMode = \PDO::FETCH_OBJ;
         $result = $command->queryOne();
-        $this->assertTrue(is_object($result));
+        $this->assertInternalType('object', $result);
 
         // FETCH_NUM, customized in query method
         $sql = 'SELECT * FROM {{customer}}';
@@ -328,6 +333,39 @@ SQL;
             'name' => 'test',
             'address' => 'test address',
         ], $record);
+    }
+
+    /**
+     * verify that {{}} are not going to be replaced in parameters
+     */
+    public function testNoTablenameReplacement()
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->insert(
+            '{{customer}}',
+            [
+                'id' => 43,
+                'name' => 'Some {{weird}} name',
+                'email' => 'test@example.com',
+                'address' => 'Some {{%weird}} address',
+            ]
+        )->execute();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $this->assertEquals('Some {{weird}} name', $customer['name']);
+        $this->assertEquals('Some {{%weird}} address', $customer['address']);
+
+        $db->createCommand()->update(
+            '{{customer}}',
+            [
+                'name' => 'Some {{updated}} name',
+                'address' => 'Some {{%updated}} address',
+            ],
+            ['id' => 43]
+        )->execute();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $this->assertEquals('Some {{updated}} name', $customer['name']);
+        $this->assertEquals('Some {{%updated}} address', $customer['address']);
     }
 
     /**
@@ -442,7 +480,8 @@ SQL;
      * Data provider for testInsertSelectFailed
      * @return array
      */
-    public function invalidSelectColumns() {
+    public function invalidSelectColumns()
+    {
         return [
             [[]],
             ['*'],
@@ -481,7 +520,7 @@ SQL;
             break;
             case 'cubrid':
             case 'mysql':
-                $expression = "YEAR(NOW())";
+                $expression = 'YEAR(NOW())';
             break;
             case 'sqlite':
                 $expression = "strftime('%Y')";

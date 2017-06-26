@@ -57,6 +57,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '!' => '!!',
     ];
 
+
     /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted

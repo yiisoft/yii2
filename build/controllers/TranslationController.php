@@ -113,7 +113,7 @@ class TranslationController extends Controller
     protected function getDiff($translatedFilePath, $sourceFilePath)
     {
         $lastTranslationHash = shell_exec('git log -1 --format=format:"%H" -- ' . $translatedFilePath);
-        return shell_exec('git diff ' . $lastTranslationHash.'..HEAD -- ' . $sourceFilePath);
+        return shell_exec('git diff ' . $lastTranslationHash . '..HEAD -- ' . $sourceFilePath);
     }
 
     /**

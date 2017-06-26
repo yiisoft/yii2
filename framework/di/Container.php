@@ -143,7 +143,6 @@ class Container extends Component implements \Psr\Container\ContainerInterface
      * ones with the integers that represent their positions in the constructor parameter list.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
-     * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     public function get($class, $params = [], $config = [])
@@ -157,10 +156,14 @@ class Container extends Component implements \Psr\Container\ContainerInterface
 
         $definition = $this->_definitions[$class];
 
+        if (is_object($definition)) {
+            return $this->_singletons[$class] = $definition;
+        }
+
         if (is_callable($definition, true)) {
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
             $object = call_user_func($definition, $this, $params, $config);
-        } elseif (is_array($definition)) {
+        } else {
             $concrete = $definition['class'];
             unset($definition['class']);
 
@@ -172,10 +175,6 @@ class Container extends Component implements \Psr\Container\ContainerInterface
             } else {
                 $object = $this->get($concrete, $params, $config);
             }
-        } elseif (is_object($definition)) {
-            return $this->_singletons[$class] = $definition;
-        } else {
-            throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
 
         if (array_key_exists($class, $this->_singletons)) {
@@ -329,7 +328,7 @@ class Container extends Component implements \Psr\Container\ContainerInterface
                 if (strpos($class, '\\') !== false) {
                     $definition['class'] = $class;
                 } else {
-                    throw new InvalidConfigException("A class definition requires a \"class\" member.");
+                    throw new InvalidConfigException('A class definition requires a "class" member.');
                 }
             }
             return $definition;
@@ -360,7 +359,7 @@ class Container extends Component implements \Psr\Container\ContainerInterface
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list ($reflection, $dependencies) = $this->getDependencies($class);
+        list($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
@@ -545,7 +544,6 @@ class Container extends Component implements \Psr\Container\ContainerInterface
                             throw $e;
                         }
                     }
-
                 }
             } elseif ($associative && isset($params[$name])) {
                 $args[] = $params[$name];

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\base;
 
@@ -16,10 +21,10 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'container' => [
                 'definitions' => [
-                    Dispatcher::className() => DispatcherMock::className()
-                ]
+                    Dispatcher::className() => DispatcherMock::className(),
+                ],
             ],
-            'bootstrap' => ['log']
+            'bootstrap' => ['log'],
         ]);
 
         $this->assertInstanceOf(DispatcherMock::className(), Yii::$app->log);
@@ -28,5 +33,4 @@ class ApplicationTest extends TestCase
 
 class DispatcherMock extends Dispatcher
 {
-
 }

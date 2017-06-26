@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\sqlite;
 
@@ -22,7 +27,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             [
                 Schema::TYPE_PK,
                 $this->primaryKey()->first()->after('col_before'),
-                'integer PRIMARY KEY AUTOINCREMENT NOT NULL'
+                'integer PRIMARY KEY AUTOINCREMENT NOT NULL',
             ],
         ]);
     }
@@ -36,12 +41,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                     ['id' => 2, 'name' => 'yo'],
                 ])],
                 '(([[id]] = :qp0 AND [[name]] = :qp1) OR ([[id]] = :qp2 AND [[name]] = :qp3))',
-                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo']
+                [':qp0' => 1, ':qp1' => 'oy', ':qp2' => 2, ':qp3' => 'yo'],
             ],
             'composite in' => [
-                ['in', ['id', 'name'], [['id' =>1, 'name' => 'oy']]],
+                ['in', ['id', 'name'], [['id' => 1, 'name' => 'oy']]],
                 '(([[id]] = :qp0 AND [[name]] = :qp1))',
-                [':qp0' => 1, ':qp1' => 'oy']
+                [':qp0' => 1, ':qp1' => 'oy'],
             ],
         ]);
     }
@@ -81,7 +86,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testRenameTable()
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
-        $this->assertEquals("ALTER TABLE `table_from` RENAME TO `table_to`", $sql);
+        $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
     }
 
     /**
@@ -90,7 +95,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function testBuildUnion()
     {
         $expectedQuerySql = $this->replaceQuotes(
-            "SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3"
+            'SELECT `id` FROM `TotalExample` `t1` WHERE (w > 0) AND (x < 2) UNION  SELECT `id` FROM `TotalTotalExample` `t2` WHERE w > 5 UNION ALL  SELECT `id` FROM `TotalTotalExample` `t3` WHERE w = 3'
         );
         $query = new Query();
         $secondQuery = new Query();
@@ -105,7 +110,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ->from('TotalExample t1')
             ->where(['and', 'w > 0', 'x < 2'])
             ->union($secondQuery)
-            ->union($thirdQuery, TRUE);
+            ->union($thirdQuery, true);
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals([], $queryParams);

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\widgets;
 
@@ -25,15 +30,15 @@ class MenuTest extends \yiiunit\TestCase
             'items' => [
                 [
                     'encode' => false,
-                    'label'  => '<span class="glyphicon glyphicon-user"></span> Users',
-                    'url'    => '#',
+                    'label' => '<span class="glyphicon glyphicon-user"></span> Users',
+                    'url' => '#',
                 ],
                 [
                     'encode' => true,
-                    'label'  => 'Authors & Publications',
-                    'url'    => '#',
+                    'label' => 'Authors & Publications',
+                    'url' => '#',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -49,15 +54,15 @@ HTML;
             'items' => [
                 [
                     'encode' => false,
-                    'label'  => '<span class="glyphicon glyphicon-user"></span> Users',
-                    'url'    => '#',
+                    'label' => '<span class="glyphicon glyphicon-user"></span> Users',
+                    'url' => '#',
                 ],
                 [
                     'encode' => true,
-                    'label'  => 'Authors & Publications',
-                    'url'    => '#',
+                    'label' => 'Authors & Publications',
+                    'url' => '#',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -81,16 +86,16 @@ HTML;
             ],
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
+                    'label' => 'item1',
+                    'url' => '#',
                     'options' => ['tag' => 'div'],
                 ],
                 [
-                    'label'  => 'item2',
-                    'url'    => '#',
+                    'label' => 'item2',
+                    'url' => '#',
                     'options' => ['tag' => false],
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -108,15 +113,15 @@ HTML;
             ],
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
+                    'label' => 'item1',
+                    'url' => '#',
                 ],
                 [
-                    'label'  => 'item2',
-                    'url'    => '#',
+                    'label' => 'item2',
+                    'url' => '#',
                 ],
             ],
-            'itemOptions' => ['tag' => false]
+            'itemOptions' => ['tag' => false],
         ]);
 
         $expected = <<<HTML
@@ -136,18 +141,18 @@ HTML;
             'labelTemplate' => '',
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
-                    'template' => 'label: {label}; url: {url}'
+                    'label' => 'item1',
+                    'url' => '#',
+                    'template' => 'label: {label}; url: {url}',
                 ],
                 [
-                    'label'  => 'item2',
-                    'template' => 'label: {label}'
+                    'label' => 'item2',
+                    'template' => 'label: {label}',
                 ],
                 [
-                    'label'  => 'item3 (no template)',
+                    'label' => 'item3 (no template)',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML
@@ -168,23 +173,23 @@ HTML;
             'labelTemplate' => '',
             'items' => [
                 [
-                    'label'  => 'item1',
-                    'url'    => '#',
+                    'label' => 'item1',
+                    'url' => '#',
                     'template' => 'label: {label}; url: {url}',
                     'active' => function ($item, $hasActiveChild, $isItemActive, $widget) {
                         return isset($item, $hasActiveChild, $isItemActive, $widget);
-                    }
+                    },
                 ],
                 [
-                    'label'  => 'item2',
+                    'label' => 'item2',
                     'template' => 'label: {label}',
-                    'active' => false
+                    'active' => false,
                 ],
                 [
-                    'label'  => 'item3 (no template)',
-                    'active' => 'somestring'
+                    'label' => 'item3 (no template)',
+                    'active' => 'somestring',
                 ],
-            ]
+            ],
         ]);
 
         $expected = <<<HTML

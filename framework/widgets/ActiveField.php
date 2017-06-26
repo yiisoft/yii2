@@ -10,9 +10,9 @@ namespace yii\widgets;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
+use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\base\Model;
 use yii\web\JsExpression;
 
 /**
@@ -799,7 +799,7 @@ class ActiveField extends Component
         }
 
         if (!empty($validators)) {
-            $options['validate'] = new JsExpression("function (attribute, value, messages, deferred, \$form) {" . implode('', $validators) . '}');
+            $options['validate'] = new JsExpression('function (attribute, value, messages, deferred, $form) {' . implode('', $validators) . '}');
         }
 
         if ($this->addAriaAttributes === false) {
@@ -857,7 +857,7 @@ class ActiveField extends Component
     {
         if ($this->addAriaAttributes) {
             if (!isset($options['aria-required']) && $this->model->isAttributeRequired($this->attribute)) {
-                $options['aria-required'] =  'true';
+                $options['aria-required'] = 'true';
             }
             if (!isset($options['aria-invalid'])) {
                 if ($this->model->hasErrors($this->attribute)) {

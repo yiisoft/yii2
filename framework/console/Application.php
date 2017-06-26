@@ -142,7 +142,7 @@ class Application extends \yii\base\Application
      */
     public function handleRequest($request)
     {
-        list ($route, $params) = $request->resolve();
+        list($route, $params) = $request->resolve();
         $this->requestedRoute = $route;
         $result = $this->runAction($route, $params);
         if ($result instanceof Response) {
@@ -178,7 +178,7 @@ class Application extends \yii\base\Application
     {
         try {
             $res = parent::runAction($route, $params);
-            return is_object($res) ? $res : (int)$res;
+            return is_object($res) ? $res : (int) $res;
         } catch (InvalidRouteException $e) {
             throw new UnknownCommandException($route, $this, 0, $e);
         }

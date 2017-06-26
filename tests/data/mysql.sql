@@ -42,7 +42,8 @@ CREATE TABLE `customer` (
   `address` text,
   `status` int (11) DEFAULT 0,
   `profile_id` int(11),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_customer_profile_id` FOREIGN KEY (`profile_id`) REFERENCES `profile` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `category` (

@@ -87,7 +87,7 @@ class CaptchaAction extends Action
      */
     public $offset = -2;
     /**
-     * @var string the TrueType font file. This can be either a file path or path alias.
+     * @var string the TrueType font file. This can be either a file path or [path alias](guide:concept-aliases).
      */
     public $fontFile = '@yii/captcha/SpicyRice.ttf';
     /**

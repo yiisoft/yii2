@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -74,7 +79,7 @@ Exception: InvalidArgumentException', $this->getController()->runAction('error')
 
         $controller = $this->getController([
             'defaultName' => 'Oops...',
-            'defaultMessage' => 'The system is drunk'
+            'defaultMessage' => 'The system is drunk',
         ]);
 
         $this->assertEquals('Name: Oops...
@@ -103,8 +108,6 @@ Exception: yii\web\NotFoundHttpException', $this->getController()->runAction('er
         $this->expectExceptionMessageRegExp('#The view file does not exist: .*?views' . $ds . 'test' . $ds . 'error.php#');
         $this->invokeMethod($action, 'renderHtmlResponse');
     }
-
-
 }
 
 class TestController extends Controller

@@ -194,7 +194,7 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array)) ) {
+        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
             return $array[$key];
         }
 
@@ -380,7 +380,7 @@ class BaseArrayHelper
     public static function index($array, $key, $groups = [])
     {
         $result = [];
-        $groups = (array)$groups;
+        $groups = (array) $groups;
 
         foreach ($array as $element) {
             $lastArray = &$result;

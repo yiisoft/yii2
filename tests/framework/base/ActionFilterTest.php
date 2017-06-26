@@ -14,7 +14,6 @@ use yii\base\Controller;
 use yii\web\User;
 use yiiunit\TestCase;
 
-
 /**
  * @group base
  */

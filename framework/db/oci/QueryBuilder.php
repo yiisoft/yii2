@@ -61,6 +61,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '!' => '!!',
     ];
 
+
     /**
      * @inheritdoc
      */
@@ -385,5 +386,4 @@ EOD;
 
         return $this->buildCondition(['AND', $condition], $params);
     }
-
 }
