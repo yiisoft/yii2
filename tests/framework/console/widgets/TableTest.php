@@ -137,11 +137,11 @@ EXPECTED;
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent_21', 'testcontent__22', 'testcontent___23'],
             ])->setChars([
-                'top' => '+', 'top-mid' => '*', 'top-left' => '*',
-                'top-right' => '*', 'bottom' => '+', 'bottom-mid' => '*',
-                'bottom-left' => '*', 'bottom-right' => '*', 'left' => '/',
-                'left-mid' => '*', 'mid' => '+', 'mid-mid' => '*',
-                'right' => '/', 'right-mid' => '*', 'middle' => '/',
+                Table::CHAR_TOP => '+', Table::CHAR_TOP_MID => '*', Table::CHAR_TOP_LEFT => '*',
+                Table::CHAR_TOP_RIGHT => '*', Table::CHAR_BOTTOM => '+', Table::CHAR_BOTTOM_MID => '*',
+                Table::CHAR_BOTTOM_LEFT => '*', Table::CHAR_BOTTOM_RIGHT => '*', Table::CHAR_LEFT => '/',
+                Table::CHAR_LEFT_MID => '*', Table::CHAR_MID => '+', Table::CHAR_MID_MID => '*',
+                Table::CHAR_RIGHT => '/', Table::CHAR_RIGHT_MID => '*', Table::CHAR_MIDDLE => '/',
             ])->setScreenSize(200)->render()
         );
     }
