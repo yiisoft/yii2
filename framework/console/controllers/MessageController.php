@@ -538,9 +538,15 @@ EOD;
                             $category = mb_substr($category, 1, -1);
 
                             if (!$this->isCategoryIgnored($category, $ignoreCategories)) {
-                                $message = stripcslashes($buffer[2][1]);
-                                $message = mb_substr($message, 1, -1);
 
+                                $fullMessage = mb_substr($buffer[2][1], 1, -1);
+                                $i = 3;
+                                while ($i < count($buffer) - 1 && !is_array($buffer[$i]) && $buffer[$i] === '.') {
+                                    $fullMessage .= mb_substr($buffer[$i + 1][1], 1, -1);
+                                    $i += 2;
+                                }
+
+                                $message = stripcslashes($fullMessage);
                                 $messages[$category][] = $message;
                             }
 
