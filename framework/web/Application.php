@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
-use yii\helpers\Url;
 use yii\base\InvalidRouteException;
+use yii\helpers\Url;
 
 /**
  * Application is the base class for all web application classes.
@@ -79,7 +79,7 @@ class Application extends \yii\base\Application
     {
         if (empty($this->catchAll)) {
             try {
-                list ($route, $params) = $request->resolve();
+                list($route, $params) = $request->resolve();
             } catch (UrlNormalizerRedirectException $e) {
                 $url = $e->url;
                 if (is_array($url)) {

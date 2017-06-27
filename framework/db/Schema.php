@@ -8,10 +8,10 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Object;
-use yii\base\NotSupportedException;
 use yii\base\InvalidCallException;
-use yii\caching\Cache;
+use yii\base\NotSupportedException;
+use yii\base\Object;
+use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
 
 /**
@@ -130,9 +130,9 @@ abstract class Schema extends Object
         $realName = $this->getRawTableName($name);
 
         if ($db->enableSchemaCache && !in_array($name, $db->schemaCacheExclude, true)) {
-            /* @var $cache Cache */
+            /* @var $cache CacheInterface */
             $cache = is_string($db->schemaCache) ? Yii::$app->get($db->schemaCache, false) : $db->schemaCache;
-            if ($cache instanceof Cache) {
+            if ($cache instanceof CacheInterface) {
                 $key = $this->getCacheKey($name);
                 if ($refresh || ($table = $cache->get($key)) === false) {
                     $this->_tables[$name] = $table = $this->loadTableSchema($realName);
@@ -277,9 +277,9 @@ abstract class Schema extends Object
      */
     public function refresh()
     {
-        /* @var $cache Cache */
+        /* @var $cache CacheInterface */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-        if ($this->db->enableSchemaCache && $cache instanceof Cache) {
+        if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             TagDependency::invalidate($cache, $this->getCacheTag());
         }
         $this->_tableNames = [];
@@ -297,9 +297,9 @@ abstract class Schema extends Object
     {
         unset($this->_tables[$name]);
         $this->_tableNames = [];
-        /* @var $cache Cache */
+        /* @var $cache CacheInterface */
         $cache = is_string($this->db->schemaCache) ? Yii::$app->get($this->db->schemaCache, false) : $this->db->schemaCache;
-        if ($this->db->enableSchemaCache && $cache instanceof Cache) {
+        if ($this->db->enableSchemaCache && $cache instanceof CacheInterface) {
             $cache->delete($this->getCacheKey($name));
         }
     }
@@ -511,7 +511,6 @@ abstract class Schema extends Object
         }
 
         return implode('.', $parts);
-
     }
 
     /**
@@ -631,7 +630,7 @@ abstract class Schema extends Object
                 $exceptionClass = $class;
             }
         }
-        $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+        $message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
         $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
         return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
     }

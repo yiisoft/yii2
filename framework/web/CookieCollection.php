@@ -7,8 +7,8 @@
 
 namespace yii\web;
 
-use Yii;
 use ArrayIterator;
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\Object;
 

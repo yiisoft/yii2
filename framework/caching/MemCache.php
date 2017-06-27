@@ -221,7 +221,7 @@ class MemCache extends Cache
             }
 
             if ($this->useMemcached) {
-                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached();
                 if ($this->username !== null || $this->password !== null) {
                     $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
                     $this->_cache->setSaslAuthData($this->username, $this->password);
@@ -230,7 +230,7 @@ class MemCache extends Cache
                     $this->_cache->setOptions($this->options);
                 }
             } else {
-                $this->_cache = new \Memcache;
+                $this->_cache = new \Memcache();
             }
         }
 

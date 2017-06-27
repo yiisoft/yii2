@@ -7,14 +7,14 @@
 
 namespace yii\db;
 
-use yii\base\InvalidConfigException;
 use yii\base\Event;
-use yii\base\Model;
+use yii\base\InvalidCallException;
+use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\base\ModelEvent;
 use yii\base\NotSupportedException;
 use yii\base\UnknownMethodException;
-use yii\base\InvalidCallException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -370,13 +370,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasOne($class, $link)
     {
-        /* @var $class ActiveRecordInterface */
-        /* @var $query ActiveQuery */
-        $query = $class::find();
-        $query->primaryModel = $this;
-        $query->link = $link;
-        $query->multiple = false;
-        return $query;
+        return $this->createRelationQuery($class, $link, false);
     }
 
     /**
@@ -411,12 +405,27 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function hasMany($class, $link)
     {
+        return $this->createRelationQuery($class, $link, true);
+    }
+
+    /**
+     * Creates a query instance for `has-one` or `has-many` relation.
+     * @param string $class the class name of the related record.
+     * @param array $link the primary-foreign key constraint.
+     * @param bool $multiple whether this query represents a relation to more than one record.
+     * @return ActiveQueryInterface the relational query object.
+     * @since 2.0.12
+     * @see hasOne()
+     * @see hasMany()
+     */
+    protected function createRelationQuery($class, $link, $multiple)
+    {
         /* @var $class ActiveRecordInterface */
         /* @var $query ActiveQuery */
         $query = $class::find();
         $query->primaryModel = $this;
         $query->link = $link;
-        $query->multiple = true;
+        $query->multiple = $multiple;
         return $query;
     }
 
@@ -925,7 +934,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function beforeSave($insert)
     {
-        $event = new ModelEvent;
+        $event = new ModelEvent();
         $this->trigger($insert ? self::EVENT_BEFORE_INSERT : self::EVENT_BEFORE_UPDATE, $event);
 
         return $event->isValid;
@@ -969,7 +978,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *     }
      *
      *     // ...custom code here...
-           return true;
+     *     return true;
      * }
      * ```
      *
@@ -977,7 +986,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public function beforeDelete()
     {
-        $event = new ModelEvent;
+        $event = new ModelEvent();
         $this->trigger(self::EVENT_BEFORE_DELETE, $event);
 
         return $event->isValid;
@@ -1151,7 +1160,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      */
     public static function instantiate($row)
     {
-        return new static;
+        return new static();
     }
 
     /**
@@ -1557,7 +1566,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
-                    $relatedModel = new $relation->modelClass;
+                    $relatedModel = new $relation->modelClass();
                 }
             }
 
@@ -1597,7 +1606,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return '';
                     }
-                    $relatedModel = new $relation->modelClass;
+                    $relatedModel = new $relation->modelClass();
                 }
             }
 

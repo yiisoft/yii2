@@ -85,9 +85,9 @@ class OracleMutex extends DbMutex
 
         /** clean vars before using */
         $releaseOnCommit = $this->releaseOnCommit ? 'TRUE' : 'FALSE';
-        $timeout = abs((int)$timeout);
+        $timeout = abs((int) $timeout);
 
-        /** inside pl/sql scopes pdo binding not working correctly :(  */
+        // inside pl/sql scopes pdo binding not working correctly :(
         $this->db->createCommand(
                 'DECLARE
     handle VARCHAR2(128);
@@ -100,7 +100,7 @@ END;',
             ->bindParam(':lockStatus', $lockStatus, PDO::PARAM_INT, 1)
             ->execute();
 
-        return ($lockStatus === 0 || $lockStatus === '0');
+        return $lockStatus === 0 || $lockStatus === '0';
     }
 
     /**
@@ -124,6 +124,6 @@ END;',
             ->bindParam(':result', $releaseStatus, PDO::PARAM_INT, 1)
             ->execute();
 
-        return ($releaseStatus === 0 || $releaseStatus === '0');
+        return $releaseStatus === 0 || $releaseStatus === '0';
     }
 }

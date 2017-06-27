@@ -1,13 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\widgets;
 
 use Yii;
-use yii\widgets\ActiveField;
 use yii\base\DynamicModel;
-use yii\widgets\ActiveForm;
-use yii\web\View;
 use yii\web\AssetManager;
+use yii\web\View;
+use yii\widgets\ActiveField;
+use yii\widgets\ActiveForm;
 use yii\widgets\InputWidget;
 
 /**
@@ -35,8 +40,8 @@ class ActiveFieldTest extends \yiiunit\TestCase
     {
         parent::setUp();
         // dirty way to have Request object not throwing exception when running testHomeLinkNull()
-        $_SERVER['SCRIPT_FILENAME'] = "index.php";
-        $_SERVER['SCRIPT_NAME'] = "index.php";
+        $_SERVER['SCRIPT_FILENAME'] = 'index.php';
+        $_SERVER['SCRIPT_NAME'] = 'index.php';
 
         $this->mockWebApplication();
 
@@ -78,7 +83,7 @@ EOD;
     {
         // field will be the html of the model's attribute wrapped with the return string below.
         $field = $this->attributeName;
-        $content = function($field) {
+        $content = function ($field) {
             return "<div class=\"custom-container\"> $field </div>";
         };
 
@@ -119,7 +124,7 @@ EOD;
 
     public function testBeginHasErrors()
     {
-        $this->helperModel->addError($this->attributeName, "Error Message");
+        $this->helperModel->addError($this->attributeName, 'Error Message');
 
         $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename has-error">';
         $actualValue = $this->activeField->begin();
@@ -139,7 +144,7 @@ EOD;
 
     public function testBeginHasErrorAndRequired()
     {
-        $this->helperModel->addError($this->attributeName, "Error Message");
+        $this->helperModel->addError($this->attributeName, 'Error Message');
         $this->helperModel->addRule($this->attributeName, 'required');
 
         $expectedValue = '<div class="form-group field-activefieldtestmodel-attributename required has-error">';
@@ -156,13 +161,13 @@ EOD;
 
         $this->assertEquals($expectedValue, $actualValue);
 
-        $expectedValue = "";
+        $expectedValue = '';
         $this->activeField->options['tag'] = null;
         $actualValue = $this->activeField->begin();
 
         $this->assertEquals($expectedValue, $actualValue);
 
-        $expectedValue = "";
+        $expectedValue = '';
         $this->activeField->options['tag'] = false;
         $actualValue = $this->activeField->begin();
 
@@ -177,19 +182,19 @@ EOD;
         $this->assertEquals($expectedValue, $actualValue);
 
         // other tag
-        $expectedValue = "</article>";
+        $expectedValue = '</article>';
         $this->activeField->options['tag'] = 'article';
         $actualValue = $this->activeField->end();
 
         $this->assertEquals($expectedValue, $actualValue);
 
-        $expectedValue = "";
+        $expectedValue = '';
         $this->activeField->options['tag'] = false;
         $actualValue = $this->activeField->end();
 
         $this->assertEquals($expectedValue, $actualValue);
 
-        $expectedValue = "";
+        $expectedValue = '';
         $this->activeField->options['tag'] = null;
         $actualValue = $this->activeField->end();
 
@@ -266,7 +271,7 @@ EOT;
         $expectedValue = <<<EOD
 <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 EOD;
-        $this->activeField->input("password");
+        $this->activeField->input('password');
 
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
 
@@ -274,7 +279,7 @@ EOD;
         $expectedValue = <<<EOD
 <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" weird="value">
 EOD;
-        $this->activeField->input("password", ['weird' => 'value']);
+        $this->activeField->input('password', ['weird' => 'value']);
 
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
     }
@@ -305,7 +310,7 @@ EOD;
 <option value="2">Item 2</option>
 </select>
 EOD;
-        $this->activeField->listBox(["1" => "Item One", "2" => "Item 2"]);
+        $this->activeField->listBox(['1' => 'Item One', '2' => 'Item 2']);
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
 
         // https://github.com/yiisoft/yii2/issues/8848
@@ -315,7 +320,7 @@ EOD;
 <option value="value2" label="value 2">Item 2</option>
 </select>
 EOD;
-        $this->activeField->listBox(["value1" => "Item One", "value2" => "Item 2"], ['options' => [
+        $this->activeField->listBox(['value1' => 'Item One', 'value2' => 'Item 2'], ['options' => [
             'value1' => ['disabled' => true],
             'value2' => ['label' => 'value 2'],
         ]]);
@@ -328,7 +333,7 @@ EOD;
 </select>
 EOD;
         $this->activeField->model->{$this->attributeName} = 'value2';
-        $this->activeField->listBox(["value1" => "Item One", "value2" => "Item 2"], ['options' => [
+        $this->activeField->listBox(['value1' => 'Item One', 'value2' => 'Item 2'], ['options' => [
             'value1' => ['disabled' => true],
             'value2' => ['label' => 'value 2'],
         ]]);
@@ -355,7 +360,6 @@ EOD;
         // expected empty
         $actualValue = $this->activeField->getClientOptions();
         $this->assertEmpty($actualValue);
-
     }
 
     public function testGetClientOptionsClientValidation()
@@ -365,7 +369,7 @@ EOD;
         $this->activeField->model->addRule($this->attributeName, 'yiiunit\framework\widgets\TestValidator');
         $this->activeField->enableClientValidation = true;
         $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {return true;}";
+        $expectedJsExpression = 'function (attribute, value, messages, deferred, $form) {return true;}';
         $this->assertEquals($expectedJsExpression, $actualValue['validate']);
 
         $this->assertNotTrue(isset($actualValue['validateOnChange']));
@@ -400,7 +404,7 @@ EOD;
         }
 
         $actualValue = $this->activeField->getClientOptions();
-        $expectedJsExpression = "function (attribute, value, messages, deferred, \$form) {if ((function (attribute, value) "
+        $expectedJsExpression = 'function (attribute, value, messages, deferred, $form) {if ((function (attribute, value) '
             . "{ return 'yii2' == 'yii2'; })(attribute, value)) { return true; }}";
 
         $this->assertEquals($expectedJsExpression, $actualValue['validate']->expression);
@@ -534,7 +538,6 @@ EOD;
 
         return $view;
     }
-
 }
 
 class ActiveFieldTestModel extends DynamicModel
@@ -576,10 +579,9 @@ class ActiveFieldExtend extends ActiveField
 
 class TestValidator extends \yii\validators\Validator
 {
-
     public function clientValidateAttribute($object, $attribute, $view)
     {
-        return "return true;";
+        return 'return true;';
     }
 
     public function setWhenClient($js)

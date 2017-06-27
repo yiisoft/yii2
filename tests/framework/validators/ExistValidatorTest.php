@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -6,6 +11,7 @@ use Yii;
 use yii\base\Exception;
 use yii\validators\ExistValidator;
 use yiiunit\data\ar\ActiveRecord;
+use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
@@ -185,4 +191,20 @@ abstract class ExistValidatorTest extends DatabaseTestCase
 
         OrderItem::$tableName = $oldTableName;
     }
+
+    /**
+    * Test expresssion in targetAttribute
+    * @see https://github.com/yiisoft/yii2/issues/14304
+    */
+   public function testExpresionInAttributeColumnName()
+   {
+       $val = new ExistValidator([
+           'targetClass' => OrderItem::className(),
+           'targetAttribute' => ['id' => 'COALESCE(order_id, 0)'],
+       ]);
+
+       $m = new Order(['id' => 1]);
+       $val->validateAttribute($m, 'id');
+       $this->assertFalse($m->hasErrors('id'));
+   }
 }
