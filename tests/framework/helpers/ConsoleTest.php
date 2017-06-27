@@ -17,7 +17,6 @@ use yiiunit\TestCase;
  */
 class ConsoleTest extends TestCase
 {
-
     protected function setUp()
     {
         parent::setUp();
