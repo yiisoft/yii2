@@ -26,7 +26,7 @@ use yii\helpers\Console;
  *         ['col1', 'col2', 'col3'],
  *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
  *     ])
-       ->render();
+ *     ->render();
  * ```
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
