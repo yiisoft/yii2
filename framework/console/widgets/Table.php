@@ -34,6 +34,22 @@ use yii\helpers\Console;
  */
 class Table extends Object
 {
+    const CHAR_TOP = 'top';
+    const CHAR_TOP_MID = 'top-mid';
+    const CHAR_TOP_LEFT = 'top-left';
+    const CHAR_TOP_RIGHT = 'top-right';
+    const CHAR_BOTTOM = 'bottom';
+    const CHAR_BOTTOM_MID = 'bottom-mid';
+    const CHAR_BOTTOM_LEFT = 'bottom-left';
+    const CHAR_BOTTOM_RIGHT = 'bottom-right';
+    const CHAR_LEFT = 'left';
+    const CHAR_LEFT_MID = 'left-mid';
+    const CHAR_MID = 'mid';
+    const CHAR_MID_MID = 'mid-mid';
+    const CHAR_RIGHT = 'right';
+    const CHAR_RIGHT_MID = 'right-mid';
+    const CHAR_MIDDLE = 'middle';
+    
     /**
      * @var array table headers
      */
@@ -46,21 +62,21 @@ class Table extends Object
      * @var array table chars
      */
     private $_chars = [
-        'top' => '═',
-        'top-mid' => '╤',
-        'top-left' => '╔',
-        'top-right' => '╗',
-        'bottom' => '═',
-        'bottom-mid' => '╧',
-        'bottom-left' => '╚',
-        'bottom-right' => '╝',
-        'left' => '║',
-        'left-mid' => '╟',
-        'mid' => '─',
-        'mid-mid' => '┼',
-        'right' => '║',
-        'right-mid' => '╢',
-        'middle' => '│',
+        self::CHAR_TOP => '═',
+        self::CHAR_TOP_MID => '╤',
+        self::CHAR_TOP_LEFT => '╔',
+        self::CHAR_TOP_RIGHT => '╗',
+        self::CHAR_BOTTOM => '═',
+        self::CHAR_BOTTOM_MID => '╧',
+        self::CHAR_BOTTOM_LEFT => '╚',
+        self::CHAR_BOTTOM_RIGHT => '╝',
+        self::CHAR_LEFT => '║',
+        self::CHAR_LEFT_MID => '╟',
+        self::CHAR_MID => '─',
+        self::CHAR_MID_MID => '┼',
+        self::CHAR_RIGHT => '║',
+        self::CHAR_RIGHT_MID => '╢',
+        self::CHAR_MIDDLE => '│',
     ];
     /**
      * @var array table column widths
@@ -142,37 +158,37 @@ class Table extends Object
     {
         $this->calculateRowsSize();
         $buffer = $this->renderSeparator(
-            $this->_chars['top-left'],
-            $this->_chars['top-mid'],
-            $this->_chars['top'],
-            $this->_chars['top-right']
+            $this->_chars[self::CHAR_TOP_LEFT],
+            $this->_chars[self::CHAR_TOP_MID],
+            $this->_chars[self::CHAR_TOP],
+            $this->_chars[self::CHAR_TOP_RIGHT]
         );
         // Header
         $buffer .= $this->renderRow($this->_headers,
-            $this->_chars['left'],
-            $this->_chars['middle'],
-            $this->_chars['right']
+            $this->_chars[self::CHAR_LEFT],
+            $this->_chars[self::CHAR_MIDDLE],
+            $this->_chars[self::CHAR_RIGHT]
         );
 
         // Content
         foreach ($this->_rows as $row) {
             $buffer .= $this->renderSeparator(
-                $this->_chars['left-mid'],
-                $this->_chars['mid-mid'],
-                $this->_chars['mid'],
-                $this->_chars['right-mid']
+                $this->_chars[self::CHAR_LEFT_MID],
+                $this->_chars[self::CHAR_MID_MID],
+                $this->_chars[self::CHAR_MID],
+                $this->_chars[self::CHAR_RIGHT_MID]
             );
             $buffer .= $this->renderRow($row,
-                $this->_chars['left'],
-                $this->_chars['middle'],
-                $this->_chars['right']);
+                $this->_chars[self::CHAR_LEFT],
+                $this->_chars[self::CHAR_MIDDLE],
+                $this->_chars[self::CHAR_RIGHT]);
         }
 
         $buffer .= $this->renderSeparator(
-            $this->_chars['bottom-left'],
-            $this->_chars['bottom-mid'],
-            $this->_chars['bottom'],
-            $this->_chars['bottom-right']
+            $this->_chars[self::CHAR_BOTTOM_LEFT],
+            $this->_chars[self::CHAR_BOTTOM_MID],
+            $this->_chars[self::CHAR_BOTTOM],
+            $this->_chars[self::CHAR_BOTTOM_RIGHT]
         );
 
         return $buffer;
