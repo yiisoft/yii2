@@ -48,7 +48,7 @@ EXPECTED;
     {
         $table = new Table();
 
-        // test fulwidth chars
+        // test fullwidth chars
         // @see https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
         $expected = <<<EXPECTED
 ╔═════════════════╤═════════════════╤═════════════════╗
