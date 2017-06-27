@@ -1160,7 +1160,7 @@ class QueryBuilder extends \yii\base\Object
         }
 
         $operand = reset($operands);
-        if (is_array($operand)) {
+        if (is_array($operand) || $operand instanceof Expression) {
             $operand = $this->buildCondition($operand, $params);
         }
         if ($operand === '') {
