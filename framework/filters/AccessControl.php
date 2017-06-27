@@ -141,7 +141,7 @@ class AccessControl extends ActionFilter
             }
         }
 
-        call_user_func($this->denyCallback, $rule, $action);
+        call_user_func($this->denyCallback, null, $action);
         return false;
     }
 
