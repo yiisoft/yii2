@@ -1,9 +1,6 @@
 Yii Framework 2 Change Log
 ==========================
 
-2.0.12 under development
---------------------------
-- Enh #13963: Refactored for yii\behaviors\TimestampBehavior. Added tests (vladis84)
 2.0.13 under development
 ------------------------
 
@@ -15,6 +12,7 @@ Yii Framework 2 Change Log
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
+- Enh #13963: Refactored for yii\behaviors\TimestampBehavior. Added tests (vladis84)
 
 2.0.12 June 05, 2017
 --------------------
