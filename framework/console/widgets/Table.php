@@ -13,18 +13,20 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 
 /**
- * Table display a table in console.
+ * Table class displays a table in console.
  *
  * For example,
  *
  * ```php
  * $table = new Table();
  *
- * echo $table->setHeaders(['test1', 'test2', 'test3'])
- *            ->setRows([
- *               ['col1', 'col2', 'col3'],
- *               ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']]
- *      ])->render();
+ * echo $table
+ *     ->setHeaders(['test1', 'test2', 'test3'])
+ *     ->setRows([
+ *         ['col1', 'col2', 'col3'],
+ *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
+ *     ])
+       ->render();
  * ```
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
@@ -134,7 +136,7 @@ class Table extends Object
     }
 
     /**
-     * @return string the generated table
+     * @return string the rendered table
      */
     public function render()
     {
@@ -177,11 +179,13 @@ class Table extends Object
     }
 
     /**
-     * @param array $row
-     * @param string $spanLeft
-     * @param string $spanMiddle
-     * @param string $spanRight
-     * @return string the generated row
+     * Renders a row of data into a string
+     *
+     * @param array $row row of data
+     * @param string $spanLeft character for left border
+     * @param string $spanMiddle character for middle border
+     * @param string $spanRight character for right border
+     * @return string
      * @see \yii\console\widgets\Table::render()
      */
     protected function renderRow(array $row, $spanLeft, $spanMiddle, $spanRight)
@@ -231,10 +235,10 @@ class Table extends Object
     }
 
     /**
-     * @param string $spanLeft
-     * @param string $spanMid
-     * @param string $spanMidMid
-     * @param string $spanRight
+     * @param string $spanLeft character for left border
+     * @param string $spanMid character for middle border
+     * @param string $spanMidMid character for middle-middle border
+     * @param string $spanRight character for right border
      * @return string the generated separator row
      * @see \yii\console\widgets\Table::render()
      */
@@ -293,7 +297,7 @@ class Table extends Object
     }
 
     /**
-     * Calculate the height of row
+     * Calculate the height of a row
      *
      * @param array $row
      * @return int maximum row per cell
