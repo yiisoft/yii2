@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use Yii;
 use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
@@ -406,6 +407,43 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     public function hasMany($class, $link)
     {
         return $this->createRelationQuery($class, $link, true);
+    }
+
+    /**
+     * Declares a relation from the another class relation definition use `via()`.
+     *
+     * For example, to declare the `items` relation for `Order` class, we can write
+     * the following code in the `Order` class:
+     *
+     * ```php
+     * public function getItems(){
+     *     return $this->hasRelation(OrderItem::className(), 'item')->via('orderItems');
+     * }
+     * public function getOrderItems()
+     * {
+     *     return $this->hasMany(OrderItem::className(), ['order_id' => 'id']);
+     * }
+     * ```
+     *
+     * and we can write following code in the `OrderItem` class:
+     *
+     * ```php
+     * public function getItem()
+     * {
+     *     return $this->hasOne(Item::className(), ['id' => 'item_id']);
+     * }
+     * ```
+     *
+     * @param ActiveRecord|array|callable|string $target the model class who have relation
+     * @param string $relationName relation name in target (case sensitive, without 'get')
+     * @return ActiveQuery
+     */
+    public function hasRelation($target, $relationName){
+        $target instanceof ActiveRecord || $target = Yii::createObject($target);
+        /** @var ActiveQuery $relationQuery */
+        $relationQuery = $target->getRelation($relationName);
+        $relationQuery->primaryModel = $this;
+        return $relationQuery;
     }
 
     /**

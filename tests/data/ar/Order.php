@@ -78,6 +78,11 @@ class Order extends ActiveRecord
             })->orderBy('item.id');
     }
 
+    public function getItems2()
+    {
+        return $this->hasRelation(OrderItem::className(), 'item')->via('orderItems');
+    }
+
     public function getItemsIndexed()
     {
         return $this->hasMany(Item::className(), ['id' => 'item_id'])
