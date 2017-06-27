@@ -28,7 +28,7 @@ use yii\helpers\Console;
  * ```
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
- * @since 2.0.12
+ * @since 2.0.13
  */
 class Table extends Object
 {
