@@ -235,6 +235,8 @@ class Table extends Object
     }
 
     /**
+     * Renders separator
+     *
      * @param string $spanLeft character for left border
      * @param string $spanMid character for middle border
      * @param string $spanMidMid character for middle-middle border
