@@ -147,8 +147,10 @@ abstract class Schema extends Object
     abstract protected function loadTableSchema($name);
 
     /**
-     * @return ColumnSchema
-     * @throws InvalidConfigException
+     * Creates a column schema for the database.
+     * This method may be overridden by child classes to create a DBMS-specific column schema.
+     * @return ColumnSchema column schema instance.
+     * @throws InvalidConfigException if a column schema class cannot be created.
      */
     protected function createColumnSchema()
     {
