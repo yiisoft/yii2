@@ -168,9 +168,7 @@ EXPECTED;
                     ['testcontent21', 'testcontent22', 'testcontent23'],
                 ],
                 'screenWidth' => 200,
-            ]
-        ]);
+            ])
+        );
     }
-
 }
-
