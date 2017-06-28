@@ -40,7 +40,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', 'testcontent23'],
-            ])->setScreenWidth(200)->render()
+            ])->setScreenWidth(200)->run()
         );
     }
 
@@ -65,7 +65,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent２１', 'testcontent２２', 'testcontent２３'],
-            ])->setScreenWidth(200)->render()
+            ])->setScreenWidth(200)->run()
         );
     }
 
@@ -89,7 +89,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
-            ])->setScreenWidth(200)->render()
+            ])->setScreenWidth(200)->run()
         );
     }
 
@@ -113,7 +113,7 @@ EXPECTED;
             ->setRows([
                 ['testcontent1', 'testcontent2', 'testcontent3'],
                 ['testcontent21', 'testcontent22', ['col1', 'col2']],
-            ])->setScreenWidth(200)->setListPrefix('* ')->render()
+            ])->setScreenWidth(200)->setListPrefix('* ')->run()
         );
     }
 
@@ -142,8 +142,35 @@ EXPECTED;
                 Table::CHAR_BOTTOM_LEFT => '*', Table::CHAR_BOTTOM_RIGHT => '*', Table::CHAR_LEFT => '/',
                 Table::CHAR_LEFT_MID => '*', Table::CHAR_MID => '+', Table::CHAR_MID_MID => '*',
                 Table::CHAR_RIGHT => '/', Table::CHAR_RIGHT_MID => '*', Table::CHAR_MIDDLE => '/',
-            ])->setScreenWidth(200)->render()
+            ])->setScreenWidth(200)->run()
         );
     }
+    
+    public function testTableWidgetSyntax()
+    {
+        $expected = <<<EXPECTED
+╔═══════════════╤═══════════════╤═══════════════╗
+║ test1         │ test2         │ test3         ║
+╟───────────────┼───────────────┼───────────────╢
+║ testcontent1  │ testcontent2  │ testcontent3  ║
+╟───────────────┼───────────────┼───────────────╢
+║ testcontent21 │ testcontent22 │ testcontent23 ║
+╚═══════════════╧═══════════════╧═══════════════╝
+
+EXPECTED;
+
+        $this->assertEqualsWithoutLE(
+            $expected,
+            Table::widget([
+                'headers' => ['test1', 'test2', 'test3'],
+                'rows' => [
+                    ['testcontent1', 'testcontent2', 'testcontent3'],
+                    ['testcontent21', 'testcontent22', 'testcontent23'],
+                ],
+                'screenWidth' => 200,
+            ]
+        ]);
+    }
+
 }
 
