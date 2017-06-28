@@ -4,14 +4,22 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Bug #14248: `yii\console\controllers\MessageController` no longer outputs colorized filenames when console does not support text colorization (PowerGamer1)
 - Bug #14264: Fixed a bug where `yii\log\Logger::calculateTimings()` was not accepting messages with array tokens (bizley)
+- Bug #14307: Fixed PHP warning when `yii\console\UnknownCommandException` is thrown for empty command (rob006)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Enh #13787: Added `yii\db\Migration::$maxSqlOutputLength` that allows limiting number of characters for outputting SQL (thiagotalma)
+- Enh #13824: Support extracting concatenated strings in `yii message` (developeruz)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
+- Chg #14286: Used primary inputmask package name instead of an alias (samdark)
+- Enh #14298: The default response formatter configs defined by `yii\web\Response::defaultFormatters()` now use the array syntax (brandonkelly)
+- Bug #14304: Fixed `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` to skip prefixes in case expressions are used (samdark)
+- Bug #14334: Fixed `\yii\db\QueryBuilder::buildNotCondition` loses params when operand is `\yii\db\Expression` (Ni-san)
+- Bug #14341: Fixed regression in error handling introduced by fixing #14264 (samdark)
 
 2.0.12 June 05, 2017
 --------------------

@@ -28,7 +28,6 @@ env:
     - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
     - TASK_TESTS_PHP=1
     - TASK_TESTS_JS=0
-    - TASK_TESTS_CS=0
     - TASK_TESTS_COVERAGE=0
 
 
@@ -53,12 +52,6 @@ addons:
 matrix:
   fast_finish: true
   include:
-    # test coding standards
-    - php: 7.1
-      env: TASK_TESTS_PHP=0 TASK_TESTS_CS=1
-      # overwrite services used for PHP tests
-      services:
-
     # run tests coverage on PHP 7.1
     - php: 7.1
       env: TASK_TESTS_COVERAGE=1
@@ -186,14 +179,6 @@ before_script:
 
 
 script:
-  # test coding standards
-  - |
-    if [ $TASK_TESTS_CS == 1 ]; then
-      composer validate --no-check-lock
-      cd framework && composer validate --no-check-lock && cd ..
-      vendor/bin/php-cs-fixer --diff --dry-run -v fix
-    fi
-
   # PHP tests
   - |
     if [ $TASK_TESTS_PHP == 1 ]; then

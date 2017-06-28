@@ -336,6 +336,39 @@ SQL;
     }
 
     /**
+     * verify that {{}} are not going to be replaced in parameters
+     */
+    public function testNoTablenameReplacement()
+    {
+        $db = $this->getConnection();
+
+        $db->createCommand()->insert(
+            '{{customer}}',
+            [
+                'id' => 43,
+                'name' => 'Some {{weird}} name',
+                'email' => 'test@example.com',
+                'address' => 'Some {{%weird}} address',
+            ]
+        )->execute();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $this->assertEquals('Some {{weird}} name', $customer['name']);
+        $this->assertEquals('Some {{%weird}} address', $customer['address']);
+
+        $db->createCommand()->update(
+            '{{customer}}',
+            [
+                'name' => 'Some {{updated}} name',
+                'address' => 'Some {{%updated}} address',
+            ],
+            ['id' => 43]
+        )->execute();
+        $customer = $db->createCommand('SELECT * FROM {{customer}} WHERE id=43')->queryOne();
+        $this->assertEquals('Some {{updated}} name', $customer['name']);
+        $this->assertEquals('Some {{%updated}} address', $customer['address']);
+    }
+
+    /**
      * Test INSERT INTO ... SELECT SQL statement
      */
     public function testInsertSelect()

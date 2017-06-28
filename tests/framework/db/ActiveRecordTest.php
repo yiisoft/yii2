@@ -1480,4 +1480,30 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         // Make sure that only links were removed, the items were not removed
         $this->assertEquals(3, $itemClass::find()->where(['category_id' => 2])->count());
     }
+
+    /**
+     * verify that {{}} are not going to be replaced in parameters
+     */
+    public function testNoTablenameReplacement()
+    {
+        /** @var Customer $customer */
+        $class = $this->getCustomerClass();
+        $customer = new $class();
+        $customer->name = 'Some {{weird}} name';
+        $customer->email = 'test@example.com';
+        $customer->address = 'Some {{%weird}} address';
+        $customer->insert(false);
+        $customer->refresh();
+
+        $this->assertEquals('Some {{weird}} name', $customer->name);
+        $this->assertEquals('Some {{%weird}} address', $customer->address);
+
+        $customer->name = 'Some {{updated}} name';
+        $customer->address = 'Some {{%updated}} address';
+        $customer->update(false);
+
+        $this->assertEquals('Some {{updated}} name', $customer->name);
+        $this->assertEquals('Some {{%updated}} address', $customer->address);
+    }
+
 }

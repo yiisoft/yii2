@@ -11,6 +11,7 @@ use Yii;
 use yii\validators\UniqueValidator;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Profile;
@@ -411,5 +412,26 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model->save(false);
         $validator->validateAttribute($model, 'id');
         $this->assertFalse($model->hasErrors());
+    }
+
+    /**
+     * Test expresssion in targetAttribute
+     * @see https://github.com/yiisoft/yii2/issues/14304
+     */
+    public function testExpresionInAttributeColumnName()
+    {
+        $validator = new UniqueValidator([
+            'targetAttribute' => [
+                'title' => 'LOWER(title)',
+            ],
+        ]);
+        $model = new Document();
+        $model->id = 42;
+        $model->title = 'Test';
+        $model->content = 'test';
+        $model->version = 1;
+        $model->save(false);
+        $validator->validateAttribute($model, 'title');
+        $this->assertFalse($model->hasErrors(), 'There were errors: ' . json_encode($model->getErrors()));
     }
 }
