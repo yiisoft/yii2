@@ -9,6 +9,7 @@ namespace yii\console\widgets;
 
 use Yii;
 use yii\base\Object;
+use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
 
@@ -26,13 +27,24 @@ use yii\helpers\Console;
  *         ['col1', 'col2', 'col3'],
  *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
  *     ])
- *     ->render();
+ *     ->run();
  * ```
+ *
+ * or
+ *
+ * ```php
+ * echo Table::widget(
+ *     'headers' => ['test1', 'test2', 'test3'],
+ *     'rows' => [
+ *         ['col1', 'col2', 'col3'],
+ *         ['col1', 'col2', ['col3-0', 'col3-1', 'col3-2']],
+ *     ],
+ * );
  *
  * @author Daniel Gomez Pan <pana_1990@hotmail.com>
  * @since 2.0.13
  */
-class Table extends Object
+class Table extends Widget
 {
     const CHAR_TOP = 'top';
     const CHAR_TOP_MID = 'top-mid';
@@ -154,7 +166,7 @@ class Table extends Object
     /**
      * @return string the rendered table
      */
-    public function render()
+    public function run()
     {
         $this->calculateRowsSize();
         $buffer = $this->renderSeparator(
