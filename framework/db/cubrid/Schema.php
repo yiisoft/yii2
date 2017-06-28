@@ -7,6 +7,7 @@
 
 namespace yii\db\cubrid;
 
+use yii\base\NotSupportedException;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
@@ -210,18 +211,20 @@ class Schema extends \yii\db\Schema
 
     /**
      * @inheritDoc
+     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
     {
-        return [];
+        throw new NotSupportedException('CUBRID does not support check constraints.');
     }
 
     /**
      * @inheritDoc
+     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
     {
-        return [];
+        throw new NotSupportedException('CUBRID does not support default value constraints.');
     }
 
     /**

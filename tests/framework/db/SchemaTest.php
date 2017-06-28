@@ -485,7 +485,7 @@ abstract class SchemaTest extends DatabaseTestCase
                     'isUnique' => true,
                 ]),
             ]],
-            '1: default' => ['T_constraints_1', 'defaultValues', []],
+            '1: default' => ['T_constraints_1', 'defaultValues', false],
 
             '2: primary key' => ['T_constraints_2', 'primaryKey', new Constraint([
                 'name' => 'CN_pk',
@@ -518,7 +518,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 ]),
             ]],
             '2: check' => ['T_constraints_2', 'checks', []],
-            '2: default' => ['T_constraints_2', 'defaultValues', []],
+            '2: default' => ['T_constraints_2', 'defaultValues', false],
 
             '3: primary key' => ['T_constraints_3', 'primaryKey', null],
             '3: foreign key' => ['T_constraints_3', 'foreignKeys', [
@@ -541,7 +541,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 ]),
             ]],
             '3: check' => ['T_constraints_3', 'checks', []],
-            '3: default' => ['T_constraints_3', 'defaultValues', []],
+            '3: default' => ['T_constraints_3', 'defaultValues', false],
 
             '4: primary key' => ['T_constraints_4', 'primaryKey', new Constraint([
                 'name' => AnyValue::getInstance(),
@@ -554,7 +554,7 @@ abstract class SchemaTest extends DatabaseTestCase
                 ]),
             ]],
             '4: check' => ['T_constraints_4', 'checks', []],
-            '4: default' => ['T_constraints_4', 'defaultValues', []],
+            '4: default' => ['T_constraints_4', 'defaultValues', false],
         ];
     }
 
@@ -573,6 +573,10 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testTableSchemaConstraints($tableName, $type, $expected)
     {
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
         $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
         $this->assertMetadataEquals($expected, $constraints);
     }
@@ -582,6 +586,10 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
     {
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
         $connection = $this->getConnection(false);
         $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_UPPER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);
@@ -593,6 +601,10 @@ abstract class SchemaTest extends DatabaseTestCase
      */
     public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
     {
+        if ($expected === false) {
+            $this->expectException('yii\base\NotSupportedException');
+        }
+
         $connection = $this->getConnection(false);
         $connection->getSlavePdo()->setAttribute(PDO::ATTR_CASE, PDO::CASE_LOWER);
         $constraints = $connection->getSchema()->{'getTable' . ucfirst($type)}($tableName, true);

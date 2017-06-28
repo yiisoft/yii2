@@ -8,6 +8,7 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidConfigException;
+use yii\base\NotSupportedException;
 use yii\db\ColumnSchema;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderTrait;
@@ -177,18 +178,20 @@ SQL;
 
     /**
      * @inheritDoc
+     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableChecks($tableName)
     {
-        return [];
+        throw new NotSupportedException('MySQL does not support check constraints.');
     }
 
     /**
      * @inheritDoc
+     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
     {
-        return [];
+        throw new NotSupportedException('MySQL does not support default value constraints.');
     }
 
     /**

@@ -82,14 +82,18 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         foreach ($result as $name => $constraints) {
             $result[$name][2] = $this->convertPropertiesToAnycase($constraints[2]);
         }
-        $result['1: check'][2] = [];
+        $result['1: check'][2] = false;
         unset($result['1: index'][2][0]);
 
+        $result['2: check'][2] = false;
         unset($result['2: index'][2][0]);
 
         $result['3: foreign key'][2][0]->onDelete = 'RESTRICT';
         $result['3: foreign key'][2][0]->onUpdate = 'RESTRICT';
         $result['3: index'][2] = [];
+        $result['3: check'][2] = false;
+
+        $result['4: check'][2] = false;
         return $result;
     }
 

@@ -8,6 +8,7 @@
 namespace yii\db\oci;
 
 use yii\base\InvalidCallException;
+use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\ColumnSchema;
 use yii\db\Connection;
@@ -220,10 +221,11 @@ SQL;
 
     /**
      * @inheritDoc
+     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
     {
-        return [];
+        throw new NotSupportedException('Oracle does not support default value constraints.');
     }
 
     /**

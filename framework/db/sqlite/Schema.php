@@ -174,10 +174,11 @@ class Schema extends \yii\db\Schema
 
     /**
      * @inheritDoc
+     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
     {
-        return [];
+        throw new NotSupportedException('SQLite does not support default value constraints.');
     }
 
     /**
@@ -362,7 +363,7 @@ class Schema extends \yii\db\Schema
      * Sets the isolation level of the current transaction.
      * @param string $level The transaction isolation level to use for this transaction.
      * This can be either [[Transaction::READ_UNCOMMITTED]] or [[Transaction::SERIALIZABLE]].
-     * @throws \yii\base\NotSupportedException when unsupported isolation levels are used.
+     * @throws NotSupportedException when unsupported isolation levels are used.
      * SQLite only supports SERIALIZABLE and READ UNCOMMITTED.
      * @see http://www.sqlite.org/pragma.html#pragma_read_uncommitted
      */

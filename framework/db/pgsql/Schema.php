@@ -7,6 +7,7 @@
 
 namespace yii\db\pgsql;
 
+use yii\base\NotSupportedException;
 use yii\db\CheckConstraint;
 use yii\db\Constraint;
 use yii\db\ConstraintFinderTrait;
@@ -260,10 +261,11 @@ SQL;
 
     /**
      * @inheritDoc
+     * @throws NotSupportedException if this method is called.
      */
     protected function loadTableDefaultValues($tableName)
     {
-        return [];
+        throw new NotSupportedException('PostgreSQL does not support default value constraints.');
     }
 
     /**
