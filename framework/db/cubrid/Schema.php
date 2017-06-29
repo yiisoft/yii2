@@ -269,7 +269,7 @@ class Schema extends \yii\db\Schema
     /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * @return \yii\db\ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
     {
