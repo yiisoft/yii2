@@ -122,7 +122,8 @@ class FileTarget extends Target
             @fclose($fp);
             $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
             if ($writeResult === false) {
-                throw new LogRuntimeException('Unable to export log through file!');
+                $error = error_get_last();
+                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
             }
             if ($writeResult < strlen($text)) {
                 throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of " . strlen($text) . ' bytes.');
@@ -130,7 +131,8 @@ class FileTarget extends Target
         } else {
             $writeResult = @fwrite($fp, $text);
             if ($writeResult === false) {
-                throw new LogRuntimeException('Unable to export log through file!');
+                $error = error_get_last();
+                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
             }
             if ($writeResult < strlen($text)) {
                 throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of " . strlen($text) . ' bytes.');
