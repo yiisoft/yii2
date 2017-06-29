@@ -15,6 +15,7 @@ Yii Framework 2 Change Log
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
+- Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990, rob006, samdark, tonykor)
 - Chg #14286: Used primary inputmask package name instead of an alias (samdark)
 - Enh #14298: The default response formatter configs defined by `yii\web\Response::defaultFormatters()` now use the array syntax (brandonkelly)
 - Bug #14304: Fixed `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` to skip prefixes in case expressions are used (samdark)
