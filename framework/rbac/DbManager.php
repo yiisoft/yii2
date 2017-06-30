@@ -617,7 +617,40 @@ class DbManager extends BaseManager
             }
         }
     }
-
+    
+    /**
+     * Convert binary column to string
+     * @param string $column the name of column to be converted
+     */       
+    protected function toStringBinaryColumn($column) {  
+        if ($this->db->getDriverName() == 'sqlsrv') {
+            $toType = $this->db->charset == 'utf8' ? 'NVARCHAR(MAX)' : 'VARCHAR(MAX)';
+            return new Expression("CONVERT($toType,$column) $column");  
+        }
+        return $column;
+    }
+    
+    /**
+     * Check if the columns of type binary and convert it to string
+     * @param string $table the name of table
+     * @param array $columns the column names
+     */    
+    protected function normalizeColumns($table,$columns) {
+        if (($tableSchema = $this->db->getSchema()->getTableSchema($table)) !== null) {
+            $result = [];
+            $columnSchemas = $tableSchema->columns;
+            foreach ($columns as $column) {
+                if (isset($columnSchemas[$column]) && $columnSchemas[$column]->type === \yii\db\Schema::TYPE_BINARY) {
+                    $result[] = $this->toStringBinaryColumn($column);
+                } else {
+                    $result[] = $column;
+                }   
+            }
+            return $result;
+        }
+        return $columns;
+    }
+    
     /**
      * @inheritdoc
      */
@@ -626,8 +659,8 @@ class DbManager extends BaseManager
         if ($this->rules !== null) {
             return isset($this->rules[$name]) ? $this->rules[$name] : null;
         }
-
-        $row = (new Query())->select(['data'])
+        
+        $row = (new Query)->select($this->normalizeColumns($this->ruleTable,['data']))        
             ->from($this->ruleTable)
             ->where(['name' => $name])
             ->one($this->db);
