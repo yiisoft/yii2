@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\db;
 
+use yii\data\Pagination;
 use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
@@ -255,6 +256,26 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertNotContains(1, $result);
         $this->assertContains(2, $result);
         $this->assertContains(3, $result);
+    }
+
+    public function testLimitOffsetWithPagination()
+    {
+        $query = new Query();
+        $pagination = new Pagination(['totalCount' => 100, 'defaultPageSize' => 10]);
+        $pagination->setPage(2);
+        $query->page($pagination);
+
+        $this->assertEquals(20, $query->offset);
+        $this->assertEquals(10, $query->limit);
+    }
+
+    public function testLimitOffsetWithArray()
+    {
+        $query = new Query();
+        $query->page([20, 10]);
+
+        $this->assertEquals(20, $query->offset);
+        $this->assertEquals(10, $query->limit);
     }
 
     public function testUnion()

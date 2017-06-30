@@ -8,6 +8,7 @@
 namespace yii\db;
 
 use yii\base\NotSupportedException;
+use yii\data\Pagination;
 
 /**
  * The BaseQuery trait represents the minimum method set of a database Query.
@@ -393,6 +394,25 @@ trait QueryTrait
     public function offset($offset)
     {
         $this->offset = $offset;
+        return $this;
+    }
+
+    /**
+     * Sets both OFFSET and LIMIT part of the query with Pagination or an array.
+     * @param $page Pagination|array Offset and limit values.
+     * Page info can be specified in either a Pagination instance or an array
+     * (e.g. `[offset, limit]`).
+     * @return $this the query object itself
+     */
+    public function page($page)
+    {
+        if ($page instanceof Pagination) {
+            $this->offset($page->offset);
+            $this->limit($page->limit);
+        } elseif (is_array($page)) {
+            $this->offset($page[0]);
+            $this->limit($page[1]);
+        }
         return $this;
     }
 
