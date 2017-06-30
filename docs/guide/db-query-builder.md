@@ -473,6 +473,23 @@ If you specify an invalid limit or offset (e.g. a negative value), it will be ig
   statement that emulates the `LIMIT`/`OFFSET` behavior.
 
 
+### [[yii\db\Query::page()|page()]] <span id="page"></span>
+
+The [[yii\db\Query::page()|page()]] method specify both the `LIMIT` and `OFFSET` fragments of a SQL query at one time.
+For example,
+
+```php
+// ... LIMIT 10 OFFSET 20
+// use an array
+$query->page([20, 10]); // equals to $query->offset(20)->limit(10);
+// OR use pagination
+$pagination = new \yii\data\Pagination(['totalCount'=>$query->count()]);
+$query->page($pagination); // equals to $query->offset($pagination->getOffset())->limit($pagination->getLimit());
+```
+This method use [limit() and offset()](#limit-offset) to specify `LIMIT` and `OFFSET` fragments.
+Please refer to the documentation for [limit() and offset()](#limit-offset) for more details.
+
+
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
 The [[yii\db\Query::join()|join()]] method specifies the `JOIN` fragment of a SQL query. For example,
