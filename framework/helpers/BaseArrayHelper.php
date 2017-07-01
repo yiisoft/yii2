@@ -255,19 +255,19 @@ class BaseArrayHelper
      *  ]
      * ```
      *
-     * @param array $array
-     * @param string $key
-     * @param mixed $value
-     * @return array
+     * @param array $array the array to add the values in
+     * @param string $path the path by which you want to replace or add `$value`
+     * @param mixed $value the value to be written at the specified value of `$path`
+     * @return array a new array with the data that is needed to add
      */
-    public static function setValue(array $array, $key, $value)
+    public static function setValue(array $array, $path, $value)
     {
-        if (($pos = strpos($key, '.')) !== false) {
-            $left_key = substr($key, 0, $pos);
-            $right_key = substr($key, $pos + 1);
+        if (($pos = strpos($path, '.')) !== false) {
+            $leftKey = substr($path, 0, $pos);
+            $rightKey = substr($path, $pos + 1);
 
-            if (isset($array[$left_key])) {
-                $data = $array[$left_key];
+            if (isset($array[$leftKey])) {
+                $data = $array[$leftKey];
                 if (!is_array($data)) {
                     $data = [$data];
                 }
@@ -275,9 +275,9 @@ class BaseArrayHelper
                 $data = [];
             }
 
-            $array[$left_key] = static::setValue($data, $right_key, $value);
+            $array[$leftKey] = static::setValue($data, $rightKey, $value);
         } else {
-            $array[$key] = $value;
+            $array[$path] = $value;
         }
 
         return $array;
