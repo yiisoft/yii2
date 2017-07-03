@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Bug #14341: Fixed regression in error handling introduced by fixing #14264 (samdark)
 - Enh #13378: Added skipOnEmpty option to SluggableBehaviour (andrewnester)
 - Enh #14389: Optimize `Validator::validateAttributes()` by calling `attributeNames()` only once (nicdnep)
+- Enh #6644: Added `yii\helpers\ArrayHelper::setValue()` (LAV45)
 
 2.0.12 June 05, 2017
 --------------------
