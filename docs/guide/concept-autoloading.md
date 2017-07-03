@@ -37,6 +37,8 @@ the front-end tier has a root alias `@frontend`, while the back-end tier root al
 you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
 allow these classes to be autoloaded by the Yii autoloader.
 
+To add a custom namespace to the autoloader you need to define an alias for the base directory of the namespace using [[Yii::setAlias()]].
+For example to load classes in the `foo` namespace that are located in the `path/to/foo` directory you will call `Yii::setAlias('@foo', 'path/to/foo')`.
 
 Class Map <span id="class-map"></span>
 ---------

@@ -65,22 +65,34 @@ class RateLimiter extends ActionFilter
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        if ($this->request === null) {
+            $this->request = Yii::$app->getRequest();
+        }
+        if ($this->response === null) {
+            $this->response = Yii::$app->getResponse();
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function beforeAction($action)
     {
-        $user = $this->user ? : (Yii::$app->getUser() ? Yii::$app->getUser()->getIdentity(false) : null);
-        if ($user instanceof RateLimitInterface) {
+        if ($this->user === null && Yii::$app->getUser()) {
+            $this->user = Yii::$app->getUser()->getIdentity(false);
+        }
+
+        if ($this->user instanceof RateLimitInterface) {
             Yii::trace('Check rate limit', __METHOD__);
-            $this->checkRateLimit(
-                $user,
-                $this->request ? : Yii::$app->getRequest(),
-                $this->response ? : Yii::$app->getResponse(),
-                $action
-            );
-        } elseif ($user) {
+            $this->checkRateLimit($this->user, $this->request, $this->response, $action);
+        } elseif ($this->user) {
             Yii::info('Rate limit skipped: "user" does not implement RateLimitInterface.', __METHOD__);
         } else {
             Yii::info('Rate limit skipped: user not logged in.', __METHOD__);
         }
+
         return true;
     }
 
@@ -96,8 +108,8 @@ class RateLimiter extends ActionFilter
     {
         $current = time();
 
-        list ($limit, $window) = $user->getRateLimit($request, $action);
-        list ($allowance, $timestamp) = $user->loadAllowance($request, $action);
+        list($limit, $window) = $user->getRateLimit($request, $action);
+        list($allowance, $timestamp) = $user->loadAllowance($request, $action);
 
         $allowance += (int) (($current - $timestamp) * $limit / $window);
         if ($allowance > $limit) {

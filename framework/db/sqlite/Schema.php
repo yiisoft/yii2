@@ -8,9 +8,9 @@
 namespace yii\db\sqlite;
 
 use yii\base\NotSupportedException;
+use yii\db\ColumnSchema;
 use yii\db\Expression;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 use yii\db\Transaction;
 
 /**
@@ -119,7 +119,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadTableSchema($name)
     {
-        $table = new TableSchema;
+        $table = new TableSchema();
         $table->name = $name;
         $table->fullName = $name;
 

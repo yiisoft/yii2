@@ -130,7 +130,7 @@ abstract class MultiFieldSession extends Session
             $extraData = call_user_func($this->readCallback, $fields);
             if (!empty($extraData)) {
                 session_decode($fields['data']);
-                $_SESSION = array_merge((array)$_SESSION, (array)$extraData);
+                $_SESSION = array_merge((array) $_SESSION, (array) $extraData);
                 return session_encode();
             }
             return $fields['data'];

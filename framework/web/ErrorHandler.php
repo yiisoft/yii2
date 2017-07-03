@@ -8,8 +8,8 @@
 namespace yii\web;
 
 use Yii;
-use yii\base\Exception;
 use yii\base\ErrorException;
+use yii\base\Exception;
 use yii\base\UserException;
 use yii\helpers\VarDumper;
 
@@ -191,7 +191,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         $url = null;
 
         $shouldGenerateLink = true;
-        if ($method !== null) {
+        if ($method !== null && substr_compare($method, '{closure}', -9) !== 0) {
             $reflection = new \ReflectionMethod($class, $method);
             $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
         }
@@ -306,11 +306,11 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
     /**
      * Renders call stack.
-     * @param \Exception $exception exception to get call stack from
+     * @param \Exception|\ParseError $exception exception to get call stack from
      * @return string HTML content of the rendered call stack.
      * @since 2.0.12
      */
-    public function renderCallStack(\Exception $exception)
+    public function renderCallStack($exception)
     {
         $out = '<ul>';
         $out .= $this->renderCallStackItem($exception->getFile(), $exception->getLine(), null, null, [], 1);
@@ -419,8 +419,8 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         foreach ($args as $key => $value) {
             $count++;
-            if ($count>=5) {
-                if ($count>5) {
+            if ($count >= 5) {
+                if ($count > 5) {
                     unset($args[$key]);
                 } else {
                     $args[$key] = '...';

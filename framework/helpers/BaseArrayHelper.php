@@ -194,7 +194,7 @@ class BaseArrayHelper
             $key = $lastKey;
         }
 
-        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array)) ) {
+        if (is_array($array) && (isset($array[$key]) || array_key_exists($key, $array))) {
             return $array[$key];
         }
 
@@ -380,7 +380,7 @@ class BaseArrayHelper
     public static function index($array, $key, $groups = [])
     {
         $result = [];
-        $groups = (array)$groups;
+        $groups = (array) $groups;
 
         foreach ($array as $element) {
             $lastArray = &$result;
@@ -761,7 +761,7 @@ class BaseArrayHelper
      * but additionally works on objects that implement the [[\Traversable]] interface.
      * @param mixed $var The variable being evaluated.
      * @return bool whether $var is array-like
-     * @see http://php.net/manual/en/function.is_array.php
+     * @see http://php.net/manual/en/function.is-array.php
      * @since 2.0.8
      */
     public static function isTraversable($var)

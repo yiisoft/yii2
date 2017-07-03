@@ -32,7 +32,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      */
     public $data = [];
     /**
-     * @var string|bool the file path or path alias of the data file that contains the fixture data
+     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
@@ -65,10 +65,8 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
         $row = $this->data[$name];
         /* @var $modelClass \yii\db\ActiveRecord */
         $modelClass = $this->modelClass;
-        /* @var $model \yii\db\ActiveRecord */
-        $model = new $modelClass;
         $keys = [];
-        foreach ($model->primaryKey() as $key) {
+        foreach ($modelClass::primaryKey() as $key) {
             $keys[$key] = isset($row[$key]) ? $row[$key] : null;
         }
 

@@ -1,12 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\base;
 
 use Yii;
 use yii\log\Dispatcher;
-use yiiunit\data\ar\Cat;
-use yiiunit\data\ar\Order;
-use yiiunit\data\ar\Type;
 use yiiunit\TestCase;
 
 /**
@@ -19,10 +21,10 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'container' => [
                 'definitions' => [
-                    Dispatcher::className() => DispatcherMock::className()
-                ]
+                    Dispatcher::className() => DispatcherMock::className(),
+                ],
             ],
-            'bootstrap' => ['log']
+            'bootstrap' => ['log'],
         ]);
 
         $this->assertInstanceOf(DispatcherMock::className(), Yii::$app->log);
@@ -31,5 +33,4 @@ class ApplicationTest extends TestCase
 
 class DispatcherMock extends Dispatcher
 {
-
 }

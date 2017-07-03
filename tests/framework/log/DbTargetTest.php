@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\log;
 
 use Yii;
@@ -37,7 +43,7 @@ abstract class DbTargetTest extends TestCase
                     'db' => static::getConnection(),
                     'log' => [
                         'targets' => [
-                            [
+                            'db' => [
                                 'class' => 'yii\log\DbTarget',
                                 'levels' => ['warning'],
                                 'logTable' => self::$logTable,
@@ -50,7 +56,7 @@ abstract class DbTargetTest extends TestCase
 
         ob_start();
         $result = Yii::$app->runAction($route, $params);
-        echo "Result is " . $result;
+        echo 'Result is ' . $result;
         if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {
@@ -58,9 +64,9 @@ abstract class DbTargetTest extends TestCase
         }
     }
 
-    public static function setUpBeforeClass()
+    public function setUp()
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
         $databases = static::getParam('databases');
         static::$database = $databases[static::$driverName];
         $pdo_database = 'pdo_' . static::$driverName;
@@ -72,20 +78,14 @@ abstract class DbTargetTest extends TestCase
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
     }
 
-    public static function tearDownAfterClass()
+    public function tearDown()
     {
+        self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/log/migrations/', 'interactive' => false]);
         if (static::$db) {
             static::$db->close();
         }
-        Yii::$app = null;
-        parent::tearDownAfterClass();
-    }
-
-    protected function tearDown()
-    {
         parent::tearDown();
-        self::getConnection()->createCommand()->truncateTable(self::$logTable)->execute();
     }
 
     /**
@@ -97,7 +97,7 @@ abstract class DbTargetTest extends TestCase
     public static function getConnection()
     {
         if (static::$db == null) {
-            $db = new Connection;
+            $db = new Connection();
             $db->dsn = static::$database['dsn'];
             if (isset(static::$database['username'])) {
                 $db->username = static::$database['username'];
@@ -130,7 +130,7 @@ abstract class DbTargetTest extends TestCase
             Logger::LEVEL_WARNING,
             'test',
             $time,
-            []
+            [],
         ];
 
         $logger->messages[] = $messsageData;
@@ -139,5 +139,35 @@ abstract class DbTargetTest extends TestCase
         $query = (new Query())->select('log_time')->from(self::$logTable)->where(['category' => 'test']);
         $loggedTime = $query->createCommand(self::getConnection())->queryScalar();
         static::assertEquals($time, $loggedTime);
+    }
+
+    public function testTransactionRollBack()
+    {
+        $db = self::getConnection();
+        $logger = Yii::getLogger();
+
+        $tx = $db->beginTransaction();
+
+        $messsageData = [
+            'test',
+            Logger::LEVEL_WARNING,
+            'test',
+            time(),
+            [],
+        ];
+
+        $logger->messages[] = $messsageData;
+        $logger->flush(true);
+
+        // current db connection should still have a transaction
+        $this->assertNotNull($db->transaction);
+        // log db connection should not have transaction
+        $this->assertNull(Yii::$app->log->targets['db']->db->transaction);
+
+        $tx->rollBack();
+
+        $query = (new Query())->select('COUNT(*)')->from(self::$logTable)->where(['category' => 'test', 'message' => 'test']);
+        $count = $query->createCommand($db)->queryScalar();
+        static::assertEquals(1, $count);
     }
 }

@@ -249,6 +249,10 @@ class BaseFileHelper
      * - afterCopy: callback, a PHP callback that is called after each sub-directory or file is successfully copied.
      *   The signature of the callback should be: `function ($from, $to)`, where `$from` is the sub-directory or
      *   file copied from, while `$to` is the copy target.
+     * - copyEmptyDirectories: boolean, whether to copy empty directories. Set this to false to avoid creating directories
+     *   that do not contain files. This affects directories that do not contain files initially as well as directories that
+     *   do not contain files at the target destination because files have been filtered via `only` or `except`.
+     *   Defaults to true. This option is available since version 2.0.12. Before 2.0.12 empty directories are always copied.
      * @throws \yii\base\InvalidParamException if unable to open directory
      */
     public static function copyDirectory($src, $dst, $options = [])
@@ -259,8 +263,10 @@ class BaseFileHelper
         if ($src === $dst || strpos($dst, $src . DIRECTORY_SEPARATOR) === 0) {
             throw new InvalidParamException('Trying to copy a directory to itself or a subdirectory.');
         }
-        if (!is_dir($dst)) {
+        $dstExists = is_dir($dst);
+        if (!$dstExists && (!isset($options['copyEmptyDirectories']) || $options['copyEmptyDirectories'])) {
             static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
+            $dstExists = true;
         }
 
         $handle = opendir($src);
@@ -270,7 +276,7 @@ class BaseFileHelper
         if (!isset($options['basePath'])) {
             // this should be done only once
             $options['basePath'] = realpath($src);
-            $options = self::normalizeOptions($options);
+            $options = static::normalizeOptions($options);
         }
         while (($file = readdir($handle)) !== false) {
             if ($file === '.' || $file === '..') {
@@ -283,6 +289,11 @@ class BaseFileHelper
                     continue;
                 }
                 if (is_file($from)) {
+                    if (!$dstExists) {
+                        // delay creation of destination directory until the first file is copied to avoid creating empty directories
+                        static::createDirectory($dst, isset($options['dirMode']) ? $options['dirMode'] : 0775, true);
+                        $dstExists = true;
+                    }
                     copy($from, $to);
                     if (isset($options['fileMode'])) {
                         @chmod($to, $options['fileMode']);
@@ -372,7 +383,7 @@ class BaseFileHelper
      *   If the pattern does not contain a slash (`/`), it is treated as a shell glob pattern
      *   and checked for a match against the pathname relative to `$dir`.
      *   Otherwise, the pattern is treated as a shell glob suitable for consumption by `fnmatch(3)`
-     *   `with the `FNM_PATHNAME` flag: wildcards in the pattern will not match a `/` in the pathname.
+     *   with the `FNM_PATHNAME` flag: wildcards in the pattern will not match a `/` in the pathname.
      *   For example, `views/*.php` matches `views/index.php` but not `views/controller/index.php`.
      *   A leading slash matches the beginning of the pathname. For example, `/*.php` matches `index.php` but not `views/start/index.php`.
      *   An optional prefix `!` which negates the pattern; any matching file excluded by a previous pattern will become included again.
@@ -396,7 +407,7 @@ class BaseFileHelper
         if (!isset($options['basePath'])) {
             // this should be done only once
             $options['basePath'] = realpath($dir);
-            $options = self::normalizeOptions($options);
+            $options = static::normalizeOptions($options);
         }
         $list = [];
         $handle = opendir($dir);
@@ -696,8 +707,9 @@ class BaseFileHelper
     /**
      * @param array $options raw options
      * @return array normalized options
+     * @since 2.0.12
      */
-    private static function normalizeOptions(array $options)
+    protected static function normalizeOptions(array $options)
     {
         if (!array_key_exists('caseSensitive', $options)) {
             $options['caseSensitive'] = true;

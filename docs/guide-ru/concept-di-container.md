@@ -60,7 +60,7 @@ class MyClass extends \yii\base\Component
 }
 ```
 
-Метод можно вызвать либо передав экземпляр `\my\heavy\Dependency` самостоятельно, либо использовава
+Метод можно вызвать либо передав экземпляр `\my\heavy\Dependency` самостоятельно, либо использовав
 [[yii\di\Container::invoke()]]:
 
 ```php

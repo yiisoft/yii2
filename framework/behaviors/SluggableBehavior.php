@@ -7,12 +7,12 @@
 
 namespace yii\behaviors;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Inflector;
 use yii\validators\UniqueValidator;
-use Yii;
 
 /**
  * SluggableBehavior automatically fills the specified attribute with a value that can be used a slug in a URL.
@@ -66,7 +66,7 @@ class SluggableBehavior extends AttributeBehavior
     public $slugAttribute = 'slug';
     /**
      * @var string|array|null the attribute or list of attributes whose value will be converted into a slug
-     * or `null` meaning that the `$value` property will be used to generate a slug. 
+     * or `null` meaning that the `$value` property will be used to generate a slug.
      */
     public $attribute;
     /**
@@ -158,6 +158,8 @@ class SluggableBehavior extends AttributeBehavior
             } else {
                 return $this->owner->{$this->slugAttribute};
             }
+
+            $slug = $this->generateSlug($slugParts);
         } else {
             $slug = parent::getValue($event);
         }
@@ -182,7 +184,11 @@ class SluggableBehavior extends AttributeBehavior
             return false;
         }
 
-        foreach ((array)$this->attribute as $attribute) {
+        if ($this->attribute === null) {
+            return true;
+        }
+
+        foreach ((array) $this->attribute as $attribute) {
             if ($this->owner->isAttributeChanged($attribute)) {
                 return true;
             }

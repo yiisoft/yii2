@@ -1,13 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Connection;
 use yii\db\Expression;
 use yiiunit\TestCase;
-use yii\db\Connection;
-use yii\db\ActiveRecord;
-use yii\behaviors\TimestampBehavior;
 
 /**
  * Unit test for [[\yii\behaviors\TimestampBehavior]].
@@ -36,8 +41,8 @@ class TimestampBehaviorTest extends TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -59,6 +64,8 @@ class TimestampBehaviorTest extends TestCase
     {
         Yii::$app->getDb()->close();
         parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :
@@ -105,8 +112,6 @@ class TimestampBehaviorTest extends TestCase
      */
     public function testUpdateCleanRecord()
     {
-        $currentTime = time();
-
         ActiveRecordTimestamp::$behaviors = [
             TimestampBehavior::className(),
         ];
@@ -187,6 +192,41 @@ class TimestampBehaviorTest extends TestCase
         $model->refresh();
         $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertEquals(date('Y'), $model->updated_at);
+    }
+
+    public function testTouchingNewRecordGeneratesException()
+    {
+        ActiveRecordTimestamp::$behaviors = [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'value' => new Expression("strftime('%Y')"),
+            ],
+        ];
+        $model = new ActiveRecordTimestamp();
+
+        $this->expectException('yii\base\InvalidCallException');
+
+        $model->touch('created_at');
+    }
+
+    public function testTouchingNotNewRecord()
+    {
+        ActiveRecordTimestamp::$behaviors = [
+            'timestamp' => [
+                'class' => TimestampBehavior::className(),
+                'value' => new Expression("strftime('%Y')"),
+            ],
+        ];
+        $model = new ActiveRecordTimestamp();
+        $enforcedTime = date('Y') - 1;
+        $model->created_at = $enforcedTime;
+        $model->updated_at = $enforcedTime;
+        $model->save(false);
+        $expectedCreatedAt = new Expression("strftime('%Y')");
+
+        $model->touch('created_at');
+
+        $this->assertEquals($expectedCreatedAt, $model->created_at);
     }
 }
 

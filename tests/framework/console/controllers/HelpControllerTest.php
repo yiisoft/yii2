@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
-use yii\helpers\Console;
-use yiiunit\framework\console\controllers\TestTrait;
 use yii\console\controllers\HelpController;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**
@@ -27,7 +32,10 @@ class HelpControllerTest extends TestCase
      */
     protected function createController()
     {
-        $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
+        $module = $this->getMockBuilder('yii\\base\\Module')
+            ->setMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
         return new BufferedHelpController('help', $module);
     }
 
@@ -153,8 +161,6 @@ STRING
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
         $this->assertContains('--router, -r: string', $result);
     }
-
-
 }
 
 

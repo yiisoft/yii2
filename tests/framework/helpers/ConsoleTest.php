@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
@@ -12,6 +17,14 @@ use yiiunit\TestCase;
  */
 class ConsoleTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testStripAnsiFormat()
     {
         ob_start();
@@ -92,7 +105,7 @@ class ConsoleTest extends TestCase
 
             [
                 Console::ansiFormat('test', [Console::UNDERLINE, Console::OVERLINED, Console::CROSSED_OUT, Console::FG_GREEN]),
-                '<span style="text-decoration: underline overline line-through;color: lime;">test</span>'
+                '<span style="text-decoration: underline overline line-through;color: lime;">test</span>',
             ],
 
             [Console::ansiFormatCode([Console::RESET]) . Console::ansiFormatCode([Console::RESET]), ''],
@@ -101,23 +114,23 @@ class ConsoleTest extends TestCase
 
             [
                 Console::ansiFormatCode([Console::BOLD]) . 'abc' . Console::ansiFormatCode([Console::RESET, Console::FG_GREEN]) . 'ghj' . Console::ansiFormatCode([Console::RESET]),
-                '<span style="font-weight: bold;">abc</span><span style="color: lime;">ghj</span>'
+                '<span style="font-weight: bold;">abc</span><span style="color: lime;">ghj</span>',
             ],
             [
                 Console::ansiFormatCode([Console::FG_GREEN]) . ' a ' . Console::ansiFormatCode([Console::BOLD]) . 'abc' . Console::ansiFormatCode([Console::RESET]) . 'ghj',
-                '<span style="color: lime;"> a <span style="font-weight: bold;">abc</span></span>ghj'
+                '<span style="color: lime;"> a <span style="font-weight: bold;">abc</span></span>ghj',
             ],
             [
                 Console::ansiFormat('test', [Console::FG_GREEN, Console::BG_BLUE, Console::NEGATIVE]),
-                '<span style="background-color: lime;color: blue;">test</span>'
+                '<span style="background-color: lime;color: blue;">test</span>',
             ],
             [
                 Console::ansiFormat('test', [Console::NEGATIVE]),
-                'test'
+                'test',
             ],
             [
                 Console::ansiFormat('test', [Console::CONCEALED]),
-                '<span style="visibility: hidden;">test</span>'
+                '<span style="visibility: hidden;">test</span>',
             ],
         ];
     }
