@@ -362,14 +362,18 @@ class RequestTest extends TestCase
                 [
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
-                    'REMOTE_HOST' => 'untrusted.com'
+                    'REMOTE_HOST' => 'trusted.com',
+                    'REMOTE_ADDR' => '192.169.1.1'
+
                 ],
                 '123.123.123.123'
             ], [
                 [
                     'HTTP_X_FORWARDED_PROTO' => 'https',
-                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
-                    'REMOTE_HOST' => 'trusted.com'
+                    'HTTP_X_FORWARDED_FOR' => '192.169.1.1',
+                    'REMOTE_HOST' => 'untrusted.com',
+                    'REMOTE_ADDR' => '192.169.1.1'
+
                 ],
                 '192.169.1.1'
             ]
