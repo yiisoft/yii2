@@ -98,7 +98,7 @@ class SluggableBehavior extends AttributeBehavior
     /**
      * @var bool whether to skip slug generation if [[attribute]] is null or an empty string.
      * If true, the behaviour will not generate a new slug if [[attribute]] is null or an empty string.
-     * @since 2.0.12
+     * @since 2.0.13
      */
     public $skipOnEmpty = false;
     /**
@@ -274,7 +274,7 @@ class SluggableBehavior extends AttributeBehavior
      *
      * @param string $slugPart One of attributes that is used for slug generation.
      * @return bool whether $slugPart empty or not.
-     * @since 2.0.12
+     * @since 2.0.13
      */
     protected function isEmpty($slugPart)
     {
