@@ -168,7 +168,8 @@ class Request extends \yii\base\Request
      * An array key is a regular expression for matching a hostname.
      * A value is a list of headers to trust.
      *
-     * For example, to trust all headers from domains ending in `.trusted.com` use the following:
+     * For example, to trust all headers EXCEPT those listed in secureHeaders
+     * from domains ending in '.trusted.com' use the following:
      *
      * ```php
      * [
@@ -183,14 +184,15 @@ class Request extends \yii\base\Request
      * ]
      * ```
 
-     * Default is to trust all headers from all hosts.
+     * Default is to trust all headers EXCEPT those listed in secureHeaders from all hosts.
      * @since 2.0.13
      */
     public $trustedHostConfig = [
         '//'
     ];
+
     /**
-     * Lists headers that are subject to the trusted host configuration.
+     * Lists headers that are, by default, subject to the trusted host configuration.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
      * @var array
      * @since 2.0.13
@@ -1187,7 +1189,7 @@ class Request extends \yii\base\Request
     public function getAcceptableLanguages()
     {
         if ($this->_languages === null) {
-            if ($this->headers->get('Accept-Language')) {
+            if ($this->headers->has('Accept-Language')) {
                 $this->_languages = array_keys($this->parseAcceptHeader($this->headers->get('Accept-Language')));
             } else {
                 $this->_languages = [];
