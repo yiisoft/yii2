@@ -215,9 +215,9 @@ class BaseArrayHelper
     }
 
     /**
-     * Writes a value to the array at the specified path.
-     * If the array key specified path is missing, then it will be created and it is assigned an appropriate value.
-     * If the key exists, then it will be overwritten.
+     * Writes a value into an associative array at the key path specified.
+     * If there is no such key path yet, it will be created recursively.
+     * If the key exists, it will be overwritten.
      *
      * ```php
      *  $array = [
@@ -230,7 +230,7 @@ class BaseArrayHelper
      *  ];
      * ```
      *
-     * The result of `ArrayHelper::setValue($array, 'key.in.0', ['arr' => 'val']);` could be like the following:
+     * The result of `ArrayHelper::setValue($array, 'key.in.0', ['arr' => 'val']);` will be the following:
      *
      * ```php
      *  [
@@ -243,7 +243,8 @@ class BaseArrayHelper
      *  ]
      *
      * ```
-     * The result of `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` could be like the following:
+     *
+     * The result of `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` will be the following:
      *
      * ```php
      *  [
@@ -255,10 +256,11 @@ class BaseArrayHelper
      *  ]
      * ```
      *
-     * @param array $array the array to add the values in
-     * @param string $path the path by which you want to replace or add `$value`
-     * @param mixed $value the value to be written at the specified value of `$path`
-     * @return array a new array with the data that is needed to add
+     * @param array $array the array to write the value to
+     * @param string $path the path of where do you want to write a value to
+     * @param mixed $value the value to be written
+     * @return array a new array with the value written
+     * @since 2.0.13
      */
     public static function setValue(array $array, $path, $value)
     {
