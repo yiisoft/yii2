@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\validators;
 
 use yii\validators\IpValidator;
@@ -24,12 +30,13 @@ class IpValidatorTest extends TestCase
         new IpValidator(['ipv4' => false, 'ipv6' => false]);
     }
 
-    public function provideRangesForSubstitution() {
+    public function provideRangesForSubstitution()
+    {
         return [
             ['10.0.0.1', ['10.0.0.1']],
             [['192.168.0.32', 'fa::/32', 'any'], ['192.168.0.32', 'fa::/32', '0.0.0.0/0', '::/0']],
             [['10.0.0.1', '!private'], ['10.0.0.1', '!10.0.0.0/8', '!172.16.0.0/12', '!192.168.0.0/16', '!fd00::/8']],
-            [['private', '!system'], ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', 'fd00::/8', '!224.0.0.0/4', '!ff00::/8', '!169.254.0.0/16', '!fe80::/10', '!127.0.0.0/8', '!::1', '!192.0.2.0/24', '!198.51.100.0/24', '!203.0.113.0/24', '!2001:db8::/32']]
+            [['private', '!system'], ['10.0.0.0/8', '172.16.0.0/12', '192.168.0.0/16', 'fd00::/8', '!224.0.0.0/4', '!ff00::/8', '!169.254.0.0/16', '!fe80::/10', '!127.0.0.0/8', '!::1', '!192.0.2.0/24', '!198.51.100.0/24', '!203.0.113.0/24', '!2001:db8::/32']],
         ];
     }
 
@@ -46,7 +53,7 @@ class IpValidatorTest extends TestCase
     public function testValidateOrder()
     {
         $validator = new IpValidator([
-            'ranges' => ['10.0.0.1', '!10.0.0.0/8', '!babe::/8', 'any']
+            'ranges' => ['10.0.0.1', '!10.0.0.0/8', '!babe::/8', 'any'],
         ]);
 
         $this->assertTrue($validator->validate('10.0.0.1'));
@@ -56,7 +63,8 @@ class IpValidatorTest extends TestCase
         $this->assertFalse($validator->validate('babe::cafe'));
     }
 
-    public function provideBadIps() {
+    public function provideBadIps()
+    {
         return [['not.an.ip'], [['what an array', '??']], [123456], [true], [false], ['bad:forSure']];
     }
 
@@ -230,7 +238,7 @@ class IpValidatorTest extends TestCase
     public function testValidateRangeIPv4()
     {
         $validator = new IpValidator([
-            'ranges' => ['10.0.1.0/24']
+            'ranges' => ['10.0.1.0/24'],
         ]);
         $this->assertTrue($validator->validate('10.0.1.2'));
         $this->assertFalse($validator->validate('192.5.1.1'));
@@ -255,7 +263,7 @@ class IpValidatorTest extends TestCase
     public function testValidateRangeIPv6()
     {
         $validator = new IpValidator([
-            'ranges' => '2001:db0:1:1::/64'
+            'ranges' => '2001:db0:1:1::/64',
         ]);
         $this->assertTrue($validator->validate('2001:db0:1:1::6'));
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
@@ -263,7 +271,7 @@ class IpValidatorTest extends TestCase
         $validator->ranges = ['2001:db0:1:2::/64'];
         $this->assertTrue($validator->validate('2001:db0:1:2::7'));
 
-        $validator->ranges = ['!2001:db0::/32', '2001:db0:1:2::/64', ];
+        $validator->ranges = ['!2001:db0::/32', '2001:db0:1:2::/64'];
         $this->assertFalse($validator->validate('2001:db0:1:2::7'));
 
         $validator->subnet = null;

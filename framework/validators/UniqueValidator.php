@@ -10,8 +10,8 @@ namespace yii\validators;
 use Yii;
 use yii\base\Model;
 use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecord;
 use yii\db\ActiveRecordInterface;
 use yii\helpers\Inflector;
 
@@ -75,7 +75,6 @@ class UniqueValidator extends Validator
      *
      * - `{attributes}`: the labels of the attributes being validated.
      * - `{values}`: the values of the attributes being validated.
-     *
      */
     public $message;
     /**
@@ -271,7 +270,7 @@ class UniqueValidator extends Validator
         }
         $this->addError($model, $attribute, $this->message, [
             'attributes' => Inflector::sentence($attributeCombo),
-            'values' => implode('-', $valueCombo)
+            'values' => implode('-', $valueCombo),
         ]);
     }
 
@@ -289,10 +288,16 @@ class UniqueValidator extends Validator
         }
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$alias}.[[" . preg_replace(
+            if (strpos($columnName, '(') === false) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . preg_quote($alias) . '\.(.*)$/',
-                    "$1",
-                    $columnName) . "]]";
+                    '$1',
+                    $columnName) . ']]';
+            } else {
+                // there is an expression, can't prefix it reliably
+                $prefixedColumn = $columnName;
+            }
+
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
         return $prefixedConditions;

@@ -108,8 +108,8 @@ class RateLimiter extends ActionFilter
     {
         $current = time();
 
-        list ($limit, $window) = $user->getRateLimit($request, $action);
-        list ($allowance, $timestamp) = $user->loadAllowance($request, $action);
+        list($limit, $window) = $user->getRateLimit($request, $action);
+        list($allowance, $timestamp) = $user->loadAllowance($request, $action);
 
         $allowance += (int) (($current - $timestamp) * $limit / $window);
         if ($allowance > $limit) {

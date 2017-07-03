@@ -7,6 +7,7 @@
 
 namespace yii\i18n;
 
+use Closure;
 use DateInterval;
 use DateTime;
 use DateTimeInterface;
@@ -18,8 +19,8 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\FormatConverter;
-use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 
 /**
  * Formatter provides a set of commonly used data formatting methods.
@@ -294,16 +295,26 @@ class Formatter extends Component
      * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
      * then [[asHtml()]] will be used. Format names are case insensitive.
      * @param mixed $value the value to be formatted.
-     * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
-     * parameters of the formatting method, you may use an array. The first element of the array
-     * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
-     * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
+     * @param string|array|Closure $format the format of the value, e.g., "html", "text" or an anonymous function
+     * returning the formatted value.
+     *
+     * To specify additional parameters of the formatting method, you may use an array.
+     * The first element of the array specifies the format name, while the rest of the elements will be used as the
+     * parameters to the formatting method. For example, a format of `['date', 'Y-m-d']` will cause the invocation
+     * of `asDate($value, 'Y-m-d')`.
+     *
+     * The anonymous function signature should be: `function($value, $formatter)`,
+     * where `$value` is the value that should be formatted and `$formatter` is an instance of the Formatter class,
+     * which can be used to call other formatting functions.
+     * The possibility to use an anonymous function is available since version 2.0.13.
      * @return string the formatting result.
      * @throws InvalidParamException if the format type is not supported by this class.
      */
     public function format($value, $format)
     {
-        if (is_array($format)) {
+        if ($format instanceof Closure) {
+            return call_user_func($format, $value, $this);
+        } elseif (is_array($format)) {
             if (!isset($format[0])) {
                 throw new InvalidParamException('The $format array must contain at least one element.');
             }
@@ -577,10 +588,10 @@ class Formatter extends Component
      * @var array map of short format names to IntlDateFormatter constant values.
      */
     private $_dateFormats = [
-        'short'  => 3, // IntlDateFormatter::SHORT,
+        'short' => 3, // IntlDateFormatter::SHORT,
         'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long'   => 1, // IntlDateFormatter::LONG,
-        'full'   => 0, // IntlDateFormatter::FULL,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
     ];
 
     /**
@@ -691,7 +702,7 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                $timestamp = new DateTime('@' . (int)$value, new DateTimeZone('UTC'));
+                $timestamp = new DateTime('@' . (int) $value, new DateTimeZone('UTC'));
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
@@ -705,7 +716,7 @@ class Formatter extends Component
                 return [
                     $timestamp,
                     !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
-                    !($info['year'] === false && $info['month'] === false && $info['day'] === false)
+                    !($info['year'] === false && $info['month'] === false && $info['day'] === false),
                 ];
             } else {
                 return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
@@ -872,7 +883,7 @@ class Formatter extends Component
             $valueDateTime = (new DateTime())->setTimestamp(abs($value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strpos($value, 'P-') === 0) {
-            $interval = new DateInterval('P'.substr($value, 2));
+            $interval = new DateInterval('P' . substr($value, 2));
             $isNegative = true;
         } else {
             $interval = new DateInterval($value);

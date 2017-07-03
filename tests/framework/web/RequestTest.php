@@ -17,7 +17,7 @@ class RequestTest extends TestCase
 {
     public function testParseAcceptHeader()
     {
-        $request = new Request;
+        $request = new Request();
 
         $this->assertEquals([], $request->parseAcceptHeader(' '));
 
@@ -149,7 +149,6 @@ class RequestTest extends TestCase
             $request->setBodyParams([$request->csrfParam => $token]);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     /**
@@ -179,7 +178,6 @@ class RequestTest extends TestCase
             $request->headers->add(Request::CSRF_HEADER, $token);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     public function testResolve()
@@ -194,8 +192,8 @@ class RequestTest extends TestCase
                         'posts' => 'post/list',
                         'post/<id>' => 'post/view',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $request = new Request();

@@ -199,10 +199,10 @@ class DateValidator extends Validator
      * @var array map of short format names to IntlDateFormatter constant values.
      */
     private $_dateFormats = [
-        'short'  => 3, // IntlDateFormatter::SHORT,
+        'short' => 3, // IntlDateFormatter::SHORT,
         'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long'   => 1, // IntlDateFormatter::LONG,
-        'full'   => 0, // IntlDateFormatter::FULL,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
     ];
 
 

@@ -10,8 +10,8 @@ namespace yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
-use yii\log\Logger;
 use yii\di\Container;
+use yii\log\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -474,7 +474,7 @@ class BaseYii
     {
         return \Yii::t('yii', 'Powered by {yii}', [
             'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>'
+                    'Yii Framework') . '</a>',
         ]);
     }
 

@@ -1,11 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\console\controllers\MessageController;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
-use yii\console\controllers\MessageController;
 
 /**
  * Base for [[\yii\console\controllers\MessageController]] unit tests.
@@ -451,6 +457,26 @@ abstract class BaseMessageControllerTest extends TestCase
         $messages = $this->loadMessages($category);
         $this->language = $firstLanguage;
         $this->assertArrayHasKey($mainMessage, $messages, "\"$mainMessage\" for language \"$secondLanguage\" is missing in translation file. Command output:\n\n" . $out);
+    }
+
+    /**
+     * @depends testCreateTranslation
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13824
+     */
+    public function testCreateTranslationFromConcatenatedString()
+    {
+        $category = 'test.category1';
+        $mainMessage = 'main message second message third message';
+        $sourceFileContent = "Yii::t('{$category}', 'main message' .   \" second message\".' third message');";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $messages = $this->loadMessages($category);
+        $this->assertArrayHasKey($mainMessage, $messages,
+            "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
     }
 }
 

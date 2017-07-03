@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db;
 
@@ -113,7 +118,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(Customer::className());
         $result = $query->joinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'LEFT JOIN']
+            [['profile'], true, 'LEFT JOIN'],
         ], $result->joinWith);
     }
 
@@ -125,7 +130,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $query = new ActiveQuery(Customer::className());
         $result = $query->innerJoinWith('profile');
         $this->assertEquals([
-            [['profile'], true, 'INNER JOIN']
+            [['profile'], true, 'INNER JOIN'],
         ], $result->joinWith);
     }
 
@@ -135,16 +140,16 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     public function testGetQueryTableName_from_not_set()
     {
         $query = new ActiveQuery(Customer::className());
-        $result = $this->invokeMethod($query,'getTableNameAndAlias');
-        $this->assertEquals(['customer','customer'], $result);
+        $result = $this->invokeMethod($query, 'getTableNameAndAlias');
+        $this->assertEquals(['customer', 'customer'], $result);
     }
 
     public function testGetQueryTableName_from_set()
     {
-        $options = ['from' => ['alias'=>'customer']];
+        $options = ['from' => ['alias' => 'customer']];
         $query = new ActiveQuery(Customer::className(), $options);
-        $result = $this->invokeMethod($query,'getTableNameAndAlias');
-        $this->assertEquals(['customer','alias'], $result);
+        $result = $this->invokeMethod($query, 'getTableNameAndAlias');
+        $this->assertEquals(['customer', 'alias'], $result);
     }
 
     public function testOnCondition()
@@ -280,7 +285,7 @@ abstract class ActiveQueryTest extends DatabaseTestCase
     public function testGetTableNames_isFromObject_generateException()
     {
         $query = new ActiveQuery(null);
-        $query->from = new \stdClass;
+        $query->from = new \stdClass();
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 
@@ -329,14 +334,14 @@ abstract class ActiveQueryTest extends DatabaseTestCase
             '{{srv}}' => '{{service}}',
             '{{order}}' => '{{order}}',
             '{{c d}}' => '{{a b}}',
-            '{{myalias}}' => '{{something}}'
+            '{{myalias}}' => '{{something}}',
         ], $tables);
     }
 
     public function testGetTablesAlias_isFromObject_generateException()
     {
         $query = new ActiveQuery(null);
-        $query->from = new \stdClass;
+        $query->from = new \stdClass();
 
         $this->setExpectedException('\yii\base\InvalidConfigException');
 

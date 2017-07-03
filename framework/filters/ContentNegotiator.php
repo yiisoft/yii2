@@ -11,8 +11,8 @@ use Yii;
 use yii\base\ActionFilter;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
-use yii\web\Response;
 use yii\web\Request;
+use yii\web\Response;
 use yii\web\UnsupportedMediaTypeHttpException;
 
 /**
@@ -151,8 +151,8 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public function negotiate()
     {
-        $request = $this->request ? : Yii::$app->getRequest();
-        $response = $this->response ? : Yii::$app->getResponse();
+        $request = $this->request ?: Yii::$app->getRequest();
+        $response = $this->response ?: Yii::$app->getResponse();
         if (!empty($this->formats)) {
             $this->negotiateContentType($request, $response);
         }

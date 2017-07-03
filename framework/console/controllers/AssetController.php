@@ -8,8 +8,8 @@
 namespace yii\console\controllers;
 
 use Yii;
-use yii\console\Exception;
 use yii\console\Controller;
+use yii\console\Exception;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -612,7 +612,7 @@ EOD;
         $inputFilePathPartsCount = count($inputFilePathParts);
         $outputFilePathParts = explode('/', $outputFilePath);
         $outputFilePathPartsCount = count($outputFilePathParts);
-        for ($i =0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
+        for ($i = 0; $i < $inputFilePathPartsCount && $i < $outputFilePathPartsCount; $i++) {
             if ($inputFilePathParts[$i] == $outputFilePathParts[$i]) {
                 $sharedPathParts[] = $inputFilePathParts[$i];
             } else {
@@ -766,7 +766,7 @@ EOD;
      */
     private function isBundleExternal($bundle)
     {
-        return (empty($bundle->sourcePath) && empty($bundle->basePath));
+        return empty($bundle->sourcePath) && empty($bundle->basePath);
     }
 
     /**

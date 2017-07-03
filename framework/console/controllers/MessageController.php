@@ -363,13 +363,13 @@ EOD;
     protected function saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)
     {
         $currentMessages = [];
-        $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+        $rows = (new Query())->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
         foreach ($rows as $row) {
             $currentMessages[$row['category']][$row['id']] = $row['message'];
         }
 
         $currentLanguages = [];
-        $rows = (new Query)->select(['language'])->from($messageTable)->groupBy('language')->all($db);
+        $rows = (new Query())->select(['language'])->from($messageTable)->groupBy('language')->all($db);
         foreach ($rows as $row) {
             $currentLanguages[] = $row['language'];
         }
@@ -422,7 +422,7 @@ EOD;
 
         if (!empty($missingLanguages)) {
             $updatedMessages = [];
-            $rows = (new Query)->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
+            $rows = (new Query())->select(['id', 'category', 'message'])->from($sourceMessageTable)->all($db);
             foreach ($rows as $row) {
                 $updatedMessages[$row['category']][$row['id']] = $row['message'];
             }
@@ -452,7 +452,7 @@ EOD;
                ->execute();
             $this->stdout("deleted.\n");
         } elseif ($markUnused) {
-            $rows = (new Query)
+            $rows = (new Query())
                 ->select(['id', 'message'])
                 ->from($sourceMessageTable)
                 ->where(['in', 'id', $obsolete])
@@ -482,7 +482,7 @@ EOD;
      */
     protected function extractMessages($fileName, $translator, $ignoreCategories = [])
     {
-        $this->stdout("Extracting messages from ");
+        $this->stdout('Extracting messages from ');
         $this->stdout($fileName, Console::FG_CYAN);
         $this->stdout("...\n");
 
@@ -538,9 +538,15 @@ EOD;
                             $category = mb_substr($category, 1, -1);
 
                             if (!$this->isCategoryIgnored($category, $ignoreCategories)) {
-                                $message = stripcslashes($buffer[2][1]);
-                                $message = mb_substr($message, 1, -1);
 
+                                $fullMessage = mb_substr($buffer[2][1], 1, -1);
+                                $i = 3;
+                                while ($i < count($buffer) - 1 && !is_array($buffer[$i]) && $buffer[$i] === '.') {
+                                    $fullMessage .= mb_substr($buffer[$i + 1][1], 1, -1);
+                                    $i += 2;
+                                }
+
+                                $message = stripcslashes($fullMessage);
                                 $messages[$category][] = $message;
                             }
 
@@ -656,7 +662,7 @@ EOD;
     protected function saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)
     {
         foreach ($messages as $category => $msgs) {
-            $file = str_replace("\\", '/', "$dirName/$category.php");
+            $file = str_replace('\\', '/', "$dirName/$category.php");
             $path = dirname($file);
             FileHelper::createDirectory($path);
             $msgs = array_values(array_unique($msgs));
@@ -777,7 +783,7 @@ EOD;
      */
     protected function saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)
     {
-        $file = str_replace("\\", '/', "$dirName/$catalog.po");
+        $file = str_replace('\\', '/', "$dirName/$catalog.po");
         FileHelper::createDirectory(dirname($file));
         $this->stdout("Saving messages to $file...\n");
 
@@ -870,7 +876,7 @@ EOD;
      */
     protected function saveMessagesToPOT($messages, $dirName, $catalog)
     {
-        $file = str_replace("\\", '/', "$dirName/$catalog.pot");
+        $file = str_replace('\\', '/', "$dirName/$catalog.pot");
         FileHelper::createDirectory(dirname($file));
         $this->stdout("Saving messages to $file...\n");
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\console\controllers;
 
@@ -191,13 +196,13 @@ CODE;
         }
         if (!$success) {
             $message .= "\n";
-            $message .= "Expected: " . var_export($expectedMigrations, true) . "\n";
+            $message .= 'Expected: ' . var_export($expectedMigrations, true) . "\n";
 
             $actualMigrations = [];
             foreach ($migrationHistory as $row) {
                 $actualMigrations[] = $row['version'];
             }
-            $message .= "Actual: " . var_export($actualMigrations, true) . "\n";
+            $message .= 'Actual: ' . var_export($actualMigrations, true) . "\n";
         }
         $this->assertTrue($success, $message);
     }
@@ -341,7 +346,7 @@ CODE;
         $migrationName = 'testDefaultNamespace';
         $this->runMigrateControllerAction('create', [$migrationName], [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
@@ -353,7 +358,7 @@ CODE;
         $migrationName = 'test_namespace_specify';
         $this->runMigrateControllerAction('create', [$this->migrationNamespace . '\\' . $migrationName], [
             'migrationPath' => $this->migrationPath,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
@@ -364,7 +369,7 @@ CODE;
         $migrationName = 'test_no_namespace';
         $this->runMigrateControllerAction('create', [$migrationName], [
             'migrationPath' => $this->migrationPath,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
         $files = FileHelper::findFiles($this->migrationPath);
         $fileContent = file_get_contents($files[0]);
@@ -381,7 +386,7 @@ CODE;
 
         $this->runMigrateControllerAction('up', [], [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ]);
 
         $this->assertMigrationHistory([
@@ -402,7 +407,7 @@ CODE;
 
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
         $this->runMigrateControllerAction('up', [], $controllerConfig);
         $this->runMigrateControllerAction('down', [1], $controllerConfig);
@@ -421,7 +426,7 @@ CODE;
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
 
         $output = $this->runMigrateControllerAction('history', [], $controllerConfig);
@@ -443,7 +448,7 @@ CODE;
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
 
         $version = '010101000001';
@@ -461,7 +466,7 @@ CODE;
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
 
         $version = '020202000020';
@@ -481,7 +486,7 @@ CODE;
         FileHelper::createDirectory(Yii::getAlias('@yiiunit/runtime/extension_migrations'));
         $controllerConfig = [
             'migrationPath' => [$appPath = '@yiiunit/runtime/app_migrations', $extensionPath = '@yiiunit/runtime/extension_migrations'],
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
 
         $this->createMigration('app_migration1', '010101_000001', $appPath);
@@ -579,8 +584,8 @@ CODE;
             'm010101_000002_ext_migration1',
             'm010101_000003_app_migration2',
             $this->migrationNamespace . '\\M010101000004NsMigration',
-            'm*_app_migration3'
+            'm*_app_migration3',
         ]);
-        $this->assertCount(1, FileHelper::findFiles(Yii::getAlias($appPath), ['only'=> ['m*_app_migration3.php']]));
+        $this->assertCount(1, FileHelper::findFiles(Yii::getAlias($appPath), ['only' => ['m*_app_migration3.php']]));
     }
 }

@@ -1,12 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yiiunit\TestCase;
-use yii\db\Connection;
-use yii\db\ActiveRecord;
 use yii\behaviors\AttributeBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Connection;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\behaviors\AttributeBehavior]].
@@ -35,8 +40,8 @@ class AttributeBehaviorTest extends TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -96,8 +101,7 @@ class AttributeBehaviorTest extends TestCase
         $preserveNonEmptyValues,
         $name,
         $alias
-    )
-    {
+    ) {
         $model = new ActiveRecordWithAttributeBehavior();
         $model->attributeBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -111,7 +115,7 @@ class AttributeBehaviorTest extends TestCase
 /**
  * Test Active Record class with [[AttributeBehavior]] behavior attached.
  *
- * @property integer $id
+ * @property int $id
  * @property string $name
  * @property string $alias
  *

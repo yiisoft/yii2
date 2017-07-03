@@ -1,8 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
-use yii\helpers\Console;
 use yii\console\controllers\HelpController;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**
@@ -155,8 +161,6 @@ STRING
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
         $this->assertContains('--router, -r: string', $result);
     }
-
-
 }
 
 

@@ -267,7 +267,7 @@ class Command extends Component
         } else {
             $this->pdoStatement->bindParam($name, $value, $dataType, $length, $driverOptions);
         }
-        $this->params[$name] =& $value;
+        $this->params[$name] = &$value;
 
         return $this;
     }
@@ -903,7 +903,7 @@ class Command extends Component
         if ($method !== '') {
             $info = $this->db->getQueryCacheInfo($this->queryCacheDuration, $this->queryCacheDependency);
             if (is_array($info)) {
-                /* @var $cache \yii\caching\Cache */
+                /* @var $cache \yii\caching\CacheInterface */
                 $cache = $info[0];
                 $cacheKey = [
                     __CLASS__,

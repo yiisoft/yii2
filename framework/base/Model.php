@@ -7,12 +7,12 @@
 
 namespace yii\base;
 
-use Yii;
 use ArrayAccess;
-use ArrayObject;
 use ArrayIterator;
-use ReflectionClass;
+use ArrayObject;
 use IteratorAggregate;
+use ReflectionClass;
+use Yii;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
@@ -372,7 +372,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function beforeValidate()
     {
-        $event = new ModelEvent;
+        $event = new ModelEvent();
         $this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
 
         return $event->isValid;
@@ -439,7 +439,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function createValidators()
     {
-        $validators = new ArrayObject;
+        $validators = new ArrayObject();
         foreach ($this->rules() as $rule) {
             if ($rule instanceof Validator) {
                 $validators->append($rule);

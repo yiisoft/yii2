@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters;
 
@@ -210,7 +215,8 @@ class AccessRuleTest extends \yiiunit\TestCase
      *           test user id
      *           expected match result (true, false, null)
      */
-    public function matchRoleProvider() {
+    public function matchRoleProvider()
+    {
         return [
             ['create', true,  'user1',   [], true],
             ['create', true,  'user2',   [], true],
@@ -232,14 +238,14 @@ class AccessRuleTest extends \yiiunit\TestCase
             ['update', true,  'unknown', ['authorID' => 'user2'], null],
 
             // user2 is author, can only edit own posts
-            ['update', true,  'user2',   function() { return ['authorID' => 'user2']; }, true],
-            ['update', true,  'user2',   function() { return ['authorID' => 'user1']; }, null],
+            ['update', true,  'user2',   function () { return ['authorID' => 'user2']; }, true],
+            ['update', true,  'user2',   function () { return ['authorID' => 'user1']; }, null],
             // user1 is admin, can update all posts
-            ['update', true,  'user1',   function() { return ['authorID' => 'user1']; }, true],
-            ['update', true,  'user1',   function() { return ['authorID' => 'user2']; }, true],
+            ['update', true,  'user1',   function () { return ['authorID' => 'user1']; }, true],
+            ['update', true,  'user1',   function () { return ['authorID' => 'user2']; }, true],
             // unknown user can not edit anything
-            ['update', true,  'unknown', function() { return ['authorID' => 'user1']; }, null],
-            ['update', true,  'unknown', function() { return ['authorID' => 'user2']; }, null],
+            ['update', true,  'unknown', function () { return ['authorID' => 'user1']; }, null],
+            ['update', true,  'unknown', function () { return ['authorID' => 'user2']; }, null],
         ];
     }
 
@@ -248,12 +254,13 @@ class AccessRuleTest extends \yiiunit\TestCase
      *
      * @dataProvider matchRoleProvider
      * @param string $actionid the action id
-     * @param boolean $allow whether the rule should allow access
+     * @param bool $allow whether the rule should allow access
      * @param string $userid the userid to check
      * @param array|Closure $roleParams params for $roleParams
-     * @param boolean $expected the expected result or null
+     * @param bool $expected the expected result or null
      */
-    public function testMatchRole($actionid, $allow, $userid, $roleParams, $expected) {
+    public function testMatchRole($actionid, $allow, $userid, $roleParams, $expected)
+    {
         $action = $this->mockAction();
         $auth = $this->mockAuthManager();
         $request = $this->mockRequest();
@@ -277,7 +284,8 @@ class AccessRuleTest extends \yiiunit\TestCase
      *
      * @see https://github.com/yiisoft/yii2/issues/4793
      */
-    public function testMatchRoleWithoutUser() {
+    public function testMatchRoleWithoutUser()
+    {
         $action = $this->mockAction();
         $request = $this->mockRequest();
 
