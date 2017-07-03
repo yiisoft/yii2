@@ -294,16 +294,20 @@ class Formatter extends Component
      * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
      * then [[asHtml()]] will be used. Format names are case insensitive.
      * @param mixed $value the value to be formatted.
-     * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
-     * parameters of the formatting method, you may use an array. The first element of the array
-     * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
-     * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
+     * @param string|array|\Closure $format the format of the value, e.g., "html", "text" or an anonymous function
+     * returning the formatted value. To specify additional parameters of the formatting method, you may use an array.
+     * The first element of the array specifies the format name, while the rest of the elements will be used as the
+     * parameters to the formatting method. For example, a format of `['date', 'Y-m-d']` will cause the invocation
+     * of `asDate($value, 'Y-m-d')`. The anonymous function signature should be: `function($value)`.
+     * The possibility to use an anonymous function is available since version 2.0.13.
      * @return string the formatting result.
      * @throws InvalidParamException if the format type is not supported by this class.
      */
     public function format($value, $format)
     {
-        if (is_array($format)) {
+        if ($format instanceof \Closure) {
+            return call_user_func($format, $value);
+        } elseif (is_array($format)) {
             if (!isset($format[0])) {
                 throw new InvalidParamException('The $format array must contain at least one element.');
             }

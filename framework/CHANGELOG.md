@@ -9,6 +9,7 @@ Yii Framework 2 Change Log
 - Bug #14264: Fixed a bug where `yii\log\Logger::calculateTimings()` was not accepting messages with array tokens (bizley)
 - Bug #14307: Fixed PHP warning when `yii\console\UnknownCommandException` is thrown for empty command (rob006)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
+- Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
 - Enh #13787: Added `yii\db\Migration::$maxSqlOutputLength` that allows limiting number of characters for outputting SQL (thiagotalma)
 - Enh #13824: Support extracting concatenated strings in `yii message` (developeruz)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
