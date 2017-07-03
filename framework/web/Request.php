@@ -1289,7 +1289,7 @@ class Request extends \yii\base\Request
      * @param string $name Filename
      * @return null|UploadedFile
      */
-    public function getFile(string $name)
+    public function getUploadedFile(string $name)
     {
         return UploadedFile::getInstanceByName($name);
     }
