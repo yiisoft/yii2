@@ -83,7 +83,7 @@ class DetailView extends Widget
      *   `$model` refers to displayed model and `$widget` is an instance of `DetailView` widget.
      *
      * - `format`: the type of the value that determines how the value would be formatted into a displayable text.
-     *   Please refer to [[Formatter]] for supported types.
+     *   Please refer to [[Formatter]] for supported types and [[Formatter::format()]] on how to specify this value.
      * - `visible`: whether the attribute is visible. If set to `false`, the attribute will NOT be displayed.
      * - `contentOptions`: the HTML attributes to customize value tag. For example: `['class' => 'bg-red']`.
      *   Please refer to [[\yii\helpers\BaseHtml::renderTagAttributes()]] for the supported syntax.
