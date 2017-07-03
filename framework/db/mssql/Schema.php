@@ -158,11 +158,10 @@ SQL;
         $this->findPrimaryKeys($table);
         if ($this->findColumns($table)) {
             $this->findForeignKeys($table);
-
             return $table;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -594,9 +593,15 @@ SQL;
     }
 
     /**
-     * @param string $tableName
-     * @param string $returnType
-     * @return mixed
+     * Loads multiple types of constraints and returns the specified ones.
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - primaryKey
+     * - foreignKeys
+     * - uniques
+     * - checks
+     * - defaults
+     * @return mixed constraints.
      */
     private function loadTableConstraints($tableName, $returnType)
     {

@@ -321,7 +321,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
-    public function addCheck($name, $table, $check)
+    public function addCheck($name, $table, $expression)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
     }
@@ -339,7 +339,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @inheritDoc
      * @throws NotSupportedException this is not supported by SQLite.
      */
-    public function addDefaultValue($name, $table, $column, $default)
+    public function addDefaultValue($name, $table, $column, $value)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
     }

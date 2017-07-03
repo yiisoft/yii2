@@ -34,23 +34,23 @@ abstract class SqlTokenizer extends Object
     protected $offset;
 
     /**
-     * @var \SplStack
+     * @var \SplStack stack of active tokens.
      */
     private $_tokenStack;
     /**
-     * @var SqlToken
+     * @var SqlToken active token. It's usually a top of the token stack.
      */
     private $_currentToken;
     /**
-     * @var string[]
+     * @var string[] cached substrings.
      */
     private $_substrings;
     /**
-     * @var string
+     * @var string current buffer value.
      */
     private $_buffer = '';
     /**
-     * @var SqlToken
+     * @var SqlToken resulting token of a last [[tokenize()]] call.
      */
     private $_token;
 

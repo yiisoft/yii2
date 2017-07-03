@@ -780,13 +780,13 @@ class Command extends Component
      * The name will be properly quoted by the method.
      * @param string $table the table that the check constraint will be added to.
      * The name will be properly quoted by the method.
-     * @param string $check the SQL of the `CHECK` constraint.
+     * @param string $expression the SQL of the `CHECK` constraint.
      * @return $this the command object itself.
      * @since 2.0.13
      */
-    public function addCheck($name, $table, $check)
+    public function addCheck($name, $table, $expression)
     {
-        $sql = $this->db->getQueryBuilder()->addCheck($name, $table, $check);
+        $sql = $this->db->getQueryBuilder()->addCheck($name, $table, $expression);
 
         return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
@@ -815,13 +815,13 @@ class Command extends Component
      * The name will be properly quoted by the method.
      * @param string $column the name of the column to that the constraint will be added on.
      * The name will be properly quoted by the method.
-     * @param mixed $default default value.
+     * @param mixed $value default value.
      * @return $this the command object itself.
      * @since 2.0.13
      */
-    public function addDefaultValue($name, $table, $column, $default)
+    public function addDefaultValue($name, $table, $column, $value)
     {
-        $sql = $this->db->getQueryBuilder()->addDefaultValue($name, $table, $column, $default);
+        $sql = $this->db->getQueryBuilder()->addDefaultValue($name, $table, $column, $value);
 
         return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }

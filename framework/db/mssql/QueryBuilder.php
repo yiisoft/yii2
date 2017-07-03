@@ -179,10 +179,10 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritDoc
      */
-    public function addDefaultValue($name, $table, $column, $default)
+    public function addDefaultValue($name, $table, $column, $value)
     {
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($default) . ' FOR '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
             . $this->db->quoteColumnName($column);
     }
 

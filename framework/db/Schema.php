@@ -643,7 +643,7 @@ abstract class Schema extends Object
                 $cache = $schemaCache;
             }
         }
-        if (!isset($this->_tableMetadata[$name]) || $refresh) {
+        if ($refresh || !isset($this->_tableMetadata[$name])) {
             $this->loadTableMetadataFromCache($cache, $name);
         }
         if (!array_key_exists($type, $this->_tableMetadata[$name])) {
@@ -703,13 +703,13 @@ abstract class Schema extends Object
             return $row;
         }
 
-        if (!$multiple) {
-            return array_change_key_case($row, CASE_LOWER);
+        if ($multiple) {
+            return array_map(function (array $row) {
+                return array_change_key_case($row, CASE_LOWER);
+            }, $row);
         }
 
-        return array_map(function (array $row) {
-            return array_change_key_case($row, CASE_LOWER);
-        }, $row);
+        return array_change_key_case($row, CASE_LOWER);
     }
 
     /**

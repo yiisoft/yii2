@@ -391,9 +391,12 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * @param string $tableName
-     * @param string $returnType
-     * @return mixed
+     * Loads multiple types of constraints and returns the specified ones.
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - indexes
+     * - uniques
+     * @return mixed constraints.
      */
     private function loadTableConstraints($tableName, $returnType)
     {

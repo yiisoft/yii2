@@ -110,11 +110,10 @@ class Schema extends \yii\db\Schema
 
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
-
             return $table;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -482,9 +481,13 @@ SQL;
     }
 
     /**
-     * @param string $tableName
-     * @param string $returnType
-     * @return mixed
+     * Loads multiple types of constraints and returns the specified ones.
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - primaryKey
+     * - foreignKeys
+     * - uniques
+     * @return mixed constraints.
      */
     private function loadTableConstraints($tableName, $returnType)
     {

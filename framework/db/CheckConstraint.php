@@ -16,7 +16,7 @@ namespace yii\db;
 class CheckConstraint extends Constraint
 {
     /**
-     * @var string
+     * @var string the SQL of the `CHECK` constraint.
      */
     public $expression;
 }

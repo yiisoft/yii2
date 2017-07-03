@@ -63,7 +63,7 @@ class SqlToken extends Object implements \ArrayAccess
     public $parent;
 
     /**
-     * @var SqlToken[]
+     * @var SqlToken[] token children.
      */
     private $_children = [];
 
@@ -194,11 +194,14 @@ class SqlToken extends Object implements \ArrayAccess
     }
 
     /**
-     * @param string $pattern
-     * @param int $offset
-     * @param int|null $firstMatchIndex
-     * @param int|null $lastMatchIndex
-     * @return bool
+     * Returns whether this token (including its children) matches the specified "pattern" SQL code.
+     * Currently this implementation uses [[\yii\db\sqlite\SqlTokenizer]] to process a pattern SQL code.
+     * @param string $pattern SQL code. Everything supported in SQLite is supported here as well.
+     * In addition, `any` keyword is supported which is treated as any number of keywords, identifiers, whitespaces.
+     * @param int $offset token children offset to start lookup with.
+     * @param int|null $firstMatchIndex token children offset where a successful match begins.
+     * @param int|null $lastMatchIndex token children offset where a successful match ends.
+     * @return bool whether this token matches the pattern SQL code.
      */
     public function matches($pattern, $offset = 0, &$firstMatchIndex = null, &$lastMatchIndex = null)
     {
@@ -237,6 +240,8 @@ class SqlToken extends Object implements \ArrayAccess
         $firstMatchIndex = $lastMatchIndex = null;
         $wildcard = false;
         for ($index = 0, $count = count($patternToken->children); $index < $count; $index++) {
+            // Here we iterate token by token with an exception of "any" that toggles
+            // an iteration until we matched with a next pattern token or EOF.
             if ($patternToken[$index]->content === 'any') {
                 $wildcard = true;
                 continue;

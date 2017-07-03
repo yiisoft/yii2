@@ -132,7 +132,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @inheritDoc
      * @throws NotSupportedException this is not supported by MySQL.
      */
-    public function addCheck($name, $table, $check)
+    public function addCheck($name, $table, $expression)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
     }

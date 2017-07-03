@@ -655,14 +655,14 @@ class QueryBuilder extends \yii\base\Object
      * The name will be properly quoted by the method.
      * @param string $table the table that the check constraint will be added to.
      * The name will be properly quoted by the method.
-     * @param string $check the SQL of the `CHECK` constraint.
+     * @param string $expression the SQL of the `CHECK` constraint.
      * @return string the SQL statement for adding a check constraint to an existing table.
      * @since 2.0.13
      */
-    public function addCheck($name, $table, $check)
+    public function addCheck($name, $table, $expression)
     {
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-            . $this->db->quoteColumnName($name) . ' CHECK (' . $this->db->quoteSql($check) . ')';
+            . $this->db->quoteColumnName($name) . ' CHECK (' . $this->db->quoteSql($expression) . ')';
     }
 
     /**
@@ -688,12 +688,12 @@ class QueryBuilder extends \yii\base\Object
      * The name will be properly quoted by the method.
      * @param string $column the name of the column to that the constraint will be added on.
      * The name will be properly quoted by the method.
-     * @param mixed $default default value.
+     * @param mixed $value default value.
      * @return string the SQL statement for adding a default value constraint to an existing table.
      * @throws NotSupportedException if this is not supported by the underlying DBMS.
      * @since 2.0.13
      */
-    public function addDefaultValue($name, $table, $column, $default)
+    public function addDefaultValue($name, $table, $column, $value)
     {
         throw new NotSupportedException($this->db->getDriverName() . ' does not support adding default value constraints.');
     }
