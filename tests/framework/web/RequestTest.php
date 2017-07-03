@@ -38,7 +38,7 @@ class RequestTest extends TestCase
             text/x-dvi; q=0.8, text/x-c'));
     }
 
-    public function testPrefferedLanguage()
+    public function testPreferredLanguage()
     {
         $this->mockApplication([
             'language' => 'en',
@@ -358,6 +358,20 @@ class RequestTest extends TestCase
                     'REMOTE_ADDR' => '192.169.1.1'
                 ],
                 '192.169.1.1'
+            ], [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
+                    'REMOTE_HOST' => 'untrusted.com'
+                ],
+                '123.123.123.123'
+            ], [
+                [
+                    'HTTP_X_FORWARDED_PROTO' => 'https',
+                    'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
+                    'REMOTE_HOST' => 'trusted.com'
+                ],
+                '192.169.1.1'
             ]
         ];
     }
@@ -371,7 +385,8 @@ class RequestTest extends TestCase
         $_SERVER = $server;
         $request = new Request([
             'trustedHostConfig' => [
-                '/^192\.168/'
+                '/^192\.168/',
+                '/^trusted.com$/'
             ],
 
         ]);

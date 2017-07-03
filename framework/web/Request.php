@@ -252,7 +252,7 @@ class Request extends \yii\base\Request
      */
     protected function filterHeaders(array $headers)
     {
-        $host = $this->getUserHost();
+        $host = $this->getRemoteHost();
         $ip = $this->getRemoteIP();
         foreach ($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
             if (!is_array($trustedHeaders)) {
@@ -1011,6 +1011,15 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Returns the user host name.
+     * The HOST is determined using headers and / or `$_SERVER` variables.
+     * @return string|null user host name, null if not available
+     */
+    public function getUserHost()
+    {
+
+    }
+    /**
      * Returns the IP on the other end of this connection.
      * This is always the next hop, any headers are ignored.
      * @return string|null remote IP address, null if not available.
@@ -1023,9 +1032,11 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the user host name.
+     * Returns the IP on the other end of this connection.
+     * This is always the next hop, any headers are ignored.
      * @return string|null user host name, null if not available
      */
-    public function getUserHost()
+    public function getRemoteHost()
     {
         return isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : null;
     }
