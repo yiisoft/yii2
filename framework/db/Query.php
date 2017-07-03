@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @link http://www.yiiframework.com/
  * @copyright Copyright (c) 2008 Yii Software LLC
@@ -43,8 +44,8 @@ use yii\base\Component;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class Query extends Component implements QueryInterface
-{
+class Query extends Component implements QueryInterface {
+
     use QueryTrait;
 
     /**
@@ -53,27 +54,32 @@ class Query extends Component implements QueryInterface
      * @see select()
      */
     public $select;
+
     /**
      * @var string additional option that should be appended to the 'SELECT' keyword. For example,
      * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
      */
     public $selectOption;
+
     /**
      * @var bool whether to select distinct rows of data only. If this is set true,
      * the SELECT clause would be changed to SELECT DISTINCT.
      */
     public $distinct;
+
     /**
      * @var array the table(s) to be selected from. For example, `['user', 'post']`.
      * This is used to construct the FROM clause in a SQL statement.
      * @see from()
      */
     public $from;
+
     /**
      * @var array how to group the query results. For example, `['company', 'department']`.
      * This is used to construct the GROUP BY clause in a SQL statement.
      */
     public $groupBy;
+
     /**
      * @var array how to join with other tables. Each array element represents the specification
      * of one join which has the following structure:
@@ -92,11 +98,13 @@ class Query extends Component implements QueryInterface
      * ```
      */
     public $join;
+
     /**
      * @var string|array|Expression the condition to be applied in the GROUP BY clause.
      * It can be either a string or an array. Please refer to [[where()]] on how to specify the condition.
      */
     public $having;
+
     /**
      * @var array this is used to construct the UNION clause(s) in a SQL statement.
      * Each array element is an array of the following structure:
@@ -105,12 +113,12 @@ class Query extends Component implements QueryInterface
      * - `all`: boolean, whether it should be `UNION ALL` or `UNION`
      */
     public $union;
+
     /**
      * @var array list of query parameter values indexed by parameter placeholders.
      * For example, `[':name' => 'Dan', ':age' => 31]`.
      */
     public $params = [];
-
 
     /**
      * Creates a DB command that can be used to execute this query.
@@ -118,8 +126,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return Command the created DB command instance.
      */
-    public function createCommand($db = null)
-    {
+    public function createCommand($db = null) {
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
@@ -135,8 +142,7 @@ class Query extends Component implements QueryInterface
      * @param QueryBuilder $builder
      * @return $this a prepared query instance which will be used by [[QueryBuilder]] to build the SQL
      */
-    public function prepare($builder)
-    {
+    public function prepare($builder) {
         return $this;
     }
 
@@ -161,14 +167,13 @@ class Query extends Component implements QueryInterface
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
-    public function batch($batchSize = 100, $db = null)
-    {
+    public function batch($batchSize = 100, $db = null) {
         return Yii::createObject([
-            'class' => BatchQueryResult::className(),
-            'query' => $this,
-            'batchSize' => $batchSize,
-            'db' => $db,
-            'each' => false,
+                    'class' => BatchQueryResult::className(),
+                    'query' => $this,
+                    'batchSize' => $batchSize,
+                    'db' => $db,
+                    'each' => false,
         ]);
     }
 
@@ -188,14 +193,13 @@ class Query extends Component implements QueryInterface
      * @return BatchQueryResult the batch query result. It implements the [[\Iterator]] interface
      * and can be traversed to retrieve the data in batches.
      */
-    public function each($batchSize = 100, $db = null)
-    {
+    public function each($batchSize = 100, $db = null) {
         return Yii::createObject([
-            'class' => BatchQueryResult::className(),
-            'query' => $this,
-            'batchSize' => $batchSize,
-            'db' => $db,
-            'each' => true,
+                    'class' => BatchQueryResult::className(),
+                    'query' => $this,
+                    'batchSize' => $batchSize,
+                    'db' => $db,
+                    'each' => true,
         ]);
     }
 
@@ -205,8 +209,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return array the query results. If the query results in nothing, an empty array will be returned.
      */
-    public function all($db = null)
-    {
+    public function all($db = null) {
         if ($this->emulateExecution) {
             return [];
         }
@@ -221,8 +224,7 @@ class Query extends Component implements QueryInterface
      * @param array $rows the raw query result from database
      * @return array the converted query result
      */
-    public function populate($rows)
-    {
+    public function populate($rows) {
         if ($this->indexBy === null) {
             return $rows;
         }
@@ -245,8 +247,7 @@ class Query extends Component implements QueryInterface
      * @return array|bool the first row (in terms of an array) of the query result. False is returned if the query
      * results in nothing.
      */
-    public function one($db = null)
-    {
+    public function one($db = null) {
         if ($this->emulateExecution) {
             return false;
         }
@@ -261,8 +262,7 @@ class Query extends Component implements QueryInterface
      * @return string|null|false the value of the first column in the first row of the query result.
      * False is returned if the query result is empty.
      */
-    public function scalar($db = null)
-    {
+    public function scalar($db = null) {
         if ($this->emulateExecution) {
             return null;
         }
@@ -275,8 +275,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return array the first column of the query result. An empty array is returned if the query results in nothing.
      */
-    public function column($db = null)
-    {
+    public function column($db = null) {
         if ($this->emulateExecution) {
             return [];
         }
@@ -311,8 +310,7 @@ class Query extends Component implements QueryInterface
      * @return int|string number of records. The result may be a string depending on the
      * underlying database engine and to support integer values higher than a 32bit PHP integer can handle.
      */
-    public function count($q = '*', $db = null)
-    {
+    public function count($q = '*', $db = null) {
         if ($this->emulateExecution) {
             return 0;
         }
@@ -327,8 +325,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the sum of the specified column values.
      */
-    public function sum($q, $db = null)
-    {
+    public function sum($q, $db = null) {
         if ($this->emulateExecution) {
             return 0;
         }
@@ -343,8 +340,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the average of the specified column values.
      */
-    public function average($q, $db = null)
-    {
+    public function average($q, $db = null) {
         if ($this->emulateExecution) {
             return 0;
         }
@@ -359,8 +355,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the minimum of the specified column values.
      */
-    public function min($q, $db = null)
-    {
+    public function min($q, $db = null) {
         return $this->queryScalar("MIN($q)", $db);
     }
 
@@ -372,8 +367,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return mixed the maximum of the specified column values.
      */
-    public function max($q, $db = null)
-    {
+    public function max($q, $db = null) {
         return $this->queryScalar("MAX($q)", $db);
     }
 
@@ -383,8 +377,7 @@ class Query extends Component implements QueryInterface
      * If this parameter is not given, the `db` application component will be used.
      * @return bool whether the query result contains any row of data.
      */
-    public function exists($db = null)
-    {
+    public function exists($db = null) {
         if ($this->emulateExecution) {
             return false;
         }
@@ -402,24 +395,20 @@ class Query extends Component implements QueryInterface
      * @param Connection|null $db
      * @return bool|string
      */
-    protected function queryScalar($selectExpression, $db)
-    {
+    protected function queryScalar($selectExpression, $db) {
         if ($this->emulateExecution) {
             return null;
         }
 
-        if (
-            !$this->distinct
-            && empty($this->groupBy)
-            && empty($this->having)
-            && empty($this->union)
-        ) {
+        if (!$this->distinct && empty($this->groupBy) && empty($this->having) && empty($this->union)) {
             $select = $this->select;
             $order = $this->orderBy;
             $limit = $this->limit;
             $offset = $this->offset;
 
-            $this->select = [$selectExpression];
+            if($selectExpression !== "COUNT(*)") {
+                $this->select = [$selectExpression];
+            }
             $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
@@ -433,9 +422,9 @@ class Query extends Component implements QueryInterface
             return $command->queryScalar();
         } else {
             return (new self())->select([$selectExpression])
-                ->from(['c' => $this])
-                ->createCommand($db)
-                ->queryScalar();
+                            ->from(['c' => $this])
+                            ->createCommand($db)
+                            ->queryScalar();
         }
     }
 
@@ -461,8 +450,7 @@ class Query extends Component implements QueryInterface
      * in MySQL, the option 'SQL_CALC_FOUND_ROWS' can be used.
      * @return $this the query object itself
      */
-    public function select($columns, $option = null)
-    {
+    public function select($columns, $option = null) {
         if ($columns instanceof Expression) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
@@ -488,8 +476,7 @@ class Query extends Component implements QueryInterface
      * @return $this the query object itself
      * @see select()
      */
-    public function addSelect($columns)
-    {
+    public function addSelect($columns) {
         if ($columns instanceof Expression) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
@@ -508,8 +495,7 @@ class Query extends Component implements QueryInterface
      * @param bool $value whether to SELECT DISTINCT or not.
      * @return $this the query object itself
      */
-    public function distinct($value = true)
-    {
+    public function distinct($value = true) {
         $this->distinct = $value;
         return $this;
     }
@@ -546,8 +532,7 @@ class Query extends Component implements QueryInterface
      *
      * @return $this the query object itself
      */
-    public function from($tables)
-    {
+    public function from($tables) {
         if (!is_array($tables)) {
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
@@ -572,8 +557,7 @@ class Query extends Component implements QueryInterface
      * @see orWhere()
      * @see QueryInterface::where()
      */
-    public function where($condition, $params = [])
-    {
+    public function where($condition, $params = []) {
         $this->where = $condition;
         $this->addParams($params);
         return $this;
@@ -589,8 +573,7 @@ class Query extends Component implements QueryInterface
      * @see where()
      * @see orWhere()
      */
-    public function andWhere($condition, $params = [])
-    {
+    public function andWhere($condition, $params = []) {
         if ($this->where === null) {
             $this->where = $condition;
         } elseif (is_array($this->where) && isset($this->where[0]) && strcasecmp($this->where[0], 'and') === 0) {
@@ -612,8 +595,7 @@ class Query extends Component implements QueryInterface
      * @see where()
      * @see andWhere()
      */
-    public function orWhere($condition, $params = [])
-    {
+    public function orWhere($condition, $params = []) {
         if ($this->where === null) {
             $this->where = $condition;
         } else {
@@ -649,8 +631,7 @@ class Query extends Component implements QueryInterface
      * @return $this The query object itself
      * @since 2.0.8
      */
-    public function andFilterCompare($name, $value, $defaultOperator = '=')
-    {
+    public function andFilterCompare($name, $value, $defaultOperator = '=') {
         if (preg_match('/^(<>|>=|>|<=|<|=)/', $value, $matches)) {
             $operator = $matches[1];
             $value = substr($value, strlen($operator));
@@ -690,8 +671,7 @@ class Query extends Component implements QueryInterface
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      */
-    public function join($type, $table, $on = '', $params = [])
-    {
+    public function join($type, $table, $on = '', $params = []) {
         $this->join[] = [$type, $table, $on];
         return $this->addParams($params);
     }
@@ -714,8 +694,7 @@ class Query extends Component implements QueryInterface
      * @param array $params the parameters (name => value) to be bound to the query.
      * @return $this the query object itself
      */
-    public function innerJoin($table, $on = '', $params = [])
-    {
+    public function innerJoin($table, $on = '', $params = []) {
         $this->join[] = ['INNER JOIN', $table, $on];
         return $this->addParams($params);
     }
@@ -738,8 +717,7 @@ class Query extends Component implements QueryInterface
      * @param array $params the parameters (name => value) to be bound to the query
      * @return $this the query object itself
      */
-    public function leftJoin($table, $on = '', $params = [])
-    {
+    public function leftJoin($table, $on = '', $params = []) {
         $this->join[] = ['LEFT JOIN', $table, $on];
         return $this->addParams($params);
     }
@@ -762,8 +740,7 @@ class Query extends Component implements QueryInterface
      * @param array $params the parameters (name => value) to be bound to the query
      * @return $this the query object itself
      */
-    public function rightJoin($table, $on = '', $params = [])
-    {
+    public function rightJoin($table, $on = '', $params = []) {
         $this->join[] = ['RIGHT JOIN', $table, $on];
         return $this->addParams($params);
     }
@@ -783,8 +760,7 @@ class Query extends Component implements QueryInterface
      * @return $this the query object itself
      * @see addGroupBy()
      */
-    public function groupBy($columns)
-    {
+    public function groupBy($columns) {
         if ($columns instanceof Expression) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
@@ -809,8 +785,7 @@ class Query extends Component implements QueryInterface
      * @return $this the query object itself
      * @see groupBy()
      */
-    public function addGroupBy($columns)
-    {
+    public function addGroupBy($columns) {
         if ($columns instanceof Expression) {
             $columns = [$columns];
         } elseif (!is_array($columns)) {
@@ -833,8 +808,7 @@ class Query extends Component implements QueryInterface
      * @see andHaving()
      * @see orHaving()
      */
-    public function having($condition, $params = [])
-    {
+    public function having($condition, $params = []) {
         $this->having = $condition;
         $this->addParams($params);
         return $this;
@@ -850,8 +824,7 @@ class Query extends Component implements QueryInterface
      * @see having()
      * @see orHaving()
      */
-    public function andHaving($condition, $params = [])
-    {
+    public function andHaving($condition, $params = []) {
         if ($this->having === null) {
             $this->having = $condition;
         } else {
@@ -871,8 +844,7 @@ class Query extends Component implements QueryInterface
      * @see having()
      * @see andHaving()
      */
-    public function orHaving($condition, $params = [])
-    {
+    public function orHaving($condition, $params = []) {
         if ($this->having === null) {
             $this->having = $condition;
         } else {
@@ -910,8 +882,7 @@ class Query extends Component implements QueryInterface
      * @see orFilterHaving()
      * @since 2.0.11
      */
-    public function filterHaving(array $condition)
-    {
+    public function filterHaving(array $condition) {
         $condition = $this->filterCondition($condition);
         if ($condition !== []) {
             $this->having($condition);
@@ -934,8 +905,7 @@ class Query extends Component implements QueryInterface
      * @see orFilterHaving()
      * @since 2.0.11
      */
-    public function andFilterHaving(array $condition)
-    {
+    public function andFilterHaving(array $condition) {
         $condition = $this->filterCondition($condition);
         if ($condition !== []) {
             $this->andHaving($condition);
@@ -958,8 +928,7 @@ class Query extends Component implements QueryInterface
      * @see andFilterHaving()
      * @since 2.0.11
      */
-    public function orFilterHaving(array $condition)
-    {
+    public function orFilterHaving(array $condition) {
         $condition = $this->filterCondition($condition);
         if ($condition !== []) {
             $this->orHaving($condition);
@@ -973,8 +942,7 @@ class Query extends Component implements QueryInterface
      * @param bool $all TRUE if using UNION ALL and FALSE if using UNION
      * @return $this the query object itself
      */
-    public function union($sql, $all = false)
-    {
+    public function union($sql, $all = false) {
         $this->union[] = ['query' => $sql, 'all' => $all];
         return $this;
     }
@@ -986,8 +954,7 @@ class Query extends Component implements QueryInterface
      * @return $this the query object itself
      * @see addParams()
      */
-    public function params($params)
-    {
+    public function params($params) {
         $this->params = $params;
         return $this;
     }
@@ -999,8 +966,7 @@ class Query extends Component implements QueryInterface
      * @return $this the query object itself
      * @see params()
      */
-    public function addParams($params)
-    {
+    public function addParams($params) {
         if (!empty($params)) {
             if (empty($this->params)) {
                 $this->params = $params;
@@ -1023,8 +989,7 @@ class Query extends Component implements QueryInterface
      * @param Query $from the source query object
      * @return Query the new Query object
      */
-    public static function create($from)
-    {
+    public static function create($from) {
         return new self([
             'where' => $from->where,
             'limit' => $from->limit,
@@ -1042,4 +1007,5 @@ class Query extends Component implements QueryInterface
             'params' => $from->params,
         ]);
     }
+
 }
