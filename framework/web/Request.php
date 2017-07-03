@@ -1283,10 +1283,10 @@ class Request extends \yii\base\Request
      * Returns \yii\web\UploadedFile instance
      *
      * ```php
-     * $file = $request->getFile('name.txt')
+     * $file = $request->getUploadedFile('avatar')
      * ```
      *
-     * @param string $name Filename
+     * @param string $name the name of the file input field
      * @return null|UploadedFile
      */
     public function getUploadedFile(string $name)
