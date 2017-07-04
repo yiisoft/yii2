@@ -1288,6 +1288,7 @@ class Request extends \yii\base\Request
      *
      * @param string $name the name of the file input field
      * @return null|UploadedFile
+     * @since 2.0.13
      */
     public function getUploadedFile(string $name)
     {
