@@ -634,6 +634,8 @@ abstract class Schema extends Object
 
     /**
      * Returns the metadata of the given type for the given table.
+     * If there's no metadata in the cache, this method will call
+     * a `'loadTable' . ucfirst($type)` named method with the table name to obtain the metadata.
      * @param string $name table name. The table name may contain schema name if any. Do not quote the table name.
      * @param string $type metadata type.
      * @param bool $refresh whether to reload the table metadata even if it is found in the cache.
@@ -661,6 +663,8 @@ abstract class Schema extends Object
 
     /**
      * Returns the metadata of the given type for all tables in the given schema.
+     * This method will call a `'getTable' . ucfirst($type)` named method with the table name
+     * and the refresh flag to obtain the metadata.
      * @param string $schema the schema of the metadata. Defaults to empty string, meaning the current or default schema name.
      * @param string $type metadata type.
      * @param bool $refresh whether to fetch the latest available table metadata. If this is `false`,
