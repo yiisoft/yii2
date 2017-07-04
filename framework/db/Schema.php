@@ -63,6 +63,12 @@ abstract class Schema extends Object
     const TYPE_MONEY = 'money';
 
     /**
+     * Schema cache version, to detect incompatibilities in cached values when the
+     * data format of the cache changes.
+     */
+    const SCHEMA_CACHE_VERSION = 1;
+
+    /**
      * @var Connection the database connection
      */
     public $db;
@@ -725,7 +731,7 @@ abstract class Schema extends Object
         }
 
         $metadata = $cache->get($this->getCacheKey($name));
-        if (!is_array($metadata) || !isset($metadata['cacheVersion']) || $metadata['cacheVersion'] !== 1) {
+        if (!is_array($metadata) || !isset($metadata['cacheVersion']) || $metadata['cacheVersion'] !== static::SCHEMA_CACHE_VERSION) {
             $this->_tableMetadata[$name] = [];
             return;
         }
@@ -746,7 +752,7 @@ abstract class Schema extends Object
         }
 
         $metadata = $this->_tableMetadata[$name];
-        $metadata['cacheVersion'] = 1;
+        $metadata['cacheVersion'] = static::SCHEMA_CACHE_VERSION;
         $cache->set(
             $this->getCacheKey($name),
             $metadata,
