@@ -33,8 +33,8 @@ class SqlToken extends Object implements \ArrayAccess
     const TYPE_STRING_LITERAL = 7;
 
     /**
-     * @var int token type.
-     * It has to be one of the following constants:
+     * @var int token type. It has to be one of the following constants:
+     *
      * - [[TYPE_CODE]]
      * - [[TYPE_STATEMENT]]
      * - [[TYPE_TOKEN]]

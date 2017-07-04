@@ -11,8 +11,19 @@ use yii\base\InvalidParamException;
 use yii\base\Object;
 
 /**
- * SqlTokenizer splits SQL query into individual SQL tokens.
- * It's used to obtain an addition information from an SQL code.
+ * SqlTokenizer splits an SQL query into individual SQL tokens.
+ *
+ * It can be used to obtain an addition information from an SQL code.
+ *
+ * Usage example:
+ *
+ * ```php
+ * $tokenizer = new SqlTokenizer("SELECT * FROM user WHERE id = 1");
+ * $root = $tokeinzer->tokenize();
+ * $sqlTokens = $root->getChildren();
+ * ```
+ *
+ * Tokens are instances of [[SqlToken]].
  *
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
