@@ -108,14 +108,7 @@ In the above, we have shown how to define a fixture about a DB table. To define 
 ## Using Fixtures
 
 If you are using [Codeception](http://codeception.com/) to test your code, you can use built-in support for loading
-and accessing fixtures. They are part of Yii2 module and should be explicitly enabled from test suite config:
-
-```yaml
-modules:
-    enabled:
-      - Yii2:
-            part: [orm, email, fixtures]
-```
+and accessing fixtures.
 
 If you are using other testing frameworks, you may use [[yii\test\FixtureTrait]] in your
 test cases to achieve the same goal.
