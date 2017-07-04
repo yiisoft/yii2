@@ -418,8 +418,10 @@ class Query extends Component implements QueryInterface
             $order = $this->orderBy;
             $limit = $this->limit;
             $offset = $this->offset;
-
-            $this->select = [$selectExpression];
+            
+            if ($selectExpression !== "COUNT(*)") {
+                $this->select = [$selectExpression];
+            }
             $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
