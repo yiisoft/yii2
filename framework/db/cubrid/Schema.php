@@ -402,7 +402,7 @@ class Schema extends \yii\db\Schema
     {
         $constraints = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
         $constraints = ArrayHelper::index($constraints, null, ['TYPE', 'NAME']);
-        ArrayHelper::multisort($columns, 'KEY_ORDER', SORT_ASC, SORT_NUMERIC);
+        ArrayHelper::multisort($constraints, 'KEY_ORDER', SORT_ASC, SORT_NUMERIC);
         $result = [
             'indexes' => [],
             'uniques' => [],
