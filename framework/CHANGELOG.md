@@ -23,6 +23,7 @@ Yii Framework 2 Change Log
 - Bug #14334: Fixed `\yii\db\QueryBuilder::buildNotCondition` loses params when operand is `\yii\db\Expression` (Ni-san)
 - Bug #14341: Fixed regression in error handling introduced by fixing #14264 (samdark)
 - Enh #13378: Added skipOnEmpty option to SluggableBehaviour (andrewnester)
+- Enh #14389: Optimize `Validator::validateAttributes()` by calling `attributeNames()` only once (nicdnep)
 
 2.0.12 June 05, 2017
 --------------------

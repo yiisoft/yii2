@@ -248,8 +248,9 @@ class Validator extends Component
     {
         if (is_array($attributes)) {
             $newAttributes = [];
+            $attributeNames = $this->getAttributeNames();
             foreach ($attributes as $attribute) {
-                if (in_array($attribute, $this->getAttributeNames(), true)) {
+                if (in_array($attribute, $attributeNames, true)) {
                     $newAttributes[] = $attribute;
                 }
             }
