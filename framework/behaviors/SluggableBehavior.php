@@ -96,6 +96,12 @@ class SluggableBehavior extends AttributeBehavior
      */
     public $ensureUnique = false;
     /**
+     * @var bool whether to skip slug generation if [[attribute]] is null or an empty string.
+     * If true, the behaviour will not generate a new slug if [[attribute]] is null or an empty string.
+     * @since 2.0.13
+     */
+    public $skipOnEmpty = false;
+    /**
      * @var array configuration for slug uniqueness validator. Parameter 'class' may be omitted - by default
      * [[UniqueValidator]] will be used.
      * @see UniqueValidator
@@ -138,14 +144,19 @@ class SluggableBehavior extends AttributeBehavior
      */
     protected function getValue($event)
     {
-        if (!$this->isNewSlugNeeded()) {
-            return $this->owner->{$this->slugAttribute};
-        }
-
         if ($this->attribute !== null) {
-            $slugParts = [];
-            foreach ((array) $this->attribute as $attribute) {
-                $slugParts[] = ArrayHelper::getValue($this->owner, $attribute);
+            if ($this->isNewSlugNeeded()) {
+                $slugParts = [];
+                foreach ((array) $this->attribute as $attribute) {
+                    $part = ArrayHelper::getValue($this->owner, $attribute);
+                    if ($this->skipOnEmpty && $this->isEmpty($part)) {
+                        return $this->owner->{$this->slugAttribute};
+                    }
+                    $slugParts[] = $part;
+                }
+                $slug = $this->generateSlug($slugParts);
+            } else {
+                return $this->owner->{$this->slugAttribute};
             }
 
             $slug = $this->generateSlug($slugParts);
@@ -256,5 +267,17 @@ class SluggableBehavior extends AttributeBehavior
             return call_user_func($this->uniqueSlugGenerator, $baseSlug, $iteration, $this->owner);
         }
         return $baseSlug . '-' . ($iteration + 1);
+    }
+
+    /**
+     * Checks if $slugPart is empty string or null.
+     *
+     * @param string $slugPart One of attributes that is used for slug generation.
+     * @return bool whether $slugPart empty or not.
+     * @since 2.0.13
+     */
+    protected function isEmpty($slugPart)
+    {
+        return $slugPart === null || $slugPart === '';
     }
 }
