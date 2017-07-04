@@ -122,8 +122,8 @@ test cases to achieve the same goal.
 
 In the following we will describe how to write a `UserProfile` unit test class using Codeception.
 
-In your unit test class extending `\Codeception\Test\Unit` either declare which fixtures you want to use in the
-`_fixtures()` method. For example,
+In your unit test class extending `\Codeception\Test\Unit` either declare fixtures you want to use in the
+`_fixtures()` method or use `haveFixtures()` method of an actor directly. For example,
 
 ```php
 namespace app\tests\unit\models;
@@ -132,21 +132,16 @@ namespace app\tests\unit\models;
 use app\tests\fixtures\UserProfileFixture;
 
 class UserProfileTest extends \Codeception\Test\Unit
-{
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
-    
+{   
     public function _fixtures()
     {
-        $this->tester->haveFixtures([
+        return [
             'profiles' => [
                 'class' => UserProfileFixture::className(),
                 // fixture data located in tests/_data/user.php
                 'dataFile' => codecept_data_dir() . 'user.php'
             ],
-        ]);
+        ];
     }
 
     // ...test methods...
@@ -158,8 +153,9 @@ described before, when a fixture is being loaded, all its dependent fixtures wil
 In the above example, because `UserProfileFixture` depends on `UserFixture`, when running any test method in the test
 class, two fixtures will be loaded sequentially: `UserFixture` and `UserProfileFixture`.
 
-When specifying fixtures for `haveFixtures()`, you may use either a class name or a configuration array to refer to
-a fixture. The configuration array will let you customize the fixture properties when the fixture is loaded.
+When specifying fixtures for both `_fixtures()` and `haveFixtures()`, you may use either a class name
+or a configuration array to refer to a fixture. The configuration array will let you customize
+the fixture properties when the fixture is loaded.
 
 You may also assign an alias to a fixture. In the above example, the `UserProfileFixture` is aliased as `profiles`.
 In the test methods, you may then access a fixture object using its alias in `grabFixture()` method. For example,
@@ -186,9 +182,31 @@ two things:
 * Perform some common initialization tasks by executing a script located at `@app/tests/fixtures/initdb.php`;
 * Disable the database integrity check before loading other DB fixtures, and re-enable it after other DB fixtures are unloaded.
 
-Using global fixtures is similar to using non-global ones. The only difference is that you declare these fixtures
-in a different module hook. For example, if you need fixtures to be applied to the whole suite, `_beforeSuite()` could
-be used instead of `_fixtures()`. When a test case loads fixtures, it will first load global fixtures and then non-global ones.
+Using global fixtures is similar to using non-global ones. If you need fixtures to be applied to the whole suite, `_beforeSuite()` could
+be used. When a test case loads fixtures, it will first load global fixtures and then non-global ones:
+
+```php
+namespace app\tests\unit\models;
+
+
+use app\tests\fixtures\UserProfileFixture;
+
+class UserProfileTest extends \Codeception\Test\Unit
+{   
+    public function _beforeSuite(\UnitTester $I)
+    {
+        return $I->haveFixtures([
+            'profiles' => [
+                'class' => UserProfileFixture::className(),
+                // fixture data located in tests/_data/user.php
+                'dataFile' => codecept_data_dir() . 'user.php'
+            ],
+        ]);
+    }
+
+    // ...test methods...
+}
+```
 
 ## Organizing Fixture Classes and Data Files
 
