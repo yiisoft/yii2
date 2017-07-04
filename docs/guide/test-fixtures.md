@@ -173,41 +173,6 @@ $profile = $I->grabFixture('profiles', 'user1');
 foreach ($I->grabFixture('profiles') as $profile) ...
 ```
 
-## Defining and Using Global Fixtures
-
-The fixtures described above are mainly used by individual test cases. In most cases, you also need some global
-fixtures that are applied to ALL or many test cases. An example is [[yii\test\InitDbFixture]] which does
-two things:
-
-* Perform some common initialization tasks by executing a script located at `@app/tests/fixtures/initdb.php`;
-* Disable the database integrity check before loading other DB fixtures, and re-enable it after other DB fixtures are unloaded.
-
-Using global fixtures is similar to using non-global ones. If you need fixtures to be applied to the whole suite, `_beforeSuite()` could
-be used. When a test case loads fixtures, it will first load global fixtures and then non-global ones:
-
-```php
-namespace app\tests\unit\models;
-
-
-use app\tests\fixtures\UserProfileFixture;
-
-class UserProfileTest extends \Codeception\Test\Unit
-{   
-    public function _beforeSuite(\UnitTester $I)
-    {
-        return $I->haveFixtures([
-            'profiles' => [
-                'class' => UserProfileFixture::className(),
-                // fixture data located in tests/_data/user.php
-                'dataFile' => codecept_data_dir() . 'user.php'
-            ],
-        ]);
-    }
-
-    // ...test methods...
-}
-```
-
 ## Organizing Fixture Classes and Data Files
 
 By default, fixture classes look for the corresponding data files under the `data` folder which is a sub-folder
