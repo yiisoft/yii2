@@ -195,17 +195,25 @@ class SqlToken extends Object implements \ArrayAccess
 
     /**
      * Returns whether this token (including its children) matches the specified "pattern" SQL code.
-     * Currently this implementation uses [[\yii\db\sqlite\SqlTokenizer]] to process a pattern SQL code.
-     * @param string $pattern SQL code. Everything supported in SQLite is supported here as well.
-     * In addition, `any` keyword is supported which is treated as any number of keywords, identifiers, whitespaces.
+     *
+     * Usage Example:
+     *
+     * ```php
+     * $patternToken = (new \yii\db\sqlite\SqlTokenizer('SELECT any FROM any'))->tokenize();
+     * if ($sqlToken->matches($patternToken, 0, $firstMatchIndex, $lastMatchIndex)) {
+     *     // ...
+     * }
+     * ```
+     *
+     * @param SqlToken $patternToken tokenized SQL code to match against. In addition to normal SQL, the
+     * `any` keyword is supported which will match any number of keywords, identifiers, whitespaces.
      * @param int $offset token children offset to start lookup with.
      * @param int|null $firstMatchIndex token children offset where a successful match begins.
      * @param int|null $lastMatchIndex token children offset where a successful match ends.
      * @return bool whether this token matches the pattern SQL code.
      */
-    public function matches($pattern, $offset = 0, &$firstMatchIndex = null, &$lastMatchIndex = null)
+    public function matches(SqlToken $patternToken, $offset = 0, &$firstMatchIndex = null, &$lastMatchIndex = null)
     {
-        $patternToken = (new \yii\db\sqlite\SqlTokenizer($pattern))->tokenize();
         if (!$patternToken->getHasChildren()) {
             return false;
         }

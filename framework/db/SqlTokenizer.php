@@ -7,8 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\Component;
 use yii\base\InvalidParamException;
-use yii\base\Object;
 
 /**
  * SqlTokenizer splits an SQL query into individual SQL tokens.
@@ -28,7 +28,7 @@ use yii\base\Object;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0.13
  */
-abstract class SqlTokenizer extends Object
+abstract class SqlTokenizer extends Component
 {
     /**
      * @var string SQL code.

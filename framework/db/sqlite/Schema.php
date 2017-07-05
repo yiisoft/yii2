@@ -15,6 +15,7 @@ use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
 use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
+use yii\db\SqlToken;
 use yii\db\TableSchema;
 use yii\db\Transaction;
 use yii\helpers\ArrayHelper;
@@ -146,8 +147,10 @@ class Schema extends \yii\db\Schema
         $sql = $this->db->createCommand('SELECT `sql` FROM `sqlite_master` WHERE name = :tableName', [
             ':tableName' => $tableName,
         ])->queryScalar();
+        /** @var $code SqlToken[]|SqlToken[][]|SqlToken[][][] */
         $code = (new SqlTokenizer($sql))->tokenize();
-        if (!$code[0]->matches('any CREATE any TABLE any()', 0, $firstMatchIndex, $lastMatchIndex)) {
+        $pattern = (new SqlTokenizer('any CREATE any TABLE any()'))->tokenize();
+        if (!$code[0]->matches($pattern, 0, $firstMatchIndex, $lastMatchIndex)) {
             return [];
         }
 
@@ -155,13 +158,15 @@ class Schema extends \yii\db\Schema
         $result = [];
         $offset = 0;
         while (true) {
-            if (!$createTableToken->matches('any CHECK()', $offset, $firstMatchIndex, $offset)) {
+            $pattern = (new SqlTokenizer('any CHECK()'))->tokenize();
+            if (!$createTableToken->matches($pattern, $offset, $firstMatchIndex, $offset)) {
                 break;
             }
 
             $checkSql = $createTableToken[$offset - 1]->getSql();
             $name = null;
-            if (isset($createTableToken[$firstMatchIndex - 2]) && $createTableToken->matches('CONSTRAINT any', $firstMatchIndex - 2)) {
+            $pattern = (new SqlTokenizer('CONSTRAINT any'))->tokenize();
+            if (isset($createTableToken[$firstMatchIndex - 2]) && $createTableToken->matches($pattern, $firstMatchIndex - 2)) {
                 $name = $createTableToken[$firstMatchIndex - 1]->content;
             }
             $result[] = new CheckConstraint([
