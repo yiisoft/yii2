@@ -253,7 +253,7 @@ class QueryBuilder extends \yii\base\Object
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
