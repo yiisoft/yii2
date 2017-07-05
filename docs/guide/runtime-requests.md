@@ -138,7 +138,51 @@ $userHost = Yii::$app->request->userHost;
 $userIP = Yii::$app->request->userIP;
 ```
 
-## Trusted proxies & headers
+## Trusted proxies & headers <span id="trusted-proxies"></span>
 
-You should not blindly trust headers provided by proxies unless you explicitly trust the proxy. Since 2.0.13 Yii supports configuring trusted proxies.
-See [[yii\web\Request::trustedHostConfig|trustedHostConfig]], [[yii\web\Request::secureHeaders|secureHeaders]] and [[yii\web\Request::ipHeaders|ipHeaders]]. 
+In the previous section you have seen how to get user information like host and ip address.
+This will work out of the box in a normal setup where a single webserver is used to serve the website.
+If your Yii application however runs behind a reverse proxy, you need to add additional configuration
+to retrieve this information as the direct client is now the proxy and the user IP address is passed to
+the Yii application by a header set by the proxy.
+
+You should not blindly trust headers provided by proxies unless you explicitly trust the proxy.
+Since 2.0.13 Yii supports configuring trusted proxies. via the 
+[[yii\web\Request::trustedHosts|trustedHosts]],
+[[yii\web\Request::secureHeaders|secureHeaders]] and 
+[[yii\web\Request::ipHeaders|ipHeaders]] properties of the `request` component.
+
+The following is a request config for an application that runs behind an array of reverse proxies,
+which are located in the `10.0.2.0/24` ip network:
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '/^10\.0\.2\.\d+$/',
+    ],
+],
+```
+
+The IP is sent by the proxy in the `X-Forwarded-For` header by default, and the protocol (`http` or `https`) is sent in `X-Forwarded-Proto`.
+
+In case your proxies are using different headers you can use the request configuration to adjust these, e.g.:
+
+```php
+'request' => [
+    // ...
+    'trustedHosts' => [
+        '/^10\.0\.2\.\d+$/',
+    ],
+    'secureHeaders' => [
+             'X-Forwarded-For',
+             'X-ProxyUser-Ip',
+             'X-Forwarded-Host',
+             'X-Forwarded-Proto',
+             'Front-End-Https',
+         ];'
+    'ipHeaders' => [
+        'X-ProxyUser-Ip',
+    ],
+],
+```

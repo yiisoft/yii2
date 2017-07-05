@@ -479,6 +479,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function shouldRenderSimpleHtml()
     {
-        return YII_ENV_TEST || \Yii::$app->request->getIsAjax();
+        return YII_ENV_TEST || Yii::$app->request->getIsAjax();
     }
 }

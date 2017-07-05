@@ -164,37 +164,46 @@ class Request extends \yii\base\Request
      */
     public $parsers = [];
     /**
-     * @var array The configuration for trusted security related headers.
-     * An array key is a regular expression for matching a hostname.
-     * A value is a list of headers to trust.
+     * @var array the configuration for trusted security related headers.
      *
-     * For example, to trust all headers EXCEPT those listed in secureHeaders
+     * An array key is a regular expression for matching a client (ususally a proxy) by
+     * host name or ip address.
+     *
+     * An array value is a list of headers to trust. These will be matched against
+     * [[secureHeaders]] to determine which headers are allowed to be sent by a specified host.
+     * The case of the header names must be the same as specified in [[secureHeaders]].
+     *
+     * To specify a host for which you trust all headers listed in [[secureHeaders]] you can just specify
+     * the regular expression as the array value.
+     *
+     * For example, to trust all headers listed in [[secureHeaders]]
      * from domains ending in '.trusted.com' use the following:
      *
      * ```php
      * [
-     *     '/^.*\.trusted\.com$/',
+     *     '/\.trusted\.com$/',
+     * ]
      * ```
      *
      * To trust just the `x-forwarded-for` header from domains ending in `.partial.com` use:
      *
      * ```
-     *     // ...
-     *     '/^.*\.partial\.com$/' => ['X-Forwarded-For']
+     * [
+     *     '/\.partial\.com$/' => ['X-Forwarded-For']
      * ]
      * ```
-
-     * Default is to trust all headers EXCEPT those listed in secureHeaders from all hosts.
+     *
+     * Default is to trust all headers except those listed in [[secureHeaders]] from all hosts.
+     * @see $secureHeaders
      * @since 2.0.13
      */
-    public $trustedHostConfig = [
-        '//'
-    ];
-
+    public $trustedHosts = [];
     /**
-     * Lists headers that are, by default, subject to the trusted host configuration.
+     * @var array lists of headers that are, by default, subject to the trusted host configuration.
+     * These headers will be filtered unless explicitly allowed in [[$trustedHosts]].
+     * The match of header names is case-insensitive.
      * @see https://en.wikipedia.org/wiki/List_of_HTTP_header_fields
-     * @var array
+     * @see $trustedHosts
      * @since 2.0.13
      */
     public $secureHeaders = [
@@ -203,15 +212,29 @@ class Request extends \yii\base\Request
         'X-Forwarded-Proto',
         'Front-End-Https',
     ];
-
     /**
-     * @see $trustedHostConfig
-     * @var string[] List of headers where proxies store the real client IP, it's not advisable to put insecure headers
-     * here.
+     * @var string[] List of headers where proxies store the real client IP.
+     * It's not advisable to put insecure headers here.
+     * The match of header names is case-insensitive.
+     * @see $trustedHosts
+     * @see $secureHeaders
      * @since 2.0.13
      */
     public $ipHeaders = [
         'X-Forwarded-For'
+    ];
+    /**
+     * @var array list of headers to check for determining whether the connection is made via HTTPS.
+     * The array keys are header names and the array value is a list of header values that indicate a secure connection.
+     * The match of header names and values is case-insensitive.
+     * It's not advisable to put insecure headers here.
+     * @see $trustedHosts
+     * @see $secureHeaders
+     * @since 2.0.13
+     */
+    public $secureProtocolHeaders = [
+        'X-Forwarded-Proto' => ['https'],
+        'Front-End-Https' => ['on'],
     ];
     /**
      * @var CookieCollection Collection of request cookies.
@@ -245,31 +268,36 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Filters headers according to the trusted host config.
-     * @param array $headers
+     * Filters headers according to the [[trustedHosts]].
+     * @param HeaderCollection $headerCollection
      * @since 2.0.13
-     * @return array filtered headers.
      */
-    protected function filterHeaders(array $headers)
+    protected function filterHeaders(HeaderCollection $headerCollection)
     {
-        $host = $this->getRemoteHost();
-        $ip = $this->getRemoteIP();
-        foreach ($this->trustedHostConfig as $hostRegex => $trustedHeaders) {
-            if (!is_array($trustedHeaders)) {
-                $hostRegex = $trustedHeaders;
-                $trustedHeaders = $this->secureHeaders;
-            }
+        // do not trust any of the [[secureHeaders]] by default
+        $trustedHeaders = [];
 
-            if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
-                foreach ($this->secureHeaders as $secureHeader) {
-                    if (!in_array($secureHeader, $trustedHeaders)) {
-                        unset($headers[$secureHeader]);
-                    }
+        // check if the client is a trusted host
+        if (!empty($this->trustedHosts)) {
+            $host = $this->getRemoteHost();
+            $ip = $this->getRemoteIP();
+            foreach ($this->trustedHosts as $hostRegex => $headers) {
+                if (!is_array($headers)) {
+                    $hostRegex = $headers;
+                    $headers = $this->secureHeaders;
                 }
-                return $headers;
+                if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
+                    $trustedHeaders = $headers;
+                }
             }
         }
-        return [];
+
+        // filter all secure headers unless they are trusted
+        foreach ($this->secureHeaders as $secureHeader) {
+            if (!in_array($secureHeader, $trustedHeaders)) {
+                $headerCollection->remove($secureHeader);
+            }
+        }
     }
 
     /**
@@ -283,21 +311,23 @@ class Request extends \yii\base\Request
             $this->_headers = new HeaderCollection();
             if (function_exists('getallheaders')) {
                 $headers = getallheaders();
+                foreach ($headers as $name => $value) {
+                    $this->_headers->add($name, $value);
+                }
             } elseif (function_exists('http_get_request_headers')) {
                 $headers = http_get_request_headers();
+                foreach ($headers as $name => $value) {
+                    $this->_headers->add($name, $value);
+                }
             } else {
-                $headers = [];
                 foreach ($_SERVER as $name => $value) {
                     if (strncmp($name, 'HTTP_', 5) === 0) {
                         $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
-                        $headers[$name] = $value;
+                        $this->_headers->add($name, $value);
                     }
                 }
             }
-
-            foreach ($this->filterHeaders($headers) as $name => $value) {
-                $this->_headers->add($name, $value);
-            }
+            $this->filterHeaders($this->_headers);
         }
 
         return $this->_headers;
@@ -954,8 +984,19 @@ class Request extends \yii\base\Request
      */
     public function getIsSecureConnection()
     {
-        return isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-            || strcasecmp($this->headers->get('X-Forwarded-Proto', ''), 'https') === 0;
+        if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) {
+            return true;
+        }
+        foreach($this->secureProtocolHeaders as $header => $values) {
+            if (($headerValue = $this->headers->get($header, null)) !== null) {
+                foreach($values as $value) {
+                    if (strcasecmp($headerValue, $value) === 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -997,7 +1038,6 @@ class Request extends \yii\base\Request
     /**
      * Returns the user IP address.
      * The IP is determined using headers and / or `$_SERVER` variables.
-     * @since 2.0.13
      * @return string|null user IP address, null if not available
      */
     public function getUserIP()
@@ -1017,12 +1057,18 @@ class Request extends \yii\base\Request
      */
     public function getUserHost()
     {
-
+        foreach ($this->ipHeaders as $ipHeader) {
+            if ($this->headers->has($ipHeader)) {
+                return gethostbyaddr(trim(explode(',', $this->headers->get($ipHeader))[0]));
+            }
+        }
+        return $this->getRemoteHost();
     }
+
     /**
      * Returns the IP on the other end of this connection.
      * This is always the next hop, any headers are ignored.
-     * @return string|null remote IP address, null if not available.
+     * @return string|null remote IP address, `null` if not available.
      * @since 2.0.13
      */
     public function getRemoteIP()
@@ -1031,10 +1077,12 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns the user host name.
-     * Returns the IP on the other end of this connection.
+     * Returns the host name of the other end of this connection.
      * This is always the next hop, any headers are ignored.
-     * @return string|null user host name, null if not available
+     * @return string|null remote host name, `null` if not available
+     * @see getUserHost()
+     * @see getRemoteIP()
+     * @since 2.0.13
      */
     public function getRemoteHost()
     {

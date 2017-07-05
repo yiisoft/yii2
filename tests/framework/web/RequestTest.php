@@ -317,6 +317,24 @@ class RequestTest extends TestCase
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
                 'REMOTE_ADDR' => '192.169.0.1'
+            ], false],
+            [['HTTP_FRONT_END_HTTPS' => 'on'], false],
+            [['HTTP_FRONT_END_HTTPS' => 'off'], false],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_HOST' => 'test.com'
+            ], true],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_HOST' => 'othertest.com'
+            ], false],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_ADDR' => '192.168.0.1'
+            ], true],
+            [[
+                'HTTP_FRONT_END_HTTPS' => 'on',
+                'REMOTE_ADDR' => '192.169.0.1'
             ], false]
         ];
     }
@@ -328,7 +346,7 @@ class RequestTest extends TestCase
     {
         $original = $_SERVER;
         $request = new Request([
-            'trustedHostConfig' => [
+            'trustedHosts' => [
                 '/^test.com$/',
                 '/^192\.168/'
             ]
@@ -337,7 +355,6 @@ class RequestTest extends TestCase
 
         $this->assertEquals($expected, $request->getIsSecureConnection());
         $_SERVER = $original;
-
     }
 
     public function getUserIPDataProvider() {
@@ -386,7 +403,7 @@ class RequestTest extends TestCase
         $original = $_SERVER;
         $_SERVER = $server;
         $request = new Request([
-            'trustedHostConfig' => [
+            'trustedHosts' => [
                 '/^192\.168/',
                 '/^trusted.com$/'
             ],
