@@ -149,8 +149,10 @@ the Yii application by a header set by the proxy.
 You should not blindly trust headers provided by proxies unless you explicitly trust the proxy.
 Since 2.0.13 Yii supports configuring trusted proxies. via the 
 [[yii\web\Request::trustedHosts|trustedHosts]],
-[[yii\web\Request::secureHeaders|secureHeaders]] and 
-[[yii\web\Request::ipHeaders|ipHeaders]] properties of the `request` component.
+[[yii\web\Request::secureHeaders|secureHeaders]], 
+[[yii\web\Request::ipHeaders|ipHeaders]] and
+[[yii\web\Request::secureProtocolHeaders|secureProtocolHeaders]]
+properties of the `request` component.
 
 The following is a request config for an application that runs behind an array of reverse proxies,
 which are located in the `10.0.2.0/24` ip network:
@@ -172,17 +174,28 @@ In case your proxies are using different headers you can use the request configu
 'request' => [
     // ...
     'trustedHosts' => [
-        '/^10\.0\.2\.\d+$/',
+        '/^10\.0\.2\.\d+$/' => [
+            'X-ProxyUser-Ip',
+            'Front-End-Https',
+        ],
     ],
     'secureHeaders' => [
              'X-Forwarded-For',
-             'X-ProxyUser-Ip',
              'X-Forwarded-Host',
              'X-Forwarded-Proto',
+             'X-Proxy-User-Ip',
              'Front-End-Https',
          ];'
     'ipHeaders' => [
-        'X-ProxyUser-Ip',
+        'X-Proxy-User-Ip',
+    ],
+    'secureProtocolHeaders' => [
+        'Front-End-Https' => ['on']
     ],
 ],
 ```
+
+with the above configuration, all headers listed in `secureHeaders` are filtered from the request,
+except the `X-ProxyUser-Ip` and `Front-End-Https` headers in case the request is made by the proxy.
+In that case the former is used to retrieve the user IP as configured in `ipHeaders` and the latter
+will be used to determine the result of [[yii\web\Request::getIsSecureConnection()]].

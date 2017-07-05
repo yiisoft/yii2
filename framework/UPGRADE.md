@@ -50,6 +50,17 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.12
+-----------------------
+
+* The `yii\web\Request` class allowed to determine the value of `getIsSecureConnection()` form the
+  `X-Forwarded-Proto` header if the connection was made via a normal HTTP request. This behavior
+  was insecure as the header could have been set by a malicious client on a non-HTTPS connection.
+  With 2.0.13 Yii adds support for configuring trusted proxies. If your application runs behind a reverse proxy and relies on
+  `getIsSecureConnection()` to return the value form the `X-Forwarded-Proto` header you need to explicitly allow
+  this in the Request configuration. See the [guide](http://www.yiiframework.com/doc-2.0/guide-runtime-requests.html#trusted-proxies) for more information.
+
+
 Upgrade from Yii 2.0.11
 -----------------------
 
