@@ -650,7 +650,7 @@ class ActiveRecord extends BaseActiveRecord
         if ($lock !== null) {
             $condition[$lock] = $this->$lock;
         }
-        $result = static::deleteAll($condition);
+        $result = static::getDb()->createCommand()->delete(static::tableName(), $condition)->execute();
         if ($lock !== null && !$result) {
             throw new StaleObjectException('The object being deleted is outdated.');
         }
