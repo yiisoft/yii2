@@ -47,6 +47,54 @@ $fullName = ArrayHelper::getValue($user, function ($user, $defaultValue) {
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
+
+## Добавить или перезаписать значение в массиве <span id="set-value"></span>
+
+```php
+$array = [
+    'key' => [
+        'in' => ['k' => 'value']
+    ]
+];
+
+ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
+// путь можно по которому записано новое значение в `$array` может указать как массив  
+ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
+```
+
+В результате исходное значение `$array['key']['in']` будет перезаписано но новое
+```php
+[
+    'key' => [
+        'in' => ['arr' => 'val']
+    ]
+]
+```
+
+Если в пути указать несуществующий ключ, тогда он будет создан и ему будет присвоено указанное значение
+```php
+// Если `$array['key']['in']['arr0']` не пустой, тогда значение будет добавлено в массив
+ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
+
+// если необходимо полностью переопределить значение `$array['key']['in']['arr0']`
+ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
+```
+
+Результатом будет
+```php
+[
+    'key' => [
+        'in' => [
+            'k' => 'value',
+            'arr0' => ['arr1' => 'val']
+        ]
+    ]
+]
+```
+
+
+## Получить значение и тут же удалить его из массива <span id="remove"></span>
+
 В случае если вы хотите получить значение и тут же удалить его из массива, вы можете использовать метод  `remove`
 
 ```php
