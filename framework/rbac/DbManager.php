@@ -453,6 +453,7 @@ class DbManager extends BaseManager
 
     /**
      * @inheritdoc
+     * The roles returned by this method include the roles assigned via [[$defaultRoles]].
      */
     public function getRolesByUser($userId)
     {
