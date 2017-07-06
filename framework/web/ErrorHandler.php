@@ -192,8 +192,13 @@ class ErrorHandler extends \yii\base\ErrorHandler
 
         $shouldGenerateLink = true;
         if ($method !== null && substr_compare($method, '{closure}', -9) !== 0) {
-            $reflection = new \ReflectionMethod($class, $method);
-            $shouldGenerateLink = $reflection->isPublic() || $reflection->isProtected();
+            $reflection = new \ReflectionClass($class);
+            if ($reflection->hasMethod($method)) {
+                $reflectionMethod = $reflection->getMethod($method);
+                $shouldGenerateLink = $reflectionMethod->isPublic() || $reflectionMethod->isProtected();
+            } else {
+                $shouldGenerateLink = false;
+            }
         }
 
         if ($shouldGenerateLink) {

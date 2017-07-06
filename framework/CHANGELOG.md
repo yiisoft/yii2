@@ -7,6 +7,7 @@ Yii Framework 2 Change Log
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Bug #14248: `yii\console\controllers\MessageController` no longer outputs colorized filenames when console does not support text colorization (PowerGamer1)
 - Bug #14264: Fixed a bug where `yii\log\Logger::calculateTimings()` was not accepting messages with array tokens (bizley)
+- Bug #14269: Fixed broken error page when calling an undefined method (cebe)
 - Bug #14307: Fixed PHP warning when `yii\console\UnknownCommandException` is thrown for empty command (rob006)
 - Chg #14201: `yii\console\controllers\MessageController::extractMessagesFromTokens()` is now protected (faenir)
 - Enh #4495:  Added closure support in `yii\i18n\Formatter` (developeruz)
