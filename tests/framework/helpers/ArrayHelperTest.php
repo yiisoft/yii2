@@ -997,6 +997,24 @@ class ArrayHelperTest extends TestCase
                     ],
                 ],
             ],
+            [
+                [
+                    'key' => [
+                        'in.array' => [
+                            'key' => 'val',
+                        ]
+                    ],
+                ],
+                ['key', 'in.array', 'ok.schema'], 'array',
+                [
+                    'key' => [
+                        'in.array' => [
+                            'key' => 'val',
+                            'ok.schema' => 'array',
+                        ]
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -1010,8 +1028,8 @@ class ArrayHelperTest extends TestCase
      */
     public function testSetValue($array_input, $key, $value, $expected)
     {
-        $result = ArrayHelper::setValue($array_input, $key, $value);
-        static::assertEquals($expected, $result);
+        ArrayHelper::setValue($array_input, $key, $value);
+        static::assertEquals($expected, $array_input);
     }
 
     public function testIsAssociative()

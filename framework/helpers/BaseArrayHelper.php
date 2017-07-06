@@ -244,7 +244,10 @@ class BaseArrayHelper
      *
      * ```
      *
-     * The result of `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` will be the following:
+     * The result of
+     * `ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);` or
+     * `ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);`
+     * will be the following:
      *
      * ```php
      *  [
@@ -257,30 +260,34 @@ class BaseArrayHelper
      * ```
      *
      * @param array $array the array to write the value to
-     * @param string $path the path of where do you want to write a value to
+     * @param string|array|null $path the path of where do you want to write a value to `$array`
+     *  the path can be described by a string when each key should be separated by a dot
+     *  you can also describe the path as an array of keys
+     *  if the path is null then `$array` will be assigned the `$value`
      * @param mixed $value the value to be written
      * @return array a new array with the value written
      * @since 2.0.13
      */
-    public static function setValue(array $array, $path, $value)
+    public static function setValue(&$array, $path, $value)
     {
-        if (($pos = strpos($path, '.')) !== false) {
-            $leftKey = substr($path, 0, $pos);
-            $rightKey = substr($path, $pos + 1);
-
-            if (isset($array[$leftKey])) {
-                $data = $array[$leftKey];
-                if (!is_array($data)) {
-                    $data = [$data];
-                }
-            } else {
-                $data = [];
-            }
-
-            $array[$leftKey] = static::setValue($data, $rightKey, $value);
-        } else {
-            $array[$path] = $value;
+        if (is_null($path)) {
+            return $array = $value;
         }
+
+        $keys = is_array($path) ? $path : explode('.', $path);
+
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($array[$key])) {
+                $array[$key] = [];
+            }
+            if (!is_array($array[$key])) {
+                $array[$key] = [$array[$key]];
+            }
+            $array = &$array[$key];
+        }
+
+        $array[array_shift($keys)] = $value;
 
         return $array;
     }
