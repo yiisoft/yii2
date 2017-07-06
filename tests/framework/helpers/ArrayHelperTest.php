@@ -1015,6 +1015,13 @@ class ArrayHelperTest extends TestCase
                     ],
                 ],
             ],
+            [
+                [
+                    'key' => ['val'],
+                ],
+                null, 'data',
+                'data',
+            ],
         ];
     }
 
@@ -1022,9 +1029,9 @@ class ArrayHelperTest extends TestCase
      * @dataProvider dataProviderSetValue
      *
      * @param array $array_input
-     * @param string $key
+     * @param string|array|null $key
      * @param mixed $value
-     * @param array $expected
+     * @param mixed $expected
      */
     public function testSetValue($array_input, $key, $value, $expected)
     {
