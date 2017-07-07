@@ -516,7 +516,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the FROM part of the query.
-     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
+     * @param string|array|Expression $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
      * or an array (e.g. `['user', 'profile']`) specifying one or several table names.
      * Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
      * The method will automatically quote the table names unless it contains some parenthesis
@@ -527,6 +527,8 @@ class Query extends Component implements QueryInterface
      *
      * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
      * as the alias for the sub-query.
+     *
+     * To specify the `FROM` part in plain SQL, you may pass an instance of [[Expression]].
      *
      * Here are some examples:
      *
