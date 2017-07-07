@@ -8,6 +8,7 @@
 namespace yii\db\cubrid;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 
 /**
@@ -116,6 +117,41 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function selectExists($rawSql)
     {
         return 'SELECT CASE WHEN EXISTS(' . $rawSql . ') THEN 1 ELSE 0 END';
+    }
+
+    /**
+     * @inheritDoc
+     * @see http://www.cubrid.org/manual/93/en/sql/schema/table.html#drop-index-clause
+     */
+    public function dropIndex($name, $table)
+    {
+        /** @var Schema $schema */
+        $schema = $this->db->getSchema();
+        foreach ($schema->getTableUniques($table) as $unique) {
+            if ($unique->name === $name) {
+                return $this->dropUnique($name, $table);
+            }
+        }
+
+        return 'DROP INDEX ' . $this->db->quoteTableName($name) . ' ON ' . $this->db->quoteTableName($table);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by CUBRID.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by CUBRID.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by CUBRID.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by CUBRID.');
     }
 
     /**

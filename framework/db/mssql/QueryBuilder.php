@@ -177,6 +177,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritDoc
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' DEFAULT ' . $this->db->quoteValue($value) . ' FOR '
+            . $this->db->quoteColumnName($column);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.

@@ -23,4 +23,24 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
         $command = $db->createCommand($sql);
         $this->assertEquals('SELECT `id`, `t`.`name` FROM `customer` t', $command->sql);
     }
+
+    public function testAddDropPrimaryKey()
+    {
+        $this->markTestSkipped('SQLite does not support adding/dropping primary keys.');
+    }
+
+    public function testAddDropForeignKey()
+    {
+        $this->markTestSkipped('SQLite does not support adding/dropping foreign keys.');
+    }
+
+    public function testAddDropUnique()
+    {
+        $this->markTestSkipped('SQLite does not support adding/dropping unique constraints.');
+    }
+
+    public function testAddDropCheck()
+    {
+        $this->markTestSkipped('SQLite does not support adding/dropping check constraints.');
+    }
 }

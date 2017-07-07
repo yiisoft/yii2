@@ -8,6 +8,7 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidParamException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 use yii\db\Expression;
 
@@ -117,6 +118,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
     public function dropPrimaryKey($name, $table)
     {
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' DROP PRIMARY KEY';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function dropUnique($name, $table)
+    {
+        return $this->dropIndex($name, $table);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
     }
 
     /**

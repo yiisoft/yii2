@@ -723,7 +723,7 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->createIndex($name, $table, $columns, $unique);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**
@@ -736,7 +736,110 @@ class Command extends Component
     {
         $sql = $this->db->getQueryBuilder()->dropIndex($name, $table);
 
-        return $this->setSql($sql);
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for adding an unique constraint to an existing table.
+     * @param string $name the name of the unique constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the unique constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        $sql = $this->db->getQueryBuilder()->addUnique($name, $table, $columns);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for dropping an unique constraint.
+     * @param string $name the name of the unique constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose unique constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function dropUnique($name, $table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropUnique($name, $table);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for adding a check constraint to an existing table.
+     * @param string $name the name of the check constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the check constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $expression the SQL of the `CHECK` constraint.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        $sql = $this->db->getQueryBuilder()->addCheck($name, $table, $expression);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for dropping a check constraint.
+     * @param string $name the name of the check constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose check constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function dropCheck($name, $table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropCheck($name, $table);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for adding a default value constraint to an existing table.
+     * @param string $name the name of the default value constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the default value constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $column the name of the column to that the constraint will be added on.
+     * The name will be properly quoted by the method.
+     * @param mixed $value default value.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        $sql = $this->db->getQueryBuilder()->addDefaultValue($name, $table, $column, $value);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
+    }
+
+    /**
+     * Creates a SQL command for dropping a default value constraint.
+     * @param string $name the name of the default value constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose default value constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return $this the command object itself.
+     * @since 2.0.13
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        $sql = $this->db->getQueryBuilder()->dropDefaultValue($name, $table);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($table);
     }
 
     /**

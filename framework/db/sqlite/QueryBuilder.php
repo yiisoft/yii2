@@ -300,6 +300,60 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropUnique($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
      * @inheritdoc
      * @throws NotSupportedException
      * @since 2.0.8
