@@ -190,6 +190,8 @@ class Validator extends Component
      */
     public $whenClient;
 
+    private $_attributeNames;
+
 
     /**
      * Creates a validator object.
@@ -461,8 +463,11 @@ class Validator extends Component
      */
     public function getAttributeNames()
     {
-        return array_map(function ($attribute) {
-            return ltrim($attribute, '!');
-        }, $this->attributes);
+        if ($this->_attributeNames === null) {
+            $this->_attributeNames = array_map(function ($attribute) {
+                return ltrim($attribute, '!');
+            }, $this->attributes);
+        }
+        return $this->_attributeNames;
     }
 }
