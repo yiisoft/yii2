@@ -456,7 +456,7 @@ You can override `fields()` to add, remove, rename or redefine fields. The retur
 should be an array. The array keys are the field names, and the array values are the corresponding
 field definitions which can be either property/attribute names or anonymous functions returning the
 corresponding field values. In the special case when a field name is the same as its defining attribute
-name, you can omit the array key. For example,
+name, you can omit the array value. For example,
 
 ```php
 // explicitly list every field, best used when you want to make sure the changes
