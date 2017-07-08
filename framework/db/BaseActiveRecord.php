@@ -1427,6 +1427,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * @param string $name the case sensitive name of the relationship, e.g. `orders` for a relation defined via `getOrders()` method.
      * @param bool $delete whether to delete the model that contains the foreign key.
+     *
+     * Note that the deletion will be performed using [[deleteAll()]], which will not trigger any events on the related models.
+     * If you need [[EVENT_BEFORE_DELETE]] or [[EVENT_AFTER_DELETE]] to be triggered, you need to [[find()|find]] the models first
+     * and then call [[delete()]] on each of them.
      */
     public function unlinkAll($name, $delete = false)
     {
