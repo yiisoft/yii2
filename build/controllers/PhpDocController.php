@@ -178,7 +178,7 @@ class PhpDocController extends Controller
             list(, $extension) = $matches;
             Yii::setAlias("@yii/$extension", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
-                include($autoloadFile);
+                include $autoloadFile;
             }
 
             if (isset($extensionExcept[$extension])) {
@@ -201,7 +201,7 @@ class PhpDocController extends Controller
             list(, $appName) = $matches;
             Yii::setAlias("@app-$appName", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
-                include($autoloadFile);
+                include $autoloadFile;
             }
 
             $except[] = '/runtime/';

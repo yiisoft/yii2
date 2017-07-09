@@ -637,7 +637,7 @@ class ReleaseController extends Controller
                 break;
             case 'advanced':
                 // setup @frontend, @backend etc...
-                require("$path/common/config/bootstrap.php");
+                require "$path/common/config/bootstrap.php";
                 break;
         }
     }
