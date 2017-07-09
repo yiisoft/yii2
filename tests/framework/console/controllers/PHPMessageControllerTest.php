@@ -95,9 +95,9 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
         }
     }
 
-    // This forces tests order for this test class - by default phpunit runs inherited test after inline tests,
-    // so `testCreateTranslation()` would be run after `testCustomFileHeaderAndDocBlock()` (this would break
-    // `@depends` annotation).
+    // By default phpunit runs inherited test after inline tests, so `testCreateTranslation()` would be run after
+    // `testCustomFileHeaderAndDocBlock()` (that would break `@depends` annotation). This ensures that
+    // `testCreateTranslation() will be run before `testCustomFileHeaderAndDocBlock()`.
     public function testCreateTranslation()
     {
         parent::testCreateTranslation();
