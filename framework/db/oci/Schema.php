@@ -76,7 +76,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findSchemaNames()
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
     USERNAME
 FROM DBA_USERS U
@@ -93,7 +93,7 @@ SQL;
     protected function findTableNames($schema = '')
     {
         if ($schema === '') {
-            $sql = <<<SQL
+            $sql = <<<'SQL'
 SELECT
     TABLE_NAME
 FROM USER_TABLES
@@ -109,7 +109,7 @@ ORDER BY TABLE_NAME
 SQL;
             $command = $this->db->createCommand($sql);
         } else {
-            $sql = <<<SQL
+            $sql = <<<'SQL'
 SELECT
     OBJECT_NAME AS TABLE_NAME
 FROM ALL_OBJECTS
@@ -168,7 +168,7 @@ SQL;
      */
     protected function loadTableIndexes($tableName)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT
     /*+ PUSH_PRED("ui") PUSH_PRED("uicol") PUSH_PRED("uc") */
     "ui"."INDEX_NAME" AS "name",
@@ -287,7 +287,7 @@ SQL;
      */
     protected function findColumns($table)
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
     A.COLUMN_NAME,
     A.DATA_TYPE,
@@ -339,7 +339,7 @@ SQL;
      */
     protected function getTableSequenceName($tableName)
     {
-        $sequenceNameSql = <<<SQL
+        $sequenceNameSql = <<<'SQL'
 SELECT
     UD.REFERENCED_NAME AS SEQUENCE_NAME
 FROM USER_DEPENDENCIES UD
@@ -424,7 +424,7 @@ SQL;
      */
     protected function findConstraints($table)
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
     /*+ PUSH_PRED(C) PUSH_PRED(D) PUSH_PRED(E) */
     D.CONSTRAINT_NAME,
@@ -503,7 +503,7 @@ SQL;
      */
     public function findUniqueIndexes($table)
     {
-        $query = <<<SQL
+        $query = <<<'SQL'
 SELECT
     DIC.INDEX_NAME,
     DIC.COLUMN_NAME
@@ -641,7 +641,7 @@ SQL;
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT
     /*+ PUSH_PRED("uc") PUSH_PRED("uccol") PUSH_PRED("fuc") */
     "uc"."CONSTRAINT_NAME" AS "name",

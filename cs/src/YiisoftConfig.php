@@ -22,7 +22,7 @@ final class YiisoftConfig extends YiiConfig
     {
         parent::__construct('yiisoft-cs-config');
 
-        $header = <<<HEADER
+        $header = <<<'HEADER'
 @link http://www.yiiframework.com/
 @copyright Copyright (c) 2008 Yii Software LLC
 @license http://www.yiiframework.com/license/

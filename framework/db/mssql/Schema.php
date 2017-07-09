@@ -120,7 +120,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findSchemaNames()
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT ns.nspname AS schema_name
 FROM pg_namespace ns
 WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
@@ -138,7 +138,7 @@ SQL;
             $schema = $this->defaultSchema;
         }
 
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT [t].[table_name]
 FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] IN ('BASE TABLE', 'VIEW')
@@ -185,7 +185,7 @@ SQL;
      */
     protected function loadTableIndexes($tableName)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT
     [i].[name] AS [name],
     [iccol].[name] AS [column_name],
@@ -519,7 +519,7 @@ SQL;
 
         // please refer to the following page for more details:
         // http://msdn2.microsoft.com/en-us/library/aa175805(SQL.80).aspx
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
 	[fk].[name] AS [fk_name],
 	[cp].[name] AS [fk_column_name],
@@ -558,7 +558,7 @@ SQL;
             $schema = $this->defaultSchema;
         }
 
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT [t].[table_name]
 FROM [INFORMATION_SCHEMA].[TABLES] AS [t]
 WHERE [t].[table_schema] = :schema AND [t].[table_type] = 'VIEW'
@@ -605,7 +605,7 @@ SQL;
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT
     [o].[name] AS [name],
     COALESCE([ccol].[name], [dcol].[name], [fccol].[name], [kiccol].[name]) AS [column_name],

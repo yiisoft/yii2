@@ -165,7 +165,7 @@ abstract class CommandTest extends DatabaseTestCase
         $command->bindParam(':email', $email);
         $this->assertEquals($name, $command->queryScalar());
 
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 INSERT INTO {{type}} ([[int_col]], [[char_col]], [[float_col]], [[blob_col]], [[numeric_col]], [[bool_col]])
   VALUES (:int_col, :char_col, :float_col, :blob_col, :numeric_col, :bool_col)
 SQL;

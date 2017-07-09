@@ -100,7 +100,7 @@ class VarDumperTest extends TestCase
             'key1' => 'value1',
             'key2' => 'value2',
         ];
-        $expectedResult = <<<RESULT
+        $expectedResult = <<<'RESULT'
 [
     'key1' => 'value1',
     'key2' => 'value2',
@@ -112,7 +112,7 @@ RESULT;
             'value1',
             'value2',
         ];
-        $expectedResult = <<<RESULT
+        $expectedResult = <<<'RESULT'
 [
     'value1',
     'value2',
@@ -128,7 +128,7 @@ RESULT;
                 'subkey2' => 'value3',
             ],
         ];
-        $expectedResult = <<<RESULT
+        $expectedResult = <<<'RESULT'
 [
     'key1' => [
         'subkey1' => 'value2',
