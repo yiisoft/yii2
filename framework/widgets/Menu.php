@@ -238,13 +238,13 @@ class Menu extends Widget
                 '{url}' => Html::encode(Url::to($item['url'])),
                 '{label}' => $item['label'],
             ]);
-        } else {
-            $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
-
-            return strtr($template, [
-                '{label}' => $item['label'],
-            ]);
         }
+
+        $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
+
+        return strtr($template, [
+            '{label}' => $item['label'],
+        ]);
     }
 
     /**

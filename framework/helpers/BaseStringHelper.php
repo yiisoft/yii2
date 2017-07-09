@@ -86,9 +86,9 @@ class BaseStringHelper
         $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
         if ($pos !== false) {
             return mb_substr($path, 0, $pos);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -110,9 +110,9 @@ class BaseStringHelper
 
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
             return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
-        } else {
-            return $string;
         }
+
+        return $string;
     }
 
     /**
@@ -134,9 +134,9 @@ class BaseStringHelper
         $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
-        } else {
-            return $string;
         }
+
+        return $string;
     }
 
     /**
@@ -215,9 +215,9 @@ class BaseStringHelper
         }
         if ($caseSensitive) {
             return strncmp($string, $with, $bytes) === 0;
-        } else {
-            return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
+
+        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
     }
 
     /**
@@ -240,9 +240,9 @@ class BaseStringHelper
                 return false;
             }
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
-        } else {
-            return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
+
+        return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
     }
 
     /**

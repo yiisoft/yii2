@@ -320,9 +320,9 @@ class AssetController extends Controller
             usort($target['depends'], function ($a, $b) use ($bundleOrders) {
                 if ($bundleOrders[$a] == $bundleOrders[$b]) {
                     return 0;
-                } else {
-                    return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
                 }
+
+                return $bundleOrders[$a] > $bundleOrders[$b] ? 1 : -1;
             });
             if (!isset($target['class'])) {
                 $target['class'] = $name;
@@ -732,10 +732,10 @@ EOD;
         }
         if (!file_put_contents($configFile, $template)) {
             throw new Exception("Unable to write template file '{$configFile}'.");
-        } else {
-            $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
-            return self::EXIT_CODE_NORMAL;
         }
+
+        $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
+        return self::EXIT_CODE_NORMAL;
     }
 
     /**

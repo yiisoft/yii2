@@ -1135,9 +1135,9 @@ class QueryBuilder extends \yii\base\Object
         if (!is_array($columns)) {
             if (strpos($columns, '(') !== false) {
                 return $columns;
-            } else {
-                $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
             }
+
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
         }
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
@@ -1179,9 +1179,10 @@ class QueryBuilder extends \yii\base\Object
             }
             array_shift($condition);
             return $this->$method($operator, $condition, $params);
-        } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-            return $this->buildHashCondition($condition, $params);
         }
+
+        // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+        return $this->buildHashCondition($condition, $params);
     }
 
     /**
@@ -1244,9 +1245,9 @@ class QueryBuilder extends \yii\base\Object
         }
         if (!empty($parts)) {
             return '(' . implode(") $operator (", $parts) . ')';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -1384,10 +1385,10 @@ class QueryBuilder extends \yii\base\Object
 
         if (count($sqlValues) > 1) {
             return "$column $operator (" . implode(', ', $sqlValues) . ')';
-        } else {
-            $operator = $operator === 'IN' ? '=' : '<>';
-            return $column . $operator . reset($sqlValues);
         }
+
+        $operator = $operator === 'IN' ? '=' : '<>';
+        return $column . $operator . reset($sqlValues);
     }
 
     /**
@@ -1409,12 +1410,13 @@ class QueryBuilder extends \yii\base\Object
                 }
             }
             return '(' . implode(', ', $columns) . ") $operator ($sql)";
-        } else {
-            if (strpos($columns, '(') === false) {
-                $columns = $this->db->quoteColumnName($columns);
-            }
-            return "$columns $operator ($sql)";
         }
+
+        if (strpos($columns, '(') === false) {
+            $columns = $this->db->quoteColumnName($columns);
+        }
+
+        return "$columns $operator ($sql)";
     }
 
     /**
@@ -1539,9 +1541,9 @@ class QueryBuilder extends \yii\base\Object
         if ($operands[0] instanceof Query) {
             list($sql, $params) = $this->build($operands[0], $params);
             return "$operator ($sql)";
-        } else {
-            throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
         }
+
+        throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
     }
 
     /**
@@ -1574,11 +1576,11 @@ class QueryBuilder extends \yii\base\Object
         } elseif ($value instanceof Query) {
             list($sql, $params) = $this->build($value, $params);
             return "$column $operator ($sql)";
-        } else {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = $value;
-            return "$column $operator $phName";
         }
+
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value;
+        return "$column $operator $phName";
     }
 
     /**

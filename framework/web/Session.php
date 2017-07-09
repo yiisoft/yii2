@@ -395,9 +395,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             return false;
         } elseif (ini_get('session.use_only_cookies') === '1') {
             return true;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -622,9 +622,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             unset($_SESSION[$key]);
 
             return $value;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -697,9 +697,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             }
 
             return $value;
-        } else {
-            return $defaultValue;
         }
+
+        return $defaultValue;
     }
 
     /**

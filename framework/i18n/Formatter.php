@@ -328,9 +328,9 @@ class Formatter extends Component
         $method = 'as' . $format;
         if ($this->hasMethod($method)) {
             return call_user_func_array([$this, $method], $params);
-        } else {
-            throw new InvalidParamException("Unknown format type: $format");
         }
+
+        throw new InvalidParamException("Unknown format type: $format");
     }
 
 
@@ -649,21 +649,22 @@ class Formatter extends Component
                 $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
             }
             return $formatter->format($timestamp);
-        } else {
-            if (strncmp($format, 'php:', 4) === 0) {
-                $format = substr($format, 4);
-            } else {
-                $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
-            }
-            if ($timeZone != null) {
-                if ($timestamp instanceof \DateTimeImmutable) {
-                    $timestamp = $timestamp->setTimezone(new DateTimeZone($timeZone));
-                } else {
-                    $timestamp->setTimezone(new DateTimeZone($timeZone));
-                }
-            }
-            return $timestamp->format($format);
         }
+
+        if (strncmp($format, 'php:', 4) === 0) {
+            $format = substr($format, 4);
+        } else {
+            $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
+        }
+        if ($timeZone != null) {
+            if ($timestamp instanceof \DateTimeImmutable) {
+                $timestamp = $timestamp->setTimezone(new DateTimeZone($timeZone));
+            } else {
+                $timestamp->setTimezone(new DateTimeZone($timeZone));
+            }
+        }
+
+        return $timestamp->format($format);
     }
 
     /**
@@ -718,9 +719,9 @@ class Formatter extends Component
                     !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
                     !($info['year'] === false && $info['month'] === false && $info['day'] === false),
                 ];
-            } else {
-                return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
             }
+
+            return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
         } catch (\Exception $e) {
             throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
                 . "\n" . print_r(DateTime::getLastErrors(), true), $e->getCode(), $e);
@@ -826,28 +827,30 @@ class Formatter extends Component
             if ($interval->s == 0) {
                 return Yii::t('yii', 'just now', [], $this->locale);
             }
+
             return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
-        } else {
-            if ($interval->y >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y], $this->locale);
-            }
-            if ($interval->m >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m], $this->locale);
-            }
-            if ($interval->d >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d], $this->locale);
-            }
-            if ($interval->h >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h], $this->locale);
-            }
-            if ($interval->i >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
-            }
-            if ($interval->s == 0) {
-                return Yii::t('yii', 'just now', [], $this->locale);
-            }
-            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
         }
+
+        if ($interval->y >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y], $this->locale);
+        }
+        if ($interval->m >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m], $this->locale);
+        }
+        if ($interval->d >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d], $this->locale);
+        }
+        if ($interval->h >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h], $this->locale);
+        }
+        if ($interval->i >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
+        }
+        if ($interval->s == 0) {
+            return Yii::t('yii', 'just now', [], $this->locale);
+        }
+
+        return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
     }
 
     /**
@@ -941,10 +944,11 @@ class Formatter extends Component
             if (($result = $f->format($value, NumberFormatter::TYPE_INT64)) === false) {
                 throw new InvalidParamException('Formatting integer value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
         }
+
+        return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
     }
 
     /**
@@ -980,13 +984,15 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting decimal value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            if ($decimals === null) {
-                $decimals = 2;
-            }
-            return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
         }
+
+        if ($decimals === null) {
+            $decimals = 2;
+        }
+
+        return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
     }
 
 
@@ -1019,13 +1025,14 @@ class Formatter extends Component
                 throw new InvalidParamException('Formatting percent value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
             return $result;
-        } else {
-            if ($decimals === null) {
-                $decimals = 0;
-            }
-            $value *= 100;
-            return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
         }
+
+        if ($decimals === null) {
+            $decimals = 0;
+        }
+
+        $value *= 100;
+        return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
     }
 
     /**
@@ -1056,14 +1063,15 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            if ($decimals !== null) {
-                return sprintf("%.{$decimals}E", $value);
-            } else {
-                return sprintf('%.E', $value);
-            }
         }
+
+        if ($decimals !== null) {
+            return sprintf("%.{$decimals}E", $value);
+        }
+
+        return sprintf('%.E', $value);
     }
 
     /**
@@ -1104,16 +1112,18 @@ class Formatter extends Component
             if ($result === false) {
                 throw new InvalidParamException('Formatting currency value failed: ' . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
             }
+
             return $result;
-        } else {
-            if ($currency === null) {
-                if ($this->currencyCode === null) {
-                    throw new InvalidConfigException('The default currency code for the formatter is not defined and the php intl extension is not installed which could take the default currency from the locale.');
-                }
-                $currency = $this->currencyCode;
-            }
-            return $currency . ' ' . $this->asDecimal($value, 2, $options, $textOptions);
         }
+
+        if ($currency === null) {
+            if ($this->currencyCode === null) {
+                throw new InvalidConfigException('The default currency code for the formatter is not defined and the php intl extension is not installed which could take the default currency from the locale.');
+            }
+            $currency = $this->currencyCode;
+        }
+
+        return $currency . ' ' . $this->asDecimal($value, 2, $options, $textOptions);
     }
 
     /**
@@ -1137,10 +1147,11 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as spellout failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            throw new InvalidConfigException('Format as Spellout is only supported when PHP intl extension is installed.');
         }
+
+        throw new InvalidConfigException('Format as Spellout is only supported when PHP intl extension is installed.');
     }
 
     /**
@@ -1164,10 +1175,11 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as ordinal failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            throw new InvalidConfigException('Format as Ordinal is only supported when PHP intl extension is installed.');
         }
+
+        throw new InvalidConfigException('Format as Ordinal is only supported when PHP intl extension is installed.');
     }
 
     /**

@@ -345,9 +345,9 @@ abstract class Schema extends Object
     {
         if ($this->db->isActive) {
             return $this->db->pdo->lastInsertId($sequenceName === '' ? null : $this->quoteTableName($sequenceName));
-        } else {
-            throw new InvalidCallException('DB Connection is not active.');
         }
+
+        throw new InvalidCallException('DB Connection is not active.');
     }
 
     /**
@@ -417,9 +417,9 @@ abstract class Schema extends Object
             if ($tableSchema->columns[$name]->autoIncrement) {
                 $result[$name] = $this->getLastInsertID($tableSchema->sequenceName);
                 break;
-            } else {
-                $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
             }
+
+            $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
         }
         return $result;
     }
@@ -439,10 +439,10 @@ abstract class Schema extends Object
 
         if (($value = $this->db->getSlavePdo()->quote($str)) !== false) {
             return $value;
-        } else {
-            // the driver doesn't support quote (e.g. oci)
-            return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
         }
+
+        // the driver doesn't support quote (e.g. oci)
+        return "'" . addcslashes(str_replace("'", "''", $str), "\000\n\r\\\032") . "'";
     }
 
     /**
@@ -533,9 +533,9 @@ abstract class Schema extends Object
             $name = preg_replace('/\\{\\{(.*?)\\}\\}/', '\1', $name);
 
             return str_replace('%', $this->db->tablePrefix, $name);
-        } else {
-            return $name;
         }
+
+        return $name;
     }
 
     /**
@@ -560,12 +560,12 @@ abstract class Schema extends Object
                 return PHP_INT_SIZE === 8 && !$column->unsigned ? 'integer' : 'string';
             } elseif ($column->type === 'integer') {
                 return PHP_INT_SIZE === 4 && $column->unsigned ? 'string' : 'integer';
-            } else {
-                return $typeMap[$column->type];
             }
-        } else {
-            return 'string';
+
+            return $typeMap[$column->type];
         }
+
+        return 'string';
     }
 
     /**

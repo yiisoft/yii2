@@ -170,9 +170,9 @@ class MigrateController extends BaseMigrateController
                 $this->db = Instance::ensure($this->db, Connection::className());
             }
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

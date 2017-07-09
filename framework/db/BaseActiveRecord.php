@@ -278,17 +278,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             return $this->_attributes[$name];
         } elseif ($this->hasAttribute($name)) {
             return null;
-        } else {
-            if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
-                return $this->_related[$name];
-            }
-            $value = parent::__get($name);
-            if ($value instanceof ActiveQueryInterface) {
-                return $this->_related[$name] = $value->findFor($name, $this);
-            } else {
-                return $value;
-            }
         }
+
+        if (isset($this->_related[$name]) || array_key_exists($name, $this->_related)) {
+            return $this->_related[$name];
+        }
+        $value = parent::__get($name);
+        if ($value instanceof ActiveQueryInterface) {
+            return $this->_related[$name] = $value->findFor($name, $this);
+        }
+
+        return $value;
     }
 
     /**
@@ -575,12 +575,12 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if (isset($this->_attributes[$name], $this->_oldAttributes[$name])) {
             if ($identical) {
                 return $this->_attributes[$name] !== $this->_oldAttributes[$name];
-            } else {
-                return $this->_attributes[$name] != $this->_oldAttributes[$name];
             }
-        } else {
-            return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
+
+            return $this->_attributes[$name] != $this->_oldAttributes[$name];
         }
+
+        return isset($this->_attributes[$name]) || isset($this->_oldAttributes[$name]);
     }
 
     /**
@@ -641,9 +641,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         if ($this->getIsNewRecord()) {
             return $this->insert($runValidation, $attributeNames);
-        } else {
-            return $this->update($runValidation, $attributeNames) !== false;
         }
+
+        return $this->update($runValidation, $attributeNames) !== false;
     }
 
     /**
@@ -819,10 +819,11 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
                 $this->_oldAttributes[$name] = $this->_attributes[$name];
             }
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -1074,14 +1075,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $keys = $this->primaryKey();
         if (!$asArray && count($keys) === 1) {
             return isset($this->_attributes[$keys[0]]) ? $this->_attributes[$keys[0]] : null;
-        } else {
-            $values = [];
-            foreach ($keys as $name) {
-                $values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
-            }
-
-            return $values;
         }
+
+        $values = [];
+        foreach ($keys as $name) {
+            $values[$name] = isset($this->_attributes[$name]) ? $this->_attributes[$name] : null;
+        }
+
+        return $values;
     }
 
     /**
@@ -1108,14 +1109,14 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         }
         if (!$asArray && count($keys) === 1) {
             return isset($this->_oldAttributes[$keys[0]]) ? $this->_oldAttributes[$keys[0]] : null;
-        } else {
-            $values = [];
-            foreach ($keys as $name) {
-                $values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
-            }
-
-            return $values;
         }
+
+        $values = [];
+        foreach ($keys as $name) {
+            $values[$name] = isset($this->_oldAttributes[$name]) ? $this->_oldAttributes[$name] : null;
+        }
+
+        return $values;
     }
 
     /**
@@ -1193,16 +1194,16 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         } catch (UnknownMethodException $e) {
             if ($throwException) {
                 throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".', 0, $e);
-            } else {
-                return null;
             }
+
+            return null;
         }
         if (!$relation instanceof ActiveQueryInterface) {
             if ($throwException) {
                 throw new InvalidParamException(get_class($this) . ' has no relation named "' . $name . '".');
-            } else {
-                return null;
             }
+
+            return null;
         }
 
         if (method_exists($this, $getter)) {
@@ -1212,9 +1213,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if ($realName !== $name) {
                 if ($throwException) {
                     throw new InvalidParamException('Relation names are case sensitive. ' . get_class($this) . " has a relation named \"$realName\" instead of \"$name\".");
-                } else {
-                    return null;
                 }
+
+                return null;
             }
         }
 
@@ -1538,9 +1539,9 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $pks = static::primaryKey();
         if (count($keys) === count($pks)) {
             return count(array_intersect($keys, $pks)) === count($pks);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

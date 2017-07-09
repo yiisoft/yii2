@@ -153,11 +153,11 @@ class Pagination extends Object implements Linkable
         $pageSize = $this->getPageSize();
         if ($pageSize < 1) {
             return $this->totalCount > 0 ? 1 : 0;
-        } else {
-            $totalCount = $this->totalCount < 0 ? 0 : (int) $this->totalCount;
-
-            return (int) (($totalCount + $pageSize - 1) / $pageSize);
         }
+
+        $totalCount = $this->totalCount < 0 ? 0 : (int) $this->totalCount;
+
+        return (int) (($totalCount + $pageSize - 1) / $pageSize);
     }
 
     private $_page;
@@ -281,9 +281,9 @@ class Pagination extends Object implements Linkable
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
-        } else {
-            return $urlManager->createUrl($params);
         }
+
+        return $urlManager->createUrl($params);
     }
 
     /**
