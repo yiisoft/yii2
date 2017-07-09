@@ -145,7 +145,7 @@ EXPECTED;
             ])->setScreenWidth(200)->run()
         );
     }
-    
+
     public function testTableWidgetSyntax()
     {
         $expected = <<<EXPECTED

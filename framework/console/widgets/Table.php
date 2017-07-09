@@ -8,7 +8,6 @@
 namespace yii\console\widgets;
 
 use Yii;
-use yii\base\Object;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Console;
@@ -61,7 +60,7 @@ class Table extends Widget
     const CHAR_RIGHT = 'right';
     const CHAR_RIGHT_MID = 'right-mid';
     const CHAR_MIDDLE = 'middle';
-    
+
     /**
      * @var array table headers
      */
@@ -304,10 +303,10 @@ class Table extends Widget
         foreach ($columns as $column) {
             $columnWidth = max(array_map(function ($val) {
                 if (is_array($val)) {
-                $encodings = array_fill(0, count($val), Yii::$app->charset);
-                return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
-            }
-            return mb_strwidth($val, Yii::$app->charset);
+                    $encodings = array_fill(0, count($val), Yii::$app->charset);
+                    return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
+                }
+                return mb_strwidth($val, Yii::$app->charset);
             }, $column)) + 2;
             $this->_columnWidths[] = $columnWidth;
             $totalWidth += $columnWidth;

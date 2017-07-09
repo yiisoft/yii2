@@ -520,7 +520,6 @@ EOD;
                             $category = mb_substr($category, 1, -1);
 
                             if (!$this->isCategoryIgnored($category, $ignoreCategories)) {
-
                                 $fullMessage = mb_substr($buffer[2][1], 1, -1);
                                 $i = 3;
                                 while ($i < count($buffer) - 1 && !is_array($buffer[$i]) && $buffer[$i] === '.') {

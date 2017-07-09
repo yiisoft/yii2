@@ -302,7 +302,7 @@ class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
                 'attribute' => 'name',
                 'slugAttribute' => 'slug',
                 'ensureUnique' => true,
-                'skipOnEmpty' => true
+                'skipOnEmpty' => true,
             ],
         ];
     }
