@@ -24,6 +24,4 @@ return yii\cs\YiisoftConfig::create()
             ->notPath('framework/classes.php')
             ->notPath('framework/helpers/mimeTypes.php')
             ->notPath('framework/views/messageConfig.php')
-            // temporary disable messages processing - conflicts with header fixer
-            ->exclude('framework/messages')
     );
