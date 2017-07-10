@@ -73,6 +73,11 @@ class ExistValidator extends Validator
      */
     public $targetAttributeJunction = 'and';
 
+    /**
+     * @var bool whether this validator can run on salve connections
+     */
+    public $canValidateOnSlaveDb =  true;
+
 
     /**
      * @inheritdoc
@@ -110,12 +115,23 @@ class ExistValidator extends Validator
         $targetClass = $this->targetClass === null ? get_class($model) : $this->targetClass;
         $query = $this->createQuery($targetClass, $conditions);
 
+        $db = $targetClass::getDb();
+        $disabledSlaves = false;
+        if(!$this->canValidateOnSlaveDb && $db->enableSlaves){
+            $db->enableSlaves = false;
+            $disabledSlaves = true;
+        }
+
         if (is_array($model->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]") != count($model->$attribute)) {
+            if ($query->count("DISTINCT [[$targetAttribute]]",$db) != count($model->$attribute)) {
                 $this->addError($model, $attribute, $this->message);
             }
-        } elseif (!$query->exists()) {
+        } elseif (!$query->exists($db)) {
             $this->addError($model, $attribute, $this->message);
+        }
+
+        if($disabledSlaves){
+            $db->enableSlaves = true;
         }
     }
 
@@ -178,14 +194,29 @@ class ExistValidator extends Validator
 
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
+        $targetClass = $this->targetClass;
+        $db = $targetClass::getDb();
+        $disabledSlaves = false;
+        if(!$this->canValidateOnSlaveDb && $db->enableSlaves){
+            $db->enableSlaves = false;
+            $disabledSlaves = true;
+        }
+
+
         if (is_array($value)) {
             if (!$this->allowArray) {
                 return [$this->message, []];
             }
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
+            $existed = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
         } else {
-            return $query->exists() ? null : [$this->message, []];
+            $existed = $query->exists() ? null : [$this->message, []];
         }
+
+        if($disabledSlaves){
+            $db->enableSlaves = true;
+        }
+
+        return $existed;
     }
 
     /**

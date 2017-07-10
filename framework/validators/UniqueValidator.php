@@ -90,6 +90,11 @@ class UniqueValidator extends Validator
      */
     public $targetAttributeJunction = 'and';
 
+    /**
+     * @var bool whether this validator can run on salve connections
+     */
+    public $canValidateOnSlaveDb =  true;
+
 
     /**
      * @inheritdoc
@@ -163,6 +168,13 @@ class UniqueValidator extends Validator
     {
         /** @var ActiveRecordInterface $targetClass $query */
         $query = $this->prepareQuery($targetClass, $conditions);
+        $db = $targetClass::getDb();
+
+        $disabledSlaves = false;
+        if(!$this->canValidateOnSlaveDb && $db->enableSlaves){
+            $db->enableSlaves = false;
+            $disabledSlaves = true;
+        }
 
         if (!$model instanceof ActiveRecordInterface || $model->getIsNewRecord() || $model->className() !== $targetClass::className()) {
             // if current $model isn't in the database yet then it's OK just to call exists()
@@ -190,6 +202,10 @@ class UniqueValidator extends Validator
                 // if there is more than one record, the value is not unique
                 $exists = $n > 1;
             }
+        }
+
+        if($disabledSlaves){
+            $db->enableSlaves = true;
         }
 
         return $exists;
