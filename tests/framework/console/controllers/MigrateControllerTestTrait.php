@@ -312,6 +312,18 @@ CODE;
         $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
     }
 
+    public function testMarkBase()
+    {
+        $version = '010101_000001';
+        $this->createMigration('test_mark1', $version);
+
+        $this->runMigrateControllerAction('up');
+        $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
+
+        $this->runMigrateControllerAction('mark', [BaseMigrateController::BASE_MIGRATION]);
+        $this->assertMigrationHistory(['m*_base']);
+    }
+
     public function testTo()
     {
         $version = '020202_000001';
