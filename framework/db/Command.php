@@ -388,9 +388,9 @@ class Command extends Component
         $result = $this->queryInternal('fetchColumn', 0);
         if (is_resource($result) && get_resource_type($result) === 'stream') {
             return stream_get_contents($result);
-        } else {
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -985,9 +985,9 @@ class Command extends Component
         }
         if (!$this->db->enableProfiling) {
             return [false, isset($rawSql) ? $rawSql : null];
-        } else {
-            return [true, isset($rawSql) ? $rawSql : $this->getRawSql()];
         }
+
+        return [true, isset($rawSql) ? $rawSql : $this->getRawSql()];
     }
 
     /**

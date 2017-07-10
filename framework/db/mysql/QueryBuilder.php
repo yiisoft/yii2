@@ -171,9 +171,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is no sequence associated with table '$tableName'.");
     }
 
     /**

@@ -94,9 +94,9 @@ class BaseArrayHelper
             }
 
             return $recursive ? static::toArray($result, $properties) : $result;
-        } else {
-            return [$object];
         }
+
+        return [$object];
     }
 
     /**
@@ -209,9 +209,9 @@ class BaseArrayHelper
             return $array->$key;
         } elseif (is_array($array)) {
             return (isset($array[$key]) || array_key_exists($key, $array)) ? $array[$key] : $default;
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     /**
@@ -526,15 +526,15 @@ class BaseArrayHelper
             // Function `isset` checks key faster but skips `null`, `array_key_exists` handles this case
             // http://php.net/manual/en/function.array-key-exists.php#107786
             return isset($array[$key]) || array_key_exists($key, $array);
-        } else {
-            foreach (array_keys($array) as $k) {
-                if (strcasecmp($key, $k) === 0) {
-                    return true;
-                }
-            }
-
-            return false;
         }
+
+        foreach (array_keys($array) as $k) {
+            if (strcasecmp($key, $k) === 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -679,14 +679,15 @@ class BaseArrayHelper
                 }
             }
             return true;
-        } else {
-            foreach ($array as $key => $value) {
-                if (is_string($key)) {
-                    return true;
-                }
-            }
-            return false;
         }
+
+        foreach ($array as $key => $value) {
+            if (is_string($key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -714,14 +715,15 @@ class BaseArrayHelper
 
         if ($consecutive) {
             return array_keys($array) === range(0, count($array) - 1);
-        } else {
-            foreach ($array as $key => $value) {
-                if (!is_int($key)) {
-                    return false;
-                }
-            }
-            return true;
         }
+
+        foreach ($array as $key => $value) {
+            if (!is_int($key)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -789,10 +791,11 @@ class BaseArrayHelper
                     return false;
                 }
             }
+
             return true;
-        } else {
-            throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
         }
+
+        throw new InvalidParamException('Argument $needles must be an array or implement Traversable');
     }
 
     /**

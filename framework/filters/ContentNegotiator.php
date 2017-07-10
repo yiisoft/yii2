@@ -176,9 +176,9 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                 $response->acceptMimeType = null;
                 $response->acceptParams = [];
                 return;
-            } else {
-                throw new UnsupportedMediaTypeHttpException('The requested response format is not supported: ' . $format);
             }
+
+            throw new UnsupportedMediaTypeHttpException('The requested response format is not supported: ' . $format);
         }
 
         $types = $request->getAcceptableContentTypes();

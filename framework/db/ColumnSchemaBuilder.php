@@ -312,9 +312,9 @@ class ColumnSchemaBuilder extends Object
             return ' NOT NULL';
         } elseif ($this->isNotNull === false) {
             return ' NULL';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**

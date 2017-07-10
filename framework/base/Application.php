@@ -651,9 +651,9 @@ abstract class Application extends Module
 
         if (YII_ENV_TEST) {
             throw new ExitException($status);
-        } else {
-            exit($status);
         }
+
+        exit($status);
     }
 
     /**

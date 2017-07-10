@@ -308,18 +308,18 @@ class UrlManager extends Component
             if ($normalized) {
                 // pathInfo was changed by normalizer - we need also normalize route
                 return $this->normalizer->normalizeRoute([$pathInfo, []]);
-            } else {
-                return [$pathInfo, []];
-            }
-        } else {
-            Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
-            $route = $request->getQueryParam($this->routeParam, '');
-            if (is_array($route)) {
-                $route = '';
             }
 
-            return [(string) $route, []];
+            return [$pathInfo, []];
         }
+
+        Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
+        $route = $request->getQueryParam($this->routeParam, '');
+        if (is_array($route)) {
+            $route = '';
+        }
+
+        return [(string) $route, []];
     }
 
     /**
@@ -393,19 +393,19 @@ class UrlManager extends Component
                 if (strpos($url, '://') !== false) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
                         return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
-                    } else {
-                        return $url . $baseUrl . $anchor;
                     }
+
+                    return $url . $baseUrl . $anchor;
                 } elseif (strpos($url, '//') === 0) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 2)) !== false) {
                         return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
-                    } else {
-                        return $url . $baseUrl . $anchor;
                     }
-                } else {
-                    $url = ltrim($url, '/');
-                    return "$baseUrl/{$url}{$anchor}";
+
+                    return $url . $baseUrl . $anchor;
                 }
+
+                $url = ltrim($url, '/');
+                return "$baseUrl/{$url}{$anchor}";
             }
 
             if ($this->suffix !== null) {
@@ -417,14 +417,14 @@ class UrlManager extends Component
 
             $route = ltrim($route, '/');
             return "$baseUrl/{$route}{$anchor}";
-        } else {
-            $url = "$baseUrl?{$this->routeParam}=" . urlencode($route);
-            if (!empty($params) && ($query = http_build_query($params)) !== '') {
-                $url .= '&' . $query;
-            }
-
-            return $url . $anchor;
         }
+
+        $url = "$baseUrl?{$this->routeParam}=" . urlencode($route);
+        if (!empty($params) && ($query = http_build_query($params)) !== '') {
+            $url .= '&' . $query;
+        }
+
+        return $url . $anchor;
     }
 
     /**

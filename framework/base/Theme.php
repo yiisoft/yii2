@@ -166,9 +166,9 @@ class Theme extends Component
     {
         if (($baseUrl = $this->getBaseUrl()) !== null) {
             return $baseUrl . '/' . ltrim($url, '/');
-        } else {
-            throw new InvalidConfigException('The "baseUrl" property must be set.');
         }
+
+        throw new InvalidConfigException('The "baseUrl" property must be set.');
     }
 
     /**
@@ -181,8 +181,8 @@ class Theme extends Component
     {
         if (($basePath = $this->getBasePath()) !== null) {
             return $basePath . DIRECTORY_SEPARATOR . ltrim($path, '/\\');
-        } else {
-            throw new InvalidConfigException('The "basePath" property must be set.');
         }
+
+        throw new InvalidConfigException('The "basePath" property must be set.');
     }
 }

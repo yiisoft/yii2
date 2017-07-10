@@ -130,9 +130,9 @@ class DataColumn extends Column
         if ($this->attribute !== null && $this->enableSorting &&
             ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
             return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
-        } else {
-            return $label;
         }
+
+        return $label;
     }
 
     /**
@@ -197,12 +197,12 @@ class DataColumn extends Column
                     $this->grid->formatter->booleanFormat[0],
                     $this->grid->formatter->booleanFormat[1],
                 ], $options) . $error;
-            } else {
-                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
             }
-        } else {
-            return parent::renderFilterCellContent();
+
+            return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
         }
+
+        return parent::renderFilterCellContent();
     }
 
     /**
@@ -217,9 +217,9 @@ class DataColumn extends Column
         if ($this->value !== null) {
             if (is_string($this->value)) {
                 return ArrayHelper::getValue($model, $this->value);
-            } else {
-                return call_user_func($this->value, $model, $key, $index, $this);
             }
+
+            return call_user_func($this->value, $model, $key, $index, $this);
         } elseif ($this->attribute !== null) {
             return ArrayHelper::getValue($model, $this->attribute);
         }
@@ -233,8 +233,8 @@ class DataColumn extends Column
     {
         if ($this->content === null) {
             return $this->grid->formatter->format($this->getDataCellValue($model, $key, $index), $this->format);
-        } else {
-            return parent::renderDataCellContent($model, $key, $index);
         }
+
+        return parent::renderDataCellContent($model, $key, $index);
     }
 }
