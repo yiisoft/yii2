@@ -133,11 +133,13 @@ class MessageController extends \yii\console\Controller
     public $ignoreCategories = [];
     /**
      * @var string File header in generated PHP file with messages. This property is used only if [[$format]] is "php".
+     * @since 2.0.13
      */
     public $phpFileHeader = '';
     /**
      * @var string|null DocBlock used for messages array in generated PHP file. If `null`, default DocBlock will be used.
      * This property is used only if [[$format]] is "php".
+     * @since 2.0.13
      */
     public $phpDocBlock;
 
@@ -145,6 +147,7 @@ class MessageController extends \yii\console\Controller
      * @var array Config for messages extraction.
      * @see actionExtract()
      * @see initConfig()
+     * @since 2.0.13
      */
     protected $config;
 
@@ -872,6 +875,7 @@ EOD;
     /**
      * @param string $configFile
      * @throws Exception If configuration file does not exists.
+     * @since 2.0.13
      */
     protected function initConfig($configFile)
     {
