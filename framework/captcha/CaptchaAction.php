@@ -134,11 +134,12 @@ class CaptchaAction extends Action
                 // when src attribute of image tag is changed
                 'url' => Url::to([$this->id, 'v' => uniqid()]),
             ];
-        } else {
-            $this->setHttpHeaders();
-            Yii::$app->response->format = Response::FORMAT_RAW;
-            return $this->renderImage($this->getVerifyCode());
         }
+
+        $this->setHttpHeaders();
+        Yii::$app->response->format = Response::FORMAT_RAW;
+
+        return $this->renderImage($this->getVerifyCode());
     }
 
     /**
@@ -255,9 +256,9 @@ class CaptchaAction extends Action
             return $this->renderImageByGD($code);
         } elseif ($imageLibrary === 'imagick') {
             return $this->renderImageByImagick($code);
-        } else {
-            throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
         }
+
+        throw new InvalidConfigException("Defined library '{$imageLibrary}' is not supported");
     }
 
     /**

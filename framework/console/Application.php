@@ -105,10 +105,10 @@ class Application extends \yii\base\Application
                 if (strpos($param, $option) !== false) {
                     $path = substr($param, strlen($option));
                     if (!empty($path) && is_file($file = Yii::getAlias($path))) {
-                        return require($file);
-                    } else {
-                        exit("The configuration file does not exist: $path\n");
+                        return require $file;
                     }
+
+                    exit("The configuration file does not exist: $path\n");
                 }
             }
         }
@@ -147,12 +147,12 @@ class Application extends \yii\base\Application
         $result = $this->runAction($route, $params);
         if ($result instanceof Response) {
             return $result;
-        } else {
-            $response = $this->getResponse();
-            $response->exitStatus = $result;
-
-            return $response;
         }
+
+        $response = $this->getResponse();
+        $response->exitStatus = $result;
+
+        return $response;
     }
 
     /**

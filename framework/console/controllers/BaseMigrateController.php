@@ -130,9 +130,9 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -673,12 +673,12 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("*** applied $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
 
             return true;
-        } else {
-            $time = microtime(true) - $start;
-            $this->stdout("*** failed to apply $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
-
-            return false;
         }
+
+        $time = microtime(true) - $start;
+        $this->stdout("*** failed to apply $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
+
+        return false;
     }
 
     /**
@@ -701,12 +701,12 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("*** reverted $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
 
             return true;
-        } else {
-            $time = microtime(true) - $start;
-            $this->stdout("*** failed to revert $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
-
-            return false;
         }
+
+        $time = microtime(true) - $start;
+        $this->stdout("*** failed to revert $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
+
+        return false;
     }
 
     /**
@@ -737,13 +737,13 @@ abstract class BaseMigrateController extends Controller
                 foreach ($this->migrationPath as $path) {
                     $file = $path . DIRECTORY_SEPARATOR . $class . '.php';
                     if (is_file($file)) {
-                        require_once($file);
+                        require_once $file;
                         break;
                     }
                 }
             } else {
                 $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-                require_once($file);
+                require_once $file;
             }
         }
     }

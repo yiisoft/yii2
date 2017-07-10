@@ -129,9 +129,9 @@ class DbManager extends BaseManager
         $this->loadFromCache();
         if ($this->items !== null) {
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
-        } else {
-            return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
         }
+
+        return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 
     /**

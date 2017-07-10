@@ -268,7 +268,7 @@ EOT;
 
     public function testInput()
     {
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 EOD;
         $this->activeField->input('password');
@@ -276,7 +276,7 @@ EOD;
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
 
         // with options
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <input type="password" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" weird="value">
 EOD;
         $this->activeField->input('password', ['weird' => 'value']);
@@ -286,7 +286,7 @@ EOD;
 
     public function testTextInput()
     {
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 EOD;
         $this->activeField->textInput();
@@ -295,7 +295,7 @@ EOD;
 
     public function testHiddenInput()
     {
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <input type="hidden" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
 EOD;
         $this->activeField->hiddenInput();
@@ -304,7 +304,7 @@ EOD;
 
     public function testListBox()
     {
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
 <option value="1">Item One</option>
 <option value="2">Item 2</option>
@@ -314,7 +314,7 @@ EOD;
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
 
         // https://github.com/yiisoft/yii2/issues/8848
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
 <option value="value1" disabled>Item One</option>
 <option value="value2" label="value 2">Item 2</option>
@@ -326,7 +326,7 @@ EOD;
         ]]);
         $this->assertEqualsWithoutLE($expectedValue, $this->activeField->parts['{input}']);
 
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <input type="hidden" name="ActiveFieldTestModel[attributeName]" value=""><select id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" size="4">
 <option value="value1" disabled>Item One</option>
 <option value="value2" selected label="value 2">Item 2</option>
@@ -453,7 +453,7 @@ EOD;
     {
         $this->activeField->addAriaAttributes = true;
 
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <div class="form-group field-activefieldtestmodel-attributename">
 <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
 <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]">
@@ -471,7 +471,7 @@ EOD;
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addRule([$this->attributeName], 'required');
 
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <div class="form-group field-activefieldtestmodel-attributename required">
 <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
 <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-required="true">
@@ -489,7 +489,7 @@ EOD;
         $this->activeField->addAriaAttributes = true;
         $this->helperModel->addError($this->attributeName, 'Some error');
 
-        $expectedValue = <<<EOD
+        $expectedValue = <<<'EOD'
 <div class="form-group field-activefieldtestmodel-attributename has-error">
 <label class="control-label" for="activefieldtestmodel-attributename">Attribute Name</label>
 <input type="text" id="activefieldtestmodel-attributename" class="form-control" name="ActiveFieldTestModel[attributeName]" aria-invalid="true">

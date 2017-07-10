@@ -431,12 +431,13 @@ class Query extends Component implements QueryInterface
             $this->offset = $offset;
 
             return $command->queryScalar();
-        } else {
-            return (new self())->select([$selectExpression])
-                ->from(['c' => $this])
-                ->createCommand($db)
-                ->queryScalar();
         }
+
+        return (new self())
+            ->select([$selectExpression])
+            ->from(['c' => $this])
+            ->createCommand($db)
+            ->queryScalar();
     }
 
     /**

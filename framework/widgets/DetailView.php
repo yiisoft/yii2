@@ -179,9 +179,9 @@ class DetailView extends Widget
                 '{captionOptions}' => $captionOptions,
                 '{contentOptions}' => $contentOptions,
             ]);
-        } else {
-            return call_user_func($this->template, $attribute, $index, $this);
         }
+
+        return call_user_func($this->template, $attribute, $index, $this);
     }
 
     /**

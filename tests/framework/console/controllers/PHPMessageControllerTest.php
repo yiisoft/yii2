@@ -90,9 +90,9 @@ class PHPMessageControllerTest extends BaseMessageControllerTest
             // https://github.com/facebook/hhvm/issues/1447
             $content = file_get_contents($messageFilePath);
             return eval(substr($content, strpos($content, 'return ')));
-        } else {
-            return require $messageFilePath;
         }
+
+        return require $messageFilePath;
     }
 
     // By default phpunit runs inherited test after inline tests, so `testCreateTranslation()` would be run after

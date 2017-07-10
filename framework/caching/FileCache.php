@@ -150,11 +150,11 @@ class FileCache extends Cache
             }
 
             return @touch($cacheFile, $duration + time());
-        } else {
-            $error = error_get_last();
-            Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
-            return false;
         }
+
+        $error = error_get_last();
+        Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
+        return false;
     }
 
     /**
@@ -206,9 +206,9 @@ class FileCache extends Cache
             }
 
             return $base . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
-        } else {
-            return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
         }
+
+        return $this->cachePath . DIRECTORY_SEPARATOR . $key . $this->cacheFileSuffix;
     }
 
     /**

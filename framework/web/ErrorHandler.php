@@ -247,12 +247,12 @@ class ErrorHandler extends \yii\base\ErrorHandler
             ob_start();
             ob_implicit_flush(false);
             extract($_params_, EXTR_OVERWRITE);
-            require(Yii::getAlias($_file_));
+            require Yii::getAlias($_file_);
 
             return ob_get_clean();
-        } else {
-            return Yii::$app->getView()->renderFile($_file_, $_params_, $this);
         }
+
+        return Yii::$app->getView()->renderFile($_file_, $_params_, $this);
     }
 
     /**
@@ -265,9 +265,9 @@ class ErrorHandler extends \yii\base\ErrorHandler
     {
         if (($previous = $exception->getPrevious()) !== null) {
             return $this->renderFile($this->previousExceptionView, ['exception' => $previous]);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**

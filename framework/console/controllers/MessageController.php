@@ -671,7 +671,7 @@ EOD;
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)
     {
         if (is_file($fileName)) {
-            $rawExistingMessages = require($fileName);
+            $rawExistingMessages = require $fileName;
             $existingMessages = $rawExistingMessages;
             sort($messages);
             ksort($existingMessages);
@@ -885,7 +885,7 @@ EOD;
             if (!is_file($configFile)) {
                 throw new Exception("The configuration file does not exist: $configFile");
             }
-            $configFileContent = require($configFile);
+            $configFileContent = require $configFile;
         }
 
         $this->config = array_merge(

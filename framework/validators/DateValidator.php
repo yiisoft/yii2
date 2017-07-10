@@ -312,9 +312,9 @@ class DateValidator extends Validator
             return [$this->tooSmall, ['min' => $this->minString]];
         } elseif ($this->max !== null && $timestamp > $this->max) {
             return [$this->tooBig, ['max' => $this->maxString]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -346,11 +346,12 @@ class DateValidator extends Validator
         } else {
             if (extension_loaded('intl')) {
                 return $this->parseDateValueIntl($value, $format);
-            } else {
-                // fallback to PHP if intl is not installed
-                $format = FormatConverter::convertDateIcuToPhp($format, 'date');
             }
+
+            // fallback to PHP if intl is not installed
+            $format = FormatConverter::convertDateIcuToPhp($format, 'date');
         }
+
         return $this->parseDateValuePHP($value, $format);
     }
 
