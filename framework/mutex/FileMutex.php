@@ -117,13 +117,13 @@ class FileMutex extends Mutex
     {
         if (!isset($this->_files[$name]) || !flock($this->_files[$name], LOCK_UN)) {
             return false;
-        } else {
-            fclose($this->_files[$name]);
-            unlink($this->getLockFilePath($name));
-            unset($this->_files[$name]);
-
-            return true;
         }
+
+        fclose($this->_files[$name]);
+        unlink($this->getLockFilePath($name));
+        unset($this->_files[$name]);
+
+        return true;
     }
 
     /**

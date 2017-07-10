@@ -428,9 +428,9 @@ class Validator extends Component
     {
         if ($this->isEmpty !== null) {
             return call_user_func($this->isEmpty, $value);
-        } else {
-            return $value === null || $value === [] || $value === '';
         }
+
+        return $value === null || $value === [] || $value === '';
     }
 
     /**

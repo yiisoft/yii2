@@ -121,9 +121,9 @@ abstract class Cache extends Component implements CacheInterface
         }
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

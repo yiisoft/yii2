@@ -297,9 +297,9 @@ class IpValidator extends Validator
         if (is_array($result)) {
             $result[1] = array_merge(['ip' => is_array($value) ? 'array()' : $value], $result[1]);
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -564,16 +564,17 @@ class IpValidator extends Validator
     {
         if ($this->getIpVersion($ip) === 4) {
             return str_pad(base_convert(ip2long($ip), 10, 2), static::IPV4_ADDRESS_LENGTH, '0', STR_PAD_LEFT);
-        } else {
-            $unpack = unpack('A16', inet_pton($ip));
-            $binStr = array_shift($unpack);
-            $bytes = static::IPV6_ADDRESS_LENGTH / 8; // 128 bit / 8 = 16 bytes
-            $result = '';
-            while ($bytes-- > 0) {
-                $result = sprintf('%08b', isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
-            }
-            return $result;
         }
+
+        $unpack = unpack('A16', inet_pton($ip));
+        $binStr = array_shift($unpack);
+        $bytes = static::IPV6_ADDRESS_LENGTH / 8; // 128 bit / 8 = 16 bytes
+            $result = '';
+        while ($bytes-- > 0) {
+            $result = sprintf('%08b', isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
+        }
+
+        return $result;
     }
 
     /**

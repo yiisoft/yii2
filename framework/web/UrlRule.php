@@ -353,9 +353,9 @@ class UrlRule extends Object implements UrlRuleInterface
     {
         if ($this->normalizer === null) {
             return $manager->normalizer;
-        } else {
-            return $this->normalizer;
         }
+
+        return $this->normalizer;
     }
 
     /**
@@ -439,9 +439,9 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($normalized) {
             // pathInfo was changed by normalizer - we need also normalize route
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
-        } else {
-            return [$route, $params];
         }
+
+        return [$route, $params];
     }
 
     /**

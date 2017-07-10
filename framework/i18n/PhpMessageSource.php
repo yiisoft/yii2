@@ -159,8 +159,8 @@ class PhpMessageSource extends MessageSource
             }
 
             return $messages;
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

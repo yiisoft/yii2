@@ -162,9 +162,9 @@ class Column extends Object
     {
         if ($this->content !== null) {
             return call_user_func($this->content, $model, $key, $index, $this);
-        } else {
-            return $this->grid->emptyCell;
         }
+
+        return $this->grid->emptyCell;
     }
 
     /**

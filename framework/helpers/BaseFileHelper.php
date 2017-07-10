@@ -104,15 +104,15 @@ class BaseFileHelper
         $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
         if (is_file($desiredFile)) {
             return $desiredFile;
-        } else {
-            $language = substr($language, 0, 2);
-            if ($language === $sourceLanguage) {
-                return $file;
-            }
-            $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
-
-            return is_file($desiredFile) ? $desiredFile : $file;
         }
+
+        $language = substr($language, 0, 2);
+        if ($language === $sourceLanguage) {
+            return $file;
+        }
+        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
+
+        return is_file($desiredFile) ? $desiredFile : $file;
     }
 
     /**
@@ -138,9 +138,9 @@ class BaseFileHelper
         if (!extension_loaded('fileinfo')) {
             if ($checkExtension) {
                 return static::getMimeTypeByExtension($file, $magicFile);
-            } else {
-                throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
             }
+
+            throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 

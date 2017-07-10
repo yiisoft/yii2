@@ -119,8 +119,8 @@ class Utf8Controller extends Controller
             return ($h & 0x0F) << 18 | (ord($c[1]) & 0x3F) << 12
                                      | (ord($c[2]) & 0x3F) << 6
                                      | (ord($c[3]) & 0x3F);
-        } else {
-            return false;
         }
+
+        return false;
     }
 }
