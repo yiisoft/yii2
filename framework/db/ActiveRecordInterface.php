@@ -427,4 +427,19 @@ interface ActiveRecordInterface
      * @return mixed the database connection used by this AR class.
      */
     public static function getDb();
+
+    /**
+     * Creates an active record instance.
+     *
+     * This method is called internally by framework for instantiating new record object.
+     * It is not meant to be used for creating new records directly.
+     *
+     * You may override this method if the instance being created
+     * depends on the row data to be populated into the record.
+     * For example, by creating a record based on the value of a column,
+     * you may implement the so-called single-table inheritance mapping.
+     * @param array $row row data to be populated into the record (can be empty).
+     * @return ActiveRecordInterface the newly created active record
+     */
+    public static function instantiate($row = []);
 }

@@ -146,11 +146,21 @@ class DataColumn extends Column
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
                 /* @var $model Model */
-                $model = new $provider->query->modelClass();
+                if (is_subclass_of($provider->query->modelClass, 'yii\db\ActiveRecordInterface')) {
+                    $modelClass = $provider->query->modelClass;
+                    $model = $modelClass::instantiate();
+                } else {
+                    $model = new $provider->query->modelClass();
+                }
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
                 /* @var $model Model */
-                $model = new $provider->modelClass();
+                if (is_subclass_of($provider->modelClass, 'yii\db\ActiveRecordInterface')) {
+                    $modelClass = $provider->modelClass;
+                    $model = $modelClass::instantiate();
+                } else {
+                    $model = new $provider->modelClass();
+                }
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
                 $label = $this->grid->filterModel->getAttributeLabel($this->attribute);

@@ -14,15 +14,19 @@ use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\CustomerWithConstructor;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
 use yiiunit\data\ar\NullValues;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
+use yiiunit\data\ar\OrderItemWithConstructor;
 use yiiunit\data\ar\OrderItemWithNullFK;
+use yiiunit\data\ar\OrderWithConstructor;
 use yiiunit\data\ar\OrderWithNullFK;
 use yiiunit\data\ar\Profile;
+use yiiunit\data\ar\ProfileWithConstructor;
 use yiiunit\data\ar\Type;
 use yiiunit\framework\ar\ActiveRecordTestTrait;
 use yiiunit\framework\db\cubrid\ActiveRecordTest as CubridActiveRecordTest;
@@ -220,6 +224,39 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertCount(2, $order['books']);
         $this->assertEquals(1, $order['books'][0]['id']);
         $this->assertEquals(2, $order['books'][1]['id']);
+    }
+
+    public function testFindWithConstructors()
+    {
+        /** @var OrderWithConstructor[] $orders */
+        $orders = OrderWithConstructor::find()->with(['customer.profile', 'orderItems'])->orderBy('id')->all();
+        $this->assertCount(3, $orders);
+
+        $order = $orders[0];
+        $this->assertEquals(1, $order->id);
+
+        $this->assertNotNull($customer = $order->customer);
+        $this->assertInstanceOf(CustomerWithConstructor::className(), $customer);
+        $this->assertEquals(1, $customer->id);
+
+        $this->assertNotNull($profile = $customer->profile);
+        $this->assertInstanceOf(ProfileWithConstructor::className(), $profile);
+        $this->assertEquals(1, $profile->id);
+
+        $this->assertNotNull($customerWithProfile = $order->customerJoinedWithProfile);
+        $this->assertInstanceOf(CustomerWithConstructor::className(), $customerWithProfile);
+        $this->assertEquals(1, $customerWithProfile->id);
+
+        $this->assertNotNull($customerProfile = $customerWithProfile->profile);
+        $this->assertInstanceOf(ProfileWithConstructor::className(), $customerProfile);
+        $this->assertEquals(1, $customerProfile->id);
+
+        $this->assertCount(2, $order->orderItems);
+
+        $item = $order->orderItems[0];
+        $this->assertInstanceOf(OrderItemWithConstructor::className(), $item);
+
+        $this->assertEquals(1, $item->item_id);
     }
 
     // deeply nested table relation

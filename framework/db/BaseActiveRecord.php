@@ -1149,17 +1149,17 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     /**
      * Creates an active record instance.
      *
-     * This method is called together with [[populateRecord()]] by [[ActiveQuery]].
+     * This method is called internally by framework for instantiating new record object.
      * It is not meant to be used for creating new records directly.
      *
      * You may override this method if the instance being created
      * depends on the row data to be populated into the record.
      * For example, by creating a record based on the value of a column,
      * you may implement the so-called single-table inheritance mapping.
-     * @param array $row row data to be populated into the record.
+     * @param array $row row data to be populated into the record (can be empty).
      * @return static the newly created active record
      */
-    public static function instantiate($row)
+    public static function instantiate($row = [])
     {
         return new static();
     }
@@ -1272,7 +1272,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 /* @var $record ActiveRecordInterface */
-                $record = new $viaClass();
+                $record = $viaClass::instantiate();
                 foreach ($columns as $column => $value) {
                     $record->$column = $value;
                 }
@@ -1571,7 +1571,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return $this->generateAttributeLabel($attribute);
                     }
-                    $relatedModel = new $relation->modelClass();
+                    $modelClass = $relation->modelClass;
+                    $relatedModel = $modelClass::instantiate();
                 }
             }
 
@@ -1611,7 +1612,8 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     } catch (InvalidParamException $e) {
                         return '';
                     }
-                    $relatedModel = new $relation->modelClass();
+                    $modelClass = $relation->modelClass;
+                    $relatedModel = $modelClass::instantiate();
                 }
             }
 
