@@ -137,7 +137,7 @@ class DataColumnTest extends \yiiunit\TestCase
         $method->setAccessible(true);
         $result = $method->invoke($dataColumn);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="0">1</option>
@@ -187,7 +187,7 @@ HTML
         $method->setAccessible(true);
         $result = $method->invoke($dataColumn);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="0">No</option>

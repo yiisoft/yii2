@@ -25,7 +25,7 @@ class TableTest extends TestCase
     {
         $table = new Table();
 
-        $expected = <<<EXPECTED
+        $expected = <<<'EXPECTED'
 ╔═══════════════╤═══════════════╤═══════════════╗
 ║ test1         │ test2         │ test3         ║
 ╟───────────────┼───────────────┼───────────────╢
@@ -50,7 +50,7 @@ EXPECTED;
 
         // test fullwidth chars
         // @see https://en.wikipedia.org/wiki/Halfwidth_and_fullwidth_forms
-        $expected = <<<EXPECTED
+        $expected = <<<'EXPECTED'
 ╔═════════════════╤═════════════════╤═════════════════╗
 ║ test1           │ test2           │ ｔｅｓｔ３      ║
 ╟─────────────────┼─────────────────┼─────────────────╢
@@ -73,7 +73,7 @@ EXPECTED;
     {
         $table = new Table();
 
-        $expected = <<<EXPECTED
+        $expected = <<<'EXPECTED'
 ╔═══════════════╤═══════════════╤══════════════╗
 ║ test1         │ test2         │ test3        ║
 ╟───────────────┼───────────────┼──────────────╢
@@ -97,7 +97,7 @@ EXPECTED;
     {
         $table = new Table();
 
-        $expected = <<<EXPECTED
+        $expected = <<<'EXPECTED'
 ╔═══════════════╤═══════════════╤══════════════╗
 ║ test1         │ test2         │ test3        ║
 ╟───────────────┼───────────────┼──────────────╢
@@ -121,7 +121,7 @@ EXPECTED;
     {
         $table = new Table();
 
-        $expected = <<<EXPECTED
+        $expected = <<<'EXPECTED'
 *++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
 / test1          / test2           / test3            /
 *++++++++++++++++*+++++++++++++++++*++++++++++++++++++*
@@ -145,10 +145,10 @@ EXPECTED;
             ])->setScreenWidth(200)->run()
         );
     }
-    
+
     public function testTableWidgetSyntax()
     {
-        $expected = <<<EXPECTED
+        $expected = <<<'EXPECTED'
 ╔═══════════════╤═══════════════╤═══════════════╗
 ║ test1         │ test2         │ test3         ║
 ╟───────────────┼───────────────┼───────────────╢

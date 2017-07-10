@@ -21,7 +21,7 @@ class SqlTokenizerTest extends TestCase
     {
         return [
             'complex' => [
-                <<<SQL
+                <<<'SQL'
 CREATE TABLE `constraints_test_1` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`col_1` integer,

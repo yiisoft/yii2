@@ -28,7 +28,7 @@ class MarkdownTest extends TestCase
 
     public function testOriginalFlavor()
     {
-        $text = <<<TEXT
+        $text = <<<'TEXT'
 html
 new line 1
 

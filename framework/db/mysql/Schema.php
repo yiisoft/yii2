@@ -137,7 +137,7 @@ class Schema extends \yii\db\Schema
      */
     protected function loadTableIndexes($tableName)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT
     `s`.`INDEX_NAME` AS `name`,
     `s`.`COLUMN_NAME` AS `column_name`,
@@ -368,7 +368,7 @@ SQL;
      */
     protected function findConstraints($table)
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
     kcu.constraint_name,
     kcu.column_name,
@@ -491,7 +491,7 @@ SQL;
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT DISTINCT
     `kcu`.`CONSTRAINT_NAME` AS `name`,
     `kcu`.`COLUMN_NAME` AS `column_name`,

@@ -142,7 +142,7 @@ class Schema extends \yii\db\Schema
      */
     protected function findSchemaNames()
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT ns.nspname AS schema_name
 FROM pg_namespace ns
 WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
@@ -159,7 +159,7 @@ SQL;
         if ($schema === '') {
             $schema = $this->defaultSchema;
         }
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT c.relname AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
@@ -205,7 +205,7 @@ SQL;
      */
     protected function loadTableIndexes($tableName)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT
     "ic"."relname" AS "name",
     "ia"."attname" AS "column_name",
@@ -316,7 +316,7 @@ SQL;
         if ($schema === '') {
             $schema = $this->defaultSchema;
         }
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT c.relname AS table_name
 FROM pg_class c
 INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
@@ -394,7 +394,7 @@ SQL;
      */
     protected function getUniqueIndexInformation($table)
     {
-        $sql = <<<SQL
+        $sql = <<<'SQL'
 SELECT
     i.relname as indexname,
     pg_get_indexdef(idx.indexrelid, k + 1, TRUE) AS columnname
@@ -620,7 +620,7 @@ SQL;
      */
     private function loadTableConstraints($tableName, $returnType)
     {
-        static $sql = <<<SQL
+        static $sql = <<<'SQL'
 SELECT
     "c"."conname" AS "name",
     "a"."attname" AS "column_name",
