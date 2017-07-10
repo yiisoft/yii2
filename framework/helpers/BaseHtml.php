@@ -1304,8 +1304,8 @@ class BaseHtml
             unset($options['maxlength']);
             $attrName = static::getAttributeName($attribute);
             foreach ($model->getActiveValidators($attrName) as $validator) {
-                if ($validator instanceof StringValidator && $validator->max !== null) {
-                    $options['maxlength'] = $validator->max;
+                if ($validator instanceof yii\Validators\StringValidator && ($validator->max !== null || $validator->length !== null)) {
+                    $options['maxlength'] = ($validator->length !== null ? $validator->length : $validator->max);
                     break;
                 }
             }
