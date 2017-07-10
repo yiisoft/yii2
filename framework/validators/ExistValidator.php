@@ -123,10 +123,10 @@ class ExistValidator extends Validator
         }
 
         if (is_array($model->$attribute)) {
-            if ($query->count("DISTINCT [[$targetAttribute]]",$db) != count($model->$attribute)) {
+            if ($query->count("DISTINCT [[$targetAttribute]]") != count($model->$attribute)) {
                 $this->addError($model, $attribute, $this->message);
             }
-        } elseif (!$query->exists($db)) {
+        } elseif (!$query->exists()) {
             $this->addError($model, $attribute, $this->message);
         }
 
