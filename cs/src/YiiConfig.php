@@ -45,8 +45,8 @@ class YiiConfig extends Config
             'ereg_to_preg' => true,
             'function_typehint_space' => true,
             'hash_to_slash_comment' => true,
+            'include' => true,
             'heredoc_to_nowdoc' => true,
-//            'include' => true, // needs more discussion
             'is_null' => [
                 'use_yoda_style' => false,
             ],

@@ -779,7 +779,7 @@ class PhpManager extends BaseManager
     protected function loadFromFile($file)
     {
         if (is_file($file)) {
-            return require($file);
+            return require $file;
         }
 
         return [];

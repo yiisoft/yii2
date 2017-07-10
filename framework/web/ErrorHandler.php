@@ -247,7 +247,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             ob_start();
             ob_implicit_flush(false);
             extract($_params_, EXTR_OVERWRITE);
-            require(Yii::getAlias($_file_));
+            require Yii::getAlias($_file_);
 
             return ob_get_clean();
         }

@@ -277,7 +277,7 @@ EOD;
             if (!is_file($configFile)) {
                 throw new Exception("The configuration file does not exist: $configFile");
             }
-            $configFileContent = require($configFile);
+            $configFileContent = require $configFile;
         }
 
         $config = array_merge(
@@ -538,7 +538,6 @@ EOD;
                             $category = mb_substr($category, 1, -1);
 
                             if (!$this->isCategoryIgnored($category, $ignoreCategories)) {
-
                                 $fullMessage = mb_substr($buffer[2][1], 1, -1);
                                 $i = 3;
                                 while ($i < count($buffer) - 1 && !is_array($buffer[$i]) && $buffer[$i] === '.') {
@@ -687,7 +686,7 @@ EOD;
     protected function saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)
     {
         if (is_file($fileName)) {
-            $rawExistingMessages = require($fileName);
+            $rawExistingMessages = require $fileName;
             $existingMessages = $rawExistingMessages;
             sort($messages);
             ksort($existingMessages);

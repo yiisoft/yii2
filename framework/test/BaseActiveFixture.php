@@ -100,7 +100,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
         }
         $dataFile = Yii::getAlias($this->dataFile);
         if (is_file($dataFile)) {
-            return require($dataFile);
+            return require $dataFile;
         }
 
         throw new InvalidConfigException("Fixture data file does not exist: {$this->dataFile}");

@@ -207,7 +207,7 @@ class BaseFileHelper
         }
         $magicFile = Yii::getAlias($magicFile);
         if (!isset(self::$_mimeTypes[$magicFile])) {
-            self::$_mimeTypes[$magicFile] = require($magicFile);
+            self::$_mimeTypes[$magicFile] = require $magicFile;
         }
         return self::$_mimeTypes[$magicFile];
     }
