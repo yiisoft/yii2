@@ -41,7 +41,7 @@ class MenuTest extends \yiiunit\TestCase
             ],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML;
@@ -65,7 +65,7 @@ HTML;
             ],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <ul><li><a href="#"><span class="glyphicon glyphicon-user"></span> Users</a></li>
 <li><a href="#">Authors &amp; Publications</a></li></ul>
 HTML;
@@ -98,7 +98,7 @@ HTML;
             ],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <div><a href="#">item1</a></div>
 <a href="#">item2</a>
 HTML;
@@ -124,7 +124,7 @@ HTML;
             'itemOptions' => ['tag' => false],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <a href="#">item1</a>
 <a href="#">item2</a>
 HTML;
@@ -155,7 +155,7 @@ HTML;
             ],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <ul><li>label: item1; url: #</li>
 <li>label: item2</li>
 <li></li></ul>
@@ -192,7 +192,7 @@ HTML;
             ],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <ul><li class="active">label: item1; url: #</li>
 <li>label: item2</li>
 <li class="active"></li></ul>
@@ -247,7 +247,7 @@ HTML;
             ],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <ul><li class="someclass item-active"><a href="#">item1</a></li>
 <li class="another-class other--class two classes"><a href="#">item2</a></li>
 <li><a href="#">item3</a></li>
@@ -293,7 +293,7 @@ HTML;
             ],
         ]);
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <ul><li class="someclass"><a href="#">item1</a></li>
 <li><a href="#">item2</a></li>
 <li class="some classes"><a href="#">item3</a></li>
