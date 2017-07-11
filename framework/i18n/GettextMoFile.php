@@ -207,9 +207,9 @@ class GettextMoFile extends GettextFile
     {
         if ($byteCount > 0) {
             return fread($fileHandle, $byteCount);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

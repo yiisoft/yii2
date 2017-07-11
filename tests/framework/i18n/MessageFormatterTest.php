@@ -84,7 +84,7 @@ class MessageFormatterTest extends TestCase
             ],
 
             // This one was provided by Aura.Intl. Thanks!
-            [<<<_MSG_
+            [<<<'_MSG_'
 {gender_of_host, select,
   female {{num_guests, plural, offset:1
       =0 {{host} does not give a party.}

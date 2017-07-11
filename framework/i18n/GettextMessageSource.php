@@ -162,8 +162,8 @@ class GettextMessageSource extends MessageSource
             }
 
             return $messages;
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

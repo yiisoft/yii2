@@ -1505,5 +1505,4 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('Some {{updated}} name', $customer->name);
         $this->assertEquals('Some {{%updated}} address', $customer->address);
     }
-
 }

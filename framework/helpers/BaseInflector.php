@@ -385,9 +385,9 @@ class BaseInflector
         $regex = $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/';
         if ($separator === '_') {
             return strtolower(trim(preg_replace($regex, '_\0', $name), '_'));
-        } else {
-            return strtolower(trim(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name)), $separator));
         }
+
+        return strtolower(trim(str_replace('_', $separator, preg_replace($regex, $separator . '\0', $name)), $separator));
     }
 
     /**
@@ -496,9 +496,9 @@ class BaseInflector
             }
 
             return transliterator_transliterate($transliterator, $string);
-        } else {
-            return strtr($string, static::$transliteration);
         }
+
+        return strtr($string, static::$transliteration);
     }
 
     /**

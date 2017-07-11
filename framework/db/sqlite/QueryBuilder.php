@@ -150,9 +150,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
     }
 
     /**

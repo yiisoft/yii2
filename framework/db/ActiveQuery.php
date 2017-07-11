@@ -295,9 +295,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if ($row !== false) {
             $models = $this->populate([$row]);
             return reset($models) ?: null;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -545,9 +545,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         if (is_array($joinType) && isset($joinType[$name])) {
             return $joinType[$name];
-        } else {
-            return is_string($joinType) ? $joinType : 'INNER JOIN';
         }
+
+        return is_string($joinType) ? $joinType : 'INNER JOIN';
     }
 
     /**
@@ -564,9 +564,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             foreach ($this->from as $alias => $tableName) {
                 if (is_string($alias)) {
                     return [$tableName, $alias];
-                } else {
-                    break;
                 }
+                break;
             }
         }
 

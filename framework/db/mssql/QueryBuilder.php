@@ -69,9 +69,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
         if ($this->isOldMssql()) {
             return $this->oldBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
-        } else {
-            return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
         }
+
+        return $this->newBuildOrderByAndLimit($sql, $orderBy, $limit, $offset);
     }
 
     /**
@@ -220,9 +220,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "DBCC CHECKIDENT ('{$tableName}', RESEED, {$value})";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
     }
 
     /**

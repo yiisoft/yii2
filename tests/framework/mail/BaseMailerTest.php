@@ -224,7 +224,7 @@ class BaseMailerTest extends TestCase
                 'HTML view file content http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef',
             ],
             [
-                2, <<<HTML
+                2, <<<'HTML'
 <html><head><style type="text/css">.content{color: #112345;}</style><title>TEST</title></head>
 <body>
     <style type="text/css">.content{color: #112345;}</style>
@@ -239,7 +239,7 @@ class BaseMailerTest extends TestCase
 </body>
 </html>
 HTML
-,                <<<TEXT
+,                <<<'TEXT'
 First paragraph
 second line
 

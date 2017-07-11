@@ -50,7 +50,7 @@ class ListViewTest extends TestCase
             'showOnEmpty' => true,
         ])->run();
 
-        $this->expectOutputString(<<<HTML
+        $this->expectOutputString(<<<'HTML'
 <div id="w0" class="list-view">
 
 </div>
@@ -81,7 +81,7 @@ HTML
     {
         $this->getListView()->run();
 
-        $this->expectOutputString(<<<HTML
+        $this->expectOutputString(<<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
@@ -95,7 +95,7 @@ HTML
     {
         $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
 
-        $this->expectOutputString(<<<HTML
+        $this->expectOutputString(<<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
