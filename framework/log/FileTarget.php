@@ -71,6 +71,11 @@ class FileTarget extends Target
      * around this problem.
      */
     public $rotateByCopy = true;
+    /**
+     * @var bool whether to compress rotation files with gzip. Defaults to `false`.
+     * @since 2.0.13
+     */
+    public $compressRotatedFiles = false;
 
 
     /**
@@ -137,14 +142,20 @@ class FileTarget extends Target
         for ($i = $this->maxLogFiles; $i >= 0; --$i) {
             // $i == 0 is the original log file
             $rotateFile = $file . ($i === 0 ? '' : '.' . $i);
+            $rotateTarget = $file . '.' . ($i + 1);
             if (!is_file($rotateFile)) {
-                continue;
+                if ($this->compressRotatedFiles && is_file("$rotateFile.gz")) {
+                    $rotateFile = "$rotateFile.gz";
+                    $rotateTarget = "$rotateTarget.gz";
+                } else {
+                    continue;
+                }
             }
             if ($i === $this->maxLogFiles) {
                 // suppress errors because it's possible multiple processes enter into this section
                 @unlink($rotateFile);
             } else {
-                $this->rotateFile($rotateFile, $file . '.' . ($i + 1));
+                $this->rotateFile($rotateFile, $rotateTarget);
             }
         }
     }
@@ -153,6 +164,7 @@ class FileTarget extends Target
      * Rotate a single file
      * @param string $file the file to rotate.
      * @param string $target the target file name.
+     * @since 2.0.13
      */
     protected function rotateFile($file, $target)
     {
@@ -169,6 +181,31 @@ class FileTarget extends Target
         } else {
             @rename($file, $target);
         }
+        if ($this->compressRotatedFiles) {
+            $this->compressFile($target);
+        }
     }
 
+    /**
+     * Compresses a file with gzip and renames it by appending `.gz` to the filename
+     * @param string $filename the file to compress.
+     * @return string the name of the compressed file.
+     * @since 2.0.13
+     */
+    protected function compressFile($filename)
+    {
+        if (substr($filename, -3, 3) === '.gz') {
+            return $filename;
+        }
+        $gzFilename = $filename . '.gz';
+        $f = fopen($filename, 'rb');
+        $gz = gzopen($gzFilename, 'wb9');
+        while (!feof($f)) {
+            gzwrite($gz, fread($f, 8192));
+        }
+        fclose($f);
+        gzclose($gz);
+        @unlink($filename);
+        return $gzFilename;
+    }
 }

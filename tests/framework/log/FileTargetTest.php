@@ -27,15 +27,17 @@ class FileTargetTest extends TestCase
     public function booleanDataProvider()
     {
         return [
-            [true],
-            [false],
+            [true,  true],
+            [false, true],
+            [true,  false],
+            [false, false],
         ];
     }
 
     /**
      * @dataProvider booleanDataProvider
      */
-    public function testRotate($rotateByCopy)
+    public function testRotate($rotateByCopy, $compressFiles)
     {
         $logFile = Yii::getAlias('@yiiunit/runtime/log/filetargettest.log');
         FileHelper::removeDirectory(dirname($logFile));
@@ -53,6 +55,7 @@ class FileTargetTest extends TestCase
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
                     'rotateByCopy' => $rotateByCopy,
+                    'compressRotatedFiles' => $compressFiles,
                 ],
             ],
         ]);
@@ -65,10 +68,15 @@ class FileTargetTest extends TestCase
         clearstatcache();
 
         $this->assertFileExists($logFile);
+        $this->assertFileNotExists($logFile . '.gz');
         $this->assertFileNotExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.1.gz');
         $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.2.gz');
         $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.3.gz');
         $this->assertFileNotExists($logFile . '.4');
+        $this->assertFileNotExists($logFile . '.4.gz');
 
         // exceed max size
         for ($i = 0; $i < 1024; $i++) {
@@ -84,10 +92,20 @@ class FileTargetTest extends TestCase
         clearstatcache();
 
         $this->assertFileExists($logFile);
-        $this->assertFileExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.gz');
+        if ($compressFiles) {
+            $this->assertFileNotExists($logFile . '.1');
+            $this->assertFileExists($logFile . '.1.gz');
+        } else {
+            $this->assertFileExists($logFile . '.1');
+            $this->assertFileNotExists($logFile . '.1.gz');
+        }
         $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.2.gz');
         $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.3.gz');
         $this->assertFileNotExists($logFile . '.4');
+        $this->assertFileNotExists($logFile . '.4.gz');
 
         // second rotate
 
@@ -99,9 +117,19 @@ class FileTargetTest extends TestCase
         clearstatcache();
 
         $this->assertFileExists($logFile);
-        $this->assertFileExists($logFile . '.1');
+        $this->assertFileNotExists($logFile . '.gz');
+        if ($compressFiles) {
+            $this->assertFileNotExists($logFile . '.1');
+            $this->assertFileExists($logFile . '.1.gz');
+        } else {
+            $this->assertFileExists($logFile . '.1');
+            $this->assertFileNotExists($logFile . '.1.gz');
+        }
         $this->assertFileNotExists($logFile . '.2');
+        $this->assertFileNotExists($logFile . '.2.gz');
         $this->assertFileNotExists($logFile . '.3');
+        $this->assertFileNotExists($logFile . '.3.gz');
         $this->assertFileNotExists($logFile . '.4');
+        $this->assertFileNotExists($logFile . '.4.gz');
     }
 }
