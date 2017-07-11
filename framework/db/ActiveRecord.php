@@ -189,6 +189,21 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function refresh()
+    {
+        $pk = [];
+        // disambiguate column names in case ActiveQuery adds a JOIN
+        foreach($this->getPrimaryKey(true) as $key => $value) {
+            $pk[static::tableName() . '.' . $key] = $value;
+        }
+        /* @var $record BaseActiveRecord */
+        $record = static::findOne($pk);
+        return $this->refreshInternal($record);
+    }
+
+    /**
      * Updates the whole table using the provided attribute values and conditions.
      *
      * For example, to change the status to be 1 for all customers whose status is 2:

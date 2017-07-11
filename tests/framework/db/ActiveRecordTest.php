@@ -14,6 +14,7 @@ use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\CustomerQuery;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
@@ -36,6 +37,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
+        CustomerQuery::$joinWithProfile = false;
     }
 
     /**
@@ -1504,5 +1506,16 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
         $this->assertEquals('Some {{updated}} name', $customer->name);
         $this->assertEquals('Some {{%updated}} address', $customer->address);
+    }
+
+    /**
+     * Ensure no ambiguous colum error occurs if ActiveQuery adds a JOIN
+     */
+    public function testAmbiguousColumnFindOne()
+    {
+        CustomerQuery::$joinWithProfile = true;
+        $model = Customer::findOne(1);
+        $this->assertTrue($model->refresh());
+        CustomerQuery::$joinWithProfile = false;
     }
 }
