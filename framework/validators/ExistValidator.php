@@ -192,6 +192,10 @@ class ExistValidator extends Validator
             throw new InvalidConfigException('The "targetAttribute" property must be configured as a string.');
         }
 
+        if (is_array($value) && !$this->allowArray) {
+            return [$this->message, []];
+        }
+
         $query = $this->createQuery($this->targetClass, [$this->targetAttribute => $value]);
 
         $targetClass = $this->targetClass;
@@ -204,23 +208,16 @@ class ExistValidator extends Validator
 
 
         if (is_array($value)) {
-            if (!$this->allowArray) {
-                return [$this->message, []];
-            }
-            $existed = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        } else {
-            $existed = $query->exists() ? null : [$this->message, []];
+            $result = $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
+        }else{
+            $result = $query->exists() ? null : [$this->message, []];
         }
 
         if($disabledSlaves){
             $db->enableSlaves = true;
         }
 
-        return $existed;
-            return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        }
-
-        return $query->exists() ? null : [$this->message, []];
+        return $result;
     }
 
     /**
