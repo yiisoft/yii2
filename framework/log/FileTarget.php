@@ -137,25 +137,38 @@ class FileTarget extends Target
         for ($i = $this->maxLogFiles; $i >= 0; --$i) {
             // $i == 0 is the original log file
             $rotateFile = $file . ($i === 0 ? '' : '.' . $i);
-            if (is_file($rotateFile)) {
+            if (!is_file($rotateFile)) {
+                continue;
+            }
+            if ($i === $this->maxLogFiles) {
                 // suppress errors because it's possible multiple processes enter into this section
-                if ($i === $this->maxLogFiles) {
-                    @unlink($rotateFile);
-                } else {
-                    if ($this->rotateByCopy) {
-                        @copy($rotateFile, $file . '.' . ($i + 1));
-                        if ($fp = @fopen($rotateFile, 'a')) {
-                            @ftruncate($fp, 0);
-                            @fclose($fp);
-                        }
-                        if ($this->fileMode !== null) {
-                            @chmod($file . '.' . ($i + 1), $this->fileMode);
-                        }
-                    } else {
-                        @rename($rotateFile, $file . '.' . ($i + 1));
-                    }
-                }
+                @unlink($rotateFile);
+            } else {
+                $this->rotateFile($rotateFile, $file . '.' . ($i + 1));
             }
         }
     }
+
+    /**
+     * Rotate a single file
+     * @param string $file the file to rotate.
+     * @param string $target the target file name.
+     */
+    protected function rotateFile($file, $target)
+    {
+        // suppress errors because it's possible multiple processes enter into this section
+        if ($this->rotateByCopy) {
+            @copy($file, $target);
+            if ($fp = @fopen($file, 'a')) {
+                @ftruncate($fp, 0);
+                @fclose($fp);
+            }
+            if ($this->fileMode !== null) {
+                @chmod($target, $this->fileMode);
+            }
+        } else {
+            @rename($file, $target);
+        }
+    }
+
 }
