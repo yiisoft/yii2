@@ -17,7 +17,7 @@ if (version_compare(PHP_VERSION, '4.3', '<')) {
  * Example:
  *
  * ```php
- * require_once('path/to/YiiRequirementChecker.php');
+ * require_once 'path/to/YiiRequirementChecker.php';
  * $requirementsChecker = new YiiRequirementChecker();
  * $requirements = array(
  *     array(
@@ -68,7 +68,7 @@ class YiiRequirementChecker
     function check($requirements)
     {
         if (is_string($requirements)) {
-            $requirements = require($requirements);
+            $requirements = require $requirements;
         }
         if (!is_array($requirements)) {
             $this->usageError('Requirements must be an array, "' . gettype($requirements) . '" has been given!');
@@ -311,11 +311,11 @@ class YiiRequirementChecker
         if ($_return_) {
             ob_start();
             ob_implicit_flush(false);
-            require($_viewFile_);
+            require $_viewFile_;
 
             return ob_get_clean();
         } else {
-            require($_viewFile_);
+            require $_viewFile_;
         }
     }
 

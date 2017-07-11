@@ -7,8 +7,8 @@
 
 namespace yii\web;
 
-use Yii;
 use ArrayIterator;
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\Object;
 
@@ -34,7 +34,7 @@ class CookieCollection extends Object implements \IteratorAggregate, \ArrayAcces
     /**
      * @var Cookie[] the cookies in this collection (indexed by the cookie names)
      */
-    private $_cookies = [];
+    private $_cookies;
 
 
     /**

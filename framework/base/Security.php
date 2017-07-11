@@ -7,8 +7,8 @@
 
 namespace yii\base;
 
-use yii\helpers\StringHelper;
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * Security provides a set of methods to handle common security-related tasks.
@@ -163,7 +163,7 @@ class Security extends Component
      * @param string $data data to be encrypted
      * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the encryption password or key
-     * @param string $info context/application specific information, e.g. a user ID
+     * @param string|null $info context/application specific information, e.g. a user ID
      * See [RFC 5869 Section 3.2](https://tools.ietf.org/html/rfc5869#section-3.2) for more details.
      *
      * @return string the encrypted data
@@ -214,7 +214,7 @@ class Security extends Component
      * @param string $data encrypted data to be decrypted.
      * @param bool $passwordBased set true to use password-based key derivation
      * @param string $secret the decryption password or key
-     * @param string $info context/application specific information, @see encrypt()
+     * @param string|null $info context/application specific information, @see encrypt()
      *
      * @return bool|string the decrypted data or false on authentication failure
      * @throws InvalidConfigException on OpenSSL not loaded
@@ -280,7 +280,7 @@ class Security extends Component
             }
             return $outputKey;
         }
-        
+
         $test = @hash_hmac($algo, '', '', true);
         if (!$test) {
             throw new InvalidParamException('Failed to generate HMAC with hash algorithm: ' . $algo);
@@ -409,7 +409,7 @@ class Security extends Component
      * It indicates whether the hash value in the data is in binary format. If false, it means the hash value consists
      * of lowercase hex digits only.
      * hex digits will be generated.
-     * @return string the real data with the hash stripped off. False if the data is tampered.
+     * @return string|false the real data with the hash stripped off. False if the data is tampered.
      * @throws InvalidConfigException when HMAC generation fails.
      * @see hashData()
      */
@@ -610,7 +610,7 @@ class Security extends Component
         }
 
         if (function_exists('password_hash')) {
-            /** @noinspection PhpUndefinedConstantInspection */
+            /* @noinspection PhpUndefinedConstantInspection */
             return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
         }
 
@@ -680,7 +680,7 @@ class Security extends Component
         // Get a 20-byte random string
         $rand = $this->generateRandomKey(20);
         // Form the prefix that specifies Blowfish (bcrypt) algorithm and cost parameter.
-        $salt = sprintf("$2y$%02d$", $cost);
+        $salt = sprintf('$2y$%02d$', $cost);
         // Append the random salt data in the required base64 format.
         $salt .= str_replace('+', '.', substr(base64_encode($rand), 0, 22));
 
@@ -705,5 +705,37 @@ class Security extends Component
             $diff |= (ord($actual[$i]) ^ ord($expected[$i % $expectedLength]));
         }
         return $diff === 0;
+    }
+
+    /**
+     * Masks a token to make it uncompressible.
+     * Applies a random mask to the token and prepends the mask used to the result making the string always unique.
+     * Used to mitigate BREACH attack by randomizing how token is outputted on each request.
+     * @param string $token An unmasked token.
+     * @return string A masked token.
+     * @since 2.0.12
+     */
+    public function maskToken($token)
+    {
+        // The number of bytes in a mask is always equal to the number of bytes in a token.
+        $mask = $this->generateRandomKey(StringHelper::byteLength($token));
+        return StringHelper::base64UrlEncode($mask . ($mask ^ $token));
+    }
+
+    /**
+     * Unmasks a token previously masked by `maskToken`.
+     * @param string $maskedToken A masked token.
+     * @return string An unmasked token, or an empty string in case of token format is invalid.
+     * @since 2.0.12
+     */
+    public function unmaskToken($maskedToken)
+    {
+        $decoded = StringHelper::base64UrlDecode($maskedToken);
+        $length = StringHelper::byteLength($decoded) / 2;
+        // Check if the masked token has an even length.
+        if (!is_int($length)) {
+            return '';
+        }
+        return StringHelper::byteSubstr($decoded, $length, $length) ^ StringHelper::byteSubstr($decoded, 0, $length);
     }
 }

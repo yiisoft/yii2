@@ -22,7 +22,7 @@ Before upgrading, make sure you have a global installation of the latest version
 as well as a stable version of Composer:
 
     composer self-update
-    composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+    composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
 
@@ -35,7 +35,7 @@ upgrade might fail when the Yii version you chose has slightly different depende
 Another way to upgrade is to change the `composer.json` file to require the new Yii version and then
 run `composer update` by specifying all packages that are allowed to be updated.
 
-    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
+    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/inputmask
 
 The above command will only update the specified packages and leave the versions of all other dependencies intact.
 This helps to update packages step by step without causing a lot of package version changes that might break in some way.
@@ -58,10 +58,23 @@ Upgrade from Yii 2.0.11
 
 * `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
   in case of `format` being set to `boolean`.
+ 
+* The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
+  `$params`.
 
-* `yii\web\User::loginRequired()` now throws an `UnauthorizedHttpException` instead of a `ForbiddenHttpException`.
-  Check and adjust your try-catch blocks.
+* The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
+  If you extend this method, make sure to adjust your code.
+  
+* `yii\web\UrlManager` now checks if rules implement `getCreateUrlStatus()` method in order to decide whether to use
+  internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
+  benefit from the acceleration provided by this cache.
 
+* `yii\filters\AccessControl` now can be used without `user` component.  
+  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
+  matching a role throws `yii\base\InvalidConfigException`.
+  
+* Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
+  assets manually, please adjust it. 
 
 Upgrade from Yii 2.0.10
 -----------------------
@@ -272,7 +285,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.3.1"
   ```
 
   You also need to add the following code to your project's `composer.json` file:

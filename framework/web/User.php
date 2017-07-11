@@ -271,9 +271,9 @@ class User extends Component
         $identity = $class::findIdentityByAccessToken($token, $type);
         if ($identity && $this->login($identity)) {
             return $identity;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -363,9 +363,9 @@ class User extends Component
         if (is_array($url)) {
             if (isset($url[0])) {
                 return Yii::$app->getUrlManager()->createUrl($url);
-            } else {
-                $url = null;
             }
+
+            $url = null;
         }
 
         return $url === null ? Yii::$app->getHomeUrl() : $url;
@@ -404,7 +404,7 @@ class User extends Component
      * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
      * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
      * @return Response the redirection response if [[loginUrl]] is set
-     * @throws UnauthorizedHttpException the "Unauthorized" HTTP exception if [[loginUrl]] is not set or a redirect is
+     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
      * not applicable.
      */
     public function loginRequired($checkAjax = true, $checkAcceptHeader = true)
@@ -424,7 +424,7 @@ class User extends Component
                 return Yii::$app->getResponse()->redirect($this->loginUrl);
             }
         }
-        throw new UnauthorizedHttpException(Yii::t('yii', 'Login Required'));
+        throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
     }
 
     /**
@@ -558,7 +558,7 @@ class User extends Component
         }
         $data = json_decode($value, true);
         if (count($data) == 3) {
-            list ($id, $authKey, $duration) = $data;
+            list($id, $authKey, $duration) = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);

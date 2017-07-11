@@ -213,9 +213,9 @@ class AssetManager extends Component
             throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
         } elseif (!is_writable($this->basePath)) {
             throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
-        } else {
-            $this->basePath = realpath($this->basePath);
         }
+
+        $this->basePath = realpath($this->basePath);
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
     }
 
@@ -243,9 +243,9 @@ class AssetManager extends Component
             return $this->bundles[$name] = $this->loadBundle($name, $this->bundles[$name], $publish);
         } elseif ($this->bundles[$name] === false) {
             return $this->loadDummyBundle($name);
-        } else {
-            throw new InvalidConfigException("Invalid asset bundle configuration: $name");
         }
+
+        throw new InvalidConfigException("Invalid asset bundle configuration: $name");
     }
 
     /**
@@ -319,9 +319,9 @@ class AssetManager extends Component
 
         if ($this->appendTimestamp && ($timestamp = @filemtime("$basePath/$asset")) > 0) {
             return "$baseUrl/$asset?v=$timestamp";
-        } else {
-            return "$baseUrl/$asset";
         }
+
+        return "$baseUrl/$asset";
     }
 
     /**
@@ -334,9 +334,9 @@ class AssetManager extends Component
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
             return Url::isRelative($actualAsset) ? $this->basePath . '/' . $actualAsset : false;
-        } else {
-            return Url::isRelative($asset) ? $bundle->basePath . '/' . $asset : false;
         }
+
+        return Url::isRelative($asset) ? $bundle->basePath . '/' . $asset : false;
     }
 
     /**
@@ -456,9 +456,9 @@ class AssetManager extends Component
 
         if (is_file($src)) {
             return $this->_published[$path] = $this->publishFile($src);
-        } else {
-            return $this->_published[$path] = $this->publishDirectory($src, $options);
         }
+
+        return $this->_published[$path] = $this->publishDirectory($src, $options);
     }
 
     /**
@@ -527,6 +527,7 @@ class AssetManager extends Component
                 [
                     'dirMode' => $this->dirMode,
                     'fileMode' => $this->fileMode,
+                    'copyEmptyDirectories' => false,
                 ]
             );
             if (!isset($opts['beforeCopy'])) {
@@ -563,9 +564,9 @@ class AssetManager extends Component
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
             return $this->basePath . DIRECTORY_SEPARATOR . $this->hash($path) . (is_file($path) ? DIRECTORY_SEPARATOR . basename($path) : '');
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -584,9 +585,9 @@ class AssetManager extends Component
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
             return $this->baseUrl . '/' . $this->hash($path) . (is_file($path) ? '/' . basename($path) : '');
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

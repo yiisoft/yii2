@@ -231,7 +231,7 @@ class Module extends ServiceLocator
     /**
      * Sets the root directory of the module.
      * This method can only be invoked at the beginning of the constructor.
-     * @param string $path the root directory of the module. This can be either a directory name or a path alias.
+     * @param string $path the root directory of the module. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidParamException if the directory does not exist.
      */
     public function setBasePath($path)
@@ -294,7 +294,7 @@ class Module extends ServiceLocator
 
     /**
      * Sets the directory that contains the layout files.
-     * @param string $path the root directory or path alias of layout files.
+     * @param string $path the root directory or [path alias](guide:concept-aliases) of layout files.
      * @throws InvalidParamException if the directory is invalid
      */
     public function setLayoutPath($path)
@@ -415,7 +415,7 @@ class Module extends ServiceLocator
         }
 
         if (isset($this->_modules[$id])) {
-            if ($this->_modules[$id] instanceof Module) {
+            if ($this->_modules[$id] instanceof self) {
                 return $this->_modules[$id];
             } elseif ($load) {
                 Yii::trace("Loading module: $id", __METHOD__);
@@ -461,7 +461,7 @@ class Module extends ServiceLocator
         if ($loadedOnly) {
             $modules = [];
             foreach ($this->_modules as $module) {
-                if ($module instanceof Module) {
+                if ($module instanceof self) {
                     $modules[] = $module;
                 }
             }
@@ -567,7 +567,7 @@ class Module extends ServiceLocator
         }
 
         if (strpos($route, '/') !== false) {
-            list ($id, $route) = explode('/', $route, 2);
+            list($id, $route) = explode('/', $route, 2);
         } else {
             $id = $route;
             $route = '';
@@ -606,7 +606,7 @@ class Module extends ServiceLocator
      * Note that this method does not check [[modules]] or [[controllerMap]].
      *
      * @param string $id the controller ID.
-     * @return Controller the newly created controller instance, or `null` if the controller ID is invalid.
+     * @return Controller|null the newly created controller instance, or `null` if the controller ID is invalid.
      * @throws InvalidConfigException if the controller class and its file name do not match.
      * This exception is only thrown when in debug mode.
      */
@@ -629,7 +629,7 @@ class Module extends ServiceLocator
         }
 
         $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
-        $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className, '\\');
+        $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
         }
@@ -638,7 +638,7 @@ class Module extends ServiceLocator
             $controller = Yii::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
-            throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
+            throw new InvalidConfigException('Controller class must extend from \\yii\\base\\Controller.');
         }
         return null;
     }

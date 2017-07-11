@@ -7,9 +7,9 @@
 
 namespace yii\mail;
 
+use Yii;
 use yii\base\ErrorHandler;
 use yii\base\Object;
-use Yii;
 
 /**
  * BaseMessage serves as a base class that implements the [[send()]] method required by [[MessageInterface]].

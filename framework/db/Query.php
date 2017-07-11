@@ -123,7 +123,7 @@ class Query extends Component implements QueryInterface
         if ($db === null) {
             $db = Yii::$app->getDb();
         }
-        list ($sql, $params) = $db->getQueryBuilder()->build($this);
+        list($sql, $params) = $db->getQueryBuilder()->build($this);
 
         return $db->createCommand($sql, $params);
     }
@@ -413,28 +413,31 @@ class Query extends Component implements QueryInterface
             && empty($this->groupBy)
             && empty($this->having)
             && empty($this->union)
-            && empty($this->orderBy)
         ) {
             $select = $this->select;
+            $order = $this->orderBy;
             $limit = $this->limit;
             $offset = $this->offset;
 
             $this->select = [$selectExpression];
+            $this->orderBy = null;
             $this->limit = null;
             $this->offset = null;
             $command = $this->createCommand($db);
 
             $this->select = $select;
+            $this->orderBy = $order;
             $this->limit = $limit;
             $this->offset = $offset;
 
             return $command->queryScalar();
-        } else {
-            return (new Query)->select([$selectExpression])
-                ->from(['c' => $this])
-                ->createCommand($db)
-                ->queryScalar();
         }
+
+        return (new self())
+            ->select([$selectExpression])
+            ->from(['c' => $this])
+            ->createCommand($db)
+            ->queryScalar();
     }
 
     /**
@@ -514,7 +517,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Sets the FROM part of the query.
-     * @param string|array $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
+     * @param string|array|Expression $tables the table(s) to be selected from. This can be either a string (e.g. `'user'`)
      * or an array (e.g. `['user', 'profile']`) specifying one or several table names.
      * Table names can contain schema prefixes (e.g. `'public.user'`) and/or table aliases (e.g. `'user u'`).
      * The method will automatically quote the table names unless it contains some parenthesis
@@ -525,6 +528,8 @@ class Query extends Component implements QueryInterface
      *
      * Use a Query object to represent a sub-query. In this case, the corresponding array key will be used
      * as the alias for the sub-query.
+     *
+     * To specify the `FROM` part in plain SQL, you may pass an instance of [[Expression]].
      *
      * Here are some examples:
      *

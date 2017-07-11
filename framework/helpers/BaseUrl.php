@@ -100,9 +100,9 @@ class BaseUrl
 
         if ($scheme !== false) {
             return static::getUrlManager()->createAbsoluteUrl($route, is_string($scheme) ? $scheme : null);
-        } else {
-            return static::getUrlManager()->createUrl($route);
         }
+
+        return static::getUrlManager()->createUrl($route);
     }
 
     /**
@@ -140,10 +140,10 @@ class BaseUrl
         if (strpos($route, '/') === false) {
             // empty or an action ID
             return $route === '' ? Yii::$app->controller->getRoute() : Yii::$app->controller->getUniqueId() . '/' . $route;
-        } else {
-            // relative to module
-            return ltrim(Yii::$app->controller->module->getUniqueId() . '/' . $route, '/');
         }
+
+        // relative to module
+        return ltrim(Yii::$app->controller->module->getUniqueId() . '/' . $route, '/');
     }
 
     /**
@@ -291,8 +291,9 @@ class BaseUrl
      * @param string|array $url the URL to remember. Please refer to [[to()]] for acceptable formats.
      * If this parameter is not specified, the currently requested URL will be used.
      * @param string $name the name associated with the URL to be remembered. This can be used
-     * later by [[previous()]]. If not set, it will use [[\yii\web\User::returnUrlParam]].
+     * later by [[previous()]]. If not set, [[\yii\web\User::setReturnUrl()]] will be used with passed URL.
      * @see previous()
+     * @see \yii\web\User::setReturnUrl()
      */
     public static function remember($url = '', $name = null)
     {
@@ -309,17 +310,19 @@ class BaseUrl
      * Returns the URL previously [[remember()|remembered]].
      *
      * @param string $name the named associated with the URL that was remembered previously.
-     * If not set, it will use [[\yii\web\User::returnUrlParam]].
-     * @return string|null the URL previously remembered. Null is returned if no URL was remembered with the given name.
+     * If not set, [[\yii\web\User::getReturnUrl()]] will be used to obtain remembered URL.
+     * @return string|null the URL previously remembered. Null is returned if no URL was remembered with the given name
+     * and `$name` is not specified.
      * @see remember()
+     * @see \yii\web\User::getReturnUrl()
      */
     public static function previous($name = null)
     {
         if ($name === null) {
             return Yii::$app->getUser()->getReturnUrl();
-        } else {
-            return Yii::$app->getSession()->get($name);
         }
+
+        return Yii::$app->getSession()->get($name);
     }
 
     /**

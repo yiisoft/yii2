@@ -174,7 +174,7 @@ $component->attachBehavior('myBehavior3', [
 ]);
 ```
 
-Использование метода [[yii\base\Component::attachBehaviors()]] позволяет прикрепить несколько поведение за раз.
+Использование метода [[yii\base\Component::attachBehaviors()]] позволяет прикрепить несколько поведений за раз.
 Например,
 
 ```php

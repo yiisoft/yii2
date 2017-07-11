@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -207,12 +212,12 @@ class UrlManagerParseUrlTest extends TestCase
         $manager = $this->getUrlManager($config);
 
         // matching pathinfo
-        $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample"));
+        $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample$suffix"));
         $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // trailing slash is significant, no match
-        $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample/"));
+        $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample/'));
         if ($suffix === '/') {
             $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         } else {
@@ -224,12 +229,12 @@ class UrlManagerParseUrlTest extends TestCase
         $result = $manager->parseRequest($this->getRequest(''));
         $this->assertEquals(['', []], $result);
         // normal pathinfo
-        $result = $manager->parseRequest($this->getRequest("site/index"));
+        $result = $manager->parseRequest($this->getRequest('site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("site/index$suffix"));
         $this->assertEquals(['site/index', []], $result);
         // pathinfo with module
-        $result = $manager->parseRequest($this->getRequest("module/site/index"));
+        $result = $manager->parseRequest($this->getRequest('module/site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("module/site/index$suffix"));
         $this->assertEquals(['module/site/index', []], $result);
@@ -252,12 +257,12 @@ class UrlManagerParseUrlTest extends TestCase
         $manager->enableStrictParsing = true;
 
         // matching pathinfo
-        $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample"));
+        $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample$suffix"));
         $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         // trailing slash is significant, no match
-        $result = $manager->parseRequest($this->getRequest("book/123/this+is+sample/"));
+        $result = $manager->parseRequest($this->getRequest('book/123/this+is+sample/'));
         if ($suffix === '/') {
             $this->assertEquals(['book/view', ['id' => '123', 'title' => 'this+is+sample']], $result);
         } else {
@@ -269,12 +274,12 @@ class UrlManagerParseUrlTest extends TestCase
         $result = $manager->parseRequest($this->getRequest(''));
         $this->assertFalse($result);
         // normal pathinfo
-        $result = $manager->parseRequest($this->getRequest("site/index"));
+        $result = $manager->parseRequest($this->getRequest('site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("site/index$suffix"));
         $this->assertFalse($result);
         // pathinfo with module
-        $result = $manager->parseRequest($this->getRequest("module/site/index"));
+        $result = $manager->parseRequest($this->getRequest('module/site/index'));
         $this->assertFalse($result);
         $result = $manager->parseRequest($this->getRequest("module/site/index$suffix"));
         $this->assertFalse($result);
@@ -288,7 +293,7 @@ class UrlManagerParseUrlTest extends TestCase
 
     public function testParseRESTRequest()
     {
-        $request = new Request;
+        $request = new Request();
 
         // pretty URL rules
         $manager = new UrlManager([
@@ -328,16 +333,13 @@ class UrlManagerParseUrlTest extends TestCase
             'components' => [
                 'request' => [
                     'hostInfo' => 'http://localhost/',
-                    'baseUrl' => '/app'
-                ]
-            ]
+                    'baseUrl' => '/app',
+                ],
+            ],
         ], \yii\web\Application::className());
         $this->assertEquals('/app/post/delete?id=123', $manager->createUrl(['post/delete', 'id' => 123]));
         $this->destroyApplication();
 
         unset($_SERVER['REQUEST_METHOD']);
     }
-
-
-
 }

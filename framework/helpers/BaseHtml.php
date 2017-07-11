@@ -9,10 +9,10 @@ namespace yii\helpers;
 
 use Yii;
 use yii\base\InvalidParamException;
+use yii\base\Model;
 use yii\db\ActiveRecordInterface;
 use yii\validators\StringValidator;
 use yii\web\Request;
-use yii\base\Model;
 
 /**
  * BaseHtml provides concrete implementation for [[Html]].
@@ -24,7 +24,6 @@ use yii\base\Model;
  */
 class BaseHtml
 {
-
     /**
      * @var string Regular expression used for attribute name validation.
      * @since 2.0.12
@@ -244,9 +243,9 @@ class BaseHtml
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
             return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
-        } else {
-            return static::tag('link', '', $options);
         }
+
+        return static::tag('link', '', $options);
     }
 
     /**
@@ -271,9 +270,9 @@ class BaseHtml
             $condition = $options['condition'];
             unset($options['condition']);
             return self::wrapIntoCondition(static::tag('script', '', $options), $condition);
-        } else {
-            return static::tag('script', '', $options);
         }
+
+        return static::tag('script', '', $options);
     }
 
     /**
@@ -301,9 +300,9 @@ class BaseHtml
         if ($request instanceof Request && $request->enableCsrfValidation) {
             return static::tag('meta', '', ['name' => 'csrf-param', 'content' => $request->csrfParam]) . "\n    "
                 . static::tag('meta', '', ['name' => 'csrf-token', 'content' => $request->getCsrfToken()]) . "\n";
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -765,9 +764,9 @@ class BaseHtml
             unset($options['label'], $options['labelOptions']);
             $content = static::label(static::input($type, $name, $value, $options) . ' ' . $label, null, $labelOptions);
             return $hidden . $content;
-        } else {
-            return $hidden . static::input($type, $name, $value, $options);
         }
+
+        return $hidden . static::input($type, $name, $value, $options);
     }
 
     /**
@@ -1221,7 +1220,7 @@ class BaseHtml
             foreach ($model->getErrors() as $errors) {
                 foreach ($errors as $error) {
                     $line = $encode ? Html::encode($error) : $error;
-                    if (array_search($line, $lines) === false) {
+                    if (!in_array($line, $lines, true)) {
                         $lines[] = $line;
                     }
                     if (!$showAllErrors) {
@@ -1557,9 +1556,9 @@ class BaseHtml
     {
         if (empty($options['multiple'])) {
             return static::activeListInput('dropDownList', $model, $attribute, $items, $options);
-        } else {
-            return static::activeListBox($model, $attribute, $items, $options);
         }
+
+        return static::activeListBox($model, $attribute, $items, $options);
     }
 
     /**
@@ -2081,9 +2080,9 @@ class BaseHtml
     {
         if (preg_match(static::$attributeRegex, $attribute, $matches)) {
             return $matches[2];
-        } else {
-            throw new InvalidParamException('Attribute name must contain word characters only.');
         }
+
+        throw new InvalidParamException('Attribute name must contain word characters only.');
     }
 
     /**
@@ -2162,9 +2161,9 @@ class BaseHtml
             return $attribute . $suffix;
         } elseif ($formName !== '') {
             return $formName . $prefix . "[$attribute]" . $suffix;
-        } else {
-            throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
         }
+
+        throw new InvalidParamException(get_class($model) . '::formName() cannot be empty for tabular inputs.');
     }
 
     /**

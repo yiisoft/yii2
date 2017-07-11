@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -105,9 +110,9 @@ class StringValidatorTest extends TestCase
     public function testEnsureMessagesOnInit()
     {
         $val = new StringValidator(['min' => 1, 'max' => 2]);
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_string($val->tooLong));
-        $this->assertTrue(is_string($val->tooShort));
+        $this->assertInternalType('string', $val->message);
+        $this->assertInternalType('string', $val->tooLong);
+        $this->assertInternalType('string', $val->tooShort);
     }
 
     public function testCustomErrorMessageInValidateAttribute()

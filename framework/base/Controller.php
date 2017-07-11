@@ -212,7 +212,7 @@ class Controller extends Component implements ViewContextInterface
      * where `Xyz` stands for the action ID. If found, an [[InlineAction]] representing that
      * method will be created and returned.
      * @param string $id the action ID.
-     * @return Action the newly created action instance. Null if the ID doesn't resolve into any action.
+     * @return Action|null the newly created action instance. Null if the ID doesn't resolve into any action.
      */
     public function createAction($id)
     {
@@ -342,7 +342,7 @@ class Controller extends Component implements ViewContextInterface
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - path alias (e.g. "@app/views/site/index");
+     * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");
      * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
      *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
      * - absolute path within module (e.g. "/site/index"): the view name starts with a single slash.
@@ -362,7 +362,7 @@ class Controller extends Component implements ViewContextInterface
      * 2. In the second step, it determines the actual layout file according to the previously found layout name
      *    and context module. The layout name can be:
      *
-     * - a path alias (e.g. "@app/views/layouts/main");
+     * - a [path alias](guide:concept-aliases) (e.g. "@app/views/layouts/main");
      * - an absolute path (e.g. "/main"): the layout name starts with a slash. The actual layout file will be
      *   looked for under the [[Application::layoutPath|layout path]] of the application;
      * - a relative path (e.g. "main"): the actual layout file will be looked for under the
@@ -413,7 +413,7 @@ class Controller extends Component implements ViewContextInterface
 
     /**
      * Renders a view file.
-     * @param string $file the view file to be rendered. This can be either a file path or a path alias.
+     * @param string $file the view file to be rendered. This can be either a file path or a [path alias](guide:concept-aliases).
      * @param array $params the parameters (name-value pairs) that should be made available in the view.
      * @return string the rendering result.
      * @throws InvalidParamException if the view file does not exist.

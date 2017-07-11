@@ -11,8 +11,8 @@ use Closure;
 use Yii;
 use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\helpers\Html;
+use yii\helpers\Url;
 
 /**
  * Menu displays a multi-level menu using nested HTML lists.
@@ -208,13 +208,7 @@ class Menu extends Widget
             if ($i === $n - 1 && $this->lastItemCssClass !== null) {
                 $class[] = $this->lastItemCssClass;
             }
-            if (!empty($class)) {
-                if (empty($options['class'])) {
-                    $options['class'] = implode(' ', $class);
-                } else {
-                    $options['class'] .= ' ' . implode(' ', $class);
-                }
-            }
+            Html::addCssClass($options, $class);
 
             $menu = $this->renderItem($item);
             if (!empty($item['items'])) {
@@ -244,13 +238,13 @@ class Menu extends Widget
                 '{url}' => Html::encode(Url::to($item['url'])),
                 '{label}' => $item['label'],
             ]);
-        } else {
-            $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
-
-            return strtr($template, [
-                '{label}' => $item['label'],
-            ]);
         }
+
+        $template = ArrayHelper::getValue($item, 'template', $this->labelTemplate);
+
+        return strtr($template, [
+            '{label}' => $item['label'],
+        ]);
     }
 
     /**

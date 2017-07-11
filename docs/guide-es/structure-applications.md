@@ -20,11 +20,11 @@ Cuando un [script de entrada](structure-entry-scripts.md) crea una aplicación, 
 una [configuración](concept-configurations.md) y la aplicará a la aplicación, como se muestra a continuación:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // carga la configuración de la aplicación
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // instancia y configura la aplicación
 (new yii\web\Application($config))->run();

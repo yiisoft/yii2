@@ -11,6 +11,8 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Inflector;
 use yii\web\CompositeUrlRule;
+use yii\web\UrlRule as WebUrlRule;
+use yii\web\UrlRuleInterface;
 
 /**
  * UrlRule is provided to simplify the creation of URL rules for RESTful API support.
@@ -187,7 +189,7 @@ class UrlRule extends CompositeUrlRule
      * @param string $pattern
      * @param string $prefix
      * @param string $action
-     * @return \yii\web\UrlRuleInterface
+     * @return UrlRuleInterface
      */
     protected function createRule($pattern, $prefix, $action)
     {
@@ -204,7 +206,7 @@ class UrlRule extends CompositeUrlRule
         $config['pattern'] = rtrim($prefix . '/' . strtr($pattern, $this->tokens), '/');
         $config['route'] = $action;
         if (!empty($verbs) && !in_array('GET', $verbs)) {
-            $config['mode'] = \yii\web\UrlRule::PARSING_ONLY;
+            $config['mode'] = WebUrlRule::PARSING_ONLY;
         }
         $config['suffix'] = $this->suffix;
 
@@ -220,13 +222,13 @@ class UrlRule extends CompositeUrlRule
         foreach ($this->rules as $urlName => $rules) {
             if (strpos($pathInfo, $urlName) !== false) {
                 foreach ($rules as $rule) {
-                    /* @var $rule \yii\web\UrlRule */
+                    /* @var $rule WebUrlRule */
                     $result = $rule->parseRequest($manager, $request);
                     if (YII_DEBUG) {
                         Yii::trace([
                             'rule' => method_exists($rule, '__toString') ? $rule->__toString() : get_class($rule),
                             'match' => $result !== false,
-                            'parent' => self::className()
+                            'parent' => self::className(),
                         ], __METHOD__);
                     }
                     if ($result !== false) {
@@ -244,17 +246,24 @@ class UrlRule extends CompositeUrlRule
      */
     public function createUrl($manager, $route, $params)
     {
+        $this->createStatus = WebUrlRule::CREATE_STATUS_SUCCESS;
         foreach ($this->controller as $urlName => $controller) {
             if (strpos($route, $controller) !== false) {
-                foreach ($this->rules[$urlName] as $rule) {
-                    /* @var $rule \yii\web\UrlRule */
-                    if (($url = $rule->createUrl($manager, $route, $params)) !== false) {
-                        return $url;
-                    }
+                /* @var $rules UrlRuleInterface[] */
+                $rules = $this->rules[$urlName];
+                $url = $this->iterateRules($rules, $manager, $route, $params);
+                if ($url !== false) {
+                    return $url;
                 }
+            } else {
+                $this->createStatus |= WebUrlRule::CREATE_STATUS_ROUTE_MISMATCH;
             }
         }
 
+        if ($this->createStatus === WebUrlRule::CREATE_STATUS_SUCCESS) {
+            // create status was not changed - there is no rules configured
+            $this->createStatus = WebUrlRule::CREATE_STATUS_PARSING_ONLY;
+        }
         return false;
     }
 }

@@ -12,7 +12,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 
 /**
  * Connection represents a connection to a database via [PDO](http://php.net/manual/en/book.pdo.php).
@@ -153,10 +153,10 @@ class Connection extends Component
 
     /**
      * @var string the Data Source Name, or DSN, contains the information required to connect to the database.
-     * Please refer to the [PHP manual](http://www.php.net/manual/en/function.PDO-construct.php) on
+     * Please refer to the [PHP manual](http://php.net/manual/en/pdo.construct.php) on
      * the format of the DSN string.
      *
-     * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a path alias
+     * For [SQLite](http://php.net/manual/en/ref.pdo-sqlite.connection.php) you may use a [path alias](guide:concept-aliases)
      * for specifying the database path, e.g. `sqlite:@app/data/db.sql`.
      *
      * @see charset
@@ -173,7 +173,7 @@ class Connection extends Component
     /**
      * @var array PDO attributes (name => value) that should be set when calling [[open()]]
      * to establish a DB connection. Please refer to the
-     * [PHP manual](http://www.php.net/manual/en/function.PDO-setAttribute.php) for
+     * [PHP manual](http://php.net/manual/en/pdo.setattribute.php) for
      * details about available attributes.
      */
     public $attributes;
@@ -207,7 +207,7 @@ class Connection extends Component
      */
     public $schemaCacheExclude = [];
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that
+     * @var CacheInterface|string the cache object or the ID of the cache application component that
      * is used to cache the table metadata.
      * @see enableSchemaCache
      */
@@ -231,7 +231,7 @@ class Connection extends Component
      */
     public $queryCacheDuration = 3600;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component
+     * @var CacheInterface|string the cache object or the ID of the cache application component
      * that is used for query caching.
      * @see enableQueryCache
      */
@@ -302,7 +302,7 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that is used to store
+     * @var CacheInterface|string the cache object or the ID of the cache application component that is used to store
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
      * This is used only when read/write splitting is enabled or [[masters]] is not empty.
      */
@@ -373,6 +373,22 @@ class Connection extends Component
      * @see masters
      */
     public $shuffleMasters = true;
+    /**
+     * @var bool whether to enable logging of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableProfiling
+     */
+    public $enableLogging = true;
+    /**
+     * @var bool whether to enable profiling of database queries. Defaults to true.
+     * You may want to disable this option in a production environment to gain performance
+     * if you do not need the information being logged.
+     * @since 2.0.12
+     * @see enableLogging
+     */
+    public $enableProfiling = true;
 
     /**
      * @var Transaction the currently active transaction
@@ -524,7 +540,7 @@ class Connection extends Component
             } else {
                 $cache = $this->queryCache;
             }
-            if ($cache instanceof Cache) {
+            if ($cache instanceof CacheInterface) {
                 return [$cache, $duration, $dependency];
             }
         }
@@ -548,9 +564,9 @@ class Connection extends Component
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
-            } else {
-                throw new InvalidConfigException('None of the master DB servers is available.');
             }
+
+            throw new InvalidConfigException('None of the master DB servers is available.');
         }
 
         if (empty($this->dsn)) {
@@ -752,17 +768,17 @@ class Connection extends Component
     {
         if ($this->_schema !== null) {
             return $this->_schema;
-        } else {
-            $driver = $this->getDriverName();
-            if (isset($this->schemaMap[$driver])) {
-                $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
-                $config['db'] = $this;
-
-                return $this->_schema = Yii::createObject($config);
-            } else {
-                throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
-            }
         }
+
+        $driver = $this->getDriverName();
+        if (isset($this->schemaMap[$driver])) {
+            $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
+            $config['db'] = $this;
+
+            return $this->_schema = Yii::createObject($config);
+        }
+
+        throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
     }
 
     /**
@@ -789,7 +805,7 @@ class Connection extends Component
      * Returns the ID of the last inserted row or sequence value.
      * @param string $sequenceName name of the sequence object (required by some DBMS)
      * @return string the row ID of the last row inserted, or the last value retrieved from the sequence object
-     * @see http://www.php.net/manual/en/function.PDO-lastInsertId.php
+     * @see http://php.net/manual/en/pdo.lastinsertid.php
      */
     public function getLastInsertID($sequenceName = '')
     {
@@ -801,7 +817,7 @@ class Connection extends Component
      * Note that if the parameter is not a string, it will be returned without change.
      * @param string $value string to be quoted
      * @return string the properly quoted string
-     * @see http://www.php.net/manual/en/function.PDO-quote.php
+     * @see http://php.net/manual/en/pdo.quote.php
      */
     public function quoteValue($value)
     {
@@ -850,9 +866,9 @@ class Connection extends Component
             function ($matches) {
                 if (isset($matches[3])) {
                     return $this->quoteColumnName($matches[3]);
-                } else {
-                    return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
                 }
+
+                return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
             },
             $sql
         );
@@ -897,9 +913,9 @@ class Connection extends Component
         $db = $this->getSlave(false);
         if ($db === null) {
             return $fallbackToMaster ? $this->getMasterPdo() : null;
-        } else {
-            return $db->pdo;
         }
+
+        return $db->pdo;
     }
 
     /**
@@ -1033,7 +1049,7 @@ class Connection extends Component
             }
 
             $key = [__METHOD__, $config['dsn']];
-            if ($cache instanceof Cache && $cache->get($key)) {
+            if ($cache instanceof CacheInterface && $cache->get($key)) {
                 // should not try this dead server now
                 continue;
             }
@@ -1046,7 +1062,7 @@ class Connection extends Component
                 return $db;
             } catch (\Exception $e) {
                 Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
-                if ($cache instanceof Cache) {
+                if ($cache instanceof CacheInterface) {
                     // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
                 }
@@ -1064,5 +1080,22 @@ class Connection extends Component
     {
         $this->close();
         return array_keys((array) $this);
+    }
+
+    /**
+     * Reset the connection after cloning.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_master = false;
+        $this->_slave = false;
+        $this->_schema = null;
+        $this->_transaction = null;
+        if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
+            // reset PDO connection, unless its sqlite in-memory, which can only have one connection
+            $this->pdo = null;
+        }
     }
 }

@@ -86,9 +86,9 @@ class BaseStringHelper
         $pos = mb_strrpos(str_replace('\\', '/', $path), '/');
         if ($pos !== false) {
             return mb_substr($path, 0, $pos);
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -110,9 +110,9 @@ class BaseStringHelper
 
         if (mb_strlen($string, $encoding ?: Yii::$app->charset) > $length) {
             return rtrim(mb_substr($string, 0, $length, $encoding ?: Yii::$app->charset)) . $suffix;
-        } else {
-            return $string;
         }
+
+        return $string;
     }
 
     /**
@@ -134,9 +134,9 @@ class BaseStringHelper
         $words = preg_split('/(\s+)/u', trim($string), null, PREG_SPLIT_DELIM_CAPTURE);
         if (count($words) / 2 > $count) {
             return implode('', array_slice($words, 0, ($count * 2) - 1)) . $suffix;
-        } else {
-            return $string;
         }
+
+        return $string;
     }
 
     /**
@@ -166,7 +166,7 @@ class BaseStringHelper
                 ++$depth;
             } elseif ($token instanceof \HTMLPurifier_Token_Text && $totalCount <= $count) { //Text
                 if (false === $encoding) {
-                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['',''];
+                    preg_match('/^(\s*)/um', $token->data, $prefixSpace) ?: $prefixSpace = ['', ''];
                     $token->data = $prefixSpace[1] . self::truncateWords(ltrim($token->data), $count - $totalCount, '');
                     $currentCount = self::countWords($token->data);
                 } else {
@@ -176,7 +176,7 @@ class BaseStringHelper
                 $totalCount += $currentCount;
                 $truncated[] = $token;
             } elseif ($token instanceof \HTMLPurifier_Token_End) { //Tag ends
-                if ($token->name === $openTokens[$depth-1]) {
+                if ($token->name === $openTokens[$depth - 1]) {
                     --$depth;
                     unset($openTokens[$depth]);
                     $truncated[] = $token;
@@ -215,9 +215,9 @@ class BaseStringHelper
         }
         if ($caseSensitive) {
             return strncmp($string, $with, $bytes) === 0;
-        } else {
-            return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
+
+        return mb_strtolower(mb_substr($string, 0, $bytes, '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
     }
 
     /**
@@ -240,9 +240,9 @@ class BaseStringHelper
                 return false;
             }
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
-        } else {
-            return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
         }
+
+        return mb_strtolower(mb_substr($string, -$bytes, mb_strlen($string, '8bit'), '8bit'), Yii::$app->charset) === mb_strtolower($with, Yii::$app->charset);
     }
 
     /**
@@ -315,10 +315,13 @@ class BaseStringHelper
 
     /**
      * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
-     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
-     * @param string $input
-     * @return string
+     * > Note: Base 64 padding `=` may be at the end of the returned string.
+     * > `=` is not transparent to URL encoding.
+     *
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input the string to encode.
+     * @return string encoded string.
      * @since 2.0.12
      */
     public static function base64UrlEncode($input)
@@ -328,10 +331,10 @@ class BaseStringHelper
 
     /**
      * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
-     * @see https://tools.ietf.org/html/rfc4648#page-7
      *
-     * @param string $input
-     * @return string
+     * @see https://tools.ietf.org/html/rfc4648#page-7
+     * @param string $input encoded string.
+     * @return string decoded string.
      * @since 2.0.12
      */
     public static function base64UrlDecode($input)

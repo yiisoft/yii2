@@ -1,28 +1,28 @@
 Yii là gì
 ===========
 
-Yii có hiệu suất cao, được dựa trên các thành phần PHP framework cho việc phát triển các ứng dụng Web hiện đại.
+Yii là một PHP Framework mã nguồn mở và hoàn toàn miễn phí, có hiệu năng xử lý cao, phát triển tốt nhất trên các ứng dụng Web 2.0, sử dụng tối đa các thành phần (component-based PHP framework) để tăng tốc độ viết ứng dụng.
 Tên Yii (được phát âm là `Yee` hoặc `[ji:]`) ở Trung Quốc có nghĩa là  "thật đơn giản và luôn phát triển". Nghĩa thứ hai có thể đọc ngắn gọn là **Yes It Is**!
 
 
 Yii thích hợp nhất để làm gì?
 ---------------------
 
-Yii là một framework lập trình Web chung chung mà có thể được sử dụng để phát triển một loạt các ứng dụng Web 
-được xây dựng với PHP. Bởi vì dựa trên kiến trúc thành phần và có bộ nhớ đệm hoàn hảo, 
-nó là đặc biệt thích hợp cho việc phát triển các ứng dụng quy mô lớn, chẳng hạn như các cổng thông tin,
-diễn đàn, hệ thống quản lý nội dung (CMS), các dự án thương mại điện tử và các dịch vụ Web RESTful.
+Yii, nói chung, là một framework phát triển ứng dụng Web nên có thể dùng để viết mọi loại ứng dụng Web 
+và sử dụng ngôn ngữ lập trình PHP. Yii rất nhẹ và được trang bị giải pháp cache tối ưu nên đặc biệt 
+hữu dụng cho ứng dụng web có dung lượng dữ liệu trên đường truyền lớn như web portal, forum, CMS, e-commerce, 
+các dự án thương mại điện tử và các dịch vụ Web RESTful..
 
 
 So sánh Yii Với các Frameworks khác?
 -------------------------------------------
 
-Nếu bạn có kinh nghiệm với các framework khác, bạn sẽ rất vui mừng khi thấy những nỗ lực của Yii:
+Nếu bạn có kinh nghiệm làm việc với các framework khác, bạn sẽ rất vui mừng khi thấy những nỗ lực của Yii:
 
-- Giống như những PHP frameworks khác, Yii sử dụng mô hình MVC (Model-View-Controller) tổ chức code một cách hợp lý và có hệ thống hơn .
+- Giống như những PHP frameworks khác, Yii sử dụng mô hình MVC (Model-View-Controller) tổ chức code một cách hợp lý và có hệ thống.
 - Yii tạo ra code đơn giản và thanh lịch, đây là triết lý trong chương trình. Yii sẽ không bao giờ 
   cố gắng tạo ra những mấu thiết kế quá an toàn và ít có sự thay đổi.
-- Yii là framework hoàn chình, cung cấp nhiều tính năng và được xác minh như: query builders, thao tác dữ liệu với
+- Yii là framework hoàn chỉnh, cung cấp nhiều tính năng và được xác minh như: query builders, thao tác dữ liệu với
   ActiveRecord được dùng cho CSDL quan hệ và NoSQL; hỗ trợ phát triển RESTful API; sự hỗ trợ đa bộ nhớ cache; và nhiều hơn.
 - Yii rất dễ mở rộng. Bạn có thể tùy chình hoặc thay thế bất kỳ một trong những bộ code chuẩn. Bạn cũng có thể
   tận dụng lợi thế của kiến trúc mở rộng chuẩn Yii để sử dụng hoặc phát triển mở rộng phân phối..
@@ -39,7 +39,7 @@ Các phiên bản Yii
 ------------
 
 Yii Hiện nay có hai phiên bản chính: 1.1 và 2.0. Phiên bản 1.1 là phiên bản cũ và bây giờ là trong chế độ bảo trì. Tiếp đến, phiên bản 2.0 là phiên bản đuọc viết lại hoàn toàn Yii, sử dụng các
-công nghệ mới và giao thức, bao gồm trình quản lý gói Composer, các tiêu chuẩn code PHP PSR, namespaces, traits, và như vậy. Phiên bản 2.0 đại diện cho sự hình thành của framework 
+công nghệ mới và giao thức mới, bao gồm trình quản lý gói Composer, các tiêu chuẩn code PHP PSR, namespaces, traits, và như vậy. Phiên bản 2.0 đại diện cho sự hình thành của framework 
 và sẽ nhận được những nỗ lực phát triển chính trong vài năm tới. 
 Hướng dẫn này chủ yếu là về phiên bản 2.0.
 

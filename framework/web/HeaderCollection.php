@@ -7,9 +7,9 @@
 
 namespace yii\web;
 
+use ArrayIterator;
 use Yii;
 use yii\base\Object;
-use ArrayIterator;
 
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
@@ -74,9 +74,9 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
         $name = strtolower($name);
         if (isset($this->_headers[$name])) {
             return $first ? reset($this->_headers[$name]) : $this->_headers[$name];
-        } else {
-            return $default;
         }
+
+        return $default;
     }
 
     /**
@@ -151,9 +151,9 @@ class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAcces
             $value = $this->_headers[$name];
             unset($this->_headers[$name]);
             return $value;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
