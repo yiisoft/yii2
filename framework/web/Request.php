@@ -910,7 +910,16 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the URL origin.
+     * The return value is taken from current [[getHeaders()|headers]] property.
+     *
+     * Note that the origin request header indicates where a fetch originates from.
+     * It doesn't include any path information, but only the server name.
+     * It is sent with CORS requests, as well as with POST requests.
+     * It is similar to the referer header, but, unlike this header, it doesn't disclose the whole path.
+     * Please refer to https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin for more info.
+     *
      * @return string|null URL origin, null if not available
+     * @see getHeaders()
      * @since 2.0.13
      */
     public function getOrigin()
