@@ -908,6 +908,7 @@ class Request extends \yii\base\Request
     /**
      * Returns the URL origin.
      * @return string|null URL origin, null if not available
+     * @since 2.0.13
      */
     public function getOrigin()
     {
