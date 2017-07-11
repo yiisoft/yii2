@@ -287,7 +287,11 @@ class Query extends Component implements QueryInterface
         }
 
         if (is_string($this->indexBy) && is_array($this->select) && count($this->select) === 1) {
-            $this->select[] = $this->indexBy;
+            if (strpos($this->indexBy, '.') === false && count($tables = $this->getTablesUsedInFrom()) > 0) {
+                $this->select[] = key($tables) . '.' . $this->indexBy;
+            } else {
+                $this->select[] = $this->indexBy;
+            }
         }
         $rows = $this->createCommand($db)->queryAll();
         $results = [];
