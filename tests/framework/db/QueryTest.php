@@ -46,6 +46,12 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['user'], $query->from);
     }
 
+    use GetTablesAliasTestTrait;
+    protected function createQuery()
+    {
+        return new Query();
+    }
+
     public function testWhere()
     {
         $query = new Query();

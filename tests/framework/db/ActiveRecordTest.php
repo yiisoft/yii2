@@ -1510,6 +1510,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
 
     /**
      * Ensure no ambiguous colum error occurs if ActiveQuery adds a JOIN
+     * https://github.com/yiisoft/yii2/issues/13757
      */
     public function testAmbiguousColumnFindOne()
     {

@@ -9,6 +9,7 @@ namespace yii\db;
 
 use Yii;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 
 /**
  * Query represents a SELECT SQL statement in a way that is independent of DBMS.
@@ -438,6 +439,84 @@ class Query extends Component implements QueryInterface
             ->from(['c' => $this])
             ->createCommand($db)
             ->queryScalar();
+    }
+
+    /**
+     * Returns table names used in [[from]] indexed by aliases.
+     * Both aliases and names are enclosed into {{ and }}.
+     * @return string[] table names indexed by aliases
+     * @throws \yii\base\InvalidConfigException
+     * @since 2.0.12
+     */
+    public function getTablesUsedInFrom()
+    {
+        if (empty($this->from)) {
+            return [];
+        } elseif (is_array($this->from)) {
+            $tableNames = $this->from;
+        } elseif (is_string($this->from)) {
+            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
+        } else {
+            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
+        }
+
+        // Clean up table names and aliases
+        $cleanedUpTableNames = [];
+        foreach ($tableNames as $alias => $tableName) {
+            if (!is_string($alias)) {
+                $pattern = <<<PATTERN
+~
+^
+\s*
+(
+    (?:['"`\[]|{{)
+    .*?
+    (?:['"`\]]|}})
+    |
+    .*?
+)
+(?:
+    (?:
+        \s+
+        (?:as)?
+        \s*
+    )
+    (
+       (?:['"`\[]|{{)
+        .*?
+        (?:['"`\]]|}})
+        |
+        .*?
+    )
+)?
+\s*
+$
+~iux
+PATTERN;
+                if (preg_match($pattern, $tableName, $matches)) {
+                    if (isset($matches[1])) {
+                        if (isset($matches[2])) {
+                            list(, $tableName, $alias) = $matches;
+                        } else {
+                            $tableName = $alias = $matches[1];
+                        }
+                        if (strncmp($alias, '{{', 2) !== 0) {
+                            $alias = '{{' . $alias . '}}';
+                        }
+                        if (strncmp($tableName, '{{', 2) !== 0) {
+                            $tableName = '{{' . $tableName . '}}';
+                        }
+                    }
+                }
+            }
+
+            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
+            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
+
+            $cleanedUpTableNames[$alias] = $tableName;
+        }
+
+        return $cleanedUpTableNames;
     }
 
     /**
