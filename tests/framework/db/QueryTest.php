@@ -335,6 +335,37 @@ abstract class QueryTest extends DatabaseTestCase
         $this->assertEquals(['user3' => 'user3', 'user2' => 'user2', 'user1' => 'user1'], $result);
     }
 
+
+    /**
+     * Ensure no ambiguous column error occurs on indexBy with JOIN
+     * https://github.com/yiisoft/yii2/issues/13859
+     */
+    public function testAmbiguousColumnIndexBy()
+    {
+        switch ($this->driverName)
+        {
+            case 'pgsql':
+            case 'sqlite':
+                $selectExpression = "(customer.name || ' in ' || p.description) AS name";
+                break;
+            case 'cubird':
+            case 'mysql':
+                $selectExpression = "concat(customer.name,' in ', p.description) name";
+                break;
+            default:
+                $this->markTestIncomplete('CONCAT syntax for this DBMS is not added to the test yet.');
+        }
+
+        $db = $this->getConnection();
+        $result = (new Query)->select([$selectExpression])->from('customer')
+            ->innerJoin('profile p', '{{customer}}.[[profile_id]] = {{p}}.[[id]]')
+            ->indexBy('id')->column($db);
+        $this->assertEquals([
+            1 => 'user1 in profile customer 1',
+            3 => 'user3 in profile customer 3',
+        ], $result);
+    }
+
     public function testCount()
     {
         $db = $this->getConnection();

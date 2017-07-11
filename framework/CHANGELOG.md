@@ -7,6 +7,8 @@ Yii Framework 2 Change Log
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Bug #13757: Fixed ambiguous column error in `BaseActiveRecord::refresh()` when the query adds a JOIN by default (cebe, ivankff)
+- Bug #13859: Fixed ambiguous column error in `Query::column()` when `$indexBy` is used with a JOIN (cebe)
+- Enh #14431: Moved `ActiveQuery::getTablesUsedInFrom()` to `Query` to make the functionality available on the lower layer (cebe)
 - Bug #14248: `yii\console\controllers\MessageController` no longer outputs colorized filenames when console does not support text colorization (PowerGamer1)
 - Bug #14264: Fixed a bug where `yii\log\Logger::calculateTimings()` was not accepting messages with array tokens (bizley)
 - Bug #14269: Fixed broken error page when calling an undefined method (cebe)
