@@ -53,6 +53,54 @@ Third optional argument is default value which is `null` if not specified. Could
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
+
+## Add or overwrite the value in the array <span id="set-value"></span>
+
+```php
+$array = [
+    'key' => [
+        'in' => ['k' => 'value']
+    ]
+];
+
+ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
+// the path to write the value in `$array` can be specified as an array
+ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
+```
+
+As a result, the initial value of `$array['key']['in']` will be overwritten by the new
+```php
+[
+    'key' => [
+        'in' => ['arr' => 'val']
+    ]
+]
+```
+
+If the path contains a nonexistent key, then it will be created with the specified value
+```php
+// if `$array['key']['in']['arr0']` is not empty, then the value will be added to the array
+ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
+
+// if you want to completely override the value `$array['key']['in']['arr0']`
+ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
+```
+
+The result will be
+```php
+[
+    'key' => [
+        'in' => [
+            'k' => 'value',
+            'arr0' => ['arr1' => 'val']
+        ]
+    ]
+]
+```
+
+
+## Get the value and then remove it from the array <span id="remove"></span>
+
 In case you want to get the value and then immediately remove it from array you can use `remove` method:
 
 ```php
