@@ -488,34 +488,20 @@ class ArrayHelperTest extends TestCase
     public function testMergeWithNullValues()
     {
         $a = [
-            1,
+            'firstValue',
             null,
-            3,
-            null
         ];
         $b = [
-            'a',
-            'b'
-        ];
-        $c = [
-            null,
-            null,
-            'c',
-            'd'
+            'secondValue',
+            'thirdValue'
         ];
 
-        $result = ArrayHelper::merge($a, $b, $c);
+        $result = ArrayHelper::merge($a, $b);
         $expected = [
-            1,
+            'firstValue',
             null,
-            3,
-            null,
-            'a',
-            'b',
-            null,
-            null,
-            'c',
-            'd'
+            'secondValue',
+            'thirdValue',
         ];
 
         $this->assertEquals($expected, $result);
