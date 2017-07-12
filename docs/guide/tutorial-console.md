@@ -267,7 +267,7 @@ public function actionIndex()
 }
 ```
 
-There are some predefined constants you can use which are defined in the [[yii\console\ExitCode]] class:
+There are some predefined constants you can use. These are defined in the [[yii\console\ExitCode]] class:
 
 ```php
 public function actionIndex()
