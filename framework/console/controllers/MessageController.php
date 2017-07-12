@@ -9,6 +9,7 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\db\Query;
 use yii\di\Instance;
@@ -219,7 +220,7 @@ class MessageController extends \yii\console\Controller
         $filePath = Yii::getAlias($filePath);
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 
@@ -242,11 +243,11 @@ EOD;
 
         if (file_put_contents($filePath, $content) === false) {
             $this->stdout("Configuration file was NOT created: '{$filePath}'.\n\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Configuration file created: '{$filePath}'.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
@@ -266,17 +267,17 @@ EOD;
 
         if (file_exists($filePath)) {
             if (!$this->confirm("File '{$filePath}' already exists. Do you wish to overwrite it?")) {
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 
         if (!copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath)) {
             $this->stdout("Configuration file template was NOT created at '{$filePath}'.\n\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
@@ -677,7 +678,7 @@ EOD;
             ksort($existingMessages);
             if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
                 $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
             unset($rawExistingMessages);
             $merged = [];
@@ -731,11 +732,11 @@ EOD;
 
         if (file_put_contents($fileName, $content) === false) {
             $this->stdout("Translation was NOT saved.\n\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
