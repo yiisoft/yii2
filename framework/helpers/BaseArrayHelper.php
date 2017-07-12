@@ -265,13 +265,13 @@ class BaseArrayHelper
      *  you can also describe the path as an array of keys
      *  if the path is null then `$array` will be assigned the `$value`
      * @param mixed $value the value to be written
-     * @return array a new array with the value written
      * @since 2.0.13
      */
     public static function setValue(&$array, $path, $value)
     {
-        if (is_null($path)) {
-            return $array = $value;
+        if ($path === null) {
+            $array = $value;
+            return;
         }
 
         $keys = is_array($path) ? $path : explode('.', $path);
@@ -288,8 +288,6 @@ class BaseArrayHelper
         }
 
         $array[array_shift($keys)] = $value;
-
-        return $array;
     }
 
     /**
