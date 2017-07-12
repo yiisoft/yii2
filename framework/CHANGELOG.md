@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.13 under development
 ------------------------
-- Enh #14254: add an option to specify whether validator can run on slave db connections for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator`
+- Enh #14254: add an option to specify whether validator can run on slave db connections for `yii\validators\UniqueValidator` and `yii\validators\ExistValidator` (rossoneri)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Bug #14248: `yii\console\controllers\MessageController` no longer outputs colorized filenames when console does not support text colorization (PowerGamer1)
 - Bug #14264: Fixed a bug where `yii\log\Logger::calculateTimings()` was not accepting messages with array tokens (bizley)
