@@ -1036,7 +1036,7 @@ class ArrayHelperTest extends TestCase
     public function testSetValue($array_input, $key, $value, $expected)
     {
         ArrayHelper::setValue($array_input, $key, $value);
-        static::assertEquals($expected, $array_input);
+        $this->assertEquals($expected, $array_input);
     }
 
     public function testIsAssociative()
