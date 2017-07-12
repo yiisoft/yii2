@@ -183,9 +183,9 @@ class ExistValidator extends Validator
                 return [$this->message, []];
             }
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        } else {
-            return $query->exists() ? null : [$this->message, []];
         }
+
+        return $query->exists() ? null : [$this->message, []];
     }
 
     /**

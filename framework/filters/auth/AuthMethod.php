@@ -69,11 +69,12 @@ abstract class AuthMethod extends ActionFilter implements AuthInterface
 
         if ($identity !== null || $this->isOptional($action)) {
             return true;
-        } else {
-            $this->challenge($response);
-            $this->handleFailure($response);
-            return false;
         }
+
+        $this->challenge($response);
+        $this->handleFailure($response);
+
+        return false;
     }
 
     /**

@@ -130,9 +130,9 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("Yii Migration Tool (based on Yii v{$version})\n\n");
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -366,11 +366,14 @@ abstract class BaseMigrateController extends Controller
      * ```
      * yii migrate/mark 101129_185401                        # using timestamp
      * yii migrate/mark m101129_185401_create_user_table     # using full name
-     * yii migrate/to app\migrations\M101129185401CreateUser # using full namespace name
+     * yii migrate/mark app\migrations\M101129185401CreateUser # using full namespace name
+     * yii migrate/mark m000000_000000_base # reset the complete migration history
      * ```
      *
      * @param string $version the version at which the migration history should be marked.
      * This can be either the timestamp or the full name of the migration.
+     * You may specify the name `m000000_000000_base` to set the migration history to a
+     * state where no migration has been applied.
      * @return int CLI exit code
      * @throws Exception if the version argument is invalid or the version cannot be found.
      */
@@ -381,7 +384,7 @@ abstract class BaseMigrateController extends Controller
             $version = $namespaceVersion;
         } elseif (($migrationName = $this->extractMigrationVersion($version)) !== false) {
             $version = $migrationName;
-        } else {
+        } elseif ($version !== static::BASE_MIGRATION) {
             throw new Exception("The version argument must be either a timestamp (e.g. 101129_185401)\nor the full name of a migration (e.g. m101129_185401_create_user_table)\nor the full name of a namespaced migration (e.g. app\\migrations\\M101129185401CreateUserTable).");
         }
 
@@ -402,6 +405,7 @@ abstract class BaseMigrateController extends Controller
 
         // try mark down
         $migrations = array_keys($this->getMigrationHistory(null));
+        $migrations[] = static::BASE_MIGRATION;
         foreach ($migrations as $i => $migration) {
             if (strpos($migration, $version) === 0) {
                 if ($i === 0) {
@@ -673,12 +677,12 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("*** applied $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
 
             return true;
-        } else {
-            $time = microtime(true) - $start;
-            $this->stdout("*** failed to apply $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
-
-            return false;
         }
+
+        $time = microtime(true) - $start;
+        $this->stdout("*** failed to apply $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
+
+        return false;
     }
 
     /**
@@ -701,12 +705,12 @@ abstract class BaseMigrateController extends Controller
             $this->stdout("*** reverted $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
 
             return true;
-        } else {
-            $time = microtime(true) - $start;
-            $this->stdout("*** failed to revert $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
-
-            return false;
         }
+
+        $time = microtime(true) - $start;
+        $this->stdout("*** failed to revert $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_RED);
+
+        return false;
     }
 
     /**
@@ -737,13 +741,13 @@ abstract class BaseMigrateController extends Controller
                 foreach ($this->migrationPath as $path) {
                     $file = $path . DIRECTORY_SEPARATOR . $class . '.php';
                     if (is_file($file)) {
-                        require_once($file);
+                        require_once $file;
                         break;
                     }
                 }
             } else {
                 $file = $this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php';
-                require_once($file);
+                require_once $file;
             }
         }
     }

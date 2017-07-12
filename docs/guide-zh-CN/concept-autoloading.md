@@ -49,8 +49,8 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 当你同时使用其他自动加载器和 Yii 自动加载器时，应该在其他自动加载器安装成功**之后**，再包含 `Yii.php` 文件。这将使 Yii 成为第一个响应任何类自动加载请求的自动加载器。举例来说，以下代码提取自[基本应用模版](start-installation.md)的[入口脚本](structure-entry-scripts.md) 。第一行安装了 Composer 的自动加载器，第二行才是 Yii 的自动加载器：
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 你也可以只使用 Composer 的自动加载，而不用 Yii 的自动加载。不过这样做的话，类的加载效率会下降，且你必须遵循 Composer 所设定的规则，从而让你的类满足可以被自动加载的要求。

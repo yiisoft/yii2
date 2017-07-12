@@ -113,9 +113,9 @@ class NumberValidator extends Validator
             return [$this->tooSmall, ['min' => $this->min]];
         } elseif ($this->max !== null && $value > $this->max) {
             return [$this->tooBig, ['max' => $this->max]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

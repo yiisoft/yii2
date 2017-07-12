@@ -7,11 +7,9 @@
 
 namespace yiiunit\framework\validators;
 
-use Yii;
 use yii\base\Exception;
 use yii\validators\ExistValidator;
 use yiiunit\data\ar\ActiveRecord;
-use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\validators\models\ValidatorTestMainModel;
@@ -192,7 +190,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         OrderItem::$tableName = $oldTableName;
     }
 
-    /**
+   /**
     * Test expresssion in targetAttribute
     * @see https://github.com/yiisoft/yii2/issues/14304
     */

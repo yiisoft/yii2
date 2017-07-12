@@ -51,9 +51,36 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         ]);
     }
 
-    public function testAddDropPrimaryKey()
+    public function primaryKeysProvider()
     {
-        $this->markTestSkipped('Comments are not supported in SQLite');
+        $this->markTestSkipped('Adding/dropping primary keys is not supported in SQLite.');
+    }
+
+    public function foreignKeysProvider()
+    {
+        $this->markTestSkipped('Adding/dropping foreign keys is not supported in SQLite.');
+    }
+
+    public function indexesProvider()
+    {
+        $result = parent::indexesProvider();
+        $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+        return $result;
+    }
+
+    public function uniquesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping unique constraints is not supported in SQLite.');
+    }
+
+    public function checksProvider()
+    {
+        $this->markTestSkipped('Adding/dropping check constraints is not supported in SQLite.');
+    }
+
+    public function defaultValuesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping default constraints is not supported in SQLite.');
     }
 
     public function testCommentColumn()
