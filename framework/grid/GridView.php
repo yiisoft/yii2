@@ -536,7 +536,7 @@ class GridView extends BaseListView
             $this->guessColumns();
         }
         foreach ($this->columns as $i => $column) {
-            if ($column === false){
+            if ($column === false) {
                 unset($this->columns[$i]);
                 continue;
             }
