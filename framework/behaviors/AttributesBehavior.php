@@ -32,7 +32,7 @@ use yii\db\ActiveRecord;
  *             'attributes' => [
  *                 'attribute1' => [
  *                     ActiveRecord::EVENT_BEFORE_INSERT => new Expression('NOW()'),
- *                     ActiveRecord::EVENT_BEFORE_UPDATE => \Yii::$app->formatter->asDatetime('0000-00-00'),
+ *                     ActiveRecord::EVENT_BEFORE_UPDATE => \Yii::$app->formatter->asDatetime('2017-07-13'),
  *                 ],
  *                 'attribute2' => [
  *                     ActiveRecord::EVENT_BEFORE_VALIDATE => [$this, 'storeAttributes'],
@@ -54,8 +54,10 @@ use yii\db\ActiveRecord;
  * Because attribute values will be set automatically by this behavior, they are usually not user input and should therefore
  * not be validated, i.e. they should not appear in the [[\yii\base\Model::rules()|rules()]] method of the model.
  *
+ * @author Luciano Baraglia <luciano.baraglia@gmail.com>
+ * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Bogdan Stepanenko <bscheshirwork@gmail.com>
- * @since 2.0.11
+ * @since 2.0.13
  */
 class AttributesBehavior extends Behavior
 {
@@ -73,7 +75,7 @@ class AttributesBehavior extends Behavior
      * [
      *   'attribute1' => [
      *       ActiveRecord::EVENT_BEFORE_INSERT => new Expression('NOW()'),
-     *       ActiveRecord::EVENT_BEFORE_UPDATE => \Yii::$app->formatter->asDatetime('0000-00-00'),
+     *       ActiveRecord::EVENT_BEFORE_UPDATE => \Yii::$app->formatter->asDatetime('2017-07-13'),
      *   ],
      *   'attribute2' => [
      *       ActiveRecord::EVENT_BEFORE_VALIDATE => [$this, 'storeAttributes'],
@@ -109,6 +111,10 @@ class AttributesBehavior extends Behavior
      * @var bool whether to skip this behavior when the `$owner` has not been modified
      */
     public $skipUpdateOnClean = true;
+    /**
+     * @var bool whether to preserve non-empty attribute values.
+     */
+    public $preserveNonEmptyValues = false;
 
 
     /**
@@ -145,6 +151,9 @@ class AttributesBehavior extends Behavior
                 array_diff($attributes, (array)$this->order[$event->name]));
         }
         foreach ($attributes as $attribute) {
+            if ($this->preserveNonEmptyValues && !empty($this->owner->$attribute)) {
+                continue;
+            }
             $this->owner->$attribute = $this->getValue($attribute, $event);
         }
     }
