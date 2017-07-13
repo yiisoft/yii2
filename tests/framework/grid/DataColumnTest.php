@@ -45,7 +45,7 @@ class DataColumnTest extends \yiiunit\TestCase
     }
 
     /**
-     * "false" is special value
+     * "false" in column definition should turn column off
      */
     public function testColumnTurnOff_OnEmpty_ArrayProvider()
     {
