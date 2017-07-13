@@ -185,12 +185,14 @@ class GridView extends BaseListView
      * e.g. the `name` attribute of the `author` relation:
      *
      * ```php
-     * // shortcut syntax
-     * 'author.name',
-     * // full syntax
      * [
-     *     'attribute' => 'author.name',
-     *     // ...
+     *     // shortcut syntax
+     *     'author.name',
+     *     // full syntax
+     *     [
+     *         'attribute' => 'author.name',
+     *         // ...
+     *     ],
      * ]
      * ```
      */
