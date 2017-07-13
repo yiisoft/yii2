@@ -171,8 +171,8 @@ class GridView extends BaseListView
      *     'created_at:datetime',
      * ]
      * ```
-     *
-     * Using `false` instead of the configuration for column to simple remove column look like this:
+     * Since version 2.0.13 you can use `false` instead of the configuration for a column
+     * to simply remove the column. An example usage looks like this:
      *
      * ```php
      * [
