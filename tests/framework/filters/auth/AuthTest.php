@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters\auth;
 
@@ -24,18 +29,18 @@ class AuthTest extends \yiiunit\TestCase
     {
         parent::setUp();
 
-        $_SERVER['SCRIPT_FILENAME'] = "/index.php";
-        $_SERVER['SCRIPT_NAME'] = "/index.php";
+        $_SERVER['SCRIPT_FILENAME'] = '/index.php';
+        $_SERVER['SCRIPT_NAME'] = '/index.php';
 
         $appConfig = [
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::className()
+                    'identityClass' => UserIdentity::className(),
                 ],
             ],
             'controllerMap' => [
-                'test-auth' => TestAuthController::className()
-            ]
+                'test-auth' => TestAuthController::className(),
+            ],
         ];
 
         $this->mockWebApplication($appConfig);
@@ -60,7 +65,6 @@ class AuthTest extends \yiiunit\TestCase
         try {
             $this->assertEquals($login, $controller->run($action));
         } catch (UnauthorizedHttpException $e) {
-
         }
     }
 
@@ -72,7 +76,6 @@ class AuthTest extends \yiiunit\TestCase
         try {
             $this->assertEquals($login, $controller->run($action));
         } catch (UnauthorizedHttpException $e) {
-
         }
     }
 
@@ -84,14 +87,14 @@ class AuthTest extends \yiiunit\TestCase
         try {
             $this->assertEquals($login, $controller->run($action));
         } catch (UnauthorizedHttpException $e) {
-
         }
     }
 
     /**
      * @dataProvider tokenProvider
      */
-    public function testQueryParamAuth($token, $login) {
+    public function testQueryParamAuth($token, $login)
+    {
         $_GET['access-token'] = $token;
         $filter = ['class' => QueryParamAuth::className()];
         $this->authOnly($token, $login, $filter, 'query-param-auth');
@@ -102,7 +105,8 @@ class AuthTest extends \yiiunit\TestCase
     /**
      * @dataProvider tokenProvider
      */
-    public function testHttpBasicAuth($token, $login) {
+    public function testHttpBasicAuth($token, $login)
+    {
         $_SERVER['PHP_AUTH_USER'] = $token;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
         $filter = ['class' => HttpBasicAuth::className()];
@@ -114,7 +118,8 @@ class AuthTest extends \yiiunit\TestCase
     /**
      * @dataProvider tokenProvider
      */
-    public function testHttpBasicAuthCustom($token, $login) {
+    public function testHttpBasicAuthCustom($token, $login)
+    {
         $_SERVER['PHP_AUTH_USER'] = $login;
         $_SERVER['PHP_AUTH_PW'] = 'whatever, we are testers';
         $filter = [
@@ -125,7 +130,7 @@ class AuthTest extends \yiiunit\TestCase
                 }
 
                 return null;
-            }
+            },
         ];
         $this->authOnly($token, $login, $filter, 'basic-auth');
         $this->authOptional($token, $login, $filter, 'basic-auth');
@@ -135,7 +140,8 @@ class AuthTest extends \yiiunit\TestCase
     /**
      * @dataProvider tokenProvider
      */
-    public function testHttpBearerAuth($token, $login) {
+    public function testHttpBearerAuth($token, $login)
+    {
         Yii::$app->request->headers->set('Authorization', "Bearer $token");
         $filter = ['class' => HttpBearerAuth::className()];
         $this->authOnly($token, $login, $filter, 'bearer-auth');
@@ -159,7 +165,7 @@ class AuthTest extends \yiiunit\TestCase
     public function testActive($authClass)
     {
         /** @var $filter AuthMethod */
-        $filter = new $authClass;
+        $filter = new $authClass();
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isActive');
         $method->setAccessible(true);
@@ -200,7 +206,6 @@ class AuthTest extends \yiiunit\TestCase
         $this->assertEquals(true, $method->invokeArgs($filter, [new Action('index', $controller)]));
         $this->assertEquals(false, $method->invokeArgs($filter, [new Action('view', $controller)]));
     }
-
 }
 
 /**

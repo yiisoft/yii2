@@ -41,7 +41,7 @@ use yii\helpers\FileHelper;
 class FileMutex extends Mutex
 {
     /**
-     * @var string the directory to store mutex files. You may use path alias here.
+     * @var string the directory to store mutex files. You may use [path alias](guide:concept-aliases) here.
      * Defaults to the "mutex" subdirectory under the application runtime path.
      */
     public $mutexPath = '@runtime/mutex';
@@ -117,13 +117,13 @@ class FileMutex extends Mutex
     {
         if (!isset($this->_files[$name]) || !flock($this->_files[$name], LOCK_UN)) {
             return false;
-        } else {
-            fclose($this->_files[$name]);
-            unlink($this->getLockFilePath($name));
-            unset($this->_files[$name]);
-
-            return true;
         }
+
+        fclose($this->_files[$name]);
+        unlink($this->getLockFilePath($name));
+        unset($this->_files[$name]);
+
+        return true;
     }
 
     /**

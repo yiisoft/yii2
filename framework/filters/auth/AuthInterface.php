@@ -7,11 +7,11 @@
 
 namespace yii\filters\auth;
 
-use yii\web\User;
+use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\Response;
-use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
+use yii\web\User;
 
 /**
  * AuthInterface is the interface that should be implemented by auth method classes.

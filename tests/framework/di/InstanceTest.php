@@ -48,7 +48,7 @@ class InstanceTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Connection::className(), Instance::ensure('db', 'yii\db\Connection', $container));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection, 'yii\db\Connection', $container));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection(), 'yii\db\Connection', $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], 'yii\db\Connection', $container));
     }
 
@@ -83,7 +83,7 @@ class InstanceTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Connection::className(), Instance::ensure('db', null, $container));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection, null, $container));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection(), null, $container));
         $this->assertInstanceOf('\\yii\\db\\Connection', Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test'], null, $container));
     }
 
@@ -95,14 +95,14 @@ class InstanceTest extends TestCase
         ]);
 
         $this->assertInstanceOf(Connection::className(), Instance::ensure('db'));
-        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection));
+        $this->assertInstanceOf(Connection::className(), Instance::ensure(new Connection()));
         $this->assertInstanceOf(Connection::className(), Instance::ensure(['class' => 'yii\db\Connection', 'dsn' => 'test']));
-        Yii::$container = new Container;
+        Yii::$container = new Container();
     }
 
     public function testExceptionRefersTo()
     {
-        $container = new Container;
+        $container = new Container();
         $container->set('db', [
             'class' => 'yii\db\Connection',
             'dsn' => 'test',
@@ -118,7 +118,7 @@ class InstanceTest extends TestCase
     {
         $this->expectException('yii\base\InvalidConfigException');
         $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
-        Instance::ensure(new Connection, 'yii\base\Widget');
+        Instance::ensure(new Connection(), 'yii\base\Widget');
     }
 
     public function testExceptionComponentIsNotSpecified()
@@ -135,8 +135,8 @@ class InstanceTest extends TestCase
                 'db' => [
                     'class' => 'yii\db\Connection',
                     'dsn' => 'test',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $container = Instance::of('db');
@@ -151,10 +151,10 @@ class InstanceTest extends TestCase
      */
     public function testLazyInitializationExample()
     {
-        Yii::$container = new Container;
+        Yii::$container = new Container();
         Yii::$container->set('cache', [
             'class' => 'yii\caching\DbCache',
-            'db' => Instance::of('db')
+            'db' => Instance::of('db'),
         ]);
         Yii::$container->set('db', [
             'class' => 'yii\db\Connection',

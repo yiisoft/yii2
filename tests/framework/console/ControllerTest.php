@@ -85,13 +85,13 @@ class ControllerTest extends TestCase
         $response = $this->runRequest('fake/status');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/status', (string)$status);
+        $response = $this->runRequest('fake/status', (string) $status);
         $this->assertResponseStatus($status, $response);
 
         $response = $this->runRequest('fake/response');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/response', (string)$status);
+        $response = $this->runRequest('fake/response', (string) $status);
         $this->assertResponseStatus($status, $response);
     }
 
@@ -139,11 +139,11 @@ class ControllerTest extends TestCase
      * @see #10372
      */
     public function testHelpSkipsTypeHintedArguments()
-     {
-         $controller = new FakeController('fake', Yii::$app);
-         $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
+    {
+        $controller = new FakeController('fake', Yii::$app);
+        $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
 
-         $this->assertArrayNotHasKey('typedArgument', $help);
-         $this->assertArrayHasKey('simpleArgument', $help);
-     }
+        $this->assertArrayNotHasKey('typedArgument', $help);
+        $this->assertArrayHasKey('simpleArgument', $help);
+    }
 }

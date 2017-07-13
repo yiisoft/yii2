@@ -7,10 +7,9 @@
 
 namespace yii\db\sqlite;
 
-use yii\db\Connection;
-use yii\db\Exception;
 use yii\base\InvalidParamException;
 use yii\base\NotSupportedException;
+use yii\db\Connection;
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -53,6 +52,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     protected $likeEscapeCharacter = '\\';
 
+
     /**
      * Generates a batch INSERT SQL statement.
      * For example,
@@ -69,7 +69,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
@@ -150,9 +150,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "UPDATE sqlite_sequence SET seq='$value' WHERE name='{$table->name}'";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.'");
     }
 
     /**
@@ -165,7 +165,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
      */
     public function checkIntegrity($check = true, $schema = '', $table = '')
     {
-        return 'PRAGMA foreign_keys='.(int) $check;
+        return 'PRAGMA foreign_keys=' . (int) $check;
     }
 
     /**
@@ -295,6 +295,60 @@ class QueryBuilder extends \yii\db\QueryBuilder
      * @throws NotSupportedException this is not supported by SQLite
      */
     public function dropPrimaryKey($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropUnique($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by SQLite.
+     */
+    public function dropDefaultValue($name, $table)
     {
         throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
     }

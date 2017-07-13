@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -28,8 +33,8 @@ class MultipartFormDataParserTest extends TestCase
         $expectedBodyParams = [
             'title' => 'test-title',
             'Item' => [
-                'name' => 'test-name'
-            ]
+                'name' => 'test-name',
+            ],
         ];
         $this->assertEquals($expectedBodyParams, $bodyParams);
 
@@ -55,7 +60,7 @@ class MultipartFormDataParserTest extends TestCase
         $parser = new MultipartFormDataParser();
 
         $_POST = [
-            'name' => 'value'
+            'name' => 'value',
         ];
 
         $bodyParams = $parser->parse('should not matter', 'multipart/form-data; boundary=---12345');
@@ -74,7 +79,7 @@ class MultipartFormDataParserTest extends TestCase
             'file' => [
                 'name' => 'file.txt',
                 'type' => 'text/plain',
-            ]
+            ],
         ];
 
         $boundary = '---------------------------22472926011618';
