@@ -129,9 +129,9 @@ class DbManager extends BaseManager
         $this->loadFromCache();
         if ($this->items !== null) {
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
-        } else {
-            return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
         }
+
+        return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 
     /**
@@ -453,6 +453,7 @@ class DbManager extends BaseManager
 
     /**
      * @inheritdoc
+     * The roles returned by this method include the roles assigned via [[$defaultRoles]].
      */
     public function getRolesByUser($userId)
     {

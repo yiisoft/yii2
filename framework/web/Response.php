@@ -647,9 +647,9 @@ class Response extends \yii\base\Response
         }
         if ($start < 0 || $start > $end) {
             return false;
-        } else {
-            return [$start, $end];
         }
+
+        return [$start, $end];
     }
 
     /**

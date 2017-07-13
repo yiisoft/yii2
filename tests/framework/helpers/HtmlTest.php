@@ -469,20 +469,20 @@ class HtmlTest extends TestCase
 
     public function testDropDownList()
     {
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test">
 
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test'));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2">text2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', null, $this->getDataItems()));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
@@ -490,7 +490,7 @@ EOD;
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::dropDownList('test', 'value2', $this->getDataItems()));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test">
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
@@ -502,7 +502,7 @@ EOD;
             ],
         ]));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test[]" multiple="true" size="4">
 
 </select>
@@ -512,55 +512,55 @@ EOD;
 
     public function testListBox()
     {
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test'));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="5">
 <option value="value1">text1</option>
 <option value="value2">text2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems(), ['size' => 5]));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1&lt;&gt;</option>
 <option value="value  2">text  2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2()));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1&lt;&gt;</option>
 <option value="value  2">text&nbsp;&nbsp;2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encodeSpaces' => true]));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1<></option>
 <option value="value  2">text  2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encode' => false]));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 <option value="value1&lt;&gt;">text1<></option>
 <option value="value  2">text&nbsp;&nbsp;2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, $this->getDataItems2(), ['encodeSpaces' => true, 'encode' => false]));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 <option value="value1">text1</option>
 <option value="value2" selected>text2</option>
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', 'value2', $this->getDataItems()));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 <option value="value1" selected>text1</option>
 <option value="value2" selected>text2</option>
@@ -568,7 +568,7 @@ EOD;
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', ['value1', 'value2'], $this->getDataItems()));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test[]" multiple size="4">
 
 </select>
@@ -576,14 +576,14 @@ EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', null, [], ['multiple' => true]));
         $this->assertEqualsWithoutLE($expected, Html::listBox('test[]', null, [], ['multiple' => true]));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <input type="hidden" name="test" value="0"><select name="test" size="4">
 
 </select>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::listBox('test', '', [], ['unselect' => '0']));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <select name="test" size="4">
 <option value="value1" selected>text1</option>
 <option value="value2" selected>text2</option>
@@ -596,20 +596,20 @@ EOD;
     {
         $this->assertEquals('<div></div>', Html::checkboxList('test'));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <div><label><input type="checkbox" name="test[]" value="value1"> text1</label>
 <label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['value2'], $this->getDataItems()));
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test[]', ['value2'], $this->getDataItems()));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <div><label><input type="checkbox" name="test[]" value="value1&lt;&gt;"> text1&lt;&gt;</label>
 <label><input type="checkbox" name="test[]" value="value  2"> text  2</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::checkboxList('test', ['value2'], $this->getDataItems2()));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <input type="hidden" name="test" value="0"><div><label><input type="checkbox" name="test[]" value="value1"> text1</label><br>
 <label><input type="checkbox" name="test[]" value="value2" checked> text2</label></div>
 EOD;
@@ -618,7 +618,7 @@ EOD;
             'unselect' => '0',
         ]));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <div>0<label>text1 <input type="checkbox" name="test[]" value="value1"></label>
 1<label>text2 <input type="checkbox" name="test[]" value="value2" checked></label></div>
 EOD;
@@ -628,7 +628,7 @@ EOD;
             },
         ]));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 0<label>text1 <input type="checkbox" name="test[]" value="value1"></label>
 1<label>text2 <input type="checkbox" name="test[]" value="value2" checked></label>
 EOD;
@@ -652,19 +652,19 @@ EOD;
     {
         $this->assertEquals('<div></div>', Html::radioList('test'));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <div><label><input type="radio" name="test" value="value1"> text1</label>
 <label><input type="radio" name="test" value="value2" checked> text2</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['value2'], $this->getDataItems()));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <div><label><input type="radio" name="test" value="value1&lt;&gt;"> text1&lt;&gt;</label>
 <label><input type="radio" name="test" value="value  2"> text  2</label></div>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::radioList('test', ['value2'], $this->getDataItems2()));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <input type="hidden" name="test" value="0"><div><label><input type="radio" name="test" value="value1"> text1</label><br>
 <label><input type="radio" name="test" value="value2" checked> text2</label></div>
 EOD;
@@ -673,7 +673,7 @@ EOD;
             'unselect' => '0',
         ]));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <div>0<label>text1 <input type="radio" name="test" value="value1"></label>
 1<label>text2 <input type="radio" name="test" value="value2" checked></label></div>
 EOD;
@@ -683,7 +683,7 @@ EOD;
             },
         ]));
 
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 0<label>text1 <input type="radio" name="test" value="value1"></label>
 1<label>text2 <input type="radio" name="test" value="value2" checked></label>
 EOD;
@@ -707,7 +707,7 @@ EOD;
         $data = [
             1, 'abc', '<>',
         ];
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <ul>
 <li>1</li>
 <li>abc</li>
@@ -715,7 +715,7 @@ EOD;
 </ul>
 EOD;
         $this->assertEqualsWithoutLE($expected, Html::ul($data));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <ul class="test">
 <li class="item-0">1</li>
 <li class="item-1">abc</li>
@@ -739,7 +739,7 @@ EOD;
         $data = [
             1, 'abc', '<>',
         ];
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <ol>
 <li class="ti">1</li>
 <li class="ti">abc</li>
@@ -749,7 +749,7 @@ EOD;
         $this->assertEqualsWithoutLE($expected, Html::ol($data, [
             'itemOptions' => ['class' => 'ti'],
         ]));
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <ol class="test">
 <li class="item-0">1</li>
 <li class="item-1">abc</li>
@@ -780,7 +780,7 @@ EOD;
             'value2' => 'label2',
             'group2' => [],
         ];
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <option value="">please&nbsp;select&lt;&gt;</option>
 <option value="value1" selected>label1</option>
 <optgroup label="group1">
@@ -826,7 +826,7 @@ EOD;
             'value1' => 'label1',
             'value2' => 'label2',
         ];
-        $expected = <<<EOD
+        $expected = <<<'EOD'
 <option class="prompt" value="-1" label="None">Please select</option>
 <option value="value1" selected>label1</option>
 <option value="value2">label2</option>
@@ -1512,7 +1512,7 @@ EOD;
 
     public function testActiveDropDownList()
     {
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <input type="hidden" name="HtmlTestModel[types]" value=""><select id="htmltestmodel-types" name="HtmlTestModel[types][]" multiple="true" size="4">
 
 </select>
@@ -1526,7 +1526,7 @@ HTML;
     {
         $model = new HtmlTestModel();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="radio" name="HtmlTestModel[types]" value="0"> foo</label></div>
 HTML;
         $actual = Html::activeRadioList($model, 'types', ['foo']);
@@ -1537,7 +1537,7 @@ HTML;
     {
         $model = new HtmlTestModel();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <input type="hidden" name="HtmlTestModel[types]" value=""><div id="htmltestmodel-types"><label><input type="checkbox" name="HtmlTestModel[types][]" value="0"> foo</label></div>
 HTML;
         $actual = Html::activeCheckboxList($model, 'types', ['foo']);

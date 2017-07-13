@@ -25,10 +25,10 @@ the Composer autoloader:
 
 ```php
 // install Composer autoloader
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // include Yii class file
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 ### Using Downloaded Libraries <span id="using-downloaded-libs"></span>
@@ -99,9 +99,9 @@ the `BasePath/vendor` directory.
 Next, you should modify the entry script of the 3rd-party system by including the following code at the beginning:
 
 ```php
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$yiiConfig = require(__DIR__ . '/../config/yii/web.php');
+$yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // Do NOT call run() here
 ```
 
@@ -134,14 +134,14 @@ Second, modify the entry script of the application as follows,
 
 ```php
 // include the customized Yii class described below
-require(__DIR__ . '/../components/Yii.php');
+require __DIR__ . '/../components/Yii.php';
 
 // configuration for Yii 2 application
-$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
+$yii2Config = require __DIR__ . '/../config/yii2/web.php';
 new yii\web\Application($yii2Config); // Do NOT call run(), yii2 app is only used as service locator
 
 // configuration for Yii 1 application
-$yii1Config = require(__DIR__ . '/../config/yii1/main.php');
+$yii1Config = require __DIR__ . '/../config/yii1/main.php';
 Yii::createWebApplication($yii1Config)->run();
 ```
 
@@ -150,10 +150,10 @@ The above code includes the customized `Yii` class file, which can be created as
 
 ```php
 $yii2path = '/path/to/yii2';
-require($yii2path . '/BaseYii.php'); // Yii 2.x
+require $yii2path . '/BaseYii.php'; // Yii 2.x
 
 $yii1path = '/path/to/yii1';
-require($yii1path . '/YiiBase.php'); // Yii 1.x
+require $yii1path . '/YiiBase.php'; // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {

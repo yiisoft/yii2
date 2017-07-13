@@ -18,11 +18,11 @@
 и применит её к приложению, например:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // загрузка конфигурации приложения
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // создание объекта приложения и его конфигурирование
 (new yii\web\Application($config))->run();

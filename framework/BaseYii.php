@@ -289,7 +289,7 @@ class BaseYii
             return;
         }
 
-        include($classFile);
+        include $classFile;
 
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");

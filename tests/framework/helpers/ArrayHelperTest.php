@@ -485,6 +485,28 @@ class ArrayHelperTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+    public function testMergeWithNullValues()
+    {
+        $a = [
+            'firstValue',
+            null,
+        ];
+        $b = [
+            'secondValue',
+            'thirdValue'
+        ];
+
+        $result = ArrayHelper::merge($a, $b);
+        $expected = [
+            'firstValue',
+            null,
+            'secondValue',
+            'thirdValue',
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
     /**
      * @see https://github.com/yiisoft/yii2/pull/11549
      */
