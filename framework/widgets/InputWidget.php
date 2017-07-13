@@ -16,9 +16,9 @@ use yii\helpers\Html;
 /**
  * InputWidget is the base class for widgets that collect user inputs.
  *
- * An input widget can be associated with a data [[model]] and an [[attribute]],
- * or a [[name]] and a [[value]]. If the former, the name and the value will
- * be generated automatically (subclasses may call [[renderInput()]] to follow this behavior).
+ * An input widget can be associated with a data model and an attribute,
+ * or a name and a value. If the former, the name and the value will
+ * be generated automatically.
  *
  * Classes extending from this widget can be used in an [[\yii\widgets\ActiveForm|ActiveForm]]
  * using the [[\yii\widgets\ActiveField::widget()|widget()]] method, for example like this:
@@ -86,26 +86,5 @@ class InputWidget extends Widget
     protected function hasModel()
     {
         return $this->model instanceof Model && $this->attribute !== null;
-    }
-
-    /**
-     * Render a HTML input tag
-     *
-     * This will call [[Html::activeInput()]] if the input widget is [[hasModel()|tied to a model]],
-     * or [[Html::input()]] if not.
-     *
-     * @param string $type the type of the input to create.
-     * @return string the HTML of the input field.
-     * @since 2.0.13
-     * @see Html::activeInput()
-     * @see Html::input()
-     */
-    protected function renderInput($type)
-    {
-        if ($this->hasModel()) {
-            return Html::activeInput($type, $this->model, $this->attribute, $this->options);
-        } else {
-            return Html::input($type, $this->name, $this->value, $this->options);
-        }
     }
 }
