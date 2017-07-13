@@ -80,6 +80,25 @@ class AttributeBehavior extends Behavior
      */
     public $value;
     /**
+     * @var array an array of the values indexed by attribute name that will be assigned to the current attributes respectively by attribute name.
+     * This property will be used only when [[value]] is `null`
+     * key - attribute name
+     * value - corresponding value
+     * Example:
+     * ```php
+     * 'values' => [
+     *   'number' => [$this, 'getNextNumber'],
+     *   'status' => 'updated'
+     * ]
+     * ```
+     * @see value for possible values
+     */
+    public $values = [];
+    /**
+     * @var string current processed attribute name. Can be use inside callable item of [[values]].
+     */
+    public $currentAttribute;
+    /**
      * @var bool whether to skip this behavior when the `$owner` has not been
      * modified
      * @since 2.0.8
@@ -117,9 +136,12 @@ class AttributeBehavior extends Behavior
         }
 
         if (!empty($this->attributes[$event->name])) {
-            $attributes = (array) $this->attributes[$event->name];
+            $attributes = (array)$this->attributes[$event->name];
             $value = $this->getValue($event);
             foreach ($attributes as $attribute) {
+                if (is_null($value)) {
+                    $value = $this->getValueByAttribute($event, $attribute);
+                }
                 // ignore attribute names which are not string (e.g. when set by TimestampBehavior::updatedAtAttribute)
                 if (is_string($attribute)) {
                     if ($this->preserveNonEmptyValues && !empty($this->owner->$attribute)) {
@@ -145,5 +167,27 @@ class AttributeBehavior extends Behavior
         }
 
         return $this->value;
+    }
+
+    /**
+     * Returns the value for the current attribute.
+     * This method is called by [[evaluateAttributes()]]. Its return value will be assigned
+     * to the attribute corresponding to the triggering event.
+     * @param Event $event the event that triggers the current attribute updating.
+     * @param string $attribute the attribute name.
+     * @return mixed the attribute value
+     */
+    protected function getValueByAttribute($event, $attribute)
+    {
+        if (array_key_exists($attribute, $this->values)) {
+            $value = $this->value;
+            $this->value = $this->values[$attribute];
+            $this->currentAttribute = $attribute;
+            $result = $this->getValue($event);
+            $this->value = $value;
+            return $result;
+        }
+
+        return null;
     }
 }
