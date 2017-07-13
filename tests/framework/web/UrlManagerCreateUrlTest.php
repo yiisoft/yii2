@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -335,7 +340,7 @@ class UrlManagerCreateUrlTest extends TestCase
                 'pattern' => '<language>',
                 'route' => 'site/index',
                 'defaults' => [
-                    'language' => 'en'
+                    'language' => 'en',
                 ],
             ],
         ];
@@ -434,7 +439,7 @@ class UrlManagerCreateUrlTest extends TestCase
      */
     public function testWithEmptyPattern($method, $showScriptName, $prefix, $config)
     {
-        $assertations = function($manager) use ($method, $prefix) {
+        $assertations = function ($manager) use ($method, $prefix) {
             // match first rule
             $url = $manager->$method(['front/site/index']);
             $this->assertEquals("$prefix/", $url);
@@ -551,7 +556,6 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals("$prefix/post/index?page=1#testhash", $manager->createUrl($urlParams));
         $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
-
     }
 
     /**
@@ -754,5 +758,4 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals(2, $rules[0]->createCounter);
         $this->assertEquals(1, $rules[1]->createCounter);
     }
-
 }

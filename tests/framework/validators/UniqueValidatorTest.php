@@ -1,11 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
-use yii\validators\UniqueValidator;
 use Yii;
+use yii\validators\UniqueValidator;
 use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Order;
 use yiiunit\data\ar\OrderItem;
 use yiiunit\data\ar\Profile;
@@ -28,7 +34,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testAssureMessageSetOnInit()
     {
         $val = new UniqueValidator();
-        $this->assertTrue(is_string($val->message));
+        $this->assertInternalType('string', $val->message);
     }
 
     public function testCustomMessage()
@@ -81,7 +87,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $customerModel->clearErrors();
 
         $customerModel->name = 'test data';
-        $customerModel->email = ['email@mail.com', 'email2@mail.com',];
+        $customerModel->email = ['email@mail.com', 'email2@mail.com'];
         $validator->targetAttribute = ['email', 'name'];
         $validator->validateAttribute($customerModel, 'name');
         $this->assertEquals($messageError, $customerModel->getFirstError('name'));
@@ -206,7 +212,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         // Check whether "Description" and "address" aren't equal
         $val = new UniqueValidator([
             'targetClass' => Customer::className(),
-            'targetAttribute' => ['description'=>'address'],
+            'targetAttribute' => ['description' => 'address'],
         ]);
 
         /** @var Profile $m */
@@ -235,7 +241,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator = new UniqueValidator();
 
         /** @var Profile $profileModel */
-        $profileModel = new Profile(['description'=>'profile customer 1']);
+        $profileModel = new Profile(['description' => 'profile customer 1']);
         $validator->validateAttribute($profileModel, 'description');
         $this->assertTrue($profileModel->hasErrors('description'));
 
@@ -381,8 +387,8 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertEquals($expected, $query->createCommand()->getSql());
 
         $params = ['val_attr_b' => 'test value b'];
-        $query = $this->invokeMethod(new UniqueValidator(['filter' => function($query) {
-         $query->orWhere('val_attr_a > 0');
+        $query = $this->invokeMethod(new UniqueValidator(['filter' => function ($query) {
+            $query->orWhere('val_attr_a > 0');
         }]), 'prepareQuery', [$model, $params]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE ({$schema->quoteColumnName('val_attr_b')}=:qp0) OR (val_attr_a > 0)";
         $this->assertEquals($expected, $query->createCommand()->getSql());
@@ -395,7 +401,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
     public function testAmbiguousColumnName()
     {
         $validator = new UniqueValidator([
-            'filter' => function($query) {
+            'filter' => function ($query) {
                 $query->joinWith('items', false);
             },
         ]);
@@ -406,5 +412,26 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model->save(false);
         $validator->validateAttribute($model, 'id');
         $this->assertFalse($model->hasErrors());
+    }
+
+    /**
+     * Test expresssion in targetAttribute
+     * @see https://github.com/yiisoft/yii2/issues/14304
+     */
+    public function testExpresionInAttributeColumnName()
+    {
+        $validator = new UniqueValidator([
+            'targetAttribute' => [
+                'title' => 'LOWER(title)',
+            ],
+        ]);
+        $model = new Document();
+        $model->id = 42;
+        $model->title = 'Test';
+        $model->content = 'test';
+        $model->version = 1;
+        $model->save(false);
+        $validator->validateAttribute($model, 'title');
+        $this->assertFalse($model->hasErrors(), 'There were errors: ' . json_encode($model->getErrors()));
     }
 }

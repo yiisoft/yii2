@@ -8,14 +8,13 @@
 namespace yiiunit\framework\console;
 
 use Yii;
-use yii\console\Application;
 use yii\console\UnknownCommandException;
 use yiiunit\TestCase;
 
 /**
  * @group console
  */
-class UnkownCommandExceptionTest extends TestCase
+class UnknownCommandExceptionTest extends TestCase
 {
     public function setUp()
     {
@@ -43,6 +42,7 @@ class UnkownCommandExceptionTest extends TestCase
             ['cach/fush', ['cache/flush']],
             ['cach/fushall', ['cache/flush-all']],
             ['what?', []],
+            ['', []],
             // test UTF 8 chars
             ['ёлка', []],
             // this crashes levenshtein because string is longer than 255 chars

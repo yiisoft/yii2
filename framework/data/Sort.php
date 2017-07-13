@@ -412,9 +412,9 @@ class Sort extends Object
         $urlManager = $this->urlManager === null ? Yii::$app->getUrlManager() : $this->urlManager;
         if ($absolute) {
             return $urlManager->createAbsoluteUrl($params);
-        } else {
-            return $urlManager->createUrl($params);
         }
+
+        return $urlManager->createUrl($params);
     }
 
     /**

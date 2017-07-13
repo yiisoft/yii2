@@ -183,9 +183,9 @@ class ExistValidator extends Validator
                 return [$this->message, []];
             }
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        } else {
-            return $query->exists() ? null : [$this->message, []];
         }
+
+        return $query->exists() ? null : [$this->message, []];
     }
 
     /**
@@ -221,10 +221,16 @@ class ExistValidator extends Validator
         }
         $prefixedConditions = [];
         foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{$alias}.[[" . preg_replace(
+            if (strpos($columnName, '(') === false) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
                     '/^' . preg_quote($alias) . '\.(.*)$/',
-                    "$1",
-                    $columnName) . "]]";
+                    '$1',
+                    $columnName) . ']]';
+            } else {
+                // there is an expression, can't prefix it reliably
+                $prefixedColumn = $columnName;
+            }
+
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
         return $prefixedConditions;

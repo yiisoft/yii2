@@ -138,13 +138,82 @@ class FontAwesomeAsset extends AssetBundle
 
 В выше указанном примере определён комплект ресурсов для [пакета "fontawesome"](http://fontawesome.io/). Задан параметр публикации `beforeCopy`, здесь только `fonts` и `css` поддиректории будут опубликованы.
 
-### Bower и NPM Ресурсы<span id="bower-npm-assets"></span>
+### Установка ресурсов Bower и NPM<span id="bower-npm-assets"></span>
 
 Большинство JavaScript/CSS пакетов управляются [Bower](http://bower.io/) и/или [NPM](https://www.npmjs.org/).
-Если Вашим приложением или расширением используется такой пакет, то рекомендуется следовать следующим этапам для управления ресурсами библиотеки:
+В мире PHP мы испольуем Composer для управления зависимостями, но он не позволяет устанавливать пакеты Bower и NPM, просто указывая их в `composer.json`.
 
-1. Исправить файл `composer.json` Вашего приложения или расширения и включить пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к соответствующей библиотеке.
-2. Создать класс комплекта ресурсов и перечислить JavaScript/CSS файлы, которые Вы планируете использовать в Вашем приложении или расширении. Вы должны задать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] как `@bower/PackageName` или `@npm/PackageName`.
+Чтобы получить такую возможность, нужно немного настроить Composer. Существует два варианта:
+
+_____
+
+##### Используя репозиторий asset-packagist
+
+Этот способ удовлетворяет потребности большинства проектов, которым нужны Bower или NPM пакеты.
+
+> Note: Начиная с версии 2.0.13, Basic и Advanced шаблоны приложений уже сконфигурированы для использования asset-packagist,
+  так что этот раздел можно пропустить.
+
+В файле `composer.json` вашего проекта, добавьте следующие строки:
+
+```json
+"repositories": [
+    {
+        "type": "composer",
+        "url": "https://asset-packagist.org"
+    }
+]
+```
+
+Настройте [алиасы](concept-aliases.md) `@npm` и `@bower` в файле [конфигурации вашего приложения](concept-configurations.md):
+
+```php
+$config = [
+    ...
+    'aliases' => [
+        '@bower' => '@vendor/bower-asset',
+        '@npm'   => '@vendor/npm-asset',
+    ],
+    ...
+];
+```
+
+Посетите [asset-packagist.org](https://asset-packagist.org) чтобы узнать, как это работает.
+
+##### Используя fxp/composer-asset-plugin
+
+По сравнению с asset-packagist, composer-asset-plugin не требует изменять конфигурацию приложения. Вместо этого, требуется
+установить специальный глобальный пакет Composer, выполнив следующую команду:
+
+```bash
+composer global require "fxp/composer-asset-plugin:^1.3.1"
+```
+
+Эта команда устанавливает [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/) глобально,
+что позволит устанавливать зависимости из Bower и NPM. После установки все проекты на вашем комьютере будут поддерживать
+установку Bower и NPM пакетов, описанных в `composer.json`.
+
+Добавьте следующие строки в `composer.json` вашего проекта, чтобы указать директории, в которые будут установлены
+необходимые Bower и NPM пакеты:
+
+```json
+"extra": {
+    "asset-installer-paths": {
+        "npm-asset-library": "vendor/npm",
+        "bower-asset-library": "vendor/bower"
+    }
+}
+```
+
+> Note: `fxp/composer-asset-plugin` выполняет команду `composer update` существенно дольше, по сравнению с asset-packagist.
+
+____
+
+После настройки Composer для поддержки Bower и NPM пакетов:
+
+1. Исправьте файл `composer.json` Вашего приложения или расширения и включите пакет в список в раздел `require`. Следует использовать `bower-asset/PackageName` (для Bower пакетов) или `npm-asset/PackageName` (для NPM пакетов) для обращения к соответствующей библиотеке.
+2. Выполните `composer update`
+3. Создайте класс комплекта ресурсов и перечислите JavaScript/CSS файлы, которые Вы планируете использовать в Вашем приложении или расширении. Вы должны задать свойство [[yii\web\AssetBundle::sourcePath|sourcePath]] как `@bower/PackageName` или `@npm/PackageName`.
 
 Это происходит потому, что Composer устанавливает Bower или NPM пакет в директорию, соответствующую этим псевдонимам.
 
@@ -514,7 +583,7 @@ return [
 return [
     'components' => [
         'assetManager' => [
-            'bundles' => require(__DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php')),  
+            'bundles' => require __DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php'),  
         ],
     ],
 ];

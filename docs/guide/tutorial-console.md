@@ -71,10 +71,10 @@ It contains code like the following:
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -291,3 +291,19 @@ If you need to build string dynamically combining multiple styles it's better to
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);
 echo "Hello, my name is $name.";
 ```
+
+### Tables
+
+Since version 2.0.13 there is a widget that allows you to format table data in console. It could be used as the following:
+
+```php
+echo Table::widget([
+    'headers' => ['Project', 'Status', 'Participant'],
+    'rows' => [
+        ['Yii', 'OK', '@samdark'],
+        ['Yii', 'OK', '@cebe'],
+    ],
+]);
+```
+
+For details please refer to [[yii\console\widgets\Table|API documentation]].

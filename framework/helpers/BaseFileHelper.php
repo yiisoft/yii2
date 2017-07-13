@@ -104,15 +104,15 @@ class BaseFileHelper
         $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
         if (is_file($desiredFile)) {
             return $desiredFile;
-        } else {
-            $language = substr($language, 0, 2);
-            if ($language === $sourceLanguage) {
-                return $file;
-            }
-            $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
-
-            return is_file($desiredFile) ? $desiredFile : $file;
         }
+
+        $language = substr($language, 0, 2);
+        if ($language === $sourceLanguage) {
+            return $file;
+        }
+        $desiredFile = dirname($file) . DIRECTORY_SEPARATOR . $language . DIRECTORY_SEPARATOR . basename($file);
+
+        return is_file($desiredFile) ? $desiredFile : $file;
     }
 
     /**
@@ -138,9 +138,9 @@ class BaseFileHelper
         if (!extension_loaded('fileinfo')) {
             if ($checkExtension) {
                 return static::getMimeTypeByExtension($file, $magicFile);
-            } else {
-                throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
             }
+
+            throw new InvalidConfigException('The fileinfo PHP extension is not installed.');
         }
         $info = finfo_open(FILEINFO_MIME_TYPE, $magicFile);
 
@@ -207,7 +207,7 @@ class BaseFileHelper
         }
         $magicFile = Yii::getAlias($magicFile);
         if (!isset(self::$_mimeTypes[$magicFile])) {
-            self::$_mimeTypes[$magicFile] = require($magicFile);
+            self::$_mimeTypes[$magicFile] = require $magicFile;
         }
         return self::$_mimeTypes[$magicFile];
     }
@@ -383,7 +383,7 @@ class BaseFileHelper
      *   If the pattern does not contain a slash (`/`), it is treated as a shell glob pattern
      *   and checked for a match against the pathname relative to `$dir`.
      *   Otherwise, the pattern is treated as a shell glob suitable for consumption by `fnmatch(3)`
-     *   `with the `FNM_PATHNAME` flag: wildcards in the pattern will not match a `/` in the pathname.
+     *   with the `FNM_PATHNAME` flag: wildcards in the pattern will not match a `/` in the pathname.
      *   For example, `views/*.php` matches `views/index.php` but not `views/controller/index.php`.
      *   A leading slash matches the beginning of the pathname. For example, `/*.php` matches `index.php` but not `views/start/index.php`.
      *   An optional prefix `!` which negates the pattern; any matching file excluded by a previous pattern will become included again.

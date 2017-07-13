@@ -1,13 +1,18 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
 use Yii;
 use yii\base\Object;
 use yii\behaviors\BlameableBehavior;
+use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 use yiiunit\TestCase;
-use yii\db\ActiveRecord;
 
 /**
  * Unit test for [[\yii\behaviors\BlameableBehavior]].
@@ -33,8 +38,8 @@ class BlameableBehaviorTest extends TestCase
                 ],
                 'user' => [
                     'class' => 'yiiunit\framework\behaviors\UserMock',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -131,9 +136,9 @@ class BlameableBehaviorTest extends TestCase
                 'class' => BlameableBehavior::className(),
                 'attributes' => [
                     BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'created_by',
-                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by']
-                ]
-            ]
+                    BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by'],
+                ],
+            ],
         ]);
         $model->name = __METHOD__;
 
@@ -149,7 +154,6 @@ class BlameableBehaviorTest extends TestCase
         $this->assertEquals(20, $model->created_by);
         $this->assertEquals(20, $model->updated_by);
     }
-
 }
 
 /**

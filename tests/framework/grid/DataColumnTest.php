@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\grid;
 
@@ -27,7 +31,7 @@ class DataColumnTest extends \yiiunit\TestCase
             'dataProvider' => new ArrayDataProvider([
                 'allModels' => [],
                 'totalCount' => 0,
-                'modelClass' => Order::className()
+                'modelClass' => Order::className(),
             ]),
             'columns' => ['customer_id', 'total'],
         ]);
@@ -69,7 +73,7 @@ class DataColumnTest extends \yiiunit\TestCase
                 'totalCount' => 0,
             ]),
             'columns' => ['customer_id', 'total'],
-            'filterModel' => new Order,
+            'filterModel' => new Order(),
         ]);
         $labels = [];
         foreach ($grid->columns as $column) {
@@ -99,7 +103,6 @@ class DataColumnTest extends \yiiunit\TestCase
                     'filter' => $filterInput,
                 ],
             ],
-
         ]);
         //print_r($grid->columns);exit();
         $dataColumn = $grid->columns[0];
@@ -121,8 +124,8 @@ class DataColumnTest extends \yiiunit\TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
         $columns = [
             'id' => 'pk',
@@ -141,9 +144,9 @@ class DataColumnTest extends \yiiunit\TestCase
                 0 => [
                     'attribute' => 'customer_id',
                     'filter' => $filterInput,
-                ]
+                ],
             ],
-            'filterModel' => new Order,
+            'filterModel' => new Order(),
         ]);
 
         $dataColumn = $grid->columns[0];
@@ -151,7 +154,7 @@ class DataColumnTest extends \yiiunit\TestCase
         $method->setAccessible(true);
         $result = $method->invoke($dataColumn);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="0">1</option>
@@ -172,8 +175,8 @@ HTML
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
         $columns = [
             'id' => 'pk',
@@ -193,7 +196,7 @@ HTML
                     'format' => 'boolean', // does not make sense for this column but should still output proper dropdown list
                 ],
             ],
-            'filterModel' => new Order,
+            'filterModel' => new Order(),
         ]);
 
         $dataColumn = $grid->columns[0];
@@ -201,7 +204,7 @@ HTML
         $method->setAccessible(true);
         $result = $method->invoke($dataColumn);
 
-        $this->assertEqualsWithoutLE(<<<HTML
+        $this->assertEqualsWithoutLE(<<<'HTML'
 <select class="form-control" name="Order[customer_id]">
 <option value=""></option>
 <option value="0">No</option>

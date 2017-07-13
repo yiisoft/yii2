@@ -1,11 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\test;
 
 use yii\test\ActiveFixture;
-use yiiunit\data\ar\ActiveRecord;
 use yii\test\FixtureTrait;
-use yii\test\InitDbFixture;
+use yiiunit\data\ar\ActiveRecord;
 use yiiunit\data\ar\Customer;
 use yiiunit\framework\db\DatabaseTestCase;
 
@@ -19,7 +23,7 @@ class CustomerFixture extends ActiveFixture
     public $modelClass = 'yiiunit\data\ar\Customer';
 
     public $depends = [
-        'yiiunit\framework\test\ProfileFixture'
+        'yiiunit\framework\test\ProfileFixture',
     ];
 }
 
@@ -29,7 +33,7 @@ class MyDbTestCase
 
     public function setUp()
     {
-        $this->initFixtures();        
+        $this->initFixtures();
     }
 
     public function tearDown()
