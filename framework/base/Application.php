@@ -306,17 +306,16 @@ abstract class Application extends Module
                 if (!$component = call_user_func($mixed, $this)) {
                     continue;
                 }
-            } else {
-                if (is_string($mixed)) {
-                    if ($this->has($mixed)) {
-                        $component = $this->get($mixed);
-                    } elseif ($this->hasModule($mixed)) {
-                        $component = $this->getModule($mixed);
-                    } elseif (strpos($mixed, '\\') === false) {
-                        throw new InvalidConfigException("Unknown bootstrapping component ID: $mixed");
-                    }
+            } elseif (is_string($mixed)) {
+                if ($this->has($mixed)) {
+                    $component = $this->get($mixed);
+                } elseif ($this->hasModule($mixed)) {
+                    $component = $this->getModule($mixed);
+                } elseif (strpos($mixed, '\\') === false) {
+                    throw new InvalidConfigException("Unknown bootstrapping component ID: $mixed");
                 }
             }
+
             if (!isset($component)) {
                 $component = Yii::createObject($mixed);
             }
