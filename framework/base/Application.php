@@ -300,19 +300,23 @@ abstract class Application extends Module
             }
         }
 
-        foreach ($this->bootstrap as $class) {
+        foreach ($this->bootstrap as $mixed) {
             $component = null;
-            if (is_string($class)) {
-                if ($this->has($class)) {
-                    $component = $this->get($class);
-                } elseif ($this->hasModule($class)) {
-                    $component = $this->getModule($class);
-                } elseif (strpos($class, '\\') === false) {
-                    throw new InvalidConfigException("Unknown bootstrapping component ID: $class");
+            if($mixed instanceof \Closure){
+                if(!$component = call_user_func($mixed, $this)){
+                    continue;
+                }
+            }else if (is_string($mixed)) {
+                if ($this->has($mixed)) {
+                    $component = $this->get($mixed);
+                } elseif ($this->hasModule($mixed)) {
+                    $component = $this->getModule($mixed);
+                } elseif (strpos($mixed, '\\') === false) {
+                    throw new InvalidConfigException("Unknown bootstrapping component ID: $mixed");
                 }
             }
             if (!isset($component)) {
-                $component = Yii::createObject($class);
+                $component = Yii::createObject($mixed);
             }
 
             if ($component instanceof BootstrapInterface) {
