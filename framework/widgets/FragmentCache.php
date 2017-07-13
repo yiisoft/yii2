@@ -9,7 +9,7 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\Widget;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\caching\Dependency;
 use yii\di\Instance;
 
@@ -25,7 +25,7 @@ use yii\di\Instance;
 class FragmentCache extends Widget
 {
     /**
-     * @var Cache|array|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|array|string the cache object or the application component ID of the cache object.
      * After the FragmentCache object is created, if you want to change this property,
      * you should only assign it with a cache object.
      * Starting from version 2.0.2, this can also be a configuration array for creating the object.
@@ -84,9 +84,9 @@ class FragmentCache extends Widget
     {
         parent::init();
 
-        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::className()) : null;
+        $this->cache = $this->enabled ? Instance::ensure($this->cache, 'yii\caching\CacheInterface') : null;
 
-        if ($this->cache instanceof Cache && $this->getCachedContent() === false) {
+        if ($this->cache instanceof CacheInterface && $this->getCachedContent() === false) {
             $this->getView()->cacheStack[] = $this;
             ob_start();
             ob_implicit_flush(false);
@@ -103,7 +103,7 @@ class FragmentCache extends Widget
     {
         if (($content = $this->getCachedContent()) !== false) {
             echo $content;
-        } elseif ($this->cache instanceof Cache) {
+        } elseif ($this->cache instanceof CacheInterface) {
             array_pop($this->getView()->cacheStack);
 
             $content = ob_get_clean();
@@ -140,7 +140,7 @@ class FragmentCache extends Widget
 
         $this->_content = false;
 
-        if (!($this->cache instanceof Cache)) {
+        if (!($this->cache instanceof CacheInterface)) {
             return $this->_content;
         }
 
@@ -150,7 +150,7 @@ class FragmentCache extends Widget
             return $this->_content;
         }
 
-        list ($this->_content, $placeholders) = $data;
+        list($this->_content, $placeholders) = $data;
         if (!is_array($placeholders) || count($placeholders) === 0) {
             return $this->_content;
         }

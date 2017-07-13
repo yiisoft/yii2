@@ -10,6 +10,7 @@ namespace yii\validators;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -182,9 +183,9 @@ class ExistValidator extends Validator
                 return [$this->message, []];
             }
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
-        } else {
-            return $query->exists() ? null : [$this->message, []];
         }
+
+        return $query->exists() ? null : [$this->message, []];
     }
 
     /**
@@ -207,6 +208,35 @@ class ExistValidator extends Validator
     }
 
     /**
+     * Returns conditions with alias
+     * @param ActiveQuery $query
+     * @param array $conditions array of condition, keys to be modified
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @return array
+     */
+    private function applyTableAlias($query, $conditions, $alias = null)
+    {
+        if ($alias === null) {
+            $alias = array_keys($query->getTablesUsedInFrom())[0];
+        }
+        $prefixedConditions = [];
+        foreach ($conditions as $columnName => $columnValue) {
+            if (strpos($columnName, '(') === false) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
+                    '/^' . preg_quote($alias) . '\.(.*)$/',
+                    '$1',
+                    $columnName) . ']]';
+            } else {
+                // there is an expression, can't prefix it reliably
+                $prefixedColumn = $columnName;
+            }
+
+            $prefixedConditions[$prefixedColumn] = $columnValue;
+        }
+        return $prefixedConditions;
+    }
+
+    /**
      * Prefix conditions with aliases
      *
      * @param ActiveRecord $model
@@ -218,15 +248,6 @@ class ExistValidator extends Validator
         $targetModelClass = $this->getTargetClass($model);
 
         /** @var ActiveRecord $targetModelClass */
-        $query = $targetModelClass::find();
-        $tableAliases = array_keys($query->getTablesUsedInFrom());
-        $primaryTableAlias = $tableAliases[0];
-        $prefixedConditions = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            $prefixedColumn = "{{{$primaryTableAlias}}}.[[{$columnName}]]";
-            $prefixedConditions[$prefixedColumn] = $columnValue;
-        }
-
-        return $prefixedConditions;
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 }

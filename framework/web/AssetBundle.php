@@ -7,10 +7,10 @@
 
 namespace yii\web;
 
+use Yii;
 use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
-use Yii;
 
 /**
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
@@ -182,7 +182,7 @@ class AssetBundle extends Object
     public function publish($am)
     {
         if ($this->sourcePath !== null && !isset($this->basePath, $this->baseUrl)) {
-            list ($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
+            list($this->basePath, $this->baseUrl) = $am->publish($this->sourcePath, $this->publishOptions);
         }
 
         if (isset($this->basePath, $this->baseUrl) && ($converter = $am->getConverter()) !== null) {

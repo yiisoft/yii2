@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\base\InvalidConfigException;
 
 /**
  * View represents a view object in the MVC pattern.
@@ -386,6 +386,11 @@ class View extends \yii\base\View
 
     /**
      * Registers a CSS file.
+     *
+     * This method should be used for simple registration of CSS files. If you want to use features of
+     * [[AssetManager]] like appending timestamps to the URL and file publishing options, use [[AssetBundle]]
+     * and [[registerAssetBundle()]] instead.
+     *
      * @param string $url the CSS file to be registered.
      * @param array $options the HTML attributes for the link tag. Please refer to [[Html::cssFile()]] for
      * the supported options. The following options are specially handled and are not treated as HTML attributes:
@@ -411,7 +416,7 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'css' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'cssOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }
@@ -446,6 +451,11 @@ class View extends \yii\base\View
 
     /**
      * Registers a JS file.
+     *
+     * This method should be used for simple registration of JS files. If you want to use features of
+     * [[AssetManager]] like appending timestamps to the URL and file publishing options, use [[AssetBundle]]
+     * and [[registerAssetBundle()]] instead.
+     *
      * @param string $url the JS file to be registered.
      * @param array $options the HTML attributes for the script tag. The following options are specially handled
      * and are not treated as HTML attributes:
@@ -479,7 +489,7 @@ class View extends \yii\base\View
                 'baseUrl' => '',
                 'js' => [strncmp($url, '//', 2) === 0 ? $url : ltrim($url, '/')],
                 'jsOptions' => $options,
-                'depends' => (array)$depends,
+                'depends' => (array) $depends,
             ]);
             $this->registerAssetBundle($key);
         }

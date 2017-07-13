@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\base;
 
 use yii\base\Object;
@@ -18,7 +24,7 @@ class ObjectTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
-        $this->object = new NewObject;
+        $this->object = new NewObject();
     }
 
     protected function tearDown()
@@ -94,7 +100,8 @@ class ObjectTest extends TestCase
         $this->assertEmpty($this->object->Text);
 
         $this->assertFalse(isset($this->object->unknownProperty));
-        $this->assertTrue(empty($this->object->unknownProperty));
+        $isEmpty = empty($this->object->unknownProperty);
+        $this->assertTrue($isEmpty);
     }
 
     public function testUnset()
@@ -175,7 +182,7 @@ class NewObject extends Object
     public function getObject()
     {
         if (!$this->_object) {
-            $this->_object = new self;
+            $this->_object = new self();
             $this->_object->_text = 'object text';
         }
 
@@ -194,5 +201,7 @@ class NewObject extends Object
         return $this->_items;
     }
 
-    public function setWriteOnly() {}
+    public function setWriteOnly()
+    {
+    }
 }

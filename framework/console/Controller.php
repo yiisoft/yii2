@@ -351,7 +351,7 @@ class Controller extends \yii\base\Controller
     public function optionAliases()
     {
         return [
-            'h' => 'help'
+            'h' => 'help',
         ];
     }
 

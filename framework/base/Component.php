@@ -533,7 +533,7 @@ class Component extends Object
         $this->ensureBehaviors();
         if (!empty($this->_events[$name])) {
             if ($event === null) {
-                $event = new Event;
+                $event = new Event();
             }
             if ($event->sender === null) {
                 $event->sender = $this;

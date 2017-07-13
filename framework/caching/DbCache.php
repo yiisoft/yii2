@@ -101,7 +101,7 @@ class DbCache extends Cache
     {
         $key = $this->buildKey($key);
 
-        $query = new Query;
+        $query = new Query();
         $query->select(['COUNT(*)'])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
@@ -125,7 +125,7 @@ class DbCache extends Cache
      */
     protected function getValue($key)
     {
-        $query = new Query;
+        $query = new Query();
         $query->select(['data'])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
@@ -150,7 +150,7 @@ class DbCache extends Cache
         if (empty($keys)) {
             return [];
         }
-        $query = new Query;
+        $query = new Query();
         $query->select(['id', 'data'])
             ->from($this->cacheTable)
             ->where(['id' => $keys])

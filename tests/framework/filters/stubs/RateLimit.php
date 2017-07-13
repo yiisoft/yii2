@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters\stubs;
 
@@ -19,7 +24,7 @@ class RateLimit extends Object implements RateLimitInterface
     public function setRateLimit($rateLimit)
     {
         $this->_rateLimit = $rateLimit;
-        
+
         return $this;
     }
 
@@ -40,5 +45,4 @@ class RateLimit extends Object implements RateLimitInterface
     {
         return [$action, $allowance, $timestamp];
     }
-
 }

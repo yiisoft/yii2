@@ -153,14 +153,14 @@ class PhpMessageSource extends MessageSource
     protected function loadMessagesFromFile($messageFile)
     {
         if (is_file($messageFile)) {
-            $messages = include($messageFile);
+            $messages = include $messageFile;
             if (!is_array($messages)) {
                 $messages = [];
             }
 
             return $messages;
-        } else {
-            return null;
         }
+
+        return null;
     }
 }
