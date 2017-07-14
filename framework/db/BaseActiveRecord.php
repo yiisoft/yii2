@@ -7,6 +7,7 @@
 
 namespace yii\db;
 
+use Yii;
 use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
@@ -1284,7 +1285,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
             if (is_array($relation->via)) {
                 /* @var $viaClass ActiveRecordInterface */
                 /* @var $record ActiveRecordInterface */
-                $record = $viaClass::model();
+                $record = Yii::createObject($viaClass);
                 foreach ($columns as $column => $value) {
                     $record->$column = $value;
                 }
