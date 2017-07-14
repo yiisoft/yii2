@@ -168,6 +168,7 @@ abstract class Application extends Module
      * - a module ID as specified via [[modules]].
      * - a class name.
      * - a configuration array.
+     * - a Closure
      *
      * During the bootstrapping process, each component will be instantiated. If the component class
      * implements [[BootstrapInterface]], its [[BootstrapInterface::bootstrap()|bootstrap()]] method
@@ -303,6 +304,7 @@ abstract class Application extends Module
         foreach ($this->bootstrap as $mixed) {
             $component = null;
             if ($mixed instanceof \Closure) {
+                Yii::trace('Bootstrap with Closure', __METHOD__);
                 if (!$component = call_user_func($mixed, $this)) {
                     continue;
                 }

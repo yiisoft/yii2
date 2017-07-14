@@ -57,7 +57,6 @@ class ApplicationTest extends TestCase
                 'withBootstrapInterface',
                 'moduleX',
                 function () {
-                    Yii::trace('Bootstrap with Closure');
                 }
 
             ],
