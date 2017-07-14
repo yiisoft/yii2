@@ -50,6 +50,17 @@ if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
 
+Upgrade from Yii 2.0.12
+-----------------------
+
+* A new method `public static function model($refresh = false);` has been added to the `yii\db\ActiveRecordInterface`.
+  This method is implemented in the `yii\base\Model`, so this only affects your code if you implement ActiveRecordInterface
+  in a class that does not extend Model.
+
+* A new method `public function validate($attributeNames = null, $clearErrors = true);` has been added to the `yii\db\ActiveRecordInterface`.
+  This method is implemented in the `yii\base\Model`, so this only affects your code if you implement ActiveRecordInterface
+  in a class that does not extend Model.
+
 Upgrade from Yii 2.0.11
 -----------------------
 

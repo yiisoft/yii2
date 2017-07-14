@@ -7,6 +7,8 @@
 
 namespace yii\db;
 
+use yii\base\ModelInterface;
+
 /**
  * ActiveRecordInterface
  *
@@ -14,7 +16,7 @@ namespace yii\db;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-interface ActiveRecordInterface
+interface ActiveRecordInterface extends ModelInterface
 {
     /**
      * Returns the primary key **name(s)** for this AR class.
@@ -26,12 +28,6 @@ interface ActiveRecordInterface
      * @return string[] the primary key name(s) for this AR class.
      */
     public static function primaryKey();
-
-    /**
-     * Returns the list of all attribute names of the record.
-     * @return array list of attribute names.
-     */
-    public function attributes();
 
     /**
      * Returns the named attribute value.

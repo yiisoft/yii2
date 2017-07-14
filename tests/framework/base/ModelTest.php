@@ -451,6 +451,18 @@ class ModelTest extends TestCase
 
         $this->assertTrue($model->validate());
     }
+
+    public function testStaticModel()
+    {
+        $speakerModel = Speaker::model();
+        $this->assertTrue($speakerModel instanceof Speaker);
+
+        $singerModel = Singer::model();
+        $this->assertTrue($singerModel instanceof Singer);
+
+        $this->assertSame($speakerModel, Speaker::model());
+        $this->assertNotSame($speakerModel, Speaker::model(true));
+    }
 }
 
 class ComplexModel1 extends Model
