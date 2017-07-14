@@ -35,6 +35,8 @@ Yii Framework 2 Change Log
 - Enh #13835: Added `yii\web\Request::getOrigin()` method that returns HTTP_ORIGIN of current CORS request (yyxx9988)
 - Bug #14165: Set `_slave` of `Connection` to `false` instead of `null` in `close` method (rossoneri)
 - Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
+- Bug #13779: Fixed `yii\db\ActiveRecord::joinWith()` unable to use relation defined via attached behavior (ElisDN, klimov-paul)
+- Enh #14078: Allowed to use custom constructors in ActiveRecord-based classes (ElisDN, klimov-paul)
 
 2.0.12 June 05, 2017
 --------------------
