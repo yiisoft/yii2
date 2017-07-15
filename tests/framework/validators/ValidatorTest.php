@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\validators;
 
+use yii\base\DynamicModel;
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
 use yii\validators\NumberValidator;
@@ -269,5 +270,25 @@ class ValidatorTest extends TestCase
             }
         }
         $this->assertTrue($isFound);
+    }
+
+    /**
+     * Make sure attribute names are calculated dynamically
+     * https://github.com/yiisoft/yii2/issues/13979
+     * https://github.com/yiisoft/yii2/pull/14413
+     */
+    public function testAttributeNamesDynamic()
+    {
+        $model = new DynamicModel(['email1' => 'invalid', 'email2' => 'invalid']);
+        $validator = new TestValidator();
+        $validator->enableErrorOnValidateAttribute();
+
+        $validator->attributes = ['email1'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
+
+        $validator->attributes = ['email2'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
     }
 }
