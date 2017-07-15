@@ -54,7 +54,7 @@ $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
 
-## Add or overwrite the value in the array <span id="set-value"></span>
+## Setting values <span id="setting-values"></span>
 
 ```php
 $array = [
@@ -68,7 +68,8 @@ ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
 ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
 ```
 
-As a result, the initial value of `$array['key']['in']` will be overwritten by the new
+As a result, initial value of `$array['key']['in']` will be overwritten by new value
+
 ```php
 [
     'key' => [
@@ -77,9 +78,10 @@ As a result, the initial value of `$array['key']['in']` will be overwritten by t
 ]
 ```
 
-If the path contains a nonexistent key, then it will be created with the specified value
+If the path contains a nonexistent key, it will be created
+
 ```php
-// if `$array['key']['in']['arr0']` is not empty, then the value will be added to the array
+// if `$array['key']['in']['arr0']` is not empty, the value will be added to the array
 ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
 
 // if you want to completely override the value `$array['key']['in']['arr0']`
@@ -87,6 +89,7 @@ ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
 ```
 
 The result will be
+
 ```php
 [
     'key' => [
@@ -99,9 +102,9 @@ The result will be
 ```
 
 
-## Get the value and then remove it from the array <span id="remove"></span>
+## Take a value from an array <span id="removing-values"></span>
 
-In case you want to get the value and then immediately remove it from array you can use `remove` method:
+In case you want to get a value and then immediately remove it from an array you can use `remove` method:
 
 ```php
 $array = ['type' => 'A', 'options' => [1, 2]];
