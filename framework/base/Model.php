@@ -54,7 +54,7 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements ModelInterface,IteratorAggregate, ArrayAccess, Arrayable
+class Model extends Component implements ModelInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
     use ArrayableTrait;
 
