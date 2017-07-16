@@ -93,7 +93,7 @@ class UniqueValidator extends Validator
     /**
      * @var bool whether this validator can run on salve connections
      */
-    public $canValidateOnSlaveDb =  true;
+    public $canValidateOnSlaveDb =  false;
 
 
     /**
