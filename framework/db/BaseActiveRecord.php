@@ -1017,6 +1017,18 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         /* @var $record BaseActiveRecord */
         $record = static::findOne($this->getPrimaryKey(true));
+        return $this->refreshInternal($record);
+    }
+
+    /**
+     * Repopulates this active record with the latest data from a newly fetched instance.
+     * @param BaseActiveRecord $record the record to take attributes from.
+     * @return bool whether refresh was successful.
+     * @see refresh()
+     * @since 2.0.13
+     */
+    protected function refreshInternal($record)
+    {
         if ($record === null) {
             return false;
         }

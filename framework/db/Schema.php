@@ -656,8 +656,8 @@ abstract class Schema extends Object
         }
         if (!array_key_exists($type, $this->_tableMetadata[$name])) {
             $this->_tableMetadata[$name][$type] = $this->{'loadTable' . ucfirst($type)}($this->getRawTableName($name));
+            $this->saveTableMetadataToCache($cache, $name);
         }
-        $this->saveTableMetadataToCache($cache, $name);
         return $this->_tableMetadata[$name][$type];
     }
 

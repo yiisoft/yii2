@@ -10,6 +10,7 @@ namespace yii\console\controllers;
 use Yii;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
@@ -728,7 +729,7 @@ return [
 EOD;
         if (file_exists($configFile)) {
             if (!$this->confirm("File '{$configFile}' already exists. Do you wish to overwrite it?")) {
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
         if (!file_put_contents($configFile, $template)) {
@@ -736,7 +737,7 @@ EOD;
         }
 
         $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
-        return self::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**

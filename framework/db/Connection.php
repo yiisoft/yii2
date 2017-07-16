@@ -403,11 +403,11 @@ class Connection extends Component
      */
     private $_driverName;
     /**
-     * @var Connection the currently active master connection
+     * @var Connection|false the currently active master connection
      */
     private $_master = false;
     /**
-     * @var Connection the currently active slave connection
+     * @var Connection|false the currently active slave connection
      */
     private $_slave = false;
     /**
@@ -597,7 +597,7 @@ class Connection extends Component
             }
 
             $this->_master->close();
-            $this->_master = null;
+            $this->_master = false;
         }
 
         if ($this->pdo !== null) {
@@ -609,7 +609,7 @@ class Connection extends Component
 
         if ($this->_slave) {
             $this->_slave->close();
-            $this->_slave = null;
+            $this->_slave = false;
         }
     }
 
