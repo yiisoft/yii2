@@ -13,7 +13,7 @@ use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
 use yii\web\Request;
 use yii\web\Response;
-use yii\web\UnsupportedMediaTypeHttpException;
+use yii\web\NotAcceptableHttpException;
 
 /**
  * ContentNegotiator supports response format negotiation and application language negotiation.
@@ -178,7 +178,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                 return;
             }
 
-            throw new UnsupportedMediaTypeHttpException('The requested response format is not supported: ' . $format);
+            throw new NotAcceptableHttpException('The requested response format is not supported: ' . $format);
         }
 
         $types = $request->getAcceptableContentTypes();
@@ -205,7 +205,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
             }
         }
 
-        throw new UnsupportedMediaTypeHttpException('None of your requested content types is supported.');
+        throw new NotAcceptableHttpException('None of your requested media types is supported.');
     }
 
     /**
