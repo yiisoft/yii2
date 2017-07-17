@@ -168,7 +168,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      * @param Request $request
      * @param Response $response
      * @throws InvalidConfigException if [[formats]] is empty
-     * @throws UnsupportedMediaTypeHttpException if none of the requested content types is accepted.
+     * @throws NotAcceptableHttpException if none of the requested media types is accepted.
      */
     protected function negotiateContentType($request, $response)
     {
