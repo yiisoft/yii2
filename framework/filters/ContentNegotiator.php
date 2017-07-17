@@ -82,6 +82,8 @@ use yii\web\NotAcceptableHttpException;
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
+ * @see https://tools.ietf.org/html/rfc7231#section-5.3.2
+ * @see https://tools.ietf.org/html/rfc7231#section-5.3.5
  */
 class ContentNegotiator extends ActionFilter implements BootstrapInterface
 {
