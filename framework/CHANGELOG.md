@@ -37,6 +37,7 @@ Yii Framework 2 Change Log
 - Enh #14188: Add constants and function for sysexits(3) to `ConsoleHelper` (tom--, samdark, cebe)
 - Bug #14165: Set `_slave` of `Connection` to `false` instead of `null` in `close` method (rossoneri)
 - Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
+- Enh #13853: Added `yii\db\Migration::$quiet` as well as `yii\console\controllers\BaseMigrateController::$quiet` to allow making the migration console output quieter (francislavoie)
 
 2.0.12 June 05, 2017
 --------------------
