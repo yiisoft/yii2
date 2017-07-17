@@ -3,6 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.13 under development
 ------------------------
+- Enh #13853: Added `yii\db\Migration::$quiet` as well as `yii\console\controllers\BaseMigrateController::$quiet` to allow making the migration console output quieter (francislavoie)
 - Bug #14449: Fix PHP 7.2 compatibility bugs and add explicit closure support in `yii\base\Application` (dynasource)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #14206: `MySqlMutex`, `PgsqlMutex` and `OracleMutex` now use `useMaster()` to ensure lock is aquired on the same DB server (cebe, ryusoft)
@@ -37,7 +38,6 @@ Yii Framework 2 Change Log
 - Enh #14188: Add constants and function for sysexits(3) to `ConsoleHelper` (tom--, samdark, cebe)
 - Bug #14165: Set `_slave` of `Connection` to `false` instead of `null` in `close` method (rossoneri)
 - Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
-- Enh #13853: Added `yii\db\Migration::$quiet` as well as `yii\console\controllers\BaseMigrateController::$quiet` to allow making the migration console output quieter (francislavoie)
 
 2.0.12 June 05, 2017
 --------------------
