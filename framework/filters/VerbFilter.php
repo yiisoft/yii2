@@ -41,7 +41,7 @@ use yii\web\MethodNotAllowedHttpException;
  * }
  * ```
  *
- * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7
+ * @see https://tools.ietf.org/html/rfc2616#section-14.7
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
@@ -100,7 +100,7 @@ class VerbFilter extends Behavior
         $allowed = array_map('strtoupper', $verbs);
         if (!in_array($verb, $allowed)) {
             $event->isValid = false;
-            // http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.7
+            // https://tools.ietf.org/html/rfc2616#section-14.7
             Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowed));
             throw new MethodNotAllowedHttpException('Method Not Allowed. This URL can only handle the following request methods: ' . implode(', ', $allowed) . '.');
         }

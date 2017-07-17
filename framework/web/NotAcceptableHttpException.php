@@ -14,7 +14,7 @@ namespace yii\web;
  * application cannot return. Note that, according to the HTTP 1.1 specification,
  * you are not required to respond with this status code in this situation.
  *
- * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.7
+ * @link https://tools.ietf.org/html/rfc2616#section-10.4.7
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */
