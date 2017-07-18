@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\base;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yiiunit\TestCase;
 
 /**
@@ -162,7 +162,7 @@ class ObjectTest extends TestCase
 }
 
 
-class NewObject extends Object
+class NewObject extends BaseObject
 {
     private $_object = null;
     private $_text = 'default';

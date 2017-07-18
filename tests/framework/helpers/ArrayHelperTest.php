@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
@@ -18,7 +18,7 @@ class Post1
     public $title = 'tt';
 }
 
-class Post2 extends Object
+class Post2 extends BaseObject
 {
     public $id = 123;
     public $content = 'test';
@@ -29,7 +29,7 @@ class Post2 extends Object
     }
 }
 
-class Post3 extends Object
+class Post3 extends BaseObject
 {
     public $id = 33;
     /** @var Object */
