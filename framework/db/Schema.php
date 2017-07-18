@@ -11,7 +11,7 @@ use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\caching\Cache;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
@@ -38,7 +38,7 @@ use yii\caching\TagDependency;
  * @author Sergey Makinen <sergey@makinen.ru>
  * @since 2.0
  */
-abstract class Schema extends Object
+abstract class Schema extends BaseObject
 {
     // The following are the supported abstract column data types.
     const TYPE_PK = 'pk';

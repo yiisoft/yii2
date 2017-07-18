@@ -9,7 +9,7 @@ namespace yii\data;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
 use yii\web\Request;
@@ -77,7 +77,7 @@ use yii\web\Request;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Sort extends Object
+class Sort extends BaseObject
 {
     /**
      * @var bool whether the sorting can be applied to multiple attributes simultaneously.
