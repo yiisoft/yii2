@@ -8,16 +8,16 @@ and create a [view](structure-views.md).
 
 Through this tutorial, you will learn how to:
 
-* Configure a DB connection
-* Define an Active Record class
-* Query data using the Active Record class
-* Display data in a view in a paginated fashion
+* configure a DB connection,
+* define an Active Record class,
+* query data using the Active Record class,
+* display data in a view in a paginated fashion.
 
 Note that in order to finish this section, you should have basic knowledge and experience using databases.
 In particular, you should know how to create a database, and how to execute SQL statements using a DB client tool.
 
 
-Preparing the Database <a name="preparing-database"></a>
+Preparing the Database <span id="preparing-database"></span>
 ----------------------
 
 To begin, create a database named `yii2basic`, from which you will fetch data in your application.
@@ -32,21 +32,21 @@ CREATE TABLE `country` (
   `population` INT(11) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `country` VALUES ('AU','Australia',18886000);
-INSERT INTO `country` VALUES ('BR','Brazil',170115000);
-INSERT INTO `country` VALUES ('CA','Canada',1147000);
-INSERT INTO `country` VALUES ('CN','China',1277558000);
-INSERT INTO `country` VALUES ('DE','Germany',82164700);
-INSERT INTO `country` VALUES ('FR','France',59225700);
-INSERT INTO `country` VALUES ('GB','United Kingdom',59623400);
-INSERT INTO `country` VALUES ('IN','India',1013662000);
-INSERT INTO `country` VALUES ('RU','Russia',146934000);
-INSERT INTO `country` VALUES ('US','United States',278357000);
+INSERT INTO `country` VALUES ('AU','Australia',24016400);
+INSERT INTO `country` VALUES ('BR','Brazil',205722000);
+INSERT INTO `country` VALUES ('CA','Canada',35985751);
+INSERT INTO `country` VALUES ('CN','China',1375210000);
+INSERT INTO `country` VALUES ('DE','Germany',81459000);
+INSERT INTO `country` VALUES ('FR','France',64513242);
+INSERT INTO `country` VALUES ('GB','United Kingdom',65097000);
+INSERT INTO `country` VALUES ('IN','India',1285400000);
+INSERT INTO `country` VALUES ('RU','Russia',146519759);
+INSERT INTO `country` VALUES ('US','United States',322976000);
 ```
 
 At this point, you have a database named `yii2basic`, and within it a `country` table with three columns, containing ten rows of data.
 
-Configuring a DB Connection <a name="configuring-db-connection"></a>
+Configuring a DB Connection <span id="configuring-db-connection"></span>
 ---------------------------
 
 Before proceeding, make sure you have installed both the [PDO](http://www.php.net/manual/en/book.pdo.php) PHP extension and
@@ -78,8 +78,14 @@ The DB connection configured above can be accessed in the application code via t
   which specifies how the [application](structure-applications.md) instance should be initialized.
   For more information, please refer to the [Configurations](concept-configurations.md) section.
 
+If you need to work with databases support for which isn't bundled with Yii, check the following extensions:
 
-Creating an Active Record <a name="creating-active-record"></a>
+- [Informix](https://github.com/edgardmessias/yii2-informix)
+- [IBM DB2](https://github.com/edgardmessias/yii2-ibm-db2)
+- [Firebird](https://github.com/edgardmessias/yii2-firebird)
+
+
+Creating an Active Record <span id="creating-active-record"></span>
 -------------------------
 
 To represent and fetch the data in the `country` table, create an [Active Record](db-active-record.md)-derived
@@ -126,7 +132,7 @@ $country->save();
 You may find more detailed information in the [Active Record](db-active-record.md) section. Alternatively, you may also interact with a database using a lower-level data accessing method called [Data Access Objects](db-dao.md).
 
 
-Creating an Action <a name="creating-action"></a>
+Creating an Action <span id="creating-action"></span>
 ------------------
 
 To expose the country data to end users, you need to create a new action. Instead of placing the new action in the `site`
@@ -182,7 +188,7 @@ At the end of the code, the `index` action renders a view named `index`, and pas
 information to it.
 
 
-Creating a View <a name="creating-view"></a>
+Creating a View <span id="creating-view"></span>
 ---------------
 
 Under the `views` directory, first create a sub-directory named `country`. This folder will be used to hold all the
@@ -213,13 +219,13 @@ The `LinkPager` widget displays a list of page buttons. Clicking on any of them 
 in the corresponding page.
 
 
-Trying it Out <a name="trying-it-out"></a>
+Trying it Out <span id="trying-it-out"></span>
 -------------
 
 To see how all of the above code works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=country/index
+http://hostname/index.php?r=country%2Findex
 ```
 
 ![Country List](images/start-country-list.png)
@@ -229,7 +235,7 @@ If you click on the button "2", you will see the page display another five count
 Observe more carefully and you will find that the URL in the browser also changes to
 
 ```
-http://hostname/index.php?r=country/index&page=2
+http://hostname/index.php?r=country%2Findex&page=2
 ```
 
 Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the necessary functionality to paginate a data set:
@@ -245,13 +251,13 @@ Behind the scenes, [[yii\data\Pagination|Pagination]] is providing all of the ne
   for display.
 
 
-Summary <a name="summary"></a>
+Summary <span id="summary"></span>
 -------
 
 In this section, you learned how to work with a database. You also learned how to fetch and display
 data in pages with the help of [[yii\data\Pagination]] and [[yii\widgets\LinkPager]].
 
-In the next section, you will learn how to use the powerful code generation tool, called [Gii](tool-gii.md),
+In the next section, you will learn how to use the powerful code generation tool, called [Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide/README.md),
 to help you rapidly implement some commonly required features, such as the Create-Read-Update-Delete (CRUD)
 operations for working with the data in a database table. As a matter of fact, the code you have just written can all
 be automatically generated in Yii using the Gii tool.

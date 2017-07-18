@@ -14,7 +14,7 @@ A travers ce tutoriel, vous apprendrez trois choses :
 3. comment une application distribue les requêtes aux [actions](structure-controllers.md#creating-actions).
 
 
-Créer une Action <a name="creating-action"></a>
+Créer une Action <span id="creating-action"></span>
 ------------------
 
 Pour la tâche "Hello", vous allez créer une [action](structure-controllers.md#creating-actions) `dire` qui reçoit un paramètre
@@ -54,7 +54,7 @@ La méthode action de notre exemple prend un paramètre `$message`, dont la vale
 Au sein de la méthode action, [[yii\web\Controller::render()|render()]] est appelé pour effectuer le rendu d'un fichier [vue](structure-views.md) appelé `dire`. Le paramètre `message` est également transmis à la vue afin qu'il puisse y être utilisé. Le résultat du rendu est renvoyé à l'utilisateur par la méthode action. Ce résultat sera reçu par l'application et présenté à l'utilisateur dans le navigateur (en tant qu'élément d'une page HTML complète). 
 
 
-Créer une Vue <a name="creating-view"></a>
+Créer une Vue <span id="creating-view"></span>
 ---------------
 
 Les [vues](structure-views.md) sont des scripts qu'on écrit pour générer le contenu d'une réponse.
@@ -78,7 +78,7 @@ En réalité, la vue `dire` est simplement un script PHP exécuté par la métho
 Le contenu affiché par le script de vue sera renvoyé à l'application en tant que résultat de réponse. L'application renverra à son tour ce résultat à l'utilisateur.
 
 
-Essayer <a name="trying-it-out"></a>
+Essayer <span id="trying-it-out"></span>
 -------------
 
 Après avoir créé l'action et la vue, vous pouvez accéder à la nouvelle page en accédant à l'URL suivant :
@@ -105,7 +105,7 @@ sera comprise comme la classe contrôleur `SiteController` et l'action `dire`. I
   au nom de classe contrôleur `PosterCommentaireController`.
 
 
-Résumé <a name="summary"></a>
+Résumé <span id="summary"></span>
 -------
 
 Dans cette section, vous avez touché aux parties contrôleur et vue du patron de conception MVC.

@@ -52,7 +52,7 @@ Module is a sub-application which contains MVC elements by itself, such as model
 
 ## namespace
 
-Namespace refers to a [PHP language feature](http://php.net/manual/en/language.namespaces.php) which is actively used in Yii2.
+Namespace refers to a [PHP language feature](http://php.net/manual/en/language.namespaces.php) which is actively used in Yii 2.
 
 # P
 

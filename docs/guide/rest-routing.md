@@ -6,8 +6,8 @@ With resource and controller classes ready, you can access the resources using t
 
 In practice, you usually want to enable pretty URLs and take advantage of HTTP verbs.
 For example, a request `POST /users` would mean accessing the `user/create` action.
-This can be done easily by configuring the `urlManager` application component in the application
-configuration like the following:
+This can be done easily by configuring the `urlManager` [application component](structure-application-components.md)
+in the application configuration like the following:
 
 ```php
 'urlManager' => [
@@ -75,7 +75,7 @@ For example, to support a new action `search` by the endpoint `GET /users/search
 
 You may have noticed that the controller ID `user` appears in plural form as `users` in the endpoint URLs.
 This is because [[yii\rest\UrlRule]] automatically pluralizes controller IDs when creating child URL rules.
-You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be false. 
+You may disable this behavior by setting [[yii\rest\UrlRule::pluralize]] to be `false`. 
 
 > Info: The pluralization of controller IDs is done by [[yii\helpers\Inflector::pluralize()]]. The method respects
   special pluralization rules. For example, the word `box` will be pluralized as `boxes` instead of `boxs`.
@@ -89,4 +89,22 @@ a controller ID. For example, the following code maps the name `u` to the contro
     'class' => 'yii\rest\UrlRule',
     'controller' => ['u' => 'user'],
 ]
+```
+
+## Extra configuration for contained rules
+
+It could be useful to specify extra configuration that is applied to each rule contained within [[yii\rest\UrlRule]].
+A good example would be specifying defaults for `expand` parameter:
+
+```php
+[
+    'class' => 'yii\rest\UrlRule',
+    'controller' => ['user'],
+    'ruleConfig' => [
+        'class' => 'yii\web\UrlRule',
+        'defaults' => [
+            'expand' => 'profile',
+        ]
+    ],
+],
 ```

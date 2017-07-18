@@ -31,6 +31,8 @@ use yii\helpers\Url;
  * ]
  * ```
  *
+ * For more details and usage information on AssetManager, see the [guide article on assets](guide:structure-assets).
+ *
  * @property AssetConverterInterface $converter The asset converter. Note that the type of this property
  * differs in getter and setter. See [[getConverter()]] and [[setConverter()]] for details.
  *
@@ -40,7 +42,7 @@ use yii\helpers\Url;
 class AssetManager extends Component
 {
     /**
-     * @var array|boolean list of asset bundle configurations. This property is provided to customize asset bundles.
+     * @var array|bool list of asset bundle configurations. This property is provided to customize asset bundles.
      * When a bundle is being loaded by [[getBundle()]], if it has a corresponding configuration specified here,
      * the configuration will be applied to the bundle.
      *
@@ -48,27 +50,27 @@ class AssetManager extends Component
      * The array values are the corresponding configurations. If a value is false, it means the corresponding asset
      * bundle is disabled and [[getBundle()]] should return null.
      *
-     * If this this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
+     * If this property is false, it means the whole asset bundle feature is disabled and [[getBundle()]]
      * will always return null.
      *
      * The following example shows how to disable the bootstrap css file used by Bootstrap widgets
      * (because you want to use your own styles):
      *
-     * ~~~
+     * ```php
      * [
      *     'yii\bootstrap\BootstrapAsset' => [
      *         'css' => [],
      *     ],
      * ]
-     * ~~~
+     * ```
      */
     public $bundles = [];
     /**
-     * @return string the root directory storing the published asset files.
+     * @var string the root directory storing the published asset files.
      */
     public $basePath = '@webroot/assets';
     /**
-     * @return string the base URL through which the published asset files can be accessed.
+     * @var string the base URL through which the published asset files can be accessed.
      */
     public $baseUrl = '@web/assets';
     /**
@@ -81,7 +83,8 @@ class AssetManager extends Component
      * the corresponding value will replace the asset and be registered with the view.
      * For example, an asset file `my/path/to/jquery.js` matches a key `jquery.js`.
      *
-     * Note that the target asset files should be either absolute URLs or paths relative to [[baseUrl]] and [[basePath]].
+     * Note that the target asset files should be absolute URLs, domain relative URLs (starting from '/') or paths
+     * relative to [[baseUrl]] and [[basePath]].
      *
      * In the following example, any assets ending with `jquery.min.js` will be replaced with `jquery/dist/jquery.js`
      * which is relative to [[baseUrl]] and [[basePath]].
@@ -91,10 +94,18 @@ class AssetManager extends Component
      *     'jquery.min.js' => 'jquery/dist/jquery.js',
      * ]
      * ```
+     *
+     * You may also use aliases while specifying map value, for example:
+     *
+     * ```php
+     * [
+     *     'jquery.min.js' => '@web/js/jquery/jquery.js',
+     * ]
+     * ```
      */
     public $assetMap = [];
     /**
-     * @var boolean whether to use symbolic link to publish asset files. Defaults to false, meaning
+     * @var bool whether to use symbolic link to publish asset files. Defaults to false, meaning
      * asset files are copied to [[basePath]]. Using symbolic links has the benefit that the published
      * assets will always be consistent with the source assets and there is no copy operation required.
      * This is especially useful during development.
@@ -106,19 +117,19 @@ class AssetManager extends Component
      * to Web users. For example, for Apache Web server, the following configuration directive should be added
      * for the Web folder:
      *
-     * ~~~
+     * ```apache
      * Options FollowSymLinks
-     * ~~~
+     * ```
      */
     public $linkAssets = false;
     /**
-     * @var integer the permission to be set for newly published asset files.
+     * @var int the permission to be set for newly published asset files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
     public $fileMode;
     /**
-     * @var integer the permission to be set for newly generated asset directories.
+     * @var int the permission to be set for newly generated asset directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
@@ -143,13 +154,49 @@ class AssetManager extends Component
      */
     public $afterCopy;
     /**
-     * @var boolean whether the directory being published should be copied even if
+     * @var bool whether the directory being published should be copied even if
      * it is found in the target directory. This option is used only when publishing a directory.
      * You may want to set this to be `true` during the development stage to make sure the published
      * directory is always up-to-date. Do not set this to true on production servers as it will
      * significantly degrade the performance.
      */
     public $forceCopy = false;
+    /**
+     * @var bool whether to append a timestamp to the URL of every published asset. When this is true,
+     * the URL of a published asset may look like `/path/to/asset?v=timestamp`, where `timestamp` is the
+     * last modification time of the published asset file.
+     * You normally would want to set this property to true when you have enabled HTTP caching for assets,
+     * because it allows you to bust caching when the assets are updated.
+     * @since 2.0.3
+     */
+    public $appendTimestamp = false;
+    /**
+     * @var callable a callback that will be called to produce hash for asset directory generation.
+     * The signature of the callback should be as follows:
+     *
+     * ```
+     * function ($path)
+     * ```
+     *
+     * where `$path` is the asset path. Note that the `$path` can be either directory where the asset
+     * files reside or a single file. For a CSS file that uses relative path in `url()`, the hash
+     * implementation should use the directory path of the file instead of the file path to include
+     * the relative asset files in the copying.
+     *
+     * If this is not set, the asset manager will use the default CRC32 and filemtime in the `hash`
+     * method.
+     *
+     * Example of an implementation using MD4 hash:
+     *
+     * ```php
+     * function ($path) {
+     *     return hash('md4', $path);
+     * }
+     * ```
+     *
+     * @since 2.0.6
+     */
+    public $hashCallback;
 
     private $_dummyBundles = [];
 
@@ -166,9 +213,9 @@ class AssetManager extends Component
             throw new InvalidConfigException("The directory does not exist: {$this->basePath}");
         } elseif (!is_writable($this->basePath)) {
             throw new InvalidConfigException("The directory is not writable by the Web process: {$this->basePath}");
-        } else {
-            $this->basePath = realpath($this->basePath);
         }
+
+        $this->basePath = realpath($this->basePath);
         $this->baseUrl = rtrim(Yii::getAlias($this->baseUrl), '/');
     }
 
@@ -179,7 +226,7 @@ class AssetManager extends Component
      * it will treat `$name` as the class of the asset bundle and create a new instance of it.
      *
      * @param string $name the class name of the asset bundle (without the leading backslash)
-     * @param boolean $publish whether to publish the asset files in the asset bundle before it is returned.
+     * @param bool $publish whether to publish the asset files in the asset bundle before it is returned.
      * If you set this false, you must manually call `AssetBundle::publish()` to publish the asset files.
      * @return AssetBundle the asset bundle instance
      * @throws InvalidConfigException if $name does not refer to a valid asset bundle
@@ -196,9 +243,9 @@ class AssetManager extends Component
             return $this->bundles[$name] = $this->loadBundle($name, $this->bundles[$name], $publish);
         } elseif ($this->bundles[$name] === false) {
             return $this->loadDummyBundle($name);
-        } else {
-            throw new InvalidConfigException("Invalid asset bundle configuration: $name");
         }
+
+        throw new InvalidConfigException("Invalid asset bundle configuration: $name");
     }
 
     /**
@@ -206,7 +253,7 @@ class AssetManager extends Component
      *
      * @param string $name bundle name
      * @param array $config bundle object configuration
-     * @param boolean $publish if bundle should be published
+     * @param bool $publish if bundle should be published
      * @return AssetBundle
      * @throws InvalidConfigException if configuration isn't valid
      */
@@ -244,39 +291,58 @@ class AssetManager extends Component
 
     /**
      * Returns the actual URL for the specified asset.
-     * The actual URL is obtained by prepending either [[baseUrl]] or [[AssetManager::baseUrl]] to the given asset path.
+     * The actual URL is obtained by prepending either [[AssetBundle::$baseUrl]] or [[AssetManager::$baseUrl]] to the given asset path.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
+     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
      * @return string the actual URL for the specified asset.
      */
     public function getAssetUrl($bundle, $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
-            return Url::isRelative($actualAsset) ? $this->baseUrl . '/' . $actualAsset : $actualAsset;
+            if (strncmp($actualAsset, '@web/', 5) === 0) {
+                $asset = substr($actualAsset, 5);
+                $basePath = Yii::getAlias('@webroot');
+                $baseUrl = Yii::getAlias('@web');
+            } else {
+                $asset = Yii::getAlias($actualAsset);
+                $basePath = $this->basePath;
+                $baseUrl = $this->baseUrl;
+            }
         } else {
-            return Url::isRelative($asset) ? $bundle->baseUrl . '/' . $asset : $asset;
+            $basePath = $bundle->basePath;
+            $baseUrl = $bundle->baseUrl;
         }
+
+        if (!Url::isRelative($asset) || strncmp($asset, '/', 1) === 0) {
+            return $asset;
+        }
+
+        if ($this->appendTimestamp && ($timestamp = @filemtime("$basePath/$asset")) > 0) {
+            return "$baseUrl/$asset?v=$timestamp";
+        }
+
+        return "$baseUrl/$asset";
     }
 
     /**
      * Returns the actual file path for the specified asset.
      * @param AssetBundle $bundle the asset bundle which the asset file belongs to
-     * @param string $asset the asset path. This should be one of the assets listed in [[js]] or [[css]].
-     * @return string|boolean the actual file path, or false if the asset is specified as an absolute URL
+     * @param string $asset the asset path. This should be one of the assets listed in [[AssetBundle::$js]] or [[AssetBundle::$css]].
+     * @return string|false the actual file path, or `false` if the asset is specified as an absolute URL
      */
     public function getAssetPath($bundle, $asset)
     {
         if (($actualAsset = $this->resolveAsset($bundle, $asset)) !== false) {
             return Url::isRelative($actualAsset) ? $this->basePath . '/' . $actualAsset : false;
-        } else {
-            return Url::isRelative($asset) ? $bundle->basePath . '/' . $asset : false;
         }
+
+        return Url::isRelative($asset) ? $bundle->basePath . '/' . $asset : false;
     }
 
     /**
      * @param AssetBundle $bundle
      * @param string $asset
-     * @return string|boolean
+     * @return string|bool
      */
     protected function resolveAsset($bundle, $asset)
     {
@@ -287,9 +353,9 @@ class AssetManager extends Component
             $asset = $bundle->sourcePath . '/' . $asset;
         }
 
-        $n = mb_strlen($asset);
+        $n = mb_strlen($asset, Yii::$app->charset);
         foreach ($this->assetMap as $from => $to) {
-            $n2 = mb_strlen($from);
+            $n2 = mb_strlen($from, Yii::$app->charset);
             if ($n2 <= $n && substr_compare($asset, $from, $n - $n2, $n2) === 0) {
                 return $to;
             }
@@ -362,6 +428,9 @@ class AssetManager extends Component
      * @param array $options the options to be applied when publishing a directory.
      * The following options are supported:
      *
+     * - only: array, list of patterns that the file paths should match if they want to be copied.
+     * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
+     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   This overrides [[beforeCopy]] if set.
      * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
@@ -387,20 +456,20 @@ class AssetManager extends Component
 
         if (is_file($src)) {
             return $this->_published[$path] = $this->publishFile($src);
-        } else {
-            return $this->_published[$path] = $this->publishDirectory($src, $options);
         }
+
+        return $this->_published[$path] = $this->publishDirectory($src, $options);
     }
 
     /**
      * Publishes a file.
      * @param string $src the asset file to be published
-     * @return array the path and the URL that the asset is published as.
+     * @return string[] the path and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
      */
     protected function publishFile($src)
     {
-        $dir = $this->hash(dirname($src) . filemtime($src));
+        $dir = $this->hash($src);
         $fileName = basename($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         $dstFile = $dstDir . DIRECTORY_SEPARATOR . $fileName;
@@ -429,6 +498,9 @@ class AssetManager extends Component
      * @param array $options the options to be applied when publishing a directory.
      * The following options are supported:
      *
+     * - only: array, list of patterns that the file paths should match if they want to be copied.
+     * - except: array, list of patterns that the files or directories should match if they want to be excluded from being copied.
+     * - caseSensitive: boolean, whether patterns specified at "only" or "except" should be case sensitive. Defaults to true.
      * - beforeCopy: callback, a PHP callback that is called before copying each sub-directory or file.
      *   This overrides [[beforeCopy]] if set.
      * - afterCopy: callback, a PHP callback that is called after a sub-directory or file is successfully copied.
@@ -437,34 +509,37 @@ class AssetManager extends Component
      *   it is found in the target directory. This option is used only when publishing a directory.
      *   This overrides [[forceCopy]] if set.
      *
-     * @return array the path directory and the URL that the asset is published as.
+     * @return string[] the path directory and the URL that the asset is published as.
      * @throws InvalidParamException if the asset to be published does not exist.
      */
     protected function publishDirectory($src, $options)
     {
-        $dir = $this->hash($src . filemtime($src));
+        $dir = $this->hash($src);
         $dstDir = $this->basePath . DIRECTORY_SEPARATOR . $dir;
         if ($this->linkAssets) {
             if (!is_dir($dstDir)) {
+                FileHelper::createDirectory(dirname($dstDir), $this->dirMode, true);
                 symlink($src, $dstDir);
             }
-        } elseif (!is_dir($dstDir) || !empty($options['forceCopy']) || (!isset($options['forceCopy']) && $this->forceCopy)) {
-            $opts = [
-                'dirMode' => $this->dirMode,
-                'fileMode' => $this->fileMode,
-            ];
-            if (isset($options['beforeCopy'])) {
-                $opts['beforeCopy'] = $options['beforeCopy'];
-            } elseif ($this->beforeCopy !== null) {
-                $opts['beforeCopy'] = $this->beforeCopy;
-            } else {
-                $opts['beforeCopy'] = function ($from, $to) {
-                    return strncmp(basename($from), '.', 1) !== 0;
-                };
+        } elseif (!empty($options['forceCopy']) || ($this->forceCopy && !isset($options['forceCopy'])) || !is_dir($dstDir)) {
+            $opts = array_merge(
+                $options,
+                [
+                    'dirMode' => $this->dirMode,
+                    'fileMode' => $this->fileMode,
+                    'copyEmptyDirectories' => false,
+                ]
+            );
+            if (!isset($opts['beforeCopy'])) {
+                if ($this->beforeCopy !== null) {
+                    $opts['beforeCopy'] = $this->beforeCopy;
+                } else {
+                    $opts['beforeCopy'] = function ($from, $to) {
+                        return strncmp(basename($from), '.', 1) !== 0;
+                    };
+                }
             }
-            if (isset($options['afterCopy'])) {
-                $opts['afterCopy'] = $options['afterCopy'];
-            } elseif ($this->afterCopy !== null) {
+            if (!isset($opts['afterCopy']) && $this->afterCopy !== null) {
                 $opts['afterCopy'] = $this->afterCopy;
             }
             FileHelper::copyDirectory($src, $dstDir, $opts);
@@ -478,7 +553,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file or directory is published, where it will go.
      * @param string $path directory or file path being published
-     * @return string the published file path. False if the file or directory does not exist
+     * @return string|false string the published file path. False if the file or directory does not exist
      */
     public function getPublishedPath($path)
     {
@@ -488,15 +563,10 @@ class AssetManager extends Component
             return $this->_published[$path][0];
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
-            $base = $this->basePath . DIRECTORY_SEPARATOR;
-            if (is_file($path)) {
-                return $base . $this->hash(dirname($path) . filemtime($path)) . DIRECTORY_SEPARATOR . basename($path);
-            } else {
-                return $base . $this->hash($path . filemtime($path));
-            }
-        } else {
-            return false;
+            return $this->basePath . DIRECTORY_SEPARATOR . $this->hash($path) . (is_file($path) ? DIRECTORY_SEPARATOR . basename($path) : '');
         }
+
+        return false;
     }
 
     /**
@@ -504,7 +574,7 @@ class AssetManager extends Component
      * This method does not perform any publishing. It merely tells you
      * if the file path is published, what the URL will be to access it.
      * @param string $path directory or file path being published
-     * @return string the published URL for the file or directory. False if the file or directory does not exist.
+     * @return string|false string the published URL for the file or directory. False if the file or directory does not exist.
      */
     public function getPublishedUrl($path)
     {
@@ -514,14 +584,10 @@ class AssetManager extends Component
             return $this->_published[$path][1];
         }
         if (is_string($path) && ($path = realpath($path)) !== false) {
-            if (is_file($path)) {
-                return $this->baseUrl . '/' . $this->hash(dirname($path) . filemtime($path)) . '/' . basename($path);
-            } else {
-                return $this->baseUrl . '/' . $this->hash($path . filemtime($path));
-            }
-        } else {
-            return false;
+            return $this->baseUrl . '/' . $this->hash($path) . (is_file($path) ? '/' . basename($path) : '');
         }
+
+        return false;
     }
 
     /**
@@ -532,6 +598,10 @@ class AssetManager extends Component
      */
     protected function hash($path)
     {
+        if (is_callable($this->hashCallback)) {
+            return call_user_func($this->hashCallback, $path);
+        }
+        $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
         return sprintf('%x', crc32($path . Yii::getVersion()));
     }
 }

@@ -42,13 +42,13 @@ Por ejemplo:
 ]
 ```
 
-> Información: A pesar de que puedes registrar tantos componentes como desees, deberías hacerlo con criterio.
+> Info: A pesar de que puedes registrar tantos componentes como desees, deberías hacerlo con criterio.
   Los componente de la aplicación son como variables globales. Abusando demasiado de ellos puede resultar en
   un código más difícil de mantener y testear. En muchos casos, puedes simplemente crear un componente local
   y utilizarlo únicamente cuando sea necesario.
 
 
-## Componentes del Núcleo de la Aplicación <a name="core-application-components"></a>
+## Componentes del Núcleo de la Aplicación <span id="core-application-components"></span>
 
 Yii define un grupo de componentes del *núcleo* con IDs fijos y configuraciones por defecto. Por ejemplo,
 el componente [[yii\web\Application::request|request]] es utilizado para recolectar información acerca

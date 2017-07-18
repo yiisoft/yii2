@@ -6,7 +6,6 @@
  */
 
 use yii\base\InvalidConfigException;
-use yii\db\Schema;
 use yii\db\Migration;
 use yii\log\DbTarget;
 
@@ -23,7 +22,7 @@ use yii\log\DbTarget;
 class m141106_185632_log_init extends Migration
 {
     /**
-     * @var DbTarget[]
+     * @var DbTarget[] Targets to create log table for
      */
     private $dbTargets = [];
 
@@ -36,9 +35,18 @@ class m141106_185632_log_init extends Migration
         if ($this->dbTargets === []) {
             $log = Yii::$app->getLog();
 
+            $usedTargets = [];
             foreach ($log->targets as $target) {
                 if ($target instanceof DbTarget) {
-                    $this->dbTargets[] = $target;
+                    $currentTarget = [
+                        $target->db,
+                        $target->logTable,
+                    ];
+                    if (!in_array($currentTarget, $usedTargets, true)) {
+                        // do not create same table twice
+                        $usedTargets[] = $currentTarget;
+                        $this->dbTargets[] = $target;
+                    }
                 }
             }
 
@@ -62,12 +70,12 @@ class m141106_185632_log_init extends Migration
             }
 
             $this->createTable($target->logTable, [
-                'id' => Schema::TYPE_BIGPK,
-                'level' => Schema::TYPE_INTEGER,
-                'category' => Schema::TYPE_STRING,
-                'log_time' => Schema::TYPE_FLOAT,
-                'prefix' => Schema::TYPE_TEXT,
-                'message' => Schema::TYPE_TEXT,
+                'id' => $this->bigPrimaryKey(),
+                'level' => $this->integer(),
+                'category' => $this->string(),
+                'log_time' => $this->double(),
+                'prefix' => $this->text(),
+                'message' => $this->text(),
             ], $tableOptions);
 
             $this->createIndex('idx_log_level', $target->logTable, 'level');

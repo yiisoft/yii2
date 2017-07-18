@@ -5,7 +5,7 @@
 方法时，它进行的第一个操作就是解析输入的请求，然后实例化对应的[控制器操作](structure-controllers.md)处理这个请求。该过程就被称为**引导路由（routing）**。（译注：中文里既是动词也是名词）
 
 
-## 解析路由 <a name="resolving-route"></a>
+## 解析路由 <span id="resolving-route"></span>
 
 路由引导的第一步，是把传入请求解析为一个路由。如我们在 [控制器（Controllers）](structure-controllers.md#routes)
 章节中所描述的那样，路由是一个用于定位控制器操作的地址。这个过程通过 `request` 应用组件的 [[yii\web\Request::resolve()|resolve()]] 
@@ -18,7 +18,7 @@
 假使某路由最终实在无法被确定，那么 `request` 组件会抛出 [[yii\web\NotFoundHttpException]] 异常（译注：大名鼎鼎的 404）。
 
 
-### 缺省路由 <a name="default-route"></a>
+### 缺省路由 <span id="default-route"></span>
 
 如果传入请求并没有提供一个具体的路由，（一般这种情况多为于对首页的请求）此时就会启用由
 [[yii\web\Application::defaultRoute]] 属性所指定的缺省路由。该属性的默认值为 `site/index`，它指向 `site` 控制器的 `index`
@@ -32,7 +32,7 @@ return [
 ```
 
 
-### `catchAll` 路由（全拦截路由） <a name="catchall-route"></a>
+### `catchAll` 路由（全拦截路由） <span id="catchall-route"></span>
 
 有时候，你会想要将你的 Web
 应用临时调整到维护模式，所有的请求下都会显示相同的信息页。当然，要实现这一点有很多种方法。这里面最简单快捷的方法就是在应用配置中设置下
@@ -50,7 +50,7 @@ return [
 当设置了 `catchAll` 属性时，它会替换掉所有从输入的请求中解析出来的路由。如果是上文的这种设置，用于处理所有传入请求的操作都会是相同的 `site/offline`。
 
 
-## 创建操作 <a name="creating-action"></a>
+## 创建操作 <span id="creating-action"></span>
 
 一旦请求路由被确定了，紧接着的步骤就是创建一个“操作（action）”对象，用以响应该路由。
 

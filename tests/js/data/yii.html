@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="csrf-param" content="_csrf">
+    <meta name="csrf-token" content="foobar">
+  </head>
+  <body id="body">
+    <div class="csrf">
+      <form id="form1">
+        <input name="_csrf" value="" type="hidden">
+      </form>
+
+      <form id="form2">
+        <input name="_csrf" value="" type="hidden">
+      </form>
+    </div>
+
+    <div class="handle-action">
+      <!-- The rest of pjax related attributes are set using JS to prevent copy pasting and for better readability -->
+
+      <div class="no-method">
+        <div class="invalid">
+          <div class="no-form">
+            <a class="link-no-href"></a>
+            <a class="link-empty-href" href=""></a>
+            <a class="link-anchor-href" href="#"></a>
+
+            <a class="link-no-href-pjax" data-pjax></a>
+            <a class="link-empty-href-pjax" href="" data-pjax></a>
+            <a class="link-anchor-href-pjax" href="#" data-pjax></a>
+
+            <input class="not-submit-no-form" type="text">
+            <input class="submit-no-form" type="submit">
+            <button class="submit-form-not-exist" data-form="not-existing-form"></button>
+
+            <input class="not-submit-no-form-pjax" type="text" data-pjax>
+            <input class="submit-no-form-pjax" type="submit" data-pjax>
+            <button class="submit-form-not-exist-pjax" data-form="not-existing-form" data-pjax></button>
+          </div>
+
+          <div class="form">
+            <form id="not-submit-separate-form">
+              <input name="query" value="a">
+            </form>
+
+            <button class="not-submit-outside-form" type="button" data-form="not-submit-separate-form"></button>
+            <form id="not-submit-parent-form">
+              <input class="not-submit-inside-form" type="reset">
+            </form>
+
+            <button class="not-submit-outside-form-pjax"
+                    type="button"
+                    data-form="not-submit-separate-form"
+                    data-pjax></button>
+            <form id="not-submit-parent-form-pjax">
+              <input class="not-submit-inside-form-pjax" type="reset" data-pjax>
+            </form>
+          </div>
+        </div>
+
+        <div class="valid">
+          <a class="link" href="/tests/index"></a>
+          <a class="link-pjax-0" href="/tests/index" data-pjax="0"></a>
+
+          <a class="link-pjax" href="/tests/index" data-pjax></a>
+          <a class="link-pjax-1" href="/tests/index" data-pjax="1"></a>
+          <a class="link-pjax-true" href="/tests/index" data-pjax="true"></a>
+
+          <div id="pjax-separate-container"></div>
+          <a class="link-pjax-outside-container"
+             href="/tests/index"
+             data-pjax
+             data-pjax-container="#pjax-separate-container"></a>
+
+          <div id="pjax-container-1" data-pjax-container>
+            <div id="pjax-container-2" data-pjax-container>
+              <a class="link-pjax-inside-container" href="/tests/index" data-pjax></a>
+            </div>
+          </div>
+
+          <form id="submit-separate-form">
+            <input name="query" value="a">
+          </form>
+
+          <input class="submit-outside-form" type="submit" data-form="submit-separate-form">
+          <form id="submit-parent-form">
+            <button class="submit-inside-form"></button>
+          </form>
+
+          <input class="submit-outside-form-pjax" type="submit" data-form="submit-separate-form" data-pjax>
+
+          <form id="submit-parent-form-pjax">
+            <button class="submit-inside-form-pjax" data-pjax></button>
+          </form>
+        </div>
+      </div>
+
+      <div class="method">
+        <div class="no-form">
+          <a class="bad-href" href="#" data-method="get"></a>
+          <a class="bad-params" href="/tests/index" data-method="get" data-params="{'foo':'1','bar':'2'}"></a>
+
+          <a class="get-params-target"
+             href="/tests/index"
+             target="_blank"
+             data-method="get"
+             data-params='{"foo":"1","bar":"2"}'></a>
+          <a class="head" href="/tests/index" data-method="head" data-params='{"foo":"1","bar":"2"}'></a>
+          <a class="post" href="/tests/index" data-method="post" data-params='{"foo":"1","bar":"2"}'></a>
+          <a class="post-upper-case" href="/tests/index" data-method="POST" data-params='{"foo":"1","bar":"2"}'></a>
+          <a class="put" href="/tests/index" data-method="put" data-params='{"foo":"1","bar":"2"}'></a>
+
+          <a class="get-params-pjax"
+             href="/tests/index"
+             data-method="get"
+             data-params='{"foo":"1","bar":"2"}'
+             data-pjax></a>
+        </div>
+
+        <div class="form">
+          <a class="new-action-new-method"
+             href="/search"
+             data-method="post"
+             data-form="method-form"
+             data-params='{"foo":"1","bar":"2"}'></a>
+          <a class="same-action-same-method"
+             href="/tests/search"
+             data-method="get"
+             data-form="method-form"
+             data-params='{"foo":"1","bar":"2"}'></a>
+          <a class="bad-action-new-method"
+             href="#"
+             data-method="post"
+             data-form="method-form"
+             data-params='{"foo":"1","bar":"2"}'></a>
+
+          <form id="method-form" method="get" action="/tests/search">
+            <input name="query" value="a">
+          </form>
+
+          <!-- https://github.com/yiisoft/yii2/pull/8014 -->
+
+          <a class="hidden-method-action"
+             href="/tests/search"
+             data-method="get"
+             data-form="form-hidden-method-action"
+             data-params='{"foo":"1","bar":"2"}'></a>
+
+          <form id="form-hidden-method-action" method="get" action="/tests/search">
+            <input name="query" value="a">
+            <input name="method" value="b" type="hidden">
+            <input name="action" value="c" type="hidden">
+          </form>
+
+          <a class="new-action-new-method-pjax"
+             href="/search"
+             data-method="post"
+             data-form="method-form"
+             data-params='{"foo":"1","bar":"2"}'
+             data-pjax></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-methods">
+      <a id="data-methods-no-data" class="data-methods-element" href="/tests/index"></a>
+      <a id="data-methods-click-confirm"
+         class="data-methods-element"
+         href="/tests/index"
+         data-confirm="Are you sure?"></a>
+      <form>
+        <select id="data-methods-change" class="data-methods-element" data-method="get">
+          <option value="1">html</option>
+          <option value="2">css</option>
+        </select>
+      </form>
+    </div>
+
+    <div class="asset-filters">
+      <div class="scripts">
+        <script src="/js/existing1.js"></script>
+        <!-- To test correct work with absolute urls -->
+        <script src="http://foo.bar/js/existing2.js"></script>
+      </div>
+
+      <div class="stylesheets">
+        <link id="stylesheet1" href="/css/stylesheet1.css" rel="stylesheet">
+        <!-- To test correct work with absolute urls -->
+        <link id="stylesheet2" href="http://foo.bar/css/stylesheet2.css" rel="stylesheet">
+      </div>
+    </div>
+  </body>
+</html>

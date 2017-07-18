@@ -6,6 +6,10 @@ Please follow the guidelines below when creating an issue so that your issue can
 * Provide information including: the version of PHP and Yii, the type of operating system and Web server, browser type and version;
 * Provide the **complete** error call stack if available. A screenshot to explain the issue is very welcome.
 * Describe the steps for reproducing the issue. It would be even better if you could provide code to reproduce the issue.
+* If possible you may even create a failing unit test and [send it as a pull request](git-workflow.md).
+
+If the issue is related to one of the official extensions, please report it in the extension repositories issue tracker.
+If you are unsure, [report it to the main repository](https://github.com/yiisoft/yii2/issues/new) (<https://github.com/yiisoft/yii2/issues>).
 
 **Do not report an issue if**
 

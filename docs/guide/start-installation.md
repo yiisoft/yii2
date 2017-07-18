@@ -1,52 +1,86 @@
 Installing Yii
 ==============
 
-You can install Yii in two ways, using [Composer](http://getcomposer.org/) or by downloading an archive file.
+You can install Yii in two ways, using the [Composer](https://getcomposer.org/) package manager or by downloading an archive file.
 The former is the preferred way, as it allows you to install new [extensions](structure-extensions.md) or update Yii by simply running a single command.
 
-> Note: Unlike with Yii 1, standard installations of Yii 2 result in both, the framework and an application skeleton being downloaded and installed.
+Standard installations of Yii result in both the framework and a project template being downloaded and installed.
+A project template is a working Yii project implementing some basic features, such as login, contact form, etc.
+Its code is organized in a recommended way. Therefore, it can serve as a good starting point for your projects.
+    
+In this and the next few sections, we will describe how to install Yii with the so-called *Basic Project Template* and
+how to implement new features on top of this template. Yii also provides another template called
+the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md) which is better used in a team development environment
+to develop applications with multiple tiers.
+
+> Info: The Basic Project Template is suitable for developing 90 percent of Web applications. It differs
+  from the Advanced Project Template mainly in how their code is organized. If you are new to Yii, we strongly
+  recommend you stick to the Basic Project Template for its simplicity yet sufficient functionalities.
 
 
-Installing via Composer <a name="installing-via-composer"></a>
+Installing via Composer <span id="installing-via-composer"></span>
 -----------------------
+
+### Installing Composer
 
 If you do not already have Composer installed, you may do so by following the instructions at
 [getcomposer.org](https://getcomposer.org/download/). On Linux and Mac OS X, you'll run the following commands:
 
-    curl -s http://getcomposer.org/installer | php
-    mv composer.phar /usr/local/bin/composer
+```bash
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
 
 On Windows, you'll download and run [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
-Please refer to the [Composer Documentation](https://getcomposer.org/doc/) if you encounter any
-problems or want to learn more about Composer usage.
+Please refer to the [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
+if you encounter any problems.
+If you are new to Composer, we also recommend to read at least the [Basic usage section](https://getcomposer.org/doc/01-basic-usage.md)
+of the Composer documentation.
+
+In this guide all composer commands assume you have installed composer [globally](https://getcomposer.org/doc/00-intro.md#globally)
+so that it is available as the `composer` command. If you are using the `composer.phar` in the local directory instead,
+you have to adjust the example commands accordingly.
 
 If you had Composer already installed before, make sure you use an up to date version. You can update Composer
 by running `composer self-update`.
 
-With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+> Note: During the installation of Yii, Composer will need to request a lot of information from the Github API.
+> The number of requests depends on the number of dependencies your application has and may be bigger than the
+> **Github API rate limit**. If you hit this limit, Composer may ask for your Github login credentials to obtain
+> a Github API access token. On fast connections you may hit this limit earlier than Composer can handle so we
+> recommend to configure the access token before installing Yii.
+> Please refer to the [Composer documentation about Github API tokens](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
+> for instructions on how to do this.
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta4"
-    composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+### Installing Yii <span id="installing-from-composer"></span>
 
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. You only need to run this command
-once for all. The second command installs Yii in a directory named `basic`. You can choose a different directory name if you want.
+With Composer installed, you can install Yii application template by running the following command
+under a Web-accessible folder:
 
-> Note: During the installation it may happen that Composer asks for login credentials for your Github account because it hits the
-> Github API rate-limit. This is normal because Composer needs to retrieve a lot of information for all the packages from Github.
-> Logging in to Github increases the API rate-limit so Composer can go on with its work. For more details, please refer to the
-> [Composer documentation](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+```bash
+composer create-project --prefer-dist yiisoft/yii2-app-basic basic
+```
+
+This will install the latest stable version of Yii application template in a directory named `basic`.
+You can choose a different directory name if you want.
+
+> Info: If the `composer create-project` command fails you may also refer to the 
+> [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
+> for common errors. When you have fixed the error, you can resume the aborted installation
+> by running `composer update` inside of the `basic` directory.
 
 > Tip: If you want to install the latest development version of Yii, you may use the following command instead,
 > which adds a [stability option](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
->     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```bash
+> composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+> ```
 >
 > Note that the development version of Yii should not be used for production as it may break your running code.
 
 
-Installing from an Archive File <a name="installing-from-archive-file"></a>
+Installing from an Archive File <span id="installing-from-archive-file"></span>
 -------------------------------
 
 Installing Yii from an archive file involves three steps:
@@ -62,51 +96,64 @@ Installing Yii from an archive file involves three steps:
    ```
 
 
-Other Installation Options <a name="other-installation-options"></a>
+Other Installation Options <span id="other-installation-options"></span>
 --------------------------
 
 The above installation instructions show how to install Yii, which also creates a basic Web application that works out of the box.
-This approach is a good starting point for small projects, or for when you just start learning Yii.
+This approach is a good starting point for most projects, either small or big. It is especially suitable if you just
+start learning Yii.
 
 But there are other installation options available:
 
 * If you only want to install the core framework and would like to build an entire  application from scratch,
   you may follow the instructions as explained in [Building Application from Scratch](tutorial-start-from-scratch.md).
 * If you want to start with a more sophisticated application, better suited to team development environments,
-  you may consider installing the [Advanced Application Template](tutorial-advanced-app.md).
+  you may consider installing the [Advanced Project Template](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/README.md).
 
 
-Verifying the Installation <a name="verifying-installation"></a>
+Verifying the Installation <span id="verifying-installation"></span>
 --------------------------
 
-After installation, you can use your browser to access the installed Yii application with the following URL:
+After installation is done, either configure your web server (see next section) or use the
+[built-in PHP web server](https://secure.php.net/manual/en/features.commandline.webserver.php) by running the following
+console command while in the project `web` directory:
+ 
+```bash
+php yii serve
+```
+
+> Note: By default the HTTP-server will listen to port 8080. However if that port is already in use or you wish to 
+serve multiple applications this way, you might want to specify what port to use. Just add the --port argument:
+
+```bash
+php yii serve --port=8888
+```
+
+You can use your browser to access the installed Yii application with the following URL:
 
 ```
-http://localhost/basic/web/index.php
+http://localhost:8080/
 ```
-
-This URL assumes you have installed Yii in a directory named `basic`, directly under the Web server's document root directory,
-and that the Web server is running on your local machine (`localhost`). You may need to adjust it to your installation environment.
 
 ![Successful Installation of Yii](images/start-app-installed.png)
 
 You should see the above "Congratulations!" page in your browser. If not, please check if your PHP installation satisfies
 Yii's requirements. You can check if the minimum requirements are met using one of the following approaches:
 
-* Use a browser to access the URL `http://localhost/basic/requirements.php`
+* Copy `/requirements.php` to `/web/requirements.php` and then use a browser to access it via `http://localhost/requirements.php`
 * Run the following commands:
 
-  ```
+  ```bash
   cd basic
   php requirements.php
   ```
 
-You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you should have PHP 5.4 or above. You should also install
-the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php) and a corresponding database driver
-(such as `pdo_mysql` for MySQL databases), if your application needs a database.
+You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
+should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
-Configuring Web Servers <a name="configuring-web-servers"></a>
+Configuring Web Servers <span id="configuring-web-servers"></span>
 -----------------------
 
 > Info: You may skip this subsection for now if you are just test driving Yii with no intention
@@ -114,9 +161,9 @@ Configuring Web Servers <a name="configuring-web-servers"></a>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebooks
-[HHVM](http://hhvm.com/) however there are some edge cases where HHVM behaves different than native
-PHP so you have to take some extra care when using HHVM.
+Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebook's
+[HHVM](http://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
+PHP, so you have to take some extra care when using HHVM.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration
@@ -133,12 +180,12 @@ to modify its Web server configuration, you may still adjust the structure of yo
 the [Shared Hosting Environment](tutorial-shared-hosting.md) section for more details.
 
 
-### Recommended Apache Configuration <a name="recommended-apache-configuration"></a>
+### Recommended Apache Configuration <span id="recommended-apache-configuration"></span>
 
 Use the following configuration in Apache's `httpd.conf` file or within a virtual host configuration. Note that you
 should replace `path/to/basic/web` with the actual path for `basic/web`.
 
-```
+```apache
 # Set document root to be "basic/web"
 DocumentRoot "path/to/basic/web"
 
@@ -156,13 +203,13 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Recommended Nginx Configuration <a name="recommended-nginx-configuration"></a>
+### Recommended Nginx Configuration <span id="recommended-nginx-configuration"></span>
 
 To use [Nginx](http://wiki.nginx.org/), you should install PHP as an [FPM SAPI](http://php.net/install.fpm).
 You may use the following Nginx configuration, replacing `path/to/basic/web` with the actual path for 
 `basic/web` and `mysite.local` with the actual hostname to serve.
 
-```
+```nginx
 server {
     charset utf-8;
     client_max_body_size 128M;
@@ -174,12 +221,12 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-    access_log  /path/to/basic/log/access.log main;
+    access_log  /path/to/basic/log/access.log;
     error_log   /path/to/basic/log/error.log;
 
     location / {
         # Redirect everything that isn't a real file to index.php
-        try_files $uri $uri/ /index.php?$args;
+        try_files $uri $uri/ /index.php$is_args$args;
     }
 
     # uncomment to avoid processing of calls to non-existing static files by Yii
@@ -188,14 +235,20 @@ server {
     #}
     #error_page 404 /404.html;
 
+    # deny accessing php files for the /assets directory
+    location ~ ^/assets/.*\.php$ {
+        deny all;
+    }
+
     location ~ \.php$ {
-        include fastcgi.conf;
-        fastcgi_pass   127.0.0.1:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass 127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
         try_files $uri =404;
     }
 
-    location ~ /\.(ht|svn|git) {
+    location ~* /\. {
         deny all;
     }
 }

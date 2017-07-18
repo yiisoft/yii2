@@ -14,6 +14,13 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
+ * BaseListView is a base class for widgets displaying data from data provider
+ * such as ListView and GridView.
+ *
+ * It provides features like sorting, paging and also filtering the data.
+ *
+ * For more details and usage information on BaseListView, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -32,11 +39,15 @@ abstract class BaseListView extends Widget
     /**
      * @var array the configuration for the pager widget. By default, [[LinkPager]] will be
      * used to render the pager. You can use a different widget class by configuring the "class" element.
+     * Note that the widget must support the `pagination` property which will be populated with the
+     * [[\yii\data\BaseDataProvider::pagination|pagination]] value of the [[dataProvider]].
      */
     public $pager = [];
     /**
      * @var array the configuration for the sorter widget. By default, [[LinkSorter]] will be
      * used to render the sorter. You can use a different widget class by configuring the "class" element.
+     * Note that the widget must support the `sort` property which will be populated with the
+     * [[\yii\data\BaseDataProvider::sort|sort]] value of the [[dataProvider]].
      */
     public $sorter = [];
     /**
@@ -60,11 +71,17 @@ abstract class BaseListView extends Widget
      */
     public $summaryOptions = ['class' => 'summary'];
     /**
-     * @var boolean whether to show the list view if [[dataProvider]] returns no data.
+     * @var bool whether to show an empty list view if [[dataProvider]] returns no data.
+     * The default value is false which displays an element according to the [[emptyText]]
+     * and [[emptyTextOptions]] properties.
      */
     public $showOnEmpty = false;
     /**
-     * @var string the HTML content to be displayed when [[dataProvider]] does not have any data.
+     * @var string|false the HTML content to be displayed when [[dataProvider]] does not have any data.
+     * When this is set to `false` no extra HTML content will be generated.
+     * The default value is the text "No results found." which will be translated to the current application language.
+     * @see showOnEmpty
+     * @see emptyTextOptions
      */
     public $emptyText;
     /**
@@ -112,8 +129,8 @@ abstract class BaseListView extends Widget
      */
     public function run()
     {
-        if ($this->dataProvider->getCount() > 0 || $this->showOnEmpty) {
-            $content = preg_replace_callback("/{\\w+}/", function ($matches) {
+        if ($this->showOnEmpty || $this->dataProvider->getCount() > 0) {
+            $content = preg_replace_callback('/{\\w+}/', function ($matches) {
                 $content = $this->renderSection($matches[0]);
 
                 return $content === false ? $matches[0] : $content;
@@ -121,15 +138,17 @@ abstract class BaseListView extends Widget
         } else {
             $content = $this->renderEmpty();
         }
-        $tag = ArrayHelper::remove($this->options, 'tag', 'div');
-        echo Html::tag($tag, $content, $this->options);
+
+        $options = $this->options;
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+        echo Html::tag($tag, $content, $options);
     }
 
     /**
      * Renders a section of the specified name.
      * If the named section is not supported, false will be returned.
      * @param string $name the section name, e.g., `{summary}`, `{items}`.
-     * @return string|boolean the rendering result of the section, or false if the named section is not supported.
+     * @return string|bool the rendering result of the section, or false if the named section is not supported.
      */
     public function renderSection($name)
     {
@@ -154,8 +173,12 @@ abstract class BaseListView extends Widget
      */
     public function renderEmpty()
     {
-        $tag = ArrayHelper::remove($this->emptyTextOptions, 'tag', 'div');
-        return Html::tag($tag, ($this->emptyText === null ? Yii::t('yii', 'No results found.') : $this->emptyText), $this->emptyTextOptions);
+        if ($this->emptyText === false) {
+            return '';
+        }
+        $options = $this->emptyTextOptions;
+        $tag = ArrayHelper::remove($options, 'tag', 'div');
+        return Html::tag($tag, $this->emptyText, $options);
     }
 
     /**
@@ -167,7 +190,8 @@ abstract class BaseListView extends Widget
         if ($count <= 0) {
             return '';
         }
-        $tag = ArrayHelper::remove($this->summaryOptions, 'tag', 'div');
+        $summaryOptions = $this->summaryOptions;
+        $tag = ArrayHelper::remove($summaryOptions, 'tag', 'div');
         if (($pagination = $this->dataProvider->getPagination()) !== false) {
             $totalCount = $this->dataProvider->getTotalCount();
             $begin = $pagination->getPage() * $pagination->pageSize + 1;
@@ -185,7 +209,7 @@ abstract class BaseListView extends Widget
                         'totalCount' => $totalCount,
                         'page' => $page,
                         'pageCount' => $pageCount,
-                    ]), $this->summaryOptions);
+                    ]), $summaryOptions);
             }
         } else {
             $begin = $page = $pageCount = 1;
@@ -198,7 +222,7 @@ abstract class BaseListView extends Widget
                     'totalCount' => $totalCount,
                     'page' => $page,
                     'pageCount' => $pageCount,
-                ]), $this->summaryOptions);
+                ]), $summaryOptions);
             }
         }
 

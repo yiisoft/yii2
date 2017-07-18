@@ -19,6 +19,8 @@ use yii\base\InvalidConfigException;
  * Also, if the fixture is an instance of [[ActiveFixture]], you will be able to access AR models
  * through the syntax `$this->fixtureName('model name')`.
  *
+ * For more details and usage information on FixtureTrait, see the [guide article on fixtures](guide:test-fixtures).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -123,6 +125,16 @@ trait FixtureTrait
     }
 
     /**
+     * Initialize the fixtures
+     * @since 2.0.12
+     */
+    public function initFixtures()
+    {
+        $this->unloadFixtures();
+        $this->loadFixtures();
+    }
+
+    /**
      * Returns the fixture objects as specified in [[globalFixtures()]] and [[fixtures()]].
      * @return Fixture[] the loaded fixtures for the current test case
      */
@@ -168,7 +180,7 @@ trait FixtureTrait
             if (!is_array($fixture)) {
                 $class = ltrim($fixture, '\\');
                 $fixtures[$name] = ['class' => $class];
-                $aliases[$class] = is_integer($name) ? $class : $name;
+                $aliases[$class] = is_int($name) ? $class : $name;
             } elseif (isset($fixture['class'])) {
                 $class = ltrim($fixture['class'], '\\');
                 $config[$class] = $fixture;

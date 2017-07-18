@@ -8,8 +8,9 @@
 namespace yii\widgets;
 
 use Yii;
-use yii\base\Widget;
 use yii\base\InvalidConfigException;
+use yii\base\Widget;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -21,7 +22,7 @@ use yii\helpers\Html;
  *
  * To use Breadcrumbs, you need to configure its [[links]] property, which specifies the links to be displayed. For example,
  *
- * ~~~
+ * ```php
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
  *     'itemTemplate' => "<li><i>{link}</i></li>\n", // template for all links
@@ -35,18 +36,18 @@ use yii\helpers\Html;
  *         'Edit',
  *     ],
  * ]);
- * ~~~
+ * ```
  *
  * Because breadcrumbs usually appears in nearly every page of a website, you may consider placing it in a layout view.
  * You can use a view parameter (e.g. `$this->params['breadcrumbs']`) to configure the links in different
  * views. In the layout view, you assign this view parameter to the [[links]] property like the following:
  *
- * ~~~
+ * ```php
  * // $this is the view object currently being used
  * echo Breadcrumbs::widget([
  *     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
  * ]);
- * ~~~
+ * ```
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -63,7 +64,7 @@ class Breadcrumbs extends Widget
      */
     public $options = ['class' => 'breadcrumb'];
     /**
-     * @var boolean whether to HTML-encode the link labels.
+     * @var bool whether to HTML-encode the link labels.
      */
     public $encodeLabels = true;
     /**
@@ -101,6 +102,14 @@ class Breadcrumbs extends Widget
      * ]
      * ```
      *
+     * Since version 2.0.3 each individual link can override global [[encodeLabels]] param like the following:
+     *
+     * ```php
+     * [
+     *     'label' => '<strong>Hello!</strong>',
+     *     'encode' => false,
+     * ]
+     * ```
      */
     public $links = [];
     /**
@@ -150,8 +159,9 @@ class Breadcrumbs extends Widget
      */
     protected function renderItem($link, $template)
     {
-        if (isset($link['label'])) {
-            $label = $this->encodeLabels ? Html::encode($link['label']) : $link['label'];
+        $encodeLabel = ArrayHelper::remove($link, 'encode', $this->encodeLabels);
+        if (array_key_exists('label', $link)) {
+            $label = $encodeLabel ? Html::encode($link['label']) : $link['label'];
         } else {
             throw new InvalidConfigException('The "label" element is required for each link.');
         }

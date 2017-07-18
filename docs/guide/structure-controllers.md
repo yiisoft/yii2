@@ -8,9 +8,9 @@ controllers will analyze incoming request data, pass them to [models](structure-
 into [views](structure-views.md), and finally generate outgoing responses.
 
 
-## Actions <a name="actions"></a>
+## Actions <span id="actions"></span>
 
-Controllers are composed by *actions* which are the most basic units that end users can address and request for
+Controllers are composed of *actions* which are the most basic units that end users can address and request for
 execution. A controller can have one or multiple actions.
 
 The following example shows a `post` controller with two actions: `view` and `create`:
@@ -57,19 +57,19 @@ according to the requested model ID; If the model is loaded successfully, it wil
 a [view](structure-views.md) named `view`. Otherwise, it will throw an exception.
 
 In the `create` action (defined by the `actionCreate()` method), the code is similar. It first tries to populate
-the [model](structure-models.md) using the request data and save the model. If both succeed it will redirect
-the browser to the `view` action with the ID of the newly created model. Otherwise it will display
+a new instance of the [model](structure-models.md) using the request data and save the model. If both succeed it
+will redirect the browser to the `view` action with the ID of the newly created model. Otherwise it will display
 the `create` view through which users can provide the needed input.
 
 
-## Routes <a name="routes"></a>
+## Routes <span id="routes"></span>
 
 End users address actions through the so-called *routes*. A route is a string that consists of the following parts:
 
 * a module ID: this exists only if the controller belongs to a non-application [module](structure-modules.md);
-* a controller ID: a string that uniquely identifies the controller among all controllers within the same application
+* a [controller ID](#controller-ids): a string that uniquely identifies the controller among all controllers within the same application
   (or the same module if the controller belongs to a module);
-* an action ID: a string that uniquely identifies the action among all actions within the same controller.
+* an [action ID](#action-ids): a string that uniquely identifies the action among all actions within the same controller.
 
 Routes take the following format:
 
@@ -85,10 +85,10 @@ ModuleID/ControllerID/ActionID
 
 So if a user requests with the URL `http://hostname/index.php?r=site/index`, the `index` action in the `site` controller
 will be executed. For more details on how routes are resolved into actions, please refer to
-the [Routing and URL Generation](runtime-routing.md) section.
+the [Routing and URL Creation](runtime-routing.md) section.
 
 
-## Creating Controllers <a name="creating-controllers"></a>
+## Creating Controllers <span id="creating-controllers"></span>
 
 In [[yii\web\Application|Web applications]], controllers should extend from [[yii\web\Controller]] or its
 child classes. Similarly in [[yii\console\Application|console applications]], controllers should extend from
@@ -105,58 +105,58 @@ class SiteController extends Controller
 ```
 
 
-### Controller IDs <a name="controller-ids"></a>
+### Controller IDs <span id="controller-ids"></span>
 
 Usually, a controller is designed to handle the requests regarding a particular type of resource.
 For this reason, controller IDs are often nouns referring to the types of the resources that they are handling.
 For example, you may use `article` as the ID of a controller that handles article data.
 
 By default, controller IDs should contain these characters only: English letters in lower case, digits,
-underscores, dashes and forward slashes. For example, `article` and `post-comment` are both valid controller IDs,
+underscores, hyphens, and forward slashes. For example, `article` and `post-comment` are both valid controller IDs,
 while `article?`, `PostComment`, `admin\post` are not.
 
 A controller ID may also contain a subdirectory prefix. For example, `admin/article` stands for an `article` controller
 in the `admin` subdirectory under the [[yii\base\Application::controllerNamespace|controller namespace]].
-Valid characters for subdirectory prefixes include: English letters in lower and upper cases, digits, underscores and
+Valid characters for subdirectory prefixes include: English letters in lower and upper cases, digits, underscores, and
 forward slashes, where forward slashes are used as separators for multi-level subdirectories (e.g. `panels/admin`).
 
 
-### Controller Class Naming <a name="controller-class-naming"></a>
+### Controller Class Naming <span id="controller-class-naming"></span>
 
-Controller class names can be derived from controller IDs according to the following rules:
+Controller class names can be derived from controller IDs according to the following procedure:
 
-* Turn the first letter in each word separated by dashes into upper case. Note that if the controller ID
+1. Turn the first letter in each word separated by hyphens into upper case. Note that if the controller ID
   contains slashes, this rule only applies to the part after the last slash in the ID.
-* Remove dashes and replace any forward slashes with backward slashes.
-* Append the suffix `Controller`.
-* And prepend the [[yii\base\Application::controllerNamespace|controller namespace]].
+2. Remove hyphens and replace any forward slashes with backward slashes.
+3. Append the suffix `Controller`.
+4. Prepend the [[yii\base\Application::controllerNamespace|controller namespace]].
 
-The followings are some examples, assuming the [[yii\base\Application::controllerNamespace|controller namespace]]
+The following are some examples, assuming the [[yii\base\Application::controllerNamespace|controller namespace]]
 takes the default value `app\controllers`:
 
-* `article` derives `app\controllers\ArticleController`;
-* `post-comment` derives `app\controllers\PostCommentController`;
-* `admin/post-comment` derives `app\controllers\admin\PostCommentController`;
-* `adminPanels/post-comment` derives `app\controllers\adminPanels\PostCommentController`.
+* `article` becomes `app\controllers\ArticleController`;
+* `post-comment` becomes `app\controllers\PostCommentController`;
+* `admin/post-comment` becomes `app\controllers\admin\PostCommentController`;
+* `adminPanels/post-comment` becomes `app\controllers\adminPanels\PostCommentController`.
 
 Controller classes must be [autoloadable](concept-autoloading.md). For this reason, in the above examples,
 the `article` controller class should be saved in the file whose [alias](concept-aliases.md)
-is `@app/controllers/ArticleController.php`; while the `admin/post2-comment` controller should be
-in `@app/controllers/admin/Post2CommentController.php`.
+is `@app/controllers/ArticleController.php`; while the `admin/post-comment` controller should be
+in `@app/controllers/admin/PostCommentController.php`.
 
-> Info: The last example `admin/post2-comment` shows how you can put a controller under a sub-directory
+> Info: The last example `admin/post-comment` shows how you can put a controller under a sub-directory
   of the [[yii\base\Application::controllerNamespace|controller namespace]]. This is useful when you want
   to organize your controllers into several categories and you do not want to use [modules](structure-modules.md).
 
 
-### Controller Map <a name="controller-map"></a>
+### Controller Map <span id="controller-map"></span>
 
-You can configure [[yii\base\Application::controllerMap|controller map]] to overcome the constraints
-of the controller IDs and class names described above. This is mainly useful when you are using some
-third-party controllers which you do not control over their class names.
+You can configure the [[yii\base\Application::controllerMap|controller map]] to overcome the constraints
+of the controller IDs and class names described above. This is mainly useful when you are using
+third-party controllers and you do not have control over their class names.
 
-You may configure [[yii\base\Application::controllerMap|controller map]] in the
-[application configuration](structure-applications.md#application-configurations) like the following:
+You may configure the [[yii\base\Application::controllerMap|controller map]] in the
+[application configuration](structure-applications.md#application-configurations). For example:
 
 ```php
 [
@@ -174,12 +174,12 @@ You may configure [[yii\base\Application::controllerMap|controller map]] in the
 ```
 
 
-### Default Controller <a name="default-controller"></a>
+### Default Controller <span id="default-controller"></span>
 
 Each application has a default controller specified via the [[yii\base\Application::defaultRoute]] property.
-When a request does not specify a [route](#ids-routes), the route specified by this property will be used.
+When a request does not specify a [route](#routes), the route specified by this property will be used.
 For [[yii\web\Application|Web applications]], its value is `'site'`, while for [[yii\console\Application|console applications]],
-it is `help`. Therefore, if a URL is `http://hostname/index.php`, it means the `site` controller will handle the request.
+it is `help`. Therefore, if a URL is `http://hostname/index.php`, then the `site` controller will handle the request.
 
 You may change the default controller with the following [application configuration](structure-applications.md#application-configurations):
 
@@ -190,11 +190,11 @@ You may change the default controller with the following [application configurat
 ```
 
 
-## Creating Actions <a name="creating-actions"></a>
+## Creating Actions <span id="creating-actions"></span>
 
 Creating actions can be as simple as defining the so-called *action methods* in a controller class. An action method is
 a *public* method whose name starts with the word `action`. The return value of an action method represents
-the response data to be sent to end users. The following code defines two actions `index` and `hello-world`:
+the response data to be sent to end users. The following code defines two actions, `index` and `hello-world`:
 
 ```php
 namespace app\controllers;
@@ -216,31 +216,31 @@ class SiteController extends Controller
 ```
 
 
-### Action IDs <a name="action-ids"></a>
+### Action IDs <span id="action-ids"></span>
 
-An action is often designed to perform a particular manipulation about a resource. For this reason,
+An action is often designed to perform a particular manipulation of a resource. For this reason,
 action IDs are usually verbs, such as `view`, `update`, etc.
 
 By default, action IDs should contain these characters only: English letters in lower case, digits,
-underscores and dashes. The dashes in an actionID are used to separate words. For example,
-`view`, `update2`, `comment-post` are all valid action IDs, while `view?`, `Update` are not.
+underscores, and hyphens (you can use hyphens to separate words). For example,
+`view`, `update2`, and `comment-post` are all valid action IDs, while `view?` and `Update` are not.
 
 You can create actions in two ways: inline actions and standalone actions. An inline action is
 defined as a method in the controller class, while a standalone action is a class extending
-[[yii\base\Action]] or its child class. Inline actions take less effort to create and are often preferred
+[[yii\base\Action]] or its child classes. Inline actions take less effort to create and are often preferred
 if you have no intention to reuse these actions. Standalone actions, on the other hand, are mainly
 created to be used in different controllers or be redistributed as [extensions](structure-extensions.md).
 
 
-### Inline Actions <a name="inline-actions"></a>
+### Inline Actions <span id="inline-actions"></span>
 
 Inline actions refer to the actions that are defined in terms of action methods as we just described.
 
-The names of the action methods are derived from action IDs according to the following criteria:
+The names of the action methods are derived from action IDs according to the following procedure:
 
-* Turn the first letter in each word of the action ID into upper case;
-* Remove dashes;
-* Prepend the prefix `action`.
+1. Turn the first letter in each word of the action ID into upper case.
+2. Remove hyphens.
+3. Prepend the prefix `action`.
 
 For example, `index` becomes `actionIndex`, and `hello-world` becomes `actionHelloWorld`.
 
@@ -255,7 +255,7 @@ if you plan to reuse the same action in different places, or if you want to redi
 you should consider defining it as a *standalone action*.
 
 
-### Standalone Actions <a name="standalone-actions"></a>
+### Standalone Actions <span id="standalone-actions"></span>
 
 Standalone actions are defined in terms of action classes extending [[yii\base\Action]] or its child classes.
 For example, in the Yii releases, there are [[yii\web\ViewAction]] and [[yii\web\ErrorAction]], both of which
@@ -284,8 +284,7 @@ As you can see, the `actions()` method should return an array whose keys are act
 action class names or [configurations](concept-configurations.md). Unlike inline actions, action IDs for standalone
 actions can contain arbitrary characters, as long as they are declared in the `actions()` method.
 
-
-To create a standalone action class, you should extend [[yii\base\Action]] or its child class, and implement
+To create a standalone action class, you should extend [[yii\base\Action]] or a child class, and implement
 a public method named `run()`. The role of the `run()` method is similar to that of an action method. For example,
 
 ```php
@@ -304,13 +303,12 @@ class HelloWorldAction extends Action
 ```
 
 
-### Action Results <a name="action-results"></a>
+### Action Results <span id="action-results"></span>
 
-The return value of an action method or the `run()` method of a standalone action is significant. It stands
+The return value of an action method or of the `run()` method of a standalone action is significant. It stands
 for the result of the corresponding action.
 
-The return value can be a [response](runtime-responses.md) object which will be sent to as the response
-to end users.
+The return value can be a [response](runtime-responses.md) object which will be sent to the end user as the response.
 
 * For [[yii\web\Application|Web applications]], the return value can also be some arbitrary data which will
   be assigned to [[yii\web\Response::data]] and be further converted into a string representing the response body.
@@ -331,7 +329,7 @@ public function actionForward()
 ```
 
 
-### Action Parameters <a name="action-parameters"></a>
+### Action Parameters <span id="action-parameters"></span>
 
 The action methods for inline actions and the `run()` methods for standalone actions can take parameters,
 called *action parameters*. Their values are obtained from requests. For [[yii\web\Application|Web applications]],
@@ -357,7 +355,7 @@ class PostController extends Controller
 The action parameters will be populated as follows for different requests:
 
 * `http://hostname/index.php?r=post/view&id=123`: the `$id` parameter will be filled with the value
-  `'123'`,  while `$version` is still null because there is no `version` query parameter.
+  `'123'`,  while `$version` is still `null` because there is no `version` query parameter.
 * `http://hostname/index.php?r=post/view&id=123&version=2`: the `$id` and `$version` parameters will
   be filled with `'123'` and `'2'`, respectively.
 * `http://hostname/index.php?r=post/view`: a [[yii\web\BadRequestHttpException]] exception will be thrown
@@ -382,10 +380,10 @@ The above examples mainly show how action parameters work for Web applications. 
 please refer to the [Console Commands](tutorial-console.md) section for more details.
 
 
-### Default Action <a name="default-action"></a>
+### Default Action <span id="default-action"></span>
 
 Each controller has a default action specified via the [[yii\base\Controller::defaultAction]] property.
-When a [route](#ids-routes) contains the controller ID only, it implies that the default action of
+When a [route](#routes) contains the controller ID only, it implies that the default action of
 the specified controller is requested.
 
 By default, the default action is set as `index`. If you want to change the default value, simply override
@@ -408,7 +406,7 @@ class SiteController extends Controller
 ```
 
 
-## Controller Lifecycle <a name="controller-lifecycle"></a>
+## Controller Lifecycle <span id="controller-lifecycle"></span>
 
 When processing a request, an [application](structure-applications.md) will create a controller
 based on the requested [route](#routes). The controller will then undergo the following lifecycle
@@ -422,28 +420,28 @@ to fulfill the request:
    * If the action ID is found to match an action method, an inline action will be created;
    * Otherwise an [[yii\base\InvalidRouteException]] exception will be thrown.
 3. The controller sequentially calls the `beforeAction()` method of the application, the module (if the controller
-   belongs to a module) and the controller.
-   * If one of the calls returns false, the rest of the uncalled `beforeAction()` will be skipped and the
+   belongs to a module), and the controller.
+   * If one of the calls returns `false`, the rest of the uncalled `beforeAction()` methods will be skipped and the
      action execution will be cancelled.
    * By default, each `beforeAction()` method call will trigger a `beforeAction` event to which you can attach a handler.
-4. The controller runs the action:
-   * The action parameters will be analyzed and populated from the request data;
+4. The controller runs the action.
+   * The action parameters will be analyzed and populated from the request data.
 5. The controller sequentially calls the `afterAction()` method of the controller, the module (if the controller
-   belongs to a module) and the application.
+   belongs to a module), and the application.
    * By default, each `afterAction()` method call will trigger an `afterAction` event to which you can attach a handler.
 6. The application will take the action result and assign it to the [response](runtime-responses.md).
 
 
-## Best Practices <a name="best-practices"></a>
+## Best Practices <span id="best-practices"></span>
 
-In a well-designed application, controllers are often very thin with each action containing only a few lines of code.
+In a well-designed application, controllers are often very thin, with each action containing only a few lines of code.
 If your controller is rather complicated, it usually indicates that you should refactor it and move some code
 to other classes.
 
-In summary, controllers
+Here are some specific best practices. Controllers
 
 * may access the [request](runtime-requests.md) data;
 * may call methods of [models](structure-models.md) and other service components with request data;
 * may use [views](structure-views.md) to compose responses;
-* should NOT process the request data - this should be done in [models](structure-models.md);
+* should NOT process the request data - this should be done in [the model layer](structure-models.md);
 * should avoid embedding HTML or other presentational code - this is better done in [views](structure-views.md).

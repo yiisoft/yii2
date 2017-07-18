@@ -19,7 +19,7 @@ create table "log"
    "id"          integer PRIMARY KEY AUTOINCREMENT NOT NULL,
    "level"       integer,
    "category"    varchar(255),
-   "log_time"    float,
+   "log_time"    double,
    "prefix"      text,
    "message"     text
 );

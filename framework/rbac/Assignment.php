@@ -13,6 +13,8 @@ use yii\base\Object;
 /**
  * Assignment represents an assignment of a role to a user.
  *
+ * For more details and usage information on Assignment, see the [guide article on security authorization](guide:security-authorization).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0
@@ -20,15 +22,15 @@ use yii\base\Object;
 class Assignment extends Object
 {
     /**
-     * @var string|integer user ID (see [[\yii\web\User::id]])
+     * @var string|int user ID (see [[\yii\web\User::id]])
      */
     public $userId;
     /**
-     * @return string the role name
+     * @var string the role name
      */
     public $roleName;
     /**
-     * @var integer UNIX timestamp representing the assignment creation time
+     * @var int UNIX timestamp representing the assignment creation time
      */
     public $createdAt;
 }

@@ -4,7 +4,7 @@
 依赖注入（Dependency Injection，DI）容器就是一个对象，它知道怎样初始化并配置对象及其依赖的所有对象。[Martin 的文章](http://martinfowler.com/articles/injection.html) 已经解释了 DI 容器为什么很有用。这里我们主要讲解 Yii 提供的 DI 容器的使用方法。
 
 
-依赖注入 <a name="dependency-injection"></a>
+依赖注入 <span id="dependency-injection"></span>
 --------------------
 
 Yii 通过 [[yii\di\Container]] 类提供 DI 容器特性。它支持如下几种类型的依赖注入：
@@ -14,7 +14,7 @@ Yii 通过 [[yii\di\Container]] 类提供 DI 容器特性。它支持如下几�
 * PHP 回调注入.
 
 
-### 构造方法注入 <a name="constructor-injection"></a>
+### 构造方法注入 <span id="constructor-injection"></span>
 
 在参数类型提示的帮助下，DI 容器实现了构造方法注入。当容器被用于创建一个新对象时，类型提示会告诉它要依赖什么类或接口。容器会尝试获取它所依赖的类或接口的实例，然后通过构造器将其注入新的对象。例如：
 
@@ -33,7 +33,7 @@ $foo = new Foo($bar);
 ```
 
 
-### Setter 和属性注入 <a name="setter-and-property-injection"></a>
+### Setter 和属性注入 <span id="setter-and-property-injection"></span>
 
 Setter 和属性注入是通过[配置](concept-configurations.md)提供支持的。当注册一个依赖或创建一个新对象时，你可以提供一个配置，该配置会提供给容器用于通过相应的 Setter 或属性注入依赖。例如：
 
@@ -64,7 +64,7 @@ $container->get('Foo', [], [
 ```
 
 
-### PHP 回调注入 <a name="php-callable-injection"></a>
+### PHP 回调注入 <span id="php-callable-injection"></span>
 
 这种情况下，容器将使用一个注册过的 PHP 回调创建一个类的新实例。回调负责解决依赖并将其恰当地注入新创建的对象。例如：
 
@@ -77,7 +77,7 @@ $foo = $container->get('Foo');
 ```
 
 
-注册依赖关系 <a name="registering-dependencies"></a>
+注册依赖关系 <span id="registering-dependencies"></span>
 ------------------------
 
 可以用 [[yii\di\Container::set()]] 注册依赖关系。注册会用到一个依赖关系名称和一个依赖关系的定义。依赖关系名称可以是一个类名，一个接口名或一个别名。依赖关系的定义可以是一个类名，一个配置数组，或者一个 PHP 回调。
@@ -140,7 +140,7 @@ $container->setSingleton('yii\db\Connection', [
 ```
 
 
-解决依赖关系 <a name="resolving-dependencies"></a>
+解决依赖关系 <span id="resolving-dependencies"></span>
 ----------------------
 
 注册依赖关系后，就可以使用 DI 容器创建新对象了。容器会自动解决依赖关系，将依赖实例化并注入新创建的对象。依赖关系的解决是递归的，如果一个依赖关系中还有其他依赖关系，则这些依赖关系都会被自动解决。
@@ -216,7 +216,7 @@ $lister = new UserLister($finder);
 ```
 
 
-实践中的运用 <a name="practical-usage"></a>
+实践中的运用 <span id="practical-usage"></span>
 ---------------
 
 当在应用程序的[入口脚本](structure-entry-scripts.md)中引入 `Yii.php` 文件时，Yii 就创建了一个 DI 容器。这个 DI 容器可以通过 [[Yii::$container]] 访问。当调用 [[Yii::createObject()]] 时，此方法实际上会调用这个容器的 [[yii\di\Container::get()|get()]] 方法创建新对象。如上所述，DI 容器会自动解决依赖关系（如果有）并将其注入新创建的对象中。因为 Yii 在其多数核心代码中都使用了
@@ -269,7 +269,7 @@ class HotelController extends Controller
 现在如果你再次访问这个控制器，一个 `app\components\BookingService` 的实例就会被创建并被作为第三个参数注入到控制器的构造器中。
 
 
-什么时候注册依赖关系 <a name="when-to-register-dependencies"></a>
+什么时候注册依赖关系 <span id="when-to-register-dependencies"></span>
 -----------------------------
 
 由于依赖关系在创建新对象时需要解决，因此它们的注册应该尽早完成。如下是推荐的实践：
@@ -278,7 +278,7 @@ class HotelController extends Controller
 * 如果你是一个可再分发[扩展](structure-extensions.md)的开发者，你可以将依赖关系注册到扩展的引导类中。
 
 
-总结 <a name="summary"></a>
+总结 <span id="summary"></span>
 -------
 
 依赖注入和[服务定位器](concept-service-locator.md)都是流行的设计模式，它们使你可以用充分解耦且更利于测试的风格构建软件。强烈推荐你阅读 [Martin 的文章](http://martinfowler.com/articles/injection.html) ，对依赖注入和服务定位器有个更深入的理解。

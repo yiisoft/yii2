@@ -21,6 +21,8 @@ use Yii;
  * You should normally use InitDbFixture to prepare a skeleton test database.
  * Other DB fixtures will then add specific tables and data to this database.
  *
+ * For more details and usage information on InitDbFixture, see the [guide article on fixtures](guide:test-fixtures).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -28,7 +30,7 @@ class InitDbFixture extends DbFixture
 {
     /**
      * @var string the init script file that should be executed when loading this fixture.
-     * This should be either a file path or path alias. Note that if the file does not exist,
+     * This should be either a file path or [path alias](guide:concept-aliases). Note that if the file does not exist,
      * no error will be raised.
      */
     public $initScript = '@app/tests/fixtures/initdb.php';
@@ -64,7 +66,7 @@ class InitDbFixture extends DbFixture
     {
         $file = Yii::getAlias($this->initScript);
         if (is_file($file)) {
-            require($file);
+            require $file;
         }
     }
 
@@ -86,7 +88,7 @@ class InitDbFixture extends DbFixture
 
     /**
      * Toggles the DB integrity check.
-     * @param boolean $check whether to turn on or off the integrity check.
+     * @param bool $check whether to turn on or off the integrity check.
      */
     public function checkIntegrity($check)
     {

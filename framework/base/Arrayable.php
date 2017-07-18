@@ -34,7 +34,7 @@ interface Arrayable
      * returning the corresponding field value. The signature of the callable should be:
      *
      * ```php
-     * function ($field, $model) {
+     * function ($model, $field) {
      *     // return field value
      * }
      * ```
@@ -62,6 +62,7 @@ interface Arrayable
      * @see toArray()
      */
     public function fields();
+
     /**
      * Returns the list of additional fields that can be returned by [[toArray()]] in addition to those listed in [[fields()]].
      *
@@ -75,6 +76,7 @@ interface Arrayable
      * @see fields()
      */
     public function extraFields();
+
     /**
      * Converts the object into an array.
      *
@@ -83,7 +85,7 @@ interface Arrayable
      * @param array $expand the additional fields that the output array should contain.
      * Fields not specified in [[extraFields()]] will be ignored. If this parameter is empty, no extra fields
      * will be returned.
-     * @param boolean $recursive whether to recursively return array representation of embedded objects.
+     * @param bool $recursive whether to recursively return array representation of embedded objects.
      * @return array the array representation of the object
      */
     public function toArray(array $fields = [], array $expand = [], $recursive = true);

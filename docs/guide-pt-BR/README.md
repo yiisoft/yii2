@@ -48,7 +48,7 @@ Tratamento de Requisições
 -------------------------
 
 * [Visão Geral](runtime-overview.md)
-* [Bootstrapping](runtime-bootstrapping.md)
+* [Inicialização (Bootstrapping)](runtime-bootstrapping.md)
 * [Roteamento e Criação de URL](runtime-routing.md)
 * [Requisições](runtime-requests.md)
 * [Respostas](runtime-responses.md)
@@ -74,14 +74,14 @@ Conceitos Chave
 Trabalhando com Banco de Dados
 ------------------------------
 
-* [Data Access Objects (DAO, Objeto de Acesso a Dados)](db-dao.md) - Estabelecendo uma conexão com o Banco de Dados, consultas básicas, transações e manipulação do esquema
-* [Query Builder (Construtor de Consulta)](db-query-builder.md) - Consultando o banco de dados usando uma camada de abstração simples
-* [Active Record](db-active-record.md) - Sobre o Active Record ORM, recuperando e manipulando registros e definindo relacionamentos
-* [Migrations (Migrações)](db-migrations.md) - Aplica controle de versão para seus banco de dados em um ambiente de desenvolvimento em equipe
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elastic-search.md)
+* [Data Access Objects (DAO, Objeto de Acesso a Dados)](db-dao.md)? Estabelecendo uma conexão com o Banco de Dados, consultas básicas, transações e manipulação do esquema
+* [Query Builder (Construtor de Consulta)](db-query-builder.md)? Consultando o banco de dados usando uma camada de abstração simples
+* [Active Record](db-active-record.md): Sobre o Active Record ORM, recuperando e manipulando registros e definindo relacionamentos
+* [Migrations (Migrações)](db-migrations.md): Aplica controle de versão para seus banco de dados em um ambiente de desenvolvimento em equipe
+* [Sphinx]((https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-pt-BR/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-pt-BR/README.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-pt-BR/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-pt-BR/README.md)
 
 
 Coletando Dados de Usuários
@@ -90,15 +90,16 @@ Coletando Dados de Usuários
 * [Criando Formulários](input-forms.md)
 * [Validação de Dados](input-validation.md)
 * [Upload de Arquivos](input-file-upload.md)
-* **TBD** [Coletando Dados de Múltiplos Modelos](input-multiple-models.md)
+* [Coletando Entradas Tabulares](input-tabular-input.md)
+* [Coletando Dados de Múltiplos Models](input-multiple-models.md)
 
 
 Exibindo Dados
 ---------------
 
 * [Formatando Dados](output-formatting.md)
-* **TBD** [Paginação](output-pagination.md)
-* **TBD** [Ordenação](output-sorting.md)
+* [Paginação](output-pagination.md)
+* [Ordenação](output-sorting.md)
 * [Data Providers (Provedores de Dados)](output-data-providers.md)
 * [Widgets de Dados](output-data-widgets.md)
 * [Trabalhando com Client Scripts](output-client-scripts.md)
@@ -111,8 +112,8 @@ Segurança
 * [Autenticação](security-authentication.md)
 * [Autorização](security-authorization.md)
 * [Trabalhando com Senhas](security-passwords.md)
-* **TBD** [Auth Clients](security-auth-clients.md)
-* **TBD** [Melhores Práticas](security-best-practices.md)
+* [Auth Clients](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-pt-BR/README.md)
+* [Melhores Práticas](security-best-practices.md)
 
 
 Cache
@@ -125,7 +126,7 @@ Cache
 * [Cache HTTP](caching-http.md)
 
 
-Web Services com RESTful 
+Web Services RESTful 
 ------------------------
 
 * [Introdução](rest-quick-start.md)
@@ -134,7 +135,7 @@ Web Services com RESTful
 * [Roteamento](rest-routing.md)
 * [Formatando Respostas](rest-response-formatting.md)
 * [Autenticação](rest-authentication.md)
-* [Rate Limiting](rest-rate-limiting.md)
+* [Limitador de Acesso](rest-rate-limiting.md)
 * [Versionamento](rest-versioning.md)
 * [Tratamento de Erros](rest-error-handling.md)
 
@@ -142,16 +143,16 @@ Web Services com RESTful
 Ferramentas de Desenvolvimento
 ------------------------------
 
-* [Barra de Ferramentas de Depuração e Depurador](tool-debugger.md)
-* [Gerando Código usando o Gii](tool-gii.md)
-* **TBD** [Gerando Documentação da API](tool-api-doc.md)
+* [Barra de Ferramentas de Depuração e Depurador](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-pt-BR/README.md)
+* [Gerando Código usando o Gii](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-pt-BR/README.md)
+* **TBD** [Gerando Documentação da API](https://github.com/yiisoft/yii2-apidoc)
 
 
 Testes
 ------
 
 * [Visão Geral](test-overview.md)
-* [Configuração do ambiente de testes](test-endvironment-setup.md)
+* [Configuração do ambiente de testes](test-environment-setup.md)
 * [Testes Unitários](test-unit.md)
 * [Testes Funcionais](test-functional.md)
 * [Testes de Aceitação](test-acceptance.md)
@@ -161,16 +162,16 @@ Testes
 Tópicos Especiais
 -----------------
 
-* [Modelo de Aplicação Avançada](tutorial-advanced-app.md)
+* [Template Avançado de Projetos](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md)
 * [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md)
 * [Comandos de Console](tutorial-console.md)
-* [Ferramentas de Validação Embutidas](tutorial-core-validators.md)
+* [Validadores Nativos](tutorial-core-validators.md)
 * [Internacionalização](tutorial-i18n.md)
 * [Enviando E-mails](tutorial-mailing.md)
 * [Ajustes no Desempenho](tutorial-performance-tuning.md)
 * [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
 * [Motor de Template](tutorial-template-engines.md)
-* [Utilização com Códigos de Terceiros](tutorial-yii-integration.md)
+* [Trabalhando com Códigos de Terceiros](tutorial-yii-integration.md)
 
 
 Widgets
@@ -184,16 +185,14 @@ Widgets
 * Menu: **TBD** link para a página de demonstração
 * LinkPager: **TBD** link para a página de demonstração
 * LinkSorter: **TBD** link para a página de demonstração
-* [Widgets do Bootstrap](bootstrap-widgets.md)
-* [Widgets do Jquery UI](jui-widgets.md)
+* [Widgets do Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-pt-BR/README.md)
+* [Widgets do JQuery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-pt-BR/README.md)
 
 
 Helpers
 -------
 
 * [Visão Geral](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
-* **TBD** [Segurança](helper-security.md)
-
+* [ArrayHelper](helper-array.md)
+* [Html](helper-html.md)
+* [Url](helper-url.md)

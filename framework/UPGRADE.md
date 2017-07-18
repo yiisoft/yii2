@@ -1,12 +1,243 @@
-Upgrading Instructions for Yii Framework v2
-===========================================
+Upgrading Instructions for Yii Framework 2.0
+============================================
 
-!!!IMPORTANT!!!
+This file contains the upgrade notes for Yii 2.0. These notes highlight changes that
+could break your application when you upgrade Yii from one version to another.
+Even though we try to ensure backwards compabitilty (BC) as much as possible, sometimes
+it is not possible or very complicated to avoid it and still create a good solution to
+a problem. You may also want to check out the [versioning policy](https://github.com/yiisoft/yii2/blob/master/docs/internals/versions.md) for further details.
 
-The following upgrading instructions are cumulative. That is,
+Upgrading in general is as simple as updating your dependency in your composer.json and
+running `composer update`. In a big application however there may be more things to consider,
+which are explained in the following.
+
+> Note: This document assumes you have composer [installed globally](http://www.yiiframework.com/doc-2.0/guide-start-installation.html#installing-composer) so that you can run the `composer` command. If you have a `composer.phar` file
+inside of your project you need to replace `composer` with `php composer.phar` in the following.
+
+> Tip: Upgrading dependencies of a complex software project always comes at the risk of breaking something, so make sure
+you have a backup (you should be doing this anyway ;) ).
+
+Before upgrading, make sure you have a global installation of the latest version of the
+[composer asset plugin](https://github.com/fxpio/composer-asset-plugin)
+as well as a stable version of Composer:
+
+    composer self-update
+    composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
+
+The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
+
+    composer require "yiisoft/yii2:~2.0.10" --update-with-dependencies
+
+This command will only upgrade Yii and its direct dependencies, if necessary. Without `--update-with-dependencies` the
+upgrade might fail when the Yii version you chose has slightly different dependencies than the version you had before.
+`composer require` will by default not update any other packages as a safety feature.
+
+Another way to upgrade is to change the `composer.json` file to require the new Yii version and then
+run `composer update` by specifying all packages that are allowed to be updated.
+
+    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/inputmask
+
+The above command will only update the specified packages and leave the versions of all other dependencies intact.
+This helps to update packages step by step without causing a lot of package version changes that might break in some way.
+If you feel lucky you can of course update everything to the latest version by running `composer update` without
+any restrictions.
+
+After upgrading you should check whether your application still works as expected and no tests are broken.
+See the following notes on which changes to consider when upgrading from one version to another.
+
+> Note: The following upgrading instructions are cumulative. That is,
 if you want to upgrade from version A to version C and there is
-version B between A and C, you need to following the instructions
+version B between A and C, you need to follow the instructions
 for both A and B.
+
+Upgrade from Yii 2.0.11
+-----------------------
+
+* `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
+  indicating whether the timestamp has date information or it is just time value.
+
+* `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
+  in case of `format` being set to `boolean`.
+ 
+* The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
+  `$params`.
+
+* The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
+  If you extend this method, make sure to adjust your code.
+  
+* `yii\web\UrlManager` now checks if rules implement `getCreateUrlStatus()` method in order to decide whether to use
+  internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
+  benefit from the acceleration provided by this cache.
+
+* `yii\filters\AccessControl` now can be used without `user` component.  
+  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
+  matching a role throws `yii\base\InvalidConfigException`.
+  
+* Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
+  assets manually, please adjust it. 
+
+Upgrade from Yii 2.0.10
+-----------------------
+
+* A new method `public function emulateExecution($value = true);` has been added to the `yii\db\QueryInterace`.
+  This method is implemented in the `yii\db\QueryTrait`, so this only affects your code if you implement QueryInterface
+  in a class that does not use the trait.
+
+* `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
+  If you extend from these classes and override these methods, you must make them public as well.
+
+* `yii\widgets\MaskedInput` inputmask dependency was updated to `~3.3.3`.
+  [See its changelog for details](https://github.com/RobinHerbots/Inputmask/blob/3.x/CHANGELOG.md).
+
+* PJAX: Auto generated IDs of the Pjax widget have been changed to use their own prefix to avoid conflicts.
+  Auto generated IDs are now prefixed with `p` instead of `w`. This is defined by the `$autoIdPrefix`
+  property of `yii\widgets\Pjax`. If you have any PHP or Javascript code that depends on autogenerated IDs
+  you should update these to match this new value. It is not a good idea to rely on auto generated values anyway, so
+  you better fix these cases by specifying an explicit ID.
+
+
+Upgrade from Yii 2.0.9
+----------------------
+
+* RBAC: `getChildRoles()` method was added to `\yii\rbac\ManagerInterface`. If you've implemented your own RBAC manager
+  you need to implement new method.
+
+* Microsoft SQL `NTEXT` data type [was marked as deprecated](https://msdn.microsoft.com/en-us/library/ms187993.aspx) in MSSQL so
+  `\yii\db\mssql\Schema::TYPE_TEXT` was changed from `'ntext'` to `'nvarchar(max)'
+
+* Method `yii\web\Request::getBodyParams()` has been changed to pass full value of 'content-type' header to the second
+  argument of `yii\web\RequestParserInterface::parse()`. If you create your own custom parser, which relies on `$contentType`
+  argument, ensure to process it correctly as it may content additional data.
+
+* `yii\rest\Serializer` has been changed to return a JSON array for collection data in all cases to be consistent among pages
+  for data that is not indexed starting by 0. If your API relies on the Serializer to return data as JSON objects indexed by
+  PHP array keys, you should set `yii\rest\Serializer::$preserveKeys` to `true`.
+
+
+Upgrade from Yii 2.0.8
+----------------------
+
+* Part of code from `yii\web\User::loginByCookie()` method was moved to new `getIdentityAndDurationFromCookie()`
+  and `removeIdentityCookie()` methods. If you override `loginByCookie()` method, update it in order use new methods.
+
+* Fixture console command syntax was changed from `yii fixture "*" -User` to `yii fixture "*, -User"`. Upgrade your
+  scripts if necessary.
+
+Upgrade from Yii 2.0.7
+----------------------
+
+* The signature of `yii\helpers\BaseArrayHelper::index()` was changed. The method has got an extra optional parameter
+  `$groups`.
+
+* `yii\helpers\BaseArrayHelper` methods `isIn()` and `isSubset()` throw `\yii\base\InvalidParamException`
+  instead of `\InvalidArgumentException`. If you wrap calls of these methods in try/catch block, change expected
+  exception class.
+
+* `yii\rbac\ManagerInterface::canAddChild()` method was added. If you have custom backend for RBAC you need to implement
+  it.
+
+* The signature of `yii\web\User::loginRequired()` was changed. The method has got an extra optional parameter
+  `$checkAcceptHeader`.
+
+* The signature of `yii\db\ColumnSchemaBuilder::__construct()` was changed. The method has got an extra optional
+  parameter `$db`. In case you are instantiating this class yourself and using the `$config` parameter, you will need to
+  move it to the right by one.
+
+* String types in the MSSQL column schema map were upgraded to Unicode storage types. This will have no effect on
+  existing columns, but any new columns you generate via the migrations engine will now store data as Unicode.
+
+* Output buffering was introduced in the pair of `yii\widgets\ActiveForm::init()` and `::run()`. If you override any of
+  these methods, make sure that output buffer handling is not corrupted. If you call the parent implementation, when
+  overriding, everything should work fine. You should be doing that anyway.
+
+Upgrade from Yii 2.0.6
+----------------------
+
+* Added new requirement: ICU Data version >= 49.1. Please, ensure that your environment has ICU data installed and
+  up to date to prevent unexpected behavior or crashes. This may not be the case on older systems e.g. running Debian Wheezy.
+
+  > Tip: Use Yii 2 Requirements checker for easy and fast check. Look for `requirements.php` in root of Basic and Advanced
+  templates (howto-comment is in head of the script).
+
+* The signature of `yii\helpers\BaseInflector::transliterate()` was changed. The method is now public and has an
+  extra optional parameter `$transliterator`.
+
+* In `yii\web\UrlRule` the `pattern` matching group names are being replaced with the placeholders on class
+  initialization to support wider range of allowed characters. Because of this change:
+
+  - You are required to flush your application cache to remove outdated `UrlRule` serialized objects.
+    See the [Cache Flushing Guide](http://www.yiiframework.com/doc-2.0/guide-caching-data.html#cache-flushing)
+  - If you implement `parseRequest()` or `createUrl()` and rely on parameter names, call `substitutePlaceholderNames()`
+    in order to replace temporary IDs with parameter names after doing matching.
+
+* The context of `yii.confirm` JavaScript function was changed from `yii` object to the DOM element which triggered
+  the event.
+
+  - If you overrode the `yii.confirm` function and accessed the `yii` object through `this`, you must access it
+    with global variable `yii` instead.
+
+* Traversable objects are now formatted as arrays in XML response to support SPL objects and Generators. Previous
+  behavior could be turned on by setting `XmlResponseFormatter::$useTraversableAsArray` to `false`.
+
+* If you've implemented `yii\rbac\ManagerInterface` you need to implement additional method `getUserIdsByRole($roleName)`.
+
+* If you're using ApcCache with APCu, set `useApcu` to `true` in the component config.
+
+* The `yii\behaviors\SluggableBehavior` class has been refactored to make it more reusable.
+  Added new `protected` methods:
+
+  - `isSlugNeeded()`
+  - `makeUnique()`
+
+  The visibility of the following Methods has changed from `private` to `protected`:
+
+  - `validateSlug()`
+  - `generateUniqueSlug()`
+
+* The `yii\console\controllers\MessageController` class has been refactored to be better configurable and now also allows
+  setting a lot of configuration options via command line. If you extend from this class, make sure it works as expected after
+  these changes.
+
+Upgrade from Yii 2.0.5
+----------------------
+
+* The signature of the following methods in `yii\console\controllers\MessageController` has changed. They have an extra parameter `$markUnused`.
+  - `saveMessagesToDb($messages, $db, $sourceMessageTable, $messageTable, $removeUnused, $languages, $markUnused)`
+  - `saveMessagesToPHP($messages, $dirName, $overwrite, $removeUnused, $sort, $markUnused)`
+  - `saveMessagesCategoryToPHP($messages, $fileName, $overwrite, $removeUnused, $sort, $category, $markUnused)`
+  - `saveMessagesToPO($messages, $dirName, $overwrite, $removeUnused, $sort, $catalog, $markUnused)`
+
+Upgrade from Yii 2.0.4
+----------------------
+
+Upgrading from 2.0.4 to 2.0.5 does not require any changes.
+
+Upgrade from Yii 2.0.3
+----------------------
+
+* Updated dependency to `cebe/markdown` to version `1.1.x`.
+  If you need stick with 1.0.x, you can specify that in your `composer.json` by
+  adding the following line in the `require` section:
+
+  ```json
+  "cebe/markdown": "~1.0.0",
+  ```
+
+Upgrade from Yii 2.0.2
+----------------------
+
+Starting from version 2.0.3 Yii `Security` component relies on OpenSSL crypto lib instead of Mcrypt. The reason is that
+Mcrypt is abandoned and isn't maintained for years. Therefore your PHP should be compiled with OpenSSL support. Most
+probably there's nothing to worry because it is quite typical.
+
+If you've extended `yii\base\Security` to override any of the config constants you have to update your code:
+
+    - `MCRYPT_CIPHER` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `MCRYPT_MODE` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `KEY_SIZE` — now encoded in `$cipher` (and hence `$allowedCiphers`).
+    - `KDF_HASH` — now `$kdfHash`.
+    - `MAC_HASH` — now `$macHash`.
+    - `AUTH_KEY_INFO` — now `$authKeyInfo`.
 
 Upgrade from Yii 2.0.0
 ----------------------
@@ -14,7 +245,7 @@ Upgrade from Yii 2.0.0
 * Upgraded Twitter Bootstrap to [version 3.3.x](http://blog.getbootstrap.com/2014/10/29/bootstrap-3-3-0-released/).
   If you need to use an older version (i.e. stick with 3.2.x) you can specify that in your `composer.json` by
   adding the following line in the `require` section:
-  
+
   ```json
   "bower-asset/bootstrap": "3.2.*",
   ```
@@ -29,13 +260,13 @@ Upgrade from Yii 2.0 RC
   This causes trouble because the formatter uses `Yii::$app->timeZone` as the default values for output so no timezone conversion
   was possible. If your timestamps are stored in the database without a timezone identifier you have to ensure they are in UTC or
   add a timezone identifier explicitly.
-  
+
 * `yii\bootstrap\Collapse` is now encoding labels by default. `encode` item option and global `encodeLabels` property were
  introduced to disable it. Keys are no longer used as labels. You need to remove keys and use `label` item option instead.
- 
+
 * The `yii\base\View::beforeRender()` and `yii\base\View::afterRender()` methods have two extra parameters `$viewFile`
   and `$params`. If you are overriding these methods, you should adjust the method signature accordingly.
-  
+
 * If you've used `asImage` formatter i.e. `Yii::$app->formatter->asImage($value, $alt);` you should change it
   to `Yii::$app->formatter->asImage($value, ['alt' => $alt]);`.
 
@@ -47,7 +278,6 @@ Upgrade from Yii 2.0 RC
   Quoting of values is broken in prior versions and Yii has no reliable way to work around this issue.
   A workaround that may have worked before has been removed in this release because it was not reliable.
 
-
 Upgrade from Yii 2.0 Beta
 -------------------------
 
@@ -55,7 +285,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:1.0.0-beta4"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.3.1"
   ```
 
   You also need to add the following code to your project's `composer.json` file:
@@ -68,11 +298,11 @@ Upgrade from Yii 2.0 Beta
       }
   }
   ```
-  
+
   It is also a good idea to upgrade composer itself to the latest version if you see any problems:
-  
+
   ```
-  php composer.phar self-update
+  composer self-update
   ```
 
 * If you used `clearAll()` or `clearAllAssignments()` of `yii\rbac\DbManager`, you should replace
@@ -157,12 +387,12 @@ Upgrade from Yii 2.0 Beta
   ];
   ```
 
-  > Note: If you are using the `Advanced Application Template` you should not add this configuration to `common/config`
+  > Note: If you are using the `Advanced Project Template` you should not add this configuration to `common/config`
   or `console/config` because the console application doesn't have to deal with CSRF and uses its own request that
   doesn't have `cookieValidationKey` property.
 
 * `yii\rbac\PhpManager` now stores data in three separate files instead of one. In order to convert old file to
-new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in: 
+new ones save the following code as `convert.php` that should be placed in the same directory your `rbac.php` is in:
 
   ```php
   <?php
@@ -170,16 +400,16 @@ new ones save the following code as `convert.php` that should be placed in the s
   $itemsFile = 'items.php';
   $assignmentsFile = 'assignments.php';
   $rulesFile = 'rules.php';
-  
+
   $oldData = include $oldFile;
-  
+
   function saveToFile($data, $fileName) {
       $out = var_export($data, true);
-      $out = "<?php\nreturn " . $out . ";";
+      $out = "<?php\nreturn " . $out . ';';
       $out = str_replace(['array (', ')'], ['[', ']'], $out);
       file_put_contents($fileName, $out);
   }
-  
+
   $items = [];
   $assignments = [];
   if (isset($oldData['items'])) {
@@ -193,16 +423,16 @@ new ones save the following code as `convert.php` that should be placed in the s
           $items[$name] = $data;
       }
   }
-  
+
   $rules = [];
   if (isset($oldData['rules'])) {
       $rules = $oldData['rules'];
   }
-  
+
   saveToFile($items, $itemsFile);
   saveToFile($assignments, $assignmentsFile);
   saveToFile($rules, $rulesFile);
-  
+
   echo "Done!\n";
   ```
 
@@ -237,7 +467,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
   }, $duration, $dependency);
   ```
-  
+
 * Due to significant changes to security you need to upgrade your code to use `\yii\base\Security` component instead of
   helper. If you have any data encrypted it should be re-encrypted. In order to do so you can use old security helper
   [as explained by @docsolver at github](https://github.com/yiisoft/yii2/issues/4461#issuecomment-50237807).
@@ -281,7 +511,7 @@ new ones save the following code as `convert.php` that should be placed in the s
 
   - `asDate`
   - `asTime`
-  - `asDateTime`
+  - `asDatetime`
   - `asSize` has been split up into `asSize` and `asShortSize`
   - `asCurrency`
   - `asDecimal`
@@ -334,6 +564,6 @@ new ones save the following code as `convert.php` that should be placed in the s
 
 * The signature of `View::registerJsFile()` and `View::registerCssFile()` has changed. The `$depends` and `$position`
   paramaters have been merged into `$options`. The new signatures are as follows:
-  
+
   - `registerJsFile($url, $options = [], $key = null)`
   - `registerCssFile($url, $options = [], $key = null)`

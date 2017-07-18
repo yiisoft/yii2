@@ -1,23 +1,38 @@
 Instalando o Yii
 ================
 
-Você pode instalar o Yii de duas maneiras, usando o [Composer](http://getcomposer.org/)
+Você pode instalar o Yii de duas maneiras, usando o gerenciador de pacotes [Composer](https://getcomposer.org/)
 ou baixando um arquivo compactado. O primeiro modo é o preferido, já que permite
 que você instale novas [extensões](structure-extensions.md) ou atualize o
 Yii simplesmente executando um único comando.
 
-> Note: Ao contrário do Yii 1, as instalações padrão do Yii 2 resultam em
-tanto o framework quanto um esqueleto de aplicação sendo baixados e instalados.
+A instalação do Yii padrão resulta no download e instalação tanto do framework 
+quanto de um template de projetos.
+Um template de projetos é uma aplicação do Yii implementando algumas recursos básicos,
+como a autenticação, o formulário de contato, etc.
+Este código é organizado de uma forma recomendada. No entanto, ele pode servir 
+como ponto de partida para seus projetos.
+
+Nesta e nas próximas seções, iremos descrever como instalar o *Template Básico 
+de Projetos* do Yii e como implementar novas funcionalidades em cima deste template.
+O Yii também fornece um outro template chamado de [Template Avançado de Projetos](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md) que é melhor usado em uma equipe de desenvolvimento que desenvolvem 
+aplicações de multiplas camadas.
+
+> Informação: O Template Básico de Projetos é adequado para o desenvolvimento de 
+cerca de 90% das aplicações Web. Este template difere do Template Avançado de 
+Projetos principalmente na forma de como o seu código é organizado. Se você é 
+novo no Yii, recomendamos fortemente em escolher o Template Básico de Projetos 
+pela sua simplicidade além de ter funcionalidades o suficiente.
 
 
-Instalando via Composer <a name="installing-via-composer"></a>
+Instalando via Composer <span id="installing-via-composer"></span>
 -----------------------
 
 Se você já não tiver o Composer instalado, você pode fazê-lo seguindo as instruções
 em [getcomposer.org](https://getcomposer.org/download/). No Linux e no Mac OS X,
 você executará os seguintes comandos:
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 No Windows, você baixará e executará o [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -31,23 +46,20 @@ Você pode atualizar o Composer executando o comando `composer self-update`.
 Com o Composer instalado, você pode instalar o Yii executando o seguinte comando
 em um diretório acessível pela Web:
 
-    composer global require "fxp/composer-asset-plugin:1.0.0-beta3"
+    composer global require "fxp/composer-asset-plugin:^1.3.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
-O primeiro comando instaka o [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
+O primeiro comando instala o [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
 o que permite gerenciar dependências via bower e npm package por meio do Composer.
 Você apenas precisa rodar este comando uma vez. O segundo comando instala o Yii
 em um diretório chamado `basic`. Você pode escolher um diretório diferente se quiser.
 
-> Nota: Durante a instalação do Yii pode acontecer que o Composer peça suas 
-> credenciais de login do Github por ultrapassar taxa limite (rate-limit) da API do Github.
-> Isso é normal pois o Composer necessita obter muitas informações de todos os 
-> pacotes no Github.
-> Logando no Github incrementa a taxa limite (rate-limit) da API para que o Composer
-> possa continuar o seu trabalho. Para mais detalhes, por favor consulte a 
-> [documentação do Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
+> Observação: Durante a instalação, o Composer pode pedir suas credenciais de login 
+> do Github. Isto é normal, pelo fato do Composer precisar obter a taxa limite 
+> (rate-limit) da API para recuperar as informações de dependência de pacotes do
+> Github. Para mais detalhes, consulte a [documentação do Composer](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens).
 
-> Tip: Se você quiser instalar a última versão de desenvolvimento do Yii, você
+> Dica: Se você quiser instalar a última versão de desenvolvimento do Yii, você
 > pode usar o seguinte comando, que adiciona uma [opção de estabilidade](https://getcomposer.org/doc/04-schema.md#minimum-stability):
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
@@ -56,7 +68,7 @@ em um diretório chamado `basic`. Você pode escolher um diretório diferente se
 > uma vez que ela pode quebrar o seu código que está rodando.
 
 
-Instalando a partir de um Arquivo Compactado <a name="installing-from-archive-file"></a>
+Instalando a partir de um Arquivo Compactado <span id="installing-from-archive-file"></span>
 --------------------------------------------
 
 A instalação do Yii a partir de um arquivo compactado envolve três passos:
@@ -73,13 +85,14 @@ o Yii pelo Composer):
    ```
 
 
-Outras Opções de Instalação <a name="other-installation-options"></a>
+Outras Opções de Instalação <span id="other-installation-options"></span>
 ---------------------------
 
 As instruções de instalação acima mostram como instalar o Yii, que também cria
 uma aplicação Web básica que funciona imediatamente sem qualquer configuração ou 
-modificação (*out of the box*). Este método é um bom ponto de início para projetos 
-pequenos ou para quando você começar a aprender o Yii.
+modificação (*out of the box*). 
+Esta abordagem é um bom ponto de partida para a maioria dos projetos, seja ele 
+pequeno ou grande. É especialmente adequado se você acabou de começar a aprender Yii.
 
 No entanto, existem outras opções de instalação disponíveis:
 
@@ -88,10 +101,10 @@ No entanto, existem outras opções de instalação disponíveis:
   [Construindo uma Aplicação a Partir do Zero](tutorial-start-from-scratch.md).
 * Se você quiser começar com uma aplicação mais sofisticada, mais adequada ao
   ambiente de desenvolvimento de equipes, você pode considerar instalar o
-  [Modelo de Aplicação Avançada](tutorial-advanced-app.md).
+  [Template Avançado de Projetos](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-pt-BR/README.md).
 
 
-Verificando a Instalação <a name="verifying-installation"></a>
+Verificando a Instalação <span id="verifying-installation"></span>
 ------------------------
 
 Após a instalação, você pode usar o seu navegador para acessar a aplicação do Yii
@@ -127,7 +140,7 @@ e o driver do banco de dados correspondente (tal como `pdo_mysql` para bancos de
 dados MySQL), se a sua aplicação precisar de um banco de dados.
 
 
-Configurando os Servidores Web <a name="configuring-web-servers"></a>
+Configurando os Servidores Web <span id="configuring-web-servers"></span>
 ------------------------------
 
 > Informação: Você pode pular essa subseção se só estiver fazendo um test drive do Yii
@@ -154,14 +167,14 @@ objetivos.
   dados sensíveis que estão armazenados em diretórios irmãos de `basic/web`.
   Negar o acesso a estes outros diretórios é uma melhoria de segurança.
 
-> Informação: Se a sua explicação rodará em um ambiente de hospedagem compartilhada
+> Informação: Se a sua aplicação rodará em um ambiente de hospedagem compartilhada
   onde você não tem permissão para alterar a configuração do seu servidor Web,
   você ainda pode ajustar a estrutura de sua aplicação para uma melhor segurança.
   Por favor consulte a seção [Ambiente de Hospedagem Compartilhada](tutorial-shared-hosting.md)
   para mais detalhes.
 
 
-### Configuração do Apache Recomendada <a name="recommended-apache-configuration"></a>
+### Configuração do Apache Recomendada <span id="recommended-apache-configuration"></span>
 
 Use a seguinte configuração no arquivo `httpd.conf` do Apache ou em uma
 configuração de virtual host. Perceba que você pode deve substituir `path/to/basic/web`
@@ -185,7 +198,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Configuração do Nginx Recomendada <a name="recommended-nginx-configuration"></a>
+### Configuração do Nginx Recomendada <span id="recommended-nginx-configuration"></span>
 
 Você deve ter instalado o PHP como um [FPM SAPI](http://php.net/install.fpm) para
 usar o [Nginx](http://wiki.nginx.org/). Use a seguinte configuração do Nginx,
@@ -204,7 +217,7 @@ server {
     root        /path/to/basic/web;
     index       index.php;
 
-    access_log  /path/to/basic/log/access.log main;
+    access_log  /path/to/basic/log/access.log;
     error_log   /path/to/basic/log/error.log;
 
     location / {
@@ -219,9 +232,11 @@ server {
     #error_page 404 /404.html;
 
     location ~ \.php$ {
-        include fastcgi.conf;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
         fastcgi_pass   127.0.0.1:9000;
         #fastcgi_pass unix:/var/run/php5-fpm.sock;
+        try_files $uri =404;
     }
 
     location ~ /\.(ht|svn|git) {

@@ -1,19 +1,19 @@
 Installer Yii
 =============
 
-Vous pouvez installer Yii de deux façons, en utilisant [Composer](http://getcomposer.org/) ou en téléchargeant une archive.
+Vous pouvez installer Yii de deux façons, en utilisant [Composer](https://getcomposer.org/) ou en téléchargeant une archive.
 La première méthode est conseillée, étant donné qu'elle permet d'installer de nouvelles [extensions](extend-creating-extensions.md) ou de mettre à jour Yii en éxécutant simplement une commande.
 
-> Remarque : Contrairement à Yii 1, les installations standards de Yii 2 auront pour résultat le téléchargement et l'installation du framework, ainsi que d'un squelette d'application.
+> Note: contrairement à Yii 1, les installations standards de Yii 2 auront pour résultat le téléchargement et l'installation du framework, ainsi que d'un squelette d'application.
 
 
-Installer via Composer <a name="installing-via-composer"></a>
+Installer via Composer <span id="installing-via-composer"></span>
 ----------------------
 
 Si vous n'avez pas déjà installé Composer, vous pouvez le faire en suivant les instructions sur le site [getcomposer.org](https://getcomposer.org/download/). 
 Sous Linux et Mac OS X, vous pouvez éxécuter les commandes :
 
-    curl -s http://getcomposer.org/installer | php
+    curl -sS https://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
 Sous Windows, téléchargez et éxécutez [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
@@ -26,14 +26,14 @@ Avec Composer installé, vous pouvez installer Yii en éxécutant la commande su
 
 Cette commande installera Yii dans le dossier `basic`.
 
-> Astuce : Si vous souhaitez installer la dernière version de développement de Yii, vous pouvez utiliser la commande suivante qui ajoutera l'[option stability](https://getcomposer.org/doc/04-schema.md#minimum-stability) :
+> Tip: si vous souhaitez installer la dernière version de développement de Yii, vous pouvez utiliser la commande suivante qui ajoutera l'[option stability](https://getcomposer.org/doc/04-schema.md#minimum-stability) :
 >
 >     composer create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
 >
 > Notez que la version de développement de Yii ne doit pas être utilisée en production, vu qu'elle pourrait *casser* votre code existant.
 
 
-Installer depuis une archive <a name="installing-from-archive-file"></a>
+Installer depuis une archive <span id="installing-from-archive-file"></span>
 ----------------------------
 
 Installer Yii depuis une archive se fait en deux étapes :
@@ -42,7 +42,7 @@ Installer Yii depuis une archive se fait en deux étapes :
 2. Décompressez l'archive dans un dossier accessible via le Web.
 
 
-Autres options d'installation <a name="other-installation-options"></a>
+Autres options d'installation <span id="other-installation-options"></span>
 -----------------------------
 
 Les instructions d'installation ci-dessus montrent comment installer Yii, ce qui installe également une application Web de base qui fonctionne *out of the box*. 
@@ -54,7 +54,7 @@ Mais il y a d'autres options d'installation disponibles :
 * Si vous voulez commencer par une application plus sophistiquée, mieux adaptée aux environnements d'équipe de développement, vous pouvez envisager l'installation du [Modèle d'application avancée](tutorial-advanced-app.md).
 
 
-Vérifier l'installation <a name="verifying-installation"></a>
+Vérifier l'installation <span id="verifying-installation"></span>
 -----------------------
 
 Après l'installation, vous pouvez utiliser votre navigateur pour accéder à l'application Yii avec l'URL suivante :
@@ -80,22 +80,22 @@ Vous devriez voir dans votre navigateur la page ci-dessus. Sinon, merci de véri
 Vous devez configurer votre installation de PHP afin qu'elle réponde aux exigences minimales de Yii. Le plus important étant que vous ayez PHP 5.4 ou plus. Si votre application a besoin d'une base de données, vous devez également installer l'[extension PHP PDO](http://www.php.net/manual/en/pdo.installation.php) ainsi qu'un pilote correspondant à votre système de base de données (par exemple `pdo_mysql` pour MySQL).
 
 
-Configuration du serveur Web <a name="configuring-web-servers"></a>
+Configuration du serveur Web <span id="configuring-web-servers"></span>
 ----------------------------
 
-> Remarque : Si vous voulez juste tester Yii sans intention de l'utiliser sur un serveur de production, vous pouvez ignorer ce paragraphe.
+> Note: si vous voulez juste tester Yii sans intention de l'utiliser sur un serveur de production, vous pouvez ignorer ce paragraphe.
 
 L'application installée selon les instructions ci-dessus devrait fonctionner *out of the box* avec le [serveur HTTP Apache](http://httpd.apache.org/) ou le [serveur HTTP Nginx](http://nginx.org/), sous Windows, Mac OX X, ou linux.
 
 Sur un serveur de production, vous pouvez configurer votre serveur Web afin que l'application soit accessible via l'URL `http://www.example.com/index.php` au lieu de `http://www.example.com/basic/web/index.php`. Cela implique que le dossier racine de votre serveur Web pointe vers le dossier `basic/web`.
 Vous pouvez également cacher `index.php` dans l'URL, comme décrit dans la partie [Génération et traitement des URL](runtime-url-handling.md), vous y apprendrez comment configurer votre serveur Apache ou Nginx pour atteindre ces objectifs.
 
-> Remarque : En utilisant `basic/web` comme dossier racine, vous empêchez également aux utilisateurs finaux d'accéder à votre code d'application privé et fichiers de données sensibles qui sont stockés dans le dossier `basic`. Refuser l'accès à ces ressources est une amélioration de la sécurité.
+> Note: en utilisant `basic/web` comme dossier racine, vous empêchez également aux utilisateurs finaux d'accéder à votre code d'application privé et fichiers de données sensibles qui sont stockés dans le dossier `basic`. Refuser l'accès à ces ressources est une amélioration de la sécurité.
 
-> Remarque: Si votre application s'exécute dans un environnement d'hébergement mutualisé où vous n'avez pas la permission de modifier la configuration du serveur Web, vous pouvez ajuster la structure de votre application pour une meilleure sécurité. Merci de lire la partie [Environnement d'hébergement mutualisé](tutorial-shared-hosting.md) pour en savoir plus.
+> Note: si votre application s'exécute dans un environnement d'hébergement mutualisé où vous n'avez pas la permission de modifier la configuration du serveur Web, vous pouvez ajuster la structure de votre application pour une meilleure sécurité. Merci de lire la partie [Environnement d'hébergement mutualisé](tutorial-shared-hosting.md) pour en savoir plus.
 
 
-### Configuration Apache recommandée <a name="recommended-apache-configuration"></a>
+### Configuration Apache recommandée <span id="recommended-apache-configuration"></span>
 
 Utilisez la configuration suivante dans `httpd.conf`, ou dans la configuration de votre hôte virtuel. Notez que vous devez remplacer `path/to/basic/web` par le chemin vers le dossier `basic/web`.
 
@@ -117,7 +117,7 @@ DocumentRoot "path/to/basic/web"
 ```
 
 
-### Configuration Nginx recommandée <a name="recommended-nginx-configuration"></a>
+### Configuration Nginx recommandée <span id="recommended-nginx-configuration"></span>
 
 Pour utiliser Nginx, vous devez avoir installé PHP en utilisant [FPM SAPI](http://php.net/install.fpm).
 Utilisez la configuration Nginx suivante, en remplaçant `path/to/basic/web` par le chemin vers le dossier `basic/web` et `mysite.local` par le nom d'hôte de votre serveur.

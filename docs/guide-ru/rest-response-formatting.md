@@ -8,13 +8,13 @@
 2. Конвертирует объекты ресурсов в массивы, как описано в секции [Ресурсы](rest-resources.md).
    Этим занимается [[yii\rest\Serializer]].
 3. Конвертирует массивы в строки исходя из формата, определенного на этапе согласование содержимого. Это задача для
-   [[yii\web\ResponseFormatterInterface|форматера ответов]], регистрируемого с помощью компонента приложения
+   [[yii\web\ResponseFormatterInterface|форматтера ответов]], регистрируемого с помощью компонента приложения
    [[yii\web\Response::formatters|response]].
 
 
-## Согласование содержимого <a name="content-negotiation"></a>
+## Согласование содержимого <span id="content-negotiation"></span>
 
-Yii поддерживает согласование содержимого с помощью фильтра [yii\filters\ContentNegotiator]]. Базовый класс
+Yii поддерживает согласование содержимого с помощью фильтра [[yii\filters\ContentNegotiator]]. Базовый класс
 контроллера RESTful API - [[yii\rest\Controller]] - использует этот фильтр под именем `contentNegotiator`.
 Фильтр обеспечивает соответствие формата ответа и определяет используемый язык. Например, если RESTful API запрос
 содержит следующий заголовок:
@@ -80,11 +80,11 @@ public function behaviors()
 форматов ответа, которые установлены в [[yii\web\Response::formatters]].
 
 
-## Сериализация данных <a name="data-serializing"></a>
+## Сериализация данных <span id="data-serializing"></span>
 
 Как уже описывалось выше, [[yii\rest\Serializer]] - это центральное место, отвечающее за конвертацию объектов ресурсов
-или коллекций в массивы. Он реализует интерфейсы [[yii\base\ArrayableInterface]] и [[yii\data\DataProviderInterface]].
-Для объектов ресурсов как правило реализуется интерфейс [[yii\base\ArrayableInterface]], а для коллекций -
+или коллекций в массивы. Он реализует интерфейсы [[yii\base\Arrayable]] и [[yii\data\DataProviderInterface]].
+Для объектов ресурсов как правило реализуется интерфейс [[yii\base\Arrayable]], а для коллекций -
 [[yii\data\DataProviderInterface]].
 
 Вы можете переконфигурировать сериализатор с помощью настройки свойства [[yii\rest\Controller::serializer]], используя
@@ -136,9 +136,15 @@ Content-Type: application/json; charset=UTF-8
         ...
     ],
     "_links": {
-        "self": "http://localhost/users?page=1",
-        "next": "http://localhost/users?page=2",
-        "last": "http://localhost/users?page=50"
+        "self": {
+            "href": "http://localhost/users?page=1"
+        },
+        "next": {
+            "href": "http://localhost/users?page=2"
+        },
+        "last": {
+            "href": "http://localhost/users?page=50"
+        }
     },
     "_meta": {
         "totalCount": 1000,
@@ -148,3 +154,32 @@ Content-Type: application/json; charset=UTF-8
     }
 }
 ```
+
+### Настройка форматирования JSON
+
+Ответ в формате JSON генерируется при помощи класса [[yii\web\JsonResponseFormatter|JsonResponseFormatter]], который
+использует внутри [[yii\helpers\Json|хелпер JSON]]. Данный форматтер гибко настраивается. Например, 
+опция [[yii\web\JsonResponseFormatter::$prettyPrint|$prettyPrint]] полезна на время разработки так как при
+её использовании ответы получаются более читаемыми. [[yii\web\JsonResponseFormatter::$encodeOptions|$encodeOptions]]
+может пригодиться для более тонкой настройки кодирования.
+
+Свойство [[yii\web\Response::formatters|formatters]] компонента приложения `response` может быть
+[сконфигурировано](concept-configuration.md) следующим образом:
+
+```php
+'response' => [
+    // ...
+    'formatters' => [
+        \yii\web\Response::FORMAT_JSON => [
+            'class' => 'yii\web\JsonResponseFormatter',
+            'prettyPrint' => YII_DEBUG, // используем "pretty" в режиме отладки
+            'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+            // ...
+        ],
+    ],
+],
+```
+
+При работе с базой данных через [DAO](db-dao.md) все данные представляются в виде строк, что не всегда корректно.
+Особенно учитывая, что в JSON для чисел есть соответствующий тип. При использовании ActiveRecord значения числовых
+столбцов приводятся к integer на этапе выборки из базы: [[yii\db\ActiveRecord::populateRecord()]].

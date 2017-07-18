@@ -7,11 +7,11 @@
 
 namespace yii\filters\auth;
 
-use yii\web\User;
+use yii\web\IdentityInterface;
 use yii\web\Request;
 use yii\web\Response;
-use yii\web\IdentityInterface;
 use yii\web\UnauthorizedHttpException;
+use yii\web\User;
 
 /**
  * AuthInterface is the interface that should be implemented by auth method classes.
@@ -30,12 +30,14 @@ interface AuthInterface
      * @throws UnauthorizedHttpException if authentication information is provided but is invalid.
      */
     public function authenticate($user, $request, $response);
+
     /**
      * Generates challenges upon authentication failure.
      * For example, some appropriate HTTP headers may be generated.
      * @param Response $response
      */
     public function challenge($response);
+
     /**
      * Handles authentication failure.
      * The implementation should normally throw UnauthorizedHttpException to indicate authentication failure.

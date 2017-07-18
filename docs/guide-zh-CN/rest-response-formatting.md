@@ -9,11 +9,11 @@
 2. 资源对象转换为数组， 如在 [Resources](rest-resources.md) 部分中所描述的。
    通过 [[yii\rest\Serializer]] 来完成。
 3. 通过内容协商步骤将数组转换成字符串。
-   [yii\web\ResponseFormatterInterface|response formatters]] 通过
-   [yii\web\Response::formatters|response]] 应用程序组件来注册完成。
+   [[yii\web\ResponseFormatterInterface|response formatters]] 通过
+   [[yii\web\Response::formatters|response]] 应用程序组件来注册完成。
 
 
-## 内容协商 <a name="content-negotiation"></a>
+## 内容协商 <span id="content-negotiation"></span>
 
 Yii 提供了通过 [[yii\filters\ContentNegotiator]] 过滤器支持内容协商。RESTful API 基于
 控制器类 [[yii\rest\Controller]] 在 `contentNegotiator` 下配备这个过滤器。
@@ -81,7 +81,7 @@ public function behaviors()
 中支持被响应格式名称。
 
 
-## 数据序列化 <a name="data-serializing"></a>
+## 数据序列化 <span id="data-serializing"></span>
 
 正如我们上面所描述的，[[yii\rest\Serializer]] 负责转换资源的中间件
 对象或集合到数组。它将对象 [[yii\base\ArrayableInterface]] 作为
@@ -136,9 +136,15 @@ Content-Type: application/json; charset=UTF-8
         ...
     ],
     "_links": {
-        "self": "http://localhost/users?page=1",
-        "next": "http://localhost/users?page=2",
-        "last": "http://localhost/users?page=50"
+        "self": {
+            "href": "http://localhost/users?page=1"
+        },
+        "next": {
+            "href": "http://localhost/users?page=2"
+        },
+        "last": {
+            "href": "http://localhost/users?page=50"
+        }
     },
     "_meta": {
         "totalCount": 1000,

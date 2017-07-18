@@ -9,7 +9,7 @@ can respond to the [events](concept-events.md) triggered by the component, which
 code execution of the component.
 
 
-Defining Behaviors <a name="defining-behaviors"></a>
+Defining Behaviors <span id="defining-behaviors"></span>
 ------------------
 
 To define a behavior, create a class that extends [[yii\base\Behavior]], or extends a child class. For example:
@@ -46,9 +46,12 @@ The above code defines the behavior class `app\components\MyBehavior`, with two 
 `prop1` and `prop2`--and one method `foo()`. Note that property `prop2`
 is defined via the getter `getProp2()` and the setter `setProp2()`. This is the case because [[yii\base\Behavior]] extends [[yii\base\Object]] and therefore supports defining [properties](concept-properties.md) via getters and setters.
 
-Because this class is a behavior, when it is attached to a component, that component will then also have the the `prop1` and `prop2` properties and the `foo()` method.
+Because this class is a behavior, when it is attached to a component, that component will then also have the `prop1` and `prop2` properties and the `foo()` method.
 
 > Tip: Within a behavior, you can access the component that the behavior is attached to through the [[yii\base\Behavior::owner]] property.
+
+> Note: In case [[yii\base\Behavior::__get()]] and/or [[yii\base\Behavior::__set()]] method of behavior is overridden you
+need to override [[yii\base\Behavior::canGetProperty()]] and/or [[yii\base\Behavior::canSetProperty()]] as well.
 
 Handling Component Events
 ------------------
@@ -96,7 +99,7 @@ function ($event) {
 }
 ```
 
-Attaching Behaviors <a name="attaching-behaviors"></a>
+Attaching Behaviors <span id="attaching-behaviors"></span>
 -------------------
 
 You can attach a behavior to a [[yii\base\Component|component]] either statically or dynamically. The former is more common in practice.
@@ -189,7 +192,7 @@ You may also attach behaviors through [configurations](concept-configurations.md
 For more details,
 please refer to the [Configurations](concept-configurations.md#configuration-format) section.
 
-Using Behaviors <a name="using-behaviors"></a>
+Using Behaviors <span id="using-behaviors"></span>
 ---------------
 
 To use a behavior, first attach it to a [[yii\base\Component|component]] per the instructions above. Once a behavior is attached to a component, its usage is straightforward.
@@ -230,7 +233,7 @@ $behaviors = $component->getBehaviors();
 ```
 
 
-Detaching Behaviors <a name="detaching-behaviors"></a>
+Detaching Behaviors <span id="detaching-behaviors"></span>
 -------------------
 
 To detach a behavior, call [[yii\base\Component::detachBehavior()]] with the name associated with the behavior:
@@ -246,11 +249,12 @@ $component->detachBehaviors();
 ```
 
 
-Using `TimestampBehavior` <a name="using-timestamp-behavior"></a>
+Using `TimestampBehavior` <span id="using-timestamp-behavior"></span>
 -------------------------
 
-To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior  supports automatically
-updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved (e.g., on insert or update).
+To wrap up, let's take a look at [[yii\behaviors\TimestampBehavior]]. This behavior supports automatically
+updating the timestamp attributes of an [[yii\db\ActiveRecord|Active Record]] model anytime the model is saved via
+`insert()`, `update()` or `save()` method.
 
 First, attach this behavior to the [[yii\db\ActiveRecord|Active Record]] class that you plan to use:
 
@@ -273,6 +277,8 @@ class User extends ActiveRecord
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
                 ],
+                // if you're using datetime instead of UNIX timestamp:
+                // 'value' => new Expression('NOW()'),
             ],
         ];
     }
@@ -281,12 +287,14 @@ class User extends ActiveRecord
 
 The behavior configuration above specifies that when the record is being:
 
-* inserted, the behavior should assign the current timestamp to
+* inserted, the behavior should assign the current UNIX timestamp to
   the `created_at` and `updated_at` attributes
-* updated, the behavior should assign the current timestamp to the `updated_at` attribute
+* updated, the behavior should assign the current UNIX timestamp to the `updated_at` attribute
+
+> Note: For the above implementation to work with MySQL database, please declare the columns(`created_at`, `updated_at`) as int(11) for being UNIX timestamp.
 
 With that code in place, if you have a `User` object and try to save it, you will find its `created_at` and `updated_at` are automatically
-filled with the current timestamp:
+filled with the current UNIX timestamp:
 
 ```php
 $user = new User;
@@ -303,7 +311,22 @@ to a specified attribute and save it to the database:
 $user->touch('login_time');
 ```
 
-Comparing Behaviors with Traits <a name="comparison-with-traits"></a>
+Other behaviors
+---------------
+
+There are several built-in and external behaviors available:
+
+- [[yii\behaviors\BlameableBehavior]] - automatically fills the specified attributes with the current user ID.
+- [[yii\behaviors\SluggableBehavior]] - automatically fills the specified attribute with a value that can be used
+  as a slug in a URL.
+- [[yii\behaviors\AttributeBehavior]] - automatically assigns a specified value to one or multiple attributes of
+  an ActiveRecord object when certain events happen.
+- [yii2tech\ar\softdelete\SoftDeleteBehavior](https://github.com/yii2tech/ar-softdelete) - provides methods to soft-delete
+  and soft-restore ActiveRecord i.e. set flag or status which marks record as deleted.
+- [yii2tech\ar\position\PositionBehavior](https://github.com/yii2tech/ar-position) - allows managing records order in an
+  integer field by providing reordering methods.
+
+Comparing Behaviors with Traits <span id="comparison-with-traits"></span>
 ----------------------
 
 While behaviors are similar to [traits](http://www.php.net/traits) in that they both "inject" their
@@ -311,12 +334,13 @@ properties and methods to the primary class, they differ in many aspects. As exp
 both have pros and cons. They are more like complements to each other rather than alternatives.
 
 
-### Reasons to Use Behaviors <a name="pros-for-behaviors"></a>
+### Reasons to Use Behaviors <span id="pros-for-behaviors"></span>
 
 Behavior classes, like normal classes, support inheritance. Traits, on the other hand,
 can be considered as language-supported copy and paste. They do not support inheritance.
 
-Behaviors can be attached and detached to a component dynamically without requiring modification of the component class. To use a trait, you must modify the class using it.
+Behaviors can be attached and detached to a component dynamically without requiring modification of the component class.
+To use a trait, you must modify the code of the class using it.
 
 Behaviors are configurable while traits are not.
 
@@ -328,7 +352,7 @@ Name conflicts caused by different traits requires manual resolution by renaming
 properties or methods.
 
 
-### Reasons to Use Traits <a name="pros-for-traits"></a>
+### Reasons to Use Traits <span id="pros-for-traits"></span>
 
 Traits are much more efficient than behaviors as behaviors are objects that take both time and memory.
 

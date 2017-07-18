@@ -1,11 +1,17 @@
 Acceptance Tests
 ================
 
-> Note: This section is under development.
+Acceptance test verifies scenarios from a user's perspective. The application tested is accessed via either PhpBrowser or
+a real browser. In both cases the browsers are communicating via HTTP so application should be served via web server.
 
-- http://codeception.com/docs/04-AcceptanceTests
+Acceptance testing is implemented with the help of Codeception framework which has a nice documentation about it:
 
-Running basic and advanced template acceptance tests
-----------------------------------------------------
+- [Codeception for Yii framework](http://codeception.com/for/yii)
+- [Codeception Acceptance Tests](http://codeception.com/docs/03-AcceptanceTests)
 
-Please refer to instructions provided in `apps/advanced/tests/README.md` and `apps/basic/tests/README.md`.
+## Running basic and advanced template tests
+
+If you've started with advanced template, please refer to ["testing" guide](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide/start-testing.md)
+for more details about running tests.  
+
+If you've started with basic template, check its [README "testing" section](https://github.com/yiisoft/yii2-app-basic/blob/master/README.md#testing).

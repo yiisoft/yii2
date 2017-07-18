@@ -9,11 +9,12 @@ con el formato de la respuesta:
 2. La conversión de objetos recurso en arrays, como está descrito en la sección [Recursos (Resources)](rest-resources.md).
    Esto es realizado por la clase [[yii\rest\Serializer]].
 3. La conversión de arrays en cadenas con el formato determinado por el paso de negociación de contenido. Esto es
-   realizado por los [[yii\web\ResponseFormatterInterface|response formatters]] registrados con el
-   componente de la aplicación [[yii\web\Response::formatters|response]].
+   realizado por los [[yii\web\ResponseFormatterInterface|formatos de respuesta]] registrados
+   con la propiedad [[yii\web\Response::formatters|formatters]] del
+   [componente de la aplicación](structure-application-components.md) `response`.
 
 
-## Negociación de contenido (Content Negotiation) <a name="content-negotiation"></a>
+## Negociación de contenido (Content Negotiation) <span id="content-negotiation"></span>
 
 Yii soporta la negociación de contenido a través del filtro [[yii\filters\ContentNegotiator]]. La clase de controlador base
 del API RESTful [[yii\rest\Controller]] está equipada con este filtro bajo el nombre `contentNegotiator`.
@@ -81,7 +82,7 @@ Las claves de la propiedad `formats` son los tipos MIME soportados, mientras que
 los cuales deben ser soportados en [[yii\web\Response::formatters]].
 
 
-## Serialización de Datos <a name="data-serializing"></a>
+## Serialización de Datos <span id="data-serializing"></span>
 
 Como hemos descrito antes, [[yii\rest\Serializer]] es la pieza central responsable de convertir
 objetos recurso o colecciones en arrays. Reconoce objetos tanto implementando [[yii\base\ArrayableInterface]]
@@ -136,9 +137,15 @@ Content-Type: application/json; charset=UTF-8
         ...
     ],
     "_links": {
-        "self": "http://localhost/users?page=1",
-        "next": "http://localhost/users?page=2",
-        "last": "http://localhost/users?page=50"
+        "self": {
+            "href": "http://localhost/users?page=1"
+        },
+        "next": {
+            "href": "http://localhost/users?page=2"
+        },
+        "last": {
+            "href": "http://localhost/users?page=50"
+        }
     },
     "_meta": {
         "totalCount": 1000,

@@ -14,16 +14,18 @@ use yii\base\InvalidParamException;
 /**
  * BaseDataProvider provides a base class that implements the [[DataProviderInterface]].
  *
- * @property integer $count The number of data models in the current page. This property is read-only.
+ * For more details and usage information on BaseDataProvider, see the [guide article on data providers](guide:output-data-providers).
+ *
+ * @property int $count The number of data models in the current page. This property is read-only.
  * @property array $keys The list of key values corresponding to [[models]]. Each data model in [[models]] is
  * uniquely identified by the corresponding key value in this array.
  * @property array $models The list of data models in the current page.
- * @property Pagination|boolean $pagination The pagination object. If this is false, it means the pagination
- * is disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
+ * @property Pagination|false $pagination The pagination object. If this is false, it means the pagination is
+ * disabled. Note that the type of this property differs in getter and setter. See [[getPagination()]] and
  * [[setPagination()]] for details.
- * @property Sort|boolean $sort The sorting object. If this is false, it means the sorting is disabled. Note
- * that the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
- * @property integer $totalCount Total number of possible data models.
+ * @property Sort|bool $sort The sorting object. If this is false, it means the sorting is disabled. Note that
+ * the type of this property differs in getter and setter. See [[getSort()]] and [[setSort()]] for details.
+ * @property int $totalCount Total number of possible data models.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -31,9 +33,15 @@ use yii\base\InvalidParamException;
 abstract class BaseDataProvider extends Component implements DataProviderInterface
 {
     /**
+     * @var int Number of data providers on the current page. Used to generate unique IDs.
+     */
+    private static $counter = 0;
+    /**
      * @var string an ID that uniquely identifies the data provider among all data providers.
-     * You should set this property if the same page contains two or more different data providers.
-     * Otherwise, the [[pagination]] and [[sort]] mainly not work properly.
+     * Generated automatically the following way in case it is not set:
+     *
+     * - First data provider ID is empty.
+     * - Second and all subsequent data provider IDs are: "dp-1", "dp-2", etc.
      */
     public $id;
 
@@ -43,6 +51,20 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     private $_models;
     private $_totalCount;
 
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->id === null) {
+            if (self::$counter > 0) {
+                $this->id = 'dp-' . self::$counter;
+            }
+            self::$counter++;
+        }
+    }
 
     /**
      * Prepares the data models that will be made available in the current page.
@@ -59,7 +81,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Returns a value indicating the total number of data models in this data provider.
-     * @return integer total number of data models in this data provider.
+     * @return int total number of data models in this data provider.
      */
     abstract protected function prepareTotalCount();
 
@@ -71,7 +93,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      *
      * This method will be implicitly called by [[getModels()]] and [[getKeys()]] if it has not been called before.
      *
-     * @param boolean $forcePrepare whether to force data preparation even if it has been done before.
+     * @param bool $forcePrepare whether to force data preparation even if it has been done before.
      */
     public function prepare($forcePrepare = false)
     {
@@ -126,7 +148,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Returns the number of data models in the current page.
-     * @return integer the number of data models in the current page.
+     * @return int the number of data models in the current page.
      */
     public function getCount()
     {
@@ -137,7 +159,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * Returns the total number of data models.
      * When [[pagination]] is false, this returns the same value as [[count]].
      * Otherwise, it will call [[prepareTotalCount()]] to get the count.
-     * @return integer total number of possible data models.
+     * @return int total number of possible data models.
      */
     public function getTotalCount()
     {
@@ -152,7 +174,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the total number of data models.
-     * @param integer $value the total number of data models.
+     * @param int $value the total number of data models.
      */
     public function setTotalCount($value)
     {
@@ -163,7 +185,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
      * Returns the pagination object used by this data provider.
      * Note that you should call [[prepare()]] or [[getModels()]] first to get correct values
      * of [[Pagination::totalCount]] and [[Pagination::pageCount]].
-     * @return Pagination|boolean the pagination object. If this is false, it means the pagination is disabled.
+     * @return Pagination|false the pagination object. If this is false, it means the pagination is disabled.
      */
     public function getPagination()
     {
@@ -176,7 +198,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the pagination for this data provider.
-     * @param array|Pagination|boolean $value the pagination to be used by this data provider.
+     * @param array|Pagination|bool $value the pagination to be used by this data provider.
      * This can be one of the following:
      *
      * - a configuration array for creating the pagination object. The "class" element defaults
@@ -203,7 +225,8 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
     }
 
     /**
-     * @return Sort|boolean the sorting object. If this is false, it means the sorting is disabled.
+     * Returns the sorting object used by this data provider.
+     * @return Sort|bool the sorting object. If this is false, it means the sorting is disabled.
      */
     public function getSort()
     {
@@ -216,7 +239,7 @@ abstract class BaseDataProvider extends Component implements DataProviderInterfa
 
     /**
      * Sets the sort definition for this data provider.
-     * @param array|Sort|boolean $value the sort definition to be used by this data provider.
+     * @param array|Sort|bool $value the sort definition to be used by this data provider.
      * This can be one of the following:
      *
      * - a configuration array for creating the sort definition object. The "class" element defaults

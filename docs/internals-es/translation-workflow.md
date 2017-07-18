@@ -1,24 +1,24 @@
-﻿Flujo de Trabajo de Traducción
+Flujo de Trabajo de Traducción
 ==============================
 
 Yii se traduce en muchos idiomas con el fin de ser útil para desarrolladores de aplicaciones e internacionales.
 Dos áreas principales donde la contribución es muy bienvenida son la documentación y los mensajes del framework.
 
-Mensajes del Framework 
+Mensajes del Framework
 ----------------------
 
-El framework tiene dos tipos de mensajes: excepciones que están destinadas al desarrollador y nunca se traducen, y mensajes 
+El framework tiene dos tipos de mensajes: excepciones que están destinadas al desarrollador y nunca se traducen, y mensajes
 que en realidad son visibles para el usuario final, tales como errores de validación.
 
 El orden para comenzar con la traducción de mensajes:
 
 1. Comprobar que en `framework/messages/config.php` su idioma aparece en `languages`. Si no, añade tu idioma allí (recuerda que debes mantener la lista en orden alfabético).
 El formato de código de idioma debe seguir el [Código de Idiomas IETF](http://es.wikipedia.org/wiki/C%C3%B3digo_de_idioma_IETF), por ejemplo, `es`.
-2. Ir al directorio `framework` y ejecutar el comando `yii message/extract messages/config.php`.
+2. Ir al directorio `framework` y ejecutar el comando `yii message/extract @yii/messages/config.php --languages=<tu-idioma>`.
 3. Traducir los mensajes en `framework/messages/tu-idioma/yii.php`. Asegúrate de guardar el archivo con codificación UTF-8.
 4. [Crear un pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals-es/git-workflow.md).
 
-Con el fin de mantener la traducción al día puedes ejecutar `yii message/extract messages/config.php` nuevamente.
+Con el fin de mantener la traducción al día puedes ejecutar `yii message/extract @yii/messages/config.php --languages=<tu-idioma>` nuevamente.
 Se volverán a extraer automáticamente los mensajes de mantenimiento intactos sin los cambios.
 
 En el archivo de traducción de cada elemento del `array` representa un mensaje (clave) y su la traducción (valor). Si el valor está vacío, el mensaje se considera como no traducido.
@@ -46,13 +46,8 @@ Las palabras en inglés que son propias del framework o de PHP se pueden dejar e
 
 Para las palabras que están muy ligadas a conceptos extendidos se deben traducir y poner entre paréntesis su equivalente en el idioma original. Ejemplos : `petición` (request), `respuesta` (response), `comportamiento` (behavior), etc.
 
-Los bloques han de ser traducidos, las traducciones se muestran a continuación :
-
-* `Warning` : `Aviso`
-* `Note` : `Nota`
-* `Info` : `Información`
-* `Tip` : `Consejo`
-
 > Aclaraciones :
-* Sólo mencionar una vez entre paréntesis la palabra original en su primera aparición en el texto o en el fichero README.md .
+* Sólo mencionar una vez entre paréntesis la palabra original en su primera aparición en el texto o en el fichero README.md,
+evitando redundancias. Ejemplo: vista(view), controlador(controller), etc.
 * Si una palabra se refiere a un concepto o acción se aplicará la traducción, si por el contrario se refiere a un tipo de dato de php o del framework no se debe traducir.
+* El equipo de traductores hemos escogido el Español-latino para elaborar las traducciones de las guías en Español, eviten usar expresiones o palabras autóctonas de su región para un mayor acercamiento al resto de hispano hablantes.

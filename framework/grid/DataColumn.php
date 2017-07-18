@@ -7,8 +7,10 @@
 
 namespace yii\grid;
 
+use Closure;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\db\ActiveQueryInterface;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -28,6 +30,8 @@ use yii\helpers\Inflector;
  * [[renderDataCellContent|data cell content]]. The cell value is an un-formatted value that
  * may be used for calculation, while the actual cell content is a [[format|formatted]] version of that
  * value which may contain HTML markup.
+ *
+ * For more details and usage information on DataColumn, see the [guide article on data widgets](guide:output-data-widgets).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -50,30 +54,36 @@ class DataColumn extends Column
      */
     public $label;
     /**
-     * @var boolean whether the header label should be HTML-encoded.
+     * @var bool whether the header label should be HTML-encoded.
      * @see label
      * @since 2.0.1
      */
     public $encodeLabel = true;
     /**
-     * @var string|\Closure an anonymous function that returns the value to be displayed for every data model.
-     * The signature of this function is `function ($model, $key, $index, $column)`.
-     * If this is not set, `$model[$attribute]` will be used to obtain the value.
+     * @var string|Closure an anonymous function or a string that is used to determine the value to display in the current column.
+     *
+     * If this is an anonymous function, it will be called for each row and the return value will be used as the value to
+     * display for every data model. The signature of this function should be: `function ($model, $key, $index, $column)`.
+     * Where `$model`, `$key`, and `$index` refer to the model, key and index of the row currently being rendered
+     * and `$column` is a reference to the [[DataColumn]] object.
      *
      * You may also set this property to a string representing the attribute name to be displayed in this column.
      * This can be used when the attribute to be displayed is different from the [[attribute]] that is used for
      * sorting and filtering.
+     *
+     * If this is not set, `$model[$attribute]` will be used to obtain the value, where `$attribute` is the value of [[attribute]].
      */
     public $value;
     /**
-     * @var string|array in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
+     * @var string|array|Closure in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
      * `['date', 'php:Y-m-d']`). Supported formats are determined by the [[GridView::formatter|formatter]] used by
      * the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
      * [[\yii\i18n\Formatter]] is used as the [[GridView::$formatter|formatter]] of the GridView.
+     * @see \yii\i18n\Formatter::format()
      */
     public $format = 'text';
     /**
-     * @var boolean whether to allow sorting by this column. If true and [[attribute]] is found in
+     * @var bool whether to allow sorting by this column. If true and [[attribute]] is found in
      * the sort definition of [[GridView::dataProvider]], then the header cell of this column
      * will contain a link that may trigger the sorting when being clicked.
      */
@@ -85,7 +95,7 @@ class DataColumn extends Column
      */
     public $sortLinkOptions = [];
     /**
-     * @var string|array|boolean the HTML code representing a filter input (e.g. a text field, a dropdown list)
+     * @var string|array|null|false the HTML code representing a filter input (e.g. a text field, a dropdown list)
      * that is used for this data column. This property is effective only when [[GridView::filterModel]] is set.
      *
      * - If this property is not set, a text field will be generated as the filter input;
@@ -112,13 +122,38 @@ class DataColumn extends Column
             return parent::renderHeaderCellContent();
         }
 
+        $label = $this->getHeaderCellLabel();
+        if ($this->encodeLabel) {
+            $label = Html::encode($label);
+        }
+
+        if ($this->attribute !== null && $this->enableSorting &&
+            ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
+            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
+        }
+
+        return $label;
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    protected function getHeaderCellLabel()
+    {
         $provider = $this->grid->dataProvider;
 
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
                 /* @var $model Model */
-                $model = new $provider->query->modelClass;
+                $model = new $provider->query->modelClass();
                 $label = $model->getAttributeLabel($this->attribute);
+            } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
+                /* @var $model Model */
+                $model = new $provider->modelClass();
+                $label = $model->getAttributeLabel($this->attribute);
+            } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
+                $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
             } else {
                 $models = $provider->getModels();
                 if (($model = reset($models)) instanceof Model) {
@@ -132,12 +167,7 @@ class DataColumn extends Column
             $label = $this->label;
         }
 
-        if ($this->attribute !== null && $this->enableSorting &&
-            ($sort = $provider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
-            return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => ($this->encodeLabel ? Html::encode($label) : $label)]));
-        } else {
-            return $this->encodeLabel ? Html::encode($label) : $label;
-        }
+        return $label;
     }
 
     /**
@@ -154,26 +184,32 @@ class DataColumn extends Column
         if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
             if ($model->hasErrors($this->attribute)) {
                 Html::addCssClass($this->filterOptions, 'has-error');
-                $error = Html::error($model, $this->attribute, $this->grid->filterErrorOptions);
+                $error = ' ' . Html::error($model, $this->attribute, $this->grid->filterErrorOptions);
             } else {
                 $error = '';
             }
             if (is_array($this->filter)) {
                 $options = array_merge(['prompt' => ''], $this->filterInputOptions);
-                return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . ' ' . $error;
-            } else {
-                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . ' ' . $error;
+                return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
+            } elseif ($this->format === 'boolean') {
+                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                return Html::activeDropDownList($model, $this->attribute, [
+                    $this->grid->formatter->booleanFormat[0],
+                    $this->grid->formatter->booleanFormat[1],
+                ], $options) . $error;
             }
-        } else {
-            return parent::renderFilterCellContent();
+
+            return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
         }
+
+        return parent::renderFilterCellContent();
     }
 
     /**
      * Returns the data cell value.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
      * @return string the data cell value
      */
     public function getDataCellValue($model, $key, $index)
@@ -181,9 +217,9 @@ class DataColumn extends Column
         if ($this->value !== null) {
             if (is_string($this->value)) {
                 return ArrayHelper::getValue($model, $this->value);
-            } else {
-                return call_user_func($this->value, $model, $key, $index, $this);
             }
+
+            return call_user_func($this->value, $model, $key, $index, $this);
         } elseif ($this->attribute !== null) {
             return ArrayHelper::getValue($model, $this->attribute);
         }
@@ -197,8 +233,8 @@ class DataColumn extends Column
     {
         if ($this->content === null) {
             return $this->grid->formatter->format($this->getDataCellValue($model, $key, $index), $this->format);
-        } else {
-            return parent::renderDataCellContent($model, $key, $index);
         }
+
+        return parent::renderDataCellContent($model, $key, $index);
     }
 }

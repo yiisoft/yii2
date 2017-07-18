@@ -11,7 +11,7 @@ de votre configuration. Cette section vous initiera aux fonctionnalités intégr
   Pour vos besoins, merci d'ajuster les URLs dans notre description comme il convient.
 
 
-Fonctionnalité <a name="Functionality"></a>
+Fonctionnalité <span id="Functionality"></span>
 --------------
 
 L'application basique installée contient quatre pages :
@@ -29,7 +29,7 @@ Vous devriez également voir une barre d'outils en bas de votre fenêtre de navi
 C'est un [outil de débogage](tool-debugger.md) utile fourni par Yii pour enregistrer et afficher de nombreuses informations de débogage, telles que des messages de logs, statuts de réponses, les requêtes lancées vers la base de données, et ainsi de suite.
 
 
-Structure de l'Application <a name="application-structure"></a>
+Structure de l'Application <span id="application-structure"></span>
 ---------------------
 
 Les répertoires et fichiers les plus importants de votre application sont (en supposant que le répertoire racine de l'application est `basic`) :
@@ -69,7 +69,7 @@ et distribue la requête aux éléments MVC. Les [Widgets](structure-widgets.md)
 pour aider à créer des éléments d'interface complexes et dynamiques.
 
 
-Cycle de vie d'une requête <a name="request-lifecycle"></a>
+Cycle de vie d'une requête <span id="request-lifecycle"></span>
 -----------------
 
 Le diagramme suivant présente la manière dont une application traite une requête.

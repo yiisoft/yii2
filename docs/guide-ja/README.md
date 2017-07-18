@@ -1,8 +1,7 @@
-Yii 2.0 公式ガイド
-==================
+Yii 2.0 決定版ガイド
+====================
 
-このチュートリアルは [Yii ドキュメント規約](http://www.yiiframework.com/doc/terms/) の下に
-リリースされています。
+このチュートリアルは [Yii ドキュメント許諾条件](http://www.yiiframework.com/doc/terms/) の下にリリースされています。
 
 All Rights Reserved.
 
@@ -21,11 +20,11 @@ All Rights Reserved.
 
 * [Yii をインストールする](start-installation.md)
 * [アプリケーションを走らせる](start-workflow.md)
-* [「こんにちは」と言う](start-hello.md)
+* [こんにちは、と言う](start-hello.md)
 * [フォームを扱う](start-forms.md)
 * [データベースを扱う](start-databases.md)
 * [Gii でコードを生成する](start-gii.md)
-* [この先を見通す](start-looking-ahead.md)
+* [先を見通す](start-looking-ahead.md)
 
 
 アプリケーションの構造
@@ -55,7 +54,7 @@ All Rights Reserved.
 * [レスポンス](runtime-responses.md)
 * [セッションとクッキー](runtime-sessions-cookies.md)
 * [エラー処理](runtime-handling-errors.md)
-* [ログ](runtime-logging.md)
+* [ロギング](runtime-logging.md)
 
 
 鍵となる概念
@@ -65,11 +64,11 @@ All Rights Reserved.
 * [プロパティ](concept-properties.md)
 * [イベント](concept-events.md)
 * [ビヘイビア](concept-behaviors.md)
-* [コンフィギュレーション](concept-configurations.md)
+* [構成情報](concept-configurations.md)
 * [エイリアス](concept-aliases.md)
 * [クラスのオートロード](concept-autoloading.md)
 * [サービスロケータ](concept-service-locator.md)
-* [依存性注入コンテナ](concept-di-container.md)
+* [依存注入コンテナ](concept-di-container.md)
 
 
 データベースの取り扱い
@@ -79,10 +78,10 @@ All Rights Reserved.
 * [クエリビルダ](db-query-builder.md): シンプルな抽象レイヤを使ってデータベースに対してクエリを行う
 * [アクティブレコード](db-active-record.md): アクティブレコード ORM、レコードの読み出しと操作、リレーションの定義
 * [マイグレーション](db-migrations.md): チーム開発環境においてデータベースにバージョンコントロールを適用
-* **TBD** [Sphinx](db-sphinx.md)
-* **TBD** [Redis](db-redis.md)
-* **TBD** [MongoDB](db-mongodb.md)
-* **TBD** [ElasticSearch](db-elasticsearch.md)
+* [Sphinx](https://github.com/yiisoft/yii2-sphinx/blob/master/docs/guide-ja/README.md)
+* [Redis](https://github.com/yiisoft/yii2-redis/blob/master/docs/guide-ja/README.md)
+* [MongoDB](https://github.com/yiisoft/yii2-mongodb/blob/master/docs/guide-ja/README.md)
+* [ElasticSearch](https://github.com/yiisoft/yii2-elasticsearch/blob/master/docs/guide-ja/README.md)
 
 
 ユーザからのデータ取得
@@ -91,29 +90,32 @@ All Rights Reserved.
 * [フォームを作成する](input-forms.md)
 * [入力を検証する](input-validation.md)
 * [ファイルをアップロードする](input-file-upload.md)
-* **TBD** [複数モデルのためのデータ取得](input-multiple-models.md)
+* [表形式インプットのデータ収集](input-tabular-input.md)
+* [複数のモデルのデータを取得する](input-multiple-models.md)
 
 
 データの表示
 ------------
 
-* [データの書式設定](output-formatter.md)
-* **TBD** [ページネーション](output-pagination.md)
-* **TBD** [並べ替え](output-sorting.md)
+* [データのフォーマット](output-formatting.md)
+* [ページネーション](output-pagination.md)
+* [並べ替え](output-sorting.md)
 * [データプロバイダ](output-data-providers.md)
 * [データウィジェット](output-data-widgets.md)
-* [クライアントスクリプトを使う](output-client-scripts.md)
-* [テーマを使う](output-theming.md)
+* [クライアントスクリプトを扱う](output-client-scripts.md)
+* [テーマ](output-theming.md)
 
 
 セキュリティ
 ------------
 
+* [概要](security-overview.md)
 * [認証](security-authentication.md)
-* [権限](security-authorization.md)
+* [権限付与](security-authorization.md)
 * [パスワードを扱う](security-passwords.md)
-* **TBD** [Auth クライアント](security-auth-clients.md)
-* **TBD** [最善の慣行](security-best-practices.md)
+* [暗号化](security-cryptography.md)
+* [認証クライアント](https://github.com/yiisoft/yii2-authclient/blob/master/docs/guide-ja/README.md)
+* [ベストプラクティス](security-best-practices.md)
 
 
 キャッシュ
@@ -133,9 +135,9 @@ RESTful ウェブサービス
 * [リソース](rest-resources.md)
 * [コントローラ](rest-controllers.md)
 * [ルーティング](rest-routing.md)
-* [レスポンスの書式設定](rest-response-formatting.md)
+* [レスポンス形式の設定](rest-response-formatting.md)
 * [認証](rest-authentication.md)
-* [転送レート制限](rest-rate-limiting.md)
+* [レート制限](rest-rate-limiting.md)
 * [バージョン管理](rest-versioning.md)
 * [エラー処理](rest-error-handling.md)
 
@@ -143,9 +145,8 @@ RESTful ウェブサービス
 開発ツール
 ----------
 
-* [デバッグツールバーとデバッガ](tool-debugger.md)
-* [Gii を使ってコードを生成する](tool-gii.md)
-* **TBD** [API ドキュメントを生成する](tool-api-doc.md)
+* [デバッグツールバーとデバッガ](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)
+* [Gii を使ってコードを生成する](https://github.com/yiisoft/yii2-gii/blob/master/docs/guide-ja/README.md)
 
 
 テスト
@@ -153,23 +154,23 @@ RESTful ウェブサービス
 
 * [概要](test-overview.md)
 * [テスト環境の構築](test-environment-setup.md)
-* [ユニットテスト](test-unit.md)
+* [単体テスト](test-unit.md)
 * [機能テスト](test-functional.md)
-* [承認テスト](test-acceptance.md)
+* [受入テスト](test-acceptance.md)
 * [フィクスチャ](test-fixtures.md)
 
 
 スペシャルトピック
 ------------------
 
-* [アドバンストアプリケーションテンプレート](tutorial-advanced-app.md)
+* [アドバンストプロジェクトテンプレート](https://github.com/yiisoft/yii2-app-advanced/blob/master/docs/guide-ja/README.md)
 * [アプリケーションを一から構築する](tutorial-start-from-scratch.md)
 * [コンソールコマンド](tutorial-console.md)
-* [コアのバリデータ](tutorial-core-validators.md)
+* [コアバリデータ](tutorial-core-validators.md)
 * [国際化](tutorial-i18n.md)
-* [メール](tutorial-mailing.md)
+* [メール送信](tutorial-mailing.md)
 * [パフォーマンスチューニング](tutorial-performance-tuning.md)
-* **TBD** [共有ホスト環境](tutorial-shared-hosting.md)
+* [共有ホスティング環境](tutorial-shared-hosting.md)
 * [テンプレートエンジン](tutorial-template-engines.md)
 * [サードパーティのコードを扱う](tutorial-yii-integration.md)
 
@@ -177,24 +178,22 @@ RESTful ウェブサービス
 ウィジェット
 ------------
 
-* GridView: link to demo page
-* ListView: link to demo page
-* DetailView: link to demo page
-* ActiveForm: link to demo page
-* Pjax: link to demo page
-* Menu: link to demo page
-* LinkPager: link to demo page
-* LinkSorter: link to demo page
-* [Bootstrap ウィジェット](widget-bootstrap.md)
-* [Jquery UI ウィジェット](widget-jui.md)
+* [GridView](http://www.yiiframework.com/doc-2.0/yii-grid-gridview.html)
+* [ListView](http://www.yiiframework.com/doc-2.0/yii-widgets-listview.html)
+* [DetailView](http://www.yiiframework.com/doc-2.0/yii-widgets-detailview.html)
+* [ActiveForm](http://www.yiiframework.com/doc-2.0/guide-input-forms.html#activerecord-based-forms-activeform)
+* [Pjax](http://www.yiiframework.com/doc-2.0/yii-widgets-pjax.html)
+* [Menu](http://www.yiiframework.com/doc-2.0/yii-widgets-menu.html)
+* [LinkPager](http://www.yiiframework.com/doc-2.0/yii-widgets-linkpager.html)
+* [LinkSorter](http://www.yiiframework.com/doc-2.0/yii-widgets-linksorter.html)
+* [Bootstrap ウィジェット](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide-ja/README.md)
+* [jQuery UI ウィジェット](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide-ja/README.md)
 
 
-ヘルパー
---------
+ヘルパ
+------
 
 * [概要](helper-overview.md)
-* **TBD** [ArrayHelper](helper-array.md)
-* **TBD** [Html](helper-html.md)
-* **TBD** [Url](helper-url.md)
-* **TBD** [Security](helper-security.md)
-
+* [配列ヘルパ](helper-array.md)
+* [Html ヘルパ](helper-html.md)
+* [Url ヘルパ](helper-url.md)

@@ -10,12 +10,12 @@ two [views](structure-views.md), you will also create a [model](structure-models
 
 Through this tutorial, you will learn how to:
 
-* Create a [model](structure-models.md) to represent the data entered by a user through a form
-* Declare rules to validate the data entered
-* Build an HTML form in a [view](structure-views.md)
+* create a [model](structure-models.md) to represent the data entered by a user through a form,
+* declare rules to validate the data entered,
+* build an HTML form in a [view](structure-views.md).
 
 
-Creating a Model <a name="creating-model"></a>
+Creating a Model <span id="creating-model"></span>
 ----------------
 
 The data to be requested from the user will be represented by an `EntryForm` model class as shown below and
@@ -27,6 +27,7 @@ section for more details about the class file naming convention.
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 
 class EntryForm extends Model
@@ -59,7 +60,7 @@ of rules for validating the data. The validation rules declared above state that
 
 If you have an `EntryForm` object populated with the data entered by a user, you may call
 its [[yii\base\Model::validate()|validate()]] to trigger the data validation routines. A data validation
-failure will set the [[yii\base\Model::hasErrors|hasErrors]] property to true, and you may learn what validation
+failure will set the [[yii\base\Model::hasErrors|hasErrors]] property to `true`, and you may learn what validation
 errors occurred through [[yii\base\Model::getErrors|errors]].
 
 ```php
@@ -76,7 +77,7 @@ if ($model->validate()) {
 ```
 
 
-Creating an Action <a name="creating-action"></a>
+Creating an Action <span id="creating-action"></span>
 ------------------
 
 Next, you'll need to create an `entry` action in the `site` controller that will use the new model. The process
@@ -97,7 +98,7 @@ class SiteController extends Controller
 
     public function actionEntry()
     {
-        $model = new EntryForm;
+        $model = new EntryForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             // valid data received in $model
@@ -132,7 +133,7 @@ be rendered, wherein the HTML form will be shown, along with any validation erro
   to avoid [form resubmission problems](http://en.wikipedia.org/wiki/Post/Redirect/Get).
 
 
-Creating Views <a name="creating-views"></a>
+Creating Views <span id="creating-views"></span>
 --------------
 
 Finally, create two view files named `entry-confirm` and `entry`. These will be rendered by the `entry` action,
@@ -180,13 +181,13 @@ and the second for the "email" data. After the input fields, the [[yii\helpers\H
 is called to generate a submit button.
 
 
-Trying it Out <a name="trying-it-out"></a>
+Trying it Out <span id="trying-it-out"></span>
 -------------
 
 To see how it works, use your browser to access the following URL:
 
 ```
-http://hostname/index.php?r=site/entry
+http://hostname/index.php?r=site%2Fentry
 ```
 
 You will see a page displaying a form with two input fields. In front of each input field, a label indicates what data is to be entered. If you click the submit button without
@@ -201,16 +202,16 @@ displaying the data that you just entered.
 
 
 
-### Magic Explained <a name="magic-explained"></a>
+### Magic Explained <span id="magic-explained"></span>
 
 You may wonder how the HTML form works behind the scene, because it seems almost magical that it can
 display a label for each input field and show error messages if you do not enter the data correctly
 without reloading the page.
 
-Yes, the data validation is initially done on the client side using JavaScript, and secondarily performed on the server side via PHP.
+Yes, the data validation is initially done on the client-side using JavaScript, and secondarily performed on the server-side via PHP.
 [[yii\widgets\ActiveForm]] is smart enough to extract the validation rules that you have declared in `EntryForm`,
 turn them into executable JavaScript code, and use the JavaScript to perform data validation. In case you have disabled
-JavaScript on your browser, the validation will still be performed on the server side, as shown in
+JavaScript on your browser, the validation will still be performed on the server-side, as shown in
 the `actionEntry()` method. This ensures data validity in all circumstances.
 
 > Warning: Client-side validation is a convenience that provides for a better user experience. Server-side validation
@@ -232,10 +233,10 @@ the following code:
   view code into reusable widgets to simplify view development in future.
 
 
-Summary <a name="summary"></a>
+Summary <span id="summary"></span>
 -------
 
-In this section of the guide, you have touched every part in the MVC design pattern. You have learned how
+In this section of the guide, you have touched every part in the MVC architectural pattern. You have learned how
 to create a model class to represent the user data and validate said data.
 
 You have also learned how to get data from users and how to display data back in the browser. This is a task that

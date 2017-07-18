@@ -7,8 +7,8 @@
 
 namespace yii\db;
 
-use yii\base\Object;
 use yii\base\InvalidParamException;
+use yii\base\Object;
 
 /**
  * TableSchema represents the metadata of a database table.
@@ -45,13 +45,13 @@ class TableSchema extends Object
     /**
      * @var array foreign keys of this table. Each array element is of the following structure:
      *
-     * ~~~
+     * ```php
      * [
      *  'ForeignTableName',
      *  'fk1' => 'pk1',  // pk1 is in foreign table
      *  'fk2' => 'pk2',  // if composite foreign key
      * ]
-     * ~~~
+     * ```
      */
     public $foreignKeys = [];
     /**
@@ -87,9 +87,7 @@ class TableSchema extends Object
      */
     public function fixPrimaryKey($keys)
     {
-        if (!is_array($keys)) {
-            $keys = [$keys];
-        }
+        $keys = (array) $keys;
         $this->primaryKey = $keys;
         foreach ($this->columns as $column) {
             $column->isPrimaryKey = false;

@@ -22,12 +22,12 @@ class ColumnSchema extends Object
      */
     public $name;
     /**
-     * @var boolean whether this column can be null.
+     * @var bool whether this column can be null.
      */
     public $allowNull;
     /**
      * @var string abstract type of this column. Possible abstract types include:
-     * string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
+     * char, string, text, boolean, smallint, integer, bigint, float, decimal, datetime,
      * timestamp, time, date, binary, and money.
      */
     public $type;
@@ -49,27 +49,27 @@ class ColumnSchema extends Object
      */
     public $enumValues;
     /**
-     * @var integer display size of the column.
+     * @var int display size of the column.
      */
     public $size;
     /**
-     * @var integer precision of the column data, if it is numeric.
+     * @var int precision of the column data, if it is numeric.
      */
     public $precision;
     /**
-     * @var integer scale of the column data, if it is numeric.
+     * @var int scale of the column data, if it is numeric.
      */
     public $scale;
     /**
-     * @var boolean whether this column is a primary key
+     * @var bool whether this column is a primary key
      */
     public $isPrimaryKey;
     /**
-     * @var boolean whether this column is auto-incremental
+     * @var bool whether this column is auto-incremental
      */
     public $autoIncrement = false;
     /**
-     * @var boolean whether this column is unsigned. This is only meaningful
+     * @var bool whether this column is unsigned. This is only meaningful
      * when [[type]] is `smallint`, `integer` or `bigint`.
      */
     public $unsigned;
@@ -87,25 +87,7 @@ class ColumnSchema extends Object
      */
     public function phpTypecast($value)
     {
-        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY) {
-            return null;
-        }
-        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression) {
-            return $value;
-        }
-        switch ($this->phpType) {
-            case 'resource':
-            case 'string':
-                return is_resource($value) ? $value : (string) $value;
-            case 'integer':
-                return (int) $value;
-            case 'boolean':
-                return (bool) $value;
-            case 'double':
-                return (double) $value;
-        }
-
-        return $value;
+        return $this->typecast($value);
     }
 
     /**
@@ -117,8 +99,47 @@ class ColumnSchema extends Object
      */
     public function dbTypecast($value)
     {
-        // the default implementation does the same as casting for PHP but it should be possible
+        // the default implementation does the same as casting for PHP, but it should be possible
         // to override this with annotation of explicit PDO type.
-        return $this->phpTypecast($value);
+        return $this->typecast($value);
+    }
+
+    /**
+     * Converts the input value according to [[phpType]] after retrieval from the database.
+     * If the value is null or an [[Expression]], it will not be converted.
+     * @param mixed $value input value
+     * @return mixed converted value
+     * @since 2.0.3
+     */
+    protected function typecast($value)
+    {
+        if ($value === '' && $this->type !== Schema::TYPE_TEXT && $this->type !== Schema::TYPE_STRING && $this->type !== Schema::TYPE_BINARY && $this->type !== Schema::TYPE_CHAR) {
+            return null;
+        }
+        if ($value === null || gettype($value) === $this->phpType || $value instanceof Expression || $value instanceof Query) {
+            return $value;
+        }
+        switch ($this->phpType) {
+            case 'resource':
+            case 'string':
+                if (is_resource($value)) {
+                    return $value;
+                }
+                if (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    return str_replace(',', '.', (string) $value);
+                }
+                return (string) $value;
+            case 'integer':
+                return (int) $value;
+            case 'boolean':
+                // treating a 0 bit value as false too
+                // https://github.com/yiisoft/yii2/issues/9006
+                return (bool) $value && $value !== "\0";
+            case 'double':
+                return (float) $value;
+        }
+
+        return $value;
     }
 }

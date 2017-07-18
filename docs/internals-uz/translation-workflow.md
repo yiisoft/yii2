@@ -1,4 +1,4 @@
-﻿O'zbekchaga tarjima qilish bilan qanday ishlash kerak
+O'zbekchaga tarjima qilish bilan qanday ishlash kerak
 =====================================================
 
 Yii juda ko'p tillarga tarjima qilinayabdi shu jumladan o'zbekchaga ham. Tarjima qo'llanma va habarlarni o'z ichiga oladi.
@@ -10,7 +10,7 @@ Ikki turdagi habarlar bor: istisnolar, qaysiki ishlab chiquvchi nazarda tutgan v
 
 Tarjimani yangilash uchun:
 
-1. Konsolda `framework` direktoriyani ochamiz, `yii message/extract messages/config.php` ni ishga tushiramiz.
+1. Konsolda `framework` direktoriyani ochamiz, `./yii message/extract @yii/messages/config.php --languages=uz` ni ishga tushiramiz.
 3. Habarlarni `framework/messages/uz/yii.php` ga ko`chiramiz. Muhimi fayllar UTF-8 kodlashda bo'lishi kerak.
 4. `uz` dagi tarjimalar bilan [pull request qilamiz](https://github.com/yiisoft/yii2/blob/master/docs/internals/git-workflow.md), qolgan tillarga tegmaymiz.
 

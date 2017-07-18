@@ -9,13 +9,13 @@ Yii中的资源是和Web页面相关的文件，可为CSS文件，JavaScript文�
 当你升级小部件时，它会自动使用新版本的资源文件，在本教程中，我们会详述Yii提供的强大的资源管理功能。
 
 
-## 资源包 <a name="asset-bundles"></a>
+## 资源包 <span id="asset-bundles"></span>
 
 Yii在*资源包*中管理资源，资源包简单的说就是放在一个目录下的资源集合，
 当在[视图](structure-views.md)中注册一个资源包，在渲染Web页面时会包含包中的CSS和JavaScript文件。
 
 
-## 定义资源包 <a name="defining-asset-bundles"></a>
+## 定义资源包 <span id="defining-asset-bundles"></span>
 
 资源包指定为继承[[yii\web\AssetBundle]]的PHP类，包名为可[自动加载](concept-autoloading.md)的PHP类名，
 在资源包类中，要指定资源所在位置，包含哪些CSS和JavaScript文件以及和其他包的依赖关系。
@@ -69,7 +69,7 @@ class AppAsset extends AssetBundle
   - 绝对URL地址表示为外部JavaScript文件，如
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包JavaScript文件的数组，该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
+* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包CSS文件的数组，该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
 * [[yii\web\AssetBundle::depends|depends]]: 一个列出该资源包依赖的其他资源包（后两节有详细介绍）。
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: 当调用[[yii\web\View::registerJsFile()]]注册该包 *每个* JavaScript文件时，
   指定传递到该方法的选项。
@@ -79,31 +79,31 @@ class AppAsset extends AssetBundle
   指定传递到该方法的选项，仅在指定了[[yii\web\AssetBundle::sourcePath|sourcePath]]属性时使用。
 
 
-### 资源位置 <a name="asset-locations"></a>
+### 资源位置 <span id="asset-locations"></span>
 
 资源根据它们的位置可以分为：
 
 * 源资源: 资源文件和PHP源代码放在一起，不能被Web直接访问，为了使用这些源资源，它们要拷贝到一个可Web访问的Web目录中
   成为发布的资源，这个过程称为*发布资源*，随后会详细介绍。
 * 发布资源: 资源文件放在可通过Web直接访问的Web目录中；
-* 外部资源: 资源文件放在你的Web应用不同的Web服务器上；
+* 外部资源: 资源文件放在与你的Web应用不同的Web服务器上；
 
 当定义资源包类时候，如果你指定了[[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，就表示任何使用相对路径的资源会被
 当作源资源；如果没有指定该属性，就表示这些资源为发布资源（因此应指定[[yii\web\AssetBundle::basePath|basePath]] 和
 [[yii\web\AssetBundle::baseUrl|baseUrl]] 让Yii知道它们的位置）。
 
-推荐将资源文件放到Web目录以避免不必要的发布资源过程，这就是之前的例子指定
+推荐将资源文件放到Web目录以避免不必要的发布资源过程，这就是之前的例子：指定
 [[yii\web\AssetBundle::basePath|basePath]] 而不是 [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
 对于 [扩展](structure-extensions.md)来说，由于它们的资源和源代码都在不能Web访问的目录下，
 在定义资源包类时必须指定[[yii\web\AssetBundle::sourcePath|sourcePath]]属性。
 
-> 注意:  [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
+> Note: [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
   [[yii\web\AssetManager|asset manager]]资源管理器将源资源发布后存储资源的路径，该路径的所有内容会认为是临时文件，
   可能会被删除。
 
 
-### 资源依赖 <a name="asset-dependencies"></a>
+### 资源依赖 <span id="asset-dependencies"></span>
 
 当Web页面包含多个CSS或JavaScript文件时，它们有一定的先后顺序以避免属性覆盖，
 例如，Web页面在使用jQuery UI小部件前必须确保jQuery JavaScript文件已经被包含了，
@@ -113,17 +113,17 @@ class AppAsset extends AssetBundle
 在`AppAsset` 示例中，资源包依赖其他两个资源包： [[yii\web\YiiAsset]] 和 [[yii\bootstrap\BootstrapAsset]]
 也就是该资源包的CSS和JavaScript文件要在这两个依赖包的文件包含 *之后* 才包含。
 
-资源依赖关系是可传递，也就是人说A依赖B，B依赖C，那么A也依赖C。
+资源依赖关系是可传递，也就是说A依赖B，B依赖C，那么A也依赖C。
 
 
-### 资源选项 <a name="asset-options"></a>
+### 资源选项 <span id="asset-options"></span>
 
 可指定[[yii\web\AssetBundle::cssOptions|cssOptions]] 和 [[yii\web\AssetBundle::jsOptions|jsOptions]]
 属性来自定义页面包含CSS和JavaScript文件的方式，
 这些属性值会分别传递给 [[yii\web\View::registerCssFile()]] 和 [[yii\web\View::registerJsFile()]] 方法，
 在[视图](structure-views.md) 调用这些方法包含CSS和JavaScript文件时。
 
-> 注意: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，如果想对每个文件使用不同的选项，
+> Note: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，如果想对每个文件使用不同的选项，
   应创建不同的资源包并在每个包中使用一个选项集。
 
 例如，只想IE9或更高的浏览器包含一个CSS文件，可以使用如下选项：
@@ -153,7 +153,7 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
 
-### Bower 和 NPM 资源 <a name="bower-npm-assets"></a>
+### Bower 和 NPM 资源 <span id="bower-npm-assets"></span>
 
 大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/)管理，
 如果你的应用或扩展使用这些包，推荐你遵循以下步骤来管理库中的资源：
@@ -164,11 +164,11 @@ public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
    应设置 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性为`@bower/PackageName` 或 `@npm/PackageName`，
    因为根据别名Composer会安装Bower或NPM包到对应的目录下。
 
-> 注意: 一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
+> Note: 一些包会将它们分布式文件放到一个子目录中，对于这种情况，应指定子目录作为
   [[yii\web\AssetBundle::sourcePath|sourcePath]]属性值，例如，[[yii\web\JqueryAsset]]使用 `@bower/jquery/dist` 而不是 `@bower/jquery`。
 
 
-## 使用资源包 <a name="using-asset-bundles"></a>
+## 使用资源包 <span id="using-asset-bundles"></span>
 
 为使用资源包，在[视图](structure-views.md)中调用[[yii\web\AssetBundle::register()]]方法先注册资源，
 例如，在视图模板可使用如下代码注册资源包：
@@ -186,9 +186,9 @@ AppAsset::register($this);  // $this 代表视图对象
 这些标签的先后顺序取决于资源包的依赖关系以及在 [[yii\web\AssetBundle::css]]和[[yii\web\AssetBundle::js]] 的列出来的前后顺序。
 
 
-### 自定义资源包 <a name="customizing-asset-bundles"></a>
+### 自定义资源包 <span id="customizing-asset-bundles"></span>
 
-Yii通过名为 `assetManager`的应用组件实现[[yii\web\AssetManager] 来管理应用组件，
+Yii通过名为 `assetManager`的应用组件实现[[yii\web\AssetManager]] 来管理应用组件，
 通过配置[[yii\web\AssetManager::bundles]] 属性，可以自定义资源包的行为，
 例如，[[yii\web\JqueryAsset]] 资源包默认从jquery Bower包中使用`jquery.js` 文件，
 为了提高可用性和性能，你可能需要从Google服务器上获取jquery文件，可以在应用配置中配置`assetManager`，如下所示：
@@ -214,7 +214,7 @@ return [
 可通过类似[[yii\web\AssetManager::bundles]]配置多个资源包，数组的键应为资源包的类名（最开头不要反斜杠），
 数组的值为对应的[配置数组](concept-configurations.md).
 
-> 提示: 可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，否则用`jquery.min.js`：
+> Tip: 可以根据条件判断使用哪个资源，如下示例为如何在开发环境用`jquery.js`，否则用`jquery.min.js`：
 >
 > ```php
 > 'yii\web\JqueryAsset' => [
@@ -243,10 +243,10 @@ return [
 可设置[[yii\web\AssetManager::bundles]]为`false`禁用 *所有* 的资源包。
 
 
-### 资源部署 <a name="asset-mapping"></a>
+### 资源部署 <span id="asset-mapping"></span>
 
 有时你想"修复" 多个资源包中资源文件的错误/不兼容，例如包A使用1.11.1版本的`jquery.min.js`，
-包B使用2.1.1版本的`jquery.js`，可自定义每个包来解决这个问题，更好的方式是使用*资源部署*特性来不熟不正确的资源为想要的，
+包B使用2.1.1版本的`jquery.js`，可自定义每个包来解决这个问题，更好的方式是使用*资源部署*特性来部署不正确的资源为想要的，
 为此，配置[[yii\web\AssetManager::assetMap]]属性，如下所示：
 
 ```php
@@ -267,10 +267,10 @@ return [
 如果数组任何键对比为资源文件的最后文件名（如果有的话前缀为 [[yii\web\AssetBundle::sourcePath]]），对应的值为替换原来的资源。
 例如，资源文件`my/path/to/jquery.js` 匹配键 `jquery.js`.
 
-> 注意: 只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，也可为和[[yii\web\AssetManager::basePath]]相关的路径。
+> Note: 只有相对相对路径指定的资源对应到资源部署，替换的资源路径可以为绝对路径，也可为和[[yii\web\AssetManager::basePath]]相关的路径。
 
 
-### 资源发布 <a name="asset-publishing"></a>
+### 资源发布 <span id="asset-publishing"></span>
 
 如前所述，如果资源包放在Web不能访问的目录，当视图注册资源时资源会被拷贝到一个Web可访问的目录中，
 这个过程称为*资源发布*，[[yii\web\AssetManager|asset manager]]会自动处理该过程。
@@ -295,7 +295,7 @@ return [
 使用以上配置，资源管理器会创建一个符号链接到要发布的资源包源路径，这比拷贝文件方式快并能确保发布的资源一直为最新的。
 
 
-## 常用资源包 <a name="common-asset-bundles"></a>
+## 常用资源包 <span id="common-asset-bundles"></span>
 
 Yii框架定义许多资源包，如下资源包是最常用，可在你的应用或扩展代码中引用它们。
 
@@ -310,7 +310,7 @@ Yii框架定义许多资源包，如下资源包是最常用，可在你的应�
 如果这些包的默认配置不能满足你的需求，可以自定义配置，详情参考[自定义资源包](#customizing-asset-bundles)。
 
 
-## 资源转换 <a name="asset-conversion"></a>
+## 资源转换 <span id="asset-conversion"></span>
 
 除了直接编写CSS 和/或 JavaScript代码，开发人员经常使用扩展语法来编写，再使用特殊的工具将它们转换成CSS/Javascript。
 例如，对于CSS代码可使用[LESS](http://lesscss.org/) 或 [SCSS](http://sass-lang.com/)，
@@ -347,7 +347,7 @@ Yii使用文件扩展名来表示资源使用哪种扩展语法，默认可以�
 - [CoffeeScript](http://coffeescript.org/): `.coffee`
 - [TypeScript](http://www.typescriptlang.org/): `.ts`
 
-Yii依靠安装的预处理公斤来转换资源，例如，为使用[LESS](http://lesscss.org/)，应安装`lessc` 预处理命令。
+Yii依靠安装的预处理工具来转换资源，例如，为使用[LESS](http://lesscss.org/)，应安装`lessc` 预处理命令。
 
 可配置[[yii\web\AssetManager::converter]]自定义预处理命令和支持的扩展语法，如下所示：
 
@@ -371,16 +371,16 @@ return [
 数组的键为文件扩展名（前面不要.），数组的值为目标资源文件扩展名和执行资源转换的命令，
 命令中的标记 `{from}` 和`{to}`会分别被源资源文件路径和目标资源文件路径替代。
 
-> 补充: 除了以上方式，也有其他的方式来处理扩展语法资源，例如，可使用编译工具如[grunt](http://gruntjs.com/)
+> Info: 除了以上方式，也有其他的方式来处理扩展语法资源，例如，可使用编译工具如[grunt](http://gruntjs.com/)
   来监控并自动转换扩展语法资源，此时，应使用资源包中编译后的CSS/Javascript文件而不是原始文件。
 
 
-## 合并和压缩资源 <a name="combining-compressing-assets"></a>
+## 合并和压缩资源 <span id="combining-compressing-assets"></span>
 
 一个Web页面可以包含很多CSS 和/或 JavaScript 文件，为减少HTTP 请求和这些下载文件的大小，
 通常的方式是在页面中合并并压缩多个CSS/JavaScript 文件为一个或很少的几个文件，并使用压缩后的文件而不是原始文件。
  
-> 补充: 合并和压缩资源通常在应用在产品上线模式，在开发模式下使用原始的CSS/JavaScript更方便调试。
+> Info: 合并和压缩资源通常在应用在产品上线模式，在开发模式下使用原始的CSS/JavaScript更方便调试。
 
 接下来介绍一种合并和压缩资源文件而不需要修改已有代码的方式：
 
@@ -396,17 +396,17 @@ return [
 而不是原始文件。
 
 
-### 示例 <a name="example"></a>
+### 示例 <span id="example"></span>
 
 使用一个示例来解释以上这种方式：
 
-鉴定你的应用有两个页面X 和 Y，页面X使用资源包A，B和C，页面Y使用资源包B，C和D。
+假定你的应用有两个页面X 和 Y，页面X使用资源包A，B和C，页面Y使用资源包B，C和D。
 
-有两种方式划分这些资源包，一种使用一个组包含所有资源包，另一种是将（A,B,C）放在组X，（B，C，C）放在组Y，
+有两种方式划分这些资源包，一种使用一个组包含所有资源包，另一种是将（A,B,C）放在组X，（B，C，D）放在组Y，
 哪种方式更好？第一种方式优点是两个页面使用相同的已合并CSS和JavaScript文件使HTTP缓存更高效，另一方面，由于单个组包含所有文件，
 已合并的CSS和Javascipt文件会更大，因此会增加文件传输时间，在这个示例中，我们使用第一种方式，也就是用一个组包含所有包。
 
-> 补充: 将资源包分组并不是无价值的，通常要求分析现实中不同页面各种资源的数据量，开始时为简便使用一个组。
+> Info: 将资源包分组并不是无价值的，通常要求分析现实中不同页面各种资源的数据量，开始时为简便使用一个组。
 
 在所有包中使用工具(例如 [Closure Compiler](https://developers.google.com/closure/compiler/), 
 [YUI Compressor](https://github.com/yui/yuicompressor/)) 来合并和压缩CSS和JavaScript文件，
@@ -449,20 +449,20 @@ return [
 return [
     'components' => [
         'assetManager' => [
-            'bundles' => require(__DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php')),  
+            'bundles' => require __DIR__ . '/' . (YII_ENV_PROD ? 'assets-prod.php' : 'assets-dev.php'),  
         ],
     ],
 ];
 ```
 
-如上所示，在产品上线模式下资源包数组存储在`assets-prod.php`文件中，不是产品上线模式存储在`assets-dev.php`文件中。
+如上所示，产品在上线模式时资源包配置数组存储在`assets-prod.php`文件中，在开发模式时存储在`assets-dev.php`文件中。
 
 
-### 使用 `asset` 命令 <a name="using-asset-command"></a>
+### 使用 `asset` 命令 <span id="using-asset-command"></span>
 
 Yii提供一个名为`asset`控制台命令来使上述操作自动处理。
 
-为使用该命令，应先创建一个配置文件设置哪些资源包要合并以及分组方式，可使用`asset/template` 子命令来生成一个模板，
+在使用该命令之前，先创建一个配置文件来设置要合并的资源包以及资源包的分组方式，可使用`asset/template` 子命令来生成一个模板，
 然后修改模板成你想要的。
 
 ```
@@ -506,7 +506,7 @@ return [
 
 应修改该文件的`bundles`的选项指定哪些包你想要合并，在`targets`选项中应指定这些包如何分组，如前述的可以指定一个或多个组。
 
-> 注意: 由于在控制台应用别名 `@webroot` and `@web` 不可用，应在配置中明确指定它们。
+> Note: 由于在控制台应用别名 `@webroot` and `@web` 不可用，应在配置中明确指定它们。
 
 JavaScript文件会被合并压缩后写入到`js/all-{hash}.js`文件，其中 {hash} 会被结果文件的哈希值替换。
 
@@ -525,4 +525,45 @@ yii asset assets.php config/assets-prod.php
 生成的配置文件可以在应用配置中包含，如最后一小节所描述的。
 
 
-> 补充: 使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
+> Info: 使用`asset` 命令并不是唯一一种自动合并和压缩过程的方法，可使用优秀的工具[grunt](http://gruntjs.com/)来完成这个过程。
+
+### 资源包分组 <span id="grouping-asset-bundles"></span>
+上一小节，介绍了如何压缩所有的资源包到一个文件，减少对应用中引用资源文件的 http 请求数，但是在实践中很少这样做。比如，应用有一个“前端”和一个“后端”，每一个都用了一个不同js和css文件集合。在这种情况下，把所有的资源包压缩到一个文件毫无意义，“前端”不会用到“后端”的资源文件，当请求“前端”页面时，“后端”的资源文件也会被发送过来，浪费网络带宽。
+
+为了解决这个问题，可以吧资源包分成若干组，每个组里面有若干个资源包。下面的配置展示了如何对资源包分组：
+```php
+return [
+    ...
+    //指定分组后输出的资源包
+    'targets' => [
+        'allShared' => [
+            'js' => 'js/all-shared-{hash}.js',
+            'css' => 'css/all-shared-{hash}.css',
+            'depends' => [
+                // “前端”和“后端”共享的资源包：
+                'yii\web\YiiAsset',
+                'app\assets\SharedAsset',
+            ],
+        ],
+        'allBackEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [
+                // 后端资源包：
+                'app\assets\AdminAsset'
+            ],
+        ],
+        'allFrontEnd' => [
+            'js' => 'js/all-{hash}.js',
+            'css' => 'css/all-{hash}.css',
+            'depends' => [], // Include all remaining assets
+        ],
+    ],
+    ...
+];
+```
+如上所示，资源包分成了三个组：`allShared`，`allBackEnd` 和 `allFrontEnd`
+
+他们分别依赖其他资源包，例如，`allBackEnd` 依赖（depends） `app\assets\AdminAsset`。当使用这个配置运行 `asset` 命令时，将会根据上面的指定组合资源包。
+
+> Info: 其中的一个资源包`depends`配置选项可以留空不配置。如果这样做了的话，留空的这个资源包将会依赖剩余的没有被其他资源包所依赖的资源包。

@@ -33,7 +33,7 @@ Yii::configure($object, $config);
 Обратите внимание, что в этом случае массив с конфигурацией не должен содержать ключ `class`.
 
 
-## Формат конфигурации <a name="configuration-format"></a>
+## Формат конфигурации <span id="configuration-format"></span>
 
 Формат конфигурации выглядит следующим образом:
 
@@ -77,7 +77,7 @@ Yii::configure($object, $config);
 ```
 
 
-## Использование конфигурации <a name="using-configurations"></a>
+## Использование конфигурации <span id="using-configurations"></span>
 
 Конфигурации повсеместно используются в Yii. В самом начале данной главы мы узнали как
 создать объект с необходимыми параметрами используя метод [[Yii::createObject()]].
@@ -85,19 +85,19 @@ Yii::configure($object, $config);
 использования конфигурации. 
 
 
-### Конфигурация приложения <a name="application-configurations"></a>
+### Конфигурация приложения <span id="application-configurations"></span>
 
 Конфигурация [приложения](structure-applications.md), пожалуй, самая сложная из используемых в фреймворке.
 Причина в том, что класс [[yii\web\Application|application]] содержит большое количество конфигурируемых
 свойств и событий. Более того, свойство приложения [[yii\web\Application::components|components]]
 может принимать массив с конфигурацией для создания компонентов, регистрируемых на уровне приложения.
-Пример конфигурации приложения для [шаблона приложения basic](start-basic.md).
+Пример конфигурации приложения для [шаблона приложения basic](start-installation.md).
 
 ```php
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -135,12 +135,35 @@ $config = [
 За более подробной документацией о настройках свойства `components` в конфигурации приложения обратитесь к главам
 [приложения](structure-applications.md) и [Service Locator](concept-service-locator.md).
 
+Начиная с версии 2.0.11, можно настраивать [контейнер зависимостей](concept-di-container.md) через конфигурацию
+приложения. Для этого используется свойство `container`:
 
-### Конфигурации виджетов <a name="widget-configurations"></a>
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // Конфигурация для единожды создающихся объектов
+        ]
+    ]
+];
+```
+
+Чтобы узнать о возможных значениях `definitions` и `singletons`, а также о реальных примерах использования,
+прочитайте подраздел [более сложное практическое применение](concept-di-container.md#advanced-practical-usage) раздела
+[Dependency Injection Container](concept-di-container.md).
+
+
+### Конфигурации виджетов <span id="widget-configurations"></span>
 
 При использовании [виджетов](structure-widgets.md) часто возникает необходимость изменить параметры виджета с помощью
 конфигурации. Для создания виджета можно использовать два метода: [[yii\base\Widget::widget()]] и 
-[[yii\base\Widget::beginWidget()]]. Оба метода принимают конфигурацию в виде PHP массива:
+[[yii\base\Widget::begin()]]. Оба метода принимают конфигурацию в виде PHP массива:
 
 ```php
 use yii\widgets\Menu;
@@ -155,13 +178,13 @@ echo Menu::widget([
 ]);
 ```
 
-Данный код создает виджет `Menu` и устанавливает параметр виджета `activeItems` в значение false.
+Данный код создает виджет `Menu` и устанавливает параметр виджета `activeItems` в значение `false`.
 Также устанавливается параметр `items`, состоящий из элементов меню.
 
 Обратите внимание что параметр `class` НЕ передается, так как полное имя уже указано.
 
 
-## Конфигурационные файлы <a name="configuration-files"></a>
+## Конфигурационные файлы <span id="configuration-files"></span>
 
 Если конфигурация очень сложная, то её, как правило, разделяют по нескольким PHP файлам. Такие файлы называют
 *Конфигурационными файлами*. Конфигурационный файл возвращает массив PHP являющийся конфигурацией.
@@ -171,8 +194,8 @@ echo Menu::widget([
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -210,12 +233,12 @@ return [
 Чтобы получить конфигурацию, хранящуюся в файле, достаточно подключить файл с помощью `require`:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 
 
-## Значения конфигурации по умолчанию <a name="default-configurations"></a>
+## Значения конфигурации по умолчанию <span id="default-configurations"></span>
 
 Метод [[Yii::createObject()]] реализован с использованием [dependency injection container](concept-di-container.md).
 Это позволяет задавать так называемые *значения конфигурации по умолчанию*, которые будут применены ко ВСЕМ экземплярам классов во время их инициализации методом [[Yii::createObject()]]. Значения конфигурации по умолчанию указываются с помощью метода `Yii::$container->set()` на этапе [предварительной загрузки](runtime-bootstrapping.md).
@@ -233,7 +256,7 @@ $config = require('path/to/web.php');
 задавать значение `maxButtonCount`.
 
 
-## Константы окружения <a name="environment-constants"></a>
+## Константы окружения <span id="environment-constants"></span>
 
 Конфигурации могут различаться в зависимости от режима, в котором происходит запуск приложения. Например,
 в окружении разработчика (development) вы используете базу данных `mydb_dev`, а в эксплуатационном (production) окружении
@@ -246,10 +269,10 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 `YII_ENV` может принимать следующие значения:
 
-- `prod`: окружение production, т.е. эксплуатационный режим сервера. Константа `YII_ENV_PROD` установлена в true.
+- `prod`: окружение production, т.е. эксплуатационный режим сервера. Константа `YII_ENV_PROD` установлена в `true`.
    Значение по умолчанию.
-- `dev`: окружение development, т.е. режим для разработки. Константа `YII_ENV_DEV` установлена в true.
-- `test`: окружение testing, т.е. режим для тестирования. Константа `YII_ENV_TEST` установлена в true.
+- `dev`: окружение development, т.е. режим для разработки. Константа `YII_ENV_DEV` установлена в `true`.
+- `test`: окружение testing, т.е. режим для тестирования. Константа `YII_ENV_TEST` установлена в `true`.
 
 Используя эти константы, вы можете задать в конфигурации значения параметров зависящие от текущего окружения.
 Например, чтобы включить [отладочную панель и отладчик](tool-debugger.md) в режиме разработки, вы можете использовать

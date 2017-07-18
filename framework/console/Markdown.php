@@ -48,13 +48,16 @@ class Markdown extends \cebe\markdown\Parser
      * @param array $block
      * @return string
      */
-   	protected function renderCode($block)
-   	{
+    protected function renderCode($block)
+    {
         return Console::ansiFormat($block['content'], [Console::NEGATIVE]) . "\n\n";
-   	}
+    }
 
     /**
-     * @inheritdoc
+     * Render a paragraph block
+     *
+     * @param string $block
+     * @return string
      */
     protected function renderParagraph($block)
     {
@@ -78,7 +81,7 @@ class Markdown extends \cebe\markdown\Parser
      */
     protected function renderEmph($element)
     {
-        return Console::ansiFormat($this->renderAbsy($element[1]), Console::ITALIC);
+        return Console::ansiFormat($this->renderAbsy($element[1]), [Console::ITALIC]);
     }
 
     /**
@@ -88,7 +91,7 @@ class Markdown extends \cebe\markdown\Parser
      */
     protected function renderStrong($element)
     {
-        return Console::ansiFormat($this->renderAbsy($element[1]), Console::BOLD);
+        return Console::ansiFormat($this->renderAbsy($element[1]), [Console::BOLD]);
     }
 
     /**

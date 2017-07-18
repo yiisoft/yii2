@@ -58,7 +58,7 @@ Por exemplo,
   simplesmente criar um componente local e utilizá-lo quando necessário.
 
 
-## Components de Inicialização <a name="bootstrapping-components"></a>
+## Components de Inicialização <span id="bootstrapping-components"></span>
 
 Conforme mencionado acima, um componente de aplicação só será instanciado quando
 ele estiver sendo acessado pela primeira vez. Se ele nunca for acessado durante
@@ -84,7 +84,7 @@ Por exemplo, a configuração de aplicação a seguir assegura-se que o componen
 ```
 
 
-## Componentes de Aplicação do Core <a name="core-application-components"></a>
+## Componentes de Aplicação do Core <span id="core-application-components"></span>
 
 O yii define um conjunto de componentes de aplicação do **core** com IDs fixos
 e configurações padrão. Por exemplo, o componente [[yii\web\Application::request|request]]
@@ -114,7 +114,7 @@ se você não especificar sua classe, a padrão será utilizada.
 * [[yii\i18n\Formatter|formatter]]: formata dados quando são exibidos aos
   usuários finais. Por exemplo, um número pode ser exibido com um separador de
   milhares, uma data pode ser formatada em um formato longo. Por favor consulte
-  a seção [Formatação de Dados](output-formatter.md) para mais detalhes.
+  a seção [Formatação de Dados](output-formatting.md) para mais detalhes.
 * [[yii\i18n\I18N|i18n]]: suporta a tradução e formatação de mensagens. Por favor
   consulte a seção [Internacionalização](tutorial-i18n.md) para mais detalhes.
 * [[yii\log\Dispatcher|log]]: gerencia alvos de logs. Por favor consulte a seção

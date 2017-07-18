@@ -17,7 +17,7 @@ public function rules()
 下面，我们将详细介绍每一款验证器的主要用法和属性。
 
 
-## [[yii\validators\BooleanValidator|boolean（布尔型）]] <a name="boolean"></a>
+## [[yii\validators\BooleanValidator|boolean（布尔型）]] <span id="boolean"></span>
 
 ```php
 [
@@ -36,11 +36,11 @@ public function rules()
 - `strict`：是否要求待测输入必须严格匹配 `trueValue` 或 `falseValue`。默认为 `false`。
 
 
-> 注意：因为通过 HTML 表单传递的输入数据都是字符串类型，所以一般情况下你都需要保持
+> Note: 因为通过 HTML 表单传递的输入数据都是字符串类型，所以一般情况下你都需要保持
   [[yii\validators\BooleanValidator::strict|strict]] 属性为假。
 
 
-## [[yii\captcha\CaptchaValidator|captcha（验证码）]] <a name="captcha"></a>
+## [[yii\captcha\CaptchaValidator|captcha（验证码）]] <span id="captcha"></span>
 
 ```php
 [
@@ -56,7 +56,7 @@ public function rules()
 - `skipOnEmpty`：当输入为空时，是否跳过验证。默认为 false，也就是输入值为必需项。
   
 
-## [[yii\validators\CompareValidator|compare（比较）]] <a name="compare"></a>
+## [[yii\validators\CompareValidator|compare（比较）]] <span id="compare"></span>
 
 ```php
 [
@@ -83,7 +83,7 @@ public function rules()
      * `<=`：检查待测目标值是否小于等于给定被测值。
 
 
-## [[yii\validators\DateValidator|date（日期）]] <a name="date"></a>
+## [[yii\validators\DateValidator|date（日期）]] <span id="date"></span>
 
 ```php
 [
@@ -98,7 +98,7 @@ public function rules()
 - `timestampAttribute`：用于保存用输入时间/日期转换出来的 UNIX 时间戳的特性。
 
 
-## [[yii\validators\DefaultValueValidator|default（默认值）]] <a name="default"></a>
+## [[yii\validators\DefaultValueValidator|default（默认值）]] <span id="default"></span>
 
 ```php
 [
@@ -126,10 +126,10 @@ function foo($model, $attribute) {
 }
 ```
 
-> 补充：如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
+> Info: 如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
 
 
-## [[yii\validators\NumberValidator|double（双精度浮点型）]] <a name="double"></a>
+## [[yii\validators\NumberValidator|double（双精度浮点型）]] <span id="double"></span>
 
 ```php
 [
@@ -144,7 +144,7 @@ function foo($model, $attribute) {
 - `min`：下限值（含界点）。若不设置，则验证器不检查下限。
 
 
-## [[yii\validators\EmailValidator|email（电子邮件）]] <a name="email"></a>
+## [[yii\validators\EmailValidator|email（电子邮件）]] <span id="email"></span>
 
 ```php
 [
@@ -160,7 +160,7 @@ function foo($model, $attribute) {
 - `enableIDN`：验证过程是否应该考虑 IDN（internationalized domain names，国际化域名，也称多语种域名，比如中文域名）。默认为 false。要注意但是为使用 IDN 验证功能，请先确保安装并开启 `intl` PHP 扩展，不然会导致抛出异常。
 
 
-## [[yii\validators\ExistValidator|exist（存在性）]] <a name="exist"></a>
+## [[yii\validators\ExistValidator|exist（存在性）]] <span id="exist"></span>
 
 ```php
 [
@@ -200,7 +200,7 @@ function foo($model, $attribute) {
 - 最后别忘了，unique 验证器不存在 `allowArray` 属性哦。
 
 
-## [[yii\validators\FileValidator|file（文件）]] <a name="file"></a>
+## [[yii\validators\FileValidator|file（文件）]] <span id="file"></span>
 
 ```php
 [
@@ -224,7 +224,7 @@ function foo($model, $attribute) {
 `FileValidator` 通常与 [[yii\web\UploadedFile]] 共同使用。请参考 [文件上传](input-file-upload.md)章节来了解有关文件上传与上传文件的检验的全部内容。
 
 
-## [[yii\validators\FilterValidator|filter（滤镜）]] <a name="filter"></a>
+## [[yii\validators\FilterValidator|filter（滤镜）]] <span id="filter"></span>
 
 ```php
 [
@@ -244,10 +244,10 @@ function foo($model, $attribute) {
 - `filter`：用于定义滤镜的 PHP 回调函数。可以为全局函数名，匿名函数，或其他。该函数的样式必须是 `function ($value) { return $newValue; }`。该属性不能省略，必须设置。
 - `skipOnArray`：是否在输入值为数组时跳过滤镜。默认为 false。请注意如果滤镜不能处理数组输入，你就应该把该属性设为 true。否则可能会导致 PHP Error 的发生。
 
-> 技巧：如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
+> Tip: 如果你只是想要用 trim 处理下输入值，你可以直接用 [trim](#trim) 验证器的。
 
 
-## [[yii\validators\ImageValidator|image（图片）]] <a name="image"></a>
+## [[yii\validators\ImageValidator|image（图片）]] <span id="image"></span>
 
 ```php
 [
@@ -267,7 +267,7 @@ function foo($model, $attribute) {
 - `maxHeight`：图片的最大高度。默认为 null，代表无上限。
 
 
-## [[yii\validators\RangeValidator|in（范围）]] <a name="in"></a>
+## [[yii\validators\RangeValidator|in（范围）]] <span id="in"></span>
 
 ```php
 [
@@ -284,7 +284,7 @@ function foo($model, $attribute) {
 - `allowArray`：是否接受输入值为数组。当该值为 true 且输入值为数组时，数组内的每一个元素都必须在给定列表内存在，否则返回验证失败。
 
 
-## [[yii\validators\NumberValidator|integer（整数）]] <a name="integer"></a>
+## [[yii\validators\NumberValidator|integer（整数）]] <span id="integer"></span>
 
 ```php
 [
@@ -299,7 +299,7 @@ function foo($model, $attribute) {
 - `min`：下限值（含界点）。若不设置，则验证器不检查下限。
 
 
-## [[yii\validators\RegularExpressionValidator|match（正则表达式）]] <a name="match"></a>
+## [[yii\validators\RegularExpressionValidator|match（正则表达式）]] <span id="match"></span>
 
 ```php
 [
@@ -314,7 +314,7 @@ function foo($model, $attribute) {
 - `not`：是否对验证的结果取反。默认为 false，代表输入值匹配正则表达式时验证成功。如果设为 true，则输入值不匹配正则时返回匹配成功。
 
 
-## [[yii\validators\NumberValidator|number（数字）]] <a name="number"></a>
+## [[yii\validators\NumberValidator|number（数字）]] <span id="number"></span>
 
 ```php
 [
@@ -329,7 +329,7 @@ function foo($model, $attribute) {
 - `min`：下限值（含界点）。若不设置，则验证器不检查下限。
 
 
-## [[yii\validators\RequiredValidator|required（必填）]] <a name="required"></a>
+## [[yii\validators\RequiredValidator|required（必填）]] <span id="required"></span>
 
 ```php
 [
@@ -345,10 +345,10 @@ function foo($model, $attribute) {
 
 当设置了 `requiredValue` 属性时，若该属性为 true，输入值与 `requiredValue` 的比对会同时检查数据类型。
 
-> 补充：如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
+> Info: 如何判断待测值是否为空，被写在另外一个话题的[处理空输入](input-validation.md#handling-empty-inputs)章节。
 
 
-## [[yii\validators\SafeValidator|safe（安全）]] <a name="safe"></a>
+## [[yii\validators\SafeValidator|safe（安全）]] <span id="safe"></span>
 
 ```php
 [
@@ -360,7 +360,7 @@ function foo($model, $attribute) {
 该验证器并不进行数据验证。而是把一个特性标记为[安全特性](structure-models.md#safe-attributes)。
 
 
-## [[yii\validators\StringValidator|string（字符串）]] <a name="string"></a>
+## [[yii\validators\StringValidator|string（字符串）]] <span id="string"></span>
 
 ```php
 [
@@ -381,7 +381,7 @@ function foo($model, $attribute) {
 - `encoding`：待测字符串的编码方式。若不设置，则使用应用自身的 [[yii\base\Application::charset|charset]] 属性值，该值默认为 `UTF-8`。
 
 
-## [[yii\validators\FilterValidator|trim（译为修剪/裁边）]] <a name="trim"></a>
+## [[yii\validators\FilterValidator|trim（译为修剪/裁边）]] <span id="trim"></span>
 
 ```php
 [
@@ -393,7 +393,7 @@ function foo($model, $attribute) {
 该验证器并不进行数据验证。而是，trim 掉输入值两侧的多余空格。注意若该输入值为数组，那它会忽略掉该验证器。
 
 
-## [[yii\validators\UniqueValidator|unique（唯一性）]] <a name="unique"></a>
+## [[yii\validators\UniqueValidator|unique（唯一性）]] <span id="unique"></span>
 
 ```php
 [
@@ -429,7 +429,7 @@ function foo($model, $attribute) {
 - 最后别忘了，unique 验证器不存在 `allowArray` 属性哦。
 
 
-## [[yii\validators\UrlValidator|url（网址）]] <a name="url"></a>
+## [[yii\validators\UrlValidator|url（网址）]] <span id="url"></span>
 
 ```php
 [

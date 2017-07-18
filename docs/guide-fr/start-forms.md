@@ -17,7 +17,7 @@ formulaire
 * Construire un formulaire HTML dans une [vue](structure-views.md)
 
 
-Créer un Modèle <a name="creating-model"></a>
+Créer un Modèle <span id="creating-model"></span>
 ----------------
 
 Les données demandées à l'utilisateur seront représentées par une classe de modèle `EntryForm` comme montrée ci-dessous
@@ -64,7 +64,7 @@ pour valider les données. Les règles de validation déclarées ci-dessus énon
 
 Si vous avez un objet `EntryForm` peuplé par les données saisies par un utilisateur, vous pouvez appeler sa méthode
 [[yii\base\Model::validate()|validate()]] pour déclencher les routines de validation de données. Un échec de validation
-de données affectera la valeur true à la propriété [[yii\base\Model::hasErrors|hasErrors]], et vous pourrez connaître
+de données affectera la valeur `true` à la propriété [[yii\base\Model::hasErrors|hasErrors]], et vous pourrez connaître
 quelles erreurs de validations sont apparues via [[yii\base\Model::getErrors|errors]].
 
 ```php
@@ -81,7 +81,7 @@ if ($model->validate()) {
 ```
 
 
-Créer une Action <a name="creating-action"></a>
+Créer une Action <span id="creating-action"></span>
 ------------------
 
 Maintenant, vous allez créer une action `entry` dans le contrôleur `site` qui utilisera le nouveau modèle. Le processus
@@ -138,7 +138,7 @@ valides. En pratique, vous devriez envisager d'utiliser [[yii\web\Controller::re
 [problèmes de multiple soumission de formulaire](http://fr.wikipedia.org/wiki/Post-Redirect-Get).
 
 
-Créer des Vues <a name="creating-views"></a>
+Créer des Vues <span id="creating-views"></span>
 --------------
 
 Enfin, créez deux fichiers de vue nommés `entry-confirm` et `entry`. Ceux-ci seront rendus par l'action `entry`,
@@ -187,7 +187,7 @@ donnée "email". Après les champs de saisie, la méthode [[yii\helpers\Html::su
 bouton de soumission.
 
 
-Essayer <a name="trying-it-out"></a>
+Essayer <span id="trying-it-out"></span>
 -------------
 
 Pour voir comment ça fonctionne, utilisez votre navigateur pour accéder à l'URL suivante :
@@ -210,7 +210,7 @@ page affichant les données que vous venez de saisir.
 
 
 
-### La Magie expliquée <a name="magic-explained"></a>
+### La Magie expliquée <span id="magic-explained"></span>
 
 Vous vous demandez peut-être comment le formulaire HTML fonctionne en coulisse, parce qu'il semble presque magique
 qu'il puisse afficher une étiquette pour chaque champ de saisie et afficher sans rafraichir la page des messages 
@@ -224,7 +224,7 @@ des données. Dans le cas où vous auriez désactivé le Javascript sur votre na
 effectuée coté serveur, comme montré dans la méthode `actionEntry()`. Cela garantit la validité des données en toutes 
 circonstances.
 
-> Attention : La validation coté client est un confort qui permet une meilleure expérience utilisateur. La validation coté serveur est toujours nécessaire, que la validation coté client soit ou non en place.
+> Warning: La validation coté client est un confort qui permet une meilleure expérience utilisateur. La validation coté serveur est toujours nécessaire, que la validation coté client soit ou non en place.
 
 Les étiquettes des champs de saisie sont générés par la méthode `field()`, en utilisant les noms des propriété du
 modèle.
@@ -241,7 +241,7 @@ Vous pouvez personnaliser une étiquette dans une vue en employant le code suiva
   Comme vous l'apprendrez plus tard, écrire un widget et aussi extrêmement simple. Vous voudrez sans doute transformer   une grande partie de votre code de vues en widgets réutilisables pour simplifier les développements de vues futurs.
 
 
-Résumé <a name="summary"></a>
+Résumé <span id="summary"></span>
 -------
 
 Dans cette section du guide, vous avez touché toutes les parties du patron de conception MVC. Vous avez appris à créer 

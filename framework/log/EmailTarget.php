@@ -24,7 +24,7 @@ use yii\mail\MailerInterface;
  *          'targets' => [
  *              [
  *                  'class' => 'yii\log\EmailTarget',
- *                  'mailer' =>'mailer',
+ *                  'mailer' => 'mailer',
  *                  'levels' => ['error', 'warning'],
  *                  'message' => [
  *                      'from' => ['log@example.com'],
@@ -50,9 +50,10 @@ class EmailTarget extends Target
      */
     public $message = [];
     /**
-     * @var MailerInterface|string the mailer object or the application component ID of the mailer object.
+     * @var MailerInterface|array|string the mailer object or the application component ID of the mailer object.
      * After the EmailTarget object is created, if you want to change this property, you should only assign it
      * with a mailer object.
+     * Starting from version 2.0.2, this can also be a configuration array for creating the object.
      */
     public $mailer = 'mailer';
 

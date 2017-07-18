@@ -28,14 +28,14 @@ Como en la [caché de datos](caching-data.md), un `$id` (clave) único es necesa
 caché.
 
 
-## Opciones de Caché <a name="caching-options"></a>
+## Opciones de Caché <span id="caching-options"></span>
 
 Puedes especificar opciones adicionales para la caché de fragmentos pasando el array de opciones como segundo
 parametro del método [[yii\base\View::beginCache()|beginCache()]]. Entre bastidores, este array de opciones se utiliza
 para configurar el widget [[yii\widgets\FragmentCache]] que es en realidad el que implementa la funcionalidad de la caché
 de fragmentos.
 
-### Duración <a name="duration"></a>
+### Duración <span id="duration"></span>
 
 Quizás la opción más utilizada en la caché de fragmentos es [[yii\widgets\FragmentCache::duration|duración]]. Ésta
 especifica cuántos segundos el contenido puede permanecer como válido en la memoria caché. El siguiente código almacena
@@ -53,7 +53,7 @@ if ($this->beginCache($id, ['duration' => 3600])) {
 Si la opción no está activada, se tomará el valor por defecto 60, lo que significa que el contenido almacenado en caché expirará en 60 segundos.
 
 
-### Dependencias <a name="dependencies"></a>
+### Dependencias <span id="dependencies"></span>
 
 Como en la [caché de datos](caching-data.md#cache-dependencies), el fragmento de contenido que está siendo almacenado en caché
 también puede tener dependencias. Por ejemplo, el contenido de un artículo que se muestre depende de si el mensaje se
@@ -78,7 +78,7 @@ if ($this->beginCache($id, ['dependency' => $dependency])) {
 ```
 
 
-### Variaciones <a name="variations"></a>
+### Variaciones <span id="variations"></span>
 
 El contenido almacenado en caché puede variar de acuerdo a ciertos parámetros. Por ejemplo, para una aplicación Web que
 soporte multiples idiomas, la misma pieza del código de la vista puede generar el contenido almacenado en caché
@@ -99,7 +99,7 @@ if ($this->beginCache($id, ['variations' => [Yii::$app->language]])) {
 ```
 
 
-### Alternando el Almacenamiento en Caché <a name="toggling-caching"></a>
+### Alternando el Almacenamiento en Caché <span id="toggling-caching"></span>
 
 Puede que a veces quieras habilitar la caché de fragmentos únicamente cuando ciertas condiciones se cumplan. Por ejemplo,
 para una página que muestra un formulario, tal vez quieras guardarlo en la caché cuando es inicialmente solicitado (a
@@ -117,7 +117,7 @@ if ($this->beginCache($id, ['enabled' => Yii::$app->request->isGet])) {
 ```
 
 
-## Almacenamiento en Caché Anidada <a name="nested-caching"></a>
+## Almacenamiento en Caché Anidada <span id="nested-caching"></span>
 
 El almacenamiento en caché de fragmentos se puede anidar. Es decir, un fragmento de caché puede ser encerrado dentro de
 otro fragmento que también se almacena en caché. Por ejemplo, los comentarios se almacenan en una caché de fragmento
@@ -151,7 +151,7 @@ dependencias de las cachés anidadas, de lo contrario los fragmentos internos qu
 manteniendo en el fragmento externo.
 
 
-## Contenido Dinámico <a name="dynamic-content"></a>
+## Contenido Dinámico <span id="dynamic-content"></span>
 
 Cuando se usa la caché de fragmentos, podrías encontrarte en la situación que un fragmento grande de contenido es
 relavitamente estático excepto en uno u otro lugar. Por ejemplo, la cabeza de una página (header) puede que muestre el

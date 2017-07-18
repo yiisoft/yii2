@@ -7,7 +7,7 @@ request object via the `request` [application component](structure-application-c
 of [[yii\web\Request]], by default. In this section, we will describe how you can make use of this component in your applications.
 
 
-## Request Parameters <a name="request-parameters"></a>
+## Request Parameters <span id="request-parameters"></span>
 
 To get request parameters, you can call [[yii\web\Request::get()|get()]] and [[yii\web\Request::post()|post()]] methods
 of the `request` component. They return the values of `$_GET` and `$_POST`, respectively. For example,
@@ -15,22 +15,22 @@ of the `request` component. They return the values of `$_GET` and `$_POST`, resp
 ```php
 $request = Yii::$app->request;
 
-$get = $request->get(); 
+$get = $request->get();
 // equivalent to: $get = $_GET;
 
-$id = $request->get('id');   
+$id = $request->get('id');
 // equivalent to: $id = isset($_GET['id']) ? $_GET['id'] : null;
 
-$id = $request->get('id', 1);   
+$id = $request->get('id', 1);
 // equivalent to: $id = isset($_GET['id']) ? $_GET['id'] : 1;
 
-$post = $request->post(); 
+$post = $request->post();
 // equivalent to: $post = $_POST;
 
-$name = $request->post('name');   
+$name = $request->post('name');
 // equivalent to: $name = isset($_POST['name']) ? $_POST['name'] : null;
 
-$name = $request->post('name', '');   
+$name = $request->post('name', '');
 // equivalent to: $name = isset($_POST['name']) ? $_POST['name'] : '';
 ```
 
@@ -57,22 +57,22 @@ $param = $request->getBodyParam('id');
   You can customize the way how these parameters are parsed by configuring the [[yii\web\Request::parsers]] property.
   
 
-## Request Methods <a name="request-methods"></a>
+## Request Methods <span id="request-methods"></span>
 
 You can get the HTTP method used by the current request via the expression `Yii::$app->request->method`.
-A whole set of boolean properties are also provided for you to check if the current method is of certain type.
+A whole set of boolean properties is also provided for you to check if the current method is of certain type.
 For example,
 
 ```php
 $request = Yii::$app->request;
 
-if ($request->isAjax) { // the request is an AJAX request }
-if ($request->isGet)  { // the request method is GET }
-if ($request->isPost) { // the request method is POST }
-if ($request->isPut)  { // the request method is PUT }
+if ($request->isAjax) { /* the request is an AJAX request */ }
+if ($request->isGet)  { /* the request method is GET */ }
+if ($request->isPost) { /* the request method is POST */ }
+if ($request->isPut)  { /* the request method is PUT */ }
 ```
 
-## Request URLs <a name="request-urls"></a>
+## Request URLs <span id="request-urls"></span>
 
 The `request` component provides many ways of inspecting the currently requested URL. 
 
@@ -93,7 +93,7 @@ parts of this URL as summarized in the following:
 * [[yii\web\Request::serverPort|serverPort]]: returns 80, which is the port used by the Web server.
 
 
-## HTTP Headers <a name="http-headers"></a> 
+## HTTP Headers <span id="http-headers"></span> 
 
 You can get the HTTP header information through the [[yii\web\HeaderCollection|header collection]] returned 
 by the [[yii\web\Request::headers]] property. For example,
@@ -105,7 +105,7 @@ $headers = Yii::$app->request->headers;
 // returns the Accept header value
 $accept = $headers->get('Accept');
 
-if ($headers->has('User-Agent')) { // there is User-Agent header }
+if ($headers->has('User-Agent')) { /* there is User-Agent header */ }
 ```
 
 The `request` component also provides support for quickly accessing some commonly used headers, including:
@@ -128,7 +128,7 @@ and returns the most appropriate language.
   on top of the properties and methods described above.
 
 
-## Client Information <a name="client-information"></a>
+## Client Information <span id="client-information"></span>
 
 You can get the host name and IP address of the client machine through [[yii\web\Request::userHost|userHost]]
 and [[yii\web\Request::userIP|userIP]], respectively. For example,

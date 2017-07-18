@@ -19,7 +19,7 @@ In the following, we will introduce the basic knowledge about widgets. Please re
 if you want to learn about the usage of a particular widget.
 
 
-## Using Widgets <a name="using-widgets"></a>
+## Using Widgets <span id="using-widgets"></span>
 
 Widgets are primarily used in [views](structure-views.md). You can call the [[yii\base\Widget::widget()]] method
 to use a widget in a view. The method takes a [configuration](concept-configurations.md) array for initializing
@@ -34,9 +34,7 @@ use yii\jui\DatePicker;
     'model' => $model,
     'attribute' => 'from_date',
     'language' => 'ru',
-    'clientOptions' => [
-        'dateFormat' => 'yy-mm-dd',
-    ],
+    'dateFormat' => 'php:Y-m-d',
 ]) ?>
 ```
 
@@ -68,8 +66,25 @@ use yii\helpers\Html;
 Note that unlike [[yii\base\Widget::widget()]] which returns the rendering result of a widget, the method
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
 
+> Note: Some widgets will use [output buffering](http://php.net/manual/en/book.outcontrol.php) to adjust the enclosed
+> content when [[yii\base\Widget::end()]] is called. For this reason calling [[yii\base\Widget::begin()]] and
+> [[yii\base\Widget::end()]] is expected to happen in the same view file.
+> Not following this rule may result in unexpected output.
 
-## Creating Widgets <a name="creating-widgets"></a>
+
+### Configuring global defaults
+
+Global defaults for a widget type could be configured via DI container:
+
+```php
+\Yii::$container->set('yii\widgets\LinkPager', ['maxButtonCount' => 5]);
+```
+
+See ["Practical Usage" section in Dependency Injection Container guide](concept-di-container.md#practical-usage) for
+details.
+
+
+## Creating Widgets <span id="creating-widgets"></span>
 
 To create a widget, extend from [[yii\base\Widget]] and override the [[yii\base\Widget::init()]] and/or
 [[yii\base\Widget::run()]] methods. Usually, the `init()` method should contain the code that normalizes the widget
@@ -175,7 +190,7 @@ stands for the directory containing the widget class file. Therefore, the above 
 the [[yii\base\Widget::getViewPath()]] method to customize the directory containing the widget view files.
 
 
-## Best Practices <a name="best-practices"></a>
+## Best Practices <span id="best-practices"></span>
 
 Widgets are an object-oriented way of reusing view code.
 

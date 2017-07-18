@@ -1,4 +1,4 @@
-﻿Componentes
+Componentes
 ===========
 
 Los componentes son los principales bloques de construcción de las aplicaciones Yii. Los componentes son instancias de [[yii\base\Component]] o de una clase extendida. Las tres características principales que los componentes proporcionan
@@ -29,9 +29,9 @@ Si tus componentes no necesitan estas dos características, deberías considerar
 
 Cuando extiendes tu clase de [[yii\base\Component]] o [[yii\base\Object]], se recomienda que sigas las siguientes convenciones:
 
-- Si sobrescribes el constructor, especifica un parámetro `$config` como el *último* parámetro del constructor, y después pasa este parámetro al constructor de la clase "padre".
-- Siempre llama al constructor del "padre" al *final* de su propio constructor.
-- Si sobrescribes el método [[yii\base\Object::init()]], asegúrate de que llamas a la implementación de la clase "padre" *al principio* de tu método `init`.
+- Si sobrescribes el constructor, especifica un parámetro `$config` como el *último* parámetro del constructor, y después pasa este parámetro al constructor padre.
+- Siempre llama al constructor padre al *final* de su propio constructor.
+- Si sobrescribes el método [[yii\base\Object::init()]], asegúrese de llamar la implementación padre de `init` * al principio * de su método` init`.
 
 Por ejemplo:
 
@@ -73,7 +73,7 @@ $component = \Yii::createObject([
 ], [1, 2]);
 ```
 
-> Información: Mientras que el enfoque de llamar [[Yii::createObject()]] parece mucho más complicado, es mucho más potente debido al hecho de que se implementa en la parte superior de un [contenedor de inyección de dependencia](concept-di-container.md).
+> Info: Mientras que el enfoque de llamar [[Yii::createObject()]] parece mucho más complicado, es mucho más potente debido al hecho de que se implementa en la parte superior de un [contenedor de inyección de dependencia](concept-di-container.md).
   
 
 La clase [[yii\base\Object]] hace cumplir el siguiente ciclo de vida del objeto:

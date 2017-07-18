@@ -19,7 +19,7 @@ create table `log`
    `id`          bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY,
    `level`       integer,
    `category`    varchar(255),
-   `log_time`    float,
+   `log_time`    double,
    `prefix`      text,
    `message`     text,
    key `idx_log_level` (`level`),
