@@ -53,12 +53,13 @@ for both A and B.
 Upgrade from Yii 2.0.12
 -----------------------
 
-* For compatibiliy with PHP 7.2 which does not allow classes to be named `Object` anymore, we needed to rename
-  `yii\base\Object` to `yii\base\BaseObject`.
+* For compatibiliy with [PHP 7.2 which does not allow classes to be named `Object` anymore](https://wiki.php.net/rfc/object-typehint),
+  we needed to rename `yii\base\Object` to `yii\base\BaseObject`.
   
   `yii\base\Object` still exists for backwards compatibility and will be loaded if needed in projects that are
   running on PHP <7.2. The compatibility class `yii\base\Object` extends from `yii\base\BaseObject` so if you
   have classes that extend from `yii\base\Object` these would still work.
+  
   What does not work however will be code that relies on `instanceof` checks or `is_subclass_of()` calls
   for `yii\base\Object` on framework classes as these do not extend `yii\base\Object` anymore but only
   extend from `yii\base\BaseObject`. In general such a check is not needed as there is a `yii\base\Configurable`

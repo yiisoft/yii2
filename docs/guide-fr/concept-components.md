@@ -38,9 +38,9 @@ Par exemple :
 
 namespace yii\components\MyClass;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class MyClass extends Object
+class MyClass extends BaseObject
 {
     public $prop1;
     public $prop2;
