@@ -552,7 +552,7 @@ class Migration extends Component implements MigrationInterface
      */
     protected function beginCommand($description)
     {
-        if($this->quiet === false) {
+        if(!$this->quiet) {
             echo "    > $description ...";
         }
         return microtime(true);
@@ -566,7 +566,7 @@ class Migration extends Component implements MigrationInterface
      */
     protected function endCommand($time)
     {
-        if($this->quiet === false) {
+        if(!$this->quiet) {
             echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
         }
     }
