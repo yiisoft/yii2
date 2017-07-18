@@ -10,7 +10,7 @@ namespace yii\base;
 use Yii;
 
 /**
- * Object is the base class that implements the *property* feature.
+ * BaseObject is the base class that implements the *property* feature.
  *
  * A property is defined by a getter method (e.g. `getLabel`), and/or a setter method (e.g. `setLabel`). For example,
  * the following getter and setter methods define a property named `label`:
@@ -46,8 +46,8 @@ use Yii;
  *
  * One can call [[hasProperty()]], [[canGetProperty()]] and/or [[canSetProperty()]] to check the existence of a property.
  *
- * Besides the property feature, Object also introduces an important object initialization life cycle. In particular,
- * creating an new instance of Object or its derived class will involve the following life cycles sequentially:
+ * Besides the property feature, BaseObject also introduces an important object initialization life cycle. In particular,
+ * creating an new instance of BaseObject or its derived class will involve the following life cycles sequentially:
  *
  * 1. the class constructor is invoked;
  * 2. object properties are initialized according to the given configuration;
@@ -57,7 +57,7 @@ use Yii;
  * you perform object initialization in the `init()` method because at that stage, the object configuration
  * is already applied.
  *
- * In order to ensure the above life cycles, if a child class of Object needs to override the constructor,
+ * In order to ensure the above life cycles, if a child class of BaseObject needs to override the constructor,
  * it should be done like the following:
  *
  * ```php
@@ -72,7 +72,7 @@ use Yii;
  * of the constructor, and the parent implementation should be called at the end of the constructor.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @since 2.0.13
  */
 class BaseObject implements Configurable
 {
