@@ -25,7 +25,7 @@ Les propriétés de l'objet graphique sont faciles à écrire car la classe éte
 
 Tandis que les composants sont très puissants, ils sont un peu plus lourds que les objets normaux. Cela est dû au fait que, en particulier,  la prise en charge des fonctionnalités [event](concept-events.md) et [behavior](concept-behaviors.md) requiert un peu plus de mémoire et de temps du processeur. Si vos composants n'ont pas besoin de ces deux fonctionnalités, vous devriez envisager d'étendre la classe [[yii\base\Object]] au lieu de la classe [[yii\base\Component]]. Ce faisant, votre composant sera aussi efficace que les objets PHP normaux, mais avec la prise en charge des [propriétés](concept-properties.md).
 
-Lorsque votre classe étend la classe [[yii\base\Component]] ou [[yii\base\Object]], il est recommandé que suiviez ces conventions :
+Lorsque votre classe étend la classe [[yii\base\Component]] ou [[yii\base\BaseObject]], il est recommandé que suiviez ces conventions :
 
 - Si vous redéfinissez le constructeur, spécifiez un paramètre `$config` en tant que *dernier* paramètre du constructeur est passez le au constructeur du parent. 
 - Appelez toujours le constructeur du parent *à la fin* de votre constructeur redéfini.
@@ -76,7 +76,7 @@ $component = \Yii::createObject([
 > Info: bien que l'approche qui consiste à appeler la méthode [[Yii::createObject()]] semble plus compliquée, elle est plus puissante car elle est mise en œuvre sur un [conteneur d'injection de dépendances](concept-di-container.md).
   
 
-La classe [[yii\base\Object]] fait appliquer le cycle de vie suivant de l'objet :
+La classe [[yii\base\BaseObject]] fait appliquer le cycle de vie suivant de l'objet :
 
 1. Pré-initialisation dans le constructeur. Vous pouvez définir les propriétés par défaut à cet endroit.
 2. Configuration de l'objet via `$config`. La configuration peut écraser les valeurs par défaut définies dans le constructeur.
