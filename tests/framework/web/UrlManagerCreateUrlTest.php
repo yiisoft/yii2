@@ -8,7 +8,6 @@
 namespace yiiunit\framework\web;
 
 use Yii;
-use yii\caching\ArrayCache;
 use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yiiunit\framework\web\stubs\CachedUrlRule;
@@ -767,7 +766,7 @@ class UrlManagerCreateUrlTest extends TestCase
     {
         $this->mockWebApplication([
             'components' => [
-                'cache' => ArrayCache::class
+                'cache' => 'yii\caching\ArrayCache'
             ]
         ]);
         $urlManager = $this->getUrlManager([
