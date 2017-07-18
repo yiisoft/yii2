@@ -15,7 +15,7 @@ namespace yii\web;
  * for that record should return a 410 GoneHttpException instead of a 404
  * [[NotFoundHttpException]].
  *
- * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.11
+ * @see https://tools.ietf.org/html/rfc7231#section-6.5.9
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

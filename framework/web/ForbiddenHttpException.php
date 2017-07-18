@@ -16,7 +16,7 @@ namespace yii\web;
  * expose authorization information to the user, it is valid to respond with a
  * 404 [[NotFoundHttpException]].
  *
- * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.4
+ * @see https://tools.ietf.org/html/rfc7231#section-6.5.3
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

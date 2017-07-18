@@ -15,7 +15,7 @@ namespace yii\web;
  * is simply not allowed to perform the action, consider using a 403
  * [[ForbiddenHttpException]] or 404 [[NotFoundHttpException]] instead.
  *
- * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.2
+ * @see https://tools.ietf.org/html/rfc7235#section-3.1
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

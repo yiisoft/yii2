@@ -10,7 +10,7 @@ namespace yii\web;
 /**
  * ConflictHttpException represents a "Conflict" HTTP exception with status code 409
  *
- * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.10
+ * @see https://tools.ietf.org/html/rfc7231#section-6.5.8
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */
