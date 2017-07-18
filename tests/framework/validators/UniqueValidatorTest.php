@@ -434,4 +434,25 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $validator->validateAttribute($model, 'title');
         $this->assertFalse($model->hasErrors(), 'There were errors: ' . json_encode($model->getErrors()));
     }
+
+    public function testFindModelWith()
+    {
+        $validator = new UniqueValidator([
+            'targetAttribute' => ['status', 'profile_id']
+        ]);
+
+        $withCustomer = new class extends Customer {
+            public static function find() {
+                $res = parent::find();
+
+                $res->with('profile');
+
+                return $res;
+            }
+        };
+        
+        $model = $withCustomer::find()->one();
+
+        $validator->validateAttribute($model, 'dummy');
+    }
 }
