@@ -59,8 +59,7 @@ use yii\base\InvalidConfigException;
  * @property bool $isPut Whether this is a PUT request. This property is read-only.
  * @property bool $isSecureConnection If the request is sent via secure channel (https). This property is
  * read-only.
- * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. The value returned is
- * turned into upper case. This property is read-only.
+ * @property string $method Request method, such as GET, POST, HEAD, PUT, PATCH, DELETE. This property is read-only.
  * @property string $pathInfo Part of the request URL that is after the entry script and before the question
  * mark. Note, the returned path info is already URL-decoded.
  * @property int $port Port number for insecure requests.
@@ -230,20 +229,19 @@ class Request extends \yii\base\Request
     /**
      * Returns the method of the current request (e.g. GET, POST, HEAD, PUT, PATCH, DELETE).
      * @return string request method, such as GET, POST, HEAD, PUT, PATCH, DELETE.
-     * The value returned is turned into upper case.
      */
     public function getMethod()
     {
         if (isset($_POST[$this->methodParam])) {
-            return strtoupper($_POST[$this->methodParam]);
+            return $_POST[$this->methodParam];
         }
 
         if (isset($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'])) {
-            return strtoupper($_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE']);
+            return $_SERVER['HTTP_X_HTTP_METHOD_OVERRIDE'];
         }
 
         if (isset($_SERVER['REQUEST_METHOD'])) {
-            return strtoupper($_SERVER['REQUEST_METHOD']);
+            return $_SERVER['REQUEST_METHOD'];
         }
 
         return 'GET';
