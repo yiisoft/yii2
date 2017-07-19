@@ -151,6 +151,11 @@ Yii Framework 2 Change Log
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 
+- Enh #13835: Added `yii\web\Request::getOrigin()` method that returns HTTP_ORIGIN of current CORS request (yyxx9988)
+- Enh #14188: Add constants and function for sysexits(3) to `ConsoleHelper` (tom--, samdark, cebe)
+- Bug #14165: Set `_slave` of `Connection` to `false` instead of `null` in `close` method (rossoneri)
+- Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
+- Bug #14484: Fixed `yii\validators\UniqueValidator` for target classes with a default scope (laszlovl)
 
 2.0.12 June 05, 2017
 --------------------
