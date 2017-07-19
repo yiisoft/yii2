@@ -787,6 +787,8 @@ class UrlManagerCreateUrlTest extends TestCase
             ]
         ]);
 
+        $this->assertNotEquals($urlManager->rules, $cachedUrlManager->rules);
+        $this->assertInstanceOf(UrlRule::className(), $urlManager->rules[0]);
         $this->assertInstanceOf(CachedUrlRule::className(), $cachedUrlManager->rules[0]);
     }
 }
