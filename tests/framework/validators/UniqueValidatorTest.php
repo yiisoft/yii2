@@ -435,24 +435,29 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertFalse($model->hasErrors(), 'There were errors: ' . json_encode($model->getErrors()));
     }
 
+    /**
+     * Test validating a class with default scope
+     * @see https://github.com/yiisoft/yii2/issues/14484
+    */
     public function testFindModelWith()
     {
         $validator = new UniqueValidator([
             'targetAttribute' => ['status', 'profile_id']
         ]);
 
-        $withCustomer = new class extends Customer {
-            public static function find() {
-                $res = parent::find();
-
-                $res->with('profile');
-
-                return $res;
-            }
-        };
-        
-        $model = $withCustomer::find()->one();
+       
+        $model = WithCustomer::find()->one();
 
         $validator->validateAttribute($model, 'dummy');
+    }
+}
+
+class WithCustomer extends Customer {
+    public static function find() {
+        $res = parent::find();
+
+        $res->with('profile');
+
+        return $res;
     }
 }
