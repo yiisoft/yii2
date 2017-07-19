@@ -50,6 +50,7 @@ class MyDbTestCase
 
 /**
  * @group fixture
+ * @group db
  */
 class ActiveFixtureTest extends DatabaseTestCase
 {

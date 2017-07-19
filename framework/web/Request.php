@@ -1090,7 +1090,7 @@ class Request extends \yii\base\Request
      * media type that would have been sent had the request been a GET.
      * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
      * @return string request content-type. Null is returned if this information is not available.
-     * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
+     * @link https://tools.ietf.org/html/rfc2616#section-14.17
      * HTTP 1.1 header field definitions
      */
     public function getContentType()
@@ -1435,7 +1435,7 @@ class Request extends \yii\base\Request
     public function validateCsrfToken($clientSuppliedToken = null)
     {
         $method = $this->getMethod();
-        // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
+        // only validate CSRF token on non-"safe" methods https://tools.ietf.org/html/rfc2616#section-9.1.1
         if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
             return true;
         }

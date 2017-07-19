@@ -55,25 +55,25 @@ menunjukkan bahwa file kelas yang sesuai adalah `web/Request.php` bawah folder f
 Komponen dan Object
 --------------------
 
-Yii 2.0 membagi kelas `CComponent` di 1.1 menjadi dua kelas: [[yii\base\Object]] dan [[yii\base\Component]].
-Class [[yii\base\Object|Object]] adalah class dasar ringan yang memungkinkan mendefinisikan [objek properti](concept-properties.md)
-melalui getter dan setter. Class [[yii\base\Component|Component]] adalah perluasan dari [[yii\base\Object|Object]] dengan dukungan
+Yii 2.0 membagi kelas `CComponent` di 1.1 menjadi dua kelas: [[yii\base\BaseObject]] dan [[yii\base\Component]].
+Class [[yii\base\BaseObject|BaseObject]] adalah class dasar ringan yang memungkinkan mendefinisikan [objek properti](concept-properties.md)
+melalui getter dan setter. Class [[yii\base\Component|Component]] adalah perluasan dari [[yii\base\BaseObject|BaseObject]] dengan dukungan
 [Event](concept-events.md) dan [behavior](concept-behaviors.md).
 
 Jika class Anda tidak perlu fitur event atau behavior, Anda harus mempertimbangkan menggunakan
-[[yii\base\Object|Object]] sebagai class dasar. Hal ini biasanya terjadi untuk class yang mewakili
+[[yii\base\BaseObject|BaseObject]] sebagai class dasar. Hal ini biasanya terjadi untuk class yang mewakili
 struktur data dasar.
 
 
 Konfigurasi objek
 --------------------
 
-Class [[yii\base\Object|Object]] memperkenalkan cara seragam untuk mengkonfigurasi objek. Setiap class turunan
-dari [[yii\base\Object|Object]] harus menyatakan konstruktor (jika diperlukan) dengan cara berikut agar
+Class [[yii\base\BaseObject|BaseObject]] memperkenalkan cara seragam untuk mengkonfigurasi objek. Setiap class turunan
+dari [[yii\base\BaseObject|BaseObject]] harus menyatakan konstruktor (jika diperlukan) dengan cara berikut agar
 dapat dikonfigurasi dengan benar:
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -93,7 +93,7 @@ class MyClass extends \yii\base\Object
 
 Dalam contoh di atas, parameter terakhir dari konstruktor harus mengambil array konfigurasi
 yang berisi pasangan nama-nilai untuk menginisialisasi properti pada akhir konstruktor.
-Anda dapat menimpa method [[yii\base\Object::init()|init()]] untuk melakukan pekerjaan inisialisasi yang harus dilakukan setelah
+Anda dapat menimpa method [[yii\base\BaseObject::init()|init()]] untuk melakukan pekerjaan inisialisasi yang harus dilakukan setelah
 konfigurasi telah diterapkan.
 
 Dengan mengikuti konvensi ini, Anda akan dapat membuat dan mengkonfigurasi objek baru menggunakan array konfigurasi:

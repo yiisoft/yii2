@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\base\Object
+class QueryBuilder extends \yii\base\BaseObject
 {
     /**
      * The prefix for automatically generated query binding parameters.

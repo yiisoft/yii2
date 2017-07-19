@@ -12,6 +12,7 @@ use yii\caching\ApcCache;
 use yii\caching\CacheInterface;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 
 /**
@@ -88,11 +89,11 @@ class CacheController extends Controller
 
         if (!$foundCaches) {
             $this->notifyNoCachesFound();
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         if (!$this->confirmFlush($foundCaches)) {
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         foreach ($caches as $name => $class) {
@@ -116,7 +117,7 @@ class CacheController extends Controller
 
         if (empty($caches)) {
             $this->notifyNoCachesFound();
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         foreach ($caches as $name => $class) {
@@ -150,14 +151,14 @@ class CacheController extends Controller
         $connection = Yii::$app->get($db, false);
         if ($connection === null) {
             $this->stdout("Unknown component \"$db\".\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         }
 
         if (!$connection instanceof \yii\db\Connection) {
             $this->stdout("\"$db\" component doesn't inherit \\yii\\db\\Connection.\n", Console::FG_RED);
-            return self::EXIT_CODE_ERROR;
+            return ExitCode::UNSPECIFIED_ERROR;
         } elseif (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         try {

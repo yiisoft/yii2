@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
@@ -112,7 +113,7 @@ class FixtureController extends Controller
             $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
             $this->stdout("Use $helpCommand to get usage info.\n");
 
-            return self::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $filtered = $this->filterFixtures($fixturesInput);
@@ -142,11 +143,11 @@ class FixtureController extends Controller
 
         if (!$fixturesToLoad) {
             $this->notifyNothingToLoad($foundFixtures, $except);
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         if (!$this->confirmLoad($fixturesToLoad, $except)) {
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToLoad));
@@ -161,7 +162,7 @@ class FixtureController extends Controller
         $this->loadFixtures($fixturesObjects);
         $this->notifyLoaded($fixtures);
 
-        return static::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
@@ -212,11 +213,11 @@ class FixtureController extends Controller
 
         if (!$fixturesToUnload) {
             $this->notifyNothingToUnload($foundFixtures, $except);
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         if (!$this->confirmUnload($fixturesToUnload, $except)) {
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToUnload));

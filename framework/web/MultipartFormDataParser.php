@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
@@ -63,7 +63,7 @@ use yii\helpers\StringHelper;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
-class MultipartFormDataParser extends Object implements RequestParserInterface
+class MultipartFormDataParser extends BaseObject implements RequestParserInterface
 {
     /**
      * @var int upload file max size in bytes.
