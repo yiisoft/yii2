@@ -15,7 +15,7 @@ namespace yii\web;
  * if the client POSTs XML data to an action or controller that only accepts
  * JSON.
  *
- * @link https://tools.ietf.org/html/rfc2616#section-10.4.16
+ * @see https://tools.ietf.org/html/rfc7231#section-6.5.13
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

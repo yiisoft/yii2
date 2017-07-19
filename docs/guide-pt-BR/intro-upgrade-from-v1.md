@@ -63,29 +63,29 @@ dessa classe, graças ao carregador de classes do Yii).
 Component e Object
 ------------------
 
-O Yii 2.0 divide a classe `CComponent` do 1.1 em duas classes: [[yii\base\Object]]
-e [[yii\base\Component]]. A classe [[yii\base\Object|Object]] é uma classe base
+O Yii 2.0 divide a classe `CComponent` do 1.1 em duas classes: [[yii\base\BaseObject]]
+e [[yii\base\Component]]. A classe [[yii\base\BaseObject|BaseObject]] é uma classe base
 leve que permite a definição das [propriedades de objetos](concept-properties.md)
 via getters e setters. A classe [[yii\base\Component|Component]] estende de
-[[yii\base\Object|Object]] e suporta [eventos](concept-events.md) e
+[[yii\base\BaseObject|BaseObject]] e suporta [eventos](concept-events.md) e
 [behaviors](concept-behaviors.md) (comportamentos).
 
 
 Se a sua classe não precisa da funcionalidade de eventos e *behaviors*,
-você deveria considerar utilizar [[yii\base\Object|Object]] como classe base.
+você deveria considerar utilizar [[yii\base\BaseObject|BaseObject]] como classe base.
 Esse geralmente é o caso de classes que representam estruturas básicas de dados.
 
 
 Configuração de Objetos
 -----------------------
 
-A classe [[yii\base\Object|Object]] introduz uma maneira uniforme de configurar
-objetos. Qualquer classe descendente de [[yii\base\Object|Object]] deveria
+A classe [[yii\base\BaseObject|BaseObject]] introduz uma maneira uniforme de configurar
+objetos. Qualquer classe descendente de [[yii\base\BaseObject|BaseObject]] deveria
 declarar seu construtor (se necessário) da seguinte maneira, para que ela
 seja configurada adequadamente:
 
 ```php
-class MinhaClasse extends \yii\base\Object
+class MinhaClasse extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -105,7 +105,7 @@ class MinhaClasse extends \yii\base\Object
 
 No código acima, o último parâmetro do construtor deve receber um array de
 configuração que contém pares de nome-valor para a inicialização das propriedades
-no final do construtor. Você pode sobrescrever o método [[yii\base\Object::init()|init()]] 
+no final do construtor. Você pode sobrescrever o método [[yii\base\BaseObject::init()|init()]] 
 para fazer o trabalho de inicialização que deve ser feito após a configuração
 ter sido aplicada.
 
