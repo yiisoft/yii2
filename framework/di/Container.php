@@ -10,7 +10,6 @@ namespace yii\di;
 use ReflectionClass;
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -97,7 +96,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Container extends Component
+class Container extends Component implements \Psr\Container\ContainerInterface
 {
     /**
      * @var array singleton objects indexed by their types
@@ -144,7 +143,6 @@ class Container extends Component
      * ones with the integers that represent their positions in the constructor parameter list.
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
-     * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
      * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     public function get($class, $params = [], $config = [])
@@ -158,10 +156,14 @@ class Container extends Component
 
         $definition = $this->_definitions[$class];
 
+        if (is_object($definition)) {
+            return $this->_singletons[$class] = $definition;
+        }
+
         if (is_callable($definition, true)) {
             $params = $this->resolveDependencies($this->mergeParams($class, $params));
             $object = call_user_func($definition, $this, $params, $config);
-        } elseif (is_array($definition)) {
+        } else {
             $concrete = $definition['class'];
             unset($definition['class']);
 
@@ -173,10 +175,6 @@ class Container extends Component
             } else {
                 $object = $this->get($concrete, $params, $config);
             }
-        } elseif (is_object($definition)) {
-            return $this->_singletons[$class] = $definition;
-        } else {
-            throw new InvalidConfigException('Unexpected object definition type: ' . gettype($definition));
         }
 
         if (array_key_exists($class, $this->_singletons)) {
