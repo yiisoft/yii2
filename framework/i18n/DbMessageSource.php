@@ -92,7 +92,7 @@ class DbMessageSource extends MessageSource
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->enableCaching) {
-            $this->cache = Instance::ensure($this->cache, Cache::class);
+            $this->cache = Instance::ensure($this->cache, CacheInterface::class);
         }
     }
 

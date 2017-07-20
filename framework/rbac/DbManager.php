@@ -111,7 +111,7 @@ class DbManager extends BaseManager
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, Cache::class);
+            $this->cache = Instance::ensure($this->cache, CacheInterface::class);
         }
     }
 
