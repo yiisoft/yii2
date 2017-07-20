@@ -667,7 +667,7 @@ abstract class SchemaTest extends DatabaseTestCase
 
     private function normalizeConstraintPair(Constraint $expectedConstraint, Constraint $actualConstraint)
     {
-        if ($expectedConstraint::className() !== $actualConstraint::className()) {
+        if (get_class($expectedConstraint) !== get_class($actualConstraint)) {
             return;
         }
 

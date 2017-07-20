@@ -41,15 +41,15 @@ class ApplicationTest extends TestCase
         $this->mockApplication([
             'components' => [
                 'withoutBootstrapInterface' => [
-                    'class' => Component::className()
+                    'class' => Component::class
                 ],
                 'withBootstrapInterface' => [
-                    'class' => BootstrapComponentMock::className()
+                    'class' => BootstrapComponentMock::class
                 ]
             ],
             'modules' => [
                 'moduleX' => [
-                    'class' => Module::className()
+                    'class' => Module::class
                 ]
             ],
             'bootstrap' => [

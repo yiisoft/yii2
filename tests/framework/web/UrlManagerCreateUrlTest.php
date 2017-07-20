@@ -767,7 +767,7 @@ class UrlManagerCreateUrlTest extends TestCase
     {
         $this->mockWebApplication([
             'components' => [
-                'cache' => ArrayCache::className()
+                'cache' => ArrayCache::class,
             ]
         ]);
         $urlManager = $this->getUrlManager([
@@ -780,15 +780,15 @@ class UrlManagerCreateUrlTest extends TestCase
         $cachedUrlManager = $this->getUrlManager([
             'cache' => 'cache',
             'ruleConfig' => [
-                'class' => CachedUrlRule::className()
+                'class' => CachedUrlRule::class,
             ],
             'rules' => [
-                '/' => 'site/index'
+                '/' => 'site/index',
             ]
         ]);
 
         $this->assertNotEquals($urlManager->rules, $cachedUrlManager->rules);
-        $this->assertInstanceOf(UrlRule::className(), $urlManager->rules[0]);
-        $this->assertInstanceOf(CachedUrlRule::className(), $cachedUrlManager->rules[0]);
+        $this->assertInstanceOf(UrlRule::class, $urlManager->rules[0]);
+        $this->assertInstanceOf(CachedUrlRule::class, $cachedUrlManager->rules[0]);
     }
 }

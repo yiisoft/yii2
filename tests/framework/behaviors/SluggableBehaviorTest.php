@@ -298,7 +298,7 @@ class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
     {
         return [
             'sluggable' => [
-                'class' => SluggableBehavior::className(),
+                'class' => SluggableBehavior::class,
                 'attribute' => 'name',
                 'slugAttribute' => 'slug',
                 'ensureUnique' => true,

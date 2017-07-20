@@ -84,7 +84,7 @@ class FragmentCache extends Widget
     {
         parent::init();
 
-        $this->cache = $this->enabled ? Instance::ensure($this->cache, Cache::class) : null;
+        $this->cache = $this->enabled ? Instance::ensure($this->cache, CacheInterface::class) : null;
 
         if ($this->cache instanceof CacheInterface && $this->getCachedContent() === false) {
             $this->getView()->cacheStack[] = $this;
