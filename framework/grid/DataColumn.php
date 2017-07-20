@@ -195,7 +195,8 @@ class DataColumn extends Column
             if (is_array($this->filter)) {
                 $options = array_merge(['prompt' => ''], $filterOptions);
                 return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
-            } elseif ($this->format === 'boolean') {
+            }
+            if ($this->format === 'boolean') {
                 $options = array_merge(['prompt' => ''], $filterOptions);
                 return Html::activeDropDownList($model, $this->attribute, [
                     $this->grid->formatter->booleanFormat[0],
@@ -203,7 +204,7 @@ class DataColumn extends Column
                 ], $options) . $error;
             }
 
-            return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
+            return Html::activeTextInput($model, $this->attribute, $filterOptions) . $error;
         }
 
         return parent::renderFilterCellContent();
@@ -224,7 +225,8 @@ class DataColumn extends Column
             }
 
             return call_user_func($this->value, $model, $key, $index, $this);
-        } elseif ($this->attribute !== null) {
+        }
+        if ($this->attribute !== null) {
             return ArrayHelper::getValue($model, $this->attribute);
         }
         return null;
