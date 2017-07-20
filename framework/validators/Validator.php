@@ -249,8 +249,9 @@ class Validator extends Component
     {
         if (is_array($attributes)) {
             $newAttributes = [];
+            $attributeNames = $this->getAttributeNames();
             foreach ($attributes as $attribute) {
-                if (in_array($attribute, $this->getAttributeNames(), true)) {
+                if (in_array($attribute, $attributeNames, true)) {
                     $newAttributes[] = $attribute;
                 }
             }
@@ -428,9 +429,9 @@ class Validator extends Component
     {
         if ($this->isEmpty !== null) {
             return call_user_func($this->isEmpty, $value);
-        } else {
-            return $value === null || $value === [] || $value === '';
         }
+
+        return $value === null || $value === [] || $value === '';
     }
 
     /**
@@ -461,7 +462,7 @@ class Validator extends Component
      */
     public function getAttributeNames()
     {
-        return array_map(function($attribute) {
+        return array_map(function ($attribute) {
             return ltrim($attribute, '!');
         }, $this->attributes);
     }

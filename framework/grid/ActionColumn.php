@@ -198,12 +198,12 @@ class ActionColumn extends Column
     {
         if (is_callable($this->urlCreator)) {
             return call_user_func($this->urlCreator, $action, $model, $key, $index, $this);
-        } else {
-            $params = is_array($key) ? $key : ['id' => (string) $key];
-            $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
-
-            return Url::toRoute($params);
         }
+
+        $params = is_array($key) ? $key : ['id' => (string) $key];
+        $params[0] = $this->controller ? $this->controller . '/' . $action : $action;
+
+        return Url::toRoute($params);
     }
 
     /**
@@ -225,9 +225,9 @@ class ActionColumn extends Column
             if ($isVisible && isset($this->buttons[$name])) {
                 $url = $this->createUrl($name, $model, $key, $index);
                 return call_user_func($this->buttons[$name], $url, $model, $key);
-            } else {
-                return '';
             }
+
+            return '';
         }, $this->template);
     }
 }

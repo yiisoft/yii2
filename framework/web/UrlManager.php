@@ -10,7 +10,7 @@ namespace yii\web;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 use yii\helpers\Url;
 
 /**
@@ -118,7 +118,7 @@ class UrlManager extends Component
      */
     public $routeParam = 'r';
     /**
-     * @var Cache|string the cache object or the application component ID of the cache object.
+     * @var CacheInterface|string the cache object or the application component ID of the cache object.
      * Compiled URL rules will be cached through this cache object, if it is available.
      *
      * After the UrlManager object is created, if you want to change this property,
@@ -170,9 +170,9 @@ class UrlManager extends Component
         if (is_string($this->cache)) {
             $this->cache = Yii::$app->get($this->cache, false);
         }
-        if ($this->cache instanceof Cache) {
+        if ($this->cache instanceof CacheInterface) {
             $cacheKey = $this->cacheKey;
-            $hash = md5(json_encode($this->rules));
+            $hash = md5(json_encode([$this->ruleConfig, $this->rules]));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
             } else {
@@ -297,18 +297,18 @@ class UrlManager extends Component
             if ($normalized) {
                 // pathInfo was changed by normalizer - we need also normalize route
                 return $this->normalizer->normalizeRoute([$pathInfo, []]);
-            } else {
-                return [$pathInfo, []];
-            }
-        } else {
-            Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
-            $route = $request->getQueryParam($this->routeParam, '');
-            if (is_array($route)) {
-                $route = '';
             }
 
-            return [(string) $route, []];
+            return [$pathInfo, []];
         }
+
+        Yii::trace('Pretty URL not enabled. Using default URL parsing logic.', __METHOD__);
+        $route = $request->getQueryParam($this->routeParam, '');
+        if (is_array($route)) {
+            $route = '';
+        }
+
+        return [(string) $route, []];
     }
 
     /**
@@ -382,19 +382,19 @@ class UrlManager extends Component
                 if (strpos($url, '://') !== false) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 8)) !== false) {
                         return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
-                    } else {
-                        return $url . $baseUrl . $anchor;
                     }
+
+                    return $url . $baseUrl . $anchor;
                 } elseif (strpos($url, '//') === 0) {
                     if ($baseUrl !== '' && ($pos = strpos($url, '/', 2)) !== false) {
                         return substr($url, 0, $pos) . $baseUrl . substr($url, $pos) . $anchor;
-                    } else {
-                        return $url . $baseUrl . $anchor;
                     }
-                } else {
-                    $url = ltrim($url, '/');
-                    return "$baseUrl/{$url}{$anchor}";
+
+                    return $url . $baseUrl . $anchor;
                 }
+
+                $url = ltrim($url, '/');
+                return "$baseUrl/{$url}{$anchor}";
             }
 
             if ($this->suffix !== null) {
@@ -406,14 +406,14 @@ class UrlManager extends Component
 
             $route = ltrim($route, '/');
             return "$baseUrl/{$route}{$anchor}";
-        } else {
-            $url = "$baseUrl?{$this->routeParam}=" . urlencode($route);
-            if (!empty($params) && ($query = http_build_query($params)) !== '') {
-                $url .= '&' . $query;
-            }
-
-            return $url . $anchor;
         }
+
+        $url = "$baseUrl?{$this->routeParam}=" . urlencode($route);
+        if (!empty($params) && ($query = http_build_query($params)) !== '') {
+            $url .= '&' . $query;
+        }
+
+        return $url . $anchor;
     }
 
     /**

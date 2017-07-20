@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\widgets;
 
@@ -10,7 +15,7 @@ use yiiunit\TestCase;
 /**
  * @group widgets
  */
-class ListViewTest extends \yiiunit\TestCase
+class ListViewTest extends TestCase
 {
     protected function setUp()
     {
@@ -22,7 +27,7 @@ class ListViewTest extends \yiiunit\TestCase
     {
         $actual = $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
-            'emptyText' => "Nothing at all",
+            'emptyText' => 'Nothing at all',
         ])->run();
 
         $this->assertEqualsWithoutLE('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>', $actual);
@@ -45,7 +50,7 @@ class ListViewTest extends \yiiunit\TestCase
             'showOnEmpty' => true,
         ])->run();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <div id="w0" class="list-view">
 
 </div>
@@ -76,7 +81,7 @@ HTML;
     {
         $actual = $this->getListView()->run();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
@@ -91,7 +96,7 @@ HTML;
     {
         $actual = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
@@ -161,7 +166,6 @@ HTML;
                             'index' => $index,
                             'id' => $model['id'],
                         ],
-
                     ];
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
@@ -197,10 +201,10 @@ HTML;
         };
         $actual = $this->getListView([
             'beforeItem' => $before,
-            'afterItem' => $after
+            'afterItem' => $after,
         ])->run();
 
-        $expected = <<<HTML
+        $expected = <<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <!-- before: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
 <div data-key="0">0</div>

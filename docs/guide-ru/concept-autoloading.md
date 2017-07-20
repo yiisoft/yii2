@@ -71,8 +71,8 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 автозагрузчик Composer, а вторая — автозагрузчик Yii:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Вы можете использовать автозагрузчик Composer без автозагрузчика Yii. Однако, скорость автозагрузки в этом случае

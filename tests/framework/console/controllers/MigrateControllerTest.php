@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\console\controllers;
 
@@ -89,7 +94,7 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:string(10):notNull:unique:defaultValue("test"),
                     body:text:notNull,
                     price:money(11,2):notNull,
-                    parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')'
+                    parenthesis_in_comment:string(255):notNull:comment(\'Name of set (RU)\')',
             ]);
 
             $this->assertCommandCreatedFile('create_title_pk', $migrationName, $table, [
@@ -132,7 +137,7 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('drop_products_from_store_table', 'drop_' . $table . '_table', $table);
         }
         // @see https://github.com/yiisoft/yii2/issues/11461
-        $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', 'test',  [
+        $this->assertCommandCreatedFile('create_title_with_comma_default_values', 'create_test_table', 'test', [
             'fields' => 'title:string(10):notNull:unique:defaultValue(",te,st"),
              body:text:notNull:defaultValue(",test"),
              test:custom(11,2,"s"):notNull',
@@ -151,7 +156,7 @@ class MigrateControllerTest extends TestCase
             $this->assertCommandCreatedFile('drop_test', $migrationName, $table);
 
             $this->assertCommandCreatedFile('drop_fields', $migrationName, $table, [
-                'fields' => 'body:text:notNull,price:money(11,2)'
+                'fields' => 'body:text:notNull,price:money(11,2)',
             ]);
         }
 
@@ -174,7 +179,7 @@ class MigrateControllerTest extends TestCase
                 'fields' => 'title:string(10):notNull,
                     body:text:notNull,
                     price:money(11,2):notNull,
-                    created_at:dateTime'
+                    created_at:dateTime',
             ]);
 
             $this->assertCommandCreatedFile('add_columns_fk', $migrationName, $table, [
@@ -209,7 +214,7 @@ class MigrateControllerTest extends TestCase
                 $this->assertCommandCreatedFile('drop_columns_test', $migrationName, $table, [
                     'fields' => 'title:string(10):notNull,body:text:notNull,
                     price:money(11,2):notNull,
-                    created_at:dateTime'
+                    created_at:dateTime',
                 ]);
             }
         }
@@ -235,7 +240,7 @@ class MigrateControllerTest extends TestCase
     {
         $controllerConfig = [
             'migrationPath' => null,
-            'migrationNamespaces' => [$this->migrationNamespace]
+            'migrationNamespaces' => [$this->migrationNamespace],
         ];
         $this->runMigrateControllerAction('history', [], $controllerConfig);
 

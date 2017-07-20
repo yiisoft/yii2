@@ -1,11 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 // override information about intl
 
 namespace yiiunit\framework\i18n {
     use yiiunit\TestCase;
 
-    class IntlTestHelper {
+    class IntlTestHelper
+    {
         public static $enableIntl;
 
         /**

@@ -1,10 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\console\controllers\fixtures;
 
 class FixtureStorage
 {
-
     public static $globalFixturesData = [];
 
     public static $firstFixtureData = [];
@@ -21,7 +25,6 @@ class FixtureStorage
         static::$firstFixtureData = [];
         static::$secondFixtureData = [];
         static::$subdirFirstFixtureData = [];
-        static::$subdirSecondFixtureData= [];
+        static::$subdirSecondFixtureData = [];
     }
-
 }

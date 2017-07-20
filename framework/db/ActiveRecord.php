@@ -189,6 +189,21 @@ class ActiveRecord extends BaseActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function refresh()
+    {
+        $pk = [];
+        // disambiguate column names in case ActiveQuery adds a JOIN
+        foreach($this->getPrimaryKey(true) as $key => $value) {
+            $pk[static::tableName() . '.' . $key] = $value;
+        }
+        /* @var $record BaseActiveRecord */
+        $record = static::findOne($pk);
+        return $this->refreshInternal($record);
+    }
+
+    /**
      * Updates the whole table using the provided attribute values and conditions.
      *
      * For example, to change the status to be 1 for all customers whose status is 2:
@@ -448,7 +463,7 @@ class ActiveRecord extends BaseActiveRecord
      * @param array $attributes list of attributes that need to be saved. Defaults to `null`,
      * meaning all attributes that are loaded from DB will be saved.
      * @return bool whether the attributes are valid and the record is inserted successfully.
-     * @throws \Exception in case insert failed.
+     * @throws \Exception|\Throwable in case insert failed.
      */
     public function insert($runValidation = true, $attributes = null)
     {
@@ -554,7 +569,7 @@ class ActiveRecord extends BaseActiveRecord
      * or [[beforeSave()]] stops the updating process.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being updated is outdated.
-     * @throws \Exception in case update failed.
+     * @throws \Exception|\Throwable in case update failed.
      */
     public function update($runValidation = true, $attributeNames = null)
     {
@@ -599,7 +614,7 @@ class ActiveRecord extends BaseActiveRecord
      * Note that it is possible the number of rows deleted is 0, even though the deletion execution is successful.
      * @throws StaleObjectException if [[optimisticLock|optimistic locking]] is enabled and the data
      * being deleted is outdated.
-     * @throws \Exception in case delete failed.
+     * @throws \Exception|\Throwable in case delete failed.
      */
     public function delete()
     {

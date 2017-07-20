@@ -128,9 +128,9 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->addItem($object);
         } elseif ($object instanceof Rule) {
             return $this->addRule($object);
-        } else {
-            throw new InvalidArgumentException('Adding unsupported object type.');
         }
+
+        throw new InvalidArgumentException('Adding unsupported object type.');
     }
 
     /**
@@ -142,9 +142,9 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->removeItem($object);
         } elseif ($object instanceof Rule) {
             return $this->removeRule($object);
-        } else {
-            throw new InvalidArgumentException('Removing unsupported object type.');
         }
+
+        throw new InvalidArgumentException('Removing unsupported object type.');
     }
 
     /**
@@ -161,9 +161,9 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
             return $this->updateRule($name, $object);
-        } else {
-            throw new InvalidArgumentException('Updating unsupported object type.');
         }
+
+        throw new InvalidArgumentException('Updating unsupported object type.');
     }
 
     /**
@@ -235,9 +235,9 @@ abstract class BaseManager extends Component implements ManagerInterface
         $rule = $this->getRule($item->ruleName);
         if ($rule instanceof Rule) {
             return $rule->execute($user, $item, $params);
-        } else {
-            throw new InvalidConfigException("Rule not found: {$item->ruleName}");
         }
+
+        throw new InvalidConfigException("Rule not found: {$item->ruleName}");
     }
 
     /**

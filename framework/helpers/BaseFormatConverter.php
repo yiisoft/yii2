@@ -75,10 +75,10 @@ class BaseFormatConverter
     ];
 
     private static $_icuShortFormats = [
-        'short'  => 3, // IntlDateFormatter::SHORT,
+        'short' => 3, // IntlDateFormatter::SHORT,
         'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long'   => 1, // IntlDateFormatter::LONG,
-        'full'   => 0, // IntlDateFormatter::FULL,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
     ];
 
 
@@ -125,19 +125,19 @@ class BaseFormatConverter
         if (preg_match_all('/(?<!\')\'(.*?[^\'])\'(?!\')/', $pattern, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $match) {
                 $match[1] = str_replace('\'\'', '\'', $match[1]);
-                $escaped[$match[0]] = '\\'.implode('\\', preg_split('//u', $match[1], -1, PREG_SPLIT_NO_EMPTY));
+                $escaped[$match[0]] = '\\' . implode('\\', preg_split('//u', $match[1], -1, PREG_SPLIT_NO_EMPTY));
             }
         }
         return strtr($pattern, array_merge($escaped, [
             '\'\'' => '\\\'', // two single quotes produce one
-            'G' => '', // era designator like (Anno Domini)
+            'G' => '',      // era designator like (Anno Domini)
             'Y' => 'o',     // 4digit year of "Week of Year"
             'y' => 'Y',     // 4digit year e.g. 2014
             'yyyy' => 'Y',  // 4digit year e.g. 2014
             'yy' => 'y',    // 2digit year number eg. 14
             'u' => '',      // extended year e.g. 4601
             'U' => '',      // cyclic year name, as in Chinese lunar calendar
-            'r' => '',        // related Gregorian year e.g. 1996
+            'r' => '',      // related Gregorian year e.g. 1996
             'Q' => '',      // number of quarter
             'QQ' => '',     // number of quarter '02'
             'QQQ' => '',    // quarter 'Q2'
@@ -152,7 +152,7 @@ class BaseFormatConverter
             'MM' => 'm',    // Numeric representation of a month, with leading zeros
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'F',  // A full textual representation of a month, such as January or March
-            'MMMMM' => '',  //
+            'MMMMM' => '',
             'L' => 'n',     // Stand alone month in year
             'LL' => 'm',    // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
@@ -205,7 +205,7 @@ class BaseFormatConverter
             'z' => 'T',     // Timezone abbreviation
             'zz' => 'T',    // Timezone abbreviation
             'zzz' => 'T',   // Timezone abbreviation
-            'zzzz' => 'T',  // Timzone full name, not supported by php but we fallback
+            'zzzz' => 'T',  // Timezone full name, not supported by php but we fallback
             'Z' => 'O',     // Difference to Greenwich time (GMT) in hours
             'ZZ' => 'O',    // Difference to Greenwich time (GMT) in hours
             'ZZZ' => 'O',   // Difference to Greenwich time (GMT) in hours
@@ -225,8 +225,8 @@ class BaseFormatConverter
             'XXXX' => '',   // Time Zone: ISO8601 basic hms?, with Z, e.g. -0800, -075258, Z
             'XXXXX' => '',  // Time Zone: ISO8601 extended hms?, with Z, e.g. -08:00, -07:52:58, Z
             'x' => '',      // Time Zone: ISO8601 basic hm?, without Z for 0, e.g. -08, +0530
-            'xx' => 'O',     // Time Zone: ISO8601 basic hm, without Z, e.g. -0800
-            'xxx' => 'P',    // Time Zone: ISO8601 extended hm, without Z, e.g. -08:00
+            'xx' => 'O',    // Time Zone: ISO8601 basic hm, without Z, e.g. -0800
+            'xxx' => 'P',   // Time Zone: ISO8601 extended hm, without Z, e.g. -08:00
             'xxxx' => '',   // Time Zone: ISO8601 basic hms?, without Z, e.g. -0800, -075258
             'xxxxx' => '',  // Time Zone: ISO8601 extended hms?, without Z, e.g. -08:00, -07:52:58
         ]));
@@ -290,7 +290,7 @@ class BaseFormatConverter
             'O' => 'xx',    // Difference to Greenwich time (GMT) in hours, Example: +0200
             'P' => 'xxx',   // Difference to Greenwich time (GMT) with colon between hours and minutes, Example: +02:00
             'T' => 'zzz',   // Timezone abbreviation, Examples: EST, MDT ...
-            'Z' => '',    // Timezone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive. -43200 through 50400
+            'Z' => '',      // Timezone offset in seconds. The offset for timezones west of UTC is always negative, and for those east of UTC is always positive. -43200 through 50400
             // Full Date/Time
             'c' => 'yyyy-MM-dd\'T\'HH:mm:ssxxx', // ISO 8601 date, e.g. 2004-02-12T15:19:21+00:00
             'r' => 'eee, dd MMM yyyy HH:mm:ss xx', // RFC 2822 formatted date, Example: Thu, 21 Dec 2000 16:01:07 +0200
@@ -358,11 +358,11 @@ class BaseFormatConverter
             'qqq' => '',    // Stand Alone quarter 'Q2'
             'qqqq' => '',   // Stand Alone quarter '2nd quarter'
             'qqqqq' => '',  // number of Stand Alone quarter '2'
-            'M' => 'm',    // Numeric representation of a month, without leading zeros
+            'M' => 'm',     // Numeric representation of a month, without leading zeros
             'MM' => 'mm',   // Numeric representation of a month, with leading zeros
             'MMM' => 'M',   // A short textual representation of a month, three letters
             'MMMM' => 'MM', // A full textual representation of a month, such as January or March
-            'MMMMM' => '',  //
+            'MMMMM' => '',
             'L' => 'm',     // Stand alone month in year
             'LL' => 'mm',   // Stand alone month in year
             'LLL' => 'M',   // Stand alone month in year
@@ -415,14 +415,14 @@ class BaseFormatConverter
             'z' => '',      // Timezone abbreviation
             'zz' => '',     // Timezone abbreviation
             'zzz' => '',    // Timezone abbreviation
-            'zzzz' => '',   // Timzone full name, not supported by php but we fallback
+            'zzzz' => '',   // Timezone full name, not supported by php but we fallback
             'Z' => '',      // Difference to Greenwich time (GMT) in hours
             'ZZ' => '',     // Difference to Greenwich time (GMT) in hours
             'ZZZ' => '',    // Difference to Greenwich time (GMT) in hours
             'ZZZZ' => '',   // Time Zone: long localized GMT (=OOOO) e.g. GMT-08:00
-            'ZZZZZ' => '',  //  TIme Zone: ISO8601 extended hms? (=XXXXX)
+            'ZZZZZ' => '',  // Time Zone: ISO8601 extended hms? (=XXXXX)
             'O' => '',      // Time Zone: short localized GMT e.g. GMT-8
-            'OOOO' => '',   //  Time Zone: long localized GMT (=ZZZZ) e.g. GMT-08:00
+            'OOOO' => '',   // Time Zone: long localized GMT (=ZZZZ) e.g. GMT-08:00
             'v' => '',      // Time Zone: generic non-location (falls back first to VVVV and then to OOOO) using the ICU defined fallback here
             'vvvv' => '',   // Time Zone: generic non-location (falls back first to VVVV and then to OOOO) using the ICU defined fallback here
             'V' => '',      // Time Zone: short time zone ID

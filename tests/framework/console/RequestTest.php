@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 use yii\console\Request;
 use yiiunit\TestCase;
@@ -128,7 +133,7 @@ class RequestTest extends TestCase
                 'expected' => [],
                 'exception' => [
                     '\yii\console\Exception',
-                    'Parameter "0" is not valid'
+                    'Parameter "0" is not valid',
                 ],
             ],
         ];

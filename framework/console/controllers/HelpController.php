@@ -168,8 +168,6 @@ class HelpController extends Controller
         }
 
         $this->stdout("\n");
-
-        return;
     }
 
     /**
@@ -275,9 +273,9 @@ class HelpController extends Controller
         if (class_exists($controllerClass)) {
             $class = new \ReflectionClass($controllerClass);
             return !$class->isAbstract() && $class->isSubclassOf(Controller::class);
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

@@ -35,7 +35,7 @@ upgrade might fail when the Yii version you chose has slightly different depende
 Another way to upgrade is to change the `composer.json` file to require the new Yii version and then
 run `composer update` by specifying all packages that are allowed to be updated.
 
-    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
+    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/inputmask
 
 The above command will only update the specified packages and leave the versions of all other dependencies intact.
 This helps to update packages step by step without causing a lot of package version changes that might break in some way.
@@ -64,6 +64,49 @@ Upgrade from Yii 2.0.x
 * Moved masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
 
+Upgrade from Yii 2.0.12
+-----------------------
+
+* For compatibiliy with [PHP 7.2 which does not allow classes to be named `Object` anymore](https://wiki.php.net/rfc/object-typehint),
+  we needed to rename `yii\base\Object` to `yii\base\BaseObject`.
+  
+  `yii\base\Object` still exists for backwards compatibility and will be loaded if needed in projects that are
+  running on PHP <7.2. The compatibility class `yii\base\Object` extends from `yii\base\BaseObject` so if you
+  have classes that extend from `yii\base\Object` these would still work.
+  
+  What does not work however will be code that relies on `instanceof` checks or `is_subclass_of()` calls
+  for `yii\base\Object` on framework classes as these do not extend `yii\base\Object` anymore but only
+  extend from `yii\base\BaseObject`. In general such a check is not needed as there is a `yii\base\Configurable`
+  interface you should check against instead.
+  
+  Here is a visualisation of the change (`a < b` means "b extends a"):
+  
+  ```
+  Before:
+  
+  yii\base\Object < Framework Classes
+  yii\base\Object < Application Classes
+  
+  After Upgrade:
+  
+  yii\base\BaseObject < Framework Classes
+  yii\base\BaseObject < yii\base\Object < Application Classes
+
+  ```
+  
+  If you want to upgrade PHP to version 7.2 in your project you need to remove all cases that extend `yii\base\Object`
+  and extend from `yii\base\BaseObject` instead:
+  
+  ```
+  yii\base\BaseObject < Framework Classes
+  yii\base\BaseObject < Application Classes
+  ```
+  
+  For extensions that have classes extending from `yii\base\Object`, to be compatible with PHP 7.2, you need to
+  require `"yiisoft/yii2": "~2.0.13"` in composer.json and change affected classes to extend from `yii\base\BaseObject`
+  instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
+
+
 Upgrade from Yii 2.0.11
 -----------------------
 
@@ -86,6 +129,9 @@ Upgrade from Yii 2.0.11
 * `yii\filters\AccessControl` now can be used without `user` component.  
   In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
   matching a role throws `yii\base\InvalidConfigException`.
+  
+* Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
+  assets manually, please adjust it. 
 
 Upgrade from Yii 2.0.10
 -----------------------

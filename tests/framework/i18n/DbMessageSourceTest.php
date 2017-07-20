@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\i18n;
 
@@ -33,8 +38,8 @@ class DbMessageSourceTest extends I18NTest
                 'test' => [
                     'class' => $this->getMessageSourceClass(),
                     'db' => static::$db,
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -60,7 +65,7 @@ class DbMessageSourceTest extends I18NTest
 
         ob_start();
         $result = Yii::$app->runAction($route, $params);
-        echo "Result is " . $result;
+        echo 'Result is ' . $result;
         if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {
@@ -119,7 +124,7 @@ class DbMessageSourceTest extends I18NTest
     public static function getConnection()
     {
         if (static::$db == null) {
-            $db = new Connection;
+            $db = new Connection();
             $db->dsn = static::$database['dsn'];
             if (isset(static::$database['username'])) {
                 $db->username = static::$database['username'];

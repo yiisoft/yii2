@@ -67,8 +67,7 @@ class ActiveFixture extends BaseActiveFixture
     /**
      * Loads the fixture.
      *
-     * The default implementation will first clean up the table by calling [[resetTable()]].
-     * It will then populate the table with the data returned by [[getData()]].
+     * It populate the table with the data returned by [[getData()]].
      *
      * If you override this method, you should consider calling the parent implementation
      * so that the data returned by [[getData()]] can be populated into the table.
@@ -99,10 +98,10 @@ class ActiveFixture extends BaseActiveFixture
             $class = new \ReflectionClass($this);
             $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
 
-            return is_file($dataFile) ? require($dataFile) : [];
-        } else {
-            return parent::getData();
+            return is_file($dataFile) ? require $dataFile : [];
         }
+
+        return parent::getData();
     }
 
     /**

@@ -69,6 +69,7 @@ use yii\base\InvalidConfigException;
  * read-only.
  * @property string $rawBody The request body.
  * @property string|null $referrer URL referrer, null if not available. This property is read-only.
+ * @property string|null $origin URL origin, null if not available. This property is read-only.
  * @property string $scriptFile The entry script file path.
  * @property string $scriptUrl The relative URL of the entry script.
  * @property int $securePort Port number for secure requests.
@@ -203,7 +204,7 @@ class Request extends \yii\base\Request
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
             if (function_exists('getallheaders')) {
                 $headers = getallheaders();
             } elseif (function_exists('http_get_request_headers')) {
@@ -407,7 +408,7 @@ class Request extends \yii\base\Request
             } elseif (isset($this->parsers['*'])) {
                 $parser = Yii::createObject($this->parsers['*']);
                 if (!($parser instanceof RequestParserInterface)) {
-                    throw new InvalidConfigException("The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.");
+                    throw new InvalidConfigException('The fallback request parser is invalid. It must implement the yii\\web\\RequestParserInterface.');
                 }
                 $this->_bodyParams = $parser->parse($this->getRawBody(), $rawContentType);
             } elseif ($this->getMethod() === 'POST') {
@@ -908,6 +909,26 @@ class Request extends \yii\base\Request
     }
 
     /**
+     * Returns the URL origin of a CORS request.
+     *
+     * The return value is taken from the `Origin` [[getHeaders()|header]] sent by the browser.
+     *
+     * Note that the origin request header indicates where a fetch originates from.
+     * It doesn't include any path information, but only the server name.
+     * It is sent with a CORS requests, as well as with POST requests.
+     * It is similar to the referer header, but, unlike this header, it doesn't disclose the whole path.
+     * Please refer to <https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin> for more information.
+     *
+     * @return string|null URL origin of a CORS request, `null` if not available.
+     * @see getHeaders()
+     * @since 2.0.13
+     */
+    public function getOrigin()
+    {
+        return $this->getHeaders()->get('origin');
+    }
+
+    /**
      * Returns the user agent.
      * @return string|null user agent, null if not available
      */
@@ -1069,7 +1090,7 @@ class Request extends \yii\base\Request
      * media type that would have been sent had the request been a GET.
      * For the MIME-types the user expects in response, see [[acceptableContentTypes]].
      * @return string request content-type. Null is returned if this information is not available.
-     * @link http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
+     * @link https://tools.ietf.org/html/rfc2616#section-14.17
      * HTTP 1.1 header field definitions
      */
     public function getContentType()
@@ -1155,7 +1176,7 @@ class Request extends \yii\base\Request
                 if (strpos($param, '=') !== false) {
                     [$key, $value] = explode('=', $param, 2);
                     if ($key === 'q') {
-                        $values['q'][2] = (double) $value;
+                        $values['q'][2] = (float) $value;
                     } else {
                         $values[$key] = $value;
                     }
@@ -1226,10 +1247,11 @@ class Request extends \yii\base\Request
             foreach ($languages as $language) {
                 $normalizedLanguage = str_replace('_', '-', strtolower($language));
 
-                if ($normalizedLanguage === $acceptableLanguage || // en-us==en-us
-                    strpos($acceptableLanguage, $normalizedLanguage . '-') === 0 || // en==en-us
-                    strpos($normalizedLanguage, $acceptableLanguage . '-') === 0) { // en-us==en
-
+                if (
+                    $normalizedLanguage === $acceptableLanguage // en-us==en-us
+                    || strpos($acceptableLanguage, $normalizedLanguage . '-') === 0 // en==en-us
+                    || strpos($normalizedLanguage, $acceptableLanguage . '-') === 0 // en-us==en
+                ) {
                     return $language;
                 }
             }
@@ -1413,7 +1435,7 @@ class Request extends \yii\base\Request
     public function validateCsrfToken($clientSuppliedToken = null)
     {
         $method = $this->getMethod();
-        // only validate CSRF token on non-"safe" methods http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9.1.1
+        // only validate CSRF token on non-"safe" methods https://tools.ietf.org/html/rfc2616#section-9.1.1
         if (!$this->enableCsrfValidation || in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {
             return true;
         }

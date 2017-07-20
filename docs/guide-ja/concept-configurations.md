@@ -19,7 +19,7 @@ $config = [
 
 $db = Yii::createObject($config);
 ```
-[[Yiiの::CreateObject()]] メソッドは引数に構成情報の配列を受け取り、構成情報で名前指定されたクラスをインスタンス化してオブジェクトを作成します。
+[[Yii::createObject()]] メソッドは引数に構成情報の配列を受け取り、構成情報で名前指定されたクラスをインスタンス化してオブジェクトを作成します。
 オブジェクトがインスタンス化されるとき、その他の設定は、
 オブジェクトのプロパティ、イベントハンドラ、およびビヘイビアを初期化するのに使われます。
 
@@ -93,7 +93,7 @@ Yii::configure($object, $config);
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -136,7 +136,7 @@ $config = [
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'container' => [
         'definitions' => [
             'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
@@ -185,8 +185,8 @@ echo Menu::widget([
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 `components` の構成もまた複雑になるため、上記のように、 `components.php` と呼ぶ別のファイルにそれを格納し `web.php` でそのファイルを "require" しています。
@@ -222,7 +222,7 @@ return [
 構成情報ファイルに格納されている構成情報を取得するには、以下のように、それを "require" するだけです:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 

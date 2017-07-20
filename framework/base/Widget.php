@@ -7,8 +7,8 @@
 
 namespace yii\base;
 
-use Yii;
 use ReflectionClass;
+use Yii;
 
 /**
  * Widget is the base class for widgets.
@@ -111,12 +111,12 @@ class Widget extends Component implements ViewContextInterface
                     echo $result;
                 }
                 return $widget;
-            } else {
-                throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
             }
-        } else {
-            throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
+
+            throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
         }
+
+        throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
     }
 
     /**

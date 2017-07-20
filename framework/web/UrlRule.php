@@ -9,7 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * UrlRule represents a rule used by [[UrlManager]] for parsing and generating URLs.
@@ -30,7 +30,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class UrlRule extends Object implements UrlRuleInterface
+class UrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
      * Set [[mode]] with this value to mark that this rule is for URL parsing only
@@ -353,9 +353,9 @@ class UrlRule extends Object implements UrlRuleInterface
     {
         if ($this->normalizer === null) {
             return $manager->normalizer;
-        } else {
-            return $this->normalizer;
         }
+
+        return $this->normalizer;
     }
 
     /**
@@ -385,7 +385,7 @@ class UrlRule extends Object implements UrlRuleInterface
             return false;
         }
 
-        $suffix = (string)($this->suffix === null ? $manager->suffix : $this->suffix);
+        $suffix = (string) ($this->suffix === null ? $manager->suffix : $this->suffix);
         $pathInfo = $request->getPathInfo();
         $normalized = false;
         if ($this->hasNormalizer($manager)) {
@@ -439,9 +439,9 @@ class UrlRule extends Object implements UrlRuleInterface
         if ($normalized) {
             // pathInfo was changed by normalizer - we need also normalize route
             return $this->getNormalizer($manager)->normalizeRoute([$route, $params]);
-        } else {
-            return [$route, $params];
         }
+
+        return [$route, $params];
     }
 
     /**
@@ -545,7 +545,8 @@ class UrlRule extends Object implements UrlRuleInterface
      * @see $createStatus
      * @since 2.0.12
      */
-    public function getCreateUrlStatus() {
+    public function getCreateUrlStatus()
+    {
         return $this->createStatus;
     }
 

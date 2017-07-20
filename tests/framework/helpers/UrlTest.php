@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
 use Yii;
@@ -8,8 +14,8 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\UrlManager;
 use yii\widgets\Menu;
-use yiiunit\TestCase;
 use yiiunit\framework\filters\stubs\UserIdentity;
+use yiiunit\TestCase;
 
 /**
  * UrlTest
@@ -26,7 +32,7 @@ class UrlTest extends TestCase
                     'class' => 'yii\web\Request',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
-                    'url' => '/base/index.php&r=site%2Fcurrent&id=42'
+                    'url' => '/base/index.php&r=site%2Fcurrent&id=42',
                 ],
                 'urlManager' => [
                     'class' => 'yii\web\UrlManager',

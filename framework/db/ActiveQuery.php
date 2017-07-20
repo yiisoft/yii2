@@ -295,9 +295,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if ($row !== false) {
             $models = $this->populate([$row]);
             return reset($models) ?: null;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -339,7 +339,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             return parent::queryScalar($selectExpression, $db);
         }
 
-        return (new Query)->select([$selectExpression])
+        return (new Query())->select([$selectExpression])
             ->from(['c' => "({$this->sql})"])
             ->params($this->params)
             ->createCommand($db)
@@ -412,7 +412,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 [, $relation, $alias] = $matches;
                 $name = $relation;
                 $callback = function ($query) use ($callback, $alias) {
-                    /** @var $query ActiveQuery */
+                    /* @var $query ActiveQuery */
                     $query->alias($alias);
                     if ($callback !== null) {
                         call_user_func($callback, $query);
@@ -435,7 +435,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $join = $this->join;
         $this->join = [];
 
-        $model = new $this->modelClass;
+        $model = new $this->modelClass();
         foreach ($this->joinWith as [$with, $eagerLoading, $joinType]) {
             $this->joinWithRelations($model, $with, $joinType);
 
@@ -514,7 +514,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 } else {
                     $relation = $relations[$fullName];
                 }
-                $primaryModel = new $relation->modelClass;
+                $primaryModel = new $relation->modelClass();
                 $parent = $relation;
                 $prefix = $fullName;
                 $name = $childName;
@@ -544,9 +544,9 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         if (is_array($joinType) && isset($joinType[$name])) {
             return $joinType[$name];
-        } else {
-            return is_string($joinType) ? $joinType : 'INNER JOIN';
         }
+
+        return is_string($joinType) ? $joinType : 'INNER JOIN';
     }
 
     /**
@@ -563,9 +563,8 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             foreach ($this->from as $alias => $tableName) {
                 if (is_string($alias)) {
                     return [$tableName, $alias];
-                } else {
-                    break;
                 }
+                break;
             }
         }
 
@@ -589,7 +588,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $via = $child->via;
         $child->via = null;
-        if ($via instanceof ActiveQuery) {
+        if ($via instanceof self) {
             // via table
             $this->joinWithRelation($parent, $via, $joinType);
             $this->joinWithRelation($via, $child, $joinType);
@@ -605,7 +604,6 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         [$childTable, $childAlias] = $child->getTableNameAndAlias();
 
         if (!empty($child->link)) {
-
             if (strpos($parentAlias, '{{') === false) {
                 $parentAlias = '{{' . $parentAlias . '}}';
             }
@@ -749,7 +747,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
      */
     public function viaTable($tableName, $link, callable $callable = null)
     {
-        $relation = new ActiveQuery(get_class($this->primaryModel), [
+        $relation = new self(get_class($this->primaryModel), [
             'from' => [$tableName],
             'link' => $link,
             'multiple' => true,
@@ -792,81 +790,15 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     }
 
     /**
-     * Returns table names used in [[from]] indexed by aliases.
-     * Both aliases and names are enclosed into {{ and }}.
-     * @return string[] table names indexed by aliases
-     * @throws \yii\base\InvalidConfigException
+     * @inheritdoc
      * @since 2.0.12
      */
     public function getTablesUsedInFrom()
     {
         if (empty($this->from)) {
-            $tableNames = [$this->getPrimaryTableName()];
-        } elseif (is_array($this->from)) {
-            $tableNames = $this->from;
-        } elseif (is_string($this->from)) {
-            $tableNames = preg_split('/\s*,\s*/', trim($this->from), -1, PREG_SPLIT_NO_EMPTY);
-        } else {
-            throw new InvalidConfigException(gettype($this->from) . ' in $from is not supported.');
+            $this->from = [$this->getPrimaryTableName()];
         }
-
-        // Clean up table names and aliases
-        $cleanedUpTableNames = [];
-        foreach ($tableNames as $alias => $tableName) {
-            if (!is_string($alias)) {
-                $pattern = <<<PATTERN
-~
-^
-\s*
-(
-    (?:['"`\[]|{{)
-    .*?
-    (?:['"`\]]|}})
-    |
-    .*?
-)
-(?:
-    (?:
-        \s+
-        (?:as)?
-        \s*
-    )
-    (
-       (?:['"`\[]|{{)
-        .*?
-        (?:['"`\]]|}})
-        |
-        .*?
-    )
-)?
-\s*
-$
-~iux
-PATTERN;
-                if (preg_match($pattern, $tableName, $matches)) {
-                    if (isset($matches[1])) {
-                        if (isset($matches[2])) {
-                            list(, $tableName, $alias) = $matches;
-                        } else {
-                            $tableName = $alias = $matches[1];
-                        }
-                        if (strncmp($alias, '{{', 2) !== 0) {
-                            $alias = '{{' . $alias . '}}';
-                        }
-                        if (strncmp($tableName, '{{', 2) !== 0) {
-                            $tableName = '{{' . $tableName . '}}';
-                        }
-                    }
-                }
-            }
-
-            $tableName = str_replace(["'", '"', '`', '[', ']'], '', $tableName);
-            $alias = str_replace(["'", '"', '`', '[', ']'], '', $alias);
-
-            $cleanedUpTableNames[$alias] = $tableName;
-        }
-
-        return $cleanedUpTableNames;
+        return parent::getTablesUsedInFrom();
     }
 
     /**

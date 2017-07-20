@@ -1,10 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
-use yii\web\UrlManager;
 use yii\web\GroupUrlRule;
 use yii\web\Request;
+use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yiiunit\TestCase;
 
@@ -117,7 +122,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\\web\\UrlRule'
+                        'class' => 'yii\\web\\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',
@@ -137,7 +142,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\web\UrlRule'
+                        'class' => 'yii\web\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',
@@ -155,7 +160,7 @@ class GroupUrlRuleTest extends TestCase
                 [
                     [
                         'admin/user/logout', [], false,
-                        UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_ROUTE_MISMATCH | UrlRule::CREATE_STATUS_PARAMS_MISMATCH
+                        UrlRule::CREATE_STATUS_PARSING_ONLY | UrlRule::CREATE_STATUS_ROUTE_MISMATCH | UrlRule::CREATE_STATUS_PARAMS_MISMATCH,
                     ],
                 ],
             ],
@@ -226,7 +231,7 @@ class GroupUrlRuleTest extends TestCase
                     'routePrefix' => 'admin',
                     'ruleConfig' => [
                         'suffix' => '.html',
-                        'class' => 'yii\\web\\UrlRule'
+                        'class' => 'yii\\web\\UrlRule',
                     ],
                     'rules' => [
                         'login' => 'user/login',

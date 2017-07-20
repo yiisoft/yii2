@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
@@ -63,7 +65,7 @@ EOF
     public function testForceConvert()
     {
         $tmpPath = $this->tmpPath;
-        file_put_contents($tmpPath . '/test.php', <<<EOF
+        file_put_contents($tmpPath . '/test.php', <<<'EOF'
 <?php
 
 echo microtime();

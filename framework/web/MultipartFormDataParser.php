@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
@@ -63,7 +63,7 @@ use yii\helpers\StringHelper;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
-class MultipartFormDataParser extends Object implements RequestParserInterface
+class MultipartFormDataParser extends BaseObject implements RequestParserInterface
 {
     /**
      * @var int upload file max size in bytes.
@@ -141,7 +141,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             if (empty($bodyPart)) {
                 continue;
             }
-            [$headers, $value] = preg_split("/\\R\\R/", $bodyPart, 2);
+            [$headers, $value] = preg_split('/\\R\\R/', $bodyPart, 2);
             $headers = $this->parseHeaders($headers);
 
             if (!isset($headers['content-disposition']['name'])) {
@@ -202,7 +202,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     private function parseHeaders($headerContent)
     {
         $headers = [];
-        $headerParts = preg_split("/\\R/s", $headerContent, -1, PREG_SPLIT_NO_EMPTY);
+        $headerParts = preg_split('/\\R/s', $headerContent, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($headerParts as $headerPart) {
             if (($separatorPos = strpos($headerPart, ':')) === false) {
                 continue;
@@ -278,7 +278,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             'size',
             'error',
             'tmp_name',
-            'tmp_resource'
+            'tmp_resource',
         ];
 
         $nameParts = preg_split('/\\]\\[|\\[/s', $name);
@@ -290,7 +290,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             }
         } else {
             foreach ($fileInfoAttributes as $attribute) {
-                $files[$baseName][$attribute] = (array)$files[$baseName][$attribute];
+                $files[$baseName][$attribute] = (array) $files[$baseName][$attribute];
             }
         }
 

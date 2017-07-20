@@ -130,7 +130,8 @@ abstract class ErrorHandler extends Component
      * @param \Exception $previousException Main exception processed in [[handleException()]].
      * @since 2.0.11
      */
-    protected function handleFallbackExceptionMessage($exception, $previousException) {
+    protected function handleFallbackExceptionMessage($exception, $previousException)
+    {
         $msg = "An Error occurred while handling another error:\n";
         $msg .= (string) $exception;
         $msg .= "\nPrevious exception:\n";
@@ -203,7 +204,7 @@ abstract class ErrorHandler extends Component
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
             if (!class_exists(ErrorException::class, false)) {
-                require_once(__DIR__ . '/ErrorException.php');
+                require_once __DIR__ . '/ErrorException.php';
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
 
@@ -232,10 +233,10 @@ abstract class ErrorHandler extends Component
     {
         unset($this->_memoryReserve);
 
-        // load ErrorException manually here because autoloading them will not
-        // work when error occurs while autoloading a class
+        // load ErrorException manually here because autoloading them will not work
+        // when error occurs while autoloading a class
         if (!class_exists(ErrorException::class, false)) {
-            require_once(__DIR__ . '/ErrorException.php');
+            require_once __DIR__ . '/ErrorException.php';
         }
 
         $error = error_get_last();

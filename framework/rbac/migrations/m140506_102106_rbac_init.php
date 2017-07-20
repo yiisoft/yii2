@@ -73,8 +73,8 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'created_at' => $this->integer(),
             'updated_at' => $this->integer(),
             'PRIMARY KEY ([[name]])',
-            'FOREIGN KEY ([[rule_name]]) REFERENCES ' . $authManager->ruleTable . ' ([[name]])'.
-                $this->buildFkClause('ON DELETE SET NULL', 'ON UPDATE CASCADE')
+            'FOREIGN KEY ([[rule_name]]) REFERENCES ' . $authManager->ruleTable . ' ([[name]])' .
+                $this->buildFkClause('ON DELETE SET NULL', 'ON UPDATE CASCADE'),
         ], $tableOptions);
         $this->createIndex('idx-auth_item-type', $authManager->itemTable, 'type');
 
@@ -82,9 +82,9 @@ class m140506_102106_rbac_init extends \yii\db\Migration
             'parent' => $this->string(64)->notNull(),
             'child' => $this->string(64)->notNull(),
             'PRIMARY KEY ([[parent]], [[child]])',
-            'FOREIGN KEY ([[parent]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])'.
+            'FOREIGN KEY ([[parent]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])' .
                 $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
-            'FOREIGN KEY ([[child]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])'.
+            'FOREIGN KEY ([[child]]) REFERENCES ' . $authManager->itemTable . ' ([[name]])' .
                 $this->buildFkClause('ON DELETE CASCADE', 'ON UPDATE CASCADE'),
         ], $tableOptions);
 

@@ -173,9 +173,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "SELECT SETVAL('$sequence',$value,false)";
         } elseif ($table === null) {
             throw new InvalidArgumentException("Table not found: $tableName");
-        } else {
-            throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidArgumentException("There is not sequence associated with table '$tableName'.");
     }
 
     /**

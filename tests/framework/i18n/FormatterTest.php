@@ -1,9 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\i18n;
 
-use yii\i18n\Formatter;
 use Yii;
+use yii\i18n\Formatter;
 use yiiunit\TestCase;
 
 /**
@@ -49,6 +54,13 @@ class FormatterTest extends TestCase
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
         $this->expectException('\yii\base\InvalidArgumentException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
+        $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, function ($value) {
+            return date('Y-m-d', $value);
+        }));
+        $this->assertSame('from: ' . date('Y-m-d', $value), $this->formatter->format($value, function ($value, $formatter) {
+            /** @var $formatter Formatter */
+            return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
+        }));
     }
 
     public function testLocale()
@@ -160,7 +172,7 @@ class FormatterTest extends TestCase
         $value = 'www.yiiframework.com/';
         $this->assertSame("<a href=\"http://$value\">$value</a>", $this->formatter->asUrl($value));
         $value = 'https://www.yiiframework.com/?name=test&value=5"';
-        $this->assertSame("<a href=\"https://www.yiiframework.com/?name=test&amp;value=5&quot;\">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>", $this->formatter->asUrl($value));
+        $this->assertSame('<a href="https://www.yiiframework.com/?name=test&amp;value=5&quot;">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>', $this->formatter->asUrl($value));
         $value = 'http://www.yiiframework.com/';
         $this->assertSame("<a href=\"$value\" target=\"_blank\">$value</a>", $this->formatter->asUrl($value, ['target' => '_blank']));
 
@@ -173,7 +185,7 @@ class FormatterTest extends TestCase
         $value = 'http://sample.com/img.jpg';
         $this->assertSame("<img src=\"$value\" alt=\"\">", $this->formatter->asImage($value));
         $value = 'http://sample.com/img.jpg';
-        $alt = "Hello!";
+        $alt = 'Hello!';
         $this->assertSame("<img src=\"$value\" alt=\"$alt\">", $this->formatter->asImage($value, ['alt' => $alt]));
 
         // null display
@@ -184,8 +196,8 @@ class FormatterTest extends TestCase
     {
         $this->assertSame('Yes', $this->formatter->asBoolean(true));
         $this->assertSame('No', $this->formatter->asBoolean(false));
-        $this->assertSame('Yes', $this->formatter->asBoolean("111"));
-        $this->assertSame('No', $this->formatter->asBoolean(""));
+        $this->assertSame('Yes', $this->formatter->asBoolean('111'));
+        $this->assertSame('No', $this->formatter->asBoolean(''));
         $this->assertSame('No', $this->formatter->asBoolean(0));
 
         // null display

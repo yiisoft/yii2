@@ -10,10 +10,11 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\helpers\Inflector;
-use yii\helpers\Url;
+use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 
 /**
  * The web Response class represents an HTTP response
@@ -317,7 +318,7 @@ class Response extends \yii\base\Response
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
         }
         return $this->_headers;
     }
@@ -396,7 +397,7 @@ class Response extends \yii\base\Response
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
-            if ($cookie->expire != 1  && isset($validationKey)) {
+            if ($cookie->expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
@@ -647,9 +648,9 @@ class Response extends \yii\base\Response
         }
         if ($start < 0 || $start > $end) {
             return false;
-        } else {
-            return [$start, $end];
         }
+
+        return [$start, $end];
     }
 
     /**
@@ -820,7 +821,7 @@ class Response extends \yii\base\Response
      * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
-     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      * @param bool $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
      * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
@@ -907,7 +908,7 @@ class Response extends \yii\base\Response
     public function getCookies()
     {
         if ($this->_cookies === null) {
-            $this->_cookies = new CookieCollection;
+            $this->_cookies = new CookieCollection();
         }
         return $this->_cookies;
     }
@@ -998,9 +999,15 @@ class Response extends \yii\base\Response
     protected function defaultFormatters()
     {
         return [
-            self::FORMAT_HTML => HtmlResponseFormatter::class,
-            self::FORMAT_XML => XmlResponseFormatter::class,
-            self::FORMAT_JSON => JsonResponseFormatter::class,
+            self::FORMAT_HTML => [
+                'class' => HtmlResponseFormatter::class,
+            ],
+            self::FORMAT_XML => [
+                'class' => XmlResponseFormatter::class,
+            ],
+            self::FORMAT_JSON => [
+                'class' => JsonResponseFormatter::class,
+            ],
             self::FORMAT_JSONP => [
                 'class' => JsonResponseFormatter::class,
                 'useJsonp' => true,

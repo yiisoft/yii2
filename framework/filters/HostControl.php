@@ -129,7 +129,7 @@ class HostControl extends ActionFilter
         }
 
         if (!is_array($allowedHosts) && !$allowedHosts instanceof \Traversable) {
-            $allowedHosts = (array)$allowedHosts;
+            $allowedHosts = (array) $allowedHosts;
         }
 
         $currentHost = Yii::$app->getRequest()->getHostName();

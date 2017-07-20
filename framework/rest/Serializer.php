@@ -150,9 +150,9 @@ class Serializer extends Component
             return $this->serializeModel($data);
         } elseif ($data instanceof DataProviderInterface) {
             return $this->serializeDataProvider($data);
-        } else {
-            return $data;
         }
+
+        return $data;
     }
 
     /**
@@ -195,16 +195,16 @@ class Serializer extends Component
             return null;
         } elseif ($this->collectionEnvelope === null) {
             return $models;
-        } else {
-            $result = [
-                $this->collectionEnvelope => $models,
-            ];
-            if ($pagination !== false) {
-                return array_merge($result, $this->serializePagination($pagination));
-            } else {
-                return $result;
-            }
         }
+
+        $result = [
+            $this->collectionEnvelope => $models,
+        ];
+        if ($pagination !== false) {
+            return array_merge($result, $this->serializePagination($pagination));
+        }
+
+        return $result;
     }
 
     /**
@@ -254,10 +254,10 @@ class Serializer extends Component
     {
         if ($this->request->getIsHead()) {
             return null;
-        } else {
-            [$fields, $expand] = $this->getRequestedFields();
-            return $model->toArray($fields, $expand);
         }
+
+        [$fields, $expand] = $this->getRequestedFields();
+        return $model->toArray($fields, $expand);
     }
 
     /**

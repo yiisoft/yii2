@@ -12,7 +12,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 
 /**
  * Connection represents a connection to a database via [PDO](http://php.net/manual/en/book.pdo.php).
@@ -207,7 +207,7 @@ class Connection extends Component
      */
     public $schemaCacheExclude = [];
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that
+     * @var CacheInterface|string the cache object or the ID of the cache application component that
      * is used to cache the table metadata.
      * @see enableSchemaCache
      */
@@ -231,7 +231,7 @@ class Connection extends Component
      */
     public $queryCacheDuration = 3600;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component
+     * @var CacheInterface|string the cache object or the ID of the cache application component
      * that is used for query caching.
      * @see enableQueryCache
      */
@@ -302,7 +302,7 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that is used to store
+     * @var CacheInterface|string the cache object or the ID of the cache application component that is used to store
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
      * This is used only when read/write splitting is enabled or [[masters]] is not empty.
      */
@@ -403,11 +403,11 @@ class Connection extends Component
      */
     private $_driverName;
     /**
-     * @var Connection the currently active master connection
+     * @var Connection|false the currently active master connection
      */
     private $_master = false;
     /**
-     * @var Connection the currently active slave connection
+     * @var Connection|false the currently active slave connection
      */
     private $_slave = false;
     /**
@@ -534,7 +534,7 @@ class Connection extends Component
             } else {
                 $cache = $this->queryCache;
             }
-            if ($cache instanceof Cache) {
+            if ($cache instanceof CacheInterface) {
                 return [$cache, $duration, $dependency];
             }
         }
@@ -558,9 +558,9 @@ class Connection extends Component
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
-            } else {
-                throw new InvalidConfigException('None of the master DB servers is available.');
             }
+
+            throw new InvalidConfigException('None of the master DB servers is available.');
         }
 
         if (empty($this->dsn)) {
@@ -591,7 +591,7 @@ class Connection extends Component
             }
 
             $this->_master->close();
-            $this->_master = null;
+            $this->_master = false;
         }
 
         if ($this->pdo !== null) {
@@ -603,7 +603,7 @@ class Connection extends Component
 
         if ($this->_slave) {
             $this->_slave->close();
-            $this->_slave = null;
+            $this->_slave = false;
         }
     }
 
@@ -759,17 +759,17 @@ class Connection extends Component
     {
         if ($this->_schema !== null) {
             return $this->_schema;
-        } else {
-            $driver = $this->getDriverName();
-            if (isset($this->schemaMap[$driver])) {
-                $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
-                $config['db'] = $this;
-
-                return $this->_schema = Yii::createObject($config);
-            } else {
-                throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
-            }
         }
+
+        $driver = $this->getDriverName();
+        if (isset($this->schemaMap[$driver])) {
+            $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
+            $config['db'] = $this;
+
+            return $this->_schema = Yii::createObject($config);
+        }
+
+        throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
     }
 
     /**
@@ -857,9 +857,9 @@ class Connection extends Component
             function ($matches) {
                 if (isset($matches[3])) {
                     return $this->quoteColumnName($matches[3]);
-                } else {
-                    return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
                 }
+
+                return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
             },
             $sql
         );
@@ -904,9 +904,9 @@ class Connection extends Component
         $db = $this->getSlave(false);
         if ($db === null) {
             return $fallbackToMaster ? $this->getMasterPdo() : null;
-        } else {
-            return $db->pdo;
         }
+
+        return $db->pdo;
     }
 
     /**
@@ -1037,7 +1037,7 @@ class Connection extends Component
             }
 
             $key = [__METHOD__, $config['dsn']];
-            if ($cache instanceof Cache && $cache->get($key)) {
+            if ($cache instanceof CacheInterface && $cache->get($key)) {
                 // should not try this dead server now
                 continue;
             }
@@ -1050,7 +1050,7 @@ class Connection extends Component
                 return $db;
             } catch (\Exception $e) {
                 Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
-                if ($cache instanceof Cache) {
+                if ($cache instanceof CacheInterface) {
                     // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
                 }
