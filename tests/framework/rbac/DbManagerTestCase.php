@@ -9,7 +9,7 @@ namespace yiiunit\framework\rbac;
 
 use Yii;
 use yii\console\Application;
-use yii\console\Controller;
+use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\rbac\DbManager;
 use yiiunit\framework\console\controllers\EchoMigrateController;
@@ -49,7 +49,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         ob_start();
         $result = Yii::$app->runAction($route, $params);
         echo 'Result is ' . $result;
-        if ($result !== Controller::EXIT_CODE_NORMAL) {
+        if ($result !== ExitCode::OK) {
             ob_end_flush();
         } else {
             ob_end_clean();

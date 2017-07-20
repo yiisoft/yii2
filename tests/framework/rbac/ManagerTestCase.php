@@ -288,6 +288,18 @@ abstract class ManagerTestCase extends TestCase
         }
     }
 
+    public function testGetPermissionsByUserWithEmptyValue()
+    {
+        $createPost = $this->auth->createPermission('createPost');
+        $this->auth->add($createPost);
+        $this->auth->assign($createPost, 0);
+
+        $permissions = $this->auth->getPermissionsByUser(0);
+
+        $this->assertTrue(isset($permissions['createPost']));
+        $this->assertInstanceOf(Permission::className(), $permissions['createPost']);
+    }
+
     public function testGetRole()
     {
         $this->prepareData();
