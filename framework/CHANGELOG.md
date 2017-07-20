@@ -39,7 +39,7 @@ Yii Framework 2 Change Log
 - Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
 - Bug #14406: Fixed caching rules in `yii\web\UrlManager` with different ruleConfig configuration (dmirogin)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
-
+- Bug #14370: Fixed creating built-in validator in model with same function name (dmirogin)
 
 2.0.12 June 05, 2017
 --------------------
