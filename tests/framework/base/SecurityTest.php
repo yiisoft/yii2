@@ -1219,43 +1219,6 @@ TEXT;
         $this->assertEquals($okm, bin2hex($dk));
     }
 
-    public function dataProviderCompareStrings()
-    {
-        return [
-            ['', ''],
-            [false, ''],
-            [null, ''],
-            [0, ''],
-            [0.00, ''],
-            ['', null],
-            ['', false],
-            ['', 0],
-            ['', "\0"],
-            ["\0", ''],
-            ["\0", "\0"],
-            ['0', "\0"],
-            [0, "\0"],
-            ['user', 'User'],
-            ['password', 'password'],
-            ['password', 'passwordpassword'],
-            ['password1', 'password'],
-            ['password', 'password2'],
-            ['', 'password'],
-            ['password', ''],
-        ];
-    }
-
-    /**
-     * @dataProvider dataProviderCompareStrings
-     *
-     * @param $expected
-     * @param $actual
-     */
-    public function testCompareStrings($expected, $actual)
-    {
-        $this->assertEquals(strcmp($expected, $actual) === 0, $this->security->compareString($expected, $actual));
-    }
-
     /**
      * @dataProvider maskProvider
      */

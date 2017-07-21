@@ -25,7 +25,7 @@ the [Creating Extensions](structure-extensions.md#creating-extensions) section o
 PHP Requirements
 ----------------
 
-Yii 2.0 requires PHP 5.4 or above, which is a huge improvement over PHP version 5.2 that is required by Yii 1.1.
+Yii 2.0 requires PHP 7.1 or above, which is a huge improvement over PHP version 5.2 that is required by Yii 1.1.
 As a result, there are many differences on the language level that you should pay attention to.
 Below is a summary of the major changes regarding PHP:
 
