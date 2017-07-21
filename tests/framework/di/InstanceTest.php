@@ -193,7 +193,8 @@ PHP
 
     public function testExceptionInvalidDataTypeInArray()
     {
-        $this->setExpectedException('yii\base\InvalidConfigException', 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        $this->expectException(\yii\base\InvalidConfigException::class);
+        $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure([
             'class' => Connection::class,
         ], 'yii\base\Widget');
