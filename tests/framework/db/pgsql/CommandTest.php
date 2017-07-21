@@ -79,10 +79,6 @@ class CommandTest extends \yiiunit\framework\db\CommandTest
      */
     public function testSaveSerializedObject()
     {
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('HHVMs PgSQL implementation does not seem to support blob colums in the way they are used here.');
-        }
-
         $db = $this->getConnection();
 
         $command = $db->createCommand()->insert('type', [

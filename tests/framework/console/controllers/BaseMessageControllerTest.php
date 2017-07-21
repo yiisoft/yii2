@@ -1,17 +1,12 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
-use yii\console\controllers\MessageController;
+use yii\base\Module;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
+use yii\console\controllers\MessageController;
 
 /**
  * Base for [[\yii\console\controllers\MessageController]] unit tests.
@@ -31,20 +26,7 @@ abstract class BaseMessageControllerTest extends TestCase
         if (!file_exists($this->sourcePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
         }
-        $this->configFileName = $this->generateConfigFileName();
-    }
-
-    /**
-     * Generate random config name.
-     *
-     * @return string
-     */
-    protected function generateConfigFileName()
-    {
-        $this->configFileName = Yii::getAlias('@yiiunit/runtime')
-            . DIRECTORY_SEPARATOR . 'message_controller_test_config-' . md5(uniqid()) . '.php';
-
-        return $this->configFileName;
+        $this->configFileName = Yii::getAlias('@yiiunit/runtime/message_controller_test_config.php');
     }
 
     public function tearDown()
@@ -61,7 +43,7 @@ abstract class BaseMessageControllerTest extends TestCase
      */
     protected function createMessageController()
     {
-        $module = $this->getMockBuilder('yii\\base\\Module')
+        $module = $this->getMockBuilder(Module::class)
             ->setMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
@@ -94,9 +76,7 @@ abstract class BaseMessageControllerTest extends TestCase
             unlink($this->configFileName);
         }
         $fileContent = '<?php return ' . VarDumper::export($config) . ';';
-        // save new config on random name to bypass HHVM cache
-        // https://github.com/facebook/hhvm/issues/1447
-        file_put_contents($this->generateConfigFileName(), $fileContent);
+        file_put_contents($this->configFileName, $fileContent);
     }
 
     /**
@@ -155,7 +135,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
     public function testConfigFileNotExist()
     {
-        $this->expectException('yii\\console\\Exception');
+        $this->expectException(\yii\console\Exception::class);
         $this->runMessageControllerAction('extract', ['not_existing_file.php']);
     }
 
@@ -457,26 +437,6 @@ abstract class BaseMessageControllerTest extends TestCase
         $messages = $this->loadMessages($category);
         $this->language = $firstLanguage;
         $this->assertArrayHasKey($mainMessage, $messages, "\"$mainMessage\" for language \"$secondLanguage\" is missing in translation file. Command output:\n\n" . $out);
-    }
-
-    /**
-     * @depends testCreateTranslation
-     *
-     * @see https://github.com/yiisoft/yii2/issues/13824
-     */
-    public function testCreateTranslationFromConcatenatedString()
-    {
-        $category = 'test.category1';
-        $mainMessage = 'main message second message third message';
-        $sourceFileContent = "Yii::t('{$category}', 'main message' .   \" second message\".' third message');";
-        $this->createSourceFile($sourceFileContent);
-
-        $this->saveConfigFile($this->getConfig());
-        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
-
-        $messages = $this->loadMessages($category);
-        $this->assertArrayHasKey($mainMessage, $messages,
-            "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
     }
 }
 
