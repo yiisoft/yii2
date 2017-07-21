@@ -35,12 +35,12 @@ class ListViewTest extends TestCase
 
     public function testEmpty()
     {
-        $this->getListView([
+        $actual = $this->getListView([
             'dataProvider' => new ArrayDataProvider(['allModels' => []]),
             'emptyText' => false,
         ])->run();
 
-        $this->expectOutputString('<div id="w0" class="list-view"></div>');
+        $this->assertEqualsWithoutLE('<div id="w0" class="list-view"></div>', $actual);
     }
 
     public function testEmptyListNotShown()
