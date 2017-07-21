@@ -301,9 +301,9 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
         $output = $this->getView()->render($view, $params, $this);
         if ($layout !== false) {
             return $this->getView()->render($layout, ['content' => $output, 'message' => $this->_message], $this);
-        } else {
-            return $output;
         }
+
+        return $output;
     }
 
     /**

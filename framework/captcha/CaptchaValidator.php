@@ -72,7 +72,7 @@ class CaptchaValidator extends Validator
         $ca = Yii::$app->createController($this->captchaAction);
         if ($ca !== false) {
             /* @var $controller \yii\base\Controller */
-            list($controller, $actionID) = $ca;
+            [$controller, $actionID] = $ca;
             $action = $controller->createAction($actionID);
             if ($action !== null) {
                 return $action;

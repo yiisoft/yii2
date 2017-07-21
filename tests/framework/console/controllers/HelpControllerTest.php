@@ -1,8 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
-use yii\helpers\Console;
 use yii\console\controllers\HelpController;
+use yii\helpers\Console;
 use yiiunit\TestCase;
 
 /**
@@ -57,7 +63,7 @@ class HelpControllerTest extends TestCase
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 cache
 cache/flush
 cache/flush-all
@@ -92,7 +98,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 action:route to action
 
 --interactive: whether to run the command interactively.
@@ -113,7 +119,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 bootstrap.php help/list-action-options <action>
 
 STRING
@@ -155,8 +161,6 @@ STRING
         $this->assertContains('--port, -p: int (defaults to 8080)', $result);
         $this->assertContains('--router, -r: string', $result);
     }
-
-
 }
 
 

@@ -9,12 +9,12 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\InvalidCallException;
-use yii\base\Widget;
 use yii\base\Model;
+use yii\base\Widget;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * ActiveForm is a widget that builds an interactive HTML form for one or multiple data models.
@@ -344,9 +344,9 @@ class ActiveForm extends Widget
         $field = array_pop($this->_fields);
         if ($field instanceof ActiveField) {
             return $field->end();
-        } else {
-            throw new InvalidCallException('Mismatching endField() call.');
         }
+
+        throw new InvalidCallException('Mismatching endField() call.');
     }
 
     /**

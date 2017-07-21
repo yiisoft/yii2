@@ -12,7 +12,7 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\caching\Cache;
+use yii\caching\CacheInterface;
 
 /**
  * Connection represents a connection to a database via [PDO](http://php.net/manual/en/book.pdo.php).
@@ -207,7 +207,7 @@ class Connection extends Component
      */
     public $schemaCacheExclude = [];
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that
+     * @var CacheInterface|string the cache object or the ID of the cache application component that
      * is used to cache the table metadata.
      * @see enableSchemaCache
      */
@@ -231,7 +231,7 @@ class Connection extends Component
      */
     public $queryCacheDuration = 3600;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component
+     * @var CacheInterface|string the cache object or the ID of the cache application component
      * that is used for query caching.
      * @see enableQueryCache
      */
@@ -302,7 +302,7 @@ class Connection extends Component
      */
     public $enableSavepoint = true;
     /**
-     * @var Cache|string the cache object or the ID of the cache application component that is used to store
+     * @var CacheInterface|string the cache object or the ID of the cache application component that is used to store
      * the health status of the DB servers specified in [[masters]] and [[slaves]].
      * This is used only when read/write splitting is enabled or [[masters]] is not empty.
      */
@@ -403,11 +403,11 @@ class Connection extends Component
      */
     private $_driverName;
     /**
-     * @var Connection the currently active master connection
+     * @var Connection|false the currently active master connection
      */
     private $_master = false;
     /**
-     * @var Connection the currently active slave connection
+     * @var Connection|false the currently active slave connection
      */
     private $_slave = false;
     /**
@@ -449,7 +449,7 @@ class Connection extends Component
      * Use 0 to indicate that the cached data will never expire.
      * @param \yii\caching\Dependency $dependency the cache dependency associated with the cached query results.
      * @return mixed the return result of the callable
-     * @throws \Exception|\Throwable if there is any exception during query
+     * @throws \Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see noCache()
@@ -461,9 +461,6 @@ class Connection extends Component
             $result = call_user_func($callable, $this);
             array_pop($this->_queryCacheInfo);
             return $result;
-        } catch (\Exception $e) {
-            array_pop($this->_queryCacheInfo);
-            throw $e;
         } catch (\Throwable $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
@@ -489,7 +486,7 @@ class Connection extends Component
      * @param callable $callable a PHP callable that contains DB queries which should not use query cache.
      * The signature of the callable is `function (Connection $db)`.
      * @return mixed the return result of the callable
-     * @throws \Exception|\Throwable if there is any exception during query
+     * @throws \Throwable if there is any exception during query
      * @see enableQueryCache
      * @see queryCache
      * @see cache()
@@ -501,9 +498,6 @@ class Connection extends Component
             $result = call_user_func($callable, $this);
             array_pop($this->_queryCacheInfo);
             return $result;
-        } catch (\Exception $e) {
-            array_pop($this->_queryCacheInfo);
-            throw $e;
         } catch (\Throwable $e) {
             array_pop($this->_queryCacheInfo);
             throw $e;
@@ -540,7 +534,7 @@ class Connection extends Component
             } else {
                 $cache = $this->queryCache;
             }
-            if ($cache instanceof Cache) {
+            if ($cache instanceof CacheInterface) {
                 return [$cache, $duration, $dependency];
             }
         }
@@ -564,9 +558,9 @@ class Connection extends Component
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
-            } else {
-                throw new InvalidConfigException('None of the master DB servers is available.');
             }
+
+            throw new InvalidConfigException('None of the master DB servers is available.');
         }
 
         if (empty($this->dsn)) {
@@ -597,7 +591,7 @@ class Connection extends Component
             }
 
             $this->_master->close();
-            $this->_master = null;
+            $this->_master = false;
         }
 
         if ($this->pdo !== null) {
@@ -609,7 +603,7 @@ class Connection extends Component
 
         if ($this->_slave) {
             $this->_slave->close();
-            $this->_slave = null;
+            $this->_slave = false;
         }
     }
 
@@ -715,7 +709,7 @@ class Connection extends Component
      * @param callable $callback a valid PHP callback that performs the job. Accepts connection instance as parameter.
      * @param string|null $isolationLevel The isolation level to use for this transaction.
      * See [[Transaction::begin()]] for details.
-     * @throws \Exception|\Throwable if there is any exception during query. In this case the transaction will be rolled back.
+     * @throws \Throwable if there is any exception during query. In this case the transaction will be rolled back.
      * @return mixed result of callback function
      */
     public function transaction(callable $callback, $isolationLevel = null)
@@ -728,9 +722,6 @@ class Connection extends Component
             if ($transaction->isActive && $transaction->level === $level) {
                 $transaction->commit();
             }
-        } catch (\Exception $e) {
-            $this->rollbackTransactionOnLevel($transaction, $level);
-            throw $e;
         } catch (\Throwable $e) {
             $this->rollbackTransactionOnLevel($transaction, $level);
             throw $e;
@@ -768,17 +759,17 @@ class Connection extends Component
     {
         if ($this->_schema !== null) {
             return $this->_schema;
-        } else {
-            $driver = $this->getDriverName();
-            if (isset($this->schemaMap[$driver])) {
-                $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
-                $config['db'] = $this;
-
-                return $this->_schema = Yii::createObject($config);
-            } else {
-                throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
-            }
         }
+
+        $driver = $this->getDriverName();
+        if (isset($this->schemaMap[$driver])) {
+            $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
+            $config['db'] = $this;
+
+            return $this->_schema = Yii::createObject($config);
+        }
+
+        throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
     }
 
     /**
@@ -866,9 +857,9 @@ class Connection extends Component
             function ($matches) {
                 if (isset($matches[3])) {
                     return $this->quoteColumnName($matches[3]);
-                } else {
-                    return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
                 }
+
+                return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
             },
             $sql
         );
@@ -913,9 +904,9 @@ class Connection extends Component
         $db = $this->getSlave(false);
         if ($db === null) {
             return $fallbackToMaster ? $this->getMasterPdo() : null;
-        } else {
-            return $db->pdo;
         }
+
+        return $db->pdo;
     }
 
     /**
@@ -981,7 +972,7 @@ class Connection extends Component
      * @param callable $callback a PHP callable to be executed by this method. Its signature is
      * `function (Connection $db)`. Its return value will be returned by this method.
      * @return mixed the return value of the callback
-     * @throws \Exception|\Throwable if there is any exception thrown from the callback
+     * @throws \Throwable if there is any exception thrown from the callback
      */
     public function useMaster(callable $callback)
     {
@@ -989,9 +980,6 @@ class Connection extends Component
             $this->enableSlaves = false;
             try {
                 $result = call_user_func($callback, $this);
-            } catch (\Exception $e) {
-                $this->enableSlaves = true;
-                throw $e;
             } catch (\Throwable $e) {
                 $this->enableSlaves = true;
                 throw $e;
@@ -1049,7 +1037,7 @@ class Connection extends Component
             }
 
             $key = [__METHOD__, $config['dsn']];
-            if ($cache instanceof Cache && $cache->get($key)) {
+            if ($cache instanceof CacheInterface && $cache->get($key)) {
                 // should not try this dead server now
                 continue;
             }
@@ -1062,7 +1050,7 @@ class Connection extends Component
                 return $db;
             } catch (\Exception $e) {
                 Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
-                if ($cache instanceof Cache) {
+                if ($cache instanceof CacheInterface) {
                     // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
                 }

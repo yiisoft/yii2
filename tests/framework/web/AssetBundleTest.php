@@ -1,17 +1,17 @@
 <?php
 /**
- *
- *
- * @author Carsten Brandt <mail@cebe.cc>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\web;
 
 use Yii;
 use yii\helpers\FileHelper;
-use yii\web\View;
 use yii\web\AssetBundle;
 use yii\web\AssetManager;
+use yii\web\View;
 
 /**
  * @group web
@@ -103,7 +103,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             'linkAssets' => true,
             'hashCallback' => function ($path) {
                 return sprintf('%x/%x', crc32($path), crc32(Yii::getVersion()));
-            }
+            },
         ]);
         $bundle = $this->verifySourcesPublishedBySymlink($view);
         $this->assertTrue(is_dir(dirname($bundle->basePath)));
@@ -114,7 +114,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $view = $this->getView([
             'beforeCopy' => function ($from, $to) {
                 return false;
-            }
+            },
         ]);
         $am = $view->assetManager;
 
@@ -137,7 +137,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle->publishOptions = [
             'beforeCopy' => function ($from, $to) {
                 return false;
-            }
+            },
         ];
         $bundle->publish($am);
 
@@ -156,8 +156,8 @@ class AssetBundleTest extends \yiiunit\TestCase
         $bundle = new TestSourceAsset([
             'publishOptions' => [
                 'only' => [
-                    'js/*'
-                ]
+                    'js/*',
+                ],
             ],
         ]);
         $bundle->publish($am);
@@ -208,7 +208,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
         $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
@@ -228,7 +228,7 @@ EOF;
         $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
         $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>4
 EOF;
@@ -283,21 +283,21 @@ EOF;
 
         switch ($pos) {
             case View::POS_HEAD:
-                $expected = <<<EOF
+                $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">
 <script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>234
 EOF;
             break;
             case View::POS_BEGIN:
-                $expected = <<<EOF
+                $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">2<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>34
 EOF;
             break;
             default:
             case View::POS_END:
-                $expected = <<<EOF
+                $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>4
 EOF;
@@ -360,7 +360,7 @@ EOF;
         // register TestJqueryAsset which also has the jquery.js
         TestJqueryAsset::register($view);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
@@ -373,7 +373,7 @@ EOF;
         $this->assertEmpty($view->assetBundles);
         TestAssetPerFileOptions::register($view);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 1<link href="/default_options.css" rel="stylesheet" media="screen" hreflang="en">
 <link href="/tv.css" rel="stylesheet" media="tv" hreflang="en">
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
@@ -441,46 +441,46 @@ EOF;
             [
                 'js', '@web/assetSources/js/missing-file1.js', true,
                 '123<script src="/backend/assetSources/js/missing-file1.js"></script>4',
-                '/backend'
+                '/backend',
             ],
             [
                 'js', 'http://full-url.example.com/backend/assetSources/js/missing-file.js', true,
                 '123<script src="http://full-url.example.com/backend/assetSources/js/missing-file.js"></script>4',
-                '/backend'
+                '/backend',
             ],
             [
                 'css', '//backend/backend/assetSources/js/missing-file.js', true,
                 '1<link href="//backend/backend/assetSources/js/missing-file.js" rel="stylesheet">234',
-                '/backend'
+                '/backend',
             ],
             [
                 'css', '@web/assetSources/css/stub.css', false,
                 '1<link href="/en/blog/backend/assetSources/css/stub.css" rel="stylesheet">234',
-                '/en/blog/backend'
+                '/en/blog/backend',
             ],
 
             // UTF-8 chars
             [
                 'css', '@web/assetSources/css/stub.css', false,
                 '1<link href="/рус/сайт/assetSources/css/stub.css" rel="stylesheet">234',
-                '/рус/сайт'
+                '/рус/сайт',
             ],
             [
                 'js', '@web/assetSources/js/jquery.js', false,
                 '123<script src="/汉语/漢語/assetSources/js/jquery.js"></script>4',
-                '/汉语/漢語'
+                '/汉语/漢語',
             ],
 
             // Custom alias repeats in the asset URL
             [
                 'css', '@web/assetSources/repeat/css/stub.css', false,
                 '1<link href="/repeat/assetSources/repeat/css/stub.css" rel="stylesheet">234',
-                '/repeat'
+                '/repeat',
             ],
             [
                 'js', '@web/assetSources/repeat/js/jquery.js', false,
                 '123<script src="/repeat/assetSources/repeat/js/jquery.js"></script>4',
-                '/repeat'
+                '/repeat',
             ],
         ];
     }
@@ -541,7 +541,7 @@ class TestAssetBundle extends AssetBundle
         'jsFile.js',
     ];
     public $depends = [
-        'yiiunit\\framework\\web\\TestJqueryAsset'
+        'yiiunit\\framework\\web\\TestJqueryAsset',
     ];
 }
 
@@ -553,7 +553,7 @@ class TestJqueryAsset extends AssetBundle
         'jquery.js',
     ];
     public $depends = [
-        'yiiunit\\framework\\web\\TestAssetLevel3'
+        'yiiunit\\framework\\web\\TestAssetLevel3',
     ];
 }
 
@@ -571,7 +571,7 @@ class TestAssetCircleA extends AssetBundle
         'jquery.js',
     ];
     public $depends = [
-        'yiiunit\\framework\\web\\TestAssetCircleB'
+        'yiiunit\\framework\\web\\TestAssetCircleB',
     ];
 }
 
@@ -583,7 +583,7 @@ class TestAssetCircleB extends AssetBundle
         'jquery.js',
     ];
     public $depends = [
-        'yiiunit\\framework\\web\\TestAssetCircleA'
+        'yiiunit\\framework\\web\\TestAssetCircleA',
     ];
 }
 
@@ -594,7 +594,7 @@ class TestAssetPerFileOptions extends AssetBundle
     public $css = [
         'default_options.css',
         ['tv.css', 'media' => 'tv'],
-        ['screen_and_print.css', 'media' => 'screen, print']
+        ['screen_and_print.css', 'media' => 'screen, print'],
     ];
     public $js = [
         'normal.js',

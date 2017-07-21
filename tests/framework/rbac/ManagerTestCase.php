@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\rbac;
 
@@ -96,7 +101,7 @@ abstract class ManagerTestCase extends TestCase
         $this->prepareData();
 
         $rule = $this->auth->getRule('isAuthor');
-        $rule->name = "newName";
+        $rule->name = 'newName';
         $rule->reallyReally = false;
         $this->auth->update('isAuthor', $rule);
 
@@ -104,7 +109,7 @@ abstract class ManagerTestCase extends TestCase
         $this->assertEquals(null, $rule);
 
         $rule = $this->auth->getRule('newName');
-        $this->assertEquals("newName", $rule->name);
+        $this->assertEquals('newName', $rule->name);
         $this->assertEquals(false, $rule->reallyReally);
 
         $rule->reallyReally = true;
@@ -205,7 +210,7 @@ abstract class ManagerTestCase extends TestCase
 
     protected function prepareData()
     {
-        $rule = new AuthorRule;
+        $rule = new AuthorRule();
         $this->auth->add($rule);
 
         $uniqueTrait = $this->auth->createPermission('Fast Metabolism');

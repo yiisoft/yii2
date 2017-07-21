@@ -9,10 +9,10 @@ namespace yii\widgets;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Html;
 use yii\base\Widget;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * LinkPager displays a list of hyperlinks that lead to different pages of target.
@@ -194,7 +194,7 @@ class LinkPager extends Widget
         }
 
         // internal pages
-        list($beginPage, $endPage) = $this->getPageRange();
+        [$beginPage, $endPage] = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; ++$i) {
             $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
         }

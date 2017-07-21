@@ -278,13 +278,13 @@ class Logger extends Component
         $stack = [];
 
         foreach ($messages as $i => $log) {
-            list($token, $level, $category, $timestamp, $traces) = $log;
-            $memory = isset($log[5]) ? $log[5] : 0;
+            [$token, $level, $category, $timestamp, $traces] = $log;
+            $memory = $log[5] ?? 0;
             $log[6] = $i;
-            $hash = md5(serialize($token));
-            if ($level == Logger::LEVEL_PROFILE_BEGIN) {
+            $hash = md5(json_encode($token));
+            if ($level == self::LEVEL_PROFILE_BEGIN) {
                 $stack[$hash] = $log;
-            } elseif ($level == Logger::LEVEL_PROFILE_END) {
+            } elseif ($level == self::LEVEL_PROFILE_END) {
                 if (isset($stack[$hash])) {
                     $timings[$stack[$hash][6]] = [
                         'info' => $stack[$hash][0],
@@ -294,7 +294,7 @@ class Logger extends Component
                         'level' => count($stack) - 1,
                         'duration' => $timestamp - $stack[$hash][3],
                         'memory' => $memory,
-                        'memoryDiff' => $memory - (isset($stack[$hash][5]) ? $stack[$hash][5] : 0),
+                        'memoryDiff' => $memory - ($stack[$hash][5] ?? 0),
                     ];
                     unset($stack[$hash]);
                 }
@@ -321,7 +321,7 @@ class Logger extends Component
             self::LEVEL_TRACE => 'trace',
             self::LEVEL_PROFILE_BEGIN => 'profile begin',
             self::LEVEL_PROFILE_END => 'profile end',
-            self::LEVEL_PROFILE => 'profile'
+            self::LEVEL_PROFILE => 'profile',
         ];
 
         return isset($levels[$level]) ? $levels[$level] : 'unknown';

@@ -170,9 +170,9 @@ class MigrateController extends BaseMigrateController
                 $this->db = Instance::ensure($this->db, Connection::class);
             }
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -220,7 +220,7 @@ class MigrateController extends BaseMigrateController
             } else {
                 $row['canonicalVersion'] = $row['version'];
             }
-            $row['apply_time'] = (int)$row['apply_time'];
+            $row['apply_time'] = (int) $row['apply_time'];
             $history[] = $row;
         }
 

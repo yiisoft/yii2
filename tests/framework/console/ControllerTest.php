@@ -32,12 +32,12 @@ class ControllerTest extends TestCase
         $controller = new FakeController('fake', Yii::$app);
 
         $params = ['from params'];
-        list($fromParam, $other) = $controller->run('aksi1', $params);
+        [$fromParam, $other] = $controller->run('aksi1', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('default', $other);
 
         $params = ['from params', 'notdefault'];
-        list($fromParam, $other) = $controller->run('aksi1', $params);
+        [$fromParam, $other] = $controller->run('aksi1', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
@@ -54,7 +54,7 @@ class ControllerTest extends TestCase
         $this->assertEquals('testAlias', $result);
 
         $params = ['_aliases' => ['ta' => 'from params,notdefault']];
-        list($fromParam, $other) = $controller->runAction('aksi6', $params);
+        [$fromParam, $other] = $controller->runAction('aksi6', $params);
         $this->assertEquals('from params', $fromParam);
         $this->assertEquals('notdefault', $other);
 
@@ -85,13 +85,13 @@ class ControllerTest extends TestCase
         $response = $this->runRequest('fake/status');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/status', (string)$status);
+        $response = $this->runRequest('fake/status', (string) $status);
         $this->assertResponseStatus($status, $response);
 
         $response = $this->runRequest('fake/response');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/response', (string)$status);
+        $response = $this->runRequest('fake/response', (string) $status);
         $this->assertResponseStatus($status, $response);
     }
 
@@ -139,11 +139,11 @@ class ControllerTest extends TestCase
      * @see #10372
      */
     public function testHelpSkipsTypeHintedArguments()
-     {
-         $controller = new FakeController('fake', Yii::$app);
-         $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
+    {
+        $controller = new FakeController('fake', Yii::$app);
+        $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
 
-         $this->assertArrayNotHasKey('typedArgument', $help);
-         $this->assertArrayHasKey('simpleArgument', $help);
-     }
+        $this->assertArrayNotHasKey('typedArgument', $help);
+        $this->assertArrayHasKey('simpleArgument', $help);
+    }
 }

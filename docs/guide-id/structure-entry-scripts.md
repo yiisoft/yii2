@@ -34,13 +34,13 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // mendaftarkan autoloader Composer
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // memasukkan file class Yii
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // Mengambil konfigurasi aplikasi
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // Membuat, mengkonfigurasi, dan menjalankan aplikasi
 (new yii\web\Application($config))->run();
@@ -66,13 +66,13 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // mendaftarkan autoloader composer
-require(__DIR__ . '/vendor/autoload.php');
+require __DIR__ . '/vendor/autoload.php';
 
 // memasukkan file class Yii
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
 // Mengambil konfigurasi aplikasi
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();

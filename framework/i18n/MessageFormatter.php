@@ -121,9 +121,9 @@ class MessageFormatter extends Component
             $this->_errorCode = $formatter->getErrorCode();
             $this->_errorMessage = $formatter->getErrorMessage();
             return false;
-        } else {
-            return $result;
         }
+
+        return $result;
     }
 
     /**
@@ -182,14 +182,14 @@ class MessageFormatter extends Component
             $this->_errorMessage = $formatter->getErrorMessage();
 
             return false;
-        } else {
-            $values = [];
-            foreach ($result as $key => $value) {
-                $values[$map[$key]] = $value;
-            }
-
-            return $values;
         }
+
+        $values = [];
+        foreach ($result as $key => $value) {
+            $values[$map[$key]] = $value;
+        }
+
+        return $values;
     }
 
     /**

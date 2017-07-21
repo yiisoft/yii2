@@ -106,11 +106,8 @@ abstract class ErrorHandler extends Component
                 \Yii::getLogger()->flush(true);
                 exit(1);
             }
-        } catch (\Exception $e) {
-            // an other exception could be thrown while displaying the exception
-            $this->handleFallbackExceptionMessage($e, $exception);
         } catch (\Throwable $e) {
-            // additional check for \Throwable introduced in PHP 7
+            // another exception could be thrown while displaying the exception
             $this->handleFallbackExceptionMessage($e, $exception);
         }
 
@@ -119,11 +116,12 @@ abstract class ErrorHandler extends Component
 
     /**
      * Handles exception thrown during exception processing in [[handleException()]].
-     * @param \Exception|\Throwable $exception Exception that was thrown during main exception processing.
+     * @param \Throwable $exception Exception that was thrown during main exception processing.
      * @param \Exception $previousException Main exception processed in [[handleException()]].
      * @since 2.0.11
      */
-    protected function handleFallbackExceptionMessage($exception, $previousException) {
+    protected function handleFallbackExceptionMessage($exception, $previousException)
+    {
         $msg = "An Error occurred while handling another error:\n";
         $msg .= (string) $exception;
         $msg .= "\nPrevious exception:\n";
@@ -161,7 +159,7 @@ abstract class ErrorHandler extends Component
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
             if (!class_exists(ErrorException::class, false)) {
-                require_once(__DIR__ . '/ErrorException.php');
+                require_once __DIR__ . '/ErrorException.php';
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
 
@@ -187,10 +185,10 @@ abstract class ErrorHandler extends Component
     {
         unset($this->_memoryReserve);
 
-        // load ErrorException manually here because autoloading them will not
-        // work when error occurs while autoloading a class
+        // load ErrorException manually here because autoloading them will not work
+        // when error occurs while autoloading a class
         if (!class_exists(ErrorException::class, false)) {
-            require_once(__DIR__ . '/ErrorException.php');
+            require_once __DIR__ . '/ErrorException.php';
         }
 
         $error = error_get_last();

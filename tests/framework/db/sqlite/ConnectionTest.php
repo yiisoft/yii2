@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\sqlite;
 
@@ -46,9 +51,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     {
         $counts = [[0, 2], [1, 2], [2, 2]];
 
-        foreach ($counts as $count) {
-            list($masterCount, $slaveCount) = $count;
-
+        foreach ($counts as [$masterCount, $slaveCount]) {
             $db = $this->prepareMasterSlave($masterCount, $slaveCount);
 
             $this->assertInstanceOf(Connection::class, $db->getSlave());
@@ -68,9 +71,9 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
             } else {
                 $this->assertNull($db->getMaster());
             }
-            $this->assertNotEquals('test', $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar());
+            $this->assertNotEquals('test', $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar());
             $result = $db->useMaster(function (Connection $db) {
-                return $db->createCommand("SELECT description FROM profile WHERE id=1")->queryScalar();
+                return $db->createCommand('SELECT description FROM profile WHERE id=1')->queryScalar();
             });
             $this->assertEquals('test', $result);
 
@@ -106,7 +109,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $hit_slaves = $hit_masters = [];
 
-        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = true;
 
@@ -128,7 +131,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
 
         $hit_slaves = $hit_masters = [];
 
-        for ($i = $nodesCount * $retryPerNode; $i-- > 0; ) {
+        for ($i = $nodesCount * $retryPerNode; $i-- > 0;) {
             $db = $this->prepareMasterSlave($mastersCount, $slavesCount);
             $db->shuffleMasters = false;
 
@@ -193,7 +196,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     public function testAliasDbPath()
     {
         $config = [
-            'dsn' => "sqlite:@yiiunit/runtime/yii2aliastest.sq3",
+            'dsn' => 'sqlite:@yiiunit/runtime/yii2aliastest.sq3',
         ];
         $connection = new Connection($config);
         $connection->open();
@@ -207,5 +210,4 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
     {
         // This test does not work on sqlite because preparing the failing query fails
     }
-
 }

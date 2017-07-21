@@ -7,8 +7,8 @@
 
 namespace yii\helpers;
 
-use yii\base\InvalidArgumentException;
 use yii\base\Arrayable;
+use yii\base\InvalidArgumentException;
 use yii\web\JsExpression;
 
 /**

@@ -7,8 +7,8 @@
 
 namespace yii\base;
 
-use yii\helpers\StringHelper;
 use Yii;
+use yii\helpers\StringHelper;
 
 /**
  * Security provides a set of methods to handle common security-related tasks.
@@ -180,7 +180,7 @@ class Security extends Component
             throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
+        [$blockSize, $keySize] = $this->allowedCiphers[$this->cipher];
 
         $keySalt = $this->generateRandomKey($keySize);
         if ($passwordBased) {
@@ -230,7 +230,7 @@ class Security extends Component
             throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
         }
 
-        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
+        [$blockSize, $keySize] = $this->allowedCiphers[$this->cipher];
 
         $keySalt = StringHelper::byteSubstr($data, 0, $keySize);
         if ($passwordBased) {
@@ -606,7 +606,7 @@ class Security extends Component
         }
 
         if (function_exists('password_hash')) {
-            /** @noinspection PhpUndefinedConstantInspection */
+            /* @noinspection PhpUndefinedConstantInspection */
             return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
         }
 
@@ -677,7 +677,7 @@ class Security extends Component
         // Get a 20-byte random string
         $rand = $this->generateRandomKey(20);
         // Form the prefix that specifies Blowfish (bcrypt) algorithm and cost parameter.
-        $salt = sprintf("$2y$%02d$", $cost);
+        $salt = sprintf('$2y$%02d$', $cost);
         // Append the random salt data in the required base64 format.
         $salt .= str_replace('+', '.', substr(base64_encode($rand), 0, 22));
 

@@ -99,7 +99,7 @@ configuration file for the [Basic Project Template](start-installation.md).
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => \yii\caching\FileCache::class,
@@ -144,7 +144,7 @@ configuration using `container` property. For example:
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'container' => [
         'definitions' => [
             'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
@@ -195,8 +195,8 @@ For example, you may keep an application configuration in a file named `web.php`
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -233,7 +233,7 @@ return [
 To get a configuration stored in a configuration file, simply "require" it, like the following:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 

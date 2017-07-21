@@ -195,7 +195,7 @@ EOD;
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
+            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -205,7 +205,7 @@ EOD;
                         $params[$n] = $v;
                     }
                 } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
+                    [$sql, $params] = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);
@@ -243,7 +243,7 @@ EOD;
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
@@ -386,5 +386,4 @@ EOD;
 
         return $this->buildCondition(['AND', $condition], $params);
     }
-
 }
