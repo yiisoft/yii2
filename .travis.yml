@@ -6,7 +6,10 @@
 dist: trusty
 
 # faster builds on new travis setup not using sudo
-sudo: false
+# temporary disable, see https://github.com/travis-ci/travis-ci/issues/6842
+#sudo: false
+sudo: required
+group: edge
 
 # build only on master branches
 # commented as this prevents people from running builds on their forks:
@@ -61,7 +64,6 @@ matrix:
     - language: node_js
       node_js: 6
       env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
-      dist: trusty
       # overwrite services used for PHP tests
       services:
 

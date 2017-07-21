@@ -71,9 +71,9 @@ class PgsqlMutex extends DbMutex
             throw new InvalidArgumentException('PgsqlMutex does not support timeout.');
         }
         [$key1, $key2] = $this->getKeysFromName($name);
-        return $this->db->useMaster(function($db) use ($key1, $key2) {
+        return $this->db->useMaster(function ($db) use ($key1, $key2) {
             /** @var \yii\db\Connection $db */
-            return (bool)$db->createCommand(
+            return (bool) $db->createCommand(
                 'SELECT pg_try_advisory_lock(:key1, :key2)',
                 [':key1' => $key1, ':key2' => $key2]
             )->queryScalar();
@@ -89,9 +89,9 @@ class PgsqlMutex extends DbMutex
     protected function releaseLock($name)
     {
         [$key1, $key2] = $this->getKeysFromName($name);
-        return $this->db->useMaster(function($db) use ($key1, $key2) {
+        return $this->db->useMaster(function ($db) use ($key1, $key2) {
             /** @var \yii\db\Connection $db */
-            return (bool)$db->createCommand(
+            return (bool) $db->createCommand(
                 'SELECT pg_advisory_unlock(:key1, :key2)',
                 [':key1' => $key1, ':key2' => $key2]
             )->queryScalar();

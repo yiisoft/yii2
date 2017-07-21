@@ -9,8 +9,8 @@ namespace yii\web;
 
 use ArrayIterator;
 use Yii;
-use yii\base\InvalidCallException;
 use yii\base\BaseObject;
+use yii\base\InvalidCallException;
 
 /**
  * CookieCollection maintains the cookies available in the current request.

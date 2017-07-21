@@ -8,8 +8,8 @@
 namespace yii\mail;
 
 use Yii;
-use yii\base\ErrorHandler;
 use yii\base\BaseObject;
+use yii\base\ErrorHandler;
 
 /**
  * BaseMessage serves as a base class that implements the [[send()]] method required by [[MessageInterface]].
