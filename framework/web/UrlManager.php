@@ -183,7 +183,7 @@ class UrlManager extends Component
         }
         if ($this->cache instanceof CacheInterface) {
             $cacheKey = $this->cacheKey;
-            $hash = md5(json_encode($this->rules));
+            $hash = md5(json_encode([$this->ruleConfig, $this->rules]));
             if (($data = $this->cache->get($cacheKey)) !== false && isset($data[1]) && $data[1] === $hash) {
                 $this->rules = $data[0];
             } else {
