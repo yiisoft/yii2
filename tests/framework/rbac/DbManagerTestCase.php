@@ -79,9 +79,6 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     protected function setUp()
     {
-        if (defined('HHVM_VERSION') && static::$driverName === 'pgsql') {
-            static::markTestSkipped('HHVM PDO for pgsql does not work with binary columns, which are essential for rbac schema. See https://github.com/yiisoft/yii2/issues/14244');
-        }
         parent::setUp();
         $this->auth = $this->createManager();
     }

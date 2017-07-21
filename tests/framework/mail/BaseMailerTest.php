@@ -260,7 +260,7 @@ TEXT
         $mailer->htmlLayout = false;
         $mailer->textLayout = false;
 
-        $htmlViewName = 'test_html_view' . $i; // $i is needed to generate different view files to ensure it works on HHVM
+        $htmlViewName = 'test_html_view';
         $htmlViewFileName = $this->getTestFilePath() . DIRECTORY_SEPARATOR . $htmlViewName . '.php';
         file_put_contents($htmlViewFileName, $htmlViewFileContent);
 

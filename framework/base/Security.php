@@ -518,10 +518,6 @@ class Security extends Component
                     if (function_exists('stream_set_read_buffer')) {
                         stream_set_read_buffer($this->_randomFile, $bufferSize);
                     }
-                    // stream_set_read_buffer() isn't implemented on HHVM
-                    if (function_exists('stream_set_chunk_size')) {
-                        stream_set_chunk_size($this->_randomFile, $bufferSize);
-                    }
                 }
             }
         }
