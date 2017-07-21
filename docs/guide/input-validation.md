@@ -841,7 +841,7 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
+To enable AJAX validation for all inputs of the form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
 to be `true` at the form level:
 
 ```php
@@ -871,4 +871,6 @@ this request by running the validation and returning the errors in JSON format.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
 When both `enableClientValidation` and `enableAjaxValidation` are set to `true`, AJAX validation request will be triggered
-only after the successful client validation.
+only after the successful client validation. Note that in case of validating a single field that happens if either
+`validateOnChange`, `validateOnBlur` or `validateOnType` is set to `true`, AJAX request will be sent when the field in
+question alone successfully passes client validation. 
