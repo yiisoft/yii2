@@ -45,11 +45,6 @@ class FormatConverterTest extends TestCase
      */
     public function testPHPDefaultFormat()
     {
-
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('Can not test on HHVM because HHVM returns inconsistend with PHP date format patterns.');
-        }
-
         foreach (FormatConverter::$phpFallbackDatePatterns as $format => $formats) {
             foreach ($formats as $name => $expected) {
                 $expected = FormatConverter::convertDatePhpToIcu($expected);

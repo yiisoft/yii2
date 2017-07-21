@@ -23,9 +23,6 @@ use yii\helpers\VarDumper;
  * (for example, the authorization data for a personal blog system).
  * Use [[DbManager]] for more complex authorization data.
  *
- * Note that PhpManager is not compatible with facebooks [HHVM](http://hhvm.com/) because
- * it relies on writing php files and including them afterwards which is not supported by HHVM.
- *
  * For more details and usage information on PhpManager, see the [guide article on security authorization](guide:security-authorization).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>

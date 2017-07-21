@@ -73,18 +73,13 @@ matrix:
 install:
   - |
     if [[ $TASK_TESTS_COVERAGE != 1 && $TRAVIS_PHP_VERSION != hhv* ]]; then
-      # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
+      # disable xdebug for performance reasons when code coverage is not needed
       phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
 
   # install composer dependencies
   - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - |
-    if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
-      # remove php-cs-fixer from composer dependencies on hhvm-3.12 - php-cs-fixer requires at least hhvm-3.18
-      composer remove friendsofphp/php-cs-fixer --dev
-    fi
   - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
 
   # setup PHP extension
@@ -102,9 +97,6 @@ install:
     fi
 
 before_script:
-  # Disable the HHVM JIT for faster Unit Testing
-  - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini; fi
-
   # show some versions and env information
   - php --version
   - composer --version
