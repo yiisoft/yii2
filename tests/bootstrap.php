@@ -23,5 +23,4 @@ require_once __DIR__ . '/../framework/Yii.php';
 
 Yii::setAlias('@yiiunit', __DIR__);
 
-require_once __DIR__ . '/compatibility.php';
 require_once __DIR__ . '/TestCase.php';

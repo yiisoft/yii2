@@ -117,7 +117,7 @@ class RateLimiterTest extends TestCase
             ->setAllowance([1, time() + 2]);
         $rateLimiter = new RateLimiter();
 
-        $this->setExpectedException('yii\web\TooManyRequestsHttpException');
+        $this->expectException(\yii\web\TooManyRequestsHttpException::class);
         $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 

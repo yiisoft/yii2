@@ -116,7 +116,7 @@ HTML
         $model = new DynamicModel(['name']);
         $model->addRule(['name'], 'required');
 
-        $view = $this->getMock(View::class);
+        $view = $this->createMock(View::class);
         $view->method('registerJs')->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
         $view->method('registerAssetBundle')->willReturn(true);
 

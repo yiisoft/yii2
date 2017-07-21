@@ -246,12 +246,12 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertTrue($profileModel->hasErrors('description'));
 
         $profileModel->clearErrors();
-        $validator->targetClass = 'yiiunit\data\ar\Profile';
+        $validator->targetClass = Profile::class;
         $validator->validateAttribute($profileModel, 'description');
         $this->assertTrue($profileModel->hasErrors('description'));
 
         $profileModel->clearErrors();
-        $validator->targetClass = '\yiiunit\data\ar\Profile';
+        $validator->targetClass = Profile::class;
         $validator->validateAttribute($profileModel, 'description');
         $this->assertTrue($profileModel->hasErrors('description'));
     }
@@ -266,12 +266,12 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $this->assertFalse($profileModel->hasErrors('description'));
 
         $profileModel->clearErrors();
-        $validator->targetClass = 'yiiunit\data\ar\Profile';
+        $validator->targetClass = Profile::class;
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));
 
         $profileModel->clearErrors();
-        $validator->targetClass = '\yiiunit\data\ar\Profile';
+        $validator->targetClass = Profile::class;
         $validator->validateAttribute($profileModel, 'description');
         $this->assertFalse($profileModel->hasErrors('description'));
     }

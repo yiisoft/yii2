@@ -140,7 +140,8 @@ class HtmlTest extends TestCase
 
     public function testCsrfMetaTagsEnableCsrfValidationWithoutCookieValidationKey()
     {
-        $request = $this->getMock('yii\\web\\Request');
+        $request = $this->getMockBuilder(\yii\web\Request::class)
+                        ->setMethods(['enableCsrfValidation'])->getMock();
         $request->method('enableCsrfValidation')->willReturn(true);
         Yii::$app->set('request', $request);
         $pattern = '<meta name="csrf-param" content="_csrf">%A<meta name="csrf-token">';
@@ -1199,7 +1200,7 @@ EOD;
         }
         $model->validate(null, false);
 
-        $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
+        $this->assertEqualsWithoutLE($expectedHtml, Html::errorSummary($model, $options));
     }
 
     /**
@@ -1451,7 +1452,7 @@ EOD;
         $actual = Html::getAttributeValue($model, 'types');
         $this->assertSame($expected, $actual);
 
-        $activeRecord = $this->getMock('yii\\db\\ActiveRecordInterface');
+        $activeRecord = $this->createMock(\yii\db\ActiveRecordInterface::class);
         $activeRecord->method('getPrimaryKey')->willReturn(1);
         $model->types = $activeRecord;
 
@@ -1484,14 +1485,14 @@ EOD;
      */
     public function testGetInputNameInvalidArgumentExceptionFormName()
     {
-        $model = $this->getMock('yii\\base\\Model');
+        $model = $this->createMock(\yii\base\Model::class);
         $model->method('formName')->willReturn('');
         Html::getInputName($model, '[foo]bar');
     }
 
     public function testGetInputName()
     {
-        $model = $this->getMock('yii\\base\\Model');
+        $model = $this->createMock(\yii\base\Model::class);
         $model->method('formName')->willReturn('');
         $expected = 'types';
         $actual = Html::getInputName($model, 'types');
