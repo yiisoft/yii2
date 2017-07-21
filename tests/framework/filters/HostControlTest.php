@@ -153,7 +153,8 @@ class HostControlTest extends TestCase
 
     public function testErrorHandlerWithDefaultHost()
     {
-        $this->setExpectedException(\yii\web\NotFoundHttpException::class, 'Page not found.');
+        $this->expectException('yii\web\NotFoundHttpException');
+        $this->expectExceptionMessage('Page not found.');
 
         $filter = new HostControl();
         $filter->allowedHosts = ['example.com'];

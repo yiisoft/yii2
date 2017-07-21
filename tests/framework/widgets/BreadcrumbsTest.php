@@ -84,7 +84,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     {
         $link = ['url' => 'http://localhost/yii2'];
         $method = $this->reflectMethod();
-        $this->setExpectedException(\yii\base\InvalidConfigException::class);
+        $this->expectException('yii\base\InvalidConfigException');
         $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
     }
 

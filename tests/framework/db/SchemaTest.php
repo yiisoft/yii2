@@ -574,7 +574,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testTableSchemaConstraints($tableName, $type, $expected)
     {
         if ($expected === false) {
-            $this->setExpectedException(\yii\base\NotSupportedException::class);
+            $this->expectException('yii\base\NotSupportedException');
         }
 
         $constraints = $this->getConnection(false)->getSchema()->{'getTable' . ucfirst($type)}($tableName);
@@ -587,7 +587,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testTableSchemaConstraintsWithPdoUppercase($tableName, $type, $expected)
     {
         if ($expected === false) {
-            $this->setExpectedException(\yii\base\NotSupportedException::class);
+            $this->expectException('yii\base\NotSupportedException');
         }
 
         $connection = $this->getConnection(false);
@@ -602,7 +602,7 @@ abstract class SchemaTest extends DatabaseTestCase
     public function testTableSchemaConstraintsWithPdoLowercase($tableName, $type, $expected)
     {
         if ($expected === false) {
-            $this->setExpectedException(\yii\base\NotSupportedException::class);
+            $this->expectException('yii\base\NotSupportedException');
         }
 
         $connection = $this->getConnection(false);

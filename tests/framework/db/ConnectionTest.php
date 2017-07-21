@@ -39,7 +39,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $connection = new Connection();
         $connection->dsn = 'unknown::memory:';
-        $this->setExpectedException(\yii\db\Exception::class);
+        $this->expectException('yii\db\Exception');
         $connection->open();
     }
 

@@ -269,7 +269,7 @@ class UserTest extends TestCase
 
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
-        $this->setExpectedException(\yii\web\ForbiddenHttpException::class);
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         $user->loginRequired();
     }
 
@@ -292,7 +292,7 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
-        $this->setExpectedException(\yii\web\ForbiddenHttpException::class);
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
 }

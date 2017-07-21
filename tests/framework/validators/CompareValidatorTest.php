@@ -27,7 +27,7 @@ class CompareValidatorTest extends TestCase
 
     public function testValidateValueException()
     {
-        $this->setExpectedException(\yii\base\InvalidConfigException::class);
+        $this->expectException('yii\base\InvalidConfigException');
         $val = new CompareValidator();
         $val->validate('val');
     }

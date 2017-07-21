@@ -114,7 +114,7 @@ class UrlTest extends TestCase
         // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
 
-        $this->setExpectedException(\yii\base\InvalidArgumentException::class);
+        $this->expectException('yii\base\InvalidArgumentException');
         Url::toRoute('site/view');
     }
 
@@ -223,7 +223,7 @@ class UrlTest extends TestCase
         //In case there is no controller, throw an exception
         $this->removeMockedAction();
 
-        $this->setExpectedException(\yii\base\InvalidArgumentException::class);
+        $this->expectException('yii\base\InvalidArgumentException');
         Url::to(['site/view']);
     }
 
