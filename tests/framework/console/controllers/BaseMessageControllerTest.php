@@ -155,7 +155,7 @@ abstract class BaseMessageControllerTest extends TestCase
 
     public function testConfigFileNotExist()
     {
-        $this->expectException('yii\\console\\Exception');
+        $this->setExpectedException(\yii\console\Exception::class);
         $this->runMessageControllerAction('extract', ['not_existing_file.php']);
     }
 

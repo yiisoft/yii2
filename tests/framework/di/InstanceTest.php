@@ -58,8 +58,10 @@ class InstanceTest extends TestCase
     public function testEnsure_NonExistingComponentException()
     {
         $container = new Container();
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
+        $this->setExpectedExceptionRegExp(
+            \yii\base\InvalidConfigException::class,
+            '/^Failed to instantiate component or class/i'
+        );
         Instance::ensure('cache', 'yii\cache\Cache', $container);
     }
 
@@ -69,8 +71,10 @@ class InstanceTest extends TestCase
     public function testEnsure_NonExistingClassException()
     {
         $container = new Container();
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessageRegExp('/^Failed to instantiate component or class/i');
+        $this->setExpectedExceptionRegExp(
+            \yii\base\InvalidConfigException::class,
+            '/^Failed to instantiate component or class/i'
+        );
         Instance::ensure('yii\cache\DoesNotExist', 'yii\cache\Cache', $container);
     }
 
@@ -108,23 +112,20 @@ class InstanceTest extends TestCase
             'dsn' => 'test',
         ]);
 
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class, '"db" refers to a yii\db\Connection component. yii\base\Widget is expected.');
 
         Instance::ensure('db', 'yii\base\Widget', $container);
     }
 
     public function testExceptionInvalidDataType()
     {
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class, 'Invalid data type: yii\db\Connection. yii\base\Widget is expected.');
         Instance::ensure(new Connection(), 'yii\base\Widget');
     }
 
     public function testExceptionComponentIsNotSpecified()
     {
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('The required component is not specified.');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class, 'The required component is not specified.');
         Instance::ensure('');
     }
 
@@ -185,8 +186,7 @@ PHP
 
     public function testRestoreAfterVarExportRequiresId()
     {
-        $this->expectException('yii\base\InvalidConfigException');
-        $this->expectExceptionMessage('Failed to instantiate class "Instance". Required parameter "id" is missing');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class, 'Failed to instantiate class "Instance". Required parameter "id" is missing');
 
         Instance::__set_state([]);
     }

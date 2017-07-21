@@ -444,8 +444,7 @@ EOL;
 
         // Assert :
         $expectedExceptionMessage = ": {$namespace}\AssetA -> {$namespace}\AssetB -> {$namespace}\AssetC -> {$namespace}\AssetA";
-        $this->expectException('yii\console\Exception');
-        $this->expectExceptionMessage($expectedExceptionMessage);
+        $this->setExpectedException(\yii\console\Exception::class, $expectedExceptionMessage);
 
         // When :
         $this->runAssetControllerAction('compress', [$configFile, $bundleFile]);

@@ -304,7 +304,7 @@ class FileHelperTest extends TestCase
             $dirName => [],
         ]);
 
-        $this->expectException('yii\base\InvalidArgumentException');
+        $this->setExpectedException(\yii\base\InvalidArgumentException::class);
 
         $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_dir';
         FileHelper::copyDirectory($dirName, $dirName);
@@ -320,7 +320,7 @@ class FileHelperTest extends TestCase
             'backup' => ['data' => []],
         ]);
 
-        $this->expectException('yii\base\InvalidArgumentException');
+        $this->setExpectedException(\yii\base\InvalidArgumentException::class);
 
         FileHelper::copyDirectory(
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup',

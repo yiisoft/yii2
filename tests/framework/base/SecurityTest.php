@@ -888,9 +888,7 @@ TEXT;
     {
         static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fopen = false;
-        $this->expectException('yii\base\Exception');
-        $this->expectExceptionMessage('Unable to generate a random key');
-
+        $this->setExpectedException(\yii\base\Exception::class, 'Unable to generate a random key');
         $this->security->generateRandomKey(42);
     }
 
@@ -901,9 +899,7 @@ TEXT;
     {
         static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
         static::$fread = false;
-        $this->expectException('yii\base\Exception');
-        $this->expectExceptionMessage('Unable to generate a random key');
-
+        $this->setExpectedException(\yii\base\Exception::class, 'Unable to generate a random key');
         $this->security->generateRandomKey(42);
     }
 
@@ -936,8 +932,7 @@ TEXT;
         }
         // there is no /dev/urandom on windows so we expect this to fail
         if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false) {
-            $this->expectException('yii\base\Exception');
-            $this->expectExceptionMessage('Unable to generate a random key');
+            $this->setExpectedException(\yii\base\Exception::class, 'Unable to generate a random key');
         }
         // Function mcrypt_create_iv() is deprecated since PHP 7.1
         if (version_compare(PHP_VERSION, '7.1.0alpha', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {

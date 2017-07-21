@@ -338,13 +338,13 @@ EOF;
         if ($jqAlreadyRegistered) {
             TestJqueryAsset::register($view);
         }
-        $this->expectException('yii\\base\\InvalidConfigException');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class);
         TestAssetBundle::register($view);
     }
 
     public function testCircularDependency()
     {
-        $this->expectException('yii\\base\\InvalidConfigException');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class);
         TestAssetCircleA::register($this->getView());
     }
 

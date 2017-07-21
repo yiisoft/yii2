@@ -65,7 +65,7 @@ class AuthMethodTest extends TestCase
         $this->assertTrue($filter->beforeAction($action));
 
         $filter = $this->createFilter(function () {return null;});
-        $this->expectException('yii\web\UnauthorizedHttpException');
+        $this->setExpectedException(\yii\web\UnauthorizedHttpException::class);
         $this->assertTrue($filter->beforeAction($action));
     }
 

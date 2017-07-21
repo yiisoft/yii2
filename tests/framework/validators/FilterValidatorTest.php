@@ -25,7 +25,7 @@ class FilterValidatorTest extends TestCase
 
     public function testAssureExceptionOnInit()
     {
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class);
         new FilterValidator();
     }
 

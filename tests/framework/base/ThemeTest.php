@@ -51,7 +51,7 @@ class ThemeTest extends TestCase
     {
         $theme = new Theme(['baseUrl' => null]);
 
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class);
 
         $theme->getUrl('/js/test.js');
     }
@@ -78,7 +78,7 @@ class ThemeTest extends TestCase
     {
         $theme = new Theme(['baseUrl' => null]);
 
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class);
 
         $theme->getPath('/img/logo.gif');
     }
@@ -87,7 +87,7 @@ class ThemeTest extends TestCase
     {
         $theme = new Theme(['basePath' => null]);
 
-        $this->expectException('yii\base\InvalidConfigException');
+        $this->setExpectedException(\yii\base\InvalidConfigException::class);
 
         $theme->applyTo(null);
     }

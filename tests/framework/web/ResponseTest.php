@@ -79,7 +79,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSendFileWrongRanges($rangeHeader)
     {
-        $this->expectException('yii\web\RangeNotSatisfiableHttpException');
+        $this->setExpectedException(\yii\web\RangeNotSatisfiableHttpException::class);
 
         $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
         $_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;

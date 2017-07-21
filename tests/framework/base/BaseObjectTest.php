@@ -67,7 +67,7 @@ class BaseObjectTest extends TestCase
     public function testGetProperty()
     {
         $this->assertSame('default', $this->object->Text);
-        $this->expectException('yii\base\UnknownPropertyException');
+        $this->setExpectedException(\yii\base\UnknownPropertyException::class);
         $value2 = $this->object->Caption;
     }
 
@@ -76,13 +76,13 @@ class BaseObjectTest extends TestCase
         $value = 'new value';
         $this->object->Text = $value;
         $this->assertEquals($value, $this->object->Text);
-        $this->expectException('yii\base\UnknownPropertyException');
+        $this->setExpectedException(\yii\base\UnknownPropertyException::class);
         $this->object->NewMember = $value;
     }
 
     public function testSetReadOnlyProperty()
     {
-        $this->expectException('yii\base\InvalidCallException');
+        $this->setExpectedException(\yii\base\InvalidCallException::class);
         $this->object->object = 'test';
     }
 
@@ -113,13 +113,13 @@ class BaseObjectTest extends TestCase
 
     public function testUnsetReadOnlyProperty()
     {
-        $this->expectException('yii\base\InvalidCallException');
+        $this->setExpectedException(\yii\base\InvalidCallException::class);
         unset($this->object->object);
     }
 
     public function testCallUnknownMethod()
     {
-        $this->expectException('yii\base\UnknownMethodException');
+        $this->setExpectedException(\yii\base\UnknownMethodException::class);
         $this->object->unknownMethod();
     }
 
@@ -149,8 +149,7 @@ class BaseObjectTest extends TestCase
 
     public function testReadingWriteOnlyProperty()
     {
-        $this->expectException('yii\base\InvalidCallException');
-        $this->expectExceptionMessage('Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
+        $this->setExpectedException(\yii\base\InvalidCallException::class, 'Getting write-only property: yiiunit\framework\base\NewObject::writeOnly');
         $this->object->writeOnly;
     }
 
