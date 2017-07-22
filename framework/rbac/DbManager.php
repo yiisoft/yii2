@@ -524,7 +524,7 @@ class DbManager extends BaseManager
      */
     public function getPermissionsByUser($userId)
     {
-        if (!is_numeric($userId) && empty($userId)) {
+        if (!isset($userId) || $userId === '') {
             return [];
         }
 
