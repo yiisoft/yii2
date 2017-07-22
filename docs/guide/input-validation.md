@@ -351,7 +351,7 @@ the method/function is:
 /**
  * @param string $attribute the attribute currently being validated
  * @param mixed $params the value of the "params" given in the rule
- * @param \yii\validators\InlineValidator related InlineValidator instance.
+ * @param \yii\validators\InlineValidator $validator related InlineValidator instance.
  * This parameter is available since version 2.0.11.
  */
 function ($attribute, $params, $validator)
