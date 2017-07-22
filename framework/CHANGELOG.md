@@ -20,6 +20,7 @@ Yii Framework 2 Change Log
 - Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
 - Chg: Moved masked input field widget into separate extension https://github.com/yiisoft/yii2-maskedinput (samdark)
 - Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
+- Chg #13885: Removed APC support in ApcCache. APCu works as before (samdark) 
 - Chg #14178: Removed HHVM-specific code (samdark)
 
 2.0.13 under development
