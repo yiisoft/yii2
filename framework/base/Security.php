@@ -470,7 +470,6 @@ class Security extends Component
             $cost = $this->passwordHashCost;
         }
 
-        /* @noinspection PhpUndefinedConstantInspection */
         return password_hash($password, PASSWORD_DEFAULT, ['cost' => $cost]);
     }
 
@@ -487,13 +486,6 @@ class Security extends Component
     {
         if (!is_string($password) || $password === '') {
             throw new InvalidArgumentException('Password must be a string and cannot be empty.');
-        }
-
-        if (!preg_match('/^\$2[axy]\$(\d\d)\$[\.\/0-9A-Za-z]{22}/', $hash, $matches)
-            || $matches[1] < 4
-            || $matches[1] > 30
-        ) {
-            throw new InvalidArgumentException('Hash is invalid.');
         }
 
         return password_verify($password, $hash);
