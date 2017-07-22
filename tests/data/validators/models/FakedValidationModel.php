@@ -88,12 +88,4 @@ class FakedValidationModel extends Model
     {
         return $this->inlineValArgs;
     }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/14370
-     */
-    private function number()
-    {
-        return 42;
-    }
 }
