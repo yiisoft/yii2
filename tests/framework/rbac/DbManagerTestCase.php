@@ -12,6 +12,8 @@ use yii\console\Application;
 use yii\console\ExitCode;
 use yii\db\Connection;
 use yii\rbac\DbManager;
+use yii\rbac\Permission;
+use yiiunit\data\rbac\UserID;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 
 /**
@@ -133,5 +135,30 @@ abstract class DbManagerTestCase extends ManagerTestCase
     protected function createManager()
     {
         return new DbManager(['db' => $this->getConnection(), 'defaultRoles' => ['myDefaultRole']]);
+    }
+
+    public function testGetPermissionsByUserWithEmptyValue()
+    {
+        $createPost = $this->auth->createPermission('createPost');
+        $this->auth->add($createPost);
+
+        // For numeric value
+        $userId = 0;
+        $this->auth->assign($createPost, $userId);
+        $permissions = $this->auth->getPermissionsByUser($userId);
+        $this->assertTrue(isset($permissions['createPost']));
+        $this->assertInstanceOf(Permission::className(), $permissions['createPost']);
+
+        // For value object
+        $permissions = $this->auth->getPermissionsByUser(new UserID($userId));
+        $this->assertTrue(isset($permissions['createPost']));
+        $this->assertInstanceOf(Permission::className(), $permissions['createPost']);
+
+        // For other empty data
+        $userId = '';
+        $this->auth->assign($createPost, $userId);
+        $permissions = $this->auth->getPermissionsByUser($userId);
+        $this->assertEmpty($permissions);
+
     }
 }
