@@ -63,7 +63,7 @@ Upgrade from Yii 2.0.x
 * Rename `InvalidParamException` usage to `InvalidArgumentException`.
 * Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
-* If you're used `Security::compareString()`, replace it with native `hash_equals()`.
+* If you're using `Security::compareString()`, replace it with native `hash_equals()`.
 
 Upgrade from Yii 2.0.12
 -----------------------
