@@ -35,15 +35,18 @@ class AccessRuleTest extends \yiiunit\TestCase
 
     /**
      * @param string $method
+     * @param boolean $isAjax
      * @return Request
      */
-    protected function mockRequest($method = 'GET')
+    protected function mockRequest($method = 'GET', $isAjax = false)
     {
         /** @var Request $request */
         $request = $this->getMockBuilder('\yii\web\Request')
-            ->setMethods(['getMethod'])
+            ->setMethods(['getMethod', 'getIsAjax'])
             ->getMock();
         $request->method('getMethod')->willReturn($method);
+        $request->method('getIsAjax')->willReturn($isAjax);
+
         return $request;
     }
 
@@ -454,6 +457,29 @@ class AccessRuleTest extends \yiiunit\TestCase
         // no match, IPv6
         $_SERVER['REMOTE_ADDR'] = '::1';
         $rule->ips = ['2a01:4f8:120:*'];
+        $rule->allow = true;
+        $this->assertNull($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertNull($rule->allows($action, $user, $request));
+    }
+
+    public function testMatchAjax()
+    {
+        $user = false;
+        $action = $this->mockAction();
+
+        $rule = new AccessRule([
+            'allow' => true,
+            'ajax' => true,
+        ]);
+
+        $request = $this->mockRequest('GET', true);
+        $rule->allow = true;
+        $this->assertTrue($rule->allows($action, $user, $request));
+        $rule->allow = false;
+        $this->assertFalse($rule->allows($action, $user, $request));
+
+        $request = $this->mockRequest('GET', false);
         $rule->allow = true;
         $this->assertNull($rule->allows($action, $user, $request));
         $rule->allow = false;
