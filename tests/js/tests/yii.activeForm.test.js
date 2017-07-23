@@ -54,9 +54,12 @@ describe('yii.activeForm', function () {
     describe('events', function () {
         describe('afterValidateAttribute', function () {
             var afterValidateAttributeEventSpy;
+            var dataForAssert;
 
             before(function () {
-                afterValidateAttributeEventSpy = sinon.spy();
+                afterValidateAttributeEventSpy = sinon.spy(function (event, data) {
+                    dataForAssert = data.value;
+                });
             });
 
             after(function () {
@@ -77,7 +80,7 @@ describe('yii.activeForm', function () {
                 $input.val('newValue');
                 $mainForm.yiiActiveForm('updateAttribute', inputId);
 
-                assert.equal('newValue', afterValidateAttributeEventSpy.getCall(0).args[1].value);
+                assert.equal('newValue', dataForAssert);
             });
         });
     });
