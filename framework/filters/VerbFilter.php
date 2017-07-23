@@ -41,7 +41,7 @@ use yii\web\MethodNotAllowedHttpException;
  * }
  * ```
  *
- * @see https://tools.ietf.org/html/rfc2616#section-14.7
+ * @see https://tools.ietf.org/html/rfc7231#section-7.4.1
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
@@ -89,20 +89,19 @@ class VerbFilter extends Behavior
     {
         $action = $event->action->id;
         if (isset($this->actions[$action])) {
-            $verbs = $this->actions[$action];
+            $allowedVerbs = $this->actions[$action];
         } elseif (isset($this->actions['*'])) {
-            $verbs = $this->actions['*'];
+            $allowedVerbs = $this->actions['*'];
         } else {
             return $event->isValid;
         }
 
         $verb = Yii::$app->getRequest()->getMethod();
-        $allowed = array_map('strtoupper', $verbs);
-        if (!in_array($verb, $allowed)) {
+        if (!in_array($verb, $allowedVerbs)) {
             $event->isValid = false;
-            // https://tools.ietf.org/html/rfc2616#section-14.7
-            Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowed));
-            throw new MethodNotAllowedHttpException('Method Not Allowed. This URL can only handle the following request methods: ' . implode(', ', $allowed) . '.');
+            // https://tools.ietf.org/html/rfc7231#section-7.4.1
+            Yii::$app->getResponse()->getHeaders()->set('Allow', implode(', ', $allowedVerbs));
+            throw new MethodNotAllowedHttpException('Method Not Allowed. This URL can only handle the following request methods: ' . implode(', ', $allowedVerbs) . '.');
         }
 
         return $event->isValid;
