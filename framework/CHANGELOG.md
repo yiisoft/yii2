@@ -41,7 +41,7 @@ Yii Framework 2 Change Log
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
 - Bug #14492: Fixed error handler not escaping error info debug mode (samdark)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
-- Enh #7823: Added possibility to limit request by ajax in `yii\filters\AccessRule` (dmirogin)
+- Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 
 2.0.12 June 05, 2017
 --------------------

@@ -110,10 +110,6 @@ class AccessRule extends Component
      */
     public $verbs;
     /**
-     * @var bool If true then this rule applies only in case that request is ajax
-     */
-    public $ajax = false;
-    /**
      * @var callable a callback that will be called to determine if the rule should be applied.
      * The signature of the callback should be as follows:
      *
@@ -156,7 +152,6 @@ class AccessRule extends Component
             && $this->matchVerb($request->getMethod())
             && $this->matchController($action->controller)
             && $this->matchCustom($action)
-            && $this->matchAjax($request->getIsAjax())
         ) {
             return $this->allow ? true : false;
         }
@@ -269,14 +264,5 @@ class AccessRule extends Component
     protected function matchCustom($action)
     {
         return empty($this->matchCallback) || call_user_func($this->matchCallback, $this, $action);
-    }
-
-    /**
-     * @param boolean $isAjax whether the request is ajax
-     * @return bool whether the rule should be applied
-     */
-    protected function matchAjax($isAjax)
-    {
-        return empty($this->ajax) || $isAjax;
     }
 }
