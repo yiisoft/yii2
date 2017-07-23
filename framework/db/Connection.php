@@ -382,6 +382,10 @@ class Connection extends Component
      */
     public $enableLogging = true;
     /**
+     * @var ConnectionLoggerInterface
+     */
+    public $loggerClass = 'yii\db\YiiConnectionLogger';
+    /**
      * @var bool whether to enable profiling of database queries. Defaults to true.
      * You may want to disable this option in a production environment to gain performance
      * if you do not need the information being logged.
@@ -414,7 +418,6 @@ class Connection extends Component
      * @var array query cache parameters for the [[cache()]] calls
      */
     private $_queryCacheInfo = [];
-
 
     /**
      * Returns a value indicating whether the DB connection is established.
@@ -574,7 +577,7 @@ class Connection extends Component
         }
         $token = 'Opening DB connection: ' . $this->dsn;
         try {
-            Yii::info($token, __METHOD__);
+            $this->getLogger()->log($token, __METHOD__);
             Yii::beginProfile($token, __METHOD__);
             $this->pdo = $this->createPdoInstance();
             $this->initConnection();
@@ -601,7 +604,7 @@ class Connection extends Component
         }
 
         if ($this->pdo !== null) {
-            Yii::trace('Closing DB connection: ' . $this->dsn, __METHOD__);
+            $this->getLogger()->log('Closing DB connection: ' . $this->dsn, __METHOD__);
             $this->pdo = null;
             $this->_schema = null;
             $this->_transaction = null;
@@ -742,7 +745,7 @@ class Connection extends Component
     /**
      * Rolls back given [[Transaction]] object if it's still active and level match.
      * In some cases rollback can fail, so this method is fail safe. Exception thrown
-     * from rollback will be caught and just logged with [[\Yii::error()]].
+     * from rollback will be caught and just logged with [[logger]].
      * @param Transaction $transaction Transaction object given from [[beginTransaction()]].
      * @param int $level Transaction level just after [[beginTransaction()]] call.
      */
@@ -753,7 +756,7 @@ class Connection extends Component
             try {
                 $transaction->rollBack();
             } catch (\Exception $e) {
-                \Yii::error($e, __METHOD__);
+                $this->getLogger()->error($e, __METHOD__);
                 // hide this exception to be able to continue throwing original exception outside
             }
         }
@@ -1061,7 +1064,7 @@ class Connection extends Component
                 $db->open();
                 return $db;
             } catch (\Exception $e) {
-                Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
+                $this->getLogger()->log("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
                 if ($cache instanceof CacheInterface) {
                     // mark this server as dead and only retry it after the specified interval
                     $cache->set($key, 1, $this->serverRetryInterval);
@@ -1097,5 +1100,33 @@ class Connection extends Component
             // reset PDO connection, unless its sqlite in-memory, which can only have one connection
             $this->pdo = null;
         }
+    }
+
+    /**
+     * @var ConnectionLoggerInterface
+     * @since 2.0.13
+     */
+    protected $_logger;
+
+    /**
+     * @return ConnectionLoggerInterface
+     * @since 2.0.13
+     */
+    public function getLogger()
+    {
+        if (!isset($this->_logger)) {
+            $this->_logger = Yii::createObject($this->loggerClass);
+        }
+
+        return $this->_logger;
+    }
+
+    /**
+     * @param ConnectionLoggerInterface $logger
+     * @since 2.0.13
+     */
+    public function setLogger(ConnectionLoggerInterface $logger)
+    {
+        $this->_logger = $logger;
     }
 }

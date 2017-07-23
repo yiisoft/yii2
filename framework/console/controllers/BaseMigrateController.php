@@ -12,6 +12,10 @@ use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
+use yii\db\fake\FakeConnection;
+use yii\db\Migration;
+use yii\db\MigrationReverser;
+use yii\db\ReversibleMigrationInterface;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -672,7 +676,12 @@ abstract class BaseMigrateController extends Controller
         $this->stdout("*** applying $class\n", Console::FG_YELLOW);
         $start = microtime(true);
         $migration = $this->createMigration($class);
-        if ($migration->up() !== false) {
+
+        $success = $migration instanceof ReversibleMigrationInterface
+            ? $this->applyChangesFrom($migration)
+            : $migration->up();
+
+        if ($success !== false) {
             $this->addMigrationHistory($class);
             $time = microtime(true) - $start;
             $this->stdout("*** applied $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
@@ -700,7 +709,12 @@ abstract class BaseMigrateController extends Controller
         $this->stdout("*** reverting $class\n", Console::FG_YELLOW);
         $start = microtime(true);
         $migration = $this->createMigration($class);
-        if ($migration->down() !== false) {
+
+        $success = $migration instanceof ReversibleMigrationInterface
+            ? $this->revertChangesFrom($migration)
+            : $migration->down();
+
+        if ($success !== false) {
             $this->removeMigrationHistory($class);
             $time = microtime(true) - $start;
             $this->stdout("*** reverted $class (time: " . sprintf('%.3f', $time) . "s)\n\n", Console::FG_GREEN);
@@ -717,7 +731,7 @@ abstract class BaseMigrateController extends Controller
     /**
      * Creates a new migration instance.
      * @param string $class the migration class name
-     * @return \yii\db\MigrationInterface the migration instance
+     * @return \yii\db\MigrationInterface|Migration the migration instance
      */
     protected function createMigration($class)
     {
@@ -895,4 +909,22 @@ abstract class BaseMigrateController extends Controller
      * @param string $version migration version name.
      */
     abstract protected function removeMigrationHistory($version);
+
+    /**
+     * @param ReversibleMigrationInterface|Migration $migration
+     */
+    protected function applyChangesFrom(ReversibleMigrationInterface $migration)
+    {
+        $reverser = new MigrationReverser($migration);
+        $reverser->apply();
+    }
+
+    /**
+     * @param ReversibleMigrationInterface|Migration $migration
+     */
+    protected function revertChangesFrom(ReversibleMigrationInterface $migration)
+    {
+        $reverser = new MigrationReverser($migration);
+        $reverser->revert();
+    }
 }

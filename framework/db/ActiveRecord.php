@@ -468,7 +468,7 @@ class ActiveRecord extends BaseActiveRecord
     public function insert($runValidation = true, $attributes = null)
     {
         if ($runValidation && !$this->validate($attributes)) {
-            Yii::info('Model not inserted due to validation error.', __METHOD__);
+            $this->db->getLogger()->log('Model not inserted due to validation error.', __METHOD__);
             return false;
         }
 
@@ -577,7 +577,7 @@ class ActiveRecord extends BaseActiveRecord
     public function update($runValidation = true, $attributeNames = null)
     {
         if ($runValidation && !$this->validate($attributeNames)) {
-            Yii::info('Model not updated due to validation error.', __METHOD__);
+            $this->db->getLogger()->log('Model not updated due to validation error.', __METHOD__);
             return false;
         }
 

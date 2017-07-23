@@ -122,7 +122,7 @@ class Transaction extends \yii\base\BaseObject
             if ($isolationLevel !== null) {
                 $this->db->getSchema()->setTransactionIsolationLevel($isolationLevel);
             }
-            Yii::trace('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : ''), __METHOD__);
+            $this->db->getLogger()->trace('Begin transaction' . ($isolationLevel ? ' with isolation level ' . $isolationLevel : ''), __METHOD__);
 
             $this->db->trigger(Connection::EVENT_BEGIN_TRANSACTION);
             $this->db->pdo->beginTransaction();
@@ -133,10 +133,10 @@ class Transaction extends \yii\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
-            Yii::trace('Set savepoint ' . $this->_level, __METHOD__);
+            $this->db->getLogger()->trace('Set savepoint ' . $this->_level, __METHOD__);
             $schema->createSavepoint('LEVEL' . $this->_level);
         } else {
-            Yii::info('Transaction not started: nested transaction not supported', __METHOD__);
+            $this->db->getLogger()->log('Transaction not started: nested transaction not supported', __METHOD__);
         }
         $this->_level++;
     }
@@ -153,7 +153,7 @@ class Transaction extends \yii\base\BaseObject
 
         $this->_level--;
         if ($this->_level === 0) {
-            Yii::trace('Commit transaction', __METHOD__);
+            $this->db->getLogger()->trace('Commit transaction', __METHOD__);
             $this->db->pdo->commit();
             $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
             return;
@@ -161,10 +161,10 @@ class Transaction extends \yii\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
-            Yii::trace('Release savepoint ' . $this->_level, __METHOD__);
+            $this->db->getLogger()->trace('Release savepoint ' . $this->_level, __METHOD__);
             $schema->releaseSavepoint('LEVEL' . $this->_level);
         } else {
-            Yii::info('Transaction not committed: nested transaction not supported', __METHOD__);
+            $this->db->getLogger()->log('Transaction not committed: nested transaction not supported', __METHOD__);
         }
     }
 
@@ -182,7 +182,7 @@ class Transaction extends \yii\base\BaseObject
 
         $this->_level--;
         if ($this->_level === 0) {
-            Yii::trace('Roll back transaction', __METHOD__);
+            $this->db->getLogger()->trace('Roll back transaction', __METHOD__);
             $this->db->pdo->rollBack();
             $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION);
             return;
@@ -190,10 +190,10 @@ class Transaction extends \yii\base\BaseObject
 
         $schema = $this->db->getSchema();
         if ($schema->supportsSavepoint()) {
-            Yii::trace('Roll back to savepoint ' . $this->_level, __METHOD__);
+            $this->db->getLogger()->trace('Roll back to savepoint ' . $this->_level, __METHOD__);
             $schema->rollBackSavepoint('LEVEL' . $this->_level);
         } else {
-            Yii::info('Transaction not rolled back: nested transaction not supported', __METHOD__);
+            $this->db->getLogger()->log('Transaction not rolled back: nested transaction not supported', __METHOD__);
             // throw an exception to fail the outer transaction
             throw new Exception('Roll back failed: nested transaction not supported.');
         }
@@ -216,7 +216,7 @@ class Transaction extends \yii\base\BaseObject
         if (!$this->getIsActive()) {
             throw new Exception('Failed to set isolation level: transaction was inactive.');
         }
-        Yii::trace('Setting transaction isolation level to ' . $level, __METHOD__);
+        $this->db->getLogger()->trace('Setting transaction isolation level to ' . $level, __METHOD__);
         $this->db->getSchema()->setTransactionIsolationLevel($level);
     }
 

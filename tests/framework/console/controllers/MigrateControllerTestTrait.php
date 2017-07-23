@@ -160,6 +160,40 @@ CODE;
         return $class;
     }
 
+
+    /**
+     * @param string $name
+     * @param string|null $date
+     * @param string $change
+     * @return string generated class name
+     */
+    protected function createNamespaceChangeMigration($name, $changeCode, $date = null)
+    {
+        if ($date === null) {
+            $date = gmdate('ymdHis');
+        }
+        $class = 'M' . $date . ucfirst($name);
+        $baseClass = $this->migrationBaseClass;
+        $namespace = $this->migrationNamespace;
+
+        $code = <<<CODE
+<?php
+
+namespace {$namespace};
+
+class {$class} extends \\{$baseClass} implements \\yii\\db\\ReversibleMigrationInterface
+{
+    public function change()
+    {
+        {$changeCode}    
+    }
+}
+CODE;
+        file_put_contents($this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php', $code);
+        return $class;
+    }
+
+
     /**
      * Change class name migration to $class
      * @param string $class name class
@@ -599,5 +633,30 @@ CODE;
             'm*_app_migration3',
         ]);
         $this->assertCount(1, FileHelper::findFiles(Yii::getAlias($appPath), ['only' => ['m*_app_migration3.php']]));
+    }
+
+    public function testChangeMigration()
+    {
+        $class = $this->createNamespaceChangeMigration('test01', <<<'PHP'
+             /** @var $this \\yii\\db\\Migration */
+             $this->createTable('change_migration_table', [
+                'name' => $this->string(),
+             ]);
+PHP
+        );
+
+        $controllerConfig = [
+            'migrationPath' => null,
+            'migrationNamespaces' => [$this->migrationNamespace],
+        ];
+        $this->runMigrateControllerAction('up', [], $controllerConfig);
+        $db = Yii::$app->db;
+        $db->createCommand()->insert('change_migration_table', [
+            'name' => 'test'
+        ]);
+        $this->runMigrateControllerAction('down', [], $controllerConfig);
+        $db->createCommand()->insert('change_migration_table', [
+            'name' => 'test'
+        ]);
     }
 }
