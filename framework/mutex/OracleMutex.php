@@ -88,7 +88,7 @@ class OracleMutex extends DbMutex
         $timeout = abs((int) $timeout);
 
         // inside pl/sql scopes pdo binding not working correctly :(
-        $this->db->useMaster(function($db) use ($name, $timeout, $releaseOnCommit, &$lockStatus) {
+        $this->db->useMaster(function ($db) use ($name, $timeout, $releaseOnCommit, &$lockStatus) {
             /** @var \yii\db\Connection $db */
             $db->createCommand(
                 'DECLARE
@@ -115,7 +115,7 @@ END;',
     protected function releaseLock($name)
     {
         $releaseStatus = null;
-        $this->db->useMaster(function($db) use ($name, &$releaseStatus) {
+        $this->db->useMaster(function ($db) use ($name, &$releaseStatus) {
             /** @var \yii\db\Connection $db */
             $db->createCommand(
                 'DECLARE
