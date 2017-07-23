@@ -195,7 +195,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         $pk = [];
         // disambiguate column names in case ActiveQuery adds a JOIN
-        foreach($this->getPrimaryKey(true) as $key => $value) {
+        foreach ($this->getPrimaryKey(true) as $key => $value) {
             $pk[static::tableName() . '.' . $key] = $value;
         }
         /* @var $record BaseActiveRecord */
