@@ -7,8 +7,8 @@
 
 namespace yii\db;
 
-use yii\base\InvalidParamException;
 use yii\base\BaseObject;
+use yii\base\InvalidParamException;
 
 /**
  * TableSchema represents the metadata of a database table.
