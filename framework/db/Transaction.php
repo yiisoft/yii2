@@ -154,7 +154,9 @@ class Transaction extends \yii\base\BaseObject
         $this->_level--;
         if ($this->_level === 0) {
             Yii::trace('Commit transaction', __METHOD__);
-            $this->db->pdo->commit();
+	    if (!$this->db->pdo->commit()) {
+		throw new Exception('Failed to commit transaction: commit return false.');
+	    }
             $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
             return;
         }
