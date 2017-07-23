@@ -569,7 +569,7 @@ class IpValidator extends Validator
         $unpack = unpack('A16', inet_pton($ip));
         $binStr = array_shift($unpack);
         $bytes = static::IPV6_ADDRESS_LENGTH / 8; // 128 bit / 8 = 16 bytes
-            $result = '';
+        $result = '';
         while ($bytes-- > 0) {
             $result = sprintf('%08b', isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
         }
