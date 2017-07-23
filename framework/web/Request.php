@@ -393,7 +393,7 @@ class Request extends \yii\base\Request
 
             $rawContentType = $this->getContentType();
             if (($pos = strpos($rawContentType, ';')) !== false) {
-                // e.g. application/json; charset=UTF-8
+                // e.g. text/html; charset=UTF-8
                 $contentType = substr($rawContentType, 0, $pos);
             } else {
                 $contentType = $rawContentType;
