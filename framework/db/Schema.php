@@ -8,10 +8,10 @@
 namespace yii\db;
 
 use Yii;
+use yii\base\BaseObject;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\NotSupportedException;
-use yii\base\BaseObject;
 use yii\caching\Cache;
 use yii\caching\CacheInterface;
 use yii\caching\TagDependency;
