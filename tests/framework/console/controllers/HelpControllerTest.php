@@ -63,7 +63,7 @@ class HelpControllerTest extends TestCase
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 cache
 cache/flush
 cache/flush-all
@@ -98,7 +98,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 action:route to action
 
 --interactive: whether to run the command interactively.
@@ -119,7 +119,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<'STRING'
+        $this->assertEqualsWithoutLE(<<<'STRING'
 bootstrap.php help/list-action-options <action>
 
 STRING
