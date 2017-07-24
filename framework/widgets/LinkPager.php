@@ -43,6 +43,7 @@ class LinkPager extends Widget
     public $options = ['class' => 'pagination'];
     /**
      * @var array HTML attributes which will be applied to all link wrappers
+     * @since 2.0.13
      */
     public $linkWrapOptions = [];
     /**
