@@ -340,7 +340,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $row = array_values($row);
             $sql = $row[1];
         }
-        if (preg_match_all('/^\s*`(.*?)`\s+(.*?),?$/m', $sql, $matches)) {
+        if (preg_match_all('/^\s*[`"](.*?)[`"]\s+(.*?),?$/m', $sql, $matches)) {
             foreach ($matches[1] as $i => $c) {
                 if ($c === $column) {
                     return $matches[2][$i];
