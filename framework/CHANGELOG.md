@@ -43,6 +43,7 @@ Yii Framework 2 Change Log
 - Bug #14370: Fixed creating built-in validator in model with same function name (dmirogin)
 - Bug #14492: Fixed error handler not escaping error info debug mode (samdark)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
+- Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 
 2.0.12 June 05, 2017
 --------------------
