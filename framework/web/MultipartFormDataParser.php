@@ -66,6 +66,15 @@ use yii\helpers\StringHelper;
 class MultipartFormDataParser extends BaseObject implements RequestParserInterface
 {
     /**
+     * @var bool whether to parse raw body even for 'POST' request and `$_FILES` already populated.
+     * By default this option is disabled saving performance for 'POST' requests, which are already
+     * processed by PHP automatically.
+     * > Note: if this option is enabled, value of `$_FILES` will be reset on each parse.
+     * @since 2.0.13
+     */
+    public $force = false;
+
+    /**
      * @var int upload file max size in bytes.
      */
     private $_uploadFileMaxSize;
@@ -118,9 +127,13 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
      */
     public function parse($rawBody, $contentType)
     {
-        if (!empty($_POST) || !empty($_FILES)) {
-            // normal POST request is parsed by PHP automatically
-            return $_POST;
+        if (!$this->force) {
+            if (!empty($_POST) || !empty($_FILES)) {
+                // normal POST request is parsed by PHP automatically
+                return $_POST;
+            }
+        } else {
+            $_FILES = [];
         }
 
         if (empty($rawBody)) {
