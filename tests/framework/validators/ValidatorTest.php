@@ -11,7 +11,9 @@ use yii\base\DynamicModel;
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
 use yii\validators\NumberValidator;
+use yii\validators\RequiredValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\data\validators\models\ValidatorTestFunctionModel;
 use yiiunit\data\validators\TestValidator;
 use yiiunit\TestCase;
 
@@ -69,6 +71,18 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::class, $val);
         $this->assertSame('inlineVal', $val->method);
         $this->assertSame(['foo' => 'bar'], $val->params);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14370
+     */
+    public function testCreateBuiltInValidatorWithSameNameFunction()
+    {
+        $model = new ValidatorTestFunctionModel();
+
+        $validator = TestValidator::createValidator('required', $model, ['firstAttribute']);
+
+        $this->assertInstanceOf(RequiredValidator::className(), $validator);
     }
 
     public function testValidate()

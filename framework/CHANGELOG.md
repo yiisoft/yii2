@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 
 2.0.13 under development
 ------------------------
+- Bug #14523: Added `yii\web\MultipartFormDataParser::$force` option allowing to enforce parsing even on 'POST' request (klimov-paul)
 - Bug #14449: Fix PHP 7.2 compatibility bugs and add explicit closure support in `yii\base\Application` (dynasource)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #14206: `MySqlMutex`, `PgsqlMutex` and `OracleMutex` now use `useMaster()` to ensure lock is aquired on the same DB server (cebe, ryusoft)
@@ -61,8 +62,11 @@ Yii Framework 2 Change Log
 - Bug #14423: Fixed `ArrayHelper::merge` behavior with null values for integer-keyed elements (dmirogin)
 - Bug #14406: Fixed caching rules in `yii\web\UrlManager` with different ruleConfig configuration (dmirogin)
 - Chg #7936: Deprecate `yii\base\Object` in favor of `yii\base\BaseObject` for compatibility with PHP 7.2 (rob006, cebe, klimov-paul)
+- Bug #14493: Fixed getting permissions in `yii\rbac\Dbmanger::getPermissionsByUser` by user with id equals 0 (dmirogin)
+- Bug #14370: Fixed creating built-in validator in model with same function name (dmirogin)
 - Bug #14492: Fixed error handler not escaping error info debug mode (samdark)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
+- Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 
 2.0.12 June 05, 2017
 --------------------
