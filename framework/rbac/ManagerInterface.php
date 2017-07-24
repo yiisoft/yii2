@@ -180,7 +180,7 @@ interface ManagerInterface extends CheckAccessInterface
     public function getChildren($name);
 
     /**
-     * Assigns a role or permission to a user.
+     * Assigns a role to a user.
      *
      * @param Role|Permission $role
      * @param string|int $userId the user ID (see [[\yii\web\User::id]])
@@ -190,7 +190,7 @@ interface ManagerInterface extends CheckAccessInterface
     public function assign($role, $userId);
 
     /**
-     * Revokes a role or permission from a user.
+     * Revokes a role from a user.
      * @param Role|Permission $role
      * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return bool whether the revoking is successful
