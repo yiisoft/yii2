@@ -379,7 +379,7 @@ class Security extends Component
 
             $calculatedHash = hash_hmac($this->macHash, $pureData, $key, $rawHash);
 
-            if (hash_equals($hash, $calculatedHash)) {
+            if ($this->compareString($hash, $calculatedHash)) {
                 return $pureData;
             }
         }
