@@ -61,7 +61,7 @@ Upgrade from Yii 2.0.x
 * `::className()` method calls should be replaced with native `::class`.
 * XCache and Zend data cache support was removed. Switch to another caching backends.
 * Rename `InvalidParamException` usage to `InvalidArgumentException`.
-* Moved masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
+* Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
 * If you've used ApcCache and set `useApcu` in your config, remove the option.  
 

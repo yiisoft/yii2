@@ -881,71 +881,8 @@ TEXT;
         $key1 = $this->security->generateRandomKey($input);
     }
 
-    /**
-     * Test the case where opening /dev/urandom fails
-     */
-    public function testRandomKeyNoOptions()
+    public function testGenerateRandomKey()
     {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
-        static::$fopen = false;
-        $this->expectException('yii\base\Exception');
-        $this->expectExceptionMessage('Unable to generate a random key');
-
-        $this->security->generateRandomKey(42);
-    }
-
-    /**
-     * Test the case where reading from /dev/urandom fails
-     */
-    public function testRandomKeyFreadFailure()
-    {
-        static::$functions = ['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false];
-        static::$fread = false;
-        $this->expectException('yii\base\Exception');
-        $this->expectExceptionMessage('Unable to generate a random key');
-
-        $this->security->generateRandomKey(42);
-    }
-
-    /**
-     * returns a set of different combinations of functions available.
-     */
-    public function randomKeyVariants()
-    {
-        return [
-            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
-            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
-            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
-            [['random_bytes' => true,  'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
-            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => true]],
-            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => true,  'mcrypt_create_iv' => false]],
-            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => true]],
-            [['random_bytes' => false, 'openssl_random_pseudo_bytes' => false, 'mcrypt_create_iv' => false]],
-        ];
-    }
-
-    /**
-     * @dataProvider randomKeyVariants
-     */
-    public function testGenerateRandomKey($functions)
-    {
-        foreach ($functions as $fun => $available) {
-            if ($available && !\function_exists($fun)) {
-                $this->markTestSkipped("Can not test generateRandomKey() branch that includes $fun, because it is not available on your system.");
-            }
-        }
-        // there is no /dev/urandom on windows so we expect this to fail
-        if (DIRECTORY_SEPARATOR === '\\' && $functions['random_bytes'] === false && $functions['openssl_random_pseudo_bytes'] === false && $functions['mcrypt_create_iv'] === false) {
-            $this->expectException('yii\base\Exception');
-            $this->expectExceptionMessage('Unable to generate a random key');
-        }
-        // Function mcrypt_create_iv() is deprecated since PHP 7.1
-        if (version_compare(PHP_VERSION, '7.1.0alpha', '>=') && $functions['random_bytes'] === false && $functions['mcrypt_create_iv'] === true) {
-            $this->markTestSkipped('Function mcrypt_create_iv() is deprecated as of PHP 7.1');
-        }
-
-        static::$functions = $functions;
-
         // test various string lengths
         for ($length = 1; $length < 64; $length++) {
             $key1 = $this->security->generateRandomKey($length);
@@ -1223,18 +1160,10 @@ TEXT;
     {
         return [
             ['', ''],
-            [false, ''],
-            [null, ''],
-            [0, ''],
-            [0.00, ''],
-            ['', null],
-            ['', false],
-            ['', 0],
             ['', "\0"],
             ["\0", ''],
             ["\0", "\0"],
             ['0', "\0"],
-            [0, "\0"],
             ['user', 'User'],
             ['password', 'password'],
             ['password', 'passwordpassword'],

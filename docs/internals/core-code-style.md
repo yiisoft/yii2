@@ -224,7 +224,7 @@ $sql = "SELECT *"
 
 ### 5.3 arrays
 
-For arrays we're using PHP 5.4 short array syntax.
+For arrays we're using short array syntax.
 
 #### Numerically indexed
 
