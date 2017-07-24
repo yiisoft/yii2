@@ -42,7 +42,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             if (is_dir($path)) {
                 FileHelper::removeDirectory($path);
             } else {
-                unlink($path);
+                $this->unlink($path);
             }
         }
         closedir($handle);
@@ -194,8 +194,22 @@ class AssetBundleTest extends \yiiunit\TestCase
             $this->assertFileEquals($publishedFile, $sourceFile);
         }
 
-        $this->assertTrue(unlink($bundle->basePath));
+        $this->assertTrue($this->unlink($bundle->basePath));
         return $bundle;
+    }
+
+    /**
+     * Properly removes symlinked directory under Windows, MacOS and Linux
+     *
+     * @param string $file path to symlink
+     * @return bool
+     */
+    protected function unlink($file)
+    {
+        if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
+            return rmdir($file);
+        }
+        return unlink($file);
     }
 
     public function testRegister()
@@ -379,7 +393,7 @@ EOF;
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
 <script src="/defered.js" charset="utf-8" defer></script>4
 EOF;
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
     public function registerFileDataProvider()
