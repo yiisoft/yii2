@@ -82,7 +82,7 @@ class ValidatorTest extends TestCase
 
         $validator = TestValidator::createValidator('required', $model, ['firstAttribute']);
 
-        $this->assertInstanceOf(RequiredValidator::className(), $validator);
+        $this->assertInstanceOf(RequiredValidator::class, $validator);
     }
 
     public function testValidate()
