@@ -18,7 +18,7 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Dependency extends \yii\base\Object
+abstract class Dependency extends \yii\base\BaseObject
 {
     /**
      * @var mixed the dependency data that is saved in cache and later is compared with the

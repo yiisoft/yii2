@@ -17,11 +17,11 @@ ejemplo que la primera letra tiene que estar en mayúsculas, se tendrán que mod
 asignen el valor a la propiedad `label`. La repetición de código conlleva a bugs, y es una practica que se tiene que
 evitar en la medida de lo posible.
 
-Para solventar este problema, Yii introduce la clase base llamada [[yii\base\Object]] que da soporte a la definición
+Para solventar este problema, Yii introduce la clase base llamada [[yii\base\BaseObject]] que da soporte a la definición
 de propiedades basada en los métodos de clase *getter* y *setter*. Si una clase necesita más funcionalidad, debe
-extender a la clase [[yii\base\Object]] o a alguna de sus hijas.
+extender a la clase [[yii\base\BaseObject]] o a alguna de sus hijas.
 
-> Info: Casi todas las clases del núcleo (core) en el framework Yii extienden a [[yii\base\Object]] o a una de
+> Info: Casi todas las clases del núcleo (core) en el framework Yii extienden a [[yii\base\BaseObject]] o a una de
   sus clases hijas. Esto significa que siempre que se encuentre un getter o un setter en una clase del núcleo, se
   puede utilizar como una propiedad.
 
@@ -32,9 +32,9 @@ setter `setLabel()` definen la propiedad `label`, como se muestra a continuació
 ```php
 namespace app\components;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     private $_label;
 
