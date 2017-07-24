@@ -139,7 +139,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         return new DbManager(['db' => $this->getConnection(), 'defaultRoles' => ['myDefaultRole']]);
     }
 
-    private function prepareRoles ($userId)
+    private function prepareRoles($userId)
     {
         $this->auth->removeAll();
 
