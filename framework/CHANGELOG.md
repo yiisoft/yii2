@@ -3,7 +3,9 @@ Yii Framework 2 Change Log
 
 2.0.13 under development
 ------------------------
+
 - Bug #14523: Added `yii\web\MultipartFormDataParser::$force` option allowing to enforce parsing even on 'POST' request (klimov-paul)
+- Bug #14533: Fixed `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` throw exception in case they are set for `yii\db\ActiveRecord` with `$targetClass` pointing to NOSQL ActiveRecord (klimov-paul)
 - Bug #14449: Fix PHP 7.2 compatibility bugs and add explicit closure support in `yii\base\Application` (dynasource)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #14206: `MySqlMutex`, `PgsqlMutex` and `OracleMutex` now use `useMaster()` to ensure lock is aquired on the same DB server (cebe, ryusoft)
