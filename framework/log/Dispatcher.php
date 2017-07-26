@@ -183,7 +183,7 @@ class Dispatcher extends Component
     {
         $targetErrors = [];
         foreach ($this->targets as $target) {
-            if ($target->enabled) {
+            if ($target->isEnabled()) {
                 try {
                     $target->collect($messages, $final);
                 } catch (\Exception $e) {

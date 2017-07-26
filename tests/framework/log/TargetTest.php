@@ -163,6 +163,23 @@ class TargetTest extends TestCase
         $this->expectExceptionMessage('Incorrect 128 value');
         $target->setLevels(128);
     }
+
+    public function testIsEnabled()
+    {
+        /** @var Target $target */
+        $target = $this->getMockForAbstractClass('yii\\log\\Target');
+
+        $target->enabled = true;
+        $this->assertTrue($target->isEnabled());
+
+        $target->enabled = false;
+        $this->assertFalse($target->isEnabled());
+
+        $target->enabled = function ($target) {
+            return empty($target->messages);
+        };
+        $this->assertTrue($target->isEnabled());
+    }
 }
 
 class TestTarget extends Target

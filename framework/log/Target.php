@@ -37,7 +37,7 @@ use yii\web\Request;
 abstract class Target extends Component
 {
     /**
-     * @var bool whether to enable this log target. Defaults to true.
+     * @var bool|callable whether to enable this log target. Defaults to true.
      */
     public $enabled = true;
     /**
@@ -308,5 +308,18 @@ abstract class Target extends Component
         $sessionID = $session && $session->getIsActive() ? $session->getId() : '-';
 
         return "[$ip][$userID][$sessionID]";
+    }
+
+    /**
+     * Whether this target is enabled.
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        if (is_callable($this->enabled)) {
+            return call_user_func($this->enabled, $this);
+        }
+
+        return $this->enabled;
     }
 }
