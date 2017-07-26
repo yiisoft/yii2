@@ -702,7 +702,6 @@
         if (!$.isArray(messages[attribute.id])) {
             messages[attribute.id] = [];
         }
-        $form.trigger(events.afterValidateAttribute, [attribute, messages[attribute.id]]);
 
         attribute.status = 1;
         if ($input.length) {
@@ -725,6 +724,9 @@
             }
             attribute.value = getValue($form, attribute);
         }
+
+        $form.trigger(events.afterValidateAttribute, [attribute, messages[attribute.id]]);
+
         return hasError;
     };
 
