@@ -49,6 +49,17 @@ class FixtureControllerTest extends TestCase
     {
         $this->_fixtureController->globalFixtures = [
             '\yiiunit\data\console\controllers\fixtures\Global',
+        ];
+
+        $this->_fixtureController->actionLoad(['First']);
+
+        $this->assertCount(1, FixtureStorage::$globalFixturesData, 'global fixture data should be loaded');
+        $this->assertCount(1, FixtureStorage::$firstFixtureData, 'first fixture data should be loaded');
+    }
+
+    public function testLoadGlobalFixtureWithFixture()
+    {
+        $this->_fixtureController->globalFixtures = [
             '\yiiunit\data\console\controllers\fixtures\GlobalFixture',
         ];
 
@@ -62,7 +73,6 @@ class FixtureControllerTest extends TestCase
     {
         $this->_fixtureController->globalFixtures = [
             '\yiiunit\data\console\controllers\fixtures\Global',
-            '\yiiunit\data\console\controllers\fixtures\GlobalFixture',
         ];
 
         FixtureStorage::$globalFixturesData[] = 'some seeded global fixture data';
