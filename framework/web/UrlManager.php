@@ -542,7 +542,7 @@ class UrlManager extends Component
      */
     public function setBaseUrl($value)
     {
-        $this->_baseUrl = $value === null ? null : rtrim($value, '/');
+        $this->_baseUrl = $value === null ? null : rtrim(Yii::getAlias($value), '/');
     }
 
     /**
