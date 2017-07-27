@@ -77,6 +77,18 @@ use Yii;
 class BaseObject implements Configurable
 {
     /**
+     * @event ComponentEvent The event that is triggered befote the component's init cycle
+     */
+    const EVENT_BEFORE_INIT = 'beforeInit';
+    
+    /**
+     * @event ComponentEvent The event that is triggered after the component's init cycle
+     *
+     * This is a good place to register custom behaviors on the component
+     */
+    const EVENT_AFTER_INIT = 'afterInit';
+    
+    /**
      * Returns the fully qualified name of this class.
      * @return string the fully qualified name of this class.
      */
@@ -104,7 +116,9 @@ class BaseObject implements Configurable
         if (!empty($config)) {
             Yii::configure($this, $config);
         }
+        $this->trigger(self::EVENT_BEFORE_INIT, new \yii\base\Event);
         $this->init();
+        $this->trigger(self::EVENT_AFTER_INIT, new \yii\base\Event);
     }
 
     /**
