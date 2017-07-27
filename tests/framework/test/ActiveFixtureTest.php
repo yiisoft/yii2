@@ -27,7 +27,15 @@ class CustomerFixture extends ActiveFixture
     ];
 }
 
-class MyDbTestCase
+class CustomFolderFixture extends ActiveFixture
+{
+    public $modelClass = 'yiiunit\data\ar\Customer';
+
+    public $dataFolder = '@app/framework/test/custom';
+}
+
+
+class BaseDbTestCase
 {
     use FixtureTrait;
 
@@ -39,11 +47,24 @@ class MyDbTestCase
     public function tearDown()
     {
     }
+}
 
+class CustomerDbTestCase extends BaseDbTestCase
+{
     public function fixtures()
     {
         return [
             'customers' => CustomerFixture::className(),
+        ];
+    }
+}
+
+class CustomFolderDbTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'customers' => CustomFolderFixture::className(),
         ];
     }
 }
@@ -71,7 +92,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testGetData()
     {
-        $test = new MyDbTestCase();
+        $test = new CustomerDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
@@ -90,7 +111,7 @@ class ActiveFixtureTest extends DatabaseTestCase
 
     public function testGetModel()
     {
-        $test = new MyDbTestCase();
+        $test = new CustomerDbTestCase();
         $test->setUp();
         $fixture = $test->getFixture('customers');
 
@@ -104,5 +125,17 @@ class ActiveFixtureTest extends DatabaseTestCase
         $this->assertEquals(2, $fixture['customer2']['profile_id']);
 
         $test->tearDown();
+    }
+
+    public function testDataFolder()
+    {
+        $test = new CustomFolderDbTestCase();
+
+        $test->setUp();
+        $fixture = $test->getFixture('customers');
+
+        $this->assertEquals(1, $fixture->getModel('folder')->id);
+        $test->tearDown();
+
     }
 }

@@ -10,6 +10,7 @@ namespace yii\test;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\TableSchema;
+use yii\helpers\FileHelper;
 
 /**
  * ActiveFixture represents a fixture backed up by a [[modelClass|ActiveRecord class]] or a [[tableName|database table]].
@@ -95,10 +96,15 @@ class ActiveFixture extends BaseActiveFixture
     protected function getData()
     {
         if ($this->dataFile === null) {
-            $class = new \ReflectionClass($this);
-            $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
 
-            return is_file($dataFile) ? require $dataFile : [];
+            if ($this->dataFolder !== null) {
+                $dataFile = $this->getTableSchema()->fullName . '.php';
+            } else {
+                $class = new \ReflectionClass($this);
+                $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';                
+            }
+
+            return $this->loadDataFile($dataFile);
         }
 
         return parent::getData();

@@ -10,6 +10,7 @@ namespace yii\test;
 use Yii;
 use yii\base\ArrayAccessTrait;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 /**
  * BaseActiveFixture is the base class for fixture classes that support accessing fixture data as ActiveRecord objects.
@@ -32,11 +33,15 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      */
     public $data = [];
     /**
+     * @var string the directory path or [path alias](guide:concept-aliases) that contains the fixture data
+     * @since 2.0.13
+     */
+    public $dataFolder;
+    /**
      * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
-
     /**
      * @var \yii\db\ActiveRecord[] the loaded AR models
      */
@@ -87,23 +92,13 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
     /**
      * Returns the fixture data.
      *
-     * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
-     * The file should return the data array that will be stored in [[data]] after inserting into the database.
-     *
      * @return array the data to be put into the database
      * @throws InvalidConfigException if the specified data file does not exist.
+     * @see [[loadDataFile]]
      */
     protected function getData()
     {
-        if ($this->dataFile === false || $this->dataFile === null) {
-            return [];
-        }
-        $dataFile = Yii::getAlias($this->dataFile);
-        if (is_file($dataFile)) {
-            return require $dataFile;
-        }
-
-        throw new InvalidConfigException("Fixture data file does not exist: {$this->dataFile}");
+        return $this->loadDataFile($this->dataFile);
     }
 
     /**
@@ -114,5 +109,33 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
         parent::unload();
         $this->data = [];
         $this->_models = [];
+    }
+
+    /**
+     * Returns the fixture data.
+     *
+     * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
+     * The file should return the data array that will be stored in [[data]] after inserting into the database.
+     *
+     * @param string $dataFile the data file path
+     * @return array the data to be put into the database
+     * @throws InvalidConfigException if the specified data file does not exist.
+     */
+    protected function loadDataFile($dataFile)
+    {
+        if ($dataFile === false || $dataFile === null) {
+            return [];
+        }
+
+        if ($this->dataFolder !== null) {
+            $dataFile = $this->dataFolder . '/' . basename($dataFile);
+        }
+
+        $dataFile = Yii::getAlias($dataFile);
+        if (is_file($dataFile)) {
+            return require $dataFile;
+        }
+
+        throw new InvalidConfigException("Fixture data file does not exist: {$dataFile}");
     }
 }
