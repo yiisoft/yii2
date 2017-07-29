@@ -112,6 +112,8 @@ Yii Framework 2 Change Log
 - Bug #14074: Fixed default value of `yii\console\controllers\FixtureController::$globalFixtures` to contain valid class name (lynicidn)
 - Bug #14094: Fixed bug when single `yii\web\UrlManager::createUrl()` call my result multiple calls of `yii\web\UrlRule::createUrl()` for the same rule (rossoneri)
 - Bug #14133: Fixed bug when calculating timings with mixed nested profile begin and end in `yii\log\Logger::calculateTimings()` (bizley)
+- Bug #14186: Forced validation in `yiiActiveForm` do not trigger `afterValidate` event (arogachev)
+- Bug #14510: The state of a form is always "not validated" when using forced validation in `yiiActiveForm` (arogachev)
 - Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
 - Enh #4999: Added support for wildcards at `yii\filters\AccessRule::$controllers` (klimov-paul)
 - Enh #5108: `yii\validators\DateValidator` now resets `$timestampAttribute` value on empty validated attribute value (klimov-paul)
