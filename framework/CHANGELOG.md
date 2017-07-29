@@ -49,7 +49,7 @@ Yii Framework 2 Change Log
 - Bug #14492: Fixed error handler not escaping error info debug mode (samdark)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
-- Enh #14546: Added `dataFolder` property into `BaseActiveFixture` (leandrogehlen)
+- Enh #14546: Added `dataDirectory` property into `BaseActiveFixture` (leandrogehlen)
 
 2.0.12 June 05, 2017
 --------------------

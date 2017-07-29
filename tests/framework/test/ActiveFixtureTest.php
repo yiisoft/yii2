@@ -31,7 +31,7 @@ class CustomFolderFixture extends ActiveFixture
 {
     public $modelClass = 'yiiunit\data\ar\Customer';
 
-    public $dataFolder = '@app/framework/test/custom';
+    public $dataDirectory = '@app/framework/test/custom';
 }
 
 

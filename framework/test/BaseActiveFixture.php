@@ -35,7 +35,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      * @var string the directory path or [path alias](guide:concept-aliases) that contains the fixture data
      * @since 2.0.13
      */
-    public $dataFolder;
+    public $dataDirectory;
     /**
      * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
      * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
@@ -126,8 +126,8 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
             return [];
         }
 
-        if ($this->dataFolder !== null) {
-            $dataFile = $this->dataFolder . '/' . basename($dataFile);
+        if ($this->dataDirectory !== null) {
+            $dataFile = $this->dataDirectory . '/' . basename($dataFile);
         }
 
         $dataFile = Yii::getAlias($dataFile);
