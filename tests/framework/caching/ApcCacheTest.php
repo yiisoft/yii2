@@ -23,14 +23,8 @@ class ApcCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (extension_loaded('apcu')) {
-            $config = [
-                'useApcu' => true
-            ];
-        } elseif (extension_loaded('apc')) {
-            $config = [];
-        } else {
-            $this->markTestSkipped('APC or APCu not installed. Skipping.');
+        if (!extension_loaded('apcu')) {
+            $this->markTestSkipped('APCu not installed. Skipping.');
         }
 
         if (!ini_get('apc.enable_cli')) {
