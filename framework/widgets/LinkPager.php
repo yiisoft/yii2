@@ -42,10 +42,10 @@ class LinkPager extends Widget
      */
     public $options = ['class' => 'pagination'];
     /**
-     * @var array HTML attributes which will be applied to all link wrappers
+     * @var array HTML attributes which will be applied to all link containers
      * @since 2.0.13
      */
-    public $linkWrapOptions = [];
+    public $linkContainerOptions = [];
     /**
      * @var array HTML attributes for the link in a pager container tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
@@ -234,7 +234,7 @@ class LinkPager extends Widget
      */
     protected function renderPageButton($label, $page, $class, $disabled, $active)
     {
-        $options = $this->linkWrapOptions;
+        $options = $this->linkContainerOptions;
         $linkWrapTag = ArrayHelper::remove($options, 'tag', 'li');
         Html::addCssClass($options, empty($class) ? $this->pageCssClass : $class);
 

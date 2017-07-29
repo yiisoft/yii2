@@ -129,7 +129,7 @@ class LinkPagerTest extends \yiiunit\TestCase
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(1),
-            'linkWrapOptions' => [
+            'linkContainerOptions' => [
                 'tag' => 'div',
                 'class' => 'my-class'
             ]
