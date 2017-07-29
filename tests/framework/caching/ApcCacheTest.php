@@ -32,7 +32,7 @@ class ApcCacheTest extends CacheTestCase
         }
 
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new ApcCache($config);
+            $this->_cacheInstance = new ApcCache();
         }
 
         return $this->_cacheInstance;
