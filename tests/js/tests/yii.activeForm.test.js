@@ -10,7 +10,7 @@ describe('yii.activeForm', function () {
     var yiiPath = 'framework/assets/yii.js';
     var jQueryPath = 'vendor/bower-asset/jquery/dist/jquery.js';
     var $;
-    var $mainForm;
+    var $activeForm;
 
     function registerYii() {
         var code = fs.readFileSync(yiiPath);
@@ -25,11 +25,7 @@ describe('yii.activeForm', function () {
         var yii = registerYii();
         var code = fs.readFileSync(yiiActiveFormPath);
         var script = new vm.Script(code);
-        var context = new vm.createContext({
-            window: window,
-            document: window.document,
-            yii: yii
-        });
+        var context = new vm.createContext({window: window, document: window.document, yii: yii});
         script.runInContext(context);
     }
 
@@ -47,40 +43,75 @@ describe('yii.activeForm', function () {
         sinon = require('sinon');
     });
 
-    beforeEach(function () {
-        $mainForm = $('#main');
+    describe('validate method', function () {
+        var windowSetTimeoutStub;
+        var afterValidateSpy;
+
+        beforeEach(function () {
+            windowSetTimeoutStub = sinon.stub(window, 'setTimeout', function (callback) {
+                callback();
+            });
+            afterValidateSpy = sinon.spy();
+        });
+
+        afterEach(function () {
+            windowSetTimeoutStub.restore();
+            afterValidateSpy.reset();
+        });
+
+        describe('with forceValidate parameter set to true', function () {
+            it('should trigger manual form validation', function () {
+                var inputId = 'name';
+
+                $activeForm = $('#w0');
+                $activeForm.yiiActiveForm([
+                    {
+                        id: inputId,
+                        input: '#' + inputId
+                    }
+                ]).on('afterValidate', afterValidateSpy);
+
+                $activeForm.yiiActiveForm('validate', true);
+                // https://github.com/yiisoft/yii2/issues/14510
+                assert.isTrue($activeForm.data('yiiActiveForm').validated);
+                // https://github.com/yiisoft/yii2/issues/14186
+                assert.isTrue(afterValidateSpy.calledOnce);
+            });
+        });
     });
 
     describe('events', function () {
         describe('afterValidateAttribute', function () {
-            var afterValidateAttributeEventSpy;
-            var dataForAssert;
+            var afterValidateAttributeSpy;
+            var eventData;
 
             before(function () {
-                afterValidateAttributeEventSpy = sinon.spy(function (event, data) {
-                    dataForAssert = data.value;
+                afterValidateAttributeSpy = sinon.spy(function (event, data) {
+                    eventData = data;
                 });
             });
 
             after(function () {
-                afterValidateAttributeEventSpy.reset();
+                afterValidateAttributeSpy.reset();
             });
 
-            it('should update attribute value', function () {
-                var inputId = 'nameInput',
-                    $input = $('#' + inputId);
-                $mainForm.yiiActiveForm([
+            // https://github.com/yiisoft/yii2/issues/14318
+
+            it('should allow to get updated attribute value', function () {
+                var inputId = 'name';
+                var $input = $('#' + inputId);
+
+                $activeForm = $('#w0');
+                $activeForm.yiiActiveForm([
                     {
-                        id : inputId,
+                        id: inputId,
                         input: '#' + inputId
                     }
-                ]).on('afterValidateAttribute', afterValidateAttributeEventSpy);
+                ]).on('afterValidateAttribute', afterValidateAttributeSpy);
 
-                // Set new value, update attribute
-                $input.val('newValue');
-                $mainForm.yiiActiveForm('updateAttribute', inputId);
-
-                assert.equal('newValue', dataForAssert);
+                $input.val('New value');
+                $activeForm.yiiActiveForm('updateAttribute', inputId);
+                assert.equal('New value', eventData.value);
             });
         });
     });
