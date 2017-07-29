@@ -1,21 +1,19 @@
-Using Yii as a Micro-framework
-=======================================
+# Using Yii as a Micro-framework
 
-Yii can be easily used without "whistles and bells" that comes with basic and advanced templates. In other words, Yii is already a micro-framework. You don't need all the folder structure provided by templates to work with Yii.
+Yii can be easily used without features included in basic and advanced templates. In other words, Yii is already a micro-framework. It is not required to have the directory structure provided by templates to work with Yii.
 
-This is especially handy when you do not need all the good things that comes with templates like assets or views and associated stuffs as in the case of JSON APIs web applications. This section will show you how to do that.
+This is especially handy when you do not need all the pre-defined template code like assets or views. One of such cases is building a JSON API. In the following sections will show how to do that.
 
-Create Project
-----------------------------------------
+## Create Project
 
-Create a folder for your project files and change working directory to that path. Commands used in this manual are Unix-based but similar commands exist in Windows.
+Create a directory for your project files and change working directory to that path. Commands used in examples are Unix-based but similar commands exist in Windows.
 
 ```bash
 mkdir micro-app
 cd micro-app
 ```
 
-> Note: Composer knowledge is required to continue. If you don't know yet how to use composer, please take time to read [Composer Guide](https://getcomposer.org/doc/00-intro.md).
+> Note: Composer knowledge is required to continue. If you don't know how to use composer yet, please take time to read [Composer Guide](https://getcomposer.org/doc/00-intro.md).
 
 Create file `composer.json` under the `micro-app` directory using your favorite editor and add the following:
 
@@ -35,8 +33,7 @@ Create file `composer.json` under the `micro-app` directory using your favorite 
 
 Save the file and run the `composer install` command. This will install the framework with all its dependencies. Alternatively you can skip the manual creation of the `composer.json` file and just run the command `composer require yiisoft/yii2`. This will create the `composer.json` file as well as install the dependencies.
 
-Create Project Structure
-----------------------------------------
+## Create Project Structure
 
 After you have installed the framework, it's time to create an entry point for the application. Entry point is the very first file that will be executed when you try to open your application. For the security reasons, it is recommended to put the entrypoint file in a separate directory and make it a web root. 
 
@@ -65,20 +62,19 @@ $config = [
 (new yii\web\Application($config))->run();
 ```
 
-> Note: Config can be moved to a separate file and directory.
+> Note: Config can be moved to a separate file located in a separate directory.
 
 Your project is ready for coding. Although it's up to you to decide the project directory structure, as long as you observe namespaces.
 
-Create Necessary Directories
-------------
+## Create Necessary Directories
 
-In order to demonstrate the usage of our "micro framework", we will create simple Rest API for Posts. 
+In order to demonstrate the usage of our "micro framework", we will create simple REST API for posts. 
 
 Create directories `models` and `controllers` respectively. 
 
-> Note: In our example, we have changed default application namespace `app` to a `micro` just to just demonstrate that you are not tied to that name (in case you thought you were), then adjusted [Controllers Namespace](http://www.yiiframework.com/doc-2.0/yii-base-application.html#$controllerNamespace-detail) and set the correct alias.
+> Note: In our example, we have changed default application namespace `app` to a `micro` to demonstrate that you are not tied to that name (in case you thought you were), then adjusted [controllers namespace](http://www.yiiframework.com/doc-2.0/yii-base-application.html#$controllerNamespace-detail) and set the correct alias.
 
-Create file `Post.php` in the `models` directory. This is the code for the model.
+Create `Post.php` file in the `models` directory. This is the code for the model.
 
 ```php
 namespace micro\models;
