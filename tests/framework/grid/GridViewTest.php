@@ -94,7 +94,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertCount(count($row), $columns);
 
         foreach ($columns as $index => $column) {
-            $this->assertInstanceOf(DataColumn::className(), $column);
+            $this->assertInstanceOf(DataColumn::class, $column);
             $this->assertArrayHasKey($column->attribute, $row);
         }
 
@@ -115,7 +115,7 @@ class GridViewTest extends \yiiunit\TestCase
         $this->assertCount(count($row) - 2, $columns);
 
         foreach ($columns as $index => $column) {
-            $this->assertInstanceOf(DataColumn::className(), $column);
+            $this->assertInstanceOf(DataColumn::class, $column);
             $this->assertArrayHasKey($column->attribute, $row);
             $this->assertNotEquals('relation', $column->attribute);
             $this->assertNotEquals('otherRelation', $column->attribute);

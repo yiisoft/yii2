@@ -33,7 +33,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $query = new Query();
         $query->select('id')->from('example')->limit(10)->offset(5);
 
-        list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
 
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
@@ -47,7 +47,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $query = new Query();
         $query->select('id')->from('example')->limit(10);
 
-        list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
 
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);
@@ -61,7 +61,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $query = new Query();
         $query->select('id')->from('example')->offset(10);
 
-        list($actualQuerySql, $actualQueryParams) = $this->getQueryBuilder()->build($query);
+        [$actualQuerySql, $actualQueryParams] = $this->getQueryBuilder()->build($query);
 
         $this->assertEquals($expectedQuerySql, $actualQuerySql);
         $this->assertEquals($expectedQueryParams, $actualQueryParams);

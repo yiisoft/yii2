@@ -125,7 +125,7 @@ If you were using Yii 1 previously, it is likely you have a running Yii 1 applic
 the whole application in Yii 2, you may just want to enhance it using some of the features only available in Yii 2.
 This can be achieved as described below.
 
-> Note: Yii 2 requires PHP 5.4 or above. You should make sure that both your server and the existing application
+> Note: Yii 2.1 requires PHP 7.1 or above. You should make sure that both your server and the existing application
 > support this.
 
 First, install Yii 2 in your existing application by following the instructions given in the [last subsection](#using-yii-in-others).

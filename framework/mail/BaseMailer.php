@@ -75,7 +75,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     /**
      * @var string the default class name of the new message instances created by [[createMessage()]]
      */
-    public $messageClass = 'yii\mail\BaseMessage';
+    public $messageClass = BaseMessage::class;
     /**
      * @var bool whether to save email messages as files under [[fileTransportPath]] instead of sending them
      * to the actual recipients. This is usually used during development for debugging purpose.
@@ -142,7 +142,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
     protected function createView(array $config)
     {
         if (!array_key_exists('class', $config)) {
-            $config['class'] = View::className();
+            $config['class'] = View::class;
         }
 
         return Yii::createObject($config);

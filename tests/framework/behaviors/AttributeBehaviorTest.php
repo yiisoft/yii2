@@ -130,7 +130,7 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     {
         return [
             'attribute' => [
-                'class' => AttributeBehavior::className(),
+                'class' => AttributeBehavior::class,
                 'attributes' => [
                     self::EVENT_BEFORE_VALIDATE => 'alias',
                 ],

@@ -31,7 +31,7 @@ class DbSessionTest extends TestCase
         }
         $this->mockApplication();
         Yii::$app->set('db', [
-            'class' => Connection::className(),
+            'class' => Connection::class,
             'dsn' => 'sqlite::memory:',
         ]);
     }
@@ -128,7 +128,7 @@ class DbSessionTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'db' => [
-                    'class' => Connection::className(),
+                    'class' => Connection::class,
                     'dsn' => 'sqlite::memory:',
                 ],
             ],

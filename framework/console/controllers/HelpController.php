@@ -55,7 +55,7 @@ class HelpController extends Controller
                 throw new Exception("No help for unknown command \"$name\".");
             }
 
-            list($controller, $actionID) = $result;
+            [$controller, $actionID] = $result;
 
             $actions = $this->getActions($controller);
             if ($actionID !== '' || count($actions) === 1 && $actions[0] === $controller->defaultAction) {
@@ -82,7 +82,7 @@ class HelpController extends Controller
                 continue;
             }
             /** @var $controller Controller */
-            list($controller, $actionID) = $result;
+            [$controller, $actionID] = $result;
             $actions = $this->getActions($controller);
             if (!empty($actions)) {
                 $prefix = $controller->getUniqueId();
@@ -110,7 +110,7 @@ class HelpController extends Controller
         }
 
         /** @var Controller $controller */
-        list($controller, $actionID) = $result;
+        [$controller, $actionID] = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
             return;
@@ -145,7 +145,7 @@ class HelpController extends Controller
         }
 
         /** @var Controller $controller */
-        list($controller, $actionID) = $result;
+        [$controller, $actionID] = $result;
         $action = $controller->createAction($actionID);
         if ($action === null) {
             return;
@@ -193,7 +193,7 @@ class HelpController extends Controller
 
             $result = Yii::$app->createController($command);
             if ($result !== false && $result[0] instanceof Controller) {
-                list($controller, $actionID) = $result;
+                [$controller, $actionID] = $result;
                 /** @var Controller $controller */
                 $description = $controller->getHelpSummary();
             }
@@ -272,7 +272,7 @@ class HelpController extends Controller
     {
         if (class_exists($controllerClass)) {
             $class = new \ReflectionClass($controllerClass);
-            return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
+            return !$class->isAbstract() && $class->isSubclassOf(Controller::class);
         }
 
         return false;
@@ -292,7 +292,7 @@ class HelpController extends Controller
                 $result = Yii::$app->createController($command);
                 if ($result !== false && $result[0] instanceof Controller) {
                     /** @var $controller Controller */
-                    list($controller, $actionID) = $result;
+                    [$controller, $actionID] = $result;
                     $actions = $this->getActions($controller);
                     if (!empty($actions)) {
                         $prefix = $controller->getUniqueId();
@@ -318,7 +318,7 @@ class HelpController extends Controller
 
                 $result = Yii::$app->createController($command);
                 if ($result !== false && $result[0] instanceof Controller) {
-                    list($controller, $actionID) = $result;
+                    [$controller, $actionID] = $result;
                     $actions = $this->getActions($controller);
                     if (!empty($actions)) {
                         $prefix = $controller->getUniqueId();

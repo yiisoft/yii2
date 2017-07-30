@@ -109,7 +109,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
     public function testAsIntegerException()
     {
@@ -117,7 +117,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
     public function testAsIntegerException2()
     {

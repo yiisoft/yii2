@@ -558,7 +558,7 @@ class User extends Component
         }
         $data = json_decode($value, true);
         if (count($data) == 3) {
-            list($id, $authKey, $duration) = $data;
+            [$id, $authKey, $duration] = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
@@ -751,11 +751,14 @@ class User extends Component
 
     /**
      * Returns the access checker used for checking access.
+     *
+     * By default this is the `authManager` application component.
+     *
      * @return CheckAccessInterface
      * @since 2.0.9
      */
     protected function getAccessChecker()
     {
-        return $this->accessChecker !== null ? $this->accessChecker : $this->getAuthManager();
+        return $this->accessChecker !== null ? $this->accessChecker : Yii::$app->getAuthManager();
     }
 }

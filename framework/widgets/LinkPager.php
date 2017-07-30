@@ -147,13 +147,14 @@ class LinkPager extends Widget
     /**
      * Executes the widget.
      * This overrides the parent implementation by displaying the generated page buttons.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
         if ($this->registerLinkTags) {
             $this->registerLinkTags();
         }
-        echo $this->renderPageButtons();
+        return $this->renderPageButtons();
     }
 
     /**
@@ -198,7 +199,7 @@ class LinkPager extends Widget
         }
 
         // internal pages
-        list($beginPage, $endPage) = $this->getPageRange();
+        [$beginPage, $endPage] = $this->getPageRange();
         for ($i = $beginPage; $i <= $endPage; ++$i) {
             $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
         }

@@ -30,7 +30,7 @@ class JsonTest extends TestCase
     public function testEncode()
     {
         // Arrayable data encoding
-        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable = $this->createMock(\yii\base\Arrayable::class);
         $dataArrayable->method('toArray')->willReturn([]);
         $actual = Json::encode($dataArrayable);
         $this->assertSame('{}', $actual);
@@ -171,15 +171,15 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
         Json::decode($json);
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Invalid JSON data.
      */
-    public function testDecodeInvalidParamException()
+    public function testDecodeInvalidArgumentException()
     {
         Json::decode([]);
     }
@@ -190,7 +190,7 @@ class JsonTest extends TestCase
         try {
             $json = "{'a': '1'}";
             Json::decode($json);
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (\yii\base\InvalidArgumentException $e) {
             $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_SYNTAX'], $e->getMessage());
         }
 
@@ -200,7 +200,7 @@ class JsonTest extends TestCase
             $data = ['a' => $fp];
             Json::encode($data);
             fclose($fp);
-        } catch (\yii\base\InvalidParamException $e) {
+        } catch (\yii\base\InvalidArgumentException $e) {
             if (PHP_VERSION_ID >= 50500) {
                 $this->assertSame(BaseJson::$jsonErrorMessages['JSON_ERROR_UNSUPPORTED_TYPE'], $e->getMessage());
             } else {

@@ -79,10 +79,6 @@ class PhpManagerTest extends ManagerTestCase
         static::$time = null;
         parent::setUp();
 
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('PhpManager is not compatible with HHVM.');
-        }
-
         $this->mockApplication();
         $this->removeDataFiles();
         $this->auth = $this->createManager();
@@ -136,7 +132,7 @@ class PhpManagerTest extends ManagerTestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
     public function testOverwriteName()
     {

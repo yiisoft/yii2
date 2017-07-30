@@ -208,7 +208,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' が挿入されました');
 });
 ```
@@ -226,11 +226,11 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     var_dump($event->sender);  // "null" を表示
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 この場合、`$event->sender` は、オブジェクトインスタンスではなく、イベントをトリガするクラスの名前を指すことに注意してください。
@@ -242,10 +242,10 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 ```php
 // $handler をデタッチ
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // Foo::EVENT_HELLO のすべてのハンドラをデタッチ
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 
@@ -291,26 +291,26 @@ class Developer extends Component implements DanceEventInterface
 これらのクラスのどれかによってトリガされた `EVENT_DANCE` を扱うためには、インターフェイスの名前を最初の引数にして [[yii\base\Event::on()|Event::on()]] を呼びます。
 
 ```php
-Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
     Yii::trace(get_class($event->sender) . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
-});
+})
 ```
 
 これらのクラスのイベントをトリガすることも出来ます。
 
 ```php
 // trigger event for Dog class
-Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Dog::class, DanceEventInterface::EVENT_DANCE);
 
 // trigger event for Developer class
-Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 ただし、このインタフェイスを実装する全クラスのイベントをトリガすることは出来ない、ということに注意して下さい。
 
 ```php
 // これは動かない
-Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE); // エラー
 ```
 
 イベントハンドラをデタッチするためには、[[yii\base\Event::off()|Event::off()]] を呼びます。
@@ -318,10 +318,10 @@ Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_
 
 ```php
 // $handler をデタッチ
-Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, $handler);
 
 // DanceEventInterface::EVENT_DANCE の全てのハンドラをデタッチ
-Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 

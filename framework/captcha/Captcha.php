@@ -50,7 +50,7 @@ use yii\widgets\InputWidget;
  * method, for example like this:
  *
  * ```php
- * <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), [
+ * <?= $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, [
  *     // configure additional widget properties here
  * ]) ?>
  * ```
@@ -65,7 +65,7 @@ class Captcha extends InputWidget
      * The action represented by this route must be an action of [[CaptchaAction]].
      * Please refer to [[\yii\helpers\Url::toRoute()]] for acceptable formats.
      */
-    public $captchaAction = 'site/captcha';
+    public $captchaAction = '/site/captcha';
     /**
      * @var array HTML attributes to be applied to the CAPTCHA image tag.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.

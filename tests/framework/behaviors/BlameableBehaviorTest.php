@@ -133,7 +133,7 @@ class BlameableBehaviorTest extends TestCase
     {
         $model = new ActiveRecordBlameable([
             'as blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
                 'attributes' => [
                     BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'created_by',
                     BaseActiveRecord::EVENT_BEFORE_INSERT => ['created_by', 'updated_by'],
@@ -171,7 +171,7 @@ class ActiveRecordBlameable extends ActiveRecord
     {
         return [
             'blameable' => [
-                'class' => BlameableBehavior::className(),
+                'class' => BlameableBehavior::class,
             ],
         ];
     }

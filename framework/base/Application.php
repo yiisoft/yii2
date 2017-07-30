@@ -363,7 +363,7 @@ abstract class Application extends Module
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the application.
      * @property string the root directory of the application.
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -624,14 +624,14 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'log' => ['class' => 'yii\log\Dispatcher'],
-            'view' => ['class' => 'yii\web\View'],
-            'formatter' => ['class' => 'yii\i18n\Formatter'],
-            'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
-            'urlManager' => ['class' => 'yii\web\UrlManager'],
-            'assetManager' => ['class' => 'yii\web\AssetManager'],
-            'security' => ['class' => 'yii\base\Security'],
+            'security' => ['class' => Security::class],
+            'formatter' => ['class' => \yii\i18n\Formatter::class],
+            'i18n' => ['class' => \yii\i18n\I18N::class],
+            'log' => ['class' => \yii\log\Dispatcher::class],
+            'mailer' => ['class' => \yii\swiftmailer\Mailer::class],
+            'assetManager' => ['class' => \yii\web\AssetManager::class],
+            'urlManager' => ['class' => \yii\web\UrlManager::class],
+            'view' => ['class' => \yii\web\View::class],
         ];
     }
 

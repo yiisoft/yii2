@@ -1,6 +1,28 @@
 Yii Framework 2 Change Log
 ==========================
 
+2.1.0 under development
+-----------------------
+
+- Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
+- Enh #12385: Methods `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()` have been added to `yii\i18n\MessageInterface` allowing setup of custom message headers (klimov-paul)
+- Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
+- Enh #12938: Allow to pass additional parameters to `yii\base\View::renderDynamic()` (mikehaertl)
+- Enh #13006: Added a `/` to the `yii\captcha\Captcha::$captchaAction` string to work correctly in a module also (boehsermoe)
+- Removed methods marked as deprecated in 2.0.x (samdark)
+- Chg #10771: Consistent behavior of `run()` method in all framework widgets. All return the result now for better extensibility (pkirill99, cebe)
+- Chg #11397: Minimum required version of PHP is 7.1 now (samdark)
+- Chg: Removed `yii\base\Object::className()` in favor of native PHP syntax `::class`, which does not trigger autoloading (cebe)
+- Chg #12074: Updated `yii\widgets\ActiveField::hint()` method signature to match `label()` (PowerGamer1, samdark)
+- Chg #11560: Removed XCache and Zend data cache support as caching backends (samdark)
+- Chg #7770: Updated the fallback date formats used when no `intl` extension is installed to match the defaults of the latest ICU version (cebe)
+- Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
+- Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
+- Chg: Moved masked input field widget into separate extension https://github.com/yiisoft/yii2-maskedinput (samdark)
+- Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
+- Chg #13885: Removed APC support in ApcCache. APCu works as before (samdark) 
+- Chg #14178: Removed HHVM-specific code (samdark)
+
 2.0.13 under development
 ------------------------
 

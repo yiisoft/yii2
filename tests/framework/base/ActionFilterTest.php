@@ -37,8 +37,8 @@ class ActionFilterTest extends TestCase
         // all filters pass
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
+                'filter1' => Filter1::class,
+                'filter3' => Filter3::class,
             ],
         ]);
         $this->assertNull($controller->result);
@@ -49,9 +49,9 @@ class ActionFilterTest extends TestCase
         // a filter stops in the middle
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter2' => Filter2::className(),
-                'filter3' => Filter3::className(),
+                'filter1' => Filter1::class,
+                'filter2' => Filter2::class,
+                'filter3' => Filter3::class,
             ],
         ]);
         $this->assertNull($controller->result);
@@ -62,9 +62,9 @@ class ActionFilterTest extends TestCase
         // the first filter stops
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter2' => Filter2::className(),
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
+                'filter2' => Filter2::class,
+                'filter1' => Filter1::class,
+                'filter3' => Filter3::class,
             ],
         ]);
         $this->assertNull($controller->result);
@@ -75,9 +75,9 @@ class ActionFilterTest extends TestCase
         // the last filter stops
         $controller = new FakeController('fake', Yii::$app, [
             'behaviors' => [
-                'filter1' => Filter1::className(),
-                'filter3' => Filter3::className(),
-                'filter2' => Filter2::className(),
+                'filter1' => Filter1::class,
+                'filter3' => Filter3::class,
+                'filter2' => Filter2::class,
             ],
         ]);
         $this->assertNull($controller->result);

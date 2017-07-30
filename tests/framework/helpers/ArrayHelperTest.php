@@ -56,7 +56,7 @@ class ArrayHelperTest extends TestCase
 
     public function testToArray()
     {
-        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable = $this->createMock(\yii\base\Arrayable::class);
         $dataArrayable->method('toArray')->willReturn([]);
         $this->assertEquals([], ArrayHelper::toArray($dataArrayable));
         $this->assertEquals(['foo'], ArrayHelper::toArray('foo'));
@@ -82,7 +82,7 @@ class ArrayHelperTest extends TestCase
             '_content' => 'test',
             'length' => 4,
         ], ArrayHelper::toArray($object, [
-            $object->className() => [
+            get_class($object) => [
                 'id', 'secret',
                 '_content' => 'content',
                 'length' => function ($post) {
@@ -110,13 +110,13 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->className() => [
+            get_class($object) => [
                 'id', 'subObject',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
                 },
             ],
-            $object->subObject->className() => [
+            get_class($object->subObject) => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -132,7 +132,7 @@ class ArrayHelperTest extends TestCase
                 'id_plus_1' => 124,
             ],
         ], ArrayHelper::toArray($object, [
-            $object->subObject->className() => [
+            get_class($object->subObject) => [
                 'id',
                 'id_plus_1' => function ($post) {
                     return $post->id + 1;
@@ -343,18 +343,18 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
-    public function testMultisortInvalidParamExceptionDirection()
+    public function testMultisortInvalidArgumentExceptionDirection()
     {
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], []);
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      */
-    public function testMultisortInvalidParamExceptionSortFlag()
+    public function testMultisortInvalidArgumentExceptionSortFlag()
     {
         $data = ['foo' => 'bar'];
         ArrayHelper::multisort($data, ['foo'], ['foo'], []);
@@ -803,20 +803,20 @@ class ArrayHelperTest extends TestCase
 
     /**
      * This is expected to result in a PHP error
-     * @expectedException \PHPUnit_Framework_Error
      */
     public function testGetValueNonexistingProperties1()
     {
+        $this->expectException(\PHPUnit\Framework\Error\Error::class);
         $object = new Post1();
         $this->assertEquals(null, ArrayHelper::getValue($object, 'nonExisting'));
     }
 
     /**
      * This is expected to result in a PHP error
-     * @expectedException \PHPUnit_Framework_Error
      */
     public function testGetValueNonexistingProperties2()
     {
+        $this->expectException(\PHPUnit\Framework\Error\Error::class);
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
     }
@@ -1180,7 +1180,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $haystack must be an array or implement Traversable
      */
     public function testInException()
@@ -1201,7 +1201,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Argument $needles must be an array or implement Traversable
      */
     public function testIsSubsetException()

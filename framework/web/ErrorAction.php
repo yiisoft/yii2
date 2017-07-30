@@ -24,7 +24,7 @@ use yii\base\UserException;
  * public function actions()
  * {
  *     return [
- *         'error' => ['class' => 'yii\web\ErrorAction'],
+ *         'error' => ['class' => \yii\web\ErrorAction::class,
  *     ];
  * }
  * ```

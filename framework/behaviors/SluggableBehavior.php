@@ -26,7 +26,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::className(),
+ *             'class' => SluggableBehavior::class,
  *             'attribute' => 'title',
  *             // 'slugAttribute' => 'slug',
  *         ],
@@ -47,7 +47,7 @@ use yii\validators\UniqueValidator;
  * {
  *     return [
  *         [
- *             'class' => SluggableBehavior::className(),
+ *             'class' => SluggableBehavior::class,
  *             'slugAttribute' => 'alias',
  *         ],
  *     ];
@@ -239,7 +239,7 @@ class SluggableBehavior extends AttributeBehavior
         /* @var $model BaseActiveRecord */
         $validator = Yii::createObject(array_merge(
             [
-                'class' => UniqueValidator::className(),
+                'class' => UniqueValidator::class
             ],
             $this->uniqueValidator
         ));

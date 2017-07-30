@@ -200,7 +200,7 @@ class Logger extends Component
      * @param array $categories list of categories that you are interested in.
      * You can use an asterisk at the end of a category to do a prefix match.
      * For example, 'yii\db\*' will match categories starting with 'yii\db\',
-     * such as 'yii\db\Connection'.
+     * such as `yii\db\Connection`.
      * @param array $excludeCategories list of categories that you want to exclude
      * @return array the profiling results. Each element is an array consisting of these elements:
      * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`.
@@ -252,7 +252,10 @@ class Logger extends Component
      */
     public function getDbProfiling()
     {
-        $timings = $this->getProfiling(['yii\db\Command::query', 'yii\db\Command::execute']);
+        $timings = $this->getProfiling([
+            'yii\db\Command::query',
+            'yii\db\Command::execute',
+        ]);
         $count = count($timings);
         $time = 0;
         foreach ($timings as $timing) {
@@ -275,8 +278,8 @@ class Logger extends Component
         $stack = [];
 
         foreach ($messages as $i => $log) {
-            list($token, $level, $category, $timestamp, $traces) = $log;
-            $memory = isset($log[5]) ? $log[5] : 0;
+            [$token, $level, $category, $timestamp, $traces] = $log;
+            $memory = $log[5] ?? 0;
             $log[6] = $i;
             $hash = md5(json_encode($token));
             if ($level == self::LEVEL_PROFILE_BEGIN) {
@@ -291,7 +294,7 @@ class Logger extends Component
                         'level' => count($stack) - 1,
                         'duration' => $timestamp - $stack[$hash][3],
                         'memory' => $memory,
-                        'memoryDiff' => $memory - (isset($stack[$hash][5]) ? $stack[$hash][5] : 0),
+                        'memoryDiff' => $memory - ($stack[$hash][5] ?? 0),
                     ];
                     unset($stack[$hash]);
                 }
