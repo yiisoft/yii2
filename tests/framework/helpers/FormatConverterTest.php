@@ -80,6 +80,18 @@ class FormatConverterTest extends TestCase
                             $this->convertFormat($format),
                             'UTC'
                         );
+                        switch ($format) {
+                            case 'short' :
+                                $expected = str_replace('yy', 'yy,', $expected);
+                                break;
+                            case 'medium' :
+                                $expected = str_replace(' y', ' y,', $expected);
+                                break;
+                            case 'long' :
+                            case 'full' :
+                                $expected = str_replace(' y', " y 'at'", $expected);
+                                break;
+                        }
                         break;
                     default:
                         throw new Exception("Format \"$name\" is not supported");
