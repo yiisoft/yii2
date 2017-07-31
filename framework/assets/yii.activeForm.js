@@ -306,9 +306,9 @@
                 needAjaxValidation = false,
                 messages = {},
                 deferreds = deferredArray(),
-                submitting = data.submitting && !forceValidate;
+                submitting = data.submitting;
 
-            if (data.submitting) {
+            if (submitting) {
                 var event = $.Event(events.beforeValidate);
                 $form.trigger(event, [messages, deferreds]);
 
@@ -391,7 +391,7 @@
                     });
                 } else if (data.submitting) {
                     // delay callback so that the form can be submitted without problem
-                    setTimeout(function () {
+                    window.setTimeout(function () {
                         updateInputs($form, messages, submitting);
                     }, 200);
                 } else {
@@ -435,7 +435,7 @@
             // Because we bind directly to a form reset event instead of a reset button (that may not exist),
             // when this function is executed form input values have not been reset yet.
             // Therefore we do the actual reset work through setTimeout.
-            setTimeout(function () {
+            window.setTimeout(function () {
                 $.each(data.attributes, function () {
                     // Without setTimeout() we would get the input values that are not reset yet.
                     this.value = getValue($form, this);
@@ -535,7 +535,7 @@
         if (data.settings.timer !== undefined) {
             clearTimeout(data.settings.timer);
         }
-        data.settings.timer = setTimeout(function () {
+        data.settings.timer = window.setTimeout(function () {
             if (data.submitting || $form.is(':hidden')) {
                 return;
             }

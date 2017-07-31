@@ -5,6 +5,7 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #14022: `yii\web\UrlManager::setBaseUrl()` now supports aliases (dmirogin)
+- Bug #14471: `ContentNegotiator` will always set one of the configured server response formats even if the client does not accept any of them (PowerGamer1)
 - Bug #14525: Fixed 2.0.12 regression of loading of global fixtures trough `yii fixture/load` (michaelarnauts)
 - Bug #14523: Added `yii\web\MultipartFormDataParser::$force` option allowing to enforce parsing even on 'POST' request (klimov-paul)
 - Bug #14533: Fixed `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` throw exception in case they are set for `yii\db\ActiveRecord` with `$targetClass` pointing to NOSQL ActiveRecord (klimov-paul)
@@ -50,6 +51,7 @@ Yii Framework 2 Change Log
 - Bug #14492: Fixed error handler not escaping error info debug mode (samdark)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
+- Enh #14363: Added `yii\widgets\LinkPager::$linkContainerOptions` and possibility to override tag in `yii\widgets\LinkPager::$options` (dmirogin)
 
 2.0.12 June 05, 2017
 --------------------
@@ -113,6 +115,8 @@ Yii Framework 2 Change Log
 - Bug #14074: Fixed default value of `yii\console\controllers\FixtureController::$globalFixtures` to contain valid class name (lynicidn)
 - Bug #14094: Fixed bug when single `yii\web\UrlManager::createUrl()` call my result multiple calls of `yii\web\UrlRule::createUrl()` for the same rule (rossoneri)
 - Bug #14133: Fixed bug when calculating timings with mixed nested profile begin and end in `yii\log\Logger::calculateTimings()` (bizley)
+- Bug #14186: Forced validation in `yiiActiveForm` do not trigger `afterValidate` event (arogachev)
+- Bug #14510: The state of a form is always "not validated" when using forced validation in `yiiActiveForm` (arogachev)
 - Enh #4793: `yii\filters\AccessControl` now can be used without `user` component (bizley)
 - Enh #4999: Added support for wildcards at `yii\filters\AccessRule::$controllers` (klimov-paul)
 - Enh #5108: `yii\validators\DateValidator` now resets `$timestampAttribute` value on empty validated attribute value (klimov-paul)
