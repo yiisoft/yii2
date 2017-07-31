@@ -116,20 +116,26 @@ HTML
         $model = new DynamicModel(['name']);
         $model->addRule(['name'], 'required');
 
-        $view = $this->createMock(View::class);
-        $view->method('registerJs')->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
-        $view->method('registerAssetBundle')->willReturn(true);
+        $mockedView = $this->createMock(View::class);
+        $mockedView
+            ->expects($this->once())
+            ->method('registerJs')
+            ->with($this->matches("jQuery('#w0').yiiActiveForm([], {\"validateOnSubmit\":false});"));
+        $mockedView
+            ->expects($this->once())
+            ->method('registerAssetBundle')
+            ->willReturn(true);
 
         Widget::$counter = 0;
         ob_start();
         ob_implicit_flush(false);
 
-        $form = ActiveForm::begin(['view' => $view, 'validateOnSubmit' => false]);
+        $form = ActiveForm::begin(['view' => $mockedView, 'validateOnSubmit' => false]);
         $form->field($model, 'name');
         $form::end();
 
         // Disable clientScript will not call `View->registerJs()`
-        $form = ActiveForm::begin(['view' => $view, 'enableClientScript' => false]);
+        $form = ActiveForm::begin(['view' => $mockedView, 'enableClientScript' => false]);
         $form->field($model, 'name');
         $form::end();
         ob_get_clean();
