@@ -10,15 +10,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * FixtureTrait provides functionalities for loading, unloading and accessing fixtures for a test case.
- *
- * By using FixtureTrait, a test class will be able to specify which fixtures to load by overriding
- * the [[fixtures()]] method. It can then load and unload the fixtures using [[loadFixtures()]] and [[unloadFixtures()]].
- * Once a fixture is loaded, it can be accessed like an object property, thanks to the PHP `__get()` magic method.
- * Also, if the fixture is an instance of [[ActiveFixture]], you will be able to access AR models
- * through the syntax `$this->fixtureName('model name')`.
- *
- * For more details and usage information on FixtureTrait, see the [guide article on fixtures](guide:test-fixtures).
+ * FileFixtureTrait provides functionalities for loading data fixture from file.
  *
  * @author Leandro Guindani Gehlen <leandrogehlen@gmail.com>
  * @since 2.0.15
