@@ -164,21 +164,21 @@ class TargetTest extends TestCase
         $target->setLevels(128);
     }
 
-    public function testIsEnabled()
+    public function testGetEnabled()
     {
         /** @var Target $target */
         $target = $this->getMockForAbstractClass('yii\\log\\Target');
 
         $target->enabled = true;
-        $this->assertTrue($target->isEnabled());
+        $this->assertTrue($target->enabled);
 
         $target->enabled = false;
-        $this->assertFalse($target->isEnabled());
+        $this->assertFalse($target->enabled);
 
         $target->enabled = function ($target) {
             return empty($target->messages);
         };
-        $this->assertTrue($target->isEnabled());
+        $this->assertTrue($target->enabled);
     }
 }
 
