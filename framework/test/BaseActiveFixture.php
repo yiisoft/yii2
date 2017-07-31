@@ -7,7 +7,6 @@
 
 namespace yii\test;
 
-use Yii;
 use yii\base\ArrayAccessTrait;
 use yii\base\InvalidConfigException;
 
@@ -22,6 +21,7 @@ use yii\base\InvalidConfigException;
 abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     use ArrayAccessTrait;
+    use FileFixtureTrait;
 
     /**
      * @var string the AR model class associated with this fixture.
@@ -32,20 +32,9 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      */
     public $data = [];
     /**
-     * @var string the directory path or [path alias](guide:concept-aliases) that contains the fixture data
-     * @since 2.0.13
-     */
-    public $dataDirectory;
-    /**
-     * @var string|bool the file path or [path alias](guide:concept-aliases) of the data file that contains the fixture data
-     * to be returned by [[getData()]]. You can set this property to be false to prevent loading any data.
-     */
-    public $dataFile;
-    /**
      * @var \yii\db\ActiveRecord[] the loaded AR models
      */
     private $_models = [];
-
 
     /**
      * Returns the AR model by the specified model name.
@@ -97,7 +86,7 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
      */
     protected function getData()
     {
-        return $this->loadDataFile($this->dataFile);
+        return $this->loadData($this->dataFile);
     }
 
     /**
@@ -108,33 +97,5 @@ abstract class BaseActiveFixture extends DbFixture implements \IteratorAggregate
         parent::unload();
         $this->data = [];
         $this->_models = [];
-    }
-
-    /**
-     * Returns the fixture data.
-     *
-     * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
-     * The file should return the data array that will be stored in [[data]] after inserting into the database.
-     *
-     * @param string $dataFile the data file path
-     * @return array the data to be put into the database
-     * @throws InvalidConfigException if the specified data file does not exist.
-     */
-    protected function loadDataFile($dataFile)
-    {
-        if ($dataFile === false || $dataFile === null) {
-            return [];
-        }
-
-        if ($this->dataDirectory !== null) {
-            $dataFile = $this->dataDirectory . '/' . basename($dataFile);
-        }
-
-        $dataFile = Yii::getAlias($dataFile);
-        if (is_file($dataFile)) {
-            return require $dataFile;
-        }
-
-        throw new InvalidConfigException("Fixture data file does not exist: {$dataFile}");
     }
 }

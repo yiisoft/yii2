@@ -27,7 +27,7 @@ class CustomerFixture extends ActiveFixture
     ];
 }
 
-class CustomFolderFixture extends ActiveFixture
+class CustomDirectoryFixture extends ActiveFixture
 {
     public $modelClass = 'yiiunit\data\ar\Customer';
 
@@ -59,12 +59,25 @@ class CustomerDbTestCase extends BaseDbTestCase
     }
 }
 
-class CustomFolderDbTestCase extends BaseDbTestCase
+class CustomDirectoryDbTestCase extends BaseDbTestCase
 {
     public function fixtures()
     {
         return [
-            'customers' => CustomFolderFixture::className(),
+            'customers' => CustomDirectoryFixture::className(),
+        ];
+    }
+}
+
+class DataPathDbTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'customers' => [
+                'class' => CustomDirectoryFixture::className(),
+                'dataFile' => '@app/framework/test/data/customer.php'
+            ]
         ];
     }
 }
@@ -127,14 +140,30 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test->tearDown();
     }
 
-    public function testDataFolder()
+    public function testDataDirectory()
     {
-        $test = new CustomFolderDbTestCase();
+        $test = new CustomDirectoryDbTestCase();
 
         $test->setUp();
         $fixture = $test->getFixture('customers');
+        $directory = $fixture->getModel('directory');
 
-        $this->assertEquals(1, $fixture->getModel('folder')->id);
+        $this->assertEquals(1, $directory->id);
+        $this->assertEquals('directory@example.com', $directory['email']);
+        $test->tearDown();
+
+    }
+
+    public function testDataPath()
+    {
+        $test = new DataPathDbTestCase();
+
+        $test->setUp();
+        $fixture = $test->getFixture('customers');
+        $customer = $fixture->getModel('customer1');
+
+        $this->assertEquals(1, $customer->id);
+        $this->assertEquals('customer1@example.com', $customer['email']);
         $test->tearDown();
 
     }

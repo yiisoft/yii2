@@ -102,7 +102,7 @@ class ActiveFixture extends BaseActiveFixture
                 $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
             }
 
-            return $this->loadDataFile($dataFile);
+            return $this->loadData($dataFile);
         }
 
         return parent::getData();

@@ -7,7 +7,6 @@
 
 namespace yii\test;
 
-use Yii;
 use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Instance;

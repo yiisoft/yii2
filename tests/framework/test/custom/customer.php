@@ -6,10 +6,10 @@
  */
 
 return [
-    'folder' => [
-        'email' => 'folder@example.com',
-        'name' => 'folder name',
-        'address' => 'folder-address1',
+    'directory' => [
+        'email' => 'directory@example.com',
+        'name' => 'directory name',
+        'address' => 'directory-address1',
         'status' => 1
-    ]    
+    ]
 ];
