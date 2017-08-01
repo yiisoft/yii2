@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\base\Object
+class QueryBuilder extends \yii\base\BaseObject
 {
     /**
      * The prefix for automatically generated query binding parameters.
@@ -1350,7 +1350,7 @@ class QueryBuilder extends \yii\base\Object
             $values = (array) $values;
         }
 
-        if ($column instanceof \Traversable || count($column) > 1) {
+        if ($column instanceof \Traversable || ((is_array($column) || $column instanceof \Countable) && count($column) > 1)) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         } elseif (is_array($column)) {
             $column = reset($column);

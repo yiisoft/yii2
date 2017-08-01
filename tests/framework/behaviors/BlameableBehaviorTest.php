@@ -8,7 +8,7 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
@@ -195,7 +195,7 @@ class ActiveRecordBlameable extends ActiveRecord
     }
 }
 
-class UserMock extends Object
+class UserMock extends BaseObject
 {
     public $id;
 

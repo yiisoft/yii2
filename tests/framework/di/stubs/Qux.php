@@ -7,13 +7,13 @@
 
 namespace yiiunit\framework\di\stubs;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Qux extends Object implements QuxInterface
+class Qux extends BaseObject implements QuxInterface
 {
     public $a;
 

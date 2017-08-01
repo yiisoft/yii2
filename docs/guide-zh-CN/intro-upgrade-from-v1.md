@@ -38,21 +38,21 @@ Yii 2.0 里最明显的改动就数命名空间的使用了。几乎每一个核
 有了 Yii 的类自动加载器，你可以直接使用全部核心类而不需要显式包含具体文件。
 
 
-组件（Component）与对象（Object）
+组件（Component）与对象（BaseObject）
 --------------------
 
-Yii 2.0 把 1.1 中的 `CComponent` 类拆分成了两个类：[[yii\base\Object]] 和 [[yii\base\Component]]。[[yii\base\Object|Object]] 类是一个轻量级的基类，你可以通过 getters 和 setters 来定义[对象的属性](concept-properties.md)。[[yii\base\Component|Component]] 类继承自 [[yii\base\Object|Object]]，同时进一步支持 [事件](concept-events.md) 和 [行为](concept-behaviors.md)。
+Yii 2.0 把 1.1 中的 `CComponent` 类拆分成了两个类：[[yii\base\BaseObject]] 和 [[yii\base\Component]]。[[yii\base\BaseObject|BaseObject]] 类是一个轻量级的基类，你可以通过 getters 和 setters 来定义[对象的属性](concept-properties.md)。[[yii\base\Component|Component]] 类继承自 [[yii\base\BaseObject|BaseObject]]，同时进一步支持 [事件](concept-events.md) 和 [行为](concept-behaviors.md)。
 
-如果你不需要用到事件或行为，应该考虑使用 [[yii\base\Object|Object]] 类作为基类。这种类通常用来表示基本的数据结构。
+如果你不需要用到事件或行为，应该考虑使用 [[yii\base\BaseObject|BaseObject]] 类作为基类。这种类通常用来表示基本的数据结构。
 
 
 对象的配置
 --------------------
 
-[[yii\base\Object|Object]] 类引入了一种统一对象配置的方法。所有 [[yii\base\Object|Object]] 的子类都应该用以下方法声明它的构造方法（如果需要的话），以正确配置它自身：
+[[yii\base\BaseObject|BaseObject]] 类引入了一种统一对象配置的方法。所有 [[yii\base\BaseObject|BaseObject]] 的子类都应该用以下方法声明它的构造方法（如果需要的话），以正确配置它自身：
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -70,7 +70,7 @@ class MyClass extends \yii\base\Object
 }
 ```
 
-在上面的例子里，构造方法的最后一个参数必须传入一个配置数组，包含一系列用于在方法结尾初始化相关属性的键值对。你可以重写 [[yii\base\Object::init()|init()]] 方法来执行一些需要在配置生效后进行的初始化工作。
+在上面的例子里，构造方法的最后一个参数必须传入一个配置数组，包含一系列用于在方法结尾初始化相关属性的键值对。你可以重写 [[yii\base\BaseObject::init()|init()]] 方法来执行一些需要在配置生效后进行的初始化工作。
 
 你可以通过遵循以下约定俗成的编码习惯，来使用配置数组创建并配置新的对象：
 

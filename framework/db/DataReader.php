@@ -48,7 +48,7 @@ use yii\base\InvalidCallException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class DataReader extends \yii\base\Object implements \Iterator, \Countable
+class DataReader extends \yii\base\BaseObject implements \Iterator, \Countable
 {
     /**
      * @var \PDOStatement the PDOStatement associated with the command

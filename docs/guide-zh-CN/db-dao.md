@@ -67,14 +67,14 @@ return [
         // ...
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=localhost;dbname=mydatabase', 
+            'dsn' => 'mysql:host=localhost;dbname=mydatabase',
             'username' => 'root',
             'password' => '',
             'charset' => 'utf8',
         ],
         'secondDb' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'sqlite:/path/to/database/file', 
+            'dsn' => 'sqlite:/path/to/database/file',
         ],
     ],
     // ...
@@ -283,7 +283,7 @@ try {
 ```
 >注意你使用的数据库必须支持`Savepoints`才能正确地执行，以上代码在所有关系数据中都可以执行，但是只有支持`Savepoints`才能保证安全性。
 
-Yii 也支持为事务设置隔离级别`isolation levels`，当执行事务时会使用数据库默认的隔离级别，你也可以为事物指定隔离级别.
+Yii 也支持为事务设置隔离级别`isolation levels`，当执行事务时会使用数据库默认的隔离级别，你也可以为事务指定隔离级别.
 Yii 提供了以下常量作为常用的隔离级别
 
 - [[\yii\db\Transaction::READ_UNCOMMITTED]] - 允许读取改变了的还未提交的数据,可能导致脏读、不可重复读和幻读
