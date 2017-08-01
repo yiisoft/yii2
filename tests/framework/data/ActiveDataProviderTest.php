@@ -101,21 +101,6 @@ abstract class ActiveDataProviderTest extends DatabaseTestCase
         $this->assertCount(2, $items);
     }
 
-    public function testActiveRelationViaHasRelation()
-    {
-        /* @var $order Order */
-        $order = Order::findOne(2);
-        $provider = new ActiveDataProvider([
-            'query' => $order->getItems2(),
-        ]);
-        $items = $provider->getModels();
-        $this->assertCount(3, $items);
-        $this->assertInstanceOf(Item::className(), $items[0]);
-        $this->assertInstanceOf(item::className(), $items[1]);
-        $this->assertInstanceOf(Item::className(), $items[2]);
-        $this->assertEquals([3, 4, 5], $provider->getKeys());
-    }
-
     public function testActiveRelationViaTable()
     {
         /* @var $order Order */

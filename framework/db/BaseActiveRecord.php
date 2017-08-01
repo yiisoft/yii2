@@ -414,10 +414,10 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      *
      * For example, to declare the `items` relation for `Order` class, we can write
      * the following code in the `Order` class:
-     *
      * ```php
-     * public function getItems(){
-     *     return $this->hasRelation(OrderItem::className(), 'item')->via('orderItems');
+     * public function getItems() : ItemQuery
+     * {
+     *     return $this->viaRelation('item', 'orderItems');
      * }
      * public function getOrderItems()
      * {
@@ -426,7 +426,6 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * ```
      *
      * and we can write following code in the `OrderItem` class:
-     *
      * ```php
      * public function getItem()
      * {
@@ -434,17 +433,33 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
      * }
      * ```
      *
-     * @param ActiveRecord|array|callable|string $target the model class who have relation
+     * Can be used for create a chain of relations, i.e. for `Order` class:
+     * ```php
+     * public function getItemsCategory() : CategoryQuery
+     * {
+     *     return $this->viaRelation('category', 'items');
+     * }
+     * ```
+     *
      * @param string $relationName relation name in target (case sensitive, without 'get')
-     * @return ActiveQuery
+     * @param string $via relation name in called (self) class (case sensitive, without 'get')
+     * @param callable $callable a PHP callback for customizing the relation associated with the junction ActiveQuery in `via`.
+     * Its signature should be `function($query)`, where `$query` is the query to be customized.
+     * @return ActiveQuery ActiveQuery type of end-side model
+     * @since 2.0.14
+     * @see hasOne()
+     * @see hasMany()
      */
-    public function hasRelation($target, $relationName){
-        $target instanceof ActiveRecord || $target = Yii::createObject($target);
+    public function viaRelation($relationName, $via, callable $callable = null)
+    {
+        $relation = $this->getRelation($via);
+        $target = Yii::createObject($relation->modelClass);
         /** @var ActiveQuery $relationQuery */
         $relationQuery = $target->getRelation($relationName);
         $relationQuery->primaryModel = $this;
-        return $relationQuery;
+        return $relationQuery->via($via, $callable);
     }
+
 
     /**
      * Creates a query instance for `has-one` or `has-many` relation.

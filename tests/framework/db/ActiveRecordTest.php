@@ -598,6 +598,17 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertNotEmpty($rows);
     }
 
+    public function testJoinWithViaRelation()
+    {
+        Order::getDb()->getQueryBuilder()->separator = "\n";
+        $rows = Order::find()->joinWith([
+            'items2' => function ($q) {
+                $q->orderBy('item.id');
+            },
+        ])->all();
+        $this->assertNotEmpty($rows);
+    }
+
     public function aliasMethodProvider()
     {
         return [

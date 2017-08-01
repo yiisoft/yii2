@@ -80,7 +80,7 @@ class Order extends ActiveRecord
 
     public function getItems2()
     {
-        return $this->hasRelation(OrderItem::className(), 'item')->via('orderItems');
+        return $this->viaRelation('item', 'orderItems');
     }
 
     public function getItemsIndexed()
