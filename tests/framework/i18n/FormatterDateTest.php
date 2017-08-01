@@ -186,6 +186,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('Y/m/d h:i:s A', $value->getTimestamp()), $this->formatter->asDatetime($value, 'php:Y/m/d h:i:s A'));
 
         // empty time
+        $value = new DateTime();
         $date = $value->format('Y-m-d');
         $value = new DateTime($date);
         $this->assertRegExp(date('~M j, Y,? g:i:s A~', $value->getTimestamp()), $this->formatter->asDatetime($date));
