@@ -1,7 +1,13 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 use yii\helpers\FileHelper;
 use yiiunit\TestCase;
+
 /**
  * Unit test for [[yii\helpers\FileHelper]]
  * @see FileHelper
@@ -26,8 +32,8 @@ class FileHelperTest extends TestCase
         $dir = $this->testFilePath . DIRECTORY_SEPARATOR . 'test_chmod';
         mkdir($dir);
         chmod($dir, 0700);
-        if ($this->getMode($dir) !== "0700") {
-            /**
+        if ($this->getMode($dir) !== '0700') {
+            /*
              * Chmod returns true but fileperms does not reflect this.
              * This happens on remote file systems, also has been seen in vagrant mounts.
              */
@@ -142,7 +148,6 @@ class FileHelperTest extends TestCase
         $dirName = $basePath . DIRECTORY_SEPARATOR . 'test_dir_perms';
         $this->assertTrue(FileHelper::createDirectory($dirName, 0700, false));
         $this->assertFileMode(0700, $dirName);
-
     }
 
     /**
@@ -156,7 +161,7 @@ class FileHelperTest extends TestCase
             'file2.txt' => 'file 2 content',
         ];
         $this->createFileStructure([
-            $srcDirName => $files
+            $srcDirName => $files,
         ]);
 
         $basePath = $this->testFilePath;
@@ -188,7 +193,7 @@ class FileHelperTest extends TestCase
             'file5.txt' => 'file 5 content',
         ];
         $this->createFileStructure([
-            $srcDirName => $structure
+            $srcDirName => $structure,
         ]);
 
         $basePath = $this->testFilePath;
@@ -229,7 +234,7 @@ class FileHelperTest extends TestCase
             'file5.txt' => 'file 5 content',
         ];
         $this->createFileStructure([
-            $srcDirName => $structure
+            $srcDirName => $structure,
         ]);
 
         $basePath = $this->testFilePath;
@@ -312,7 +317,7 @@ class FileHelperTest extends TestCase
     {
         $this->createFileStructure([
             'data' => [],
-            'backup' => ['data' => []]
+            'backup' => ['data' => []],
         ]);
 
         $this->expectException('yii\base\InvalidParamException');
@@ -330,14 +335,14 @@ class FileHelperTest extends TestCase
     {
         $this->createFileStructure([
             'data' => [],
-            'backup' => ['data' => []]
+            'backup' => ['data' => []],
         ]);
 
         FileHelper::copyDirectory(
             $this->testFilePath . DIRECTORY_SEPARATOR . 'data',
             $this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'
         );
-        $this->assertTrue(file_exists($this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data'));
+        $this->assertFileExists($this->testFilePath . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . 'data');
     }
 
     /**
@@ -347,7 +352,7 @@ class FileHelperTest extends TestCase
     {
         $this->createFileStructure([
             'data' => [],
-            'data-backup' => []
+            'data-backup' => [],
         ]);
 
         FileHelper::copyDirectory(
@@ -392,7 +397,7 @@ class FileHelperTest extends TestCase
             $dirName => [
                 'file' => 'Symlinked file.',
                 'directory' => [
-                    'standard-file-1' => 'Standard file 1.'
+                    'standard-file-1' => 'Standard file 1.',
                 ],
                 'symlinks' => [
                     'standard-file-2' => 'Standard file 2.',
@@ -435,7 +440,7 @@ class FileHelperTest extends TestCase
             $dirName => [
                 'file' => 'Symlinked file.',
                 'directory' => [
-                    'standard-file-1' => 'Standard file 1.'
+                    'standard-file-1' => 'Standard file 1.',
                 ],
                 'symlinks' => [
                     'standard-file-2' => 'Standard file 2.',
@@ -514,7 +519,7 @@ class FileHelperTest extends TestCase
         $options = [
             'filter' => function ($path) use ($passedFileName) {
                 return $passedFileName == basename($path);
-            }
+            },
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $passedFileName], $foundFiles);
@@ -561,7 +566,7 @@ class FileHelperTest extends TestCase
                     'file2' => 'def',
                 ],
                 'symDir' => ['symlink', 'theDir'],
-                'file3' => 'root'
+                'file3' => 'root',
             ],
         ]);
         $dirName = $this->testFilePath . DIRECTORY_SEPARATOR . $dirName;
@@ -609,7 +614,7 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['a.[2-8]']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return substr($p, -3)==='a.1';
+            return substr($p, -3) === 'a.1';
         }));
         $this->assertEquals($expect, $foundFiles);
 
@@ -617,7 +622,7 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['*.1']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return substr($p, -3)!=='a.1';
+            return substr($p, -3) !== 'a.1';
         }));
         $this->assertEquals($expect, $foundFiles);
 
@@ -625,7 +630,7 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['/one']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return strpos($p, DIRECTORY_SEPARATOR.'one')===false;
+            return strpos($p, DIRECTORY_SEPARATOR . 'one') === false;
         }));
         $this->assertEquals($expect, $foundFiles);
 
@@ -633,9 +638,9 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['?*/a.1']]);
         sort($foundFiles);
         $expect = array_values(array_filter($flat, function ($p) {
-            return substr($p, -11, 10)==='one'.DIRECTORY_SEPARATOR.'two'.DIRECTORY_SEPARATOR.'a.' || (
-                substr($p, -8)!==DIRECTORY_SEPARATOR.'one'.DIRECTORY_SEPARATOR.'a.1' &&
-                substr($p, -10)!==DIRECTORY_SEPARATOR.'three'.DIRECTORY_SEPARATOR.'a.1'
+            return substr($p, -11, 10) === 'one' . DIRECTORY_SEPARATOR . 'two' . DIRECTORY_SEPARATOR . 'a.' || (
+                substr($p, -8) !== DIRECTORY_SEPARATOR . 'one' . DIRECTORY_SEPARATOR . 'a.1' &&
+                substr($p, -10) !== DIRECTORY_SEPARATOR . 'three' . DIRECTORY_SEPARATOR . 'a.1'
             );
         }));
         $this->assertEquals($expect, $foundFiles);
@@ -658,14 +663,14 @@ class FileHelperTest extends TestCase
 
         $options = [
             'except' => ['*.txt'],
-            'caseSensitive' => false
+            'caseSensitive' => false,
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(0, $foundFiles);
 
         $options = [
             'only' => ['*.txt'],
-            'caseSensitive' => false
+            'caseSensitive' => false,
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
         $this->assertCount(2, $foundFiles);
@@ -710,15 +715,15 @@ class FileHelperTest extends TestCase
         $this->assertEquals("{$ds}b{$ds}c", FileHelper::normalizePath('/a/../b/c'));
         $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a\\b/../..///c'));
         $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
-        $this->assertEquals("c", FileHelper::normalizePath('/a/.\\b/../..//../c'));
+        $this->assertEquals('c', FileHelper::normalizePath('/a/.\\b/../..//../c'));
         $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
 
         // relative paths
-        $this->assertEquals(".", FileHelper::normalizePath('.'));
-        $this->assertEquals(".", FileHelper::normalizePath('./'));
-        $this->assertEquals("a", FileHelper::normalizePath('.\\a'));
+        $this->assertEquals('.', FileHelper::normalizePath('.'));
+        $this->assertEquals('.', FileHelper::normalizePath('./'));
+        $this->assertEquals('a', FileHelper::normalizePath('.\\a'));
         $this->assertEquals("a{$ds}b", FileHelper::normalizePath('./a\\b'));
-        $this->assertEquals(".", FileHelper::normalizePath('./a\\../'));
+        $this->assertEquals('.', FileHelper::normalizePath('./a\\../'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a'));
         $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a/../a'));
         $this->assertEquals("..{$ds}..{$ds}b", FileHelper::normalizePath('../..\\a/../b'));
@@ -771,7 +776,7 @@ class FileHelperTest extends TestCase
             'file2.dat' => 'data file 2 content',
         ];
         $this->createFileStructure([
-            $srcDirName => array_merge($textFiles, $dataFiles)
+            $srcDirName => array_merge($textFiles, $dataFiles),
         ]);
 
         $basePath = $this->testFilePath;

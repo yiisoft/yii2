@@ -239,7 +239,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 Note that, in this case, `$event->sender` is `null` instead of an object instance.
 
 > Note: Because a class-level handler will respond to an event triggered by any instance of that class, or any child
-  classes, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\Object]].
+  classes, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\BaseObject]].
 
 To detach a class-level event handler, call [[yii\base\Event::off()]]. For example:
 

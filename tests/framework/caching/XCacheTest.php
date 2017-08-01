@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\caching;
 
 use yii\caching\XCache;
@@ -17,8 +23,8 @@ class XCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (!function_exists("xcache_isset")) {
-            $this->markTestSkipped("XCache not installed. Skipping.");
+        if (!function_exists('xcache_isset')) {
+            $this->markTestSkipped('XCache not installed. Skipping.');
         }
 
         if ($this->_cacheInstance === null) {

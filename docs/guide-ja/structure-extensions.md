@@ -362,7 +362,7 @@ Yii はテストのサポートを提供しており、それよって、単体�
   このファイルは Markdown 形式で書いて `upgrade.md` と名付けることが出来ます。
 * チュートリアル、デモ、スクリーンショットなど: あなたのエクステンションが readme ファイルでは十分にカバーできないほど多くの機能を提供するものである場合は、これらが必要になります。
 * API ドキュメント: あなたのコードは、他の人々が読んで理解することがより一層容易に出来るように、十分な解説を含むべきです。
-  [Object のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
+  [BaseObject のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
 
 > Info: コードのコメントを Markdown 形式で書くことが出来ます。
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。

@@ -385,7 +385,7 @@ mencionados a continuación para facilitar a otra gente el uso de nuestra extens
   características que no pueden ser detalladas completamente en el archivo `readme`.
 * Documentación de API: el código debe documentarse debidamente para que otras personas puedan leerlo y entenderlo
   fácilmente. Más información acerca de documentación de código en
-  [archivo de Objetos de clase](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
+  [archivo de Objetos de clase](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php)
 
 > Info: Los comentarios de código pueden ser escritos en formato Markdown. La extensión `yiisoft/yii2-apidoc`
   proporciona una herramienta para generar buena documentación de API basándose en los comentarios del código.

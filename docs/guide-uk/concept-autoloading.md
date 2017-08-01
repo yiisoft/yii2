@@ -69,8 +69,8 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 Перший рядок встановлює автозавантажувач Composer, а другий - автозавантажувач Yii:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Ви можете використовувати автозавантажувач Composer без автозавантажувачa Yii, однак, швидкість автозавантаження в 

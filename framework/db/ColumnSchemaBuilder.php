@@ -8,7 +8,7 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * ColumnSchemaBuilder helps to define database schema types using a PHP interface.
@@ -18,7 +18,7 @@ use yii\base\Object;
  * @author Vasenin Matvey <vaseninm@gmail.com>
  * @since 2.0.6
  */
-class ColumnSchemaBuilder extends Object
+class ColumnSchemaBuilder extends BaseObject
 {
     // Internally used constants representing categories that abstract column types fall under.
     // See [[$categoryMap]] for mappings of abstract column types to category.
@@ -312,9 +312,9 @@ class ColumnSchemaBuilder extends Object
             return ' NOT NULL';
         } elseif ($this->isNotNull === false) {
             return ' NULL';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
