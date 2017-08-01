@@ -21,10 +21,10 @@
 
 ```php
 // подключение автозагрузчика Composer
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // подключение файла класса Yii
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 ### Использование отдельных библиотек <span id="using-downloaded-libs"></span>
@@ -79,9 +79,9 @@ composer require yiisoft/yii2
 Далее следует изменить входной скрипт сторонней системы, поместив в его начало следующий код:
 
 ```php
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$yiiConfig = require(__DIR__ . '/../config/yii/web.php');
+$yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // НЕ ВЫЗЫВАЙТЕ run() в этом месте
 ```
 
@@ -106,14 +106,14 @@ new yii\web\Application($yiiConfig); // НЕ ВЫЗЫВАЙТЕ run() в это�
 
 ```php
 // подключение модифицированного класса Yii, описанного ниже
-require(__DIR__ . '/../components/Yii.php');
+require __DIR__ . '/../components/Yii.php';
 
 // настройка приложения Yii 2
-$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
+$yii2Config = require __DIR__ . '/../config/yii2/web.php';
 new yii\web\Application($yii2Config); // НЕ ВЫЗЫВАЙТЕ run()
 
 // настройка приложения Yii 1
-$yii1Config = require(__DIR__ . '/../config/yii1/main.php');
+$yii1Config = require __DIR__ . '/../config/yii1/main.php';
 Yii::createWebApplication($yii1Config)->run();
 ```
 
@@ -122,10 +122,10 @@ Yii::createWebApplication($yii1Config)->run();
 
 ```php
 $yii2path = '/path/to/yii2';
-require($yii2path . '/BaseYii.php'); // Yii 2.x
+require $yii2path . '/BaseYii.php'; // Yii 2.x
 
 $yii1path = '/path/to/yii1';
-require($yii1path . '/YiiBase.php'); // Yii 1.x
+require $yii1path . '/YiiBase.php'; // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {

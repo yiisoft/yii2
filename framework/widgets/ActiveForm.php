@@ -342,9 +342,9 @@ class ActiveForm extends Widget
         $field = array_pop($this->_fields);
         if ($field instanceof ActiveField) {
             return $field->end();
-        } else {
-            throw new InvalidCallException('Mismatching endField() call.');
         }
+
+        throw new InvalidCallException('Mismatching endField() call.');
     }
 
     /**

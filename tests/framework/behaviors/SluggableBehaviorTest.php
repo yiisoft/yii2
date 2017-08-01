@@ -174,6 +174,22 @@ class SluggableBehaviorTest extends TestCase
         $this->assertEquals('test-name', $model->slug);
     }
 
+    public function testSkipOnEmpty()
+    {
+        $model = new SkipOnEmptySluggableActiveRecord();
+        $model->name = 'test name';
+        $model->save();
+        $this->assertEquals('test-name', $model->slug);
+
+        $model->name = null;
+        $model->save();
+        $this->assertEquals('test-name', $model->slug);
+
+        $model->name = 'test name 2';
+        $model->save();
+        $this->assertEquals('test-name-2', $model->slug);
+    }
+
     /**
      * @depends testSlug
      */
@@ -271,6 +287,22 @@ class ActiveRecordSluggableUnique extends ActiveRecordSluggable
                 'class' => SluggableBehavior::className(),
                 'attribute' => 'name',
                 'ensureUnique' => true,
+            ],
+        ];
+    }
+}
+
+class SkipOnEmptySluggableActiveRecord extends ActiveRecordSluggable
+{
+    public function behaviors()
+    {
+        return [
+            'sluggable' => [
+                'class' => SluggableBehavior::className(),
+                'attribute' => 'name',
+                'slugAttribute' => 'slug',
+                'ensureUnique' => true,
+                'skipOnEmpty' => true,
             ],
         ];
     }

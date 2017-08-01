@@ -201,9 +201,9 @@ class Order extends ActiveRecord
             $this->created_at = time();
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function attributeLabels()
