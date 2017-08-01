@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\base\Object
+class QueryBuilder extends \yii\base\BaseObject
 {
     /**
      * The prefix for automatically generated query binding parameters.
@@ -253,7 +253,7 @@ class QueryBuilder extends \yii\base\Object
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
@@ -451,8 +451,8 @@ class QueryBuilder extends \yii\base\Object
         }
 
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
-            . $this->db->quoteColumnName($name) . '  PRIMARY KEY ('
-            . implode(', ', $columns) . ' )';
+            . $this->db->quoteColumnName($name) . ' PRIMARY KEY ('
+            . implode(', ', $columns) . ')';
     }
 
     /**
@@ -607,6 +607,110 @@ class QueryBuilder extends \yii\base\Object
     public function dropIndex($name, $table)
     {
         return 'DROP INDEX ' . $this->db->quoteTableName($name) . ' ON ' . $this->db->quoteTableName($table);
+    }
+
+    /**
+     * Creates a SQL command for adding an unique constraint to an existing table.
+     * @param string $name the name of the unique constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the unique constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string|array $columns the name of the column to that the constraint will be added on.
+     * If there are multiple columns, separate them with commas.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for adding an unique constraint to an existing table.
+     * @since 2.0.13
+     */
+    public function addUnique($name, $table, $columns)
+    {
+        if (is_string($columns)) {
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
+        }
+        foreach ($columns as $i => $col) {
+            $columns[$i] = $this->db->quoteColumnName($col);
+        }
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' UNIQUE ('
+            . implode(', ', $columns) . ')';
+    }
+
+    /**
+     * Creates a SQL command for dropping an unique constraint.
+     * @param string $name the name of the unique constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose unique constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping an unique constraint.
+     * @since 2.0.13
+     */
+    public function dropUnique($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
+     * Creates a SQL command for adding a check constraint to an existing table.
+     * @param string $name the name of the check constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the check constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $expression the SQL of the `CHECK` constraint.
+     * @return string the SQL statement for adding a check constraint to an existing table.
+     * @since 2.0.13
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
+            . $this->db->quoteColumnName($name) . ' CHECK (' . $this->db->quoteSql($expression) . ')';
+    }
+
+    /**
+     * Creates a SQL command for dropping a check constraint.
+     * @param string $name the name of the check constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose check constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping a check constraint.
+     * @since 2.0.13
+     */
+    public function dropCheck($name, $table)
+    {
+        return 'ALTER TABLE ' . $this->db->quoteTableName($table)
+            . ' DROP CONSTRAINT ' . $this->db->quoteColumnName($name);
+    }
+
+    /**
+     * Creates a SQL command for adding a default value constraint to an existing table.
+     * @param string $name the name of the default value constraint.
+     * The name will be properly quoted by the method.
+     * @param string $table the table that the default value constraint will be added to.
+     * The name will be properly quoted by the method.
+     * @param string $column the name of the column to that the constraint will be added on.
+     * The name will be properly quoted by the method.
+     * @param mixed $value default value.
+     * @return string the SQL statement for adding a default value constraint to an existing table.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS.
+     * @since 2.0.13
+     */
+    public function addDefaultValue($name, $table, $column, $value)
+    {
+        throw new NotSupportedException($this->db->getDriverName() . ' does not support adding default value constraints.');
+    }
+
+    /**
+     * Creates a SQL command for dropping a default value constraint.
+     * @param string $name the name of the default value constraint to be dropped.
+     * The name will be properly quoted by the method.
+     * @param string $table the table whose default value constraint is to be dropped.
+     * The name will be properly quoted by the method.
+     * @return string the SQL statement for dropping a default value constraint.
+     * @throws NotSupportedException if this is not supported by the underlying DBMS.
+     * @since 2.0.13
+     */
+    public function dropDefaultValue($name, $table)
+    {
+        throw new NotSupportedException($this->db->getDriverName() . ' does not support dropping default value constraints.');
     }
 
     /**
@@ -1031,9 +1135,9 @@ class QueryBuilder extends \yii\base\Object
         if (!is_array($columns)) {
             if (strpos($columns, '(') !== false) {
                 return $columns;
-            } else {
-                $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
             }
+
+            $columns = preg_split('/\s*,\s*/', $columns, -1, PREG_SPLIT_NO_EMPTY);
         }
         foreach ($columns as $i => $column) {
             if ($column instanceof Expression) {
@@ -1075,9 +1179,10 @@ class QueryBuilder extends \yii\base\Object
             }
             array_shift($condition);
             return $this->$method($operator, $condition, $params);
-        } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
-            return $this->buildHashCondition($condition, $params);
         }
+
+        // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+        return $this->buildHashCondition($condition, $params);
     }
 
     /**
@@ -1140,9 +1245,9 @@ class QueryBuilder extends \yii\base\Object
         }
         if (!empty($parts)) {
             return '(' . implode(") $operator (", $parts) . ')';
-        } else {
-            return '';
         }
+
+        return '';
     }
 
     /**
@@ -1245,7 +1350,7 @@ class QueryBuilder extends \yii\base\Object
             $values = (array) $values;
         }
 
-        if ($column instanceof \Traversable || count($column) > 1) {
+        if ($column instanceof \Traversable || ((is_array($column) || $column instanceof \Countable) && count($column) > 1)) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         } elseif (is_array($column)) {
             $column = reset($column);
@@ -1280,10 +1385,10 @@ class QueryBuilder extends \yii\base\Object
 
         if (count($sqlValues) > 1) {
             return "$column $operator (" . implode(', ', $sqlValues) . ')';
-        } else {
-            $operator = $operator === 'IN' ? '=' : '<>';
-            return $column . $operator . reset($sqlValues);
         }
+
+        $operator = $operator === 'IN' ? '=' : '<>';
+        return $column . $operator . reset($sqlValues);
     }
 
     /**
@@ -1305,12 +1410,13 @@ class QueryBuilder extends \yii\base\Object
                 }
             }
             return '(' . implode(', ', $columns) . ") $operator ($sql)";
-        } else {
-            if (strpos($columns, '(') === false) {
-                $columns = $this->db->quoteColumnName($columns);
-            }
-            return "$columns $operator ($sql)";
         }
+
+        if (strpos($columns, '(') === false) {
+            $columns = $this->db->quoteColumnName($columns);
+        }
+
+        return "$columns $operator ($sql)";
     }
 
     /**
@@ -1435,9 +1541,9 @@ class QueryBuilder extends \yii\base\Object
         if ($operands[0] instanceof Query) {
             list($sql, $params) = $this->build($operands[0], $params);
             return "$operator ($sql)";
-        } else {
-            throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
         }
+
+        throw new InvalidParamException('Subquery for EXISTS operator must be a Query object.');
     }
 
     /**
@@ -1470,11 +1576,11 @@ class QueryBuilder extends \yii\base\Object
         } elseif ($value instanceof Query) {
             list($sql, $params) = $this->build($value, $params);
             return "$column $operator ($sql)";
-        } else {
-            $phName = self::PARAM_PREFIX . count($params);
-            $params[$phName] = $value;
-            return "$column $operator $phName";
         }
+
+        $phName = self::PARAM_PREFIX . count($params);
+        $params[$phName] = $value;
+        return "$column $operator $phName";
     }
 
     /**

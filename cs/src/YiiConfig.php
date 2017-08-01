@@ -45,8 +45,8 @@ class YiiConfig extends Config
             'ereg_to_preg' => true,
             'function_typehint_space' => true,
             'hash_to_slash_comment' => true,
-//            'heredoc_to_nowdoc' => true, // needs more discussion
-//            'include' => true, // needs more discussion
+            'include' => true,
+            'heredoc_to_nowdoc' => true,
             'is_null' => [
                 'use_yoda_style' => false,
             ],
@@ -91,7 +91,7 @@ class YiiConfig extends Config
             'no_trailing_comma_in_singleline_array' => true,
             'no_unneeded_control_parentheses' => true,
             'no_unused_imports' => true,
-//            'no_useless_else' => true, // needs more discussion
+            'no_useless_else' => true,
             'no_useless_return' => true,
             'no_whitespace_before_comma_in_array' => true,
             'no_whitespace_in_blank_line' => true,

@@ -686,9 +686,9 @@ Podemos criar uma classe de regra de URL para resolver este formato.
 namespace app\components;
 
 use yii\web\UrlRuleInterface;
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class CarUrlRule extends Object implements UrlRuleInterface
+class CarUrlRule extends BaseObject implements UrlRuleInterface
 {
 
     public function createUrl($manager, $route, $params)

@@ -54,6 +54,13 @@ class FormatterTest extends TestCase
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
         $this->expectException('\yii\base\InvalidParamException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
+        $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, function ($value) {
+            return date('Y-m-d', $value);
+        }));
+        $this->assertSame('from: ' . date('Y-m-d', $value), $this->formatter->format($value, function ($value, $formatter) {
+            /** @var $formatter Formatter */
+            return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
+        }));
     }
 
     public function testLocale()

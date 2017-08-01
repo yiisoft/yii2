@@ -243,4 +243,16 @@ class UrlManagerTest extends TestCase
         $this->assertEquals(['site/index', []], $result);
         $this->assertEquals(5, $request->getQueryParam('id'));
     }
+
+    public function testSetBaseUrl()
+    {
+        $manager = $this->getUrlManager();
+
+        $manager->setBaseUrl('example.com');
+        $this->assertEquals('example.com', $manager->getBaseUrl());
+
+        Yii::setAlias('@testAlias', 'example.com/');
+        $manager->setBaseUrl('@testAlias');
+        $this->assertEquals('example.com', $manager->getBaseUrl());
+    }
 }

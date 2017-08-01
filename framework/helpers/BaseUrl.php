@@ -100,9 +100,9 @@ class BaseUrl
 
         if ($scheme !== false) {
             return static::getUrlManager()->createAbsoluteUrl($route, is_string($scheme) ? $scheme : null);
-        } else {
-            return static::getUrlManager()->createUrl($route);
         }
+
+        return static::getUrlManager()->createUrl($route);
     }
 
     /**
@@ -140,10 +140,10 @@ class BaseUrl
         if (strpos($route, '/') === false) {
             // empty or an action ID
             return $route === '' ? Yii::$app->controller->getRoute() : Yii::$app->controller->getUniqueId() . '/' . $route;
-        } else {
-            // relative to module
-            return ltrim(Yii::$app->controller->module->getUniqueId() . '/' . $route, '/');
         }
+
+        // relative to module
+        return ltrim(Yii::$app->controller->module->getUniqueId() . '/' . $route, '/');
     }
 
     /**
@@ -320,9 +320,9 @@ class BaseUrl
     {
         if ($name === null) {
             return Yii::$app->getUser()->getReturnUrl();
-        } else {
-            return Yii::$app->getSession()->get($name);
         }
+
+        return Yii::$app->getSession()->get($name);
     }
 
     /**

@@ -7,10 +7,10 @@
 
 namespace yiiunit\framework\filters\stubs;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\filters\RateLimitInterface;
 
-class RateLimit extends Object implements RateLimitInterface
+class RateLimit extends BaseObject implements RateLimitInterface
 {
     private $_rateLimit;
 

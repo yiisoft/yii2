@@ -178,7 +178,7 @@ class PhpDocController extends Controller
             list(, $extension) = $matches;
             Yii::setAlias("@yii/$extension", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
-                include($autoloadFile);
+                include $autoloadFile;
             }
 
             if (isset($extensionExcept[$extension])) {
@@ -201,7 +201,7 @@ class PhpDocController extends Controller
             list(, $appName) = $matches;
             Yii::setAlias("@app-$appName", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
-                include($autoloadFile);
+                include $autoloadFile;
             }
 
             $except[] = '/runtime/';
@@ -486,8 +486,8 @@ class PhpDocController extends Controller
             return false;
         }
 
-        if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object') {
-            $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\Object.\n", Console::FG_BLUE, Console::BOLD);
+        if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object' && !$ref->isSubclassOf('yii\base\BaseObject') && $className != 'yii\base\BaseObject') {
+            $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\BaseObject.\n", Console::FG_BLUE, Console::BOLD);
             return false;
         }
 

@@ -53,7 +53,7 @@ PHP код должен содержать только символы в код
 /**
  * Документация
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // код
 }
@@ -339,7 +339,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 - Код без документации недопустим;
 - Все файлы классов должны содержать блок документации в начале файла и блок документации непосредственно перед каждым классом;
 - Нет необходимости использовать тег `@return` если метод не возвращает значение;
-- Все виртуальные свойства классов, наследованных от `yii\base\Object`, документируются тегом `@property` в блоке документации класса;
+- Все виртуальные свойства классов, наследованных от `yii\base\BaseObject`, документируются тегом `@property` в блоке документации класса;
   Аннотации геттеров и сеттеров автоматически генерируются из соответствующих тегов `@return` or `@param`
   посредством выполнения команды `./build php-doc` в соответствующем каталоге;
   Вы можете добавить дополнительный тег `@property` для геттера или сеттера для пояснения назначения переменной метода, если это необходимо.
@@ -381,7 +381,7 @@ public function getErrors($attribute = null)
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 
