@@ -104,7 +104,11 @@ class Captcha extends InputWidget
     public function run()
     {
         $this->registerClientScript();
-        $input = $this->renderInput('text');
+        if ($this->hasModel()) {
+            $input = Html::activeTextInput($this->model, $this->attribute, $this->options);
+        } else {
+            $input = Html::textInput($this->name, $this->value, $this->options);
+        }
         $route = $this->captchaAction;
         if (is_array($route)) {
             $route['v'] = uniqid();

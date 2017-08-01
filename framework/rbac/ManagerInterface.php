@@ -182,7 +182,7 @@ interface ManagerInterface extends CheckAccessInterface
     /**
      * Assigns a role to a user.
      *
-     * @param Role $role
+     * @param Role|Permission $role
      * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return Assignment the role assignment information.
      * @throws \Exception if the role has already been assigned to the user
@@ -191,7 +191,7 @@ interface ManagerInterface extends CheckAccessInterface
 
     /**
      * Revokes a role from a user.
-     * @param Role $role
+     * @param Role|Permission $role
      * @param string|int $userId the user ID (see [[\yii\web\User::id]])
      * @return bool whether the revoking is successful
      */

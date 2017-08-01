@@ -14,7 +14,7 @@
 
 构建响应时，最先应做的是标识请求是否成功处理的状态，可通过设置
 [[yii\web\Response::statusCode]] 属性，该属性使用一个有效的
-[HTTP 状态码](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html)。例如，为标识处理已被处理成功，
+[HTTP 状态码](https://tools.ietf.org/html/rfc2616#section-10)。例如，为标识处理已被处理成功，
 可设置状态码为200，如下所示：
 
 ```php

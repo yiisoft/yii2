@@ -40,6 +40,7 @@ return [
   'yii\base\Module' => YII2_PATH . '/base/Module.php',
   'yii\base\NotSupportedException' => YII2_PATH . '/base/NotSupportedException.php',
   'yii\base\Object' => YII2_PATH . '/base/Object.php',
+  'yii\base\BaseObject' => YII2_PATH . '/base/BaseObject.php',
   'yii\base\Request' => YII2_PATH . '/base/Request.php',
   'yii\base\Response' => YII2_PATH . '/base/Response.php',
   'yii\base\Security' => YII2_PATH . '/base/Security.php',

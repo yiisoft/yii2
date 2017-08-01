@@ -49,21 +49,21 @@ Klaslarni nomlash kelishuvi direktoriyalar strukturasiga asoslanilgan. Masalan, 
 Komponent va obekt
 ------------------
 
-Yii 2.0 da 1.1 dagi `CComponent` klas ikkita klasga ajratilgan: [[yii\base\Object]] va [[yii\base\Component]].
-[[yii\base\Object|Object]] klas oddiy asos klas bo'lib xususiyatlar uchun [getter va setter](concept-properties.md) larni ishlatishga imkon beradi. 
-[[yii\base\Component|Component]] klas [[yii\base\Object|Object]] klasdan voris bo'lib [xodisalar](concept-events.md) va 
+Yii 2.0 da 1.1 dagi `CComponent` klas ikkita klasga ajratilgan: [[yii\base\BaseObject]] va [[yii\base\Component]].
+[[yii\base\BaseObject|BaseObject]] klas oddiy asos klas bo'lib xususiyatlar uchun [getter va setter](concept-properties.md) larni ishlatishga imkon beradi. 
+[[yii\base\Component|Component]] klas [[yii\base\BaseObject|BaseObject]] klasdan voris bo'lib [xodisalar](concept-events.md) va 
 [o'zini tutish](concept-behaviors.md) larni qo'llab quvvatlaydi.
 
-Agar sizni klasingizga xodisalar funksiyalari yoki o'zini tutishlar kerak bo'lmasa asos klas sifatida [[yii\base\Object|Object]] ni qo'llashingiz mumkin. Ushbu holat asosan asos strukturali klaslar yaratilayotgan vaqtda yuz beradi.
+Agar sizni klasingizga xodisalar funksiyalari yoki o'zini tutishlar kerak bo'lmasa asos klas sifatida [[yii\base\BaseObject|BaseObject]] ni qo'llashingiz mumkin. Ushbu holat asosan asos strukturali klaslar yaratilayotgan vaqtda yuz beradi.
 
 
 Obekt sozlashlari
 -----------------
 
-[[yii\base\Object|Object]] klas obektlarni sozlashni yagona usulini tashkillashtiradi. Ixtiyoriy [[yii\base\Object|Object]] ga voris bo'lgan klas (agar kerak bo'lsa) o'zini sozlashi uchun quyidagi ko'rinishda o'ziga konstruktor yaratishi mumkin: 
+[[yii\base\BaseObject|BaseObject]] klas obektlarni sozlashni yagona usulini tashkillashtiradi. Ixtiyoriy [[yii\base\BaseObject|BaseObject]] ga voris bo'lgan klas (agar kerak bo'lsa) o'zini sozlashi uchun quyidagi ko'rinishda o'ziga konstruktor yaratishi mumkin: 
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -81,7 +81,7 @@ class MyClass extends \yii\base\Object
 }
 ```
 
-Yuqoridagi misolda oxirgi parametr obekt xususiyatlarini qiymatlovchi sozlashlar massivi ya'ni kalit-qiymat formatidagi juftlikdan iborat bo'lishi kerak. Siz sozlashlar qo'llanilganidan keyin initsializatsiya ishini amalga oshirish uchun oldindan [[yii\base\Object::init()|init()]] metod yaratib qo'yishingiz mumkin.
+Yuqoridagi misolda oxirgi parametr obekt xususiyatlarini qiymatlovchi sozlashlar massivi ya'ni kalit-qiymat formatidagi juftlikdan iborat bo'lishi kerak. Siz sozlashlar qo'llanilganidan keyin initsializatsiya ishini amalga oshirish uchun oldindan [[yii\base\BaseObject::init()|init()]] metod yaratib qo'yishingiz mumkin.
 
 Ushbu kelishuvga asoslanib siz sozlash massivi yordamida yangi obektlarni yaratishingiz va sozlashingiz mumkin:
 

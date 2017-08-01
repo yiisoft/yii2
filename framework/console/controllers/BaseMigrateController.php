@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
@@ -155,7 +156,7 @@ abstract class BaseMigrateController extends Controller
         if (empty($migrations)) {
             $this->stdout("No new migrations found. Your system is up-to-date.\n", Console::FG_GREEN);
 
-            return self::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $total = count($migrations);
@@ -183,7 +184,7 @@ abstract class BaseMigrateController extends Controller
                     $this->stdout("\n$applied from $n " . ($applied === 1 ? 'migration was' : 'migrations were') . " applied.\n", Console::FG_RED);
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+                    return ExitCode::UNSPECIFIED_ERROR;
                 }
                 $applied++;
             }
@@ -225,7 +226,7 @@ abstract class BaseMigrateController extends Controller
         if (empty($migrations)) {
             $this->stdout("No migration has been done before.\n", Console::FG_YELLOW);
 
-            return self::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $migrations = array_keys($migrations);
@@ -244,7 +245,7 @@ abstract class BaseMigrateController extends Controller
                     $this->stdout("\n$reverted from $n " . ($reverted === 1 ? 'migration was' : 'migrations were') . " reverted.\n", Console::FG_RED);
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+                    return ExitCode::UNSPECIFIED_ERROR;
                 }
                 $reverted++;
             }
@@ -287,7 +288,7 @@ abstract class BaseMigrateController extends Controller
         if (empty($migrations)) {
             $this->stdout("No migration has been done before.\n", Console::FG_YELLOW);
 
-            return self::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $migrations = array_keys($migrations);
@@ -304,14 +305,14 @@ abstract class BaseMigrateController extends Controller
                 if (!$this->migrateDown($migration)) {
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+                    return ExitCode::UNSPECIFIED_ERROR;
                 }
             }
             foreach (array_reverse($migrations) as $migration) {
                 if (!$this->migrateUp($migration)) {
                     $this->stdout("\nMigration failed. The rest of the migrations are canceled.\n", Console::FG_RED);
 
-                    return self::EXIT_CODE_ERROR;
+                    return ExitCode::UNSPECIFIED_ERROR;
                 }
             }
             $this->stdout("\n$n " . ($n === 1 ? 'migration was' : 'migrations were') . " redone.\n", Console::FG_GREEN);
@@ -399,7 +400,7 @@ abstract class BaseMigrateController extends Controller
                     $this->stdout("The migration history is set at $originalVersion.\nNo actual migration was performed.\n", Console::FG_GREEN);
                 }
 
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 
@@ -419,7 +420,7 @@ abstract class BaseMigrateController extends Controller
                     }
                 }
 
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 
@@ -786,7 +787,7 @@ abstract class BaseMigrateController extends Controller
             if (strpos($migration, $version) === 0) {
                 $this->actionUp($i + 1);
 
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 
@@ -800,7 +801,7 @@ abstract class BaseMigrateController extends Controller
                     $this->actionDown($i);
                 }
 
-                return self::EXIT_CODE_NORMAL;
+                return ExitCode::OK;
             }
         }
 

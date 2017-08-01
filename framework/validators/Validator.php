@@ -208,7 +208,7 @@ class Validator extends Component
     {
         $params['attributes'] = $attributes;
 
-        if ($type instanceof \Closure || $model->hasMethod($type)) {
+        if ($type instanceof \Closure || ($model->hasMethod($type) && !isset(static::$builtInValidators[$type]))) {
             // method-based validator
             $params['class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = $type;
