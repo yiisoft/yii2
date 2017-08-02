@@ -1,9 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
-use yiiunit\TestCase;
 use yii\helpers\Markdown;
+use yiiunit\TestCase;
+
 /**
  * Description of MarkdownTest
  *
@@ -12,9 +18,17 @@ use yii\helpers\Markdown;
  */
 class MarkdownTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testOriginalFlavor()
     {
-        $text = <<<TEXT
+        $text = <<<'TEXT'
 html
 new line 1
 
@@ -27,5 +41,21 @@ TEXT;
         Markdown::$defaultFlavor = 'gfm-comment';
         $this->assertNotEquals(Markdown::process($text), Markdown::process($text, 'original'));
         $this->assertEquals(Markdown::process($text), Markdown::process($text, 'gfm-comment'));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Markdown flavor 'undefined' is not defined.
+     */
+    public function testProcessInvalidParamException()
+    {
+        Markdown::process('foo', 'undefined');
+    }
+
+    public function testProcessParagraph()
+    {
+        $actual = Markdown::processParagraph('foo');
+        $expected = 'foo';
+        $this->assertEquals($expected, $actual);
     }
 }

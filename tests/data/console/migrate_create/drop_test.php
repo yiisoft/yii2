@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return <<<CODE
 <?php
@@ -6,7 +11,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles the dropping of table `test`.
+ * Handles the dropping of table `{table}`.
  */
 class {$class} extends Migration
 {
@@ -15,7 +20,7 @@ class {$class} extends Migration
      */
     public function up()
     {
-        \$this->dropTable('test');
+        \$this->dropTable('{table}');
     }
 
     /**
@@ -23,7 +28,7 @@ class {$class} extends Migration
      */
     public function down()
     {
-        \$this->createTable('test', [
+        \$this->createTable('{table}', [
             'id' => \$this->primaryKey(),
         ]);
     }

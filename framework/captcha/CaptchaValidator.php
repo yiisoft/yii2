@@ -27,11 +27,11 @@ use yii\validators\Validator;
 class CaptchaValidator extends Validator
 {
     /**
-     * @var boolean whether to skip this validator if the input is empty.
+     * @var bool whether to skip this validator if the input is empty.
      */
     public $skipOnEmpty = false;
     /**
-     * @var boolean whether the comparison is case sensitive. Defaults to false.
+     * @var bool whether the comparison is case sensitive. Defaults to false.
      */
     public $caseSensitive = false;
     /**
@@ -84,7 +84,18 @@ class CaptchaValidator extends Validator
     /**
      * @inheritdoc
      */
-    public function clientValidateAttribute($object, $attribute, $view)
+    public function clientValidateAttribute($model, $attribute, $view)
+    {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
     {
         $captcha = $this->createCaptchaAction();
         $code = $captcha->getVerifyCode(false);
@@ -94,15 +105,13 @@ class CaptchaValidator extends Validator
             'hashKey' => 'yiiCaptcha/' . $captcha->getUniqueId(),
             'caseSensitive' => $this->caseSensitive,
             'message' => Yii::$app->getI18n()->format($this->message, [
-                'attribute' => $object->getAttributeLabel($attribute),
+                'attribute' => $model->getAttributeLabel($attribute),
             ], Yii::$app->language),
         ];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.captcha(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

@@ -53,7 +53,58 @@ Third optional argument is default value which is `null` if not specified. Could
 $username = ArrayHelper::getValue($comment, 'user.username', 'Unknown');
 ```
 
-In case you want to get the value and then immediately remove it from array you can use `remove` method:
+
+## Setting values <span id="setting-values"></span>
+
+```php
+$array = [
+    'key' => [
+        'in' => ['k' => 'value']
+    ]
+];
+
+ArrayHelper::setValue($array, 'key.in', ['arr' => 'val']);
+// the path to write the value in `$array` can be specified as an array
+ArrayHelper::setValue($array, ['key', 'in'], ['arr' => 'val']);
+```
+
+As a result, initial value of `$array['key']['in']` will be overwritten by new value
+
+```php
+[
+    'key' => [
+        'in' => ['arr' => 'val']
+    ]
+]
+```
+
+If the path contains a nonexistent key, it will be created
+
+```php
+// if `$array['key']['in']['arr0']` is not empty, the value will be added to the array
+ArrayHelper::setValue($array, 'key.in.arr0.arr1', 'val');
+
+// if you want to completely override the value `$array['key']['in']['arr0']`
+ArrayHelper::setValue($array, 'key.in.arr0', ['arr1' => 'val']);
+```
+
+The result will be
+
+```php
+[
+    'key' => [
+        'in' => [
+            'k' => 'value',
+            'arr0' => ['arr1' => 'val']
+        ]
+    ]
+]
+```
+
+
+## Take a value from an array <span id="removing-values"></span>
+
+In case you want to get a value and then immediately remove it from an array you can use `remove` method:
 
 ```php
 $array = ['type' => 'A', 'options' => [1, 2]];
@@ -88,7 +139,7 @@ if (!ArrayHelper::keyExists('username', $data1, false) || !ArrayHelper::keyExist
 Often you need to get a column of values from array of data rows or objects. Common example is getting a list of IDs.
 
 ```php
-$data = [
+$array = [
     ['id' => '123', 'data' => 'abc'],
     ['id' => '345', 'data' => 'def'],
 ];
@@ -131,7 +182,7 @@ $array = [
 $result = ArrayHelper::index($array, 'id');
 ```
 
-The result will be an associative array, where the key is the value of `id` attribute
+The result will be an associative array, where the key is the value of `id` attribute:
 
 ```php
 [
@@ -141,7 +192,7 @@ The result will be an associative array, where the key is the value of `id` attr
 ]
 ```
 
-Anonymous function, passed as a `$key`, gives the same result.
+Anonymous function, passed as a `$key`, gives the same result:
 
 ```php
 $result = ArrayHelper::index($array, function ($element) {
@@ -398,7 +449,7 @@ Each mapping array contains a set of mappings. Each mapping could be:
 - A key-value pair of desired array key name and model column name to take value from.
 - A key-value pair of desired array key name and a callback which returns value.
 
-The result of conversion above will be:
+The result of conversion above for single model will be:
 
 
 ```php

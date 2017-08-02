@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="PHPMD rule set for Yii 2" xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>Custom PHPMD settings for naming, cleancode and controversial rulesets</description>
+
+    <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass" />
+    <rule ref="rulesets/naming.xml/ConstantNamingConventions" />
+    <!-- Long variable names can help with better understanding so we increase the limit a bit -->
+    <rule ref="rulesets/naming.xml/LongVariable">
+        <properties>
+            <property name="maximum" value="25" />
+        </properties>
+    </rule>
+    <!-- method names like up(), gc(), ... are okay. -->
+    <rule ref="rulesets/naming.xml/ShortMethodName">
+        <properties>
+            <property name="minimum" value="2" />
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/cleancode.xml">
+        <!-- else is not always bad. Disabling this as there is no way to differentiate between early return and normal else cases. -->
+        <exclude name="ElseExpression" />
+        <!-- Static access on Yii::$app is normal in Yii -->
+        <exclude name="StaticAccess" />
+    </rule>
+
+    <rule ref="rulesets/controversial.xml/Superglobals" />
+    <rule ref="rulesets/controversial.xml/CamelCaseClassName" />
+    <rule ref="rulesets/controversial.xml/CamelCaseMethodName" />
+    <rule ref="rulesets/controversial.xml/CamelCaseParameterName" />
+    <rule ref="rulesets/controversial.xml/CamelCaseVariableName" />
+    <!-- allow private properties to start with $_ -->
+    <rule ref="rulesets/controversial.xml/CamelCasePropertyName">
+        <properties>
+            <property name="allow-underscore" value="true" />
+        </properties>
+    </rule>
+</ruleset>

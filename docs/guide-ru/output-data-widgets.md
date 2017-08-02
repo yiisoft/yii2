@@ -26,13 +26,15 @@ DetailView использует свойство [[yii\widgets\DetailView::$attr
 echo DetailView::widget([
     'model' => $model,
     'attributes' => [
-        'title',               // title свойство (обычный текст)
-        'description:html',    // description свойство, как HTML
-        [                      // name свойство зависимой модели owner
+        'title',                                           // title свойство (обычный текст)
+        'description:html',                                // description свойство, как HTML
+        [                                                  // name свойство зависимой модели owner
             'label' => 'Owner',
-            'value' => $model->owner->name,
+            'value' => $model->owner->name,            
+            'contentOptions' => ['class' => 'bg-red'],     // настройка HTML атрибутов для тега, соответсвующего value
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // настройка HTML атрибутов для тега, соответсвующего label
         ],
-        'created_at:datetime', // дата создания в формате datetime
+        'created_at:datetime',                             // дата создания в формате datetime
     ],
 ]);
 ```
@@ -265,7 +267,7 @@ echo GridView::widget([
       // возвращаем HTML код для кнопки
   }
   ```
-  где, `$url` - это URL, который будет повешен на как ссылка на кнопку, `$model` - это объект модели для текущей строки и
+  где, `$url` - это URL, который будет повешен как ссылка на кнопку, `$model` - это объект модели для текущей строки и
   `$key` - это ключ для модели из провайдера данных.
 
 - [[yii\grid\ActionColumn::urlCreator|urlCreator]] замыкание, которое создаёт URL используя информацию из модели. Вид
@@ -556,7 +558,7 @@ public function rules()
 $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name')]);
 ```
 
-> Info: В коде, что выше, использует такая же строка, как и имя зависимости и псевдонима таблицы.
+> Info: В коде, что выше, используется такая же строка, как и имя зависимости и псевдонима таблицы.
 > Однако, когда ваш псевдоним и имя связи различаются, вы должны обратить внимание, где вы используете псевдоним,
 > а где имя связи. Простым правилом для этого является использование псевдонима в каждом месте, которое используется
 > для построения запроса к базе данных, и имя связи во всех других определениях, таких как `attributes()`, `rules()` и т.д.
@@ -605,7 +607,7 @@ CREATE OR REPLACE VIEW vw_user_info AS
     WHERE user.id = user_profile.user_id
 ```
 
-Теперь необходимо создать ActiveRecord, которая будет отображение данных из этого вида:
+Теперь вам необходимо создать ActiveRecord, через который будут доступны данные из вида выше:
 
 ```php
 
@@ -648,8 +650,6 @@ class UserView extends ActiveRecord
             // здесь определяйте ваши метки атрибутов
         ];
     }
-
-
 }
 ```
 
@@ -666,7 +666,7 @@ class UserView extends ActiveRecord
 Вы можете использовать больше одной GridView на одной странице. Для этого нужно внести некоторые дополнительные настройки
 для того, чтобы они друг другу не мешали.
 При использовании нескольких экземпляров GridView вы должны настроить различные имена параметров для сортировки и ссылки
-для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальный сортировку и разбиение на страницы.
+для разбиения на страницы так, чтобы каждый GridView имел свою индивидуальную сортировку и разбиение на страницы.
 Сделать это возможно через настройку [[yii\data\Sort::sortParam|sortParam]] и [[yii\data\Pagination::pageParam|pageParam]]
 свойств провайдеров данных [[yii\data\BaseDataProvider::$sort|sort]] и [[yii\data\BaseDataProvider::$pagination|pagination]]
 

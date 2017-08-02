@@ -18,7 +18,7 @@ Yii はさまざまなコンポーネントを結び付けてログインをサ�
 実際の認証ロジックを含む [[yii\web\User::identityClass|ユーザ識別情報クラス]] は、あなたが指定しなければなりません。
 下記のアプリケーション構成情報においては、[[yii\web\User|user]] の [[yii\web\User::identityClass|ユーザ識別情報クラス]] は `app\models\User` であると構成されています。
 `app\models\User` の実装については、次の項で説明します。
-  
+
 ```php
 return [
     'components' => [
@@ -63,7 +63,7 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * 与えられた ID によってユーザ識別情報を探す
      *
-     * @param string|integer $id 探すための ID
+     * @param string|int $id 探すための ID
      * @return IdentityInterface|null 与えられた ID に合致する Identity オブジェクト
      */
     public static function findIdentity($id)
@@ -100,7 +100,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     /**
      * @param string $authKey
-     * @return boolean 認証キーが現在のユーザに対して有効か否か
+     * @return bool 認証キーが現在のユーザに対して有効か否か
      */
     public function validateAuthKey($authKey)
     {
@@ -116,7 +116,7 @@ class User extends ActiveRecord implements IdentityInterface
 class User extends ActiveRecord implements IdentityInterface
 {
     ......
-    
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {

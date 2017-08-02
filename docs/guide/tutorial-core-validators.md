@@ -26,7 +26,7 @@ In the following, we will describe the main usage and properties of every core v
     // checks if "selected" is either 0 or 1, regardless of data type
     ['selected', 'boolean'],
 
-    // checks if "deleted" is of boolean type, either `true` or `false`
+    // checks if "deleted" is of boolean type, either true or false
     ['deleted', 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
 ]
 ```
@@ -67,8 +67,11 @@ to make sure an input is the same as the verification code displayed by [[yii\ca
     // validates if the value of "password" attribute equals to that of "password_repeat"
     ['password', 'compare'],
 
+    // same as above but with explicitly specifying the attribute to compare with
+    ['password', 'compare', 'compareAttribute' => 'password_repeat'],
+
     // validates if age is greater than or equal to 30
-    ['age', 'compare', 'compareValue' => 30, 'operator' => '>='],
+    ['age', 'compare', 'compareValue' => 30, 'operator' => '>=', 'type' => 'number'],
 ]
 ```
 
@@ -91,7 +94,9 @@ is as specified by the `operator` property.
      * `>=`: check if value being validated is greater than or equal to the value being compared with.
      * `<`: check if value being validated is less than the value being compared with.
      * `<=`: check if value being validated is less than or equal to the value being compared with.
-
+- `type`: The default comparison type is '[[yii\validators\CompareValidator::TYPE_STRING|string]]', which means the values are
+  compared byte by byte. When comparing numbers, make sure to set the [[yii\validators\CompareValidator::$type|$type]]
+  to '[[yii\validators\CompareValidator::TYPE_NUMBER|number]]' to enable numeric comparison.
 
 ### Comparing date values
 
@@ -118,9 +123,14 @@ is set to `false` on the compare validator too.
 
 ## [[yii\validators\DateValidator|date]] <span id="date"></span>
 
+The [[yii\validators\DateValidator|date]] validator comes with three different
+shortcuts:
+
 ```php
 [
     [['from_date', 'to_date'], 'date'],
+    [['from_datetime', 'to_datetime'], 'datetime'],
+    [['some_time'], 'time'],
 ]
 ```
 
@@ -143,6 +153,9 @@ specified via [[yii\validators\DateValidator::timestampAttribute|timestampAttrib
   Since version 2.0.4, a format and timezone can be specified for this attribute using
   [[yii\validators\DateValidator::$timestampAttributeFormat|$timestampAttributeFormat]] and
   [[yii\validators\DateValidator::$timestampAttributeTimeZone|$timestampAttributeTimeZone]].
+  
+  Note, that when using `timestampAttribute`, the input value will be converted to a unix timestamp, which by definition is in UTC, so
+  a conversion from the [[yii\validators\DateValidator::timeZone|input time zone]] to UTC will be performed.
 
 - Since version 2.0.4 it is also possible to specify a [[yii\validators\DateValidator::$min|minimum]] or
   [[yii\validators\DateValidator::$max|maximum]] timestamp.
@@ -162,7 +175,7 @@ or `1970-01-01` in the input field of a date picker.
 
 ```php
 [
-    // set "age" to be `null` if it is empty
+    // set "age" to be null if it is empty
     ['age', 'default', 'value' => null],
 
     // set "country" to be "USA" if it is empty
@@ -189,7 +202,8 @@ function foo($model, $attribute) {
 ```
 
 > Info: How to determine if a value is empty or not is a separate topic covered
-  in the [Empty Values](input-validation.md#handling-empty-inputs) section.
+  in the [Empty Values](input-validation.md#handling-empty-inputs) section. Default value from database
+  schema could be loaded via [loadDefaultValues()](db-active-record.md#default-attribute-values) method of the model.
 
 
 ## [[yii\validators\NumberValidator|double]] <span id="double"></span>
@@ -663,3 +677,6 @@ This validator checks if the input value is a valid URL.
   Defaults to `false`. Note that in order to use IDN validation you have to install and enable the `intl` PHP
   extension, otherwise an exception would be thrown.
 
+> Note: The validator checks that URL scheme and host part is correct. It does NOT check the remaining parts of a URL
+and is NOT designed to protect against XSS or any other attacks. See [Security best practices](security-best-practices.md)
+article to learn more about threats prevention when developing applications.

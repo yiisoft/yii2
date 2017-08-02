@@ -21,7 +21,7 @@ Você pode configurar a propriedade [[yii\filters\HttpCache::lastModified]] para
 /**
  * @param Action $action O Objeto da ação que está sendo manipulada no momento
  * @param array $params o valor da propriedade "params"
- * @return integer uma data(timestamp) UNIX timestamp representando o tempo da 
+ * @return int uma data(timestamp) UNIX timestamp representando o tempo da
  * última modificação na página
  */
 function ($action, $params)
@@ -47,7 +47,7 @@ public function behaviors()
 
 O código acima afirma que o cache HTTP deve ser habilitado apenas para a ação `index`. Este deve
 gerar um cabeçalho HTTP `last-modified` baseado na última data de alteração dos*posts*. Quando um
-navegador visitar a página `index` pela primeira vez, a página será gerada no servidor e enviada para 
+navegador visitar a página `index` pela primeira vez, a página será gerada no servidor e enviada para
 o navegador; Se o navegador visitar a mesma página novamente e não houver modificação dos *posts* durante este
 período, o servidor não irá remontará a página e o navegador usará a versão em cache no cliente.
 Como resultado, a renderização do conteúdo na página não será executada no servidor.
@@ -91,20 +91,20 @@ public function behaviors()
 
 O código acima afirma que o cache de HTTP deve ser habilitado apenas para a ação `view`. Este deve
 gerar um cabeçalho HTTP `ETag` baseado no título e no conteúdo do *post* requisitado. Quando um navegador visitar
-a página `view` pela primeira vez, a página será gerada no servidor e enviada para ele; Se o navegador visitar 
+a página `view` pela primeira vez, a página será gerada no servidor e enviada para ele; Se o navegador visitar
 a mesma página novamente e não houver alteração para o título e o conteúdo do *post*, o servidor não remontará
-a página e o navegador usará a versão que estiver no cache do cliente. Como resultado, a renderização do 
+a página e o navegador usará a versão que estiver no cache do cliente. Como resultado, a renderização do
 conteúdo na página não será executada no servidor.
 
 ETags permite estratégias mais complexas e/ou mais precisas do que o uso do cabeçalho de `Last-modified`.
 Por exemplo, um ETag pode ser invalidado se o site tiver sido alterado para um novo tema.
 
-Gerações muito complexas de ETags podem contrariar o propósito de se usar `HttpCache` e introduzir despesas desnecessárias ao processamento, já que eles precisam ser reavaliados a cada requisição. 
+Gerações muito complexas de ETags podem contrariar o propósito de se usar `HttpCache` e introduzir despesas desnecessárias ao processamento, já que eles precisam ser reavaliados a cada requisição.
 Tente encontrar uma expressão simples que invalida o cache se o conteúdo da página for modificado.
 
 > Observação: Em concordância com a [RFC 7232](http://tools.ietf.org/html/rfc7232#section-2.4), o
   `HttpCache` enviará os cabeçalhos `ETag` e `Last-Modified` se ambos forem assim configurados.
-  E se o cliente enviar ambos o cabeçalhos `If-None-Match` e `If-Modified-Since`, apenas o primeiro será 
+  E se o cliente enviar ambos o cabeçalhos `If-None-Match` e `If-Modified-Since`, apenas o primeiro será
   respeitado.
 
 
@@ -120,16 +120,16 @@ Cache-Control: public, max-age=3600
 ## Limitador de Cache na Sessão <span id="session-cache-limiter"></span>
 
 Quando uma página usa sessão, o PHP automaticamente enviará alguns cabeçalhos HTTP relacionados ao cache
-como especificado na configuração `session.cache_limiter` do PHP.INI. Estes cabeçalhos podem interferir ou 
+como especificado na configuração `session.cache_limiter` do PHP.INI. Estes cabeçalhos podem interferir ou
 desabilitar o cache que você deseja do `HttpCache`. Para prevenir-se deste problema, por padrão, o `HttpCache`
 desabilitará o envio destes cabeçalhos automaticamente. Se você quiser modificar estes comportamentos, deve
-configurar a propriedade [[yii\filters\HttpCache::sessionCacheLimiter]]. A propriedade pode receber um valor string, como: `public`, `private`, `private_no_expire` e `nocache`. Por favor, consulte o manual do 
+configurar a propriedade [[yii\filters\HttpCache::sessionCacheLimiter]]. A propriedade pode receber um valor string, como: `public`, `private`, `private_no_expire` e `nocache`. Por favor, consulte o manual do
 PHP sobre [session_cache_limiter()](http://www.php.net/manual/en/function.session-cache-limiter.php)
 para mais explicações sobre estes valores.
 
 
 ## Implicações para SEO <span id="seo-implications"></span>
 
-Os bots do motor de buscas tendem a respeitar cabeçalhos de cache. Já que alguns rastreadores têm um limite sobre a quantidade de páginas por domínio que eles processam em um certo espaço de tempo, introduzir cabeçalhos de cache podem 
+Os bots do motor de buscas tendem a respeitar cabeçalhos de cache. Já que alguns rastreadores têm um limite sobre a quantidade de páginas por domínio que eles processam em um certo espaço de tempo, introduzir cabeçalhos de cache podem
 ajudar na indexação do seu site já que eles reduzem o número de páginas que precisam ser processadas.
 

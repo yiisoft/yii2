@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\helpers\ArrayHelper;
 use yii\helpers\StringHelper;
 
@@ -57,26 +57,35 @@ use yii\helpers\StringHelper;
  * Thus functions like `is_uploaded_file()` and `move_uploaded_file()` will fail on them. This also
  * means [[UploadedFile::saveAs()]] will fail as well.
  *
- * @property integer $uploadFileMaxSize upload file max size in bytes.
- * @property integer $uploadFileMaxCount maximum upload files count.
+ * @property int $uploadFileMaxCount Maximum upload files count.
+ * @property int $uploadFileMaxSize Upload file max size in bytes.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.10
  */
-class MultipartFormDataParser extends Object implements RequestParserInterface
+class MultipartFormDataParser extends BaseObject implements RequestParserInterface
 {
     /**
-     * @var integer upload file max size in bytes.
+     * @var bool whether to parse raw body even for 'POST' request and `$_FILES` already populated.
+     * By default this option is disabled saving performance for 'POST' requests, which are already
+     * processed by PHP automatically.
+     * > Note: if this option is enabled, value of `$_FILES` will be reset on each parse.
+     * @since 2.0.13
+     */
+    public $force = false;
+
+    /**
+     * @var int upload file max size in bytes.
      */
     private $_uploadFileMaxSize;
     /**
-     * @var integer maximum upload files count.
+     * @var int maximum upload files count.
      */
     private $_uploadFileMaxCount;
 
 
     /**
-     * @return integer upload file max size in bytes.
+     * @return int upload file max size in bytes.
      */
     public function getUploadFileMaxSize()
     {
@@ -87,7 +96,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     }
 
     /**
-     * @param integer $uploadFileMaxSize upload file max size in bytes.
+     * @param int $uploadFileMaxSize upload file max size in bytes.
      */
     public function setUploadFileMaxSize($uploadFileMaxSize)
     {
@@ -95,7 +104,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     }
 
     /**
-     * @return integer maximum upload files count.
+     * @return int maximum upload files count.
      */
     public function getUploadFileMaxCount()
     {
@@ -106,7 +115,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     }
 
     /**
-     * @param integer $uploadFileMaxCount maximum upload files count.
+     * @param int $uploadFileMaxCount maximum upload files count.
      */
     public function setUploadFileMaxCount($uploadFileMaxCount)
     {
@@ -118,9 +127,13 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
      */
     public function parse($rawBody, $contentType)
     {
-        if (!empty($_POST) || !empty($_FILES)) {
-            // normal POST request is parsed by PHP automatically
-            return $_POST;
+        if (!$this->force) {
+            if (!empty($_POST) || !empty($_FILES)) {
+                // normal POST request is parsed by PHP automatically
+                return $_POST;
+            }
+        } else {
+            $_FILES = [];
         }
 
         if (empty($rawBody)) {
@@ -132,7 +145,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
         }
         $boundary = $matches[1];
 
-        $bodyParts = preg_split('/-+' . preg_quote($boundary) . '/s', $rawBody);
+        $bodyParts = preg_split('/\\R?-+' . preg_quote($boundary, '/') . '/s', $rawBody);
         array_pop($bodyParts); // last block always has no data, contains boundary ending like `--`
 
         $bodyParams = [];
@@ -141,9 +154,9 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             if (empty($bodyPart)) {
                 continue;
             }
-            list($headers, $value) = preg_split("/\\R\\R/", $bodyPart, 2);
+            list($headers, $value) = preg_split('/\\R\\R/', $bodyPart, 2);
             $headers = $this->parseHeaders($headers);
-            
+
             if (!isset($headers['content-disposition']['name'])) {
                 continue;
             }
@@ -202,7 +215,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
     private function parseHeaders($headerContent)
     {
         $headers = [];
-        $headerParts = preg_split("/\\R/s", $headerContent, -1, PREG_SPLIT_NO_EMPTY);
+        $headerParts = preg_split('/\\R/s', $headerContent, -1, PREG_SPLIT_NO_EMPTY);
         foreach ($headerParts as $headerPart) {
             if (($separatorPos = strpos($headerPart, ':')) === false) {
                 continue;
@@ -278,7 +291,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             'size',
             'error',
             'tmp_name',
-            'tmp_resource'
+            'tmp_resource',
         ];
 
         $nameParts = preg_split('/\\]\\[|\\[/s', $name);
@@ -290,7 +303,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
             }
         } else {
             foreach ($fileInfoAttributes as $attribute) {
-                $files[$baseName][$attribute] = (array)$files[$baseName][$attribute];
+                $files[$baseName][$attribute] = (array) $files[$baseName][$attribute];
             }
         }
 
@@ -321,7 +334,7 @@ class MultipartFormDataParser extends Object implements RequestParserInterface
      * Gets the size in bytes from verbose size representation.
      * For example: '5K' => 5*1024
      * @param string $verboseSize verbose size representation.
-     * @return integer actual size in bytes.
+     * @return int actual size in bytes.
      */
     private function getByteSize($verboseSize)
     {

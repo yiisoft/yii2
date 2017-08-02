@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\mutex;
 
@@ -9,19 +14,10 @@ use yiiunit\TestCase;
  * Class FileMutexTest
  *
  * @group mutex
- *
- * @package yii\tests\unit\framework\mutex
  */
 class FileMutexTest extends TestCase
 {
     use MutexTestTrait;
-
-    protected function setUp() {
-        parent::setUp();
-        if (DIRECTORY_SEPARATOR === '\\') {
-            $this->markTestSkipped('FileMutex does not have MS Windows operating system support.');
-        }
-    }
 
     /**
      * @return FileMutex
@@ -31,6 +27,7 @@ class FileMutexTest extends TestCase
     {
         return \Yii::createObject([
             'class' => FileMutex::className(),
+            'mutexPath' => '@yiiunit/runtime/mutex',
         ]);
     }
 

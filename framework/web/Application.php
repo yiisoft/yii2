@@ -8,11 +8,13 @@
 namespace yii\web;
 
 use Yii;
-use yii\helpers\Url;
 use yii\base\InvalidRouteException;
+use yii\helpers\Url;
 
 /**
  * Application is the base class for all web application classes.
+ *
+ * For more details and usage information on Application, see the [guide article on applications](guide:structure-applications).
  *
  * @property ErrorHandler $errorHandler The error handler application component. This property is read-only.
  * @property string $homeUrl The homepage URL.
@@ -77,7 +79,7 @@ class Application extends \yii\base\Application
     {
         if (empty($this->catchAll)) {
             try {
-                list ($route, $params) = $request->resolve();
+                list($route, $params) = $request->resolve();
             } catch (UrlNormalizerRedirectException $e) {
                 $url = $e->url;
                 if (is_array($url)) {
@@ -100,14 +102,14 @@ class Application extends \yii\base\Application
             $result = $this->runAction($route, $params);
             if ($result instanceof Response) {
                 return $result;
-            } else {
-                $response = $this->getResponse();
-                if ($result !== null) {
-                    $response->data = $result;
-                }
-
-                return $response;
             }
+
+            $response = $this->getResponse();
+            if ($result !== null) {
+                $response->data = $result;
+            }
+
+            return $response;
         } catch (InvalidRouteException $e) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $e->getCode(), $e);
         }
@@ -123,12 +125,12 @@ class Application extends \yii\base\Application
         if ($this->_homeUrl === null) {
             if ($this->getUrlManager()->showScriptName) {
                 return $this->getRequest()->getScriptUrl();
-            } else {
-                return $this->getRequest()->getBaseUrl() . '/';
             }
-        } else {
-            return $this->_homeUrl;
+
+            return $this->getRequest()->getBaseUrl() . '/';
         }
+
+        return $this->_homeUrl;
     }
 
     /**
