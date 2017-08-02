@@ -9,6 +9,7 @@ namespace yii\db;
 
 use yii\base\Component;
 use yii\di\Instance;
+use yii\helpers\StringHelper;
 
 /**
  * Migration is the base class for representing a database migration.
@@ -26,12 +27,18 @@ use yii\di\Instance;
  * [[safeDown()]] so that if anything wrong happens during the upgrading or downgrading,
  * the whole migration can be reverted in a whole.
  *
+ * Note that some DB queries in some DBMS cannot be put into a transaction. For some examples,
+ * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
+ * you should still implement `up()` and `down()`, instead.
+ *
  * Migration provides a set of convenient methods for manipulating database data and schema.
  * For example, the [[insert()]] method can be used to easily insert a row of data into
  * a database table; the [[createTable()]] method can be used to create a database table.
  * Compared with the same methods in [[Command]], these methods will display extra
  * information showing the method parameters and execution time, which may be useful when
  * applying migrations.
+ *
+ * For more details and usage information on Migration, see the [guide article on Migration](guide:db-migrations).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -59,6 +66,12 @@ class Migration extends Component implements MigrationInterface
      */
     public $db = 'db';
 
+    /**
+     * @var int max number of characters of the SQL outputted. Useful for reduction of long statements and making
+     * console output more compact.
+     * @since 2.0.13
+     */
+    public $maxSqlOutputLength;
 
     /**
      * Initializes the migration.
@@ -84,7 +97,7 @@ class Migration extends Component implements MigrationInterface
     /**
      * This method contains the logic to be executed when applying this migration.
      * Child classes may override this method to provide actual migration logic.
-     * @return boolean return a false value to indicate the migration fails
+     * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
     public function up()
@@ -93,15 +106,16 @@ class Migration extends Component implements MigrationInterface
         try {
             if ($this->safeUp() === false) {
                 $transaction->rollBack();
-
                 return false;
             }
             $transaction->commit();
         } catch (\Exception $e) {
-            echo 'Exception: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
-            echo $e->getTraceAsString() . "\n";
+            $this->printException($e);
             $transaction->rollBack();
-
+            return false;
+        } catch (\Throwable $e) {
+            $this->printException($e);
+            $transaction->rollBack();
             return false;
         }
 
@@ -112,7 +126,7 @@ class Migration extends Component implements MigrationInterface
      * This method contains the logic to be executed when removing this migration.
      * The default implementation throws an exception indicating the migration cannot be removed.
      * Child classes may override this method if the corresponding migrations can be removed.
-     * @return boolean return a false value to indicate the migration fails
+     * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
     public function down()
@@ -121,19 +135,29 @@ class Migration extends Component implements MigrationInterface
         try {
             if ($this->safeDown() === false) {
                 $transaction->rollBack();
-
                 return false;
             }
             $transaction->commit();
         } catch (\Exception $e) {
-            echo 'Exception: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
-            echo $e->getTraceAsString() . "\n";
+            $this->printException($e);
             $transaction->rollBack();
-
+            return false;
+        } catch (\Throwable $e) {
+            $this->printException($e);
+            $transaction->rollBack();
             return false;
         }
 
         return null;
+    }
+
+    /**
+     * @param \Throwable|\Exception $e
+     */
+    private function printException($e)
+    {
+        echo 'Exception: ' . $e->getMessage() . ' (' . $e->getFile() . ':' . $e->getLine() . ")\n";
+        echo $e->getTraceAsString() . "\n";
     }
 
     /**
@@ -142,7 +166,12 @@ class Migration extends Component implements MigrationInterface
      * be enclosed within a DB transaction.
      * Child classes may implement this method instead of [[up()]] if the DB logic
      * needs to be within a transaction.
-     * @return boolean return a false value to indicate the migration fails
+     *
+     * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
+     * you should still implement `up()` and `down()`, instead.
+     *
+     * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
     public function safeUp()
@@ -155,7 +184,12 @@ class Migration extends Component implements MigrationInterface
      * be enclosed within a DB transaction.
      * Child classes may implement this method instead of [[down()]] if the DB logic
      * needs to be within a transaction.
-     * @return boolean return a false value to indicate the migration fails
+     *
+     * Note: Not all DBMS support transactions. And some DB queries cannot be put into a transaction. For some examples,
+     * please refer to [implicit commit](http://dev.mysql.com/doc/refman/5.7/en/implicit-commit.html). If this is the case,
+     * you should still implement `up()` and `down()`, instead.
+     *
+     * @return bool return a false value to indicate the migration fails
      * and should not proceed further. All other return values mean the migration succeeds.
      */
     public function safeDown()
@@ -171,7 +205,12 @@ class Migration extends Component implements MigrationInterface
      */
     public function execute($sql, $params = [])
     {
-        echo "    > execute SQL: $sql ...";
+        $sqlOutput = $sql;
+        if ($this->maxSqlOutputLength !== null) {
+            $sqlOutput = StringHelper::truncate($sql, $this->maxSqlOutputLength, '[... hidden]');
+        }
+
+        echo "    > execute SQL: $sqlOutput ...";
         $time = microtime(true);
         $this->db->createCommand($sql)->bindValues($params)->execute();
         echo ' done (time: ' . sprintf('%.3f', microtime(true) - $time) . "s)\n";
@@ -436,7 +475,7 @@ class Migration extends Component implements MigrationInterface
      * @param string|array $columns the column(s) that should be included in the index. If there are multiple columns, please separate them
      * by commas or use an array. Each column name will be properly quoted by the method. Quoting will be skipped for column names that
      * include a left parenthesis "(".
-     * @param boolean $unique whether to add UNIQUE constraint on the created index.
+     * @param bool $unique whether to add UNIQUE constraint on the created index.
      */
     public function createIndex($name, $table, $columns, $unique = false)
     {

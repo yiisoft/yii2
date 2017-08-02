@@ -29,11 +29,11 @@ use yii\helpers\Json;
 class JsonParser implements RequestParserInterface
 {
     /**
-     * @var boolean whether to return objects in terms of associative arrays.
+     * @var bool whether to return objects in terms of associative arrays.
      */
     public $asArray = true;
     /**
-     * @var boolean whether to throw a [[BadRequestHttpException]] if the body is invalid json
+     * @var bool whether to throw a [[BadRequestHttpException]] if the body is invalid json
      */
     public $throwException = true;
 

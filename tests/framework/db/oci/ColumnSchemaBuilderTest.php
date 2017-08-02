@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\oci;
 
@@ -16,7 +21,7 @@ class ColumnSchemaBuilderTest extends \yiiunit\framework\db\ColumnSchemaBuilderT
 
     /**
      * @param string $type
-     * @param integer $length
+     * @param int $length
      * @return ColumnSchemaBuilder
      */
     public function getColumnSchemaBuilder($type, $length = null)

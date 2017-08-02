@@ -23,9 +23,16 @@ class SyslogTarget extends Target
      */
     public $identity;
     /**
-     * @var integer syslog facility.
+     * @var int syslog facility.
      */
     public $facility = LOG_USER;
+    /**
+     * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](http://php.net/openlog).
+     * Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
+     * @see http://php.net/openlog for available options.
+     * @since 2.0.11
+     */
+    public $options;
 
     /**
      * @var array syslog levels
@@ -42,11 +49,22 @@ class SyslogTarget extends Target
 
 
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        if ($this->options === null) {
+            $this->options = LOG_ODELAY | LOG_PID;
+        }
+    }
+
+    /**
      * Writes log messages to syslog
      */
     public function export()
     {
-        openlog($this->identity, LOG_ODELAY | LOG_PID, $this->facility);
+        openlog($this->identity, $this->options, $this->facility);
         foreach ($this->messages as $message) {
             syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message));
         }

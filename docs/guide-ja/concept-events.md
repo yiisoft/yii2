@@ -236,7 +236,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 この場合、`$event->sender` は、オブジェクトインスタンスではなく、イベントをトリガするクラスの名前を指すことに注意してください。
 
 > Note: クラスレベルのハンドラは、そのクラスのあらゆるインスタンス、またはあらゆる子クラスのインスタンスがトリガしたイベントに応答
-  してしまうため、よく注意して使わなければなりません。 [[yii\base\Object]] のように、クラスが低レベルの基底クラスの場合は特にそうです。
+  してしまうため、よく注意して使わなければなりません。 [[yii\base\BaseObject]] のように、クラスが低レベルの基底クラスの場合は特にそうです。
 
 クラスレベルのイベントハンドラを取り外すときは、 [[yii\base\Event::off()]] を呼び出します。たとえば:
 
@@ -258,6 +258,8 @@ Event::off(Foo::className(), Foo::EVENT_HELLO);
 例えば、次のようなインタフェイスを作ります。
 
 ```php
+namespace app\interfaces;
+
 interface DanceEventInterface
 {
     const EVENT_DANCE = 'dance';
@@ -289,22 +291,26 @@ class Developer extends Component implements DanceEventInterface
 これらのクラスのどれかによってトリガされた `EVENT_DANCE` を扱うためには、インターフェイスの名前を最初の引数にして [[yii\base\Event::on()|Event::on()]] を呼びます。
 
 ```php
-Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace($event->sender->className . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
-})
+Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace(get_class($event->sender) . ' が躍り上がって喜んだ。'); // 犬または開発者が躍り上がって喜んだことをログに記録。
+});
 ```
 
 これらのクラスのイベントをトリガすることも出来ます。
 
 ```php
-Event::trigger(DanceEventInterface::className(), DanceEventInterface::EVENT_DANCE);
+// trigger event for Dog class
+Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+
+// trigger event for Developer class
+Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
 ```
 
 ただし、このインタフェイスを実装する全クラスのイベントをトリガすることは出来ない、ということに注意して下さい。
 
 ```php
 // これは動かない
-Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // エラー
+Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 イベントハンドラをデタッチするためには、[[yii\base\Event::off()|Event::off()]] を呼びます。
@@ -312,10 +318,10 @@ Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // エ�
 
 ```php
 // $handler をデタッチ
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
 
 // DanceEventInterface::EVENT_DANCE の全てのハンドラをデタッチ
-Event::off('DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
 ```
 
 

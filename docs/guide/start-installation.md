@@ -53,23 +53,20 @@ by running `composer self-update`.
 > Please refer to the [Composer documentation about Github API tokens](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > for instructions on how to do this.
 
-### Installing Yii
+### Installing Yii <span id="installing-from-composer"></span>
 
-With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+With Composer installed, you can install Yii application template by running the following command
+under a Web-accessible folder:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. You only need to run this command
-once for all. The second command installs the latest stable version of Yii in a directory named `basic`.
+This will install the latest stable version of Yii application template in a directory named `basic`.
 You can choose a different directory name if you want.
 
-> Info: If the `composer create-project` command fails make sure you have the composer asset plugin installed correctly.
-> You can do that by running `composer global show`, which should contain an entry `fxp/composer-asset-plugin`.
-> You may also refer to the [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
+> Info: If the `composer create-project` command fails you may also refer to the 
+> [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
 > for common errors. When you have fixed the error, you can resume the aborted installation
 > by running `composer update` inside of the `basic` directory.
 
@@ -152,7 +149,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+should have PHP 5.4 or above. Ideally latest PHP 7. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 

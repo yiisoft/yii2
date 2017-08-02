@@ -8,12 +8,14 @@
 
 namespace yiiunit\framework\test;
 
-use yiiunit\TestCase;
 use yii\test\ArrayFixture;
+use yiiunit\TestCase;
 
+/**
+ * @group fixture
+ */
 class ArrayFixtureTest extends TestCase
 {
-
     /**
      * @var \yii\test\ArrayFixture
      */
@@ -54,5 +56,4 @@ class ArrayFixtureTest extends TestCase
         $this->_fixture->dataFile = 'wrong/fixtures/data/path/alias';
         $this->_fixture->load();
     }
-
 }

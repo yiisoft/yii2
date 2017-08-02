@@ -340,6 +340,9 @@ sending the content of the [[yii\log\Target::messages]] array to a designated me
 [[yii\log\Target::formatMessage()]] method to format each message. For more details, you may refer to any of the
 log target classes included in the Yii release.
 
+> Tip: Instead of creating your own loggers you may try any PSR-3 compatible logger such
+  as [Monolog](https://github.com/Seldaek/monolog) by using
+  [PSR log target extension](https://github.com/samdark/yii2-psr-log-target).
 
 ## Performance Profiling <span id="performance-profiling"></span>
 

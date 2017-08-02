@@ -4,7 +4,7 @@
 Пошук і підключення файлів класів в Yii реалізовано за допомогою
 [автозавантаження класів](http://www.php.net/manual/ru/language.oop5.autoload.php).
 Фреймворк надає власний швидкісний автозавантажувач, що сумісний з 
-[PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md),
+[PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md),
 який встановлюється в момент підключення файлу `Yii.php`.
 
 > Note: Для простоти опису, в цьому розділі ми будемо говорити тільки про автозавантаження класів.
@@ -69,8 +69,8 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 Перший рядок встановлює автозавантажувач Composer, а другий - автозавантажувач Yii:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Ви можете використовувати автозавантажувач Composer без автозавантажувачa Yii, однак, швидкість автозавантаження в 

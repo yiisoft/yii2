@@ -1,12 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\i18n;
 
-use yii\i18n\Formatter;
-use Yii;
-use yiiunit\TestCase;
-use DateTime;
 use DateInterval;
+use DateTime;
+use yii\i18n\Formatter;
+use yiiunit\TestCase;
 
 /**
  * @group i18n
@@ -45,7 +49,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'date'));
         $this->assertSame(date('M j, Y', $value), $this->formatter->format($value, 'DATE'));
         $this->assertSame(date('Y/m/d', $value), $this->formatter->format($value, ['date', 'php:Y/m/d']));
-        $this->setExpectedException('\yii\base\InvalidParamException');
+        $this->expectException('\yii\base\InvalidParamException');
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, 'data'));
     }
 
@@ -213,9 +217,9 @@ class FormatterDateTest extends TestCase
         $this->assertSame("$value", $this->formatter->asTimestamp(date('Y-m-d H:i:s', $value)));
 
         // empty input
-        $this->assertSame("0", $this->formatter->asTimestamp(0));
-        $this->assertSame("0", $this->formatter->asTimestamp(false));
-        $this->assertSame("0", $this->formatter->asTimestamp(""));
+        $this->assertSame('0', $this->formatter->asTimestamp(0));
+        $this->assertSame('0', $this->formatter->asTimestamp(false));
+        $this->assertSame('0', $this->formatter->asTimestamp(''));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asTimestamp(null));
@@ -278,18 +282,18 @@ class FormatterDateTest extends TestCase
 
     public function testAsRelativeTime()
     {
-        $interval_1_second    = new DateInterval("PT1S");
-        $interval_244_seconds = new DateInterval("PT244S");
-        $interval_1_minute    = new DateInterval("PT1M");
-        $interval_33_minutes  = new DateInterval("PT33M");
-        $interval_1_hour      = new DateInterval("PT1H");
-        $interval_6_hours     = new DateInterval("PT6H");
-        $interval_1_day       = new DateInterval("P1D");
-        $interval_89_days     = new DateInterval("P89D");
-        $interval_1_month     = new DateInterval("P1M");
-        $interval_5_months    = new DateInterval("P5M");
-        $interval_1_year      = new DateInterval("P1Y");
-        $interval_12_years    = new DateInterval("P12Y");
+        $interval_1_second = new DateInterval('PT1S');
+        $interval_244_seconds = new DateInterval('PT244S');
+        $interval_1_minute = new DateInterval('PT1M');
+        $interval_33_minutes = new DateInterval('PT33M');
+        $interval_1_hour = new DateInterval('PT1H');
+        $interval_6_hours = new DateInterval('PT6H');
+        $interval_1_day = new DateInterval('P1D');
+        $interval_89_days = new DateInterval('P89D');
+        $interval_1_month = new DateInterval('P1M');
+        $interval_5_months = new DateInterval('P5M');
+        $interval_1_year = new DateInterval('P1Y');
+        $interval_12_years = new DateInterval('P12Y');
 
         // Pass a DateInterval
         $this->assertSame('a second ago', $this->formatter->asRelativeTime($interval_1_second));
@@ -390,12 +394,12 @@ class FormatterDateTest extends TestCase
         $this->assertSame('in 28 days', $this->formatter->asRelativeTime($dateThen, $dateNow));
 
         // just now
-        $this->assertSame("just now", $this->formatter->asRelativeTime($t = time(), $t));
-        $this->assertSame("just now", $this->formatter->asRelativeTime(0, 0));
+        $this->assertSame('just now', $this->formatter->asRelativeTime($t = time(), $t));
+        $this->assertSame('just now', $this->formatter->asRelativeTime(0, 0));
 
         // empty input
-        $this->assertSame("just now", $this->formatter->asRelativeTime(false, 0));
-        $this->assertSame("just now", $this->formatter->asRelativeTime("", 0));
+        $this->assertSame('just now', $this->formatter->asRelativeTime(false, 0));
+        $this->assertSame('just now', $this->formatter->asRelativeTime('', 0));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asRelativeTime(null));
@@ -409,19 +413,19 @@ class FormatterDateTest extends TestCase
 
     public function testAsDuration()
     {
-        $interval_0_seconds   = new DateInterval("PT0S");
-        $interval_1_second    = new DateInterval("PT1S");
-        $interval_244_seconds = new DateInterval("PT244S");
-        $interval_1_minute    = new DateInterval("PT1M");
-        $interval_33_minutes  = new DateInterval("PT33M");
-        $interval_1_hour      = new DateInterval("PT1H");
-        $interval_6_hours     = new DateInterval("PT6H");
-        $interval_1_day       = new DateInterval("P1D");
-        $interval_89_days     = new DateInterval("P89D");
-        $interval_1_month     = new DateInterval("P1M");
-        $interval_5_months    = new DateInterval("P5M");
-        $interval_1_year      = new DateInterval("P1Y");
-        $interval_12_years    = new DateInterval("P12Y");
+        $interval_0_seconds = new DateInterval('PT0S');
+        $interval_1_second = new DateInterval('PT1S');
+        $interval_244_seconds = new DateInterval('PT244S');
+        $interval_1_minute = new DateInterval('PT1M');
+        $interval_33_minutes = new DateInterval('PT33M');
+        $interval_1_hour = new DateInterval('PT1H');
+        $interval_6_hours = new DateInterval('PT6H');
+        $interval_1_day = new DateInterval('P1D');
+        $interval_89_days = new DateInterval('P89D');
+        $interval_1_month = new DateInterval('P1M');
+        $interval_5_months = new DateInterval('P5M');
+        $interval_1_year = new DateInterval('P1Y');
+        $interval_12_years = new DateInterval('P12Y');
 
         // Pass a DateInterval
         $this->assertSame('0 seconds', $this->formatter->asDuration($interval_0_seconds));
@@ -437,7 +441,7 @@ class FormatterDateTest extends TestCase
         $this->assertSame('5 months', $this->formatter->asDuration($interval_5_months));
         $this->assertSame('1 year', $this->formatter->asDuration($interval_1_year));
         $this->assertSame('12 years', $this->formatter->asDuration($interval_12_years));
-        
+
         // Pass a numeric value
         $this->assertSame('0 seconds', $this->formatter->asDuration(0));
         $this->assertSame('1 second', $this->formatter->asDuration(1));
@@ -521,7 +525,7 @@ class FormatterDateTest extends TestCase
     public function testDateInput($expected, $value, $expectedException = null)
     {
         if ($expectedException !== null) {
-            $this->setExpectedException($expectedException);
+            $this->expectException($expectedException);
         }
         $this->assertSame($expected, $this->formatter->asDate($value, 'yyyy-MM-dd HH:mm:ss'));
         $this->assertSame($expected, $this->formatter->asTime($value, 'yyyy-MM-dd HH:mm:ss'));
@@ -549,7 +553,7 @@ class FormatterDateTest extends TestCase
         $utc = new \DateTimeZone('UTC');
         $berlin = new \DateTimeZone('Europe/Berlin');
         $result = [];
-        foreach($this->provideTimezones() as $tz) {
+        foreach ($this->provideTimezones() as $tz) {
             $result[] = [$tz[0], 1407674460,                          1388580060];
             $result[] = [$tz[0], '2014-08-10 12:41:00',               '2014-01-01 12:41:00'];
             $result[] = [$tz[0], '2014-08-10 12:41:00 UTC',           '2014-01-01 12:41:00 UTC'];
@@ -623,6 +627,10 @@ class FormatterDateTest extends TestCase
         }
     }
 
+    public function testIntlTimezoneInputNonDefault()
+    {
+        $this->testTimezoneInputNonDefault();
+    }
 
     /**
      * Test timezones with input date and time in other timezones
@@ -671,10 +679,15 @@ class FormatterDateTest extends TestCase
     }
 
 
+    public function testIntlDateOnlyValues()
+    {
+        $this->testDateOnlyValues();
+    }
+
     public function testDateOnlyValues()
     {
         date_default_timezone_set('Pacific/Kiritimati');
-        // timzones with exactly 24h difference, ensure this test does not fail on a certain time
+        // timezones with exactly 24h difference, ensure this test does not fail on a certain time
         $this->formatter->defaultTimeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->formatter->timeZone = 'Pacific/Honolulu'; // always UTC-10
 
@@ -686,6 +699,33 @@ class FormatterDateTest extends TestCase
         $this->formatter->defaultTimeZone = 'Pacific/Honolulu'; // always UTC-10
         $this->formatter->timeZone = 'Pacific/Kiritimati'; // always UTC+14
         $this->assertSame('2014-08-01', $this->formatter->asDate('2014-08-01', 'yyyy-MM-dd'));
+    }
+
+    public function testIntlTimeOnlyValues()
+    {
+        return $this->testTimeOnlyValues();
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/13343
+     *
+     * Prevent timezone conversion for time-only values.
+     */
+    public function testTimeOnlyValues()
+    {
+        $this->formatter->defaultTimeZone = 'UTC';
+        $this->formatter->timeZone = 'Europe/Zurich'; // UTC+1 (DST UTC+2)
+
+        // time-only value, do not convert
+        $this->assertSame('12:00:00', $this->formatter->asTime('12:00', 'HH:mm:ss'));
+        $this->assertSame('12:00:00', $this->formatter->asTime('12:00:00', 'HH:mm:ss'));
+        // full info, convert
+        $this->assertSame('13:00:00', $this->formatter->asTime('07.01.2017 12:00:00', 'HH:mm:ss'));
+        $this->assertSame('14:00:00', $this->formatter->asTime('29.06.2017 12:00:00', 'HH:mm:ss'));
+
+        // timezone conversion expected with asDatetime() and asDate() with time-only value
+        $this->assertNotSame('12:00:00', $this->formatter->asDatetime('12:00:00', 'HH:mm:ss'));
+        $this->assertNotSame('12:00:00', $this->formatter->asDate('12:00:00', 'HH:mm:ss'));
     }
 
     /**
@@ -734,6 +774,10 @@ class FormatterDateTest extends TestCase
         $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
     }
 
+    public function testIntlInputUnixTimestamp()
+    {
+        $this->testInputUnixTimestamp();
+    }
 
     public function testInputUnixTimestamp()
     {
@@ -764,7 +808,5 @@ class FormatterDateTest extends TestCase
         $this->assertEquals('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
         $this->formatter->timeZone = 'Europe/Berlin';
         $this->assertEquals('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
-
     }
-
 }
