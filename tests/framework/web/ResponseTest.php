@@ -1,10 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
+use Error;
 use Exception;
 use RuntimeException;
-use Error;
 use yii\helpers\StringHelper;
 use yii\web\HttpException;
 
@@ -22,13 +27,13 @@ class ResponseTest extends \yiiunit\TestCase
     {
         parent::setUp();
         $this->mockWebApplication();
-        $this->response = new \yii\web\Response;
+        $this->response = new \yii\web\Response();
     }
 
     public function rightRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
-        // http://www.w3.org/Protocols/rfc2616/rfc2616.txt
+        // https://tools.ietf.org/html/rfc2616
         return [
             ['0-5', '0-5', 6, '12ёж'],
             ['2-', '2-66', 65, 'ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?'],
@@ -51,8 +56,8 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals($expectedContent, $content);
         $this->assertEquals(206, $this->response->statusCode);
         $headers = $this->response->headers;
-        $this->assertEquals("bytes", $headers->get('Accept-Ranges'));
-        $this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::byteLength($fullContent), $headers->get('Content-Range'));
+        $this->assertEquals('bytes', $headers->get('Accept-Ranges'));
+        $this->assertEquals('bytes ' . $expectedHeader . '/' . StringHelper::byteLength($fullContent), $headers->get('Content-Range'));
         $this->assertEquals('text/plain', $headers->get('Content-Type'));
         $this->assertEquals("$length", $headers->get('Content-Length'));
     }
@@ -60,12 +65,12 @@ class ResponseTest extends \yiiunit\TestCase
     public function wrongRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
-        // http://www.w3.org/Protocols/rfc2616/rfc2616.txt
+        // https://tools.ietf.org/html/rfc2616
         return [
-            ['1-2,3-5,6-10'],	// multiple range request not supported
-            ['5-1'],			// last-byte-pos value is less than its first-byte-pos value
-            ['-100000'],		// last-byte-pos bigger then content length
-            ['10000-'],			// first-byte-pos bigger then content length
+            ['1-2,3-5,6-10'], // multiple range request not supported
+            ['5-1'],          // last-byte-pos value is less than its first-byte-pos value
+            ['-100000'],      // last-byte-pos bigger then content length
+            ['10000-'],       // first-byte-pos bigger then content length
         ];
     }
 
@@ -93,7 +98,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         ob_start();
         $this->response->sendContentAsFile('test', 'test.txt')->send([
-            'mimeType' => 'text/plain'
+            'mimeType' => 'text/plain',
         ]);
         $content = ob_get_clean();
 
@@ -124,7 +129,6 @@ class ResponseTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider dataProviderSetStatusCodeByException
-     *
      */
     public function testSetStatusCodeByException($exception, $statusCode)
     {

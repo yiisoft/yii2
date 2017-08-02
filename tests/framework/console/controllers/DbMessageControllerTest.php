@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
@@ -37,7 +43,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 
         ob_start();
         $result = Yii::$app->runAction($route, $params);
-        echo "Result is " . $result;
+        echo 'Result is ' . $result;
         if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {
@@ -84,7 +90,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     public static function getConnection()
     {
         if (static::$db == null) {
-            $db = new Connection;
+            $db = new Connection();
             $db->dsn = static::$database['dsn'];
             if (isset(static::$database['username'])) {
                 $db->username = static::$database['username'];
@@ -111,7 +117,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
             'languages' => [$this->language],
             'sourcePath' => $this->sourcePath,
             'overwrite' => true,
-            'db' => static::$db
+            'db' => static::$db,
         ];
     }
 
@@ -127,12 +133,12 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         foreach ($messages as $source => $translation) {
             $lastPk = static::$db->schema->insert('source_message', [
                 'category' => $category,
-                'message' => $source
+                'message' => $source,
             ]);
             static::$db->createCommand()->insert('message', [
                 'id' => $lastPk['id'],
                 'language' => $this->language,
-                'translation' => $translation
+                'translation' => $translation,
             ])->execute();
         }
     }

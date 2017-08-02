@@ -8,8 +8,8 @@
 namespace yii\filters;
 
 use Yii;
-use yii\base\ActionFilter;
 use yii\base\Action;
+use yii\base\ActionFilter;
 
 /**
  * HttpCache implements client-side caching by utilizing the `Last-Modified` and `ETag` HTTP headers.
@@ -171,9 +171,9 @@ class HttpCache extends ActionFilter
             return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
         } elseif (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
             return $lastModified !== null && @strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $lastModified;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -206,7 +206,7 @@ class HttpCache extends ActionFilter
      */
     protected function generateEtag($seed)
     {
-        $etag =  '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+        $etag = '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
         return $this->weakEtag ? 'W/' . $etag : $etag;
     }
 }

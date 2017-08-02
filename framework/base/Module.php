@@ -415,7 +415,7 @@ class Module extends ServiceLocator
         }
 
         if (isset($this->_modules[$id])) {
-            if ($this->_modules[$id] instanceof Module) {
+            if ($this->_modules[$id] instanceof self) {
                 return $this->_modules[$id];
             } elseif ($load) {
                 Yii::trace("Loading module: $id", __METHOD__);
@@ -461,7 +461,7 @@ class Module extends ServiceLocator
         if ($loadedOnly) {
             $modules = [];
             foreach ($this->_modules as $module) {
-                if ($module instanceof Module) {
+                if ($module instanceof self) {
                     $modules[] = $module;
                 }
             }
@@ -567,7 +567,7 @@ class Module extends ServiceLocator
         }
 
         if (strpos($route, '/') !== false) {
-            list ($id, $route) = explode('/', $route, 2);
+            list($id, $route) = explode('/', $route, 2);
         } else {
             $id = $route;
             $route = '';
@@ -629,7 +629,7 @@ class Module extends ServiceLocator
         }
 
         $className = str_replace(' ', '', ucwords(str_replace('-', ' ', $className))) . 'Controller';
-        $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix)  . $className, '\\');
+        $className = ltrim($this->controllerNamespace . '\\' . str_replace('/', '\\', $prefix) . $className, '\\');
         if (strpos($className, '-') !== false || !class_exists($className)) {
             return null;
         }
@@ -638,7 +638,7 @@ class Module extends ServiceLocator
             $controller = Yii::createObject($className, [$id, $this]);
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
-            throw new InvalidConfigException("Controller class must extend from \\yii\\base\\Controller.");
+            throw new InvalidConfigException('Controller class must extend from \\yii\\base\\Controller.');
         }
         return null;
     }

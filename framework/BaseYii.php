@@ -10,8 +10,8 @@ namespace yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
-use yii\log\Logger;
 use yii\di\Container;
+use yii\log\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -289,7 +289,7 @@ class BaseYii
             return;
         }
 
-        include($classFile);
+        include $classFile;
 
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
@@ -381,7 +381,8 @@ class BaseYii
     /**
      * Logs a trace message.
      * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code.
+     * the execution work flow of some code. This method will only log
+     * a message when the application is in debug mode.
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
@@ -474,7 +475,7 @@ class BaseYii
     {
         return \Yii::t('yii', 'Powered by {yii}', [
             'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>'
+                    'Yii Framework') . '</a>',
         ]);
     }
 

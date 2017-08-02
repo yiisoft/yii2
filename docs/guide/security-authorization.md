@@ -262,9 +262,82 @@ Building authorization data is all about the following tasks:
 - assigning roles to users.
 
 Depending on authorization flexibility requirements the tasks above could be done in different ways.
+If your permissions hierarchy is meant to be changed by developers only, you can use either migrations
+or a console command. Migration pro is that it could be executed along with other migrations. Console
+command pro is that you have a good overview of the hierarchy in the code rathe than it being scattered
+among multiple migrations.
+
+Either way in the end you'll get the following RBAC hierarchy:
+
+![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
+
+In case you need permissions hierarchy to be formed dynamically you need a UI or a console command. API used to
+build the hierarchy itself won't be different.
+
+#### Using migrations
+
+You can use [migrations](db-migrations.md)
+to initialize and modify hierarchy via APIs offered by `authManager`.
+
+Create new migration using `./yii migrate/create init_rbac` then impement creating a hierarchy:
+
+```php
+<?php
+use yii\db\Migration;
+
+class m170124_084304_init_rbac extends Migration
+{
+    public function up()
+    {
+        $auth = Yii::$app->authManager;
+
+        // add "createPost" permission
+        $createPost = $auth->createPermission('createPost');
+        $createPost->description = 'Create a post';
+        $auth->add($createPost);
+
+        // add "updatePost" permission
+        $updatePost = $auth->createPermission('updatePost');
+        $updatePost->description = 'Update post';
+        $auth->add($updatePost);
+
+        // add "author" role and give this role the "createPost" permission
+        $author = $auth->createRole('author');
+        $auth->add($author);
+        $auth->addChild($author, $createPost);
+
+        // add "admin" role and give this role the "updatePost" permission
+        // as well as the permissions of the "author" role
+        $admin = $auth->createRole('admin');
+        $auth->add($admin);
+        $auth->addChild($admin, $updatePost);
+        $auth->addChild($admin, $author);
+
+        // Assign roles to users. 1 and 2 are IDs returned by IdentityInterface::getId()
+        // usually implemented in your User model.
+        $auth->assign($author, 2);
+        $auth->assign($admin, 1);
+    }
+    
+    public function down()
+    {
+        $auth = Yii::$app->authManager;
+
+        $auth->removeAll();
+    }
+}
+```
+
+> If you don't want to hardcode which users have certain roles, don't put `->assign()` calls in migrations. Instead,
+  create either UI or console command to manage assignments.
+
+Migration could be applied by using `yii migrate`.
+
+### Using console command
 
 If your permissions hierarchy doesn't change at all and you have a fixed number of users you can create a
-[console command](tutorial-console.md#create-command) that will initialize authorization data once via APIs offered by `authManager`:
+-[console command](tutorial-console.md#create-command) that will initialize authorization data once via
+APIs offered by `authManager`:
 
 ```php
 <?php
@@ -278,7 +351,8 @@ class RbacController extends Controller
     public function actionInit()
     {
         $auth = Yii::$app->authManager;
-
+        $auth->removeAll();
+        
         // add "createPost" permission
         $createPost = $auth->createPermission('createPost');
         $createPost->description = 'Create a post';
@@ -311,10 +385,17 @@ class RbacController extends Controller
 
 > Note: If you are using advanced template, you need to put your `RbacController` inside `console/controllers` directory
   and change namespace to `console\controllers`.
+  
+The command above could be executed from console the following way:
 
-After executing the command with `yii rbac/init` we'll get the following hierarchy:
+```
+yii rbac/init
+```
 
-![Simple RBAC hierarchy](images/rbac-hierarchy-1.png "Simple RBAC hierarchy")
+> If you don't want to hardcode what users have certain roles, don't put `->assign()` calls into the command. Instead,
+  create either UI or console command to manage assignments.
+
+## Assigning roles to users
 
 Author can create post, admin can update post and do everything author can.
 

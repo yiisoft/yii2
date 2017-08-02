@@ -176,9 +176,9 @@ class CompareValidator extends Validator
                 'compareValue' => $this->compareValue,
                 'compareValueOrAttribute' => $this->compareValue,
             ]];
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

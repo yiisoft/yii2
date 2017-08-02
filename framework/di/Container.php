@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
  * ```php
  * namespace app\models;
  *
- * use yii\base\Object;
+ * use yii\base\BaseObject;
  * use yii\db\Connection;
  * use yii\di\Container;
  *
@@ -45,7 +45,7 @@ use yii\helpers\ArrayHelper;
  *     function findUser();
  * }
  *
- * class UserFinder extends Object implements UserFinderInterface
+ * class UserFinder extends BaseObject implements UserFinderInterface
  * {
  *     public $db;
  *
@@ -60,7 +60,7 @@ use yii\helpers\ArrayHelper;
  *     }
  * }
  *
- * class UserLister extends Object
+ * class UserLister extends BaseObject
  * {
  *     public $finder;
  *
@@ -330,13 +330,13 @@ class Container extends Component
                 if (strpos($class, '\\') !== false) {
                     $definition['class'] = $class;
                 } else {
-                    throw new InvalidConfigException("A class definition requires a \"class\" member.");
+                    throw new InvalidConfigException('A class definition requires a "class" member.');
                 }
             }
             return $definition;
-        } else {
-            throw new InvalidConfigException("Unsupported definition type for \"$class\": " . gettype($definition));
         }
+
+        throw new InvalidConfigException("Unsupported definition type for \"$class\": " . gettype($definition));
     }
 
     /**
@@ -361,7 +361,7 @@ class Container extends Component
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list ($reflection, $dependencies) = $this->getDependencies($class);
+        list($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
@@ -379,13 +379,14 @@ class Container extends Component
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
             return $reflection->newInstanceArgs($dependencies);
-        } else {
-            $object = $reflection->newInstanceArgs($dependencies);
-            foreach ($config as $name => $value) {
-                $object->$name = $value;
-            }
-            return $object;
         }
+
+        $object = $reflection->newInstanceArgs($dependencies);
+        foreach ($config as $name => $value) {
+            $object->$name = $value;
+        }
+
+        return $object;
     }
 
     /**
@@ -400,13 +401,14 @@ class Container extends Component
             return $params;
         } elseif (empty($params)) {
             return $this->_params[$class];
-        } else {
-            $ps = $this->_params[$class];
-            foreach ($params as $index => $value) {
-                $ps[$index] = $value;
-            }
-            return $ps;
         }
+
+        $ps = $this->_params[$class];
+        foreach ($params as $index => $value) {
+            $ps[$index] = $value;
+        }
+
+        return $ps;
     }
 
     /**
@@ -494,9 +496,9 @@ class Container extends Component
     {
         if (is_callable($callback)) {
             return call_user_func_array($callback, $this->resolveCallableDependencies($callback, $params));
-        } else {
-            return call_user_func_array($callback, $params);
         }
+
+        return call_user_func_array($callback, $params);
     }
 
     /**
@@ -546,7 +548,6 @@ class Container extends Component
                             throw $e;
                         }
                     }
-
                 }
             } elseif ($associative && isset($params[$name])) {
                 $args[] = $params[$name];

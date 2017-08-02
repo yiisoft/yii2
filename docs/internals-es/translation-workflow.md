@@ -14,11 +14,11 @@ El orden para comenzar con la traducción de mensajes:
 
 1. Comprobar que en `framework/messages/config.php` su idioma aparece en `languages`. Si no, añade tu idioma allí (recuerda que debes mantener la lista en orden alfabético).
 El formato de código de idioma debe seguir el [Código de Idiomas IETF](http://es.wikipedia.org/wiki/C%C3%B3digo_de_idioma_IETF), por ejemplo, `es`.
-2. Ir al directorio `framework` y ejecutar el comando `yii message/extract messages/config.php`.
+2. Ir al directorio `framework` y ejecutar el comando `yii message/extract @yii/messages/config.php --languages=<tu-idioma>`.
 3. Traducir los mensajes en `framework/messages/tu-idioma/yii.php`. Asegúrate de guardar el archivo con codificación UTF-8.
 4. [Crear un pull request](https://github.com/yiisoft/yii2/blob/master/docs/internals-es/git-workflow.md).
 
-Con el fin de mantener la traducción al día puedes ejecutar `yii message/extract messages/config.php` nuevamente.
+Con el fin de mantener la traducción al día puedes ejecutar `yii message/extract @yii/messages/config.php --languages=<tu-idioma>` nuevamente.
 Se volverán a extraer automáticamente los mensajes de mantenimiento intactos sin los cambios.
 
 En el archivo de traducción de cada elemento del `array` representa un mensaje (clave) y su la traducción (valor). Si el valor está vacío, el mensaje se considera como no traducido.

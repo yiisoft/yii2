@@ -1,9 +1,15 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
-use yiiunit\TestCase;
 use yii\helpers\Markdown;
+use yiiunit\TestCase;
+
 /**
  * Description of MarkdownTest
  *
@@ -22,7 +28,7 @@ class MarkdownTest extends TestCase
 
     public function testOriginalFlavor()
     {
-        $text = <<<TEXT
+        $text = <<<'TEXT'
 html
 new line 1
 
