@@ -18,7 +18,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         \$this->dropColumn('{table}', 'title');
         \$this->dropColumn('{table}', 'body');
@@ -29,7 +29,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         \$this->addColumn('{table}', 'title', \$this->string(10)->notNull());
         \$this->addColumn('{table}', 'body', \$this->text()->notNull());

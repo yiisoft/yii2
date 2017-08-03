@@ -18,7 +18,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         \$this->createTable('{table}', [
             'title' => \$this->primaryKey(),
@@ -30,7 +30,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         \$this->dropTable('{table}');
     }

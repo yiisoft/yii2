@@ -22,7 +22,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function up()
+    public function safeUp()
     {
         \$this->createTable('post_tag', [
             'post_id' => \$this->integer(),
@@ -68,7 +68,7 @@ class {$class} extends Migration
     /**
      * @inheritdoc
      */
-    public function down()
+    public function safeDown()
     {
         // drops foreign key for table `post`
         \$this->dropForeignKey(
