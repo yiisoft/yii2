@@ -115,17 +115,17 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    'Unknown filter attribute fake'
+                    "Unknown filter attribute 'fake'"
                 ]
             ],
             [
                 [
-                    '$and' => [
+                    'and' => [
                         [
-                            'name' => ['$eq' => 'foo']
+                            'name' => ['eq' => 'foo']
                         ],
                         [
-                            'number' => ['$in' => [1, 5, 8]],
+                            'number' => ['in' => [1, 5, 8]],
                         ],
                     ],
                 ],
@@ -134,31 +134,31 @@ class DataFilterTest extends TestCase
             ],
             [
                 [
-                    '$and' => [
-                        'name' => ['$eq' => 'foo'],
-                        'number' => ['$in' => [1, 5, 8]],
+                    'and' => [
+                        'name' => ['eq' => 'foo'],
+                        'number' => ['in' => [1, 5, 8]],
                     ],
                 ],
                 false,
                 [
-                    'Operator $and requires multiple operands.'
+                    "Operator 'and' requires multiple operands."
                 ]
             ],
             [
                 [
-                    '$not' => ['name' => 'foo']
+                    'not' => ['name' => 'foo']
                 ],
                 true,
                 []
             ],
             [
                 [
-                    '$and' => [
+                    'and' => [
                         [
-                            '$not' => ['name' => 'foo']
+                            'not' => ['name' => 'foo']
                         ],
                         [
-                            'number' => ['$in' => [1, 5, 8]],
+                            'number' => ['in' => [1, 5, 8]],
                         ],
                     ],
                 ],
@@ -171,14 +171,14 @@ class DataFilterTest extends TestCase
                 ],
                 false,
                 [
-                    'Name must be a string.'
+                    "Name must be a string."
                 ]
             ],
             [
                 [
                     'number' => [
-                        '$gt' => 10,
-                        '$lt' => 20,
+                        'gt' => 10,
+                        'lt' => 20,
                     ],
                 ],
                 true,
@@ -186,11 +186,11 @@ class DataFilterTest extends TestCase
             ],
             [
                 [
-                    '$gt' => 10,
+                    'gt' => 10,
                 ],
                 false,
                 [
-                    'Operator $gt must be used with search attribute.'
+                    "Operator 'gt' must be used with search attribute."
                 ]
             ],
         ];
@@ -219,5 +219,96 @@ class DataFilterTest extends TestCase
         $builder->filter = $filter;
         $this->assertEquals($expectedResult, $builder->validate());
         $this->assertEquals($expectedErrors, $builder->getErrors('filter'));
+    }
+
+    /**
+     * Data provider for [[testNormalize()]].
+     * @return array test data.
+     */
+    public function dataProviderNormalize()
+    {
+        return [
+            [
+                [],
+                [],
+            ],
+            [
+                null,
+                [],
+            ],
+            [
+                '',
+                [],
+            ],
+            [
+                [
+                    'name' => 'foo',
+                    'number' => '10',
+                ],
+                [
+                    'name' => 'foo',
+                    'number' => '10',
+                ],
+            ],
+            [
+                [
+                    'number' => [
+                        'gt' => 10,
+                        'lt' => 20,
+                    ],
+                ],
+                [
+                    'number' => [
+                        '>' => 10,
+                        '<' => 20,
+                    ],
+                ],
+            ],
+            [
+                [
+                    'and' => [
+                        [
+                            'name' => ['eq' => 'foo']
+                        ],
+                        [
+                            'number' => ['gte' => 15]
+                        ],
+                    ],
+                ],
+                [
+                    'and' => [
+                        [
+                            'name' => ['=' => 'foo']
+                        ],
+                        [
+                            'number' => ['>=' => 15]
+                        ],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @depends testValidate
+     *
+     * @dataProvider dataProviderNormalize
+     *
+     * @param array $filter
+     * @param array $expectedResult
+     */
+    public function testNormalize($filter, $expectedResult)
+    {
+        $builder = new DataFilter();
+        $searchModel = (new DynamicModel(['name' => null, 'number' => null, 'price' => null, 'tags' => null]))
+            ->addRule('name', 'string')
+            ->addRule('number', 'integer', ['min' => 0, 'max' => 100])
+            ->addRule('price', 'number')
+            ->addRule('tags', 'each', ['rule' => ['string']]);
+
+        $builder->setSearchModel($searchModel);
+
+        $builder->filter = $filter;
+        $this->assertEquals($expectedResult, $builder->normalize(false));
     }
 }

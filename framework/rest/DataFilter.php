@@ -20,26 +20,28 @@ use yii\validators\StringValidator;
  * DataFilter is a special kind of [[Model]] dedicated to the processing of the query filter specification.
  * It allows validation and building of the filter condition passed via request.
  *
- * The used filter format has been designed to be suitable for JSON request types.
+ * The used filter format has been inspired from the ones used by ElasticSearch and MongoDB.
  *
  * Filter example:
  *
  * ```json
  * {
- *     "$or": [
+ *     "or": [
  *         {
- *             "$and": [
+ *             "and": [
  *                 {
  *                     "name": "some name",
+ *                 },
+ *                 {
  *                     "price": "25",
  *                 }
  *             ]
  *         },
  *         {
- *             "id": {"$in": [2, 5, 9]},
+ *             "id": {"in": [2, 5, 9]},
  *             "price": {
- *                 "$gt": 10,
- *                 "$lt": 50
+ *                 "gt": 10,
+ *                 "lt": 50
  *             }
  *         }
  *     ]
@@ -51,7 +53,7 @@ use yii\validators\StringValidator;
  *
  * ```json
  * {
- *     "filter": {"$or": {...}},
+ *     "filter": {"or": {...}},
  *     "page": 2,
  *     ...
  * }
@@ -136,21 +138,62 @@ class DataFilter extends Model
      */
     public $filterAttributeLabel;
     /**
+     * @var array the keywords or expressions, which could be used for filter composition.
+     * Array keys are the expressions, which are used in raw filter value obtained from user request,
+     * array values are internal build keys used over this class methods.
+     *
+     * Any word, which does not appear here, will not be recognized as filter control and will be treated as
+     * an attribute name. Thus you should avoid conflicts between control keywords and attribute names.
+     * For example: in case you have control keyword 'like' and attribute named 'like', condition specification
+     * for such attribute will be impossible.
+     *
+     * You may specify several keywords for the same filter build key, creating multiple aliases. For example:
+     *
+     * ```php
+     * [
+     *     'eq' => '=',
+     *     '=' => '=',
+     *     '==' => '=',
+     *     '===' => '=',
+     *     // ...
+     * ]
+     * ```
+     *
+     * > Note: while specifying filter controls keep in mind actual data exchange format, which your API uses.
+     *   Make sure each specified control keyword to be valid for this format. For example: in XML tag name can start
+     *   only from letter character, thus controls like `>` or `$gt` will break the XML schema.
+     */
+    public $filterControls = [
+        'and' => 'and',
+        'or' => 'or',
+        'not' => 'not',
+        'lt' => '<',
+        'gt' => '>',
+        'lte' => '<=',
+        'gte' => '>=',
+        'eq' => '=',
+        'neq' => '!=',
+        'in' => 'in',
+        'nin' => 'not in',
+        'like' => 'like',
+    ];
+    /**
      * @var array map of filter condition keywords to validation methods.
-     * These methods are used by [[validateCondition]] to validate raw filter conditions.
+     * These methods are used by [[validateCondition()]] to validate raw filter conditions.
      */
     public $conditionValidators = [
-        '$and' => 'validateConjunctionCondition',
-        '$or' => 'validateConjunctionCondition',
-        '$not' => 'validateBlockCondition',
-        '$lt' => 'validateOperatorCondition',
-        '$gt' => 'validateOperatorCondition',
-        '$lte' => 'validateOperatorCondition',
-        '$gte' => 'validateOperatorCondition',
-        '$eq' => 'validateOperatorCondition',
-        '$neq' => 'validateOperatorCondition',
-        '$in' => 'validateOperatorCondition',
-        '$nin' => 'validateOperatorCondition',
+        'and' => 'validateConjunctionCondition',
+        'or' => 'validateConjunctionCondition',
+        'not' => 'validateBlockCondition',
+        '<' => 'validateOperatorCondition',
+        '>' => 'validateOperatorCondition',
+        '<=' => 'validateOperatorCondition',
+        '>=' => 'validateOperatorCondition',
+        '=' => 'validateOperatorCondition',
+        '!=' => 'validateOperatorCondition',
+        'in' => 'validateOperatorCondition',
+        'not in' => 'validateOperatorCondition',
+        'like' => 'validateOperatorCondition',
     ];
     /**
      * @var array specifies the list of supported search attribute type per each operator.
@@ -159,21 +202,22 @@ class DataFilter extends Model
      * Any keyword, which is not present in this specification will not be considered as valid operator.
      */
     public $operatorTypes = [
-        '$lt' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
-        '$gt' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
-        '$lte' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
-        '$gte' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
-        '$eq' => '*',
-        '$neq' => '*',
-        '$in' => '*',
-        '$nin' => '*',
+        '<' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '>' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '<=' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '>=' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
+        '=' => '*',
+        '!=' => '*',
+        'in' => '*',
+        'not in' => '*',
+        'like' => [self::TYPE_STRING],
     ];
     /**
      * @var array list of operators keywords, which should accept multiple values.
      */
     public $multiValueOperators = [
-        '$in',
-        '$nin',
+        'in',
+        'not in',
     ];
     /**
      * @var array list of error messages responding to invalid filter structure, in format: messageKey => messageContent.
@@ -182,11 +226,11 @@ class DataFilter extends Model
      */
     public $errorMessages = [
         'invalidFilter' => 'The format of {filter} is invalid.',
-        'operatorRequireMultipleOperands' => 'Operator {operator} requires multiple operands.',
-        'unknownAttribute' => 'Unknown filter attribute {attribute}',
-        'invalidAttributeValueFormat' => 'Condition for {attribute} should be either a value or valid operator specification.',
-        'operatorRequireAttribute' => 'Operator {operator} must be used with search attribute.',
-        'unsupportedOperatorType' => '{attribute} does not support operator {operator}.',
+        'operatorRequireMultipleOperands' => "Operator '{operator}' requires multiple operands.",
+        'unknownAttribute' => "Unknown filter attribute '{attribute}'",
+        'invalidAttributeValueFormat' => "Condition for '{attribute}' should be either a value or valid operator specification.",
+        'operatorRequireAttribute' => "Operator '{operator}' must be used with search attribute.",
+        'unsupportedOperatorType' => "'{attribute}' does not support operator '{operator}'.",
     ];
 
     /**
@@ -228,7 +272,7 @@ class DataFilter extends Model
         if (!is_object($this->_searchModel) || $this->_searchModel instanceof \Closure) {
             $model = Yii::createObject($this->_searchModel);
             if (!$model instanceof Model) {
-                throw new InvalidConfigException('`' . get_class($this) . '::model` should be an instance of `' . Model::className() . '` or its DI compatible configuration.');
+                throw new InvalidConfigException('`' . get_class($this) . '::$model` should be an instance of `' . Model::className() . '` or its DI compatible configuration.');
             }
             $this->_searchModel = $model;
         }
@@ -243,7 +287,7 @@ class DataFilter extends Model
     {
         if (is_object($model)) {
             if (!$model instanceof Model && !$model instanceof \Closure) {
-                throw new InvalidConfigException('`' . get_class($this) . '::model` should be an instance of `' . Model::className() . '` or its DI compatible configuration.');
+                throw new InvalidConfigException('`' . get_class($this) . '::$model` should be an instance of `' . Model::className() . '` or its DI compatible configuration.');
             }
         }
         $this->_searchModel = $model;
@@ -395,10 +439,12 @@ class DataFilter extends Model
         }
 
         foreach ($condition as $key => $value) {
-            if (isset($this->conditionValidators[$key])) {
-                $method = $this->conditionValidators[$key];
-            } else {
-                $method = 'validateAttributeCondition';
+            $method = 'validateAttributeCondition';
+            if (isset($this->filterControls[$key])) {
+                $controlKey = $this->filterControls[$key];
+                if (isset($this->conditionValidators[$controlKey])) {
+                    $method = $this->conditionValidators[$controlKey];
+                }
             }
             $this->$method($key, $value);
         }
@@ -406,8 +452,8 @@ class DataFilter extends Model
 
     /**
      * Validates conjunction condition, which consist of multiple independent ones.
-     * This covers such operators like `$and` and `$or`.
-     * @param string $operator operator keyword.
+     * This covers such operators like `and` and `or`.
+     * @param string $operator raw operator control keyword.
      * @param mixed $condition raw condition.
      */
     protected function validateConjunctionCondition($operator, $condition)
@@ -424,8 +470,8 @@ class DataFilter extends Model
 
     /**
      * Validates block condition, which consist of single condition.
-     * This covers such operators like `$not`.
-     * @param string $operator operator keyword.
+     * This covers such operators like `not`.
+     * @param string $operator raw operator control keyword.
      * @param mixed $condition raw condition.
      */
     protected function validateBlockCondition($operator, $condition)
@@ -448,10 +494,13 @@ class DataFilter extends Model
 
         if (is_array($condition)) {
             $operatorCount = 0;
-            foreach ($condition as $operator => $value) {
-                if (isset($this->operatorTypes[$operator])) {
-                    $operatorCount++;
-                    $this->validateOperatorCondition($operator, $value, $attribute);
+            foreach ($condition as $rawOperator => $value) {
+                if (isset($this->filterControls[$rawOperator])) {
+                    $operator = $this->filterControls[$rawOperator];
+                    if (isset($this->operatorTypes[$operator])) {
+                        $operatorCount++;
+                        $this->validateOperatorCondition($rawOperator, $value, $attribute);
+                    }
                 }
             }
 
@@ -470,7 +519,7 @@ class DataFilter extends Model
 
     /**
      * Validates operator condition.
-     * @param string $operator operator keyword.
+     * @param string $operator raw operator control keyword.
      * @param mixed $condition attribute condition.
      * @param string $attribute attribute name.
      */
@@ -482,8 +531,10 @@ class DataFilter extends Model
             return;
         }
 
+        $internalOperator = $this->filterControls[$operator];
+
         // check operator type :
-        $operatorTypes = $this->operatorTypes[$operator];
+        $operatorTypes = $this->operatorTypes[$internalOperator];
         if ($operatorTypes !== '*') {
             $attributeTypes = $this->getSearchAttributeTypes();
             $attributeType = $attributeTypes[$attribute];
@@ -493,7 +544,7 @@ class DataFilter extends Model
             }
         }
 
-        if (in_array($operator, $this->multiValueOperators, true)) {
+        if (in_array($internalOperator, $this->multiValueOperators, true)) {
             // multi-value operator :
             if (!is_array($condition)) {
                 $this->addError($this->filterAttributeName, $this->parseErrorMessage('operatorRequireMultipleOperands', ['operator' => $operator]));
@@ -569,13 +620,55 @@ class DataFilter extends Model
 
     /**
      * Performs actual filter build.
-     * By default this method returns value of the [[filter]] as it is.
+     * By default this method returns result of [[normalize()]].
      * The child class may override this method providing more specific implementation.
      * @return mixed built actual filter value.
      */
     protected function buildInternal()
     {
-        return $this->getFilter();
+        return $this->normalize(false);
+    }
+
+    /**
+     * Normalizes filter value, replacing raw controls by internal keys according to [[filterControls]].
+     * @param bool $runValidation whether to perform validation (calling [[validate()]])
+     * before normalizing the filter. Defaults to `true`. If the validation fails, no filter will
+     * be processed and this method will return `false`.
+     * @return array|bool normalized filter value, or `false` if validation fails.
+     */
+    public function normalize($runValidation = true)
+    {
+        if ($runValidation && !$this->validate()) {
+            return false;
+        }
+
+        $filter = $this->getFilter();
+        if (!is_array($filter) || empty($filter)) {
+            return [];
+        }
+
+        return $this->normalizeComplexFilter($filter);
+    }
+
+    /**
+     * Normalizes complex filter recursively.
+     * @param array $filter raw filter.
+     * @return array normalized filter.
+     */
+    private function normalizeComplexFilter(array $filter)
+    {
+        $result = [];
+        foreach ($filter as $key => $value) {
+            if (isset($this->filterControls[$key])) {
+                $key = $this->filterControls[$key];
+            }
+            if (is_array($value)) {
+                $result[$key] = $this->normalizeComplexFilter($value);
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 
     // Property access :

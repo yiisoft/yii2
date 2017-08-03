@@ -37,7 +37,7 @@ class ActiveDataFilterTest extends TestCase
             ],
             [
                 [
-                    '$and' => [
+                    'and' => [
                         ['name' => 'some'],
                         ['number' => '2'],
                     ]
@@ -59,14 +59,14 @@ class ActiveDataFilterTest extends TestCase
             [
                 [
                     'number' => [
-                        '$in' => [1, 5, 8]
+                        'in' => [1, 5, 8]
                     ],
                 ],
                 ['IN', 'number', [1, 5, 8]],
             ],
             [
                 [
-                    '$not' => [
+                    'not' => [
                         'number' => 10
                     ],
                 ],
@@ -74,22 +74,22 @@ class ActiveDataFilterTest extends TestCase
             ],
             [
                 [
-                    '$or' => [
+                    'or' => [
                         [
-                            '$and' => [
+                            'and' => [
                                 ['name' => 'some'],
                                 ['number' => '2'],
                             ],
                         ],
                         [
-                            '$or' => [
+                            'or' => [
                                 [
                                     'price' => 100,
                                 ],
                                 [
                                     'price' => [
-                                        '$gt' => 0,
-                                        '$lt' => 10,
+                                        'gt' => 0,
+                                        'lt' => 10,
                                     ],
                                 ],
                             ],

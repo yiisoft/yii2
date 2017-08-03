@@ -22,34 +22,36 @@ class ActiveDataFilter extends DataFilter
      * These methods are used by [[buildCondition()]] to build the actual filter conditions.
      */
     public $conditionBuilders = [
-        '$and' => 'buildConjunctionCondition',
-        '$or' => 'buildConjunctionCondition',
-        '$not' => 'buildBlockCondition',
-        '$lt' => 'buildOperatorCondition',
-        '$gt' => 'buildOperatorCondition',
-        '$lte' => 'buildOperatorCondition',
-        '$gte' => 'buildOperatorCondition',
-        '$eq' => 'buildOperatorCondition',
-        '$neq' => 'buildOperatorCondition',
-        '$in' => 'buildOperatorCondition',
-        '$nin' => 'buildOperatorCondition',
+        'and' => 'buildConjunctionCondition',
+        'or' => 'buildConjunctionCondition',
+        'not' => 'buildBlockCondition',
+        '<' => 'buildOperatorCondition',
+        '>' => 'buildOperatorCondition',
+        '<=' => 'buildOperatorCondition',
+        '>=' => 'buildOperatorCondition',
+        '=' => 'buildOperatorCondition',
+        '!=' => 'buildOperatorCondition',
+        'in' => 'buildOperatorCondition',
+        'not in' => 'buildOperatorCondition',
+        'like' => 'buildOperatorCondition',
     ];
     /**
      * @var array a map from filter operators to the ones use in [[\yii\db\QueryInterface::where()]],
      * in format: `[filterOperator => queryOperator]`
      */
-    public $operatorMap = [
-        '$and' => 'AND',
-        '$or' => 'OR',
-        '$not' => 'NOT',
-        '$lt' => '<',
-        '$gt' => '>',
-        '$lte' => '<=',
-        '$gte' => '>=',
-        '$eq' => '=',
-        '$neq' => '!=',
-        '$in' => 'IN',
-        '$nin' => 'NOT IN',
+    public $queryOperatorMap = [
+        'and' => 'AND',
+        'or' => 'OR',
+        'not' => 'NOT',
+        '<' => '<',
+        '>' => '>',
+        '<=' => '<=',
+        '>=' => '>=',
+        '=' => '=',
+        '!=' => '!=',
+        'in' => 'IN',
+        'not in' => 'NOT IN',
+        'like' => 'LIKE',
     ];
 
 
@@ -58,7 +60,7 @@ class ActiveDataFilter extends DataFilter
      */
     protected function buildInternal()
     {
-        $filter = $this->getFilter();
+        $filter = $this->normalize(false);
         if (empty($filter)) {
             return [];
         }
@@ -102,7 +104,7 @@ class ActiveDataFilter extends DataFilter
      */
     protected function buildConjunctionCondition($operator, $condition)
     {
-        $result = [$this->operatorMap[$operator]];
+        $result = [$this->queryOperatorMap[$operator]];
 
         foreach ($condition as $part) {
             $result[] = $this->buildCondition($part);
@@ -121,7 +123,7 @@ class ActiveDataFilter extends DataFilter
     protected function buildBlockCondition($operator, $condition)
     {
         return [
-            $this->operatorMap[$operator],
+            $this->queryOperatorMap[$operator],
             $this->buildCondition($condition)
         ];
     }
@@ -162,6 +164,6 @@ class ActiveDataFilter extends DataFilter
      */
     protected function buildOperatorCondition($operator, $condition, $attribute)
     {
-        return [$this->operatorMap[$operator], $attribute, $this->filterAttributeValue($attribute, $condition)];
+        return [$this->queryOperatorMap[$operator], $attribute, $this->filterAttributeValue($attribute, $condition)];
     }
 }
