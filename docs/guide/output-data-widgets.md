@@ -29,8 +29,8 @@ echo DetailView::widget([
         [                                                  // the owner name of the model
             'label' => 'Owner',
             'value' => $model->owner->name,            
-            'contentOptions' => ['class' => 'bg-red'],     // to HTML customize attributes of value tag
-            'captionOptions' => ['tooltip' => 'Tooltip'],  // to HTML customize attributes of label tag
+            'contentOptions' => ['class' => 'bg-red'],     // HTML attributes to customize value tag
+            'captionOptions' => ['tooltip' => 'Tooltip'],  // HTML attributes to customize label tag
         ],
         'created_at:datetime',                             // creation date formatted as datetime
     ],
@@ -38,8 +38,8 @@ echo DetailView::widget([
 ```
 
 Remember that unlike [[yii\widgets\GridView|GridView]] which processes a set of models,
-[[yii\widgets\DetailView|DetailView]] processes just one. So most of the times there is no need for using closure since
-`$model` is the only one model for display and available in view as variable.
+[[yii\widgets\DetailView|DetailView]] processes just one. So most of the time there is no need for using closure since
+`$model` is the only one model for display and available in view as a variable.
 
 However some cases can make using of closure useful. For example when `visible` is specified and you want to prevent
 `value` calculations in case it evaluates to `false`:
@@ -600,7 +600,7 @@ $query->andFilterWhere(['LIKE', 'author.name', $this->getAttribute('author.name'
 > $query->andFilterWhere(['LIKE', 'au.name', $this->getAttribute('author.name')]);
 > ```
 >
-> The same is `true` for the sorting definition:
+> The same is true for the sorting definition:
 >
 > ```php
 > $dataProvider->sort->attributes['author.name'] = [

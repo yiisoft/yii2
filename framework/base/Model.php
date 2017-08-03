@@ -7,12 +7,12 @@
 
 namespace yii\base;
 
-use Yii;
 use ArrayAccess;
-use ArrayObject;
 use ArrayIterator;
-use ReflectionClass;
+use ArrayObject;
 use IteratorAggregate;
+use ReflectionClass;
+use Yii;
 use yii\helpers\Inflector;
 use yii\validators\RequiredValidator;
 use yii\validators\Validator;
@@ -372,7 +372,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function beforeValidate()
     {
-        $event = new ModelEvent;
+        $event = new ModelEvent();
         $this->trigger(self::EVENT_BEFORE_VALIDATE, $event);
 
         return $event->isValid;
@@ -424,7 +424,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         $validators = [];
         $scenario = $this->getScenario();
         foreach ($this->getValidators() as $validator) {
-            if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->attributes, true))) {
+            if ($validator->isActive($scenario) && ($attribute === null || in_array($attribute, $validator->getAttributeNames(), true))) {
                 $validators[] = $validator;
             }
         }
@@ -439,7 +439,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
      */
     public function createValidators()
     {
-        $validators = new ArrayObject;
+        $validators = new ArrayObject();
         foreach ($this->rules() as $rule) {
             if ($rule instanceof Validator) {
                 $validators->append($rule);
@@ -562,9 +562,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         if ($attribute === null) {
             return $this->_errors === null ? [] : $this->_errors;
-        } else {
-            return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
         }
+        return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
     }
 
     /**
@@ -578,16 +577,15 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     {
         if (empty($this->_errors)) {
             return [];
-        } else {
-            $errors = [];
-            foreach ($this->_errors as $name => $es) {
-                if (!empty($es)) {
-                    $errors[$name] = reset($es);
-                }
-            }
-
-            return $errors;
         }
+
+        $errors = [];
+        foreach ($this->_errors as $name => $es) {
+            if (!empty($es)) {
+                $errors[$name] = reset($es);
+            }
+        }
+        return $errors;
     }
 
     /**
@@ -829,9 +827,8 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
             $this->setAttributes($data[$scope]);
 
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -852,7 +849,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public static function loadMultiple($models, $data, $formName = null)
     {
         if ($formName === null) {
-            /* @var $first Model */
+            /* @var $first Model|false */
             $first = reset($models);
             if ($first === false) {
                 return false;
@@ -864,12 +861,10 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         foreach ($models as $i => $model) {
             /* @var $model Model */
             if ($formName == '') {
-                if (!empty($data[$i])) {
-                    $model->load($data[$i], '');
+                if (!empty($data[$i]) && $model->load($data[$i], '')) {
                     $success = true;
                 }
-            } elseif (!empty($data[$formName][$i])) {
-                $model->load($data[$formName][$i], '');
+            } elseif (!empty($data[$formName][$i]) && $model->load($data[$formName][$i], '')) {
                 $success = true;
             }
         }

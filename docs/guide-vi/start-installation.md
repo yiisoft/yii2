@@ -1,20 +1,19 @@
 Cài đặt Yii
 ==============
 
-Bạn có thể cài đặt Yii theo hai cách, dùng trình quản lý gói [Composer](http://getcomposer.org/) hoặc tải về một tập tin lưu trữ.
-Cách thứ nhất thường được hay dùng hơn, vì nó cho phép bạn cài đặt các [Gói mở rộng (extensions)](structure-extensions.md)  mới hoặc cập nhật Yii đơn giản chỉ mới một câu lệnh.
+Bạn có thể cài đặt Yii theo hai cách, dùng trình quản lý gói [Composer](http://getcomposer.org/) hoặc tải toàn bộ mã nguồn Yii về.
+Cách thứ nhất thường được khuyến khích dùng hơn, vì nó cho phép bạn cài đặt thêm các [Gói mở rộng (extensions)](structure-extensions.md)  hoặc cập nhật Yii đơn giản chỉ mới một dòng lệnh.
 
-Ứng dụng Yii cần được tải về và cài đặt, điều này có kết quả giống nhau khi thực hiện cài đặt theo chuẩn.
-Những ứng dụng Yii khi đã cài đặt đều được triển khai một số tính năng cơ bản, như đăng nhập (login), form liên hệ (contact form), vv. 
-Những tính năng trên đều được khuyến khích. Vì thế, nó có thể hữu ích như là một điểm bắt đầu tốt cho các dự án của bạn.
+Mặc định, sau khi cài đặt Yii sẽ cung cấp cho bạn một số tính năng cơ bản, như đăng nhập (login), form liên hệ (contact form), vv. 
+Những tính năng trên đều được khuyến khích và sử dụng rộng rãi, vì thế, nó có thể hữu ích cho các dự án của bạn.
     
-Trong bài hướng dẫn này  và các phần tiếp theo, chúng ta sẽ tìm hiều cách cài ứng dụng Yii với tên *Basic Application Template* và
-làm thế nào để thực hiện các tính năng mới trên mẫu ứng dụng này. Yii đồng thời cũng cung cấp mẫu ứng dụng tên là [Advanced Application Template](tutorial-advanced-app.md)
-mẫu này được dùng tốt hơn cho những đội dự án cần phát triển ứng dụng có nhiều tầng.
+Trong bài hướng dẫn này và các phần tiếp theo, chúng ta sẽ tìm hiều cách cài ứng dụng Yii với tên *Basic Application Template* và
+làm thế nào để triển khai các tính năng mới trên mẫu ứng dụng này. Yii đồng thời cũng cung cấp mẫu ứng dụng tên là [Advanced Application Template](tutorial-advanced-app.md)
+Template này hướng đến những đội dự án cần phát triển ứng dụng có nhiều tầng (multiple tiers).
 
-> Lưu ý: Các mẫu ứng dụng *Basic Application Template* là thích hợp cho việc phát triển 90% của các ứng dụng Web. nó khác
-với các mẫu ứng dụng [Advanced Application Template](tutorial-advanced-app.md). Nếu bạn là người mới tìm hiều về Yii, chúng tôi khuyến khích
-bạn bắt đầu với các ứng dụng *Basic Application Template* , ứng dụng này đơn giản và ít chức năng thích hợp hơn cho việc tìm hiểu về Yii.
+> Lưu ý: *Basic Application Template* thích hợp đến 90% cho việc phát triển web. Nó khác
+với [Advanced Application Template](tutorial-advanced-app.md) trong cách tổ chức mã nguồn. Nếu bạn là người mới tìm hiều về Yii, chúng tôi khuyến khích
+bạn bắt đầu với *Basic Application Template* , ứng dụng này đơn giản và ít chức năng. Thích hợp hơn cho việc tìm hiểu về Yii.
 
 
 
@@ -22,25 +21,25 @@ Cài đặt qua trinh quản lý gói Composer <span id="installing-via-composer
 -----------------------
 
 Nếu bạn chưa cài Composer, bạn có thể cài đặt theo đường link sau
-[getcomposer.org](https://getcomposer.org/download/). Trong hệ điều hành Linux và Mac OS X, bạn có thể chạy các lệnh sau đây:
+[getcomposer.org](https://getcomposer.org/download/). Đối với hệ điều hành Linux và Mac OS X, bạn có thể chạy các lệnh sau đây:
 
     curl -s http://getcomposer.org/installer | php
     mv composer.phar /usr/local/bin/composer
 
-Còn trên HDH Windows, bạn có thể tải về và chạy [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
+Còn trên HĐH Windows, bạn có thể tải về và chạy [Composer-Setup.exe](https://getcomposer.org/Composer-Setup.exe).
 
-Nếu bạn có bất kỳ thắc mắc hoặc muốn biết thêm nghiên cứu chuyên sâu Composer, vui lòng tham khảo [Tài liệu Composer](https://getcomposer.org/doc/) 
+Nếu bạn có bất kỳ thắc mắc hoặc muốn biết thêm và nghiên cứu chuyên sâu về Composer, vui lòng tham khảo [Tài liệu Composer](https://getcomposer.org/doc/) 
 
 Nếu bạn đã cài Composer rồi, hãy chắc chắn rằng bạn đang sử dụng phiên bản mới nhất. Bạn có thể cập nhật Composer bằng cách thực hiện lệnh
  `composer self-update`.
 
 Sau khi cài đặt Composer, bạn có thể cài đặt Yii bằng cách chạy lệnh sau ở thư mục Web mà ứng dụng cần chạy:
 
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.3.1"
     composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 
 Câu lệnh đầu tiên sẽ cài đặt [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-Nó là thông qua Composer để quản lý bower và npm dùng cho việc quản lý các gói cần thiết. Bạn cần chạy câu lệnh này để có hiệu lực toàn hệ thống.
+và cho phép Composer có thể quản lý những package dependencies của bower và npm. Câu lệnh này chỉ cần chạy một lần.
 Câu lệnh thứ hai sẽ cài đặt phiên bản Yii có tên là  `basic`. Bạn có thể chọn một tên thư mục khác nếu bạn muốn.
 
 > Chú ý: Trong quá trình cài đặt Composer có thể yêu cầu thông tin đăng nhập từ tài khoản Github của bạn. điều này là bình thường bởi vì Composer 
@@ -62,12 +61,12 @@ Việc cài đặt Yii từ một tập tin lưu trữ bao gồm ba bước:
 
 1. Tải gói cài đặt từ [yiiframework.com](http://www.yiiframework.com/download/).
 2. Giải nén file tải về vào một thư mục Web của ứng dụng cần chạy.
-3. Sửa đồi file `config/web.php`  bởi nhập thông tin secret key (khóa bí mật) `cookieValidationKey` ở mục cấu hình
+3. Sửa đồi file `config/web.php`  bởi nhập thông tin secret key `cookieValidationKey` ở mục cấu hình
    (này được thực hiện tự động nếu bạn đang cài đặt Yii sử dụng Composer):
 
    ```php
-   // !!! chèn một khóa bí mật trong phần sau (nếu rỗng) - điều này được yêu cầu cho cookie validation
-   'cookieValidationKey' => 'Nhập khóa bí mật vào đây',
+   // !!! chèn một secret key trong phần sau (nếu rỗng) - Việc này là cần thiết để xác thực cookie trong ứng dụng
+   'cookieValidationKey' => 'Nhập secret key tuỳ chọn vào đây',
    ```
 
 
@@ -88,7 +87,7 @@ Nhưng cũng có những phương pháp cài đặt khác:
 Kết quả cài đặt <span id="verifying-installation"></span>
 --------------------------
 
-Sau khi cài đặt, bạn có thể sử dụng trình duyệt để truy cập các ứng dụng Yii được cài đặt với các URL sau đây:
+Sau khi cài đặt, bạn có thể sử dụng trình duyệt để truy cập ứng dụng Yii được cài đặt với URL dưới đây:
 
 ```
 http://localhost/basic/web/index.php

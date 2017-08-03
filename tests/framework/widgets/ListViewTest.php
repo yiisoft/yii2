@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\widgets;
 
@@ -7,13 +12,50 @@ use yii\data\ArrayDataProvider;
 use yii\widgets\ListView;
 use yiiunit\TestCase;
 
+/**
+ * @group widgets
+ */
 class ListViewTest extends TestCase
 {
     protected function setUp()
     {
         parent::setUp();
+        $this->mockApplication();
+    }
 
-        $this->mockWebApplication();
+    public function testEmptyListShown()
+    {
+        $this->getListView([
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+            'emptyText' => 'Nothing at all',
+        ])->run();
+
+        $this->expectOutputString('<div id="w0" class="list-view"><div class="empty">Nothing at all</div></div>');
+    }
+
+    public function testEmpty()
+    {
+        $this->getListView([
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+            'emptyText' => false,
+        ])->run();
+
+        $this->expectOutputString('<div id="w0" class="list-view"></div>');
+    }
+
+    public function testEmptyListNotShown()
+    {
+        $this->getListView([
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+            'showOnEmpty' => true,
+        ])->run();
+
+        $this->expectOutputString(<<<'HTML'
+<div id="w0" class="list-view">
+
+</div>
+HTML
+        );
     }
 
     private function getListView($options = [])
@@ -37,9 +79,9 @@ class ListViewTest extends TestCase
 
     public function testSimplyListView()
     {
-        $listView = $this->getListView();
+        $this->getListView()->run();
 
-        $this->expectOutputString(<<<HTML
+        $this->expectOutputString(<<<'HTML'
 <div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div>
 <div data-key="1">1</div>
@@ -47,22 +89,18 @@ class ListViewTest extends TestCase
 </div>
 HTML
         );
-
-        $listView->run();
     }
 
     public function testWidgetOptions()
     {
-        $listView = $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => '']);
+        $this->getListView(['options' => ['class' => 'test-passed'], 'separator' => ''])->run();
 
-        $this->expectOutputString(<<<HTML
+        $this->expectOutputString(<<<'HTML'
 <div id="w0" class="test-passed"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <div data-key="0">0</div><div data-key="1">1</div><div data-key="2">2</div>
 </div>
 HTML
         );
-
-        $listView->run();
     }
 
     public function itemViewOptions()
@@ -84,7 +122,7 @@ HTML
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: yii\widgets\ListView</div>
 <div data-key="2">Item #2: cebe - Widget: yii\widgets\ListView</div>
-</div>'
+</div>',
             ],
             [
                 '@yiiunit/data/views/widgets/ListView/item',
@@ -92,8 +130,8 @@ HTML
 <div data-key="0">Item #0: silverfire - Widget: yii\widgets\ListView</div>
 <div data-key="1">Item #1: samdark - Widget: yii\widgets\ListView</div>
 <div data-key="2">Item #2: cebe - Widget: yii\widgets\ListView</div>
-</div>'
-            ]
+</div>',
+            ],
         ];
     }
 
@@ -102,9 +140,8 @@ HTML
      */
     public function testItemViewOptions($itemView, $expected)
     {
-        $listView = $this->getListView(['itemView' => $itemView]);
+        $this->getListView(['itemView' => $itemView])->run();
         $this->expectOutputString($expected);
-        $listView->run();
     }
 
     public function itemOptions()
@@ -126,17 +163,16 @@ HTML
                             'test' => 'passed',
                             'key' => $key,
                             'index' => $index,
-                            'id' => $model['id']
-                        ]
-
+                            'id' => $model['id'],
+                        ],
                     ];
                 },
                 '<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
 <span data-test="passed" data-key="0" data-index="0" data-id="1" data-key="0">0</span>
 <span data-test="passed" data-key="1" data-index="1" data-id="2" data-key="1">1</span>
 <span data-test="passed" data-key="2" data-index="2" data-id="3" data-key="2">2</span>
-</div>'
-            ]
+</div>',
+            ],
         ];
     }
 
@@ -145,8 +181,40 @@ HTML
      */
     public function testItemOptions($itemOptions, $expected)
     {
-        $listView = $this->getListView(['itemOptions' => $itemOptions]);
+        $this->getListView(['itemOptions' => $itemOptions])->run();
         $this->expectOutputString($expected);
-        $listView->run();
+    }
+
+    public function testBeforeAndAfterItem()
+    {
+        $before = function ($model, $key, $index, $widget) {
+            $widget = get_class($widget);
+            return "<!-- before: {$model['id']}, key: $key, index: $index, widget: $widget -->";
+        };
+        $after = function ($model, $key, $index, $widget) {
+            if ($model['id'] === 1) {
+                return null;
+            }
+            $widget = get_class($widget);
+            return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
+        };
+        $this->getListView([
+            'beforeItem' => $before,
+            'afterItem' => $after,
+        ])->run();
+
+        $this->expectOutputString(<<<HTML
+<div id="w0" class="list-view"><div class="summary">Showing <b>1-3</b> of <b>3</b> items.</div>
+<!-- before: 1, key: 0, index: 0, widget: yii\widgets\ListView -->
+<div data-key="0">0</div>
+<!-- before: 2, key: 1, index: 1, widget: yii\widgets\ListView -->
+<div data-key="1">1</div>
+<!-- after: 2, key: 1, index: 1, widget: yii\widgets\ListView -->
+<!-- before: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
+<div data-key="2">2</div>
+<!-- after: 3, key: 2, index: 2, widget: yii\widgets\ListView -->
+</div>
+HTML
+);
     }
 }

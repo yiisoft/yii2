@@ -71,7 +71,6 @@ class IpValidator extends Validator
      *  - `localhost`: `127.0.0.0/8', ::1`
      *  - `documentation`: `192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24, 2001:db8::/32`
      *  - `system`: `multicast, linklocal, localhost, documentation`
-     *
      */
     public $networks = [
         '*' => ['any'],
@@ -221,11 +220,6 @@ class IpValidator extends Validator
         if (!$this->ipv4 && !$this->ipv6) {
             throw new InvalidConfigException('Both IPv4 and IPv6 checks can not be disabled at the same time');
         }
-
-        if (!defined('AF_INET6') && $this->ipv6) {
-            throw new InvalidConfigException('IPv6 validation can not be used. PHP is compiled without IPv6');
-        }
-
         if ($this->message === null) {
             $this->message = Yii::t('yii', '{attribute} must be a valid IP address.');
         }
@@ -303,9 +297,9 @@ class IpValidator extends Validator
         if (is_array($result)) {
             $result[1] = array_merge(['ip' => is_array($value) ? 'array()' : $value], $result[1]);
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -369,11 +363,11 @@ class IpValidator extends Validator
                 $cidr = static::IPV6_ADDRESS_LENGTH;
             }
 
-            if (!$this->ipv6) {
-                return [$this->ipv6NotAllowed, []];
-            }
             if (!$this->validateIPv6($ip)) {
                 return [$this->message, []];
+            }
+            if (!$this->ipv6) {
+                return [$this->ipv6NotAllowed, []];
             }
 
             if ($this->expandIPv6) {
@@ -388,12 +382,11 @@ class IpValidator extends Validator
                 $isCidrDefault = true;
                 $cidr = static::IPV4_ADDRESS_LENGTH;
             }
-
-            if (!$this->ipv4) {
-                return [$this->ipv4NotAllowed, []];
-            }
             if (!$this->validateIPv4($ip)) {
                 return [$this->message, []];
+            }
+            if (!$this->ipv4) {
+                return [$this->ipv4NotAllowed, []];
             }
         }
 
@@ -528,7 +521,7 @@ class IpValidator extends Validator
      */
     private function getIpParsePattern()
     {
-        return '/^(' . preg_quote(static::NEGATION_CHAR) . '?)(.+?)(\/(\d+))?$/';
+        return '/^(' . preg_quote(static::NEGATION_CHAR, '/') . '?)(.+?)(\/(\d+))?$/';
     }
 
     /**
@@ -571,22 +564,34 @@ class IpValidator extends Validator
     {
         if ($this->getIpVersion($ip) === 4) {
             return str_pad(base_convert(ip2long($ip), 10, 2), static::IPV4_ADDRESS_LENGTH, '0', STR_PAD_LEFT);
-        } else {
-            $unpack = unpack('A16', inet_pton($ip));
-            $binStr = array_shift($unpack);
-            $bytes = static::IPV6_ADDRESS_LENGTH / 8; // 128 bit / 8 = 16 bytes
-            $result = '';
-            while ($bytes-- > 0) {
-                $result = sprintf('%08b', isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
-            }
-            return $result;
         }
+
+        $unpack = unpack('A16', inet_pton($ip));
+        $binStr = array_shift($unpack);
+        $bytes = static::IPV6_ADDRESS_LENGTH / 8; // 128 bit / 8 = 16 bytes
+        $result = '';
+        while ($bytes-- > 0) {
+            $result = sprintf('%08b', isset($binStr[$bytes]) ? ord($binStr[$bytes]) : '0') . $result;
+        }
+
+        return $result;
     }
 
     /**
      * @inheritdoc
      */
     public function clientValidateAttribute($model, $attribute, $view)
+    {
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
     {
         $messages = [
             'ipv6NotAllowed' => $this->ipv6NotAllowed,
@@ -596,9 +601,9 @@ class IpValidator extends Validator
             'hasSubnet' => $this->hasSubnet,
         ];
         foreach ($messages as &$message) {
-            $message = Yii::$app->getI18n()->format($message, [
+            $message = $this->formatMessage($message, [
                 'attribute' => $model->getAttributeLabel($attribute),
-            ], Yii::$app->language);
+            ]);
         }
 
         $options = [
@@ -615,8 +620,6 @@ class IpValidator extends Validator
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'yii.validation.ip(value, messages, ' . Json::htmlEncode($options) . ');';
+        return $options;
     }
 }

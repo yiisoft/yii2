@@ -17,7 +17,7 @@ class RequestTest extends TestCase
 {
     public function testParseAcceptHeader()
     {
-        $request = new Request;
+        $request = new Request();
 
         $this->assertEquals([], $request->parseAcceptHeader(' '));
 
@@ -101,7 +101,7 @@ class RequestTest extends TestCase
         $request->enableCsrfValidation = true;
 
         // accept any value on GET request
-        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+        foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertTrue($request->validateCsrfToken($token . 'a'));
@@ -112,7 +112,7 @@ class RequestTest extends TestCase
         }
 
         // only accept valid token on POST
-        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+        foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken($token));
             $this->assertFalse($request->validateCsrfToken($token . 'a'));
@@ -136,20 +136,19 @@ class RequestTest extends TestCase
         $token = $request->getCsrfToken();
 
         // accept no value on GET request
-        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+        foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken());
         }
 
         // only accept valid token on POST
-        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+        foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $request->setBodyParams([]);
             $this->assertFalse($request->validateCsrfToken());
             $request->setBodyParams([$request->csrfParam => $token]);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     /**
@@ -165,23 +164,20 @@ class RequestTest extends TestCase
         $token = $request->getCsrfToken();
 
         // accept no value on GET request
-        foreach(['GET', 'HEAD', 'OPTIONS'] as $method) {
+        foreach (['GET', 'HEAD', 'OPTIONS'] as $method) {
             $_POST[$request->methodParam] = $method;
             $this->assertTrue($request->validateCsrfToken());
         }
 
         // only accept valid token on POST
-        foreach(['POST', 'PUT', 'DELETE'] as $method) {
+        foreach (['POST', 'PUT', 'DELETE'] as $method) {
             $_POST[$request->methodParam] = $method;
             $request->setBodyParams([]);
-            //$request->headers->remove(Request::CSRF_HEADER);
-            unset($_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))]);
+            $request->headers->remove(Request::CSRF_HEADER);
             $this->assertFalse($request->validateCsrfToken());
-            //$request->headers->add(Request::CSRF_HEADER, $token);
-            $_SERVER['HTTP_' . str_replace('-', '_', strtoupper(Request::CSRF_HEADER))] = $token;
+            $request->headers->add(Request::CSRF_HEADER, $token);
             $this->assertTrue($request->validateCsrfToken());
         }
-
     }
 
     public function testResolve()
@@ -196,8 +192,8 @@ class RequestTest extends TestCase
                         'posts' => 'post/list',
                         'post/<id>' => 'post/view',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $request = new Request();
@@ -245,8 +241,8 @@ class RequestTest extends TestCase
         $request = new Request();
 
         unset($_SERVER['SERVER_NAME'], $_SERVER['HTTP_HOST']);
-        $this->assertSame(null, $request->getHostInfo());
-        $this->assertSame(null, $request->getHostName());
+        $this->assertNull($request->getHostInfo());
+        $this->assertNull($request->getHostName());
 
         $request->setHostInfo('http://servername.com:80');
         $this->assertSame('http://servername.com:80', $request->getHostInfo());
@@ -295,5 +291,16 @@ class RequestTest extends TestCase
 
         unset($_SERVER['SERVER_PORT']);
         $this->assertEquals(null, $request->getServerPort());
+    }
+
+    public function testGetOrigin()
+    {
+        $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';
+        $request = new Request();
+        $this->assertEquals('https://www.w3.org', $request->getOrigin());
+
+        unset($_SERVER['HTTP_ORIGIN']);
+        $request = new Request();
+        $this->assertEquals(null, $request->getOrigin());
     }
 }

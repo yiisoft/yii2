@@ -50,6 +50,60 @@ class Controller extends \yii\base\Controller
     }
 
     /**
+     * Send data formatted as JSON.
+     *
+     * This method is a shortcut for sending data formatted as JSON. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
+     * be formatted. A common usage will be:
+     *
+     * ```php
+     * return $this->asJson($data);
+     * ```
+     *
+     * @param mixed $data the data that should be formatted.
+     * @return Response a response that is configured to send `$data` formatted as JSON.
+     * @since 2.0.11
+     * @see Response::$format
+     * @see Response::FORMAT_JSON
+     * @see JsonResponseFormatter
+     */
+    public function asJson($data)
+    {
+        $response = Yii::$app->getResponse();
+        $response->format = Response::FORMAT_JSON;
+        $response->data = $data;
+        return $response;
+    }
+
+    /**
+     * Send data formatted as XML.
+     *
+     * This method is a shortcut for sending data formatted as XML. It will return
+     * the [[Application::getResponse()|response]] application component after configuring
+     * the [[Response::$format|format]] and setting the [[Response::$data|data]] that should
+     * be formatted. A common usage will be:
+     *
+     * ```php
+     * return $this->asXml($data);
+     * ```
+     *
+     * @param mixed $data the data that should be formatted.
+     * @return Response a response that is configured to send `$data` formatted as XML.
+     * @since 2.0.11
+     * @see Response::$format
+     * @see Response::FORMAT_XML
+     * @see XmlResponseFormatter
+     */
+    public function asXml($data)
+    {
+        $response = Yii::$app->getResponse();
+        $response->format = Response::FORMAT_XML;
+        $response->data = $data;
+        return $response;
+    }
+
+    /**
      * Binds the parameters to the action.
      * This method is invoked by [[\yii\base\Action]] when it begins to run with the given parameters.
      * This method will check the parameter names that the action requires and return
@@ -113,7 +167,7 @@ class Controller extends \yii\base\Controller
             }
             return true;
         }
-        
+
         return false;
     }
 
@@ -135,11 +189,11 @@ class Controller extends \yii\base\Controller
      * - an array in the format of `[$route, ...name-value pairs...]` (e.g. `['site/index', 'ref' => 1]`)
      *   [[Url::to()]] will be used to convert the array into a URL.
      *
-     * Any relative URL will be converted into an absolute one by prepending it with the host info
-     * of the current request.
+     * Any relative URL that starts with a single forward slash "/" will be converted
+     * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
-     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      * @return Response the current response object
      */

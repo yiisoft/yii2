@@ -37,7 +37,7 @@ class FakeController extends Controller
         return array_merge(parent::options($actionID), [
             'test',
             'testArray',
-            'alias'
+            'alias',
         ]);
     }
 
@@ -46,7 +46,7 @@ class FakeController extends Controller
         return [
             't' => 'test',
             'ta' => 'testArray',
-            'a' => 'alias'
+            'a' => 'alias',
         ];
     }
 
@@ -84,6 +84,11 @@ class FakeController extends Controller
         return $this->testArray;
     }
 
+    public function actionWithComplexTypeHint(self $typedArgument, $simpleArgument)
+    {
+        return $simpleArgument;
+    }
+
     public function actionStatus($status = 0)
     {
         return $status;
@@ -92,7 +97,7 @@ class FakeController extends Controller
     public function actionResponse($status = 0)
     {
         $response = new Response();
-        $response->exitStatus = (int)$status;
+        $response->exitStatus = (int) $status;
         return $response;
     }
 }

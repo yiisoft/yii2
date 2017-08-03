@@ -7,10 +7,9 @@
 
 namespace yii\data;
 
-use Yii;
-use yii\db\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
 use yii\db\QueryInterface;
 use yii\di\Instance;
@@ -105,6 +104,9 @@ class ActiveDataProvider extends BaseDataProvider
         $query = clone $this->query;
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
+            if ($pagination->totalCount === 0) {
+                return [];
+            }
             $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
         if (($sort = $this->getSort()) !== false) {
@@ -131,7 +133,7 @@ class ActiveDataProvider extends BaseDataProvider
 
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
-            /* @var $class \yii\db\ActiveRecord */
+            /* @var $class \yii\db\ActiveRecordInterface */
             $class = $this->query->modelClass;
             $pks = $class::primaryKey();
             if (count($pks) === 1) {
@@ -150,9 +152,9 @@ class ActiveDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
@@ -175,7 +177,7 @@ class ActiveDataProvider extends BaseDataProvider
         parent::setSort($value);
         if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
             /* @var $model Model */
-            $model = new $this->query->modelClass;
+            $model = new $this->query->modelClass();
             if (empty($sort->attributes)) {
                 foreach ($model->attributes() as $attribute) {
                     $sort->attributes[$attribute] = [

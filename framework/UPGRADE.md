@@ -22,21 +22,21 @@ Before upgrading, make sure you have a global installation of the latest version
 as well as a stable version of Composer:
 
     composer self-update
-    composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+    composer global require "fxp/composer-asset-plugin:^1.3.1" --no-plugins
 
 The simple way to upgrade Yii, for example to version 2.0.10 (replace this with the version you want) will be running `composer require`:
 
-    composer require "yiisoft/yii2:~2.0.10"
+    composer require "yiisoft/yii2:~2.0.10" --update-with-dependencies
 
-This however may fail due to changes in the dependencies of yiisoft/yii2, which may change due to security updates
-in other libraries or by adding support for newer versions. `composer require` will not update any other packages 
-as a safety feature.
+This command will only upgrade Yii and its direct dependencies, if necessary. Without `--update-with-dependencies` the
+upgrade might fail when the Yii version you chose has slightly different dependencies than the version you had before.
+`composer require` will by default not update any other packages as a safety feature.
 
-The better way to upgrade is to change the `composer.json` file to require the new Yii version and then
+Another way to upgrade is to change the `composer.json` file to require the new Yii version and then
 run `composer update` by specifying all packages that are allowed to be updated.
 
-    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/jquery.inputmask
-    
+    composer update yiisoft/yii2 yiisoft/yii2-composer bower-asset/inputmask
+
 The above command will only update the specified packages and leave the versions of all other dependencies intact.
 This helps to update packages step by step without causing a lot of package version changes that might break in some way.
 If you feel lucky you can of course update everything to the latest version by running `composer update` without
@@ -49,6 +49,94 @@ See the following notes on which changes to consider when upgrading from one ver
 if you want to upgrade from version A to version C and there is
 version B between A and C, you need to follow the instructions
 for both A and B.
+
+Upgrade from Yii 2.0.12
+-----------------------
+
+* For compatibiliy with [PHP 7.2 which does not allow classes to be named `Object` anymore](https://wiki.php.net/rfc/object-typehint),
+  we needed to rename `yii\base\Object` to `yii\base\BaseObject`.
+  
+  `yii\base\Object` still exists for backwards compatibility and will be loaded if needed in projects that are
+  running on PHP <7.2. The compatibility class `yii\base\Object` extends from `yii\base\BaseObject` so if you
+  have classes that extend from `yii\base\Object` these would still work.
+  
+  What does not work however will be code that relies on `instanceof` checks or `is_subclass_of()` calls
+  for `yii\base\Object` on framework classes as these do not extend `yii\base\Object` anymore but only
+  extend from `yii\base\BaseObject`. In general such a check is not needed as there is a `yii\base\Configurable`
+  interface you should check against instead.
+  
+  Here is a visualisation of the change (`a < b` means "b extends a"):
+  
+  ```
+  Before:
+  
+  yii\base\Object < Framework Classes
+  yii\base\Object < Application Classes
+  
+  After Upgrade:
+  
+  yii\base\BaseObject < Framework Classes
+  yii\base\BaseObject < yii\base\Object < Application Classes
+
+  ```
+  
+  If you want to upgrade PHP to version 7.2 in your project you need to remove all cases that extend `yii\base\Object`
+  and extend from `yii\base\BaseObject` instead:
+  
+  ```
+  yii\base\BaseObject < Framework Classes
+  yii\base\BaseObject < Application Classes
+  ```
+  
+  For extensions that have classes extending from `yii\base\Object`, to be compatible with PHP 7.2, you need to
+  require `"yiisoft/yii2": "~2.0.13"` in composer.json and change affected classes to extend from `yii\base\BaseObject`
+  instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
+
+
+Upgrade from Yii 2.0.11
+-----------------------
+
+* `yii\i18n\Formatter::normalizeDatetimeValue()` returns now array with additional third boolean element
+  indicating whether the timestamp has date information or it is just time value.
+
+* `yii\grid\DataColumn` filter is now automatically generated as dropdown list with localized `Yes` and `No` strings
+  in case of `format` being set to `boolean`.
+ 
+* The signature of `yii\db\QueryBuilder::prepareInsertSelectSubQuery()` was changed. The method has got an extra optional parameter
+  `$params`.
+
+* The signature of `yii\cache\Cache::getOrSet()` has been adjusted to also accept a callable and not only `Closure`.
+  If you extend this method, make sure to adjust your code.
+  
+* `yii\web\UrlManager` now checks if rules implement `getCreateUrlStatus()` method in order to decide whether to use
+  internal cache for `createUrl()` calls. Ensure that all your custom rules implement this method in order to fully 
+  benefit from the acceleration provided by this cache.
+
+* `yii\filters\AccessControl` now can be used without `user` component.  
+  In this case `yii\filters\AccessControl::denyAccess()` throws `yii\web\ForbiddenHttpException` and using `AccessRule` 
+  matching a role throws `yii\base\InvalidConfigException`.
+  
+* Inputmask package name was changed from `jquery.inputmask` to `inputmask`. If you've configured path to
+  assets manually, please adjust it. 
+
+Upgrade from Yii 2.0.10
+-----------------------
+
+* A new method `public function emulateExecution($value = true);` has been added to the `yii\db\QueryInterace`.
+  This method is implemented in the `yii\db\QueryTrait`, so this only affects your code if you implement QueryInterface
+  in a class that does not use the trait.
+
+* `yii\validators\FileValidator::getClientOptions()` and `yii\validators\ImageValidator::getClientOptions()` are now public.
+  If you extend from these classes and override these methods, you must make them public as well.
+
+* `yii\widgets\MaskedInput` inputmask dependency was updated to `~3.3.3`.
+  [See its changelog for details](https://github.com/RobinHerbots/Inputmask/blob/3.x/CHANGELOG.md).
+
+* PJAX: Auto generated IDs of the Pjax widget have been changed to use their own prefix to avoid conflicts.
+  Auto generated IDs are now prefixed with `p` instead of `w`. This is defined by the `$autoIdPrefix`
+  property of `yii\widgets\Pjax`. If you have any PHP or Javascript code that depends on autogenerated IDs
+  you should update these to match this new value. It is not a good idea to rely on auto generated values anyway, so
+  you better fix these cases by specifying an explicit ID.
 
 
 Upgrade from Yii 2.0.9
@@ -240,7 +328,7 @@ Upgrade from Yii 2.0 Beta
   the composer-asset-plugin, *before* you update your project:
 
   ```
-  php composer.phar global require "fxp/composer-asset-plugin:~1.0.0"
+  php composer.phar global require "fxp/composer-asset-plugin:~1.3.1"
   ```
 
   You also need to add the following code to your project's `composer.json` file:

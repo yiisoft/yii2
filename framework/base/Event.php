@@ -24,7 +24,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Event extends Object
+class Event extends BaseObject
 {
     /**
      * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
@@ -116,20 +116,19 @@ class Event extends Object
         if ($handler === null) {
             unset(self::$_events[$name][$class]);
             return true;
-        } else {
-            $removed = false;
-            foreach (self::$_events[$name][$class] as $i => $event) {
-                if ($event[0] === $handler) {
-                    unset(self::$_events[$name][$class][$i]);
-                    $removed = true;
-                }
-            }
-            if ($removed) {
-                self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
-            }
-
-            return $removed;
         }
+
+        $removed = false;
+        foreach (self::$_events[$name][$class] as $i => $event) {
+            if ($event[0] === $handler) {
+                unset(self::$_events[$name][$class][$i]);
+                $removed = true;
+            }
+        }
+        if ($removed) {
+            self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
+        }
+        return $removed;
     }
 
     /**
@@ -191,7 +190,7 @@ class Event extends Object
             return;
         }
         if ($event === null) {
-            $event = new static;
+            $event = new static();
         }
         $event->handled = false;
         $event->name = $name;
@@ -212,13 +211,15 @@ class Event extends Object
         );
 
         foreach ($classes as $class) {
-            if (!empty(self::$_events[$name][$class])) {
-                foreach (self::$_events[$name][$class] as $handler) {
-                    $event->data = $handler[1];
-                    call_user_func($handler[0], $event);
-                    if ($event->handled) {
-                        return;
-                    }
+            if (empty(self::$_events[$name][$class])) {
+                continue;
+            }
+
+            foreach (self::$_events[$name][$class] as $handler) {
+                $event->data = $handler[1];
+                call_user_func($handler[0], $event);
+                if ($event->handled) {
+                    return;
                 }
             }
         }

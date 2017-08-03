@@ -80,20 +80,18 @@ class ViewAction extends Action
             if ($controllerLayout) {
                 $this->controller->layout = $controllerLayout;
             }
-
         } catch (ViewNotFoundException $e) {
-
             if ($controllerLayout) {
                 $this->controller->layout = $controllerLayout;
             }
 
             if (YII_DEBUG) {
                 throw new NotFoundHttpException($e->getMessage());
-            } else {
-                throw new NotFoundHttpException(
-                    Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewName])
-                );
             }
+
+            throw new NotFoundHttpException(
+                Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewName])
+            );
         }
 
         return $output;
@@ -123,9 +121,9 @@ class ViewAction extends Action
         if (!is_string($viewName) || !preg_match('~^\w(?:(?!\/\.{0,2}\/)[\w\/\-\.])*$~', $viewName)) {
             if (YII_DEBUG) {
                 throw new NotFoundHttpException("The requested view \"$viewName\" must start with a word character, must not contain /../ or /./, can contain only word characters, forward slashes, dots and dashes.");
-            } else {
-                throw new NotFoundHttpException(Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewName]));
             }
+
+            throw new NotFoundHttpException(Yii::t('yii', 'The requested view "{name}" was not found.', ['name' => $viewName]));
         }
 
         return empty($this->viewPrefix) ? $viewName : $this->viewPrefix . '/' . $viewName;

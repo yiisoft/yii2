@@ -97,7 +97,7 @@ Yii::configure($object, $config);
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -135,6 +135,29 @@ $config = [
 За более подробной документацией о настройках свойства `components` в конфигурации приложения обратитесь к главам
 [приложения](structure-applications.md) и [Service Locator](concept-service-locator.md).
 
+Начиная с версии 2.0.11, можно настраивать [контейнер зависимостей](concept-di-container.md) через конфигурацию
+приложения. Для этого используется свойство `container`:
+
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // Конфигурация для единожды создающихся объектов
+        ]
+    ]
+];
+```
+
+Чтобы узнать о возможных значениях `definitions` и `singletons`, а также о реальных примерах использования,
+прочитайте подраздел [более сложное практическое применение](concept-di-container.md#advanced-practical-usage) раздела
+[Dependency Injection Container](concept-di-container.md).
+
 
 ### Конфигурации виджетов <span id="widget-configurations"></span>
 
@@ -171,8 +194,8 @@ echo Menu::widget([
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -210,7 +233,7 @@ return [
 Чтобы получить конфигурацию, хранящуюся в файле, достаточно подключить файл с помощью `require`:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\data\ar;
 
@@ -178,15 +183,22 @@ class Order extends ActiveRecord
             ->viaTable('order_item', ['order_id' => 'id']);
     }
 
+    public function getLimitedItems()
+    {
+        return $this->hasMany(Item::className(), ['id' => 'item_id'])
+            ->onCondition(['item.id' => [3, 5]])
+            ->via('orderItems');
+    }
+
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
             $this->created_at = time();
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function attributeLabels()
@@ -200,7 +212,7 @@ class Order extends ActiveRecord
     public function activeAttributes()
     {
         return [
-            0 => 'customer_id'
+            0 => 'customer_id',
         ];
     }
 }

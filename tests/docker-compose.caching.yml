@@ -1,0 +1,13 @@
+version: '2'
+services:
+
+  php:
+    depends_on:
+      - redis
+      - memcached
+
+  redis:
+    image: redis
+
+  memcached:
+    image: memcached

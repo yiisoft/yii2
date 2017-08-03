@@ -1,8 +1,12 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\mssql;
 
-use yii\db\mssql\Schema;
 use yii\db\Query;
 
 /**
@@ -12,6 +16,14 @@ use yii\db\Query;
 class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 {
     public $driverName = 'sqlsrv';
+
+    protected $likeParameterReplacements = [
+        '\%' => '[%]',
+        '\_' => '[_]',
+        '[' => '[[]',
+        ']' => '[]]',
+        '\\\\' => '[\\]',
+    ];
 
     public function testOffsetLimit()
     {
@@ -88,5 +100,29 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     public function columnTypes()
     {
         return array_merge(parent::columnTypes(), []);
+    }
+
+    public function batchInsertProvider()
+    {
+        $data = parent::batchInsertProvider();
+
+        $data['escape-danger-chars']['expected'] = 'INSERT INTO [customer] ([address]) VALUES ("SQL-danger chars are escaped: \'); --")';
+        $data['bool-false, bool2-null']['expected'] = 'INSERT INTO [type] ([bool_col], [bool_col2]) VALUES (FALSE, NULL)';
+        $data['bool-false, time-now()']['expected'] = 'INSERT INTO {{%type}} ({{%type}}.[[bool_col]], [[time]]) VALUES (FALSE, now())';
+
+        return $data;
+    }
+
+    public function testResetSequence()
+    {
+        $qb = $this->getQueryBuilder();
+
+        $expected = "DBCC CHECKIDENT ('[item]', RESEED, (SELECT COALESCE(MAX([id]),0) FROM [item])+1)";
+        $sql = $qb->resetSequence('item');
+        $this->assertEquals($expected, $sql);
+
+        $expected = "DBCC CHECKIDENT ('[item], RESEED, 4)";
+        $sql = $qb->resetSequence('item', 4);
+        $this->assertEquals($expected, $sql);
     }
 }

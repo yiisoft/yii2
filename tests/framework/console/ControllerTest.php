@@ -9,7 +9,6 @@ namespace yiiunit\framework\console;
 
 use Yii;
 use yii\base\Module;
-use yii\console\controllers\HelpController;
 use yii\console\Request;
 use yiiunit\TestCase;
 
@@ -61,7 +60,8 @@ class ControllerTest extends TestCase
 
         $params = ['avaliable'];
         $message = Yii::t('yii', 'Missing required arguments: {params}', ['params' => implode(', ', ['missing'])]);
-        $this->setExpectedException('yii\console\Exception', $message);
+        $this->expectException('yii\console\Exception');
+        $this->expectExceptionMessage($message);
         $result = $controller->runAction('aksi3', $params);
     }
 
@@ -85,13 +85,13 @@ class ControllerTest extends TestCase
         $response = $this->runRequest('fake/status');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/status', (string)$status);
+        $response = $this->runRequest('fake/status', (string) $status);
         $this->assertResponseStatus($status, $response);
 
         $response = $this->runRequest('fake/response');
         $this->assertResponseStatus(0, $response);
 
-        $response = $this->runRequest('fake/response', (string)$status);
+        $response = $this->runRequest('fake/response', (string) $status);
         $this->assertResponseStatus($status, $response);
     }
 
@@ -131,5 +131,19 @@ class ControllerTest extends TestCase
 
         $this->assertFalse(FakeController::getWasActionIndexCalled());
         $this->assertEquals(FakeHelpController::getActionIndexLastCallParams(), ['news/posts/index']);
+    }
+
+
+    /**
+     * Tests if action help does not include (class) type hinted arguments.
+     * @see #10372
+     */
+    public function testHelpSkipsTypeHintedArguments()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+        $help = $controller->getActionArgsHelp($controller->createAction('with-complex-type-hint'));
+
+        $this->assertArrayNotHasKey('typedArgument', $help);
+        $this->assertArrayHasKey('simpleArgument', $help);
     }
 }

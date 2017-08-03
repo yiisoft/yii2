@@ -97,6 +97,15 @@ class Pjax extends Widget
      * [pjax project page](https://github.com/yiisoft/jquery-pjax) for available options.
      */
     public $clientOptions;
+    /**
+     * @inheritdoc
+     * @internal
+     */
+    public static $counter = 0;
+    /**
+     * @inheritdoc
+     */
+    public static $autoIdPrefix = 'p';
 
 
     /**
@@ -162,6 +171,7 @@ class Pjax extends Widget
         $response->setStatusCode(200);
         $response->format = Response::FORMAT_HTML;
         $response->content = $content;
+        $response->headers->setDefault('X-Pjax-Url', Yii::$app->request->url);
         $response->send();
 
         Yii::$app->end();

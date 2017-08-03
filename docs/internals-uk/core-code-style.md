@@ -7,8 +7,7 @@
 
 Ви можете отримати конфігурацію для CodeSniffer за посиланням: https://github.com/yiisoft/yii2-coding-standards
 
-1. Загальні положення
----------------------
+## 1. Загальні положення
 
 В основному командою розробників використовується стиль сумісний з [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md),
 тому все, що стосується
@@ -25,8 +24,7 @@
 - Імена приватних властивостей ПОВИННІ починатись з підкреслення.
 - Завжди використовуйте `elseif` замість `else if`.
 
-2. Файли
---------
+## 2. Файли
 
 ### 2.1. Теги PHP
 
@@ -39,13 +37,11 @@
 
 PHP код ПОВИНЕН використовувати лише UTF-8 без BOM.
 
-3. Імена класів
----------------
+## 3. Імена класів
 
 Імена класів ПОВИННІ оголошуватись як `StudlyCaps`. Наприклад: `Controller`, `Model`.
 
-4. Класи
---------
+## 4. Класи
 
 Тут термін "клас" відноситься до всіх класів та інтерфейсів.
 
@@ -61,7 +57,7 @@ PHP код ПОВИНЕН використовувати лише UTF-8 без B
 /**
  * Документація
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // код
 }
@@ -341,7 +337,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 - Усі файли класів повинні містити файловий ("file-level") doc-блок на початку
   та класовий ("class-level") doc-блок безпосередньо над кожним класом.
 - Нема потреби використовувати `@return`, якщо метод нічого не повертає.
-- Усі віртуальні властивості у класах успадкованих від `yii\base\Object`
+- Усі віртуальні властивості у класах успадкованих від `yii\base\BaseObject`
   документуються з тегом `@property` у класовому doc-блоці.
   Ці анотації генеруються автоматично із тегів `@return` чи `@param`
   відповідних геттерів або сеттерів виконанням команди `./build php-doc` у директорії build.
@@ -386,7 +382,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 

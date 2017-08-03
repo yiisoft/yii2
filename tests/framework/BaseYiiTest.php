@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework;
 
 use Yii;
@@ -62,7 +68,7 @@ class BaseYiiTest extends TestCase
 
     public function testPowered()
     {
-        $this->assertTrue(is_string(Yii::powered()));
+        $this->assertInternalType('string', Yii::powered());
     }
 
     public function testCreateObjectCallable()
@@ -70,19 +76,19 @@ class BaseYiiTest extends TestCase
         Yii::$container = new Container();
 
         // Test passing in of normal params combined with DI params.
-        $this->assertTrue(Yii::createObject(function(Singer $singer, $a) {
+        $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
             return $a === 'a';
         }, ['a']));
 
 
         $singer = new Singer();
         $singer->firstName = 'Bob';
-        $this->assertTrue(Yii::createObject(function(Singer $singer, $a) {
+        $this->assertTrue(Yii::createObject(function (Singer $singer, $a) {
             return $singer->firstName === 'Bob';
         }, [$singer, 'a']));
 
 
-        $this->assertTrue(Yii::createObject(function(Singer $singer, $a = 3) {
+        $this->assertTrue(Yii::createObject(function (Singer $singer, $a = 3) {
             return true;
         }));
     }
@@ -100,7 +106,7 @@ class BaseYiiTest extends TestCase
 
         BaseYii::setLogger(null);
         $defaultLogger = BaseYii::getLogger();
-        $this->assertTrue($defaultLogger instanceof Logger);
+        $this->assertInstanceOf(Logger::className(), $defaultLogger);
     }
 
     /**
@@ -113,7 +119,9 @@ class BaseYiiTest extends TestCase
      */
     public function testLog()
     {
-        $logger = $this->getMock('yii\\log\\Logger', ['log']);
+        $logger = $this->getMockBuilder('yii\\log\\Logger')
+            ->setMethods(['log'])
+            ->getMock();
         BaseYii::setLogger($logger);
 
         $logger->expects($this->exactly(6))
@@ -123,19 +131,19 @@ class BaseYiiTest extends TestCase
                 [
                     $this->equalTo('warning message'),
                     $this->equalTo(Logger::LEVEL_WARNING),
-                    $this->equalTo('warning category')
+                    $this->equalTo('warning category'),
                 ],
                 [$this->equalTo('trace message'), $this->equalTo(Logger::LEVEL_TRACE), $this->equalTo('trace category')],
                 [$this->equalTo('error message'), $this->equalTo(Logger::LEVEL_ERROR), $this->equalTo('error category')],
                 [
                     $this->equalTo('beginProfile message'),
                     $this->equalTo(Logger::LEVEL_PROFILE_BEGIN),
-                    $this->equalTo('beginProfile category')
+                    $this->equalTo('beginProfile category'),
                 ],
                 [
                     $this->equalTo('endProfile message'),
                     $this->equalTo(Logger::LEVEL_PROFILE_END),
-                    $this->equalTo('endProfile category')
+                    $this->equalTo('endProfile category'),
                 ]
             );
 

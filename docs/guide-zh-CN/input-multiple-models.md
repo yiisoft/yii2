@@ -1,35 +1,77 @@
 多模型的复合表单
 ==================================
 
-在复杂的用户界面可能会发生，用户在表单中填写数据
-后将其保存在数据库的不同表中。yii形式的表单与单模型表单相比
-可以让你用更加简单的方法来创建。
+当处理负载的数据时，可能会发生需要使用多个模型来收集用户的输入。例如，假设用户登录信息保存在`user`表中，但是用户详细信息却保存在`profile`表中，你也许会使用`User`模型和`Profile`模型来接受用户的输入。在Yii模型与表单的支持下，你可以非常方便用不同于单个模型的方式来解决该问题。
 
-与一个模型一样，你遵循以下模式用于服务端验证：
+接下来，我们会使用一个例子阐述如何创建一个表单，它允许你同时为`User`和`Profile`模型收集数据。
 
-1. 实例化模型类
-2. 用输入数据填充模型属性
-3. 验证所有模型
-4. 如果所有模型验证通过，则保存它们
-5. 如果验证失败或没有提交数据，传递所有模型对象到视图显示表单
+首先，控制user和profile接收数据的控制器如下：
 
-在下文中我们展示了一个在表单中使用多模型的例子... TBD
+```php
+namespace app\controllers;
 
-多模型实例
----------------
+use Yii;
+use yii\base\Model;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+use app\models\User;
+use app\models\Profile;
 
-> Note: This section is under development.
->
-> It has no content yet.
+class UserController extends Controller
+{
+    public function actionUpdate($id)
+    {
+        $user = User::findOne($id);
+        if (!$user) {
+            throw new NotFoundHttpException("The user was not found.");
+        }
+        
+        $profile = Profile::findOne($user->profile_id);
+        
+        if (!$profile) {
+            throw new NotFoundHttpException("The user has no profile.");
+        }
+        
+        $user->scenario = 'update';
+        $profile->scenario = 'update';
+        
+        if ($user->load(Yii::$app->request->post()) && $profile->load(Yii::$app->request->post())) {
+            $isValid = $user->validate();
+            $isValid = $profile->validate() && $isValid;
+            if ($isValid) {
+                $user->save(false);
+                $profile->save(false);
+                return $this->redirect(['user/view', 'id' => $id]);
+            }
+        }
+        
+        return $this->render('update', [
+            'user' => $user,
+            'profile' => $profile,
+        ]);
+    }
+}
+```
 
-TBD
+在`update`动作中，我们首先加载`$user`和`$profile`模型并设置他们为更新模式。然后我们使用[[yii\base\Model::load()]]方法将用户输入的数据填充到模型中。如果数据顺利填充了，我们会验证这两个模型之后在保存它们。但是，请注意我们使用了`save(false)`来避免验证通过的数据在模型中被重复验证。如果填充不成功，我们将会显示下面的`update`视图：
 
-Dependend models
-----------------
+```php
+<?php
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
+$form = ActiveForm::begin([
+    'id' => 'user-update-form',
+    'options' => ['class' => 'form-horizontal'],
+]) ?>
+    <?= $form->field($user, 'username') ?>
 
-> Note: This section is under development.
->
-> It has no content yet.
+    ...other input fields...
+    
+    <?= $form->field($profile, 'website') ?>
 
-TBD
+    <?= Html::submitButton('Update', ['class' => 'btn btn-primary']) ?>
+<?php ActiveForm::end() ?>
+```
+
+如上，在`update`视图中你需要给予输入框两个模型`$user`和`$profile`。

@@ -38,7 +38,7 @@ abstract class ErrorHandler extends Component
      */
     public $memoryReserveSize = 262144;
     /**
-     * @var \Exception the exception that is being handled currently.
+     * @var \Exception|null the exception that is being handled currently.
      */
     public $exception;
 
@@ -133,7 +133,8 @@ abstract class ErrorHandler extends Component
      * @param \Exception $previousException Main exception processed in [[handleException()]].
      * @since 2.0.11
      */
-    protected function handleFallbackExceptionMessage($exception, $previousException) {
+    protected function handleFallbackExceptionMessage($exception, $previousException)
+    {
         $msg = "An Error occurred while handling another error:\n";
         $msg .= (string) $exception;
         $msg .= "\nPrevious exception:\n";
@@ -206,7 +207,7 @@ abstract class ErrorHandler extends Component
             // load ErrorException manually here because autoloading them will not work
             // when error occurs while autoloading a class
             if (!class_exists('yii\\base\\ErrorException', false)) {
-                require_once(__DIR__ . '/ErrorException.php');
+                require_once __DIR__ . '/ErrorException.php';
             }
             $exception = new ErrorException($message, $code, $code, $file, $line);
 
@@ -238,7 +239,7 @@ abstract class ErrorHandler extends Component
         // load ErrorException manually here because autoloading them will not work
         // when error occurs while autoloading a class
         if (!class_exists('yii\\base\\ErrorException', false)) {
-            require_once(__DIR__ . '/ErrorException.php');
+            require_once __DIR__ . '/ErrorException.php';
         }
 
         $error = error_get_last();
@@ -316,7 +317,7 @@ abstract class ErrorHandler extends Component
 
     /**
      * Converts an exception into a simple string.
-     * @param \Exception $exception the exception being converted
+     * @param \Exception|\Error $exception the exception being converted
      * @return string the string representation of the exception.
      */
     public static function convertExceptionToString($exception)
