@@ -386,14 +386,14 @@ Say we work on API application and have:
   ```php
   class FileStorage
   {
-      public function __contruct($root) {
+      public function __construct($root) {
           // whatever
       }
   }
   
   class DocumentsReader
   {
-      public function __contruct(FileStorage $fs) {
+      public function __construct(FileStorage $fs) {
           // whatever
       }
   }
