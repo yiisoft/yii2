@@ -161,39 +161,39 @@ class DataFilter extends Model
      *
      * > Note: while specifying filter controls keep in mind actual data exchange format, which your API uses.
      *   Make sure each specified control keyword to be valid for this format. For example: in XML tag name can start
-     *   only from letter character, thus controls like `>` or `$gt` will break the XML schema.
+     *   only from letter character, thus controls like `>`, '=' or `$gt` will break the XML schema.
      */
     public $filterControls = [
-        'and' => 'and',
-        'or' => 'or',
-        'not' => 'not',
+        'and' => 'AND',
+        'or' => 'OR',
+        'not' => 'NOT',
         'lt' => '<',
         'gt' => '>',
         'lte' => '<=',
         'gte' => '>=',
         'eq' => '=',
         'neq' => '!=',
-        'in' => 'in',
-        'nin' => 'not in',
-        'like' => 'like',
+        'in' => 'IN',
+        'nin' => 'NOT IN',
+        'like' => 'LIKE',
     ];
     /**
      * @var array map of filter condition keywords to validation methods.
      * These methods are used by [[validateCondition()]] to validate raw filter conditions.
      */
     public $conditionValidators = [
-        'and' => 'validateConjunctionCondition',
-        'or' => 'validateConjunctionCondition',
-        'not' => 'validateBlockCondition',
+        'AND' => 'validateConjunctionCondition',
+        'OR' => 'validateConjunctionCondition',
+        'NOT' => 'validateBlockCondition',
         '<' => 'validateOperatorCondition',
         '>' => 'validateOperatorCondition',
         '<=' => 'validateOperatorCondition',
         '>=' => 'validateOperatorCondition',
         '=' => 'validateOperatorCondition',
         '!=' => 'validateOperatorCondition',
-        'in' => 'validateOperatorCondition',
-        'not in' => 'validateOperatorCondition',
-        'like' => 'validateOperatorCondition',
+        'IN' => 'validateOperatorCondition',
+        'NOT IN' => 'validateOperatorCondition',
+        'LIKE' => 'validateOperatorCondition',
     ];
     /**
      * @var array specifies the list of supported search attribute type per each operator.
@@ -208,16 +208,16 @@ class DataFilter extends Model
         '>=' => [self::TYPE_INTEGER, self::TYPE_FLOAT],
         '=' => '*',
         '!=' => '*',
-        'in' => '*',
-        'not in' => '*',
-        'like' => [self::TYPE_STRING],
+        'IN' => '*',
+        'NOT IN' => '*',
+        'LIKE' => [self::TYPE_STRING],
     ];
     /**
      * @var array list of operators keywords, which should accept multiple values.
      */
     public $multiValueOperators = [
-        'in',
-        'not in',
+        'IN',
+        'NOT IN',
     ];
     /**
      * @var array list of error messages responding to invalid filter structure, in format: messageKey => messageContent.

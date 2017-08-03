@@ -22,37 +22,34 @@ class ActiveDataFilter extends DataFilter
      * These methods are used by [[buildCondition()]] to build the actual filter conditions.
      */
     public $conditionBuilders = [
-        'and' => 'buildConjunctionCondition',
-        'or' => 'buildConjunctionCondition',
-        'not' => 'buildBlockCondition',
+        'AND' => 'buildConjunctionCondition',
+        'OR' => 'buildConjunctionCondition',
+        'NOT' => 'buildBlockCondition',
         '<' => 'buildOperatorCondition',
         '>' => 'buildOperatorCondition',
         '<=' => 'buildOperatorCondition',
         '>=' => 'buildOperatorCondition',
         '=' => 'buildOperatorCondition',
         '!=' => 'buildOperatorCondition',
-        'in' => 'buildOperatorCondition',
-        'not in' => 'buildOperatorCondition',
-        'like' => 'buildOperatorCondition',
+        'IN' => 'buildOperatorCondition',
+        'NOT IN' => 'buildOperatorCondition',
+        'LIKE' => 'buildOperatorCondition',
     ];
     /**
      * @var array a map from filter operators to the ones use in [[\yii\db\QueryInterface::where()]],
-     * in format: `[filterOperator => queryOperator]`
+     * in format: `[filterOperator => queryOperator]`.
+     * If particular operator keyword does not appear in the map, it will be used as it is.
+     * Thus in general this field can be left empty as filter operator names are consistent with the ones
+     * used at [[\yii\db\QueryInterface::where()]]. However, you may want to adjust it in some special cases.
+     * For example: using PosgreSQL you may want to setup the following map:
+     *
+     * ```php
+     * [
+     *     'LIKE' => 'ILIKE'
+     * ]
+     * ```
      */
-    public $queryOperatorMap = [
-        'and' => 'AND',
-        'or' => 'OR',
-        'not' => 'NOT',
-        '<' => '<',
-        '>' => '>',
-        '<=' => '<=',
-        '>=' => '>=',
-        '=' => '=',
-        '!=' => '!=',
-        'in' => 'IN',
-        'not in' => 'NOT IN',
-        'like' => 'LIKE',
-    ];
+    public $queryOperatorMap = [];
 
 
     /**
@@ -97,14 +94,17 @@ class ActiveDataFilter extends DataFilter
 
     /**
      * Builds conjunction condition, which consist of multiple independent ones.
-     * This covers such operators like `$and` and `$or`.
+     * This covers such operators like `and` and `or`.
      * @param string $operator operator keyword.
      * @param mixed $condition raw condition.
      * @return array actual condition.
      */
     protected function buildConjunctionCondition($operator, $condition)
     {
-        $result = [$this->queryOperatorMap[$operator]];
+        if (isset($this->queryOperatorMap[$operator])) {
+            $operator = $this->queryOperatorMap[$operator];
+        }
+        $result = [$operator];
 
         foreach ($condition as $part) {
             $result[] = $this->buildCondition($part);
@@ -115,15 +115,18 @@ class ActiveDataFilter extends DataFilter
 
     /**
      * Builds block condition, which consist of single condition.
-     * This covers such operators like `$not`.
+     * This covers such operators like `not`.
      * @param string $operator operator keyword.
      * @param mixed $condition raw condition.
      * @return array actual condition.
      */
     protected function buildBlockCondition($operator, $condition)
     {
+        if (isset($this->queryOperatorMap[$operator])) {
+            $operator = $this->queryOperatorMap[$operator];
+        }
         return [
-            $this->queryOperatorMap[$operator],
+            $operator,
             $this->buildCondition($condition)
         ];
     }
@@ -164,6 +167,9 @@ class ActiveDataFilter extends DataFilter
      */
     protected function buildOperatorCondition($operator, $condition, $attribute)
     {
-        return [$this->queryOperatorMap[$operator], $attribute, $this->filterAttributeValue($attribute, $condition)];
+        if (isset($this->queryOperatorMap[$operator])) {
+            $operator = $this->queryOperatorMap[$operator];
+        }
+        return [$operator, $attribute, $this->filterAttributeValue($attribute, $condition)];
     }
 }
