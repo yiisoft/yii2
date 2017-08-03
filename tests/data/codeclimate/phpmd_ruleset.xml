@@ -27,6 +27,7 @@
         <exclude name="StaticAccess" />
     </rule>
 
+    <rule ref="rulesets/controversial.xml/Superglobals" />
     <rule ref="rulesets/controversial.xml/CamelCaseClassName" />
     <rule ref="rulesets/controversial.xml/CamelCaseMethodName" />
     <rule ref="rulesets/controversial.xml/CamelCaseParameterName" />
