@@ -220,6 +220,19 @@ class DataFilter extends Model
         'NOT IN',
     ];
     /**
+     * @var array actual attribute names to be used in searched condition, in format: [filterAttribute => actualAttribute].
+     * For example, in case of using table joins in the search query, attribute map may look like following:
+     *
+     * ```php
+     * [
+     *     'authorName' => '{{author}}.[[name]]'
+     * ]
+     * ```
+     *
+     * Attribute map will be applied to filter condition at [[normalize()]].
+     */
+    public $attributeMap = [];
+    /**
      * @var array list of error messages responding to invalid filter structure, in format: messageKey => messageContent.
      * Message may contain placeholders, which will be populated depending on message context.
      * For each message placeholder `{filter}` is available referring to the label for [[filterAttributeName]] attribute.
@@ -630,7 +643,7 @@ class DataFilter extends Model
     }
 
     /**
-     * Normalizes filter value, replacing raw controls by internal keys according to [[filterControls]].
+     * Normalizes filter value, replacing raw keys according to [[filterControls]] and [[attributeMap]].
      * @param bool $runValidation whether to perform validation (calling [[validate()]])
      * before normalizing the filter. Defaults to `true`. If the validation fails, no filter will
      * be processed and this method will return `false`.
@@ -661,6 +674,8 @@ class DataFilter extends Model
         foreach ($filter as $key => $value) {
             if (isset($this->filterControls[$key])) {
                 $key = $this->filterControls[$key];
+            } elseif (isset($this->attributeMap[$key])) {
+                $key = $this->attributeMap[$key];
             }
             if (is_array($value)) {
                 $result[$key] = $this->normalizeComplexFilter($value);

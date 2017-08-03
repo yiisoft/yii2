@@ -276,7 +276,7 @@ class DataFilterTest extends TestCase
                     ],
                 ],
                 [
-                    'and' => [
+                    'AND' => [
                         [
                             'name' => ['=' => 'foo']
                         ],
@@ -284,6 +284,16 @@ class DataFilterTest extends TestCase
                             'number' => ['>=' => 15]
                         ],
                     ],
+                ],
+            ],
+            [
+                [
+                    'authorName' => 'John',
+                    'number' => '10',
+                ],
+                [
+                    '{{author}}.[[name]]' => 'John',
+                    'number' => '10',
                 ],
             ],
         ];
@@ -307,6 +317,9 @@ class DataFilterTest extends TestCase
             ->addRule('tags', 'each', ['rule' => ['string']]);
 
         $builder->setSearchModel($searchModel);
+        $builder->attributeMap = [
+            'authorName' => '{{author}}.[[name]]'
+        ];
 
         $builder->filter = $filter;
         $this->assertEquals($expectedResult, $builder->normalize(false));
