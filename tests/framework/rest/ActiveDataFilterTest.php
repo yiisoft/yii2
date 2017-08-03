@@ -114,7 +114,20 @@ class ActiveDataFilterTest extends TestCase
                             ['<', 'price', 10],
                         ],
                     ],
-                ]
+                ],
+                [
+                    [
+                        'price' => [
+                            'gt' => 0,
+                            'lt' => 10,
+                        ],
+                    ],
+                    [
+                        'AND',
+                        ['>', 'price', 0],
+                        ['<', 'price', 10],
+                    ],
+                ],
             ],
         ];
     }
@@ -138,6 +151,49 @@ class ActiveDataFilterTest extends TestCase
         $builder->setSearchModel($searchModel);
 
         $builder->filter = $filter;
+        $this->assertEquals($expectedResult, $builder->build());
+    }
+
+    /**
+     * @depends testBuild
+     */
+    public function testBuildCallback()
+    {
+        $builder = new ActiveDataFilter();
+        $searchModel = (new DynamicModel(['name' => null]))
+            ->addRule('name', 'trim')
+            ->addRule('name', 'string');
+
+        $builder->setSearchModel($searchModel);
+
+        $builder->conditionBuilders['OR'] = function ($operator, $condition) {
+            return ['CALLBACK-OR', $condition];
+        };
+        $builder->conditionBuilders['LIKE'] = function ($operator, $condition, $attribute) {
+            return ['CALLBACK-LIKE', $operator, $condition, $attribute];
+        };
+
+        $builder->filter = [
+            'or' => [
+                ['name' => 'some'],
+                ['name' => 'another'],
+            ]
+        ];
+        $expectedResult = [
+            'CALLBACK-OR',
+            [
+                ['name' => 'some'],
+                ['name' => 'another'],
+            ],
+        ];
+        $this->assertEquals($expectedResult, $builder->build());
+
+        $builder->filter = [
+            'name' => [
+                'like' => 'foo'
+            ],
+        ];
+        $expectedResult = ['CALLBACK-LIKE', 'LIKE', 'foo', 'name'];
         $this->assertEquals($expectedResult, $builder->build());
     }
 }

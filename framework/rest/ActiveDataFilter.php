@@ -20,6 +20,18 @@ class ActiveDataFilter extends DataFilter
     /**
      * @var array map of filter condition keywords to build methods.
      * These methods are used by [[buildCondition()]] to build the actual filter conditions.
+     * Particular condition builder can be specified using a PHP callback. For example:
+     *
+     * ```php
+     * [
+     *     'XOR' => function (string $operator, mixed $condition) {
+     *         //return array;
+     *     },
+     *     'LIKE' => function (string $operator, mixed $condition, string $attribute) {
+     *         //return array;
+     *     },
+     * ]
+     * ```
      */
     public $conditionBuilders = [
         'AND' => 'buildConjunctionCondition',
@@ -75,10 +87,15 @@ class ActiveDataFilter extends DataFilter
         foreach ($condition as $key => $value) {
             if (isset($this->conditionBuilders[$key])) {
                 $method = $this->conditionBuilders[$key];
+                if (is_string($method)) {
+                    $callback = [$this, $method];
+                } else {
+                    $callback = $method;
+                }
             } else {
-                $method = 'buildAttributeCondition';
+                $callback = [$this, 'buildAttributeCondition'];
             }
-            $parts[] = $this->$method($key, $value);
+            $parts[] = call_user_func($callback, $key, $value);
         }
 
         if (!empty($parts)) {
@@ -143,7 +160,17 @@ class ActiveDataFilter extends DataFilter
             $parts = [];
             foreach ($condition as $operator => $value) {
                 if (isset($this->operatorTypes[$operator])) {
-                    $parts[] = $this->buildOperatorCondition($operator, $value, $attribute);
+                    if (isset($this->conditionBuilders[$operator])) {
+                        $method = $this->conditionBuilders[$operator];
+                        if (is_string($method)) {
+                            $callback = [$this, $method];
+                        } else {
+                            $callback = $method;
+                        }
+                        $parts[] = call_user_func($callback, $operator, $value, $attribute);
+                    } else {
+                        $parts[] = $this->buildOperatorCondition($operator, $value, $attribute);
+                    }
                 }
             }
 
