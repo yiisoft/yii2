@@ -324,4 +324,25 @@ class DataFilterTest extends TestCase
         $builder->filter = $filter;
         $this->assertEquals($expectedResult, $builder->normalize(false));
     }
+
+    public function testSetupErrorMessages()
+    {
+        $builder = new DataFilter();
+        $builder->setErrorMessages([
+            'unsupportedOperatorType' => 'Test message'
+        ]);
+
+        $errorMessages = $builder->getErrorMessages();
+        $this->assertEquals('Test message', $errorMessages['unsupportedOperatorType']);
+        $this->assertTrue(isset($errorMessages['unknownAttribute']));
+
+        $builder->setErrorMessages(function () {
+            return [
+                'unsupportedOperatorType' => 'Test message callback'
+            ];
+        });
+        $errorMessages = $builder->getErrorMessages();
+        $this->assertEquals('Test message callback', $errorMessages['unsupportedOperatorType']);
+        $this->assertTrue(isset($errorMessages['unknownAttribute']));
+    }
 }

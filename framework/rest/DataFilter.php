@@ -115,6 +115,8 @@ use yii\validators\StringValidator;
  * @property mixed $filter filter value.
  * @property Model $searchModel model to be used for filter attributes validation.
  * @property array $searchAttributeTypes search attribute type map.
+ * @property array $errorMessages list of error messages responding to invalid filter structure,
+ * in format: `[errorKey => message]`. Please refer to [[setErrorMessages()]] for details.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.13
@@ -232,12 +234,11 @@ class DataFilter extends Model
      * Attribute map will be applied to filter condition at [[normalize()]].
      */
     public $attributeMap = [];
+
     /**
-     * @var array list of error messages responding to invalid filter structure, in format: messageKey => messageContent.
-     * Message may contain placeholders, which will be populated depending on message context.
-     * For each message placeholder `{filter}` is available referring to the label for [[filterAttributeName]] attribute.
+     * @var array list of error messages responding to invalid filter structure, in format: `[errorKey => message]`.
      */
-    public $errorMessages = [
+    private $_errorMessages = [
         'invalidFilter' => 'The format of {filter} is invalid.',
         'operatorRequireMultipleOperands' => "Operator '{operator}' requires multiple operands.",
         'unknownAttribute' => "Unknown filter attribute '{attribute}'",
@@ -245,7 +246,6 @@ class DataFilter extends Model
         'operatorRequireAttribute' => "Operator '{operator}' must be used with search attribute.",
         'unsupportedOperatorType' => "'{attribute}' does not support operator '{operator}'.",
     ];
-
     /**
      * @var mixed raw filter specification.
      */
@@ -360,6 +360,54 @@ class DataFilter extends Model
     }
 
     /**
+     * @return array error messages in format `[errorKey => message]`.
+     */
+    public function getErrorMessages()
+    {
+        if (!is_array($this->_errorMessages)) {
+            if ($this->_errorMessages === null) {
+                $this->_errorMessages = $this->defaultErrorMessages();
+            } else {
+                $this->_errorMessages = array_merge(
+                    $this->defaultErrorMessages(),
+                    call_user_func($this->_errorMessages)
+                );
+            }
+        }
+        return $this->_errorMessages;
+    }
+
+    /**
+     * Sets the list of error messages responding to invalid filter structure, in format: `[errorKey => message]`.
+     * Message may contain placeholders, which will be populated depending on message context.
+     * For each message placeholder `{filter}` is available referring to the label for [[filterAttributeName]] attribute.
+     * @param array|\Closure $errorMessages error messages in format `[errorKey => message]`, or PHP callback returning them.
+     */
+    public function setErrorMessages($errorMessages)
+    {
+        if (is_array($errorMessages)) {
+            $errorMessages = array_merge($this->defaultErrorMessages(), $errorMessages);
+        }
+        $this->_errorMessages = $errorMessages;
+    }
+
+    /**
+     * Returns default values for [[errorMessages]].
+     * @return array default error messages in format `[errorKey => message]`.
+     */
+    protected function defaultErrorMessages()
+    {
+        return [
+            'invalidFilter' => Yii::t('yii-rest', 'The format of {filter} is invalid.'),
+            'operatorRequireMultipleOperands' => Yii::t('yii-rest', "Operator '{operator}' requires multiple operands."),
+            'unknownAttribute' => Yii::t('yii-rest', "Unknown filter attribute '{attribute}'"),
+            'invalidAttributeValueFormat' => Yii::t('yii-rest', "Condition for '{attribute}' should be either a value or valid operator specification."),
+            'operatorRequireAttribute' => Yii::t('yii-rest', "Operator '{operator}' must be used with search attribute."),
+            'unsupportedOperatorType' => Yii::t('yii-rest', "'{attribute}' does not support operator '{operator}'."),
+        ];
+    }
+
+    /**
      * Parses content of the message from [[errorMessages]], specified by message key.
      * @param string $messageKey message key.
      * @param array $params params to be parsed into the message.
@@ -367,10 +415,11 @@ class DataFilter extends Model
      */
     protected function parseErrorMessage($messageKey, $params = [])
     {
-        if (isset($this->errorMessages[$messageKey])) {
-            $message = $this->errorMessages[$messageKey];
+        $messages = $this->getErrorMessages();
+        if (isset($messages[$messageKey])) {
+            $message = $messages[$messageKey];
         } else {
-            $message = 'The format of {filter} is invalid.';
+            $message = Yii::t('yii-rest', 'The format of {filter} is invalid.');
         }
 
         $params = array_merge(
