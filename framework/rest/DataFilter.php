@@ -115,7 +115,7 @@ use yii\validators\StringValidator;
  * @property array $searchAttributeTypes search attribute type map.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.0.10
+ * @since 2.0.13
  */
 class DataFilter extends Model
 {

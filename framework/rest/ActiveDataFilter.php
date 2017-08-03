@@ -13,13 +13,13 @@ namespace yii\rest;
  * @see DataFilter
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
- * @since 2.0.10
+ * @since 2.0.13
  */
 class ActiveDataFilter extends DataFilter
 {
     /**
      * @var array map of filter condition keywords to build methods.
-     * These methods are used by [[buildCondition]] to build the actual filter conditions.
+     * These methods are used by [[buildCondition()]] to build the actual filter conditions.
      */
     public $conditionBuilders = [
         '$and' => 'buildConjunctionCondition',
@@ -35,7 +35,8 @@ class ActiveDataFilter extends DataFilter
         '$nin' => 'buildOperatorCondition',
     ];
     /**
-     * @var array
+     * @var array a map from filter operators to the ones use in [[\yii\db\QueryInterface::where()]],
+     * in format: `[filterOperator => queryOperator]`
      */
     public $operatorMap = [
         '$and' => 'AND',
@@ -50,6 +51,7 @@ class ActiveDataFilter extends DataFilter
         '$in' => 'IN',
         '$nin' => 'NOT IN',
     ];
+
 
     /**
      * @inheritdoc
