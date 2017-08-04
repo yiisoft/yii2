@@ -269,6 +269,32 @@ in the `admin` module which is a child module of the `forum` module.
 to its parent. The [[yii\base\Application::loadedModules]] property keeps a list of loaded modules, including both
 direct children and nested ones, indexed by their class names.
 
+## Accessing components from within your module.
+Since 2.0.13 modules support [tree traversal](guide:concept-service-locator#Tree traversal). This allows module 
+developers to reference (application) components via the service locator that is their module.
+This means that it is preferable to use `$module->get('db')` over `\Yii::$app->get('db')`.
+The user of your module is able to specify a specific module to be used for your module in case a different component
+(configuration) is required.
+For example consider this:
+````
+[
+    'components' => [
+        'db' => [
+            'prefix' => 'main_'
+        ]
+    ],
+    'modules' => [
+        'mymodule' => [
+            'components' => [
+                'db' => [
+                    'prefix' => 'module_'                
+                
+                ]
+            ]
+        ]
+    ]
+]
+````
 
 ## Best Practices <span id="best-practices"></span>
 
