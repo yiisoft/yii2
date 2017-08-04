@@ -171,9 +171,9 @@ class HttpCache extends ActionFilter
             return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
         } elseif (Yii::$app->request->headers->has('If-Modified-Since')) {
             return $lastModified !== null && @strtotime(Yii::$app->request->headers->get('If-Modified-Since')) >= $lastModified;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**

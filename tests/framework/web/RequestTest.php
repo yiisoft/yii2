@@ -504,4 +504,14 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
+    public function testGetOrigin()
+    {
+        $_SERVER['HTTP_ORIGIN'] = 'https://www.w3.org';
+        $request = new Request();
+        $this->assertEquals('https://www.w3.org', $request->getOrigin());
+
+        unset($_SERVER['HTTP_ORIGIN']);
+        $request = new Request();
+        $this->assertEquals(null, $request->getOrigin());
+    }
 }

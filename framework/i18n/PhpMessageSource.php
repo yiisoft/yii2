@@ -80,7 +80,7 @@ class PhpMessageSource extends MessageSource
             $messages = $this->loadFallbackMessages($category, $this->sourceLanguage, $messages, $messageFile);
         } else {
             if ($messages === null) {
-                Yii::error("The message file for category '$category' does not exist: $messageFile", __METHOD__);
+                Yii::warning("The message file for category '$category' does not exist: $messageFile", __METHOD__);
             }
         }
 
@@ -153,14 +153,14 @@ class PhpMessageSource extends MessageSource
     protected function loadMessagesFromFile($messageFile)
     {
         if (is_file($messageFile)) {
-            $messages = include($messageFile);
+            $messages = include $messageFile;
             if (!is_array($messages)) {
                 $messages = [];
             }
 
             return $messages;
-        } else {
-            return null;
         }
+
+        return null;
     }
 }

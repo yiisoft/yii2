@@ -56,25 +56,25 @@ al autoloader de Yii.)
 Componentes y Objetos
 ----------------------
 
-Yii 2.0 parte la clase `CComponent` de 1.1 en dos clases: [[yii\base\Object]] y [[yii\base\Component]].
-La clase [[yii\base\Object|Object]] es una clase base que permite definir [propiedades de object](concept-properties.md)
-a través de getters y setters. La clase [[yii\base\Component|Component]] extiende de [[yii\base\Object|Object]] y soporta
+Yii 2.0 parte la clase `CComponent` de 1.1 en dos clases: [[yii\base\BaseObject]] y [[yii\base\Component]].
+La clase [[yii\base\BaseObject|BaseObject]] es una clase base que permite definir [propiedades de object](concept-properties.md)
+a través de getters y setters. La clase [[yii\base\Component|Component]] extiende de [[yii\base\BaseObject|BaseObject]] y soporta
 [eventos](concept-events.md) y [comportamientos](concept-behaviors.md).
 
 Si tu clase no necesita utilizar las características de eventos o comportamientos, puedes considerar usar
-[[yii\base\Object|Object]] como clase base. Esto es frecuente en el caso de que las clases que representan sean
+[[yii\base\BaseObject|BaseObject]] como clase base. Esto es frecuente en el caso de que las clases que representan sean
 estructuras de datos básicas.
 
 
 Configuración de objetos
 ------------------------
 
-La clase [[yii\base\Object|Object]] introduce una manera uniforme de configurar objetos. Cualquier clase descendiente
-de [[yii\base\Object|Object]] debería declarar su constructor (si fuera necesario) de la siguiente manera para que
+La clase [[yii\base\BaseObject|BaseObject]] introduce una manera uniforme de configurar objetos. Cualquier clase descendiente
+de [[yii\base\BaseObject|BaseObject]] debería declarar su constructor (si fuera necesario) de la siguiente manera para que
 puede ser adecuadamente configurado:
 
 ```php
-class MyClass extends \yii\base\Object
+class MyClass extends \yii\base\BaseObject
 {
     public function __construct($param1, $param2, $config = [])
     {
@@ -94,7 +94,7 @@ class MyClass extends \yii\base\Object
 
 En el ejemplo de arriba, el último parámetro del constructor debe tomar un array de configuración que
 contiene pares clave-valor para la inicialización de las propiedades al final del mismo.
-Puedes sobrescribir el método [[yii\base\Object::init()|init()]] para realizar el trabajo de inicialización
+Puedes sobrescribir el método [[yii\base\BaseObject::init()|init()]] para realizar el trabajo de inicialización
 que debe ser hecho después de que la configuración haya sido aplicada.
 
 Siguiendo esa convención, podrás crear y configurar nuevos objetos utilizando

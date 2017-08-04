@@ -127,9 +127,9 @@ class DbMessageSource extends MessageSource
             }
 
             return $messages;
-        } else {
-            return $this->loadMessagesFromDb($category, $language);
         }
+
+        return $this->loadMessagesFromDb($category, $language);
     }
 
     /**

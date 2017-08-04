@@ -7,7 +7,7 @@
 
 namespace yii\web;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * JsExpression marks a string as a JavaScript expression.
@@ -18,7 +18,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class JsExpression extends Object
+class JsExpression extends BaseObject
 {
     /**
      * @var string the JavaScript expression represented by this object

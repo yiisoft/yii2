@@ -71,10 +71,10 @@ It contains code like the following:
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -267,12 +267,21 @@ public function actionIndex()
 }
 ```
 
-There are some predefined constants you can use:
+There are some predefined constants you can use. These are defined in the [[yii\console\ExitCode]] class:
 
-- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] with value of `0`;
-- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] with value of `1`.
+```php
+public function actionIndex()
+{
+    if (/* some problem */) {
+        echo "A problem occurred!\n";
+        return ExitCode::UNSPECIFIED_ERROR;
+    }
+    // do something
+    return ExitCode::OK;
+}
+```
 
-It's a good practice to define meaningful constants for your controller in case you have more error code types.
+It's a good practice to define meaningful constants for your controller in case you have more specific error code types.
 
 ### Formatting and colors
 
