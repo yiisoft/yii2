@@ -48,10 +48,12 @@ Yii Framework 2 Change Log
 - Bug #14318: Trigger `yiiActiveForm.events.afterValidateAttribute` after updating attribute  (dmirogin)
 - Bug #14493: Fixed getting permissions in `yii\rbac\Dbmanger::getPermissionsByUser` by user with id equals 0 (dmirogin)
 - Bug #14370: Fixed creating built-in validator in model with same function name (dmirogin)
-- Bug #14492: Fixed error handler not escaping error info debug mode (samdark)
+- Bug #14492: Fixed error handler not escaping error info debug mode, see CVE-2017-11516 (samdark)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #14363: Added `yii\widgets\LinkPager::$linkContainerOptions` and possibility to override tag in `yii\widgets\LinkPager::$options` (dmirogin)
+- Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
+
 
 2.0.12 June 05, 2017
 --------------------
