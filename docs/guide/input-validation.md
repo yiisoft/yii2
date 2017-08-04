@@ -564,7 +564,7 @@ $this->addError('childrenCount', $message);
 Or use a loop:
 
 ```php
-$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+$attributes = ['personalSalary', 'wifeSalary', 'childrenCount'];
 foreach ($attributes as $attribute) {
     $this->addError($attribute, 'Your salary is not enough for children.');
 }
