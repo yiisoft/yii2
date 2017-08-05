@@ -1590,6 +1590,13 @@ class QueryBuilder extends \yii\base\BaseObject
         return "$column $operator $phName";
     }
 
+    private static $strictCompositComparison = [
+        '>' => '>',
+        '>=' => '>',
+        '<' => '<',
+        '<=' => '<',
+    ];
+
     /**
      * Create an SQL expression to compare composit key with its composit value.
      *
@@ -1612,23 +1619,10 @@ class QueryBuilder extends \yii\base\BaseObject
             throw new InvalidParamException("Composit key and value has different items count");
         }
 
-        switch ($operator) {
-            case '>':
-            case '<':
-                $strictOperator = $operator;
-                break;
-
-            case '>=':
-                $strictOperator = '>';
-                break;
-
-            case '<=':
-                $strictOperator = '<';
-                break;
-
-            default:
-                throw new InvalidParamException("Operator '$operator' is not supported for composit comparison");
+        if (!isset(self::$strictCompositComparison[$operator])) {
+            throw new InvalidParamException("Operator '$operator' is not supported for composit comparison");
         }
+        $strictOperator = self::$strictCompositComparison[$operator];
 
         if (isset($values[0])) {
             // assume it is simple ordered list of values
