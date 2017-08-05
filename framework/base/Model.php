@@ -54,9 +54,10 @@ use yii\validators\Validator;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Model extends Component implements ModelInterface, IteratorAggregate, ArrayAccess, Arrayable
+class Model extends Component implements StaticInstanceInterface, IteratorAggregate, ArrayAccess, Arrayable
 {
     use ArrayableTrait;
+    use StaticInstanceTrait;
 
     /**
      * The name of the default scenario.
@@ -73,11 +74,6 @@ class Model extends Component implements ModelInterface, IteratorAggregate, Arra
     const EVENT_AFTER_VALIDATE = 'afterValidate';
 
     /**
-     * @var static[] static models in format: `[className => model]`
-     * @since 2.0.13
-     */
-    private static $_models = [];
-    /**
      * @var array validation errors (attribute name => array of errors)
      */
     private $_errors;
@@ -90,19 +86,6 @@ class Model extends Component implements ModelInterface, IteratorAggregate, Arra
      */
     private $_scenario = self::SCENARIO_DEFAULT;
 
-
-    /**
-     * @inheritdoc
-     * @since 2.0.13
-     */
-    public static function model($refresh = false)
-    {
-        $className = get_called_class();
-        if ($refresh || !isset(self::$_models[$className])) {
-            self::$_models[$className] = Yii::createObject($className);
-        }
-        return self::$_models[$className];
-    }
 
     /**
      * Returns the validation rules for attributes.

@@ -179,7 +179,7 @@ trait ActiveRelationTrait
                 if (!isset($inverseRelation)) {
                     /* @var $modelClass ActiveRecordInterface */
                     $modelClass = $this->modelClass;
-                    $inverseRelation = $modelClass::model()->getRelation($this->inverseOf);
+                    $inverseRelation = $modelClass::instance()->getRelation($this->inverseOf);
                 }
                 $result[$i][$this->inverseOf] = $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel;
             }
@@ -305,7 +305,7 @@ trait ActiveRelationTrait
         } else {
             /* @var $modelClass ActiveRecordInterface */
             $modelClass = $this->modelClass;
-            $relation = $modelClass::model()->getRelation($name);
+            $relation = $modelClass::instance()->getRelation($name);
         }
 
         if ($relation->multiple) {

@@ -8,7 +8,6 @@
 namespace yii\db;
 
 use Yii;
-use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
@@ -1586,7 +1585,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     }
                     /* @var $modelClass ActiveRecordInterface */
                     $modelClass = $relation->modelClass;
-                    $relatedModel = $modelClass::model();
+                    $relatedModel = $modelClass::instance();
                 }
             }
 
@@ -1628,7 +1627,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                     }
                     /* @var $modelClass ActiveRecordInterface */
                     $modelClass = $relation->modelClass;
-                    $relatedModel = $modelClass::model();
+                    $relatedModel = $modelClass::instance();
                 }
             }
 

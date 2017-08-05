@@ -437,7 +437,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
 
         /* @var $modelClass ActiveRecordInterface */
         $modelClass = $this->modelClass;
-        $model = $modelClass::model();
+        $model = $modelClass::instance();
         foreach ($this->joinWith as $config) {
             list($with, $eagerLoading, $joinType) = $config;
             $this->joinWithRelations($model, $with, $joinType);
@@ -519,7 +519,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
                 /* @var $relationModelClass ActiveRecordInterface */
                 $relationModelClass = $relation->modelClass;
-                $primaryModel = $relationModelClass::model();
+                $primaryModel = $relationModelClass::instance();
                 $parent = $relation;
                 $prefix = $fullName;
                 $name = $childName;
