@@ -1,9 +1,16 @@
 数据库访问 (DAO)
 ========
 
-Yii 包含了一个建立在 PHP PDO 之上的数据访问层 (DAO). DAO为不同的数据库提供了一套统一的API. 其中```ActiveRecord``` 提供了数据库与模型(MVC 中的 M,Model) 的交互,```QueryBuilder``` 用于创建动态的查询语句. DAO提供了简单高效的SQL查询,可以用在与数据库交互的各个地方.
+Yii 包含了一个建立在 PHP PDO 之上的数据访问层 (DAO). DAO为不同的数据库提供了一套统一的API. 
+其中```ActiveRecord``` 提供了数据库与模型(MVC 中的 M,Model) 的交互,```QueryBuilder``` 用于创建动态的查询语句.
+DAO提供了简单高效的SQL查询,可以用在与数据库交互的各个地方.
+
+When using Yii DAO, you mainly need to deal with plain SQLs and PHP arrays. As a result, it is the most efficient 
+way to access databases. However, because SQL syntax may vary for different databases, using Yii DAO also means 
+you have to take extra effort to create a database-agnostic application.
 
 Yii 默认支持以下数据库 (DBMS):
+
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
