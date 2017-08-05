@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\test;
 
+use yii\db\Query;
 use yii\test\ActiveFixture;
 use yii\test\FixtureTrait;
 use yiiunit\data\ar\ActiveRecord;
@@ -27,8 +28,17 @@ class CustomerFixture extends ActiveFixture
     ];
 }
 
-class MyDbTestCase
+class OrderFixture extends ActiveFixture
 {
+    public $modelClass = 'yiiunit\data\ar\Order';
+
+    public $dataExtra = [
+        'order_item.php'
+    ];
+}
+
+class BaseDbTestCase {
+
     use FixtureTrait;
 
     public function setUp()
@@ -40,12 +50,28 @@ class MyDbTestCase
     {
     }
 
+}
+
+class MyDbTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'customers' => CustomerFixture::className()
+        ];
+    }
+}
+
+class ExtraDataTestCase extends BaseDbTestCase
+{
     public function fixtures()
     {
         return [
             'customers' => CustomerFixture::className(),
+            'orders' => OrderFixture::className()
         ];
     }
+
 }
 
 /**
@@ -102,6 +128,27 @@ class ActiveFixtureTest extends DatabaseTestCase
         $this->assertEquals(2, $fixture->getModel('customer2')->id);
         $this->assertEquals('customer2@example.com', $fixture->getModel('customer2')->email);
         $this->assertEquals(2, $fixture['customer2']['profile_id']);
+
+        $test->tearDown();
+    }
+
+    public function testDataExtra()
+    {
+        $test = new ExtraDataTestCase();
+        $test->setUp();
+
+        $items = (new Query())->from('order_item')->all();
+        $this->assertCount(2, $items);
+
+        $this->assertEquals(1, $items[0]['order_id']);
+        $this->assertEquals(1, $items[0]['item_id']);
+        $this->assertEquals(1, $items[0]['quantity']);
+        $this->assertEquals(100, $items[0]['subtotal']);
+
+        $this->assertEquals(1, $items[1]['order_id']);
+        $this->assertEquals(2, $items[1]['item_id']);
+        $this->assertEquals(2, $items[1]['quantity']);
+        $this->assertEquals(200, $items[1]['subtotal']);
 
         $test->tearDown();
     }
