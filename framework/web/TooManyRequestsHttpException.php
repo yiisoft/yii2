@@ -14,7 +14,7 @@ namespace yii\web;
  * given period of time. For example, you would throw this exception when
  * 'throttling' an API user.
  *
- * @link http://tools.ietf.org/search/rfc6585#section-4
+ * @see https://tools.ietf.org/html/rfc6585#section-4
  * @author Dan Schmidt <danschmidt5189@gmail.com>
  * @since 2.0
  */

@@ -456,7 +456,7 @@ a sua extensão:
   fornece muitos recursos que podem não ser totalmente cobertos no arquivo readme.
 * Documentação da API: seu código deve ser bem documentado para permitir que 
   outros usuários possam ler e entender mais facilmente.
-  Você pode consultar o [arquivo da classe Object](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) 
+  Você pode consultar o [arquivo da classe BaseObject](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) 
   para aprender como documentar o seu código.
 
 > Informação: Os seus comentários no código podem ser escritos no formato Markdown. 

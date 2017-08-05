@@ -28,7 +28,7 @@ namespace yii\db;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Expression extends \yii\base\Object
+class Expression extends \yii\base\BaseObject
 {
     /**
      * @var string the DB expression
