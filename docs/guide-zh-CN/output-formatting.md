@@ -2,7 +2,8 @@
 ==============
 
 Yii提供一个格式化类来格式化输出，以使输出数据对终端用户更友好易读，
-[[yii\i18n\Formatter]] 是一个助手类，作为 [应用组件](structure-application-components.md) 使用，默认名为`formatter`。
+[[yii\i18n\Formatter]] 是一个助手类，作为 [应用组件](structure-application-components.md) 使用，
+默认名为`formatter`。
 
 它提供一些方法用来格式化数据，如日期/时间、数字或其他常用的本地化格式，
 两种方式使用格式器：
