@@ -93,8 +93,8 @@ Upgrade from Yii 2.0.12
   instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
 
 * A new method `public static function instance($refresh = false);` has been added to the `yii\db\ActiveRecordInterface`.
-  This method is implemented in the `yii\base\Model`, so this only affects your code if you implement ActiveRecordInterface
-  in a class that does not extend Model.
+  This method is implemented in the `yii\base\Model`, so the change only affects your code if you implement `ActiveRecordInterface`
+  in a class that does not extend `Model`.
 
 Upgrade from Yii 2.0.11
 -----------------------
