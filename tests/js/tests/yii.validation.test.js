@@ -1394,7 +1394,6 @@ describe('yii.validation', function () {
             data: function () {
                 return {
                     attributes: [{
-
                         "id": "input-id",
                         "input": "#input-id"
                     }]
