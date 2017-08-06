@@ -137,18 +137,15 @@ class ActiveFixtureTest extends DatabaseTestCase
         $test = new ExtraDataTestCase();
         $test->setUp();
 
-        $items = (new Query())->from('order_item')->all();
+        $fixture = $test->getFixture('orders');
+        $items = $fixture->getModel('order1')->items;
+
         $this->assertCount(2, $items);
+        $this->assertEquals('Agile Web Application Development with Yii1.1 and PHP5', $items[0]['name']);
+        $this->assertEquals(1, $items[0]['category_id']);
 
-        $this->assertEquals(1, $items[0]['order_id']);
-        $this->assertEquals(1, $items[0]['item_id']);
-        $this->assertEquals(1, $items[0]['quantity']);
-        $this->assertEquals(100, $items[0]['subtotal']);
-
-        $this->assertEquals(1, $items[1]['order_id']);
-        $this->assertEquals(2, $items[1]['item_id']);
-        $this->assertEquals(2, $items[1]['quantity']);
-        $this->assertEquals(200, $items[1]['subtotal']);
+        $this->assertEquals('Ice Age', $items[1]['name']);
+        $this->assertEquals(2, $items[1]['category_id']);
 
         $test->tearDown();
     }

@@ -13,7 +13,7 @@ return [
         'subtotal' => 100
     ],[
         'order_id' => 1,
-        'item_id' => 2,
+        'item_id' => 3,
         'quantity' => 2,
         'subtotal' => 200
     ],
