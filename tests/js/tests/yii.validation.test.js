@@ -1390,16 +1390,6 @@ describe('yii.validation', function () {
                 return 'b';
             }
         };
-        var $form = {
-            data: function () {
-                return {
-                    attributes: [{
-                        "id": "input-id",
-                        "input": "#input-id"
-                    }]
-                }
-            }
-        }
         var jQueryInitStub;
         var inputSpy;
 
@@ -1514,8 +1504,17 @@ describe('yii.validation', function () {
 
         describe('with compareAttribute, "==" operator and 2 identical strings', function () {
             it(VALIDATOR_SUCCESS_MESSAGE, function () {
+                var $form = {
+                    data: function () {
+                        return {
+                            attributes: [{
+                                "id": "input-id",
+                                "input": "#input-id"
+                            }]
+                        }
+                    }
+                };
                 var messages = [];
-
                 yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'}, $form);
                 assert.deepEqual(messages, []);
 
