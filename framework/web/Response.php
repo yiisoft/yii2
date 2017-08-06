@@ -435,7 +435,7 @@ class Response extends \yii\base\Response
     {
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
-        if (is_array($this->stream)) {
+        if (is_array($stream)) {
             list($handle, $begin, $end) = $stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
@@ -449,11 +449,11 @@ class Response extends \yii\base\Response
 
             return;
         }
-        while (!feof($this->stream)) {
-            echo fread($this->stream, $chunkSize);
+        while (!feof($stream)) {
+            echo fread($stream, $chunkSize);
             flush();
         }
-        fclose($this->stream);
+        fclose($stream);
     }
 
     /**
