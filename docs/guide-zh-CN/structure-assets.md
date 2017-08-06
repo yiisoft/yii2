@@ -5,20 +5,25 @@ Yii中的资源是和Web页面相关的文件，可为CSS文件，JavaScript文�
 资源放在Web可访问的目录下，直接被Web服务器调用。
 
 通过程序自动管理资源更好一点，例如，当你在页面中使用 [[yii\jui\DatePicker]] 小部件时，
-它会自动包含需要的CSS和JavaScript文件，而不是要求你手工去找到这些文件并包含，
-当你升级小部件时，它会自动使用新版本的资源文件，在本教程中，我们会详述Yii提供的强大的资源管理功能。
+它会自动包含需要的CSS和JavaScript文件，
+而不是要求你手工去找到这些文件并包含，
+当你升级小部件时，它会自动使用新版本的资源文件，
+在本教程中，我们会详述Yii提供的强大的资源管理功能。
 
 
 ## 资源包 <span id="asset-bundles"></span>
 
 Yii在*资源包*中管理资源，资源包简单的说就是放在一个目录下的资源集合，
-当在[视图](structure-views.md)中注册一个资源包，在渲染Web页面时会包含包中的CSS和JavaScript文件。
+当在[视图](structure-views.md)中注册一个资源包，
+在渲染Web页面时会包含包中的CSS和JavaScript文件。
 
 
 ## 定义资源包 <span id="defining-asset-bundles"></span>
 
-资源包指定为继承[[yii\web\AssetBundle]]的PHP类，包名为可[自动加载](concept-autoloading.md)的PHP类名，
-在资源包类中，要指定资源所在位置，包含哪些CSS和JavaScript文件以及和其他包的依赖关系。
+资源包指定为继承[[yii\web\AssetBundle]]的PHP类，
+包名为可[自动加载](concept-autoloading.md)的PHP类名，
+在资源包类中，要指定资源所在位置，
+包含哪些CSS和JavaScript文件以及和其他包的依赖关系。
 
 如下代码定义[基础应用模板](start-installation.md)使用的主要资源包：
 
@@ -60,57 +65,71 @@ class AppAsset extends AssetBundle
   如果你的资源文件在一个Web可访问目录下，应设置该属性，这样就不用再发布了。
   [路径别名](concept-aliases.md) 可在此处使用。
 * [[yii\web\AssetBundle::baseUrl|baseUrl]]: 指定对应到[[yii\web\AssetBundle::basePath|basePath]]目录的URL，
-  和 [[yii\web\AssetBundle::basePath|basePath]] 类似，如果你指定 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，
+  和 [[yii\web\AssetBundle::basePath|basePath]] 类似，
+  如果你指定 [[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，
   [资源管理器](#asset-manager) 会发布这些资源并覆盖该属性，[路径别名](concept-aliases.md) 可在此处使用。
-* [[yii\web\AssetBundle::js|js]]: 一个包含该资源包JavaScript文件的数组，注意正斜杠"/"应作为目录分隔符，
+* [[yii\web\AssetBundle::js|js]]: 一个包含该资源包JavaScript文件的数组，
+  注意正斜杠"/"应作为目录分隔符，
   每个JavaScript文件可指定为以下两种格式之一：
   - 相对路径表示为本地JavaScript文件 (如 `js/main.js`)，文件实际的路径在该相对路径前加上
-    [[yii\web\AssetManager::basePath]]，文件实际的URL在该路径前加上[[yii\web\AssetManager::baseUrl]]。
+    [[yii\web\AssetManager::basePath]]，文件实际的URL
+    在该路径前加上[[yii\web\AssetManager::baseUrl]]。
   - 绝对URL地址表示为外部JavaScript文件，如
     `http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js` 或 
     `//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js`.
-* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包CSS文件的数组，该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
-* [[yii\web\AssetBundle::depends|depends]]: 一个列出该资源包依赖的其他资源包（后两节有详细介绍）。
+* [[yii\web\AssetBundle::css|css]]: 一个包含该资源包CSS文件的数组，
+  该数组格式和 [[yii\web\AssetBundle::js|js]] 相同。
+* [[yii\web\AssetBundle::depends|depends]]: 一个列出该资源包依赖的
+  其他资源包（后两节有详细介绍）。
 * [[yii\web\AssetBundle::jsOptions|jsOptions]]: 当调用[[yii\web\View::registerJsFile()]]注册该包 *每个* JavaScript文件时，
   指定传递到该方法的选项。
 * [[yii\web\AssetBundle::cssOptions|cssOptions]]: 当调用[[yii\web\View::registerCssFile()]]注册该包 *每个* css文件时，
   指定传递到该方法的选项。
 * [[yii\web\AssetBundle::publishOptions|publishOptions]]: 当调用[[yii\web\AssetManager::publish()]]发布该包资源文件到Web目录时
-  指定传递到该方法的选项，仅在指定了[[yii\web\AssetBundle::sourcePath|sourcePath]]属性时使用。
+  指定传递到该方法的选项，仅在指定了
+  [[yii\web\AssetBundle::sourcePath|sourcePath]]属性时使用。
 
 
 ### 资源位置 <span id="asset-locations"></span>
 
 资源根据它们的位置可以分为：
 
-* 源资源: 资源文件和PHP源代码放在一起，不能被Web直接访问，为了使用这些源资源，它们要拷贝到一个可Web访问的Web目录中
+* 源资源: 资源文件和PHP源代码放在一起，不能被Web直接访问，为了使用这些源资源，
+  它们要拷贝到一个可Web访问的Web目录中
   成为发布的资源，这个过程称为*发布资源*，随后会详细介绍。
 * 发布资源: 资源文件放在可通过Web直接访问的Web目录中；
-* 外部资源: 资源文件放在与你的Web应用不同的Web服务器上；
+* 外部资源: 资源文件放在与你的Web应用不同
+  的Web服务器上；
 
-当定义资源包类时候，如果你指定了[[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，就表示任何使用相对路径的资源会被
-当作源资源；如果没有指定该属性，就表示这些资源为发布资源（因此应指定[[yii\web\AssetBundle::basePath|basePath]] 和
+当定义资源包类时候，如果你指定了[[yii\web\AssetBundle::sourcePath|sourcePath]] 属性，
+就表示任何使用相对路径的资源会被当作源资源；
+如果没有指定该属性，就表示这些资源为发布资源（因此应指定[[yii\web\AssetBundle::basePath|basePath]] 和
 [[yii\web\AssetBundle::baseUrl|baseUrl]] 让Yii知道它们的位置）。
 
 推荐将资源文件放到Web目录以避免不必要的发布资源过程，这就是之前的例子：指定
-[[yii\web\AssetBundle::basePath|basePath]] 而不是 [[yii\web\AssetBundle::sourcePath|sourcePath]].
+[[yii\web\AssetBundle::basePath|basePath]] 
+而不是 [[yii\web\AssetBundle::sourcePath|sourcePath]].
 
-对于 [扩展](structure-extensions.md)来说，由于它们的资源和源代码都在不能Web访问的目录下，
+对于 [扩展](structure-extensions.md)来说，
+由于它们的资源和源代码都在不能Web访问的目录下，
 在定义资源包类时必须指定[[yii\web\AssetBundle::sourcePath|sourcePath]]属性。
 
 > Note: [[yii\web\AssetBundle::sourcePath|source path]] 属性不要用`@webroot/assets`，该路径默认为
-  [[yii\web\AssetManager|asset manager]]资源管理器将源资源发布后存储资源的路径，该路径的所有内容会认为是临时文件，
+  [[yii\web\AssetManager|asset manager]]资源管理器将源资源发布后存储资源的路径，
+  该路径的所有内容会认为是临时文件，
   可能会被删除。
 
 
 ### 资源依赖 <span id="asset-dependencies"></span>
 
-当Web页面包含多个CSS或JavaScript文件时，它们有一定的先后顺序以避免属性覆盖，
+当Web页面包含多个CSS或JavaScript文件时，
+它们有一定的先后顺序以避免属性覆盖，
 例如，Web页面在使用jQuery UI小部件前必须确保jQuery JavaScript文件已经被包含了，
 我们称这种资源先后次序称为资源依赖。
 
 资源依赖主要通过[[yii\web\AssetBundle::depends]] 属性来指定，
-在`AppAsset` 示例中，资源包依赖其他两个资源包： [[yii\web\YiiAsset]] 和 [[yii\bootstrap\BootstrapAsset]]
+在`AppAsset` 示例中，资源包依赖其他两个资源包： 
+[[yii\web\YiiAsset]] 和 [[yii\bootstrap\BootstrapAsset]]
 也就是该资源包的CSS和JavaScript文件要在这两个依赖包的文件包含 *之后* 才包含。
 
 资源依赖关系是可传递，也就是说A依赖B，B依赖C，那么A也依赖C。
@@ -123,7 +142,8 @@ class AppAsset extends AssetBundle
 这些属性值会分别传递给 [[yii\web\View::registerCssFile()]] 和 [[yii\web\View::registerJsFile()]] 方法，
 在[视图](structure-views.md) 调用这些方法包含CSS和JavaScript文件时。
 
-> Note: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，如果想对每个文件使用不同的选项，
+> Note: 在资源包类中设置的选项会应用到该包中 *每个* CSS/JavaScript 文件，
+  如果想对每个文件使用不同的选项，
   应创建不同的资源包并在每个包中使用一个选项集。
 
 例如，只想IE9或更高的浏览器包含一个CSS文件，可以使用如下选项：
@@ -146,16 +166,47 @@ public $cssOptions = ['condition' => 'lte IE9'];
 public $cssOptions = ['noscript' => true];
 ```
 
-为使JavaScript文件包含在页面head区域（JavaScript文件默认包含在body的结束处）使用以下选项：
+为使JavaScript文件包含在页面head区域（JavaScript文件默认包含在body的结束处）
+使用以下选项：
 
 ```php
 public $jsOptions = ['position' => \yii\web\View::POS_HEAD];
 ```
 
+By default, when an asset bundle is being published, all contents in the directory specified by [[yii\web\AssetBundle::sourcePath]]
+will be published. You can customize this behavior by configuring the [[yii\web\AssetBundle::publishOptions|publishOptions]] 
+property. For example, to publish only one or a few subdirectories of [[yii\web\AssetBundle::sourcePath]], 
+you can do the following in the asset bundle class:
+
+```php
+<?php
+namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class FontAwesomeAsset extends AssetBundle 
+{
+    public $sourcePath = '@bower/font-awesome'; 
+    public $css = [ 
+        'css/font-awesome.min.css', 
+    ];
+    public $publishOptions = [
+        'only' => [
+            'fonts/',
+            'css/',
+        ]
+    ];
+}  
+```
+
+The above example defines an asset bundle for the ["fontawesome" package](http://fontawesome.io/). By specifying 
+the `only` publishing option, only the `fonts` and `css` subdirectories will be published.
+
 
 ### Bower 和 NPM 资源 <span id="bower-npm-assets"></span>
 
-大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 [NPM](https://www.npmjs.org/)管理，
+大多数 JavaScript/CSS 包通过[Bower](http://bower.io/) 和/或 
+[NPM](https://www.npmjs.org/)管理，
 如果你的应用或扩展使用这些包，推荐你遵循以下步骤来管理库中的资源：
 
 1. 修改应用或扩展的 `composer.json` 文件将包列入`require` 中，
