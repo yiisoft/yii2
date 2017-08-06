@@ -278,7 +278,7 @@ yii.validation = (function ($) {
                     if (attributes[i].id == options.compareAttribute) {
                         compareValue = $(attributes[i].input).val();
                     }
-                };
+                }
             }
 
             if (options.type === 'number') {
