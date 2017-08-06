@@ -263,7 +263,7 @@ yii.validation = (function ($) {
             }
         },
 
-        compare: function (value, messages, options) {
+        compare: function (value, messages, options, $form) {
             if (options.skipOnEmpty && pub.isEmpty(value)) {
                 return;
             }
@@ -273,7 +273,12 @@ yii.validation = (function ($) {
             if (options.compareAttribute === undefined) {
                 compareValue = options.compareValue;
             } else {
-                compareValue = $('#' + options.compareAttribute).val();
+                var attributes = $form.data('yiiActiveForm').attributes
+                for (var i = attributes.length - 1; i >= 0; i--) {
+                    if (attributes[i].id == options.compareAttribute) {
+                        compareValue = $(attributes[i].input).val();
+                    }
+                };
             }
 
             if (options.type === 'number') {

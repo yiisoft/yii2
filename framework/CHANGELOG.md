@@ -53,6 +53,7 @@ Yii Framework 2 Change Log
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #14363: Added `yii\widgets\LinkPager::$linkContainerOptions` and possibility to override tag in `yii\widgets\LinkPager::$options` (dmirogin)
 - Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
+- Bug #14604: Fixed `yii\validators\CompareValidator` `compareAttribute` does not work if `compareAttribute` form ID has been changed (mikk150) 
 
 
 2.0.12 June 05, 2017
