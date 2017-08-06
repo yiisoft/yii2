@@ -416,10 +416,27 @@ class Response extends \yii\base\Response
         }
 
         set_time_limit(0); // Reset time limit for big files
+
+        if ($this->stream instanceof StreamInterface && $this->stream->isReadable()) {
+            $this->sendPsrStream($this->stream);
+
+            return;
+        }
+
+        $this->sendFileStream($this->stream);
+    }
+
+    /**
+     * Sends a file stream, either
+     *
+     * @param resource|array  $stream  The stream descriptive array or resource
+     */
+    protected function sendFileStream($stream)
+    {
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
-            list($handle, $begin, $end) = $this->stream;
+            list($handle, $begin, $end) = $stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -429,17 +446,28 @@ class Response extends \yii\base\Response
                 flush(); // Free up memory. Otherwise large files will trigger PHP's memory limit.
             }
             fclose($handle);
-        } elseif ($this->stream instanceof StreamInterface && $this->stream->isReadable()) {
-            while (($chunk = $this->stream->read($chunkSize)) !== '') {
-                echo $chunk;
-                flush();
-            }
-        } else {
-            while (!feof($this->stream)) {
-                echo fread($this->stream, $chunkSize);
-                flush();
-            }
-            fclose($this->stream);
+
+            return;
+        }
+        while (!feof($this->stream)) {
+            echo fread($this->stream, $chunkSize);
+            flush();
+        }
+        fclose($this->stream);
+    }
+
+    /**
+     * Sends a psr stream.
+     *
+     * @param      \Psr\Http\Message\StreamInterface  $stream  The stream
+     */
+    public function sendPsrStream(StreamInterface $stream)
+    {
+        $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
+
+        while (($chunk = $stream->read($chunkSize)) !== '') {
+            echo $chunk;
+            flush();
         }
     }
 
