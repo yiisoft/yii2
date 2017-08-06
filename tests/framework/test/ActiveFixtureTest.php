@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\test;
 
-use yii\db\Query;
 use yii\test\ActiveFixture;
 use yii\test\FixtureTrait;
 use yiiunit\data\ar\ActiveRecord;
