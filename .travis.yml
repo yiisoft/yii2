@@ -6,7 +6,10 @@
 dist: trusty
 
 # faster builds on new travis setup not using sudo
-sudo: false
+# temporary disable, see https://github.com/travis-ci/travis-ci/issues/6842
+#sudo: false
+sudo: required
+group: edge
 
 # build only on master branches
 # commented as this prevents people from running builds on their forks:
@@ -23,74 +26,12 @@ sudo: false
 
 language: php
 
-php:
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
-  - nightly
-
-matrix:
-  fast_finish: true
-  include:
-    # Test against HHVM 3.12 LTS version by using trusty
-    - php: hhvm-3.12
-      sudo: true
-      dist: trusty
-      group: edge # Use edge image until the next travis CI image update
-      addons:
-        code_climate:
-          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        apt:
-          packages:
-            - mysql-server-5.6
-            - mysql-client-core-5.6
-            - mysql-client-5.6
-      services:
-        - mysql
-    # test against the latest HHVM version by using a newer image
-    - php: hhvm
-      sudo: true
-      dist: trusty
-      group: edge # Use edge image until the next travis CI image update
-      addons:
-        code_climate:
-          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
-        postgresql: "9.3"
-        apt:
-          packages:
-            - mysql-server-5.6
-            - mysql-client-core-5.6
-            - mysql-client-5.6
-      services:
-        - mysql
-        - postgresql
-    # have a separate branch for javascript tests
-    - language: node_js
-      node_js: 6
-      dist: trusty
-      # overwrite php related settings
-      php:
-      services:
-      addons:
-      install:
-        - travis_retry npm install
-        # disable xdebug for performance in composer
-        - phpenv config-rm xdebug.ini || echo "xdebug is not installed"
-        - travis_retry composer self-update && composer --version
-        - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
-        - travis_retry composer install --prefer-dist --no-interaction
-      before_script:
-        - node --version
-        - npm --version
-        - php --version
-        - composer --version
-      script: npm test
-      after_script:
-
-  allow_failures:
-    - php: nightly
+env:
+  global:
+    - DEFAULT_COMPOSER_FLAGS="--prefer-dist --no-interaction --no-progress --optimize-autoloader"
+    - TASK_TESTS_PHP=1
+    - TASK_TESTS_JS=0
+    - TASK_TESTS_COVERAGE=0
 
 
 services:
@@ -111,55 +52,146 @@ addons:
   code_climate:
     repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
 
+matrix:
+  fast_finish: true
+  include:
+    # run tests coverage on PHP 7.1
+    - php: 7.1
+      env: TASK_TESTS_COVERAGE=1
+
+    - php: 7.0
+
+    - php: 5.6
+
+    - php: 5.5
+
+    - php: 5.4
+
+    # Test against HHVM 3.12 LTS version by using trusty
+    - php: hhvm-3.12
+      sudo: true
+      addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+
+    # test against the latest HHVM version by using a newer image
+    - php: hhvm
+      sudo: true
+      addons:
+        code_climate:
+          repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
+        postgresql: "9.3"
+        apt:
+          packages:
+            - mysql-server-5.6
+            - mysql-client-core-5.6
+            - mysql-client-5.6
+      services:
+        - mysql
+        - postgresql
+
+    - php: nightly
+
+    # have a separate branch for javascript tests
+    - language: node_js
+      node_js: 6
+      env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
+      # overwrite services used for PHP tests
+      services:
+
+  allow_failures:
+    - php: nightly
+
 install:
   - |
-    if [[ $TRAVIS_PHP_VERSION != '5.6' && $TRAVIS_PHP_VERSION != hhv* ]]; then
-        # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
-        phpenv config-rm xdebug.ini || echo "xdebug is not installed"
+    if [[ $TASK_TESTS_COVERAGE != 1 && $TRAVIS_PHP_VERSION != hhv* ]]; then
+      # disable xdebug for performance reasons when code coverage is not needed. note: xdebug on hhvm is disabled by default
+      phpenv config-rm xdebug.ini || echo "xdebug is not installed"
     fi
-  - travis_retry composer self-update && composer --version
-  - travis_retry composer global require "fxp/composer-asset-plugin:^1.2.0" --no-plugins
+
+  # install composer dependencies
+  - travis_retry composer self-update
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  # core framework:
-  - travis_retry composer install --prefer-dist --no-interaction
-  - tests/data/travis/apc-setup.sh
-  - tests/data/travis/memcache-setup.sh
-  - tests/data/travis/imagick-setup.sh
+  - |
+    if [[ $TRAVIS_PHP_VERSION == "hhvm-3.12" ]]; then
+      # remove php-cs-fixer from composer dependencies on hhvm-3.12 - php-cs-fixer requires at least hhvm-3.18
+      composer remove friendsofphp/php-cs-fixer --dev
+    fi
+  - travis_retry composer install $DEFAULT_COMPOSER_FLAGS
+
+  # setup PHP extension
+  - |
+    if [ $TASK_TESTS_PHP == 1 ]; then
+      tests/data/travis/apc-setup.sh
+      tests/data/travis/memcache-setup.sh
+      tests/data/travis/imagick-setup.sh
+    fi
+
+  # setup JS test
+  - |
+    if [ $TASK_TESTS_JS == 1 ]; then
+      travis_retry npm install
+    fi
 
 before_script:
   # Disable the HHVM JIT for faster Unit Testing
   - if [[ $TRAVIS_PHP_VERSION = hhv* ]]; then echo 'hhvm.jit = 0' >> /etc/hhvm/php.ini; fi
+
   # show some versions and env information
-  - php -r "echo INTL_ICU_VERSION . \"\n\";"
-  - php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
-  - mysql --version
-  - psql --version
+  - php --version
+  - composer --version
+  - |
+    if [ $TASK_TESTS_PHP == 1 ]; then
+      php -r "echo INTL_ICU_VERSION . \"\n\";"
+      php -r "echo INTL_ICU_DATA_VERSION . \"\n\";"
+      psql --version
+      mysql --version
+    fi
+  - |
+    if [ $TASK_TESTS_JS == 1 ]; then
+      node --version
+      npm --version
+    fi
 
   # initialize databases
-  - travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
-  - mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
-  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
-  - psql -U postgres -c 'CREATE DATABASE yiitest;';
-
-  # enable code coverage on PHP 5.6, only one PHP version needs to generate coverage data
   - |
-    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+    if [ $TASK_TESTS_PHP == 1 ]; then
+      travis_retry mysql -e 'CREATE DATABASE `yiitest`;';
+      mysql -e "CREATE USER 'travis'@'localhost' IDENTIFIED WITH mysql_native_password;";
+      mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'travis'@'localhost' WITH GRANT OPTION;";
+      psql -U postgres -c 'CREATE DATABASE yiitest;';
+    fi
+
+  # enable code coverage
+  - |
+    if [ $TASK_TESTS_COVERAGE == 1 ]; then
       PHPUNIT_FLAGS="--coverage-clover=coverage.clover"
     fi
 
 
 script:
-  # ensure no files contain UTF-8 byte order mark
-  - if ! grep -rlI $'\xEF\xBB\xBF' framework/ ; then echo "no utf8 BOM found"; else echo "found utf8 BOM in some files. See above."; exit 1; fi
-  # validate composer.json
-  - composer validate --no-check-lock
-  - cd framework && composer validate --no-check-lock && cd ..
-  # run PHPUnit
-  - vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+  # PHP tests
+  - |
+    if [ $TASK_TESTS_PHP == 1 ]; then
+      vendor/bin/phpunit --verbose $PHPUNIT_FLAGS --exclude-group mssql,oci,wincache,xcache,zenddata,cubrid
+    fi
+
+  # JS tests
+  - |
+    if [ $TASK_TESTS_JS == 1 ]; then
+      npm test
+    fi
 
 after_script:
   - |
-    if [ $TRAVIS_PHP_VERSION = '5.6' ]; then
+    if [ $TASK_TESTS_COVERAGE == 1 ]; then
       travis_retry wget https://scrutinizer-ci.com/ocular.phar
       php ocular.phar code-coverage:upload --format=php-clover coverage.clover
     fi

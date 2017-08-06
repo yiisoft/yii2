@@ -7,9 +7,9 @@
 
 namespace yii\rbac;
 
+use Yii;
 use yii\base\InvalidCallException;
 use yii\base\InvalidParamException;
-use Yii;
 use yii\helpers\VarDumper;
 
 /**
@@ -38,7 +38,7 @@ class PhpManager extends BaseManager
 {
     /**
      * @var string the path of the PHP script that contains the authorization items.
-     * This can be either a file path or a path alias to the file.
+     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
      * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
      * @see loadFromFile()
      * @see saveToFile()
@@ -46,7 +46,7 @@ class PhpManager extends BaseManager
     public $itemFile = '@app/rbac/items.php';
     /**
      * @var string the path of the PHP script that contains the authorization assignments.
-     * This can be either a file path or a path alias to the file.
+     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
      * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
      * @see loadFromFile()
      * @see saveToFile()
@@ -54,7 +54,7 @@ class PhpManager extends BaseManager
     public $assignmentFile = '@app/rbac/assignments.php';
     /**
      * @var string the path of the PHP script that contains the authorization rules.
-     * This can be either a file path or a path alias to the file.
+     * This can be either a file path or a [path alias](guide:concept-aliases) to the file.
      * Make sure this file is writable by the Web server process if the authorization needs to be changed online.
      * @see loadFromFile()
      * @see saveToFile()
@@ -226,9 +226,9 @@ class PhpManager extends BaseManager
             unset($this->children[$parent->name][$child->name]);
             $this->saveItems();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -240,9 +240,9 @@ class PhpManager extends BaseManager
             unset($this->children[$parent->name]);
             $this->saveItems();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -262,15 +262,16 @@ class PhpManager extends BaseManager
             throw new InvalidParamException("Unknown role '{$role->name}'.");
         } elseif (isset($this->assignments[$userId][$role->name])) {
             throw new InvalidParamException("Authorization item '{$role->name}' has already been assigned to user '$userId'.");
-        } else {
-            $this->assignments[$userId][$role->name] = new Assignment([
-                'userId' => $userId,
-                'roleName' => $role->name,
-                'createdAt' => time(),
-            ]);
-            $this->saveAssignments();
-            return $this->assignments[$userId][$role->name];
         }
+
+        $this->assignments[$userId][$role->name] = new Assignment([
+            'userId' => $userId,
+            'roleName' => $role->name,
+            'createdAt' => time(),
+        ]);
+        $this->saveAssignments();
+
+        return $this->assignments[$userId][$role->name];
     }
 
     /**
@@ -282,9 +283,9 @@ class PhpManager extends BaseManager
             unset($this->assignments[$userId][$role->name]);
             $this->saveAssignments();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -298,9 +299,9 @@ class PhpManager extends BaseManager
             }
             $this->saveAssignments();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -345,9 +346,9 @@ class PhpManager extends BaseManager
             $this->saveItems();
             $this->saveAssignments();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -389,10 +390,11 @@ class PhpManager extends BaseManager
 
     /**
      * @inheritdoc
+     * The roles returned by this method include the roles assigned via [[$defaultRoles]].
      */
     public function getRolesByUser($userId)
     {
-        $roles = $this->getDefaultRoles();
+        $roles = $this->getDefaultRoleInstances();
         foreach ($this->getAssignments($userId) as $name => $assignment) {
             $role = $this->items[$assignment->roleName];
             if ($role->type === Item::TYPE_ROLE) {
@@ -629,9 +631,9 @@ class PhpManager extends BaseManager
             }
             $this->saveRules();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -652,29 +654,29 @@ class PhpManager extends BaseManager
         if ($name !== $item->name) {
             if (isset($this->items[$item->name])) {
                 throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
-            } else {
-                // Remove old item in case of renaming
-                unset($this->items[$name]);
-
-                if (isset($this->children[$name])) {
-                    $this->children[$item->name] = $this->children[$name];
-                    unset($this->children[$name]);
-                }
-                foreach ($this->children as &$children) {
-                    if (isset($children[$name])) {
-                        $children[$item->name] = $children[$name];
-                        unset($children[$name]);
-                    }
-                }
-                foreach ($this->assignments as &$assignments) {
-                    if (isset($assignments[$name])) {
-                        $assignments[$item->name] = $assignments[$name];
-                        $assignments[$item->name]->roleName = $item->name;
-                        unset($assignments[$name]);
-                    }
-                }
-                $this->saveAssignments();
             }
+
+            // Remove old item in case of renaming
+            unset($this->items[$name]);
+
+            if (isset($this->children[$name])) {
+                $this->children[$item->name] = $this->children[$name];
+                unset($this->children[$name]);
+            }
+            foreach ($this->children as &$children) {
+                if (isset($children[$name])) {
+                    $children[$item->name] = $children[$name];
+                    unset($children[$name]);
+                }
+            }
+            foreach ($this->assignments as &$assignments) {
+                if (isset($assignments[$name])) {
+                    $assignments[$item->name] = $assignments[$name];
+                    $assignments[$item->name]->roleName = $item->name;
+                    unset($assignments[$name]);
+                }
+            }
+            $this->saveAssignments();
         }
 
         $this->items[$item->name] = $item;
@@ -701,7 +703,6 @@ class PhpManager extends BaseManager
         $this->saveItems();
 
         return true;
-
     }
 
     /**
@@ -778,10 +779,10 @@ class PhpManager extends BaseManager
     protected function loadFromFile($file)
     {
         if (is_file($file)) {
-            return require($file);
-        } else {
-            return [];
+            return require $file;
         }
+
+        return [];
     }
 
     /**
@@ -875,7 +876,7 @@ class PhpManager extends BaseManager
         foreach ($this->assignments as $userID => $assignments) {
             foreach ($assignments as $userAssignment) {
                 if ($userAssignment->roleName === $roleName && $userAssignment->userId == $userID) {
-                    $result[] = (string)$userID;
+                    $result[] = (string) $userID;
                 }
             }
         }

@@ -1,11 +1,19 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
+use yii\base\DynamicModel;
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
 use yii\validators\NumberValidator;
+use yii\validators\RequiredValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\data\validators\models\ValidatorTestFunctionModel;
 use yiiunit\data\validators\TestValidator;
 use yiiunit\TestCase;
 
@@ -17,7 +25,9 @@ class ValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     protected function getTestModel($additionalAttributes = [])
@@ -61,6 +71,18 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::className(), $val);
         $this->assertSame('inlineVal', $val->method);
         $this->assertSame(['foo' => 'bar'], $val->params);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14370
+     */
+    public function testCreateBuiltInValidatorWithSameNameFunction()
+    {
+        $model = new ValidatorTestFunctionModel();
+
+        $validator = TestValidator::createValidator('required', $model, ['firstAttribute']);
+
+        $this->assertInstanceOf(RequiredValidator::className(), $validator);
     }
 
     public function testValidate()
@@ -168,10 +190,8 @@ class ValidatorTest extends TestCase
 
     public function testValidateValue()
     {
-        $this->setExpectedException(
-            'yii\base\NotSupportedException',
-            TestValidator::className() . ' does not support validateValue().'
-        );
+        $this->expectException('yii\base\NotSupportedException');
+        $this->expectExceptionMessage(TestValidator::className() . ' does not support validateValue().');
         $val = new TestValidator();
         $val->validate('abc');
     }
@@ -242,17 +262,47 @@ class ValidatorTest extends TestCase
         $this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
     }
 
+    public function testGetAttributeNames()
+    {
+        $validator = new TestValidator();
+        $validator->attributes = ['id', 'name', '!email'];
+        $this->assertEquals(['id', 'name', 'email'], $validator->getAttributeNames());
+    }
+
+    /**
+     * @depends  testGetAttributeNames
+     */
     public function testGetActiveValidatorsForSafeAttributes()
     {
         $model = $this->getTestModel();
         $validators = $model->getActiveValidators('safe_attr');
-        $is_found = false;
+        $isFound = false;
         foreach ($validators as $v) {
             if ($v instanceof NumberValidator) {
-                $is_found = true;
+                $isFound = true;
                 break;
             }
         }
-        $this->assertTrue($is_found);
+        $this->assertTrue($isFound);
+    }
+
+    /**
+     * Make sure attribute names are calculated dynamically
+     * https://github.com/yiisoft/yii2/issues/13979
+     * https://github.com/yiisoft/yii2/pull/14413
+     */
+    public function testAttributeNamesDynamic()
+    {
+        $model = new DynamicModel(['email1' => 'invalid', 'email2' => 'invalid']);
+        $validator = new TestValidator();
+        $validator->enableErrorOnValidateAttribute();
+
+        $validator->attributes = ['email1'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
+
+        $validator->attributes = ['email2'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
     }
 }

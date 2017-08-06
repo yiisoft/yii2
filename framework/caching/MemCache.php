@@ -221,7 +221,7 @@ class MemCache extends Cache
             }
 
             if ($this->useMemcached) {
-                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached();
                 if ($this->username !== null || $this->password !== null) {
                     $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
                     $this->_cache->setSaslAuthData($this->username, $this->password);
@@ -230,7 +230,7 @@ class MemCache extends Cache
                     $this->_cache->setOptions($this->options);
                 }
             } else {
-                $this->_cache = new \Memcache;
+                $this->_cache = new \Memcache();
             }
         }
 
@@ -304,7 +304,7 @@ class MemCache extends Cache
      * Stores multiple key-value pairs in cache.
      * @param array $data array where key corresponds to cache key while value is the value stored
      * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array array of failed keys. Always empty in case of using memcached.
+     * @return array array of failed keys.
      */
     protected function setValues($data, $duration)
     {
@@ -313,12 +313,13 @@ class MemCache extends Cache
             // @see http://php.net/manual/en/memcache.set.php
             // @see http://php.net/manual/en/memcached.expiration.php
             $expire = $duration > 0 ? $duration + time() : 0;
-            $this->_cache->setMulti($data, $expire);
 
-            return [];
-        } else {
-            return parent::setValues($data, $duration);
+            // Memcached::setMulti() returns boolean
+            // @see http://php.net/manual/en/memcached.setmulti.php
+            return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
         }
+
+        return parent::setValues($data, $duration);
     }
 
     /**

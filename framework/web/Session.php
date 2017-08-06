@@ -190,6 +190,11 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Frees all session variables and destroys all data registered to a session.
+     *
+     * This method has no effect when session is not [[getIsActive()|active]].
+     * Make sure to call [[open()]] before calling it.
+     * @see open()
+     * @see isActive
      */
     public function destroy()
     {
@@ -270,9 +275,16 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Updates the current session ID with a newly generated one .
+     * Updates the current session ID with a newly generated one.
+     *
      * Please refer to <http://php.net/session_regenerate_id> for more details.
+     *
+     * This method has no effect when session is not [[getIsActive()|active]].
+     * Make sure to call [[open()]] before calling it.
+     *
      * @param bool $deleteOldSession Whether to delete the old associated session file or not.
+     * @see open()
+     * @see isActive
      */
     public function regenerateID($deleteOldSession = false)
     {
@@ -321,7 +333,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     /**
      * Sets the current session save path.
      * This is a wrapper for [PHP session_save_path()](http://php.net/manual/en/function.session-save-path.php).
-     * @param string $value the current session save path. This can be either a directory name or a path alias.
+     * @param string $value the current session save path. This can be either a directory name or a [path alias](guide:concept-aliases).
      * @throws InvalidParamException if the path is not a valid directory
      */
     public function setSavePath($value)
@@ -383,9 +395,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             return false;
         } elseif (ini_get('session.use_only_cookies') === '1') {
             return true;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -549,7 +561,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     public function getIterator()
     {
         $this->open();
-        return new SessionIterator;
+        return new SessionIterator();
     }
 
     /**
@@ -610,9 +622,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             unset($_SESSION[$key]);
 
             return $value;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -685,9 +697,9 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
             }
 
             return $value;
-        } else {
-            return $defaultValue;
         }
+
+        return $defaultValue;
     }
 
     /**

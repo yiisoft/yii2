@@ -1,8 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
+use Yii;
+use yii\caching\ArrayCache;
 use yii\web\UrlManager;
+use yii\web\UrlRule;
+use yiiunit\framework\web\stubs\CachedUrlRule;
 use yiiunit\TestCase;
 
 /**
@@ -46,13 +55,13 @@ class UrlManagerCreateUrlTest extends TestCase
     {
         // in this test class, all tests have enablePrettyUrl enabled.
         $config['enablePrettyUrl'] = true;
-        $config['cache'] = null;
 
         // set default values if they are not set
         $config = array_merge([
             'baseUrl' => '',
             'scriptUrl' => '/index.php',
             'hostInfo' => 'http://www.example.com',
+            'cache' => null,
             'showScriptName' => $showScriptName,
         ], $config);
 
@@ -332,7 +341,7 @@ class UrlManagerCreateUrlTest extends TestCase
                 'pattern' => '<language>',
                 'route' => 'site/index',
                 'defaults' => [
-                    'language' => 'en'
+                    'language' => 'en',
                 ],
             ],
         ];
@@ -431,7 +440,7 @@ class UrlManagerCreateUrlTest extends TestCase
      */
     public function testWithEmptyPattern($method, $showScriptName, $prefix, $config)
     {
-        $assertations = function($manager) use ($method, $prefix) {
+        $assertations = function ($manager) use ($method, $prefix) {
             // match first rule
             $url = $manager->$method(['front/site/index']);
             $this->assertEquals("$prefix/", $url);
@@ -548,7 +557,6 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals("$prefix/post/index?page=1#testhash", $manager->createUrl($urlParams));
         $expected = "http://www.example.com$prefix/post/index?page=1#testhash";
         $this->assertEquals($expected, $manager->createAbsoluteUrl($urlParams));
-
     }
 
     /**
@@ -674,4 +682,113 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals('http://example.fr/search?param1=value1', $url);
     }
 
+    public function testCreateUrlCache()
+    {
+        /* @var $rules CachedUrlRule[] */
+        $rules = [
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => 'user/show',
+                'pattern' => 'user/<name:[\w-]+>',
+            ]),
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => '<controller>/<action>',
+                'pattern' => '<controller:\w+>/<action:\w+>',
+            ]),
+        ];
+        $manager = $this->getUrlManager([
+            'rules' => $rules,
+        ], false);
+
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(1, $rules[0]->createCounter);
+        $this->assertEquals(0, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
+        $this->assertEquals(2, $rules[0]->createCounter);
+        $this->assertEquals(1, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/profile?name=rob006', $manager->createUrl(['user/profile', 'name' => 'rob006']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_ROUTE_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
+        $this->assertEquals(3, $rules[0]->createCounter);
+        $this->assertEquals(2, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/profile?name=John+Doe', $manager->createUrl(['user/profile', 'name' => 'John Doe']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_ROUTE_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
+        // fist rule is skipped - cached rule has precedence
+        $this->assertEquals(3, $rules[0]->createCounter);
+        $this->assertEquals(3, $rules[1]->createCounter);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/1335
+     */
+    public function testUrlCreateCacheWithParameterMismatch()
+    {
+        /* @var $rules CachedUrlRule[] */
+        $rules = [
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => 'user/show',
+                'pattern' => 'user/<name:[\w-]+>',
+            ]),
+            Yii::createObject([
+                'class' => CachedUrlRule::className(),
+                'route' => '<controller>/<action>',
+                'pattern' => '<controller:\w+>/<action:\w+>',
+            ]),
+        ];
+        $manager = $this->getUrlManager([
+            'rules' => $rules,
+        ], false);
+
+        $this->assertEquals('/user/show?name=John+Doe', $manager->createUrl(['user/show', 'name' => 'John Doe']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_PARAMS_MISMATCH, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[1]->getCreateUrlStatus());
+        $this->assertEquals(1, $rules[0]->createCounter);
+        $this->assertEquals(1, $rules[1]->createCounter);
+
+        $this->assertEquals('/user/rob006', $manager->createUrl(['user/show', 'name' => 'rob006']));
+        $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateUrlStatus());
+        $this->assertEquals(2, $rules[0]->createCounter);
+        $this->assertEquals(1, $rules[1]->createCounter);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14406
+     */
+    public function testCreatingRulesWithDifferentRuleConfigAndEnabledCache()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'cache' => ArrayCache::className()
+            ]
+        ]);
+        $urlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'rules' => [
+                '/' => 'site/index'
+            ]
+        ]);
+
+        $cachedUrlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'ruleConfig' => [
+                'class' => CachedUrlRule::className()
+            ],
+            'rules' => [
+                '/' => 'site/index'
+            ]
+        ]);
+
+        $this->assertNotEquals($urlManager->rules, $cachedUrlManager->rules);
+        $this->assertInstanceOf(UrlRule::className(), $urlManager->rules[0]);
+        $this->assertInstanceOf(CachedUrlRule::className(), $cachedUrlManager->rules[0]);
+    }
 }

@@ -101,7 +101,7 @@ class DbCache extends Cache
     {
         $key = $this->buildKey($key);
 
-        $query = new Query;
+        $query = new Query();
         $query->select(['COUNT(*)'])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
@@ -125,7 +125,7 @@ class DbCache extends Cache
      */
     protected function getValue($key)
     {
-        $query = new Query;
+        $query = new Query();
         $query->select(['data'])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
@@ -136,9 +136,8 @@ class DbCache extends Cache
             $this->db->enableQueryCache = true;
 
             return $result;
-        } else {
-            return $query->createCommand($this->db)->queryScalar();
         }
+        return $query->createCommand($this->db)->queryScalar();
     }
 
     /**
@@ -151,7 +150,7 @@ class DbCache extends Cache
         if (empty($keys)) {
             return [];
         }
-        $query = new Query;
+        $query = new Query();
         $query->select(['id', 'data'])
             ->from($this->cacheTable)
             ->where(['id' => $keys])
@@ -187,19 +186,21 @@ class DbCache extends Cache
      */
     protected function setValue($key, $value, $duration)
     {
-        $command = $this->db->createCommand()
-            ->update($this->cacheTable, [
-                'expire' => $duration > 0 ? $duration + time() : 0,
-                'data' => [$value, \PDO::PARAM_LOB],
-            ], ['id' => $key]);
+        $result = $this->db->noCache(function (Connection $db) use ($key, $value, $duration) {
+            $command = $db->createCommand()
+                ->update($this->cacheTable, [
+                    'expire' => $duration > 0 ? $duration + time() : 0,
+                    'data' => [$value, \PDO::PARAM_LOB],
+                ], ['id' => $key]);
+            return $command->execute();
+        });
 
-        if ($command->execute()) {
+        if ($result) {
             $this->gc();
 
             return true;
-        } else {
-            return $this->addValue($key, $value, $duration);
         }
+        return $this->addValue($key, $value, $duration);
     }
 
     /**
@@ -216,12 +217,14 @@ class DbCache extends Cache
         $this->gc();
 
         try {
-            $this->db->createCommand()
-                ->insert($this->cacheTable, [
-                    'id' => $key,
-                    'expire' => $duration > 0 ? $duration + time() : 0,
-                    'data' => [$value, \PDO::PARAM_LOB],
-                ])->execute();
+            $this->db->noCache(function (Connection $db) use ($key, $value, $duration) {
+                $db->createCommand()
+                    ->insert($this->cacheTable, [
+                        'id' => $key,
+                        'expire' => $duration > 0 ? $duration + time() : 0,
+                        'data' => [$value, \PDO::PARAM_LOB],
+                    ])->execute();
+            });
 
             return true;
         } catch (\Exception $e) {
@@ -237,9 +240,11 @@ class DbCache extends Cache
      */
     protected function deleteValue($key)
     {
-        $this->db->createCommand()
-            ->delete($this->cacheTable, ['id' => $key])
-            ->execute();
+        $this->db->noCache(function (Connection $db) use ($key) {
+            $db->createCommand()
+                ->delete($this->cacheTable, ['id' => $key])
+                ->execute();
+        });
 
         return true;
     }

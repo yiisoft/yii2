@@ -1,6 +1,12 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\mysql;
+
 use yii\db\Expression;
 use yii\db\Query;
 
@@ -19,7 +25,7 @@ class QueryTest extends \yiiunit\framework\db\QueryTest
     {
         $db = $this->getConnection();
 
-        $query = (new Query)->from([new Expression('{{%customer}} USE INDEX (primary)')]);
+        $query = (new Query())->from([new Expression('{{%customer}} USE INDEX (primary)')]);
         $row = $query->one($db);
         $this->assertArrayHasKey('id', $row);
         $this->assertArrayHasKey('name', $row);

@@ -8,8 +8,8 @@
 namespace yii\widgets;
 
 use Yii;
-use yii\base\Widget;
 use yii\base\InvalidConfigException;
+use yii\base\Widget;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -110,7 +110,6 @@ class Breadcrumbs extends Widget
      *     'encode' => false,
      * ]
      * ```
-     *
      */
     public $links = [];
     /**

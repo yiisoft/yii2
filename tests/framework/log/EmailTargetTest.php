@@ -1,6 +1,8 @@
 <?php
 /**
- * @author Dmitriy Makarov <makarov.dmitriy@gmail.com>
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 namespace yiiunit\framework\log;
@@ -10,7 +12,6 @@ use yiiunit\TestCase;
 
 /**
  * Class EmailTargetTest
- * @package yiiunit\framework\log
  * @group log
  */
 class EmailTargetTest extends TestCase
@@ -32,15 +33,16 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::init()
+     * @covers \yii\log\EmailTarget::init()
      */
     public function testInitWithOptionTo()
     {
-        new EmailTarget(['mailer' => $this->mailer, 'message'=> ['to' => 'developer1@example.com']]);
+        $target = new EmailTarget(['mailer' => $this->mailer, 'message' => ['to' => 'developer1@example.com']]);
+        $this->assertInternalType('object', $target); // should be no exception during `init()`
     }
 
     /**
-     * @covers yii\log\EmailTarget::init()
+     * @covers \yii\log\EmailTarget::init()
      * @expectedException \yii\base\InvalidConfigException
      * @expectedExceptionMessage The "to" option must be set for EmailTarget::message.
      */
@@ -50,8 +52,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::export()
-     * @covers yii\log\EmailTarget::composeMessage()
+     * @covers \yii\log\EmailTarget::export()
+     * @covers \yii\log\EmailTarget::composeMessage()
      */
     public function testExportWithSubject()
     {
@@ -70,15 +72,18 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Hello world'));
 
-        $mailTarget = $this->getMock('yii\\log\\EmailTarget', ['formatMessage'], [
-            [
-                'mailer' => $this->mailer,
-                'message'=> [
-                    'to' => 'developer@example.com',
-                    'subject' => 'Hello world'
-                ]
-            ]
-        ]);
+        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
+            ->setMethods(['formatMessage'])
+            ->setConstructorArgs([
+                [
+                    'mailer' => $this->mailer,
+                    'message' => [
+                        'to' => 'developer@example.com',
+                        'subject' => 'Hello world',
+                    ],
+                ],
+            ])
+            ->getMock();
 
         $mailTarget->messages = $messages;
         $mailTarget->expects($this->exactly(2))->method('formatMessage')->willReturnMap(
@@ -91,8 +96,8 @@ class EmailTargetTest extends TestCase
     }
 
     /**
-     * @covers yii\log\EmailTarget::export()
-     * @covers yii\log\EmailTarget::composeMessage()
+     * @covers \yii\log\EmailTarget::export()
+     * @covers \yii\log\EmailTarget::composeMessage()
      */
     public function testExportWithoutSubject()
     {
@@ -111,14 +116,17 @@ class EmailTargetTest extends TestCase
         $message->expects($this->once())->method('send')->with($this->equalTo($this->mailer));
         $message->expects($this->once())->method('setSubject')->with($this->equalTo('Application Log'));
 
-        $mailTarget = $this->getMock('yii\\log\\EmailTarget', ['formatMessage'], [
-            [
-                'mailer' => $this->mailer,
-                'message'=> [
-                    'to' => 'developer@example.com',
-                ]
-            ]
-        ]);
+        $mailTarget = $this->getMockBuilder('yii\\log\\EmailTarget')
+            ->setMethods(['formatMessage'])
+            ->setConstructorArgs([
+                [
+                    'mailer' => $this->mailer,
+                    'message' => [
+                        'to' => 'developer@example.com',
+                    ],
+                ],
+            ])
+            ->getMock();
 
         $mailTarget->messages = $messages;
         $mailTarget->expects($this->exactly(2))->method('formatMessage')->willReturnMap(
