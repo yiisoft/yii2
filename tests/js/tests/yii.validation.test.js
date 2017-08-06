@@ -1390,6 +1390,17 @@ describe('yii.validation', function () {
                 return 'b';
             }
         };
+        var $form = {
+            data: function () {
+                return {
+                    attributes: [{
+
+                        "id": "input-id",
+                        "input": "#input-id"
+                    }]
+                }
+            }
+        }
         var jQueryInitStub;
         var inputSpy;
 
@@ -1506,7 +1517,7 @@ describe('yii.validation', function () {
             it(VALIDATOR_SUCCESS_MESSAGE, function () {
                 var messages = [];
 
-                yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'});
+                yii.validation.compare('b', messages, {operator: '==', compareAttribute: 'input-id'}, $form);
                 assert.deepEqual(messages, []);
 
                 assert.isTrue(jQueryInitStub.calledOnce);
