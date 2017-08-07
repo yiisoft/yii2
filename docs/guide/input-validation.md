@@ -215,6 +215,26 @@ data filtering.
 As you can see, these validation rules do not really validate the inputs. Instead, they will process the values
 and save them back to the attributes being validated.
 
+A complete processing of user input is shown in the following example code, which will ensure only integer
+values are stored in an attribute:
+
+```php
+['age', 'trim'],
+['age', 'default', 'value' => null],
+['age', 'integer', 'integerOnly' => true, 'min' => 0],
+['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
+```
+
+The above code will perform the following operations on the input:
+
+1. Trim whitespace from the input value.
+2. Make sure empty input is stored as `null` in the database; we differentiate between a value being "not set"
+   and the actual value `0`. If `null` is not allowed you can set another default value here.
+3. Validate that the value is an integer greater than 0 if it is not empty. Normal validators have
+   [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] set to `true`.
+4. Make sure the value is of type integer, e.g. casting a string `'42'` to integer `42`.
+   Here we set [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] to `true`, which is `false` by default
+   on the [[yii\validators\FilterValidator|filter]] validator.
 
 ### Handling Empty Inputs <span id="handling-empty-inputs"></span>
 
@@ -331,7 +351,7 @@ the method/function is:
 /**
  * @param string $attribute the attribute currently being validated
  * @param mixed $params the value of the "params" given in the rule
- * @param \yii\validators\InlineValidator related InlineValidator instance.
+ * @param \yii\validators\InlineValidator $validator related InlineValidator instance.
  * This parameter is available since version 2.0.11.
  */
 function ($attribute, $params, $validator)
@@ -821,7 +841,7 @@ echo $form->field($model, 'username', ['enableAjaxValidation' => true]);
 ActiveForm::end();
 ```
 
-To enable AJAX validation for the whole form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
+To enable AJAX validation for all inputs of the form, configure [[yii\widgets\ActiveForm::enableAjaxValidation|enableAjaxValidation]]
 to be `true` at the form level:
 
 ```php
@@ -851,4 +871,6 @@ this request by running the validation and returning the errors in JSON format.
   However, the AJAX validation feature described here is more systematic and requires less coding effort.
 
 When both `enableClientValidation` and `enableAjaxValidation` are set to `true`, AJAX validation request will be triggered
-only after the successful client validation.
+only after the successful client validation. Note that in case of validating a single field that happens if either
+`validateOnChange`, `validateOnBlur` or `validateOnType` is set to `true`, AJAX request will be sent when the field in
+question alone successfully passes client validation. 

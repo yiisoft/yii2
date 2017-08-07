@@ -7,8 +7,8 @@
 
 namespace yii\di;
 
-use Yii;
 use Closure;
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 
@@ -71,9 +71,9 @@ class ServiceLocator extends Component
     {
         if ($this->has($name)) {
             return $this->get($name);
-        } else {
-            return parent::__get($name);
         }
+
+        return parent::__get($name);
     }
 
     /**
@@ -86,9 +86,9 @@ class ServiceLocator extends Component
     {
         if ($this->has($name)) {
             return true;
-        } else {
-            return parent::__isset($name);
         }
+
+        return parent::__isset($name);
     }
 
     /**
@@ -131,14 +131,14 @@ class ServiceLocator extends Component
             $definition = $this->_definitions[$id];
             if (is_object($definition) && !$definition instanceof Closure) {
                 return $this->_components[$id] = $definition;
-            } else {
-                return $this->_components[$id] = Yii::createObject($definition);
             }
+
+            return $this->_components[$id] = Yii::createObject($definition);
         } elseif ($throwException) {
             throw new InvalidConfigException("Unknown component ID: $id");
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

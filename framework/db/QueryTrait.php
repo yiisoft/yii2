@@ -27,12 +27,13 @@ trait QueryTrait
      */
     public $where;
     /**
-     * @var int maximum number of records to be returned. If not set or less than 0, it means no limit.
+     * @var int|Expression maximum number of records to be returned. May be an instance of [[Expression]].
+     * If not set or less than 0, it means no limit.
      */
     public $limit;
     /**
-     * @var int zero-based offset from where the records are to be returned. If not set or
-     * less than 0, it means starting from the beginning.
+     * @var int|Expression zero-based offset from where the records are to be returned.
+     * May be an instance of [[Expression]]. If not set or less than 0, it means starting from the beginning.
      */
     public $offset;
     /**
@@ -51,7 +52,7 @@ trait QueryTrait
      */
     public $indexBy;
     /**
-     * @var boolean whether to emulate the actual query execution, returning empty or false results.
+     * @var bool whether to emulate the actual query execution, returning empty or false results.
      * @see emulateExecution()
      * @since 2.0.11
      */
@@ -359,23 +360,24 @@ trait QueryTrait
             return [$columns];
         } elseif (is_array($columns)) {
             return $columns;
-        } else {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-            $result = [];
-            foreach ($columns as $column) {
-                if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-                    $result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
-                } else {
-                    $result[$column] = SORT_ASC;
-                }
-            }
-            return $result;
         }
+
+        $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+        $result = [];
+        foreach ($columns as $column) {
+            if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
+                $result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
+            } else {
+                $result[$column] = SORT_ASC;
+            }
+        }
+
+        return $result;
     }
 
     /**
      * Sets the LIMIT part of the query.
-     * @param int $limit the limit. Use null or negative value to disable limit.
+     * @param int|Expression|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit)
@@ -386,7 +388,7 @@ trait QueryTrait
 
     /**
      * Sets the OFFSET part of the query.
-     * @param int $offset the offset. Use null or negative value to disable offset.
+     * @param int|Expression|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset)

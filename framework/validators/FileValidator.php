@@ -8,11 +8,11 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yii\web\UploadedFile;
-use yii\helpers\FileHelper;
 
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
@@ -250,7 +250,7 @@ class FileValidator extends Validator
                     ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($value)) {
                     return [$this->wrongExtension, ['file' => $value->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($value)) {
+                } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($value)) {
                     return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 }
                 return null;
@@ -353,7 +353,6 @@ class FileValidator extends Validator
         $extension = mb_strtolower($file->extension, 'UTF-8');
 
         if ($this->checkExtensionByMimeType) {
-
             $mimeType = FileHelper::getMimeType($file->tempName, null, false);
             if ($mimeType === null) {
                 return false;
@@ -392,17 +391,17 @@ class FileValidator extends Validator
 
         $options = [];
         if ($this->message !== null) {
-            $options['message'] = Yii::$app->getI18n()->format($this->message, [
+            $options['message'] = $this->formatMessage($this->message, [
                 'attribute' => $label,
-            ], Yii::$app->language);
+            ]);
         }
 
         $options['skipOnEmpty'] = $this->skipOnEmpty;
 
         if (!$this->skipOnEmpty) {
-            $options['uploadRequired'] = Yii::$app->getI18n()->format($this->uploadRequired, [
+            $options['uploadRequired'] = $this->formatMessage($this->uploadRequired, [
                 'attribute' => $label,
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->mimeTypes !== null) {
@@ -411,44 +410,44 @@ class FileValidator extends Validator
                 $mimeTypes[] = new JsExpression(Html::escapeJsRegularExpression($this->buildMimeTypeRegexp($mimeType)));
             }
             $options['mimeTypes'] = $mimeTypes;
-            $options['wrongMimeType'] = Yii::$app->getI18n()->format($this->wrongMimeType, [
+            $options['wrongMimeType'] = $this->formatMessage($this->wrongMimeType, [
                 'attribute' => $label,
                 'mimeTypes' => implode(', ', $this->mimeTypes),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->extensions !== null) {
             $options['extensions'] = $this->extensions;
-            $options['wrongExtension'] = Yii::$app->getI18n()->format($this->wrongExtension, [
+            $options['wrongExtension'] = $this->formatMessage($this->wrongExtension, [
                 'attribute' => $label,
                 'extensions' => implode(', ', $this->extensions),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->minSize !== null) {
             $options['minSize'] = $this->minSize;
-            $options['tooSmall'] = Yii::$app->getI18n()->format($this->tooSmall, [
+            $options['tooSmall'] = $this->formatMessage($this->tooSmall, [
                 'attribute' => $label,
                 'limit' => $this->minSize,
                 'formattedLimit' => Yii::$app->formatter->asShortSize($this->minSize),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxSize !== null) {
             $options['maxSize'] = $this->maxSize;
-            $options['tooBig'] = Yii::$app->getI18n()->format($this->tooBig, [
+            $options['tooBig'] = $this->formatMessage($this->tooBig, [
                 'attribute' => $label,
                 'limit' => $this->getSizeLimit(),
                 'formattedLimit' => Yii::$app->formatter->asShortSize($this->getSizeLimit()),
-            ], Yii::$app->language);
+            ]);
         }
 
         if ($this->maxFiles !== null) {
             $options['maxFiles'] = $this->maxFiles;
-            $options['tooMany'] = Yii::$app->getI18n()->format($this->tooMany, [
+            $options['tooMany'] = $this->formatMessage($this->tooMany, [
                 'attribute' => $label,
                 'limit' => $this->maxFiles,
-            ], Yii::$app->language);
+            ]);
         }
 
         return $options;

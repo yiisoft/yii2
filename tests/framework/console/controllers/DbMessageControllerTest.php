@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
@@ -6,17 +12,20 @@ use yii\db\Connection;
 
 /**
  * Tests that [[\yii\console\controllers\MessageController]] works as expected with DB message format.
+ *
+ * @group db
+ * @group mysql
  */
 class DbMessageControllerTest extends BaseMessageControllerTest
 {
     protected static $driverName = 'mysql';
     protected static $database;
-    
+
     /**
      * @var Connection
      */
     protected static $db;
-    
+
     protected static function runConsoleAction($route, $params = [])
     {
         if (Yii::$app === null) {
@@ -34,14 +43,14 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 
         ob_start();
         $result = Yii::$app->runAction($route, $params);
-        echo "Result is " . $result;
+        echo 'Result is ' . $result;
         if ($result !== \yii\console\Controller::EXIT_CODE_NORMAL) {
             ob_end_flush();
         } else {
             ob_end_clean();
         }
     }
-    
+
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -55,7 +64,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
 
         static::runConsoleAction('migrate/up', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
     }
-    
+
     public static function tearDownAfterClass()
     {
         static::runConsoleAction('migrate/down', ['migrationPath' => '@yii/i18n/migrations/', 'interactive' => false]);
@@ -65,15 +74,14 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         Yii::$app = null;
         parent::tearDownAfterClass();
     }
-    
+
     public function tearDown()
     {
         parent::tearDown();
         Yii::$app = null;
     }
-    
+
     /**
-     * @throws \yii\base\InvalidParamException
      * @throws \yii\db\Exception
      * @throws \yii\base\InvalidConfigException
      * @return \yii\db\Connection
@@ -81,7 +89,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
     public static function getConnection()
     {
         if (static::$db == null) {
-            $db = new Connection;
+            $db = new Connection();
             $db->dsn = static::$database['dsn'];
             if (isset(static::$database['username'])) {
                 $db->username = static::$database['username'];
@@ -97,7 +105,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         }
         return static::$db;
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -108,7 +116,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
             'languages' => [$this->language],
             'sourcePath' => $this->sourcePath,
             'overwrite' => true,
-            'db' => static::$db
+            'db' => static::$db,
         ];
     }
 
@@ -124,12 +132,12 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         foreach ($messages as $source => $translation) {
             $lastPk = static::$db->schema->insert('source_message', [
                 'category' => $category,
-                'message' => $source
+                'message' => $source,
             ]);
             static::$db->createCommand()->insert('message', [
                 'id' => $lastPk['id'],
                 'language' => $this->language,
-                'translation' => $translation
+                'translation' => $translation,
             ])->execute();
         }
     }
@@ -148,9 +156,9 @@ class DbMessageControllerTest extends BaseMessageControllerTest
                 't2.language' => $this->language,
             ])->all(static::$db), 'message', 'translation');
     }
-    
+
     // DbMessage tests variants:
-    
+
     /**
      * Source is marked instead of translation.
      * @depends testMerge
@@ -170,7 +178,7 @@ class DbMessageControllerTest extends BaseMessageControllerTest
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $obsoleteMessage = '@@obsolete message@@';
-        
+
         $messages = $this->loadMessages($category);
 
         $this->assertArrayHasKey($obsoleteMessage, $messages, "Obsolete message should not be removed. Command output:\n\n" . $out);

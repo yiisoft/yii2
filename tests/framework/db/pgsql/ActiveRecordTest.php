@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\pgsql;
 
@@ -29,19 +34,19 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $customer->save(false);
 
         $customer->refresh();
-        $this->assertSame(false, $customer->bool_status);
+        $this->assertFalse($customer->bool_status);
 
         $customer->bool_status = true;
         $customer->save(false);
 
         $customer->refresh();
-        $this->assertSame(true, $customer->bool_status);
+        $this->assertTrue($customer->bool_status);
 
         $customers = $customerClass::find()->where(['bool_status' => true])->all();
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
 
         $customers = $customerClass::find()->where(['bool_status' => false])->all();
-        $this->assertEquals(1, count($customers));
+        $this->assertCount(1, $customers);
     }
 
     public function testFindAsArray()
@@ -63,7 +68,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
         // find all asArray
         $customers = $customerClass::find()->asArray()->all();
-        $this->assertEquals(3, count($customers));
+        $this->assertCount(3, $customers);
         $this->assertArrayHasKey('id', $customers[0]);
         $this->assertArrayHasKey('name', $customers[0]);
         $this->assertArrayHasKey('email', $customers[0]);
@@ -106,8 +111,8 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertEquals(1, BoolAR::find()->where('bool_col = :bool_col', ['bool_col' => true])->count('*', $db));
         $this->assertEquals(1, BoolAR::find()->where('bool_col = :bool_col', ['bool_col' => false])->count('*', $db));
 
-        $this->assertSame(true,  BoolAR::find()->where(['bool_col' => true])->one($db)->bool_col);
-        $this->assertSame(false, BoolAR::find()->where(['bool_col' => false])->one($db)->bool_col);
+        $this->assertTrue(BoolAR::find()->where(['bool_col' => true])->one($db)->bool_col);
+        $this->assertFalse(BoolAR::find()->where(['bool_col' => false])->one($db)->bool_col);
     }
 
     /**
@@ -118,7 +123,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $db = $this->getConnection();
         $db->charset = 'utf8';
 
-        $db->createCommand("DROP TABLE IF EXISTS bool_user;")->execute();
+        $db->createCommand('DROP TABLE IF EXISTS bool_user;')->execute();
         $db->createCommand()->createTable('bool_user', [
             'id' => Schema::TYPE_PK,
             'username' => Schema::TYPE_STRING . ' NOT NULL',
@@ -141,9 +146,9 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $user->email = 'test@example.com';
         $user->save(false);
 
-        $this->assertEquals(1, count(UserAR::find()->where(['is_deleted' => false])->all($db)));
-        $this->assertEquals(0, count(UserAR::find()->where(['is_deleted' => true])->all($db)));
-        $this->assertEquals(1, count(UserAR::find()->where(['is_deleted' => [true, false]])->all($db)));
+        $this->assertCount(1, UserAR::find()->where(['is_deleted' => false])->all($db));
+        $this->assertCount(0, UserAR::find()->where(['is_deleted' => true])->all($db));
+        $this->assertCount(1, UserAR::find()->where(['is_deleted' => [true, false]])->all($db));
     }
 
     public function testBooleanDefaultValues()
@@ -154,8 +159,8 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $this->assertNull($model->default_false);
         $model->loadDefaultValues();
         $this->assertNull($model->bool_col);
-        $this->assertSame(true, $model->default_true);
-        $this->assertSame(false, $model->default_false);
+        $this->assertTrue($model->default_true);
+        $this->assertFalse($model->default_false);
 
         $this->assertTrue($model->save(false));
     }

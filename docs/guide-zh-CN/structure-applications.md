@@ -15,11 +15,11 @@ Yii有两种应用主体: [[yii\web\Application|网页应用主体]] and
 如下所示，当 [入口脚本](structure-entry-scripts.md) 创建了一个应用主体，它会加载一个 [配置](concept-configurations.md) 文件并传给应用主体。
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // 加载应用主体配置
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // 实例化应用主体、配置应用主体
 (new yii\web\Application($config))->run();

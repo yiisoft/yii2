@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -46,19 +51,22 @@ class NumberValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+
         $this->oldLocale = setlocale(LC_NUMERIC, 0);
+
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testEnsureMessageOnInit()
     {
-        $val = new NumberValidator;
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_null($val->max));
+        $val = new NumberValidator();
+        $this->assertInternalType('string', $val->message);
+        $this->assertTrue($val->max === null);
         $val = new NumberValidator(['min' => -1, 'max' => 20, 'integerOnly' => true]);
-        $this->assertTrue(is_string($val->message));
-        $this->assertTrue(is_string($val->tooSmall));
-        $this->assertTrue(is_string($val->tooBig));
+        $this->assertInternalType('string', $val->message);
+        $this->assertInternalType('string', $val->tooSmall);
+        $this->assertInternalType('string', $val->tooBig);
     }
 
     public function testValidateValueSimple()
@@ -207,7 +215,6 @@ class NumberValidatorTest extends TestCase
         $model->attr_number = new \stdClass();
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-
     }
 
     public function testValidateAttributeWithLocaleWhereDecimalPointIsComma()
@@ -231,13 +238,13 @@ class NumberValidatorTest extends TestCase
     {
         $val = new NumberValidator([
             'tooSmall' => '{attribute} is to small.',
-            'min' => 5
+            'min' => 5,
         ]);
         $model = new FakedValidationModel();
         $model->attr_number = 0;
         $val->validateAttribute($model, 'attr_number');
         $this->assertTrue($model->hasErrors('attr_number'));
-        $this->assertEquals(1, count($model->getErrors('attr_number')));
+        $this->assertCount(1, $model->getErrors('attr_number'));
         $msgs = $model->getErrors('attr_number');
         $this->assertSame('attr_number is to small.', $msgs[0]);
     }

@@ -1,6 +1,13 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\db\oci;
+
+use yii\db\Transaction;
 
 /**
  * @group db
@@ -18,7 +25,7 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $unserialized = unserialize($serialized);
         $this->assertInstanceOf('yii\db\Connection', $unserialized);
 
-        $this->assertEquals(123, $unserialized->createCommand("SELECT 123 FROM DUAL")->queryScalar());
+        $this->assertEquals(123, $unserialized->createCommand('SELECT 123 FROM DUAL')->queryScalar());
     }
 
     public function testQuoteTableName()
@@ -66,5 +73,16 @@ class ConnectionTest extends \yiiunit\framework\db\ConnectionTest
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{table}}."column"'));
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{%table}}.[[column]]'));
         $this->assertEquals('"table"."column"', $connection->quoteSql('{{%table}}."column"'));
+    }
+
+    public function testTransactionIsolation()
+    {
+        $connection = $this->getConnection(true);
+
+        $transaction = $connection->beginTransaction(Transaction::READ_COMMITTED);
+        $transaction->commit();
+
+        $transaction = $connection->beginTransaction(Transaction::SERIALIZABLE);
+        $transaction->commit();
     }
 }

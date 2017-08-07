@@ -8,6 +8,7 @@
 namespace yii\db\mysql;
 
 use yii\base\InvalidArgumentException;
+use yii\base\NotSupportedException;
 use yii\db\Exception;
 use yii\db\Expression;
 
@@ -120,6 +121,32 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
+     * @inheritDoc
+     */
+    public function dropUnique($name, $table)
+    {
+        return $this->dropIndex($name, $table);
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function addCheck($name, $table, $expression)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException this is not supported by MySQL.
+     */
+    public function dropCheck($name, $table)
+    {
+        throw new NotSupportedException(__METHOD__ . ' is not supported by MySQL.');
+    }
+
+    /**
      * Creates a SQL statement for resetting the sequence value of a table's primary key.
      * The sequence will be reset such that the primary key of the next new row inserted
      * will have the specified value or 1.
@@ -144,9 +171,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "ALTER TABLE $tableName AUTO_INCREMENT=$value";
         } elseif ($table === null) {
             throw new InvalidArgumentException("Table not found: $tableName");
-        } else {
-            throw new InvalidArgumentException("There is no sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidArgumentException("There is no sequence associated with table '$tableName'.");
     }
 
     /**
@@ -185,6 +212,25 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
+    protected function hasLimit($limit)
+    {
+        // In MySQL limit argument must be nonnegative integer constant
+        return ctype_digit((string) $limit);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function hasOffset($offset)
+    {
+        // In MySQL offset argument must be nonnegative integer constant
+        $offset = (string) $offset;
+        return ctype_digit($offset) && $offset !== '0';
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function insert($table, $columns, &$params)
     {
         $schema = $this->db->getSchema();
@@ -197,7 +243,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values) = $this->prepareInsertSelectSubQuery($columns, $schema);
+            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -207,7 +253,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                         $params[$n] = $v;
                     }
                 } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
+                    [$sql, $params] = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
@@ -40,11 +45,6 @@ class FormatConverterTest extends TestCase
      */
     public function testPHPDefaultFormat()
     {
-
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('Can not test on HHVM because HHVM returns inconsistend with PHP date format patterns.');
-        }
-
         foreach (FormatConverter::$phpFallbackDatePatterns as $format => $formats) {
             foreach ($formats as $name => $expected) {
                 $expected = FormatConverter::convertDatePhpToIcu($expected);
@@ -80,6 +80,18 @@ class FormatConverterTest extends TestCase
                             $this->convertFormat($format),
                             'UTC'
                         );
+                        switch ($format) {
+                            case 'short' :
+                                $expected = str_replace('yy', 'yy,', $expected);
+                                break;
+                            case 'medium' :
+                                $expected = str_replace(' y', ' y,', $expected);
+                                break;
+                            case 'long' :
+                            case 'full' :
+                                $expected = str_replace(' y', " y 'at'", $expected);
+                                break;
+                        }
                         break;
                     default:
                         throw new Exception("Format \"$name\" is not supported");

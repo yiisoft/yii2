@@ -1,12 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\behaviors;
 
 use Yii;
 use yii\base\DynamicModel;
-use yiiunit\TestCase;
-use yii\db\ActiveRecord;
 use yii\behaviors\AttributeTypecastBehavior;
+use yii\db\ActiveRecord;
+use yiiunit\TestCase;
 
 /**
  * Unit test for [[\yii\behaviors\AttributeTypecastBehavior]].
@@ -30,8 +35,8 @@ class AttributeTypecastBehaviorTest extends TestCase
                 'db' => [
                     'class' => '\yii\db\Connection',
                     'dsn' => 'sqlite::memory:',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $columns = [
@@ -49,6 +54,8 @@ class AttributeTypecastBehaviorTest extends TestCase
     {
         parent::tearDown();
         AttributeTypecastBehavior::clearAutoDetectedAttributeTypes();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     // Tests :
@@ -68,7 +75,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('123', $model->name);
         $this->assertSame(58, $model->amount);
         $this->assertSame(100.8, $model->price);
-        $this->assertSame(true, $model->isActive);
+        $this->assertTrue($model->isActive);
         $this->assertSame('callback: foo', $model->callback);
     }
 
@@ -100,7 +107,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $this->assertSame('', $model->name);
         $this->assertSame(0, $model->amount);
         $this->assertSame(0.0, $model->price);
-        $this->assertSame(false, $model->isActive);
+        $this->assertFalse($model->isActive);
         $this->assertSame('callback: ', $model->callback);
     }
 

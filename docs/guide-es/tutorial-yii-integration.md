@@ -25,10 +25,10 @@ para instalar el cargador automático de Composer:
 
 ```php
 // instalar el cargador automático de  Composer
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // incluir rl fichero de la clase Yii
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 ### Usando librerías Descargadas <span id="using-downloaded-libs"></span>
@@ -82,7 +82,7 @@ instalar Yii , e iniciar  Yii.
 Si el sistema de terceros usa Composer para manejar sus dependencias, simplemente ejecuta estos comandos
 para instalar Yii:
 
-    composer global require "fxp/composer-asset-plugin:^1.2.0"
+    composer global require "fxp/composer-asset-plugin:^1.3.1"
     composer require yiisoft/yii2
     composer install
 
@@ -114,9 +114,9 @@ y desempaquetarla en el directorio `BasePath/vendor`.
 Después, debes de modificar el script de entrada de sistema de terceros para incluir el siguiente código al principio:
 
 ```php
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$yiiConfig = require(__DIR__ . '/../config/yii/web.php');
+$yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // No ejecutes run() aquí
 ```
 
@@ -149,14 +149,14 @@ Segundo, modifica el script de entrada de la aplicación como sigue,
 
 ```php
 // incluir la clase Yii personalizada descrita debajo
-require(__DIR__ . '/../components/Yii.php');
+require __DIR__ . '/../components/Yii.php';
 
 // configuración para la aplicación Yii 2
-$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
+$yii2Config = require __DIR__ . '/../config/yii2/web.php';
 new yii\web\Application($yii2Config); // No llamar a run()
 
 // configuración para la aplicación Yii 1
-$yii1Config = require(__DIR__ . '/../config/yii1/main.php');
+$yii1Config = require __DIR__ . '/../config/yii1/main.php';
 Yii::createWebApplication($yii1Config)->run();
 ```
 
@@ -165,10 +165,10 @@ El código anterior incluye el fichero con la clase `Yii` personalizada, que tie
 
 ```php
 $yii2path = '/path/to/yii2';
-require($yii2path . '/BaseYii.php'); // Yii 2.x
+require $yii2path . '/BaseYii.php'; // Yii 2.x
 
 $yii1path = '/path/to/yii1';
-require($yii1path . '/YiiBase.php'); // Yii 1.x
+require $yii1path . '/YiiBase.php'; // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {

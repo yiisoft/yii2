@@ -12,8 +12,7 @@ Yii 2 コアフレームワークコードスタイル
   しかし、コアコードや公式エクステンションに対して実際に寄稿する場合には、それらを英語で書く必要があります。
 
 
-1. 概要
--------
+## 1. 概要
 
 全体として、私たちは [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) 互換のスタイルを使っていますので、
 [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) に適用されることは、すべて私たちのコードスタイルにも適用されます。
@@ -29,8 +28,7 @@ Yii 2 コアフレームワークコードスタイル
 - プロパティ名は private である場合はアンダースコアで始まらなければならない。
 - `else if` ではなく常に `elseif` を使用すること。
 
-2. ファイル
------------
+## 2. ファイル
 
 ### 2.1. PHP タグ
 
@@ -43,13 +41,11 @@ Yii 2 コアフレームワークコードスタイル
 
 PHP コードは BOM 無しの UTF-8 のみを使わなければなりません。
 
-3. クラス名
------------
+## 3. クラス名
 
 クラス名は `StudlyCaps` で宣言されなければなりません。例えば、`Controller`、`Model`。
 
-4. クラス
----------
+## 4. クラス
 
 ここで "クラス" という用語はあらゆるクラスとインタフェイスを指すものとします。
 
@@ -65,7 +61,7 @@ PHP コードは BOM 無しの UTF-8 のみを使わなければなりません�
 /**
  * ドキュメント
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // コード
 }
@@ -373,7 +369,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 - ドキュメントの無いコードは許容されません。
 - 全てのクラスファイルは、ファイルレベルの doc ブロックを各ファイルの先頭に持ち、クラスレベルの doc ブロックを各クラスの直前に持たなければなりません。
 - メソッドが実際に何も返さないときは `@return` を使う必要はありません。
-- `yii\base\Object` から派生するクラスのすべての仮想プロパティは、クラスの doc ブロックで `@property` タグでドキュメントされます。
+- `yii\base\BaseObject` から派生するクラスのすべての仮想プロパティは、クラスの doc ブロックで `@property` タグでドキュメントされます。
   これらの注釈は、`build` ディレクトリで `./build php-doc` コマンドを走らせることにより、対応する getter や setter の `@return` や `@param` タグから自動的に生成されます。
   getter や setter に `@property` タグを追加することによって、これらのメソッドによって導入されるプロパティに対してドキュメントのメッセージを明示的に与えることが出来ます。
   これは `@return` で記述されているのとは違う説明を与えたい場合に有用です。
@@ -415,7 +411,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 

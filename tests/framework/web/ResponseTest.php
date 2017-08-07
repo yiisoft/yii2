@@ -1,9 +1,17 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
-use Yii;
+use Error;
+use Exception;
+use RuntimeException;
 use yii\helpers\StringHelper;
+use yii\web\HttpException;
 
 /**
  * @group web
@@ -19,13 +27,13 @@ class ResponseTest extends \yiiunit\TestCase
     {
         parent::setUp();
         $this->mockWebApplication();
-        $this->response = new \yii\web\Response;
+        $this->response = new \yii\web\Response();
     }
 
     public function rightRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
-        // http://www.w3.org/Protocols/rfc2616/rfc2616.txt
+        // https://tools.ietf.org/html/rfc2616
         return [
             ['0-5', '0-5', 6, '12ёж'],
             ['2-', '2-66', 65, 'ёжик3456798áèabcdefghijklmnopqrstuvwxyz!"§$%&/(ёжик)=?'],
@@ -48,8 +56,8 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals($expectedContent, $content);
         $this->assertEquals(206, $this->response->statusCode);
         $headers = $this->response->headers;
-        $this->assertEquals("bytes", $headers->get('Accept-Ranges'));
-        $this->assertEquals("bytes " . $expectedHeader . '/' . StringHelper::byteLength($fullContent), $headers->get('Content-Range'));
+        $this->assertEquals('bytes', $headers->get('Accept-Ranges'));
+        $this->assertEquals('bytes ' . $expectedHeader . '/' . StringHelper::byteLength($fullContent), $headers->get('Content-Range'));
         $this->assertEquals('text/plain', $headers->get('Content-Type'));
         $this->assertEquals("$length", $headers->get('Content-Length'));
     }
@@ -57,12 +65,12 @@ class ResponseTest extends \yiiunit\TestCase
     public function wrongRanges()
     {
         // TODO test more cases for range requests and check for rfc compatibility
-        // http://www.w3.org/Protocols/rfc2616/rfc2616.txt
+        // https://tools.ietf.org/html/rfc2616
         return [
-            ['1-2,3-5,6-10'],	// multiple range request not supported
-            ['5-1'],			// last-byte-pos value is less than its first-byte-pos value
-            ['-100000'],		// last-byte-pos bigger then content length
-            ['10000-'],			// first-byte-pos bigger then content length
+            ['1-2,3-5,6-10'], // multiple range request not supported
+            ['5-1'],          // last-byte-pos value is less than its first-byte-pos value
+            ['-100000'],      // last-byte-pos bigger then content length
+            ['10000-'],       // first-byte-pos bigger then content length
         ];
     }
 
@@ -71,7 +79,7 @@ class ResponseTest extends \yiiunit\TestCase
      */
     public function testSendFileWrongRanges($rangeHeader)
     {
-        $this->setExpectedException('yii\web\RangeNotSatisfiableHttpException');
+        $this->expectException('yii\web\RangeNotSatisfiableHttpException');
 
         $dataFile = \Yii::getAlias('@yiiunit/data/web/data.txt');
         $_SERVER['HTTP_RANGE'] = 'bytes=' . $rangeHeader;
@@ -90,7 +98,7 @@ class ResponseTest extends \yiiunit\TestCase
     {
         ob_start();
         $this->response->sendContentAsFile('test', 'test.txt')->send([
-            'mimeType' => 'text/plain'
+            'mimeType' => 'text/plain',
         ]);
         $content = ob_get_clean();
 
@@ -117,5 +125,57 @@ class ResponseTest extends \yiiunit\TestCase
         $this->assertEquals($this->response->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
         $this->assertEquals($this->response->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
         $this->assertEquals($this->response->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+    }
+
+    /**
+     * @dataProvider dataProviderSetStatusCodeByException
+     */
+    public function testSetStatusCodeByException($exception, $statusCode)
+    {
+        $this->response->setStatusCodeByException($exception);
+        $this->assertEquals($statusCode, $this->response->getStatusCode());
+    }
+
+    public function dataProviderSetStatusCodeByException()
+    {
+        $data = [
+            [
+                new Exception(),
+                500,
+            ],
+            [
+                new RuntimeException(),
+                500,
+            ],
+            [
+                new HttpException(500),
+                500,
+            ],
+            [
+                new HttpException(403),
+                403,
+            ],
+            [
+                new HttpException(404),
+                404,
+            ],
+            [
+                new HttpException(301),
+                301,
+            ],
+            [
+                new HttpException(200),
+                200,
+            ],
+        ];
+
+        if (class_exists('Error')) {
+            $data[] = [
+                new Error(),
+                500,
+            ];
+        }
+
+        return $data;
     }
 }

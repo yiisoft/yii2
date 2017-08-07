@@ -10,10 +10,11 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\helpers\Inflector;
-use yii\helpers\Url;
+use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
+use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
+use yii\helpers\Url;
 
 /**
  * The web Response class represents an HTTP response
@@ -53,6 +54,7 @@ use yii\helpers\StringHelper;
  * @property bool $isServerError Whether this response indicates a server error. This property is read-only.
  * @property bool $isSuccessful Whether this response is successful. This property is read-only.
  * @property int $statusCode The HTTP status code to send with the response.
+ * @property \Exception|\Error $statusCodeByException The exception object. This property is write-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @author Carsten Brandt <mail@cebe.cc>
@@ -216,6 +218,7 @@ class Response extends \yii\base\Response
         431 => 'Request Header Fields Too Large',
         449 => 'Retry With',
         450 => 'Blocked by Windows Parental Controls',
+        451 => 'Unavailable For Legal Reasons',
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway or Proxy Error',
@@ -271,6 +274,7 @@ class Response extends \yii\base\Response
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
      * @throws InvalidArgumentException if the status code is invalid.
+     * @return $this the response object itself
      */
     public function setStatusCode($value, $text = null)
     {
@@ -286,6 +290,24 @@ class Response extends \yii\base\Response
         } else {
             $this->statusText = $text;
         }
+        return $this;
+    }
+
+    /**
+     * Sets the response status code based on the exception.
+     * @param \Exception|\Error $e the exception object.
+     * @throws InvalidArgumentException if the status code is invalid.
+     * @return $this the response object itself
+     * @since 2.0.12
+     */
+    public function setStatusCodeByException($e)
+    {
+        if ($e instanceof HttpException) {
+            $this->setStatusCode($e->statusCode);
+        } else {
+            $this->setStatusCode(500);
+        }
+        return $this;
     }
 
     /**
@@ -296,7 +318,7 @@ class Response extends \yii\base\Response
     public function getHeaders()
     {
         if ($this->_headers === null) {
-            $this->_headers = new HeaderCollection;
+            $this->_headers = new HeaderCollection();
         }
         return $this->_headers;
     }
@@ -375,7 +397,7 @@ class Response extends \yii\base\Response
         }
         foreach ($this->getCookies() as $cookie) {
             $value = $cookie->value;
-            if ($cookie->expire != 1  && isset($validationKey)) {
+            if ($cookie->expire != 1 && isset($validationKey)) {
                 $value = Yii::$app->getSecurity()->hashData(serialize([$cookie->name, $value]), $validationKey);
             }
             setcookie($cookie->name, $value, $cookie->expire, $cookie->path, $cookie->domain, $cookie->secure, $cookie->httpOnly);
@@ -397,7 +419,7 @@ class Response extends \yii\base\Response
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
-            list ($handle, $begin, $end) = $this->stream;
+            [$handle, $begin, $end] = $this->stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -495,7 +517,7 @@ class Response extends \yii\base\Response
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
         if ($begin != 0 || $end != $contentLength - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$contentLength");
@@ -550,7 +572,7 @@ class Response extends \yii\base\Response
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
         if ($begin != 0 || $end != $fileSize - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$fileSize");
@@ -626,9 +648,9 @@ class Response extends \yii\base\Response
         }
         if ($start < 0 || $start > $end) {
             return false;
-        } else {
-            return [$start, $end];
         }
+
+        return [$start, $end];
     }
 
     /**
@@ -795,11 +817,11 @@ class Response extends \yii\base\Response
      *   Note that the route is with respect to the whole application, instead of relative to a controller or module.
      *   [[Url::to()]] will be used to convert the array into a URL.
      *
-     * Any relative URL will be converted into an absolute one by prepending it with the host info
-     * of the current request.
+     * Any relative URL that starts with a single forward slash "/" will be converted
+     * into an absolute one by prepending it with the host info of the current request.
      *
      * @param int $statusCode the HTTP status code. Defaults to 302.
-     * See <http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html>
+     * See <https://tools.ietf.org/html/rfc2616#section-10>
      * for details about HTTP status code
      * @param bool $checkAjax whether to specially handle AJAX (and PJAX) requests. Defaults to true,
      * meaning if the current request is an AJAX or PJAX request, then calling this method will cause the browser
@@ -886,7 +908,7 @@ class Response extends \yii\base\Response
     public function getCookies()
     {
         if ($this->_cookies === null) {
-            $this->_cookies = new CookieCollection;
+            $this->_cookies = new CookieCollection();
         }
         return $this->_cookies;
     }
@@ -977,9 +999,15 @@ class Response extends \yii\base\Response
     protected function defaultFormatters()
     {
         return [
-            self::FORMAT_HTML => HtmlResponseFormatter::class,
-            self::FORMAT_XML => XmlResponseFormatter::class,
-            self::FORMAT_JSON => JsonResponseFormatter::class,
+            self::FORMAT_HTML => [
+                'class' => HtmlResponseFormatter::class,
+            ],
+            self::FORMAT_XML => [
+                'class' => XmlResponseFormatter::class,
+            ],
+            self::FORMAT_JSON => [
+                'class' => JsonResponseFormatter::class,
+            ],
             self::FORMAT_JSONP => [
                 'class' => JsonResponseFormatter::class,
                 'useJsonp' => true,

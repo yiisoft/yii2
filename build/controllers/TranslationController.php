@@ -47,7 +47,7 @@ class TranslationController extends Controller
 
                 $errors = $this->checkFiles($translatedFilePath);
                 $diff = empty($errors) ? $this->getDiff($translatedFilePath, $sourceFilePath) : '';
-                if(!empty($diff)) {
+                if (!empty($diff)) {
                     $errors[] = 'Translation outdated.';
                 }
 
@@ -68,7 +68,7 @@ class TranslationController extends Controller
                 $translatedFilePath = $translationPath . '/' . $fileinfo->getFilename();
 
                 $errors = $this->checkFiles(null, $translatedFilePath);
-                if(!empty($errors)) {
+                if (!empty($errors)) {
                     $results[$fileinfo->getFilename()]['errors'] = $errors;
                 }
             }
@@ -113,7 +113,7 @@ class TranslationController extends Controller
     protected function getDiff($translatedFilePath, $sourceFilePath)
     {
         $lastTranslationHash = shell_exec('git log -1 --format=format:"%H" -- ' . $translatedFilePath);
-        return shell_exec('git diff ' . $lastTranslationHash.'..HEAD -- ' . $sourceFilePath);
+        return shell_exec('git diff ' . $lastTranslationHash . '..HEAD -- ' . $sourceFilePath);
     }
 
     /**

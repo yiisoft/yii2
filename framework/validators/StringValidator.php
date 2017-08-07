@@ -159,36 +159,39 @@ class StringValidator extends Validator
         return 'yii.validation.string(value, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getClientOptions($model, $attribute)
     {
         $label = $model->getAttributeLabel($attribute);
 
         $options = [
-            'message' => Yii::$app->getI18n()->format($this->message, [
+            'message' => $this->formatMessage($this->message, [
                 'attribute' => $label,
-            ], Yii::$app->language),
+            ]),
         ];
 
         if ($this->min !== null) {
             $options['min'] = $this->min;
-            $options['tooShort'] = Yii::$app->getI18n()->format($this->tooShort, [
+            $options['tooShort'] = $this->formatMessage($this->tooShort, [
                 'attribute' => $label,
                 'min' => $this->min,
-            ], Yii::$app->language);
+            ]);
         }
         if ($this->max !== null) {
             $options['max'] = $this->max;
-            $options['tooLong'] = Yii::$app->getI18n()->format($this->tooLong, [
+            $options['tooLong'] = $this->formatMessage($this->tooLong, [
                 'attribute' => $label,
                 'max' => $this->max,
-            ], Yii::$app->language);
+            ]);
         }
         if ($this->length !== null) {
             $options['is'] = $this->length;
-            $options['notEqual'] = Yii::$app->getI18n()->format($this->notEqual, [
+            $options['notEqual'] = $this->formatMessage($this->notEqual, [
                 'attribute' => $label,
                 'length' => $this->length,
-            ], Yii::$app->language);
+            ]);
         }
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;

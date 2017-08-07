@@ -10,8 +10,6 @@ namespace yiiunit\framework\web;
 use Yii;
 use yii\base\InlineAction;
 use yii\web\Response;
-use yiiunit\framework\web\stubs\Bar;
-use yiiunit\framework\web\stubs\OtherQux;
 use yiiunit\TestCase;
 
 /**
@@ -19,22 +17,19 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
-
     public function testBindActionParams()
     {
-
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
 
         $params = ['fromGet' => 'from query params', 'q' => 'd426', 'validator' => 'avaliable'];
-        list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
+        [$fromGet, $other] = $this->controller->bindActionParams($aksi1, $params);
         $this->assertEquals('from query params', $fromGet);
         $this->assertEquals('default', $other);
 
         $params = ['fromGet' => 'from query params', 'q' => 'd426', 'other' => 'avaliable'];
-        list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
+        [$fromGet, $other] = $this->controller->bindActionParams($aksi1, $params);
         $this->assertEquals('from query params', $fromGet);
         $this->assertEquals('avaliable', $other);
-
     }
 
     public function testAsJson()
@@ -78,7 +73,6 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
         $this->assertEquals($this->controller->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
         $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
-
     }
 
     protected function setUp()
@@ -94,9 +88,8 @@ class ControllerTest extends TestCase
                     'scriptFile' => __DIR__ . '/index.php',
                     'scriptUrl' => '/index.php',
                 ],
-            ]
+            ],
         ]));
         $this->mockWebApplication(['controller' => $this->controller]);
     }
-
 }

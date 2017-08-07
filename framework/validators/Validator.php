@@ -49,6 +49,8 @@ use yii\captcha\CaptchaValidator;
  *
  * For more details and usage information on Validator, see the [guide article on validators](guide:input-validation).
  *
+ * @property array $attributeNames Attribute names. This property is read-only.
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -207,7 +209,7 @@ class Validator extends Component
     {
         $params['attributes'] = $attributes;
 
-        if ($type instanceof \Closure || $model->hasMethod($type)) {
+        if ($type instanceof \Closure || ($model->hasMethod($type) && !isset(static::$builtInValidators[$type]))) {
             // method-based validator
             $params['class'] = __NAMESPACE__ . '\InlineValidator';
             $params['method'] = $type;
@@ -240,24 +242,22 @@ class Validator extends Component
      * Validates the specified object.
      * @param \yii\base\Model $model the data model being validated
      * @param array|null $attributes the list of attributes to be validated.
-     * Note that if an attribute is not associated with the validator, or is is prefixed with `!` char - it will be
+     * Note that if an attribute is not associated with the validator - it will be
      * ignored. If this parameter is null, every attribute listed in [[attributes]] will be validated.
      */
     public function validateAttributes($model, $attributes = null)
     {
         if (is_array($attributes)) {
             $newAttributes = [];
+            $attributeNames = $this->getAttributeNames();
             foreach ($attributes as $attribute) {
-                if (in_array($attribute, $this->attributes) || in_array('!' . $attribute, $this->attributes)) {
+                if (in_array($attribute, $attributeNames, true)) {
                     $newAttributes[] = $attribute;
                 }
             }
             $attributes = $newAttributes;
         } else {
-            $attributes = [];
-            foreach ($this->attributes as $attribute) {
-                $attributes[] = $attribute[0] === '!' ? substr($attribute, 1) : $attribute;
-            }
+            $attributes = $this->getAttributeNames();
         }
 
         foreach ($attributes as $attribute) {
@@ -299,7 +299,7 @@ class Validator extends Component
             return true;
         }
 
-        list($message, $params) = $result;
+        [$message, $params] = $result;
         $params['attribute'] = Yii::t('yii', 'the input value');
         if (is_array($value)) {
             $params['value'] = 'array()';
@@ -308,7 +308,7 @@ class Validator extends Component
         } else {
             $params['value'] = $value;
         }
-        $error = Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+        $error = $this->formatMessage($message, $params);
 
         return false;
     }
@@ -354,7 +354,7 @@ class Validator extends Component
      * @param string $attribute the name of the attribute to be validated.
      * @param \yii\web\View $view the view object that is going to be used to render views or view files
      * containing a model form with this validator applied.
-     * @return string the client-side validation script. Null if the validator does not support
+     * @return string|null the client-side validation script. Null if the validator does not support
      * client-side validation.
      * @see getClientOptions()
      * @see \yii\widgets\ActiveForm::enableClientValidation
@@ -415,7 +415,7 @@ class Validator extends Component
                 $params['value'] = $value;
             }
         }
-        $model->addError($attribute, Yii::$app->getI18n()->format($message, $params, Yii::$app->language));
+        $model->addError($attribute, $this->formatMessage($message, $params));
     }
 
     /**
@@ -429,8 +429,41 @@ class Validator extends Component
     {
         if ($this->isEmpty !== null) {
             return call_user_func($this->isEmpty, $value);
-        } else {
-            return $value === null || $value === [] || $value === '';
         }
+
+        return $value === null || $value === [] || $value === '';
+    }
+
+    /**
+     * Formats a mesage using the I18N, or simple strtr if `\Yii::$app` is not available.
+     * @param string $message
+     * @param array $params
+     * @since 2.0.12
+     * @return string
+     */
+    protected function formatMessage($message, $params)
+    {
+        if (Yii::$app !== null) {
+            return \Yii::$app->getI18n()->format($message, $params, Yii::$app->language);
+        }
+
+        $placeholders = [];
+        foreach ((array) $params as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        return ($placeholders === []) ? $message : strtr($message, $placeholders);
+    }
+
+    /**
+     * Returns cleaned attribute names without the `!` character at the beginning
+     * @return array attribute names.
+     * @since 2.0.12
+     */
+    public function getAttributeNames()
+    {
+        return array_map(function ($attribute) {
+            return ltrim($attribute, '!');
+        }, $this->attributes);
     }
 }

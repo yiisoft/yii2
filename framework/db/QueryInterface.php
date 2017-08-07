@@ -241,14 +241,14 @@ interface QueryInterface
 
     /**
      * Sets the LIMIT part of the query.
-     * @param int $limit the limit. Use null or negative value to disable limit.
+     * @param int|null $limit the limit. Use null or negative value to disable limit.
      * @return $this the query object itself
      */
     public function limit($limit);
 
     /**
      * Sets the OFFSET part of the query.
-     * @param int $offset the offset. Use null or negative value to disable offset.
+     * @param int|null $offset the offset. Use null or negative value to disable offset.
      * @return $this the query object itself
      */
     public function offset($offset);

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\filters\auth;
 
@@ -18,9 +23,9 @@ class AuthMethodTest extends TestCase
         $this->mockWebApplication([
             'components' => [
                 'user' => [
-                    'identityClass' => UserIdentity::class
+                    'identityClass' => UserIdentity::class,
                 ],
-            ]
+            ],
         ]);
     }
 
@@ -31,7 +36,9 @@ class AuthMethodTest extends TestCase
      */
     protected function createFilter($authenticateCallback)
     {
-        $filter = $this->getMock(AuthMethod::class, ['authenticate']);
+        $filter = $this->getMockBuilder(AuthMethod::class)
+            ->setMethods(['authenticate'])
+            ->getMock();
         $filter->method('authenticate')->willReturnCallback($authenticateCallback);
 
         return $filter;
@@ -47,9 +54,9 @@ class AuthMethodTest extends TestCase
         $controller = new Controller('test', Yii::$app);
         return new Action('index', $controller, $config);
     }
-    
+
     // Tests :
-    
+
     public function testBeforeAction()
     {
         $action = $this->createAction();
@@ -58,7 +65,7 @@ class AuthMethodTest extends TestCase
         $this->assertTrue($filter->beforeAction($action));
 
         $filter = $this->createFilter(function () {return null;});
-        $this->setExpectedException('yii\web\UnauthorizedHttpException');
+        $this->expectException('yii\web\UnauthorizedHttpException');
         $this->assertTrue($filter->beforeAction($action));
     }
 

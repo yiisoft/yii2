@@ -8,9 +8,9 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Query;
-use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**
@@ -134,7 +134,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session read handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return string the session data
      */
@@ -155,7 +155,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session write handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @param string $data session data
      * @return bool whether session write is successful
@@ -165,7 +165,7 @@ class DbSession extends MultiFieldSession
         // exception must be caught in session write handler
         // http://us.php.net/manual/en/function.session-set-save-handler.php#refsect1-function.session-set-save-handler-notes
         try {
-            $query = new Query;
+            $query = new Query();
             $exists = $query->select(['id'])
                 ->from($this->sessionTable)
                 ->where(['id' => $id])
@@ -197,7 +197,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session destroy handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param string $id session ID
      * @return bool whether session is destroyed successfully
      */
@@ -212,7 +212,7 @@ class DbSession extends MultiFieldSession
 
     /**
      * Session GC (garbage collection) handler.
-     * Do not call this method directly.
+     * @internal Do not call this method directly.
      * @param int $maxLifetime the number of seconds after which data will be seen as 'garbage' and cleaned up.
      * @return bool whether session is GCed successfully
      */

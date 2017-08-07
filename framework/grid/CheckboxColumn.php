@@ -103,9 +103,9 @@ class CheckboxColumn extends Column
     {
         if ($this->header !== null || !$this->multiple) {
             return parent::renderHeaderCellContent();
-        } else {
-            return Html::checkbox($this->getHeaderCheckBoxName(), false, ['class' => 'select-on-check-all']);
         }
+
+        return Html::checkbox($this->getHeaderCheckBoxName(), false, ['class' => 'select-on-check-all']);
     }
 
     /**

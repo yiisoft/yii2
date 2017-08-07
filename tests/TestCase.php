@@ -1,15 +1,31 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit;
 
+use Yii;
 use yii\helpers\ArrayHelper;
 
 /**
  * This is the base class for all yii framework unit tests.
  */
-abstract class TestCase extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     public static $params;
+
+    /**
+     * Clean up after test case.
+     */
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+        $logger = Yii::getLogger();
+        $logger->flush();
+    }
 
     /**
      * Returns a test configuration param from /data/config.php
@@ -20,7 +36,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     public static function getParam($name, $default = null)
     {
         if (static::$params === null) {
-            static::$params = require(__DIR__ . '/data/config.php');
+            static::$params = require __DIR__ . '/data/config.php';
         }
 
         return isset(static::$params[$name]) ? static::$params[$name] : $default;
@@ -57,13 +73,17 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
             'id' => 'testapp',
             'basePath' => __DIR__,
             'vendorPath' => $this->getVendorPath(),
+            'aliases' => [
+                '@bower' => '@vendor/bower-asset',
+                '@npm' => '@vendor/npm-asset',
+            ],
             'components' => [
                 'request' => [
                     'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
                     'scriptFile' => __DIR__ . '/index.php',
                     'scriptUrl' => '/index.php',
                 ],
-            ]
+            ],
         ], $config));
     }
 
@@ -137,7 +157,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
         }
         $property = $class->getProperty($propertyName);
         $property->setAccessible(true);
-        $property->setValue($value);
+        $property->setValue($object, $value);
         if ($revoke) {
             $property->setAccessible(false);
         }
@@ -166,8 +186,15 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase
     }
 
 
-
-
-
-
+    /**
+     * Asserts that value is one of expected values
+     *
+     * @param mixed $actual
+     * @param array $expected
+     * @param string $message
+     */
+    public function assertIsOneOf($actual, array $expected, $message = '')
+    {
+        self::assertThat($actual, new IsOneOfAssert($expected), $message);
+    }
 }

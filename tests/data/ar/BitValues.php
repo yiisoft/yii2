@@ -16,5 +16,4 @@ namespace yiiunit\data\ar;
  */
 class BitValues extends ActiveRecord
 {
-
 }

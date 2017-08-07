@@ -39,7 +39,13 @@ use yii\helpers\Console;
  */
 class Controller extends \yii\base\Controller
 {
+    /**
+     * @deprecated since 2.0.13. Use [[ExitCode::OK]] instead.
+     */
     const EXIT_CODE_NORMAL = 0;
+    /**
+     * @deprecated since 2.0.13. Use [[ExitCode::UNSPECIFIED_ERROR]] instead.
+     */
     const EXIT_CODE_ERROR = 1;
 
     /**
@@ -351,7 +357,7 @@ class Controller extends \yii\base\Controller
     public function optionAliases()
     {
         return [
-            'h' => 'help'
+            'h' => 'help',
         ];
     }
 
@@ -467,6 +473,9 @@ class Controller extends \yii\base\Controller
 
         /** @var \ReflectionParameter $reflection */
         foreach ($method->getParameters() as $i => $reflection) {
+            if ($reflection->getClass() !== null) {
+                continue;
+            }
             $name = $reflection->getName();
             $tag = isset($params[$i]) ? $params[$i] : '';
             if (preg_match('/^(\S+)\s+(\$\w+\s+)?(.*)/s', $tag, $matches)) {
