@@ -104,7 +104,7 @@ In the above, we have shown how to define a fixture about a DB table. To define 
 (e.g. a fixture about certain files and directories), you may extend from the more general base class
 [[yii\test\Fixture]] and override the [[yii\test\Fixture::load()|load()]] and [[yii\test\Fixture::unload()|unload()]] methods.
 
-It is possible to load extra fixtures into any tables using the `dataExtra` property. It is expecially
+It is possible to load extra fixtures into any tables using the `dataExtra` property. It is especially
 useful if the table in question has relations. In the following example a table for many to many relation is being filled:
 
 ```php
