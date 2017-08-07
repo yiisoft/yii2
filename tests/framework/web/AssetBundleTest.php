@@ -42,7 +42,7 @@ class AssetBundleTest extends \yiiunit\TestCase
             if (is_dir($path)) {
                 FileHelper::removeDirectory($path);
             } else {
-                unlink($path);
+                $this->unlink($path);
             }
         }
         closedir($handle);
@@ -194,8 +194,22 @@ class AssetBundleTest extends \yiiunit\TestCase
             $this->assertFileEquals($publishedFile, $sourceFile);
         }
 
-        $this->assertTrue(unlink($bundle->basePath));
+        $this->assertTrue($this->unlink($bundle->basePath));
         return $bundle;
+    }
+
+    /**
+     * Properly removes symlinked directory under Windows, MacOS and Linux
+     *
+     * @param string $file path to symlink
+     * @return bool
+     */
+    protected function unlink($file)
+    {
+        if (is_dir($file) && DIRECTORY_SEPARATOR === '\\') {
+            return rmdir($file);
+        }
+        return unlink($file);
     }
 
     public function testRegister()
@@ -206,7 +220,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         TestSimpleAsset::register($view);
         $this->assertCount(1, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
 
         $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
@@ -224,9 +238,9 @@ EOF;
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetBundle', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
         $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
@@ -270,9 +284,9 @@ EOF;
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestJqueryAsset', $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestAssetLevel3', $view->assetBundles);
 
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
         $this->assertArrayHasKey('position', $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions);
         $this->assertEquals($pos, $view->assetBundles['yiiunit\\framework\\web\\TestAssetBundle']->jsOptions['position']);
@@ -356,7 +370,7 @@ EOF;
         TestSimpleAsset::register($view);
         $this->assertCount(1, $view->assetBundles);
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
-        $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
+        $this->assertInstanceOf(AssetBundle::class, $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
         // register TestJqueryAsset which also has the jquery.js
         TestJqueryAsset::register($view);
 
@@ -379,7 +393,7 @@ EOF;
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
 <script src="/defered.js" charset="utf-8" defer></script>4
 EOF;
-        $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
+        $this->assertEqualsWithoutLE($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
     }
 
     public function registerFileDataProvider()

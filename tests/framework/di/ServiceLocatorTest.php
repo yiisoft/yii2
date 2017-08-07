@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\di;
 
-use yii\base\BaseObject;
+use yii\base\Object;
 use yii\di\ServiceLocator;
 use yiiunit\TestCase;
 
@@ -15,11 +15,11 @@ class Creator
 {
     public static function create()
     {
-        return new TestClass();
+        return new TestClass;
     }
 }
 
-class TestClass extends BaseObject
+class TestClass extends Object
 {
     public $prop1 = 1;
     public $prop2;
@@ -36,7 +36,7 @@ class ServiceLocatorTest extends TestCase
     {
         // anonymous function
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, function () {
             return new TestClass([
                 'prop1' => 100,
@@ -50,8 +50,8 @@ class ServiceLocatorTest extends TestCase
 
         // static method
         $container = new ServiceLocator();
-        $className = TestClass::className();
-        $container->set($className, [__NAMESPACE__ . '\\Creator', 'create']);
+        $className = TestClass::class;
+        $container->set($className, [__NAMESPACE__ . "\\Creator", 'create']);
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
         $this->assertEquals(1, $object->prop1);
@@ -61,8 +61,8 @@ class ServiceLocatorTest extends TestCase
     public function testObject()
     {
         $object = new TestClass();
-        $className = TestClass::className();
-        $container = new ServiceLocator();
+        $className = TestClass::class;
+        $container = new ServiceLocator;
         $container->set($className, $object);
         $this->assertSame($container->get($className), $object);
     }
@@ -71,7 +71,7 @@ class ServiceLocatorTest extends TestCase
     {
         // with configuration: shared
         $container = new ServiceLocator();
-        $className = TestClass::className();
+        $className = TestClass::class;
         $container->set($className, [
             'class' => $className,
             'prop1' => 10,

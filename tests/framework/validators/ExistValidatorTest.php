@@ -39,7 +39,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         }
         // combine to save the time creating a new db-fixture set (likely ~5 sec)
         try {
-            $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::className()]);
+            $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::class]);
             $val->validate('ref');
             $this->fail('Exception should have been thrown at this time');
         } catch (Exception $e) {
@@ -50,7 +50,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
 
     public function testValidateValue()
     {
-        $val = new ExistValidator(['targetClass' => ValidatorTestRefModel::className(), 'targetAttribute' => 'id']);
+        $val = new ExistValidator(['targetClass' => ValidatorTestRefModel::class, 'targetAttribute' => 'id']);
         $this->assertTrue($val->validate(2));
         $this->assertTrue($val->validate(5));
         $this->assertFalse($val->validate(99));
@@ -60,12 +60,12 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     public function testValidateAttribute()
     {
         // existing value on different table
-        $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::className(), 'targetAttribute' => 'id']);
+        $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::class, 'targetAttribute' => 'id']);
         $m = ValidatorTestRefModel::findOne(['id' => 1]);
         $val->validateAttribute($m, 'ref');
         $this->assertFalse($m->hasErrors());
         // non-existing value on different table
-        $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::className(), 'targetAttribute' => 'id']);
+        $val = new ExistValidator(['targetClass' => ValidatorTestMainModel::class, 'targetAttribute' => 'id']);
         $m = ValidatorTestRefModel::findOne(['id' => 6]);
         $val->validateAttribute($m, 'ref');
         $this->assertTrue($m->hasErrors('ref'));
@@ -130,7 +130,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     public function testValidateCompositeKeys()
     {
         $val = new ExistValidator([
-            'targetClass' => OrderItem::className(),
+            'targetClass' => OrderItem::class,
             'targetAttribute' => ['order_id', 'item_id'],
         ]);
         // validate old record
@@ -150,7 +150,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         $this->assertTrue($m->hasErrors('order_id'));
 
         $val = new ExistValidator([
-            'targetClass' => OrderItem::className(),
+            'targetClass' => OrderItem::class,
             'targetAttribute' => ['id' => 'order_id'],
         ]);
         // validate old record
@@ -179,7 +179,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
         OrderItem::$tableName = '{{%order_item}}';
 
         $val = new ExistValidator([
-            'targetClass' => OrderItem::className(),
+            'targetClass' => OrderItem::class,
             'targetAttribute' => ['id' => 'order_id'],
         ]);
 
@@ -197,7 +197,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
    public function testExpresionInAttributeColumnName()
    {
        $val = new ExistValidator([
-           'targetClass' => OrderItem::className(),
+           'targetClass' => OrderItem::class,
            'targetAttribute' => ['id' => 'COALESCE(order_id, 0)'],
        ]);
 

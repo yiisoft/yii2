@@ -75,7 +75,7 @@ class TimestampBehaviorTest extends TestCase
         $currentTime = time();
 
         ActiveRecordTimestamp::$behaviors = [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
         $model = new ActiveRecordTimestamp();
         $model->save(false);
@@ -92,7 +92,7 @@ class TimestampBehaviorTest extends TestCase
         $currentTime = time();
 
         ActiveRecordTimestamp::$behaviors = [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
         $model = new ActiveRecordTimestamp();
         $model->save(false);
@@ -113,7 +113,7 @@ class TimestampBehaviorTest extends TestCase
     public function testUpdateCleanRecord()
     {
         ActiveRecordTimestamp::$behaviors = [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
         $model = new ActiveRecordTimestamp();
         $model->save(false);
@@ -147,15 +147,15 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'value' => $expression,
             ],
         ];
         $model = new ActiveRecordTimestamp();
         $model->save(false);
         if ($expression instanceof Expression) {
-            $this->assertInstanceOf(Expression::className(), $model->created_at);
-            $this->assertInstanceOf(Expression::className(), $model->updated_at);
+            $this->assertInstanceOf(Expression::class, $model->created_at);
+            $this->assertInstanceOf(Expression::class, $model->updated_at);
             $model->refresh();
         }
         $this->assertEquals($expected, $model->created_at);
@@ -175,7 +175,7 @@ class TimestampBehaviorTest extends TestCase
         ActiveRecordTimestamp::$tableName = 'test_auto_timestamp_string';
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
@@ -188,7 +188,7 @@ class TimestampBehaviorTest extends TestCase
         $model->updated_at = $enforcedTime;
         $model->save(false);
         $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
-        $this->assertInstanceOf(Expression::className(), $model->updated_at);
+        $this->assertInstanceOf(Expression::class, $model->updated_at);
         $model->refresh();
         $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertEquals(date('Y'), $model->updated_at);
@@ -198,7 +198,7 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];
@@ -213,7 +213,7 @@ class TimestampBehaviorTest extends TestCase
     {
         ActiveRecordTimestamp::$behaviors = [
             'timestamp' => [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'value' => new Expression("strftime('%Y')"),
             ],
         ];

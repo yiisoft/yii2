@@ -41,7 +41,6 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         if (!function_exists('posix_kill')) {
             $this->markTestSkipped('posix_kill() is not available');
         }
-        // HHVM does not support this (?)
         if (!function_exists('pcntl_sigtimedwait')) {
             $this->markTestSkipped('pcntl_sigtimedwait() is not available');
         }
@@ -186,7 +185,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 });
             }, Transaction::REPEATABLE_READ);
         } catch (Exception $e) {
-            list($sqlError, $driverError, $driverMessage) = $e->errorInfo;
+            [$sqlError, $driverError, $driverMessage] = $e->errorInfo;
             // Deadlock found when trying to get lock; try restarting transaction
             if ('40001' === $sqlError && 1213 === $driverError) {
                 return self::CHILD_EXIT_CODE_DEADLOCK;
@@ -246,7 +245,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 });
             }, Transaction::REPEATABLE_READ);
         } catch (Exception $e) {
-            list($sqlError, $driverError, $driverMessage) = $e->errorInfo;
+            [$sqlError, $driverError, $driverMessage] = $e->errorInfo;
             // Deadlock found when trying to get lock; try restarting transaction
             if ('40001' === $sqlError && 1213 === $driverError) {
                 return self::CHILD_EXIT_CODE_DEADLOCK;

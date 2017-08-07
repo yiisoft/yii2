@@ -99,7 +99,7 @@ Yii支持以下可直接使用的格式，每个实现了[[yii\web\ResponseForma
 * [[yii\web\Response::FORMAT_JSONP|JSONP]]: 通过 [[yii\web\JsonResponseFormatter]]来实现.
 
 上述响应主体可明确地被设置，但是在大多数情况下是通过 [操作](structure-controllers.md) 方法的返回值隐式地设置，常用场景如下所示：
- 
+
 ```php
 public function actionIndex()
 {
@@ -123,7 +123,7 @@ public function actionInfo()
 }
 ```
 
-如上所述，触雷使用默认的 `response` 应用组件，也可创建自己的响应对象并发送给终端用户，可在操作方法中返回该响应对象，如下所示：
+如上所述，除了使用默认的 `response` 应用组件，也可创建自己的响应对象并发送给终端用户，可在操作方法中返回该响应对象，如下所示：
 
 ```php
 public function actionInfo()
@@ -220,7 +220,7 @@ Web应用可在服务器发送文件前结束，为使用该功能，可调用[[
 [[yii\web\Response::send()]] 方法使用以下步骤来发送响应：
 
 1. 触发 [[yii\web\Response::EVENT_BEFORE_SEND]] 事件.
-2. 调用 [[yii\web\Response::prepare()]] 来格式化 [[yii\web\Response::data|response data]] 为 
+2. 调用 [[yii\web\Response::prepare()]] 来格式化 [[yii\web\Response::data|response data]] 为
    [[yii\web\Response::content|response content]].
 3. 触发 [[yii\web\Response::EVENT_AFTER_PREPARE]] 事件.
 4. 调用 [[yii\web\Response::sendHeaders()]] 来发送注册的HTTP头

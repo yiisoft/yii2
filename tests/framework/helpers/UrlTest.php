@@ -41,7 +41,7 @@ class UrlTest extends TestCase
                     'hostInfo' => 'http://example.com/',
                 ],
                 'user' => [
-                    'identityClass' => UserIdentity::className(),
+                    'identityClass' => UserIdentity::class,
                 ],
             ],
         ], '\yii\web\Application');
@@ -114,7 +114,7 @@ class UrlTest extends TestCase
         // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
         Url::toRoute('site/view');
     }
 
@@ -223,7 +223,7 @@ class UrlTest extends TestCase
         //In case there is no controller, throw an exception
         $this->removeMockedAction();
 
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
         Url::to(['site/view']);
     }
 

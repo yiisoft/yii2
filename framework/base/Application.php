@@ -27,7 +27,7 @@ use Yii;
  * component. This property is read-only.
  * @property \yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
- * @property \yii\log\Dispatcher $log The log dispatcher application component. This property is read-only.
+ * @property \psr\log\LoggerInterface $logger The logger.
  * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
@@ -216,6 +216,11 @@ abstract class Application extends Module
      */
     public function preInit(&$config)
     {
+        if (isset($config['logger'])) {
+            $this->setLogger($config['logger']);
+            unset($config['logger']);
+        }
+
         if (!isset($config['id'])) {
             throw new InvalidConfigException('The "id" configuration for the Application is required.');
         }
@@ -363,7 +368,7 @@ abstract class Application extends Module
      * This method can only be invoked at the beginning of the constructor.
      * @param string $path the root directory of the application.
      * @property string the root directory of the application.
-     * @throws InvalidParamException if the directory does not exist.
+     * @throws InvalidArgumentException if the directory does not exist.
      */
     public function setBasePath($path)
     {
@@ -500,12 +505,21 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the log dispatcher component.
-     * @return \yii\log\Dispatcher the log dispatcher application component.
+     * Sets up or configure the logger instance.
+     * @param \psr\log\LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
      */
-    public function getLog()
+    public function setLogger($logger)
     {
-        return $this->get('log');
+        Yii::setLogger($logger);
+    }
+
+    /**
+     * Returns the logger instance.
+     * @return \psr\log\LoggerInterface the logger instance.
+     */
+    public function getLogger()
+    {
+        return Yii::getLogger();
     }
 
     /**
@@ -624,14 +638,14 @@ abstract class Application extends Module
     public function coreComponents()
     {
         return [
-            'log' => ['class' => 'yii\log\Dispatcher'],
-            'view' => ['class' => 'yii\web\View'],
-            'formatter' => ['class' => 'yii\i18n\Formatter'],
-            'i18n' => ['class' => 'yii\i18n\I18N'],
-            'mailer' => ['class' => 'yii\swiftmailer\Mailer'],
-            'urlManager' => ['class' => 'yii\web\UrlManager'],
-            'assetManager' => ['class' => 'yii\web\AssetManager'],
-            'security' => ['class' => 'yii\base\Security'],
+            'security' => ['class' => Security::class],
+            'formatter' => ['class' => \yii\i18n\Formatter::class],
+            'i18n' => ['class' => \yii\i18n\I18N::class],
+            'log' => ['class' => \yii\log\Dispatcher::class],
+            'mailer' => ['class' => \yii\swiftmailer\Mailer::class],
+            'assetManager' => ['class' => \yii\web\AssetManager::class],
+            'urlManager' => ['class' => \yii\web\UrlManager::class],
+            'view' => ['class' => \yii\web\View::class],
         ];
     }
 

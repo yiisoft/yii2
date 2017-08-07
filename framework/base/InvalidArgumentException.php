@@ -8,18 +8,18 @@
 namespace yii\base;
 
 /**
- * InvalidParamException represents an exception caused by invalid parameters passed to a method.
+ * InvalidArgumentException represents an exception caused by invalid arguments passed to a method.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class InvalidParamException extends \BadMethodCallException
+class InvalidArgumentException extends \BadMethodCallException
 {
     /**
      * @return string the user-friendly name of this exception
      */
     public function getName()
     {
-        return 'Invalid Parameter';
+        return 'Invalid Argument';
     }
 }

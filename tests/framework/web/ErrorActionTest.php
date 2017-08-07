@@ -123,7 +123,7 @@ class TestController extends Controller
     {
         return [
             'error' => array_merge([
-                'class' => ErrorAction::className(),
+                'class' => ErrorAction::class,
                 'view' => '@yiiunit/data/views/error.php',
             ], $this->actionConfig),
         ];

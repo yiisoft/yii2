@@ -68,12 +68,13 @@ class ContentDecorator extends Widget
     /**
      * Ends recording a clip.
      * This method stops output buffering and saves the rendering result as a named clip in the controller.
+     * @return string the result of widget execution to be outputted.
      */
     public function run()
     {
         $params = $this->params;
         $params['content'] = ob_get_clean();
         // render under the existing context
-        echo $this->view->renderFile($this->viewFile, $params);
+        return $this->view->renderFile($this->viewFile, $params);
     }
 }

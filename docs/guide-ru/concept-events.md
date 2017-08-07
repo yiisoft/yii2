@@ -187,7 +187,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' добавлен');
 });
 ```
@@ -201,11 +201,11 @@ Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function 
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
     var_dump($event->sender);  // выводит "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Обратите внимание, что в данном случае `$event->sender` имеет значение `null` вместо экзепляра класса, который инициировал событие.
@@ -216,10 +216,10 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 ```php
 // отсоединение $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // отсоединяются все обработчики Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Обработчики событий на уровне интерфейсов <span id="interface-level-event-handlers"></span>
@@ -265,7 +265,7 @@ class Developer extends Component implements DanceEventInterface
 вызовите [[yii\base\Event::on()|Event:on()]], передав ему в качестве первого параметра имя интерфейса.
 
 ```php
-Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
+Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
     Yii::trace(get_class($event->sender) . ' just danced'); // Оставит запись в журнале о том, что кто-то танцевал
 });
 ```
@@ -274,27 +274,27 @@ Event::on('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE
 
 ```php
 // trigger event for Dog class
-Event::trigger(Dog::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Dog::class), DanceEventInterface::EVENT_DANCE);
 
 // trigger event for Developer class
-Event::trigger(Developer::className(), DanceEventInterface::EVENT_DANCE);
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 Однако, невозможно инициализировать событие во всех классах, которые реализуют интерфейс:
 
 ```php
 // НЕ БУДЕТ РАБОТАТЬ
-Event::trigger('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE); // ошибка
 ```
 
 Отсоединить обработчик события можно с помощью метода [[yii\base\Event::off()|Event::off()]]. Например:
 
 ```php
 // отсоединяет $handler
-Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE, $handler);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, $handler);
 
 // отсоединяются все обработчики DanceEventInterface::EVENT_DANCE
-Event::off('app\interfaces\DanceEventInterface', DanceEventInterface::EVENT_DANCE);
+Event::off(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 Глобальные события <span id="global-events"></span>

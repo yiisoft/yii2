@@ -283,7 +283,7 @@ class CacheController extends Controller
      */
     private function isCacheClass($className)
     {
-        return is_subclass_of($className, 'yii\caching\CacheInterface');
+        return is_subclass_of($className, CacheInterface::class);
     }
 
     /**
@@ -293,6 +293,6 @@ class CacheController extends Controller
      */
     private function canBeFlushed($className)
     {
-        return !is_a($className, ApcCache::className(), true) || php_sapi_name() !== 'cli';
+        return !is_a($className, ApcCache::class, true) || php_sapi_name() !== 'cli';
     }
 }

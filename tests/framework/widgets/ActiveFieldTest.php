@@ -300,6 +300,7 @@ EOD;
 EOD;
         $this->activeField->hiddenInput();
         $this->assertEquals($expectedValue, $this->activeField->parts['{input}']);
+        $this->assertEquals('', $this->activeField->parts['{label}']);
     }
 
     public function testListBox()
@@ -512,8 +513,8 @@ EOD;
 
     public function testWidget()
     {
-        $this->activeField->widget(TestInputWidget::className());
-        $this->assertEquals('Render: ' . TestInputWidget::className(), $this->activeField->parts['{input}']);
+        $this->activeField->widget(TestInputWidget::class);
+        $this->assertEquals('Render: ' . TestInputWidget::class, $this->activeField->parts['{input}']);
         $widget = TestInputWidget::$lastInstance;
 
         $this->assertSame($this->activeField->model, $widget->model);
@@ -521,7 +522,7 @@ EOD;
         $this->assertSame($this->activeField->form->view, $widget->view);
         $this->assertSame($this->activeField, $widget->field);
 
-        $this->activeField->widget(TestInputWidget::className(), ['options' => ['id' => 'test-id']]);
+        $this->activeField->widget(TestInputWidget::class, ['options' => ['id' => 'test-id']]);
         $this->assertEquals('test-id', $this->activeField->labelOptions['for']);
     }
 

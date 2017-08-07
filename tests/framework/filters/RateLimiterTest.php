@@ -27,7 +27,7 @@ class RateLimiterTest extends TestCase
         parent::setUp();
 
         /* @var $logger Logger|\Prophecy\ObjectProphecy */
-        $logger = $this->prophesize(Logger::className());
+        $logger = $this->prophesize(Logger::class);
         $logger
             ->log(Argument::any(), Argument::any(), Argument::any())
             ->will(function ($parameters, $logger) {
@@ -55,7 +55,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter();
 
-        $this->assertInstanceOf(Request::className(), $rateLimiter->request);
+        $this->assertInstanceOf(Request::class, $rateLimiter->request);
     }
 
     public function testInitFilledResponse()
@@ -69,7 +69,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter();
 
-        $this->assertInstanceOf(Response::className(), $rateLimiter->response);
+        $this->assertInstanceOf(Response::class, $rateLimiter->response);
     }
 
     public function testBeforeActionUserInstanceOfRateLimitInterface()
@@ -98,7 +98,7 @@ class RateLimiterTest extends TestCase
 
     public function testBeforeActionEmptyUser()
     {
-        $user = new User(['identityClass' => RateLimit::className()]);
+        $user = new User(['identityClass' => RateLimit::class]);
         Yii::$app->set('user', $user);
         $rateLimiter = new RateLimiter();
 
@@ -117,7 +117,7 @@ class RateLimiterTest extends TestCase
             ->setAllowance([1, time() + 2]);
         $rateLimiter = new RateLimiter();
 
-        $this->setExpectedException('yii\web\TooManyRequestsHttpException');
+        $this->expectException(\yii\web\TooManyRequestsHttpException::class);
         $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 
@@ -128,7 +128,7 @@ class RateLimiterTest extends TestCase
         $rateLimit
             ->setRateLimit([1, 1])
             ->setAllowance([1, time()]);
-        $rateLimiter = $this->getMockBuilder(RateLimiter::className())
+        $rateLimiter = $this->getMockBuilder(RateLimiter::class)
             ->setMethods(['addRateLimitHeaders'])
             ->getMock();
         $rateLimiter->expects(self::at(0))

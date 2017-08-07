@@ -9,7 +9,7 @@ namespace yii\rbac;
 
 use Yii;
 use yii\base\InvalidCallException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\caching\CacheInterface;
 use yii\db\Connection;
 use yii\db\Expression;
@@ -109,9 +109,9 @@ class DbManager extends BaseManager
     public function init()
     {
         parent::init();
-        $this->db = Instance::ensure($this->db, Connection::className());
+        $this->db = Instance::ensure($this->db, Connection::class);
         if ($this->cache !== null) {
-            $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
+            $this->cache = Instance::ensure($this->cache, CacheInterface::class);
         }
     }
 
@@ -434,7 +434,7 @@ class DbManager extends BaseManager
      */
     protected function populateItem($row)
     {
-        $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::className() : Role::className();
+        $class = $row['type'] == Item::TYPE_PERMISSION ? Permission::class : Role::class;
 
         if (!isset($row['data']) || ($data = @unserialize(is_resource($row['data']) ? stream_get_contents($row['data']) : $row['data'])) === false) {
             $data = null;
@@ -482,7 +482,7 @@ class DbManager extends BaseManager
         $role = $this->getRole($roleName);
 
         if ($role === null) {
-            throw new InvalidParamException("Role \"$roleName\" not found.");
+            throw new InvalidArgumentException("Role \"$roleName\" not found.");
         }
 
         $result = [];
@@ -729,11 +729,11 @@ class DbManager extends BaseManager
     public function addChild($parent, $child)
     {
         if ($parent->name === $child->name) {
-            throw new InvalidParamException("Cannot add '{$parent->name}' as a child of itself.");
+            throw new InvalidArgumentException("Cannot add '{$parent->name}' as a child of itself.");
         }
 
         if ($parent instanceof Permission && $child instanceof Role) {
-            throw new InvalidParamException('Cannot add a role as a child of a permission.');
+            throw new InvalidArgumentException('Cannot add a role as a child of a permission.');
         }
 
         if ($this->detectLoop($parent, $child)) {
@@ -974,7 +974,7 @@ class DbManager extends BaseManager
 
         $data = $this->cache->get($this->cacheKey);
         if (is_array($data) && isset($data[0], $data[1], $data[2])) {
-            list($this->items, $this->rules, $this->parents) = $data;
+            [$this->items, $this->rules, $this->parents] = $data;
             return;
         }
 

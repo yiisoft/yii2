@@ -154,7 +154,7 @@ class Request extends \yii\base\Request
      *
      * ```
      * [
-     *     'application/json' => 'yii\web\JsonParser',
+     *     'application/json' => \yii\web\JsonParser::class,
      * ]
      * ```
      *
@@ -184,7 +184,7 @@ class Request extends \yii\base\Request
     {
         $result = Yii::$app->getUrlManager()->parseRequest($this);
         if ($result !== false) {
-            list($route, $params) = $result;
+            [$route, $params] = $result;
             if ($this->_queryParams === null) {
                 $_GET = $params + $_GET; // preserve numeric keys
             } else {
@@ -1174,7 +1174,7 @@ class Request extends \yii\base\Request
             ];
             foreach ($params as $param) {
                 if (strpos($param, '=') !== false) {
-                    list($key, $value) = explode('=', $param, 2);
+                    [$key, $value] = explode('=', $param, 2);
                     if ($key === 'q') {
                         $values['q'][2] = (float) $value;
                     } else {

@@ -10,6 +10,7 @@ namespace yii\validators;
 use Yii;
 use yii\base\Component;
 use yii\base\NotSupportedException;
+use yii\captcha\CaptchaValidator;
 
 /**
  * Validator is the base class for all validators.
@@ -59,44 +60,44 @@ class Validator extends Component
      * @var array list of built-in validators (name => class or configuration)
      */
     public static $builtInValidators = [
-        'boolean' => 'yii\validators\BooleanValidator',
-        'captcha' => 'yii\captcha\CaptchaValidator',
-        'compare' => 'yii\validators\CompareValidator',
-        'date' => 'yii\validators\DateValidator',
+        'boolean' => BooleanValidator::class,
+        'captcha' => CaptchaValidator::class,
+        'compare' => CompareValidator::class,
+        'date' => DateValidator::class,
         'datetime' => [
-            'class' => 'yii\validators\DateValidator',
+            'class' => DateValidator::class,
             'type' => DateValidator::TYPE_DATETIME,
         ],
         'time' => [
-            'class' => 'yii\validators\DateValidator',
+            'class' => DateValidator::class,
             'type' => DateValidator::TYPE_TIME,
         ],
-        'default' => 'yii\validators\DefaultValueValidator',
-        'double' => 'yii\validators\NumberValidator',
-        'each' => 'yii\validators\EachValidator',
-        'email' => 'yii\validators\EmailValidator',
-        'exist' => 'yii\validators\ExistValidator',
-        'file' => 'yii\validators\FileValidator',
-        'filter' => 'yii\validators\FilterValidator',
-        'image' => 'yii\validators\ImageValidator',
-        'in' => 'yii\validators\RangeValidator',
+        'default' => DefaultValueValidator::class,
+        'double' => NumberValidator::class,
+        'each' => EachValidator::class,
+        'email' => EmailValidator::class,
+        'exist' => ExistValidator::class,
+        'file' => FileValidator::class,
+        'filter' => FilterValidator::class,
+        'image' => ImageValidator::class,
+        'in' => RangeValidator::class,
         'integer' => [
-            'class' => 'yii\validators\NumberValidator',
+            'class' => NumberValidator::class,
             'integerOnly' => true,
         ],
-        'match' => 'yii\validators\RegularExpressionValidator',
-        'number' => 'yii\validators\NumberValidator',
-        'required' => 'yii\validators\RequiredValidator',
-        'safe' => 'yii\validators\SafeValidator',
-        'string' => 'yii\validators\StringValidator',
+        'match' => RegularExpressionValidator::class,
+        'number' => NumberValidator::class,
+        'required' => RequiredValidator::class,
+        'safe' => SafeValidator::class,
+        'string' => StringValidator::class,
         'trim' => [
-            'class' => 'yii\validators\FilterValidator',
+            'class' => FilterValidator::class,
             'filter' => 'trim',
             'skipOnArray' => true,
         ],
-        'unique' => 'yii\validators\UniqueValidator',
-        'url' => 'yii\validators\UrlValidator',
-        'ip' => 'yii\validators\IpValidator',
+        'unique' => UniqueValidator::class,
+        'url' => UrlValidator::class,
+        'ip' => IpValidator::class,
     ];
     /**
      * @var array|string attributes to be validated by this validator. For multiple attributes,
@@ -298,7 +299,7 @@ class Validator extends Component
             return true;
         }
 
-        list($message, $params) = $result;
+        [$message, $params] = $result;
         $params['attribute'] = Yii::t('yii', 'the input value');
         if (is_array($value)) {
             $params['value'] = 'array()';

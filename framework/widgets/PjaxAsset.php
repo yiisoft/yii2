@@ -8,6 +8,7 @@
 namespace yii\widgets;
 
 use yii\web\AssetBundle;
+use yii\web\YiiAsset;
 
 /**
  * This asset bundle provides the javascript files required by [[Pjax]] widget.
@@ -17,11 +18,18 @@ use yii\web\AssetBundle;
  */
 class PjaxAsset extends AssetBundle
 {
+    /**
+     * @inheritdoc
+     */
     public $sourcePath = '@bower/yii2-pjax';
-    public $js = [
-        'jquery.pjax.js',
-    ];
-    public $depends = [
-        'yii\web\YiiAsset',
-    ];
+
+    /**
+     * @inheritdoc
+     */
+    public $js = ['jquery.pjax.js',];
+
+    /**
+     * @inheritdoc
+     */
+    public $depends = [YiiAsset::class];
 }

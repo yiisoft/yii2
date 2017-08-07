@@ -9,13 +9,14 @@ namespace yii\console\controllers;
 
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\console\Controller;
 use yii\console\Exception;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
+use yii\test\InitDbFixture;
 
 /**
  * Manages fixture data loading and unloading.
@@ -59,7 +60,7 @@ class FixtureController extends Controller
      * that disables and enables integrity check, so your data can be safely loaded.
      */
     public $globalFixtures = [
-        'yii\test\InitDbFixture',
+        InitDbFixture::class,
     ];
 
 
@@ -512,7 +513,7 @@ class FixtureController extends Controller
     {
         try {
             return Yii::getAlias('@' . str_replace('\\', '/', $this->namespace));
-        } catch (InvalidParamException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new InvalidConfigException('Invalid fixture namespace: "' . $this->namespace . '". Please, check your FixtureController::namespace parameter');
         }
     }

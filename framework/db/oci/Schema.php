@@ -19,6 +19,7 @@ use yii\db\ForeignKeyConstraint;
 use yii\db\IndexConstraint;
 use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
+use yii\db\IntegrityException;
 
 /**
  * Schema is the class for retrieving metadata from an Oracle database
@@ -38,7 +39,7 @@ class Schema extends \yii\db\Schema
      * If left part is found in DB error message exception class from the right part is used.
      */
     public $exceptionMap = [
-        'ORA-00001: unique constraint' => 'yii\db\IntegrityException',
+        'ORA-00001: unique constraint' => IntegrityException::class,
     ];
 
 

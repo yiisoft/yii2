@@ -7,7 +7,7 @@
 
 namespace yii\db\oci;
 
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\db\Connection;
 use yii\db\Exception;
 use yii\db\Expression;
@@ -65,9 +65,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
     /**
      * @inheritdoc
      */
-    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset)
+    public function buildOrderByAndLimit($sql, $orderBy, $limit, $offset, &$params)
     {
-        $orderBy = $this->buildOrderBy($orderBy);
+        $orderBy = $this->buildOrderBy($orderBy, $params);
         if ($orderBy !== '') {
             $sql .= $this->separator . $orderBy;
         }
@@ -141,7 +141,7 @@ EOD;
     {
         $tableSchema = $this->db->getTableSchema($table);
         if ($tableSchema === null) {
-            throw new InvalidParamException("Unknown table: $table");
+            throw new InvalidArgumentException("Unknown table: $table");
         }
         if ($tableSchema->sequenceName === null) {
             return '';
@@ -195,7 +195,7 @@ EOD;
         $placeholders = [];
         $values = ' DEFAULT VALUES';
         if ($columns instanceof \yii\db\Query) {
-            list($names, $values, $params) = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
+            [$names, $values, $params] = $this->prepareInsertSelectSubQuery($columns, $schema, $params);
         } else {
             foreach ($columns as $name => $value) {
                 $names[] = $schema->quoteColumnName($name);
@@ -205,7 +205,7 @@ EOD;
                         $params[$n] = $v;
                     }
                 } elseif ($value instanceof \yii\db\Query) {
-                    list($sql, $params) = $this->build($value, $params);
+                    [$sql, $params] = $this->build($value, $params);
                     $placeholders[] = "($sql)";
                 } else {
                     $phName = self::PARAM_PREFIX . count($params);

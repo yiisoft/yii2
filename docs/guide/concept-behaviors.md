@@ -120,21 +120,21 @@ class User extends ActiveRecord
     {
         return [
             // anonymous behavior, behavior class name only
-            MyBehavior::className(),
+            MyBehavior::class,
 
             // named behavior, behavior class name only
-            'myBehavior2' => MyBehavior::className(),
+            'myBehavior2' => MyBehavior::class,
 
             // anonymous behavior, configuration array
             [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ],
 
             // named behavior, configuration array
             'myBehavior4' => [
-                'class' => MyBehavior::className(),
+                'class' => MyBehavior::class,
                 'prop1' => 'value1',
                 'prop2' => 'value2',
             ]
@@ -156,11 +156,11 @@ use app\components\MyBehavior;
 $component->attachBehavior('myBehavior1', new MyBehavior);
 
 // attach a behavior class
-$component->attachBehavior('myBehavior2', MyBehavior::className());
+$component->attachBehavior('myBehavior2', MyBehavior::class);
 
 // attach a configuration array
 $component->attachBehavior('myBehavior3', [
-    'class' => MyBehavior::className(),
+    'class' => MyBehavior::class,
     'prop1' => 'value1',
     'prop2' => 'value2',
 ]);
@@ -171,7 +171,7 @@ You may attach multiple behaviors at once using the [[yii\base\Component::attach
 ```php
 $component->attachBehaviors([
     'myBehavior1' => new MyBehavior,  // a named behavior
-    MyBehavior::className(),          // an anonymous behavior
+    MyBehavior::class,          // an anonymous behavior
 ]);
 ```
 
@@ -179,10 +179,10 @@ You may also attach behaviors through [configurations](concept-configurations.md
 
 ```php
 [
-    'as myBehavior2' => MyBehavior::className(),
+    'as myBehavior2' => MyBehavior::class,
 
     'as myBehavior3' => [
-        'class' => MyBehavior::className(),
+        'class' => MyBehavior::class,
         'prop1' => 'value1',
         'prop2' => 'value2',
     ],
@@ -272,7 +272,7 @@ class User extends ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'attributes' => [
                     ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
                     ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],

@@ -138,12 +138,22 @@ class HtmlTest extends TestCase
         $this->assertStringMatchesFormat($pattern, $actual);
     }
 
-    public function testCsrfMetaTagsEnableCsrfValidationWithoutCookieValidationKey()
+    public function testCsrfMetaTagsEnableCsrfValidation_WithoutCookieValidationKey()
     {
-        $request = $this->getMock('yii\\web\\Request');
-        $request->method('enableCsrfValidation')->willReturn(true);
-        Yii::$app->set('request', $request);
-        $pattern = '<meta name="csrf-param" content="_csrf">%A<meta name="csrf-token">';
+        $this->mockApplication([
+            'components' => [
+                'request' => [
+                    'class' => 'yii\web\Request',
+                    'enableCsrfValidation' => true,
+                    'enableCookieValidation' => false,
+                    'cookieValidationKey' => '',
+                ],
+                'response' => [
+                    'class' => 'yii\web\Response',
+                ],
+            ],
+        ]);
+        $pattern = '<meta name="csrf-param" content="_csrf">%A<meta name="csrf-token" content="%s">';
         $actual = Html::csrfMetaTags();
         $this->assertStringMatchesFormat($pattern, $actual);
     }
@@ -1199,7 +1209,7 @@ EOD;
         }
         $model->validate(null, false);
 
-        $this->assertEquals($expectedHtml, Html::errorSummary($model, $options));
+        $this->assertEqualsWithoutLE($expectedHtml, Html::errorSummary($model, $options));
     }
 
     /**
@@ -1407,7 +1417,7 @@ EOD;
     public function testAttributeNameValidation($name, $expected)
     {
         if (!isset($expected)) {
-            $this->expectException('yii\base\InvalidParamException');
+            $this->expectException('yii\base\InvalidArgumentException');
             Html::getAttributeName($name);
         } else {
             $this->assertEquals($expected, Html::getAttributeName($name));
@@ -1421,7 +1431,7 @@ EOD;
      */
     public function testAttributeNameException($name)
     {
-        $this->expectException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidArgumentException');
         Html::getAttributeName($name);
     }
 
@@ -1434,10 +1444,10 @@ EOD;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Attribute name must contain word characters only.
      */
-    public function testGetAttributeValueInvalidParamException()
+    public function testGetAttributeValueInvalidArgumentException()
     {
         $model = new HtmlTestModel();
         Html::getAttributeValue($model, '-');
@@ -1451,7 +1461,7 @@ EOD;
         $actual = Html::getAttributeValue($model, 'types');
         $this->assertSame($expected, $actual);
 
-        $activeRecord = $this->getMock('yii\\db\\ActiveRecordInterface');
+        $activeRecord = $this->createMock(\yii\db\ActiveRecordInterface::class);
         $activeRecord->method('getPrimaryKey')->willReturn(1);
         $model->types = $activeRecord;
 
@@ -1469,29 +1479,29 @@ EOD;
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessage Attribute name must contain word characters only.
      */
-    public function testGetInputNameInvalidParamExceptionAttribute()
+    public function testGetInputNameInvalidArgumentExceptionAttribute()
     {
         $model = new HtmlTestModel();
         Html::getInputName($model, '-');
     }
 
     /**
-     * @expectedException \yii\base\InvalidParamException
+     * @expectedException \yii\base\InvalidArgumentException
      * @expectedExceptionMessageRegExp /(.*)formName\(\) cannot be empty for tabular inputs.$/
      */
-    public function testGetInputNameInvalidParamExceptionFormName()
+    public function testGetInputNameInvalidArgumentExceptionFormName()
     {
-        $model = $this->getMock('yii\\base\\Model');
+        $model = $this->createMock(\yii\base\Model::class);
         $model->method('formName')->willReturn('');
         Html::getInputName($model, '[foo]bar');
     }
 
     public function testGetInputName()
     {
-        $model = $this->getMock('yii\\base\\Model');
+        $model = $this->createMock(\yii\base\Model::class);
         $model->method('formName')->willReturn('');
         $expected = 'types';
         $actual = Html::getInputName($model, 'types');

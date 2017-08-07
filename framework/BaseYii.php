@@ -7,10 +7,13 @@
 
 namespace yii;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
+use yii\di\Instance;
 use yii\log\Logger;
 
 /**
@@ -125,7 +128,7 @@ class BaseYii
      * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
      * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
-     * @throws InvalidParamException if the alias is invalid while $throwException is true.
+     * @throws InvalidArgumentException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
     public static function getAlias($alias, $throwException = true)
@@ -151,7 +154,7 @@ class BaseYii
         }
 
         if ($throwException) {
-            throw new InvalidParamException("Invalid path alias: $alias");
+            throw new InvalidArgumentException("Invalid path alias: $alias");
         }
 
         return false;
@@ -211,7 +214,7 @@ class BaseYii
      * - a path alias (e.g. `@yii/base`). In this case, the path alias will be converted into the
      *   actual path first by calling [[getAlias()]].
      *
-     * @throws InvalidParamException if $path is an invalid alias.
+     * @throws InvalidArgumentException if $path is an invalid alias.
      * @see getAlias()
      */
     public static function setAlias($alias, $path)
@@ -307,11 +310,11 @@ class BaseYii
      *
      * ```php
      * // create an object using a class name
-     * $object = Yii::createObject('yii\db\Connection');
+     * $object = Yii::createObject(\yii\db\Connection::class);
      *
      * // create an object using a configuration array
      * $object = Yii::createObject([
-     *     'class' => 'yii\db\Connection',
+     *     'class' => \yii\db\Connection::class,
      *     'dsn' => 'mysql:host=127.0.0.1;dbname=demo',
      *     'username' => 'root',
      *     'password' => '',
@@ -358,7 +361,7 @@ class BaseYii
     private static $_logger;
 
     /**
-     * @return Logger message logger
+     * @return LoggerInterface message logger
      */
     public static function getLogger()
     {
@@ -366,16 +369,31 @@ class BaseYii
             return self::$_logger;
         }
 
-        return self::$_logger = static::createObject('yii\log\Logger');
+        return self::$_logger = Instance::ensure(['class' => Logger::class], LoggerInterface::class);
     }
 
     /**
      * Sets the logger object.
-     * @param Logger $logger the logger object.
+     * @param LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
      */
     public static function setLogger($logger)
     {
-        self::$_logger = $logger;
+        if ($logger === null) {
+            self::$_logger = null;
+            return;
+        }
+
+        if (is_array($logger)) {
+            if (!isset($logger['class']) && is_object(self::$_logger)) {
+                static::configure(self::$_logger, $logger);
+                return;
+            }
+            $logger = array_merge(['class' => Logger::class], $logger);
+        } elseif ($logger instanceof \Closure) {
+            $logger = call_user_func($logger);
+        }
+
+        self::$_logger = Instance::ensure($logger, LoggerInterface::class);
     }
 
     /**
@@ -390,7 +408,7 @@ class BaseYii
     public static function trace($message, $category = 'application')
     {
         if (YII_DEBUG) {
-            static::getLogger()->log($message, Logger::LEVEL_TRACE, $category);
+            static::getLogger()->log(LogLevel::DEBUG, $message, ['category' => $category]);
         }
     }
 
@@ -404,7 +422,7 @@ class BaseYii
      */
     public static function error($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_ERROR, $category);
+        static::getLogger()->log(LogLevel::ERROR, $message, ['category' => $category]);
     }
 
     /**
@@ -417,7 +435,7 @@ class BaseYii
      */
     public static function warning($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_WARNING, $category);
+        static::getLogger()->log(LogLevel::WARNING, $message, ['category' => $category]);
     }
 
     /**
@@ -430,7 +448,7 @@ class BaseYii
      */
     public static function info($message, $category = 'application')
     {
-        static::getLogger()->log($message, Logger::LEVEL_INFO, $category);
+        static::getLogger()->log(LogLevel::INFO, $message, ['category' => $category]);
     }
 
     /**
@@ -452,7 +470,7 @@ class BaseYii
      */
     public static function beginProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_BEGIN, $category);
+        static::getLogger()->log(Logger::LEVEL_PROFILE_BEGIN, $token, ['category' => $category]);
     }
 
     /**
@@ -464,7 +482,7 @@ class BaseYii
      */
     public static function endProfile($token, $category = 'application')
     {
-        static::getLogger()->log($token, Logger::LEVEL_PROFILE_END, $category);
+        static::getLogger()->log(Logger::LEVEL_PROFILE_END, $token, ['category' => $category]);
     }
 
     /**

@@ -8,6 +8,7 @@
 namespace yii\web;
 
 use Yii;
+use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
@@ -272,7 +273,7 @@ class Response extends \yii\base\Response
      * This method will set the corresponding status text if `$text` is null.
      * @param int $value the status code
      * @param string $text the status text. If not set, it will be set automatically based on the status code.
-     * @throws InvalidParamException if the status code is invalid.
+     * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      */
     public function setStatusCode($value, $text = null)
@@ -282,7 +283,7 @@ class Response extends \yii\base\Response
         }
         $this->_statusCode = (int) $value;
         if ($this->getIsInvalid()) {
-            throw new InvalidParamException("The HTTP status code is invalid: $value");
+            throw new InvalidArgumentException("The HTTP status code is invalid: $value");
         }
         if ($text === null) {
             $this->statusText = isset(static::$httpStatuses[$this->_statusCode]) ? static::$httpStatuses[$this->_statusCode] : '';
@@ -295,7 +296,7 @@ class Response extends \yii\base\Response
     /**
      * Sets the response status code based on the exception.
      * @param \Exception|\Error $e the exception object.
-     * @throws InvalidParamException if the status code is invalid.
+     * @throws InvalidArgumentException if the status code is invalid.
      * @return $this the response object itself
      * @since 2.0.12
      */
@@ -418,7 +419,7 @@ class Response extends \yii\base\Response
         $chunkSize = 8 * 1024 * 1024; // 8MB per chunk
 
         if (is_array($this->stream)) {
-            list($handle, $begin, $end) = $this->stream;
+            [$handle, $begin, $end] = $this->stream;
             fseek($handle, $begin);
             while (!feof($handle) && ($pos = ftell($handle)) <= $end) {
                 if ($pos + $chunkSize > $end) {
@@ -516,7 +517,7 @@ class Response extends \yii\base\Response
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
         if ($begin != 0 || $end != $contentLength - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$contentLength");
@@ -571,7 +572,7 @@ class Response extends \yii\base\Response
             throw new RangeNotSatisfiableHttpException();
         }
 
-        list($begin, $end) = $range;
+        [$begin, $end] = $range;
         if ($begin != 0 || $end != $fileSize - 1) {
             $this->setStatusCode(206);
             $headers->set('Content-Range', "bytes $begin-$end/$fileSize");
@@ -999,16 +1000,16 @@ class Response extends \yii\base\Response
     {
         return [
             self::FORMAT_HTML => [
-                'class' => 'yii\web\HtmlResponseFormatter',
+                'class' => HtmlResponseFormatter::class,
             ],
             self::FORMAT_XML => [
-                'class' => 'yii\web\XmlResponseFormatter',
+                'class' => XmlResponseFormatter::class,
             ],
             self::FORMAT_JSON => [
-                'class' => 'yii\web\JsonResponseFormatter',
+                'class' => JsonResponseFormatter::class,
             ],
             self::FORMAT_JSONP => [
-                'class' => 'yii\web\JsonResponseFormatter',
+                'class' => JsonResponseFormatter::class,
                 'useJsonp' => true,
             ],
         ];
@@ -1044,12 +1045,13 @@ class Response extends \yii\base\Response
         }
 
         if (is_array($this->content)) {
-            throw new InvalidParamException('Response content must not be an array.');
+            throw new InvalidArgumentException('Response content must not be an array.');
         } elseif (is_object($this->content)) {
             if (method_exists($this->content, '__toString')) {
                 $this->content = $this->content->__toString();
             } else {
-                throw new InvalidParamException('Response content must be a string or an object implementing __toString().');
+                throw new InvalidArgumentException('Response content must be a string or an object implementing '
+                    . ' __toString().');
             }
         }
     }

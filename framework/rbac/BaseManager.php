@@ -9,7 +9,7 @@ namespace yii\rbac;
 
 use yii\base\Component;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
+use yii\base\InvalidArgumentException;
 
 /**
  * BaseManager is a base class implementing [[ManagerInterface]] for RBAC management.
@@ -130,7 +130,7 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->addRule($object);
         }
 
-        throw new InvalidParamException('Adding unsupported object type.');
+        throw new InvalidArgumentException('Adding unsupported object type.');
     }
 
     /**
@@ -144,7 +144,7 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->removeRule($object);
         }
 
-        throw new InvalidParamException('Removing unsupported object type.');
+        throw new InvalidArgumentException('Removing unsupported object type.');
     }
 
     /**
@@ -163,7 +163,7 @@ abstract class BaseManager extends Component implements ManagerInterface
             return $this->updateRule($name, $object);
         }
 
-        throw new InvalidParamException('Updating unsupported object type.');
+        throw new InvalidArgumentException('Updating unsupported object type.');
     }
 
     /**

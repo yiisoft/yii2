@@ -23,13 +23,11 @@ class ApcCacheTest extends CacheTestCase
      */
     protected function getCacheInstance()
     {
-        if (!extension_loaded('apc')) {
-            $this->markTestSkipped('APC not installed. Skipping.');
-        } elseif ('cli' === PHP_SAPI && !ini_get('apc.enable_cli')) {
-            $this->markTestSkipped('APC cli is not enabled. Skipping.');
+        if (!extension_loaded('apcu')) {
+            $this->markTestSkipped('APCu not installed. Skipping.');
         }
 
-        if (!ini_get('apc.enabled') || !ini_get('apc.enable_cli')) {
+        if (!ini_get('apc.enable_cli')) {
             $this->markTestSkipped('APC is installed but not enabled. Skipping.');
         }
 
