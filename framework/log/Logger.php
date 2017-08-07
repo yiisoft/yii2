@@ -387,15 +387,19 @@ class Logger extends Component implements LoggerInterface
     public static function getLevelName($level)
     {
         static $levels = [
-            self::LEVEL_ERROR => 'error',
-            self::LEVEL_WARNING => 'warning',
-            self::LEVEL_INFO => 'info',
-            self::LEVEL_TRACE => 'trace',
             self::LEVEL_PROFILE_BEGIN => 'profile begin',
             self::LEVEL_PROFILE_END => 'profile end',
             self::LEVEL_PROFILE => 'profile',
         ];
+        
+        if (isset($levels[$level])) {
+            return $levels[$level];
+        }
 
-        return isset($levels[$level]) ? $levels[$level] : 'unknown';
+        if (is_string($level)) {
+            return $level;
+        }
+
+        return 'unknown';
     }
 }
