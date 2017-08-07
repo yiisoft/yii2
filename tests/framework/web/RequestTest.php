@@ -90,7 +90,7 @@ class RequestTest extends TestCase
         $request->enableCsrfCookie = false;
 
         $token = $request->getCsrfToken();
-        $this->assertRegExp('~[a-z0-9]~i', $token);
+        $this->assertRegExp('~[-_=a-z0-9]~i', $token);
     }
 
     public function testCsrfTokenValidation()
