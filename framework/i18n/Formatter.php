@@ -1127,6 +1127,26 @@ class Formatter extends Component
     }
 
     /**
+     * Return a currency symbol
+     *
+     * @param null $currencyCode
+     * @return string
+     * @throws InvalidConfigException
+     */
+    public function getCurrencySymbol($currencyCode=null)
+    {
+        if ($currencyCode === null) {
+            $currencyCode = $this->currencyCode;
+        }
+        if (strlen($currencyCode) == 0) {
+            throw new InvalidConfigException("The default currency code for the formatter is not defined.");
+        }
+        $locale = $this->locale . '@currency=' . $currencyCode;
+        $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
+        return $formatter->getSymbol(\NumberFormatter::CURRENCY_SYMBOL);
+    }
+
+    /**
      * Formats the value as a number spellout.
      *
      * This function requires the [PHP intl extension](http://php.net/manual/en/book.intl.php) to be installed.
