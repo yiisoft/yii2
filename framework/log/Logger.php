@@ -7,8 +7,12 @@
 
 namespace yii\log;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Psr\Log\LoggerTrait;
 use Yii;
 use yii\base\Component;
+use yii\base\ErrorHandler;
 
 /**
  * Logger records logged messages in memory and sends them to different targets if [[dispatcher]] is set.
@@ -30,6 +34,7 @@ use yii\base\Component;
  * to send logged messages to different log targets, such as [[FileTarget|file]], [[EmailTarget|email]],
  * or [[DbTarget|database]], with the help of the [[dispatcher]].
  *
+ * @property array|Target[] $targets the log targets. See [[setTargets()]] for details.
  * @property array $dbProfiling The first element indicates the number of SQL statements executed, and the
  * second element the total time spent in SQL execution. This property is read-only.
  * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
@@ -41,27 +46,29 @@ use yii\base\Component;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Logger extends Component
+class Logger extends Component implements LoggerInterface
 {
+    use LoggerTrait;
+
     /**
      * Error message level. An error message is one that indicates the abnormal termination of the
      * application and may require developer's handling.
      */
-    const LEVEL_ERROR = 0x01;
+    const LEVEL_ERROR = LogLevel::ERROR;
     /**
      * Warning message level. A warning message is one that indicates some abnormal happens but
      * the application is able to continue to run. Developers should pay attention to this message.
      */
-    const LEVEL_WARNING = 0x02;
+    const LEVEL_WARNING = LogLevel::WARNING;
     /**
      * Informational message level. An informational message is one that includes certain information
      * for developers to review.
      */
-    const LEVEL_INFO = 0x04;
+    const LEVEL_INFO = LogLevel::INFO;
     /**
      * Tracing message level. An tracing message is one that reveals the code execution flow.
      */
-    const LEVEL_TRACE = 0x08;
+    const LEVEL_TRACE = LogLevel::DEBUG;
     /**
      * Profiling message level. This indicates the message is for profiling purpose.
      */
@@ -107,11 +114,38 @@ class Logger extends Component
      * call stacks are counted.
      */
     public $traceLevel = 0;
-    /**
-     * @var Dispatcher the message dispatcher
-     */
-    public $dispatcher;
 
+    /**
+     * @var array|Target[] the log targets. Each array element represents a single [[Target|log target]] instance
+     * or the configuration for creating the log target instance.
+     * @since 2.1
+     */
+    private $_targets = [];
+
+
+    /**
+     * @return Target[] the log targets. Each array element represents a single [[Target|log target]] instance.
+     * @since 2.1
+     */
+    public function getTargets()
+    {
+        return $this->_targets;
+    }
+
+    /**
+     * @param array|Target[] $targets the log targets. Each array element represents a single [[Target|log target]] instance
+     * or the configuration for creating the log target instance.
+     * @since 2.1
+     */
+    public function setTargets($targets)
+    {
+        foreach ($targets as $name => $target) {
+            if (!$target instanceof Target) {
+                $this->_targets[$name] = Yii::createObject($target);
+            }
+        }
+        $this->_targets = $targets;
+    }
 
     /**
      * Initializes the logger by registering [[flush()]] as a shutdown function.
@@ -129,35 +163,42 @@ class Logger extends Component
     }
 
     /**
-     * Logs a message with the given type and category.
-     * If [[traceLevel]] is greater than 0, additional call stack information about
-     * the application code will be logged as well.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure that will be handled by a [[Target|log target]].
-     * @param int $level the level of the message. This must be one of the following:
-     * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
-     * `Logger::LEVEL_PROFILE_BEGIN`, `Logger::LEVEL_PROFILE_END`.
-     * @param string $category the category of the message.
+     * {@inheritdoc}
      */
-    public function log($message, $level, $category = 'application')
+    public function log($level, $message, array $context = array())
     {
-        $time = microtime(true);
-        $traces = [];
-        if ($this->traceLevel > 0) {
-            $count = 0;
-            $ts = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-            array_pop($ts); // remove the last trace since it would be the entry script, not very useful
-            foreach ($ts as $trace) {
-                if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII2_PATH) !== 0) {
-                    unset($trace['object'], $trace['args']);
-                    $traces[] = $trace;
-                    if (++$count >= $this->traceLevel) {
-                        break;
+        if (!isset($context['time'])) {
+            $context['time'] = microtime(true);
+        }
+        if (!isset($context['trace'])) {
+            $traces = [];
+            if ($this->traceLevel > 0) {
+                $count = 0;
+                $ts = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+                array_pop($ts); // remove the last trace since it would be the entry script, not very useful
+                foreach ($ts as $trace) {
+                    if (isset($trace['file'], $trace['line']) && strpos($trace['file'], YII2_PATH) !== 0) {
+                        unset($trace['object'], $trace['args']);
+                        $traces[] = $trace;
+                        if (++$count >= $this->traceLevel) {
+                            break;
+                        }
                     }
                 }
             }
+            $context['trace'] = $traces;
         }
-        $this->messages[] = [$message, $level, $category, $time, $traces, memory_get_usage()];
+
+        if (!isset($context['memory'])) {
+            $context['memory'] = memory_get_usage();
+        }
+
+        if (!isset($context['category'])) {
+            $context['category'] = 'application';
+        }
+
+        $this->messages[] = [$level, $message, $context];
+
         if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
             $this->flush();
         }
@@ -173,8 +214,38 @@ class Logger extends Component
         // https://github.com/yiisoft/yii2/issues/5619
         // new messages could be logged while the existing ones are being handled by targets
         $this->messages = [];
-        if ($this->dispatcher instanceof Dispatcher) {
-            $this->dispatcher->dispatch($messages, $final);
+
+        $this->dispatch($messages, $final);
+    }
+
+    /**
+     * Dispatches the logged messages to [[targets]].
+     * @param array $messages the logged messages
+     * @param bool $final whether this method is called at the end of the current application
+     * @since 2.1
+     */
+    protected function dispatch($messages, $final)
+    {
+        $targetErrors = [];
+        foreach ($this->targets as $target) {
+            if ($target->enabled) {
+                try {
+                    $target->collect($messages, $final);
+                } catch (\Exception $e) {
+                    $target->enabled = false;
+                    $targetErrors[] = [
+                        'Unable to send log via ' . get_class($target) . ': ' . ErrorHandler::convertExceptionToString($e),
+                        LogLevel::WARNING,
+                        __METHOD__,
+                        microtime(true),
+                        [],
+                    ];
+                }
+            }
+        }
+
+        if (!empty($targetErrors)) {
+            $this->dispatch($targetErrors, true);
         }
     }
 
@@ -278,23 +349,24 @@ class Logger extends Component
         $stack = [];
 
         foreach ($messages as $i => $log) {
-            [$token, $level, $category, $timestamp, $traces] = $log;
-            $memory = $log[5] ?? 0;
-            $log[6] = $i;
+            [$level, $token, $context] = $log;
+            $timestamp = $context['time'];
+            $memory = $context['memory'] ?? 0;
+            $log['index'] = $i;
             $hash = md5(json_encode($token));
             if ($level == self::LEVEL_PROFILE_BEGIN) {
                 $stack[$hash] = $log;
             } elseif ($level == self::LEVEL_PROFILE_END) {
                 if (isset($stack[$hash])) {
-                    $timings[$stack[$hash][6]] = [
-                        'info' => $stack[$hash][0],
-                        'category' => $stack[$hash][2],
-                        'timestamp' => $stack[$hash][3],
-                        'trace' => $stack[$hash][4],
+                    $timings[$stack[$hash]['index']] = [
+                        'info' => $stack[$hash][1],
+                        'category' => $stack[$hash][2]['category'],
+                        'timestamp' => $stack[$hash][2]['time'],
+                        'trace' => $stack[$hash][2]['trace'],
                         'level' => count($stack) - 1,
-                        'duration' => $timestamp - $stack[$hash][3],
+                        'duration' => $timestamp - $stack[$hash][2]['time'],
                         'memory' => $memory,
-                        'memoryDiff' => $memory - ($stack[$hash][5] ?? 0),
+                        'memoryDiff' => $memory - ($stack[$hash][2]['memory'] ?? 0),
                     ];
                     unset($stack[$hash]);
                 }

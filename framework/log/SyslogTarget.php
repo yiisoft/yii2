@@ -7,6 +7,7 @@
 
 namespace yii\log;
 
+use Psr\Log\LogLevel;
 use Yii;
 use yii\helpers\VarDumper;
 
@@ -27,25 +28,29 @@ class SyslogTarget extends Target
      */
     public $facility = LOG_USER;
     /**
+     * @var array syslog levels
+     */
+    private $_syslogLevels = [
+        LogLevel::EMERGENCY => LOG_EMERG,
+        LogLevel::ALERT => LOG_ALERT,
+        LogLevel::CRITICAL => LOG_CRIT,
+        LogLevel::ERROR => LOG_ERR,
+        LogLevel::WARNING => LOG_WARNING,
+        LogLevel::NOTICE => LOG_NOTICE,
+        LogLevel::INFO => LOG_INFO,
+        LogLevel::DEBUG => LOG_DEBUG,
+        Logger::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
+        Logger::LEVEL_PROFILE_END => LOG_DEBUG,
+        Logger::LEVEL_PROFILE => LOG_DEBUG,
+    ];
+
+    /**
      * @var int openlog options. This is a bitfield passed as the `$option` parameter to [openlog()](http://php.net/openlog).
      * Defaults to `null` which means to use the default options `LOG_ODELAY | LOG_PID`.
      * @see http://php.net/openlog for available options.
      * @since 2.0.11
      */
     public $options;
-
-    /**
-     * @var array syslog levels
-     */
-    private $_syslogLevels = [
-        Logger::LEVEL_TRACE => LOG_DEBUG,
-        Logger::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
-        Logger::LEVEL_PROFILE_END => LOG_DEBUG,
-        Logger::LEVEL_PROFILE => LOG_DEBUG,
-        Logger::LEVEL_INFO => LOG_INFO,
-        Logger::LEVEL_WARNING => LOG_WARNING,
-        Logger::LEVEL_ERROR => LOG_ERR,
-    ];
 
 
     /**
@@ -66,7 +71,7 @@ class SyslogTarget extends Target
     {
         openlog($this->identity, $this->options, $this->facility);
         foreach ($this->messages as $message) {
-            syslog($this->_syslogLevels[$message[1]], $this->formatMessage($message));
+            syslog($this->_syslogLevels[$message[0]], $this->formatMessage($message));
         }
         closelog();
     }
@@ -76,7 +81,7 @@ class SyslogTarget extends Target
      */
     public function formatMessage($message)
     {
-        [$text, $level, $category, $timestamp] = $message;
+        [$text, $level, $context] = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure
@@ -88,6 +93,6 @@ class SyslogTarget extends Target
         }
 
         $prefix = $this->getMessagePrefix($message);
-        return "{$prefix}[$level][$category] $text";
+        return "{$prefix}[{$level}][{$context['category']}] {$text}";
     }
 }

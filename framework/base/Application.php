@@ -27,7 +27,7 @@ use Yii;
  * component. This property is read-only.
  * @property \yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
- * @property \yii\log\Dispatcher $log The log dispatcher application component. This property is read-only.
+ * @property \psr\log\LoggerInterface $logger The logger.
  * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
@@ -216,6 +216,11 @@ abstract class Application extends Module
      */
     public function preInit(&$config)
     {
+        if (isset($config['logger'])) {
+            $this->setLogger($config['logger']);
+            unset($config['logger']);
+        }
+
         if (!isset($config['id'])) {
             throw new InvalidConfigException('The "id" configuration for the Application is required.');
         }
@@ -500,12 +505,21 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the log dispatcher component.
-     * @return \yii\log\Dispatcher the log dispatcher application component.
+     * Sets up or configure the logger instance.
+     * @param \psr\log\LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
      */
-    public function getLog()
+    public function setLogger($logger)
     {
-        return $this->get('log');
+        Yii::setLogger($logger);
+    }
+
+    /**
+     * Returns the logger instance.
+     * @return \psr\log\LoggerInterface the logger instance.
+     */
+    public function getLogger()
+    {
+        return Yii::getLogger();
     }
 
     /**

@@ -7,6 +7,7 @@
 
 namespace yii\log;
 
+use Psr\Log\LogLevel;
 use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
@@ -155,49 +156,33 @@ abstract class Target extends Component
     /**
      * Sets the message levels that this target is interested in.
      *
-     * The parameter can be either an array of interested level names or an integer representing
-     * the bitmap of the interested level values. Valid level names include: 'error',
-     * 'warning', 'info', 'trace' and 'profile'; valid level values include:
-     * [[Logger::LEVEL_ERROR]], [[Logger::LEVEL_WARNING]], [[Logger::LEVEL_INFO]],
-     * [[Logger::LEVEL_TRACE]] and [[Logger::LEVEL_PROFILE]].
+     * The parameter should be an array of interested level names. See [[LogLevel]] constants for valid level names.
      *
      * For example,
      *
      * ```php
-     * ['error', 'warning']
-     * // which is equivalent to:
-     * Logger::LEVEL_ERROR | Logger::LEVEL_WARNING
+     * ['error', 'warning'],
+     * // or 
+     * [LogLevel::ERROR, LogLevel::WARNING]
      * ```
      *
-     * @param array|int $levels message levels that this target is interested in.
+     * @param array $levels message levels that this target is interested in.
      * @throws InvalidConfigException if $levels value is not correct.
      */
     public function setLevels($levels)
     {
         static $levelMap = [
-            'error' => Logger::LEVEL_ERROR,
-            'warning' => Logger::LEVEL_WARNING,
-            'info' => Logger::LEVEL_INFO,
-            'trace' => Logger::LEVEL_TRACE,
+            'trace' => LogLevel::DEBUG,
             'profile' => Logger::LEVEL_PROFILE,
         ];
-        if (is_array($levels)) {
-            $this->_levels = 0;
-            foreach ($levels as $level) {
-                if (isset($levelMap[$level])) {
-                    $this->_levels |= $levelMap[$level];
-                } else {
-                    throw new InvalidConfigException("Unrecognized level: $level");
-                }
+
+        $this->_levels = [];
+        foreach ($levels as $level) {
+            if (isset($levelMap[$level])) {
+                $this->_levels[] = $levelMap[$level];
+            } else {
+                $this->_levels[] = $level;
             }
-        } else {
-            $bitmapValues = array_reduce($levelMap, function ($carry, $item) {
-                return $carry | $item;
-            });
-            if (!($bitmapValues & $levels) && $levels !== 0) {
-                throw new InvalidConfigException("Incorrect $levels value");
-            }
-            $this->_levels = $levels;
         }
     }
 
@@ -205,23 +190,22 @@ abstract class Target extends Component
      * Filters the given messages according to their categories and levels.
      * @param array $messages messages to be filtered.
      * The message structure follows that in [[Logger::messages]].
-     * @param int $levels the message levels to filter by. This is a bitmap of
-     * level values. Value 0 means allowing all levels.
+     * @param array $levels the message levels to filter by. Empty value means allowing all levels.
      * @param array $categories the message categories to filter by. If empty, it means all categories are allowed.
      * @param array $except the message categories to exclude. If empty, it means all categories are allowed.
      * @return array the filtered messages.
      */
-    public static function filterMessages($messages, $levels = 0, $categories = [], $except = [])
+    public static function filterMessages($messages, $levels = [], $categories = [], $except = [])
     {
         foreach ($messages as $i => $message) {
-            if ($levels && !($levels & $message[1])) {
+            if ($levels !== [] && !in_array($message[0], $levels, true)) {
                 unset($messages[$i]);
                 continue;
             }
 
             $matched = empty($categories);
             foreach ($categories as $category) {
-                if ($message[2] === $category || !empty($category) && substr_compare($category, '*', -1, 1) === 0 && strpos($message[2], rtrim($category, '*')) === 0) {
+                if ($message[2]['category'] === $category || !empty($category) && substr_compare($category, '*', -1, 1) === 0 && strpos($message[2]['category'], rtrim($category, '*')) === 0) {
                     $matched = true;
                     break;
                 }
@@ -230,7 +214,7 @@ abstract class Target extends Component
             if ($matched) {
                 foreach ($except as $category) {
                     $prefix = rtrim($category, '*');
-                    if (($message[2] === $category || $prefix !== $category) && strpos($message[2], $prefix) === 0) {
+                    if (($message[2]['category'] === $category || $prefix !== $category) && strpos($message[2]['category'], $prefix) === 0) {
                         $matched = false;
                         break;
                     }
@@ -252,7 +236,9 @@ abstract class Target extends Component
      */
     public function formatMessage($message)
     {
-        [$text, $level, $category, $timestamp] = $message;
+        [$level, $text, $context] = $message;
+        $category = $context['category'];
+        $timestamp = $context['timestamp'];
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure
@@ -263,8 +249,8 @@ abstract class Target extends Component
             }
         }
         $traces = [];
-        if (isset($message[4])) {
-            foreach ($message[4] as $trace) {
+        if (isset($context['trace'])) {
+            foreach ($context['trace'] as $trace) {
                 $traces[] = "in {$trace['file']}:{$trace['line']}";
             }
         }
