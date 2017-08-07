@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.1.0 under development
 -----------------------
 
+- Enh #9260: Mail view rendering encapsulated into `yii\mail\Template` class allowing rendering in isolation and access to `yii\mail\MessageInterface` instance via `$this->context->message` inside the view (klimov-paul)
 - Enh #11058: Add `$checkAjax` parameter to method `yii\web\Controller::redirect()` which controls redirection in AJAX and PJAX requests (ivanovyordan)
 - Enh #12385: Methods `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()` have been added to `yii\i18n\MessageInterface` allowing setup of custom message headers (klimov-paul)
 - Enh #12592: Optimized `yii\filters\AccessController` on processing accessrules (dynasource)
@@ -18,6 +19,7 @@ Yii Framework 2 Change Log
 - Chg #7770: Updated the fallback date formats used when no `intl` extension is installed to match the defaults of the latest ICU version (cebe)
 - Chg #13080: Rename `yii\base\InvalidParamException` to `yii\base\InvalidArgumentException` (arogachev)
 - Enh #2990: `yii\widgets\ActiveField::hiddenInput()` no longer renders label by default (lennartvdd)
+- Chg #9260: Mail message composition extracted into separated class `yii\mail\Composer`, which setup is available via `yii\mail\BaseMailer::$composer` (klimov-paul)
 - Chg: Moved masked input field widget into separate extension https://github.com/yiisoft/yii2-maskedinput (samdark)
 - Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
 - Chg #13885: Removed APC support in ApcCache. APCu works as before (samdark) 

@@ -63,7 +63,12 @@ Upgrade from Yii 2.0.x
 * Rename `InvalidParamException` usage to `InvalidArgumentException`.
 * Masked input field widget was moved into separate extension https://github.com/yiisoft/yii2-maskedinput.
   Include it in your composer.json if you use it.
-* If you've used ApcCache and set `useApcu` in your config, remove the option.  
+* If you've used ApcCache and set `useApcu` in your config, remove the option.
+* During mail view rendering the `$message` variable is no longer set by default to be an instance of `yii\mail\MessageInterface`. Instead it is available via `$this->context->message` expression.
+* `yii\mail\BaseMailer::render()` method has been removed. Make sure you do not use it anywhere in your program.
+  Mail view rendering is now encapsulated into `yii\mail\Template` class.
+* Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
+  which now encapsulates message composition.
 
 Upgrade from Yii 2.0.12
 -----------------------
@@ -106,7 +111,6 @@ Upgrade from Yii 2.0.12
   For extensions that have classes extending from `yii\base\Object`, to be compatible with PHP 7.2, you need to
   require `"yiisoft/yii2": "~2.0.13"` in composer.json and change affected classes to extend from `yii\base\BaseObject`
   instead. It is not possible to allow Yii versions `<2.0.13` and be compatible with PHP 7.2 or higher.
-
 
 Upgrade from Yii 2.0.11
 -----------------------
