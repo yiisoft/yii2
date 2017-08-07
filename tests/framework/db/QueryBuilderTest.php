@@ -1118,6 +1118,16 @@ abstract class QueryBuilderTest extends DatabaseTestCase
             [['>=', 'date', new Expression('DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2])], '[[date]] >= DATE_SUB(NOW(), INTERVAL :month MONTH)', [':month' => 2]],
             [['=', 'date', (new Query())->select('max(date)')->from('test')->where(['id' => 5])], '[[date]] = (SELECT max(date) FROM [[test]] WHERE [[id]]=:qp0)', [':qp0' => 5]],
 
+            // composit comparison
+            [['>', ['a', 'b', 'c'], [10, 'foo', 20]], '([[a]] > :qp0) OR (([[a]] = :qp0) AND (([[b]] > :qp1) OR (([[b]] = :qp1) AND ([[c]] > :qp2))))', [':qp0' => 10, ':qp1' => 'foo', ':qp2' => 20]],
+            [['>=', ['a', 'b', 'c'], [10, 'foo', 20]], '([[a]] > :qp0) OR (([[a]] = :qp0) AND (([[b]] > :qp1) OR (([[b]] = :qp1) AND ([[c]] >= :qp2))))', [':qp0' => 10, ':qp1' => 'foo', ':qp2' => 20]],
+            [['<', ['a', 'b', 'c'], [10, 'foo', 20]], '([[a]] < :qp0) OR (([[a]] = :qp0) AND (([[b]] < :qp1) OR (([[b]] = :qp1) AND ([[c]] < :qp2))))', [':qp0' => 10, ':qp1' => 'foo', ':qp2' => 20]],
+            [['<=', ['a', 'b', 'c'], [10, 'foo', 20]], '([[a]] < :qp0) OR (([[a]] = :qp0) AND (([[b]] < :qp1) OR (([[b]] = :qp1) AND ([[c]] <= :qp2))))', [':qp0' => 10, ':qp1' => 'foo', ':qp2' => 20]],
+            [['>', ['a', 'b', 'c'], ['a' => 10, 'c' => 20, 'b' => 'foo']], '([[a]] > :qp0) OR (([[a]] = :qp0) AND (([[b]] > :qp1) OR (([[b]] = :qp1) AND ([[c]] > :qp2))))', [':qp0' => 10, ':qp1' => 'foo', ':qp2' => 20]],
+            [['>=', ['a', 'b'], ['b' => 'foo', 'a' => 10]], '([[a]] > :qp0) OR (([[a]] = :qp0) AND ([[b]] >= :qp1))', [':qp0' => 10, ':qp1' => 'foo']],
+            [['>=', ['a', 'b'], [10, null]], '([[a]] > :qp0) OR (([[a]] = :qp0) AND ([[b]] >= :qp1))', [':qp0' => 10, ':qp1' => null]],
+            [['>=', ['a'], [10]], '[[a]] >= :qp0', [':qp0' => 10]],
+
             // hash condition
             [['a' => 1, 'b' => 2], '([[a]]=:qp0) AND ([[b]]=:qp1)', [':qp0' => 1, ':qp1' => 2]],
             [['a' => new Expression('CONCAT(col1, col2)'), 'b' => 2], '([[a]]=CONCAT(col1, col2)) AND ([[b]]=:qp0)', [':qp0' => 2]],

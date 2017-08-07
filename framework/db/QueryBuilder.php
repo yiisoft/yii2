@@ -1562,6 +1562,13 @@ class QueryBuilder extends \yii\base\BaseObject
 
         list($column, $value) = $operands;
 
+        if (is_array($column)) {
+            if (!is_array($value)) {
+                throw new InvalidParamException("Composit comparison requires array as a value");
+            }
+            return $this->buildCompositRelationCondition($operator, $column, $value, $params);
+        }
+
         if (strpos($column, '(') === false) {
             $column = $this->db->quoteColumnName($column);
         }
@@ -1581,6 +1588,70 @@ class QueryBuilder extends \yii\base\BaseObject
         $phName = self::PARAM_PREFIX . count($params);
         $params[$phName] = $value;
         return "$column $operator $phName";
+    }
+
+    private static $strictCompositComparison = [
+        '>' => '>',
+        '>=' => '>',
+        '<' => '<',
+        '<=' => '<',
+    ];
+
+    /**
+     * Create an SQL expression to compare composit key with its composit value.
+     *
+     * @param string $operator the relation operator to use. Only `>`, `>=`, `<` and `<=` can be used.
+     * @param array $columns columns in the key in order like `['a', 'b', 'c']`
+     * @param array $values columns values to compare with. Only scalar SQL constant values
+     * can be used, because they can be repeated twice in the result SQL. Either ordered list
+     * can be used `[10, 'foo', 20]` with respect to `$columns` or key=>value pairs
+     * in any order like `['a' => 10, 'c' => 20, 'b' => 'foo']`.
+     * @param array $params the binding parameters to be populated
+     * @return string the generated SQL expression
+     * @throws InvalidParamException if wrong number of items in arrays or unsupported operator have been given.
+     */
+    public function buildCompositRelationCondition($operator, $columns, $values, &$params)
+    {
+        if (!$columns) {
+            throw new InvalidParamException("Empty composit key");
+        }
+        if (count($columns) !== count($values)) {
+            throw new InvalidParamException("Composit key and value has different items count");
+        }
+
+        if (!isset(self::$strictCompositComparison[$operator])) {
+            throw new InvalidParamException("Operator '$operator' is not supported for composit comparison");
+        }
+        $strictOperator = self::$strictCompositComparison[$operator];
+
+        if (isset($values[0])) {
+            // assume it is simple ordered list of values
+            // convert simple list to hash
+            $values = array_combine($columns, $values);
+        }
+
+        // prepare params in the order of $columns for debug and tests
+        $phNames = [];
+        foreach ($columns as $column) {
+            $phName = self::PARAM_PREFIX . count($params);
+            $params[$phName] = $values[$column];
+            $phNames[$column] = $phName;
+        }
+
+        $restColumns = $columns;
+
+        $column = array_pop($restColumns);
+        $sqlColumn = $this->db->quoteColumnName($column);
+        $condition = "$sqlColumn $operator {$phNames[$column]}";
+
+        while ($restColumns) {
+            $column = array_pop($restColumns);
+            $sqlColumn = $this->db->quoteColumnName($column);
+            $phName = $phNames[$column];
+            $condition = "($sqlColumn $strictOperator $phName) OR (($sqlColumn = $phName) AND ($condition))";
+        }
+
+        return $condition;
     }
 
     /**
