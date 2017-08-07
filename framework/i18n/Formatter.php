@@ -1127,19 +1127,21 @@ class Formatter extends Component
     }
 
     /**
-     * Return a currency symbol
+     * Returns a currency symbol
      *
-     * @param null $currencyCode
+     * @param string|null $currencyCode currency code to get symbol for. If not specified,
+     * default formatter currency code is used
      * @return string
-     * @throws InvalidConfigException
+     * @throws InvalidConfigException if currency code is not specified and default formatter
+     * code is not set
      */
-    public function getCurrencySymbol($currencyCode=null)
+    public function getCurrencySymbol($currencyCode = null)
     {
         if ($currencyCode === null) {
             $currencyCode = $this->currencyCode;
         }
-        if (strlen($currencyCode) == 0) {
-            throw new InvalidConfigException("The default currency code for the formatter is not defined.");
+        if (strlen($currencyCode) === 0) {
+            throw new InvalidConfigException('The default currency code for the formatter is not defined.');
         }
         $locale = $this->locale . '@currency=' . $currencyCode;
         $formatter = new \NumberFormatter($locale, \NumberFormatter::CURRENCY);
