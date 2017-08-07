@@ -79,6 +79,20 @@ class RequestTest extends TestCase
         $this->assertEquals('pl', $request->getPreferredLanguage(['pl', 'ru-ru']));
     }
 
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14542
+     */
+    public function testCsrfTokenContainsASCIIOnly()
+    {
+        $this->mockWebApplication();
+
+        $request = new Request();
+        $request->enableCsrfCookie = false;
+
+        $token = $request->getCsrfToken();
+        $this->assertRegExp('~[-_=a-z0-9]~i', $token);
+    }
+
     public function testCsrfTokenValidation()
     {
         $this->mockWebApplication();
