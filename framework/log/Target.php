@@ -239,7 +239,7 @@ abstract class Target extends Component
     {
         [$level, $text, $context] = $message;
         $category = $context['category'];
-        $timestamp = $context['timestamp'];
+        $timestamp = $context['time'];
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure

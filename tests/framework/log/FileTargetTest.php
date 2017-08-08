@@ -47,7 +47,7 @@ class FileTargetTest extends TestCase
                 'file' => [
                     'class' => FileTarget::class,
                     'logFile' => $logFile,
-                    'levels' => ['warning'],
+                    'levels' => [LogLevel::WARNING],
                     'maxFileSize' => 1024, // 1 MB
                     'maxLogFiles' => 1, // one file for rotation and one normal log file
                     'logVars' => [],
