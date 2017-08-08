@@ -275,7 +275,7 @@ yii.validation = (function ($) {
             } else {
                 var attributes = $form.data('yiiActiveForm').attributes
                 for (var i = attributes.length - 1; i >= 0; i--) {
-                    if (attributes[i].id == options.compareAttribute) {
+                    if (attributes[i].id === options.compareAttribute) {
                         compareValue = $(attributes[i].input).val();
                     }
                 }
