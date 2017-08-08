@@ -15,6 +15,8 @@ use yii\base\UnknownClassException;
 use yii\di\Container;
 use yii\di\Instance;
 use yii\log\Logger;
+use yii\profile\Profiler;
+use yii\profile\ProfilerInterface;
 
 /**
  * Gets the application start timestamp.
@@ -358,6 +360,9 @@ class BaseYii
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
 
+    /**
+     * @var LoggerInterface logger instance.
+     */
     private static $_logger;
 
     /**
@@ -397,14 +402,56 @@ class BaseYii
     }
 
     /**
-     * Logs a trace message.
+     * @var ProfilerInterface profiler instance.
+     * @since 2.1
+     */
+    private static $_profiler;
+
+    /**
+     * @return ProfilerInterface profiler instance.
+     * @since 2.1
+     */
+    public static function getProfiler()
+    {
+        if (self::$_profiler !== null) {
+            return self::$_profiler;
+        }
+        return self::$_profiler = Instance::ensure(['class' => Profiler::class], ProfilerInterface::class);
+    }
+
+    /**
+     * @param ProfilerInterface|\Closure|array|null $profiler profiler instance or its DI compatible configuration.
+     * @since 2.1
+     */
+    public static function setProfiler($profiler)
+    {
+        if ($profiler === null) {
+            self::$_profiler = null;
+            return;
+        }
+
+        if (is_array($profiler)) {
+            if (!isset($profiler['class']) && is_object(self::$_profiler)) {
+                static::configure(self::$_profiler, $profiler);
+                return;
+            }
+            $profiler = array_merge(['class' => Profiler::class], $profiler);
+        } elseif ($profiler instanceof \Closure) {
+            $profiler = call_user_func($profiler);
+        }
+
+        self::$_profiler = Instance::ensure($profiler, ProfilerInterface::class);
+    }
+
+    /**
+     * Logs a debug message.
      * Trace messages are logged mainly for development purpose to see
      * the execution work flow of some code.
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure, such as array.
      * @param string $category the category of the message.
      */
-    public static function trace($message, $category = 'application')
+    public static function debug($message, $category = 'application')
     {
         if (YII_DEBUG) {
             static::getLogger()->log(LogLevel::DEBUG, $message, ['category' => $category]);
@@ -469,7 +516,7 @@ class BaseYii
      */
     public static function beginProfile($token, $category = 'application')
     {
-        static::getLogger()->log(Logger::LEVEL_PROFILE_BEGIN, $token, ['category' => $category]);
+        static::getProfiler()->begin($token, $category);
     }
 
     /**
@@ -481,7 +528,7 @@ class BaseYii
      */
     public static function endProfile($token, $category = 'application')
     {
-        static::getLogger()->log(Logger::LEVEL_PROFILE_END, $token, ['category' => $category]);
+        static::getProfiler()->end($token, $category);
     }
 
     /**

@@ -108,7 +108,7 @@ class AssetConverter extends Component implements AssetConverterInterface
         $status = proc_close($proc);
 
         if ($status === 0) {
-            Yii::trace("Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__);
+            Yii::debug("Converted $asset into $result:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr", __METHOD__);
         } elseif (YII_DEBUG) {
             throw new Exception("AssetConverter command '$command' failed with exit code $status:\nSTDOUT:\n$stdout\nSTDERR:\n$stderr");
         } else {

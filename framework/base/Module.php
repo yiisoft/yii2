@@ -418,7 +418,7 @@ class Module extends ServiceLocator
             if ($this->_modules[$id] instanceof self) {
                 return $this->_modules[$id];
             } elseif ($load) {
-                Yii::trace("Loading module: $id", __METHOD__);
+                Yii::debug("Loading module: $id", __METHOD__);
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
                 $module->setInstance($module);

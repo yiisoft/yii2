@@ -169,12 +169,12 @@ class PageCache extends ActionFilter
             ob_start();
             ob_implicit_flush(false);
             $response->on(Response::EVENT_AFTER_SEND, [$this, 'cacheResponse']);
-            Yii::trace('Valid page content is not found in the cache.', __METHOD__);
+            Yii::debug('Valid page content is not found in the cache.', __METHOD__);
             return true;
         }
 
         $this->restoreResponse($response, $data);
-        Yii::trace('Valid page content is found in the cache.', __METHOD__);
+        Yii::debug('Valid page content is found in the cache.', __METHOD__);
         return false;
     }
 

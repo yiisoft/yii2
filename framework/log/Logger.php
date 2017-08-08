@@ -73,20 +73,6 @@ class Logger extends Component implements LoggerInterface
      * @deprecated since 2.1.0 Use [[LogLevel::DEBUG]] instead.
      */
     const LEVEL_TRACE = LogLevel::DEBUG;
-    /**
-     * Profiling message level. This indicates the message is for profiling purpose.
-     */
-    const LEVEL_PROFILE = 0x40;
-    /**
-     * Profiling message level. This indicates the message is for profiling purpose. It marks the
-     * beginning of a profiling block.
-     */
-    const LEVEL_PROFILE_BEGIN = 0x50;
-    /**
-     * Profiling message level. This indicates the message is for profiling purpose. It marks the
-     * end of a profiling block.
-     */
-    const LEVEL_PROFILE_END = 0x60;
 
     /**
      * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
