@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework;
 
+use Psr\Log\LogLevel;
 use Yii;
 use yii\BaseYii;
 use yii\di\Container;
@@ -178,22 +179,22 @@ class BaseYiiTest extends TestCase
             ->method('log')
             ->withConsecutive(
                 [
-                    $this->equalTo(Logger::LEVEL_INFO),
+                    $this->equalTo(LogLevel::INFO),
                     $this->equalTo('info message'),
                     $this->equalTo(['category' => 'info category'])
                 ],
                 [
-                    $this->equalTo(Logger::LEVEL_WARNING),
+                    $this->equalTo(LogLevel::WARNING),
                     $this->equalTo('warning message'),
                     $this->equalTo(['category' => 'warning category']),
                 ],
                 [
-                    $this->equalTo(Logger::LEVEL_TRACE),
+                    $this->equalTo(LogLevel::DEBUG),
                     $this->equalTo('trace message'),
                     $this->equalTo(['category' => 'trace category'])
                 ],
                 [
-                    $this->equalTo(Logger::LEVEL_ERROR),
+                    $this->equalTo(LogLevel::ERROR),
                     $this->equalTo('error message'),
                     $this->equalTo(['category' => 'error category'])
                 ]
