@@ -27,8 +27,17 @@ class CustomerFixture extends ActiveFixture
     ];
 }
 
-class MyDbTestCase
+class OrderFixture extends ActiveFixture
 {
+    public $modelClass = 'yiiunit\data\ar\Order';
+
+    public $dataExtra = [
+        'order_item.php'
+    ];
+}
+
+class BaseDbTestCase {
+
     use FixtureTrait;
 
     public function setUp()
@@ -40,12 +49,28 @@ class MyDbTestCase
     {
     }
 
+}
+
+class MyDbTestCase extends BaseDbTestCase
+{
+    public function fixtures()
+    {
+        return [
+            'customers' => CustomerFixture::className()
+        ];
+    }
+}
+
+class ExtraDataTestCase extends BaseDbTestCase
+{
     public function fixtures()
     {
         return [
             'customers' => CustomerFixture::className(),
+            'orders' => OrderFixture::className()
         ];
     }
+
 }
 
 /**
@@ -102,6 +127,24 @@ class ActiveFixtureTest extends DatabaseTestCase
         $this->assertEquals(2, $fixture->getModel('customer2')->id);
         $this->assertEquals('customer2@example.com', $fixture->getModel('customer2')->email);
         $this->assertEquals(2, $fixture['customer2']['profile_id']);
+
+        $test->tearDown();
+    }
+
+    public function testDataExtra()
+    {
+        $test = new ExtraDataTestCase();
+        $test->setUp();
+
+        $fixture = $test->getFixture('orders');
+        $items = $fixture->getModel('order1')->items;
+
+        $this->assertCount(2, $items);
+        $this->assertEquals('Agile Web Application Development with Yii1.1 and PHP5', $items[0]['name']);
+        $this->assertEquals(1, $items[0]['category_id']);
+
+        $this->assertEquals('Ice Age', $items[1]['name']);
+        $this->assertEquals(2, $items[1]['category_id']);
 
         $test->tearDown();
     }

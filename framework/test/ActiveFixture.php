@@ -46,11 +46,20 @@ class ActiveFixture extends BaseActiveFixture
      * name of the table associated with this fixture. You can set this property to be false to prevent loading any data.
      */
     public $dataFile;
-
+    /**
+     * @var string[] the file names that contains extra data that must be loaded.
+     * This is usefull to load fixtures for `hasMany` relations that use `viaTable`.
+     * The file name must be equal to table name.
+     */
+    public $dataExtra = [];
     /**
      * @var TableSchema the table schema for the table associated with this fixture
      */
     private $_table;
+    /**
+     * @var string the directory path that contains the fixture data
+     */
+    private $_dataDirectory;
 
 
     /**
@@ -61,6 +70,11 @@ class ActiveFixture extends BaseActiveFixture
         parent::init();
         if ($this->modelClass === null && $this->tableName === null) {
             throw new InvalidConfigException('Either "modelClass" or "tableName" must be set.');
+        }
+
+        if ($this->dataFile === null) {
+            $class = new \ReflectionClass($this);
+            $this->_dataDirectory = dirname($class->getFileName()) . '/data';
         }
     }
 
@@ -76,28 +90,37 @@ class ActiveFixture extends BaseActiveFixture
     {
         $this->data = [];
         $table = $this->getTableSchema();
+
         foreach ($this->getData() as $alias => $row) {
             $primaryKeys = $this->db->schema->insert($table->fullName, $row);
             $this->data[$alias] = array_merge($row, $primaryKeys);
         }
+
+        foreach ($this->dataExtra as $extra) {
+            $info = pathinfo($extra);
+            $file = $this->_dataDirectory . '/' . $extra;
+            $data = is_file($file) ? require $file : [];
+
+            foreach ($data as $row) {
+                $this->db->schema->insert($info['filename'], $row);
+            }
+        }
     }
 
     /**
-     * Returns the fixture data.
-     *
-     * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
-     * The file should return an array of data rows (column name => column value), each corresponding to a row in the table.
-     *
-     * If the data file does not exist, an empty array will be returned.
-     *
-     * @return array the data rows to be inserted into the database table.
-     */
+    * Returns the fixture data.
+    *
+    * The default implementation will try to return the fixture data by including the external file specified by [[dataFile]].
+    * The file should return an array of data rows (column name => column value), each corresponding to a row in the table.
+    *
+    * If the data file does not exist, an empty array will be returned.
+    *
+    * @return array the data rows to be inserted into the database table.
+    */
     protected function getData()
     {
         if ($this->dataFile === null) {
-            $class = new \ReflectionClass($this);
-            $dataFile = dirname($class->getFileName()) . '/data/' . $this->getTableSchema()->fullName . '.php';
-
+            $dataFile = $this->_dataDirectory . '/' . $this->getTableSchema()->fullName . '.php';
             return is_file($dataFile) ? require $dataFile : [];
         }
 
@@ -109,6 +132,11 @@ class ActiveFixture extends BaseActiveFixture
      */
     public function unload()
     {
+        foreach (array_reverse($this->dataExtra) as $extra) {
+            $info = pathinfo($extra);
+            $this->db->createCommand()->delete($info['filename'])->execute();
+        }
+
         $this->resetTable();
         parent::unload();
     }

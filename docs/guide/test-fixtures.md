@@ -104,6 +104,38 @@ In the above, we have shown how to define a fixture about a DB table. To define 
 (e.g. a fixture about certain files and directories), you may extend from the more general base class
 [[yii\test\Fixture]] and override the [[yii\test\Fixture::load()|load()]] and [[yii\test\Fixture::unload()|unload()]] methods.
 
+It is possible to load extra fixtures into any tables using the `dataExtra` property. It is especially
+useful if the table in question has relations. In the following example a table for many to many relation is being filled:
+
+```php
+namespace app\tests\fixtures;
+
+use yii\test\ActiveFixture;
+
+class UserFixture extends ActiveFixture
+{
+    public $modelClass = 'app\models\User';
+
+    public $dataExtra = [
+      'user_profile.php'
+    ];
+}
+```
+
+The data file name must be equal to the table name and should be formatted like the following:
+
+```php
+<?php
+return [
+    [
+        'user_id' => 1,
+        'profile_id' => 1        
+    ], [
+        'user_id' => 1,
+        'profile_id' => 2        
+    ],
+];
+```
 
 ## Using Fixtures
 
