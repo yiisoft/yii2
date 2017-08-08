@@ -171,17 +171,28 @@ class GridView extends BaseListView
      *     'created_at:datetime',
      * ]
      * ```
+     * Since version 2.0.13 you can use `false` instead of the configuration for a column
+     * to simply remove the column. An example usage looks like this:
+     *
+     * ```php
+     * [
+     *     $showSerial ? ['class' => SerialColumn::className()] : false,
+     *     \Yii::$app->user->can('adminPermission') ? ['class' => 'yii\grid\ActionColumn'] : false,
+     * ]
+     * ```
      *
      * When using a [[dataProvider]] with active records, you can also display values from related records,
      * e.g. the `name` attribute of the `author` relation:
      *
      * ```php
-     * // shortcut syntax
-     * 'author.name',
-     * // full syntax
      * [
-     *     'attribute' => 'author.name',
-     *     // ...
+     *     // shortcut syntax
+     *     'author.name',
+     *     // full syntax
+     *     [
+     *         'attribute' => 'author.name',
+     *         // ...
+     *     ],
      * ]
      * ```
      */
@@ -525,6 +536,10 @@ class GridView extends BaseListView
             $this->guessColumns();
         }
         foreach ($this->columns as $i => $column) {
+            if ($column === false) {
+                unset($this->columns[$i]);
+                continue;
+            }
             if (is_string($column)) {
                 $column = $this->createDataColumn($column);
             } else {

@@ -45,6 +45,23 @@ class DataColumnTest extends \yiiunit\TestCase
     }
 
     /**
+     * "false" in column definition should turn column off
+     */
+    public function testColumnTurnOff_OnEmpty_ArrayProvider()
+    {
+        $this->mockApplication();
+        $grid = new GridView([
+            'dataProvider' => new ArrayDataProvider([
+                'allModels' => [],
+                'totalCount' => 0,
+                'modelClass' => Order::className()
+            ]),
+            'columns' => [false, 'customer_id', false , 'total', false],
+        ]);
+        $this->assertEquals(count($grid->columns), 2);
+    }
+
+    /**
      * @see DataColumn::getHeaderCellLabel()
      */
     public function testColumnLabels_OnEmpty_ArrayProvider_WithFilterModel()
