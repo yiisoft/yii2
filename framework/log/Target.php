@@ -13,6 +13,7 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
+use yii\profile\Profiler;
 use yii\web\Request;
 
 /**
@@ -117,7 +118,7 @@ abstract class Target extends Component
         $count = count($this->messages);
         if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
             if (($context = $this->getContextMessage()) !== '') {
-                $this->messages[] = [$context, Logger::LEVEL_INFO, 'application', YII_BEGIN_TIME];
+                $this->messages[] = [$context, LogLevel::INFO, 'application', YII_BEGIN_TIME];
             }
             // set exportInterval to 0 to avoid triggering export again while exporting
             $oldExportInterval = $this->exportInterval;
@@ -173,7 +174,7 @@ abstract class Target extends Component
     {
         static $levelMap = [
             'trace' => LogLevel::DEBUG,
-            'profile' => Logger::LEVEL_PROFILE,
+            'profile' => Profiler::LEVEL_PROFILE,
         ];
 
         $this->_levels = [];

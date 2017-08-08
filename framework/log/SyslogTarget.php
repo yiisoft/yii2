@@ -10,6 +10,7 @@ namespace yii\log;
 use Psr\Log\LogLevel;
 use Yii;
 use yii\helpers\VarDumper;
+use yii\profile\Profiler;
 
 /**
  * SyslogTarget writes log to syslog.
@@ -39,9 +40,10 @@ class SyslogTarget extends Target
         LogLevel::NOTICE => LOG_NOTICE,
         LogLevel::INFO => LOG_INFO,
         LogLevel::DEBUG => LOG_DEBUG,
-        Logger::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
-        Logger::LEVEL_PROFILE_END => LOG_DEBUG,
-        Logger::LEVEL_PROFILE => LOG_DEBUG,
+        // @todo consider remove after Profiler refactoring
+        Profiler::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
+        Profiler::LEVEL_PROFILE_END => LOG_DEBUG,
+        Profiler::LEVEL_PROFILE => LOG_DEBUG,
     ];
 
     /**
@@ -81,7 +83,7 @@ class SyslogTarget extends Target
      */
     public function formatMessage($message)
     {
-        [$text, $level, $context] = $message;
+        [$level, $text, $context] = $message;
         $level = Logger::getLevelName($level);
         if (!is_string($text)) {
             // exceptions may not be serializable if in the call stack somewhere is a Closure
@@ -93,6 +95,6 @@ class SyslogTarget extends Target
         }
 
         $prefix = $this->getMessagePrefix($message);
-        return "{$prefix}[{$level}][{$context['category']}] {$text}";
+        return $prefix. '[' . $level . '][' . ($context['category'] ?? '') . '] ' .$text;
     }
 }

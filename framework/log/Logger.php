@@ -13,6 +13,7 @@ use Psr\Log\LoggerTrait;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
+use yii\profile\Profiler;
 
 /**
  * Logger records logged messages in memory and sends them to different targets if [[dispatcher]] is set.
@@ -111,6 +112,11 @@ class Logger extends Component implements LoggerInterface
      * @since 2.1
      */
     private $_targets = [];
+    /**
+     * @var bool whether [[targets]] have been initialized, e.g. ensured to be objects.
+     * @since 2.1
+     */
+    private $_isTargetsInitialized = false;
 
 
     /**
@@ -119,6 +125,14 @@ class Logger extends Component implements LoggerInterface
      */
     public function getTargets()
     {
+        if (!$this->_isTargetsInitialized) {
+            foreach ($this->_targets as $name => $target) {
+                if (!$target instanceof Target) {
+                    $this->_targets[$name] = Yii::createObject($target);
+                }
+            }
+            $this->_isTargetsInitialized = true;
+        }
         return $this->_targets;
     }
 
@@ -129,12 +143,8 @@ class Logger extends Component implements LoggerInterface
      */
     public function setTargets($targets)
     {
-        foreach ($targets as $name => $target) {
-            if (!$target instanceof Target) {
-                $this->_targets[$name] = Yii::createObject($target);
-            }
-        }
         $this->_targets = $targets;
+        $this->_isTargetsInitialized = false;
     }
 
     /**
@@ -377,9 +387,9 @@ class Logger extends Component implements LoggerInterface
     public static function getLevelName($level)
     {
         static $levels = [
-            self::LEVEL_PROFILE_BEGIN => 'profile begin',
-            self::LEVEL_PROFILE_END => 'profile end',
-            self::LEVEL_PROFILE => 'profile',
+            Profiler::LEVEL_PROFILE_BEGIN => 'profile begin',
+            Profiler::LEVEL_PROFILE_END => 'profile end',
+            Profiler::LEVEL_PROFILE => 'profile',
         ];
         
         if (isset($levels[$level])) {
