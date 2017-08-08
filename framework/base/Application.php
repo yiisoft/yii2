@@ -641,7 +641,6 @@ abstract class Application extends Module
             'security' => ['class' => Security::class],
             'formatter' => ['class' => \yii\i18n\Formatter::class],
             'i18n' => ['class' => \yii\i18n\I18N::class],
-            'log' => ['class' => \yii\log\Dispatcher::class],
             'mailer' => ['class' => \yii\swiftmailer\Mailer::class],
             'assetManager' => ['class' => \yii\web\AssetManager::class],
             'urlManager' => ['class' => \yii\web\UrlManager::class],

@@ -16,7 +16,7 @@ use yii\base\ErrorHandler;
 use yii\profile\Profiler;
 
 /**
- * Logger records logged messages in memory and sends them to different targets if [[dispatcher]] is set.
+ * Logger records logged messages in memory and sends them to different targets according to [[targets]].
  *
  * A Logger instance can be accessed via `Yii::getLogger()`. You can call the method [[log()]] to record a single log message.
  * For convenience, a set of shortcut methods are provided for logging messages of various severity levels
@@ -33,7 +33,7 @@ use yii\profile\Profiler;
  *
  * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
  * to send logged messages to different log targets, such as [[FileTarget|file]], [[EmailTarget|email]],
- * or [[DbTarget|database]], with the help of the [[dispatcher]].
+ * or [[DbTarget|database]], according to the [[targets]].
  *
  * @property array|Target[] $targets the log targets. See [[setTargets()]] for details.
  * @property array $dbProfiling The first element indicates the number of SQL statements executed, and the
