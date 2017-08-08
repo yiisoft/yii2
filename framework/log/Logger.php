@@ -354,9 +354,9 @@ class Logger extends Component implements LoggerInterface
             $memory = $context['memory'] ?? 0;
             $log['index'] = $i;
             $hash = md5(json_encode($token));
-            if ($level == self::LEVEL_PROFILE_BEGIN) {
+            if ($level == Profiler::LEVEL_PROFILE_BEGIN) {
                 $stack[$hash] = $log;
-            } elseif ($level == self::LEVEL_PROFILE_END) {
+            } elseif ($level == Profiler::LEVEL_PROFILE_END) {
                 if (isset($stack[$hash])) {
                     $timings[$stack[$hash]['index']] = [
                         'info' => $stack[$hash][1],

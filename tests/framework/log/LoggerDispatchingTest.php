@@ -21,7 +21,6 @@ namespace yiiunit\framework\log {
     use Psr\Log\LogLevel;
     use Yii;
     use yii\base\UserException;
-    use yii\log\Dispatcher;
     use yii\log\Logger;
     use yiiunit\TestCase;
 
@@ -71,7 +70,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers \yii\log\Dispatcher::dispatch()
+         * @covers \yii\log\Logger::dispatch()
          */
         public function testDispatchWithSuccessTargetCollect()
         {
@@ -93,7 +92,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers \yii\log\Dispatcher::dispatch()
+         * @covers \yii\log\Logger::dispatch()
          */
         public function testDispatchWithFakeTarget2ThrowExceptionWhenCollect()
         {
@@ -142,7 +141,7 @@ namespace yiiunit\framework\log {
         }
 
         /**
-         * @covers \yii\log\Dispatcher::init()
+         * @covers \yii\log\Logger::init()
          */
         public function testInitWithCreateTargetObject()
         {

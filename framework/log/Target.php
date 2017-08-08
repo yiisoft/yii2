@@ -118,7 +118,7 @@ abstract class Target extends Component
         $count = count($this->messages);
         if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
             if (($context = $this->getContextMessage()) !== '') {
-                $this->messages[] = [$context, LogLevel::INFO, 'application', YII_BEGIN_TIME];
+                $this->messages[] = [LogLevel::INFO, $context, ['category' => 'application', 'time' => YII_BEGIN_TIME]];
             }
             // set exportInterval to 0 to avoid triggering export again while exporting
             $oldExportInterval = $this->exportInterval;
@@ -199,7 +199,7 @@ abstract class Target extends Component
     public static function filterMessages($messages, $levels = [], $categories = [], $except = [])
     {
         foreach ($messages as $i => $message) {
-            if ($levels !== [] && !in_array($message[0], $levels, true)) {
+            if (!empty($levels) && !in_array($message[0], $levels, true)) {
                 unset($messages[$i]);
                 continue;
             }
