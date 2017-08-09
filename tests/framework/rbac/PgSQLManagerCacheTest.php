@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\rbac;
 
+use yii\caching\Cache;
 use yii\caching\FileCache;
 use yii\rbac\DbManager;
 

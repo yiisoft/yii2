@@ -7,6 +7,8 @@
 
 namespace yiiunit\framework\db;
 
+use yii\caching\ArrayCache;
+use yii\caching\Cache;
 use yii\caching\FileCache;
 use yii\db\Connection;
 use yii\db\DataReader;
@@ -861,7 +863,7 @@ SQL;
     {
         $db = $this->getConnection();
         $db->enableQueryCache = true;
-        $db->queryCache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $db->queryCache = new Cache(['handler' => new ArrayCache()]);
         $command = $db->createCommand('SELECT [[name]] FROM {{customer}} WHERE [[id]] = :id');
 
         $this->assertEquals('user1', $command->bindValue(':id', 1)->queryScalar());
