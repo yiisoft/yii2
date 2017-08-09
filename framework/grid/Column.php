@@ -102,7 +102,7 @@ class Column extends BaseObject
      */
     public function renderDataCell($model, $key, $index)
     {
-        if ($this->contentOptions instanceof Closure) {
+        if ($this->contentOptions instanceof Closure|| is_callable($this->contentOptions)) {
             $options = call_user_func($this->contentOptions, $model, $key, $index, $this);
         } else {
             $options = $this->contentOptions;
