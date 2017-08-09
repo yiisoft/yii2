@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\caching;
 
+use yii\caching\Cache;
 use yii\caching\FileCache;
 use yii\caching\TagDependency;
 use yiiunit\TestCase;
@@ -18,7 +19,7 @@ class TagDependencyTest extends TestCase
 {
     public function testInvalidate()
     {
-        $cache = new FileCache(['cachePath' => '@yiiunit/runtime/cache']);
+        $cache = new Cache(['handler' => new FileCache(['cachePath' => '@yiiunit/runtime/cache'])]);
 
         // single tag test
         $cache->set('a1', 11, 0, new TagDependency(['tags' => 't1']));

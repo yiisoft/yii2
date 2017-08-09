@@ -9,6 +9,7 @@ namespace yiiunit\framework\caching;
 
 use yii\caching\Cache;
 use yii\caching\Dependency;
+use yii\caching\SimpleCache;
 use yiiunit\data\cache\MockDependency;
 use yiiunit\TestCase;
 
@@ -44,8 +45,10 @@ class DependencyTest extends TestCase
 
     public function testIsChanged()
     {
+        /* @var $dependency Dependency */
+        /* @var $cache SimpleCache */
         $dependency = $this->getMockForAbstractClass(Dependency::class);
-        $cache = $this->getMockForAbstractClass(Cache::class);
+        $cache = $this->getMockForAbstractClass(SimpleCache::class);
 
         $result = $dependency->isChanged($cache);
         $this->assertFalse($result);
