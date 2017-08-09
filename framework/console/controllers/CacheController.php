@@ -100,7 +100,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
+                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->clear() : false,
             ];
         }
 
@@ -124,7 +124,7 @@ class CacheController extends Controller
             $cachesInfo[] = [
                 'name' => $name,
                 'class' => $class,
-                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->flush() : false,
+                'is_flushed' => $this->canBeFlushed($class) ? Yii::$app->get($name)->clear() : false,
             ];
         }
 
