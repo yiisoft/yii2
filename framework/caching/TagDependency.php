@@ -93,7 +93,7 @@ class TagDependency extends Dependency
         foreach ($keys as $key) {
             $items[$key] = $time;
         }
-        $cache->multiSet($items);
+        $cache->setMultiple($items);
         return $items;
     }
 
@@ -114,6 +114,6 @@ class TagDependency extends Dependency
             $keys[] = $cache->buildKey([__CLASS__, $tag]);
         }
 
-        return $cache->multiGet($keys);
+        return $cache->getMultiple($keys);
     }
 }

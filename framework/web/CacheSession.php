@@ -79,7 +79,7 @@ class CacheSession extends Session
     {
         $data = $this->cache->get($this->calculateKey($id));
 
-        return $data === false ? '' : $data;
+        return $data === null ? '' : $data;
     }
 
     /**
@@ -103,7 +103,7 @@ class CacheSession extends Session
     public function destroySession($id)
     {
         $cacheId = $this->calculateKey($id);
-        if ($this->cache->exists($cacheId) === false) {
+        if ($this->cache->has($cacheId) === false) {
             return true;
         }
 

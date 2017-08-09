@@ -30,7 +30,7 @@ class ArrayCache extends Cache
     /**
      * @inheritdoc
      */
-    public function exists($key)
+    public function has($key)
     {
         $key = $this->buildKey($key);
         return isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true));

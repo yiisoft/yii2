@@ -87,7 +87,7 @@ class DbCacheTest extends CacheTestCase
         static::$time++;
         $this->assertEquals('expire_test', $cache->get('expire_test'));
         static::$time++;
-        $this->assertFalse($cache->get('expire_test'));
+        $this->assertNull($cache->get('expire_test'));
     }
 
     public function testExpireAdd()
@@ -99,6 +99,6 @@ class DbCacheTest extends CacheTestCase
         static::$time++;
         $this->assertEquals('expire_testa', $cache->get('expire_testa'));
         static::$time++;
-        $this->assertFalse($cache->get('expire_testa'));
+        $this->assertNull($cache->get('expire_testa'));
     }
 }

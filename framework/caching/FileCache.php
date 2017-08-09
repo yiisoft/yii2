@@ -93,7 +93,7 @@ class FileCache extends Cache
      * a complex data structure consisting of factors representing the key.
      * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
      */
-    public function exists($key)
+    public function has($key)
     {
         $cacheFile = $this->getCacheFile($this->buildKey($key));
 
