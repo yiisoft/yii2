@@ -81,8 +81,8 @@ class CacheControllerTest extends TestCase
 
         $this->_cacheController->actionFlush('firstCache');
 
-        $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->firstCache->get('secondKey'), 'first cache data should be flushed');
+        $this->assertNull(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
+        $this->assertNull(Yii::$app->firstCache->get('secondKey'), 'first cache data should be flushed');
         $this->assertEquals('thirdValue', Yii::$app->secondCache->get('thirdKey'), 'second cache data should not be flushed');
     }
 
@@ -112,9 +112,9 @@ class CacheControllerTest extends TestCase
 
         $this->_cacheController->actionFlush('firstCache', 'secondCache');
 
-        $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->firstCache->get('secondKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
+        $this->assertNull(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
+        $this->assertNull(Yii::$app->firstCache->get('secondKey'), 'first cache data should be flushed');
+        $this->assertNull(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
     }
 
     public function testNotFoundFlush()
@@ -141,7 +141,7 @@ class CacheControllerTest extends TestCase
 
         $this->_cacheController->actionFlushAll();
 
-        $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
-        $this->assertFalse(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
+        $this->assertNull(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
+        $this->assertNull(Yii::$app->secondCache->get('thirdKey'), 'second cache data should be flushed');
     }
 }
