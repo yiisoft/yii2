@@ -8,6 +8,7 @@
 namespace yiiunit\framework\caching;
 
 use yii\caching\ArrayCache;
+use yii\caching\Cache;
 
 /**
  * Class for testing file cache backend
@@ -18,12 +19,14 @@ class ArrayCacheTest extends CacheTestCase
     private $_cacheInstance = null;
 
     /**
-     * @return ArrayCache
+     * @return Cache
      */
     protected function getCacheInstance()
     {
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new ArrayCache();
+            $this->_cacheInstance = new Cache([
+                'handler' => new ArrayCache()
+            ]);
         }
         return $this->_cacheInstance;
     }

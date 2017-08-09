@@ -7,6 +7,7 @@
 
 namespace yiiunit\framework\caching;
 
+use yii\caching\Cache;
 use yii\caching\DbCache;
 
 /**
@@ -67,12 +68,14 @@ class DbCacheTest extends CacheTestCase
     }
 
     /**
-     * @return DbCache
+     * @return Cache
      */
     protected function getCacheInstance()
     {
         if ($this->_cacheInstance === null) {
-            $this->_cacheInstance = new DbCache(['db' => $this->getConnection()]);
+            $this->_cacheInstance = new Cache([
+                'handler' => new DbCache(['db' => $this->getConnection()])
+            ]);
         }
 
         return $this->_cacheInstance;

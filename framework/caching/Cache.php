@@ -9,6 +9,7 @@ namespace yii\caching;
 
 use Yii;
 use yii\base\Component;
+use yii\di\Instance;
 use yii\helpers\StringHelper;
 
 /**
@@ -51,7 +52,7 @@ use yii\helpers\StringHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Cache extends Component implements CacheInterface
+class Cache extends Component implements CacheInterface
 {
     /**
      * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
@@ -77,8 +78,22 @@ abstract class Cache extends Component implements CacheInterface
      * This value is used by [[set()]] if the duration is not explicitly given.
      * @since 2.0.11
      */
-    public $defaultDuration = 0;
+    public $defaultTtl = 0;
+    /**
+     * @var \Psr\SimpleCache\CacheInterface|array actual cache handler or its DI compatible configuration.
+     * @since 2.1.0
+     */
+    public $handler;
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function init()
+    {
+        parent::init();
+        $this->handler = Instance::ensure($this->handler instanceof \Closure ? call_user_func($this->handler) : $this->handler, \Psr\SimpleCache\CacheInterface::class);
+    }
 
     /**
      * Builds a normalized cache key from a given key.
@@ -107,8 +122,8 @@ abstract class Cache extends Component implements CacheInterface
     public function get($key, $default = null)
     {
         $key = $this->buildKey($key);
-        $value = $this->getValue($key);
-        if ($value === false || $this->serializer === false) {
+        $value = $this->handler->get($key);
+        if ($value === null || $this->serializer === false) {
             return $default;
         } elseif ($this->serializer === null) {
             $value = unserialize($value);
@@ -128,9 +143,7 @@ abstract class Cache extends Component implements CacheInterface
     public function has($key)
     {
         $key = $this->buildKey($key);
-        $value = $this->getValue($key);
-
-        return $value !== false;
+        return $this->handler->has($key);
     }
 
     /**
@@ -151,7 +164,7 @@ abstract class Cache extends Component implements CacheInterface
         foreach ($keys as $key) {
             $keyMap[$key] = $this->buildKey($key);
         }
-        $values = $this->getValues(array_values($keyMap));
+        $values = $this->handler->getMultiple(array_values($keyMap));
         $results = [];
         foreach ($keyMap as $key => $newKey) {
             $results[$key] = $default;
@@ -180,17 +193,17 @@ abstract class Cache extends Component implements CacheInterface
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * @param int $ttl default duration in seconds before the cache will expire. If not set,
      * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
      */
-    public function set($key, $value, $duration = null, $dependency = null)
+    public function set($key, $value, $ttl = null, $dependency = null)
     {
-        if ($duration === null) {
-            $duration = $this->defaultDuration;
+        if ($ttl === null) {
+            $ttl = $this->defaultTtl;
         }
 
         if ($dependency !== null && $this->serializer !== false) {
@@ -203,7 +216,7 @@ abstract class Cache extends Component implements CacheInterface
         }
         $key = $this->buildKey($key);
 
-        return $this->setValue($key, $value, $duration);
+        return $this->handler->set($key, $value, $ttl);
     }
 
     /**
@@ -237,7 +250,7 @@ abstract class Cache extends Component implements CacheInterface
             $data[$key] = $value;
         }
 
-        return $this->setValues($data, $ttl);
+        return $this->handler->setMultiple($data, $ttl);
     }
 
     /**
@@ -246,11 +259,11 @@ abstract class Cache extends Component implements CacheInterface
      */
     public function deleteMultiple($keys)
     {
-        $result = true;
+        $keyMap = [];
         foreach ($keys as $key) {
-            $result = $result && $this->delete($key);
+            $keyMap[$key] = $this->buildKey($key);
         }
-        return $result;
+        return $this->handler->deleteMultiple(array_values($keyMap));
     }
 
     /**
@@ -283,7 +296,14 @@ abstract class Cache extends Component implements CacheInterface
             $data[$key] = $value;
         }
 
-        return $this->addValues($data, $ttl);
+        $values = $this->handler->getMultiple(array_keys($data));
+        foreach ($values as $key => $value) {
+            if ($value !== null) {
+                unset($data[$key]);
+            }
+        }
+
+        return $this->handler->setMultiple($data, $ttl);
     }
 
     /**
@@ -298,7 +318,7 @@ abstract class Cache extends Component implements CacheInterface
      * This parameter is ignored if [[serializer]] is false.
      * @return bool whether the value is successfully stored into cache
      */
-    public function add($key, $value, $ttl = 0, $dependency = null)
+    public function add($key, $value, $ttl = null, $dependency = null)
     {
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
@@ -310,7 +330,11 @@ abstract class Cache extends Component implements CacheInterface
         }
         $key = $this->buildKey($key);
 
-        return $this->addValue($key, $value, $ttl);
+        if ($this->handler->has($key)) {
+            return false;
+        }
+
+        return $this->handler->set($key, $value, $ttl);
     }
 
     /**
@@ -323,7 +347,7 @@ abstract class Cache extends Component implements CacheInterface
     {
         $key = $this->buildKey($key);
 
-        return $this->deleteValue($key);
+        return $this->handler->delete($key);
     }
 
     /**
@@ -333,114 +357,7 @@ abstract class Cache extends Component implements CacheInterface
      */
     public function clear()
     {
-        return $this->flushValues();
-    }
-
-    /**
-     * Retrieves a value from cache with a specified key.
-     * This method should be implemented by child classes to retrieve the data
-     * from specific cache storage.
-     * @param string $key a unique key identifying the cached value
-     * @return mixed|false the value stored in cache, false if the value is not in the cache or expired. Most often
-     * value is a string. If you have disabled [[serializer]], it could be something else.
-     */
-    abstract protected function getValue($key);
-
-    /**
-     * Stores a value identified by a key in cache.
-     * This method should be implemented by child classes to store the data
-     * in specific cache storage.
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
-     * it could be something else.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
-     */
-    abstract protected function setValue($key, $value, $duration);
-
-    /**
-     * Stores a value identified by a key into cache if the cache does not contain this key.
-     * This method should be implemented by child classes to store the data
-     * in specific cache storage.
-     * @param string $key the key identifying the value to be cached
-     * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
-     * it could be something else.
-     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return bool true if the value is successfully stored into cache, false otherwise
-     */
-    abstract protected function addValue($key, $value, $duration);
-
-    /**
-     * Deletes a value with the specified key from cache
-     * This method should be implemented by child classes to delete the data from actual cache storage.
-     * @param string $key the key of the value to be deleted
-     * @return bool if no error happens during deletion
-     */
-    abstract protected function deleteValue($key);
-
-    /**
-     * Deletes all values from cache.
-     * Child classes may implement this method to realize the flush operation.
-     * @return bool whether the flush operation was successful.
-     */
-    abstract protected function flushValues();
-
-    /**
-     * Retrieves multiple values from cache with the specified keys.
-     * The default implementation calls [[getValue()]] multiple times to retrieve
-     * the cached values one by one. If the underlying cache storage supports multiget,
-     * this method should be overridden to exploit that feature.
-     * @param array $keys a list of keys identifying the cached values
-     * @return array a list of cached values indexed by the keys
-     */
-    protected function getValues($keys)
-    {
-        $results = [];
-        foreach ($keys as $key) {
-            $results[$key] = $this->getValue($key);
-        }
-
-        return $results;
-    }
-
-    /**
-     * Stores multiple key-value pairs in cache.
-     * The default implementation calls [[setValue()]] multiple times store values one by one. If the underlying cache
-     * storage supports multi-set, this method should be overridden to exploit that feature.
-     * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array array of failed keys
-     */
-    protected function setValues($data, $duration)
-    {
-        $failedKeys = [];
-        foreach ($data as $key => $value) {
-            if ($this->setValue($key, $value, $duration) === false) {
-                $failedKeys[] = $key;
-            }
-        }
-
-        return $failedKeys;
-    }
-
-    /**
-     * Adds multiple key-value pairs to cache.
-     * The default implementation calls [[addValue()]] multiple times add values one by one. If the underlying cache
-     * storage supports multi-add, this method should be overridden to exploit that feature.
-     * @param array $data array where key corresponds to cache key while value is the value stored.
-     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array array of failed keys
-     */
-    protected function addValues($data, $duration)
-    {
-        $failedKeys = [];
-        foreach ($data as $key => $value) {
-            if ($this->addValue($key, $value, $duration) === false) {
-                $failedKeys[] = $key;
-            }
-        }
-
-        return $failedKeys;
+        return $this->handler->clear();
     }
 
     /**

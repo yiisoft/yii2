@@ -22,9 +22,12 @@ namespace yii\caching;
  * @author Carsten Brandt <mail@cebe.cc>
  * @since 2.0
  */
-class ArrayCache extends Cache
+class ArrayCache extends SimpleCache
 {
-    private $_cache;
+    /**
+     * @var array cached values.
+     */
+    private $_cache = [];
 
 
     /**
@@ -32,46 +35,33 @@ class ArrayCache extends Cache
      */
     public function has($key)
     {
-        $key = $this->buildKey($key);
         return isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true));
     }
 
     /**
      * @inheritdoc
      */
-    protected function getValue($key)
+    public function get($key, $default = null)
     {
         if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
             return $this->_cache[$key][0];
         }
-        return false;
+        return $default;
     }
 
     /**
      * @inheritdoc
      */
-    protected function setValue($key, $value, $duration)
+    protected function setValue($key, $value, $ttl)
     {
-        $this->_cache[$key] = [$value, $duration === 0 ? 0 : microtime(true) + $duration];
+        $this->_cache[$key] = [$value, $ttl === 0 ? 0 : microtime(true) + $ttl];
         return true;
     }
 
     /**
      * @inheritdoc
      */
-    protected function addValue($key, $value, $duration)
-    {
-        if (isset($this->_cache[$key]) && ($this->_cache[$key][1] === 0 || $this->_cache[$key][1] > microtime(true))) {
-            return false;
-        }
-        $this->_cache[$key] = [$value, $duration === 0 ? 0 : microtime(true) + $duration];
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function deleteValue($key)
+    public function delete($key)
     {
         unset($this->_cache[$key]);
         return true;
@@ -80,7 +70,7 @@ class ArrayCache extends Cache
     /**
      * @inheritdoc
      */
-    protected function flushValues()
+    public function clear()
     {
         $this->_cache = [];
         return true;
