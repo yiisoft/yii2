@@ -3,7 +3,7 @@ Yii Framework 2 Change Log
 
 2.0.13 under development
 ------------------------
-
+- Eng #14582: Add Closure to min\max DateValidator (SwoDs)
 - Enh #14022: `yii\web\UrlManager::setBaseUrl()` now supports aliases (dmirogin)
 - Bug #14471: `ContentNegotiator` will always set one of the configured server response formats even if the client does not accept any of them (PowerGamer1)
 - Bug #14525: Fixed 2.0.12 regression of loading of global fixtures trough `yii fixture/load` (michaelarnauts)
