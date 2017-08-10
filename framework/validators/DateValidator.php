@@ -238,18 +238,20 @@ class DateValidator extends Validator
         if ($this->max !== null && $this->tooBig === null) {
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
-        if ($this->maxString === null) {
-            $this->maxString = (string) $this->max;
+        if (!($this->min instanceof \Closure)) {
+            $this->setMin();
         }
+        if (!($this->max instanceof \Closure)) {
+            $this->setMax();
+        }
+    }
+
+    /**
+     * Parses [[min]] string into UNIX timestamp
+     */
+    public function setMin() {
         if ($this->minString === null) {
             $this->minString = (string) $this->min;
-        }
-        if ($this->max !== null && is_string($this->max)) {
-            $timestamp = $this->parseDateValue($this->max);
-            if ($timestamp === false) {
-                throw new InvalidConfigException("Invalid max date value: {$this->max}");
-            }
-            $this->max = $timestamp;
         }
         if ($this->min !== null && is_string($this->min)) {
             $timestamp = $this->parseDateValue($this->min);
@@ -261,10 +263,32 @@ class DateValidator extends Validator
     }
 
     /**
+     * Parses [[max]] string into UNIX timestamp
+     */
+    public function setMax() {
+        if ($this->maxString === null) {
+            $this->maxString = (string) $this->max;
+        }
+        if ($this->max !== null && is_string($this->max)) {
+            $timestamp = $this->parseDateValue($this->max);
+            if ($timestamp === false) {
+                throw new InvalidConfigException("Invalid max date value: {$this->max}");
+            }
+            $this->max = $timestamp;
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function validateAttribute($model, $attribute)
     {
+        foreach (['min', 'max'] as $val) {
+            if ($this->$val instanceof \Closure) {
+                $this->$val = call_user_func($this->$val, $model);
+                call_user_func([$this, 'set'.ucfirst($val)]);
+            }
+        }
         $value = $model->$attribute;
         if ($this->isEmpty($value)) {
             if ($this->timestampAttribute !== null) {
