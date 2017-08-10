@@ -44,31 +44,23 @@ class WinCache extends SimpleCache
      */
     public function has($key)
     {
-        return wincache_ucache_exists($key);
+        return wincache_ucache_exists($this->normalizeKey($key));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    protected function getValue($key)
     {
-        $success = true;
-        $value = wincache_ucache_get($key, $success);
-        return $success ? $value : $default;
+        return wincache_ucache_get($key);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMultiple($keys, $default = null)
+    protected function getValues($keys)
     {
-        $success = true;
-        $values = wincache_ucache_get($keys, $success);
-        $result = array_fill_keys($keys, $default);
-        if (!$success) {
-            return $result;
-        }
-        return array_merge($result, $values);
+        return wincache_ucache_get($keys);
     }
 
     /**
@@ -90,7 +82,7 @@ class WinCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function delete($key)
+    protected function deleteValue($key)
     {
         return wincache_ucache_delete($key);
     }

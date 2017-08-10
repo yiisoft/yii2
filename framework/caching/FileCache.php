@@ -98,7 +98,7 @@ class FileCache extends SimpleCache
      */
     public function has($key)
     {
-        $cacheFile = $this->getCacheFile($key);
+        $cacheFile = $this->getCacheFile($this->normalizeKey($key));
 
         return @filemtime($cacheFile) > time();
     }
@@ -106,7 +106,7 @@ class FileCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    protected function getValue($key)
     {
         $cacheFile = $this->getCacheFile($key);
 
@@ -121,7 +121,7 @@ class FileCache extends SimpleCache
             }
         }
 
-        return $default;
+        return false;
     }
 
     /**
@@ -153,7 +153,7 @@ class FileCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function delete($key)
+    protected function deleteValue($key)
     {
         $cacheFile = $this->getCacheFile($key);
         return @unlink($cacheFile);

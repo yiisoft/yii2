@@ -9,16 +9,17 @@ namespace yii\caching;
 
 use Psr\SimpleCache\CacheInterface;
 use yii\base\Component;
+use yii\helpers\StringHelper;
 
 /**
  * SimpleCache is the base class for cache classes implementing pure PSR-16 [[CacheInterface]].
- * This class handles default TTL specification and TTL normalization.
+ * This class handles cache key normalization, default TTL specification normalization, data serialization.
  *
  * Derived classes should implement the following methods which do the actual cache storage operations:
  *
- * - [[get()]]: retrieve the value with a key (if any) from cache
+ * - [[getValue()]]: retrieve the value with a key (if any) from cache
  * - [[setValue()]]: store the value with a key into cache
- * - [[delete()]]: delete the value with the specified key from cache
+ * - [[deleteValue()]]: delete the value with the specified key from cache
  * - [[clear()]]: delete all values from cache
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview)
@@ -36,18 +37,91 @@ abstract class SimpleCache extends Component implements CacheInterface
      * This value is used by [[set()]] and [[setMultiple()]], if the duration is not explicitly given.
      */
     public $defaultTtl = 0;
+    /**
+     * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
+     * It is recommended that you set a unique cache key prefix for each application if the same cache
+     * storage is being used by different applications.
+     *
+     * To ensure interoperability, only alphanumeric characters should be used.
+     */
+    public $keyPrefix = '';
+    /**
+     * @var null|array|false the functions used to serialize and unserialize cached data. Defaults to null, meaning
+     * using the default PHP `serialize()` and `unserialize()` functions. If you want to use some more efficient
+     * serializer (e.g. [igbinary](http://pecl.php.net/package/igbinary)), you may configure this property with
+     * a two-element array. The first element specifies the serialization function, and the second the deserialization
+     * function. If this property is set false, data will be directly sent to and retrieved from the underlying
+     * cache component without any serialization or deserialization. You should not turn off serialization if
+     * you are using [[Dependency|cache dependency]], because it relies on data serialization. Also, some
+     * implementations of the cache can not correctly save and retrieve data different from a string type.
+     */
+    public $serializer;
 
+
+    /**
+     * {@inheritdoc}
+     */
+    public function get($key, $default = null)
+    {
+        $key = $this->normalizeKey($key);
+        $value = $this->getValue($key);
+        if ($value === false || $this->serializer === false) {
+            return $default;
+        } elseif ($this->serializer === null) {
+            return unserialize($value);
+        }
+
+        return call_user_func($this->serializer[1], $value);
+    }
 
     /**
      * {@inheritdoc}
      */
     public function getMultiple($keys, $default = null)
     {
-        $items = [];
+        $keyMap = [];
         foreach ($keys as $key) {
-            $items[$key] = $this->get($key, $default);
+            $keyMap[$key] = $this->normalizeKey($key);
         }
-        return $items;
+        $values = $this->getValues(array_values($keyMap));
+        $results = [];
+        foreach ($keyMap as $key => $newKey) {
+            $results[$key] = $default;
+            if (isset($values[$newKey])) {
+                if ($this->serializer === false) {
+                    $results[$key] = $values[$newKey];
+                } else {
+                    $results[$key] = $this->serializer === null ? unserialize($values[$newKey])
+                        : call_user_func($this->serializer[1], $values[$newKey]);
+                }
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function has($key)
+    {
+        $key = $this->normalizeKey($key);
+        $value = $this->getValue($key);
+        return $value !== false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function set($key, $value, $ttl = null)
+    {
+        if ($this->serializer === null) {
+            $value = serialize($value);
+        } elseif ($this->serializer !== false) {
+            $value = call_user_func($this->serializer[0], $value);
+        }
+        $key = $this->normalizeKey($key);
+        $ttl = $this->normalizeTtl($ttl);
+        return $this->setValue($key, $value, $ttl);
     }
 
     /**
@@ -55,7 +129,26 @@ abstract class SimpleCache extends Component implements CacheInterface
      */
     public function setMultiple($values, $ttl = null)
     {
-        return $this->setValues($values, $this->normalizeTtl($ttl));
+        $data = [];
+        foreach ($values as $key => $value) {
+            if ($this->serializer === null) {
+                $value = serialize($value);
+            } elseif ($this->serializer !== false) {
+                $value = call_user_func($this->serializer[0], $value);
+            }
+            $key = $this->normalizeKey($key);
+            $data[$key] = $value;
+        }
+        return $this->setValues($data , $this->normalizeTtl($ttl));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($key)
+    {
+        $key = $this->normalizeKey($key);
+        return $this->deleteValue($key);
     }
 
     /**
@@ -73,19 +166,21 @@ abstract class SimpleCache extends Component implements CacheInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Builds a normalized cache key from a given key.
+     *
+     * The given key will be type-casted to string.
+     * If the result string does not contain alphanumeric characters only or has more than 32 characters,
+     * then the hash of the key will be used.
+     * The result key will be returned back prefixed with [[keyPrefix]].
+     *
+     * @param mixed $key the key to be normalized
+     * @return string the generated cache key
      */
-    public function set($key, $value, $ttl = null)
+    protected function normalizeKey($key)
     {
-        return $this->setValue($key, $value, $this->normalizeTtl($ttl));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function has($key)
-    {
-        return ($this->get($key) !== null);
+        $key = (string)$key;
+        $key = ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
+        return $this->keyPrefix . $key;
     }
 
     /**
@@ -105,6 +200,16 @@ abstract class SimpleCache extends Component implements CacheInterface
     }
 
     /**
+     * Retrieves a value from cache with a specified key.
+     * This method should be implemented by child classes to retrieve the data
+     * from specific cache storage.
+     * @param string $key a unique key identifying the cached value
+     * @return mixed|false the value stored in cache, `false` if the value is not in the cache or expired. Most often
+     * value is a string. If you have disabled [[serializer]], it could be something else.
+     */
+    abstract protected function getValue($key);
+
+    /**
      * Stores a value identified by a key in cache.
      * This method should be implemented by child classes to store the data
      * in specific cache storage.
@@ -115,6 +220,34 @@ abstract class SimpleCache extends Component implements CacheInterface
      * @return bool true if the value is successfully stored into cache, false otherwise
      */
     abstract protected function setValue($key, $value, $ttl);
+
+    /**
+     * Deletes a value with the specified key from cache
+     * This method should be implemented by child classes to delete the data from actual cache storage.
+     * @param string $key the key of the value to be deleted
+     * @return bool if no error happens during deletion
+     */
+    abstract protected function deleteValue($key);
+
+    /**
+     * Retrieves multiple values from cache with the specified keys.
+     * The default implementation calls [[getValue()]] multiple times to retrieve
+     * the cached values one by one. If the underlying cache storage supports multiget,
+     * this method should be overridden to exploit that feature.
+     * @param array $keys a list of keys identifying the cached values
+     * @return array a list of cached values indexed by the keys
+     */
+    protected function getValues($keys)
+    {
+        $results = [];
+        foreach ($keys as $key) {
+            $value = $this->getValue($key);
+            if ($value !== false) {
+                $results[$key] = $value;
+            }
+        }
+        return $results;
+    }
 
     /**
      * Stores multiple key-value pairs in cache.

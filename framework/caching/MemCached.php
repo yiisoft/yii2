@@ -192,23 +192,17 @@ class MemCached extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    protected function getValue($key)
     {
-        $value = $this->_cache->get($key);
-        return $value === false ? $default : $value;
+        return $this->_cache->get($key);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMultiple($keys, $default = null)
+    protected function getValues($keys)
     {
-        $values = $this->_cache->getMulti($keys);
-        $result = array_fill_keys($keys, $default);
-        if ($values === false) {
-            return $result;
-        }
-        return array_merge($result, $values);
+        return $this->_cache->getMulti($keys);
     }
 
     /**
@@ -240,7 +234,7 @@ class MemCached extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function delete($key)
+    protected function deleteValue($key)
     {
         return $this->_cache->delete($key, 0);
     }

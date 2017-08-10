@@ -42,10 +42,9 @@ class ZendDataCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    protected function getValue($key)
     {
         $result = zend_shm_cache_fetch($key);
-
         return $result === null ? false : $result;
     }
 
@@ -60,7 +59,7 @@ class ZendDataCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function delete($key)
+    protected function deleteValue($key)
     {
         return zend_shm_cache_delete($key);
     }

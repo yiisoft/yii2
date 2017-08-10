@@ -59,31 +59,24 @@ class ApcCache extends SimpleCache
      */
     public function has($key)
     {
-        return apcu_exists($key);
+        return apcu_exists($this->normalizeKey($key));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    protected function getValue($key)
     {
-        $value = apcu_fetch($key);
-        if ($value === false) {
-            return $default;
-        }
-        return $value;
+        return apcu_fetch($key);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMultiple($keys, $default = null)
+    protected function getValues($keys)
     {
         $values = apcu_fetch($keys);
-        if (is_array($values)) {
-            return $values;
-        }
-        return array_fill_keys($keys, $default);
+        return is_array($values) ? $values : [];
     }
 
     /**
@@ -106,7 +99,7 @@ class ApcCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function delete($key)
+    protected function deleteValue($key)
     {
         return apcu_delete($key);
     }

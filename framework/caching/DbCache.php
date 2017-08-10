@@ -101,6 +101,8 @@ class DbCache extends SimpleCache
      */
     public function has($key)
     {
+        $key = $this->normalizeKey($key);
+
         $query = new Query();
         $query->select(['COUNT(*)'])
             ->from($this->cacheTable)
@@ -120,33 +122,34 @@ class DbCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function get($key, $default = null)
+    protected function getValue($key)
     {
-        $query = new Query();
-        $query->select(['data'])
+        $query = (new Query())
+            ->select(['data'])
             ->from($this->cacheTable)
             ->where('[[id]] = :id AND ([[expire]] = 0 OR [[expire]] >' . time() . ')', [':id' => $key]);
+
         if ($this->db->enableQueryCache) {
             // temporarily disable and re-enable query caching
             $this->db->enableQueryCache = false;
             $result = $query->createCommand($this->db)->queryScalar();
             $this->db->enableQueryCache = true;
-        } else {
-            $result = $query->createCommand($this->db)->queryScalar();
+            return $result;
         }
-        return $result === false ? $default : $result;
+
+        return $query->createCommand($this->db)->queryScalar();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getMultiple($keys, $default = null)
+    protected function getValues($keys)
     {
         if (empty($keys)) {
-            return array_fill_keys($keys, $default);
+            return [];
         }
-        $query = new Query();
-        $query->select(['id', 'data'])
+        $query = (new Query())
+            ->select(['id', 'data'])
             ->from($this->cacheTable)
             ->where(['id' => $keys])
             ->andWhere('([[expire]] = 0 OR [[expire]] > ' . time() . ')');
@@ -159,7 +162,7 @@ class DbCache extends SimpleCache
             $rows = $query->createCommand($this->db)->queryAll();
         }
 
-        $results = array_fill_keys($keys, $default);
+        $results = array_fill_keys($keys, false);
         foreach ($rows as $row) {
             $results[$row['id']] = $row['data'];
         }
@@ -220,7 +223,7 @@ class DbCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    public function delete($key)
+    protected function deleteValue($key)
     {
         $this->db->noCache(function (Connection $db) use ($key) {
             $db->createCommand()
