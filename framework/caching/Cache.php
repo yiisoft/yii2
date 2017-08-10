@@ -274,7 +274,6 @@ class Cache extends Component implements CacheInterface
                 unset($data[$key]);
             }
         }
-
         return $this->handler->setMultiple($data, $ttl);
     }
 

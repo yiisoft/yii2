@@ -87,7 +87,7 @@ abstract class SimpleCache extends Component implements CacheInterface
         $results = [];
         foreach ($keyMap as $key => $newKey) {
             $results[$key] = $default;
-            if (isset($values[$newKey])) {
+            if (isset($values[$newKey]) && $values[$newKey] !== false) {
                 if ($this->serializer === false) {
                     $results[$key] = $values[$newKey];
                 } else {
@@ -139,7 +139,7 @@ abstract class SimpleCache extends Component implements CacheInterface
             $key = $this->normalizeKey($key);
             $data[$key] = $value;
         }
-        return $this->setValues($data , $this->normalizeTtl($ttl));
+        return $this->setValues($data, $this->normalizeTtl($ttl));
     }
 
     /**

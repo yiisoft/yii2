@@ -39,6 +39,12 @@ class DbCacheTest extends CacheTestCase
         ')->execute();
     }
 
+    protected function tearDown()
+    {
+        $this->getConnection()->createCommand('DROP TABLE IF EXISTS cache')->execute();
+        parent::tearDown();
+    }
+
     /**
      * @param  bool            $reset whether to clean up the test database
      * @return \yii\db\Connection
