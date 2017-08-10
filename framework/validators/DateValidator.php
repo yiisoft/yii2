@@ -157,16 +157,20 @@ class DateValidator extends Validator
      */
     public $timestampAttributeTimeZone = 'UTC';
     /**
-     * @var int|string upper limit of the date. Defaults to null, meaning no upper limit.
-     * This can be a unix timestamp or a string representing a date time value.
+     * @var int|string|callable upper limit of the date. Defaults to null, meaning no upper limit.
+     * This can be a unix timestamp, a string representing a date time value or PHP callable.
+     * The signature of the callable should be `function ($model)`, where `$model`
+     * refer to the model currently being validated. The callable should return a string or unix timestamp.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooBig for the customized message used when the date is too big.
      * @since 2.0.4
      */
     public $max;
     /**
-     * @var int|string lower limit of the date. Defaults to null, meaning no lower limit.
-     * This can be a unix timestamp or a string representing a date time value.
+     * @var int|string|callable lower limit of the date. Defaults to null, meaning no lower limit.
+     * This can be a unix timestamp, a string representing a date time value or PHP callable.
+     * The signature of the callable should be `function ($model)`, where `$model`
+     * refer to the model currently being validated. The callable should return a string or unix timestamp.
      * If this property is a string, [[format]] will be used to parse it.
      * @see tooSmall for the customized message used when the date is too small.
      * @since 2.0.4
