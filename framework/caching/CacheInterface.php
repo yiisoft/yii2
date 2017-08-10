@@ -95,14 +95,14 @@ interface CacheInterface extends \Psr\SimpleCache\CacheInterface, \ArrayAccess
      * Stores multiple items in cache. Each item contains a value identified by a key.
      * If the cache already contains such a key, the existing value and expiration time will be preserved.
      *
-     * @param array $items the items to be cached, as key-value pairs.
+     * @param array $values the items to be cached, as key-value pairs.
      * @param null|int|\DateInterval $ttl the TTL value of this item. If not set, default value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
      * @return array array of failed keys
      */
-    public function addMultiple($items, $ttl = 0, $dependency = null);
+    public function addMultiple($values, $ttl = 0, $dependency = null);
 
     /**
      * Builds a normalized cache key from a given key.

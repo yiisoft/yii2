@@ -244,7 +244,7 @@ class Cache extends Component implements CacheInterface
      * Stores multiple items in cache. Each item contains a value identified by a key.
      * If the cache already contains such a key, the existing value and expiration time will be preserved.
      *
-     * @param array $items the items to be cached, as key-value pairs.
+     * @param array $values the items to be cached, as key-value pairs.
      * @param null|int|\DateInterval $ttl the TTL value of this item. If not set, default value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
@@ -252,14 +252,14 @@ class Cache extends Component implements CacheInterface
      * @return array array of failed keys
      * @since 2.0.7
      */
-    public function addMultiple($items, $ttl = 0, $dependency = null)
+    public function addMultiple($values, $ttl = 0, $dependency = null)
     {
         if ($dependency !== null) {
             $dependency->evaluateDependency($this);
         }
 
         $data = [];
-        foreach ($items as $key => $value) {
+        foreach ($values as $key => $value) {
             if ($dependency !== null) {
                 $value = [$value, $dependency];
             }
@@ -268,8 +268,8 @@ class Cache extends Component implements CacheInterface
             $data[$key] = $value;
         }
 
-        $values = $this->handler->getMultiple(array_keys($data));
-        foreach ($values as $key => $value) {
+        $existingValues = $this->handler->getMultiple(array_keys($data));
+        foreach ($existingValues as $key => $value) {
             if ($value !== null) {
                 unset($data[$key]);
             }

@@ -226,7 +226,7 @@ abstract class CacheTestCase extends TestCase
         $this->assertEquals(13, $cache->get('add_test'));
     }
 
-    public function testMultiAdd()
+    public function testAddMultiple()
     {
         $cache = $this->prepare();
 
