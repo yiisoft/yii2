@@ -21,6 +21,9 @@ use yii\base\Component;
  * - [[delete()]]: delete the value with the specified key from cache
  * - [[clear()]]: delete all values from cache
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview)
+ * and [PSR-16 specification](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-16-simple-cache.md).
+ *
  * @see CacheInterface
  *
  * @author Paul Klimov <klimov.paul@gmail.com>

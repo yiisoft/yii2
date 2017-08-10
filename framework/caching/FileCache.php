@@ -17,6 +17,24 @@ use yii\helpers\FileHelper;
  * The cache files are placed under [[cachePath]]. FileCache will perform garbage collection
  * automatically to remove expired cache files.
  *
+ * Application configuration example:
+ *
+ * ```php
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => yii\caching\Cache::class,
+ *             'handler' => [
+ *                 'class' => yii\caching\FileCache::class,
+ *                 // 'cachePath' => '@runtime/cache',
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
  * Please refer to [[\Psr\SimpleCache\CacheInterface]] for common cache operations that are supported by FileCache.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).

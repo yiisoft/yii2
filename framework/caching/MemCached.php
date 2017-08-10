@@ -17,7 +17,7 @@ use yii\base\InvalidConfigException;
  * MemCached can be configured with a list of memcached servers by settings its [[servers]] property.
  * By default, MemCached assumes there is a memcached server running on localhost at port 11211.
  *
- * See [[Cache]] for common cache operations that MemCached supports.
+ * See [[\Psr\SimpleCache\CacheInterface]] for common cache operations that MemCached supports.
  *
  * Note, there is no security measure to protected data in memcached.
  * All data in memcached can be accessed by any process running in the system.
@@ -28,17 +28,20 @@ use yii\base\InvalidConfigException;
  * [
  *     'components' => [
  *         'cache' => [
- *             'class' => \yii\caching\MemCached::class,
- *             'servers' => [
- *                 [
- *                     'host' => 'server1',
- *                     'port' => 11211,
- *                     'weight' => 60,
- *                 ],
- *                 [
- *                     'host' => 'server2',
- *                     'port' => 11211,
- *                     'weight' => 40,
+ *             'class' => \yii\caching\Cache::class,
+ *             'handler' => [
+ *                 'class' => \yii\caching\MemCached::class,
+ *                 'servers' => [
+ *                     [
+ *                         'host' => 'server1',
+ *                         'port' => 11211,
+ *                         'weight' => 60,
+ *                     ],
+ *                     [
+ *                         'host' => 'server2',
+ *                         'port' => 11211,
+ *                         'weight' => 40,
+ *                     ],
  *                 ],
  *             ],
  *         ],

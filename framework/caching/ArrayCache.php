@@ -10,12 +10,29 @@ namespace yii\caching;
 /**
  * ArrayCache provides caching for the current request only by storing the values in an array.
  *
- * See [[Cache]] for common cache operations that ArrayCache supports.
+ * Application configuration example:
  *
- * Unlike the [[Cache]], ArrayCache allows the expire parameter of [[set]], [[add]], [[multiSet]] and [[multiAdd]] to
+ * ```php
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => yii\caching\Cache::class,
+ *             'handler' => [
+ *                 'class' => yii\caching\ArrayCache::class,
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
+ * See [[\Psr\SimpleCache\CacheInterface]] for common cache operations that ArrayCache supports.
+ *
+ * Unlike the [[Cache]], ArrayCache allows the expire parameter of [[set()]] and [[setMultiple()]]  to
  * be a floating point number, so you may specify the time in milliseconds (e.g. 0.1 will be 100 milliseconds).
  *
- * For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting [[$serializer]] to `false`.
+ * For enhanced performance of ArrayCache, you can disable serialization of the stored data by setting [[Cache::$serializer]] to `false`.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *

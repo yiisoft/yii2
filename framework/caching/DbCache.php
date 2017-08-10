@@ -19,16 +19,25 @@ use yii\di\Instance;
  * By default, DbCache stores session data in a DB table named 'cache'. This table
  * must be pre-created. The table name can be changed by setting [[cacheTable]].
  *
- * Please refer to [[Cache]] for common cache operations that are supported by DbCache.
+ * Please refer to [[\Psr\SimpleCache\CacheInterface]] for common cache operations that are supported by DbCache.
  *
  * The following example shows how you can configure the application to use DbCache:
  *
  * ```php
- * 'cache' => [
- *     'class' => \yii\caching\DbCache::class,
- *     // 'db' => 'mydb',
- *     // 'cacheTable' => 'my_cache',
- * ]
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => yii\caching\Cache:class,
+ *             'handler' => [
+ *                 'class' => yii\caching\DbCache::class,
+ *                 // 'db' => 'mydb',
+ *                 // 'cacheTable' => 'my_cache',
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
  * ```
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).

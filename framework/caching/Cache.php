@@ -13,7 +13,27 @@ use yii\di\Instance;
 use yii\helpers\StringHelper;
 
 /**
- * Cache is the base class for cache classes supporting different cache storage implementations.
+ * Cache provides support for the data caching, including cache key composition, dependencies and data serialization.
+ * The actual data caching is performed via [[handler]], which should be configured to be [[\Psr\SimpleCache\CacheInterface]]
+ * instance.
+ *
+ * Application configuration example:
+ *
+ * ```php
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => yii\caching\Cache::class,
+ *             'handler' => [
+ *                 'class' => yii\caching\FileCache::class,
+ *                 'cachePath' => '@runtime/cache',
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
  *
  * A data item can be stored in the cache by calling [[set()]] and be retrieved back
  * later (in the same or different request) by [[get()]]. In both operations,
@@ -26,7 +46,7 @@ use yii\helpers\StringHelper;
  * ```php
  * $key = 'demo';
  * $data = $cache->get($key);
- * if ($data === false) {
+ * if ($data === null) {
  *     // ...generate $data here...
  *     $cache->set($key, $data, $duration, $dependency);
  * }
@@ -39,15 +59,8 @@ use yii\helpers\StringHelper;
  * echo $cache['foo'];
  * ```
  *
- * Derived classes should implement the following methods which do the actual cache storage operations:
- *
- * - [[getValue()]]: retrieve the value with a key (if any) from cache
- * - [[setValue()]]: store the value with a key into cache
- * - [[addValue()]]: store the value only if the cache does not have this key before
- * - [[deleteValue()]]: delete the value with the specified key from cache
- * - [[flushValues()]]: delete all values from cache
- *
- * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview)
+ * and [PSR-16 specification](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-16-simple-cache.md).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -74,7 +87,9 @@ class Cache extends Component implements CacheInterface
      */
     public $serializer;
     /**
-     * @var \Psr\SimpleCache\CacheInterface|array actual cache handler or its DI compatible configuration.
+     * @var \Psr\SimpleCache\CacheInterface|array|\Closure|string actual cache handler or its DI compatible configuration.
+     * After the Cache object is created, if you want to change this property, you should only assign it
+     * with a [[\Psr\SimpleCache\CacheInterface]] instance.
      * @since 2.1.0
      */
     public $handler;
@@ -187,8 +202,7 @@ class Cache extends Component implements CacheInterface
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param int $ttl default duration in seconds before the cache will expire. If not set,
-     * default [[defaultDuration]] value is used.
+     * @param null|int|\DateInterval $ttl the TTL value of this item. If not set, default value is used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
@@ -215,7 +229,7 @@ class Cache extends Component implements CacheInterface
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $ttl default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param null|int|\DateInterval $ttl the TTL value of this item. If not set, default value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
@@ -261,7 +275,7 @@ class Cache extends Component implements CacheInterface
      * If the cache already contains such a key, the existing value and expiration time will be preserved.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param int $ttl default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param null|int|\DateInterval $ttl the TTL value of this item. If not set, default value is used.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
@@ -302,7 +316,7 @@ class Cache extends Component implements CacheInterface
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param int $ttl the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param null|int|\DateInterval $ttl the TTL value of this item. If not set, default value is used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
@@ -414,7 +428,7 @@ class Cache extends Component implements CacheInterface
      * a complex data structure consisting of factors representing the key.
      * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
      * In case $callable returns `false`, the value will not be cached.
-     * @param int $ttl default duration in seconds before the cache will expire.
+     * @param null|int|\DateInterval $ttl the TTL value of this item. If not set, default value is used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.

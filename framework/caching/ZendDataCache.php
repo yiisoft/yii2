@@ -13,7 +13,24 @@ namespace yii\caching;
  * To use this application component, the [Zend Data Cache PHP extension](http://www.zend.com/en/products/server/)
  * must be loaded.
  *
- * See [[Cache]] for common cache operations that ZendDataCache supports.
+ * Application configuration example:
+ *
+ * ```php
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => yii\caching\Cache::class,
+ *             'handler' => [
+ *                 'class' => yii\caching\ZendDataCache::class,
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
+ * See [[\Psr\SimpleCache\CacheInterface]] for common cache operations that ZendDataCache supports.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *

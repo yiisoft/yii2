@@ -15,7 +15,24 @@ use yii\base\InvalidConfigException;
  * To use this application component, the [APCu PHP extension](http://www.php.net/apcu) must be loaded.
  * In order to enable APCu for CLI you should add "apc.enable_cli = 1" to your php.ini.
  *
- * See [[Cache]] for common cache operations that ApcCache supports.
+ * Application configuration example:
+ *
+ * ```php
+ * return [
+ *     'components' => [
+ *         'cache' => [
+ *             'class' => yii\caching\Cache::class,
+ *             'handler' => [
+ *                 'class' => yii\caching\ApcCache::class,
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
+ * See [[\Psr\SimpleCache\CacheInterface]] for common cache operations that ApcCache supports.
  *
  * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
  *
