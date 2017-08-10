@@ -74,12 +74,6 @@ class Cache extends Component implements CacheInterface
      */
     public $serializer;
     /**
-     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
-     * This value is used by [[set()]] if the duration is not explicitly given.
-     * @since 2.0.11
-     */
-    public $defaultTtl = 0;
-    /**
      * @var \Psr\SimpleCache\CacheInterface|array actual cache handler or its DI compatible configuration.
      * @since 2.1.0
      */
@@ -202,10 +196,6 @@ class Cache extends Component implements CacheInterface
      */
     public function set($key, $value, $ttl = null, $dependency = null)
     {
-        if ($ttl === null) {
-            $ttl = $this->defaultTtl;
-        }
-
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -261,9 +251,9 @@ class Cache extends Component implements CacheInterface
     {
         $keyMap = [];
         foreach ($keys as $key) {
-            $keyMap[$key] = $this->buildKey($key);
+            $keyMap[] = $this->buildKey($key);
         }
-        return $this->handler->deleteMultiple(array_values($keyMap));
+        return $this->handler->deleteMultiple($keyMap);
     }
 
     /**
@@ -424,8 +414,7 @@ class Cache extends Component implements CacheInterface
      * a complex data structure consisting of factors representing the key.
      * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
      * In case $callable returns `false`, the value will not be cached.
-     * @param int $ttl default duration in seconds before the cache will expire. If not set,
-     * [[defaultDuration]] value will be used.
+     * @param int $ttl default duration in seconds before the cache will expire.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is `false`.

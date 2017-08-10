@@ -223,7 +223,7 @@ class MemCached extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    protected function setValues($data, $ttl)
+    protected function setValues($values, $ttl)
     {
         // Use UNIX timestamp since it doesn't have any limitation
         // @see http://php.net/manual/en/memcached.expiration.php
@@ -231,7 +231,7 @@ class MemCached extends SimpleCache
 
         // Memcached::setMulti() returns boolean
         // @see http://php.net/manual/en/memcached.setmulti.php
-        return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
+        return $this->_cache->setMulti($values, $expire) ? [] : array_keys($values);
     }
 
     /**

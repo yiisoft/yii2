@@ -65,9 +65,9 @@ class WinCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    protected function setValues($data, $ttl)
+    protected function setValues($values, $ttl)
     {
-        return wincache_ucache_set($data, null, $ttl);
+        return wincache_ucache_set($values, null, $ttl);
     }
 
     /**

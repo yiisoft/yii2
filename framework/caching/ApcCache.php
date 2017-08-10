@@ -80,9 +80,9 @@ class ApcCache extends SimpleCache
     /**
      * {@inheritdoc}
      */
-    protected function setValues($data, $ttl)
+    protected function setValues($values, $ttl)
     {
-        $result = apcu_store($data, null, $ttl);
+        $result = apcu_store($values, null, $ttl);
         return is_array($result);
     }
 
