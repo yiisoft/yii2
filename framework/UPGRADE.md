@@ -72,7 +72,7 @@ Upgrade from Yii 2.0.x
 * `yii\captcha\CaptchaAction` has been refactored. Rendering logic was extracted into 'yii\captcha\DriverInterface', which
   instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
   the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.
-* Method `yii\captcha\Captcha::checkRequirements()` has been removed.
+* `yii\captcha\Captcha::checkRequirements()` method has been removed.
 
 Upgrade from Yii 2.0.12
 -----------------------
