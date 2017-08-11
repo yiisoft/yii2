@@ -54,7 +54,7 @@ Upgrade from Yii 2.0.x
 ----------------------
 
 * PHP requirements were raised to 7.1. Make sure your code is updated accordingly.
-* memcache PECL extension support was dropped. Use memcached PECL extesion instead.
+* memcache PECL extension support was dropped. Use memcached PECL extension instead.
 * Following new methods have been added to `yii\i18n\MessageInterface` `addHeader()`, `setHeader()`, `getHeader()`, `setHeaders()`
   providing ability to setup custom mail headers. Make sure your provide implementation for those methods, while
   creating your own mailer solution.
@@ -69,6 +69,16 @@ Upgrade from Yii 2.0.x
   Mail view rendering is now encapsulated into `yii\mail\Template` class.
 * Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
   which now encapsulates message composition.
+* All cache related classes interface has been changed according to PSR-16 'Simple Cache' specification. Make sure you
+  change your invocations for the cache methods accordingly. The most notable changes affects methods `get()` and `getMultiple()`
+  as they now accept `$default` argument, which value will be returned in case there is no value in the cache. This makes
+  the default return value to be `null` instead of `false`.
+* Particular cache implementation should now be configured as `yii\caching\Cache::$handler` property instead of the
+  component itself. Properties `$defaultTtl`, `$serializer` and `$keyPrefix` has been moved to cache handler and should
+  be configured there. Creating your own cache implementation you should implement `\Psr\SimpleCache\CacheInterface` or
+  extend `yii\caching\SimpleCache` abstract class. Use `yii\caching\CacheInterface` only if you wish to replace `yii\caching\Cache`
+  component providing your own solution for cache dependency handling.
+
 
 Upgrade from Yii 2.0.12
 -----------------------

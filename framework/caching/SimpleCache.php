@@ -33,7 +33,7 @@ use yii\helpers\StringHelper;
 abstract class SimpleCache extends Component implements CacheInterface
 {
     /**
-     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
+     * @var int default TTL for a cache entry. Default value is 0, meaning infinity.
      * This value is used by [[set()]] and [[setMultiple()]], if the duration is not explicitly given.
      */
     public $defaultTtl = 0;
