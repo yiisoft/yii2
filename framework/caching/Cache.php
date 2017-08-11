@@ -95,7 +95,7 @@ class Cache extends Component implements CacheInterface
      * @param mixed $key the key to be normalized
      * @return string the generated cache key
      */
-    public function buildKey($key)
+    protected function buildKey($key)
     {
         if (is_string($key)) {
             return ctype_alnum($key) && StringHelper::byteLength($key) <= 32 ? $key : md5($key);
