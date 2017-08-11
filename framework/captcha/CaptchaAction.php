@@ -22,7 +22,7 @@ use yii\web\Response;
  *
  * You should configure [[driver]] with the actual CAPTCHA rendering driver to be used.
  * Note that different drivers may require different libraries or PHP extension installed.
- * Please refer to the particular driver class for details and requirement.
+ * Please refer to the particular driver class for details.
  *
  * Using CAPTCHA involves the following steps:
  *
@@ -57,9 +57,9 @@ class CaptchaAction extends Action
      */
     public $fixedVerifyCode;
     /**
-     * @var DriverInterface|array|string the driver to be used for CAPTCHA rendering. This could be either an instance
+     * @var DriverInterface|array|string the driver to be used for CAPTCHA rendering. It could be either an instance
      * of [[DriverInterface]] or its DI compatible configuration.
-     * After the action object is created, if you want to change this property, you should only assign it
+     * After the action object is created, if you want to change this property, you should assign it
      * with a [[DriverInterface]] object only.
      * @since 2.1.0
      */
