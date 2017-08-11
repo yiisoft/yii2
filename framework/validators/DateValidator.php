@@ -243,42 +243,27 @@ class DateValidator extends Validator
             $this->tooBig = Yii::t('yii', '{attribute} must be no greater than {max}.');
         }
         if (!($this->min instanceof \Closure)) {
-            $this->setMin();
+            $this->setMinMax('min');
         }
         if (!($this->max instanceof \Closure)) {
-            $this->setMax();
+            $this->setMinMax('max');
         }
     }
 
     /**
-     * Parses [[min]] string into UNIX timestamp
+     * Parses [[min]]/[[max]] string into UNIX timestamp
      */
-    public function setMin() {
-        if ($this->minString === null) {
-            $this->minString = (string) $this->min;
+    public function setMinMax($att) {
+        $string = $att.'String';
+        if ($this->$string === null) {
+            $this->$string = (string) $this->$att;
         }
-        if ($this->min !== null && is_string($this->min)) {
-            $timestamp = $this->parseDateValue($this->min);
+        if ($this->$att !== null && is_string($this->$att)) {
+            $timestamp = $this->parseDateValue($this->$att);
             if ($timestamp === false) {
-                throw new InvalidConfigException("Invalid min date value: {$this->min}");
+                throw new InvalidConfigException("Invalid {$att} date value: {$this->$att}");
             }
-            $this->min = $timestamp;
-        }
-    }
-
-    /**
-     * Parses [[max]] string into UNIX timestamp
-     */
-    public function setMax() {
-        if ($this->maxString === null) {
-            $this->maxString = (string) $this->max;
-        }
-        if ($this->max !== null && is_string($this->max)) {
-            $timestamp = $this->parseDateValue($this->max);
-            if ($timestamp === false) {
-                throw new InvalidConfigException("Invalid max date value: {$this->max}");
-            }
-            $this->max = $timestamp;
+            $this->$att = $timestamp;
         }
     }
 
@@ -290,7 +275,7 @@ class DateValidator extends Validator
         foreach (['min', 'max'] as $val) {
             if ($this->$val instanceof \Closure) {
                 $this->$val = call_user_func($this->$val, $model);
-                call_user_func([$this, 'set'.ucfirst($val)]);
+                $this->setMinMax($val);
             }
         }
         $value = $model->$attribute;
