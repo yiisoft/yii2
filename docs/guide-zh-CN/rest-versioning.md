@@ -70,10 +70,10 @@ api/
 return [
     'modules' => [
         'v1' => [
-            'basePath' => '@app/modules/v1',
+            'class' => 'app\modules\v1\Module',
         ],
         'v2' => [
-            'basePath' => '@app/modules/v2',
+           'class' => 'app\modules\v2\Module',
         ],
     ],
     'components' => [
