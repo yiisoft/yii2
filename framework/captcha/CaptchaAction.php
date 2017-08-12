@@ -59,6 +59,16 @@ class CaptchaAction extends Action
     /**
      * @var DriverInterface|array|string the driver to be used for CAPTCHA rendering. It could be either an instance
      * of [[DriverInterface]] or its DI compatible configuration.
+     * For example:
+     *
+     * ```php
+     * [
+     *     'class' => \yii\captcha\ImagickDriver::class,
+     *     // 'backColor' => 0xFFFFFF,
+     *     // 'foreColor' => 0x2040A0,
+     * ]
+     * ```
+     *
      * After the action object is created, if you want to change this property, you should assign it
      * with a [[DriverInterface]] object only.
      * @since 2.1.0
@@ -128,12 +138,12 @@ class CaptchaAction extends Action
         $session = Yii::$app->getSession();
         $session->open();
         $name = $this->getSessionKey();
-        if ($session[$name] === null || $regenerate) {
-            $session[$name] = $this->driver->generateVerifyCode();
-            $session[$name . 'count'] = 1;
+        if ($session->get($name) === null || $regenerate) {
+            $session->set($name, $this->driver->generateVerifyCode());
+            $session->set($name . 'count', 1);
         }
 
-        return $session[$name];
+        return $session->get($name);
     }
 
     /**

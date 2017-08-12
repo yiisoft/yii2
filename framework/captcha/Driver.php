@@ -38,6 +38,11 @@ abstract class Driver extends Component implements DriverInterface
      */
     public $padding = 2;
     /**
+     * @var int the offset between characters. Defaults to -2. You can adjust this property
+     * in order to decrease or increase the readability of the captcha.
+     */
+    public $offset = -2;
+    /**
      * @var int the background color. For example, 0x55FF00.
      * Defaults to 0xFFFFFF, meaning white color.
      */

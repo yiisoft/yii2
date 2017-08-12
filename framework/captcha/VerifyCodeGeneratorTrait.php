@@ -25,11 +25,6 @@ trait VerifyCodeGeneratorTrait
      * @var int the maximum length for randomly generated word. Defaults to 7.
      */
     public $maxLength = 7;
-    /**
-     * @var int the offset between characters. Defaults to -2. You can adjust this property
-     * in order to decrease or increase the readability of the captcha.
-     */
-    public $offset = -2;
 
 
     /**
