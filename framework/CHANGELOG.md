@@ -73,7 +73,6 @@ Yii Framework 2 Change Log
 - Bug #11230: Include `defaultRoles` in `yii\rbac\DbManager->getRolesByUser()` results (developeruz)
 - Bug #11404: `yii\base\Model::loadMultiple()` returns true even if `yii\base\Model::load()` returns false (zvook)
 - Bug #11719: Fixed `yii\db\Connection::$enableQueryCache` caused infinite loop when the same connection was used for `yii\caching\DbCache` (michaelarnauts)
-- Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase)
 - Bug #12715: Exception `SAVEPOINT LEVEL1 does not exist` instead of deadlock exception (Vovan-VE)
 - Bug #13058: Fixed caught exception thrown during view file rendering produces wrong output (klimov-paul)
 - Bug #13086, #13656: Fixed bug with optional parameters at the beginning of pattern in `yii\web\UrlRule` (rob006)
