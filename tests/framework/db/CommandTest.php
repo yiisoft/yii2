@@ -365,6 +365,7 @@ SQL;
             setlocale(LC_NUMERIC, $locale);
             throw $e;
         }
+        setlocale(LC_NUMERIC, $locale);
     }
 
     public function testInsert()
