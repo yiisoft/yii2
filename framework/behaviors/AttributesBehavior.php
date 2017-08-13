@@ -43,7 +43,9 @@ use yii\db\ActiveRecord;
  *                     ActiveRecord::EVENT_AFTER_VALIDATE => $fn2,
  *                 ],
  *                 'attribute4' => [
- *                     ActiveRecord::EVENT_BEFORE_DELETE => function($event) {static::disabled() || $event->isValid = false;},
+ *                     ActiveRecord::EVENT_BEFORE_DELETE => function ($event) {
+ *                         static::disabled() || $event->isValid = false;
+ *                     },
  *                 ],
  *             ],
  *         ],
@@ -86,7 +88,9 @@ class AttributesBehavior extends Behavior
      *       ActiveRecord::EVENT_AFTER_VALIDATE => $fn2,
      *   ],
      *   'attribute4' => [
-     *       ActiveRecord::EVENT_BEFORE_DELETE => function($event) {static::disabled() || $event->isValid = false;},
+     *       ActiveRecord::EVENT_BEFORE_DELETE => function ($event) {
+     *           static::disabled() || $event->isValid = false;
+     *       },
      *   ],
      * ]
      * ```
@@ -137,7 +141,7 @@ class AttributesBehavior extends Behavior
     public function evaluateAttributes($event)
     {
         if ($this->skipUpdateOnClean
-            && $event->name == ActiveRecord::EVENT_BEFORE_UPDATE
+            && $event->name === ActiveRecord::EVENT_BEFORE_UPDATE
             && empty($this->owner->dirtyAttributes)
         ) {
             return;
@@ -168,12 +172,12 @@ class AttributesBehavior extends Behavior
      */
     protected function getValue($attribute, $event)
     {
-        if (!isset($this->attributes[$attribute][$event])) {
+        if (!isset($this->attributes[$attribute][$event->name])) {
             return null;
         }
-        $value = $this->attributes[$attribute][$event];
-        if ($value instanceof Closure || is_array($value) && is_callable($value)) {
-            return call_user_func($value, $attribute, $event);
+        $value = $this->attributes[$attribute][$event->name];
+        if ($value instanceof Closure || (is_array($value) && is_callable($value))) {
+            return $value($event);
         }
 
         return $value;
