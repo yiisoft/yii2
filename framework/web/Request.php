@@ -988,9 +988,9 @@ class Request extends \yii\base\Request
         if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) {
             return true;
         }
-        foreach($this->secureProtocolHeaders as $header => $values) {
+        foreach ($this->secureProtocolHeaders as $header => $values) {
             if (($headerValue = $this->headers->get($header, null)) !== null) {
-                foreach($values as $value) {
+                foreach ($values as $value) {
                     if (strcasecmp($headerValue, $value) === 0) {
                         return true;
                     }
