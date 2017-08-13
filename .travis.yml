@@ -6,7 +6,10 @@
 dist: trusty
 
 # faster builds on new travis setup not using sudo
-sudo: false
+# temporary disable, see https://github.com/travis-ci/travis-ci/issues/6842
+#sudo: false
+sudo: required
+group: edge
 
 # build only on master branches
 # commented as this prevents people from running builds on their forks:
@@ -67,8 +70,6 @@ matrix:
     # Test against HHVM 3.12 LTS version by using trusty
     - php: hhvm-3.12
       sudo: true
-      dist: trusty
-      group: edge # Use edge image until the next travis CI image update
       addons:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
@@ -83,8 +84,6 @@ matrix:
     # test against the latest HHVM version by using a newer image
     - php: hhvm
       sudo: true
-      dist: trusty
-      group: edge # Use edge image until the next travis CI image update
       addons:
         code_climate:
           repo_token: 2935307212620b0e2228ab67eadd92c9f5501ddb60549d0d86007a354d56915b
@@ -104,7 +103,6 @@ matrix:
     - language: node_js
       node_js: 6
       env: TASK_TESTS_PHP=0 TASK_TESTS_JS=1
-      dist: trusty
       # overwrite services used for PHP tests
       services:
 

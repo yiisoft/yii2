@@ -14,13 +14,22 @@ if (!empty($namespace)) {
 
 use yii\db\Migration;
 
+/**
+ * Class <?= $className . "\n" ?>
+ */
 class <?= $className ?> extends Migration
 {
+    /**
+     * @inheritdoc
+     */
     public function safeUp()
     {
 
     }
 
+    /**
+     * @inheritdoc
+     */
     public function safeDown()
     {
         echo "<?= $className ?> cannot be reverted.\n";

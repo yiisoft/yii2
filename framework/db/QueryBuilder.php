@@ -23,7 +23,7 @@ use yii\helpers\ArrayHelper;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class QueryBuilder extends \yii\base\Object
+class QueryBuilder extends \yii\base\BaseObject
 {
     /**
      * The prefix for automatically generated query binding parameters.
@@ -278,6 +278,9 @@ class QueryBuilder extends \yii\base\Object
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = str_replace(',', '.', (string) $value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -801,7 +804,7 @@ class QueryBuilder extends \yii\base\Object
      *
      * - `pk`: an auto-incremental primary key type, will be converted into "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `bigpk`: an auto-incremental primary key type, will be converted into "bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY"
-     * - `unsignedpk`: an unsigned auto-incremental primary key type, will be converted into "int(11) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
+     * - `upk`: an unsigned auto-incremental primary key type, will be converted into "int(10) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY"
      * - `char`: char type, will be converted into "char(1)"
      * - `string`: string type, will be converted into "varchar(255)"
      * - `text`: a long string type, will be converted into "text"
@@ -1350,7 +1353,7 @@ class QueryBuilder extends \yii\base\Object
             $values = (array) $values;
         }
 
-        if ($column instanceof \Traversable || count($column) > 1) {
+        if ($column instanceof \Traversable || ((is_array($column) || $column instanceof \Countable) && count($column) > 1)) {
             return $this->buildCompositeInCondition($operator, $column, $values, $params);
         } elseif (is_array($column)) {
             $column = reset($column);

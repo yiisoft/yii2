@@ -148,11 +148,13 @@ class ExistValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        if (!$model instanceof ActiveRecord) {
+        $targetModelClass = $this->getTargetClass($model);
+        if (!is_subclass_of($targetModelClass, 'yii\db\ActiveRecord')) {
             return $conditions;
         }
 
-        return $this->prefixConditions($model, $conditions);
+        /** @var ActiveRecord $targetModelClass */
+        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 
     /**
@@ -234,20 +236,5 @@ class ExistValidator extends Validator
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
         return $prefixedConditions;
-    }
-
-    /**
-     * Prefix conditions with aliases
-     *
-     * @param ActiveRecord $model
-     * @param array $conditions
-     * @return array
-     */
-    private function prefixConditions($model, $conditions)
-    {
-        $targetModelClass = $this->getTargetClass($model);
-
-        /** @var ActiveRecord $targetModelClass */
-        return $this->applyTableAlias($targetModelClass::find(), $conditions);
     }
 }

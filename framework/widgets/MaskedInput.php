@@ -124,7 +124,11 @@ class MaskedInput extends InputWidget
     public function run()
     {
         $this->registerClientScript();
-        echo $this->renderInput($this->type);
+        if ($this->hasModel()) {
+            echo Html::activeInput($this->type, $this->model, $this->attribute, $this->options);
+        } else {
+            echo Html::input($this->type, $this->name, $this->value, $this->options);
+        }
     }
 
     /**

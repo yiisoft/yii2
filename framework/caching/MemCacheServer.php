@@ -18,7 +18,7 @@ namespace yii\caching;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class MemCacheServer extends \yii\base\Object
+class MemCacheServer extends \yii\base\BaseObject
 {
     /**
      * @var string memcache server hostname or IP address
