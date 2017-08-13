@@ -13,7 +13,7 @@ use yii\base\Event;
 use yii\db\ActiveRecord;
 
 /**
- * AttributeBehavior automatically assigns a specified values to one or multiple attributes of an ActiveRecord
+ * AttributesBehavior automatically assigns values specified to one or multiple attributes of an ActiveRecord
  * object when certain events happen.
  *
  * To use AttributesBehavior, configure the [[attributes]] property which should specify the list of attributes
