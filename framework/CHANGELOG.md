@@ -54,6 +54,7 @@ Yii Framework 2 Change Log
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #14363: Added `yii\widgets\LinkPager::$linkContainerOptions` and possibility to override tag in `yii\widgets\LinkPager::$options` (dmirogin)
 - Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
+- Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 
 
 2.0.12 June 05, 2017
