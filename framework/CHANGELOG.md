@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- New #14151: Added `AttributesBehavior` that assigns values specified to one or multiple attributes of an AR object when certain events happen (bscheshirwork)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
 - Bug #14206: `MySqlMutex`, `PgsqlMutex` and `OracleMutex` now use `useMaster()` to ensure lock is aquired on the same DB server (cebe, ryusoft)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
