@@ -1,4 +1,4 @@
-﻿Extensiones
+Extensiones
 ===========
 
 Las extensiones son paquetes de software redistribuibles diseñados especialmente para ser usados en aplicaciones Yii y
@@ -7,7 +7,7 @@ añade una practica barra de herramientas de depuración (debug toolbar) al fina
 ayudar a comprender más fácilmente como se han generado las páginas. Se pueden usar extensiones para acelerar el
 proceso de desarrollo. También se puede empaquetar código propio para compartir nuestro trabajo con otra gente.
 
-> Información: Usamos el termino "extensión" para referirnos a los paquetes específicos de software Yii. Para
+> Info: Usamos el termino "extensión" para referirnos a los paquetes específicos de software Yii. Para
   propósitos generales los paquetes de software pueden usarse sin Yii, nos referiremos a ellos usando los términos
   "paquetes" (package) o "librerías" (library).
 
@@ -43,7 +43,7 @@ a continuación:
     "require": {
         // ... otras dependencias
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -52,7 +52,7 @@ Después de la instalación, debemos encontrar el directorio `yiisoft/yii2-imagi
 `BasePath/vendor`. También debemos encontrar el directorio `imagine/imagine` que contiene sus paquetes dependientes
 instalados.
 
-> Información: La extensión `yiisoft/yii2-imagine` es una extensión del núcleo (core) desarrollada y mantenida por el
+> Info: La extensión `yiisoft/yii2-imagine` es una extensión del núcleo (core) desarrollada y mantenida por el
   equipo de desarrollo de Yii. Todas las extensiones del núcleo se hospedan en [Packagist](https://packagist.org/) y
   son nombradas como `yiisoft/yii2-xyz`, donde `zyz` varia según la extensión.
 
@@ -68,7 +68,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     ->save(Yii::getAlias('@runtime/thumb-test-image.jpg'), ['quality' => 50]);
 ```
 
-> Información: Las clases de extensiones se cargan automáticamente gracias a
+> Info: Las clases de extensiones se cargan automáticamente gracias a
   [autocarga de clases de Yii](concept-autoloading.md).
 
 ### Instalación Manual de Extensiones <span id="installing-extensions-manually"></span>
@@ -149,7 +149,7 @@ muestra el archivo `composer.json` para la extensión `yiisoft/yii2-imagine`:
 
     // dependencias del paquete
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -385,12 +385,12 @@ mencionados a continuación para facilitar a otra gente el uso de nuestra extens
   características que no pueden ser detalladas completamente en el archivo `readme`.
 * Documentación de API: el código debe documentarse debidamente para que otras personas puedan leerlo y entenderlo
   fácilmente. Más información acerca de documentación de código en
-  [archivo de Objetos de clase](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
+  [archivo de Objetos de clase](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php)
 
-> Información: Los comentarios de código pueden ser escritos en formato Markdown. La extensión `yiisoft/yii2-apidoc`
+> Info: Los comentarios de código pueden ser escritos en formato Markdown. La extensión `yiisoft/yii2-apidoc`
   proporciona una herramienta para generar buena documentación de API basándose en los comentarios del código.
 
-> Información: Aunque no es un requerimiento, se recomienda que la extensión se adhiera a ciertos estilos de
+> Info: Aunque no es un requerimiento, se recomienda que la extensión se adhiera a ciertos estilos de
   codificación. Se puede hacer referencia a
   [estilo de código del núcleo del framework](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) para
   obtener más detalles.
@@ -420,6 +420,8 @@ se describe en la subsección [Uso de Extensiones](#using-extensions)
   [Faker](https://github.com/fzaninotto/Faker) y generar datos automáticamente.
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii): proporciona un generador de código basado den Web altamente
   extensible y que puede usarse para generar modelos, formularios, módulos, CRUD, etc. rápidamente.
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine): proporciona funciones comunes de manipulación de
   imágenes basadas en [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui): proporciona un conjunto de widgets que encapsulan las

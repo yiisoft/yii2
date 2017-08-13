@@ -33,7 +33,7 @@ You should also see a toolbar at the bottom of the browser window.
 This is a useful [debugger tool](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide/README.md) provided by Yii to record and display a lot of debugging information, such as log messages, response statuses, the database queries run, and so on.
 
 Additionally to the web application, there is a console script called `yii`, which is located in the applications base directory.
-This script can be used to run background and maintainance tasks for the application, which are described
+This script can be used to run background and maintenance tasks for the application, which are described
 in the [Console Application Section](tutorial-console.md).
 
 

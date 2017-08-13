@@ -7,10 +7,15 @@
 
 namespace yii\db\cubrid;
 
+use yii\base\NotSupportedException;
+use yii\db\Constraint;
+use yii\db\ConstraintFinderTrait;
 use yii\db\Expression;
+use yii\db\ForeignKeyConstraint;
+use yii\db\IndexConstraint;
 use yii\db\TableSchema;
-use yii\db\ColumnSchema;
 use yii\db\Transaction;
+use yii\helpers\ArrayHelper;
 
 /**
  * Schema is the class for retrieving metadata from a CUBRID database (version 9.3.x and higher).
@@ -20,6 +25,8 @@ use yii\db\Transaction;
  */
 class Schema extends \yii\db\Schema
 {
+    use ConstraintFinderTrait;
+
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
      * Please refer to [CUBRID manual](http://www.cubrid.org/manual/91/en/sql/datatype.html) for
@@ -45,10 +52,10 @@ class Schema extends \yii\db\Schema
         'timestamp' => self::TYPE_TIMESTAMP,
         'datetime' => self::TYPE_DATETIME,
         // String data types
-        'char' => self::TYPE_STRING,
+        'char' => self::TYPE_CHAR,
         'varchar' => self::TYPE_STRING,
         'char varying' => self::TYPE_STRING,
-        'nchar' => self::TYPE_STRING,
+        'nchar' => self::TYPE_CHAR,
         'nchar varying' => self::TYPE_STRING,
         'string' => self::TYPE_STRING,
         // BLOB/CLOB data types
@@ -72,6 +79,153 @@ class Schema extends \yii\db\Schema
         'Operation would have caused one or more unique constraint violations' => 'yii\db\IntegrityException',
     ];
 
+
+    /**
+     * @inheritDoc
+     */
+    protected function findTableNames($schema = '')
+    {
+        $pdo = $this->db->getSlavePdo();
+        $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
+        $tableNames = [];
+        foreach ($tables as $table) {
+            // do not list system tables
+            if ($table['TYPE'] != 0) {
+                $tableNames[] = $table['NAME'];
+            }
+        }
+
+        return $tableNames;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableSchema($name)
+    {
+        $pdo = $this->db->getSlavePdo();
+
+        $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
+
+        if (!isset($tableInfo[0]['NAME'])) {
+            return null;
+        }
+
+        $table = new TableSchema();
+        $table->fullName = $table->name = $tableInfo[0]['NAME'];
+
+        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
+        $columns = $this->db->createCommand($sql)->queryAll();
+
+        foreach ($columns as $info) {
+            $column = $this->loadColumnSchema($info);
+            $table->columns[$column->name] = $column;
+        }
+
+        $primaryKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
+        foreach ($primaryKeys as $key) {
+            $column = $table->columns[$key['ATTR_NAME']];
+            $column->isPrimaryKey = true;
+            $table->primaryKey[] = $column->name;
+            if ($column->autoIncrement) {
+                $table->sequenceName = '';
+            }
+        }
+
+        $foreignKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
+        foreach ($foreignKeys as $key) {
+            if (isset($table->foreignKeys[$key['FK_NAME']])) {
+                $table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
+            } else {
+                $table->foreignKeys[$key['FK_NAME']] = [
+                    $key['PKTABLE_NAME'],
+                    $key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME'],
+                ];
+            }
+        }
+
+        return $table;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTablePrimaryKey($tableName)
+    {
+        $primaryKey = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $tableName);
+        if (empty($primaryKey)) {
+            return null;
+        }
+
+        ArrayHelper::multisort($primaryKey, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
+        return new Constraint([
+            'name' => $primaryKey[0]['KEY_NAME'],
+            'columnNames' => ArrayHelper::getColumn($primaryKey, 'ATTR_NAME'),
+        ]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableForeignKeys($tableName)
+    {
+        static $actionTypes = [
+            0 => 'CASCADE',
+            1 => 'RESTRICT',
+            2 => 'NO ACTION',
+            3 => 'SET NULL',
+        ];
+
+        $foreignKeys = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $tableName);
+        $foreignKeys = ArrayHelper::index($foreignKeys, null, 'FK_NAME');
+        ArrayHelper::multisort($foreignKeys, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
+        $result = [];
+        foreach ($foreignKeys as $name => $foreignKey) {
+            $result[] = new ForeignKeyConstraint([
+                'name' => $name,
+                'columnNames' => ArrayHelper::getColumn($foreignKey, 'FKCOLUMN_NAME'),
+                'foreignTableName' => $foreignKey[0]['PKTABLE_NAME'],
+                'foreignColumnNames' => ArrayHelper::getColumn($foreignKey, 'PKCOLUMN_NAME'),
+                'onDelete' => isset($actionTypes[$foreignKey[0]['DELETE_RULE']]) ? $actionTypes[$foreignKey[0]['DELETE_RULE']] : null,
+                'onUpdate' => isset($actionTypes[$foreignKey[0]['UPDATE_RULE']]) ? $actionTypes[$foreignKey[0]['UPDATE_RULE']] : null,
+            ]);
+        }
+        return $result;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableIndexes($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'indexes');
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function loadTableUniques($tableName)
+    {
+        return $this->loadTableConstraints($tableName, 'uniques');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException if this method is called.
+     */
+    protected function loadTableChecks($tableName)
+    {
+        throw new NotSupportedException('CUBRID does not support check constraints.');
+    }
+
+    /**
+     * @inheritDoc
+     * @throws NotSupportedException if this method is called.
+     */
+    protected function loadTableDefaultValues($tableName)
+    {
+        throw new NotSupportedException('CUBRID does not support default value constraints.');
+    }
 
     /**
      * @inheritdoc
@@ -113,61 +267,9 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * Loads the metadata for the specified table.
-     * @param string $name table name
-     * @return TableSchema driver dependent table metadata. Null if the table does not exist.
-     */
-    protected function loadTableSchema($name)
-    {
-        $pdo = $this->db->getSlavePdo();
-
-        $tableInfo = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE, $name);
-
-        if (!isset($tableInfo[0]['NAME'])) {
-            return null;
-        }
-
-        $table = new TableSchema();
-        $table->fullName = $table->name = $tableInfo[0]['NAME'];
-
-        $sql = 'SHOW FULL COLUMNS FROM ' . $this->quoteSimpleTableName($table->name);
-        $columns = $this->db->createCommand($sql)->queryAll();
-
-        foreach ($columns as $info) {
-            $column = $this->loadColumnSchema($info);
-            $table->columns[$column->name] = $column;
-        }
-
-        $primaryKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_PRIMARY_KEY, $table->name);
-        foreach ($primaryKeys as $key) {
-            $column = $table->columns[$key['ATTR_NAME']];
-            $column->isPrimaryKey = true;
-            $table->primaryKey[] = $column->name;
-            if ($column->autoIncrement) {
-                $table->sequenceName = '';
-            }
-        }
-
-        $foreignKeys = $pdo->cubrid_schema(\PDO::CUBRID_SCH_IMPORTED_KEYS, $table->name);
-        foreach ($foreignKeys as $key) {
-            if (isset($table->foreignKeys[$key['FK_NAME']])) {
-                $table->foreignKeys[$key['FK_NAME']][$key['FKCOLUMN_NAME']] = $key['PKCOLUMN_NAME'];
-            } else {
-                $table->foreignKeys[$key['FK_NAME']] = [
-                    $key['PKTABLE_NAME'],
-                    $key['FKCOLUMN_NAME'] => $key['PKCOLUMN_NAME']
-                ];
-            }
-        }
-        $table->foreignKeys = array_values($table->foreignKeys);
-
-        return $table;
-    }
-
-    /**
      * Loads the column information into a [[ColumnSchema]] object.
      * @param array $info column information
-     * @return ColumnSchema the column schema object
+     * @return \yii\db\ColumnSchema the column schema object
      */
     protected function loadColumnSchema($info)
     {
@@ -236,29 +338,9 @@ class Schema extends \yii\db\Schema
     }
 
     /**
-     * Returns all table names in the database.
-     * @param string $schema the schema of the tables. Defaults to empty string, meaning the current or default schema.
-     * @return array all table names in the database. The names have NO schema name prefix.
-     */
-    protected function findTableNames($schema = '')
-    {
-        $pdo = $this->db->getSlavePdo();
-        $tables = $pdo->cubrid_schema(\PDO::CUBRID_SCH_TABLE);
-        $tableNames = [];
-        foreach ($tables as $table) {
-            // do not list system tables
-            if ($table['TYPE'] != 0) {
-                $tableNames[] = $table['NAME'];
-            }
-        }
-
-        return $tableNames;
-    }
-
-    /**
      * Determines the PDO type for the given PHP data value.
      * @param mixed $data the data whose PDO type is to be determined
-     * @return integer the PDO type
+     * @return int the PDO type
      * @see http://www.php.net/manual/en/pdo.constants.php
      */
     public function getPdoType($data)
@@ -298,5 +380,53 @@ class Schema extends \yii\db\Schema
                 break;
         }
         parent::setTransactionIsolationLevel($level);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createColumnSchemaBuilder($type, $length = null)
+    {
+        return new ColumnSchemaBuilder($type, $length, $this->db);
+    }
+
+    /**
+     * Loads multiple types of constraints and returns the specified ones.
+     * @param string $tableName table name.
+     * @param string $returnType return type:
+     * - indexes
+     * - uniques
+     * @return mixed constraints.
+     */
+    private function loadTableConstraints($tableName, $returnType)
+    {
+        $constraints = $this->db->getSlavePdo()->cubrid_schema(\PDO::CUBRID_SCH_CONSTRAINT, $tableName);
+        $constraints = ArrayHelper::index($constraints, null, ['TYPE', 'NAME']);
+        ArrayHelper::multisort($constraints, 'KEY_ORDER', SORT_ASC, SORT_NUMERIC);
+        $result = [
+            'indexes' => [],
+            'uniques' => [],
+        ];
+        foreach ($constraints as $type => $names) {
+            foreach ($names as $name => $constraint) {
+                $isUnique = in_array((int) $type, [0, 2], true);
+                $result['indexes'][] = new IndexConstraint([
+                    'isPrimary' => (bool) $constraint[0]['PRIMARY_KEY'],
+                    'isUnique' => $isUnique,
+                    'name' => $name,
+                    'columnNames' => ArrayHelper::getColumn($constraint, 'ATTR_NAME'),
+                ]);
+                if ($isUnique) {
+                    $result['uniques'][] = new Constraint([
+                        'name' => $name,
+                        'columnNames' => ArrayHelper::getColumn($constraint, 'ATTR_NAME'),
+                    ]);
+                }
+            }
+        }
+        foreach ($result as $type => $data) {
+            $this->setTableMetadata($tableName, $type, $data);
+        }
+        return $result[$returnType];
     }
 }

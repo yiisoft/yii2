@@ -47,10 +47,13 @@ class DevController extends Controller
         'elasticsearch' => 'git@github.com:yiisoft/yii2-elasticsearch.git',
         'faker' => 'git@github.com:yiisoft/yii2-faker.git',
         'gii' => 'git@github.com:yiisoft/yii2-gii.git',
+        'httpclient' => 'git@github.com:yiisoft/yii2-httpclient.git',
         'imagine' => 'git@github.com:yiisoft/yii2-imagine.git',
         'jui' => 'git@github.com:yiisoft/yii2-jui.git',
         'mongodb' => 'git@github.com:yiisoft/yii2-mongodb.git',
+        'queue' => 'git@github.com:yiisoft/yii2-queue.git',
         'redis' => 'git@github.com:yiisoft/yii2-redis.git',
+        'shell' => 'git@github.com:yiisoft/yii2-shell.git',
         'smarty' => 'git@github.com:yiisoft/yii2-smarty.git',
         'sphinx' => 'git@github.com:yiisoft/yii2-sphinx.git',
         'swiftmailer' => 'git@github.com:yiisoft/yii2-swiftmailer.git',
@@ -67,14 +70,14 @@ class DevController extends Controller
             return 1;
         }
 
-        foreach($this->extensions as $ext => $repo) {
+        foreach ($this->extensions as $ext => $repo) {
             $ret = $this->actionExt($ext);
             if ($ret !== 0) {
                 return $ret;
             }
         }
 
-        foreach($this->apps as $app => $repo) {
+        foreach ($this->apps as $app => $repo) {
             $ret = $this->actionApp($app);
             if ($ret !== 0) {
                 return $ret;
@@ -104,7 +107,7 @@ class DevController extends Controller
         asort($dirs);
 
         $oldcwd = getcwd();
-        foreach($dirs as $dir) {
+        foreach ($dirs as $dir) {
             $displayDir = substr($dir, strlen($base));
             $this->stdout("Running '$command' in $displayDir...\n", Console::BOLD);
             chdir($dir);
@@ -249,7 +252,7 @@ class DevController extends Controller
             $this->unlink($link);
         }
         $extensions = $this->findDirs("$dir/vendor/yiisoft");
-        foreach($extensions as $ext) {
+        foreach ($extensions as $ext) {
             if (is_link($link = "$dir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing symlink $link.\n");
                 $this->unlink($link);
@@ -258,7 +261,7 @@ class DevController extends Controller
     }
 
     /**
-     * Creates symlinks to freamework and extension sources for the application
+     * Creates symlinks to framework and extension sources for the application
      * @param string $dir application directory
      * @param string $base Yii sources base directory
      *
@@ -273,7 +276,7 @@ class DevController extends Controller
             symlink("$base/framework", $link);
         }
         $extensions = $this->findDirs("$dir/vendor/yiisoft");
-        foreach($extensions as $ext) {
+        foreach ($extensions as $ext) {
             if (is_dir($link = "$dir/vendor/yiisoft/yii2-$ext")) {
                 $this->stdout("Removing dir $link.\n");
                 FileHelper::removeDirectory($link);
@@ -356,7 +359,7 @@ class DevController extends Controller
         }
         closedir($handle);
 
-        foreach($list as $i => $e) {
+        foreach ($list as $i => $e) {
             if ($e === 'composer') { // skip composer to not break composer update
                 unset($list[$i]);
             }

@@ -32,13 +32,13 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // Composer のオートローダを登録
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // Yii クラスファイルをインクルード
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // アプリケーションの構成情報を読み出す
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // アプリケーションを作成し、構成して、走らせる
 (new yii\web\Application($config))->run();
@@ -61,15 +61,16 @@ $config = require(__DIR__ . '/../config/web.php');
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // Composer のオートローダを登録
-require(__DIR__ . '/vendor/autoload.php');
+require __DIR__ . '/vendor/autoload.php';
 
 // Yii クラスファイルをインクルード
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
 // アプリケーションの構成情報を読み出す
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -85,12 +86,12 @@ Yii は下記の三つの定数をサポートしています。
 * `YII_DEBUG`: アプリケーションがデバッグモードで走るかどうかを指定します。
   デバッグモードにおいては、アプリケーションはより多くのログ情報を保持し、例外が投げられたときに、より詳細なエラーのコールスタックを表示します。
   この理由により、デバッグモードは主として開発時に使用されるべきものとなります。
-  `YII_DEBUG` のデフォルト値は false です。
+  `YII_DEBUG` のデフォルト値は `false` です。
 * `YII_ENV`: どういう環境でアプリケーションが走っているかを指定します。
   詳細は、[構成情報](concept-configurations.md#environment-constants) の節で説明されます。
   `YII_ENV` のデフォルト値は `'prod'` であり、アプリケーションが本番環境で走っていることを意味します。
 * `YII_ENABLE_ERROR_HANDLER`: Yii によって提供されるエラーハンドラを有効にするかどうかを指定します。
-  この定数のデフォルト値は true です。
+  この定数のデフォルト値は `true` です。
 
 定数を定義するときには、しばしば次のようなコードを用います。
 

@@ -6,7 +6,7 @@
 エクステンションを使うと、あなたの開発プロセスを加速することが出来ます。
 また、あなたのコードをエクステンションとしてパッケージ化すると、あなたの優れた仕事を他の人たちと共有することが出来ます。
 
-> Info|情報: 「エクステンション」という用語は Yii に限定されたソフトウェアパッケージを指すものとして使用します。
+> Info: 「エクステンション」という用語は Yii に限定されたソフトウェアパッケージを指すものとして使用します。
   Yii がなくても使用できる汎用のソフトウェアパッケージを指すためには、「パッケージ」または「ライブラリ」という用語を使うことにします。
 
 ## エクステンションを使う <span id="using-extensions"></span>
@@ -37,7 +37,7 @@ Composer は依存関係を管理するものですから、あるパッケー�
     "require": {
         // ... 他の依存パッケージ
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -45,7 +45,7 @@ Composer は依存関係を管理するものですから、あるパッケー�
 インストール完了後には、`BasePath/vendor` の下に `yiisoft/yii2-imagine` ディレクトリが作られている筈です。
 それと同時に、`imagine/imagine` という別のディレクトリも作られて、依存するパッケージがそこにインストールされている筈です。
 
-> Info|情報: `yiisoft/yii2-imagine` は Yii 開発チームによって開発され保守されるコアエクステンションの一つです。
+> Info: `yiisoft/yii2-imagine` は Yii 開発チームによって開発され保守されるコアエクステンションの一つです。
   全てのコアエクステンションは [Packagist](https://packagist.org/) でホストされ、`yiisoft/yii2-xyz` のように名付けられます。
   ここで `xyz` はエクステンションによってさまざまに変ります。
 
@@ -61,7 +61,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
     ->save(Yii::getAlias('@runtime/thumb-test-image.jpg'), ['quality' => 50]);
 ```
 
-> Info|情報: エクステンションのクラスは [Yii クラスオートローダ](concept-autoloading.md) によってオートロードされます。
+> Info: エクステンションのクラスは [Yii クラスオートローダ](concept-autoloading.md) によってオートロードされます。
 
 
 ### エクステンションを手作業でインストールする <span id="installing-extensions-manually"></span>
@@ -140,7 +140,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 
     // 依存パッケージ
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -362,12 +362,12 @@ Yii はテストのサポートを提供しており、それよって、単体�
   このファイルは Markdown 形式で書いて `upgrade.md` と名付けることが出来ます。
 * チュートリアル、デモ、スクリーンショットなど: あなたのエクステンションが readme ファイルでは十分にカバーできないほど多くの機能を提供するものである場合は、これらが必要になります。
 * API ドキュメント: あなたのコードは、他の人々が読んで理解することがより一層容易に出来るように、十分な解説を含むべきです。
-  [Object のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
+  [BaseObject のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
 
-> Info|情報: コードのコメントを Markdown 形式で書くことが出来ます。
+> Info: コードのコメントを Markdown 形式で書くことが出来ます。
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。
 
-> Info|情報: これは要求ではありませんが、あなたのエクステンションも一定のコーディングスタイルを守るのが良いと思います。
+> Info: これは要求ではありませんが、あなたのエクステンションも一定のコーディングスタイルを守るのが良いと思います。
   [コアフレームワークコードスタイル](https://github.com/yiisoft/yii2/wiki/Core-framework-code-style) を参照してください。
 
 
@@ -395,6 +395,8 @@ Yii は下記のコアエクステンションを提供しています。これ�
   ダミーデータを作る [Faker](https://github.com/fzaninotto/Faker) を使うためのサポートを提供します。
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   拡張性が非常に高いウェブベースのコードジェネレータを提供します。これを使って、モデル、フォーム、モジュール、CRUD などを迅速に生成することが出来ます。
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   [Imagine](http://imagine.readthedocs.org/) に基づいて、使われることの多い画像操作機能を提供します。
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):

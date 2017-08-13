@@ -141,7 +141,7 @@ CSRF は、クロスサイトリクエストフォージェリ (cross-site reque
 
 これは基本的な考え方です。ユーザがログアウトされるぐらいは大したことではない、と言うことも出来るでしょう。
 しかし、悪い奴は、この考え方を使って、もっとひどいことをすることも出来ます。
-例えば、`http://an.example.com/purse/transfer?to=anotherUser&amout=2000` という URL を持つウェブサイトがあると考えて見てください。
+例えば、`http://an.example.com/purse/transfer?to=anotherUser&amount=2000` という URL を持つウェブサイトがあると考えて見てください。
 この URL に GET リクエストを使ってアクセスすると、権限を持つユーザアカウントから `anotherUser` に $2000 が送金されるのです。
 私たちは、ブラウザは画像をロードするのに常に GET リクエストを使う、ということを知っていますから、この URL が POST リクエストだけを受け入れるようにコードを修正することは出来ます。
 しかし残念なことに、それで問題が解決する訳ではありません。
@@ -151,6 +151,43 @@ CSRF を回避するためには、常に次のことを守らなければなり
 
 1. HTTP の規格、すなわち、GET はアプリケーションの状態を変更すべきではない、という規則に従うこと。
 2. Yii の CSRF 保護を有効にしておくこと。
+
+場合によっては、コントローラやアクションの単位で CSRF 検証を無効化する必要があることがあるでしょう。
+これは、そのプロパティを設定することによって達成することが出来ます。
+
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public $enableCsrfValidation = false;
+
+    public function actionIndex()
+    {
+        // CSRF 検証はこのアクションおよびその他のアクションに対して適用されない
+    }
+
+}
+```
+
+特定のアクションに対して CSRF 検証を無効化したいときは、次のようにすることが出来ます。
+```php
+namespace app\controllers;
+
+use yii\web\Controller;
+
+class SiteController extends Controller
+{
+    public function beforeAction($action)
+    {
+        // ... ここで何らかの条件に従って `$this->enableCsrfValidation` を設定する ...
+        // 親のメソッドを呼ぶ。プロパティが true であれば、その中で CSRF がチェックされる。
+        return parent::beforeAction($action);
+    }
+}
+```
 
 
 ファイルの曝露を回避する
@@ -175,3 +212,61 @@ Gii を使うと、データベース構造とコードに関する情報を得�
 デバッグツールバーは本当に必要でない限り本番環境では使用を避けるべきです。
 これはアプリケーションと構成情報の全ての詳細を曝露することが出来ます。
 どうしても必要な場合は、あなたの IP だけに適切にアクセス制限されていることを再度チェックしてください。
+
+TLS によるセキュアな接続を使う
+------------------------------
+
+Yii が提供する機能には、クッキーや PHP セッションに依存するものがあります。
+これらのものは、接続が侵害された場合には、脆弱性となり得ます。
+アプリケーションが TLS によるセキュアな接続を使用している場合は、この危険性を減少させることが出来ます。
+
+その設定の仕方については、あなたのウェブサーバのドキュメントの指示を参照してください。
+H5BP プロジェクトが提供する構成例を参考にすることも出来ます。
+
+- [Nginx](https://github.com/h5bp/server-configs-nginx)
+- [Apache](https://github.com/h5bp/server-configs-apache).
+- [IIS](https://github.com/h5bp/server-configs-iis).
+- [Lighttpd](https://github.com/h5bp/server-configs-lighttpd).
+
+サーバの構成をセキュアにする
+----------------------------
+
+この節の目的は、Yii ベースのウェブサイトをホストするサーバの構成を作成するときに、
+考慮に入れなければならないリスクに照明を当てることにあります。
+ここで触れられる問題点以外にも、セキュリティに関連して考慮すべき構成オプションがあるかもしれません。
+この節の説明が完全であるとは考えないで下さい。
+
+### `Host` ヘッダ攻撃を避ける
+
+[[yii\web\UrlManager]] や [[yii\helpers\Url]] のクラスは、リンクを生成するために [[yii\web\Request::getHostInfo()|現在リクエストされているホスト名]] を使うことがあります。
+って
+ウェブサーバが `Host` ヘッダの値とは無関係に同じサイトとして応答するように構成されている場合は、
+この情報は [HTTP リクエストを送信するユーザによって偽装され](https://www.acunetix.com/vulnerabilities/web/host-header-attack) て、信頼できないものになっている可能性があります。
+そのような状況においては、ウェブサーバの構成を改修して、指定されたホスト名に対してのみ応答するようにするか、
+または、`request` アプリケーションコンポーネントの [[yii\web\Request::setHostInfo()|hostInfo]] プロパティを設定して、ホスト名の値を設定ないしフィルタするか、
+どちらかの対策を取るべきです。
+
+サーバの構成についての詳細な情報は、ウェブサーバのドキュメントを参照して下さい。
+
+- Apache 2: <http://httpd.apache.org/docs/trunk/vhosts/examples.html#defaultallports>
+- Nginx: <https://www.nginx.com/resources/wiki/start/topics/examples/server_blocks/>
+
+サーバの構成にアクセスする権限がない場合は、このような攻撃に対して防御するために、[[yii\filters\HostControl]] フィルタを設定することが出来ます。
+
+```php
+// ウェブアプリケーション構成ファイル
+return [
+    'as hostControl' => [
+        'class' => 'yii\filters\HostControl',
+        'allowedHosts' => [
+            'example.com',
+            '*.example.com',
+        ],
+        'fallbackHostInfo' => 'https://example.com',
+    ],
+    // ...
+];
+```
+
+> Note: 「ホストヘッダ攻撃」に対する保護のためには、常に、フィルタの使用よりもウェブサーバの構成を優先すべきです。
+  [[yii\filters\HostControl]] は、サーバの構成が出来ない場合にだけ使うべきものです。

@@ -1,20 +1,40 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
 use yii\base\Model;
 use yii\helpers\BaseJson;
 use yii\helpers\Json;
-use yiiunit\TestCase;
 use yii\web\JsExpression;
+use yiiunit\framework\web\Post;
+use yiiunit\TestCase;
 
 /**
  * @group helpers
  */
 class JsonTest extends TestCase
 {
+    protected function setUp()
+    {
+        parent::setUp();
+
+        // destroy application, Helper must work without Yii::$app
+        $this->destroyApplication();
+    }
+
     public function testEncode()
     {
+        // Arrayable data encoding
+        $dataArrayable = $this->getMock('yii\\base\\Arrayable');
+        $dataArrayable->method('toArray')->willReturn([]);
+        $actual = Json::encode($dataArrayable);
+        $this->assertSame('{}', $actual);
+
         // basic data encoding
         $data = '1';
         $this->assertSame('"1"', Json::encode($data));
@@ -31,6 +51,12 @@ class JsonTest extends TestCase
         $data->b = 2;
         $this->assertSame('{"a":1,"b":2}', Json::encode($data));
 
+        // empty data encoding
+        $data = [];
+        $this->assertSame('[]', Json::encode($data));
+        $data = new \stdClass();
+        $this->assertSame('{}', Json::encode($data));
+
         // expression encoding
         $expression = 'function () {}';
         $data = new JsExpression($expression);
@@ -41,7 +67,7 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];
@@ -54,6 +80,13 @@ class JsonTest extends TestCase
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::encode($data));
+        // @see https://github.com/yiisoft/yii2/issues/12043
+        $data = new JsonModel();
+        $data->data = [];
+        $this->assertSame('[]', Json::encode($data));
+        $data = new JsonModel();
+        $data->data = (object) null;
+        $this->assertSame('{}', Json::encode($data));
     }
 
     public function testHtmlEncode()
@@ -88,23 +121,46 @@ class JsonTest extends TestCase
         $expression2 = 'function (b) {}';
         $data = [
             'a' => [
-                1, new JsExpression($expression1)
+                1, new JsExpression($expression1),
             ],
             'b' => new JsExpression($expression2),
         ];
         $this->assertSame("{\"a\":[1,$expression1],\"b\":$expression2}", Json::htmlEncode($data));
 
         // https://github.com/yiisoft/yii2/issues/957
-        $data = (object)null;
+        $data = (object) null;
         $this->assertSame('{}', Json::htmlEncode($data));
 
         // JsonSerializable
         $data = new JsonModel();
         $this->assertSame('{"json":"serializable"}', Json::htmlEncode($data));
+
+        // https://github.com/yiisoft/yii2/issues/10278
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>
+<file>
+  <apiKey>ieu2iqw4o</apiKey>
+  <methodProperties>
+    <FindByString>Kiev</FindByString>
+  </methodProperties>
+</file>';
+
+        $document = simplexml_load_string($xml);
+        $this->assertSame('{"apiKey":"ieu2iqw4o","methodProperties":{"FindByString":"Kiev"}}', Json::encode($document));
+
+        $postsStack = new \SplStack();
+        $postsStack->push(new Post(915, 'record1'));
+        $postsStack->push(new Post(456, 'record2'));
+
+        $this->assertSame('{"1":{"id":456,"title":"record2"},"0":{"id":915,"title":"record1"}}', Json::encode($postsStack));
     }
 
     public function testDecode()
     {
+        // empty value
+        $json = '';
+        $actual = Json::decode($json);
+        $this->assertSame(null, $actual);
+
         // basic data decoding
         $json = '"1"';
         $this->assertSame('1', Json::decode($json));
@@ -115,8 +171,17 @@ class JsonTest extends TestCase
 
         // exception
         $json = '{"a":1,"b":2';
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Json::decode($json);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidParamException
+     * @expectedExceptionMessage Invalid JSON data.
+     */
+    public function testDecodeInvalidParamException()
+    {
+        Json::decode([]);
     }
 
     public function testHandleJsonError()
@@ -147,8 +212,10 @@ class JsonTest extends TestCase
 
 class JsonModel extends Model implements \JsonSerializable
 {
-    function jsonSerialize()
+    public $data = ['json' => 'serializable'];
+
+    public function jsonSerialize()
     {
-        return ['json' => 'serializable'];
+        return $this->data;
     }
 }

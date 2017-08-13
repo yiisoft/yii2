@@ -13,16 +13,18 @@ namespace yii\base;
  * It encapsulates the parameters associated with an event.
  * The [[sender]] property describes who raises the event.
  * And the [[handled]] property indicates if the event is handled.
- * If an event handler sets [[handled]] to be true, the rest of the
+ * If an event handler sets [[handled]] to be `true`, the rest of the
  * uninvoked handlers will no longer be called to handle the event.
  *
  * Additionally, when attaching an event handler, extra data may be passed
  * and be available via the [[data]] property when the event handler is invoked.
  *
+ * For more details and usage information on Event, see the [guide article on events](guide:concept-events).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Event extends Object
+class Event extends BaseObject
 {
     /**
      * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
@@ -31,14 +33,14 @@ class Event extends Object
     public $name;
     /**
      * @var object the sender of this event. If not set, this property will be
-     * set as the object whose "trigger()" method is called.
+     * set as the object whose `trigger()` method is called.
      * This property may also be a `null` when this event is a
      * class-level event which is triggered in a static context.
      */
     public $sender;
     /**
-     * @var boolean whether the event is handled. Defaults to false.
-     * When a handler sets this to be true, the event processing will stop and
+     * @var bool whether the event is handled. Defaults to `false`.
+     * When a handler sets this to be `true`, the event processing will stop and
      * ignore the rest of the uninvoked event handlers.
      */
     public $handled = false;
@@ -48,6 +50,9 @@ class Event extends Object
      */
     public $data;
 
+    /**
+     * @var array contains all globally registered event handlers.
+     */
     private static $_events = [];
 
 
@@ -60,11 +65,11 @@ class Event extends Object
      * For example, the following code attaches an event handler to `ActiveRecord`'s
      * `afterInsert` event:
      *
-     * ~~~
+     * ```php
      * Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
      *     Yii::trace(get_class($event->sender) . ' is inserted.');
      * });
-     * ~~~
+     * ```
      *
      * The handler will be invoked for EVERY successful ActiveRecord insertion.
      *
@@ -75,8 +80,8 @@ class Event extends Object
      * @param callable $handler the event handler.
      * @param mixed $data the data to be passed to the event handler when the event is triggered.
      * When the event handler is invoked, this data can be accessed via [[Event::data]].
-     * @param boolean $append whether to append new event handler to the end of the existing
-     * handler list. If false, the new handler will be inserted at the beginning of the existing
+     * @param bool $append whether to append new event handler to the end of the existing
+     * handler list. If `false`, the new handler will be inserted at the beginning of the existing
      * handler list.
      * @see off()
      */
@@ -98,8 +103,8 @@ class Event extends Object
      * @param string $class the fully qualified class name from which the event handler needs to be detached.
      * @param string $name the event name.
      * @param callable $handler the event handler to be removed.
-     * If it is null, all handlers attached to the named event will be removed.
-     * @return boolean whether a handler is found and detached.
+     * If it is `null`, all handlers attached to the named event will be removed.
+     * @return bool whether a handler is found and detached.
      * @see on()
      */
     public static function off($class, $name, $handler = null)
@@ -111,20 +116,30 @@ class Event extends Object
         if ($handler === null) {
             unset(self::$_events[$name][$class]);
             return true;
-        } else {
-            $removed = false;
-            foreach (self::$_events[$name][$class] as $i => $event) {
-                if ($event[0] === $handler) {
-                    unset(self::$_events[$name][$class][$i]);
-                    $removed = true;
-                }
-            }
-            if ($removed) {
-                self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
-            }
-
-            return $removed;
         }
+
+        $removed = false;
+        foreach (self::$_events[$name][$class] as $i => $event) {
+            if ($event[0] === $handler) {
+                unset(self::$_events[$name][$class][$i]);
+                $removed = true;
+            }
+        }
+        if ($removed) {
+            self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
+        }
+        return $removed;
+    }
+
+    /**
+     * Detaches all registered class-level event handlers.
+     * @see on()
+     * @see off()
+     * @since 2.0.10
+     */
+    public static function offAll()
+    {
+        self::$_events = [];
     }
 
     /**
@@ -133,7 +148,7 @@ class Event extends Object
      * to the named event.
      * @param string|object $class the object or the fully qualified class name specifying the class-level event.
      * @param string $name the event name.
-     * @return boolean whether there is any handler attached to the event.
+     * @return bool whether there is any handler attached to the event.
      */
     public static function hasHandlers($class, $name)
     {
@@ -145,11 +160,18 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
-        do {
+
+        $classes = array_merge(
+            [$class],
+            class_parents($class, true),
+            class_implements($class, true)
+        );
+
+        foreach ($classes as $class) {
             if (!empty(self::$_events[$name][$class])) {
                 return true;
             }
-        } while (($class = get_parent_class($class)) !== false);
+        }
 
         return false;
     }
@@ -168,7 +190,7 @@ class Event extends Object
             return;
         }
         if ($event === null) {
-            $event = new static;
+            $event = new static();
         }
         $event->handled = false;
         $event->name = $name;
@@ -181,16 +203,25 @@ class Event extends Object
         } else {
             $class = ltrim($class, '\\');
         }
-        do {
-            if (!empty(self::$_events[$name][$class])) {
-                foreach (self::$_events[$name][$class] as $handler) {
-                    $event->data = $handler[1];
-                    call_user_func($handler[0], $event);
-                    if ($event->handled) {
-                        return;
-                    }
+
+        $classes = array_merge(
+            [$class],
+            class_parents($class, true),
+            class_implements($class, true)
+        );
+
+        foreach ($classes as $class) {
+            if (empty(self::$_events[$name][$class])) {
+                continue;
+            }
+
+            foreach (self::$_events[$name][$class] as $handler) {
+                $event->data = $handler[1];
+                call_user_func($handler[0], $event);
+                if ($event->handled) {
+                    return;
                 }
             }
-        } while (($class = get_parent_class($class)) !== false);
+        }
     }
 }

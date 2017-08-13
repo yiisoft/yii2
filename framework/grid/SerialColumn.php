@@ -22,6 +22,8 @@ namespace yii\grid;
  * ]
  * ```
  *
+ * For more details and usage information on SerialColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -41,8 +43,8 @@ class SerialColumn extends Column
         $pagination = $this->grid->dataProvider->getPagination();
         if ($pagination !== false) {
             return $pagination->getOffset() + $index + 1;
-        } else {
-            return $index + 1;
         }
+
+        return $index + 1;
     }
 }

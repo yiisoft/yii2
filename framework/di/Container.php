@@ -8,8 +8,10 @@
 namespace yii\di;
 
 use ReflectionClass;
+use Yii;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
 
 /**
  * Container implements a [dependency injection](http://en.wikipedia.org/wiki/Dependency_injection) container.
@@ -34,7 +36,7 @@ use yii\base\InvalidConfigException;
  * ```php
  * namespace app\models;
  *
- * use yii\base\Object;
+ * use yii\base\BaseObject;
  * use yii\db\Connection;
  * use yii\di\Container;
  *
@@ -43,7 +45,7 @@ use yii\base\InvalidConfigException;
  *     function findUser();
  * }
  *
- * class UserFinder extends Object implements UserFinderInterface
+ * class UserFinder extends BaseObject implements UserFinderInterface
  * {
  *     public $db;
  *
@@ -58,7 +60,7 @@ use yii\base\InvalidConfigException;
  *     }
  * }
  *
- * class UserLister extends Object
+ * class UserLister extends BaseObject
  * {
  *     public $finder;
  *
@@ -86,6 +88,8 @@ use yii\base\InvalidConfigException;
  * $finder = new UserFinder($db);
  * $lister = new UserLister($finder);
  * ```
+ *
+ * For more details and usage information on Container, see the [guide article on di-containers](guide:concept-di-container).
  *
  * @property array $definitions The list of the object definitions or the loaded shared objects (type or ID =>
  * definition or instance). This property is read-only.
@@ -141,6 +145,7 @@ class Container extends Component
      * @param array $config a list of name-value pairs that will be used to initialize the object properties.
      * @return object an instance of the requested class.
      * @throws InvalidConfigException if the class cannot be recognized or correspond to an invalid definition
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     public function get($class, $params = [], $config = [])
     {
@@ -276,7 +281,7 @@ class Container extends Component
     /**
      * Returns a value indicating whether the container has the definition of the specified name.
      * @param string $class class name, interface name or alias name
-     * @return boolean whether the container has the definition of the specified name..
+     * @return bool whether the container has the definition of the specified name..
      * @see set()
      */
     public function has($class)
@@ -287,8 +292,8 @@ class Container extends Component
     /**
      * Returns a value indicating whether the given name corresponds to a registered singleton.
      * @param string $class class name, interface name or alias name
-     * @param boolean $checkInstance whether to check if the singleton has been instantiated.
-     * @return boolean whether the given name corresponds to a registered singleton. If `$checkInstance` is true,
+     * @param bool $checkInstance whether to check if the singleton has been instantiated.
+     * @return bool whether the given name corresponds to a registered singleton. If `$checkInstance` is true,
      * the method should return a value indicating whether the singleton has been instantiated.
      */
     public function hasSingleton($class, $checkInstance = false)
@@ -325,13 +330,13 @@ class Container extends Component
                 if (strpos($class, '\\') !== false) {
                     $definition['class'] = $class;
                 } else {
-                    throw new InvalidConfigException("A class definition requires a \"class\" member.");
+                    throw new InvalidConfigException('A class definition requires a "class" member.');
                 }
             }
             return $definition;
-        } else {
-            throw new InvalidConfigException("Unsupported definition type for \"$class\": " . gettype($definition));
         }
+
+        throw new InvalidConfigException("Unsupported definition type for \"$class\": " . gettype($definition));
     }
 
     /**
@@ -351,17 +356,21 @@ class Container extends Component
      * @param array $params constructor parameters
      * @param array $config configurations to be applied to the new instance
      * @return object the newly created instance of the specified class
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
      */
     protected function build($class, $params, $config)
     {
         /* @var $reflection ReflectionClass */
-        list ($reflection, $dependencies) = $this->getDependencies($class);
+        list($reflection, $dependencies) = $this->getDependencies($class);
 
         foreach ($params as $index => $param) {
             $dependencies[$index] = $param;
         }
 
         $dependencies = $this->resolveDependencies($dependencies, $reflection);
+        if (!$reflection->isInstantiable()) {
+            throw new NotInstantiableException($reflection->name);
+        }
         if (empty($config)) {
             return $reflection->newInstanceArgs($dependencies);
         }
@@ -370,13 +379,14 @@ class Container extends Component
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
             return $reflection->newInstanceArgs($dependencies);
-        } else {
-            $object = $reflection->newInstanceArgs($dependencies);
-            foreach ($config as $name => $value) {
-                $object->$name = $value;
-            }
-            return $object;
         }
+
+        $object = $reflection->newInstanceArgs($dependencies);
+        foreach ($config as $name => $value) {
+            $object->$name = $value;
+        }
+
+        return $object;
     }
 
     /**
@@ -391,13 +401,14 @@ class Container extends Component
             return $params;
         } elseif (empty($params)) {
             return $this->_params[$class];
-        } else {
-            $ps = $this->_params[$class];
-            foreach ($params as $index => $value) {
-                $ps[$index] = $value;
-            }
-            return $ps;
         }
+
+        $ps = $this->_params[$class];
+        foreach ($params as $index => $value) {
+            $ps[$index] = $value;
+        }
+
+        return $ps;
     }
 
     /**
@@ -453,5 +464,187 @@ class Container extends Component
             }
         }
         return $dependencies;
+    }
+
+    /**
+     * Invoke a callback with resolving dependencies in parameters.
+     *
+     * This methods allows invoking a callback and let type hinted parameter names to be
+     * resolved as objects of the Container. It additionally allow calling function using named parameters.
+     *
+     * For example, the following callback may be invoked using the Container to resolve the formatter dependency:
+     *
+     * ```php
+     * $formatString = function($string, \yii\i18n\Formatter $formatter) {
+     *    // ...
+     * }
+     * Yii::$container->invoke($formatString, ['string' => 'Hello World!']);
+     * ```
+     *
+     * This will pass the string `'Hello World!'` as the first param, and a formatter instance created
+     * by the DI container as the second param to the callable.
+     *
+     * @param callable $callback callable to be invoked.
+     * @param array $params The array of parameters for the function.
+     * This can be either a list of parameters, or an associative array representing named function parameters.
+     * @return mixed the callback return value.
+     * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     * @since 2.0.7
+     */
+    public function invoke(callable $callback, $params = [])
+    {
+        if (is_callable($callback)) {
+            return call_user_func_array($callback, $this->resolveCallableDependencies($callback, $params));
+        }
+
+        return call_user_func_array($callback, $params);
+    }
+
+    /**
+     * Resolve dependencies for a function.
+     *
+     * This method can be used to implement similar functionality as provided by [[invoke()]] in other
+     * components.
+     *
+     * @param callable $callback callable to be invoked.
+     * @param array $params The array of parameters for the function, can be either numeric or associative.
+     * @return array The resolved dependencies.
+     * @throws InvalidConfigException if a dependency cannot be resolved or if a dependency cannot be fulfilled.
+     * @throws NotInstantiableException If resolved to an abstract class or an interface (since 2.0.9)
+     * @since 2.0.7
+     */
+    public function resolveCallableDependencies(callable $callback, $params = [])
+    {
+        if (is_array($callback)) {
+            $reflection = new \ReflectionMethod($callback[0], $callback[1]);
+        } else {
+            $reflection = new \ReflectionFunction($callback);
+        }
+
+        $args = [];
+
+        $associative = ArrayHelper::isAssociative($params);
+
+        foreach ($reflection->getParameters() as $param) {
+            $name = $param->getName();
+            if (($class = $param->getClass()) !== null) {
+                $className = $class->getName();
+                if ($associative && isset($params[$name]) && $params[$name] instanceof $className) {
+                    $args[] = $params[$name];
+                    unset($params[$name]);
+                } elseif (!$associative && isset($params[0]) && $params[0] instanceof $className) {
+                    $args[] = array_shift($params);
+                } elseif (isset(Yii::$app) && Yii::$app->has($name) && ($obj = Yii::$app->get($name)) instanceof $className) {
+                    $args[] = $obj;
+                } else {
+                    // If the argument is optional we catch not instantiable exceptions
+                    try {
+                        $args[] = $this->get($className);
+                    } catch (NotInstantiableException $e) {
+                        if ($param->isDefaultValueAvailable()) {
+                            $args[] = $param->getDefaultValue();
+                        } else {
+                            throw $e;
+                        }
+                    }
+                }
+            } elseif ($associative && isset($params[$name])) {
+                $args[] = $params[$name];
+                unset($params[$name]);
+            } elseif (!$associative && count($params)) {
+                $args[] = array_shift($params);
+            } elseif ($param->isDefaultValueAvailable()) {
+                $args[] = $param->getDefaultValue();
+            } elseif (!$param->isOptional()) {
+                $funcName = $reflection->getName();
+                throw new InvalidConfigException("Missing required parameter \"$name\" when calling \"$funcName\".");
+            }
+        }
+
+        foreach ($params as $value) {
+            $args[] = $value;
+        }
+        return $args;
+    }
+
+    /**
+     * Registers class definitions within this container.
+     *
+     * @param array $definitions array of definitions. There are two allowed formats of array.
+     * The first format:
+     *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
+     *    as a first argument `$class`.
+     *  - value: the definition associated with `$class`. Possible values are described in
+     *    [[set()]] documentation for the `$definition` parameter. Will be passed to the [[set()]] method
+     *    as the second argument `$definition`.
+     *
+     * Example:
+     * ```php
+     * $container->setDefinitions([
+     *     'yii\web\Request' => 'app\components\Request',
+     *     'yii\web\Response' => [
+     *         'class' => 'app\components\Response',
+     *         'format' => 'json'
+     *     ],
+     *     'foo\Bar' => function () {
+     *         $qux = new Qux;
+     *         $foo = new Foo($qux);
+     *         return new Bar($foo);
+     *     }
+     * ]);
+     * ```
+     *
+     * The second format:
+     *  - key: class name, interface name or alias name. The key will be passed to the [[set()]] method
+     *    as a first argument `$class`.
+     *  - value: array of two elements. The first element will be passed the [[set()]] method as the
+     *    second argument `$definition`, the second one — as `$params`.
+     *
+     * Example:
+     * ```php
+     * $container->setDefinitions([
+     *     'foo\Bar' => [
+     *          ['class' => 'app\Bar'],
+     *          [Instance::of('baz')]
+     *      ]
+     * ]);
+     * ```
+     *
+     * @see set() to know more about possible values of definitions
+     * @since 2.0.11
+     */
+    public function setDefinitions(array $definitions)
+    {
+        foreach ($definitions as $class => $definition) {
+            if (count($definition) === 2 && array_values($definition) === $definition) {
+                $this->set($class, $definition[0], $definition[1]);
+                continue;
+            }
+
+            $this->set($class, $definition);
+        }
+    }
+
+    /**
+     * Registers class definitions as singletons within this container by calling [[setSingleton()]]
+     *
+     * @param array $singletons array of singleton definitions. See [[setDefinitions()]]
+     * for allowed formats of array.
+     *
+     * @see setDefinitions() for allowed formats of $singletons parameter
+     * @see setSingleton() to know more about possible values of definitions
+     * @since 2.0.11
+     */
+    public function setSingletons(array $singletons)
+    {
+        foreach ($singletons as $class => $definition) {
+            if (count($definition) === 2 && array_values($definition) === $definition) {
+                $this->setSingleton($class, $definition[0], $definition[1]);
+                continue;
+            }
+
+            $this->setSingleton($class, $definition);
+        }
     }
 }

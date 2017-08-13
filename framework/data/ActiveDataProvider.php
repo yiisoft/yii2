@@ -7,10 +7,9 @@
 
 namespace yii\data;
 
-use Yii;
-use yii\db\ActiveQueryInterface;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
+use yii\db\ActiveQueryInterface;
 use yii\db\Connection;
 use yii\db\QueryInterface;
 use yii\di\Instance;
@@ -22,7 +21,7 @@ use yii\di\Instance;
  *
  * The following is an example of using ActiveDataProvider to provide ActiveRecord instances:
  *
- * ~~~
+ * ```php
  * $provider = new ActiveDataProvider([
  *     'query' => Post::find(),
  *     'pagination' => [
@@ -32,12 +31,12 @@ use yii\di\Instance;
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
- * ~~~
+ * ```
  *
  * And the following example shows how to use ActiveDataProvider without ActiveRecord:
  *
- * ~~~
- * $query = new Query;
+ * ```php
+ * $query = new Query();
  * $provider = new ActiveDataProvider([
  *     'query' => $query->from('post'),
  *     'pagination' => [
@@ -47,7 +46,9 @@ use yii\di\Instance;
  *
  * // get the posts in the current page
  * $posts = $provider->getModels();
- * ~~~
+ * ```
+ *
+ * For more details and usage information on ActiveDataProvider, see the [guide article on data providers](guide:output-data-providers).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -103,6 +104,9 @@ class ActiveDataProvider extends BaseDataProvider
         $query = clone $this->query;
         if (($pagination = $this->getPagination()) !== false) {
             $pagination->totalCount = $this->getTotalCount();
+            if ($pagination->totalCount === 0) {
+                return [];
+            }
             $query->limit($pagination->getLimit())->offset($pagination->getOffset());
         }
         if (($sort = $this->getSort()) !== false) {
@@ -129,7 +133,7 @@ class ActiveDataProvider extends BaseDataProvider
 
             return $keys;
         } elseif ($this->query instanceof ActiveQueryInterface) {
-            /* @var $class \yii\db\ActiveRecord */
+            /* @var $class \yii\db\ActiveRecordInterface */
             $class = $this->query->modelClass;
             $pks = $class::primaryKey();
             if (count($pks) === 1) {
@@ -148,9 +152,9 @@ class ActiveDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
@@ -173,7 +177,7 @@ class ActiveDataProvider extends BaseDataProvider
         parent::setSort($value);
         if (($sort = $this->getSort()) !== false && $this->query instanceof ActiveQueryInterface) {
             /* @var $model Model */
-            $model = new $this->query->modelClass;
+            $model = new $this->query->modelClass();
             if (empty($sort->attributes)) {
                 foreach ($model->attributes() as $attribute) {
                     $sort->attributes[$attribute] = [

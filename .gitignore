@@ -9,6 +9,10 @@ nbproject
 .project
 .settings
 
+# sublime text project / workspace files
+*.sublime-project
+*.sublime-workspace
+
 # windows thumbnail cache
 Thumbs.db
 
@@ -31,6 +35,10 @@ phpunit.phar
 # local phpunit config
 /phpunit.xml
 
-# ignore sub directory for dev installed apps and extensions
+# ignore dev installed apps and extensions
 /apps
 /extensions
+
+# NPM packages
+/node_modules
+.env

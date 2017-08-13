@@ -34,9 +34,7 @@ use yii\jui\DatePicker;
     'model' => $model,
     'attribute' => 'from_date',
     'language' => 'ru',
-    'clientOptions' => [
-        'dateFormat' => 'yy-mm-dd',
-    ],
+    'dateFormat' => 'php:Y-m-d',
 ]) ?>
 ```
 
@@ -67,6 +65,11 @@ use yii\helpers\Html;
 
 Note that unlike [[yii\base\Widget::widget()]] which returns the rendering result of a widget, the method
 [[yii\base\Widget::begin()]] returns an instance of the widget which you can use to build the widget content.
+
+> Note: Some widgets will use [output buffering](http://php.net/manual/en/book.outcontrol.php) to adjust the enclosed
+> content when [[yii\base\Widget::end()]] is called. For this reason calling [[yii\base\Widget::begin()]] and
+> [[yii\base\Widget::end()]] is expected to happen in the same view file.
+> Not following this rule may result in unexpected output.
 
 
 ### Configuring global defaults

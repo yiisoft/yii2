@@ -21,7 +21,7 @@ echo $formatter->asEmail('cebe@example.com');
 echo $formatter->asBoolean(true); 
 // it also handles display of null values:
 
-// output: (Not set)
+// output: (not set)
 echo $formatter->asDate(null); 
 ```
 
@@ -97,6 +97,20 @@ echo Yii::$app->formatter->asDate('now', 'yyyy-MM-dd'); // 2014-10-06
 echo Yii::$app->formatter->asDate('now', 'php:Y-m-d'); // 2014-10-06
 ```
 
+> Info: Some letters of the PHP format syntax are not supported by ICU and thus the PHP intl extension and can not be used
+> in Yii formatter. Most of these (`w`, `t`, `L`, `B`, `u`, `I`, `Z`) are not really useful for formatting dates but rather
+> used when doing date math. `S` and `U` however may be useful. Their behavior can be achived by doing the following:
+>
+> - for `S`, which is the English ordinal suffix for the day of the month (e.g. st, nd, rd or th.), the following replacement can be used:
+>
+>   ```php
+>   $f = Yii::$app->formatter;
+>   $d = $f->asOrdinal($f->asDate('2017-05-15', 'php:j'));
+>   echo "On the $d day of the month.";  // prints "On the 15th day of the month."
+>   ```
+>
+> - for `U`, the Unix Epoch, you can use the [[yii\i18n\Formatter::asTimestamp()|timestamp]] format.
+
 When working with applications that need to support multiple languages, you often need to specify different date
 and time formats for different locales. To simplify this task, you may use format shortcuts (e.g. `long`, `short`), instead.
 The formatter will turn a format shortcut into an appropriate format according to the currently active [[yii\i18n\Formatter::locale|locale]].
@@ -106,6 +120,9 @@ The following format shortcuts are supported (the examples assume `en_GB` is the
 - `medium`: will output `6 Oct 2014` and `15:58:42`;
 - `long`: will output `6 October 2014` and `15:58:42 GMT`;
 - `full`: will output `Monday, 6 October 2014` and `15:58:42 GMT`.
+
+Since version 2.0.7 it is also possible to format dates in different calendar systems.
+Please refer to the API documentation of the formatters [[yii\i18n\Formatter::$calendar|$calendar]]-property on how to set a different calendar.
 
 
 ### Time Zones <span id="time-zones"></span>

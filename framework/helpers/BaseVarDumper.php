@@ -6,7 +6,9 @@
  */
 
 namespace yii\helpers;
+
 use yii\base\Arrayable;
+use yii\base\InvalidValueException;
 
 /**
  * BaseVarDumper provides concrete implementation for [[VarDumper]].
@@ -28,8 +30,8 @@ class BaseVarDumper
      * This method achieves the similar functionality as var_dump and print_r
      * but is more robust when handling complex objects such as Yii controllers.
      * @param mixed $var variable to be dumped
-     * @param integer $depth maximum depth that the dumper should go into the variable. Defaults to 10.
-     * @param boolean $highlight whether the result should be syntax-highlighted
+     * @param int $depth maximum depth that the dumper should go into the variable. Defaults to 10.
+     * @param bool $highlight whether the result should be syntax-highlighted
      */
     public static function dump($var, $depth = 10, $highlight = false)
     {
@@ -41,8 +43,8 @@ class BaseVarDumper
      * This method achieves the similar functionality as var_dump and print_r
      * but is more robust when handling complex objects such as Yii controllers.
      * @param mixed $var variable to be dumped
-     * @param integer $depth maximum depth that the dumper should go into the variable. Defaults to 10.
-     * @param boolean $highlight whether the result should be syntax-highlighted
+     * @param int $depth maximum depth that the dumper should go into the variable. Defaults to 10.
+     * @param bool $highlight whether the result should be syntax-highlighted
      * @return string the string representation of the variable
      */
     public static function dumpAsString($var, $depth = 10, $highlight = false)
@@ -61,7 +63,7 @@ class BaseVarDumper
 
     /**
      * @param mixed $var variable to be dumped
-     * @param integer $level depth level
+     * @param int $level depth level
      */
     private static function dumpInternal($var, $level)
     {
@@ -115,7 +117,15 @@ class BaseVarDumper
                     $className = get_class($var);
                     $spaces = str_repeat(' ', $level * 4);
                     self::$_output .= "$className#$id\n" . $spaces . '(';
-                    foreach ((array) $var as $key => $value) {
+                    if ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__debugInfo')) {
+                        $dumpValues = $var->__debugInfo();
+                        if (!is_array($dumpValues)) {
+                            throw new InvalidValueException('__debuginfo() must return an array');
+                        }
+                    } else {
+                        $dumpValues = (array) $var;
+                    }
+                    foreach ($dumpValues as $key => $value) {
                         $keyDisplay = strtr(trim($key), "\0", ':');
                         self::$_output .= "\n" . $spaces . "    [$keyDisplay] => ";
                         self::dumpInternal($value, $level + 1);
@@ -151,7 +161,7 @@ class BaseVarDumper
 
     /**
      * @param mixed $var variable to be exported
-     * @param integer $level depth level
+     * @param int $level depth level
      */
     private static function exportInternal($var, $level)
     {
@@ -198,7 +208,7 @@ class BaseVarDumper
                             }
                             self::exportInternal($varAsArray, $level);
                             return;
-                        } elseif (method_exists($var, '__toString')) {
+                        } elseif ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__toString')) {
                             $output = var_export($var->__toString(), true);
                         } else {
                             $outputBackup = self::$_output;

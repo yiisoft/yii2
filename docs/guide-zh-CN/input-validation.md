@@ -115,11 +115,9 @@ public function rules()
 [[yii\validators\Validator::when|when]] 属性来定义相关条件。举例而言，
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
-    }],
-]
+    }]
 ```
 
 [[yii\validators\Validator::when|when]] 属性会读入一个如下所示结构的 PHP callable 函数对象：
@@ -128,7 +126,7 @@ public function rules()
 /**
  * @param Model $model 要验证的模型对象
  * @param string $attribute 待测特性名
- * @return boolean 返回是否启用该规则
+ * @return bool 返回是否启用该规则
  */
 function ($model, $attribute)
 ```
@@ -137,13 +135,11 @@ function ($model, $attribute)
 [[yii\validators\Validator::whenClient|whenClient]] 属性，它会读入一条包含有 JavaScript 函数的字符串。这个函数将被用于确定该客户端验证规则是否被启用。比如，
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').value == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -154,16 +150,31 @@ function ($model, $attribute)
 下面的例子展示了如何去掉输入信息的首尾空格，并将空输入返回为 null。具体方法为通过调用 [trim](tutorial-core-validators.md#trim) 和 [default](tutorial-core-validators.md#default) 核心验证器：
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 也还可以用更加通用的 [filter（滤镜）](tutorial-core-validators.md#filter) 核心验证器来执行更加复杂的数据过滤。
 
 如你所见，这些验证规则并不真的对输入数据进行任何验证。而是，对输入数据进行一些处理，然后把它们存回当前被验证的模型特性。
 
+下面的代码示例展示了对用户输入的完整处理，这将确保只将整数值存储在一个属性中：
+
+```php
+['age', 'trim'],
+['age', 'default', 'value' => null],
+['age', 'integer', 'integerOnly' => true, 'min' => 0],
+['age', 'filter', 'filter' => 'intval', 'skipOnEmpty' => true],
+```
+
+以上代码将对输入执行以下操作：
+
+1. 从输入值中去除前后空白。
+2. 确保空输入在数据库中存储为`null`；我们区分 `未设置` 值和实际值为 `0` 之间的区别。如果值不允许为`null`，则可以在此处设置另一个默认值。
+3. 如果该值不为空，则验证该值是否为大于0的整数。大多数验证器的 [[yii\validators\Validator::$skipOnEmpty|$skipOnEmpty]] 属性都被设置为`true`。
+4. 确保该值为整数类型，例如将字符串 `'42'` 转换为整数 `42`。在这里，我们将 [[yii\validators\FilterValidator::$skipOnEmpty|$skipOnEmpty]] 设置为 `true`，默认情况下，在 [[yii\validators\FilterValidator|filter]] 验证器里这个属性是 `false`。
 
 ### 处理空输入 <span id="handling-empty-inputs"></span>
 
@@ -171,27 +182,25 @@ function ($model, $attribute)
 [default](tutorial-core-validators.md#default) 验证器来实现这一点。举例来说，
 
 ```php
-[
+return [
     // 若 "username" 和 "email" 为空，则设为 null
     [['username', 'email'], 'default'],
 
     // 若 "level" 为空，则设其为 1
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 默认情况下，当输入项为空字符串，空数组，或 null 时，会被视为“空值”。你也可以通过配置
 [[yii\validators\Validator::isEmpty]] 属性来自定义空值的判定规则。比如，
 
 ```php
-[
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
-    }],
-]
+    }]
 ```
 
-> 注意：对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
+> Note: 对于绝大多数验证器而言，若其 [[yii\base\Validator::skipOnEmpty]] 属性为默认值
 true，则它们不会对空值进行任何处理。也就是当他们的关联特性接收到空值时，相关验证会被直接略过。在
 [核心验证器](tutorial-core-validators.md) 之中，只有 `captcha`（验证码），`default`（默认值），`filter`（滤镜），`required`（必填），以及 `trim`（去首尾空格），这几个验证器会处理空输入。
 
@@ -214,7 +223,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> 注意：不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，它的设计初衷就是只作用于模型类内部的。
+> Note: 不是所有的验证器都支持这种形式的验证。比如 [unique（唯一性）](tutorial-core-validators.md#unique)核心验证器就就是一个例子，它的设计初衷就是只作用于模型类内部的。
 
 若你需要针对一系列值执行多项验证，你可以使用 [[yii\base\DynamicModel]]
 。它支持即时添加特性和验证规则的定义。它的使用规则是这样的：
@@ -315,13 +324,14 @@ class MyForm extends Model
 }
 ```
 
-> 注意：缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及 [[yii\validators\Validator::skipOnError|skipOnError]]
-  属性设为 false，比如，
+> Note: 缺省状态下，行内验证器不会在关联特性的输入值为空或该特性已经在其他验证中失败的情况下起效。若你想要确保该验证器始终启用的话，你可以在定义规则时，酌情将 [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] 以及 [[yii\validators\Validator::skipOnError|skipOnError]]
+>   属性设为 false，比如，
+>
 > ```php
-[
-    ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
-]
-```
+> [
+>     ['country', 'validateCountry', 'skipOnEmpty' => false, 'skipOnError' => false],
+> ]
+> ```
 
 
 ### 独立验证器（Standalone Validators） <span id="standalone-validators"></span>
@@ -340,7 +350,7 @@ class CountryValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!in_array($model->$attribute, ['兲朝', '墙外'])) {
-            $this->addError($attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
+            $this->addError($model, $attribute, '国家必须为 "兲朝" 或 "墙外" 中的一个。');
         }
     }
 }
@@ -357,7 +367,7 @@ class CountryValidator extends Validator
 
 当终端用户通过 HTML 表单提供相关输入信息时，我们可能会需要用到基于 JavaScript 的客户端验证。因为，它可以让用户更快速的得到错误信息，也因此可以提供更好的用户体验。你可以使用或自己实现除服务器端验证之外，**还能额外**客户端验证功能的验证器。
 
-> 补充：尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 方法执行服务器端验证。
+> Info: 尽管客户端验证为加分项，但它不是必须项。它存在的主要意义在于给用户提供更好的客户体验。正如“永远不要相信来自终端用户的输入信息”，也同样永远不要相信客户端验证。基于这个理由，你应该始终如前文所描述的那样，通过调用 [[yii\base\Model::validate()]] 方法执行服务器端验证。
 
 
 ### 使用客户端验证 <span id="using-client-side-validation"></span>
@@ -450,7 +460,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message);
         return <<<JS
-if (!$.inArray(value, $statuses)) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;
@@ -458,9 +468,10 @@ JS;
 }
 ```
 
-> 技巧：上述代码主要是演示了如何支持客户端验证。在具体实践中，你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。比如这样的验证规则：
+> Tip: 上述代码主要是演示了如何支持客户端验证。在具体实践中，你可以使用 [in](tutorial-core-validators.md#in) 核心验证器来达到同样的目的。比如这样的验证规则：
+>
 > ```php
-[
-    ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
-]
+> [
+>     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
+> ]
 ```

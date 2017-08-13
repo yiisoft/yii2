@@ -2,7 +2,7 @@ Czym jest Yii
 =============
 
 Yii jest wysoko wydajnym, opartym na komponentach frameworkiem PHP do szybkiego programowania 
-nowoczesnych stron internetowych. Nazwa Yii (wymawiana [ji:]) oznacza w języku chińskim "prosto i ewolucyjnie".
+nowoczesnych stron internetowych. Nazwa Yii (wymawiana `[ji:]`) oznacza w języku chińskim "prosto i ewolucyjnie".
 Może to być również rozumiane jako akronim dla **Yes It Is**!
 
 
@@ -30,11 +30,10 @@ oraz ActiveRecord dla baz danych relacyjnych i NoSQL, wsparcia dla tworzenia RES
 Dodatkowo Yii wykorzystuje architekturę rozszerzeń, dzięki czemu możesz w prosty sposób stworzyć i opublikować swoje własne moduły i widżety.
 * Podstawowym celem, do którego Yii zawsze dąży, jest wysoka wydajność.
 
-Yii nie jest efektem pracy pojedynczego programisty - projekt wspiera zarówno [grupa doświadczonych deweloperów][about_yii], jak i ogromna społeczność programistyczna, nieustannie 
+Yii nie jest efektem pracy pojedynczego programisty - projekt wspiera zarówno [grupa doświadczonych deweloperów][http://www.yiiframework.com/team/], jak i ogromna społeczność programistyczna, nieustannie 
 przyczyniając się do jego rozwoju. Deweloperzy trzymają rękę na pulsie najnowszych trendów Internetu, za pomocą prostych i eleganckich interfejsów wzbogacając Yii w najlepsze sprawdzone 
 rozwiązania i funkcjonalności, dostępne w innych frameworkach i projektach.
 
- 
 Wersje Yii
 ----------
 
@@ -47,8 +46,8 @@ Ten przewodnik opisuje wersję 2.0.
 Wymagania i zależności
 ----------------------
 
-Yii 2.0 wymaga PHP w wersji 5.4.0 lub nowszej. Aby otrzymać więcej informacji na temat wymagań i indywidualnych funkcjonalności, 
-uruchom specjalny skrypt testujący system `requirements.php`, dołączony w każdym wydaniu Yii.
+Yii 2.0 wymaga PHP w wersji 5.4.0 lub nowszej i pracuje najwydajniej na najnowszej wersji PHP 7. Aby otrzymać więcej 
+informacji na temat wymagań i indywidualnych funkcjonalności, uruchom specjalny skrypt testujący system dołączony w każdym wydaniu Yii.
 
 Używanie Yii wymaga podstawowej wiedzy o programowaniu obiektowym w PHP (OOP), ponieważ Yii
 jest frameworkiem czysto obiektowym. Yii 2.0 wykorzystuje ostatnie udoskonalenia w PHP, jak 

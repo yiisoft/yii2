@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\web;
 
@@ -30,7 +35,20 @@ class CacheSessionTest extends \yiiunit\TestCase
 
     public function testInvalidCache()
     {
-        $this->setExpectedException('\Exception');
+        $this->expectException('\Exception');
         new CacheSession(['cache' => 'invalid']);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/13537
+     */
+    public function testNotWrittenSessionDestroying()
+    {
+        $session = new CacheSession();
+
+        $session->set('foo', 'bar');
+        $this->assertEquals('bar', $session->get('foo'));
+
+        $this->assertTrue($session->destroySession($session->getId()));
     }
 }

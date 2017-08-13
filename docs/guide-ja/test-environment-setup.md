@@ -1,7 +1,7 @@
 テスト環境の構築
 ================
 
-> Note|注意: この節はまだ執筆中です。
+> Note: この節はまだ執筆中です。
 
 Yii 2 は [`Codeception`](https://github.com/Codeception/Codeception) テストフレームワークとの統合を公式にサポートしており、次のタイプのテストを作成することを可能にしています。
 
@@ -17,7 +17,7 @@ Codeception は、特定のプロジェクトのためだけにローカルに�
 ローカルのインストールのためには、次のコマンドを使います。
 
 ```
-composer require "codeception/codeception=2.0.*"
+composer require "codeception/codeception=2.1.*"
 composer require "codeception/specify=*"
 composer require "codeception/verify=*"
 ```
@@ -25,7 +25,7 @@ composer require "codeception/verify=*"
 グローバルのインストールのためには、`global` 命令を使う必要があります。
 
 ```
-composer global require "codeception/codeception=2.0.*"
+composer global require "codeception/codeception=2.1.*"
 composer global require "codeception/specify=*"
 composer global require "codeception/verify=*"
 ```
@@ -40,7 +40,7 @@ Changed current directory to <directory>
 そうしたら、`<directory>/vendor/bin` をあなたの `PATH` 環境変数に追加してください。
 これでコマンドラインから `codecept` をグローバルに使うことが出来ます。
 
-> Note|注意: グローバルにインストールすると、あなたの開発環境で扱っている全てのプロジェクトに対して Codeception を使うことが出来るようになります。
+> Note: グローバルにインストールすると、あなたの開発環境で扱っている全てのプロジェクトに対して Codeception を使うことが出来るようになります。
   パスを指定せずに `codecept` シェルコマンドをグローバルに走らせることが可能になります。
   しかしながら、例えば、二つのプロジェクトが異なるバージョンの Codeception のインストールを要求している場合など、この方法が不適切なこともあり得ます。
   話を単純にするために、このガイドで実行しているテストに関するシェルコマンドは、全て、Codeception がグローバルにインストールされていることを前提にしています。

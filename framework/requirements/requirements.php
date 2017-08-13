@@ -1,10 +1,16 @@
 <?php
 /**
- * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
- * These requirements are mandatory for any Yii application.
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
  */
 
 /* @var $this YiiRequirementChecker */
+
+/**
+ * These are the Yii core requirements for the [[YiiRequirementChecker]] instance.
+ * These requirements are mandatory for any Yii application.
+ */
 return array(
     array(
         'name' => 'PHP version',
@@ -70,7 +76,18 @@ return array(
         (for example, plural in
         <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
         Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU version is ' .
-        INTL_ICU_VERSION . '.'
+        (defined('INTL_ICU_VERSION') ? INTL_ICU_VERSION : '(ICU is missing)') . '.'
+    ),
+    array(
+        'name' => 'ICU Data version',
+        'mandatory' => false,
+        'condition' => defined('INTL_ICU_DATA_VERSION') && version_compare(INTL_ICU_DATA_VERSION, '49.1', '>='),
+        'by' => '<a href="http://www.php.net/manual/en/book.intl.php">Internationalization</a> support',
+        'memo' => 'ICU Data 49.1 or higher is required when you want to use <code>#</code> placeholder in plural rules
+        (for example, plural in
+        <a href=\"http://www.yiiframework.com/doc-2.0/yii-i18n-formatter.html#asRelativeTime%28%29-detail\">
+        Formatter::asRelativeTime()</a>) in the <code>yii\i18n\Formatter</code> class. Your current ICU Data version is ' .
+        (defined('INTL_ICU_DATA_VERSION') ? INTL_ICU_DATA_VERSION : '(ICU Data is missing)') . '.'
     ),
     array(
         'name' => 'Fileinfo extension',
@@ -86,4 +103,13 @@ return array(
         'by' => '<a href="http://php.net/manual/en/book.dom.php">Document Object Model</a>',
         'memo' => 'Required for REST API to send XML responses via <code>yii\web\XmlResponseFormatter</code>.'
     ),
+    array(
+        'name' => 'IPv6 support',
+        'mandatory' => false,
+        'condition' => defined('AF_INET6'),
+        'by' => 'IPv6 expansion in <a href="http://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html">IpValidator</a>',
+        'memo' => 'When <a href="http://www.yiiframework.com/doc-2.0/yii-validators-ipvalidator.html#$expandIPv6-detail">IpValidator::expandIPv6</a>
+        property is set to <code>true</code>, PHP must support IPv6 protocol stack. Currently PHP constant <code>AF_INET6</code> is not defined
+        and IPv6 is probably unsupported.'
+    )
 );

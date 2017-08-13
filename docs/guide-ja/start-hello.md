@@ -20,7 +20,7 @@
 「こんにちは」のタスクのために、リクエストから `message` パラメータを読んで、そのメッセージをユーザに表示して返す `say` [アクション](structure-controllers.md#creating-actions) を作ります。
 リクエストが `message` パラメータを提供しなかった場合は、アクションはデフォルト値として "こんにちは" というメッセージを表示するものとします。
 
-> Info|情報: [アクション](structure-controllers.md#creating-actions) は、エンドユーザが直接に参照して実行できるオブジェクトです。
+> Info: [アクション](structure-controllers.md#creating-actions) は、エンドユーザが直接に参照して実行できるオブジェクトです。
   アクションは [コントローラ](structure-controllers.md) によってグループ化されます。
   アクションの実行結果が、エンドユーザが受け取るレスポンスです。
 
@@ -100,7 +100,7 @@ use yii\helpers\Html;
 アクションとビューを作成したら、下記の URL で新しいページにアクセスすることが出来ます。
 
 ```
-http://hostname/index.php?r=site/say&message=Hello+World
+http://hostname/index.php?r=site%2Fsay&message=Hello+World
 ```
 
 ![Hello World](images/start-hello-world.png)
@@ -111,7 +111,7 @@ http://hostname/index.php?r=site/say&message=Hello+World
 URL から `message` パラメータを省略すると、"こんにちは" を表示するページを見ることになるでしょう。
 これは、`message` が `actionSay()` メソッドにパラメータとして渡されるものであり、それが省略された場合には、デフォルト値である `"こんにちは"` が代りに使われるからです。
 
-> Info|情報: 新しいページは他のページと同じヘッダとフッタを共有していますが、それは [[yii\web\Controller::render()|render()]] メソッドが `say` ビューの結果をいわゆる [レイアウト](structure-views.md#layouts) に自動的に埋め込むからです。
+> Info: 新しいページは他のページと同じヘッダとフッタを共有していますが、それは [[yii\web\Controller::render()|render()]] メソッドが `say` ビューの結果をいわゆる [レイアウト](structure-views.md#layouts) に自動的に埋め込むからです。
 レイアウトは、この場合、`views/layouts/main.php` にあります。
 
 上記の URL の `r` パラメータについては、さらに説明が必要でしょう。
@@ -123,7 +123,7 @@ URL から `message` パラメータを省略すると、"こんにちは" を�
 結果として、`SiteController::actionSay()` メソッドがリクエストを処理するために呼び出されます。
 
 
-> Info|情報: アクションと同じく、コントローラもまたアプリケーションの中で一意に定義される ID を持ちます。
+> Info: アクションと同じく、コントローラもまたアプリケーションの中で一意に定義される ID を持ちます。
   コントローラ ID も、アクション ID と同じ命名規則を使います。
   コントローラクラスの名前は、コントローラ ID からダッシュを削除し、各単語の最初の文字を大文字にし、結果として出来る文字列に `Controller` という接尾辞を追加したものとなります。
   例えば、`post-comment` というコントローラ ID に対応するコントローラクラスの名前は `PostCommentController` です。

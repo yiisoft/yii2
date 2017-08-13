@@ -1,4 +1,4 @@
-﻿Contenedor de Inyección de Dependencias
+Contenedor de Inyección de Dependencias
 =======================================
 
 Un contenedor de Inyección de Dependencias (ID), es un objeto que sabe como instancias y configurar objetos y sus 
@@ -44,9 +44,9 @@ registra una dependencia o se crea un nuevo objeto, se puede proporcionar una co
 para inyectar las dependencias a través de sus correspondientes setters y propiedades. Por ejemplo,
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -135,7 +135,7 @@ $container->set('db', function ($container, $params, $config) {
 $container->set('pageCache', new FileCache);
 ```
 
-> Consejo: Si un nombre de dependencia es el mismo que la definición de dependencia, no es necesario registrarlo con 
+> Tip: Si un nombre de dependencia es el mismo que la definición de dependencia, no es necesario registrarlo con 
   el contenedor de ID.
 
 Una dependencia registrada mediante `set()` generará una instancia cada vez que se necesite la dependencia. Se puede 
@@ -185,7 +185,7 @@ una nueva instancia de `UserLister` con una simple llamada a `get('userLister')`
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -194,7 +194,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -209,7 +209,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 

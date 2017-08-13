@@ -34,13 +34,13 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // register Composer autoloader
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // include Yii class file
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // load application configuration
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // create, configure and run application
 (new yii\web\Application($config))->run();
@@ -63,15 +63,16 @@ Similarly, the following is the code for the entry script of a console applicati
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // register Composer autoloader
-require(__DIR__ . '/vendor/autoload.php');
+require __DIR__ . '/vendor/autoload.php';
 
 // include Yii class file
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
 // load application configuration
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -85,12 +86,12 @@ Entry scripts are the best place for defining global constants. Yii supports the
 
 * `YII_DEBUG`: specifies whether the application is running in debug mode. When in debug mode, an application
   will keep more log information, and will reveal detailed error call stacks if exceptions are thrown. For this
-  reason, debug mode should be used mainly during development. The default value of `YII_DEBUG` is false.
+  reason, debug mode should be used mainly during development. The default value of `YII_DEBUG` is `false`.
 * `YII_ENV`: specifies which environment the application is running in. This will be described in
   more detail in the [Configurations](concept-configurations.md#environment-constants) section.
   The default value of `YII_ENV` is `'prod'`, meaning the application is running in production environment.
 * `YII_ENABLE_ERROR_HANDLER`: specifies whether to enable the error handler provided by Yii. The default
-  value of this constant is true.
+  value of this constant is `true`.
 
 When defining a constant, we often use the code like the following:
 

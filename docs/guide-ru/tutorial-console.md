@@ -17,7 +17,7 @@
 Как вы можете видеть на скриншоте, в Yii уже определён набор доступных по умолчанию команд:
 
 - [[yii\console\controllers\AssetController|AssetController]] - Позволяет вам объединять и сжимать ваши JavaScript и CSS файлы.
-  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#using-the-asset-command).
+  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#using-asset-bundles).
 - [[yii\console\controllers\CacheController|CacheController]] - Позволяет вам сбрасывать кеш приложения.
 - [[yii\console\controllers\FixtureController|FixtureController]] - Управляет загрузкой и выгрузкой данных фикстур для тестирования.
   Данная команда более подробно описана в [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
@@ -27,6 +27,7 @@
   Больше об этой команде вы можете узнать в [I18N Section](tutorial-i18n.md#message-command).
 - [[yii\console\controllers\MigrateController|MigrateController]] - Управление миграциями приложения.
   Миграции базы данных более детально описаны в [Database Migration Section](db-migrations.md).
+- [[yii\console\controllers\ServeController|ServeController]] - Позволяет запускать встроенный вебсервер PHP.
 
 
 Использование <span id="usage"></span>
@@ -49,7 +50,7 @@ yii <route> [--option1=value1 --option2=value2 ... argument1 argument2 ...]
 yii migrate/up 5 --migrationTable=migrations
 ```
 
-> **Примечание**: При использовании в консоли `*`, не забудьте поместить её в кавычки `"*"` чтобы избежать её интерпретации 
+> Note: При использовании в консоли `*`, не забудьте поместить её в кавычки `"*"` чтобы избежать её интерпретации
 > и замены на все имена файлов в данной директории.
 
 
@@ -68,11 +69,12 @@ yii migrate/up 5 --migrationTable=migrations
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -96,7 +98,7 @@ exit($exitCode);
 отдельный файл, и включить его в оба файла конфигурации (веб и консоль).
 Вы можете посмотреть пример в "продвинутом" шаблоне проекта.
 
-> Подсказка: Иногда, вам может потребоваться запустить консольную команду используя конфигурацию, отличную от той, что
+> Tip: Иногда, вам может потребоваться запустить консольную команду используя конфигурацию, отличную от той, что
 > указано во входном скрипте. Для примера, вы можете использовать команду `yii migrate` для обновления тестовой
 > базы данных, которая настраивается для каждого отдельного набора тестов. Для изменения файла конфигурации,
 > просто укажите свой конфигурационный файл через опцию `appconfig` при запуске команды:
@@ -105,6 +107,55 @@ exit($exitCode);
 > yii <route> --appconfig=path/to/config.php ...
 > ```
 
+Автодополнение консольных команд <span id="console-command-completion"></span>
+---------------
+
+Автодополнение аргументов команд является полезной возможностью при работе в командной строке.
+Начиная с версии 2.0.11, команда `./yii` поддерживает автодополнение для Bash и ZSH. 
+
+### Автодополнение для Bash
+
+Убедитесь, что средства автодополнения для Bash установлены. В большинстве дистрибутивов они поставляются по умолчанию.
+
+Сохраните скрипт для автодополнения в директорию `/etc/bash_completion.d/`:
+
+     curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
+
+Для временного использования, вы можете сохранить файл в произвольную директорию и подключить его на время работы сессии,
+вызвав команду `source yii`.
+
+Если скрипт был установлен глобально, вам потребуется перезапустить терминал или выполнить команду `source ~/.bashrc` 
+для активации автодополнения.
+
+Обратитесь к [инструкции по автодополнению в Bash](https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html)
+чтобы узнать о других способах подключения скриптов автодополнения в ваше окружение.
+
+### Автодополнение для ZSH
+
+Сохраните скрипт автодополнения в директорию для скриптов автодополнения. Например, `~/.zsh/completion/`
+
+```
+mkdir -p ~/.zsh/completion
+curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/zsh/_yii -o ~/.zsh/completion/_yii
+```
+
+Добавьте эту директорию в переменную среды `$fpath`, например добавив в конец `~/.zshrc` следующую строку:
+
+```
+fpath=(~/.zsh/completion $fpath)
+```
+
+Убедитесь, что программа `compinit` запущена. Если это не так - добавьте в `~/.zshrc` следующие строки:
+
+```
+autoload -Uz compinit && compinit -i
+```
+
+Затем перезапустите ваш терминал, либо выполните команду
+
+```
+exec $SHELL -l
+```
 
 Создание ваших собственных команд <span id="create-command"></span>
 ----------------------------------
@@ -138,8 +189,48 @@ exit($exitCode);
 умолчанию, если они определены. Если значения по умолчанию не определены, и не были переданы, команда завершит
 выполнение с ошибкой.
 
-Вы можете использовать указание типа `array`, чтобы указать что аргумент должен рассматриваться как массив. Массив
-будет сгенерирован путём разделение входной строки по запятым.
+Вы можете использовать указание типа `array`, чтобы указать, что аргумент должен рассматриваться как массив. Массив
+будет сгенерирован путём разделения входной строки по запятым.
+
+### Псевдонимы опций
+
+Начиная с версии 2.0.8 в классе консольной команды  доступен метод [[yii\console\Controller::optionAliases()]],
+позволяющий добавлять псевдонимы для опций.
+
+Для того, чтобы задать псевдоним, перекройте метод [[yii\console\Controller::optionAliases()]] в вашем контроллере:
+
+```php
+namespace app\commands;
+
+use yii\console\Controller;
+
+class HelloController extends Controller
+{
+    public $message;
+    
+    public function options($actionID)
+    {
+        return ['message'];
+    }
+    
+    public function optionAliases()
+    {
+        return ['m' => 'message'];
+    }
+    
+    public function actionIndex()
+    {
+        echo $this->message . "\n";
+    }
+}
+```
+
+Теперь для запуска команды можно использовать следующий синтаксис:
+
+```
+yii hello -m=hello
+```
+
 
 Следующий пример показывает как описывать аргументы:
 
@@ -164,7 +255,7 @@ class ExampleController extends \yii\console\Controller
 
 При разработке консольного приложения принято использовать код возврата. Принято, код `0` означает, что команда выполнилась
 удачно. Если команда вернула код больше нуля, то это говорит об ошибке. Номер, который был возвращён при ошибке,
-потенциально может быть использован для поиска более детальной информации о ошибке.
+потенциально может быть использован для поиска более детальной информации об ошибке.
 Для примера `1` может указывать на неизвестную ошибку, а все коды выше могут быть зарезервированы под специфичные
 ошибки: ошибки ввода, повреждённые файлы, и что-то другое.
 
@@ -173,26 +264,26 @@ class ExampleController extends \yii\console\Controller
 ```php
 public function actionIndex()
 {
-    if (/* some problem */) {
-        echo "A problem occured!\n";
+    if (/* возникла проблема */) {
+        echo "Возникла проблема!\n";
         return 1;
     }
-    // do something
+    // делаем что-нибудь
     return 0;
 }
 ```
 
 Есть несколько предопределённых констант, которые вы можете использовать:
 
-- `Controller::EXIT_CODE_NORMAL` со значением `0`;
-- `Controller::EXIT_CODE_ERROR` со значением `1`.
+- [[yii\console\Controller::EXIT_CODE_NORMAL|Controller::EXIT_CODE_NORMAL]] со значением `0`;
+- [[yii\console\Controller::EXIT_CODE_ERROR|Controller::EXIT_CODE_ERROR]] со значением `1`.
 
 Хорошая практика, определять значимые для вашего контроллера константы в случае, если вы используете больше типов ошибок.
 
 ### Форматирование и цвета
 
-Консоль Yii поддерживает форматирование вывода, который автоматически деградирует до не форматированного, если это поддерживается
-в терминале где запускается команда.
+Консоль Yii поддерживает форматирование вывода, который автоматически деградирует до не форматированного, если это не поддерживается
+в терминале, где запускается команда.
 
 Вывод форматированных строк прост. Вот как можно вывести некоторый жирный текст:
 
@@ -200,7 +291,8 @@ public function actionIndex()
 $this->stdout("Hello?\n", Console::BOLD);
 ```
 
-Если вам нужно собрать строку динамически объединяя несколько стилей, лучше использовать `ansiFormat`:
+Если вам нужно собрать строку динамически объединяя несколько стилей, лучше использовать
+[[yii\helpers\Console::ansiFormat()|ansiFormat()]]:
 
 ```php
 $name = $this->ansiFormat('Alex', Console::FG_YELLOW);

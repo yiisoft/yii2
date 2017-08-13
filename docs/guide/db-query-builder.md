@@ -1,7 +1,7 @@
 Query Builder
 =============
 
-Built on top of [Database Access Objects](db-dao.md), query builder allows you to construct a SQL statement
+Built on top of [Database Access Objects](db-dao.md), query builder allows you to construct a SQL query
 in a programmatic and DBMS-agnostic way. Compared to writing raw SQL statements, using query builder will help you write 
 more readable SQL-related code and generate more secure SQL statements.  
 
@@ -21,7 +21,7 @@ $rows = (new \yii\db\Query())
     ->all();
 ```
 
-The above code generates and executes the following SQL statement, where the `:last_name` parameter is bound with the
+The above code generates and executes the following SQL query, where the `:last_name` parameter is bound with the
 string `'Smith'`.
 
 ```sql
@@ -40,8 +40,8 @@ LIMIT 10
 ## Building Queries <span id="building-queries"></span>
 
 To build a [[yii\db\Query]] object, you call different query building methods to specify different parts of
-a SQL statement. The names of these methods resemble the SQL keywords used in the corresponding parts of the SQL
-statement. For example, to specify the `FROM` part of a SQL statement, you would call the `from()` method.
+a SQL query. The names of these methods resemble the SQL keywords used in the corresponding parts of the SQL
+statement. For example, to specify the `FROM` part of a SQL query, you would call the [[yii\db\Query::from()|from()]] method.
 All the query building methods return the query object itself, which allows you to chain multiple calls together.
 
 In the following, we will describe the usage of each query building method.
@@ -61,7 +61,7 @@ $query->select(['id', 'email']);
 $query->select('id, email');
 ```
 
-The column names being selected may include table prefixes and/or column aliases, like you do when writing raw SQL statements. 
+The column names being selected may include table prefixes and/or column aliases, like you do when writing raw SQL queries.
 For example,
 
 ```php
@@ -88,6 +88,9 @@ that contains commas to avoid incorrect automatic name quoting. For example,
 ```php
 $query->select(["CONCAT(first_name, ' ', last_name) AS full_name", 'email']); 
 ```
+
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing DB expressions in select.
 
 Starting from version 2.0.1, you may also select sub-queries. You should specify each sub-query in terms of 
 a [[yii\db\Query]] object. For example,
@@ -150,10 +153,13 @@ $subQuery = (new Query())->select('id')->from('user')->where('status=1');
 $query->from(['u' => $subQuery]);
 ```
 
+#### Prefixes
+Also a default [[yii\db\Connection::$tablePrefix|tablePrefix]] can be applied. Implementation instructions
+are in the ["Quoting Tables" section of the "Database Access Objects" guide](guide-db-dao.html#quoting-table-and-column-names).
 
 ### [[yii\db\Query::where()|where()]] <span id="where"></span>
 
-The [[yii\db\Query::where()|where()]] method specifies the `WHERE` fragment of a SQL statement. You can use one of
+The [[yii\db\Query::where()|where()]] method specifies the `WHERE` fragment of a SQL query. You can use one of
 the three formats to specify a `WHERE` condition:
 
 - string format, e.g., `'status=1'`
@@ -163,13 +169,17 @@ the three formats to specify a `WHERE` condition:
 
 #### String Format <span id="string-format"></span>
 
-String format is best used to specify very simple conditions. It works as if you are writing a raw SQL. For example,
+String format is best used to specify very simple conditions or if you need to use built-in functions of the DBMS.
+It works as if you are writing a raw SQL. For example,
 
 ```php
 $query->where('status=1');
 
 // or use parameter binding to bind dynamic parameter values
 $query->where('status=:status', [':status' => $status]);
+
+// raw SQL using MySQL YEAR() function on a date field
+$query->where('YEAR(somedate) = 2015');
 ```
 
 Do NOT embed variables directly in the condition like the following, especially if the variable values come from 
@@ -188,6 +198,8 @@ $query->where('status=:status')
     ->addParams([':status' => $status]);
 ```
 
+As with all places where raw SQL is involved, you may use the [DBMS agnostic quoting syntax](db-dao.md#quoting-table-and-column-names)
+for table and column names when writing conditions in string format. 
 
 #### Hash Format <span id="hash-format"></span>
 
@@ -214,6 +226,9 @@ $userQuery = (new Query())->select('id')->from('user');
 // ...WHERE `id` IN (SELECT `id` FROM `user`)
 $query->where(['id' => $userQuery]);
 ```
+
+Using the Hash Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
 
 
 #### Operator Format <span id="operator-format"></span>
@@ -279,12 +294,15 @@ the operator can be one of the following:
   the `NOT LIKE` predicates.
 
 - `exists`: requires one operand which must be an instance of [[yii\db\Query]] representing the sub-query.
-  It will build a `EXISTS (sub-query)` expression.
+  It will build an `EXISTS (sub-query)` expression.
 
 - `not exists`: similar to the `exists` operator and builds a `NOT EXISTS (sub-query)` expression.
 
 - `>`, `<=`, or any other valid DB operator that takes two operands: the first operand must be a column name
   while the second operand a value. For example, `['>', 'age', 10]` will generate `age>10`.
+
+Using the Operator Format, Yii internally uses parameter binding so in contrast to the [string format](#string-format), here
+you do not have to add parameters manually.
 
 
 #### Appending Conditions <span id="appending-conditions"></span>
@@ -304,16 +322,16 @@ if (!empty($search)) {
 }
 ```
 
-If `$search` is not empty, the following SQL statement will be generated:
+If `$search` is not empty, the following `WHERE` condition will be generated:
 
 ```sql
-... WHERE (`status` = 10) AND (`title` LIKE '%yii%')
+WHERE (`status` = 10) AND (`title` LIKE '%yii%')
 ```
 
 
 #### Filter Conditions <span id="filter-conditions"></span>
 
-When building `WHERE` conditions based on input from end users, you usually want to ignore those empty input values.
+When building `WHERE` conditions based on input from end users, you usually want to ignore those input values, that are empty.
 For example, in a search form that allows you to search by username and email, you would like to ignore the username/email
 condition if the user does not enter anything in the username/email input field. You can achieve this goal by
 using the [[yii\db\Query::filterWhere()|filterWhere()]] method:
@@ -328,19 +346,39 @@ $query->filterWhere([
 
 The only difference between [[yii\db\Query::filterWhere()|filterWhere()]] and [[yii\db\Query::where()|where()]] 
 is that the former will ignore empty values provided in the condition in [hash format](#hash-format). So if `$email`
-is empty while `$username` is not, the above code will result in the SQL `...WHERE username=:username`.
+is empty while `$username` is not, the above code will result in the SQL condition `WHERE username=:username`.
 
-> Info: A value is considered empty if it is null, an empty array, an empty string or a string consisting of whitespaces only.
+> Info: A value is considered empty if it is `null`, an empty array, an empty string or a string consisting of whitespaces only.
 
 Like [[yii\db\Query::andWhere()|andWhere()]] and [[yii\db\Query::orWhere()|orWhere()]], you can use
 [[yii\db\Query::andFilterWhere()|andFilterWhere()]] and [[yii\db\Query::orFilterWhere()|orFilterWhere()]]
 to append additional filter conditions to the existing one.
 
+Additionally, there is [[yii\db\Query::andFilterCompare()]] that can intelligently determine operator based on what's
+in the value:
+
+```php
+$query->andFilterCompare('name', 'John Doe');
+$query->andFilterCompare('rating', '>9');
+$query->andFilterCompare('value', '<=100');
+```
+
+You can also specify operator explicitly:
+
+```php
+$query->andFilterCompare('name', 'Doe', 'like');
+```
+
+Since Yii 2.0.11 there are similar methods for `HAVING` condition:
+
+- [[yii\db\Query::filterHaving()|filterHaving()]]
+- [[yii\db\Query::andFilterHaving()|andFilterHaving()]]
+- [[yii\db\Query::orFilterHaving()|orFilterHaving()]]
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 
-The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL statement. For example,
- 
+The [[yii\db\Query::orderBy()|orderBy()]] method specifies the `ORDER BY` fragment of a SQL query. For example,
+
 ```php
 // ... ORDER BY `id` ASC, `name` DESC
 $query->orderBy([
@@ -349,7 +387,7 @@ $query->orderBy([
 ]);
 ```
  
-In the above code, the array keys are column names while the array values are the corresponding order-by directions.
+In the above code, the array keys are column names while the array values are the corresponding order by directions.
 The PHP constant `SORT_ASC` specifies ascending sort and `SORT_DESC` descending sort.
 
 If `ORDER BY` only involves simple column names, you can specify it using a string, just like you do when writing 
@@ -372,7 +410,7 @@ $query->orderBy('id ASC')
 
 ### [[yii\db\Query::groupBy()|groupBy()]] <span id="group-by"></span>
 
-The [[yii\db\Query::groupBy()|groupBy()]] method specifies the `GROUP BY` fragment of a SQL statement. For example,
+The [[yii\db\Query::groupBy()|groupBy()]] method specifies the `GROUP BY` fragment of a SQL query. For example,
 
 ```php
 // ... GROUP BY `id`, `status`
@@ -399,7 +437,7 @@ $query->groupBy(['id', 'status'])
 
 ### [[yii\db\Query::having()|having()]] <span id="having"></span>
 
-The [[yii\db\Query::having()|having()]] method specifies the `HAVING` fragment of a SQL statement. It takes
+The [[yii\db\Query::having()|having()]] method specifies the `HAVING` fragment of a SQL query. It takes
 a condition which can be specified in the same way as that for [where()](#where). For example,
 
 ```php
@@ -422,8 +460,8 @@ $query->having(['status' => 1])
 ### [[yii\db\Query::limit()|limit()]] and [[yii\db\Query::offset()|offset()]] <span id="limit-offset"></span>
 
 The [[yii\db\Query::limit()|limit()]] and [[yii\db\Query::offset()|offset()]] methods specify the `LIMIT`
-and `OFFSET` fragments of a SQL statement. For example,
- 
+and `OFFSET` fragments of a SQL query. For example,
+
 ```php
 // ... LIMIT 10 OFFSET 20
 $query->limit(10)->offset(20);
@@ -437,19 +475,22 @@ If you specify an invalid limit or offset (e.g. a negative value), it will be ig
 
 ### [[yii\db\Query::join()|join()]] <span id="join"></span>
 
-The [[yii\db\Query::join()|join()]] method specifies the `JOIN` fragment of a SQL statement. For example,
- 
+The [[yii\db\Query::join()|join()]] method specifies the `JOIN` fragment of a SQL query. For example,
+
 ```php
 // ... LEFT JOIN `post` ON `post`.`user_id` = `user`.`id`
 $query->join('LEFT JOIN', 'post', 'post.user_id = user.id');
 ```
 
 The [[yii\db\Query::join()|join()]] method takes four parameters:
- 
+
 - `$type`: join type, e.g., `'INNER JOIN'`, `'LEFT JOIN'`.
 - `$table`: the name of the table to be joined.
 - `$on`: optional, the join condition, i.e., the `ON` fragment. Please refer to [where()](#where) for details
-   about specifying a condition.
+   about specifying a condition. Note, that the array syntax does **not** work for specifying a column based
+   condition, e.g. `['user.id' => 'comment.userId']` will result in a condition where the user id must be equal
+   to the string `'comment.userId'`. You should use the string syntax instead and specify the condition as
+   `'user.id = comment.userId'`.
 - `$params`: optional, the parameters to be bound to the join condition.
 
 You can use the following shortcut methods to specify `INNER JOIN`, `LEFT JOIN` and `RIGHT JOIN`, respectively.
@@ -479,7 +520,7 @@ In this case, you should put the sub-query in an array and use the array key to 
 
 ### [[yii\db\Query::union()|union()]] <span id="union"></span>
 
-The [[yii\db\Query::union()|union()]] method specifies the `UNION` fragment of a SQL statement. For example,
+The [[yii\db\Query::union()|union()]] method specifies the `UNION` fragment of a SQL query. For example,
 
 ```php
 $query1 = (new \yii\db\Query())
@@ -536,7 +577,7 @@ $row = (new \yii\db\Query())
 
 All these query methods take an optional `$db` parameter representing the [[yii\db\Connection|DB connection]] that
 should be used to perform a DB query. If you omit this parameter, the `db` [application component](structure-application-components.md) will be used
-as the DB connection. Below is another example using the `count()` query method:
+as the DB connection. Below is another example using the [[yii\db\Query::count()|count()]] query method:
 
 ```php
 // executes SQL: SELECT COUNT(*) FROM `user` WHERE `last_name`=:last_name
@@ -550,7 +591,7 @@ When you call a query method of [[yii\db\Query]], it actually does the following
 
 * Call [[yii\db\QueryBuilder]] to generate a SQL statement based on the current construct of [[yii\db\Query]];
 * Create a [[yii\db\Command]] object with the generated SQL statement;
-* Call a query method (e.g. `queryAll()`) of [[yii\db\Command]] to execute the SQL statement and retrieve the data.
+* Call a query method (e.g.  [[yii\db\Command::queryAll()|queryAll()]]) of [[yii\db\Command]] to execute the SQL statement and retrieve the data.
 
 Sometimes, you may want to examine or use the SQL statement built from a [[yii\db\Query]] object. You can
 achieve this goal with the following code: 
@@ -602,13 +643,18 @@ $query = (new \yii\db\Query())
 The anonymous function takes a parameter `$row` which contains the current row data and should return a scalar
 value which will be used as the index value for the current row.
 
+> Note: In contrast to query methods like [[yii\db\Query::groupBy()|groupBy()]] or [[yii\db\Query::orderBy()|orderBy()]]
+> which are converted to SQL and are part of the query, this method works after the data has been fetched from the database.
+> That means that only those column names can be used that have been part of SELECT in your query.
+> Also if you selected a column with table prefix, e.g. `customer.id`, the result set will only contain `id` so you have to call
+> `->indexBy('id')` without table prefix.
+
 
 ### Batch Query <span id="batch-query"></span>
 
-When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable
-because they require loading all data into the memory. To keep the memory requirement low, Yii
-provides the so-called batch query support. A batch query makes use of the data cursor and fetches
-data in batches.
+When working with large amounts of data, methods such as [[yii\db\Query::all()]] are not suitable because they require loading the whole query result into the client's memory. To solve this issue Yii provides batch query support. The server holds the query result, and the client uses a cursor to iterate over the result set one batch at a time.
+
+> Warning: There are known limitations and workarounds for the MySQL implementation of batch queries. See below.
 
 Batch query can be used like the following:
 
@@ -623,23 +669,23 @@ foreach ($query->batch() as $users) {
     // $users is an array of 100 or fewer rows from the user table
 }
 
-// or if you want to iterate the row one by one
+// or to iterate the row one by one
 foreach ($query->each() as $user) {
-    // $user represents one row of data from the user table
+    // data is being fetched from the server in batches of 100,
+    // but $user represents one row of data from the user table
 }
 ```
 
-The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object
-which implements the `Iterator` interface and thus can be used in the `foreach` construct.
-During the first iteration, a SQL query is made to the database. Data are then fetched in batches
+The method [[yii\db\Query::batch()]] and [[yii\db\Query::each()]] return an [[yii\db\BatchQueryResult]] object which implements the `Iterator` interface and thus can be used in the `foreach` construct.
+During the first iteration, a SQL query is made to the database. Data is then fetched in batches
 in the remaining iterations. By default, the batch size is 100, meaning 100 rows of data are being fetched in each batch.
 You can change the batch size by passing the first parameter to the `batch()` or `each()` method.
 
 Compared to the [[yii\db\Query::all()]], the batch query only loads 100 rows of data at a time into the memory.
-If you process the data and then discard it right away, the batch query can help reduce memory usage.
 
-If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query
-will still keep the proper index. For example,
+If you specify the query result to be indexed by some column via [[yii\db\Query::indexBy()]], the batch query will still keep the proper index.
+
+For example:
 
 ```php
 $query = (new \yii\db\Query())
@@ -651,5 +697,62 @@ foreach ($query->batch() as $users) {
 }
 
 foreach ($query->each() as $username => $user) {
+    // ...
 }
 ```
+
+#### Limitations of batch query in MySQL <span id="batch-query-mysql"></span>
+
+MySQL implementation of batch queries relies on the PDO driver library. By default, MySQL queries are [`buffered`](http://php.net/manual/en/mysqlinfo.concepts.buffering.php). This defeats the purpose of using the cursor to get the data, because it doesn't prevent the whole result set from being loaded into the client's memory by the driver.
+
+> Note: When `libmysqlclient` is used (typical of PHP5), PHP's memory limit won't count the memory used for result sets. It may seem that batch queries work correctly, but in reality the whole dataset is loaded into client's memory, and has the potential of using it up.
+
+To disable buffering and reduce client memory requirements, PDO connection property `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` must be set to `false`. However, until the whole dataset has been retrieved, no other query can be made through the same connection. This may prevent `ActiveRecord` from making a query to get the table schema when it needs to. If this is not a problem (the table schema is cached already), it is possible to switch the original connection into unbuffered mode, and then roll back when the batch query is done.
+
+```php
+Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+
+// Do batch query
+
+Yii::$app->db->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
+```
+
+> Note: In the case of MyISAM, for the duration of the batch query, the table may become locked, delaying or denying write access for other connections. When using unbuffered queries, try to keep the cursor open for as little time as possible.
+
+If the schema is not cached, or it is necessary to run other queries while the batch query is being processed, you can create a separate unbuffered connection to the database:
+
+```php
+$unbufferedDb = new \yii\db\Connection([
+    'dsn' => Yii::$app->db->dsn,
+    'username' => Yii::$app->db->username,
+    'password' => Yii::$app->db->password,
+    'charset' => Yii::$app->db->charset,
+]);
+$unbufferedDb->open();
+$unbufferedDb->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+```
+
+If you want to ensure that the `$unbufferedDb` has exactly the same PDO attributes like the original buffered `$db` but the `PDO::MYSQL_ATTR_USE_BUFFERED_QUERY` is `false`, [consider a deep copy of `$db`](https://github.com/yiisoft/yii2/issues/8420#issuecomment-301423833), set it to false manually.
+
+Then, queries are created normally. The new connection is used to run batch queries and retrieve results either in batches or one by one:
+
+```php
+// getting data in batches of 1000
+foreach ($query->batch(1000, $unbufferedDb) as $users) {
+    // ...
+}
+
+
+// data is fetched from server in batches of 1000, but is iterated one by one 
+foreach ($query->each(1000, $unbufferedDb) as $user) {
+    // ...
+}
+```
+
+When the connection is no longer necessary and the result set has been retrieved, it can be closed:
+
+```php
+$unbufferedDb->close();
+```
+
+> Note: unbuffered query uses less memory on the PHP-side, but can increase the load on the MySQL server. It is recommended to design your own code with your production practice for extra massive data, [for example, divide the range for integer keys, loop them with Unbuffered Queries](https://github.com/yiisoft/yii2/issues/8420#issuecomment-296109257).

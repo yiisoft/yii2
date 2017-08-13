@@ -64,7 +64,7 @@ Because service locators are often being created with [configurations](concept-c
 a writable property named [[yii\di\ServiceLocator::setComponents()|components]] is provided. This allows you 
 to configure and register multiple components at once. The following code shows a configuration array
 that can be used to configure a service locator (e.g. an [application](structure-applications.md)) with 
-the "db", "cache" and "search" components:
+the `db`, `cache`, `tz` and `search` components:
 
 ```php
 return [
@@ -77,6 +77,9 @@ return [
             'password' => '',
         ],
         'cache' => 'yii\caching\ApcCache',
+        'tz' => function() {
+            return new \DateTimeZone(Yii::$app->formatter->defaultTimeZone);
+        },
         'search' => function () {
             $solr = new app\components\SolrService('127.0.0.1');
             // ... other initializations ...
@@ -86,7 +89,7 @@ return [
 ];
 ```
 
-In the above, there is an alternative way to configure the "search" component. Instead of directly writing a PHP
+In the above, there is an alternative way to configure the `search` component. Instead of directly writing a PHP
 callback which builds a `SolrService` instance, you can use a static class method to return such a callback, like
 shown as below:
 

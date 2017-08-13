@@ -32,7 +32,7 @@ class DefaultValueValidator extends Validator
      */
     public $value;
     /**
-     * @var boolean this property is overwritten to be false so that this validator will
+     * @var bool this property is overwritten to be false so that this validator will
      * be applied when the value being validated is empty.
      */
     public $skipOnEmpty = false;

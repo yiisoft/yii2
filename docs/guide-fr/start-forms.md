@@ -64,7 +64,7 @@ pour valider les données. Les règles de validation déclarées ci-dessus énon
 
 Si vous avez un objet `EntryForm` peuplé par les données saisies par un utilisateur, vous pouvez appeler sa méthode
 [[yii\base\Model::validate()|validate()]] pour déclencher les routines de validation de données. Un échec de validation
-de données affectera la valeur true à la propriété [[yii\base\Model::hasErrors|hasErrors]], et vous pourrez connaître
+de données affectera la valeur `true` à la propriété [[yii\base\Model::hasErrors|hasErrors]], et vous pourrez connaître
 quelles erreurs de validations sont apparues via [[yii\base\Model::getErrors|errors]].
 
 ```php
@@ -224,7 +224,7 @@ des données. Dans le cas où vous auriez désactivé le Javascript sur votre na
 effectuée coté serveur, comme montré dans la méthode `actionEntry()`. Cela garantit la validité des données en toutes 
 circonstances.
 
-> Attention : La validation coté client est un confort qui permet une meilleure expérience utilisateur. La validation coté serveur est toujours nécessaire, que la validation coté client soit ou non en place.
+> Warning: La validation coté client est un confort qui permet une meilleure expérience utilisateur. La validation coté serveur est toujours nécessaire, que la validation coté client soit ou non en place.
 
 Les étiquettes des champs de saisie sont générés par la méthode `field()`, en utilisant les noms des propriété du
 modèle.

@@ -18,7 +18,9 @@ use yii\widgets\FragmentCache;
  *
  * View provides a set of methods (e.g. [[render()]]) for rendering purpose.
  *
- * @property string|boolean $viewFile The view file currently being rendered. False if no view file is being
+ * For more details and usage information on View, see the [guide article on views](guide:structure-views).
+ *
+ * @property string|bool $viewFile The view file currently being rendered. False if no view file is being
  * rendered. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
@@ -56,12 +58,12 @@ class View extends Component
      * Each renderer may be a view renderer object or the configuration for creating the renderer object.
      * For example, the following configuration enables both Smarty and Twig view renderers:
      *
-     * ~~~
+     * ```php
      * [
      *     'tpl' => ['class' => 'yii\smarty\ViewRenderer'],
      *     'twig' => ['class' => 'yii\twig\ViewRenderer'],
      * ]
-     * ~~~
+     * ```
      *
      * If no renderer is available for the given view file, the view file will be treated as a normal PHP
      * and rendered via [[renderPhpFile()]].
@@ -124,7 +126,7 @@ class View extends Component
      *
      * The view to be rendered can be specified in one of the following formats:
      *
-     * - path alias (e.g. "@app/views/site/index");
+     * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");
      * - absolute path within application (e.g. "//site/index"): the view name starts with double slashes.
      *   The actual view file will be looked for under the [[Application::viewPath|view path]] of the application.
      * - absolute path within current module (e.g. "/site/index"): the view name starts with a single slash.
@@ -140,7 +142,8 @@ class View extends Component
      * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
      * the view file corresponding to a relative view name.
      * @return string the rendering result
-     * @throws InvalidParamException if the view cannot be resolved or the view file does not exist.
+     * @throws ViewNotFoundException if the view file does not exist.
+     * @throws InvalidCallException if the view cannot be resolved.
      * @see renderFile()
      */
     public function render($view, $params = [], $context = null)
@@ -151,7 +154,7 @@ class View extends Component
 
     /**
      * Finds the view file based on the given view name.
-     * @param string $view the view name or the path alias of the view file. Please refer to [[render()]]
+     * @param string $view the view name or the [path alias](guide:concept-aliases) of the view file. Please refer to [[render()]]
      * on how to specify this parameter.
      * @param object $context the context to be assigned to the view and can later be accessed via [[context]]
      * in the view. If the context implements [[ViewContextInterface]], it may also be used to locate
@@ -211,7 +214,7 @@ class View extends Component
      * @param object $context the context that the view should use for rendering the view. If null,
      * existing [[context]] will be used.
      * @return string the rendering result
-     * @throws InvalidParamException if the view file does not exist
+     * @throws ViewNotFoundException if the view file does not exist
      */
     public function renderFile($viewFile, $params = [], $context = null)
     {
@@ -223,7 +226,7 @@ class View extends Component
         if (is_file($viewFile)) {
             $viewFile = FileHelper::localize($viewFile);
         } else {
-            throw new InvalidParamException("The view file does not exist: $viewFile");
+            throw new ViewNotFoundException("The view file does not exist: $viewFile");
         }
 
         $oldContext = $this->context;
@@ -256,7 +259,7 @@ class View extends Component
     }
 
     /**
-     * @return string|boolean the view file currently being rendered. False if no view file is being rendered.
+     * @return string|bool the view file currently being rendered. False if no view file is being rendered.
      */
     public function getViewFile()
     {
@@ -269,7 +272,7 @@ class View extends Component
      * If you override this method, make sure you call the parent implementation first.
      * @param string $viewFile the view file to be rendered.
      * @param array $params the parameter array passed to the [[render()]] method.
-     * @return boolean whether to continue rendering the view file.
+     * @return bool whether to continue rendering the view file.
      */
     public function beforeRender($viewFile, $params)
     {
@@ -319,12 +322,28 @@ class View extends Component
      */
     public function renderPhpFile($_file_, $_params_ = [])
     {
+        $_obInitialLevel_ = ob_get_level();
         ob_start();
         ob_implicit_flush(false);
         extract($_params_, EXTR_OVERWRITE);
-        require($_file_);
-
-        return ob_get_clean();
+        try {
+            require $_file_;
+            return ob_get_clean();
+        } catch (\Exception $e) {
+            while (ob_get_level() > $_obInitialLevel_) {
+                if (!@ob_end_clean()) {
+                    ob_clean();
+                }
+            }
+            throw $e;
+        } catch (\Throwable $e) {
+            while (ob_get_level() > $_obInitialLevel_) {
+                if (!@ob_end_clean()) {
+                    ob_clean();
+                }
+            }
+            throw $e;
+        }
     }
 
     /**
@@ -344,9 +363,8 @@ class View extends Component
             $this->addDynamicPlaceholder($placeholder, $statements);
 
             return $placeholder;
-        } else {
-            return $this->evaluateDynamicContent($statements);
         }
+        return $this->evaluateDynamicContent($statements);
     }
 
     /**
@@ -378,7 +396,7 @@ class View extends Component
      * Begins recording a block.
      * This method is a shortcut to beginning [[Block]]
      * @param string $id the block ID.
-     * @param boolean $renderInPlace whether to render the block content in place.
+     * @param bool $renderInPlace whether to render the block content in place.
      * Defaults to false, meaning the captured block will not be displayed.
      * @return Block the Block widget instance
      */
@@ -404,14 +422,14 @@ class View extends Component
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
-     * ~~~
+     * ```php
      * <?php $this->beginContent('@app/views/layouts/base.php'); ?>
-     * ...layout content here...
+     * //...layout content here...
      * <?php $this->endContent(); ?>
-     * ~~~
+     * ```
      *
      * @param string $viewFile the view file that will be used to decorate the content enclosed by this widget.
-     * This can be specified as either the view file path or path alias.
+     * This can be specified as either the view file path or [path alias](guide:concept-aliases).
      * @param array $params the variables (name => value) to be extracted and made available in the decorative view.
      * @return ContentDecorator the ContentDecorator widget instance
      * @see ContentDecorator
@@ -440,16 +458,16 @@ class View extends Component
      * call to end the cache and save the content into cache.
      * A typical usage of fragment caching is as follows,
      *
-     * ~~~
+     * ```php
      * if ($this->beginCache($id)) {
      *     // ...generate content here
      *     $this->endCache();
      * }
-     * ~~~
+     * ```
      *
      * @param string $id a unique ID identifying the fragment to be cached.
      * @param array $properties initial property values for [[FragmentCache]]
-     * @return boolean whether you should generate the content for caching.
+     * @return bool whether you should generate the content for caching.
      * False if the cached version is available.
      */
     public function beginCache($id, $properties = [])
@@ -462,9 +480,8 @@ class View extends Component
             $this->endCache();
 
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
 
     /**

@@ -11,6 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\Connection;
 use yii\db\Expression;
+use yii\db\Query;
 use yii\di\Instance;
 
 /**
@@ -25,7 +26,7 @@ use yii\di\Instance;
  *
  * SqlDataProvider may be used in the following way:
  *
- * ~~~
+ * ```php
  * $count = Yii::$app->db->createCommand('
  *     SELECT COUNT(*) FROM user WHERE status=:status
  * ', [':status' => 1])->queryScalar();
@@ -52,11 +53,13 @@ use yii\di\Instance;
  *
  * // get the user records in the current page
  * $models = $dataProvider->getModels();
- * ~~~
+ * ```
  *
  * Note: if you want to use the pagination feature, you must configure the [[totalCount]] property
  * to be the total number of rows (without pagination). And if you want to use the sorting feature,
  * you must configure the [[sort]] property so that the provider knows which columns can be sorted.
+ *
+ * For more details and usage information on SqlDataProvider, see the [guide article on data providers](guide:output-data-providers).
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -150,9 +153,9 @@ class SqlDataProvider extends BaseDataProvider
             }
 
             return $keys;
-        } else {
-            return array_keys($models);
         }
+
+        return array_keys($models);
     }
 
     /**
@@ -160,6 +163,9 @@ class SqlDataProvider extends BaseDataProvider
      */
     protected function prepareTotalCount()
     {
-        return 0;
+        return (new Query([
+            'from' => ['sub' => "({$this->sql})"],
+            'params' => $this->params,
+        ]))->count('*', $this->db);
     }
 }
