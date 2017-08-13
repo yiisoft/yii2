@@ -60,3 +60,13 @@ namespace PHPUnit\Framework {
         }
     }
 }
+
+namespace PHPUnit\Framework\Error {
+    if (!class_exists('PHPUnit\Framework\Error') && class_exists('PHPUnit_Framework_Error')) {
+        class Error extends \PHPUnit_Framework_Error
+        {
+        }
+    }
+}
+
+
