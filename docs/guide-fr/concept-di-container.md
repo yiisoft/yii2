@@ -67,9 +67,9 @@ Yii::$container->invoke([$obj, 'doSomething'], ['param1' => 42]); // $something 
 L'injection par les méthodes d'assignation et les propriétés est prise en charge via les [configurations](concept-configurations.md). Lors de l'enregistrement d'une dépendance ou lors de la création d'un nouvel objet, vous pouvez fournir une configuration qui est utilisée par le conteneur pour injecter les dépendances via les méthodes d'assignation ou les propriétés correspondantes. Par exemple :
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -92,7 +92,7 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Info: la méthode [[yii\di\Container::get()]] accepte un tableau de configuration qui peut être appliqué à l'objet en création comme troisième paramètre. Si la classe implémente l'interface [[yii\base\Configurable]] (p. ex. [[yii\base\Object]]), le tableau de configuration est passé en tant que dernier paramètre du constructeur de la classe ; autrement le tableau de configuration serait appliqué *après* la création de l'objet. 
+> Info: la méthode [[yii\di\Container::get()]] accepte un tableau de configuration qui peut être appliqué à l'objet en création comme troisième paramètre. Si la classe implémente l'interface [[yii\base\Configurable]] (p. ex. [[yii\base\BaseObject]]), le tableau de configuration est passé en tant que dernier paramètre du constructeur de la classe ; autrement le tableau de configuration serait appliqué *après* la création de l'objet. 
 
 ### Injection par une méthode de rappel PHP <span id="php-callable-injection"></span>
 
@@ -215,7 +215,7 @@ Le code suivant montre un exemple plus sophistiqué. La classe `UserLister` dép
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -224,7 +224,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -239,7 +239,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 

@@ -9,7 +9,7 @@ namespace yii\web;
 
 use ArrayIterator;
 use Yii;
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * HeaderCollection is used by [[Response]] to maintain the currently registered HTTP headers.
@@ -21,7 +21,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class HeaderCollection extends Object implements \IteratorAggregate, \ArrayAccess, \Countable
+class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     /**
      * @var array the headers in this collection (indexed by the header names)
