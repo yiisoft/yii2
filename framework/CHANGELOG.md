@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
 - Bug #14542: Ensured only ASCII characters are in CSRF cookie value since binary data causes issues with ModSecurity and some browsers (samdark)
 - Enh #14022: `yii\web\UrlManager::setBaseUrl()` now supports aliases (dmirogin)
 - Bug #14471: `ContentNegotiator` will always set one of the configured server response formats even if the client does not accept any of them (PowerGamer1)

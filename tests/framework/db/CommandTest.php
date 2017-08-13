@@ -312,6 +312,61 @@ SQL;
         }
     }
 
+    /**
+     * Test batch insert with different data types.
+     *
+     * Ensure double is inserted with `.` decimal separator.
+     *
+     * https://github.com/yiisoft/yii2/issues/6526
+     */
+    public function testBatchInsertDataTypesLocale()
+    {
+        $locale = setlocale(LC_NUMERIC, 0);
+        if (false === $locale) {
+            $this->markTestSkipped('Your platform does not support locales.');
+        }
+        $db = $this->getConnection();
+
+        try {
+            // This one sets decimal mark to comma sign
+            setlocale(LC_NUMERIC, 'ru_RU.utf8');
+
+            $cols = ['int_col', 'char_col', 'float_col', 'bool_col'];
+            $data = [
+                [1, 'A', 9.735, true],
+                [2, 'B', -2.123, false],
+                [3, 'C', 2.123, false],
+            ];
+
+            // clear data in "type" table
+            $db->createCommand()->delete('type')->execute();
+            // batch insert on "type" table
+            $db->createCommand()->batchInsert('type', $cols, $data)->execute();
+
+            $data = $db->createCommand("SELECT * FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];")->queryAll();
+            $this->assertEquals(3, count($data));
+            $this->assertEquals(1, $data[0]['int_col']);
+            $this->assertEquals(2, $data[1]['int_col']);
+            $this->assertEquals(3, $data[2]['int_col']);
+            $this->assertEquals('A', rtrim($data[0]['char_col'])); // rtrim because Postgres padds the column with whitespace
+            $this->assertEquals('B', rtrim($data[1]['char_col']));
+            $this->assertEquals('C', rtrim($data[2]['char_col']));
+            $this->assertEquals('9.735', $data[0]['float_col']);
+            $this->assertEquals('-2.123', $data[1]['float_col']);
+            $this->assertEquals('2.123', $data[2]['float_col']);
+            $this->assertEquals('1', $data[0]['bool_col']);
+            $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
+            $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
+
+        } catch (\Exception $e) {
+            setlocale(LC_NUMERIC, $locale);
+            throw $e;
+        } catch (\Throwable $e) {
+            setlocale(LC_NUMERIC, $locale);
+            throw $e;
+        }
+    }
+
     public function testInsert()
     {
         $db = $this->getConnection();
