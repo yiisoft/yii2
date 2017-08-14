@@ -7,7 +7,6 @@
 
 namespace yii\filters;
 
-use Yii;
 use yii\base\ActionFilter;
 use yii\web\Request;
 use yii\web\Response;
@@ -97,8 +96,8 @@ class Cors extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $this->request = $this->request ?: Yii::$app->getRequest();
-        $this->response = $this->response ?: Yii::$app->getResponse();
+        $this->request = $this->request ?: $action->controller->getRequest();
+        $this->response = $this->response ?: $action->controller->getResponse();
 
         $this->overrideDefaultSettings($action);
 
@@ -169,7 +168,7 @@ class Cors extends ActionFilter
             $responseHeaders['Access-Control-Allow-Credentials'] = $this->cors['Access-Control-Allow-Credentials'] ? 'true' : 'false';
         }
 
-        if (isset($this->cors['Access-Control-Max-Age']) && Yii::$app->getRequest()->getIsOptions()) {
+        if (isset($this->cors['Access-Control-Max-Age']) && $this->request->getIsOptions()) {
             $responseHeaders['Access-Control-Max-Age'] = $this->cors['Access-Control-Max-Age'];
         }
 

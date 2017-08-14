@@ -142,7 +142,11 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
      */
     public function beforeAction($action)
     {
+        $this->request = $this->request ?: $action->controller->getRequest();
+        $this->response = $this->response ?: $action->controller->getResponse();
+
         $this->negotiate();
+
         return true;
     }
 
