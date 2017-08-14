@@ -518,6 +518,8 @@ class Module extends ServiceLocator
         if (is_array($parts)) {
             /* @var $controller Controller */
             list($controller, $actionID) = $parts;
+            $controller->setRequest(Yii::$app->getRequest());
+            $controller->setResponse(Yii::$app->getResponse());
             $oldController = Yii::$app->controller;
             Yii::$app->controller = $controller;
             $result = $controller->runAction($actionID, $params);

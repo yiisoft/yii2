@@ -10,6 +10,7 @@ namespace yiiunit\framework\console;
 use Yii;
 use yii\base\Module;
 use yii\console\Request;
+use yii\console\Response;
 use yiiunit\TestCase;
 
 /**
@@ -145,5 +146,43 @@ class ControllerTest extends TestCase
 
         $this->assertArrayNotHasKey('typedArgument', $help);
         $this->assertArrayHasKey('simpleArgument', $help);
+    }
+
+    public function testSetupRequest()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $request = new Request();
+        $controller->setRequest($request);
+        $this->assertSame($request, $controller->getRequest());
+
+        $controller->setRequest([
+            'class' => Request::className(),
+            'params' => [
+                'name' => 'test'
+            ],
+        ]);
+        $this->assertNotSame($request, $controller->getRequest());
+        $this->assertEquals(['name' => 'test'], $controller->getRequest()->getParams());
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $controller->setRequest(new \stdClass());
+    }
+
+    public function testSetupResponse()
+    {
+        $controller = new FakeController('fake', Yii::$app);
+
+        $response = new Response();
+        $controller->setResponse($response);
+        $this->assertSame($response, $controller->getResponse());
+
+        $controller->setResponse([
+            'class' => Response::className(),
+        ]);
+        $this->assertNotSame($response, $controller->getResponse());
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $controller->setResponse(new \stdClass());
     }
 }

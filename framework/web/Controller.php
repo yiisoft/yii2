@@ -9,12 +9,16 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InlineAction;
+use yii\di\Instance;
 use yii\helpers\Url;
 
 /**
  * Controller is the base class of web controllers.
  *
  * For more details and usage information on Controller, see the [guide article on controllers](guide:structure-controllers).
+ *
+ * @property Request $request The web request instance for this controller.
+ * @property Response $response The web response instance for this controller.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -70,7 +74,7 @@ class Controller extends \yii\base\Controller
      */
     public function asJson($data)
     {
-        $response = Yii::$app->getResponse();
+        $response = $this->getResponse();
         $response->format = Response::FORMAT_JSON;
         $response->data = $data;
         return $response;
@@ -97,7 +101,7 @@ class Controller extends \yii\base\Controller
      */
     public function asXml($data)
     {
-        $response = Yii::$app->getResponse();
+        $response = $this->getResponse();
         $response->format = Response::FORMAT_XML;
         $response->data = $data;
         return $response;
@@ -162,7 +166,7 @@ class Controller extends \yii\base\Controller
     public function beforeAction($action)
     {
         if (parent::beforeAction($action)) {
-            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
+            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->getRequest()->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
             return true;
@@ -199,7 +203,7 @@ class Controller extends \yii\base\Controller
      */
     public function redirect($url, $statusCode = 302)
     {
-        return Yii::$app->getResponse()->redirect(Url::to($url), $statusCode);
+        return $this->getResponse()->redirect(Url::to($url), $statusCode);
     }
 
     /**
@@ -216,7 +220,7 @@ class Controller extends \yii\base\Controller
      */
     public function goHome()
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getHomeUrl());
+        return $this->getResponse()->redirect(Yii::$app->getHomeUrl());
     }
 
     /**
@@ -239,7 +243,7 @@ class Controller extends \yii\base\Controller
      */
     public function goBack($defaultUrl = null)
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
+        return $this->getResponse()->redirect(Yii::$app->getUser()->getReturnUrl($defaultUrl));
     }
 
     /**
@@ -259,6 +263,52 @@ class Controller extends \yii\base\Controller
      */
     public function refresh($anchor = '')
     {
-        return Yii::$app->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
+        return $this->getResponse()->redirect(Yii::$app->getRequest()->getUrl() . $anchor);
+    }
+
+    /**
+     * @return Request web request instance.
+     * @since 2.0.13
+     */
+    public function getRequest()
+    {
+        $request = parent::getRequest();
+        if ($request !== null) {
+            return $request;
+        }
+        $this->setRequest(Yii::$app->getRequest());
+        return parent::getRequest();
+    }
+
+    /**
+     * @param Request|array $request web request instance or its DI compatible configuration.
+     * @since 2.0.13
+     */
+    public function setRequest($request)
+    {
+        parent::setRequest(Instance::ensure($request, 'yii\web\Request'));
+    }
+
+    /**
+     * @return Response web response instance.
+     * @since 2.0.13
+     */
+    public function getResponse()
+    {
+        $response = parent::getResponse();
+        if ($response !== null) {
+            return $response;
+        }
+        $this->setResponse(Yii::$app->getResponse());
+        return parent::getResponse();
+    }
+
+    /**
+     * @param Response|array $response web response instance or its DI compatible configuration.
+     * @since 2.0.13
+     */
+    public function setResponse($response)
+    {
+        parent::setResponse(Instance::ensure($response, 'yii\web\Response'));
     }
 }
