@@ -154,14 +154,14 @@ Yii 支持一系列缓存存储器，概况如下：
 * [[yii\caching\Cache::delete()|delete()]]：通过一个键，删除缓存中对应的值。
 * [[yii\caching\Cache::flush()|flush()]]：删除缓存中的所有数据。
 
-有些缓存存储器如 MemCache，APC 支持以批量模式取回缓存值，这样可以节省取回缓存数据的开支。 
-[[yii\caching\Cache::mget()|mget()]] 和 [[yii\caching\Cache::madd()|madd()]] API提供对该特性的支持。
-如果底层缓存存储器不支持该特性，Yii 也会模拟实现。
+> Note: Do not cache a `false` boolean value directly because the [[yii\caching\Cache::get()|get()]] method uses
+`false` return value to indicate the data item is not found in the cache. You may put `false` in an array and cache
+this array instead to avoid this problem. 
 
-Some cache storage, such as MemCache, APC, support retrieving multiple cached values in a batch mode,
-which may reduce the overhead involved in retrieving cached data. The APIs [[yii\caching\Cache::multiGet()|multiGet()]]
-and [[yii\caching\Cache::multiAdd()|multiAdd()]] are provided to exploit this feature. In case the underlying cache storage
-does not support this feature, it will be simulated.
+有些缓存存储器如 MemCache，APC 支持以批量模式取回缓存值，这样可以节省取回缓存数据的开支。 
+[[yii\caching\Cache::multiGet()|multiGet()]]
+和 [[yii\caching\Cache::multiAdd()|multiAdd()]] API提供对该特性的支持。
+如果底层缓存存储器不支持该特性，Yii 也会模拟实现。
 
 由于 [[yii\caching\Cache]] 实现了 PHP `ArrayAccess` 接口，
 缓存组件也可以像数组那样使用，下面是几个例子：
@@ -419,6 +419,4 @@ $result = $db->cache(function ($db) {
 有些缓存存储器有大小限制。例如，memcache 限制每条数据最大为 1MB。
 因此，如果查询结果的大小超出了该限制，
 则会导致缓存失败。
-
-
 
