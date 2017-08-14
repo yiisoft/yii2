@@ -66,6 +66,13 @@ class ErrorAction extends Action
      * Defaults to "An internal server error occurred.".
      */
     public $defaultMessage;
+    /**
+     * @var string|false|null the name of the layout to be applied to this error action view.
+     * If not set, the layout configured in the controller will be used.
+     * @see \yii\base\Controller::$layout
+     * @since 2.0.15
+     */
+    public $layout;
 
     /**
      * @var \Exception the exception object, normally is filled on [[init()]] method call.
@@ -73,13 +80,6 @@ class ErrorAction extends Action
      * @since 2.0.11
      */
     protected $exception;
-
-    /**
-     * @var string|false the name of the layout to be applied to this error action view
-     * @see [[yii\base\Controller::$layout]]
-     * @since 2.0.15
-     */
-    public $layout;
 
 
     /**
@@ -105,7 +105,7 @@ class ErrorAction extends Action
      */
     public function run()
     {
-        if ($this->layout) {
+        if ($this->layout !== null) {
             $this->controller->layout = $this->layout;
         }
 
