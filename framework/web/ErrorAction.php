@@ -77,7 +77,7 @@ class ErrorAction extends Action
     /**
      * @var string|false the name of the layout to be applied to this error action view
      * @see [[yii\base\Component::$layout]]
-     * @since 2.0.~
+     * @since 2.0.15
      */
     public $layout;
 
@@ -105,7 +105,9 @@ class ErrorAction extends Action
      */
     public function run()
     {
-        if ($this->layout) $this->controller->layout = $this->layout;
+        if ($this->layout) {
+            $this->controller->layout = $this->layout;
+        }
 
         Yii::$app->getResponse()->setStatusCodeByException($this->exception);
 
