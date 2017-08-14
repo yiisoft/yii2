@@ -47,11 +47,29 @@ use yii\helpers\HtmlPurifier;
  */
 class Formatter extends Component
 {
+    /**
+     * @since 2.0.13
+     */
     const UNIT_SYSTEM_METRIC = 'metric';
+    /**
+     * @since 2.0.13
+     */
     const UNIT_SYSTEM_IMPERIAL = 'imperial';
+    /**
+     * @since 2.0.13
+     */
     const FORMAT_WIDTH_LONG = 'long';
+    /**
+     * @since 2.0.13
+     */
     const FORMAT_WIDTH_SHORT = 'short';
+    /**
+     * @since 2.0.13
+     */
     const UNIT_LENGTH = 'length';
+    /**
+     * @since 2.0.13
+     */
     const UNIT_WEIGHT = 'weight';
 
     /**
@@ -262,11 +280,18 @@ class Formatter extends Component
      */
     public $sizeFormatBase = 1024;
     /**
-     * @var string default system of measure units.
+     * @var string default system of measure units. Defaults to [[UNIT_SYSTEM_METRIC]].
+     * Possible values:
+     *  - [[UNIT_SYSTEM_METRIC]]
+     *  - [[UNIT_SYSTEM_IMPERIAL]]
+     * @since 2.0.13
      */
     public $systemOfUnits = self::UNIT_SYSTEM_METRIC;
     /**
-     * @var array configuration of measure units
+     * @var array configuration of weight and length measurement units.
+     * This array contains the most usable measurement units, but you can change it
+     * in case you have some special requirements.
+     * @since 2.0.13
      */
     public $measureUnits = [
         self::UNIT_LENGTH => [
@@ -304,7 +329,8 @@ class Formatter extends Component
         ],
     ];
     /**
-     * @var array base units as multipliers for smallest possible unit from $measureUnits
+     * @var array The base units that are used as multipliers for smallest possible unit from [[measureUnits]]
+     * @since 2.0.13
      */
     public $baseUnits = [
         self::UNIT_LENGTH => [
@@ -316,7 +342,6 @@ class Formatter extends Component
             self::UNIT_SYSTEM_METRIC => 1000, // 1 kilogram = 1000 grams
         ],
     ];
-
     /**
      * @var bool whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
      */
@@ -1369,19 +1394,21 @@ class Formatter extends Component
     /**
      * Formats the value as a length in human readable form for example `12 meters`.
      *
-     * @param integer $value value to be formatted.
-     * @param double $baseUnit unit of value as the multiplier of the smallest unit
-     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
-     * @param integer $decimals the number of digits after the decimal point.
+     * @param double|int $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit.
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see asLength
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
      */
-    public function asLength($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
+    public function asLength($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
     }
 
     /**
@@ -1389,37 +1416,40 @@ class Formatter extends Component
      *
      * This is the short form of [[asLength]].
      *
-     * @param integer $value value to be formatted.
+     * @param double|int $value value to be formatted.
      * @param double $baseUnit unit of value as the multiplier of the smallest unit
-     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
-     * @param integer $decimals the number of digits after the decimal point.
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      * @see asLength
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
      */
-    public function asShortLength($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
+    public function asShortLength($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
     }
 
     /**
      * Formats the value as a weight in human readable form for example `12 kilograms`.
      *
-     * @param integer $value value to be formatted.
+     * @param double|int $value value to be formatted.
      * @param double $baseUnit unit of value as the multiplier of the smallest unit
-     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
-     * @param integer $decimals the number of digits after the decimal point.
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see asWeight
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
      */
-    public function asWeight($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
+    public function asWeight($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
     }
 
     /**
@@ -1427,48 +1457,50 @@ class Formatter extends Component
      *
      * This is the short form of [[asWeight]].
      *
-     * @param double $value value to be formatted.
+     * @param double|int $value value to be formatted.
      * @param double $baseUnit unit of value as the multiplier of the smallest unit
-     * @param string $system either self::UNIT_SYSTEM_METRIC or self::UNIT_SYSTEM_IMPERIAL, if null defaults to metric
-     * @param integer $decimals the number of digits after the decimal point.
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
-     * @see asWeight
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
      */
-    public function asShortWeight($value, $baseUnit = null, $system = null, $decimals = null, $options = [], $textOptions = [])
+    public function asShortWeight($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
     {
-        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $system, $decimals, $options, $textOptions);
+        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
     }
 
     /**
-     * @param string $unitType one of: weight, length
-     * @param string $unitFormat one of: short, long
-     * @param double $value
-     * @param double $baseUnit
-     * @param string $system
-     * @param integer $decimals
-     * @param $options
-     * @param $textOptions
+     * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
+     * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
+     * @param double|int $value to be formatted
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string
      */
-    private function formatUnit($unitType, $unitFormat, $value, $baseUnit, $system, $decimals, $options, $textOptions)
+    private function formatUnit($unitType, $unitFormat, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions)
     {
         if ($value === null) {
             return $this->nullDisplay;
         }
-        if ($system === null) {
-            $system = $this->systemOfUnits;
+        if ($unitSystem === null) {
+            $unitSystem = $this->systemOfUnits;
         }
         if ($baseUnit === null) {
-            $baseUnit = $this->baseUnits[$unitType][$system];
+            $baseUnit = $this->baseUnits[$unitType][$unitSystem];
         }
-        $multipliers = array_values($this->measureUnits[$unitType][$system]);
+
+        $multipliers = array_values($this->measureUnits[$unitType][$unitSystem]);
 
         list($params, $position) = $this->formatNumber($value * $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
 
-        $message = $this->getUnitMessage($unitType, $unitFormat, $system, $position);
+        $message = $this->getUnitMessage($unitType, $unitFormat, $unitSystem, $position);
         
         return (new \MessageFormatter($this->locale, $message))->format([
             '0' => $params['nFormatted'],
@@ -1480,7 +1512,7 @@ class Formatter extends Component
      * @param string $unitType
      * @param string $unitFormat
      * @param string $system
-     * @param integer $position
+     * @param int $position
      * @return string
      */
     private function getUnitMessage($unitType, $unitFormat, $system, $position)
@@ -1526,6 +1558,10 @@ class Formatter extends Component
         }
         do {
             if (is_array($formatBase)) {
+                if (!isset($formatBase[$position + 1])) {
+                    break;
+                }
+
                 if (abs($value) < $formatBase[$position + 1]) {
                     break;
                 }

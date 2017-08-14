@@ -37,12 +37,64 @@ class FormatterUnitTest extends TestCase
         $this->formatter = null;
     }
 
-    public function testAsLength()
+    public function lengthDataProvider()
     {
-        $this->assertSame("5 milimetrów", $this->formatter->asLength(0.005));
-        $this->assertSame("5.30 centymetra", $this->formatter->asLength(0.053));
-        $this->assertSame("9.90 centymetra", $this->formatter->asLength(0.099));
-        $this->assertSame("10.00 centymetrów", $this->formatter->asLength(0.1));
-        $this->assertSame("1.12 metra", $this->formatter->asLength(1.123));
+        return [
+            [-3, "-3.00 metry", '-3.00 m'],
+            [0, "0 milimetrów", '0 mm'],
+            [0.005, "5 milimetrów", '5 mm'],
+            [0.053, "5.30 centymetra", '5.30 cm'],
+            [0.1, "10.00 centymetrów", '10.00 cm'],
+            [1.123, "1.12 metra", '1.12 m'],
+            [1893.12, "1.89 kilometra", '1.89 km'],
+            [4561549, "4561.55 kilometra", '4561.55 km'],
+        ];
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     *
+     * @dataProvider lengthDataProvider
+     */
+    public function testAsLength($value, $expected)
+    {
+        $this->assertSame($expected, $this->formatter->asLength($value));
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     *
+     * @dataProvider lengthDataProvider
+     */
+    public function testAsShortLength($value, $_, $expected)
+    {
+        $this->assertSame($expected, $this->formatter->asShortLength($value));
+    }
+
+    public function weightDataProvider()
+    {
+        return [
+            [-3, '', ''],
+            [0, '', ''],
+            [0.001, '', ''],
+            [0.091, '', ''],
+            [0.1, '', ''],
+            [1, '', ''],
+            [453, '', ''],
+            [19913.13, '', ''],
+        ];
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     *
+     * @dataProvider weightDataProvider
+     */
+    public function testAsWeight($value, $expected)
+    {
+        $this->assertSame($expected, $this->formatter->asWeight($value));
     }
 }
