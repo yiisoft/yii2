@@ -216,7 +216,11 @@ class BaseUrl
 
         $url = Yii::getAlias($url);
         if ($url === '') {
-            $url = Yii::$app->getRequest()->getUrl();
+            if (Yii::$app->controller) {
+                $url = Yii::$app->controller->getRequest()->getUrl();
+            } else {
+                $url = Yii::$app->getRequest()->getUrl();
+            }
         }
 
         if ($scheme === false) {
@@ -426,7 +430,7 @@ class BaseUrl
      */
     public static function current(array $params = [], $scheme = false)
     {
-        $currentParams = Yii::$app->getRequest()->getQueryParams();
+        $currentParams = Yii::$app->controller->getRequest()->getQueryParams();
         $currentParams[0] = '/' . Yii::$app->controller->getRoute();
         $route = ArrayHelper::merge($currentParams, $params);
         return static::toRoute($route, $scheme);
