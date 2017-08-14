@@ -39,7 +39,7 @@ For example, to install the `yiisoft/yii2-imagine` extension, modify your `compo
     "require": {
         // ... other dependencies
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -141,7 +141,7 @@ The following example shows the `composer.json` file for the `yiisoft/yii2-imagi
 
     // package dependencies
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -376,7 +376,7 @@ help other people learn about and use your extension:
 * Tutorials, demos, screenshots, etc.: these are needed if your extension provides many features that cannot be
   fully covered in the readme file.
 * API documentation: your code should be well documented to allow other people more easily read and understand it.
-  You may refer to the [Object class file](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php)
+  You may refer to the [BaseObject class file](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php)
   to learn how to document your code.
 
 > Info: Your code comments can be written in Markdown format. The `yiisoft/yii2-apidoc` extension provides a tool
@@ -414,6 +414,8 @@ registered on [Packagist](https://packagist.org/) and can be easily installed as
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   provides a Web-based code generator that is highly extensible and can be used to quickly generate models,
   forms, modules, CRUD, etc.
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   provides commonly used image manipulation functions based on [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):

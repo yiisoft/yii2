@@ -24,6 +24,8 @@ use yii\base\Component;
  * - [[Yii::beginProfile()]]
  * - [[Yii::endProfile()]]
  *
+ * For more details and usage information on Logger, see the [guide article on logging](guide:runtime-logging).
+ *
  * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
  * to send logged messages to different log targets, such as [[FileTarget|file]], [[EmailTarget|email]],
  * or [[DbTarget|database]], with the help of the [[dispatcher]].
@@ -33,7 +35,8 @@ use yii\base\Component;
  * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
  * read-only.
  * @property array $profiling The profiling results. Each element is an array consisting of these elements:
- * `info`, `category`, `timestamp`, `trace`, `level`, `duration`. This property is read-only.
+ * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory` and
+ * `memoryDiff` values are available since version 2.0.11. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -85,12 +88,13 @@ class Logger extends Component
      *   [2] => category (string)
      *   [3] => timestamp (float, obtained by microtime(true))
      *   [4] => traces (array, debug backtrace, contains the application code call stacks)
+     *   [5] => memory usage in bytes (int, obtained by memory_get_usage()), available since version 2.0.11.
      * ]
      * ```
      */
     public $messages = [];
     /**
-     * @var integer how many messages should be logged before they are flushed from memory and sent to targets.
+     * @var int how many messages should be logged before they are flushed from memory and sent to targets.
      * Defaults to 1000, meaning the [[flush]] method will be invoked once every 1000 messages logged.
      * Set this property to be 0 if you don't want to flush messages until the application terminates.
      * This property mainly affects how much memory will be taken by the logged messages.
@@ -98,7 +102,7 @@ class Logger extends Component
      */
     public $flushInterval = 1000;
     /**
-     * @var integer how much call stack information (file name and line number) should be logged for each message.
+     * @var int how much call stack information (file name and line number) should be logged for each message.
      * If it is greater than 0, at most that number of call stacks will be logged. Note that only application
      * call stacks are counted.
      */
@@ -130,7 +134,7 @@ class Logger extends Component
      * the application code will be logged as well.
      * @param string|array $message the message to be logged. This can be a simple string or a more
      * complex data structure that will be handled by a [[Target|log target]].
-     * @param integer $level the level of the message. This must be one of the following:
+     * @param int $level the level of the message. This must be one of the following:
      * `Logger::LEVEL_ERROR`, `Logger::LEVEL_WARNING`, `Logger::LEVEL_INFO`, `Logger::LEVEL_TRACE`,
      * `Logger::LEVEL_PROFILE_BEGIN`, `Logger::LEVEL_PROFILE_END`.
      * @param string $category the category of the message.
@@ -153,7 +157,7 @@ class Logger extends Component
                 }
             }
         }
-        $this->messages[] = [$message, $level, $category, $time, $traces];
+        $this->messages[] = [$message, $level, $category, $time, $traces, memory_get_usage()];
         if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
             $this->flush();
         }
@@ -161,7 +165,7 @@ class Logger extends Component
 
     /**
      * Flushes log messages from memory to targets.
-     * @param boolean $final whether this is a final call during a request.
+     * @param bool $final whether this is a final call during a request.
      */
     public function flush($final = false)
     {
@@ -199,7 +203,8 @@ class Logger extends Component
      * such as 'yii\db\Connection'.
      * @param array $excludeCategories list of categories that you want to exclude
      * @return array the profiling results. Each element is an array consisting of these elements:
-     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
+     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`.
+     * The `memory` and `memoryDiff` values are available since version 2.0.11.
      */
     public function getProfiling($categories = [], $excludeCategories = [])
     {
@@ -261,7 +266,8 @@ class Logger extends Component
      * Calculates the elapsed time for the given log messages.
      * @param array $messages the log messages obtained from profiling
      * @return array timings. Each element is an array consisting of these elements:
-     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`.
+     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`.
+     * The `memory` and `memoryDiff` values are available since version 2.0.11.
      */
     public function calculateTimings($messages)
     {
@@ -270,19 +276,24 @@ class Logger extends Component
 
         foreach ($messages as $i => $log) {
             list($token, $level, $category, $timestamp, $traces) = $log;
-            $log[5] = $i;
-            if ($level == Logger::LEVEL_PROFILE_BEGIN) {
-                $stack[] = $log;
-            } elseif ($level == Logger::LEVEL_PROFILE_END) {
-                if (($last = array_pop($stack)) !== null && $last[0] === $token) {
-                    $timings[$last[5]] = [
-                        'info' => $last[0],
-                        'category' => $last[2],
-                        'timestamp' => $last[3],
-                        'trace' => $last[4],
-                        'level' => count($stack),
-                        'duration' => $timestamp - $last[3],
+            $memory = isset($log[5]) ? $log[5] : 0;
+            $log[6] = $i;
+            $hash = md5(json_encode($token));
+            if ($level == self::LEVEL_PROFILE_BEGIN) {
+                $stack[$hash] = $log;
+            } elseif ($level == self::LEVEL_PROFILE_END) {
+                if (isset($stack[$hash])) {
+                    $timings[$stack[$hash][6]] = [
+                        'info' => $stack[$hash][0],
+                        'category' => $stack[$hash][2],
+                        'timestamp' => $stack[$hash][3],
+                        'trace' => $stack[$hash][4],
+                        'level' => count($stack) - 1,
+                        'duration' => $timestamp - $stack[$hash][3],
+                        'memory' => $memory,
+                        'memoryDiff' => $memory - (isset($stack[$hash][5]) ? $stack[$hash][5] : 0),
                     ];
+                    unset($stack[$hash]);
                 }
             }
         }
@@ -295,7 +306,7 @@ class Logger extends Component
 
     /**
      * Returns the text display of the specified level.
-     * @param integer $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
+     * @param int $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
      * @return string the text display of the level
      */
     public static function getLevelName($level)
@@ -307,6 +318,7 @@ class Logger extends Component
             self::LEVEL_TRACE => 'trace',
             self::LEVEL_PROFILE_BEGIN => 'profile begin',
             self::LEVEL_PROFILE_END => 'profile end',
+            self::LEVEL_PROFILE => 'profile',
         ];
 
         return isset($levels[$level]) ? $levels[$level] : 'unknown';

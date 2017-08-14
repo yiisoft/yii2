@@ -1,4 +1,10 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\db;
 
 use yii\db\Connection;
@@ -7,24 +13,32 @@ use yiiunit\TestCase as TestCase;
 abstract class DatabaseTestCase extends TestCase
 {
     protected $database;
-    protected $driverName = 'mysql';
+    /**
+     * @var string the driver name of this test class. Must be set by a subclass.
+     */
+    protected $driverName;
     /**
      * @var Connection
      */
     private $_db;
 
+
     protected function setUp()
     {
+        if ($this->driverName === null) {
+            throw new \Exception('driverName is not set for a DatabaseTestCase.');
+        }
+
         parent::setUp();
         $databases = self::getParam('databases');
         $this->database = $databases[$this->driverName];
-        $pdo_database = 'pdo_'.$this->driverName;
+        $pdo_database = 'pdo_' . $this->driverName;
         if ($this->driverName === 'oci') {
             $pdo_database = 'oci8';
         }
 
         if (!extension_loaded('pdo') || !extension_loaded($pdo_database)) {
-            $this->markTestSkipped('pdo and '.$pdo_database.' extension are required.');
+            $this->markTestSkipped('pdo and ' . $pdo_database . ' extension are required.');
         }
         $this->mockApplication();
     }
@@ -38,8 +52,8 @@ abstract class DatabaseTestCase extends TestCase
     }
 
     /**
-     * @param  boolean $reset whether to clean up the test database
-     * @param  boolean $open  whether to open and populate test database
+     * @param  bool $reset whether to clean up the test database
+     * @param  bool $open  whether to open and populate test database
      * @return \yii\db\Connection
      */
     public function getConnection($reset = true, $open = true)
@@ -57,7 +71,7 @@ abstract class DatabaseTestCase extends TestCase
         try {
             $this->_db = $this->prepareDatabase($config, $fixture, $open);
         } catch (\Exception $e) {
-            $this->markTestSkipped("Something wrong when preparing database: " . $e->getMessage());
+            $this->markTestSkipped('Something wrong when preparing database: ' . $e->getMessage());
         }
         return $this->_db;
     }
@@ -88,5 +102,27 @@ abstract class DatabaseTestCase extends TestCase
             }
         }
         return $db;
+    }
+
+    /**
+     * adjust dbms specific escaping
+     * @param $sql
+     * @return mixed
+     */
+    protected function replaceQuotes($sql)
+    {
+        switch ($this->driverName) {
+            case 'mysql':
+            case 'sqlite':
+                return str_replace(['[[', ']]'], '`', $sql);
+            case 'cubrid':
+            case 'pgsql':
+            case 'oci':
+                return str_replace(['[[', ']]'], '"', $sql);
+            case 'sqlsrv':
+                return str_replace(['[[', ']]'], ['[', ']'], $sql);
+            default:
+                return $sql;
+        }
     }
 }

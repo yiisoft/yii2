@@ -50,10 +50,10 @@ class BaseHtmlPurifier
         $purifier->config->set('Cache.SerializerPath', \Yii::$app->getRuntimePath());
         $purifier->config->set('Cache.SerializerPermissions', 0775);
 
+        static::configure($configInstance);
         if ($config instanceof \Closure) {
             call_user_func($config, $configInstance);
         }
-        static::configure($configInstance);
 
         return $purifier->purify($content);
     }

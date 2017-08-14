@@ -206,7 +206,7 @@ interface MessageInterface
      * Sends this email message.
      * @param MailerInterface $mailer the mailer that should be used to send this message.
      * If null, the "mail" application component will be used instead.
-     * @return boolean whether this message is sent successfully.
+     * @return bool whether this message is sent successfully.
      */
     public function send(MailerInterface $mailer = null);
 

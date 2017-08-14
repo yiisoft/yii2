@@ -85,7 +85,7 @@ public function fields()
 }
 ```
 
-> Warning|警告: デフォルトではモデルの全ての属性がエクスポートされる配列に含まれるため、データを精査して、
+> Warning: デフォルトではモデルの全ての属性がエクスポートされる配列に含まれるため、データを精査して、
 > 公開すべきでない情報が含まれていないことを確認すべきです。そういう情報がある場合は、
 > `fields()` をオーバーライドして、除去すべきです。上記の例では、`auth_key`、`password_hash`
 > および `password_reset_token` を選んで除去しています。
@@ -93,7 +93,7 @@ public function fields()
 
 ### `extraFields()` をオーバーライドする<span id="overriding-extra-fields"></span>
 
-デフォルトでは、[[yii\base\Model::extraFields()]] は何も返さず、[[yii\db\ActiveRecord::extraFields()]] は DB から取得されたリレーションの名前を返します。
+デフォルトでは、[[yii\base\Model::extraFields()]] は空の配列を返し、[[yii\db\ActiveRecord::extraFields()]] は DB から取得されたリレーションの名前を返します。
 
 `extraFields()` によって返されるデータの形式は `fields()` のそれと同じです。
 通常、`extraFields()` は、主として、値がオブジェクトであるフィールドを指定するのに使用されます。
@@ -140,23 +140,41 @@ HATEOAS のキーポイントは、リソースデータが API によって提�
 例えば、
 
 ```php
-use yii\db\ActiveRecord;
-use yii\web\Link;
+use yii\base\Model;
+use yii\web\Link; // JSON ハイパーメディア API 言語に定義されているリンクオブジェクトを表す
 use yii\web\Linkable;
 use yii\helpers\Url;
 
-class User extends ActiveRecord implements Linkable
+class UserResource extends Model implements Linkable
 {
+    public $id;
+    public $email;
+
+    //...
+
+    public function fields()
+    {
+        return ['id', 'email'];
+    }
+
+    public function extraFields()
+    {
+        return ['profile'];
+    }
+
     public function getLinks()
     {
         return [
             Link::REL_SELF => Url::to(['user/view', 'id' => $this->id], true),
+            'edit' => Url::to(['user/view', 'id' => $this->id], true),
+            'profile' => Url::to(['user/profile/view', 'id' => $this->id], true),
+            'index' => Url::to(['users'], true),
         ];
     }
 }
 ```
 
-`User` オブジェクトがレスポンスで返されるとき、レスポンスはそのユーザに関連するリンクを表現する `_links` 要素を含むことになります。
+`UserResource` オブジェクトがレスポンスで返されるとき、レスポンスはそのユーザに関連するリンクを表現する `_links` 要素を含むことになります。
 例えば、
 
 ```
@@ -167,6 +185,15 @@ class User extends ActiveRecord implements Linkable
     "_links" => {
         "self": {
             "href": "https://example.com/users/100"
+        },
+        "edit": {
+            "href": "https://example.com/users/100"
+        },
+        "profile": {
+            "href": "https://example.com/users/profile/100"
+        },
+        "index": {
+            "href": "https://example.com/users"
         }
     }
 }

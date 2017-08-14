@@ -106,7 +106,7 @@ Si todo está bien, la acción mostrará una vista llamada `entry-confirm` para 
 con el usuario que acepta los datos que ha ingresado. De otra manera, la vista `entry` será
 mostrada, y mostrará el formulario HTML junto con los mensajes de error de validación (si es que hay alguno).
 
-> Información: La expresión `Yii::$app` representa la instancia de la [aplicación](structure-applications.md)
+> Info: La expresión `Yii::$app` representa la instancia de la [aplicación](structure-applications.md)
   que es un singleton globalmente accesible. También es un [service locator](concept-service-locator.md) (localizador de servicio)
   que provee los componentes, tales como `request`, `response`, `db`, etc. para soportar funcionalidades específicas.
   En el código de arriba, el componente `request` es utilizado para acceder los datos `$_POST`.

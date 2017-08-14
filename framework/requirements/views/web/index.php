@@ -11,12 +11,11 @@
 </head>
 <body>
 <div class="container">
-    <div class="header">
+    <header>
         <h1>Yii Application Requirement Checker</h1>
-    </div>
+    </header>
     <hr>
-
-    <div class="content">
+    <main>
         <h3>Description</h3>
         <p>
         This script checks if your server configuration meets the requirements
@@ -67,15 +66,12 @@
             </tr>
             <?php endforeach; ?>
         </table>
-
-    </div>
-
+    </main>
     <hr>
-
-    <div class="footer">
+    <footer>
         <p>Server: <?php echo $this->getServerInfo() . ' ' . $this->getNowDate() ?></p>
         <p>Powered by <a href="http://www.yiiframework.com/" rel="external">Yii Framework</a></p>
-    </div>
+    </footer>
 </div>
 </body>
 </html>

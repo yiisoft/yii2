@@ -55,7 +55,7 @@ class PostController extends Controller
 失敗したときは例外を投げます。
 
 `create` アクション (`actionCreate()` メソッドで定義されます) においても、コードは似たようなものです。
-最初にリクエストデータを使って [モデル](structure-models.md) にデータを投入して、モデルを保存することを試みます。
+最初に、リクエストデータを使って [モデル](structure-models.md) の新しいインスタンスにデータを投入することを試み、そして、モデルを保存することを試みます。
 両方が成功したときは、新しく作成されたモデルの ID を使って `view` アクションにブラウザをリダイレクトします。
 どちらかが失敗したときは、ユーザが必要なデータを入力できるようにするための `create` ビューを表示します。
 
@@ -138,7 +138,7 @@ class SiteController extends Controller
 この理由により、上記の例の `aritcle` コントローラクラスは [エイリアス](concept-aliases.md) が `@app/controllers/ArticleController.php` であるファイルに保存されるべきものとなります。
 一方、`admin/post-comment` コントローラは `@app/controllers/admin/PostCommentController.php` というエイリアスのファイルに保存されるべきものとなります。
 
-> Info|情報: 最後の例である `admin/post-comment` は、どうすれば [[yii\base\Application::controllerNamespace|コントローラ名前空間]] のサブディレクトリにコントローラを置くことが出来るかを示しています。
+> Info: 最後の例である `admin/post-comment` は、どうすれば [[yii\base\Application::controllerNamespace|コントローラ名前空間]] のサブディレクトリにコントローラを置くことが出来るかを示しています。
   この方法は、コントローラをいくつかのカテゴリに分けて編成したい、けれども [モジュール](structure-modules.md) は使いたくない、という場合に役立ちます。
 
 
@@ -235,7 +235,7 @@ class SiteController extends Controller
 
 例えば、`index` は `actionIndex` となり、`hello-world` は `actionHelloWorld` となります。
 
-> Note|注意: アクションメソッドの名前は、*大文字と小文字を区別* します。
+> Note: アクションメソッドの名前は、*大文字と小文字を区別* します。
   `ActionIndex` という名前のメソッドがあっても、それはアクションメソッドとは見なされず、結果として、`index` アクションに対するリクエストは例外に帰結します。
   アクションメソッドが public でなければならない事にも注意してください。
   private や protected なメソッドがインラインアクションを定義することはありません。
@@ -339,7 +339,7 @@ class PostController extends Controller
 アクションパラメータには、次のように、さまざまなリクエストに応じて異なる値が投入されます。
 
 * `http://hostname/index.php?r=post/view&id=123`: `$id` パラメータには `'123'` という値が入れられます。
-  一方、`version` というクエリパラメータは無いので、`$version` は null のままになります。
+  一方、`version` というクエリパラメータは無いので、`$version` は `null` のままになります。
 * `http://hostname/index.php?r=post/view&id=123&version=2`: `$id` および `$version` パラメータに、それぞれ、`'123'` と `'2'` が入ります。
 * `http://hostname/index.php?r=post/view`: 必須の `$id` パラメータがリクエストで提供されていないため、 [[yii\web\BadRequestHttpException]] 例外が投げられます。
 * `http://hostname/index.php?r=post/view&id[]=123`: `$id` パラメータが予期しない配列値 `['123']` を受け取ろうとするため、[[yii\web\BadRequestHttpException]] 例外が投げられます。
@@ -397,7 +397,7 @@ class SiteController extends Controller
    * アクション ID に合致するアクションメソッドが見つかった場合は、インラインアクションが作成される。
    * 上記以外の場合は、[[yii\base\InvalidRouteException]] 例外が投げられる。
 3. コントローラは、アプリケーション、(コントローラがモジュールに属する場合は) モジュール、そしてコントローラの `beforeAction()` メソッドをこの順で呼び出す。
-   * どれか一つの呼び出しが false を返した場合は、残りのまだ呼ばれていない `beforeAction()` メソッドはスキップされ、アクションの実行はキャンセルされる。
+   * どれか一つの呼び出しが `false` を返した場合は、残りのまだ呼ばれていない `beforeAction()` メソッドはスキップされ、アクションの実行はキャンセルされる。
    * デフォルトでは、それぞれの `beforeAction()` メソッドは、ハンドラをアタッチすることが可能な `beforeAction` イベントをトリガする。
 4. コントローラがアクションを実行する。
    * アクションパラメータが解析されて、リクエストデータからデータが投入される。

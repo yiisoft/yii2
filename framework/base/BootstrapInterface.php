@@ -47,6 +47,8 @@ namespace yii\base;
  *
  * As you can see, you can register a bootstrapping class in terms of either a class name or a configuration class.
  *
+ * For more details and usage information on BootstrapInterface, see the [guide article on bootstrapping applications](guide:structure-applications).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */

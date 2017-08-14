@@ -4,7 +4,7 @@
 应用主体是管理 Yii 应用系统整体结构和生命周期的对象。
 每个Yii应用系统只能包含一个应用主体，应用主体在 [入口脚本](structure-entry-scripts.md) 中创建并能通过表达式 `\Yii::$app` 全局范围内访问。
 
-> 补充: 当我们说"一个应用"，它可能是一个应用主体对象，也可能是一个应用系统，是根据上下文来决定[译：中文为避免歧义，Application翻译为应用主体]。
+> Info: 当我们说"一个应用"，它可能是一个应用主体对象，也可能是一个应用系统，是根据上下文来决定[译：中文为避免歧义，Application翻译为应用主体]。
 
 Yii有两种应用主体: [[yii\web\Application|网页应用主体]] and
 [[yii\console\Application|控制台应用主体]]， 如名称所示，前者主要处理网页请求，后者处理控制台请求。
@@ -15,11 +15,11 @@ Yii有两种应用主体: [[yii\web\Application|网页应用主体]] and
 如下所示，当 [入口脚本](structure-entry-scripts.md) 创建了一个应用主体，它会加载一个 [配置](concept-configurations.md) 文件并传给应用主体。
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // 加载应用主体配置
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // 实例化应用主体、配置应用主体
 (new yii\web\Application($config))->run();
@@ -117,14 +117,15 @@ $config = require(__DIR__ . '/../config/web.php');
 ]
 ```
 
-> 补充: 如果模块ID和应用组件ID同名，优先使用应用组件ID，如果你想用模块ID，可以使用如下无名称函数返回模块ID。
+> Info: 如果模块ID和应用组件ID同名，优先使用应用组件ID，如果你想用模块ID，可以使用如下无名称函数返回模块ID。
+> 
 > ```php
-[
-    function () {
-        return Yii::$app->getModule('user');
-    },
-]
-```
+> [
+>     function () {
+>         return Yii::$app->getModule('user');
+>     },
+> ]
+> ```
 
 
 在启动阶段，每个组件都会实例化。如果组件类实现接口 [[yii\base\BootstrapInterface]],也会调用 [[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] 方法。
@@ -198,12 +199,10 @@ if (YII_ENV_DEV) {
 ```php
 [
     'controllerMap' => [
-        [
-            'account' => 'app\controllers\UserController',
-            'article' => [
-                'class' => 'app\controllers\PostController',
-                'enableCsrfValidation' => false,
-            ],
+        'account' => 'app\controllers\UserController',
+        'article' => [
+            'class' => 'app\controllers\PostController',
+            'enableCsrfValidation' => false,
         ],
     ],
 ]

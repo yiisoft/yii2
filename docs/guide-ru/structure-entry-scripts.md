@@ -34,13 +34,13 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
 // регистрация загрузчика классов Composer
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // подключение файла класса Yii
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // загрузка конфигурации приложения
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // создание и конфигурация приложения, а также вызов метода для обработки входящего запроса
 (new yii\web\Application($config))->run();
@@ -65,13 +65,13 @@ $config = require(__DIR__ . '/../config/web.php');
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 
 // регистрация загрузчика классов Composer
-require(__DIR__ . '/vendor/autoload.php');
+require __DIR__ . '/vendor/autoload.php';
 
 // подключение файла класса Yii
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
 // загрузка конфигурации приложения
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -85,11 +85,11 @@ exit($exitCode);
 
 * `YII_DEBUG`: указывает работает ли приложение в отладочном режиме. Находясь в отладочном режиме, приложение будет собирать
   больше информации в логи и покажет детальный стек вызовов если возникнет исключение. По этой причине, отладочный режим должен
-  быть использован только в процессе разработки. По-умолчанию значение `YII_DEBUG` равно false;
+  быть использован только в процессе разработки. По-умолчанию значение `YII_DEBUG` равно `false`;
 * `YII_ENV`: указывает в каком окружении запущено приложение. Данная тема подробно описана в разделе [Конфигурации](concept-configurations.md#environment-constants).
   По-умолчанию значение `YII_ENV` равно `'prod'`, означающие, что приложение запущено в производственном режиме;
 * `YII_ENABLE_ERROR_HANDLER`: указывает нужно ли включать имеющийся в Yii обработчик ошибок. По-умолчанию значение данной константы
-  равно true.
+  равно `true`.
 
 При определении константы, мы обычно используем следующий код:
 

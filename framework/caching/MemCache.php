@@ -53,6 +53,8 @@ use yii\base\InvalidConfigException;
  * In the above, two memcache servers are used: server1 and server2. You can configure more properties of
  * each server, such as `persistent`, `weight`, `timeout`. Please see [[MemCacheServer]] for available options.
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @property \Memcache|\Memcached $memcache The memcache (or memcached) object used by this cache component.
  * This property is read-only.
  * @property MemCacheServer[] $servers List of memcache server configurations. Note that the type of this
@@ -64,7 +66,7 @@ use yii\base\InvalidConfigException;
 class MemCache extends Cache
 {
     /**
-     * @var boolean whether to use memcached or memcache as the underlying caching extension.
+     * @var bool whether to use memcached or memcache as the underlying caching extension.
      * If true, [memcached](http://pecl.php.net/package/memcached) will be used.
      * If false, [memcache](http://pecl.php.net/package/memcache) will be used.
      * Defaults to false.
@@ -179,7 +181,7 @@ class MemCache extends Cache
             // $timeout is used for memcache versions that do not have $timeoutms parameter
             $timeout = (int) ($server->timeout / 1000) + (($server->timeout % 1000 > 0) ? 1 : 0);
             if ($paramCount === 9) {
-                $cache->addServer(
+                $cache->addserver(
                     $server->host,
                     $server->port,
                     $server->persistent,
@@ -191,7 +193,7 @@ class MemCache extends Cache
                     $server->timeout
                 );
             } else {
-                $cache->addServer(
+                $cache->addserver(
                     $server->host,
                     $server->port,
                     $server->persistent,
@@ -219,7 +221,7 @@ class MemCache extends Cache
             }
 
             if ($this->useMemcached) {
-                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached;
+                $this->_cache = $this->persistentId !== null ? new \Memcached($this->persistentId) : new \Memcached();
                 if ($this->username !== null || $this->password !== null) {
                     $this->_cache->setOption(\Memcached::OPT_BINARY_PROTOCOL, true);
                     $this->_cache->setSaslAuthData($this->username, $this->password);
@@ -228,7 +230,7 @@ class MemCache extends Cache
                     $this->_cache->setOptions($this->options);
                 }
             } else {
-                $this->_cache = new \Memcache;
+                $this->_cache = new \Memcache();
             }
         }
 
@@ -261,7 +263,7 @@ class MemCache extends Cache
      * Retrieves a value from cache with a specified key.
      * This is the implementation of the method declared in the parent class.
      * @param string $key a unique key identifying the cached value
-     * @return string|boolean the value stored in cache, false if the value is not in the cache or expired.
+     * @return mixed|false the value stored in cache, false if the value is not in the cache or expired.
      */
     protected function getValue($key)
     {
@@ -283,13 +285,16 @@ class MemCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param mixed $value the value to be cached.
+     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function setValue($key, $value, $duration)
     {
-        $duration = $this->trimDuration($duration);
+        // Use UNIX timestamp since it doesn't have any limitation
+        // @see http://php.net/manual/en/memcache.set.php
+        // @see http://php.net/manual/en/memcached.expiration.php
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->set($key, $value, $expire) : $this->_cache->set($key, $value, 0, $expire);
@@ -298,20 +303,23 @@ class MemCache extends Cache
     /**
      * Stores multiple key-value pairs in cache.
      * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
-     * @return array array of failed keys. Always empty in case of using memcached.
+     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @return array array of failed keys.
      */
     protected function setValues($data, $duration)
     {
-        $duration = $this->trimDuration($duration);
-
         if ($this->useMemcached) {
-            $this->_cache->setMulti($data, $duration > 0 ? $duration + time() : 0);
+            // Use UNIX timestamp since it doesn't have any limitation
+            // @see http://php.net/manual/en/memcache.set.php
+            // @see http://php.net/manual/en/memcached.expiration.php
+            $expire = $duration > 0 ? $duration + time() : 0;
 
-            return [];
-        } else {
-            return parent::setValues($data, $duration);
+            // Memcached::setMulti() returns boolean
+            // @see http://php.net/manual/en/memcached.setmulti.php
+            return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
         }
+
+        return parent::setValues($data, $duration);
     }
 
     /**
@@ -319,13 +327,16 @@ class MemCache extends Cache
      * This is the implementation of the method declared in the parent class.
      *
      * @param string $key the key identifying the value to be cached
-     * @param string $value the value to be cached
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param mixed $value the value to be cached
+     * @see [Memcache::set()](http://php.net/manual/en/memcache.set.php)
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     protected function addValue($key, $value, $duration)
     {
-        $duration = $this->trimDuration($duration);
+        // Use UNIX timestamp since it doesn't have any limitation
+        // @see http://php.net/manual/en/memcache.set.php
+        // @see http://php.net/manual/en/memcached.expiration.php
         $expire = $duration > 0 ? $duration + time() : 0;
 
         return $this->useMemcached ? $this->_cache->add($key, $value, $expire) : $this->_cache->add($key, $value, 0, $expire);
@@ -335,7 +346,7 @@ class MemCache extends Cache
      * Deletes a value with the specified key from cache
      * This is the implementation of the method declared in the parent class.
      * @param string $key the key of the value to be deleted
-     * @return boolean if no error happens during deletion
+     * @return bool if no error happens during deletion
      */
     protected function deleteValue($key)
     {
@@ -345,24 +356,10 @@ class MemCache extends Cache
     /**
      * Deletes all values from cache.
      * This is the implementation of the method declared in the parent class.
-     * @return boolean whether the flush operation was successful.
+     * @return bool whether the flush operation was successful.
      */
     protected function flushValues()
     {
         return $this->_cache->flush();
-    }
-
-    /**
-     * Trims duration to 30 days (2592000 seconds).
-     * @param integer $duration the number of seconds
-     * @return int the duration
-     */
-    protected function trimDuration($duration)
-    {
-        if ($duration > 2592000) {
-            Yii::warning('Duration has been truncated to 30 days due to Memcache/Memcached limitation.', __METHOD__);
-            return 2592000;
-        }
-        return $duration;
     }
 }

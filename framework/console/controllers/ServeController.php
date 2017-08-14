@@ -31,22 +31,21 @@ class ServeController extends Controller
      * @var int port to serve on.
      */
     public $port = 8080;
-
     /**
-     * @var string path or path alias to directory to serve
+     * @var string path or [path alias](guide:concept-aliases) to directory to serve
      */
     public $docroot = '@app/web';
-
     /**
      * @var string path to router script.
      * See https://secure.php.net/manual/en/features.commandline.webserver.php
      */
     public $router;
 
+
     /**
      * Runs PHP built-in web server
      *
-     * @param string $address address to serve on.  Either "host" or "host:port".
+     * @param string $address address to serve on. Either "host" or "host:port".
      *
      * @return int
      */
@@ -96,8 +95,21 @@ class ServeController extends Controller
     }
 
     /**
+     * @inheritdoc
+     * @since 2.0.8
+     */
+    public function optionAliases()
+    {
+        return array_merge(parent::optionAliases(), [
+            't' => 'docroot',
+            'p' => 'port',
+            'r' => 'router',
+        ]);
+    }
+
+    /**
      * @param string $address server address
-     * @return boolean if address is already in use
+     * @return bool if address is already in use
      */
     protected function isAddressTaken($address)
     {

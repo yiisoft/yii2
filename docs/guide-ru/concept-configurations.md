@@ -97,7 +97,7 @@ Yii::configure($object, $config);
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
     'components' => [
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -135,6 +135,29 @@ $config = [
 За более подробной документацией о настройках свойства `components` в конфигурации приложения обратитесь к главам
 [приложения](structure-applications.md) и [Service Locator](concept-service-locator.md).
 
+Начиная с версии 2.0.11, можно настраивать [контейнер зависимостей](concept-di-container.md) через конфигурацию
+приложения. Для этого используется свойство `container`:
+
+```php
+$config = [
+    'id' => 'basic',
+    'basePath' => dirname(__DIR__),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'container' => [
+        'definitions' => [
+            'yii\widgets\LinkPager' => ['maxButtonCount' => 5]
+        ],
+        'singletons' => [
+            // Конфигурация для единожды создающихся объектов
+        ]
+    ]
+];
+```
+
+Чтобы узнать о возможных значениях `definitions` и `singletons`, а также о реальных примерах использования,
+прочитайте подраздел [более сложное практическое применение](concept-di-container.md#advanced-practical-usage) раздела
+[Dependency Injection Container](concept-di-container.md).
+
 
 ### Конфигурации виджетов <span id="widget-configurations"></span>
 
@@ -155,7 +178,7 @@ echo Menu::widget([
 ]);
 ```
 
-Данный код создает виджет `Menu` и устанавливает параметр виджета `activeItems` в значение false.
+Данный код создает виджет `Menu` и устанавливает параметр виджета `activeItems` в значение `false`.
 Также устанавливается параметр `items`, состоящий из элементов меню.
 
 Обратите внимание что параметр `class` НЕ передается, так как полное имя уже указано.
@@ -171,8 +194,8 @@ echo Menu::widget([
 return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
-    'extensions' => require(__DIR__ . '/../vendor/yiisoft/extensions.php'),
-    'components' => require(__DIR__ . '/components.php'),
+    'extensions' => require __DIR__ . '/../vendor/yiisoft/extensions.php',
+    'components' => require __DIR__ . '/components.php',
 ];
 ```
 
@@ -210,7 +233,7 @@ return [
 Чтобы получить конфигурацию, хранящуюся в файле, достаточно подключить файл с помощью `require`:
 
 ```php
-$config = require('path/to/web.php');
+$config = require 'path/to/web.php';
 (new yii\web\Application($config))->run();
 ```
 
@@ -246,10 +269,10 @@ defined('YII_ENV') or define('YII_ENV', 'dev');
 
 `YII_ENV` может принимать следующие значения:
 
-- `prod`: окружение production, т.е. эксплуатационный режим сервера. Константа `YII_ENV_PROD` установлена в true.
+- `prod`: окружение production, т.е. эксплуатационный режим сервера. Константа `YII_ENV_PROD` установлена в `true`.
    Значение по умолчанию.
-- `dev`: окружение development, т.е. режим для разработки. Константа `YII_ENV_DEV` установлена в true.
-- `test`: окружение testing, т.е. режим для тестирования. Константа `YII_ENV_TEST` установлена в true.
+- `dev`: окружение development, т.е. режим для разработки. Константа `YII_ENV_DEV` установлена в `true`.
+- `test`: окружение testing, т.е. режим для тестирования. Константа `YII_ENV_TEST` установлена в `true`.
 
 Используя эти константы, вы можете задать в конфигурации значения параметров зависящие от текущего окружения.
 Например, чтобы включить [отладочную панель и отладчик](tool-debugger.md) в режиме разработки, вы можете использовать

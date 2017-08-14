@@ -7,8 +7,8 @@
 
 namespace yii\validators;
 
-use yii\base\InvalidConfigException;
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\base\Model;
 
 /**
@@ -32,6 +32,9 @@ use yii\base\Model;
  * > Note: This validator will not work with inline validation rules in case of usage outside the model scope,
  *   e.g. via [[validate()]] method.
  *
+ * > Note: EachValidator is meant to be used only in basic cases, you should consider usage of tabular input,
+ *   using several models for the more complex case.
+ *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.0.4
  */
@@ -39,7 +42,7 @@ class EachValidator extends Validator
 {
     /**
      * @var array|Validator definition of the validation rule, which should be used on array values.
-     * It should be specified in the same format as at [[yii\base\Model::rules()]], except it should not
+     * It should be specified in the same format as at [[\yii\base\Model::rules()]], except it should not
      * contain attribute list as the first element.
      * For example:
      *
@@ -48,15 +51,24 @@ class EachValidator extends Validator
      * ['match', 'pattern' => '/[a-z]/is']
      * ```
      *
-     * Please refer to [[yii\base\Model::rules()]] for more details.
+     * Please refer to [[\yii\base\Model::rules()]] for more details.
      */
     public $rule;
     /**
-     * @var boolean whether to use error message composed by validator declared via [[rule]] if its validation fails.
+     * @var bool whether to use error message composed by validator declared via [[rule]] if its validation fails.
      * If enabled, error message specified for this validator itself will appear only if attribute value is not an array.
      * If disabled, own error message value will be used always.
      */
     public $allowMessageFromRule = true;
+    /**
+     * @var bool whether to stop validation once first error among attribute value elements is detected.
+     * When enabled validation will produce single error message on attribute, when disabled - multiple
+     * error messages mya appear: one per each invalid value.
+     * Note that this option will affect only [[validateAttribute()]] value, while [[validateValue()]] will
+     * not be affected.
+     * @since 2.0.11
+     */
+    public $stopOnFirstError = true;
 
     /**
      * @var Validator validator instance.
@@ -104,9 +116,9 @@ class EachValidator extends Validator
                 $model = new Model(); // mock up context model
             }
             return Validator::createValidator($rule[0], $model, $this->attributes, array_slice($rule, 1));
-        } else {
-            throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
         }
+
+        throw new InvalidConfigException('Invalid validation rule: a rule must be an array specifying validator type.');
     }
 
     /**
@@ -115,19 +127,42 @@ class EachValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        $validator = $this->getValidator();
-        if ($validator instanceof FilterValidator && is_array($value)) {
-            $filteredValue = [];
-            foreach ($value as $k => $v) {
-                if (!$validator->skipOnArray || !is_array($v)) {
-                    $filteredValue[$k] = call_user_func($validator->filter, $v);
+        if (!is_array($value)) {
+            $this->addError($model, $attribute, $this->message, []);
+            return;
+        }
+
+        $validator = $this->getValidator($model); // ensure model context while validator creation
+
+        $detectedErrors = $model->getErrors($attribute);
+        $filteredValue = $model->$attribute;
+        foreach ($value as $k => $v) {
+            $model->clearErrors($attribute);
+            $model->$attribute = $v;
+            if (!$validator->skipOnEmpty || !$validator->isEmpty($v)) {
+                $validator->validateAttribute($model, $attribute);
+            }
+            $filteredValue[$k] = $model->$attribute;
+            if ($model->hasErrors($attribute)) {
+                if ($this->allowMessageFromRule) {
+                    $validationErrors = $model->getErrors($attribute);
+                    $detectedErrors = array_merge($detectedErrors, $validationErrors);
+                } else {
+                    $model->clearErrors($attribute);
+                    $this->addError($model, $attribute, $this->message, ['value' => $v]);
+                    $detectedErrors[] = $model->getFirstError($attribute);
+                }
+                $model->$attribute = $value;
+
+                if ($this->stopOnFirstError) {
+                    break;
                 }
             }
-            $model->$attribute = $filteredValue;
-        } else {
-            $this->getValidator($model); // ensure model context while validator creation
-            parent::validateAttribute($model, $attribute);
         }
+
+        $model->$attribute = $filteredValue;
+        $model->clearErrors($attribute);
+        $model->addErrors([$attribute => $detectedErrors]);
     }
 
     /**
@@ -141,9 +176,17 @@ class EachValidator extends Validator
 
         $validator = $this->getValidator();
         foreach ($value as $v) {
+            if ($validator->skipOnEmpty && $validator->isEmpty($v)) {
+                continue;
+            }
             $result = $validator->validateValue($v);
             if ($result !== null) {
-                return $this->allowMessageFromRule ? $result : [$this->message, []];
+                if ($this->allowMessageFromRule) {
+                    $result[1]['value'] = $v;
+                    return $result;
+                }
+
+                return [$this->message, ['value' => $v]];
             }
         }
 

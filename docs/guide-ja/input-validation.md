@@ -90,6 +90,28 @@ public function rules()
 
 属性は、上記の検証のステップに従って、`scenarios()` でアクティブな属性であると宣言されており、かつ、`rules()` で宣言された一つまたは複数のアクティブな規則と関連付けられている場合に、また、その場合に限って、検証されます。
 
+> Note: 規則に名前を付けると便利です。すなわち、
+>
+> ```php
+> public function rules()
+> {
+>     return [
+>         // ...
+>         'password' => [['password'], 'string', 'max' => 60],
+>     ];
+> }
+> ```
+>
+> これを子のモデルで使うことが出来ます。
+>
+> ```php
+> public function rules()
+> {
+>     $rules = parent::rules();
+>     unset($rules['password']);
+>     return $rules;
+> }
+
 
 ### エラーメッセージをカスタマイズする <span id="customizing-error-messages"></span>
 
@@ -129,11 +151,9 @@ public function rules()
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function($model) {
         return $model->country == 'USA';
     }],
-]
 ```
 
 [[yii\validators\Validator::when|when]] プロパティは、次のシグニチャを持つ PHP コーラブルを値として取ります。
@@ -142,7 +162,7 @@ public function rules()
 /**
  * @param Model $model 検証されるモデル
  * @param string $attribute 検証される属性
- * @return boolean 規則が適用されるか否か
+ * @return bool 規則が適用されるか否か
  */
 function ($model, $attribute)
 ```
@@ -152,13 +172,11 @@ function ($model, $attribute)
 例えば、
 
 ```php
-[
     ['state', 'required', 'when' => function ($model) {
         return $model->country == 'USA';
     }, 'whenClient' => "function (attribute, value) {
         return $('#country').val() == 'USA';
-    }"],
-]
+    }"]
 ```
 
 
@@ -171,10 +189,10 @@ function ($model, $attribute)
 次の例では、入力値の前後にある空白を除去して、空の入力値を null に変換することを、[trim](tutorial-core-validators.md#trim) および [default](tutorial-core-validators.md#default) のコアバリデータで行っています。
 
 ```php
-[
+return [
     [['username', 'email'], 'trim'],
     [['username', 'email'], 'default'],
-]
+];
 ```
 
 もっと汎用的な [filter](tutorial-core-validators.md#filter) バリデータを使って、もっと複雑なデータフィルタリングをすることも出来ます。
@@ -189,13 +207,13 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     // 空の時は "username" と "email" を null にする
     [['username', 'email'], 'default'],
 
     // 空の時は "level" を 1 にする
     ['level', 'default', 'value' => 1],
-]
+];
 ```
 
 デフォルトでは、入力値が空であると見なされるのは、それが、空文字列であるか、空配列であるか、null であるときです。
@@ -203,14 +221,14 @@ HTML フォームから入力データが送信されたとき、入力値が空
 例えば、
 
 ```php
-[
+return [
     ['agree', 'required', 'isEmpty' => function ($value) {
         return empty($value);
     }],
-]
+];
 ```
 
-> Note|注意: たいていのバリデータは、[[yii\base\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
+> Note: たいていのバリデータは、[[yii\validators\Validator::skipOnEmpty]] プロパティがデフォルト値 `true` を取っている場合は、空の入力値を処理しません。
   そのようなバリデータは、関連付けられた属性が空の入力値を受け取ったときは、検証の過程ではスキップされるだけになります。
   [コアバリデータ](tutorial-core-validators.md) の中では、`captcha`、`default`、`filter`、`required`、そして `trim` だけが空の入力値を処理します。
 
@@ -232,7 +250,7 @@ if ($validator->validate($email, $error)) {
 }
 ```
 
-> Note|注意: 全てのバリデータがこの種の検証をサポートしている訳ではありません。
+> Note: 全てのバリデータがこの種の検証をサポートしている訳ではありません。
   その一例が [unique](tutorial-core-validators.md#unique) コアバリデータであり、これはモデルとともに使用されることだけを前提にして設計されています。
 
 いくつかの値に対して複数の検証を実行する必要がある場合は、属性と規則の両方をその場で宣言することが出来る [[yii\base\DynamicModel]] を使うことが出来ます。
@@ -293,8 +311,10 @@ Yii のリリースに含まれている [コアバリデータ](tutorial-core-v
 /**
  * @param string $attribute 現在検証されている属性
  * @param mixed $params 規則に与えられる "params" の値
+ * @param \yii\validators\InlineValidator 関係する InlineValidator のインスタンス。
+ * このパラメータは、バージョン 2.0.11 以降で利用可能。
  */
-function ($attribute, $params)
+function ($attribute, $params, $validator)
 ```
 
 属性が検証に失敗した場合は、メソッド/関数 は [[yii\base\Model::addError()]] を呼んでエラーメッセージをモデルに保存し、後で読み出してエンドユーザに表示することが出来るようにしなければなりません。
@@ -316,7 +336,7 @@ class MyForm extends Model
             ['country', 'validateCountry'],
 
             // 無名関数として定義されるインラインバリデータ
-            ['token', function ($attribute, $params) {
+            ['token', function ($attribute, $params, $validator) {
                 if (!ctype_alnum($this->$attribute)) {
                     $this->addError($attribute, 'トークンは英数字で構成しなければなりません。');
                 }
@@ -324,7 +344,7 @@ class MyForm extends Model
         ];
     }
 
-    public function validateCountry($attribute, $params)
+    public function validateCountry($attribute, $params, $validator)
     {
         if (!in_array($this->$attribute, ['USA', 'Web'])) {
             $this->addError($attribute, '国は "USA" または "Web" でなければなりません。');
@@ -333,7 +353,15 @@ class MyForm extends Model
 }
 ```
 
-> Note|注意: デフォルトでは、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかの検証規則に失敗したりしている場合には、適用されません。
+> Note: バージョン 2.0.11 以降では、代わりに、[[yii\validators\InlineValidator::addError()]] を使ってエラーメッセージを追加することが出来ます。
+> そうすれば、エラーメッセージはそのまま [[yii\i18n\I18N::format()]] を使ってフォーマットされます。
+> 属性のラベルと値を参照するためには、それぞれ、`{attribute}` と `{value}` を使ってください(手作業で取得する必要はありません)。
+>
+> ```php
+> $validator->addError($this, $attribute, 'The value "{value}" is not acceptable for {attribute}.');
+> ```
+
+> Note: デフォルトでは、インラインバリデータは、関連付けられている属性が空の入力値を受け取ったり、既に何らかの検証規則に失敗したりしている場合には、適用されません。
 > 規則が常に適用されることを保証したい場合は、規則の宣言において [[yii\validators\Validator::skipOnEmpty|skipOnEmpty]] および/または [[yii\validators\Validator::skipOnError|skipOnError]] のプロパティを false に設定することが出来ます。
 > 例えば、
 >
@@ -400,13 +428,128 @@ class EntryForm extends Model
 }
 ```
 
+## 複数の属性の検証 <span id="multiple-attributes-validation"></span>
+
+時として、バリデータが複数の属性に関係する場合があります。次のようなフォームを考えてみてください。
+
+```php
+class MigrationForm extends \yii\base\Model
+{
+    /**
+     * 成人一人のための最低限の生活費
+     */
+    const MIN_ADULT_FUNDS = 3000;
+    /**
+     * こども一人のための最低限の生活費
+     */
+    const MIN_CHILD_FUNDS = 1500;
+
+    public $personalSalary;   // 給与
+    public $spouseSalary;     // 配偶者の給与
+    public $childrenCount;    // こどもの数
+    public $description;
+
+    public function rules()
+    {
+        return [
+            [['personalSalary', 'description'], 'required'],
+            [['personalSalary', 'spouseSalary'], 'integer', 'min' => self::MIN_ADULT_FUNDS],
+            ['childrenCount', 'integer', 'min' => 0, 'max' => 5],
+            [['spouseSalary', 'childrenCount'], 'default', 'value' => 0],
+            ['description', 'string'],
+        ];
+    }
+}
+```
+
+### バリデータを作成する <span id="multiple-attributes-validator"></span>
+
+家族の収入が子ども達のために十分であるかどうかをチェックする必要があるとしましょう。
+そのためには、`childrenCount` が 1 以上である場合にのみ実行される `validateChildrenFunds` というインラインバリデータを作れば良いわけです。
+
+検証されるすべての属性 (`['personalSalary', 'spouseSalary', 'childrenCount']`) にこのバリデータをアタッチすることは出来ない、ということに注意してください。
+そのようにすると、同じバリデータが属性ごとに (合計で三回) 走ることになりますが、
+属性のセット全体に対してこのバリデータを一度だけ走らせれば十分なのです。
+
+これらの属性のどれを使っても構いません (あるいは、もっとも関係が深いと思うものを使ってください)。
+
+```php
+['childrenCount', 'validateChildrenFunds', 'when' => function ($model) {
+    return $model->childrenCount > 0;
+}],
+```
+
+`validateChildrenFunds` の実装は次のようにすることが出来ます。
+
+```php
+public function validateChildrenFunds($attribute, $params)
+{
+    $totalSalary = $this->personalSalary + $this->spouseSalary;
+    // 配偶者の給与が指定されているときは、成人の最低生活費を倍にする
+    $minAdultFunds = $this->spouseSalary ? self::MIN_ADULT_FUNDS * 2 : self::MIN_ADULT_FUNDS;
+    $childFunds = $totalSalary - $minAdultFunds;
+    if ($childFunds / $this->childrenCount < self::MIN_CHILD_FUNDS) {
+        $this->addError('childrenCount', '子どもの数に対して給与が不足しています。');
+    }
+}
+```
+
+この検証は属性一つだけに関係するものではないので、`$attribute` のパラメータは無視することが出来ます。
+
+
+### エラーメッセージを追加する <span id="multiple-attributes-errors"></span>
+
+複数の属性の場合のエラーメッセージの追加は、フォームをどのように設計するかによって異なってきます。
+
+- もっとも関係が深いとあなたが思うフィールドを選んで、その属性にエラーメッセージを追加する。
+
+```php
+$this->addError('childrenCount', '子どもの数に対して給与が不足しています。');
+```
+
+- 重要な複数の属性、または、すべての属性を選んで、同じエラーメッセージを追加する。
+  メッセージを独立した変数に格納してから `addError` に渡せば、コードを DRY に保つことが出来ます。
+
+```php
+$message = '子どもの数に対して給与が不足しています。';
+$this->addError('personalSalary', $message);
+$this->addError('wifeSalary', $message);
+$this->addError('childrenCount', $message);
+```
+
+あるいは、ループを使います。
+
+```php
+$attributes = ['personalSalary, 'wifeSalary', 'childrenCount'];
+foreach ($attributes as $attribute) {
+    $this->addError($attribute, '子どもの数に対して給与が不足しています。');
+}
+```
+
+- (特定の属性に結び付かない) 共通のエラーメッセージを追加する。
+  その時点では属性の存在はチェックされませんので、存在しない属性の名前、例えば `*` を使ってエラーメッセージを追加することが出来ます。
+
+```php
+$this->addError('*', '子どもの数に対して給与が不足しています。');
+```
+
+結果として、フォームのフィールドの近くにはこのエラーメッセージは表示されません。
+これを表示するためには、ビューにエラーサマリーを含めます。
+
+```php
+<?= $form->errorSummary($model) ?>
+```
+
+> Note: 複数の属性を一度に検証するバリデータを作成する方法が [community cookbook](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-validator-multiple-attributes.md) で分り易く解説されています。.
+
+
 ## クライアント側での検証 <span id="client-side-validation"></span>
 
 エンドユーザが HTML フォームで値を入力する際には、JavaScript に基づくクライアント側での検証を提供することが望まれます。
 というのは、クライアント側での検証は、ユーザが入力のエラーを早く見つけることが出来るようにすることによって、より良いユーザ体験を提供するものだからです。
 あなたも、サーバ側での検証 *に加えて* クライアント側での検証をサポートするバリデータを使用したり実装したりすることが出来ます。
 
-> Info|情報: クライアント側での検証は望ましいものですが、不可欠なものではありません。
+> Info: クライアント側での検証は望ましいものですが、不可欠なものではありません。
   その主たる目的は、ユーザにより良い体験を提供することにあります。
   エンドユーザから来る入力値と同じように、クライアント側での検証を決して信用してはいけません。
   この理由により、これまでの項で説明したように、常に [[yii\base\Model::validate()]] を呼び出してサーバ側での検証を実行しなければなりません。
@@ -467,10 +610,26 @@ class LoginForm extends Model
 舞台裏では、[[yii\widgets\ActiveForm]] がモデルで宣言されている検証規則を読んで、クライアント側の検証をサポートするバリデータのために、適切な JavaScript コードを生成します。
 ユーザが入力フィールドの値を変更したりフォームを送信したりすると、クライアント側の検証の JavaScript が起動されます。
 
-クライアント側の検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]] プロパティを false に設定することが出来ます。
+クライアント側の検証を完全に無効にしたい場合は、[[yii\widgets\ActiveForm::enableClientValidation]] プロパティを `false` に設定することが出来ます。
 また、個々の入力フィールドごとにクライアント側の検証を無効にしたい場合には、入力フィールドの [[yii\widgets\ActiveField::enableClientValidation]] プロパティを false に設定することが出来ます。
 `eanbleClientValidation` が入力フィールドのレベルとフォームのレベルの両方で構成されている場合は前者が優先されます。
 
+> Info: バージョン 2.0.11 以降、[[yii\validators\Validator]] を拡張する全てのバリデータは、
+> クライアント側のオプションを独立したメソッド - [[yii\validators\Validator::getClientOptions()]] から受け取るようになりました。
+> これを使うと、次のことが可能になります。
+>
+> - 独自のクライアント側検証を実装しながら、サーバ側検証のオプションとの同期はそのまま残す
+> - 特殊な要求に合うように拡張またはカスタマイズする
+>
+> ```php
+> public function getClientOptions($model, $attribute)
+> {
+>     $options = parent::getClientOptions($model, $attribute);
+>     // ここで $options を修正
+>
+>     return $options;
+> }
+> ```
 
 ### クライアント側の検証を実装する <span id="implementing-client-side-validation"></span>
 
@@ -512,7 +671,7 @@ class StatusValidator extends Validator
         $statuses = json_encode(Status::find()->select('id')->asArray()->column());
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
-if ($.inArray(value, $statuses) > -1) {
+if ($.inArray(value, $statuses) === -1) {
     messages.push($message);
 }
 JS;
@@ -520,7 +679,7 @@ JS;
 }
 ```
 
-> Tip|ヒント: 上記のコード例の主たる目的は、クライアント側の検証をサポートする方法を説明することにあります。
+> Tip: 上記のコード例の主たる目的は、クライアント側の検証をサポートする方法を説明することにあります。
 > 実際の仕事では、[in](tutorial-core-validators.md#in) コアバリデータを使って、同じ目的を達することが出来ます。
 > 次のように検証規則を書けばよいのです。
 >
@@ -529,6 +688,9 @@ JS;
 >     ['status', 'in', 'range' => Status::find()->select('id')->asArray()->column()],
 > ]
 > ```
+
+> Tip: クライアント側の検証を手動で操作する必要がある場合、すなわち、動的にフィールドを追加したり、何か特殊な UI ロジックを実装する場合は、
+> Yii 2.0 Cookbook の [Working with ActiveForm via JavaScript](https://github.com/samdark/yii2-cookbook/blob/master/book/forms-activeform-js.md) を参照してください。
 
 ### Deferred 検証 <span id="deferred-validation"></span>
 
@@ -577,7 +739,7 @@ JS;
 }
 ```
 
-> Note|注意: 属性が検証された後に、`resolve()` メソッドを呼び出さなければなりません。
+> Note: 属性が検証された後に、`resolve()` メソッドを呼び出さなければなりません。
   そうしないと、主たるフォームの検証が完了しません。
 
 簡潔に記述できるように、`deferred` 配列はショートカットメソッド `add()` を装備しており、このメソッドを使うと、自動的に Deferred オブジェクトを作成して `deferred` 配列に追加することが出来ます。
@@ -638,7 +800,7 @@ $form = ActiveForm::begin([
 ]);
 ```
 
-> Note|注意: `enableAjaxValidation` プロパティがインプットフィールドのレベルとフォームのレベルの両方で構成された場合は、前者が優先されます。
+> Note: `enableAjaxValidation` プロパティがインプットフィールドのレベルとフォームのレベルの両方で構成された場合は、前者が優先されます。
 
 また、サーバ側では、AJAX 検証のリクエストを処理できるように準備しておく必要があります。
 これは、コントローラのアクションにおいて、次のようなコード断片を使用することで達成できます。
@@ -653,5 +815,7 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 上記のコードは、現在のリクエストが AJAX であるかどうかをチェックします。
 もし AJAX であるなら、リクエストに応えて検証を実行し、エラーを JSON 形式で返します。
 
-> Info|情報: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
+> Info: AJAX 検証を実行するためには、[Deferred 検証](#deferred-validation) を使うことも出来ます。
   しかし、ここで説明された AJAX 検証の機能の方がより体系化されており、コーディングの労力も少なくて済みます。
+
+`enableClientValidation` と `enableAjaxValidation` が両方とも真に設定されているときは、クライアント検証が成功した後でだけ AJAX 検証が起動されます。

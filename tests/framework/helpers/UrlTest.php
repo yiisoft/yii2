@@ -1,10 +1,20 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
 namespace yiiunit\framework\helpers;
 
+use Yii;
 use yii\base\Action;
 use yii\base\Module;
 use yii\helpers\Url;
 use yii\web\Controller;
+use yii\web\UrlManager;
+use yii\widgets\Menu;
+use yiiunit\framework\filters\stubs\UserIdentity;
 use yiiunit\TestCase;
 
 /**
@@ -22,16 +32,25 @@ class UrlTest extends TestCase
                     'class' => 'yii\web\Request',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
-                    'url' => '/base/index.php&r=site%2Fcurrent&id=42'
+                    'url' => '/base/index.php&r=site%2Fcurrent&id=42',
                 ],
                 'urlManager' => [
                     'class' => 'yii\web\UrlManager',
                     'baseUrl' => '/base',
                     'scriptUrl' => '/base/index.php',
                     'hostInfo' => 'http://example.com/',
-                ]
+                ],
+                'user' => [
+                    'identityClass' => UserIdentity::className(),
+                ],
             ],
         ], '\yii\web\Application');
+    }
+
+    protected function tearDown()
+    {
+        Yii::$app->getSession()->removeAll();
+        parent::tearDown();
     }
 
     /**
@@ -64,8 +83,11 @@ class UrlTest extends TestCase
 
         // If the route is an empty string, the current route will be used;
         $this->assertEquals('/base/index.php?r=page%2Fview', Url::toRoute(''));
+        // a slash will be an absolute route representing the default route
+        $this->assertEquals('/base/index.php?r=', Url::toRoute('/'));
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fview', Url::toRoute('', true));
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fview', Url::toRoute('', 'https'));
+        $this->assertEquals('//example.com/base/index.php?r=page%2Fview', Url::toRoute('', ''));
 
         // If the route contains no slashes at all, it is considered to be an action ID of the current controller and
         // will be prepended with uniqueId;
@@ -73,6 +95,7 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20]));
         $this->assertEquals('http://example.com/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20], true));
         $this->assertEquals('https://example.com/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20], 'https'));
+        $this->assertEquals('//example.com/base/index.php?r=page%2Fedit&id=20', Url::toRoute(['edit', 'id' => 20], ''));
 
         // If the route has no leading slash, it is considered to be a route relative
         // to the current module and will be prepended with the module's uniqueId.
@@ -81,6 +104,7 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42]));
         $this->assertEquals('http://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], true));
         $this->assertEquals('https://example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], 'https'));
+        $this->assertEquals('//example.com/base/index.php?r=stats%2Fuser%2Fview&id=42', Url::toRoute(['user/view', 'id' => 42], ''));
 
         // alias support
         \Yii::setAlias('@userView', 'user/view');
@@ -90,7 +114,7 @@ class UrlTest extends TestCase
         // In case there is no controller, an exception should be thrown for relative route
         $this->removeMockedAction();
 
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Url::toRoute('site/view');
     }
 
@@ -104,6 +128,17 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php?r=page%2Fview&id=20&name=test', Url::current(['id' => 20]));
 
         $this->assertEquals('/base/index.php?r=page%2Fview&name=test', Url::current(['id' => null]));
+    }
+
+    public function testPrevious()
+    {
+        Yii::$app->getUser()->login(UserIdentity::findIdentity('user1'));
+
+        $this->assertNull(Url::previous('notExistedPage'));
+
+        $this->assertNull(Url::previous(Yii::$app->getUser()->returnUrlParam));
+
+        $this->assertEquals('/base/index.php', Url::previous());
     }
 
     public function testTo()
@@ -176,12 +211,53 @@ class UrlTest extends TestCase
         $this->assertEquals('#test', Url::to('@web5'));
         $this->assertEquals('http://example.com/#test', Url::to('@web5', true));
         $this->assertEquals('https://example.com/#test', Url::to('@web5', 'https'));
+        $this->assertEquals('//example.com/#test', Url::to('@web5', ''));
+
+        // @see https://github.com/yiisoft/yii2/issues/13156
+        \Yii::setAlias('@cdn', '//cdn.example.com');
+        $this->assertEquals('http://cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', 'http'));
+        $this->assertEquals('//cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', ''));
+        $this->assertEquals('https://cdn.example.com/images/logo.gif', Url::to('@cdn/images/logo.gif', 'https'));
+        \Yii::setAlias('@cdn', null);
 
         //In case there is no controller, throw an exception
         $this->removeMockedAction();
 
-        $this->setExpectedException('yii\base\InvalidParamException');
+        $this->expectException('yii\base\InvalidParamException');
         Url::to(['site/view']);
+    }
+
+    /**
+     * https://github.com/yiisoft/yii2/issues/11925
+     */
+    public function testToWithSuffix()
+    {
+        Yii::$app->set('urlManager', [
+            'class' => 'yii\web\UrlManager',
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'cache' => null,
+            'rules' => [
+                '<controller:\w+>/<id:\d+>' => '<controller>/view',
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
+            'baseUrl' => '/',
+            'scriptUrl' => '/index.php',
+            'suffix' => '.html',
+        ]);
+        $url = Yii::$app->urlManager->createUrl(['/site/page', 'view' => 'about']);
+        $this->assertEquals('/site/page.html?view=about', $url);
+
+        $url = Url::to(['/site/page', 'view' => 'about']);
+        $this->assertEquals('/site/page.html?view=about', $url);
+
+        $output = Menu::widget([
+            'items' => [
+                ['label' => 'Test', 'url' => ['/site/page', 'view' => 'about']],
+            ],
+        ]);
+        $this->assertRegExp('~<a href="/site/page.html\?view=about">~', $output);
     }
 
     public function testBase()
@@ -190,6 +266,7 @@ class UrlTest extends TestCase
         $this->assertEquals('/base', Url::base());
         $this->assertEquals('http://example.com/base', Url::base(true));
         $this->assertEquals('https://example.com/base', Url::base('https'));
+        $this->assertEquals('//example.com/base', Url::base(''));
     }
 
     public function testHome()
@@ -197,6 +274,7 @@ class UrlTest extends TestCase
         $this->assertEquals('/base/index.php', Url::home());
         $this->assertEquals('http://example.com/base/index.php', Url::home(true));
         $this->assertEquals('https://example.com/base/index.php', Url::home('https'));
+        $this->assertEquals('//example.com/base/index.php', Url::home(''));
     }
 
     public function testCanonical()

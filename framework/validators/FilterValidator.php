@@ -38,17 +38,20 @@ class FilterValidator extends Validator
      * The function signature must be as follows,
      *
      * ```php
-     * function foo($value) { return $newValue; }
+     * function foo($value) {
+     *     // compute $newValue here
+     *     return $newValue;
+     * }
      * ```
      */
     public $filter;
     /**
-     * @var boolean whether the filter should be skipped if an array input is given.
+     * @var bool whether the filter should be skipped if an array input is given.
      * If true and an array input is given, the filter will not be applied.
      */
     public $skipOnArray = false;
     /**
-     * @var boolean this property is overwritten to be false so that this validator will
+     * @var bool this property is overwritten to be false so that this validator will
      * be applied when the value being validated is empty.
      */
     public $skipOnEmpty = false;
@@ -85,13 +88,22 @@ class FilterValidator extends Validator
             return null;
         }
 
+        ValidationAsset::register($view);
+        $options = $this->getClientOptions($model, $attribute);
+
+        return 'value = yii.validation.trim($form, attribute, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getClientOptions($model, $attribute)
+    {
         $options = [];
         if ($this->skipOnEmpty) {
             $options['skipOnEmpty'] = 1;
         }
 
-        ValidationAsset::register($view);
-
-        return 'value = yii.validation.trim($form, attribute, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ');';
+        return $options;
     }
 }

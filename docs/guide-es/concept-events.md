@@ -1,4 +1,4 @@
-﻿Eventos
+Eventos
 =======
 
 Los eventos permiten inyectar código dentro de otro código existente en ciertos puntos de ejecución. Se pueden adjuntar
@@ -96,7 +96,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 De forma predeterminada, cada nuevo gestor añadido se pone a la cola de la lista de gestores del evento. Por lo tanto,
 el gestor se ejecutará en el último lugar cuando se lance el evento. Para insertar un nuevo gestor al principio de la
 cola de gestores para que sea ejecutado primero, se debe llamar a [[yii\base\Component::on()]], pasando al cuarto
-parámetro `$append` el valor false:
+parámetro `$append` el valor `false`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -130,7 +130,7 @@ class Foo extends Component
 
 Con el código anterior, cada llamada a `bar()` lanzará un evento llamado `hello`
 
-> Consejo: Se recomienda usar las constantes de clase para representar nombres de eventos. En el anterior ejemplo, la
+> Tip: Se recomienda usar las constantes de clase para representar nombres de eventos. En el anterior ejemplo, la
   constante `EVENT_HELLO` representa el evento `hello`. Este enfoque proporciona tres beneficios. Primero, previene
   errores tipográficos. Segundo, puede hacer que los IDEs reconozcan los eventos en las funciones de auto-completado.
   Tercero, se puede ver que eventos soporta una clase simplemente revisando la declaración de constantes.
@@ -237,7 +237,7 @@ invocación de los gestores de eventos a nivel de clase.
 use yii\base\Event;
 
 Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // displays "app\models\Foo"
+    var_dump($event->sender);  // displays "null"
 });
 
 Event::trigger(Foo::className(), Foo::EVENT_HELLO);
@@ -246,9 +246,9 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 Tenga en cuenta que en este caso, el `$event->sender` hace referencia al nombre de la clase que lanza el evento en
 lugar de a la instancia del objeto.
 
-> Nota: Debido a que los gestores a nivel de clase responderán a los eventos lanzados por cualquier instancia de la
+> Note: Debido a que los gestores a nivel de clase responderán a los eventos lanzados por cualquier instancia de la
 clase, o cualquier clase hija, se debe usar con cuidado, especialmente en las clases de bajo nivel (low-level), tales
-como [[yii\base\Object]].
+como [[yii\base\BaseObject]].
 
 Para desadjuntar un gestor de eventos a nivel de clase, se tiene que llamar a [[yii\base\Event::off()]]. Por ejemplo:
 

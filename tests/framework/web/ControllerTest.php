@@ -8,87 +8,88 @@
 namespace yiiunit\framework\web;
 
 use Yii;
-use yiiunit\TestCase;
-use yiiunit\framework\di\stubs\Qux;
-use yiiunit\framework\web\stubs\Bar;
-use yiiunit\framework\web\stubs\OtherQux;
 use yii\base\InlineAction;
+use yii\web\Response;
+use yiiunit\TestCase;
 
 /**
  * @group web
  */
 class ControllerTest extends TestCase
 {
-
     public function testBindActionParams()
     {
-        $this->mockApplication([
-            'components'=>[
-                'barBelongApp'=>[
-                    'class'=>  Bar::className(),
-                    'foo'=>'belong_app'
-                ],
-                'quxApp'=>[
-                    'class' => OtherQux::className(),
-                    'b' => 'belong_app'
-                ]
-            ]
-        ]);
+        $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
 
-        $controller = new FakeController('fake', Yii::$app);
-        $aksi1 = new InlineAction('aksi1', $controller, 'actionAksi1');
-        $aksi2 = new InlineAction('aksi2', $controller, 'actionAksi2');
-        $aksi3 = new InlineAction('aksi3', $controller, 'actionAksi3');
-
-        Yii::$container->set('yiiunit\framework\di\stubs\QuxInterface', [
-            'class' => Qux::className(),
-            'a' => 'D426'
-        ]);
-        Yii::$container->set(Bar::className(),[
-            'foo' => 'independent'
-        ]);
-        
-        $params = ['fromGet'=>'from query params','q'=>'d426','validator'=>'avaliable'];
-
-        list($bar, $fromGet, $other) = $controller->bindActionParams($aksi1, $params);
-        $this->assertTrue($bar instanceof Bar);
-        $this->assertNotEquals($bar, Yii::$app->barBelongApp);
-        $this->assertEquals('independent', $bar->foo);
+        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'validator' => 'avaliable'];
+        list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
         $this->assertEquals('from query params', $fromGet);
         $this->assertEquals('default', $other);
 
-        list($barBelongApp, $qux) = $controller->bindActionParams($aksi2, $params);
-        $this->assertTrue($barBelongApp instanceof Bar);
-        $this->assertEquals($barBelongApp, Yii::$app->barBelongApp);
-        $this->assertEquals('belong_app', $barBelongApp->foo);
-        $this->assertTrue($qux instanceof Qux);
-        $this->assertEquals('D426', $qux->a);
+        $params = ['fromGet' => 'from query params', 'q' => 'd426', 'other' => 'avaliable'];
+        list($fromGet, $other) = $this->controller->bindActionParams($aksi1, $params);
+        $this->assertEquals('from query params', $fromGet);
+        $this->assertEquals('avaliable', $other);
+    }
 
-        list($quxApp) = $controller->bindActionParams($aksi3, $params);
-        $this->assertTrue($quxApp instanceof OtherQux);
-        $this->assertEquals($quxApp, Yii::$app->quxApp);
-        $this->assertEquals('belong_app', $quxApp->b);
+    public function testAsJson()
+    {
+        $data = [
+            'test' => 123,
+            'example' => 'data',
+        ];
+        $result = $this->controller->asJson($data);
+        $this->assertInstanceOf('yii\web\Response', $result);
+        $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
+        $this->assertEquals(Response::FORMAT_JSON, $result->format);
+        $this->assertEquals($data, $result->data);
+    }
 
-        $result = $controller->runAction('aksi4', $params);
-        $this->assertEquals(['independent', 'other_qux', 'd426'], $result);
+    public function testAsXml()
+    {
+        $data = [
+            'test' => 123,
+            'example' => 'data',
+        ];
+        $result = $this->controller->asXml($data);
+        $this->assertInstanceOf('yii\web\Response', $result);
+        $this->assertSame(Yii::$app->response, $result, 'response should be the same as Yii::$app->response');
+        $this->assertEquals(Response::FORMAT_XML, $result->format);
+        $this->assertEquals($data, $result->data);
+    }
 
-        $result = $controller->runAction('aksi5', $params);
-        $this->assertEquals(['d426', 'independent', 'other_qux'], $result);
+    public function testRedirect()
+    {
+        $_SERVER['REQUEST_URI'] = 'http://test-domain.com/';
+        $this->assertEquals($this->controller->redirect('')->headers->get('location'), '/');
+        $this->assertEquals($this->controller->redirect('http://some-external-domain.com')->headers->get('location'), 'http://some-external-domain.com');
+        $this->assertEquals($this->controller->redirect('/')->headers->get('location'), '/');
+        $this->assertEquals($this->controller->redirect('/something-relative')->headers->get('location'), '/something-relative');
+        $this->assertEquals($this->controller->redirect(['/'])->headers->get('location'), '/index.php?r=');
+        $this->assertEquals($this->controller->redirect(['view'])->headers->get('location'), '/index.php?r=fake%2Fview');
+        $this->assertEquals($this->controller->redirect(['/controller'])->headers->get('location'), '/index.php?r=controller');
+        $this->assertEquals($this->controller->redirect(['/controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
+        $this->assertEquals($this->controller->redirect(['//controller/index'])->headers->get('location'), '/index.php?r=controller%2Findex');
+        $this->assertEquals($this->controller->redirect(['//controller/index', 'id' => 3])->headers->get('location'), '/index.php?r=controller%2Findex&id=3');
+        $this->assertEquals($this->controller->redirect(['//controller/index', 'id_1' => 3, 'id_2' => 4])->headers->get('location'), '/index.php?r=controller%2Findex&id_1=3&id_2=4');
+        $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
+    }
 
-        $result = $controller->runAction('aksi6', $params);
-        $this->assertEquals(['d426', false, true], $result);
-        
-        // Manually inject an instance of \StdClass
-        // In this case we don't want a newly created instance, but use the existing one
-        $stdClass = new \StdClass;
-        $stdClass->test = 'dummy';
-        $result = $controller->runAction('aksi7', array_merge($params, ['validator' => $stdClass]));
-        $this->assertEquals(['d426', 'dummy'], $result);
-        
-        // Manually inject a string instead of an instance of \StdClass
-        // Since this is wrong usage, we expect a new instance of the type hinted \StdClass anyway
-        $stdClass = 'string';
-        $result = $controller->runAction('aksi8', array_merge($params, ['validator' => $stdClass]));
-        $this->assertEquals(['d426', 'object'], $result);
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->controller = new FakeController('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
     }
 }

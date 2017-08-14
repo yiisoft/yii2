@@ -8,19 +8,28 @@ Yii は、全ての領域にわたる国際化機能を提供し、メッセー�
 
 ## ロケールと言語 <span id="locale-language"></span>
 
+### ロケール
+
 ロケールとは、ユーザの言語、国、そして、ユーザが彼らのユーザインタフェイスにおいて目にすることを期待するすべての変異形式を定義する一連のパラメータです。
 ロケールは、通常、言語 ID と地域 ID から成るロケール ID によって定義されます。
-例えば、`en-US` は、英語とアメリカ合衆国のロケールを意味します。
+
+例えば、`en-US` という ID は、「英語とアメリカ合衆国」というロケールを意味します。
+
 Yii アプリケーションで使用される全てのロケール ID は、一貫性のために、`ll-CC` の形式に正規化されなければなりません。
 ここで `ll` は [ISO-639](http://www.loc.gov/standards/iso639-2/) に従った小文字二つまたは三つの言語コードであり、`CC` は [ISO-3166](http://www.iso.org/iso/en/prods-services/iso3166ma/02iso-3166-code-lists/list-en1.html) に従った二文字の国コードです。
 ロケールに関する更なる詳細は [ICU プロジェクトのドキュメント project](http://userguide.icu-project.org/locale#TOC-The-Locale-Concept) に述べられています。
 
+### 言語
+
 Yii では、"言語" という用語でロケールに言及することがしばしばあります。
 
-Yii のアプリケーションでは二つの言語を使用します。
-すなわち、[[yii\base\Application::$sourceLanguage|ソース言語]] と [[yii\base\Application::$language|ターゲット言語]] です。
-前者はソースコード中のテキストメッセージが書かれている言語を意味し、後者はコンテントをエンドユーザに表示するのに使用されるべき言語を指します。
+Yii のアプリケーションでは二つの言語を使用します。すなわち、
+* [[yii\base\Application::$sourceLanguage|ソース言語]] : ソースコード中のテキストメッセージが書かれている言語。
+* [[yii\base\Application::$language|ターゲット言語]] : コンテントをエンドユーザに表示するのに使用されるべき言語。
+
 いわゆるメッセージ翻訳サービスは、主として、テキストメッセージをソース言語からターゲット言語に翻訳するものです。
+
+### 構成
 
 アプリケーションの言語は、アプリケーションの構成情報で次のように構成することが出来ます。
 
@@ -37,7 +46,7 @@ return [
 ```
 
 [[yii\base\Application::$sourceLanguage|ソース言語]] のデフォルト値は `en-US` であり、合衆国の英語を意味します。
-このデフォルト値は変えないことが推奨されます。
+このデフォルト値は変えないことが **推奨** されます。
 なぜなら、通常は、英語から他の言語への翻訳者を見つける方が、非英語から非英語への翻訳者を見つけるより、はるかに簡単だからです。
 
 [[yii\base\Application::$language|ターゲット言語]] は、エンドユーザの言語選択など、さまざまな要因に基づいて、動的に設定しなければならないことがよくあります。
@@ -48,19 +57,29 @@ return [
 \Yii::$app->language = 'zh-CN';
 ```
 
+> Tip: ソース言語がコードの部分によって異なる場合は、メッセージソースごとにソース言語をオーバーライドすることが出来ます。
+> これについては、次の説で説明します。
+
 
 ## メッセージ翻訳 <span id="message-translation"></span>
 
+### ソース言語からターゲット言語へ
+
 メッセージ翻訳サービスは、テキストメッセージをある言語 (通常は [[yii\base\Application::$sourceLanguage|ソース言語]]) から別の言語 (通常は [[yii\base\Application::$language|ターゲット言語]]) に翻訳するものです。
+
 翻訳は、元のメッセージと翻訳されたメッセージを格納するメッセージソースの中から、翻訳対象となったメッセージを探すことにより行われます。
 メッセージが見つかれば、対応する翻訳されたメッセージが返されます。
 メッセージが見つからなければ、元のメッセージが翻訳されずに返されます。
 
+### 実装の仕方
+
 メッセージ翻訳サービスを使用するためには、主として次の作業をする必要があります。
 
-* 翻訳する必要のある全てのテキストメッセージを [[Yii::t()]] メソッドの呼び出しの中に包む。
-* メッセージ翻訳サービスが翻訳されたメッセージを探すことが出来る一つまたは複数のメッセージソースを構成する。
-* 翻訳者にメッセージを翻訳させて、それをメッセージソースに格納する。
+1. 翻訳する必要のある全てのテキストメッセージを [[Yii::t()]] メソッドの呼び出しの中に包む。
+2. メッセージ翻訳サービスが翻訳されたメッセージを探すことが出来る一つまたは複数のメッセージソースを構成する。
+3. 翻訳者にメッセージを翻訳させて、それをメッセージソースに格納する。
+
+#### 1. テキストメッセージを包む
 
 [[Yii::t()]] メソッドは次のように使います。
 
@@ -69,6 +88,8 @@ echo \Yii::t('app', 'This is a string to translate!');
 ```
 
 ここで、二番目のパラメータが翻訳されるべきテキストメッセージを示し、最初のパラメータはメッセージを分類するのに使用されるカテゴリ名を示します。
+
+#### 2. 一つまたは複数のメッセージソースを構成する
 
 [[Yii::t()]] メソッドは `i18n` [アプリケーションコンポーネント](structure-application-components.md) の `translate` メソッドを呼んで実際の翻訳作業を実行します。
 このコンポーネントはアプリケーションの構成情報の中で次のようにして構成することが出来ます。
@@ -93,12 +114,43 @@ echo \Yii::t('app', 'This is a string to translate!');
 ```
 
 上記のコードにおいては、[[yii\i18n\PhpMessageSource]] によってサポートされるメッセージソースが構成されています。
+
+##### シンボル `*` によるカテゴリのワイルドカード
+
 `app*` は、`app` で始まる全てのメッセージカテゴリがこのメッセージソースを使って翻訳されるべきであることを示しています。
-[[yii\i18n\PhpMessageSource]] クラスは、メッセージ翻訳を格納するのに PHP ファイルを使用します。
+
+#### 3. 翻訳者にメッセージを翻訳させて、それをメッセージソースに格納する
+
+[[yii\i18n\PhpMessageSource]] クラスは、単純な PHP 配列を持つ複数の PHP ファイルを使用してメッセージ翻訳を格納します。
+それらのファイルが、「ソース言語」のメッセージと「ターゲット言語」の翻訳とのマップを含みます。
+
+> Info: それらのファイルを [`message` コマンド](#message-command) を使用して自動的に生成することが出来ます。
+> この節で後で紹介します。
+
+PHP ファイルは、それぞれ、一つのカテゴリのメッセージに対応します。
 デフォルトでは、ファイル名はカテゴリ名と同じでなければなりません。
-ただし、[[yii\i18n\PhpMessageSource::fileMap|fileMap]] を構成して、別の命名方法によってカテゴリを PHP ファイルに割り付けることも可能です。
-上記の例では、(`ja-JP` がターゲット言語であると仮定すると) `app/error` のカテゴリは `@app/messages/ja-JP/error.php` という PHP ファイルに割り付けられます。
-`fileMap` を構成しなければ、このカテゴリは `@app/messages/ja-JP/app/error.php` に割り付けられることになります。
+`app/messages/nl-NL/main.ph` の例を示します。
+
+```php
+<?php
+
+/**
+* Translation map for nl-NL
+*/
+return [
+    'welcome' => 'welkom'
+];
+
+```
+
+##### ファイルのマッピング
+
+ただし、[[yii\i18n\PhpMessageSource::fileMap|fileMap]] を構成して、別の命名方法によってカテゴリを PHP ファイルにマップすることも可能です。
+
+上記の例では、(`ja-JP` がターゲット言語であると仮定すると) `app/error` のカテゴリは `@app/messages/ja-JP/error.php` という PHP ファイルにマップされます。
+`fileMap` を構成しなければ、このカテゴリは `@app/messages/ja-JP/app/error.php` にマップされることになります。
+
+#####  他のストレージタイプ
 
 翻訳メッセージを格納するのには、PHP ファイル以外に、次のメッセージソースを使うことも可能です。
 
@@ -112,7 +164,7 @@ echo \Yii::t('app', 'This is a string to translate!');
 更には、パラメータ値をターゲット言語に応じてフォーマットさせるための特別なプレースホルダの構文を使うことも出来ます。
 この項では、メッセージをフォーマットする様々な方法を説明します。
 
-> Note|訳注: 以下においては、メッセージフォーマットの理解を助けるために、原文にはない日本語への翻訳例 (とその出力結果) をコードサンプルに追加しています。
+> Note: 以下においては、メッセージフォーマットの理解を助けるために、原文にはない日本語への翻訳例 (とその出力結果) をコードサンプルに追加しています。
 
 ### メッセージパラメータ <span id="message-parameters"></span>
 
@@ -168,7 +220,7 @@ echo \Yii::t('app', 'Price: {0}, Count: {1}, Subtotal: {2}', [$price, $count, $s
 echo \Yii::t('app', 'Price: {0}', $price);
 ```
 
-> Tip|ヒント: たいていの場合は名前付きプレースホルダを使うべきです。
+> Tip: たいていの場合は名前付きプレースホルダを使うべきです。
 > と言うのは、翻訳者にとっては、パラメータ名がある方が、翻訳すべきメッセージ全体をより良く理解できるからです。
 
 
@@ -179,22 +231,22 @@ echo \Yii::t('app', 'Price: {0}', $price);
 
 ```php
 $price = 100;
-echo \Yii::t('app', 'Price: {0, number, currency}', $price);
+echo \Yii::t('app', 'Price: {0,number,currency}', $price);
 ```
 
-> Note|注意: パラメータのフォーマットには、[intl PHP 拡張](http://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
+> Note: パラメータのフォーマットには、[intl PHP 拡張](http://www.php.net/manual/ja/intro.intl.php) のインストールが必要です。
 
 プレースホルダにフォーマット規則を指定するためには、短い構文または完全な構文のどちらかを使うことが出来ます。
 
 ```
-短い形式: {name, type}
-完全な形式: {name, type, style}
+短い形式: {name,type}
+完全な形式: {name,type,style}
 ```
 
-> Note|注意: `{`、`}`、`'`、`#` などの特殊な文字を使用する必要がある場合は、その部分の文字列を `'` で囲んでください。
+> Note: `{`、`}`、`'`、`#` などの特殊な文字を使用する必要がある場合は、その部分の文字列を `'` で囲んでください。
 > 
 ```php
-echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count, plural, other{''count'' value is # '#{}'}}", ['count' => 3]);
+echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{test}' {count,plural,other{''count'' value is # '#{}'}}", ['count' => 3]);
 +```
 
 このようなプレースホルダを指定する方法についての完全な説明は、[ICU ドキュメント](http://icu-project.org/apiref/icu4c/classMessageFormat.html) を参照してください。
@@ -205,9 +257,9 @@ echo Yii::t('app', "Example of string with ''-escaped characters'': '{' '}' '{te
 
 ```php
 $sum = 12345;
-echo \Yii::t('app', 'Balance: {0, number}', $sum);
+echo \Yii::t('app', 'Balance: {0,number}', $sum);
 
-// 日本語翻訳: '差引残高: {0, number}'
+// 日本語翻訳: '差引残高: {0,number}'
 // 日本語出力: '差引残高: 12,345'
 ```
 
@@ -215,9 +267,9 @@ echo \Yii::t('app', 'Balance: {0, number}', $sum);
 
 ```php
 $sum = 12345;
-echo \Yii::t('app', 'Balance: {0, number, currency}', $sum);
+echo \Yii::t('app', 'Balance: {0,number,currency}', $sum);
 
-// 日本語翻訳: '差引残高: {0, number, currency}'
+// 日本語翻訳: '差引残高: {0,number,currency}'
 // 日本語出力: '差引残高: ￥12,345'
 ```
 
@@ -225,9 +277,9 @@ echo \Yii::t('app', 'Balance: {0, number, currency}', $sum);
 
 ```php
 $sum = 12345;
-echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
+echo \Yii::t('app', 'Balance: {0,number,,000,000000}', $sum);
 
-// 日本語翻訳: '差引残高: {0, number, ,000,000000}'
+// 日本語翻訳: '差引残高: {0,number,,000,000000}'
 // 日本語出力: '差引残高: 000,012345'
 ```
 
@@ -242,27 +294,27 @@ echo \Yii::t('app', 'Balance: {0, number, ,000,000000}', $sum);
 パラメータ値は日付としてフォーマットされます。例えば、
 
 ```php
-echo \Yii::t('app', 'Today is {0, date}', time());
+echo \Yii::t('app', 'Today is {0,date}', time());
 
-// 日本語翻訳: '今日は {0, date} です。'
+// 日本語翻訳: '今日は {0,date} です。'
 // 日本語出力: '今日は 2015/01/07 です。'
 ```
 
 オプションのパラメータとして、`short`、`medium`、`long`、そして `full` のスタイルを指定することが出来ます。
 
 ```php
-echo \Yii::t('app', 'Today is {0, date, short}', time());
+echo \Yii::t('app', 'Today is {0,date,short}', time());
 
-// 日本語翻訳: '今日は {0, date, short} です。'
+// 日本語翻訳: '今日は {0,date,short} です。'
 // 日本語出力: '今日は 2015/01/07 です。'
 ```
 
 日付の値をフォーマットするカスタムパターンを指定することも出来ます。
 
 ```php
-echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
+echo \Yii::t('app', 'Today is {0,date,yyyy-MM-dd}', time());
 
-// 日本語翻訳: '今日は {0, date, yyyy-MM-dd} です。'
+// 日本語翻訳: '今日は {0,date,yyyy-MM-dd} です。'
 // 日本語出力: '今日は 2015-01-07 です。'
 ```
 
@@ -273,27 +325,27 @@ echo \Yii::t('app', 'Today is {0, date, yyyy-MM-dd}', time());
 パラメータ値は時刻としてフォーマットされます。例えば、
 
 ```php
-echo \Yii::t('app', 'It is {0, time}', time());
+echo \Yii::t('app', 'It is {0,time}', time());
 
-// 日本語翻訳: '現在 {0, time} です。'
+// 日本語翻訳: '現在 {0,time} です。'
 // 日本語出力: '現在 22:37:47 です。'
 ```
 
 オプションのパラメータとして、`short`、`medium`、`long`、そして `full` のスタイルを指定することが出来ます。
 
 ```php
-echo \Yii::t('app', 'It is {0, time, short}', time());
+echo \Yii::t('app', 'It is {0,time,short}', time());
 
-// 日本語翻訳: '現在 {0, time, short} です。'
+// 日本語翻訳: '現在 {0,time,short} です。'
 // 日本語出力: '現在 22:37 です。'
 ```
 
 時刻の値をフォーマットするカスタムパターンを指定することも出来ます。
 
 ```php
-echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
+echo \Yii::t('app', 'It is {0,date,HH:mm}', time());
 
-// 日本語翻訳: '現在 {0, time, HH:mm} です。'
+// 日本語翻訳: '現在 {0,time,HH:mm} です。'
 // 日本語出力: '現在 22:37 です。'
 ```
 
@@ -306,9 +358,9 @@ echo \Yii::t('app', 'It is {0, date, HH:mm}', time());
 
 ```php
 // 出力例 : "42 is spelled as forty-two"
-echo \Yii::t('app', '{n, number} is spelled as {n, spellout}', ['n' => 42]);
+echo \Yii::t('app', '{n,number} is spelled as {n,spellout}', ['n' => 42]);
 
-// 日本語翻訳: '{n, number} は、文字で綴ると {n, spellout} です。'
+// 日本語翻訳: '{n,number} は、文字で綴ると {n,spellout} です。'
 // 日本語出力: '42 は、文字で綴ると 四十二 です。'
 ```
 
@@ -316,9 +368,9 @@ echo \Yii::t('app', '{n, number} is spelled as {n, spellout}', ['n' => 42]);
 
 ```php
 // 出力例 : "I am forty-seventh agent"
-echo \Yii::t('app', 'I am {n, spellout,%spellout-ordinal} agent', ['n' => 47]);
+echo \Yii::t('app', 'I am {n,spellout,%spellout-ordinal} agent', ['n' => 47]);
 
-// 日本語翻訳: '私は{n, spellout,%spellout-ordinal}の工作員です。'
+// 日本語翻訳: '私は{n,spellout,%spellout-ordinal}の工作員です。'
 // 日本語出力: '私は第四十七の工作員です。'
 ```
 
@@ -333,26 +385,26 @@ echo \Yii::t('app', 'I am {n, spellout,%spellout-ordinal} agent', ['n' => 47]);
 
 ```php
 // 出力: "You are the 42nd visitor here!"
-echo \Yii::t('app', 'You are the {n, ordinal} visitor here!', ['n' => 42]);
+echo \Yii::t('app', 'You are the {n,ordinal} visitor here!', ['n' => 42]);
 ```
 
 序数については、スペイン語などの言語では、さらに多くのフォーマットがサポートされています。
 
 ```php
 // 出力: "471ª"
-echo \Yii::t('app', '{n, ordinal,%digits-ordinal-feminine}', ['n' => 471]);
+echo \Yii::t('app', '{n,ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 ```
 
 'ordinal,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Ordinal" を参照してください。
 
-> Note|訳注: 上記のソースメッセージを、プレースホルダのスタイルを守って日本語に翻訳すると、'あなたはこのサイトの{n, ordinal}の訪問者です' となります。
+> Note: 上記のソースメッセージを、プレースホルダのスタイルを守って日本語に翻訳すると、'あなたはこのサイトの{n,ordinal}の訪問者です' となります。
 > しかし、その出力結果は、'あなたはこのサイトの第42の訪問者です' となり、意味は通じますが、日本語としては若干不自然なものになります。
 >
 > プレースホルダのスタイル自体も、翻訳の対象として、より適切なものに変更することが可能であることに注意してください。
 >
-> この場合も、'あなたはこのサイトの{n, plural, =1{最初} other{#番目}}の訪問者です' のように翻訳するほうが適切でしょう。
+> この場合も、'あなたはこのサイトの{n,plural,=1{最初} other{#番目}}の訪問者です' のように翻訳するほうが適切でしょう。
 
 #### 継続時間 <span id="duration"></span>
 
@@ -360,21 +412,21 @@ echo \Yii::t('app', '{n, ordinal,%digits-ordinal-feminine}', ['n' => 471]);
 
 ```php
 // 出力: "You are here for 47 sec. already!"
-echo \Yii::t('app', 'You are here for {n, duration} already!', ['n' => 47]);
+echo \Yii::t('app', 'You are here for {n,duration} already!', ['n' => 47]);
 ```
 
 継続時間については、さらに多くのフォーマットがサポートされています。
 
 ```php
 // 出力: '130:53:47'
-echo \Yii::t('app', '{n, duration,%in-numerals}', ['n' => 471227]);
+echo \Yii::t('app', '{n,duration,%in-numerals}', ['n' => 471227]);
 ```
 
 'duration,' と '%' の間に空白を入れてはならないことに注意してください。
 
 あなたが使用しているロケールで利用可能なオプションのリストについては、[http://intl.rmcreative.ru/](http://intl.rmcreative.ru/) の "Numbering schemas, Duration" を参照してください。
 
-> Note|訳注: このソースメッセージを 'あなたはこのサイトに既に{n, duration}の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に47の間滞在しています' となります。
+> Note: このソースメッセージを 'あなたはこのサイトに既に{n,duration}の間滞在しています' と翻訳した場合の出力結果は、'あなたはこのサイトに既に47の間滞在しています' となります。
 > これも、プレースホルダのスタイルも含めて全体を翻訳し直す方が良いでしょう。
 > どうも、ICU ライブラリは、ja_JP の数値関連の書式指定においては、割と貧弱な実装にとどまっている印象です。
 
@@ -390,7 +442,7 @@ Yii は、さまざまな形式の複数形語形変化に対応したメッセ�
 // $n = 0 の場合の出力: "There are no cats!"
 // $n = 1 の場合の出力: "There is one cat!"
 // $n = 42 の場合の出: "There are 42 cats!"
-echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
+echo \Yii::t('app', 'There {n,plural,=0{are no cats} =1{is one cat} other{are # cats}}!', ['n' => $n]);
 ```
 
 上記の複数形規則の引数において、`=` はぴったりその値であることを意味します。
@@ -402,7 +454,7 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 例えば、次のロシア語の例では、`=1` が `n = 1` にぴったりと一致するのに対して、`one` が `21` や `101` などに一致します。
 
 ```
-Здесь {n, plural, =0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
+Здесь {n,plural,=0{котов нет} =1{есть один кот} one{# кот} few{# кота} many{# котов} other{# кота}}!
 ```
 
 これら `other`、`few`、`many` などの特別な引数の名前は言語によって異なります。
@@ -410,7 +462,7 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
 あるいは、その代りに、[unicode.org の規則のリファレンス](http://unicode.org/repos/cldr-tmp/trunk/diff/supplemental/language_plural_rules.html) を参照することも出来ます。
 
 
-> Note|注意: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
+> Note: 上記のロシア語のメッセージのサンプルは、主として翻訳メッセージとして使用されるものです。
 > アプリケーションの [[yii\base\Application::$sourceLanguage|ソース言語]] を `ru-RU` にしてロシア語から他の言語に翻訳するという設定にしない限り、オリジナルのメッセージとしては使用されることはありません。
 >
 > `Yii::t()` の呼び出しにおいて、オリジナルのメッセージに対する翻訳が見つからない場合は、[[yii\base\Application::$sourceLanguage|ソース言語]] の複数形規則がオリジナルのメッセージに対して適用されます。
@@ -419,7 +471,7 @@ echo \Yii::t('app', 'There {n, plural, =0{are no cats} =1{is one cat} other{are 
  
 ```php
 $likeCount = 2;
-echo Yii::t('app', 'You {likeCount, plural,
+echo Yii::t('app', 'You {likeCount,plural,
     offset: 1
     =0{did not like this}
     =1{liked this}
@@ -432,7 +484,7 @@ echo Yii::t('app', 'You {likeCount, plural,
 // 出力: 'You and one other person liked this'
 ```
 
-> Note|訳注: 上記のソースメッセージの日本語翻訳は以下のようなものになります。
+> Note: 上記のソースメッセージの日本語翻訳は以下のようなものになります。
 >
 > '猫は{n, plural, =0{いません} other{#匹います}}。'
 >
@@ -446,12 +498,12 @@ echo Yii::t('app', 'You {likeCount, plural,
 
 ```php
 $n = 3;
-echo Yii::t('app', 'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
+echo Yii::t('app', 'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} other{#th}} visitor', ['n' => $n]);
 // 英語の出力
-// You are 3rd visitor
+// You are the 3rd visitor
 
 // ロシア語の翻訳
-'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{#th}} visitor' => 'Вы {n, selectordinal, other{#-й}} посетитель',
+'You are the {n,selectordinal,one{#st} two{#nd} few{#rd} other{#th}} visitor' => 'Вы {n, selectordinal, other{#-й}} посетитель',
 
 // ロシア語の出力
 // Вы 3-й посетитель
@@ -468,7 +520,7 @@ echo Yii::t('app', 'You are {n, selectordinal, one{#st} two{#nd} few{#rd} other{
 
 ```php
 // 出力: "Snoopy is a dog and it loves Yii!"
-echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{he} other{it}} loves Yii!', [
+echo \Yii::t('app', '{name} is a {gender} and {gender,select,female{she} male{he} other{it}} loves Yii!', [
     'name' => 'Snoopy',
     'gender' => 'dog',
 ]);
@@ -477,14 +529,14 @@ echo \Yii::t('app', '{name} is a {gender} and {gender, select, female{she} male{
 上記の式の中で、`female` と `male` が `gender` が取り得る値であり、`other` がそれらに一致しない値を処理します。
 それぞれの取り得る値の後には、波括弧で囲んで対応する表現を指定します。
 
-> Note|訳注: 日本語翻訳: '{name} は {gender} であり、{gender, select, female{彼女} male{彼} other{それ}}は Yii を愛しています。'
+> Note: 日本語翻訳: '{name} は {gender} であり、{gender,select,female{彼女} male{彼} other{それ}}は Yii を愛しています。'
 >
 > 日本語出力: 'Snoopy は dog であり、それは Yii を愛しています。'
 
-### デフォルトの翻訳を指定する <span id="default-translation"></span>
+### デフォルトのメッセージソースを指定する <span id="default-message-source"></span>
 
-他の翻訳にマッチしないカテゴリのフォールバックとして使用されるデフォルトの翻訳を指定することが出来ます。
-この翻訳は `*` によってマークされなければなりません。
+構成されたカテゴリのどれにもマッチしないカテゴリのためのフォールバックとして使用される、デフォルトのメッセージソースを指定することが出来ます。
+これは、ワイルドカードのカテゴリ `*` を構成することによって可能になります。
 そうするためには、アプリケーションの構成情報に次のように追加します。
 
 ```php
@@ -605,7 +657,7 @@ class Menu extends Widget
 `fileMap` を使わずに、カテゴリを同じ名前のファイルにマップする規約を使って済ませることも出来ます。
 これで、直接に `Menu::t('messages', 'new messages {messages}', ['{messages}' => 10])` を使用することが出来ます。
 
-> **Note**|注意: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
+> Note: ウィジェットのためには i18n ビューも使うことが出来ます。コントローラのための同じ規則がウィジェットにも適用されます。
 
 
 ### フレームワークメッセージを翻訳する <span id="framework-translation"></span>
@@ -678,12 +730,12 @@ class TranslationEventHandler
 
 このイベントハンドラによって [[yii\i18n\MissingTranslationEvent::translatedMessage]] がセットされた場合は、それが翻訳結果として表示されます。
 
-> Note|注意: 全てのメッセージソースは、欠落した翻訳をそれぞれ独自に処理します。
+> Note: 全てのメッセージソースは、欠落した翻訳をそれぞれ独自に処理します。
 > いくつかのメッセージソースを使っていて、それらが同じ方法で欠落した翻訳を取り扱うようにしたい場合は、対応するイベントハンドラを全てのメッセージソースそれぞれに割り当てなければなりません。
 
 ### `message` コマンドを使う <a name="message-command"></a>
 
-翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
+翻訳は [[yii\i18n\PhpMessageSource|php ファイル]]、[[yii\i18n\GettextMessageSource|.po ファイル]]、または [[yii\i18n\DbMessageSource|database]] に保存することが出来ます。
 追加のオプションについてはそれぞれのクラスを参照してください。
 
 まず最初に、構成情報ファイルを作成する必要があります。
@@ -703,19 +755,19 @@ class TranslationEventHandler
 './yii message/config' コマンドを使って、CLI 経由で、指定したオプションを持つ設定ファイルを動的に生成することも可能です。
 例えば、`languages` と `messagePath` のパラメータは、次のようにして設定することが出来ます。
 
-```shell
+```bash
 ./yii message/config --languages=de,ja --messagePath=messages path/to/config.php
 ```
 
 利用可能なオプションのリストを取得するためには、次のコマンドを実行します。
 
-```shell
+```bash
 ./yii help message/config
 ```
 
 構成情報ファイルの編集が完了すれば、ついに、下記のコマンドを使ってメッセージを抽出することが出来ます。
 
-```shell
+```bash
 ./yii message path/to/config.php
 ```
 
@@ -729,7 +781,7 @@ class TranslationEventHandler
 例えば、`views/site/index.php` というビューをターゲット言語 `ru-RU` に翻訳したい場合は、翻訳したビューを `views/site/ru-RU/index.php` というファイルとして保存します。
 このようにすると、[[yii\base\View::renderFile()]] メソッド、または、このメソッドを呼び出す他のメソッド (例えば [[yii\base\Controller::render()]]) を呼んで `views/site/index.php` をレンダリングするたびに、翻訳された `views/site/ru-RU/index.php` が代りにレンダリングされるようになります。
 
-> **Note**|注意: [[yii\base\Application::$language|ターゲット言語]] が [[yii\base\Application::$sourceLanguage|ソース言語]] と同じ場合は、翻訳されたビューの有無にかかわらず、オリジナルのビューがレンダリングされます。
+> Note: [[yii\base\Application::$language|ターゲット言語]] が [[yii\base\Application::$sourceLanguage|ソース言語]] と同じ場合は、翻訳されたビューの有無にかかわらず、オリジナルのビューがレンダリングされます。
 
 
 ## 数値と日付の値を書式設定する <span id="date-number"></span>
@@ -755,6 +807,7 @@ ICU のバージョンが異なると、日付や数値のフォーマットの�
 <?php
 echo "PHP: " . PHP_VERSION . "\n";
 echo "ICU: " . INTL_ICU_VERSION . "\n";
+echo "ICU Data: " . INTL_ICU_DATA_VERSION . "\n";
 ```
 
 さらに、バージョン 49 以上の ICU を使用する事も推奨されます。

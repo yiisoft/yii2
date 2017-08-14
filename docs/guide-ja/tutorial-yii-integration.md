@@ -24,10 +24,10 @@ Yii アプリケーションの中でサードパーティのライブラリを�
 
 ```php
 // Composer のオートローダをインストール
-require(__DIR__ . '/../vendor/autoload.php');
+require __DIR__ . '/../vendor/autoload.php';
 
 // Yii クラスファイルをインクルード
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 ### ダウンロードしたライブラリを使う <span id="using-downloaded-libs"></span>
@@ -77,13 +77,28 @@ Yii は数多くの優れた機能を提供していますので、サードパ�
 
 サードパーティのシステムが Composer を使って依存を管理している場合は、単に下記のコマンドを実行すれば Yii をインストールすることが出来ます。
 
-    composer global require "fxp/composer-asset-plugin:~1.1.1"
+    composer global require "fxp/composer-asset-plugin:~1.3.1"
     composer require yiisoft/yii2
     composer install
 
 最初のコマンドは [composer アセットプラグイン](https://github.com/francoispluchino/composer-asset-plugin/) をインストールします。
 これは、Composer によって bower と npm の依存パッケージを管理できるようにするものです。
 このことは、データベースなど、アセットに関係しない Yii の機能を使いたいだけの場合でも、Yii の Composer パッケージをインストールするために必要とされます。
+
+[Yii のアセット発行の機能](structure-assets.md) を使いたい場合は、あなたの `composer.json` の `extra` セクションに次の構成も追加しなければなりません。
+
+```json
+{
+    ...
+    "extra": {
+        "asset-installer-paths": {
+            "npm-asset-library": "vendor/npm",
+            "bower-asset-library": "vendor/bower"
+        }
+    }
+}
+```
+
 Composer に関する更なる情報や、インストールの過程で出現しうる問題に対する解決方法については、一般的な [Composer によるインストール](start-installation.md#installing-via-composer) の節を参照してください。
 
 そうでない場合は、Yii のリリースを [ダウンロード](http://www.yiiframework.com/download/) して、`BasePath/vendor` ディレクトリに解凍してください。
@@ -92,9 +107,9 @@ Composer に関する更なる情報や、インストールの過程で出現�
 次のコードをエントリスクリプトの先頭に追加してください。
 
 ```php
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
-$yiiConfig = require(__DIR__ . '/../config/yii/web.php');
+$yiiConfig = require __DIR__ . '/../config/yii/web.php';
 new yii\web\Application($yiiConfig); // ここで run() を呼ばない
 ```
 
@@ -116,7 +131,7 @@ Yii 2 を Yii 1 とともに使う <span id="using-both-yii2-yii1"></span>
 アプリケーション全体を Yii 2 で書き直す代りに、Yii 2 でのみ利用できる機能を使ってアプリケーションを機能拡張したいこともあるでしょう。
 このことは、以下に述べるようにして、実現できます。
 
-> Note|注意: Yii 2 は PHP 5.4 以上を必要とします。
+> Note: Yii 2 は PHP 5.4 以上を必要とします。
 > あなたのサーバと既存のアプリケーションが PHP 5.4 以上をサポートしていることを確認しなければなりません。
 
 最初に、[直前の項](#using-yii-in-others) で述べられている指示に従って、Yii 2 を既存のアプリケーションにインストールします。
@@ -125,14 +140,14 @@ Yii 2 を Yii 1 とともに使う <span id="using-both-yii2-yii1"></span>
 
 ```php
 // カスタマイズされた Yii クラスをインクルード (下記で説明)
-require(__DIR__ . '/../components/Yii.php');
+require __DIR__ . '/../components/Yii.php';
 
 // Yii 2 アプリケーションの構成
-$yii2Config = require(__DIR__ . '/../config/yii2/web.php');
-new yii\web\Application($yii2Config); // ここで run() を呼ばない
+$yii2Config = require __DIR__ . '/../config/yii2/web.php';
+new yii\web\Application($yii2Config); // ここで run() を呼ばない。yii2 app はサービスロケータとしてのみ使用される。
 
 // Yii 1 アプリケーションの構成
-$yii1Config = require(__DIR__ . '/../config/yii1/main.php');
+$yii1Config = require __DIR__ . '/../config/yii1/main.php';
 Yii::createWebApplication($yii1Config)->run();
 ```
 
@@ -141,10 +156,10 @@ Yii 1 と Yii 2 の両者が `Yii` クラスを持っているため、二つを
 
 ```php
 $yii2path = '/path/to/yii2';
-require($yii2path . '/BaseYii.php'); // Yii 2.x
+require $yii2path . '/BaseYii.php'; // Yii 2.x
 
 $yii1path = '/path/to/yii1';
-require($yii1path . '/YiiBase.php'); // Yii 1.x
+require $yii1path . '/YiiBase.php'; // Yii 1.x
 
 class Yii extends \yii\BaseYii
 {
@@ -153,7 +168,7 @@ class Yii extends \yii\BaseYii
 
 Yii::$classMap = include($yii2path . '/classes.php');
 // Yii 2 オートローダを Yii 1 によって登録
-Yii::registerAutoloader(['Yii', 'autoload']);
+Yii::registerAutoloader(['yii\BaseYii', 'autoload']);
 // 依存注入コンテナを作成
 Yii::$container = new yii\di\Container;
 ```

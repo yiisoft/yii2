@@ -10,8 +10,8 @@ namespace yii;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\base\UnknownClassException;
-use yii\log\Logger;
 use yii\di\Container;
+use yii\log\Logger;
 
 /**
  * Gets the application start timestamp.
@@ -62,7 +62,7 @@ class BaseYii
     /**
      * @var array class map used by the Yii autoloading mechanism.
      * The array keys are the class names (without leading backslashes), and the array values
-     * are the corresponding class file paths (or path aliases). This property mainly affects
+     * are the corresponding class file paths (or [path aliases](guide:concept-aliases)). This property mainly affects
      * how [[autoload()]] works.
      * @see autoload()
      */
@@ -93,7 +93,7 @@ class BaseYii
      */
     public static function getVersion()
     {
-        return '2.0.7-dev';
+        return '2.0.13-dev';
     }
 
     /**
@@ -119,10 +119,12 @@ class BaseYii
      *
      * Note, this method does not check if the returned path exists or not.
      *
+     * See the [guide article on aliases](guide:concept-aliases) for more information.
+     *
      * @param string $alias the alias to be translated.
-     * @param boolean $throwException whether to throw an exception if the given alias is invalid.
+     * @param bool $throwException whether to throw an exception if the given alias is invalid.
      * If this is false and an invalid alias is given, false will be returned by this method.
-     * @return string|boolean the path corresponding to the alias, false if the root alias is not previously registered.
+     * @return string|bool the path corresponding to the alias, false if the root alias is not previously registered.
      * @throws InvalidParamException if the alias is invalid while $throwException is true.
      * @see setAlias()
      */
@@ -139,20 +141,20 @@ class BaseYii
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
                 return $pos === false ? static::$aliases[$root] : static::$aliases[$root] . substr($alias, $pos);
-            } else {
-                foreach (static::$aliases[$root] as $name => $path) {
-                    if (strpos($alias . '/', $name . '/') === 0) {
-                        return $path . substr($alias, strlen($name));
-                    }
+            }
+
+            foreach (static::$aliases[$root] as $name => $path) {
+                if (strpos($alias . '/', $name . '/') === 0) {
+                    return $path . substr($alias, strlen($name));
                 }
             }
         }
 
         if ($throwException) {
             throw new InvalidParamException("Invalid path alias: $alias");
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -160,7 +162,7 @@ class BaseYii
      * A root alias is an alias that has been registered via [[setAlias()]] previously.
      * If a given alias matches multiple root aliases, the longest one will be returned.
      * @param string $alias the alias
-     * @return string|boolean the root alias, or false if no root alias is found
+     * @return string|bool the root alias, or false if no root alias is found
      */
     public static function getRootAlias($alias)
     {
@@ -170,11 +172,11 @@ class BaseYii
         if (isset(static::$aliases[$root])) {
             if (is_string(static::$aliases[$root])) {
                 return $root;
-            } else {
-                foreach (static::$aliases[$root] as $name => $path) {
-                    if (strpos($alias . '/', $name . '/') === 0) {
-                        return $name;
-                    }
+            }
+
+            foreach (static::$aliases[$root] as $name => $path) {
+                if (strpos($alias . '/', $name . '/') === 0) {
+                    return $name;
                 }
             }
         }
@@ -195,6 +197,8 @@ class BaseYii
      * to associate the alias with the path.
      *
      * Any trailing '/' and '\' characters in the given path will be trimmed.
+     *
+     * See the [guide article on aliases](guide:concept-aliases) for more information.
      *
      * @param string $alias the alias name (e.g. "@yii"). It must start with a '@' character.
      * It may contain the forward slash '/' which serves as boundary character when performing
@@ -285,7 +289,7 @@ class BaseYii
             return;
         }
 
-        include($classFile);
+        include $classFile;
 
         if (YII_DEBUG && !class_exists($className, false) && !interface_exists($className, false) && !trait_exists($className, false)) {
             throw new UnknownClassException("Unable to find '$className' in file: $classFile. Namespace missing?");
@@ -343,12 +347,12 @@ class BaseYii
             unset($type['class']);
             return static::$container->get($class, $params, $type);
         } elseif (is_callable($type, true)) {
-            return call_user_func($type, $params);
+            return static::$container->invoke($type, $params);
         } elseif (is_array($type)) {
             throw new InvalidConfigException('Object configuration must be an array containing a "class" element.');
-        } else {
-            throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
         }
+
+        throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
 
     private static $_logger;
@@ -360,9 +364,9 @@ class BaseYii
     {
         if (self::$_logger !== null) {
             return self::$_logger;
-        } else {
-            return self::$_logger = static::createObject('yii\log\Logger');
         }
+
+        return self::$_logger = static::createObject('yii\log\Logger');
     }
 
     /**
@@ -377,8 +381,10 @@ class BaseYii
     /**
      * Logs a trace message.
      * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code.
-     * @param string $message the message to be logged.
+     * the execution work flow of some code. This method will only log
+     * a message when the application is in debug mode.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function trace($message, $category = 'application')
@@ -392,7 +398,8 @@ class BaseYii
      * Logs an error message.
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
-     * @param string $message the message to be logged.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function error($message, $category = 'application')
@@ -404,7 +411,8 @@ class BaseYii
      * Logs a warning message.
      * A warning message is typically logged when an error occurs while the execution
      * can still continue.
-     * @param string $message the message to be logged.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function warning($message, $category = 'application')
@@ -416,7 +424,8 @@ class BaseYii
      * Logs an informative message.
      * An informative message is typically logged by an application to keep record of
      * something important (e.g. an administrator logs in).
-     * @param string $message the message to be logged.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
      * @param string $category the category of the message.
      */
     public static function info($message, $category = 'application')
@@ -466,7 +475,7 @@ class BaseYii
     {
         return \Yii::t('yii', 'Powered by {yii}', [
             'yii' => '<a href="http://www.yiiframework.com/" rel="external">' . \Yii::t('yii',
-                    'Yii Framework') . '</a>'
+                    'Yii Framework') . '</a>',
         ]);
     }
 
@@ -499,14 +508,14 @@ class BaseYii
     {
         if (static::$app !== null) {
             return static::$app->getI18n()->translate($category, $message, $params, $language ?: static::$app->language);
-        } else {
-            $p = [];
-            foreach ((array) $params as $name => $value) {
-                $p['{' . $name . '}'] = $value;
-            }
-
-            return ($p === []) ? $message : strtr($message, $p);
         }
+
+        $placeholders = [];
+        foreach ((array) $params as $name => $value) {
+            $placeholders['{' . $name . '}'] = $value;
+        }
+
+        return ($placeholders === []) ? $message : strtr($message, $placeholders);
     }
 
     /**

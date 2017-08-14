@@ -69,7 +69,7 @@ public function init()
 {
     parent::init();
     // inicializa o módulo com as configurações carregadas de config.php
-    \Yii::configure($this, require(__DIR__ . '/config.php'));
+    \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 
@@ -186,7 +186,7 @@ $module = MyModuleClass::getInstance();
 
 O `MyModuleClass` refere-se ao nome da classe do módulo que você está interessado. 
 O método `getInstance()` retornará a instância que foi solicitada pela requisição. 
-Se o módulo não for solicitado pela requisição, o método retornará null. Observe 
+Se o módulo não for solicitado pela requisição, o método retornará `null`. Observe 
 que você não vai querer criar uma nova instância manualmente da classe do módulo 
 pois será diferente do criado pelo Yii em resposta a uma requisição.
 

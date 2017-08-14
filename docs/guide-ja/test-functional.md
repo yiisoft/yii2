@@ -1,7 +1,7 @@
 機能テスト
 ==========
 
-> Note|注意: この節はまだ執筆中です。
+> Note: この節はまだ執筆中です。
 
 - [Codeception Functional Tests](http://codeception.com/docs/04-FunctionalTests)
 

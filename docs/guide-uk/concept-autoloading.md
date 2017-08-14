@@ -4,10 +4,10 @@
 Пошук і підключення файлів класів в Yii реалізовано за допомогою
 [автозавантаження класів](http://www.php.net/manual/ru/language.oop5.autoload.php).
 Фреймворк надає власний швидкісний автозавантажувач, що сумісний з 
-[PSR-4](https://github.com/php-fig/fig-standards/blob/master/proposed/psr-4-autoloader/psr-4-autoloader.md),
+[PSR-4](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-4-autoloader.md),
 який встановлюється в момент підключення файлу `Yii.php`.
 
-> Примітка: Для простоти опису, в цьому розділі ми будемо говорити тільки про автозавантаження класів.
+> Note: Для простоти опису, в цьому розділі ми будемо говорити тільки про автозавантаження класів.
 Тим не менш, все описане також стосується до інтерфейсів і трейтів.
 
 
@@ -69,15 +69,15 @@ Yii::$classMap['foo\bar\MyClass'] = 'path/to/MyClass.php';
 Перший рядок встановлює автозавантажувач Composer, а другий - автозавантажувач Yii:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 Ви можете використовувати автозавантажувач Composer без автозавантажувачa Yii, однак, швидкість автозавантаження в 
 цьому випадку може зменшиться. До того ж вам буде необхідно слідувати правилам автозавантажувача Composer.
 
-> Інформація: Якщо ви не хочете використовувати автозавантажувач Yii, створіть свою версію файлу `Yii.php`
-  і підключіть його у [вхідному скрипті](structure-entry-scripts.md).
+> Info: Якщо ви не хочете використовувати автозавантажувач Yii, створіть свою версію файлу `Yii.php`
+і підключіть його у [вхідному скрипті](structure-entry-scripts.md).
 
 
 Автозавантаження класів розширень <span id="autoloading-extension-classes"></span>

@@ -14,8 +14,9 @@ use yii\web\Response;
 
 /**
  * Cors filter implements [Cross Origin Resource Sharing](http://en.wikipedia.org/wiki/Cross-origin_resource_sharing).
+ *
  * Make sure to read carefully what CORS does and does not. CORS do not secure your API,
- * but allow the developer to grant access to third party code (ajax calls from external domain)
+ * but allow the developer to grant access to third party code (ajax calls from external domain).
  *
  * You may use CORS filter by attaching it as a behavior to a controller or module, like the following,
  *
@@ -57,6 +58,9 @@ use yii\web\Response;
  *     ];
  * }
  * ```
+ *
+ * For more information on how to add the CORS filter to a controller, see
+ * the [Guide on REST controllers](guide:rest-controllers#cors).
  *
  * @author Philippe Gaultier <pgaultier@gmail.com>
  * @since 2.0
@@ -192,7 +196,7 @@ class Cors extends ActionFilter
         if (in_array('*', $this->cors[$requestHeaderField])) {
             $responseHeaders[$responseHeaderField] = $this->headerize($requestHeaders[$requestHeaderField]);
         } else {
-            $requestedData = preg_split("/[\\s,]+/", $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
+            $requestedData = preg_split('/[\\s,]+/', $requestHeaders[$requestHeaderField], -1, PREG_SPLIT_NO_EMPTY);
             $acceptedData = array_uintersect($requestedData, $this->cors[$requestHeaderField], 'strcasecmp');
             if (!empty($acceptedData)) {
                 $responseHeaders[$responseHeaderField] = implode(', ', $acceptedData);
@@ -203,7 +207,7 @@ class Cors extends ActionFilter
     /**
      * Adds the CORS headers to the response
      * @param Response $response
-     * @param array CORS headers which have been computed
+     * @param array $headers CORS headers which have been computed
      */
     public function addCorsHeaders($response, $headers)
     {
@@ -224,7 +228,7 @@ class Cors extends ActionFilter
      */
     protected function headerize($string)
     {
-        $headers = preg_split("/[\\s,]+/", $string, -1, PREG_SPLIT_NO_EMPTY);
+        $headers = preg_split('/[\\s,]+/', $string, -1, PREG_SPLIT_NO_EMPTY);
         $headers = array_map(function ($element) {
             return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $element))));
         }, $headers);
