@@ -76,7 +76,7 @@ class ErrorAction extends Action
 
     /**
      * @var string|false the name of the layout to be applied to this error action view
-     * @see [[yii\base\Component::$layout]]
+     * @see [[yii\base\Controller::$layout]]
      * @since 2.0.15
      */
     public $layout;
