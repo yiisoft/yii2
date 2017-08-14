@@ -43,7 +43,7 @@ use yii\db\ActiveRecord;
  *                     ActiveRecord::EVENT_AFTER_VALIDATE => $fn2,
  *                 ],
  *                 'attribute4' => [
- *                     ActiveRecord::EVENT_BEFORE_DELETE => function ($event) {
+ *                     ActiveRecord::EVENT_BEFORE_DELETE => function ($event, $attribute) {
  *                         static::disabled() || $event->isValid = false;
  *                     },
  *                 ],
@@ -88,7 +88,7 @@ class AttributesBehavior extends Behavior
      *       ActiveRecord::EVENT_AFTER_VALIDATE => $fn2,
      *   ],
      *   'attribute4' => [
-     *       ActiveRecord::EVENT_BEFORE_DELETE => function ($event) {
+     *       ActiveRecord::EVENT_BEFORE_DELETE => function ($event, $attribute) {
      *           static::disabled() || $event->isValid = false;
      *       },
      *   ],
@@ -177,7 +177,7 @@ class AttributesBehavior extends Behavior
         }
         $value = $this->attributes[$attribute][$event->name];
         if ($value instanceof Closure || (is_array($value) && is_callable($value))) {
-            return $value($event);
+            return $value($event, $attribute);
         }
 
         return $value;

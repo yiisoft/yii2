@@ -119,7 +119,7 @@ class AttributesBehaviorTest extends TestCase
     {
         return [
             [
-                'Johnny',
+                'name: Johnny',
                 [ActiveRecordWithAttributesBehavior::EVENT_BEFORE_VALIDATE => ['name', 'alias']],
                 // 1: name = alias; 2: alias = name; check alias
                 'John Doe', // name
@@ -181,8 +181,8 @@ class ActiveRecordWithAttributesBehavior extends ActiveRecord
                         },
                     ],
                     'name' => [
-                        self::EVENT_BEFORE_VALIDATE => function ($event) {
-                            return $event->sender->alias;
+                        self::EVENT_BEFORE_VALIDATE => function ($event, $attribute) {
+                            return $attribute . ': ' . $event->sender->alias;
                         },
                     ],
                 ],
