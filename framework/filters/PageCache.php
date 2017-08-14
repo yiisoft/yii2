@@ -33,6 +33,7 @@ use yii\web\Response;
  *             'class' => 'yii\filters\PageCache',
  *             'only' => ['index'],
  *             'duration' => 60,
+ *             'minifyHtml' => false,
  *             'dependency' => [
  *                 'class' => 'yii\caching\DbDependency',
  *                 'sql' => 'SELECT COUNT(*) FROM post',
@@ -132,6 +133,10 @@ class PageCache extends ActionFilter
      */
     public $dynamicPlaceholders;
 
+    /**
+     * @var bool weather to minify the output or not
+     */
+    public $minifyHtml = false;
 
     /**
      * @inheritdoc
@@ -261,11 +266,43 @@ class PageCache extends ActionFilter
         }
         $this->insertResponseCollectionIntoData($response, 'headers', $data);
         $this->insertResponseCollectionIntoData($response, 'cookies', $data);
+        
+        if ($this->minifyHtml === true) {
+          $data['content'] = $this->minifyResponseHtml($data['content']);
+        }
+        
         $this->cache->set($this->calculateCacheKey(), $data, $this->duration, $this->dependency);
+        
         if (empty($this->view->cacheStack) && !empty($this->dynamicPlaceholders)) {
             $data['content'] = $this->updateDynamicContent($data['content'], $this->dynamicPlaceholders);
         }
         echo $data['content'];
+    }
+    
+    /**
+     * strip unnecessary characters from HTML output
+     * @param string $content
+     * @return string
+     */
+    protected function minifyResponseHtml($content)
+    {
+      
+      $search = [
+        '/\>[^\S ]+/s',     // strip whitespaces after tags, except space
+        '/[^\S ]+\</s',     // strip whitespaces before tags, except space
+        '/(\s)+/s',         // shorten multiple whitespace sequences
+        '/<!--(.|\s)*?-->/' // Remove HTML comments
+      ];
+
+      $replace = [
+        '>',
+        '<',
+        '\\1',
+        ''
+      ];
+
+      return preg_replace($search, $replace, $content);
+      
     }
 
     /**
