@@ -74,6 +74,13 @@ class ErrorAction extends Action
      */
     protected $exception;
 
+    /**
+     * @var string|false the name of the layout to be applied to this error action view
+     * @see [[yii\base\Component::$layout]]
+     * @since 2.0.~
+     */
+    public $layout;
+
 
     /**
      * {@inheritdoc}
@@ -98,6 +105,8 @@ class ErrorAction extends Action
      */
     public function run()
     {
+        if ($this->layout) $this->controller->layout = $this->layout;
+
         Yii::$app->getResponse()->setStatusCodeByException($this->exception);
 
         if (Yii::$app->getRequest()->getIsAjax()) {
