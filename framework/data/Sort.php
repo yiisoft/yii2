@@ -229,7 +229,7 @@ class Sort extends BaseObject
                     $orders[$name] = $dir;
                 }
             } else {
-                $orders[] = $columns;
+                $orders = $columns;
             }
         }
 
