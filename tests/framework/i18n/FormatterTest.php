@@ -8,6 +8,7 @@
 namespace yiiunit\framework\i18n;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
 
@@ -221,5 +222,98 @@ class FormatterTest extends TestCase
 
         $dateTime = new \DateTime('2016-01-01 00:00:00.000', new \DateTimeZone('Europe/Berlin'));
         $this->assertSame('1451602800', $this->formatter->asTimestamp($dateTime));
+    }
+
+    public function lengthDataProvider()
+    {
+        return [
+            [-3, "-3 meters", '-3 m'],
+            ['NaN', '0 millimeters', '0 mm'],
+            [0, "0 millimeters", '0 mm'],
+            [0.005, "5 millimeters", '5 mm'],
+            [0.053, "5.3 centimeters", '5.3 cm'],
+            [0.1, "10 centimeters", '10 cm'],
+            [1.123, "1.123 meters", '1.123 m'],
+            [1893.12, "1.893 kilometers", '1.893 km'],
+            [4561549, "4561.549 kilometers", '4561.549 km'],
+        ];
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     *
+     * @dataProvider lengthDataProvider
+     */
+    public function testIntlAsLength($value, $expected)
+    {
+        $this->assertSame($expected, $this->formatter->asLength($value));
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     *
+     * @dataProvider lengthDataProvider
+     */
+    public function testIntlAsShortLength($value, $_, $expected)
+    {
+        $this->assertSame($expected, $this->formatter->asShortLength($value));
+    }
+
+    public function weightDataProvider()
+    {
+        return [
+            [null, '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>'],
+            ['NaN', '0 grams', '0 g'],
+            [-3, '-3 kilograms', '-3 kg'],
+            [0, '0 grams', '0 g'],
+            [0.001, '1 gram', '1 g'],
+            [0.091, '91 grams', '91 g'],
+            [0.1, '100 grams', '100 g'],
+            [1, '1 kilogram', '1 kg'],
+            [453, '453 kilograms', '453 kg'],
+            [19913.13, '19.913 tons', '19.913 tn'],
+        ];
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     *
+     * @dataProvider weightDataProvider
+     */
+    public function testIntlAsWeight($value, $expected)
+    {
+        $this->assertSame($expected, $this->formatter->asWeight($value));
+    }
+
+    /**
+     * @param $value
+     * @param $expected
+     *
+     * @dataProvider weightDataProvider
+     */
+    public function testIntlAsShortWeight($value, $_, $expected)
+    {
+        $this->assertSame($expected, $this->formatter->asShortWeight($value));
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     * @expectedExceptionMessage Format of mass is only supported when PHP intl extension is installed.
+     */
+    public function testAsWeight()
+    {
+        $this->formatter->asWeight(10);
+    }
+
+    /**
+     * @expectedException \yii\base\InvalidConfigException
+     * @expectedExceptionMessage Format of length is only supported when PHP intl extension is installed.
+     */
+    public function testAsLength()
+    {
+        $this->formatter->asShortLength(10);
     }
 }

@@ -686,6 +686,7 @@ Yii Framework 2 Change Log
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `yii\helpers\FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
+- Enh #9707: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
 - Enh: `yii\behaviors\AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
 - Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)
