@@ -195,6 +195,7 @@ class Request extends \yii\base\Request
      * ```
      *
      * Default is to trust all headers except those listed in [[secureHeaders]] from all hosts.
+     * Matches are tried in order and searching is stopped when a host or IP matches.
      * @see $secureHeaders
      * @since 2.0.13
      */
@@ -289,6 +290,7 @@ class Request extends \yii\base\Request
                 }
                 if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
                     $trustedHeaders = $headers;
+                    continue;
                 }
             }
         }
