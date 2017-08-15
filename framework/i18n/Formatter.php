@@ -70,7 +70,7 @@ class Formatter extends Component
     /**
      * @since 2.0.13
      */
-    const UNIT_WEIGHT = 'weight';
+    const UNIT_WEIGHT = 'mass';
 
     /**
      * @var string the text to be displayed when formatting a `null` value.
@@ -291,6 +291,14 @@ class Formatter extends Component
      * @var array configuration of weight and length measurement units.
      * This array contains the most usable measurement units, but you can change it
      * in case you have some special requirements.
+     *
+     * For example, you can add smaller measure unit:
+     *
+     * ```php
+     * $this->measureUnits[self::UNIT_LENGTH][self::UNIT_SYSTEM_METRIC] = [
+     *     'nanometer' => 0.000001
+     * ]
+     * ```
      * @since 2.0.13
      */
     public $measureUnits = [
@@ -1402,6 +1410,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
      * @see asLength
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
@@ -1424,6 +1433,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
      * @see asLength
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
@@ -1444,6 +1454,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
      */
@@ -1465,6 +1476,7 @@ class Formatter extends Component
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string the formatted result.
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
      * @since 2.0.13
      * @author John Was <janek.jan@gmail.com>
      */
@@ -1483,6 +1495,7 @@ class Formatter extends Component
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return string
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information
      */
     private function formatUnit($unitType, $unitFormat, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions)
     {
@@ -1501,7 +1514,7 @@ class Formatter extends Component
         list($params, $position) = $this->formatNumber($value * $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
 
         $message = $this->getUnitMessage($unitType, $unitFormat, $unitSystem, $position);
-        
+
         return (new \MessageFormatter($this->locale, $message))->format([
             '0' => $params['nFormatted'],
             'n' => $params['n'],
@@ -1509,23 +1522,33 @@ class Formatter extends Component
     }
 
     /**
-     * @param string $unitType
-     * @param string $unitFormat
-     * @param string $system
-     * @param int $position
+     * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
+     * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
+     * @param string $system either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $position internal position of size unit
      * @return string
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information
      */
     private function getUnitMessage($unitType, $unitFormat, $system, $position)
     {
         if (isset($this->_unitMessages[$unitType][$system][$position])) {
             return $this->_unitMessages[$unitType][$system][$position];
         }
+        if (!$this->_intlLoaded) {
+            throw new InvalidConfigException('Format of ' . $unitType . ' is only supported when PHP intl extension is installed.');
+        }
+
         if ($this->_resourceBundle === null) {
             $this->_resourceBundle = new \ResourceBundle($this->locale, 'ICUDATA-unit');
         }
         $unitNames = array_keys($this->measureUnits[$unitType][$system]);
         $bundleKey = 'units' . ($unitFormat === self::FORMAT_WIDTH_SHORT ? 'Short' : '');
+
         $unitBundle = $this->_resourceBundle[$bundleKey][$unitType][$unitNames[$position]];
+        if ($unitBundle === null) {
+            throw new InvalidConfigException('Current version of ICU data does not contain information about unit type "' . $unitType . '" and unit measure "' . $unitNames[$position] . '. Check system requirements.');
+        }
+
         $message = [];
         foreach ($unitBundle as $key => $value) {
             if ($key === 'dnam') {
@@ -1573,6 +1596,7 @@ class Formatter extends Component
             }
             $position++;
         } while ($position < $maxPosition + 1);
+
         if (is_array($formatBase) && $position !== 0) {
             $value /= $formatBase[$position];
         }
