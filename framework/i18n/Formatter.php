@@ -1539,14 +1539,18 @@ class Formatter extends Component
         }
 
         if ($this->_resourceBundle === null) {
-            $this->_resourceBundle = new \ResourceBundle($this->locale, 'ICUDATA-unit');
+            try {
+                $this->_resourceBundle = new \ResourceBundle($this->locale, 'ICUDATA-unit');
+            } catch (\IntlException $e) {
+                throw new InvalidConfigException('Current ICU data does not contain information about measure units. Check system requirements.');
+            }
         }
         $unitNames = array_keys($this->measureUnits[$unitType][$system]);
         $bundleKey = 'units' . ($unitFormat === self::FORMAT_WIDTH_SHORT ? 'Short' : '');
 
         $unitBundle = $this->_resourceBundle[$bundleKey][$unitType][$unitNames[$position]];
         if ($unitBundle === null) {
-            throw new InvalidConfigException('Current version of ICU data does not contain information about unit type "' . $unitType . '" and unit measure "' . $unitNames[$position] . '. Check system requirements.');
+            throw new InvalidConfigException('Current ICU data version does not contain information about unit type "' . $unitType . '" and unit measure "' . $unitNames[$position] . '". Check system requirements.');
         }
 
         $message = [];

@@ -58,10 +58,11 @@ class FormatterTest extends TestCase
         $this->assertSame(date('Y-m-d', $value), $this->formatter->format($value, function ($value) {
             return date('Y-m-d', $value);
         }));
-        $this->assertSame('from: ' . date('Y-m-d', $value), $this->formatter->format($value, function ($value, $formatter) {
-            /** @var $formatter Formatter */
-            return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
-        }));
+        $this->assertSame('from: ' . date('Y-m-d', $value),
+            $this->formatter->format($value, function ($value, $formatter) {
+                /** @var $formatter Formatter */
+                return 'from: ' . $formatter->asDate($value, 'php:Y-m-d');
+            }));
     }
 
     public function testLocale()
@@ -158,7 +159,8 @@ class FormatterTest extends TestCase
         $value = 'test@sample.com';
         $this->assertSame("<a href=\"mailto:$value\">$value</a>", $this->formatter->asEmail($value));
         $value = 'test@sample.com';
-        $this->assertSame("<a href=\"mailto:$value\" target=\"_blank\">$value</a>", $this->formatter->asEmail($value, ['target' => '_blank']));
+        $this->assertSame("<a href=\"mailto:$value\" target=\"_blank\">$value</a>",
+            $this->formatter->asEmail($value, ['target' => '_blank']));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asEmail(null));
@@ -173,9 +175,11 @@ class FormatterTest extends TestCase
         $value = 'www.yiiframework.com/';
         $this->assertSame("<a href=\"http://$value\">$value</a>", $this->formatter->asUrl($value));
         $value = 'https://www.yiiframework.com/?name=test&value=5"';
-        $this->assertSame('<a href="https://www.yiiframework.com/?name=test&amp;value=5&quot;">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>', $this->formatter->asUrl($value));
+        $this->assertSame('<a href="https://www.yiiframework.com/?name=test&amp;value=5&quot;">https://www.yiiframework.com/?name=test&amp;value=5&quot;</a>',
+            $this->formatter->asUrl($value));
         $value = 'http://www.yiiframework.com/';
-        $this->assertSame("<a href=\"$value\" target=\"_blank\">$value</a>", $this->formatter->asUrl($value, ['target' => '_blank']));
+        $this->assertSame("<a href=\"$value\" target=\"_blank\">$value</a>",
+            $this->formatter->asUrl($value, ['target' => '_blank']));
 
         // null display
         $this->assertSame($this->formatter->nullDisplay, $this->formatter->asUrl(null));
@@ -247,6 +251,7 @@ class FormatterTest extends TestCase
      */
     public function testIntlAsLength($value, $expected)
     {
+        $this->ensureIntlUnitDataAvailable();
         $this->assertSame($expected, $this->formatter->asLength($value));
     }
 
@@ -258,6 +263,7 @@ class FormatterTest extends TestCase
      */
     public function testIntlAsShortLength($value, $_, $expected)
     {
+        $this->ensureIntlUnitDataAvailable();
         $this->assertSame($expected, $this->formatter->asShortLength($value));
     }
 
@@ -285,6 +291,7 @@ class FormatterTest extends TestCase
      */
     public function testIntlAsWeight($value, $expected)
     {
+        $this->ensureIntlUnitDataAvailable();
         $this->assertSame($expected, $this->formatter->asWeight($value));
     }
 
@@ -296,6 +303,7 @@ class FormatterTest extends TestCase
      */
     public function testIntlAsShortWeight($value, $_, $expected)
     {
+        $this->ensureIntlUnitDataAvailable();
         $this->assertSame($expected, $this->formatter->asShortWeight($value));
     }
 
@@ -315,5 +323,14 @@ class FormatterTest extends TestCase
     public function testAsLength()
     {
         $this->formatter->asShortLength(10);
+    }
+
+    protected function ensureIntlUnitDataAvailable()
+    {
+        try {
+            new \ResourceBundle($this->formatter->locale, 'ICUDATA-unit');
+        } catch (\IntlException $e) {
+            $this->markTestSkipped('ICU data does not contain measure units information.');
+        }
     }
 }
