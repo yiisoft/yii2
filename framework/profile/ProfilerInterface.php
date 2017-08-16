@@ -42,4 +42,9 @@ interface ProfilerInterface
      * @see begin()
      */
     public function end($token, $category);
+
+    /**
+     * Flushes profiling messages from memory to actual storage.
+     */
+    public function flush();
 }
