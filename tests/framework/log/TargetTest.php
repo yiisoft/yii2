@@ -123,22 +123,6 @@ class TargetTest extends TestCase
         $this->assertNotContains('E_b', $context);
         $this->assertNotContains('E_c', $context);
     }
-
-    /**
-     * @covers \yii\log\Target::setLevels()
-     * @covers \yii\log\Target::getLevels()
-     */
-    public function testSetupLevelsThroughArray()
-    {
-        /* @var $target Target */
-        $target = $this->getMockForAbstractClass(Target::class);
-
-        $target->setLevels(['info', 'error']);
-        $this->assertEquals([LogLevel::INFO, LogLevel::ERROR], $target->getLevels());
-
-        $target->setLevels(['trace']);
-        $this->assertEquals([LogLevel::DEBUG], $target->getLevels());
-    }
 }
 
 class TestTarget extends Target

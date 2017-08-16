@@ -52,30 +52,6 @@ class Logger extends Component implements LoggerInterface
     use LoggerTrait;
 
     /**
-     * Error message level. An error message is one that indicates the abnormal termination of the
-     * application and may require developer's handling.
-     * @deprecated since 2.1.0 Use [[LogLevel::ERROR]] instead.
-     */
-    const LEVEL_ERROR = LogLevel::ERROR;
-    /**
-     * Warning message level. A warning message is one that indicates some abnormal happens but
-     * the application is able to continue to run. Developers should pay attention to this message.
-     * @deprecated since 2.1.0 Use [[LogLevel::WARNING]] instead.
-     */
-    const LEVEL_WARNING = LogLevel::WARNING;
-    /**
-     * Informational message level. An informational message is one that includes certain information
-     * for developers to review.
-     * @deprecated since 2.1.0 Use [[LogLevel::INFO]] instead.
-     */
-    const LEVEL_INFO = LogLevel::INFO;
-    /**
-     * Tracing message level. An tracing message is one that reveals the code execution flow.
-     * @deprecated since 2.1.0 Use [[LogLevel::DEBUG]] instead.
-     */
-    const LEVEL_TRACE = LogLevel::DEBUG;
-
-    /**
      * @var array logged messages. This property is managed by [[log()]] and [[flush()]].
      * Each log message is of the following structure:
      *

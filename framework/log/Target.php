@@ -10,10 +10,8 @@ namespace yii\log;
 use Psr\Log\LogLevel;
 use Yii;
 use yii\base\Component;
-use yii\base\InvalidConfigException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
-use yii\profile\Profiler;
 use yii\web\Request;
 
 /**
@@ -26,10 +24,6 @@ use yii\web\Request;
  * Level filter and category filter are combinatorial, i.e., only messages
  * satisfying both filter conditions will be handled. Additionally, you
  * may specify [[except]] to exclude messages of certain categories.
- *
- * @property int $levels The message levels that this target is interested in. This is a bitmap of level
- * values. Defaults to 0, meaning  all available levels. Note that the type of this property differs in getter
- * and setter. See [[getLevels()]] and [[setLevels()]] for details.
  *
  * For more details and usage information on Target, see the [guide article on logging & targets](guide:runtime-logging).
  *
@@ -58,6 +52,22 @@ abstract class Target extends Component
      * @see categories
      */
     public $except = [];
+    /**
+     * @var array the message levels that this target is interested in.
+     *
+     * The parameter should be an array of interested level names. See [[LogLevel]] constants for valid level names.
+     *
+     * For example:
+     *
+     * ```php
+     * ['error', 'warning'],
+     * // or
+     * [LogLevel::ERROR, LogLevel::WARNING]
+     * ```
+     *
+     * Defaults is empty array, meaning all available levels.
+     */
+    public $levels = [];
     /**
      * @var array list of the PHP predefined variables that should be logged in a message.
      * Note that a variable must be accessible via `$GLOBALS`. Otherwise it won't be logged.
@@ -95,8 +105,6 @@ abstract class Target extends Component
      */
     public $messages = [];
 
-    private $_levels = 0;
-
 
     /**
      * Exports log [[messages]] to a specific destination.
@@ -114,7 +122,7 @@ abstract class Target extends Component
      */
     public function collect($messages, $final)
     {
-        $this->messages = array_merge($this->messages, static::filterMessages($messages, $this->getLevels(), $this->categories, $this->except));
+        $this->messages = array_merge($this->messages, static::filterMessages($messages, $this->levels, $this->categories, $this->except));
         $count = count($this->messages);
         if ($count > 0 && ($final || $this->exportInterval > 0 && $count >= $this->exportInterval)) {
             if (($context = $this->getContextMessage()) !== '') {
@@ -143,47 +151,6 @@ abstract class Target extends Component
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
         return implode("\n\n", $result);
-    }
-
-    /**
-     * @return int the message levels that this target is interested in. This is a bitmap of
-     * level values. Defaults to 0, meaning  all available levels.
-     */
-    public function getLevels()
-    {
-        return $this->_levels;
-    }
-
-    /**
-     * Sets the message levels that this target is interested in.
-     *
-     * The parameter should be an array of interested level names. See [[LogLevel]] constants for valid level names.
-     *
-     * For example,
-     *
-     * ```php
-     * ['error', 'warning'],
-     * // or 
-     * [LogLevel::ERROR, LogLevel::WARNING]
-     * ```
-     *
-     * @param array $levels message levels that this target is interested in.
-     * @throws InvalidConfigException if $levels value is not correct.
-     */
-    public function setLevels($levels)
-    {
-        static $levelMap = [
-            'trace' => LogLevel::DEBUG,
-        ];
-
-        $this->_levels = [];
-        foreach ($levels as $level) {
-            if (isset($levelMap[$level])) {
-                $this->_levels[] = $levelMap[$level];
-            } else {
-                $this->_levels[] = $level;
-            }
-        }
     }
 
     /**
