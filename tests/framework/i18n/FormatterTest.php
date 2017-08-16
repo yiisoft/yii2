@@ -327,10 +327,20 @@ class FormatterTest extends TestCase
 
     protected function ensureIntlUnitDataAvailable()
     {
-        try {
-            new \ResourceBundle($this->formatter->locale, 'ICUDATA-unit');
-        } catch (\IntlException $e) {
+        $skip = function () {
             $this->markTestSkipped('ICU data does not contain measure units information.');
+        };
+
+        try {
+            $bundle = new \ResourceBundle($this->formatter->locale, 'ICUDATA-unit');
+            $massUnits = $bundle['units']['mass'];
+            $lengthUnits = $bundle['units']['length'];
+
+            if ($massUnits === null || $lengthUnits === null) {
+                $skip();
+            }
+        } catch (\IntlException $e) {
+            $skip();
         }
     }
 }
