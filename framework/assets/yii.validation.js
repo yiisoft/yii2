@@ -59,14 +59,17 @@ yii.validation = (function ($) {
                 return;
             }
 
-            if (options.is !== undefined && value.length != options.is) {
+            //line breaks will be counted as 2 characters (\r\n) in php/mb_strlen
+            var mb_strlen = value.replace(/\r(?!\n)|\n(?!\r)/g, "\r\n").length;
+
+            if (options.is !== undefined && mb_strlen !== options.is) {
                 pub.addMessage(messages, options.notEqual, value);
                 return;
             }
-            if (options.min !== undefined && value.length < options.min) {
+            if (options.min !== undefined && mb_strlen < options.min) {
                 pub.addMessage(messages, options.tooShort, value);
             }
-            if (options.max !== undefined && value.length > options.max) {
+            if (options.max !== undefined && mb_strlen > options.max) {
                 pub.addMessage(messages, options.tooLong, value);
             }
         },
