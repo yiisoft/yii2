@@ -9,6 +9,7 @@ namespace yiiunit\framework\profile;
 
 use yii\profile\LogTarget;
 use yii\profile\Profiler;
+use yii\profile\Target;
 use yiiunit\TestCase;
 
 /**
@@ -39,6 +40,33 @@ class ProfilerTest extends TestCase
         $target = $profiler->getTargets()[0];
         $this->assertTrue($target instanceof LogTarget);
         $this->assertEquals('test', $target->logLevel);
+    }
+
+    /**
+     * @depends testSetupTarget
+     *
+     * @covers \yii\profile\Profiler::addTarget()
+     */
+    public function testAddTarget()
+    {
+        $profiler = new Profiler();
+
+        $target = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $profiler->setTargets([$target]);
+
+        $namedTarget = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $profiler->addTarget($namedTarget, 'test-target');
+
+        $targets = $profiler->getTargets();
+        $this->assertCount(2, $targets);
+        $this->assertTrue(isset($targets['test-target']));
+        $this->assertSame($namedTarget, $targets['test-target']);
+
+        $namelessTarget = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $profiler->addTarget($namelessTarget);
+        $targets = $profiler->getTargets();
+        $this->assertCount(3, $targets);
+        $this->assertSame($namelessTarget, array_pop($targets));
     }
 
     public function testEnabled()

@@ -152,6 +152,24 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
+     * Adds extra target to [[targets]].
+     * @param Target|array $target the log target instance or its DI compatible configuration.
+     * @param string|null $name array key to be used to store target, if `null` is given target will be append
+     * to the end of the array by natural integer key.
+     */
+    public function addTarget($target, $name = null)
+    {
+        if (!$target instanceof Target) {
+            $this->_isTargetsInitialized = false;
+        }
+        if ($name === null) {
+            $this->_targets[] = $target;
+        } else {
+            $this->_targets[$name] = $target;
+        }
+    }
+
+    /**
      * Initializes the logger by registering [[flush()]] as a shutdown function.
      */
     public function init()

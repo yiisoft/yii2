@@ -9,7 +9,7 @@ namespace yiiunit\framework\log;
 
 use Psr\Log\LogLevel;
 use yii\log\Logger;
-use yii\profile\Profiler;
+use yii\log\Target;
 use yiiunit\TestCase;
 
 /**
@@ -145,5 +145,55 @@ class LoggerTest extends TestCase
         $this->assertEquals('alert', Logger::getLevelName(LogLevel::ALERT));
         $this->assertEquals('critical', Logger::getLevelName(LogLevel::CRITICAL));
         $this->assertEquals('unknown', Logger::getLevelName(0));
+    }
+
+    /**
+     * @covers \yii\log\Logger::setTargets()
+     * @covers \yii\log\Logger::getTargets()
+     */
+    public function testSetupTarget()
+    {
+        $logger = new Logger();
+
+        $target = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->setTargets([$target]);
+
+        $this->assertEquals([$target], $logger->getTargets());
+        $this->assertSame($target, $logger->getTargets()[0]);
+
+        $logger->setTargets([
+            [
+                'class' => get_class($target),
+            ],
+        ]);
+        $this->assertNotSame($target, $logger->getTargets()[0]);
+        $this->assertEquals(get_class($target), get_class($logger->getTargets()[0]));
+    }
+
+    /**
+     * @depends testSetupTarget
+     *
+     * @covers \yii\log\Logger::addTarget()
+     */
+    public function testAddTarget()
+    {
+        $logger = new Logger();
+
+        $target = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->setTargets([$target]);
+
+        $namedTarget = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->addTarget($namedTarget, 'test-target');
+
+        $targets = $logger->getTargets();
+        $this->assertCount(2, $targets);
+        $this->assertTrue(isset($targets['test-target']));
+        $this->assertSame($namedTarget, $targets['test-target']);
+
+        $namelessTarget = $this->getMockBuilder(Target::class)->getMockForAbstractClass();
+        $logger->addTarget($namelessTarget);
+        $targets = $logger->getTargets();
+        $this->assertCount(3, $targets);
+        $this->assertSame($namelessTarget, array_pop($targets));
     }
 }
