@@ -81,14 +81,18 @@ class Logger extends Component implements LoggerInterface
      *
      * ```
      * [
-     *   [0] => message (mixed, can be a string or some complex data, such as an exception object)
-     *   [1] => level (integer)
-     *   [2] => category (string)
-     *   [3] => timestamp (float, obtained by microtime(true))
-     *   [4] => traces (array, debug backtrace, contains the application code call stacks)
-     *   [5] => memory usage in bytes (int, obtained by memory_get_usage()), available since version 2.0.11.
+     *   [0] => level (string)
+     *   [1] => message (mixed, can be a string or some complex data, such as an exception object)
+     *   [2] => context (array)
      * ]
      * ```
+     *
+     * Message context has a following keys:
+     *
+     * - category: string, message category.
+     * - time: float, message timestamp obtained by microtime(true).
+     * - trace: array, debug backtrace, contains the application code call stacks.
+     * - memory: int, memory usage in bytes, obtained by `memory_get_usage()`, available since version 2.0.11.
      */
     public $messages = [];
     /**
@@ -262,144 +266,15 @@ class Logger extends Component implements LoggerInterface
     }
 
     /**
-     * Returns the profiling results.
-     *
-     * By default, all profiling results will be returned. You may provide
-     * `$categories` and `$excludeCategories` as parameters to retrieve the
-     * results that you are interested in.
-     *
-     * @param array $categories list of categories that you are interested in.
-     * You can use an asterisk at the end of a category to do a prefix match.
-     * For example, 'yii\db\*' will match categories starting with 'yii\db\',
-     * such as `yii\db\Connection`.
-     * @param array $excludeCategories list of categories that you want to exclude
-     * @return array the profiling results. Each element is an array consisting of these elements:
-     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`.
-     * The `memory` and `memoryDiff` values are available since version 2.0.11.
-     */
-    public function getProfiling($categories = [], $excludeCategories = [])
-    {
-        $timings = $this->calculateTimings($this->messages);
-        if (empty($categories) && empty($excludeCategories)) {
-            return $timings;
-        }
-
-        foreach ($timings as $i => $timing) {
-            $matched = empty($categories);
-            foreach ($categories as $category) {
-                $prefix = rtrim($category, '*');
-                if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
-                    $matched = true;
-                    break;
-                }
-            }
-
-            if ($matched) {
-                foreach ($excludeCategories as $category) {
-                    $prefix = rtrim($category, '*');
-                    foreach ($timings as $i => $timing) {
-                        if (($timing['category'] === $category || $prefix !== $category) && strpos($timing['category'], $prefix) === 0) {
-                            $matched = false;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!$matched) {
-                unset($timings[$i]);
-            }
-        }
-
-        return array_values($timings);
-    }
-
-    /**
-     * Returns the statistical results of DB queries.
-     * The results returned include the number of SQL statements executed and
-     * the total time spent.
-     * @return array the first element indicates the number of SQL statements executed,
-     * and the second element the total time spent in SQL execution.
-     */
-    public function getDbProfiling()
-    {
-        $timings = $this->getProfiling([
-            'yii\db\Command::query',
-            'yii\db\Command::execute',
-        ]);
-        $count = count($timings);
-        $time = 0;
-        foreach ($timings as $timing) {
-            $time += $timing['duration'];
-        }
-
-        return [$count, $time];
-    }
-
-    /**
-     * Calculates the elapsed time for the given log messages.
-     * @param array $messages the log messages obtained from profiling
-     * @return array timings. Each element is an array consisting of these elements:
-     * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`.
-     * The `memory` and `memoryDiff` values are available since version 2.0.11.
-     */
-    public function calculateTimings($messages)
-    {
-        $timings = [];
-        $stack = [];
-
-        foreach ($messages as $i => $log) {
-            [$level, $token, $context] = $log;
-            $timestamp = $context['time'];
-            $memory = $context['memory'] ?? 0;
-            $log['index'] = $i;
-            $hash = md5(json_encode($token));
-            if ($level == Profiler::LEVEL_PROFILE_BEGIN) {
-                $stack[$hash] = $log;
-            } elseif ($level == Profiler::LEVEL_PROFILE_END) {
-                if (isset($stack[$hash])) {
-                    $timings[$stack[$hash]['index']] = [
-                        'info' => $stack[$hash][1],
-                        'category' => $stack[$hash][2]['category'],
-                        'timestamp' => $stack[$hash][2]['time'],
-                        'trace' => $stack[$hash][2]['trace'],
-                        'level' => count($stack) - 1,
-                        'duration' => $timestamp - $stack[$hash][2]['time'],
-                        'memory' => $memory,
-                        'memoryDiff' => $memory - ($stack[$hash][2]['memory'] ?? 0),
-                    ];
-                    unset($stack[$hash]);
-                }
-            }
-        }
-
-        ksort($timings);
-
-        return array_values($timings);
-    }
-
-
-    /**
      * Returns the text display of the specified level.
-     * @param int $level the message level, e.g. [[LEVEL_ERROR]], [[LEVEL_WARNING]].
+     * @param mixed $level the message level, e.g. [[LogLevel::ERROR]], [[LogLevel::WARNING]].
      * @return string the text display of the level
      */
     public static function getLevelName($level)
     {
-        static $levels = [
-            Profiler::LEVEL_PROFILE_BEGIN => 'profile begin',
-            Profiler::LEVEL_PROFILE_END => 'profile end',
-            Profiler::LEVEL_PROFILE => 'profile',
-        ];
-        
-        if (isset($levels[$level])) {
-            return $levels[$level];
-        }
-
         if (is_string($level)) {
             return $level;
         }
-
         return 'unknown';
     }
 }

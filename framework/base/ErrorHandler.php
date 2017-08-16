@@ -103,6 +103,7 @@ abstract class ErrorHandler extends Component
             }
             $this->renderException($exception);
             if (!YII_ENV_TEST) {
+                Yii::getProfiler()->flush();
                 $this->flushLogger();
                 exit(1);
             }
@@ -205,6 +206,7 @@ abstract class ErrorHandler extends Component
             $this->renderException($exception);
 
             // need to explicitly flush logs because exit() next will terminate the app immediately
+            Yii::getProfiler()->flush();
             $this->flushLogger();
             exit(1);
         }

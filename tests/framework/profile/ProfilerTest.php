@@ -79,4 +79,16 @@ class ProfilerTest extends TestCase
         $profiler->flush();
         $this->assertEmpty($profiler->messages);
     }
+
+    public function testNestedMessages()
+    {
+        $profiler = new Profiler();
+
+        $profiler->begin('test', 'test');
+        $profiler->begin('test', 'test');
+        $profiler->end('test', 'test');
+        $profiler->end('test', 'test');
+
+        $this->assertCount(2, $profiler->messages);
+    }
 }

@@ -47,6 +47,15 @@ class Profiler extends Component implements ProfilerInterface
 
 
     /**
+     * Initializes the profiler by registering [[flush()]] as a shutdown function.
+     */
+    public function init()
+    {
+        parent::init();
+        register_shutdown_function([$this, 'flush']);
+    }
+
+    /**
      * @return Target[] the profiling targets. Each array element represents a single [[Target|profiling target]] instance.
      */
     public function getTargets()
@@ -107,6 +116,8 @@ class Profiler extends Component implements ProfilerInterface
         $message = array_pop($this->_pendingMessages[$category][$token]);
         $message['endTime'] = microtime(true);
         $message['endMemory'] = memory_get_usage();
+        $message['duration'] = $message['endTime'] - $message['beginTime'];
+        $message['memoryDiff'] = $message['endMemory'] - $message['beginMemory'];
 
         $this->messages[] = $message;
     }
@@ -124,6 +135,10 @@ class Profiler extends Component implements ProfilerInterface
             }
         }
         $this->_pendingMessages = [];
+
+        if (empty($this->messages)) {
+            return;
+        }
 
         $messages = $this->messages;
         // new messages could appear while the existing ones are being handled by targets
