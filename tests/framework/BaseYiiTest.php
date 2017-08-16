@@ -34,6 +34,7 @@ class BaseYiiTest extends TestCase
     {
         parent::tearDown();
         Yii::$aliases = $this->aliases;
+        Yii::setLogger(null);
     }
 
     public function testAlias()
