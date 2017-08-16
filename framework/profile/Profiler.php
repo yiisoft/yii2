@@ -100,7 +100,7 @@ class Profiler extends Component implements ProfilerInterface
             return;
         }
 
-        if (!empty($this->_pendingMessages[$category][$token])) {
+        if (empty($this->_pendingMessages[$category][$token])) {
             throw new InvalidArgumentException('Unexpected ' . get_called_class() . '::end() call for category "' . $category . '" token "' . $token . '". A matching begin() is not found.');
         }
 

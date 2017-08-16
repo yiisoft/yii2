@@ -48,6 +48,10 @@ abstract class Target extends Component
      */
     public function collect(array $messages)
     {
+        if (!$this->enabled) {
+            return;
+        }
+
         $messages = $this->filterMessages($messages);
         if (count($messages) > 0) {
             $this->export($messages);
