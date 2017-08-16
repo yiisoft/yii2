@@ -60,7 +60,7 @@ class PsrTarget extends Target
     public function export()
     {
         foreach ($this->messages as $message) {
-            $text = $message[1];
+            [$level, $text, $context] = $message;
 
             if (!is_string($text)) {
                 // exceptions may not be serializable if in the call stack somewhere is a Closure
@@ -71,7 +71,7 @@ class PsrTarget extends Target
                 }
             }
 
-            $this->getLogger()->log($message[0], $text, $message[2]);
+            $this->getLogger()->log($level, $text, $context);
         }
     }
 }

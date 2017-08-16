@@ -35,6 +35,7 @@ class BaseYiiTest extends TestCase
         parent::tearDown();
         Yii::$aliases = $this->aliases;
         Yii::setLogger(null);
+        Yii::setProfiler(null);
     }
 
     public function testAlias()
@@ -162,12 +163,12 @@ class BaseYiiTest extends TestCase
     }
 
     /**
+     * @depends testSetupLogger
+     *
      * @covers \yii\BaseYii::info()
      * @covers \yii\BaseYii::warning()
      * @covers \yii\BaseYii::debug()
      * @covers \yii\BaseYii::error()
-     * @covers \yii\BaseYii::beginProfile()
-     * @covers \yii\BaseYii::endProfile()
      */
     public function testLog()
     {
@@ -176,7 +177,7 @@ class BaseYiiTest extends TestCase
             ->getMock();
         BaseYii::setLogger($logger);
 
-        $logger->expects($this->exactly(6))
+        $logger->expects($this->exactly(4))
             ->method('log')
             ->withConsecutive(
                 [
@@ -205,9 +206,50 @@ class BaseYiiTest extends TestCase
         BaseYii::warning('warning message', 'warning category');
         BaseYii::debug('trace message', 'trace category');
         BaseYii::error('error message', 'error category');
-        BaseYii::beginProfile('beginProfile message', 'beginProfile category');
-        BaseYii::endProfile('endProfile message', 'endProfile category');
+    }
 
-        BaseYii::setLogger(null);
+    /**
+     * @depends testSetupProfiler
+     *
+     * @covers \yii\BaseYii::beginProfile()
+     * @covers \yii\BaseYii::endProfile()
+     */
+    public function testProfile()
+    {
+        $profiler = $this->getMockBuilder('yii\profile\Profiler')
+            ->setMethods(['begin', 'end'])
+            ->getMock();
+        BaseYii::setProfiler($profiler);
+
+        $profiler->expects($this->exactly(2))
+            ->method('begin')
+            ->withConsecutive(
+                [
+                    $this->equalTo('Profile message 1'),
+                    $this->equalTo('Profile category 1')
+                ],
+                [
+                    $this->equalTo('Profile message 2'),
+                    $this->equalTo('Profile category 2'),
+                ]
+            );
+
+        $profiler->expects($this->exactly(2))
+            ->method('end')
+            ->withConsecutive(
+                [
+                    $this->equalTo('Profile message 1'),
+                    $this->equalTo('Profile category 1')
+                ],
+                [
+                    $this->equalTo('Profile message 2'),
+                    $this->equalTo('Profile category 2'),
+                ]
+            );
+
+        BaseYii::beginProfile('Profile message 1', 'Profile category 1');
+        BaseYii::endProfile('Profile message 1', 'Profile category 1');
+        BaseYii::beginProfile('Profile message 2', 'Profile category 2');
+        BaseYii::endProfile('Profile message 2', 'Profile category 2');
     }
 }

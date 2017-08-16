@@ -10,7 +10,6 @@ namespace yii\log;
 use Psr\Log\LogLevel;
 use Yii;
 use yii\helpers\VarDumper;
-use yii\profile\Profiler;
 
 /**
  * SyslogTarget writes log to syslog.

@@ -13,7 +13,6 @@ use Psr\Log\LoggerTrait;
 use Yii;
 use yii\base\Component;
 use yii\base\ErrorHandler;
-use yii\profile\Profiler;
 
 /**
  * Logger records logged messages in memory and sends them to different targets according to [[targets]].
