@@ -561,7 +561,9 @@ class Request extends \yii\base\Request
         if ($this->_hostInfo === null) {
             $secure = $this->getIsSecureConnection();
             $http = $secure ? 'https' : 'http';
-            if (isset($_SERVER['HTTP_HOST'])) {
+            if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+                $this->_hostInfo = $http . '://' . $_SERVER['HTTP_X_FORWARDED_HOST'];
+            } elseif (isset($_SERVER['HTTP_HOST'])) {
                 $this->_hostInfo = $http . '://' . $_SERVER['HTTP_HOST'];
             } elseif (isset($_SERVER['SERVER_NAME'])) {
                 $this->_hostInfo = $http . '://' . $_SERVER['SERVER_NAME'];
