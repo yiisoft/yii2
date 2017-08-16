@@ -40,10 +40,6 @@ class SyslogTarget extends Target
         LogLevel::NOTICE => LOG_NOTICE,
         LogLevel::INFO => LOG_INFO,
         LogLevel::DEBUG => LOG_DEBUG,
-        // @todo consider remove after Profiler refactoring
-        Profiler::LEVEL_PROFILE_BEGIN => LOG_DEBUG,
-        Profiler::LEVEL_PROFILE_END => LOG_DEBUG,
-        Profiler::LEVEL_PROFILE => LOG_DEBUG,
     ];
 
     /**

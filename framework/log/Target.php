@@ -174,7 +174,6 @@ abstract class Target extends Component
     {
         static $levelMap = [
             'trace' => LogLevel::DEBUG,
-            'profile' => Profiler::LEVEL_PROFILE,
         ];
 
         $this->_levels = [];
