@@ -102,18 +102,20 @@ class Profiler extends Component implements ProfilerInterface
     /**
      * {@inheritdoc}
      */
-    public function begin($token, $category)
+    public function begin($token, array $context = [])
     {
         if (!$this->enabled) {
             return;
         }
 
-        $message = [
+        $category = isset($context['category']) ?: 'application';
+
+        $message = array_merge($context, [
             'token' => $token,
             'category' => $category,
             'beginTime' => microtime(true),
             'beginMemory' => memory_get_usage(),
-        ];
+        ]);
 
         $this->_pendingMessages[$category][$token][] = $message;
     }
@@ -121,17 +123,26 @@ class Profiler extends Component implements ProfilerInterface
     /**
      * {@inheritdoc}
      */
-    public function end($token, $category)
+    public function end($token, array $context = [])
     {
         if (!$this->enabled) {
             return;
         }
+
+        $category = isset($context['category']) ?: 'application';
 
         if (empty($this->_pendingMessages[$category][$token])) {
             throw new InvalidArgumentException('Unexpected ' . get_called_class() . '::end() call for category "' . $category . '" token "' . $token . '". A matching begin() is not found.');
         }
 
         $message = array_pop($this->_pendingMessages[$category][$token]);
+        if (empty($this->_pendingMessages[$category][$token])) {
+            unset($this->_pendingMessages[$category][$token]);
+            if (empty($this->_pendingMessages[$category])) {
+                unset($this->_pendingMessages[$category]);
+            }
+        }
+
         $message['endTime'] = microtime(true);
         $message['endMemory'] = memory_get_usage();
         $message['duration'] = $message['endTime'] - $message['beginTime'];

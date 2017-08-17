@@ -75,15 +75,15 @@ class ProfilerTest extends TestCase
 
         $profiler->enabled = false;
 
-        $profiler->begin('test', 'test');
-        $profiler->end('test', 'test');
+        $profiler->begin('test');
+        $profiler->end('test');
 
         $this->assertEmpty($profiler->messages);
 
         $profiler->enabled = true;
 
-        $profiler->begin('test', 'test');
-        $profiler->end('test', 'test');
+        $profiler->begin('test');
+        $profiler->end('test');
 
         $this->assertCount(1, $profiler->messages);
     }
@@ -112,10 +112,10 @@ class ProfilerTest extends TestCase
     {
         $profiler = new Profiler();
 
-        $profiler->begin('test', 'test');
-        $profiler->begin('test', 'test');
-        $profiler->end('test', 'test');
-        $profiler->end('test', 'test');
+        $profiler->begin('test');
+        $profiler->begin('test');
+        $profiler->end('test');
+        $profiler->end('test');
 
         $this->assertCount(2, $profiler->messages);
     }

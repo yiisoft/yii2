@@ -226,11 +226,11 @@ class BaseYiiTest extends TestCase
             ->withConsecutive(
                 [
                     $this->equalTo('Profile message 1'),
-                    $this->equalTo('Profile category 1')
+                    $this->equalTo(['category' => 'Profile category 1'])
                 ],
                 [
                     $this->equalTo('Profile message 2'),
-                    $this->equalTo('Profile category 2'),
+                    $this->equalTo(['category' => 'Profile category 2']),
                 ]
             );
 
@@ -239,11 +239,11 @@ class BaseYiiTest extends TestCase
             ->withConsecutive(
                 [
                     $this->equalTo('Profile message 1'),
-                    $this->equalTo('Profile category 1')
+                    $this->equalTo(['category' => 'Profile category 1'])
                 ],
                 [
                     $this->equalTo('Profile message 2'),
-                    $this->equalTo('Profile category 2'),
+                    $this->equalTo(['category' => 'Profile category 2']),
                 ]
             );
 

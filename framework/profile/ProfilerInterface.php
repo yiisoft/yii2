@@ -29,19 +29,19 @@ interface ProfilerInterface
      * \Yii::getProfiler()->end('block1');
      * ```
      * @param string $token token for the code block
-     * @param string $category the category of this log the code block
+     * @param array $context the context data of this profile block
      * @see endProfile()
      */
-    public function begin($token, $category);
+    public function begin($token, array $context = []);
 
     /**
      * Marks the end of a code block for profiling.
      * This has to be matched with a previous call to [[begin()]] with the same category name.
      * @param string $token token for the code block
-     * @param string $category the category of this code block
+     * @param array $context the context data of this profile block
      * @see begin()
      */
-    public function end($token, $category);
+    public function end($token, array $context = []);
 
     /**
      * Flushes profiling messages from memory to actual storage.

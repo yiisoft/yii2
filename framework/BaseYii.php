@@ -516,7 +516,7 @@ class BaseYii
      */
     public static function beginProfile($token, $category = 'application')
     {
-        static::getProfiler()->begin($token, $category);
+        static::getProfiler()->begin($token, ['category' => $category]);
     }
 
     /**
@@ -528,7 +528,7 @@ class BaseYii
      */
     public static function endProfile($token, $category = 'application')
     {
-        static::getProfiler()->end($token, $category);
+        static::getProfiler()->end($token, ['category' => $category]);
     }
 
     /**
