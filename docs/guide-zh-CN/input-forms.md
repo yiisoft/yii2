@@ -1,5 +1,6 @@
 创建表单
-==============
+====
+
 基于活动记录(ActiveRecord)的表单：ActiveForm
 -----------------------
 在yii中使用表单的主要方式是通过[[yii\widgets\ActiveForm]]。当某个表单是基于一个模型时，应该首选这种方式。此外，在[[yii\helpers\Html]]中有很多实用的方法为表单添加按钮和帮助文档。
@@ -53,7 +54,8 @@ $form = ActiveForm::begin([
 
 在上面的代码中，[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]] 不仅创建了一个表单实例，同时也标志的表单的开始。所有在[[yii\widgets\ActiveForm::begin()|ActiveForm::begin()]]与[[yii\widgets\ActiveForm::end()|ActiveForm::end()]]之中的内容都会被HTML中的 `<form>`标签包裹。与其他小部件一样，你可以制定一些选项，通过传递数组到到 `begin` 中来配置小部件。在这种情况下，一个额外的CSS类和ID会在 `<form>` 标签中使用。要查看更多可用的选项，请查看API文档的 [[yii\widgets\ActiveForm]]。
 
-### ActiveField <span id="activefield"></span>.
+### ActiveField <span id="activefield"></span>
+
 为了在表单中创建表单元素与元素的标签，以及任意适用的Javascript验证，需要使用[[yii\widgets\ActiveForm::field()]|ActiveForm::field()]方法，其返回一个[[yii\widgets\ActiveField]]实例。当直接输出该方法时，结果是一个普通的（文本）输入。要自定义输出，可以附加上[[yii\widgets\ActiveField|ActiveField]]的其他方法来一起调用：
 
 ```php
@@ -88,6 +90,7 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 > Tip：如果你的应用程序正在使用Twitter的Bootstrap CSS样式，你可以选择使用[[yii\bootstrap\ActiveForm]]代替[[yii\widgets\ActiveForm]]，这个表单继承自后者，并且使用Bootstrap特有的样式初始化表单的输入框。
 
 > Tip: 为了使用星号对必填字段进行样式,你可以使用下面的CSS样式：
+>
 > ```css
 > div.required label.control-label:after {
 >     content: " *";
@@ -99,9 +102,10 @@ echo $form->field($model, 'items[]')->checkboxList(['a' => 'Item A', 'b' => 'Ite
 -----------------------
 
 这里有3中类型的列表：
-* 下拉列表
-* 单选列表
-* 多选列表
+
+- 下拉列表
+- 单选列表
+- 多选列表
 
 为了创建列表，你必须先为它准备选项。这些选项可以手动准备如下：
 
@@ -188,6 +192,7 @@ Pjax::begin([
     ActiveForm::end();
 Pjax::end();
 ```
+
 > Tip: 注意小心[[yii\widgets\Pjax|Pjax]]内部的链接，因为响应仍可能在组件内部呈现。为了避免这种现象，可以使用`data-pjax="0"`这个HTML属性。
 
 #### 提交按钮和文件上传
