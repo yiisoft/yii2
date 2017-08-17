@@ -68,24 +68,24 @@ class HttpCacheTest extends \yiiunit\TestCase
         $method = new \ReflectionMethod($httpCache, 'validateCache');
         $method->setAccessible(true);
 
-        $request->headers->remove('If-Modified-Since');
-        $request->headers->remove('If-None-Match');
+        $httpCache->request->headers->remove('If-Modified-Since');
+        $httpCache->request->headers->remove('If-None-Match');
         $this->assertFalse($method->invoke($httpCache, null, null));
         $this->assertFalse($method->invoke($httpCache, 0, null));
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
 
-        $request->headers->set('If-Modified-Since', 'Thu, 01 Jan 1970 00:00:00 GMT');
+        $httpCache->request->headers->set('If-Modified-Since', 'Thu, 01 Jan 1970 00:00:00 GMT');
         $this->assertTrue($method->invoke($httpCache, 0, null));
         $this->assertFalse($method->invoke($httpCache, 1, null));
 
-        $request->headers->set('If-None-Match', '"foo"');
+        $httpCache->request->headers->set('If-None-Match', '"foo"');
         $this->assertTrue($method->invoke($httpCache, 0, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 0, '"foos"'));
         $this->assertTrue($method->invoke($httpCache, 1, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 1, '"foos"'));
         $this->assertFalse($method->invoke($httpCache, null, null));
 
-        $request->headers->set('If-None-Match', '*');
+        $httpCache->request->headers->set('If-None-Match', '*');
         $this->assertFalse($method->invoke($httpCache, 0, '"foo"'));
         $this->assertFalse($method->invoke($httpCache, 0, null));
     }
