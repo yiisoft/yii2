@@ -111,6 +111,8 @@ class StringValidator extends Validator
             return;
         }
 
+		$value = str_replace(["\r\n", "\r"], "\n", $value);
+
         $length = mb_strlen($value, $this->encoding);
 
         if ($this->min !== null && $length < $this->min) {
