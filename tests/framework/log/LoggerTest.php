@@ -196,4 +196,46 @@ class LoggerTest extends TestCase
         $this->assertCount(3, $targets);
         $this->assertSame($namelessTarget, array_pop($targets));
     }
+
+    /**
+     * Data provider for [[testParseMessage()]]
+     * @return array test data.
+     */
+    public function dataProviderParseMessage()
+    {
+        return [
+            [
+                'no placeholder',
+                ['foo' => 'some'],
+                'no placeholder',
+            ],
+            [
+                'has {foo} placeholder',
+                ['foo' => 'some'],
+                'has some placeholder',
+            ],
+            [
+                'has {foo} placeholder',
+                [],
+                'has {foo} placeholder',
+            ],
+        ];
+    }
+
+    /**
+     * @depends testLog
+     * @dataProvider dataProviderParseMessage
+     *
+     * @covers \yii\log\Logger::parseMessage()
+     *
+     * @param $message
+     * @param array $context
+     * @param $expected
+     */
+    public function testParseMessage($message, array $context, $expected)
+    {
+        $this->logger->log(LogLevel::INFO, $message, $context);
+        [$level, $message, $context] = $this->logger->messages[0];
+        $this->assertEquals($expected, $message);
+    }
 }

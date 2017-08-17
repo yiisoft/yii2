@@ -194,6 +194,8 @@ class Logger extends Component implements LoggerInterface
             $context['category'] = 'application';
         }
 
+        $message = $this->parseMessage($message, $context);
+
         $this->messages[] = [$level, $message, $context];
 
         if ($this->flushInterval > 0 && count($this->messages) >= $this->flushInterval) {
@@ -244,6 +246,25 @@ class Logger extends Component implements LoggerInterface
         if (!empty($targetErrors)) {
             $this->dispatch($targetErrors, true);
         }
+    }
+
+    /**
+     * Parses log message resolving placeholders in the form: '{foo}', where foo
+     * will be replaced by the context data in key "foo".
+     * @param string $message log message.
+     * @param array $context message context.
+     * @return string parsed message.
+     * @since 2.1
+     */
+    protected function parseMessage($message, array $context)
+    {
+        return preg_replace_callback('/\\{([\\w\\.]+)\\}/is', function ($matches) use ($context) {
+            $placeholderName = $matches[1];
+            if (isset($context[$placeholderName])) {
+                return (string)$context[$placeholderName];
+            }
+            return $matches[0];
+        }, $message);
     }
 
     /**
