@@ -130,8 +130,8 @@ and returns the most appropriate language.
 
 ## Client Information <span id="client-information"></span>
 
-You can get the host name and 
-ess of the client machine through [[yii\web\Request::userHost|userHost]]
+You can get the host name and IP address
+of the client machine through [[yii\web\Request::userHost|userHost]]
 and [[yii\web\Request::userIP|userIP]], respectively. For example,
 
 ```php
