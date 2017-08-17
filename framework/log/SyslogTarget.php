@@ -9,7 +9,6 @@ namespace yii\log;
 
 use Psr\Log\LogLevel;
 use Yii;
-use yii\helpers\VarDumper;
 
 /**
  * SyslogTarget writes log to syslog.
@@ -80,15 +79,6 @@ class SyslogTarget extends Target
     {
         [$level, $text, $context] = $message;
         $level = Logger::getLevelName($level);
-        if (!is_string($text)) {
-            // exceptions may not be serializable if in the call stack somewhere is a Closure
-            if ($text instanceof \Throwable) {
-                $text = (string) $text;
-            } else {
-                $text = VarDumper::export($text);
-            }
-        }
-
         $prefix = $this->getMessagePrefix($message);
         return $prefix. '[' . $level . '][' . ($context['category'] ?? '') . '] ' .$text;
     }

@@ -7,6 +7,7 @@
 
 namespace yii\log;
 
+use Psr\Log\InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerTrait;
@@ -164,6 +165,25 @@ class Logger extends Component implements LoggerInterface
      */
     public function log($level, $message, array $context = array())
     {
+        if (!is_string($message)) {
+            if (is_scalar($message)) {
+                $message = (string)$message;
+            } elseif (is_object($message)) {
+                if ($message instanceof \Throwable) {
+                    if (!isset($context['exception'])) {
+                        $context['exception'] = $message;
+                    }
+                    $message = $message->__toString();
+                } elseif (method_exists($message, '__toString')) {
+                    $message = $message->__toString();
+                } else {
+                    throw new InvalidArgumentException('The log message MUST be a string or object implementing __toString()');
+                }
+            } else {
+                throw new InvalidArgumentException('The log message MUST be a string or object implementing __toString()');
+            }
+        }
+
         if (!isset($context['time'])) {
             $context['time'] = microtime(true);
         }

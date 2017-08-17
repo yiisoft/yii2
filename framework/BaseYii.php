@@ -14,6 +14,7 @@ use yii\base\InvalidArgumentException;
 use yii\base\UnknownClassException;
 use yii\di\Container;
 use yii\di\Instance;
+use yii\helpers\VarDumper;
 use yii\log\Logger;
 use yii\profile\Profiler;
 use yii\profile\ProfilerInterface;
@@ -459,6 +460,30 @@ class BaseYii
     }
 
     /**
+     * Logs a message with category.
+     * @param string $level log level.
+     * @param mixed $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
+     * @param string $category the category of the message.
+     * @since 2.1.0
+     */
+    public static function log($level, $message, $category = 'application')
+    {
+        $context = ['category' => $category];
+        if (!is_string($message)) {
+            if ($message instanceof \Throwable) {
+                // exceptions are string-convertable, thus should be passed as it is to the logger
+                // if exception instance is given to produce a stack trace, it MUST be in a key named "exception".
+                $context['exception'] = $message;
+            } else {
+                // exceptions may not be serializable if in the call stack somewhere is a Closure
+                $message = VarDumper::export($message);
+            }
+        }
+        static::getLogger()->log($level, $message, $context);
+    }
+
+    /**
      * Logs an error message.
      * An error message is typically logged when an unrecoverable error occurs
      * during the execution of an application.
@@ -468,7 +493,7 @@ class BaseYii
      */
     public static function error($message, $category = 'application')
     {
-        static::getLogger()->log(LogLevel::ERROR, $message, ['category' => $category]);
+        static::log(LogLevel::ERROR, $message, $category);
     }
 
     /**
@@ -481,7 +506,7 @@ class BaseYii
      */
     public static function warning($message, $category = 'application')
     {
-        static::getLogger()->log(LogLevel::WARNING, $message, ['category' => $category]);
+        static::log(LogLevel::WARNING, $message, $category);
     }
 
     /**
@@ -494,7 +519,7 @@ class BaseYii
      */
     public static function info($message, $category = 'application')
     {
-        static::getLogger()->log(LogLevel::INFO, $message, ['category' => $category]);
+        static::log(LogLevel::INFO, $message, $category);
     }
 
     /**

@@ -10,7 +10,6 @@ namespace yii\log;
 use Psr\Log\LoggerInterface;
 use yii\base\InvalidConfigException;
 use yii\di\Instance;
-use yii\helpers\VarDumper;
 
 /**
  * PsrTarget is a log target which passes messages to PSR-3 compatible logger.
@@ -61,16 +60,6 @@ class PsrTarget extends Target
     {
         foreach ($this->messages as $message) {
             [$level, $text, $context] = $message;
-
-            if (!is_string($text)) {
-                // exceptions may not be serializable if in the call stack somewhere is a Closure
-                if ($text instanceof \Throwable || $text instanceof \Exception) {
-                    $text = (string)$text;
-                } else {
-                    $text = VarDumper::export($text);
-                }
-            }
-
             $this->getLogger()->log($level, $text, $context);
         }
     }
