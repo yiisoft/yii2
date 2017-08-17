@@ -143,8 +143,15 @@ class Profiler extends Component implements ProfilerInterface
             }
         }
 
-        $message['endTime'] = microtime(true);
-        $message['endMemory'] = memory_get_usage();
+        $message = array_merge(
+            $message,
+            $context,
+            [
+                'endTime' => microtime(true),
+                'endMemory' => memory_get_usage(),
+            ]
+        );
+
         $message['duration'] = $message['endTime'] - $message['beginTime'];
         $message['memoryDiff'] = $message['endMemory'] - $message['beginMemory'];
 
