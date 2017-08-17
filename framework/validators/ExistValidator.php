@@ -147,10 +147,12 @@ class ExistValidator extends Validator
             $conditions = [$targetAttribute => $model->$attribute];
         }
 
-        if (!$model instanceof ActiveRecord) {
+        $targetModelClass = $this->getTargetClass($model);
+        if (!is_subclass_of($targetModelClass, 'yii\db\ActiveRecord')) {
             return $conditions;
         }
 
+        /** @var ActiveRecord $model */
         return $this->prefixConditions($model, $conditions);
     }
 

@@ -40,9 +40,9 @@ Ao registrar uma dependência ou ao criar um novo objeto, você pode fornecer um
 Por exemplo:
 
 ```php
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class Foo extends Object
+class Foo extends BaseObject
 {
     public $bar;
 
@@ -65,7 +65,7 @@ $container->get('Foo', [], [
 ]);
 ```
 
-> Informação: O método [[yii\di\Container::get()]] recebe em seu terceiro parâmetro um array de configuração que deve ser aplicado ao objecto a ser criado. Se a classe implementa a interface [[yii\base\Configurable]] (por exemplo, [[yii\base\Object]]), o array de configuração será passado como o último parâmetro para o construtor da classe; caso contrário, a configuração será aplicada *depois* que o objeto for criado.
+> Informação: O método [[yii\di\Container::get()]] recebe em seu terceiro parâmetro um array de configuração que deve ser aplicado ao objecto a ser criado. Se a classe implementa a interface [[yii\base\Configurable]] (por exemplo, [[yii\base\BaseObject]]), o array de configuração será passado como o último parâmetro para o construtor da classe; caso contrário, a configuração será aplicada *depois* que o objeto for criado.
 
 
 ### Injeção de PHP Callable <span id="php-callable-injection"></span>
@@ -195,7 +195,7 @@ O código abaixo mostra um exemplo mais sofisticado. A classe `UserLister` depen
 ```php
 namespace app\models;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Connection;
 use yii\di\Container;
 
@@ -204,7 +204,7 @@ interface UserFinderInterface
     function findUser();
 }
 
-class UserFinder extends Object implements UserFinderInterface
+class UserFinder extends BaseObject implements UserFinderInterface
 {
     public $db;
 
@@ -219,7 +219,7 @@ class UserFinder extends Object implements UserFinderInterface
     }
 }
 
-class UserLister extends Object
+class UserLister extends BaseObject
 {
     public $finder;
 

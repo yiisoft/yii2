@@ -162,7 +162,7 @@ class BaseFileHelper
      * @param string $file the file name.
      * @param string $magicFile the path (or alias) of the file that contains all available MIME type information.
      * If this is not set, the file specified by [[mimeMagicFile]] will be used.
-     * @return string the MIME type. Null is returned if the MIME type cannot be determined.
+     * @return string|null the MIME type. Null is returned if the MIME type cannot be determined.
      */
     public static function getMimeTypeByExtension($file, $magicFile = null)
     {
@@ -609,7 +609,7 @@ class BaseFileHelper
      * @param string $basePath
      * @param string $path
      * @param array $excludes list of patterns to match $path against
-     * @return string null or one of $excludes item as an array with keys: 'pattern', 'flags'
+     * @return array|null null or one of $excludes item as an array with keys: 'pattern', 'flags'
      * @throws InvalidParamException if any of the exclude patterns is not a string or an array with keys: pattern, flags, firstWildcard.
      */
     private static function lastExcludeMatchingFromList($basePath, $path, $excludes)

@@ -373,7 +373,7 @@ body.mousedown pre {
         <h2><?= nl2br($handler->htmlEncode($exception->getMessage())) ?></h2>
 
         <?php if ($exception instanceof \yii\db\Exception && !empty($exception->errorInfo)): ?>
-            <pre>Error Info: <?php print_r($exception->errorInfo, true) ?></pre>
+            <pre>Error Info: <?= $handler->htmlEncode(print_r($exception->errorInfo, true)) ?></pre>
         <?php endif ?>
 
         <?= $handler->renderPreviousExceptions($exception) ?>

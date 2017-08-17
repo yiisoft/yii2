@@ -330,7 +330,7 @@ class PostController extends Controller
 操作参数会被不同的参数填入，如下所示：
 
 * `http://hostname/index.php?r=post/view&id=123`: `$id` 会填入`'123'`，`$version` 仍为 null 空因为没有`version`请求参数;
-* `http://hostname/index.php?r=post/view&id=123&version=2`: $id` 和 `$version` 分别填入 `'123'` 和 `'2'`；
+* `http://hostname/index.php?r=post/view&id=123&version=2`: `$id` 和 `$version` 分别填入 `'123'` 和 `'2'`；
 * `http://hostname/index.php?r=post/view`: 会抛出[[yii\web\BadRequestHttpException]] 异常
   因为请求没有提供参数给必须赋值参数`$id`；
 * `http://hostname/index.php?r=post/view&id[]=123`: 会抛出[[yii\web\BadRequestHttpException]] 异常
