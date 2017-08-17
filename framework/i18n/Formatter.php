@@ -7,6 +7,7 @@
 
 namespace yii\i18n;
 
+use Closure;
 use DateInterval;
 use DateTime;
 use DateTimeInterface;
@@ -18,8 +19,8 @@ use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\FormatConverter;
-use yii\helpers\HtmlPurifier;
 use yii\helpers\Html;
+use yii\helpers\HtmlPurifier;
 
 /**
  * Formatter provides a set of commonly used data formatting methods.
@@ -46,6 +47,31 @@ use yii\helpers\Html;
  */
 class Formatter extends Component
 {
+    /**
+     * @since 2.0.13
+     */
+    const UNIT_SYSTEM_METRIC = 'metric';
+    /**
+     * @since 2.0.13
+     */
+    const UNIT_SYSTEM_IMPERIAL = 'imperial';
+    /**
+     * @since 2.0.13
+     */
+    const FORMAT_WIDTH_LONG = 'long';
+    /**
+     * @since 2.0.13
+     */
+    const FORMAT_WIDTH_SHORT = 'short';
+    /**
+     * @since 2.0.13
+     */
+    const UNIT_LENGTH = 'length';
+    /**
+     * @since 2.0.13
+     */
+    const UNIT_WEIGHT = 'mass';
+
     /**
      * @var string the text to be displayed when formatting a `null` value.
      * Defaults to `'<span class="not-set">(not set)</span>'`, where `(not set)`
@@ -85,6 +111,9 @@ class Formatter extends Component
      * Please refer to the [php manual](http://www.php.net/manual/en/timezones.php) for available time zones.
      *
      * It defaults to `UTC` so you only have to adjust this value if you store datetime values in another time zone in your database.
+     *
+     * Note that a UNIX timestamp is always in UTC by its definition. That means that specifying a default time zone different from
+     * UTC has no effect on date values given as UNIX timestamp.
      *
      * @since 2.0.1
      */
@@ -183,7 +212,7 @@ class Formatter extends Component
     public $thousandSeparator;
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [Numberformatter::setAttribute()](http://php.net/manual/en/numberformatter.setattribute.php) method of all
+     * intl [NumberFormatter::setAttribute()](http://php.net/manual/en/numberformatter.setattribute.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
      * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
      *
@@ -202,7 +231,7 @@ class Formatter extends Component
     public $numberFormatterOptions = [];
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [Numberformatter::setTextAttribute()](http://php.net/manual/en/numberformatter.settextattribute.php) method of all
+     * intl [NumberFormatter::setTextAttribute()](http://php.net/manual/en/numberformatter.settextattribute.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
      * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
      *
@@ -220,7 +249,7 @@ class Formatter extends Component
     public $numberFormatterTextOptions = [];
     /**
      * @var array a list of name value pairs that are passed to the
-     * intl [Numberformatter::setSymbol()](http://php.net/manual/en/numberformatter.setsymbol.php) method of all
+     * intl [NumberFormatter::setSymbol()](http://php.net/manual/en/numberformatter.setsymbol.php) method of all
      * the number formatter objects created by [[createNumberFormatter()]].
      * This property takes only effect if the [PHP intl extension](http://php.net/manual/en/book.intl.php) is installed.
      *
@@ -250,11 +279,89 @@ class Formatter extends Component
      * Defaults to 1024.
      */
     public $sizeFormatBase = 1024;
-
+    /**
+     * @var string default system of measure units. Defaults to [[UNIT_SYSTEM_METRIC]].
+     * Possible values:
+     *  - [[UNIT_SYSTEM_METRIC]]
+     *  - [[UNIT_SYSTEM_IMPERIAL]]
+     * @since 2.0.13
+     */
+    public $systemOfUnits = self::UNIT_SYSTEM_METRIC;
+    /**
+     * @var array configuration of weight and length measurement units.
+     * This array contains the most usable measurement units, but you can change it
+     * in case you have some special requirements.
+     *
+     * For example, you can add smaller measure unit:
+     *
+     * ```php
+     * $this->measureUnits[self::UNIT_LENGTH][self::UNIT_SYSTEM_METRIC] = [
+     *     'nanometer' => 0.000001
+     * ]
+     * ```
+     * @since 2.0.13
+     */
+    public $measureUnits = [
+        self::UNIT_LENGTH => [
+            self::UNIT_SYSTEM_IMPERIAL => [
+                'inch' => 1,
+                'foot' => 12,
+                'yard' => 36,
+                'chain' => 792,
+                'furlong' => 7920,
+                'mile' => 63360,
+            ],
+            self::UNIT_SYSTEM_METRIC => [
+                'millimeter' => 1,
+                'centimeter' => 10,
+                'meter' => 1000,
+                'kilometer' => 1000000,
+            ],
+        ],
+        self::UNIT_WEIGHT => [
+            self::UNIT_SYSTEM_IMPERIAL => [
+                'grain' => 1,
+                'drachm' => 27.34375,
+                'ounce' => 437.5,
+                'pound' => 7000,
+                'stone' => 98000,
+                'quarter' => 196000,
+                'hundredweight' => 784000,
+                'ton' => 15680000,
+            ],
+            self::UNIT_SYSTEM_METRIC => [
+                'gram' => 1,
+                'kilogram' => 1000,
+                'ton' => 1000000,
+            ],
+        ],
+    ];
+    /**
+     * @var array The base units that are used as multipliers for smallest possible unit from [[measureUnits]]
+     * @since 2.0.13
+     */
+    public $baseUnits = [
+        self::UNIT_LENGTH => [
+            self::UNIT_SYSTEM_IMPERIAL => 12, // 1 feet = 12 inches
+            self::UNIT_SYSTEM_METRIC => 1000, // 1 meter = 1000 millimeters
+        ],
+        self::UNIT_WEIGHT => [
+            self::UNIT_SYSTEM_IMPERIAL => 7000, // 1 pound = 7000 grains
+            self::UNIT_SYSTEM_METRIC => 1000, // 1 kilogram = 1000 grams
+        ],
+    ];
     /**
      * @var bool whether the [PHP intl extension](http://php.net/manual/en/book.intl.php) is loaded.
      */
     private $_intlLoaded = false;
+    /**
+     * @var \ResourceBundle cached ResourceBundle object used to read unit translations
+     */
+    private $_resourceBundle;
+    /**
+     * @var array cached unit translation patterns
+     */
+    private $_unitMessages = [];
 
 
     /**
@@ -291,16 +398,26 @@ class Formatter extends Component
      * For type "xyz", the method "asXyz" will be used. For example, if the format is "html",
      * then [[asHtml()]] will be used. Format names are case insensitive.
      * @param mixed $value the value to be formatted.
-     * @param string|array $format the format of the value, e.g., "html", "text". To specify additional
-     * parameters of the formatting method, you may use an array. The first element of the array
-     * specifies the format name, while the rest of the elements will be used as the parameters to the formatting
-     * method. For example, a format of `['date', 'Y-m-d']` will cause the invocation of `asDate($value, 'Y-m-d')`.
+     * @param string|array|Closure $format the format of the value, e.g., "html", "text" or an anonymous function
+     * returning the formatted value.
+     *
+     * To specify additional parameters of the formatting method, you may use an array.
+     * The first element of the array specifies the format name, while the rest of the elements will be used as the
+     * parameters to the formatting method. For example, a format of `['date', 'Y-m-d']` will cause the invocation
+     * of `asDate($value, 'Y-m-d')`.
+     *
+     * The anonymous function signature should be: `function($value, $formatter)`,
+     * where `$value` is the value that should be formatted and `$formatter` is an instance of the Formatter class,
+     * which can be used to call other formatting functions.
+     * The possibility to use an anonymous function is available since version 2.0.13.
      * @return string the formatting result.
      * @throws InvalidParamException if the format type is not supported by this class.
      */
     public function format($value, $format)
     {
-        if (is_array($format)) {
+        if ($format instanceof Closure) {
+            return call_user_func($format, $value, $this);
+        } elseif (is_array($format)) {
             if (!isset($format[0])) {
                 throw new InvalidParamException('The $format array must contain at least one element.');
             }
@@ -314,9 +431,9 @@ class Formatter extends Component
         $method = 'as' . $format;
         if ($this->hasMethod($method)) {
             return call_user_func_array([$this, $method], $params);
-        } else {
-            throw new InvalidParamException("Unknown format type: $format");
         }
+
+        throw new InvalidParamException("Unknown format type: $format");
     }
 
 
@@ -466,10 +583,15 @@ class Formatter extends Component
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
-     * - an integer representing a UNIX timestamp
+     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
+     *   for the DateTime object to specify the source time zone.
+     *
+     * The formatter will convert date values according to [[timeZone]] before formatting it.
+     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
+     * Also no conversion will be performed on values that have no time information, e.g. `"2017-06-05"`.
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[dateFormat]] will be used.
@@ -498,10 +620,14 @@ class Formatter extends Component
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
-     * - an integer representing a UNIX timestamp
+     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
+     *   for the DateTime object to specify the source time zone.
+     *
+     * The formatter will convert date values according to [[timeZone]] before formatting it.
+     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[timeFormat]] will be used.
@@ -530,10 +656,14 @@ class Formatter extends Component
      * @param int|string|DateTime $value the value to be formatted. The following
      * types of value are supported:
      *
-     * - an integer representing a UNIX timestamp
+     * - an integer representing a UNIX timestamp. A UNIX timestamp is always in UTC by its definition.
      * - a string that can be [parsed to create a DateTime object](http://php.net/manual/en/datetime.formats.php).
      *   The timestamp is assumed to be in [[defaultTimeZone]] unless a time zone is explicitly given.
-     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object
+     * - a PHP [DateTime](http://php.net/manual/en/class.datetime.php) object. You may set the time zone
+     *   for the DateTime object to specify the source time zone.
+     *
+     * The formatter will convert date values according to [[timeZone]] before formatting it.
+     * If no timezone conversion should be performed, you need to set [[defaultTimeZone]] and [[timeZone]] to the same value.
      *
      * @param string $format the format used to convert the value into a date string.
      * If null, [[dateFormat]] will be used.
@@ -561,10 +691,10 @@ class Formatter extends Component
      * @var array map of short format names to IntlDateFormatter constant values.
      */
     private $_dateFormats = [
-        'short'  => 3, // IntlDateFormatter::SHORT,
+        'short' => 3, // IntlDateFormatter::SHORT,
         'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long'   => 1, // IntlDateFormatter::LONG,
-        'full'   => 0, // IntlDateFormatter::FULL,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
     ];
 
     /**
@@ -622,21 +752,22 @@ class Formatter extends Component
                 $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
             }
             return $formatter->format($timestamp);
-        } else {
-            if (strncmp($format, 'php:', 4) === 0) {
-                $format = substr($format, 4);
-            } else {
-                $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
-            }
-            if ($timeZone != null) {
-                if ($timestamp instanceof \DateTimeImmutable) {
-                    $timestamp = $timestamp->setTimezone(new DateTimeZone($timeZone));
-                } else {
-                    $timestamp->setTimezone(new DateTimeZone($timeZone));
-                }
-            }
-            return $timestamp->format($format);
         }
+
+        if (strncmp($format, 'php:', 4) === 0) {
+            $format = substr($format, 4);
+        } else {
+            $format = FormatConverter::convertDateIcuToPhp($format, $type, $this->locale);
+        }
+        if ($timeZone != null) {
+            if ($timestamp instanceof \DateTimeImmutable) {
+                $timestamp = $timestamp->setTimezone(new DateTimeZone($timeZone));
+            } else {
+                $timestamp->setTimezone(new DateTimeZone($timeZone));
+            }
+        }
+
+        return $timestamp->format($format);
     }
 
     /**
@@ -656,7 +787,7 @@ class Formatter extends Component
      * whether the timestamp has date information.
      * This parameter is available since version 2.0.1.
      * @return DateTime|array the normalized datetime value.
-     * Since version 2.0.1 this may also return an array if `$checkTimeInfo` is true.
+     * Since version 2.0.1 this may also return an array if `$checkDateTimeInfo` is true.
      * The first element of the array is the normalized timestamp and the second is a boolean indicating whether
      * the timestamp has time information or it is just a date value.
      * Since version 2.0.12 the array has third boolean element indicating whether the timestamp has date information
@@ -675,9 +806,9 @@ class Formatter extends Component
         }
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
-                $timestamp = new DateTime('@' . (int)$value, new DateTimeZone('UTC'));
+                $timestamp = new DateTime('@' . (int) $value, new DateTimeZone('UTC'));
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
-            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
+            } elseif (($timestamp = DateTime::createFromFormat('Y-m-d|', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d H:i:s format (support invalid dates like 2012-13-01 12:63:12)
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
@@ -689,11 +820,11 @@ class Formatter extends Component
                 return [
                     $timestamp,
                     !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
-                    !($info['year'] === false && $info['month'] === false && $info['day'] === false)
+                    !($info['year'] === false && $info['month'] === false && $info['day'] === false),
                 ];
-            } else {
-                return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
             }
+
+            return new DateTime($value, new DateTimeZone($this->defaultTimeZone));
         } catch (\Exception $e) {
             throw new InvalidParamException("'$value' is not a valid date time value: " . $e->getMessage()
                 . "\n" . print_r(DateTime::getLastErrors(), true), $e->getCode(), $e);
@@ -799,28 +930,30 @@ class Formatter extends Component
             if ($interval->s == 0) {
                 return Yii::t('yii', 'just now', [], $this->locale);
             }
+
             return Yii::t('yii', 'in {delta, plural, =1{a second} other{# seconds}}', ['delta' => $interval->s], $this->locale);
-        } else {
-            if ($interval->y >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y], $this->locale);
-            }
-            if ($interval->m >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m], $this->locale);
-            }
-            if ($interval->d >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d], $this->locale);
-            }
-            if ($interval->h >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h], $this->locale);
-            }
-            if ($interval->i >= 1) {
-                return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
-            }
-            if ($interval->s == 0) {
-                return Yii::t('yii', 'just now', [], $this->locale);
-            }
-            return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
         }
+
+        if ($interval->y >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a year} other{# years}} ago', ['delta' => $interval->y], $this->locale);
+        }
+        if ($interval->m >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a month} other{# months}} ago', ['delta' => $interval->m], $this->locale);
+        }
+        if ($interval->d >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a day} other{# days}} ago', ['delta' => $interval->d], $this->locale);
+        }
+        if ($interval->h >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{an hour} other{# hours}} ago', ['delta' => $interval->h], $this->locale);
+        }
+        if ($interval->i >= 1) {
+            return Yii::t('yii', '{delta, plural, =1{a minute} other{# minutes}} ago', ['delta' => $interval->i], $this->locale);
+        }
+        if ($interval->s == 0) {
+            return Yii::t('yii', 'just now', [], $this->locale);
+        }
+
+        return Yii::t('yii', '{delta, plural, =1{a second} other{# seconds}} ago', ['delta' => $interval->s], $this->locale);
     }
 
     /**
@@ -856,7 +989,7 @@ class Formatter extends Component
             $valueDateTime = (new DateTime())->setTimestamp(abs($value));
             $interval = $valueDateTime->diff($zeroDateTime);
         } elseif (strpos($value, 'P-') === 0) {
-            $interval = new DateInterval('P'.substr($value, 2));
+            $interval = new DateInterval('P' . substr($value, 2));
             $isNegative = true;
         } else {
             $interval = new DateInterval($value);
@@ -914,10 +1047,11 @@ class Formatter extends Component
             if (($result = $f->format($value, NumberFormatter::TYPE_INT64)) === false) {
                 throw new InvalidParamException('Formatting integer value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
         }
+
+        return number_format((int) $value, 0, $this->decimalSeparator, $this->thousandSeparator);
     }
 
     /**
@@ -953,13 +1087,15 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting decimal value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            if ($decimals === null) {
-                $decimals = 2;
-            }
-            return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
         }
+
+        if ($decimals === null) {
+            $decimals = 2;
+        }
+
+        return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator);
     }
 
 
@@ -992,13 +1128,14 @@ class Formatter extends Component
                 throw new InvalidParamException('Formatting percent value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
             return $result;
-        } else {
-            if ($decimals === null) {
-                $decimals = 0;
-            }
-            $value *= 100;
-            return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
         }
+
+        if ($decimals === null) {
+            $decimals = 0;
+        }
+
+        $value *= 100;
+        return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
     }
 
     /**
@@ -1029,14 +1166,15 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting scientific number value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            if ($decimals !== null) {
-                return sprintf("%.{$decimals}E", $value);
-            } else {
-                return sprintf('%.E', $value);
-            }
         }
+
+        if ($decimals !== null) {
+            return sprintf("%.{$decimals}E", $value);
+        }
+
+        return sprintf('%.E', $value);
     }
 
     /**
@@ -1077,16 +1215,18 @@ class Formatter extends Component
             if ($result === false) {
                 throw new InvalidParamException('Formatting currency value failed: ' . $formatter->getErrorCode() . ' ' . $formatter->getErrorMessage());
             }
+
             return $result;
-        } else {
-            if ($currency === null) {
-                if ($this->currencyCode === null) {
-                    throw new InvalidConfigException('The default currency code for the formatter is not defined and the php intl extension is not installed which could take the default currency from the locale.');
-                }
-                $currency = $this->currencyCode;
-            }
-            return $currency . ' ' . $this->asDecimal($value, 2, $options, $textOptions);
         }
+
+        if ($currency === null) {
+            if ($this->currencyCode === null) {
+                throw new InvalidConfigException('The default currency code for the formatter is not defined and the php intl extension is not installed which could take the default currency from the locale.');
+            }
+            $currency = $this->currencyCode;
+        }
+
+        return $currency . ' ' . $this->asDecimal($value, 2, $options, $textOptions);
     }
 
     /**
@@ -1110,10 +1250,11 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as spellout failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            throw new InvalidConfigException('Format as Spellout is only supported when PHP intl extension is installed.');
         }
+
+        throw new InvalidConfigException('Format as Spellout is only supported when PHP intl extension is installed.');
     }
 
     /**
@@ -1137,10 +1278,11 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting number as ordinal failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
-        } else {
-            throw new InvalidConfigException('Format as Ordinal is only supported when PHP intl extension is installed.');
         }
+
+        throw new InvalidConfigException('Format as Ordinal is only supported when PHP intl extension is installed.');
     }
 
     /**
@@ -1166,7 +1308,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+        list($params, $position) = $this->formatNumber($value, $decimals, 4, $this->sizeFormatBase, $options, $textOptions);
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
@@ -1222,7 +1364,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
 
-        list($params, $position) = $this->formatSizeNumber($value, $decimals, $options, $textOptions);
+        list($params, $position) = $this->formatNumber($value, $decimals, 4, $this->sizeFormatBase, $options, $textOptions);
 
         if ($this->sizeFormatBase == 1024) {
             switch ($position) {
@@ -1257,31 +1399,213 @@ class Formatter extends Component
         }
     }
 
+    /**
+     * Formats the value as a length in human readable form for example `12 meters`.
+     *
+     * @param double|int $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit.
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @see asLength
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
+     */
+    public function asLength($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
+    {
+        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
+    }
+
+    /**
+     * Formats the value as a length in human readable form for example `12 m`.
+     *
+     * This is the short form of [[asLength]].
+     *
+     * @param double|int $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @see asLength
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
+     */
+    public function asShortLength($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
+    {
+        return $this->formatUnit(self::UNIT_LENGTH, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
+    }
+
+    /**
+     * Formats the value as a weight in human readable form for example `12 kilograms`.
+     *
+     * @param double|int $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
+     */
+    public function asWeight($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
+    {
+        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_LONG, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
+    }
+
+    /**
+     * Formats the value as a weight in human readable form for example `12 kg`.
+     *
+     * This is the short form of [[asWeight]].
+     *
+     * @param double|int $value value to be formatted.
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string the formatted result.
+     * @throws InvalidParamException if the input value is not numeric or the formatting failed.
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information.
+     * @since 2.0.13
+     * @author John Was <janek.jan@gmail.com>
+     */
+    public function asShortWeight($value, $baseUnit = null, $unitSystem = null, $decimals = null, $options = [], $textOptions = [])
+    {
+        return $this->formatUnit(self::UNIT_WEIGHT, self::FORMAT_WIDTH_SHORT, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions);
+    }
+
+    /**
+     * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
+     * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
+     * @param double|int $value to be formatted
+     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $decimals the number of digits after the decimal point.
+     * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
+     * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
+     * @return string
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information
+     */
+    private function formatUnit($unitType, $unitFormat, $value, $baseUnit, $unitSystem, $decimals, $options, $textOptions)
+    {
+        if ($value === null) {
+            return $this->nullDisplay;
+        }
+        if ($unitSystem === null) {
+            $unitSystem = $this->systemOfUnits;
+        }
+        if ($baseUnit === null) {
+            $baseUnit = $this->baseUnits[$unitType][$unitSystem];
+        }
+
+        $multipliers = array_values($this->measureUnits[$unitType][$unitSystem]);
+
+        list($params, $position) = $this->formatNumber($value * $baseUnit, $decimals, null, $multipliers, $options, $textOptions);
+
+        $message = $this->getUnitMessage($unitType, $unitFormat, $unitSystem, $position);
+
+        return (new \MessageFormatter($this->locale, $message))->format([
+            '0' => $params['nFormatted'],
+            'n' => $params['n'],
+        ]);
+    }
+
+    /**
+     * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
+     * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
+     * @param string $system either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
+     * @param int $position internal position of size unit
+     * @return string
+     * @throws InvalidConfigException when INTL is not installed or does not contain required information
+     */
+    private function getUnitMessage($unitType, $unitFormat, $system, $position)
+    {
+        if (isset($this->_unitMessages[$unitType][$system][$position])) {
+            return $this->_unitMessages[$unitType][$system][$position];
+        }
+        if (!$this->_intlLoaded) {
+            throw new InvalidConfigException('Format of ' . $unitType . ' is only supported when PHP intl extension is installed.');
+        }
+
+        if ($this->_resourceBundle === null) {
+            try {
+                $this->_resourceBundle = new \ResourceBundle($this->locale, 'ICUDATA-unit');
+            } catch (\IntlException $e) {
+                throw new InvalidConfigException('Current ICU data does not contain information about measure units. Check system requirements.');
+            }
+        }
+        $unitNames = array_keys($this->measureUnits[$unitType][$system]);
+        $bundleKey = 'units' . ($unitFormat === self::FORMAT_WIDTH_SHORT ? 'Short' : '');
+
+        $unitBundle = $this->_resourceBundle[$bundleKey][$unitType][$unitNames[$position]];
+        if ($unitBundle === null) {
+            throw new InvalidConfigException('Current ICU data version does not contain information about unit type "' . $unitType . '" and unit measure "' . $unitNames[$position] . '". Check system requirements.');
+        }
+
+        $message = [];
+        foreach ($unitBundle as $key => $value) {
+            if ($key === 'dnam') {
+                continue;
+            }
+            $message[] = "$key{{$value}}";
+        }
+        return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, '.implode(' ', $message).'}';
+    }
 
     /**
      * Given the value in bytes formats number part of the human readable form.
      *
      * @param string|int|float $value value in bytes to be formatted.
      * @param int $decimals the number of digits after the decimal point
+     * @param int $maxPosition maximum internal position of size unit, ignored if $formatBase is an array
+     * @param array|int $formatBase the base at which each next unit is calculated, either 1000 or 1024, or an array
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
      * @param array $textOptions optional configuration for the number formatter. This parameter will be merged with [[numberFormatterTextOptions]].
      * @return array [parameters for Yii::t containing formatted number, internal position of size unit]
      * @throws InvalidParamException if the input value is not numeric or the formatting failed.
      */
-    private function formatSizeNumber($value, $decimals, $options, $textOptions)
+    private function formatNumber($value, $decimals, $maxPosition, $formatBase, $options, $textOptions)
     {
         $value = $this->normalizeNumericValue($value);
 
         $position = 0;
+        if (is_array($formatBase)) {
+            $maxPosition = count($formatBase) - 1;
+        }
         do {
-            if (abs($value) < $this->sizeFormatBase) {
-                break;
-            }
-            $value /= $this->sizeFormatBase;
-            $position++;
-        } while ($position < 5);
+            if (is_array($formatBase)) {
+                if (!isset($formatBase[$position + 1])) {
+                    break;
+                }
 
-        // no decimals for bytes
+                if (abs($value) < $formatBase[$position + 1]) {
+                    break;
+                }
+            } else {
+                if (abs($value) < $formatBase) {
+                    break;
+                }
+                $value = $value / $formatBase;
+            }
+            $position++;
+        } while ($position < $maxPosition + 1);
+
+        if (is_array($formatBase) && $position !== 0) {
+            $value /= $formatBase[$position];
+        }
+
+        // no decimals for smallest unit
         if ($position === 0) {
             $decimals = 0;
         } elseif ($decimals !== null) {

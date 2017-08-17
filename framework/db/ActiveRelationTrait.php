@@ -177,7 +177,7 @@ trait ActiveRelationTrait
                 $relatedModel->populateRelation($this->inverseOf, $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel);
             } else {
                 if (!isset($inverseRelation)) {
-                    $inverseRelation = (new $this->modelClass)->getRelation($this->inverseOf);
+                    $inverseRelation = (new $this->modelClass())->getRelation($this->inverseOf);
                 }
                 $result[$i][$this->inverseOf] = $inverseRelation->multiple ? [$this->primaryModel] : $this->primaryModel;
             }
@@ -232,57 +232,57 @@ trait ActiveRelationTrait
             }
 
             return [$model];
+        }
+
+        // https://github.com/yiisoft/yii2/issues/3197
+        // delay indexing related models after buckets are built
+        $indexBy = $this->indexBy;
+        $this->indexBy = null;
+        $models = $this->all();
+
+        if (isset($viaModels, $viaQuery)) {
+            $buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery->link);
         } else {
-            // https://github.com/yiisoft/yii2/issues/3197
-            // delay indexing related models after buckets are built
-            $indexBy = $this->indexBy;
-            $this->indexBy = null;
-            $models = $this->all();
+            $buckets = $this->buildBuckets($models, $this->link);
+        }
 
-            if (isset($viaModels, $viaQuery)) {
-                $buckets = $this->buildBuckets($models, $this->link, $viaModels, $viaQuery->link);
-            } else {
-                $buckets = $this->buildBuckets($models, $this->link);
-            }
+        $this->indexBy = $indexBy;
+        if ($this->indexBy !== null && $this->multiple) {
+            $buckets = $this->indexBuckets($buckets, $this->indexBy);
+        }
 
-            $this->indexBy = $indexBy;
-            if ($this->indexBy !== null && $this->multiple) {
-                $buckets = $this->indexBuckets($buckets, $this->indexBy);
-            }
-
-            $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
-            foreach ($primaryModels as $i => $primaryModel) {
-                if ($this->multiple && count($link) === 1 && is_array($keys = $primaryModel[reset($link)])) {
-                    $value = [];
-                    foreach ($keys as $key) {
-                        $key = $this->normalizeModelKey($key);
-                        if (isset($buckets[$key])) {
-                            if ($this->indexBy !== null) {
-                                // if indexBy is set, array_merge will cause renumbering of numeric array
-                                foreach ($buckets[$key] as $bucketKey => $bucketValue) {
-                                    $value[$bucketKey] = $bucketValue;
-                                }
-                            } else {
-                                $value = array_merge($value, $buckets[$key]);
+        $link = array_values(isset($viaQuery) ? $viaQuery->link : $this->link);
+        foreach ($primaryModels as $i => $primaryModel) {
+            if ($this->multiple && count($link) === 1 && is_array($keys = $primaryModel[reset($link)])) {
+                $value = [];
+                foreach ($keys as $key) {
+                    $key = $this->normalizeModelKey($key);
+                    if (isset($buckets[$key])) {
+                        if ($this->indexBy !== null) {
+                            // if indexBy is set, array_merge will cause renumbering of numeric array
+                            foreach ($buckets[$key] as $bucketKey => $bucketValue) {
+                                $value[$bucketKey] = $bucketValue;
                             }
+                        } else {
+                            $value = array_merge($value, $buckets[$key]);
                         }
                     }
-                } else {
-                    $key = $this->getModelKey($primaryModel, $link);
-                    $value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? [] : null);
                 }
-                if ($primaryModel instanceof ActiveRecordInterface) {
-                    $primaryModel->populateRelation($name, $value);
-                } else {
-                    $primaryModels[$i][$name] = $value;
-                }
+            } else {
+                $key = $this->getModelKey($primaryModel, $link);
+                $value = isset($buckets[$key]) ? $buckets[$key] : ($this->multiple ? [] : null);
             }
-            if ($this->inverseOf !== null) {
-                $this->populateInverseRelation($primaryModels, $models, $name, $this->inverseOf);
+            if ($primaryModel instanceof ActiveRecordInterface) {
+                $primaryModel->populateRelation($name, $value);
+            } else {
+                $primaryModels[$i][$name] = $value;
             }
-
-            return $models;
         }
+        if ($this->inverseOf !== null) {
+            $this->populateInverseRelation($primaryModels, $models, $name, $this->inverseOf);
+        }
+
+        return $models;
     }
 
     /**
@@ -298,7 +298,7 @@ trait ActiveRelationTrait
         }
         $model = reset($models);
         /* @var $relation ActiveQueryInterface|ActiveQuery */
-        $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass)->getRelation($name);
+        $relation = $model instanceof ActiveRecordInterface ? $model->getRelation($name) : (new $this->modelClass())->getRelation($name);
 
         if ($relation->multiple) {
             $buckets = $this->buildBuckets($primaryModels, $relation->link, null, null, false);

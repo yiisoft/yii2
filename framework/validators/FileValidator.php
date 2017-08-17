@@ -8,11 +8,11 @@
 namespace yii\validators;
 
 use Yii;
+use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
 use yii\web\UploadedFile;
-use yii\helpers\FileHelper;
 
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.
@@ -250,7 +250,7 @@ class FileValidator extends Validator
                     ];
                 } elseif (!empty($this->extensions) && !$this->validateExtension($value)) {
                     return [$this->wrongExtension, ['file' => $value->name, 'extensions' => implode(', ', $this->extensions)]];
-                } elseif (!empty($this->mimeTypes) &&  !$this->validateMimeType($value)) {
+                } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($value)) {
                     return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 }
                 return null;
@@ -353,7 +353,6 @@ class FileValidator extends Validator
         $extension = mb_strtolower($file->extension, 'UTF-8');
 
         if ($this->checkExtensionByMimeType) {
-
             $mimeType = FileHelper::getMimeType($file->tempName, null, false);
             if ($mimeType === null) {
                 return false;

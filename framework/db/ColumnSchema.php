@@ -7,7 +7,7 @@
 
 namespace yii\db;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 
 /**
  * ColumnSchema class describes the metadata of a column in a database table.
@@ -15,7 +15,7 @@ use yii\base\Object;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class ColumnSchema extends Object
+class ColumnSchema extends BaseObject
 {
     /**
      * @var string name of this column (without quotes).
@@ -137,7 +137,7 @@ class ColumnSchema extends Object
                 // https://github.com/yiisoft/yii2/issues/9006
                 return (bool) $value && $value !== "\0";
             case 'double':
-                return (double) $value;
+                return (float) $value;
         }
 
         return $value;

@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit;
 
 /**
  * IsOneOfAssert asserts that the value is one of the expected values.
  */
-class IsOneOfAssert extends \PHPUnit_Framework_Constraint
+class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
 {
     private $allowedValues;
 

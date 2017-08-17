@@ -58,12 +58,22 @@ If it is not accessed at all during a request, it will not be instantiated. Some
 to instantiate an application component for every request, even if it is not explicitly accessed.
 To do so, you may list its ID in the [[yii\base\Application::bootstrap|bootstrap]] property of the application.
 
+You can also use Closures to bootstrap customized components. Returning a instantiated component is not 
+required. A Closure can also be used simply for running code after [[yii\base\Application]] instantiation.
+
 For example, the following application configuration makes sure the `log` component is always loaded:
 
 ```php
 [
     'bootstrap' => [
         'log',
+        function($app){
+            return new ComponentX();
+        },
+        function($app){
+            // some code
+           return;
+        }
     ],
     'components' => [
         'log' => [

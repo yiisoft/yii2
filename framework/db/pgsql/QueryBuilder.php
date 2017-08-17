@@ -173,9 +173,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
             return "SELECT SETVAL('$sequence',$value,false)";
         } elseif ($table === null) {
             throw new InvalidParamException("Table not found: $tableName");
-        } else {
-            throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
         }
+
+        throw new InvalidParamException("There is not sequence associated with table '$tableName'.");
     }
 
     /**
@@ -305,6 +305,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = str_replace(',', '.', (string) $value);
                 } elseif ($value === true) {
                     $value = 'TRUE';
                 } elseif ($value === false) {

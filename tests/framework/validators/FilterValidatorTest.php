@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
@@ -14,7 +19,8 @@ class FilterValidatorTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockApplication();
+        // destroy application, Validator must work without Yii::$app
+        $this->destroyApplication();
     }
 
     public function testAssureExceptionOnInit()
@@ -31,7 +37,7 @@ class FilterValidatorTest extends TestCase
                 'attr_empty1' => '',
                 'attr_empty2' => null,
                 'attr_array' => ['Maria', 'Anna', 'Elizabeth'],
-                'attr_array_skipped' => ['John', 'Bill']
+                'attr_array_skipped' => ['John', 'Bill'],
         ]);
         $val = new FilterValidator(['filter' => 'trim']);
         $val->validateAttribute($m, 'attr_one');
@@ -47,8 +53,7 @@ class FilterValidatorTest extends TestCase
         $val->skipOnEmpty = true;
         $val->validateAttribute($m, 'attr_empty2');
         $this->assertNotNull($m->attr_empty2);
-        $val->filter = function($value) {
-
+        $val->filter = function ($value) {
             return implode(',', $value);
         };
         $val->skipOnArray = false;

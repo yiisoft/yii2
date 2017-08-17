@@ -76,20 +76,28 @@
         "ezyang/htmlpurifier": "~4.6",
         "cebe/markdown": "~1.0.0 | ~1.1.0",
         "bower-asset/jquery": "2.2.*@stable | 2.1.*@stable | 1.11.*@stable | 1.12.*@stable",
-        "bower-asset/jquery.inputmask": "~3.2.2 | ~3.3.3",
+        "bower-asset/inputmask": "~3.2.2 | ~3.3.5",
         "bower-asset/punycode": "1.3.*",
         "bower-asset/yii2-pjax": "~2.0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.4",
-        "cebe/indent": "~1.0.2"
+        "phpunit/phpunit": "4.8.34",
+        "cebe/indent": "~1.0.2",
+        "friendsofphp/php-cs-fixer": "~2.2.3"
     },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
     "suggest": {
         "yiisoft/yii2-coding-standards": "you can use this package to check for code style issues when contributing to yii"
     },
     "autoload": {
         "psr-4": {
-            "yii\\": "framework/"
+            "yii\\": "framework/",
+            "yii\\cs\\": "cs/src/"
         }
     },
     "config": {
@@ -101,14 +109,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "2.0.x-dev"
-        },
-        "asset-installer-paths": {
-            "npm-asset-library": "vendor/npm",
-            "bower-asset-library": "vendor/bower"
-        },
-        "asset-vcs-driver-options": {
-            "github-no-api": true
-        },
-        "asset-pattern-skip-version": "(-build|-patch)"
+        }
     }
 }

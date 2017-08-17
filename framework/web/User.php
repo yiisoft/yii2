@@ -271,9 +271,9 @@ class User extends Component
         $identity = $class::findIdentityByAccessToken($token, $type);
         if ($identity && $this->login($identity)) {
             return $identity;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**
@@ -363,9 +363,9 @@ class User extends Component
         if (is_array($url)) {
             if (isset($url[0])) {
                 return Yii::$app->getUrlManager()->createUrl($url);
-            } else {
-                $url = null;
             }
+
+            $url = null;
         }
 
         return $url === null ? Yii::$app->getHomeUrl() : $url;
@@ -558,7 +558,7 @@ class User extends Component
         }
         $data = json_decode($value, true);
         if (count($data) == 3) {
-            list ($id, $authKey, $duration) = $data;
+            list($id, $authKey, $duration) = $data;
             /* @var $class IdentityInterface */
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
@@ -609,7 +609,7 @@ class User extends Component
         }
 
         /* Ensure any existing identity cookies are removed. */
-        if ($this->enableAutoLogin) {
+        if ($this->enableAutoLogin && ($this->autoRenewCookie || $identity === null)) {
             $this->removeIdentityCookie();
         }
 
@@ -628,7 +628,7 @@ class User extends Component
             if ($this->absoluteAuthTimeout !== null) {
                 $session->set($this->absoluteAuthTimeoutParam, time() + $this->absoluteAuthTimeout);
             }
-            if ($duration > 0 && $this->enableAutoLogin) {
+            if ($this->enableAutoLogin && $duration > 0) {
                 $this->sendIdentityCookie($identity, $duration);
             }
         }

@@ -37,6 +37,8 @@ the front-end tier has a root alias `@frontend`, while the back-end tier root al
 you may put the front-end classes under the namespace `frontend` while the back-end classes are under `backend`. This will
 allow these classes to be autoloaded by the Yii autoloader.
 
+To add a custom namespace to the autoloader you need to define an alias for the base directory of the namespace using [[Yii::setAlias()]].
+For example to load classes in the `foo` namespace that are located in the `path/to/foo` directory you will call `Yii::setAlias('@foo', 'path/to/foo')`.
 
 Class Map <span id="class-map"></span>
 ---------
@@ -70,8 +72,8 @@ the [entry script](structure-entry-scripts.md) of the [Basic Project Template](s
 line installs the Composer autoloader, while the second line installs the Yii autoloader:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 ```
 
 You may use the Composer autoloader alone without the Yii autoloader. However, by doing so, the performance

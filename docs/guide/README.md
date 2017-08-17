@@ -92,6 +92,7 @@ Getting Data from Users
 * [Uploading Files](input-file-upload.md)
 * [Collecting Tabular Input](input-tabular-input.md)
 * [Getting Data for Multiple Models](input-multiple-models.md)
+* [Extending ActiveForm on the Client Side](input-form-javascript.md)
 
 
 Displaying Data

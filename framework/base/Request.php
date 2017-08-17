@@ -73,7 +73,7 @@ abstract class Request extends Component
      * The entry script file path can normally be determined based on the `SCRIPT_FILENAME` SERVER variable.
      * However, for some server configurations, this may not be correct or feasible.
      * This setter is provided so that the entry script file path can be manually specified.
-     * @param string $value the entry script file path. This can be either a file path or a path alias.
+     * @param string $value the entry script file path. This can be either a file path or a [path alias](guide:concept-aliases).
      * @throws InvalidConfigException if the provided entry script file path is invalid.
      */
     public function setScriptFile($value)

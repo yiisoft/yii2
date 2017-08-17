@@ -49,7 +49,7 @@ use yii\base\InvalidConfigException;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Transaction extends \yii\base\Object
+class Transaction extends \yii\base\BaseObject
 {
     /**
      * A constant representing the transaction isolation level `READ UNCOMMITTED`.

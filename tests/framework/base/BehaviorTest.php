@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\base;
 
@@ -72,6 +77,13 @@ class BehaviorTest extends TestCase
     {
         parent::setUp();
         $this->mockApplication();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        gc_enable();
+        gc_collect_cycles();
     }
 
     public function testAttachAndAccessingWithName()

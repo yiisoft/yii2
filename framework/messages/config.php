@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return [
     // string, required, root directory of all source files
@@ -47,6 +52,13 @@ return [
     // Please refer to "except" for details about the patterns.
     // If a file/directory matches both a pattern in "only" and "except", it will NOT be processed.
     'only' => ['*.php'],
+    'phpFileHeader' => '/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
+
+',
     // Generated file format. Can be "php", "db" or "po".
     'format' => 'php',
     // Connection component ID for "db" format.
