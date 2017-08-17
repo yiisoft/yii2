@@ -4,6 +4,7 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #14596: Fix event call on init in `yii\widgets\BaseListView` (panchenkodv)
 - New #14151: Added `AttributesBehavior` that assigns values specified to one or multiple attributes of an AR object when certain events happen (bscheshirwork)
 - Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
 - Bug #14542: Ensured only ASCII characters are in CSRF cookie value since binary data causes issues with ModSecurity and some browsers (samdark)

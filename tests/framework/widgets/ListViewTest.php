@@ -7,7 +7,6 @@
 
 namespace yiiunit\framework\widgets;
 
-use Yii;
 use yii\data\ArrayDataProvider;
 use yii\data\DataProviderInterface;
 use yii\widgets\ListView;
@@ -244,5 +243,20 @@ HTML
 HTML
     , $out
 );
+    }
+    
+    /**
+     * @see https://github.com/yiisoft/yii2/pull/14596
+     */
+    public function testShouldTriggerInitEvent()
+    {
+        $initTriggered = false;
+        $this->getListView([
+            'on init' => function () use (&$initTriggered) {
+                $initTriggered = true;
+            },
+            'dataProvider' => new ArrayDataProvider(['allModels' => []]),
+        ]);
+        $this->assertTrue($initTriggered);
     }
 }
