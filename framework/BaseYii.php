@@ -479,7 +479,7 @@ class BaseYii
     public static function debug($message, $category = 'application')
     {
         if (YII_DEBUG) {
-            static::log(LogLevel::DEBUG, $message, ['category' => $category]);
+            static::log(LogLevel::DEBUG, $message, $category);
         }
     }
 
