@@ -44,6 +44,7 @@ class AccessRuleTest extends \yiiunit\TestCase
             ->setMethods(['getMethod'])
             ->getMock();
         $request->method('getMethod')->willReturn($method);
+
         return $request;
     }
 

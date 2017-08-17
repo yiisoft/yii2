@@ -101,6 +101,9 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = str_replace(',', '.', (string) $value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {

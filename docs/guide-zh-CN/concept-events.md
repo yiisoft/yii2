@@ -204,7 +204,7 @@ Event::trigger(Foo::className(), Foo::EVENT_HELLO);
 
 注意这种情况下 `$event->sender` 指向触发事件的类名而不是对象实例。
 
-> Note: 因为类级别的处理器响应类和其子类的所有实例触发的事件，必须谨慎使用，尤其是底层的基类，如 [[yii\base\Object]]。
+> Note: 因为类级别的处理器响应类和其子类的所有实例触发的事件，必须谨慎使用，尤其是底层的基类，如 [[yii\base\BaseObject]]。
 
 移除类级别的事件处理器只需调用[[yii\base\Event::off()]]，如：
 

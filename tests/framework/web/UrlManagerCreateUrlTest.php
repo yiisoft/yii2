@@ -8,6 +8,7 @@
 namespace yiiunit\framework\web;
 
 use Yii;
+use yii\caching\ArrayCache;
 use yii\web\UrlManager;
 use yii\web\UrlRule;
 use yiiunit\framework\web\stubs\CachedUrlRule;
@@ -54,13 +55,13 @@ class UrlManagerCreateUrlTest extends TestCase
     {
         // in this test class, all tests have enablePrettyUrl enabled.
         $config['enablePrettyUrl'] = true;
-        $config['cache'] = null;
 
         // set default values if they are not set
         $config = array_merge([
             'baseUrl' => '',
             'scriptUrl' => '/index.php',
             'hostInfo' => 'http://www.example.com',
+            'cache' => null,
             'showScriptName' => $showScriptName,
         ], $config);
 
@@ -757,5 +758,37 @@ class UrlManagerCreateUrlTest extends TestCase
         $this->assertEquals(UrlRule::CREATE_STATUS_SUCCESS, $rules[0]->getCreateUrlStatus());
         $this->assertEquals(2, $rules[0]->createCounter);
         $this->assertEquals(1, $rules[1]->createCounter);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14406
+     */
+    public function testCreatingRulesWithDifferentRuleConfigAndEnabledCache()
+    {
+        $this->mockWebApplication([
+            'components' => [
+                'cache' => ArrayCache::className()
+            ]
+        ]);
+        $urlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'rules' => [
+                '/' => 'site/index'
+            ]
+        ]);
+
+        $cachedUrlManager = $this->getUrlManager([
+            'cache' => 'cache',
+            'ruleConfig' => [
+                'class' => CachedUrlRule::className()
+            ],
+            'rules' => [
+                '/' => 'site/index'
+            ]
+        ]);
+
+        $this->assertNotEquals($urlManager->rules, $cachedUrlManager->rules);
+        $this->assertInstanceOf(UrlRule::className(), $urlManager->rules[0]);
+        $this->assertInstanceOf(CachedUrlRule::className(), $cachedUrlManager->rules[0]);
     }
 }
