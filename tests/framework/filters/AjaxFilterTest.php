@@ -10,7 +10,6 @@ namespace yiiunit\framework\filters;
 use Yii;
 use yii\base\Action;
 use yii\filters\AjaxFilter;
-use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\Request;
 use yiiunit\TestCase;

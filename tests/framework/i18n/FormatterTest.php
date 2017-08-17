@@ -8,7 +8,6 @@
 namespace yiiunit\framework\i18n;
 
 use Yii;
-use yii\base\InvalidConfigException;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
 
