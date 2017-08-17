@@ -29,6 +29,7 @@ Yii Framework 2 Change Log
 - Enh #13824: Support extracting concatenated strings in `yii message` (developeruz)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
+- Enh #13780: Added support for trusted proxies in `yii\web\Request` (sammousa, cebe)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
 - Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990, rob006, samdark, tonykor)
