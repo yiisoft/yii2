@@ -347,6 +347,7 @@ $n = 100;
 $sum = array_reduce($numbers, function ($r, $x) use ($n) {
     $this->doMagic();
     $r += $x * $n;
+    
     return $r;
 });
 
