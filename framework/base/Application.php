@@ -28,6 +28,7 @@ use Yii;
  * @property \yii\i18n\Formatter $formatter The formatter application component. This property is read-only.
  * @property \yii\i18n\I18N $i18n The internationalization application component. This property is read-only.
  * @property \psr\log\LoggerInterface $logger The logger.
+ * @property \yii\profile\ProfilerInterface $profiler The profiler.
  * @property \yii\mail\MailerInterface $mailer The mailer application component. This property is read-only.
  * @property \yii\web\Request|\yii\console\Request $request The request component. This property is read-only.
  * @property \yii\web\Response|\yii\console\Response $response The response component. This property is
@@ -216,11 +217,6 @@ abstract class Application extends Module
      */
     public function preInit(&$config)
     {
-        if (isset($config['logger'])) {
-            $this->setLogger($config['logger']);
-            unset($config['logger']);
-        }
-
         if (!isset($config['id'])) {
             throw new InvalidConfigException('The "id" configuration for the Application is required.');
         }
@@ -255,8 +251,17 @@ abstract class Application extends Module
 
         if (isset($config['container'])) {
             $this->setContainer($config['container']);
-
             unset($config['container']);
+        }
+
+        if (isset($config['logger'])) {
+            $this->setLogger($config['logger']);
+            unset($config['logger']);
+        }
+
+        if (isset($config['profiler'])) {
+            $this->setProfiler($config['profiler']);
+            unset($config['profiler']);
         }
 
         // merge core components with custom components
@@ -507,6 +512,7 @@ abstract class Application extends Module
     /**
      * Sets up or configure the logger instance.
      * @param \psr\log\LoggerInterface|\Closure|array|null $logger the logger object or its DI compatible configuration.
+     * @since 2.1.0
      */
     public function setLogger($logger)
     {
@@ -516,10 +522,31 @@ abstract class Application extends Module
     /**
      * Returns the logger instance.
      * @return \psr\log\LoggerInterface the logger instance.
+     * @since 2.1.0
      */
     public function getLogger()
     {
         return Yii::getLogger();
+    }
+
+    /**
+     * Sets up or configure the profiler instance.
+     * @param \yii\profile\ProfilerInterface |\Closure|array|null $profiler the profiler object or its DI compatible configuration.
+     * @since 2.1.0
+     */
+    public function setProfiler($profiler)
+    {
+        Yii::setProfiler($profiler);
+    }
+
+    /**
+     * Returns the profiler instance.
+     * @return \yii\profile\ProfilerInterface profiler instance.
+     * @since 2.1.0
+     */
+    public function getProfiler()
+    {
+        return Yii::getProfiler();
     }
 
     /**

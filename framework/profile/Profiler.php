@@ -12,7 +12,17 @@ use yii\base\Component;
 use yii\base\InvalidArgumentException;
 
 /**
- * Profiler provides profiling support.
+ * Profiler provides profiling support. It stores profiling messages in the memory and sends them to different targets
+ * according to [[targets]].
+ *
+ * A Profiler instance can be accessed via `Yii::getProfiler()`.
+ *
+ * For convenience, a set of shortcut methods are provided for profiling via the [[Yii]] class:
+ *
+ * - [[Yii::beginProfile()]]
+ * - [[Yii::endProfile()]]
+ *
+ * For more details and usage information on Profiler, see the [guide article on profiling](guide:runtime-profiling)
  *
  * @author Paul Klimov <klimov-paul@gmail.com>
  * @since 2.1
@@ -25,7 +35,17 @@ class Profiler extends Component implements ProfilerInterface
      */
     public $enabled = true;
     /**
-     * @var array complete profiling messages.
+     * @var array[] complete profiling messages.
+     * Each message has a following keys:
+     *
+     * - token: string, profiling token.
+     * - category: string, message category.
+     * - beginTime: float, profiling begin timestamp obtained by microtime(true).
+     * - endTime: float, profiling end timestamp obtained by microtime(true).
+     * - duration: float, profiling block duration in milliseconds.
+     * - beginMemory: int, memory usage at the beginning of profile block in bytes, obtained by `memory_get_usage()`.
+     * - endMemory: int, memory usage at the end of profile block in bytes, obtained by `memory_get_usage()`.
+     * - memoryDiff: int, a diff between 'endMemory' and 'beginMemory'.
      */
     public $messages = [];
 

@@ -12,6 +12,11 @@ use yii\base\Component;
 /**
  * Target is the base class for all profiling target classes.
  *
+ * A profile target object will filter the messages stored by [[Profiler]] according
+ * to its [[categories]] and [[except]] properties.
+ *
+ * For more details and usage information on Target, see the [guide article on profiling & targets](guide:runtime-profiling).
+ *
  * @author Paul Klimov <klimov-paul@gmail.com>
  * @since 2.1
  */

@@ -10,6 +10,10 @@ namespace yii\profile;
 /**
  * ProfilerInterface describes a profiler instance.
  *
+ * A Profiler instance can be accessed via `Yii::getProfiler()`.
+ *
+ * For more details and usage information on Profiler, see the [guide article on profiling](guide:runtime-profiling)
+ *
  * @author Paul Klimov <klimov-paul@gmail.com>
  * @since 2.1
  */

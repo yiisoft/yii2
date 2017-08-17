@@ -26,23 +26,17 @@ use yii\base\ErrorHandler;
  * - [[Yii::error()]]
  * - [[Yii::warning()]]
  * - [[Yii::info()]]
- * - [[Yii::beginProfile()]]
- * - [[Yii::endProfile()]]
  *
- * For more details and usage information on Logger, see the [guide article on logging](guide:runtime-logging).
+ * For more details and usage information on Logger, see the [guide article on logging](guide:runtime-logging)
+ * and [PSR-3 specification](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-3-logger-interface.md).
  *
  * When the application ends or [[flushInterval]] is reached, Logger will call [[flush()]]
  * to send logged messages to different log targets, such as [[FileTarget|file]], [[EmailTarget|email]],
  * or [[DbTarget|database]], according to the [[targets]].
  *
  * @property array|Target[] $targets the log targets. See [[setTargets()]] for details.
- * @property array $dbProfiling The first element indicates the number of SQL statements executed, and the
- * second element the total time spent in SQL execution. This property is read-only.
  * @property float $elapsedTime The total elapsed time in seconds for current request. This property is
  * read-only.
- * @property array $profiling The profiling results. Each element is an array consisting of these elements:
- * `info`, `category`, `timestamp`, `trace`, `level`, `duration`, `memory`, `memoryDiff`. The `memory` and
- * `memoryDiff` values are available since version 2.0.11. This property is read-only.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0

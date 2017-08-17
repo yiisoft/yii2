@@ -15,6 +15,22 @@ use yii\di\Instance;
 /**
  * LogTarget saves profiling messages as a log messages.
  *
+ * Application configuration example:
+ *
+ * ```php
+ * return [
+ *     'profiler' => [
+ *         'targets' => [
+ *             [
+ *                 'class' => yii\profile\LogTarget::class,
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
  * @property LoggerInterface $logger logger to be used for message export.
  *
  * @author Paul Klimov <klimov-paul@gmail.com>
