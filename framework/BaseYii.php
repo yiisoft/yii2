@@ -445,21 +445,6 @@ class BaseYii
     }
 
     /**
-     * Logs a debug message.
-     * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code.
-     * @param string|array $message the message to be logged. This can be a simple string or a more
-     * complex data structure, such as array.
-     * @param string $category the category of the message.
-     */
-    public static function debug($message, $category = 'application')
-    {
-        if (YII_DEBUG) {
-            static::getLogger()->log(LogLevel::DEBUG, $message, ['category' => $category]);
-        }
-    }
-
-    /**
      * Logs a message with category.
      * @param string $level log level.
      * @param mixed $message the message to be logged. This can be a simple string or a more
@@ -481,6 +466,21 @@ class BaseYii
             }
         }
         static::getLogger()->log($level, $message, $context);
+    }
+
+    /**
+     * Logs a debug message.
+     * Trace messages are logged mainly for development purpose to see
+     * the execution work flow of some code.
+     * @param string|array $message the message to be logged. This can be a simple string or a more
+     * complex data structure, such as array.
+     * @param string $category the category of the message.
+     */
+    public static function debug($message, $category = 'application')
+    {
+        if (YII_DEBUG) {
+            static::log(LogLevel::DEBUG, $message, ['category' => $category]);
+        }
     }
 
     /**

@@ -199,24 +199,5 @@ namespace yiiunit\framework\log {
             $result = $this->syslogTarget->formatMessage($message);
             $this->assertEquals('some prefix[info][category] ' . (string) $exception, $result);
         }
-
-        /**
-         * @covers \yii\log\SyslogTarget::formatMessage()
-         */
-        public function testFormatMessageWhereTextIsNotStringAndNotThrowable()
-        {
-            $text = new \stdClass();
-            $text->var = 'some text';
-            $message = [LogLevel::ERROR, $text, ['category' => 'category', 'time' => 'timestamp']];
-
-            $this->syslogTarget
-                ->expects($this->once())
-                ->method('getMessagePrefix')
-                ->with($this->equalTo($message))
-                ->willReturn('some prefix');
-
-            $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[error][category] ' . VarDumper::export($text), $result);
-        }
     }
 }
