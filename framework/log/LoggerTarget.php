@@ -12,7 +12,32 @@ use yii\base\InvalidConfigException;
 use yii\di\Instance;
 
 /**
- * PsrTarget is a log target which passes messages to PSR-3 compatible logger.
+ * PsrTarget is a log target which simply passes messages to another PSR-3 compatible logger,
+ * which is specified via [[$logger]].
+ *
+ * Application configuration example:
+ *
+ * ```php
+ * return [
+ *     'logger' => [
+ *         'targets' => [
+ *             [
+ *                 'class' => yii\log\LoggerTarget::class,
+ *                 'logger' => function () {
+ *                     $logger = new \Monolog\Logger('my_logger');
+ *                     $logger->pushHandler(new \Monolog\Handler\SlackHandler('slack_token', 'logs', null, true, null, \Monolog\Logger::DEBUG));
+ *                     return $logger;
+ *                 },
+ *             ],
+ *         ],
+ *         // ...
+ *     ],
+ *     // ...
+ * ];
+ * ```
+ *
+ * > Warning: make sure logger specified via [[$logger]] is not the same as [[Yii::getLogger()]], otherwise
+ *   your program may fall into infinite loop.
  *
  * @property LoggerInterface $logger logger to be used by this target. Refer to [[setLogger()]] for details.
  *
@@ -20,7 +45,7 @@ use yii\di\Instance;
  * @author Alexander Makarov <sam@rmcreative.ru>
  * @since 2.1
  */
-class PsrTarget extends Target
+class LoggerTarget extends Target
 {
     /**
      * @var LoggerInterface logger instance to be used for messages processing.
@@ -29,7 +54,7 @@ class PsrTarget extends Target
 
 
     /**
-     * Sets the PSR logger used to save messages of this target.
+     * Sets the PSR-3 logger used to save messages of this target.
      * @param LoggerInterface|\Closure|array $logger logger instance or its DI compatible configuration.
      * @throws InvalidConfigException
      */
