@@ -83,6 +83,7 @@ abstract class Dependency extends \yii\base\BaseObject
         } else {
             $data = $this->generateDependencyData($cache);
         }
+
         return $data !== $this->data;
     }
 
@@ -105,6 +106,7 @@ abstract class Dependency extends \yii\base\BaseObject
         $this->data = null;  // https://github.com/yiisoft/yii2/issues/3052
         $key = sha1(serialize($this));
         $this->data = $data;
+
         return $key;
     }
 

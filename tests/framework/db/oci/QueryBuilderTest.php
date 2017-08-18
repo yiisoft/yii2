@@ -46,6 +46,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $tableName = 'T_constraints_3';
         $name = 'CN_constraints_3';
         $pkTableName = 'T_constraints_2';
+
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
@@ -72,6 +73,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     {
         $result = parent::indexesProvider();
         $result['drop'][0] = 'DROP INDEX [[CN_constraints_2_single]]';
+
         return $result;
     }
 
@@ -129,6 +131,7 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
          */
         $encodedBackslash = substr($this->getDb()->quoteValue('\\'), 1, -1);
         $this->likeParameterReplacements[$encodedBackslash] = '\\';
+
         return parent::likeConditionProvider();
     }
 

@@ -83,6 +83,7 @@ class UploadedFile extends BaseObject
     public static function getInstance($model, $attribute)
     {
         $name = Html::getInputName($model, $attribute);
+
         return static::getInstanceByName($name);
     }
 
@@ -97,6 +98,7 @@ class UploadedFile extends BaseObject
     public static function getInstances($model, $attribute)
     {
         $name = Html::getInputName($model, $attribute);
+
         return static::getInstancesByName($name);
     }
 
@@ -110,6 +112,7 @@ class UploadedFile extends BaseObject
     public static function getInstanceByName($name)
     {
         $files = self::loadFiles();
+
         return isset($files[$name]) ? new static($files[$name]) : null;
     }
 
@@ -134,6 +137,7 @@ class UploadedFile extends BaseObject
                 $results[] = new static($file);
             }
         }
+
         return $results;
     }
 
@@ -165,6 +169,7 @@ class UploadedFile extends BaseObject
                 return copy($this->tempName, $file);
             }
         }
+
         return false;
     }
 
@@ -175,6 +180,7 @@ class UploadedFile extends BaseObject
     {
         // https://github.com/yiisoft/yii2/issues/11012
         $pathInfo = pathinfo('_' . $this->name, PATHINFO_FILENAME);
+
         return mb_substr($pathInfo, 1, mb_strlen($pathInfo, '8bit'), '8bit');
     }
 
@@ -209,6 +215,7 @@ class UploadedFile extends BaseObject
                 }
             }
         }
+
         return self::$_files;
     }
 

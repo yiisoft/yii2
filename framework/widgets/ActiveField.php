@@ -176,6 +176,7 @@ class ActiveField extends Component
             return $this->render();
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
+
             return '';
         }
     }
@@ -273,6 +274,7 @@ class ActiveField extends Component
     {
         if ($label === false) {
             $this->parts['{label}'] = '';
+
             return $this;
         }
 
@@ -310,6 +312,7 @@ class ActiveField extends Component
     {
         if ($options === false) {
             $this->parts['{error}'] = '';
+
             return $this;
         }
         $options = array_merge($this->errorOptions, $options);
@@ -338,6 +341,7 @@ class ActiveField extends Component
     {
         if ($content === false) {
             $this->parts['{hint}'] = '';
+
             return $this;
         }
 

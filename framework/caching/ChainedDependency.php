@@ -69,6 +69,7 @@ class ChainedDependency extends Dependency
                 return false;
             }
         }
+
         return !$this->dependOnAll;
     }
 }

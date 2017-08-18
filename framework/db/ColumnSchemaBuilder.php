@@ -139,6 +139,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function notNull()
     {
         $this->isNotNull = true;
+
         return $this;
     }
 
@@ -150,6 +151,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function null()
     {
         $this->isNotNull = false;
+
         return $this;
     }
 
@@ -160,6 +162,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function unique()
     {
         $this->isUnique = true;
+
         return $this;
     }
 
@@ -171,6 +174,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function check($check)
     {
         $this->check = $check;
+
         return $this;
     }
 
@@ -186,6 +190,7 @@ class ColumnSchemaBuilder extends BaseObject
         }
 
         $this->default = $default;
+
         return $this;
     }
 
@@ -198,6 +203,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function comment($comment)
     {
         $this->comment = $comment;
+
         return $this;
     }
 
@@ -217,6 +223,7 @@ class ColumnSchemaBuilder extends BaseObject
                 break;
         }
         $this->isUnsigned = true;
+
         return $this;
     }
 
@@ -230,6 +237,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function after($after)
     {
         $this->after = $after;
+
         return $this;
     }
 
@@ -242,6 +250,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function first()
     {
         $this->isFirst = true;
+
         return $this;
     }
 
@@ -254,6 +263,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function defaultExpression($default)
     {
         $this->default = new Expression($default);
+
         return $this;
     }
 
@@ -267,6 +277,7 @@ class ColumnSchemaBuilder extends BaseObject
     public function append($sql)
     {
         $this->append = $sql;
+
         return $this;
     }
 
@@ -283,6 +294,7 @@ class ColumnSchemaBuilder extends BaseObject
             default:
                 $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
+
         return $this->buildCompleteString($format);
     }
 
@@ -298,6 +310,7 @@ class ColumnSchemaBuilder extends BaseObject
         if (is_array($this->length)) {
             $this->length = implode(',', $this->length);
         }
+
         return "({$this->length})";
     }
 
@@ -447,6 +460,7 @@ class ColumnSchemaBuilder extends BaseObject
             '{pos}' => $this->isFirst ? $this->buildFirstString() : $this->buildAfterString(),
             '{append}' => $this->buildAppendString(),
         ];
+
         return strtr($format, $placeholderValues);
     }
 }

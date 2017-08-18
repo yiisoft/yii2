@@ -77,6 +77,7 @@ trait QueryTrait
     public function indexBy($column)
     {
         $this->indexBy = $column;
+
         return $this;
     }
 
@@ -93,6 +94,7 @@ trait QueryTrait
     public function where($condition)
     {
         $this->where = $condition;
+
         return $this;
     }
 
@@ -112,6 +114,7 @@ trait QueryTrait
         } else {
             $this->where = ['and', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -131,6 +134,7 @@ trait QueryTrait
         } else {
             $this->where = ['or', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -167,6 +171,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->where($condition);
         }
+
         return $this;
     }
 
@@ -190,6 +195,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->andWhere($condition);
         }
+
         return $this;
     }
 
@@ -213,6 +219,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->orWhere($condition);
         }
+
         return $this;
     }
 
@@ -236,6 +243,7 @@ trait QueryTrait
                     unset($condition[$name]);
                 }
             }
+
             return $condition;
         }
 
@@ -317,6 +325,7 @@ trait QueryTrait
     public function orderBy($columns)
     {
         $this->orderBy = $this->normalizeOrderBy($columns);
+
         return $this;
     }
 
@@ -345,6 +354,7 @@ trait QueryTrait
         } else {
             $this->orderBy = array_merge($this->orderBy, $columns);
         }
+
         return $this;
     }
 
@@ -383,6 +393,7 @@ trait QueryTrait
     public function limit($limit)
     {
         $this->limit = $limit;
+
         return $this;
     }
 
@@ -394,6 +405,7 @@ trait QueryTrait
     public function offset($offset)
     {
         $this->offset = $offset;
+
         return $this;
     }
 
@@ -410,6 +422,7 @@ trait QueryTrait
     public function emulateExecution($value = true)
     {
         $this->emulateExecution = $value;
+
         return $this;
     }
 }

@@ -140,6 +140,7 @@ abstract class Target extends Component
         foreach ($context as $key => $value) {
             $result[] = "\${$key} = " . VarDumper::dumpAsString($value);
         }
+
         return implode("\n\n", $result);
     }
 
@@ -241,6 +242,7 @@ abstract class Target extends Component
                 unset($messages[$i]);
             }
         }
+
         return $messages;
     }
 
@@ -270,6 +272,7 @@ abstract class Target extends Component
         }
 
         $prefix = $this->getMessagePrefix($message);
+
         return date('Y-m-d H:i:s', $timestamp) . " {$prefix}[$level][$category] $text"
             . (empty($traces) ? '' : "\n    " . implode("\n    ", $traces));
     }

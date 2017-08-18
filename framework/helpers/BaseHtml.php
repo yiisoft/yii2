@@ -148,6 +148,7 @@ class BaseHtml
             return $content;
         }
         $html = "<$name" . static::renderTagAttributes($options) . '>';
+
         return isset(static::$voidElements[strtolower($name)]) ? $html : "$html$content</$name>";
     }
 
@@ -167,6 +168,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "<$name" . static::renderTagAttributes($options) . '>';
     }
 
@@ -182,6 +184,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "</$name>";
     }
 
@@ -239,9 +242,11 @@ class BaseHtml
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
+
             return self::wrapIntoCondition(static::tag('link', '', $options), $condition);
         } elseif (isset($options['noscript']) && $options['noscript'] === true) {
             unset($options['noscript']);
+
             return '<noscript>' . static::tag('link', '', $options) . '</noscript>';
         }
 
@@ -269,6 +274,7 @@ class BaseHtml
         if (isset($options['condition'])) {
             $condition = $options['condition'];
             unset($options['condition']);
+
             return self::wrapIntoCondition(static::tag('script', '', $options), $condition);
         }
 
@@ -286,6 +292,7 @@ class BaseHtml
         if (strpos($condition, '!IE') !== false) {
             return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
         }
+
         return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
     }
 
@@ -408,6 +415,7 @@ class BaseHtml
         if ($url !== null) {
             $options['href'] = Url::to($url);
         }
+
         return static::tag('a', $text, $options);
     }
 
@@ -427,6 +435,7 @@ class BaseHtml
     public static function mailto($text, $email = null, $options = [])
     {
         $options['href'] = 'mailto:' . ($email === null ? $text : $email);
+
         return static::tag('a', $text, $options);
     }
 
@@ -457,6 +466,7 @@ class BaseHtml
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
+
         return static::tag('img', '', $options);
     }
 
@@ -476,6 +486,7 @@ class BaseHtml
     public static function label($content, $for = null, $options = [])
     {
         $options['for'] = $for;
+
         return static::tag('label', $content, $options);
     }
 
@@ -495,6 +506,7 @@ class BaseHtml
         if (!isset($options['type'])) {
             $options['type'] = 'button';
         }
+
         return static::tag('button', $content, $options);
     }
 
@@ -516,6 +528,7 @@ class BaseHtml
     public static function submitButton($content = 'Submit', $options = [])
     {
         $options['type'] = 'submit';
+
         return static::button($content, $options);
     }
 
@@ -533,6 +546,7 @@ class BaseHtml
     public static function resetButton($content = 'Reset', $options = [])
     {
         $options['type'] = 'reset';
+
         return static::button($content, $options);
     }
 
@@ -554,6 +568,7 @@ class BaseHtml
         }
         $options['name'] = $name;
         $options['value'] = $value === null ? null : (string) $value;
+
         return static::tag('input', '', $options);
     }
 
@@ -570,6 +585,7 @@ class BaseHtml
     {
         $options['type'] = 'button';
         $options['value'] = $label;
+
         return static::tag('input', '', $options);
     }
 
@@ -590,6 +606,7 @@ class BaseHtml
     {
         $options['type'] = 'submit';
         $options['value'] = $label;
+
         return static::tag('input', '', $options);
     }
 
@@ -605,6 +622,7 @@ class BaseHtml
     {
         $options['type'] = 'reset';
         $options['value'] = $label;
+
         return static::tag('input', '', $options);
     }
 
@@ -690,6 +708,7 @@ class BaseHtml
     {
         $options['name'] = $name;
         $doubleEncode = ArrayHelper::remove($options, 'doubleEncode', true);
+
         return static::tag('textarea', static::encode($value, $doubleEncode), $options);
     }
 
@@ -763,6 +782,7 @@ class BaseHtml
             $labelOptions = isset($options['labelOptions']) ? $options['labelOptions'] : [];
             unset($options['label'], $options['labelOptions']);
             $content = static::label(static::input($type, $name, $value, $options) . ' ' . $label, null, $labelOptions);
+
             return $hidden . $content;
         }
 
@@ -821,6 +841,7 @@ class BaseHtml
         $options['name'] = $name;
         unset($options['unselect']);
         $selectOptions = static::renderSelectOptions($selection, $items, $options);
+
         return static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
 
@@ -891,6 +912,7 @@ class BaseHtml
             $hidden = '';
         }
         $selectOptions = static::renderSelectOptions($selection, $items, $options);
+
         return $hidden . static::tag('select', "\n" . $selectOptions . "\n", $options);
     }
 
@@ -1123,6 +1145,7 @@ class BaseHtml
     public static function ol($items, $options = [])
     {
         $options['tag'] = 'ol';
+
         return static::ul($items, $options);
     }
 
@@ -1150,6 +1173,7 @@ class BaseHtml
         $for = ArrayHelper::remove($options, 'for', static::getInputId($model, $attribute));
         $attribute = static::getAttributeName($attribute);
         $label = ArrayHelper::remove($options, 'label', static::encode($model->getAttributeLabel($attribute)));
+
         return static::label($label, $for, $options);
     }
 
@@ -1183,6 +1207,7 @@ class BaseHtml
         }
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         unset($options['hint']);
+
         return static::tag($tag, $hint, $options);
     }
 
@@ -1237,6 +1262,7 @@ class BaseHtml
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
+
         return Html::tag('div', $header . $content . $footer, $options);
     }
 
@@ -1265,6 +1291,7 @@ class BaseHtml
         $error = $model->getFirstError($attribute);
         $tag = ArrayHelper::remove($options, 'tag', 'div');
         $encode = ArrayHelper::remove($options, 'encode', true);
+
         return Html::tag($tag, $encode ? Html::encode($error) : $error, $options);
     }
 
@@ -1288,6 +1315,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::input($type, $name, $value, $options);
     }
 
@@ -1333,6 +1361,7 @@ class BaseHtml
     public static function activeTextInput($model, $attribute, $options = [])
     {
         self::normalizeMaxLength($model, $attribute, $options);
+
         return static::activeInput('text', $model, $attribute, $options);
     }
 
@@ -1374,6 +1403,7 @@ class BaseHtml
     public static function activePasswordInput($model, $attribute, $options = [])
     {
         self::normalizeMaxLength($model, $attribute, $options);
+
         return static::activeInput('password', $model, $attribute, $options);
     }
 
@@ -1397,6 +1427,7 @@ class BaseHtml
         if (isset($options['name'])) {
             $hiddenOptions['name'] = $options['name'];
         }
+
         return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
     }
@@ -1431,6 +1462,7 @@ class BaseHtml
             $options['id'] = static::getInputId($model, $attribute);
         }
         self::normalizeMaxLength($model, $attribute, $options);
+
         return static::textarea($name, $value, $options);
     }
 
@@ -1724,6 +1756,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::$type($name, $selection, $items, $options);
     }
 
@@ -1913,6 +1946,7 @@ class BaseHtml
                 $existingClasses[$key] = $class;
             }
         }
+
         return array_unique($existingClasses);
     }
 
@@ -2056,6 +2090,7 @@ class BaseHtml
                 $result[trim($property[0])] = trim($property[1]);
             }
         }
+
         return $result;
     }
 
@@ -2179,6 +2214,7 @@ class BaseHtml
     public static function getInputId($model, $attribute)
     {
         $name = strtolower(static::getInputName($model, $attribute));
+
         return str_replace(['[]', '][', '[', ']', ' ', '.'], ['', '-', '-', '', '-', '-'], $name);
     }
 

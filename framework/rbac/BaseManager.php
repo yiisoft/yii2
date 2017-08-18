@@ -101,6 +101,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     {
         $role = new Role();
         $role->name = $name;
+
         return $role;
     }
 
@@ -111,6 +112,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     {
         $permission = new Permission();
         $permission->name = $name;
+
         return $permission;
     }
 
@@ -125,6 +127,7 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->addItem($object);
         } elseif ($object instanceof Rule) {
             return $this->addRule($object);
@@ -158,6 +161,7 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
             return $this->updateRule($name, $object);
@@ -172,6 +176,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function getRole($name)
     {
         $item = $this->getItem($name);
+
         return $item instanceof Item && $item->type == Item::TYPE_ROLE ? $item : null;
     }
 
@@ -181,6 +186,7 @@ abstract class BaseManager extends Component implements ManagerInterface
     public function getPermission($name)
     {
         $item = $this->getItem($name);
+
         return $item instanceof Item && $item->type == Item::TYPE_PERMISSION ? $item : null;
     }
 
@@ -203,6 +209,7 @@ abstract class BaseManager extends Component implements ManagerInterface
         foreach ($this->defaultRoles as $roleName) {
             $result[$roleName] = $this->createRole($roleName);
         }
+
         return $result;
     }
 

@@ -49,11 +49,13 @@ class JsonParser implements RequestParserInterface
     {
         try {
             $parameters = Json::decode($rawBody, $this->asArray);
+
             return $parameters === null ? [] : $parameters;
         } catch (InvalidParamException $e) {
             if ($this->throwException) {
                 throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage());
             }
+
             return [];
         }
     }

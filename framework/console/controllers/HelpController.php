@@ -178,6 +178,7 @@ class HelpController extends Controller
     {
         $commands = $this->getModuleCommands(Yii::$app);
         sort($commands);
+
         return array_unique($commands);
     }
 
@@ -272,6 +273,7 @@ class HelpController extends Controller
     {
         if (class_exists($controllerClass)) {
             $class = new \ReflectionClass($controllerClass);
+
             return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
         }
 
@@ -529,6 +531,7 @@ class HelpController extends Controller
                 return ', -' . $name;
             }
         }
+
         return '';
     }
 

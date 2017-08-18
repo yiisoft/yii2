@@ -438,6 +438,7 @@ abstract class BaseMigrateController extends Controller
         if (preg_match('/^\\\\?([\w_]+\\\\)+m(\d{6}_?\d{6})(\D.*)?$/is', $rawVersion, $matches)) {
             return trim($rawVersion, '\\');
         }
+
         return false;
     }
 
@@ -452,6 +453,7 @@ abstract class BaseMigrateController extends Controller
         if (preg_match('/^m?(\d{6}_?\d{6})(\D.*)?$/is', $rawVersion, $matches)) {
             return 'm' . $matches[1];
         }
+
         return false;
     }
 
@@ -722,6 +724,7 @@ abstract class BaseMigrateController extends Controller
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
+
         return new $class();
     }
 

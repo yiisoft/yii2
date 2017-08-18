@@ -198,6 +198,7 @@ class PageCacheTest extends TestCase
             $this->assertNotEmpty($this->getInaccessibleProperty($filter->cache, '_cache'), $testCase['name']);
         } else {
             $this->assertEmpty($this->getInaccessibleProperty($filter->cache, '_cache'), $testCase['name']);
+
             return;
         }
 

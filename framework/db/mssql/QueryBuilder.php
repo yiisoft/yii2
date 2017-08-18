@@ -64,6 +64,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         if (!$this->hasOffset($offset) && !$this->hasLimit($limit)) {
             $orderBy = $this->buildOrderBy($orderBy);
+
             return $orderBy === '' ? $sql : $sql . $this->separator . $orderBy;
         }
 
@@ -154,6 +155,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $table = $this->db->quoteTableName($table);
         $oldName = $this->db->quoteColumnName($oldName);
         $newName = $this->db->quoteColumnName($newName);
+
         return "sp_rename '{$table}.{$oldName}', {$newName}, 'COLUMN'";
     }
 
@@ -298,6 +300,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
         /* @var $modelClass \yii\db\ActiveRecord */
         $schema = $modelClass::getTableSchema();
+
         return array_keys($schema->columns);
     }
 
@@ -318,6 +321,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
             $this->_oldMssql = $version[0] < 11;
         }
+
         return $this->_oldMssql;
     }
 
@@ -330,6 +334,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (is_array($columns)) {
             throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
         }
+
         return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
     }
 
@@ -393,6 +398,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return $columns;
     }
 

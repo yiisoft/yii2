@@ -112,6 +112,7 @@ class Schema extends \yii\db\Schema
             $resolvedName->schemaName = $this->defaultSchema;
             $resolvedName->fullName = $resolvedName->name = $parts[0];
         }
+
         return $resolvedName;
     }
 
@@ -126,6 +127,7 @@ FROM pg_namespace ns
 WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
 ORDER BY ns.nspname
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 
@@ -158,6 +160,7 @@ SQL;
         $this->findPrimaryKeys($table);
         if ($this->findColumns($table)) {
             $this->findForeignKeys($table);
+
             return $table;
         }
 
@@ -215,6 +218,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -589,6 +593,7 @@ SQL;
         foreach ($this->findTableConstraints($table, 'UNIQUE') as $row) {
             $result[$row['index_name']][] = $row['field_name'];
         }
+
         return $result;
     }
 
@@ -704,6 +709,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

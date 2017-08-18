@@ -111,6 +111,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         if ($this->db === null) {
             $this->db = static::createConnection();
         }
+
         return $this->db;
     }
 
@@ -128,6 +129,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         if (!$db->isActive) {
             $db->open();
         }
+
         return $db;
     }
 

@@ -108,6 +108,7 @@ trait ActiveRelationTrait
         if ($callable !== null) {
             call_user_func($callable, $relation);
         }
+
         return $this;
     }
 
@@ -134,6 +135,7 @@ trait ActiveRelationTrait
     public function inverseOf($relationName)
     {
         $this->inverseOf = $relationName;
+
         return $this;
     }
 
@@ -411,6 +413,7 @@ trait ActiveRelationTrait
                 $result[$key][$index] = $model;
             }
         }
+
         return $result;
     }
 
@@ -439,6 +442,7 @@ trait ActiveRelationTrait
                 }
             }
         }
+
         return $attributes;
     }
 
@@ -504,6 +508,7 @@ trait ActiveRelationTrait
             return serialize($key);
         }
         $key = reset($key);
+
         return is_scalar($key) ? $key : serialize($key);
     }
 
@@ -517,6 +522,7 @@ trait ActiveRelationTrait
             // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
             $value = $value->__toString();
         }
+
         return $value;
     }
 

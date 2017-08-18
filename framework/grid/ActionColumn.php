@@ -180,6 +180,7 @@ class ActionColumn extends Column
                     'data-pjax' => '0',
                 ], $additionalOptions, $this->buttonOptions);
                 $icon = Html::tag('span', '', ['class' => "glyphicon glyphicon-$iconName"]);
+
                 return Html::a($icon, $url, $options);
             };
         }
@@ -224,6 +225,7 @@ class ActionColumn extends Column
 
             if ($isVisible && isset($this->buttons[$name])) {
                 $url = $this->createUrl($name, $model, $key, $index);
+
                 return call_user_func($this->buttons[$name], $url, $model, $key);
             }
 

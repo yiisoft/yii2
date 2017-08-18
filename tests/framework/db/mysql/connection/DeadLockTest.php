@@ -192,15 +192,19 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 return self::CHILD_EXIT_CODE_DEADLOCK;
             }
             $this->log("child 1: ! sql error $sqlError: $driverError: $driverMessage");
+
             return 1;
         } catch (\Exception $e) {
             $this->log('child 1: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+
             return 1;
         } catch (\Throwable $e) {
             $this->log('child 1: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+
             return 1;
         }
         $this->log('child 1: exit');
+
         return 0;
     }
 
@@ -217,6 +221,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         // install no-op signal handler to prevent termination
         if (!pcntl_signal(SIGUSR1, function () {}, false)) {
             $this->log('child 2: cannot install signal handler');
+
             return 1;
         }
 
@@ -225,6 +230,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             $this->log('child 2: wait signal from child 1');
             if (pcntl_sigtimedwait([SIGUSR1], $info, 10) <= 0) {
                 $this->log('child 2: wait timeout exceeded');
+
                 return 1;
             }
 
@@ -252,15 +258,19 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
                 return self::CHILD_EXIT_CODE_DEADLOCK;
             }
             $this->log("child 2: ! sql error $sqlError: $driverError: $driverMessage");
+
             return 1;
         } catch (\Exception $e) {
             $this->log('child 2: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+
             return 1;
         } catch (\Throwable $e) {
             $this->log('child 2: ! exit <<' . get_class($e) . ' #' . $e->getCode() . ': ' . $e->getMessage() . "\n" . $e->getTraceAsString() . '>>');
+
             return 1;
         }
         $this->log('child 2: exit');
+
         return 0;
     }
 
@@ -311,8 +321,10 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
         if (null !== $this->logFile && is_file($this->logFile)) {
             $content = file_get_contents($this->logFile);
             unlink($this->logFile);
+
             return $content;
         }
+
         return null;
     }
 

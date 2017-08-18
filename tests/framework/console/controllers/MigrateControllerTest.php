@@ -54,6 +54,7 @@ class MigrateControllerTest extends TestCase
     protected function getMigrationHistory()
     {
         $query = new Query();
+
         return $query->from('migration')->all();
     }
 

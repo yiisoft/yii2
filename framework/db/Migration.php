@@ -106,16 +106,19 @@ class Migration extends Component implements MigrationInterface
         try {
             if ($this->safeUp() === false) {
                 $transaction->rollBack();
+
                 return false;
             }
             $transaction->commit();
         } catch (\Exception $e) {
             $this->printException($e);
             $transaction->rollBack();
+
             return false;
         } catch (\Throwable $e) {
             $this->printException($e);
             $transaction->rollBack();
+
             return false;
         }
 
@@ -135,16 +138,19 @@ class Migration extends Component implements MigrationInterface
         try {
             if ($this->safeDown() === false) {
                 $transaction->rollBack();
+
                 return false;
             }
             $transaction->commit();
         } catch (\Exception $e) {
             $this->printException($e);
             $transaction->rollBack();
+
             return false;
         } catch (\Throwable $e) {
             $this->printException($e);
             $transaction->rollBack();
+
             return false;
         }
 

@@ -219,6 +219,7 @@ class LinkPager extends Widget
 
         $options = $this->options;
         $tag = ArrayHelper::remove($options, 'tag', 'ul');
+
         return Html::tag($tag, implode("\n", $buttons), $options);
     }
 

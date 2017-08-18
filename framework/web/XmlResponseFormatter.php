@@ -160,6 +160,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
         if (empty($name) || is_int($name) || !$this->isValidXmlName($name)) {
             return $this->itemTag;
         }
+
         return $name;
     }
 
@@ -175,6 +176,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     {
         try {
             new DOMElement($name);
+
             return true;
         } catch (DOMException $e) {
             return false;

@@ -74,6 +74,7 @@ class Controller extends \yii\web\Controller
     public function afterAction($action, $result)
     {
         $result = parent::afterAction($action, $result);
+
         return $this->serializeData($result);
     }
 

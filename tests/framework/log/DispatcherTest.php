@@ -225,6 +225,7 @@ namespace yiiunit\framework\log {
 
             static::$functions['microtime'] = function ($arguments) {
                 $this->assertEquals([true], $arguments);
+
                 return 'time data';
             };
 
@@ -258,6 +259,7 @@ namespace yiiunit\framework\log {
         {
             if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
                 $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
+
                 return forward_static_call(static::$functions[$name], $arguments);
             }
             static::fail("Function '$name' has not implemented yet!");

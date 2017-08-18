@@ -84,6 +84,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         }
 
         $filter = implode(' AND ', $filters);
+
         return <<<EOD
 WITH USER_SQL AS ($sql),
     PAGINATION AS (SELECT USER_SQL.*, rownum as rowNumId FROM USER_SQL)
@@ -333,6 +334,7 @@ EOD;
              */
             $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
         }
+
         return parent::buildLikeCondition($operator, $operands, $params);
     }
 

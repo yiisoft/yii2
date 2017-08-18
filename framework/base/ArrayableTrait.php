@@ -71,6 +71,7 @@ trait ArrayableTrait
     public function fields()
     {
         $fields = array_keys(Yii::getObjectVars($this));
+
         return array_combine($fields, $fields);
     }
 

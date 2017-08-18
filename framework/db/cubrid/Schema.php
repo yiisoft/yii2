@@ -158,6 +158,7 @@ class Schema extends \yii\db\Schema
         }
 
         ArrayHelper::multisort($primaryKey, 'KEY_SEQ', SORT_ASC, SORT_NUMERIC);
+
         return new Constraint([
             'name' => $primaryKey[0]['KEY_NAME'],
             'columnNames' => ArrayHelper::getColumn($primaryKey, 'ATTR_NAME'),
@@ -190,6 +191,7 @@ class Schema extends \yii\db\Schema
                 'onUpdate' => isset($actionTypes[$foreignKey[0]['UPDATE_RULE']]) ? $actionTypes[$foreignKey[0]['UPDATE_RULE']] : null,
             ]);
         }
+
         return $result;
     }
 
@@ -427,6 +429,7 @@ class Schema extends \yii\db\Schema
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

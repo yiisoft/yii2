@@ -88,6 +88,7 @@ class SyslogTarget extends Target
         }
 
         $prefix = $this->getMessagePrefix($message);
+
         return "{$prefix}[$level][$category] $text";
     }
 }

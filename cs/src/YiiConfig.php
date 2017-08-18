@@ -37,6 +37,7 @@ class YiiConfig extends Config
                 'align_equals' => false,
             ],
             'blank_line_after_opening_tag' => true,
+            'blank_line_before_return' => true,
             'cast_spaces' => true,
             'concat_space' => [
                 'spacing' => 'one',

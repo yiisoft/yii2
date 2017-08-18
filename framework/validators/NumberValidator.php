@@ -83,6 +83,7 @@ class NumberValidator extends Validator
         $value = $model->$attribute;
         if (is_array($value) || (is_object($value) && !method_exists($value, '__toString'))) {
             $this->addError($model, $attribute, $this->message);
+
             return;
         }
         $pattern = $this->integerOnly ? $this->integerPattern : $this->numberPattern;

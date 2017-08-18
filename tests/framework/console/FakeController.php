@@ -98,6 +98,7 @@ class FakeController extends Controller
     {
         $response = new Response();
         $response->exitStatus = (int) $status;
+
         return $response;
     }
 }

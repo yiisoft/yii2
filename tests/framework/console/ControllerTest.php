@@ -75,6 +75,7 @@ class ControllerTest extends TestCase
     {
         $request = new Request();
         $request->setParams(func_get_args());
+
         return Yii::$app->handleRequest($request);
     }
 

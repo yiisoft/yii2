@@ -105,6 +105,7 @@ class DbSession extends MultiFieldSession
         // if session id regeneration failed, no need to create/update it.
         if (empty($newID)) {
             Yii::warning('Failed to generate new session ID', __METHOD__);
+
             return;
         }
 
@@ -146,10 +147,12 @@ class DbSession extends MultiFieldSession
 
         if ($this->readCallback !== null) {
             $fields = $query->one($this->db);
+
             return $fields === false ? '' : $this->extractData($fields);
         }
 
         $data = $query->select(['data'])->scalar($this->db);
+
         return $data === false ? '' : $data;
     }
 
@@ -189,6 +192,7 @@ class DbSession extends MultiFieldSession
             if (YII_DEBUG) {
                 echo $exception;
             }
+
             return false;
         }
 

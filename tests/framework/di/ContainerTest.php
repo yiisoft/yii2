@@ -67,6 +67,7 @@ class ContainerTest extends TestCase
         $container->set('foo', function () {
             $qux = new Qux();
             $bar = new Bar($qux);
+
             return new Foo($bar);
         });
         $foo = $container->get('foo');

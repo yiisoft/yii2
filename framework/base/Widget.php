@@ -110,6 +110,7 @@ class Widget extends Component implements ViewContextInterface
                     $result = $widget->afterRun($result);
                     echo $result;
                 }
+
                 return $widget;
             }
 
@@ -286,6 +287,7 @@ class Widget extends Component implements ViewContextInterface
     {
         $event = new WidgetEvent();
         $this->trigger(self::EVENT_BEFORE_RUN, $event);
+
         return $event->isValid;
     }
 
@@ -315,6 +317,7 @@ class Widget extends Component implements ViewContextInterface
         $event = new WidgetEvent();
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_RUN, $event);
+
         return $event->result;
     }
 }

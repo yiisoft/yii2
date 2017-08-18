@@ -166,6 +166,7 @@ class ImageValidator extends FileValidator
     {
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
+
         return 'yii.validation.image(attribute, messages, ' . json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ', deferred);';
     }
 

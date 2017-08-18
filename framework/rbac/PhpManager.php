@@ -225,6 +225,7 @@ class PhpManager extends BaseManager
         if (isset($this->children[$parent->name][$child->name])) {
             unset($this->children[$parent->name][$child->name]);
             $this->saveItems();
+
             return true;
         }
 
@@ -239,6 +240,7 @@ class PhpManager extends BaseManager
         if (isset($this->children[$parent->name])) {
             unset($this->children[$parent->name]);
             $this->saveItems();
+
             return true;
         }
 
@@ -282,6 +284,7 @@ class PhpManager extends BaseManager
         if (isset($this->assignments[$userId][$role->name])) {
             unset($this->assignments[$userId][$role->name]);
             $this->saveAssignments();
+
             return true;
         }
 
@@ -298,6 +301,7 @@ class PhpManager extends BaseManager
                 unset($this->assignments[$userId][$itemName]);
             }
             $this->saveAssignments();
+
             return true;
         }
 
@@ -345,6 +349,7 @@ class PhpManager extends BaseManager
             unset($this->items[$item->name]);
             $this->saveItems();
             $this->saveAssignments();
+
             return true;
         }
 
@@ -369,6 +374,7 @@ class PhpManager extends BaseManager
         }
         $this->rules[$rule->name] = $rule;
         $this->saveRules();
+
         return true;
     }
 
@@ -444,6 +450,7 @@ class PhpManager extends BaseManager
                 $permissions[$itemName] = $this->items[$itemName];
             }
         }
+
         return $permissions;
     }
 
@@ -517,6 +524,7 @@ class PhpManager extends BaseManager
                 $permissions[$itemName] = $this->items[$itemName];
             }
         }
+
         return $permissions;
     }
 
@@ -630,6 +638,7 @@ class PhpManager extends BaseManager
                 }
             }
             $this->saveRules();
+
             return true;
         }
 
@@ -643,6 +652,7 @@ class PhpManager extends BaseManager
     {
         $this->rules[$rule->name] = $rule;
         $this->saveRules();
+
         return true;
     }
 
@@ -682,6 +692,7 @@ class PhpManager extends BaseManager
         $this->items[$item->name] = $item;
 
         $this->saveItems();
+
         return true;
     }
 
@@ -880,6 +891,7 @@ class PhpManager extends BaseManager
                 }
             }
         }
+
         return $result;
     }
 }

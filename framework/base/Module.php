@@ -167,6 +167,7 @@ class Module extends ServiceLocator
     public static function getInstance()
     {
         $class = get_called_class();
+
         return isset(Yii::$app->loadedModules[$class]) ? Yii::$app->loadedModules[$class] : null;
     }
 
@@ -266,6 +267,7 @@ class Module extends ServiceLocator
         if ($this->_viewPath === null) {
             $this->_viewPath = $this->getBasePath() . DIRECTORY_SEPARATOR . 'views';
         }
+
         return $this->_viewPath;
     }
 
@@ -317,6 +319,7 @@ class Module extends ServiceLocator
                 $this->_version = call_user_func($this->_version, $this);
             }
         }
+
         return $this->_version;
     }
 
@@ -350,6 +353,7 @@ class Module extends ServiceLocator
         if ($this->module === null) {
             return '1.0';
         }
+
         return $this->module->getVersion();
     }
 
@@ -393,6 +397,7 @@ class Module extends ServiceLocator
 
             return $module === null ? false : $module->hasModule(substr($id, $pos + 1));
         }
+
         return isset($this->_modules[$id]);
     }
 
@@ -422,6 +427,7 @@ class Module extends ServiceLocator
                 /* @var $module Module */
                 $module = Yii::createObject($this->_modules[$id], [$id, $this]);
                 $module->setInstance($module);
+
                 return $this->_modules[$id] = $module;
             }
         }
@@ -468,6 +474,7 @@ class Module extends ServiceLocator
 
             return $modules;
         }
+
         return $this->_modules;
     }
 
@@ -576,6 +583,7 @@ class Module extends ServiceLocator
         // module and controller map take precedence
         if (isset($this->controllerMap[$id])) {
             $controller = Yii::createObject($this->controllerMap[$id], [$id, $this]);
+
             return [$controller, $route];
         }
         $module = $this->getModule($id);
@@ -636,10 +644,12 @@ class Module extends ServiceLocator
 
         if (is_subclass_of($className, 'yii\base\Controller')) {
             $controller = Yii::createObject($className, [$id, $this]);
+
             return get_class($controller) === $className ? $controller : null;
         } elseif (YII_DEBUG) {
             throw new InvalidConfigException('Controller class must extend from \\yii\\base\\Controller.');
         }
+
         return null;
     }
 
@@ -674,6 +684,7 @@ class Module extends ServiceLocator
     {
         $event = new ActionEvent($action);
         $this->trigger(self::EVENT_BEFORE_ACTION, $event);
+
         return $event->isValid;
     }
 
@@ -703,6 +714,7 @@ class Module extends ServiceLocator
         $event = new ActionEvent($action);
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
+
         return $event->result;
     }
 }

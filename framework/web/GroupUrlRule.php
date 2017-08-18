@@ -105,6 +105,7 @@ class GroupUrlRule extends CompositeUrlRule
             }
             $rules[] = $rule;
         }
+
         return $rules;
     }
 
@@ -131,6 +132,7 @@ class GroupUrlRule extends CompositeUrlRule
         }
 
         $this->createStatus = UrlRule::CREATE_STATUS_ROUTE_MISMATCH;
+
         return false;
     }
 }

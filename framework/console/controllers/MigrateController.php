@@ -169,6 +169,7 @@ class MigrateController extends BaseMigrateController
             if ($action->id !== 'create') {
                 $this->db = Instance::ensure($this->db, Connection::className());
             }
+
             return true;
         }
 
@@ -183,6 +184,7 @@ class MigrateController extends BaseMigrateController
     protected function createMigration($class)
     {
         $this->includeMigrationFile($class);
+
         return new $class(['db' => $this->db]);
     }
 
@@ -204,6 +206,7 @@ class MigrateController extends BaseMigrateController
             $rows = $query->all($this->db);
             $history = ArrayHelper::map($rows, 'version', 'apply_time');
             unset($history[self::BASE_MIGRATION]);
+
             return $history;
         }
 
@@ -229,8 +232,10 @@ class MigrateController extends BaseMigrateController
                 if (($compareResult = strcasecmp($b['canonicalVersion'], $a['canonicalVersion'])) !== 0) {
                     return $compareResult;
                 }
+
                 return strcasecmp($b['version'], $a['version']);
             }
+
             return ($a['apply_time'] > $b['apply_time']) ? -1 : +1;
         });
 
@@ -396,6 +401,7 @@ class MigrateController extends BaseMigrateController
         if (!$this->useTablePrefix) {
             return $tableName;
         }
+
         return '{{%' . $tableName . '}}';
     }
 

@@ -97,6 +97,7 @@ class UrlNormalizerTest extends TestCase
         $normalizer->action = function ($route, $normalizer) {
             $route[0] = 'site/redirect';
             $route['normalizeTrailingSlash'] = $normalizer->normalizeTrailingSlash;
+
             return $route;
         };
         $expected = $route;

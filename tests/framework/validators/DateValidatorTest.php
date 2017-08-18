@@ -252,6 +252,7 @@ class DateValidatorTest extends TestCase
                 $return[] = [null, '2013-09-13', 1379030400, $tz[0], $appTz[0]];
             }
         }
+
         return $return;
     }
 

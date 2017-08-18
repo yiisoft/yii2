@@ -452,6 +452,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return $value;
     }
 
@@ -465,6 +466,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::encode($value);
     }
 
@@ -478,6 +480,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return nl2br(Html::encode($value));
     }
 
@@ -493,6 +496,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return str_replace('<p></p>', '', '<p>' . preg_replace('/\R{2,}/u', "</p>\n<p>", Html::encode($value)) . '</p>');
     }
 
@@ -509,6 +513,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return HtmlPurifier::process($value, $config);
     }
 
@@ -523,6 +528,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::mailto(Html::encode($value), $value, $options);
     }
 
@@ -537,6 +543,7 @@ class Formatter extends Component
         if ($value === null) {
             return $this->nullDisplay;
         }
+
         return Html::img($value, $options);
     }
 
@@ -612,6 +619,7 @@ class Formatter extends Component
         if ($format === null) {
             $format = $this->dateFormat;
         }
+
         return $this->formatDateTimeValue($value, $format, 'date');
     }
 
@@ -648,6 +656,7 @@ class Formatter extends Component
         if ($format === null) {
             $format = $this->timeFormat;
         }
+
         return $this->formatDateTimeValue($value, $format, 'time');
     }
 
@@ -684,6 +693,7 @@ class Formatter extends Component
         if ($format === null) {
             $format = $this->datetimeFormat;
         }
+
         return $this->formatDateTimeValue($value, $format, 'datetime');
     }
 
@@ -751,6 +761,7 @@ class Formatter extends Component
             if ($timestamp instanceof \DateTimeImmutable) {
                 $timestamp = new DateTime($timestamp->format(DateTime::ISO8601), $timestamp->getTimezone());
             }
+
             return $formatter->format($timestamp);
         }
 
@@ -807,6 +818,7 @@ class Formatter extends Component
         try {
             if (is_numeric($value)) { // process as unix timestamp, which is always in UTC
                 $timestamp = new DateTime('@' . (int) $value, new DateTimeZone('UTC'));
+
                 return $checkDateTimeInfo ? [$timestamp, true, true] : $timestamp;
             } elseif (($timestamp = DateTime::createFromFormat('Y-m-d|', $value, new DateTimeZone($this->defaultTimeZone))) !== false) { // try Y-m-d format (support invalid dates like 2012-13-01)
                 return $checkDateTimeInfo ? [$timestamp, false, true] : $timestamp;
@@ -817,6 +829,7 @@ class Formatter extends Component
             if ($checkDateTimeInfo) {
                 $timestamp = new DateTime($value, new DateTimeZone($this->defaultTimeZone));
                 $info = date_parse($value);
+
                 return [
                     $timestamp,
                     !($info['hour'] === false && $info['minute'] === false && $info['second'] === false),
@@ -849,6 +862,7 @@ class Formatter extends Component
             return $this->nullDisplay;
         }
         $timestamp = $this->normalizeDatetimeValue($value);
+
         return number_format($timestamp->format('U'), 0, '.', '');
     }
 
@@ -1127,6 +1141,7 @@ class Formatter extends Component
             if (($result = $f->format($value)) === false) {
                 throw new InvalidParamException('Formatting percent value failed: ' . $f->getErrorCode() . ' ' . $f->getErrorMessage());
             }
+
             return $result;
         }
 
@@ -1135,6 +1150,7 @@ class Formatter extends Component
         }
 
         $value *= 100;
+
         return number_format($value, $decimals, $this->decimalSeparator, $this->thousandSeparator) . '%';
     }
 
@@ -1560,6 +1576,7 @@ class Formatter extends Component
             }
             $message[] = "$key{{$value}}";
         }
+
         return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
     }
 
@@ -1654,6 +1671,7 @@ class Formatter extends Component
         if (!is_numeric($value)) {
             throw new InvalidParamException("'$value' is not a numeric value.");
         }
+
         return $value;
     }
 

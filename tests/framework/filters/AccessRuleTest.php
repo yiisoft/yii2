@@ -61,6 +61,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         if ($userid !== null) {
             $user->setIdentity(UserIdentity::findIdentity($userid));
         }
+
         return $user;
     }
 
@@ -70,6 +71,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     protected function mockAction()
     {
         $controller = new Controller('site', Yii::$app);
+
         return new Action('test', $controller);
     }
 

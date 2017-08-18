@@ -30,6 +30,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $result['3: check'][2] = false;
 
         $result['4: check'][2] = false;
+
         return $result;
     }
 }

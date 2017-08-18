@@ -45,6 +45,7 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
         } elseif ($mailer === null) {
             $mailer = $this->mailer;
         }
+
         return $mailer->send($this);
     }
 
@@ -60,6 +61,7 @@ abstract class BaseMessage extends BaseObject implements MessageInterface
             return $this->toString();
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
+
             return '';
         }
     }

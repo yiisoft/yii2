@@ -94,6 +94,7 @@ class AssetControllerTest extends TestCase
     {
         $controller = $this->createAssetController();
         $controller->run($actionID, $args);
+
         return $controller->flushStdOutBuffer();
     }
 

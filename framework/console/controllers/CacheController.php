@@ -89,6 +89,7 @@ class CacheController extends Controller
 
         if (!$foundCaches) {
             $this->notifyNoCachesFound();
+
             return ExitCode::OK;
         }
 
@@ -117,6 +118,7 @@ class CacheController extends Controller
 
         if (empty($caches)) {
             $this->notifyNoCachesFound();
+
             return ExitCode::OK;
         }
 
@@ -151,11 +153,13 @@ class CacheController extends Controller
         $connection = Yii::$app->get($db, false);
         if ($connection === null) {
             $this->stdout("Unknown component \"$db\".\n", Console::FG_RED);
+
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
         if (!$connection instanceof \yii\db\Connection) {
             $this->stdout("\"$db\" component doesn't inherit \\yii\\db\\Connection.\n", Console::FG_RED);
+
             return ExitCode::UNSPECIFIED_ERROR;
         } elseif (!$this->confirm("Flush cache schema for \"$db\" connection?")) {
             return ExitCode::OK;

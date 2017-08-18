@@ -111,6 +111,7 @@ class Table extends Widget
     public function setHeaders(array $headers)
     {
         $this->_headers = $headers;
+
         return $this;
     }
 
@@ -123,6 +124,7 @@ class Table extends Widget
     public function setRows(array $rows)
     {
         $this->_rows = $rows;
+
         return $this;
     }
 
@@ -135,6 +137,7 @@ class Table extends Widget
     public function setChars(array $chars)
     {
         $this->_chars = $chars;
+
         return $this;
     }
 
@@ -147,6 +150,7 @@ class Table extends Widget
     public function setScreenWidth($width)
     {
         $this->_screenWidth = $width;
+
         return $this;
     }
 
@@ -159,6 +163,7 @@ class Table extends Widget
     public function setListPrefix($listPrefix)
     {
         $this->_listPrefix = $listPrefix;
+
         return $this;
     }
 
@@ -281,6 +286,7 @@ class Table extends Widget
             $separator .= str_repeat($spanMidMid, $rowSize);
         }
         $separator .= $spanRight . "\n";
+
         return $separator;
     }
 
@@ -304,8 +310,10 @@ class Table extends Widget
             $columnWidth = max(array_map(function ($val) {
                 if (is_array($val)) {
                     $encodings = array_fill(0, count($val), Yii::$app->charset);
+
                     return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
                 }
+
                 return mb_strwidth($val, Yii::$app->charset);
             }, $column)) + 2;
             $this->_columnWidths[] = $columnWidth;
@@ -340,14 +348,18 @@ class Table extends Widget
                 foreach ($columnWidth as $width) {
                     $rows += ceil($width / ($size - 2));
                 }
+
                 return $rows;
             }
+
             return ceil($columnWidth / ($size - 2));
         }, $this->_columnWidths, array_map(function ($val) {
             if (is_array($val)) {
                 $encodings = array_fill(0, count($val), Yii::$app->charset);
+
                 return array_map('mb_strwidth', $val, $encodings);
             }
+
             return mb_strwidth($val, Yii::$app->charset);
         }, $row)
         );
@@ -368,6 +380,7 @@ class Table extends Widget
                 $this->_screenWidth = $size[0];
             }
         }
+
         return $this->_screenWidth;
     }
 }

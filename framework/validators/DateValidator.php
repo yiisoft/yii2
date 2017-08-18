@@ -270,6 +270,7 @@ class DateValidator extends Validator
             if ($this->timestampAttribute !== null) {
                 $model->{$this->timestampAttribute} = null;
             }
+
             return;
         }
 
@@ -413,6 +414,7 @@ class DateValidator extends Validator
         if (!$hasTimeInfo) {
             $date->setTime(0, 0, 0);
         }
+
         return $date->getTimestamp();
     }
 
@@ -433,6 +435,7 @@ class DateValidator extends Validator
         $date = new DateTime();
         $date->setTimestamp($timestamp);
         $date->setTimezone(new \DateTimeZone($this->timestampAttributeTimeZone));
+
         return $date->format($format);
     }
 }

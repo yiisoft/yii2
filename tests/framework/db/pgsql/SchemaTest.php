@@ -223,6 +223,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $result['3: foreign key'][2][0]->foreignSchemaName = 'public';
         $result['3: index'][2] = [];
+
         return $result;
     }
 }

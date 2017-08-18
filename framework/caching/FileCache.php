@@ -117,6 +117,7 @@ class FileCache extends Cache
                 $cacheValue = @stream_get_contents($fp);
                 @flock($fp, LOCK_UN);
                 @fclose($fp);
+
                 return $cacheValue;
             }
         }
@@ -154,6 +155,7 @@ class FileCache extends Cache
 
         $error = error_get_last();
         Yii::warning("Unable to write cache file '{$cacheFile}': {$error['message']}", __METHOD__);
+
         return false;
     }
 

@@ -60,6 +60,7 @@ class UrlManagerParseUrlTest extends TestCase
         $config['pathInfo'] = $pathInfo;
         $config['hostInfo'] = $hostInfo;
         $_POST['_method'] = $method;
+
         return new Request($config);
     }
 

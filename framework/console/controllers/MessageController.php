@@ -243,10 +243,12 @@ EOD;
 
         if (file_put_contents($filePath, $content) === false) {
             $this->stdout("Configuration file was NOT created: '{$filePath}'.\n\n", Console::FG_RED);
+
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Configuration file created: '{$filePath}'.\n\n", Console::FG_GREEN);
+
         return ExitCode::OK;
     }
 
@@ -273,10 +275,12 @@ EOD;
 
         if (!copy(Yii::getAlias('@yii/views/messageConfig.php'), $filePath)) {
             $this->stdout("Configuration file template was NOT created at '{$filePath}'.\n\n", Console::FG_RED);
+
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Configuration file template created at '{$filePath}'.\n\n", Console::FG_GREEN);
+
         return ExitCode::OK;
     }
 
@@ -429,6 +433,7 @@ EOD;
 
         if (empty($obsolete)) {
             $this->stdout("Nothing obsoleted...skipped.\n");
+
             return;
         }
 
@@ -614,6 +619,7 @@ EOD;
         if (isset($a[0], $a[1], $b[0], $b[1])) {
             return $a[0] === $b[0] && $a[1] == $b[1];
         }
+
         return false;
     }
 
@@ -631,6 +637,7 @@ EOD;
                 return $token[2];
             }
         }
+
         return 'unknown';
     }
 
@@ -678,6 +685,7 @@ EOD;
             ksort($existingMessages);
             if (array_keys($existingMessages) === $messages && (!$sort || array_keys($rawExistingMessages) === $messages)) {
                 $this->stdout("Nothing new in \"$category\" category... Nothing to save.\n\n", Console::FG_GREEN);
+
                 return ExitCode::OK;
             }
             unset($rawExistingMessages);
@@ -732,10 +740,12 @@ EOD;
 
         if (file_put_contents($fileName, $content) === false) {
             $this->stdout("Translation was NOT saved.\n\n", Console::FG_RED);
+
             return ExitCode::UNSPECIFIED_ERROR;
         }
 
         $this->stdout("Translation saved.\n\n", Console::FG_GREEN);
+
         return ExitCode::OK;
     }
 

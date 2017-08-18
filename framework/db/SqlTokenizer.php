@@ -115,6 +115,7 @@ abstract class SqlTokenizer extends Component
         if ($this->_token->getHasChildren() && !$this->_token[-1]->getHasChildren()) {
             unset($this->_token[-1]);
         }
+
         return $this->_token;
     }
 
@@ -202,9 +203,11 @@ abstract class SqlTokenizer extends Component
             $content = $this->substring($testLength, $caseSensitive);
             if (isset($testValues[$content])) {
                 $length = $testLength;
+
                 return true;
             }
         }
+
         return false;
     }
 
@@ -231,6 +234,7 @@ abstract class SqlTokenizer extends Component
         if (!$caseSensitive && !isset($this->_substrings[$cacheKey . ',0'])) {
             $this->_substrings[$cacheKey . ',0'] = mb_strtoupper($this->_substrings[$cacheKey . ',1'], 'UTF-8');
         }
+
         return $this->_substrings[$cacheKey . ',' . (int) $caseSensitive];
     }
 
@@ -255,6 +259,7 @@ abstract class SqlTokenizer extends Component
         } else {
             $afterIndexOf += mb_strlen($string, 'UTF-8');
         }
+
         return $afterIndexOf;
     }
 
@@ -278,6 +283,7 @@ abstract class SqlTokenizer extends Component
             'startOffset' => $this->offset,
             'endOffset' => $this->offset + $length,
         ]);
+
         return true;
     }
 
@@ -341,6 +347,7 @@ abstract class SqlTokenizer extends Component
                 ]);
                 break;
         }
+
         return true;
     }
 

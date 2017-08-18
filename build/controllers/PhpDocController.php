@@ -230,6 +230,7 @@ class PhpDocController extends Controller
                 'vendor/',
             ]),
         ];
+
         return FileHelper::findFiles($root, $options);
     }
 
@@ -350,6 +351,7 @@ class PhpDocController extends Controller
                     case 'boolean': $types[$i] = 'bool'; break;
                 }
             }
+
             return '@' . $matches[1] . ' ' . implode('|', $types);
         }, $line);
     }
@@ -479,20 +481,24 @@ class PhpDocController extends Controller
             $ref = new \ReflectionClass($className);
         } catch (\Exception $e) {
             $this->stderr("[ERR] Unable to create ReflectionClass for class '$className': " . $e->getMessage() . "\n", Console::FG_RED);
+
             return false;
         }
         if ($ref->getFileName() != $file) {
             $this->stderr("[ERR] Unable to create ReflectionClass for class: $className loaded class is not from file: $file\n", Console::FG_RED);
+
             return false;
         }
 
         if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object' && !$ref->isSubclassOf('yii\base\BaseObject') && $className != 'yii\base\BaseObject') {
             $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\BaseObject.\n", Console::FG_BLUE, Console::BOLD);
+
             return false;
         }
 
         if ($ref->isSubclassOf('yii\db\BaseActiveRecord')) {
             $this->stderr("[INFO] Skipping class $className as it is an ActiveRecord class, property handling is not supported yet.\n", Console::FG_BLUE, Console::BOLD);
+
             return false;
         }
 
@@ -759,6 +765,7 @@ class PhpDocController extends Controller
                 $sets[] = $set;
             }
         }
+
         return $sets;
     }
 
@@ -768,6 +775,7 @@ class PhpDocController extends Controller
         if ($str == '') {
             return '';
         }
+
         return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
     }
 

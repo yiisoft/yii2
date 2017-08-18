@@ -156,6 +156,7 @@ class Transaction extends \yii\base\BaseObject
             Yii::trace('Commit transaction', __METHOD__);
             $this->db->pdo->commit();
             $this->db->trigger(Connection::EVENT_COMMIT_TRANSACTION);
+
             return;
         }
 
@@ -185,6 +186,7 @@ class Transaction extends \yii\base\BaseObject
             Yii::trace('Roll back transaction', __METHOD__);
             $this->db->pdo->rollBack();
             $this->db->trigger(Connection::EVENT_ROLLBACK_TRANSACTION);
+
             return;
         }
 

@@ -1138,6 +1138,7 @@ SELECT*from/*foo*/`T_constraints_1`WHERE not`C_check`=\'foo\'\'bar\'--bar
         $result['children'] = array_map(function (SqlToken $token) {
             return $this->exportToken($token);
         }, $token->children);
+
         return $result;
     }
 }

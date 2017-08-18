@@ -68,6 +68,7 @@ class Schema extends \yii\db\Schema
             $resolvedName->name = $name;
         }
         $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
+
         return $resolvedName;
     }
 
@@ -84,6 +85,7 @@ WHERE
     EXISTS (SELECT 1 FROM DBA_OBJECTS O WHERE O.OWNER = U.USERNAME)
     AND DEFAULT_TABLESPACE NOT IN ('SYSTEM','SYSAUX')
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 
@@ -129,6 +131,7 @@ SQL;
             }
             $names[] = $row['TABLE_NAME'];
         }
+
         return $names;
     }
 
@@ -141,6 +144,7 @@ SQL;
         $this->resolveTableNames($table, $name);
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
+
             return $table;
         }
 
@@ -200,6 +204,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -327,6 +332,7 @@ SQL;
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
         }
+
         return true;
     }
 
@@ -350,6 +356,7 @@ WHERE
     AND UD.REFERENCED_TYPE = 'SEQUENCE'
 SQL;
         $sequenceName = $this->db->createCommand($sequenceNameSql, [':tableName' => $tableName])->queryScalar();
+
         return $sequenceName === false ? null : $sequenceName;
     }
 
@@ -367,6 +374,7 @@ SQL;
         if ($this->db->isActive) {
             // get the last insert id from the master connection
             $sequenceName = $this->quoteSimpleTableName($sequenceName);
+
             return $this->db->useMaster(function (Connection $db) use ($sequenceName) {
                 return $db->createCommand("SELECT {$sequenceName}.CURRVAL FROM DUAL")->queryScalar();
             });
@@ -523,6 +531,7 @@ SQL;
         foreach ($command->queryAll() as $row) {
             $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
         }
+
         return $result;
     }
 
@@ -715,6 +724,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

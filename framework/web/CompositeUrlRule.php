@@ -86,6 +86,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
             // create status was not changed - there is no rules configured
             $this->createStatus = UrlRule::CREATE_STATUS_PARSING_ONLY;
         }
+
         return false;
     }
 
@@ -107,6 +108,7 @@ abstract class CompositeUrlRule extends BaseObject implements UrlRuleInterface
             $url = $rule->createUrl($manager, $route, $params);
             if ($url !== false) {
                 $this->createStatus = UrlRule::CREATE_STATUS_SUCCESS;
+
                 return $url;
             }
             if (

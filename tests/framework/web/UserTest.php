@@ -367,6 +367,7 @@ class UserIdentity extends Component implements IdentityInterface
         if (in_array($id, static::$ids)) {
             $identitiy = new static();
             $identitiy->_id = $id;
+
             return $identitiy;
         }
     }

@@ -248,6 +248,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function formName()
     {
         $reflector = new ReflectionClass($this);
+
         return $reflector->getShortName();
     }
 
@@ -410,6 +411,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($this->_validators === null) {
             $this->_validators = $this->createValidators();
         }
+
         return $this->_validators;
     }
 
@@ -428,6 +430,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $validators[] = $validator;
             }
         }
+
         return $validators;
     }
 
@@ -450,6 +453,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
             }
         }
+
         return $validators;
     }
 
@@ -474,6 +478,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 return true;
             }
         }
+
         return false;
     }
 
@@ -509,6 +514,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function getAttributeLabel($attribute)
     {
         $labels = $this->attributeLabels();
+
         return isset($labels[$attribute]) ? $labels[$attribute] : $this->generateAttributeLabel($attribute);
     }
 
@@ -522,6 +528,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function getAttributeHint($attribute)
     {
         $hints = $this->attributeHints();
+
         return isset($hints[$attribute]) ? $hints[$attribute] : '';
     }
 
@@ -563,6 +570,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($attribute === null) {
             return $this->_errors === null ? [] : $this->_errors;
         }
+
         return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
     }
 
@@ -585,6 +593,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $errors[$name] = reset($es);
             }
         }
+
         return $errors;
     }
 
@@ -828,6 +837,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
             return true;
         }
+
         return false;
     }
 
@@ -954,6 +964,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
     public function getIterator()
     {
         $attributes = $this->getAttributes();
+
         return new ArrayIterator($attributes);
     }
 

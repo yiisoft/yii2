@@ -36,6 +36,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $result['3: default'][2] = [];
 
         $result['4: default'][2] = [];
+
         return $result;
     }
 }
