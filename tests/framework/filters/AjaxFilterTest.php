@@ -20,7 +20,7 @@ use yiiunit\TestCase;
 class AjaxFilterTest extends TestCase
 {
     /**
-     * @param boolean $isAjax
+     * @param bool $isAjax
      * @return Request
      */
     protected function mockRequest($isAjax)

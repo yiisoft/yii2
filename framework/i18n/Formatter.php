@@ -1402,8 +1402,8 @@ class Formatter extends Component
     /**
      * Formats the value as a length in human readable form for example `12 meters`.
      *
-     * @param double|int $value value to be formatted.
-     * @param double $baseUnit unit of value as the multiplier of the smallest unit.
+     * @param float|int $value value to be formatted.
+     * @param float $baseUnit unit of value as the multiplier of the smallest unit.
      * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
@@ -1425,8 +1425,8 @@ class Formatter extends Component
      *
      * This is the short form of [[asLength]].
      *
-     * @param double|int $value value to be formatted.
-     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param float|int $value value to be formatted.
+     * @param float $baseUnit unit of value as the multiplier of the smallest unit
      * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
@@ -1446,8 +1446,8 @@ class Formatter extends Component
     /**
      * Formats the value as a weight in human readable form for example `12 kilograms`.
      *
-     * @param double|int $value value to be formatted.
-     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param float|int $value value to be formatted.
+     * @param float $baseUnit unit of value as the multiplier of the smallest unit
      * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
@@ -1468,8 +1468,8 @@ class Formatter extends Component
      *
      * This is the short form of [[asWeight]].
      *
-     * @param double|int $value value to be formatted.
-     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param float|int $value value to be formatted.
+     * @param float $baseUnit unit of value as the multiplier of the smallest unit
      * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
@@ -1488,8 +1488,8 @@ class Formatter extends Component
     /**
      * @param string $unitType one of [[UNIT_WEIGHT]], [[UNIT_LENGTH]]
      * @param string $unitFormat one of [[FORMAT_WIDTH_SHORT]], [[FORMAT_WIDTH_LONG]]
-     * @param double|int $value to be formatted
-     * @param double $baseUnit unit of value as the multiplier of the smallest unit
+     * @param float|int $value to be formatted
+     * @param float $baseUnit unit of value as the multiplier of the smallest unit
      * @param string $unitSystem either [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]]. When `null`, property [[systemOfUnits]] will be used.
      * @param int $decimals the number of digits after the decimal point.
      * @param array $options optional configuration for the number formatter. This parameter will be merged with [[numberFormatterOptions]].
@@ -1560,7 +1560,7 @@ class Formatter extends Component
             }
             $message[] = "$key{{$value}}";
         }
-        return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, '.implode(' ', $message).'}';
+        return $this->_unitMessages[$unitType][$system][$position] = '{n, plural, ' . implode(' ', $message) . '}';
     }
 
     /**

@@ -244,7 +244,7 @@ HTML
     , $out
 );
     }
-    
+
     /**
      * @see https://github.com/yiisoft/yii2/pull/14596
      */

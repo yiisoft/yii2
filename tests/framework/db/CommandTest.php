@@ -343,7 +343,7 @@ SQL;
             // batch insert on "type" table
             $db->createCommand()->batchInsert('type', $cols, $data)->execute();
 
-            $data = $db->createCommand("SELECT int_col, char_col, float_col, bool_col FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];")->queryAll();
+            $data = $db->createCommand('SELECT int_col, char_col, float_col, bool_col FROM {{type}} WHERE [[int_col]] IN (1,2,3) ORDER BY [[int_col]];')->queryAll();
             $this->assertEquals(3, count($data));
             $this->assertEquals(1, $data[0]['int_col']);
             $this->assertEquals(2, $data[1]['int_col']);
@@ -357,7 +357,6 @@ SQL;
             $this->assertEquals('1', $data[0]['bool_col']);
             $this->assertIsOneOf($data[1]['bool_col'], ['0', false]);
             $this->assertIsOneOf($data[2]['bool_col'], ['0', false]);
-
         } catch (\Exception $e) {
             setlocale(LC_NUMERIC, $locale);
             throw $e;

@@ -230,15 +230,15 @@ class FormatterTest extends TestCase
     public function lengthDataProvider()
     {
         return [
-            [-3, "-3 meters", '-3 m'],
+            [-3, '-3 meters', '-3 m'],
             ['NaN', '0 millimeters', '0 mm'],
-            [0, "0 millimeters", '0 mm'],
-            [0.005, "5 millimeters", '5 mm'],
-            [0.053, "5.3 centimeters", '5.3 cm'],
-            [0.1, "10 centimeters", '10 cm'],
-            [1.123, "1.123 meters", '1.123 m'],
-            [1893.12, "1.893 kilometers", '1.893 km'],
-            [4561549, "4561.549 kilometers", '4561.549 km'],
+            [0, '0 millimeters', '0 mm'],
+            [0.005, '5 millimeters', '5 mm'],
+            [0.053, '5.3 centimeters', '5.3 cm'],
+            [0.1, '10 centimeters', '10 cm'],
+            [1.123, '1.123 meters', '1.123 m'],
+            [1893.12, '1.893 kilometers', '1.893 km'],
+            [4561549, '4561.549 kilometers', '4561.549 km'],
         ];
     }
 

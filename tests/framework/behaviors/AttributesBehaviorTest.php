@@ -101,8 +101,7 @@ class AttributesBehaviorTest extends TestCase
         $preserveNonEmptyValues,
         $name,
         $alias
-    )
-    {
+    ) {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
         $model->name = $name;
@@ -143,8 +142,7 @@ class AttributesBehaviorTest extends TestCase
         $order,
         $name,
         $alias
-    )
-    {
+    ) {
         $model = new ActiveRecordWithAttributesBehavior();
         $model->attributesBehavior->order = $order;
         $model->name = $name;

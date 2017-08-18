@@ -224,7 +224,7 @@ class Request extends \yii\base\Request
      * @since 2.0.13
      */
     public $ipHeaders = [
-        'X-Forwarded-For'
+        'X-Forwarded-For',
     ];
     /**
      * @var array list of headers to check for determining whether the connection is made via HTTPS.
@@ -1255,10 +1255,10 @@ class Request extends \yii\base\Request
     {
         if (isset($_SERVER['CONTENT_TYPE'])) {
             return $_SERVER['CONTENT_TYPE'];
-        } else {
-            //fix bug https://bugs.php.net/bug.php?id=66606
-            return $this->headers->get('Content-Type');
         }
+
+        //fix bug https://bugs.php.net/bug.php?id=66606
+        return $this->headers->get('Content-Type');
     }
 
     private $_languages;

@@ -140,7 +140,7 @@ class YiiConfig extends Config
 //            'phpdoc_summary' => true, // needs more attention (summary should be separated by blank line from description)
 //            'phpdoc_to_comment' => true, // breaks phpdoc for define('CONSTANT', $value);
             'phpdoc_trim' => true,
-//            'phpdoc_types' => true, // conflicts with yii\base\Object typehits https://github.com/yiisoft/yii2/pull/12699
+            'phpdoc_types' => true,
             'phpdoc_var_without_name' => true,
             'protected_to_private' => true,
             'psr4' => true,

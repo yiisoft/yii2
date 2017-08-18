@@ -342,8 +342,7 @@ abstract class QueryTest extends DatabaseTestCase
      */
     public function testAmbiguousColumnIndexBy()
     {
-        switch ($this->driverName)
-        {
+        switch ($this->driverName) {
             case 'pgsql':
             case 'sqlite':
                 $selectExpression = "(customer.name || ' in ' || p.description) AS name";
@@ -357,7 +356,7 @@ abstract class QueryTest extends DatabaseTestCase
         }
 
         $db = $this->getConnection();
-        $result = (new Query)->select([$selectExpression])->from('customer')
+        $result = (new Query())->select([$selectExpression])->from('customer')
             ->innerJoin('profile p', '{{customer}}.[[profile_id]] = {{p}}.[[id]]')
             ->indexBy('id')->column($db);
         $this->assertEquals([

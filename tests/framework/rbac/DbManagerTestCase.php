@@ -161,7 +161,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
         return [
             [0, 0, true],
             [0, new UserID(0), true],
-            ['', '', false]
+            ['', '', false],
         ];
     }
 
