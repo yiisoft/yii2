@@ -8,6 +8,7 @@
 namespace yii\cs;
 
 use PhpCsFixer\Config;
+use PhpCsFixer\Fixer\Import\OrderedImportsFixer;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -113,11 +114,11 @@ class YiiConfig extends Config
 //                ],
 //            ],
             'ordered_imports' => [
-                'sortAlgorithm' => 'alpha',
+                'sortAlgorithm' => OrderedImportsFixer::SORT_ALPHA,
                 'importsOrder' => [
-                    'const',
-                    'function',
-                    'class',
+                    OrderedImportsFixer::IMPORT_TYPE_CONST,
+                    OrderedImportsFixer::IMPORT_TYPE_CLASS,
+                    OrderedImportsFixer::IMPORT_TYPE_FUNCTION,
                 ],
             ],
             'php_unit_construct' => true,
