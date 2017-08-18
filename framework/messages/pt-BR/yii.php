@@ -127,7 +127,7 @@ return [
     'The verification code is incorrect.' => 'O código de verificação está incorreto.',
     'Total <b>{count, number}</b> {count, plural, one{item} other{items}}.' => 'Total <b>{count, number}</b> {count, plural, one{item} other{itens}}.',
     'Unable to verify your data submission.' => 'Não foi possível verificar o seu envio de dados.',
-    'Unknown alias: -{name}' => 'Alias ​​desconhecido: -{name}',
+    'Unknown alias: -{name}' => 'Alias desconhecido: -{name}',
     'Unknown option: --{name}' => 'Opção desconhecida : --{name}',
     'Update' => 'Alterar',
     'View' => 'Exibir',

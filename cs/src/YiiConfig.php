@@ -95,7 +95,7 @@ class YiiConfig extends Config
             'no_useless_return' => true,
             'no_whitespace_before_comma_in_array' => true,
             'no_whitespace_in_blank_line' => true,
-//            'non_printable_character' => true, // breaks Formatter::asCurrency() tests
+            'non_printable_character' => true,
             'normalize_index_brace' => true,
             'object_operator_without_whitespace' => true,
 //            'ordered_class_elements' => [ // needs more discussion
