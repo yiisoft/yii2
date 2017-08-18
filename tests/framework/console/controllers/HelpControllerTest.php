@@ -77,6 +77,7 @@ help/usage
 migrate
 migrate/create
 migrate/down
+migrate/fresh
 migrate/history
 migrate/mark
 migrate/new

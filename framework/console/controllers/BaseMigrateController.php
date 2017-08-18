@@ -428,6 +428,30 @@ abstract class BaseMigrateController extends Controller
     }
 
     /**
+     * Truncates the whole database and starts the migration from the beginning.
+     *
+     * ```
+     * yii migrate/fresh
+     * ```
+     *
+     * @since 2.0.13
+     */
+    public function actionFresh()
+    {
+        if (YII_ENV_PROD) {
+            $this->stdout("YII_ENV is set to 'prod'.\nRefreshing migrations is not possible on production systems.\n");
+            return ExitCode::OK;
+        }
+
+        if ($this->confirm(
+            "Are you sure you want to reset the database and start the migration from the beginning?\nAll data will be lost irreversibly!")) {
+            $this->refreshDatabase();
+        } else {
+            $this->stdout('Action was cancelled by user. Nothing has been performed.');
+        }
+    }
+
+    /**
      * Checks if given migration version specification matches namespaced migration name.
      * @param string $rawVersion raw version specification received from user input.
      * @return string|false actual migration version, `false` - if not match.
@@ -875,6 +899,19 @@ abstract class BaseMigrateController extends Controller
     protected function generateMigrationSourceCode($params)
     {
         return $this->renderFile(Yii::getAlias($this->templateFile), $params);
+    }
+
+    /**
+     * Truncates the database and reapplies all migrations from the beginning.
+     *
+     * This method will simply print a message in the base class implementation.
+     * It should be overwritten in subclasses to implement the task of clearing the database.
+     *
+     * @since 2.0.13
+     */
+    protected function refreshDatabase()
+    {
+        $this->stdout('This command is not implemented in ' . get_class($this) . "\n");
     }
 
     /**
