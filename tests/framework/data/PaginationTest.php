@@ -73,7 +73,7 @@ class PaginationTest extends TestCase
         $pagination = new Pagination();
         $pagination->route = 'item/list';
         $pagination->params = $params;
-        $this->assertEquals($expectedUrl, $pagination->createUrl($page, $pageSize));
+        $this->assertSame($expectedUrl, $pagination->createUrl($page, $pageSize));
     }
 
     /**
@@ -85,10 +85,10 @@ class PaginationTest extends TestCase
         $pagination->route = 'item/list';
 
         $pagination->forcePageParam = true;
-        $this->assertEquals('/index.php?r=item%2Flist&page=1', $pagination->createUrl(0));
+        $this->assertSame('/index.php?r=item%2Flist&page=1', $pagination->createUrl(0));
 
         $pagination->forcePageParam = false;
-        $this->assertEquals('/index.php?r=item%2Flist', $pagination->createUrl(0));
+        $this->assertSame('/index.php?r=item%2Flist', $pagination->createUrl(0));
     }
 
     public function testValidatePage()
@@ -99,9 +99,9 @@ class PaginationTest extends TestCase
         $pagination->totalCount = 100;
 
         $pagination->setPage(999, true);
-        $this->assertEquals(9, $pagination->getPage());
+        $this->assertSame(9, $pagination->getPage());
 
         $pagination->setPage(999, false);
-        $this->assertEquals(999, $pagination->getPage());
+        $this->assertSame(999, $pagination->getPage());
     }
 }

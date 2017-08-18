@@ -36,56 +36,56 @@ class FileValidatorTest extends TestCase
     public function testTypeSplitOnInit()
     {
         $val = new FileValidator(['extensions' => 'jpeg, jpg, gif']);
-        $this->assertEquals(['jpeg', 'jpg', 'gif'], $val->extensions);
+        $this->assertSame(['jpeg', 'jpg', 'gif'], $val->extensions);
 
         $val = new FileValidator(['extensions' => 'jpeg']);
-        $this->assertEquals(['jpeg'], $val->extensions);
+        $this->assertSame(['jpeg'], $val->extensions);
 
         $val = new FileValidator(['extensions' => '']);
-        $this->assertEquals([], $val->extensions);
+        $this->assertSame([], $val->extensions);
 
         $val = new FileValidator(['extensions' => []]);
-        $this->assertEquals([], $val->extensions);
+        $this->assertSame([], $val->extensions);
 
         $val = new FileValidator();
-        $this->assertEquals([], $val->extensions);
+        $this->assertSame([], $val->extensions);
 
         $val = new FileValidator(['extensions' => ['jpeg', 'exe']]);
-        $this->assertEquals(['jpeg', 'exe'], $val->extensions);
+        $this->assertSame(['jpeg', 'exe'], $val->extensions);
     }
 
     public function testMimeTypeSplitOnInit()
     {
         $val = new FileValidator(['mimeTypes' => 'text/plain, image/png']);
-        $this->assertEquals(['text/plain', 'image/png'], $val->mimeTypes);
+        $this->assertSame(['text/plain', 'image/png'], $val->mimeTypes);
 
         $val = new FileValidator(['mimeTypes' => 'text/plain']);
-        $this->assertEquals(['text/plain'], $val->mimeTypes);
+        $this->assertSame(['text/plain'], $val->mimeTypes);
 
         $val = new FileValidator(['mimeTypes' => '']);
-        $this->assertEquals([], $val->mimeTypes);
+        $this->assertSame([], $val->mimeTypes);
 
         $val = new FileValidator(['mimeTypes' => []]);
-        $this->assertEquals([], $val->mimeTypes);
+        $this->assertSame([], $val->mimeTypes);
 
         $val = new FileValidator();
-        $this->assertEquals([], $val->mimeTypes);
+        $this->assertSame([], $val->mimeTypes);
 
         $val = new FileValidator(['mimeTypes' => ['text/plain', 'image/png']]);
-        $this->assertEquals(['text/plain', 'image/png'], $val->mimeTypes);
+        $this->assertSame(['text/plain', 'image/png'], $val->mimeTypes);
     }
 
     public function testGetSizeLimit()
     {
         $size = min($this->sizeToBytes(ini_get('upload_max_filesize')), $this->sizeToBytes(ini_get('post_max_size')));
         $val = new FileValidator();
-        $this->assertEquals($size, $val->getSizeLimit());
+        $this->assertSame($size, $val->getSizeLimit());
         $val->maxSize = $size + 1; // set and test if value is overridden
-        $this->assertEquals($size, $val->getSizeLimit());
+        $this->assertSame($size, $val->getSizeLimit());
         $val->maxSize = abs($size - 1);
-        $this->assertEquals($size - 1, $val->getSizeLimit());
+        $this->assertSame($size - 1, $val->getSizeLimit());
         $_POST['MAX_FILE_SIZE'] = $size + 1;
-        $this->assertEquals($size - 1, $val->getSizeLimit());
+        $this->assertSame($size - 1, $val->getSizeLimit());
         $_POST['MAX_FILE_SIZE'] = abs($size - 2);
         $this->assertSame($_POST['MAX_FILE_SIZE'], $val->getSizeLimit());
     }
@@ -359,7 +359,7 @@ class FileValidatorTest extends TestCase
         $file = $this->createTestFiles([
             ['name' => $baseName . '.txt'],
         ]);
-        $this->assertEquals($baseName, $file->getBaseName());
+        $this->assertSame($baseName, $file->getBaseName());
     }
 
     /**

@@ -31,16 +31,16 @@ abstract class ManagerTestCase extends TestCase
     {
         $role = $this->auth->createRole('admin');
         $this->assertInstanceOf(Role::className(), $role);
-        $this->assertEquals(Item::TYPE_ROLE, $role->type);
-        $this->assertEquals('admin', $role->name);
+        $this->assertSame(Item::TYPE_ROLE, $role->type);
+        $this->assertSame('admin', $role->name);
     }
 
     public function testCreatePermission()
     {
         $permission = $this->auth->createPermission('edit post');
         $this->assertInstanceOf(Permission::className(), $permission);
-        $this->assertEquals(Item::TYPE_PERMISSION, $permission->type);
-        $this->assertEquals('edit post', $permission->name);
+        $this->assertSame(Item::TYPE_PERMISSION, $permission->type);
+        $this->assertSame('edit post', $permission->name);
     }
 
     public function testAdd()
@@ -77,7 +77,7 @@ abstract class ManagerTestCase extends TestCase
 
         $rule = $this->auth->getRule('isAuthor');
         $this->assertInstanceOf('yii\rbac\Rule', $rule);
-        $this->assertEquals('isAuthor', $rule->name);
+        $this->assertSame('isAuthor', $rule->name);
 
         $rule = $this->auth->getRule('nonExisting');
         $this->assertNull($rule);
@@ -92,8 +92,8 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->add($rule);
 
         $rule = $this->auth->getRule($ruleName);
-        $this->assertEquals($ruleName, $rule->name);
-        $this->assertEquals(true, $rule->reallyReally);
+        $this->assertSame($ruleName, $rule->name);
+        $this->assertSame(true, $rule->reallyReally);
     }
 
     public function testUpdateRule()
@@ -106,27 +106,27 @@ abstract class ManagerTestCase extends TestCase
         $this->auth->update('isAuthor', $rule);
 
         $rule = $this->auth->getRule('isAuthor');
-        $this->assertEquals(null, $rule);
+        $this->assertSame(null, $rule);
 
         $rule = $this->auth->getRule('newName');
-        $this->assertEquals('newName', $rule->name);
-        $this->assertEquals(false, $rule->reallyReally);
+        $this->assertSame('newName', $rule->name);
+        $this->assertSame(false, $rule->reallyReally);
 
         $rule->reallyReally = true;
         $this->auth->update('newName', $rule);
 
         $rule = $this->auth->getRule('newName');
-        $this->assertEquals(true, $rule->reallyReally);
+        $this->assertSame(true, $rule->reallyReally);
 
         $item = $this->auth->getPermission('createPost');
         $item->name = 'new createPost';
         $this->auth->update('createPost', $item);
 
         $item = $this->auth->getPermission('createPost');
-        $this->assertEquals(null, $item);
+        $this->assertSame(null, $item);
 
         $item = $this->auth->getPermission('new createPost');
-        $this->assertEquals('new createPost', $item->name);
+        $this->assertSame('new createPost', $item->name);
     }
 
     public function testGetRules()
@@ -203,7 +203,7 @@ abstract class ManagerTestCase extends TestCase
 
         foreach ($testSuites as $user => $tests) {
             foreach ($tests as $permission => $result) {
-                $this->assertEquals($result, $this->auth->checkAccess($user, $permission, $params), "Checking $user can $permission");
+                $this->assertSame($result, $this->auth->checkAccess($user, $permission, $params), "Checking $user can $permission");
             }
         }
     }
@@ -271,7 +271,7 @@ abstract class ManagerTestCase extends TestCase
         $this->prepareData();
         $permissions = $this->auth->getPermissionsByRole('admin');
         $expectedPermissions = ['createPost', 'updatePost', 'readPost', 'updateAnyPost'];
-        $this->assertEquals(count($expectedPermissions), count($permissions));
+        $this->assertSame(count($expectedPermissions), count($permissions));
         foreach ($expectedPermissions as $permissionName) {
             $this->assertInstanceOf(Permission::className(), $permissions[$permissionName]);
         }
@@ -282,7 +282,7 @@ abstract class ManagerTestCase extends TestCase
         $this->prepareData();
         $permissions = $this->auth->getPermissionsByUser('author B');
         $expectedPermissions = ['deletePost', 'createPost', 'updatePost', 'readPost'];
-        $this->assertEquals(count($expectedPermissions), count($permissions));
+        $this->assertSame(count($expectedPermissions), count($permissions));
         foreach ($expectedPermissions as $permissionName) {
             $this->assertInstanceOf(Permission::className(), $permissions[$permissionName]);
         }
@@ -292,18 +292,18 @@ abstract class ManagerTestCase extends TestCase
     {
         $this->prepareData();
         $author = $this->auth->getRole('author');
-        $this->assertEquals(Item::TYPE_ROLE, $author->type);
-        $this->assertEquals('author', $author->name);
-        $this->assertEquals('authorData', $author->data);
+        $this->assertSame(Item::TYPE_ROLE, $author->type);
+        $this->assertSame('author', $author->name);
+        $this->assertSame('authorData', $author->data);
     }
 
     public function testGetPermission()
     {
         $this->prepareData();
         $createPost = $this->auth->getPermission('createPost');
-        $this->assertEquals(Item::TYPE_PERMISSION, $createPost->type);
-        $this->assertEquals('createPost', $createPost->name);
-        $this->assertEquals('createPostData', $createPost->data);
+        $this->assertSame(Item::TYPE_PERMISSION, $createPost->type);
+        $this->assertSame('createPost', $createPost->name);
+        $this->assertSame('createPostData', $createPost->data);
     }
 
     public function testGetRolesByUser()
@@ -315,15 +315,15 @@ abstract class ManagerTestCase extends TestCase
 
         $roles = $this->auth->getRolesByUser('reader A');
         $this->assertInstanceOf(Role::className(), reset($roles));
-        $this->assertEquals($roles['reader']->name, 'reader');
+        $this->assertSame($roles['reader']->name, 'reader');
 
         $roles = $this->auth->getRolesByUser(0);
         $this->assertInstanceOf(Role::className(), reset($roles));
-        $this->assertEquals($roles['reader']->name, 'reader');
+        $this->assertSame($roles['reader']->name, 'reader');
 
         $roles = $this->auth->getRolesByUser(123);
         $this->assertInstanceOf(Role::className(), reset($roles));
-        $this->assertEquals($roles['reader']->name, 'reader');
+        $this->assertSame($roles['reader']->name, 'reader');
 
         $this->assertContains('myDefaultRole', array_keys($roles));
     }
@@ -400,10 +400,10 @@ abstract class ManagerTestCase extends TestCase
 
         $this->auth = $this->createManager();
 
-        $this->assertEquals([], $this->auth->getUserIdsByRole('nonexisting'));
-        $this->assertEquals(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
-        $this->assertEquals(['author B'], $this->auth->getUserIdsByRole('author'));
-        $this->assertEquals(['admin C'], $this->auth->getUserIdsByRole('admin'));
+        $this->assertSame([], $this->auth->getUserIdsByRole('nonexisting'));
+        $this->assertSame(['reader A', '123'], $this->auth->getUserIdsByRole('reader'), '', 0.0, 10, true);
+        $this->assertSame(['author B'], $this->auth->getUserIdsByRole('author'));
+        $this->assertSame(['admin C'], $this->auth->getUserIdsByRole('admin'));
     }
 
     public function testCanAddChild()

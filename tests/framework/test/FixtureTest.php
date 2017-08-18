@@ -123,7 +123,7 @@ class FixtureTest extends TestCase
             $test->scenario = $scenario;
             $test->setUp();
             foreach ($result as $name => $loaded) {
-                $this->assertEquals($loaded, $test->fetchFixture($name) !== null, "Verifying scenario $scenario fixture $name");
+                $this->assertSame($loaded, $test->fetchFixture($name) !== null, "Verifying scenario $scenario fixture $name");
             }
         }
     }
@@ -136,9 +136,9 @@ class FixtureTest extends TestCase
             MyTestCase::$load = '';
             MyTestCase::$unload = '';
             $test->setUp();
-            $this->assertEquals($result[0], MyTestCase::$load, "Verifying scenario $scenario load sequence");
+            $this->assertSame($result[0], MyTestCase::$load, "Verifying scenario $scenario load sequence");
             $test->tearDown();
-            $this->assertEquals($result[1], MyTestCase::$unload, "Verifying scenario $scenario unload sequence");
+            $this->assertSame($result[1], MyTestCase::$unload, "Verifying scenario $scenario unload sequence");
         }
     }
 

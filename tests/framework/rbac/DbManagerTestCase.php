@@ -210,7 +210,7 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
         if ($isValid) {
             $this->assertInstanceOf(Assignment::className(), $assignment);
-            $this->assertEquals($userId, $assignment->userId);
+            $this->assertSame($userId, $assignment->userId);
         } else {
             $this->assertEmpty($assignment);
         }

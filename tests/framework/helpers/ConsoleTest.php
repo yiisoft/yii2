@@ -81,7 +81,7 @@ class ConsoleTest extends TestCase
         $output = Console::stripAnsiFormat(ob_get_clean());
         ob_implicit_flush(true);
         // $output = str_replace("\033", 'X003', $output );// uncomment for debugging
-        $this->assertEquals(str_repeat('a', 25), $output);
+        $this->assertSame(str_repeat('a', 25), $output);
     }
 
     /*public function testScreenSize()
@@ -140,6 +140,6 @@ class ConsoleTest extends TestCase
      */
     public function testAnsi2Html($ansi, $html)
     {
-        $this->assertEquals($html, Console::ansiToHtml($ansi));
+        $this->assertSame($html, Console::ansiToHtml($ansi));
     }
 }

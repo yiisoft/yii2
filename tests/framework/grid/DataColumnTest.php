@@ -41,7 +41,7 @@ class DataColumnTest extends \yiiunit\TestCase
             $method->setAccessible(true);
             $labels[] = $method->invoke($column);
         }
-        $this->assertEquals(['Customer', 'Invoice Total'], $labels);
+        $this->assertSame(['Customer', 'Invoice Total'], $labels);
     }
 
     /**
@@ -64,7 +64,7 @@ class DataColumnTest extends \yiiunit\TestCase
             $method->setAccessible(true);
             $labels[] = $method->invoke($column);
         }
-        $this->assertEquals(['Customer', 'Invoice Total'], $labels);
+        $this->assertSame(['Customer', 'Invoice Total'], $labels);
     }
 
     /**
@@ -92,7 +92,7 @@ class DataColumnTest extends \yiiunit\TestCase
         $method = new \ReflectionMethod($dataColumn, 'renderFilterCellContent');
         $method->setAccessible(true);
         $result = $method->invoke($dataColumn);
-        $this->assertEquals($result, $filterInput);
+        $this->assertSame($result, $filterInput);
     }
 
 

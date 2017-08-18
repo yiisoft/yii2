@@ -68,11 +68,11 @@ class FormatterTest extends TestCase
     {
         // locale is configured explicitly
         $f = new Formatter(['locale' => 'en-US']);
-        $this->assertEquals('en-US', $f->locale);
+        $this->assertSame('en-US', $f->locale);
 
         // if not, take from application
         $f = new Formatter();
-        $this->assertEquals('ru-RU', $f->locale);
+        $this->assertSame('ru-RU', $f->locale);
     }
 
 

@@ -107,13 +107,13 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             $this->markTestSkipped('This test is only relevant for SQLite < 3.7.11');
         }
         $sql = $this->getQueryBuilder()->batchInsert('{{customer}} t', ['t.id', 't.name'], [[1, 'a'], [2, 'b']]);
-        $this->assertEquals("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
+        $this->assertSame("INSERT INTO {{customer}} t (`t`.`id`, `t`.`name`) SELECT 1, 'a' UNION SELECT 2, 'b'", $sql);
     }
 
     public function testRenameTable()
     {
         $sql = $this->getQueryBuilder()->renameTable('table_from', 'table_to');
-        $this->assertEquals('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
+        $this->assertSame('ALTER TABLE `table_from` RENAME TO `table_to`', $sql);
     }
 
     /**
@@ -139,8 +139,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
             ->union($secondQuery)
             ->union($thirdQuery, true);
         list($actualQuerySql, $queryParams) = $this->getQueryBuilder()->build($query);
-        $this->assertEquals($expectedQuerySql, $actualQuerySql);
-        $this->assertEquals([], $queryParams);
+        $this->assertSame($expectedQuerySql, $actualQuerySql);
+        $this->assertSame([], $queryParams);
     }
 
     public function testResetSequence()
@@ -149,10 +149,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "UPDATE sqlite_sequence SET seq='5' WHERE name='item'";
         $sql = $qb->resetSequence('item');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = "UPDATE sqlite_sequence SET seq='3' WHERE name='item'";
         $sql = $qb->resetSequence('item', 4);
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
     }
 }

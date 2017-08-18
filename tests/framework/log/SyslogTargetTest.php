@@ -175,7 +175,7 @@ namespace yiiunit\framework\log {
                 ->willReturn('some prefix');
 
             $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[info][category] text', $result);
+            $this->assertSame('some prefix[info][category] text', $result);
         }
 
         /**
@@ -193,7 +193,7 @@ namespace yiiunit\framework\log {
                 ->willReturn('some prefix');
 
             $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[info][category] ' . (string) $exception, $result);
+            $this->assertSame('some prefix[info][category] ' . (string) $exception, $result);
         }
 
         /**
@@ -212,7 +212,7 @@ namespace yiiunit\framework\log {
                 ->willReturn('some prefix');
 
             $result = $this->syslogTarget->formatMessage($message);
-            $this->assertEquals('some prefix[error][category] ' . VarDumper::export($text), $result);
+            $this->assertSame('some prefix[error][category] ' . VarDumper::export($text), $result);
         }
     }
 }

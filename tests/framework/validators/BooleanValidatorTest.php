@@ -76,7 +76,7 @@ class BooleanValidatorTest extends TestCase
         ]);
         $validator->validate('someIncorrectValue', $errorMessage);
 
-        $this->assertEquals('the input value must be either "true" or "false".', $errorMessage);
+        $this->assertSame('the input value must be either "true" or "false".', $errorMessage);
 
         $obj = new FakedValidationModel();
         $obj->attrA = true;
@@ -84,7 +84,7 @@ class BooleanValidatorTest extends TestCase
         $obj->attrC = '0';
         $obj->attrD = [];
 
-        $this->assertEquals(
+        $this->assertSame(
             'yii.validation.boolean(value, messages, {"trueValue":true,"falseValue":false,"message":"attrB must be either \"true\" or \"false\".","skipOnEmpty":1,"strict":1});',
             $validator->clientValidateAttribute($obj, 'attrB', new ViewStub())
         );

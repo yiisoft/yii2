@@ -163,7 +163,7 @@ class InstanceTest extends TestCase
 
         $this->assertInstanceOf('yii\caching\DbCache', $cache = Yii::$container->get('cache'));
         $this->assertInstanceOf('yii\db\Connection', $db = $cache->db);
-        $this->assertEquals('sqlite:path/to/file.db', $db->dsn);
+        $this->assertSame('sqlite:path/to/file.db', $db->dsn);
     }
 
     public function testRestoreAfterVarExport()
@@ -178,7 +178,7 @@ class InstanceTest extends TestCase
 PHP
         , $export);
 
-        $this->assertEquals($instance, Instance::__set_state([
+        $this->assertSame($instance, Instance::__set_state([
             'id' => 'something',
         ]));
     }

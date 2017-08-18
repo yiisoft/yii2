@@ -79,9 +79,9 @@ class UrlManagerTest extends TestCase
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl('post/view');
-        $this->assertEquals('/index.php?r=post%2Fview', $url);
+        $this->assertSame('/index.php?r=post%2Fview', $url);
         $url = $manager->createUrl(['post/view']);
-        $this->assertEquals('/index.php?r=post%2Fview', $url);
+        $this->assertSame('/index.php?r=post%2Fview', $url);
 
         // default setting with '/test/' as base url
         $manager = $this->getUrlManager([
@@ -89,9 +89,9 @@ class UrlManagerTest extends TestCase
             'scriptUrl' => '/test',
         ], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl('post/view');
-        $this->assertEquals('/test?r=post%2Fview', $url);
+        $this->assertSame('/test?r=post%2Fview', $url);
         $url = $manager->createUrl(['post/view']);
-        $this->assertEquals('/test?r=post%2Fview', $url);
+        $this->assertSame('/test?r=post%2Fview', $url);
     }
 
     /**
@@ -102,7 +102,7 @@ class UrlManagerTest extends TestCase
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertSame('/index.php?r=post%2Fview&id=1&title=sample+post', $url);
 
         // default setting with '/test/' as base url
         $manager = $this->getUrlManager([
@@ -110,7 +110,7 @@ class UrlManagerTest extends TestCase
             'scriptUrl' => '/test',
         ], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('/test?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertSame('/test?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
     /**
@@ -123,9 +123,9 @@ class UrlManagerTest extends TestCase
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl(['post/view', '#' => 'anchor']);
-        $this->assertEquals('/index.php?r=post%2Fview#anchor', $url);
+        $this->assertSame('/index.php?r=post%2Fview#anchor', $url);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post', '#' => 'anchor']);
-        $this->assertEquals('/index.php?r=post%2Fview&id=1&title=sample+post#anchor', $url);
+        $this->assertSame('/index.php?r=post%2Fview&id=1&title=sample+post#anchor', $url);
 
         // default setting with '/test/' as base url
         $manager = $this->getUrlManager([
@@ -133,9 +133,9 @@ class UrlManagerTest extends TestCase
             'scriptUrl' => '/test',
         ], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl(['post/view', '#' => 'anchor']);
-        $this->assertEquals('/test?r=post%2Fview#anchor', $url);
+        $this->assertSame('/test?r=post%2Fview#anchor', $url);
         $url = $manager->createUrl(['post/view', 'id' => 1, 'title' => 'sample post', '#' => 'anchor']);
-        $this->assertEquals('/test?r=post%2Fview&id=1&title=sample+post#anchor', $url);
+        $this->assertSame('/test?r=post%2Fview&id=1&title=sample+post#anchor', $url);
     }
 
     /**
@@ -145,42 +145,42 @@ class UrlManagerTest extends TestCase
     {
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
         $url = $manager->createAbsoluteUrl('post/view');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('http://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view']);
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('http://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', true);
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('http://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view'], true);
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('http://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', 'http');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('http://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view'], 'http');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('http://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', 'https');
-        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('https://www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view'], 'https');
-        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('https://www.example.com/index.php?r=post%2Fview', $url);
 
         $url = $manager->createAbsoluteUrl('post/view', '');
-        $this->assertEquals('//www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('//www.example.com/index.php?r=post%2Fview', $url);
         $url = $manager->createAbsoluteUrl(['post/view'], '');
-        $this->assertEquals('//www.example.com/index.php?r=post%2Fview', $url);
+        $this->assertSame('//www.example.com/index.php?r=post%2Fview', $url);
 
         $manager->hostInfo = 'https://www.example.com';
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post']);
-        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertSame('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
 
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'https');
-        $this->assertEquals('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertSame('https://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
 
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], 'http');
-        $this->assertEquals('http://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertSame('http://www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
 
         $url = $manager->createAbsoluteUrl(['post/view', 'id' => 1, 'title' => 'sample post'], '');
-        $this->assertEquals('//www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
+        $this->assertSame('//www.example.com/index.php?r=post%2Fview&id=1&title=sample+post', $url);
     }
 
     /**
@@ -192,13 +192,13 @@ class UrlManagerTest extends TestCase
         // default setting with '/' as base url
         $manager = $this->getUrlManager([], $showScriptName, $enableStrictParsing);
         $url = $manager->createUrl(['/post/view']);
-        $this->assertEquals('/index.php?r=post%2Fview', $url);
+        $this->assertSame('/index.php?r=post%2Fview', $url);
         $url = $manager->createUrl(['/post/view/']);
-        $this->assertEquals('/index.php?r=post%2Fview', $url);
+        $this->assertSame('/index.php?r=post%2Fview', $url);
         $url = $manager->createUrl(['/module/post/view']);
-        $this->assertEquals('/index.php?r=module%2Fpost%2Fview', $url);
+        $this->assertSame('/index.php?r=module%2Fpost%2Fview', $url);
         $url = $manager->createUrl(['/post/view/']);
-        $this->assertEquals('/index.php?r=post%2Fview', $url);
+        $this->assertSame('/index.php?r=post%2Fview', $url);
     }
 
 
@@ -225,23 +225,23 @@ class UrlManagerTest extends TestCase
         // default setting without 'r' param
         $request->setQueryParams([]);
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['', []], $result);
+        $this->assertSame(['', []], $result);
 
         // default setting with 'r' param
         $request->setQueryParams([$routeParam => 'site/index']);
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['site/index', []], $result);
+        $this->assertSame(['site/index', []], $result);
 
         // default setting with 'r' param as an array
         $request->setQueryParams([$routeParam => ['site/index']]);
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['', []], $result);
+        $this->assertSame(['', []], $result);
 
         // other parameters are not returned here
         $request->setQueryParams([$routeParam => 'site/index', 'id' => 5]);
         $result = $manager->parseRequest($request);
-        $this->assertEquals(['site/index', []], $result);
-        $this->assertEquals(5, $request->getQueryParam('id'));
+        $this->assertSame(['site/index', []], $result);
+        $this->assertSame(5, $request->getQueryParam('id'));
     }
 
     public function testSetBaseUrl()
@@ -249,10 +249,10 @@ class UrlManagerTest extends TestCase
         $manager = $this->getUrlManager();
 
         $manager->setBaseUrl('example.com');
-        $this->assertEquals('example.com', $manager->getBaseUrl());
+        $this->assertSame('example.com', $manager->getBaseUrl());
 
         Yii::setAlias('@testAlias', 'example.com/');
         $manager->setBaseUrl('@testAlias');
-        $this->assertEquals('example.com', $manager->getBaseUrl());
+        $this->assertSame('example.com', $manager->getBaseUrl());
     }
 }

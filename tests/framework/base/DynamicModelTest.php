@@ -40,13 +40,13 @@ class DynamicModelTest extends TestCase
     public function testAddRule()
     {
         $model = new DynamicModel();
-        $this->assertEquals(0, $model->getValidators()->count());
+        $this->assertSame(0, $model->getValidators()->count());
         $model->addRule('name', 'string', ['min' => 12]);
-        $this->assertEquals(1, $model->getValidators()->count());
+        $this->assertSame(1, $model->getValidators()->count());
         $model->addRule('email', 'email');
-        $this->assertEquals(2, $model->getValidators()->count());
+        $this->assertSame(2, $model->getValidators()->count());
         $model->addRule(['name', 'email'], 'required');
-        $this->assertEquals(3, $model->getValidators()->count());
+        $this->assertSame(3, $model->getValidators()->count());
     }
 
     public function testValidateWithAddRule()
@@ -70,8 +70,8 @@ class DynamicModelTest extends TestCase
         $email = 'invalid';
         $name = 'long name';
         $model = new DynamicModel(compact('name', 'email'));
-        $this->assertEquals($email, $model->email);
-        $this->assertEquals($name, $model->name);
+        $this->assertSame($email, $model->email);
+        $this->assertSame($name, $model->name);
         $this->expectException('yii\base\UnknownPropertyException');
         $age = $model->age;
     }
@@ -96,7 +96,7 @@ class DynamicModelTest extends TestCase
         $this->assertTrue($dynamic->load($data));
 
         $this->assertTrue($dynamic->validate());
-        $this->assertEquals($name, $dynamic->name);
-        $this->assertEquals($mobile, $dynamic->mobile);
+        $this->assertSame($name, $dynamic->name);
+        $this->assertSame($mobile, $dynamic->mobile);
     }
 }

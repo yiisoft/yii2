@@ -95,13 +95,13 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->prepare();
 
-        $this->assertEquals('string_test', $cache->get('string_test'));
+        $this->assertSame('string_test', $cache->get('string_test'));
 
-        $this->assertEquals(42, $cache->get('number_test'));
+        $this->assertSame(42, $cache->get('number_test'));
 
         $array = $cache->get('array_test');
         $this->assertArrayHasKey('array_test', $array);
-        $this->assertEquals('array_test', $array['array_test']);
+        $this->assertSame('array_test', $array['array_test']);
     }
 
     /**
@@ -126,13 +126,13 @@ abstract class CacheTestCase extends TestCase
             'array_test' => ['array_test' => 'array_test'],
         ], $expiry);
 
-        $this->assertEquals('string_test', $cache->get('string_test'));
+        $this->assertSame('string_test', $cache->get('string_test'));
 
-        $this->assertEquals(42, $cache->get('number_test'));
+        $this->assertSame(42, $cache->get('number_test'));
 
         $array = $cache->get('array_test');
         $this->assertArrayHasKey('array_test', $array);
-        $this->assertEquals('array_test', $array['array_test']);
+        $this->assertSame('array_test', $array['array_test']);
     }
 
     public function testExists()
@@ -141,7 +141,7 @@ abstract class CacheTestCase extends TestCase
 
         $this->assertTrue($cache->exists('string_test'));
         // check whether exists affects the value
-        $this->assertEquals('string_test', $cache->get('string_test'));
+        $this->assertSame('string_test', $cache->get('string_test'));
 
         $this->assertTrue($cache->exists('number_test'));
         $this->assertFalse($cache->exists('not_exists'));
@@ -177,10 +177,10 @@ abstract class CacheTestCase extends TestCase
     {
         $cache = $this->prepare();
 
-        $this->assertEquals(['string_test' => 'string_test', 'number_test' => 42], $cache->multiGet(['string_test', 'number_test']));
+        $this->assertSame(['string_test' => 'string_test', 'number_test' => 42], $cache->multiGet(['string_test', 'number_test']));
         // ensure that order does not matter
-        $this->assertEquals(['number_test' => 42, 'string_test' => 'string_test'], $cache->multiGet(['number_test', 'string_test']));
-        $this->assertEquals(['number_test' => 42, 'non_existent_key' => null], $cache->multiGet(['number_test', 'non_existent_key']));
+        $this->assertSame(['number_test' => 42, 'string_test' => 'string_test'], $cache->multiGet(['number_test', 'string_test']));
+        $this->assertSame(['number_test' => 42, 'non_existent_key' => null], $cache->multiGet(['number_test', 'non_existent_key']));
     }
 
     public function testDefaultTtl()
@@ -196,7 +196,7 @@ abstract class CacheTestCase extends TestCase
 
         $this->assertTrue($cache->set('expire_test', 'expire_test', 2));
         usleep(500000);
-        $this->assertEquals('expire_test', $cache->get('expire_test'));
+        $this->assertSame('expire_test', $cache->get('expire_test'));
         usleep(2500000);
         $this->assertFalse($cache->get('expire_test'));
     }
@@ -207,7 +207,7 @@ abstract class CacheTestCase extends TestCase
 
         $this->assertTrue($cache->add('expire_testa', 'expire_testa', 2));
         usleep(500000);
-        $this->assertEquals('expire_testa', $cache->get('expire_testa'));
+        $this->assertSame('expire_testa', $cache->get('expire_testa'));
         usleep(2500000);
         $this->assertFalse($cache->get('expire_testa'));
     }
@@ -218,12 +218,12 @@ abstract class CacheTestCase extends TestCase
 
         // should not change existing keys
         $this->assertFalse($cache->add('number_test', 13));
-        $this->assertEquals(42, $cache->get('number_test'));
+        $this->assertSame(42, $cache->get('number_test'));
 
         // should store data if it's not there yet
         $this->assertFalse($cache->get('add_test'));
         $this->assertTrue($cache->add('add_test', 13));
-        $this->assertEquals(13, $cache->get('add_test'));
+        $this->assertSame(13, $cache->get('add_test'));
     }
 
     public function testMultiAdd()
@@ -237,8 +237,8 @@ abstract class CacheTestCase extends TestCase
             'add_test' => 13,
         ]);
 
-        $this->assertEquals(42, $cache->get('number_test'));
-        $this->assertEquals(13, $cache->get('add_test'));
+        $this->assertSame(42, $cache->get('number_test'));
+        $this->assertSame(13, $cache->get('add_test'));
     }
 
     public function testDelete()
@@ -264,9 +264,9 @@ abstract class CacheTestCase extends TestCase
         $expected = $this->getOrSetCallable($cache);
         $callable = [$this, 'getOrSetCallable'];
 
-        $this->assertEquals(null, $cache->get('something'));
-        $this->assertEquals($expected, $cache->getOrSet('something', $callable));
-        $this->assertEquals($expected, $cache->get('something'));
+        $this->assertSame(null, $cache->get('something'));
+        $this->assertSame($expected, $cache->getOrSet('something', $callable));
+        $this->assertSame($expected, $cache->get('something'));
     }
 
     public function getOrSetCallable($cache)
@@ -281,14 +281,14 @@ abstract class CacheTestCase extends TestCase
 
         $expected = 'SilverFire';
         $loginClosure = function ($cache) use (&$login) { return 'SilverFire'; };
-        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
+        $this->assertSame($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         // Call again with another login to make sure that value is cached
         $loginClosure = function ($cache) use (&$login) { return 'SamDark'; };
-        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
+        $this->assertSame($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
 
         $dependency->invalidate($cache, 'test');
         $expected = 'SamDark';
-        $this->assertEquals($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
+        $this->assertSame($expected, $cache->getOrSet('some-login', $loginClosure, null, $dependency));
     }
 }

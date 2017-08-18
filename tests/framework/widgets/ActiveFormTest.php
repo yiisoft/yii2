@@ -93,7 +93,7 @@ EOF
 
         $content = ob_get_clean();
 
-        $this->assertEquals($obLevel, ob_get_level(), 'Output buffers not closed correctly.');
+        $this->assertSame($obLevel, ob_get_level(), 'Output buffers not closed correctly.');
 
         $this->assertEqualsWithoutLE(<<<'HTML'
 <form id="someform" action="/someform" method="post">

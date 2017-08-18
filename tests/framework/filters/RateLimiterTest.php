@@ -48,7 +48,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter(['request' => 'Request']);
 
-        $this->assertEquals('Request', $rateLimiter->request);
+        $this->assertSame('Request', $rateLimiter->request);
     }
 
     public function testInitNotFilledRequest()
@@ -62,7 +62,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter(['response' => 'Response']);
 
-        $this->assertEquals('Response', $rateLimiter->response);
+        $this->assertSame('Response', $rateLimiter->response);
     }
 
     public function testInitNotFilledResponse()

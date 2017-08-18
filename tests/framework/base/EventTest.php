@@ -41,19 +41,19 @@ class EventTest extends TestCase
         Event::on('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT, function ($event) {
             $this->counter += 5;
         });
-        $this->assertEquals(0, $this->counter);
+        $this->assertSame(0, $this->counter);
         $post = new Post();
         $post->save();
-        $this->assertEquals(4, $this->counter);
+        $this->assertSame(4, $this->counter);
         $user = new User();
         $user->save();
-        $this->assertEquals(7, $this->counter);
+        $this->assertSame(7, $this->counter);
         $someClass = new SomeClass();
         $someClass->emitEvent();
-        $this->assertEquals(12, $this->counter);
+        $this->assertSame(12, $this->counter);
         $childClass = new SomeSubclass();
         $childClass->emitEventInSubclass();
-        $this->assertEquals(17, $this->counter);
+        $this->assertSame(17, $this->counter);
     }
 
     public function testOff()

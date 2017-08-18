@@ -127,12 +127,12 @@ class ValidatorTest extends TestCase
         $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
         $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
         $this->assertFalse($val->isAttributeValidated('attr_skip'));
-        $this->assertEquals(1, $val->countAttributeValidations('attr_runMe2'));
-        $this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
+        $this->assertSame(1, $val->countAttributeValidations('attr_runMe2'));
+        $this->assertSame(1, $val->countAttributeValidations('attr_runMe1'));
         $val->validateAttributes($model, ['attr_runMe2']);
-        $this->assertEquals(2, $val->countAttributeValidations('attr_runMe2'));
-        $this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
-        $this->assertEquals(0, $val->countAttributeValidations('attr_skip'));
+        $this->assertSame(2, $val->countAttributeValidations('attr_runMe2'));
+        $this->assertSame(1, $val->countAttributeValidations('attr_runMe1'));
+        $this->assertSame(0, $val->countAttributeValidations('attr_skip'));
         $val = new TestValidator(['attributes' => ['attr_runMe1', 'attr_runMe2'], 'skipOnError' => true]);
         $model = $this->getTestModel();
         $val->enableErrorOnValidateAttribute();
@@ -140,13 +140,13 @@ class ValidatorTest extends TestCase
         $this->assertTrue($val->isAttributeValidated('attr_runMe1'));
         $this->assertTrue($val->isAttributeValidated('attr_runMe2'));
         $this->assertFalse($val->isAttributeValidated('attr_skip'));
-        $this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
-        $this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
-        $this->assertEquals(0, $val->countAttributeValidations('attr_skip'));
+        $this->assertSame(1, $val->countAttributeValidations('attr_runMe1'));
+        $this->assertSame(1, $val->countAttributeValidations('attr_runMe1'));
+        $this->assertSame(0, $val->countAttributeValidations('attr_skip'));
         $val->validateAttributes($model, ['attr_runMe2']);
-        $this->assertEquals(1, $val->countAttributeValidations('attr_runMe2'));
-        $this->assertEquals(1, $val->countAttributeValidations('attr_runMe1'));
-        $this->assertEquals(0, $val->countAttributeValidations('attr_skip'));
+        $this->assertSame(1, $val->countAttributeValidations('attr_runMe2'));
+        $this->assertSame(1, $val->countAttributeValidations('attr_runMe1'));
+        $this->assertSame(0, $val->countAttributeValidations('attr_skip'));
     }
 
     public function testValidateWithEmpty()
@@ -206,8 +206,8 @@ class ValidatorTest extends TestCase
         $args = $model->getInlineValArgs();
 
         $this->assertCount(3, $args);
-        $this->assertEquals('val_attr_a', $args[0]);
-        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertSame('val_attr_a', $args[0]);
+        $this->assertSame(['foo' => 'bar'], $args[1]);
         $this->assertInstanceOf(InlineValidator::className(), $args[2]);
     }
 
@@ -226,8 +226,8 @@ class ValidatorTest extends TestCase
         $args = $val->clientValidateAttribute($model, 'val_attr_a', null);
 
         $this->assertCount(3, $args);
-        $this->assertEquals('val_attr_a', $args[0]);
-        $this->assertEquals(['foo' => 'bar'], $args[1]);
+        $this->assertSame('val_attr_a', $args[0]);
+        $this->assertSame(['foo' => 'bar'], $args[1]);
         $this->assertInstanceOf(InlineValidator::className(), $args[2]);
     }
 
@@ -251,22 +251,22 @@ class ValidatorTest extends TestCase
         $m = $this->getTestModel(['attr_msg_val' => 'abc']);
         $val->addError($m, 'attr_msg_val', '{attribute}::{value}');
         $errors = $m->getErrors('attr_msg_val');
-        $this->assertEquals('attr_msg_val::abc', $errors[0]);
+        $this->assertSame('attr_msg_val::abc', $errors[0]);
         $m = $this->getTestModel(['attr_msg_val' => ['bcc']]);
         $val->addError($m, 'attr_msg_val', '{attribute}::{value}');
         $errors = $m->getErrors('attr_msg_val');
-        $this->assertEquals('attr_msg_val::array()', $errors[0]);
+        $this->assertSame('attr_msg_val::array()', $errors[0]);
         $m = $this->getTestModel(['attr_msg_val' => 'abc']);
         $val->addError($m, 'attr_msg_val', '{attribute}::{value}::{param}', ['param' => 'param_value']);
         $errors = $m->getErrors('attr_msg_val');
-        $this->assertEquals('attr_msg_val::abc::param_value', $errors[0]);
+        $this->assertSame('attr_msg_val::abc::param_value', $errors[0]);
     }
 
     public function testGetAttributeNames()
     {
         $validator = new TestValidator();
         $validator->attributes = ['id', 'name', '!email'];
-        $this->assertEquals(['id', 'name', 'email'], $validator->getAttributeNames());
+        $this->assertSame(['id', 'name', 'email'], $validator->getAttributeNames());
     }
 
     /**

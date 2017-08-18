@@ -55,7 +55,7 @@ class EachValidatorTest extends TestCase
         ]);
         $validator = new EachValidator(['rule' => ['trim']]);
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertEquals('to be trimmed', $model->attr_one[0]);
+        $this->assertSame('to be trimmed', $model->attr_one[0]);
     }
 
     /**
@@ -99,7 +99,7 @@ class EachValidatorTest extends TestCase
         $validator->allowMessageFromRule = false;
         $validator->message = '{value} is invalid';
         $validator->validateAttribute($model, 'attr_one');
-        $this->assertEquals('TEXT is invalid', $model->getFirstError('attr_one'));
+        $this->assertSame('TEXT is invalid', $model->getFirstError('attr_one'));
     }
 
     /**

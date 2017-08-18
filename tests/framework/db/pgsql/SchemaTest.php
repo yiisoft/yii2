@@ -93,9 +93,9 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $this->assertCount(1, $table->foreignKeys);
         $this->assertTrue(isset($table->foreignKeys['fk_composite_fk_order_item']));
-        $this->assertEquals('order_item', $table->foreignKeys['fk_composite_fk_order_item'][0]);
-        $this->assertEquals('order_id', $table->foreignKeys['fk_composite_fk_order_item']['order_id']);
-        $this->assertEquals('item_id', $table->foreignKeys['fk_composite_fk_order_item']['item_id']);
+        $this->assertSame('order_item', $table->foreignKeys['fk_composite_fk_order_item'][0]);
+        $this->assertSame('order_id', $table->foreignKeys['fk_composite_fk_order_item']['order_id']);
+        $this->assertSame('item_id', $table->foreignKeys['fk_composite_fk_order_item']['item_id']);
     }
 
     public function testGetPDOType()
@@ -115,7 +115,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
-            $this->assertEquals($value[1], $schema->getPdoType($value[0]));
+            $this->assertSame($value[1], $schema->getPdoType($value[0]));
         }
         fclose($fp);
     }
@@ -168,7 +168,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $type->save(false);
 
         $actual = Type::find()->one();
-        $this->assertEquals($bigint, $actual->bigint_col);
+        $this->assertSame($bigint, $actual->bigint_col);
     }
 
     /**
@@ -192,8 +192,8 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $column = $tableSchema->getColumn('user_timezone');
         $this->assertNotNull($column);
         $this->assertFalse($column->allowNull);
-        $this->assertEquals('numeric', $column->dbType);
-        $this->assertEquals(0, $column->defaultValue);
+        $this->assertSame('numeric', $column->dbType);
+        $this->assertSame(0, $column->defaultValue);
     }
 
     /**

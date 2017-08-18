@@ -32,7 +32,7 @@ class SqlDataProviderTest extends DatabaseTestCase
             'sql' => 'select * from `customer`',
             'db' => $this->getConnection(),
         ]);
-        $this->assertEquals(3, $dataProvider->getTotalCount());
+        $this->assertSame(3, $dataProvider->getTotalCount());
     }
 
     public function testTotalCountWithParams()
@@ -44,6 +44,6 @@ class SqlDataProviderTest extends DatabaseTestCase
             ],
             'db' => $this->getConnection(),
         ]);
-        $this->assertEquals(3, $dataProvider->getTotalCount());
+        $this->assertSame(3, $dataProvider->getTotalCount());
     }
 }

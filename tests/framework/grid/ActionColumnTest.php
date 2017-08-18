@@ -19,10 +19,10 @@ class ActionColumnTest extends \yiiunit\TestCase
     public function testInit()
     {
         $column = new ActionColumn();
-        $this->assertEquals(['view', 'update', 'delete'], array_keys($column->buttons));
+        $this->assertSame(['view', 'update', 'delete'], array_keys($column->buttons));
 
         $column = new ActionColumn(['template' => '{show} {edit} {delete}']);
-        $this->assertEquals(['delete'], array_keys($column->buttons));
+        $this->assertSame(['delete'], array_keys($column->buttons));
 
         $column = new ActionColumn(['template' => '{show} {edit} {remove}']);
         $this->assertEmpty($column->buttons);
@@ -31,7 +31,7 @@ class ActionColumnTest extends \yiiunit\TestCase
         $this->assertEmpty($column->buttons);
 
         $column = new ActionColumn(['template' => '{view} {view-items}']);
-        $this->assertEquals(['view'], array_keys($column->buttons));
+        $this->assertSame(['view'], array_keys($column->buttons));
     }
 
     public function testRenderDataCell()
@@ -45,7 +45,7 @@ class ActionColumnTest extends \yiiunit\TestCase
         $updateButton = '<a href="http://test.com" title="Update" aria-label="Update" data-pjax="0"><span class="glyphicon glyphicon-pencil"></span></a>';
         $deleteButton = '<a href="http://test.com" title="Delete" aria-label="Delete" data-pjax="0" data-confirm="Are you sure you want to delete this item?" data-method="post"><span class="glyphicon glyphicon-trash"></span></a>';
         $expectedHtml = "<td>$viewButton $updateButton $deleteButton</td>";
-        $this->assertEquals($expectedHtml, $columnContents);
+        $this->assertSame($expectedHtml, $columnContents);
 
         $column = new ActionColumn();
         $column->urlCreator = function ($model, $key, $index) {

@@ -36,19 +36,19 @@ class MultipartFormDataParserTest extends TestCase
                 'name' => 'test-name',
             ],
         ];
-        $this->assertEquals($expectedBodyParams, $bodyParams);
+        $this->assertSame($expectedBodyParams, $bodyParams);
 
         $this->assertNotEmpty($_FILES['someFile']);
-        $this->assertEquals(UPLOAD_ERR_OK, $_FILES['someFile']['error']);
-        $this->assertEquals('some-file.txt', $_FILES['someFile']['name']);
-        $this->assertEquals('text/plain', $_FILES['someFile']['type']);
+        $this->assertSame(UPLOAD_ERR_OK, $_FILES['someFile']['error']);
+        $this->assertSame('some-file.txt', $_FILES['someFile']['name']);
+        $this->assertSame('text/plain', $_FILES['someFile']['type']);
         $this->assertStringEqualsFile($_FILES['someFile']['tmp_name'], 'some file content');
 
         $this->assertNotEmpty($_FILES['Item']);
         $this->assertNotEmpty($_FILES['Item']['name']['file']);
-        $this->assertEquals(UPLOAD_ERR_OK, $_FILES['Item']['error']['file']);
-        $this->assertEquals('item-file.txt', $_FILES['Item']['name']['file']);
-        $this->assertEquals('text/plain', $_FILES['Item']['type']['file']);
+        $this->assertSame(UPLOAD_ERR_OK, $_FILES['Item']['error']['file']);
+        $this->assertSame('item-file.txt', $_FILES['Item']['name']['file']);
+        $this->assertSame('text/plain', $_FILES['Item']['type']['file']);
         $this->assertStringEqualsFile($_FILES['Item']['tmp_name']['file'], 'item file content');
     }
 
@@ -64,8 +64,8 @@ class MultipartFormDataParserTest extends TestCase
         ];
 
         $bodyParams = $parser->parse('should not matter', 'multipart/form-data; boundary=---12345');
-        $this->assertEquals($_POST, $bodyParams);
-        $this->assertEquals([], $_FILES);
+        $this->assertSame($_POST, $bodyParams);
+        $this->assertSame([], $_FILES);
     }
 
     /**
@@ -87,7 +87,7 @@ class MultipartFormDataParserTest extends TestCase
         $rawBody = "--{$boundary}\nContent-Disposition: form-data; name=\"title\"\r\ntest-title--{$boundary}--";
 
         $bodyParams = $parser->parse($rawBody, $contentType);
-        $this->assertEquals([], $bodyParams);
+        $this->assertSame([], $bodyParams);
     }
 
     /**
@@ -126,7 +126,7 @@ class MultipartFormDataParserTest extends TestCase
 
         $parser->parse($rawBody, $contentType);
         $this->assertCount(3, $_FILES);
-        $this->assertEquals(UPLOAD_ERR_INI_SIZE, $_FILES['thirdFile']['error']);
+        $this->assertSame(UPLOAD_ERR_INI_SIZE, $_FILES['thirdFile']['error']);
     }
 
     /**
@@ -159,7 +159,7 @@ class MultipartFormDataParserTest extends TestCase
         $expectedBodyParams = [
             'title' => 'test-title',
         ];
-        $this->assertEquals($expectedBodyParams, $bodyParams);
+        $this->assertSame($expectedBodyParams, $bodyParams);
         $this->assertNotEmpty($_FILES['someFile']);
         $this->assertFalse(isset($_FILES['existingFile']));
     }

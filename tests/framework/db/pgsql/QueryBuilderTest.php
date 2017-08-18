@@ -85,19 +85,19 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" TYPE varchar(255)';
         $sql = $qb->alterColumn('foo1', 'bar', 'varchar(255)');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" SET NOT null';
         $sql = $qb->alterColumn('foo1', 'bar', 'SET NOT null');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" drop default';
         $sql = $qb->alterColumn('foo1', 'bar', 'drop default');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = 'ALTER TABLE "foo1" ALTER COLUMN "bar" reset xyz';
         $sql = $qb->alterColumn('foo1', 'bar', 'reset xyz');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
     }
 
     public function indexesProvider()
@@ -118,11 +118,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS 'This is my column.'";
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
 
         $expected = 'COMMENT ON COLUMN [[comment]].[[text]] IS NULL';
         $sql = $qb->dropCommentFromColumn('comment', 'text');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
     }
 
     public function testCommentTable()
@@ -131,11 +131,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON TABLE [[comment]] IS 'This is my table.'";
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
 
         $expected = 'COMMENT ON TABLE [[comment]] IS NULL';
         $sql = $qb->dropCommentFromTable('comment');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
     }
 
     public function batchInsertProvider()
@@ -155,10 +155,10 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "SELECT SETVAL('\"item_id_seq\"',(SELECT COALESCE(MAX(\"id\"),0) FROM \"item\")+1,false)";
         $sql = $qb->resetSequence('item');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = "SELECT SETVAL('\"item_id_seq\"',4,false)";
         $sql = $qb->resetSequence('item', 4);
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
     }
 }

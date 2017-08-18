@@ -35,7 +35,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $schema = $this->getConnection()->schema;
 
         foreach ($values as $value) {
-            $this->assertEquals($value[1], $schema->getPdoType($value[0]));
+            $this->assertSame($value[1], $schema->getPdoType($value[0]));
         }
         fclose($fp);
     }

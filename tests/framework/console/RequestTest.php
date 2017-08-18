@@ -153,7 +153,7 @@ class RequestTest extends TestCase
 
         $request->setParams($params);
         list($route, $params) = $request->resolve();
-        $this->assertEquals($expected['route'], $route);
-        $this->assertEquals($expected['params'], $params);
+        $this->assertSame($expected['route'], $route);
+        $this->assertSame($expected['params'], $params);
     }
 }

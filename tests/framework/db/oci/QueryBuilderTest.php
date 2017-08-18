@@ -86,11 +86,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS 'This is my column.'";
         $sql = $qb->addCommentOnColumn('comment', 'text', 'This is my column.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
 
         $expected = "COMMENT ON COLUMN [[comment]].[[text]] IS ''";
         $sql = $qb->dropCommentFromColumn('comment', 'text');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
     }
 
     public function testCommentTable()
@@ -99,11 +99,11 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
 
         $expected = "COMMENT ON TABLE [[comment]] IS 'This is my table.'";
         $sql = $qb->addCommentOnTable('comment', 'This is my table.');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
 
         $expected = "COMMENT ON TABLE [[comment]] IS ''";
         $sql = $qb->dropCommentFromTable('comment');
-        $this->assertEquals($this->replaceQuotes($expected), $sql);
+        $this->assertSame($this->replaceQuotes($expected), $sql);
     }
 
     public function testResetSequence()
@@ -113,12 +113,12 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
         $expected = 'DROP SEQUENCE "item_SEQ";'
             . 'CREATE SEQUENCE "item_SEQ" START WITH 6 INCREMENT BY 1 NOMAXVALUE NOCACHE';
         $sql = $qb->resetSequence('item');
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
 
         $expected = 'DROP SEQUENCE "item_SEQ";'
             . 'CREATE SEQUENCE "item_SEQ" START WITH 4 INCREMENT BY 1 NOMAXVALUE NOCACHE';
         $sql = $qb->resetSequence('item', 4);
-        $this->assertEquals($expected, $sql);
+        $this->assertSame($expected, $sql);
     }
 
     public function likeConditionProvider()

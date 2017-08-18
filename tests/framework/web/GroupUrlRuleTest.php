@@ -34,7 +34,7 @@ class GroupUrlRuleTest extends TestCase
             foreach ($tests as $j => $test) {
                 list($route, $params, $expected, $status) = $test;
                 $url = $rule->createUrl($manager, $route, $params);
-                $this->assertEquals($expected, $url, "Test#$i-$j: $name");
+                $this->assertSame($expected, $url, "Test#$i-$j: $name");
                 $this->assertSame($status, $rule->getCreateUrlStatus(), "Test#$i-$j: $name");
             }
         }
@@ -56,7 +56,7 @@ class GroupUrlRuleTest extends TestCase
                 if ($route === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
                 } else {
-                    $this->assertEquals([$route, $params], $result, "Test#$i-$j: $name");
+                    $this->assertSame([$route, $params], $result, "Test#$i-$j: $name");
                 }
             }
         }

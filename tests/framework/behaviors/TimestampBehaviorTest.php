@@ -103,7 +103,7 @@ class TimestampBehaviorTest extends TestCase
         $model->updated_at = $enforcedTime;
         $model->save(false);
 
-        $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
+        $this->assertSame($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertTrue($model->updated_at >= $currentTime, 'Update time has NOT been set on update!');
     }
 
@@ -158,8 +158,8 @@ class TimestampBehaviorTest extends TestCase
             $this->assertInstanceOf(Expression::className(), $model->updated_at);
             $model->refresh();
         }
-        $this->assertEquals($expected, $model->created_at);
-        $this->assertEquals($expected, $model->updated_at);
+        $this->assertSame($expected, $model->created_at);
+        $this->assertSame($expected, $model->updated_at);
     }
 
     public function arrayCallable($event)
@@ -187,11 +187,11 @@ class TimestampBehaviorTest extends TestCase
         $model->created_at = $enforcedTime;
         $model->updated_at = $enforcedTime;
         $model->save(false);
-        $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
+        $this->assertSame($enforcedTime, $model->created_at, 'Create time has been set on update!');
         $this->assertInstanceOf(Expression::className(), $model->updated_at);
         $model->refresh();
-        $this->assertEquals($enforcedTime, $model->created_at, 'Create time has been set on update!');
-        $this->assertEquals(date('Y'), $model->updated_at);
+        $this->assertSame($enforcedTime, $model->created_at, 'Create time has been set on update!');
+        $this->assertSame(date('Y'), $model->updated_at);
     }
 
     public function testTouchingNewRecordGeneratesException()
@@ -226,7 +226,7 @@ class TimestampBehaviorTest extends TestCase
 
         $model->touch('created_at');
 
-        $this->assertEquals($expectedCreatedAt, $model->created_at);
+        $this->assertSame($expectedCreatedAt, $model->created_at);
     }
 }
 

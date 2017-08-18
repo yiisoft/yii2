@@ -51,14 +51,14 @@ class BaseMessageTest extends TestCase
         $mailer = $this->getMailer();
         $message = $mailer->compose();
         $message->send($mailer);
-        $this->assertEquals($message, $mailer->sentMessages[0], 'Unable to send message!');
+        $this->assertSame($message, $mailer->sentMessages[0], 'Unable to send message!');
     }
 
     public function testToString()
     {
         $mailer = $this->getMailer();
         $message = $mailer->compose();
-        $this->assertEquals($message->toString(), '' . $message);
+        $this->assertSame($message->toString(), '' . $message);
     }
 }
 

@@ -45,8 +45,8 @@ class ServiceLocatorTest extends TestCase
         });
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
-        $this->assertEquals(100, $object->prop1);
-        $this->assertEquals(200, $object->prop2);
+        $this->assertSame(100, $object->prop1);
+        $this->assertSame(200, $object->prop2);
 
         // static method
         $container = new ServiceLocator();
@@ -54,7 +54,7 @@ class ServiceLocatorTest extends TestCase
         $container->set($className, [__NAMESPACE__ . '\\Creator', 'create']);
         $object = $container->get($className);
         $this->assertInstanceOf($className, $object);
-        $this->assertEquals(1, $object->prop1);
+        $this->assertSame(1, $object->prop1);
         $this->assertNull($object->prop2);
     }
 
@@ -78,8 +78,8 @@ class ServiceLocatorTest extends TestCase
             'prop2' => 20,
         ]);
         $object = $container->get($className);
-        $this->assertEquals(10, $object->prop1);
-        $this->assertEquals(20, $object->prop2);
+        $this->assertSame(10, $object->prop1);
+        $this->assertSame(20, $object->prop2);
         $this->assertInstanceOf($className, $object);
         // check shared
         $object2 = $container->get($className);
@@ -106,7 +106,7 @@ class ServiceLocatorTest extends TestCase
         $this->assertTrue(isset($app->captcha->name));
         $this->assertNotEmpty($app->captcha->name);
 
-        $this->assertEquals('foo bar', $app->captcha->name);
+        $this->assertSame('foo bar', $app->captcha->name);
 
         $this->assertTrue(isset($app->captcha->name));
         $this->assertNotEmpty($app->captcha->name);

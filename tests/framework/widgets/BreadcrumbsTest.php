@@ -45,7 +45,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertSame($expectedHtml, $actualHtml);
     }
 
     public function testEmptyLinks()
@@ -67,7 +67,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertSame($expectedHtml, $actualHtml);
     }
 
 
@@ -86,7 +86,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertSame($expectedHtml, $actualHtml);
     }
 
     public function testRenderItemException()
@@ -103,13 +103,13 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $method = $this->reflectMethod();
         $encodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
 
-        $this->assertEquals("<li>My-&lt;br&gt;Test-Label</li>\n", $encodedValue);
+        $this->assertSame("<li>My-&lt;br&gt;Test-Label</li>\n", $encodedValue);
 
         //without encodeLabels
         $this->breadcrumbs->encodeLabels = false;
         $unencodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
 
-        $this->assertEquals("<li>My-<br>Test-Label</li>\n", $unencodedValue);
+        $this->assertSame("<li>My-<br>Test-Label</li>\n", $unencodedValue);
     }
 
     public function testEncodeOverride()
@@ -118,13 +118,13 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $method = $this->reflectMethod();
         $result = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
 
-        $this->assertEquals("<li>My-<br>Test-Label</li>\n", $result);
+        $this->assertSame("<li>My-<br>Test-Label</li>\n", $result);
 
         //without encodeLabels
         $this->breadcrumbs->encodeLabels = false;
         $unencodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
 
-        $this->assertEquals("<li>My-<br>Test-Label</li>\n", $unencodedValue);
+        $this->assertSame("<li>My-<br>Test-Label</li>\n", $unencodedValue);
     }
 
     public function testRenderItemWithLabelAndUrl()
@@ -133,12 +133,12 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $method = $this->reflectMethod();
         $encodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
 
-        $this->assertEquals("<li><a href=\"http://localhost/yii2\">My-&lt;br&gt;Test-Label</a></li>\n", $encodedValue);
+        $this->assertSame("<li><a href=\"http://localhost/yii2\">My-&lt;br&gt;Test-Label</a></li>\n", $encodedValue);
 
         // without encodeLabels
         $this->breadcrumbs->encodeLabels = false;
         $unencodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
-        $this->assertEquals("<li><a href=\"http://localhost/yii2\">My-<br>Test-Label</a></li>\n", $unencodedValue);
+        $this->assertSame("<li><a href=\"http://localhost/yii2\">My-<br>Test-Label</a></li>\n", $unencodedValue);
     }
 
     public function testRenderItemTemplate()
@@ -147,12 +147,12 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $method = $this->reflectMethod();
         $encodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
 
-        $this->assertEquals("<td><a href=\"http://localhost/yii2\">My-&lt;br&gt;Test-Label</a></td>\n", $encodedValue);
+        $this->assertSame("<td><a href=\"http://localhost/yii2\">My-&lt;br&gt;Test-Label</a></td>\n", $encodedValue);
 
         // without encodeLabels
         $this->breadcrumbs->encodeLabels = false;
         $unencodedValue = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
-        $this->assertEquals("<td><a href=\"http://localhost/yii2\">My-<br>Test-Label</a></td>\n", $unencodedValue);
+        $this->assertSame("<td><a href=\"http://localhost/yii2\">My-<br>Test-Label</a></td>\n", $unencodedValue);
     }
 
     public function testExtraOptions()
@@ -164,7 +164,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         ];
         $method = $this->reflectMethod();
         $result = $method->invoke($this->breadcrumbs, $link, $this->breadcrumbs->itemTemplate);
-        $this->assertEquals('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
+        $this->assertSame('<li><a class="external" href="http://example.com">demo</a></li>' . "\n", $result);
     }
 
     public function testTag()
@@ -184,7 +184,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
         $actualHtml = ob_get_contents();
         ob_end_clean();
 
-        $this->assertEquals($expectedHtml, $actualHtml);
+        $this->assertSame($expectedHtml, $actualHtml);
     }
 
     /**

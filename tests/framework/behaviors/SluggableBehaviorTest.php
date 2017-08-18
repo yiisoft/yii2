@@ -76,7 +76,7 @@ class SluggableBehaviorTest extends TestCase
         $model->name = 'test name';
         $model->validate();
 
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
     }
 
     /**
@@ -91,7 +91,7 @@ class SluggableBehaviorTest extends TestCase
         $model->category_id = 10;
 
         $model->validate();
-        $this->assertEquals('test-10', $model->slug);
+        $this->assertSame('test-10', $model->slug);
     }
 
     /**
@@ -110,7 +110,7 @@ class SluggableBehaviorTest extends TestCase
 
         $model->validate();
 
-        $this->assertEquals('i-am-an-value-inside-an-related-activerecord-model', $model->slug);
+        $this->assertSame('i-am-an-value-inside-an-related-activerecord-model', $model->slug);
     }
 
     /**
@@ -129,7 +129,7 @@ class SluggableBehaviorTest extends TestCase
         $model->name = $name;
         $model->save();
 
-        $this->assertEquals('test-name-2', $model->slug);
+        $this->assertSame('test-name-2', $model->slug);
     }
 
     /**
@@ -148,7 +148,7 @@ class SluggableBehaviorTest extends TestCase
         $model->name = $name;
         $model->save();
 
-        $this->assertEquals('test-name-callback', $model->slug);
+        $this->assertSame('test-name-callback', $model->slug);
     }
 
     /**
@@ -163,15 +163,15 @@ class SluggableBehaviorTest extends TestCase
         $model->save();
 
         $model->save();
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
 
         $model = ActiveRecordSluggableUnique::find()->one();
         $model->save();
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
 
         $model->name = 'test-name';
         $model->save();
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
     }
 
     public function testSkipOnEmpty()
@@ -179,15 +179,15 @@ class SluggableBehaviorTest extends TestCase
         $model = new SkipOnEmptySluggableActiveRecord();
         $model->name = 'test name';
         $model->save();
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
 
         $model->name = null;
         $model->save();
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
 
         $model->name = 'test name 2';
         $model->save();
-        $this->assertEquals('test-name-2', $model->slug);
+        $this->assertSame('test-name-2', $model->slug);
     }
 
     /**
@@ -200,11 +200,11 @@ class SluggableBehaviorTest extends TestCase
 
         $model->name = 'test name';
         $model->validate();
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
 
         $model->name = 'another name';
         $model->validate();
-        $this->assertEquals('test-name', $model->slug);
+        $this->assertSame('test-name', $model->slug);
     }
 
     /**
@@ -221,11 +221,11 @@ class SluggableBehaviorTest extends TestCase
 
         $model->name = 'test name';
         $model->validate();
-        $this->assertEquals('test name', $model->slug);
+        $this->assertSame('test name', $model->slug);
 
         $model->name = 'another name';
         $model->validate();
-        $this->assertEquals('test name', $model->slug);
+        $this->assertSame('test name', $model->slug);
     }
 }
 

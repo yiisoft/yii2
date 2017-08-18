@@ -137,7 +137,7 @@ class XmlResponseFormatterTest extends FormatterTest
 
         $this->response->data = 1;
         $formatter->format($this->response);
-        $this->assertEquals($this->xmlHead . "<$rootTag>1</$rootTag>\n", $this->response->content);
+        $this->assertSame($this->xmlHead . "<$rootTag>1</$rootTag>\n", $this->response->content);
     }
 
     public function testRootTagRemoval()
@@ -148,7 +148,7 @@ class XmlResponseFormatterTest extends FormatterTest
 
         $this->response->data = 1;
         $formatter->format($this->response);
-        $this->assertEquals($this->xmlHead . "1\n", $this->response->content);
+        $this->assertSame($this->xmlHead . "1\n", $this->response->content);
     }
 
     public function testNoObjectTags()
@@ -159,6 +159,6 @@ class XmlResponseFormatterTest extends FormatterTest
 
         $this->response->data = new Post(123, 'abc');
         $formatter->format($this->response);
-        $this->assertEquals($this->xmlHead . "<response><id>123</id><title>abc</title></response>\n", $this->response->content);
+        $this->assertSame($this->xmlHead . "<response><id>123</id><title>abc</title></response>\n", $this->response->content);
     }
 }

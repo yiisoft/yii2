@@ -116,7 +116,7 @@ class HostControlTest extends TestCase
             ob_get_clean();
 
             $this->assertTrue($isExit);
-            $this->assertEquals(404, Yii::$app->response->getStatusCode());
+            $this->assertSame(404, Yii::$app->response->getStatusCode());
         }
     }
 

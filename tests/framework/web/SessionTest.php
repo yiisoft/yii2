@@ -30,6 +30,6 @@ class SessionTest extends TestCase
 
         $newSessionId = @session_id();
         $this->assertNotEmpty($newSessionId);
-        $this->assertEquals($oldSessionId, $newSessionId);
+        $this->assertSame($oldSessionId, $newSessionId);
     }
 }

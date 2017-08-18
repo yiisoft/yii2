@@ -83,7 +83,7 @@ class CacheControllerTest extends TestCase
 
         $this->assertFalse(Yii::$app->firstCache->get('firstKey'), 'first cache data should be flushed');
         $this->assertFalse(Yii::$app->firstCache->get('secondKey'), 'first cache data should be flushed');
-        $this->assertEquals('thirdValue', Yii::$app->secondCache->get('thirdKey'), 'second cache data should not be flushed');
+        $this->assertSame('thirdValue', Yii::$app->secondCache->get('thirdKey'), 'second cache data should not be flushed');
     }
 
     public function testClearSchema()
@@ -93,15 +93,15 @@ class CacheControllerTest extends TestCase
         $noCacheSchemas = $schema->getTableSchemas('', true);
         $cacheSchema = $schema->getTableSchemas('', false);
 
-        $this->assertEquals($noCacheSchemas, $cacheSchema, 'Schema should not be modified.');
+        $this->assertSame($noCacheSchemas, $cacheSchema, 'Schema should not be modified.');
 
         Yii::$app->db->createCommand()->dropTable('test_schema_cache')->execute();
         $noCacheSchemas = $schema->getTableSchemas('', true);
-        $this->assertNotEquals($noCacheSchemas, $cacheSchema, 'Schemas should be different.');
+        $this->assertNotSame($noCacheSchemas, $cacheSchema, 'Schemas should be different.');
 
         $this->_cacheController->actionFlushSchema('db');
         $cacheSchema = $schema->getTableSchemas('', false);
-        $this->assertEquals($noCacheSchemas, $cacheSchema, 'Schema cache should be flushed.');
+        $this->assertSame($noCacheSchemas, $cacheSchema, 'Schema cache should be flushed.');
     }
 
     public function testFlushBoth()
@@ -123,7 +123,7 @@ class CacheControllerTest extends TestCase
 
         $this->_cacheController->actionFlush('notExistingCache');
 
-        $this->assertEquals('firstValue', Yii::$app->firstCache->get('firstKey'), 'first cache data should not be flushed');
+        $this->assertSame('firstValue', Yii::$app->firstCache->get('firstKey'), 'first cache data should not be flushed');
     }
 
     /**

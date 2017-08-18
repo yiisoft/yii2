@@ -216,8 +216,8 @@ abstract class BaseMessageControllerTest extends TestCase
         $messages = $this->loadMessages($category);
         $this->assertArrayHasKey($newMessage, $messages, "Unable to add new message: \"$newMessage\". Command output:\n\n" . $out);
         $this->assertArrayHasKey($existingMessage, $messages, "Unable to keep existing message: \"$existingMessage\". Command output:\n\n" . $out);
-        $this->assertEquals('', $messages[$newMessage], "Wrong new message content. Command output:\n\n" . $out);
-        $this->assertEquals($existingMessageTranslation, $messages[$existingMessage], "Unable to keep existing message content. Command output:\n\n" . $out);
+        $this->assertSame('', $messages[$newMessage], "Wrong new message content. Command output:\n\n" . $out);
+        $this->assertSame($existingMessageTranslation, $messages[$existingMessage], "Unable to keep existing message content. Command output:\n\n" . $out);
     }
 
     /**
@@ -240,7 +240,7 @@ abstract class BaseMessageControllerTest extends TestCase
         $messages = $this->loadMessages($category);
 
         $this->assertArrayHasKey($obsoleteMessage, $messages, "Obsolete message should not be removed. Command output:\n\n" . $out);
-        $this->assertEquals('@@' . $obsoleteTranslation . '@@', $messages[$obsoleteMessage], "Obsolete message was not marked properly. Command output:\n\n" . $out);
+        $this->assertSame('@@' . $obsoleteTranslation . '@@', $messages[$obsoleteMessage], "Obsolete message was not marked properly. Command output:\n\n" . $out);
     }
 
     /**

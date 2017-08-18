@@ -65,6 +65,6 @@ PHP
         }
         $view->renderFile($normalViewFile);
 
-        $this->assertEquals($obInitialLevel, ob_get_level());
+        $this->assertSame($obInitialLevel, ob_get_level());
     }
 }

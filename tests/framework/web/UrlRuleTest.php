@@ -61,7 +61,7 @@ class UrlRuleTest extends TestCase
                 if ($expected === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
                 } else {
-                    $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                    $this->assertSame($expected, $result, "Test#$i-$j: $name");
                 }
             }
         }
@@ -86,10 +86,10 @@ class UrlRuleTest extends TestCase
                     if ($expected === false) {
                         $this->assertFalse($result, "Test#$i-$j: $name");
                     } else {
-                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
-                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
+                    $this->assertSame([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -117,11 +117,11 @@ class UrlRuleTest extends TestCase
                     if ($expected === false) {
                         $this->assertFalse($result, "Test#$i-$j: $name");
                     } else {
-                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
-                    $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_PERMANENT, $exc->statusCode, "Test-statusCode#$i-$j: $name");
-                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
+                    $this->assertSame(UrlNormalizer::ACTION_REDIRECT_PERMANENT, $exc->statusCode, "Test-statusCode#$i-$j: $name");
+                    $this->assertSame([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -146,11 +146,11 @@ class UrlRuleTest extends TestCase
                     if ($expected === false) {
                         $this->assertFalse($result, "Test#$i-$j: $name");
                     } else {
-                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     }
                 } catch (UrlNormalizerRedirectException $exc) {
-                    $this->assertEquals(UrlNormalizer::ACTION_REDIRECT_TEMPORARY, $exc->statusCode, "Test-statusCode#$i-$j: $name");
-                    $this->assertEquals([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
+                    $this->assertSame(UrlNormalizer::ACTION_REDIRECT_TEMPORARY, $exc->statusCode, "Test-statusCode#$i-$j: $name");
+                    $this->assertSame([$expected[0]] + $expected[1], $exc->url, "Test#$i-$j: $name");
                 }
             }
         }
@@ -175,7 +175,7 @@ class UrlRuleTest extends TestCase
                     if ($expected === false) {
                         $this->assertFalse($result, "Test#$i-$j: $name");
                     } else {
-                        $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                        $this->assertSame($expected, $result, "Test#$i-$j: $name");
                     }
                 } catch (NotFoundHttpException $exc) {
                     $this->assertFalse($expected, "Test#$i-$j: $name");
@@ -202,7 +202,7 @@ class UrlRuleTest extends TestCase
                 if ($expected === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
                 } else {
-                    $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                    $this->assertSame($expected, $result, "Test#$i-$j: $name");
                 }
             }
         }
@@ -231,7 +231,7 @@ class UrlRuleTest extends TestCase
                 if ($expected === false) {
                     $this->assertFalse($result, "Test#$i-$j: $name");
                 } else {
-                    $this->assertEquals($expected, $result, "Test#$i-$j: $name");
+                    $this->assertSame($expected, $result, "Test#$i-$j: $name");
                 }
             }
         }
@@ -276,7 +276,7 @@ class UrlRuleTest extends TestCase
             ],
         ]);
         $result = $rule->parseRequest($manager, $request);
-        $this->assertEquals(['post/index', ['page' => 1, 'tag' => 'a']], $result);
+        $this->assertSame(['post/index', ['page' => 1, 'tag' => 'a']], $result);
     }
 
     public function testToString()
@@ -285,7 +285,7 @@ class UrlRuleTest extends TestCase
         foreach ($suites as $i => $suite) {
             list($name, $config, $test) = $suite;
             $rule = new UrlRule($config);
-            $this->assertEquals($rule->__toString(), $test, "Test#$i: $name");
+            $this->assertSame($rule->__toString(), $test, "Test#$i: $name");
         }
     }
 

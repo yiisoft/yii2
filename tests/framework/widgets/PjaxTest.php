@@ -27,10 +27,10 @@ class PjaxTest extends TestCase
         $pjax2 = new Pjax();
         ob_end_clean();
 
-        $this->assertEquals('w0', $nonPjaxWidget1->options['id']);
-        $this->assertEquals('w1', $nonPjaxWidget2->options['id']);
-        $this->assertEquals('p0', $pjax1->options['id']);
-        $this->assertEquals('p1', $pjax2->options['id']);
+        $this->assertSame('w0', $nonPjaxWidget1->options['id']);
+        $this->assertSame('w1', $nonPjaxWidget2->options['id']);
+        $this->assertSame('p0', $pjax1->options['id']);
+        $this->assertSame('p1', $pjax2->options['id']);
     }
 
     protected function setUp()

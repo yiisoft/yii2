@@ -126,6 +126,6 @@ class StringValidatorTest extends TestCase
         $val->validateAttribute($model, 'attr_string');
         $this->assertTrue($model->hasErrors('attr_string'));
         $errorMsg = $model->getErrors('attr_string');
-        $this->assertEquals('attr_string to short. Min is 5', $errorMsg[0]);
+        $this->assertSame('attr_string to short. Min is 5', $errorMsg[0]);
     }
 }

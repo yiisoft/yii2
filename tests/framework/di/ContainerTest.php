@@ -106,11 +106,11 @@ class ContainerTest extends TestCase
         $container = new Container();
         $container->set('qux', $Qux);
         $qux = $container->get('qux', [], ['a' => 2]);
-        $this->assertEquals(2, $qux->a);
+        $this->assertSame(2, $qux->a);
         $qux = $container->get('qux', [3]);
-        $this->assertEquals(3, $qux->a);
+        $this->assertSame(3, $qux->a);
         $qux = $container->get('qux', [3, ['a' => 4]]);
-        $this->assertEquals(4, $qux->a);
+        $this->assertSame(4, $qux->a);
     }
 
     public function testInvoke()
@@ -137,34 +137,34 @@ class ContainerTest extends TestCase
             return [$param, $qux instanceof Qux, $qux->a, $bar->qux->a];
         };
         $result = Yii::$container->invoke($callback, ['D426']);
-        $this->assertEquals(['D426', true, 'belongApp', 'independent'], $result);
+        $this->assertSame(['D426', true, 'belongApp', 'independent'], $result);
 
         // another component of application
         $callback = function ($param, stubs\QuxInterface $qux2, $other = 'default') {
             return [$param, $qux2 instanceof Qux, $qux2->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['M2792684']);
-        $this->assertEquals(['M2792684', true, 'belongAppQux2', 'default'], $result);
+        $this->assertSame(['M2792684', true, 'belongAppQux2', 'default'], $result);
 
         // component not belong application
         $callback = function ($param, stubs\QuxInterface $notBelongApp, $other) {
             return [$param, $notBelongApp instanceof Qux, $notBelongApp->a, $other];
         };
         $result = Yii::$container->invoke($callback, ['MDM', 'not_default']);
-        $this->assertEquals(['MDM', true, 'independent', 'not_default'], $result);
+        $this->assertSame(['MDM', true, 'independent', 'not_default'], $result);
 
 
         $myFunc = function ($a, NumberValidator $b, $c = 'default') {
             return[$a, get_class($b), $c];
         };
         $result = Yii::$container->invoke($myFunc, ['a']);
-        $this->assertEquals(['a', 'yii\validators\NumberValidator', 'default'], $result);
+        $this->assertSame(['a', 'yii\validators\NumberValidator', 'default'], $result);
 
         $result = Yii::$container->invoke($myFunc, ['ok', 'value_of_c']);
-        $this->assertEquals(['ok', 'yii\validators\NumberValidator', 'value_of_c'], $result);
+        $this->assertSame(['ok', 'yii\validators\NumberValidator', 'value_of_c'], $result);
 
         // use native php function
-        $this->assertEquals(Yii::$container->invoke('trim', [' M2792684  ']), 'M2792684');
+        $this->assertSame(Yii::$container->invoke('trim', [' M2792684  ']), 'M2792684');
 
         // use helper function
         $array = ['M36', 'D426', 'Y2684'];
@@ -175,8 +175,8 @@ class ContainerTest extends TestCase
             return [$request, $response];
         };
         list($request, $response) = Yii::$container->invoke($myFunc);
-        $this->assertEquals($request, Yii::$app->request);
-        $this->assertEquals($response, Yii::$app->response);
+        $this->assertSame($request, Yii::$app->request);
+        $this->assertSame($response, Yii::$app->response);
     }
 
     public function testAssociativeInvoke()
@@ -217,9 +217,9 @@ class ContainerTest extends TestCase
         $closure = function ($a, $b) {
             return $a > $b;
         };
-        $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['b' => 5, 'a' => 1]));
-        $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, ['a' => 1, 'b' => 5]));
-        $this->assertEquals([1, 5], Yii::$container->resolveCallableDependencies($closure, [1, 5]));
+        $this->assertSame([1, 5], Yii::$container->resolveCallableDependencies($closure, ['b' => 5, 'a' => 1]));
+        $this->assertSame([1, 5], Yii::$container->resolveCallableDependencies($closure, ['a' => 1, 'b' => 5]));
+        $this->assertSame([1, 5], Yii::$container->resolveCallableDependencies($closure, [1, 5]));
     }
 
     public function testOptionalDependencies()
@@ -253,7 +253,7 @@ class ContainerTest extends TestCase
 
         $traversable = $container->get('test\TraversableInterface');
         $this->assertInstanceOf('yiiunit\data\base\TraversableObject', $traversable);
-        $this->assertEquals('item1', $traversable->current());
+        $this->assertSame('item1', $traversable->current());
 
         $this->assertInstanceOf('yiiunit\framework\di\stubs\Qux', $container->get('qux.using.closure'));
     }

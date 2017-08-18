@@ -153,7 +153,7 @@ class AttributeTypecastBehaviorTest extends TestCase
             'price' => AttributeTypecastBehavior::TYPE_FLOAT,
             'isActive' => AttributeTypecastBehavior::TYPE_BOOLEAN,
         ];
-        $this->assertEquals($expectedAttributeTypes, $behavior->attributeTypes);
+        $this->assertSame($expectedAttributeTypes, $behavior->attributeTypes);
     }
 
     /**
@@ -181,7 +181,7 @@ class AttributeTypecastBehaviorTest extends TestCase
         $model->save(false);
 
         $model->refresh();
-        $this->assertEquals('58', $model->amount);
+        $this->assertSame('58', $model->amount);
     }
 }
 

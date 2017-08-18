@@ -132,7 +132,7 @@ class FileHelperTest extends TestCase
     protected function assertFileMode($expectedMode, $fileName, $message = '')
     {
         $expectedMode = sprintf('%o', $expectedMode);
-        $this->assertEquals($expectedMode, $this->getMode($fileName), $message);
+        $this->assertSame($expectedMode, $this->getMode($fileName), $message);
     }
 
     // Tests :
@@ -497,7 +497,7 @@ class FileHelperTest extends TestCase
         $foundFiles = FileHelper::findFiles($dirName);
         sort($expectedFiles);
         sort($foundFiles);
-        $this->assertEquals($expectedFiles, $foundFiles);
+        $this->assertSame($expectedFiles, $foundFiles);
     }
 
     /**
@@ -522,7 +522,7 @@ class FileHelperTest extends TestCase
             },
         ];
         $foundFiles = FileHelper::findFiles($dirName, $options);
-        $this->assertEquals([$dirName . DIRECTORY_SEPARATOR . $passedFileName], $foundFiles);
+        $this->assertSame([$dirName . DIRECTORY_SEPARATOR . $passedFileName], $foundFiles);
     }
 
     /**
@@ -550,7 +550,7 @@ class FileHelperTest extends TestCase
         ];
         $result = FileHelper::findFiles($dirName);
         sort($result);
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
     /**
@@ -574,7 +574,7 @@ class FileHelperTest extends TestCase
         $expected = [
             $dirName . DIRECTORY_SEPARATOR . 'file3',
         ];
-        $this->assertEquals($expected, FileHelper::findFiles($dirName, ['recursive' => false]));
+        $this->assertSame($expected, FileHelper::findFiles($dirName, ['recursive' => false]));
     }
 
     /**
@@ -616,7 +616,7 @@ class FileHelperTest extends TestCase
         $expect = array_values(array_filter($flat, function ($p) {
             return substr($p, -3) === 'a.1';
         }));
-        $this->assertEquals($expect, $foundFiles);
+        $this->assertSame($expect, $foundFiles);
 
         // suffix
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['*.1']]);
@@ -624,7 +624,7 @@ class FileHelperTest extends TestCase
         $expect = array_values(array_filter($flat, function ($p) {
             return substr($p, -3) !== 'a.1';
         }));
-        $this->assertEquals($expect, $foundFiles);
+        $this->assertSame($expect, $foundFiles);
 
         // dir
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['/one']]);
@@ -632,7 +632,7 @@ class FileHelperTest extends TestCase
         $expect = array_values(array_filter($flat, function ($p) {
             return strpos($p, DIRECTORY_SEPARATOR . 'one') === false;
         }));
-        $this->assertEquals($expect, $foundFiles);
+        $this->assertSame($expect, $foundFiles);
 
         // dir contents
         $foundFiles = FileHelper::findFiles($basePath, ['except' => ['?*/a.1']]);
@@ -643,7 +643,7 @@ class FileHelperTest extends TestCase
                 substr($p, -10) !== DIRECTORY_SEPARATOR . 'three' . DIRECTORY_SEPARATOR . 'a.1'
             );
         }));
-        $this->assertEquals($expect, $foundFiles);
+        $this->assertSame($expect, $foundFiles);
     }
 
     /**
@@ -689,7 +689,7 @@ class FileHelperTest extends TestCase
         foreach ($mimeTypeMap as $extension => $mimeType) {
             $fileName = 'test.' . $extension;
             $this->assertNull(FileHelper::getMimeTypeByExtension($fileName));
-            $this->assertEquals($mimeType, FileHelper::getMimeTypeByExtension($fileName, $magicFile));
+            $this->assertSame($mimeType, FileHelper::getMimeTypeByExtension($fileName, $magicFile));
         }
     }
 
@@ -697,7 +697,7 @@ class FileHelperTest extends TestCase
     {
         $file = $this->testFilePath . DIRECTORY_SEPARATOR . 'mime_type_test.txt';
         file_put_contents($file, 'some text');
-        $this->assertEquals('text/plain', FileHelper::getMimeType($file));
+        $this->assertSame('text/plain', FileHelper::getMimeType($file));
 
         // see http://stackoverflow.com/questions/477816/what-is-the-correct-json-content-type
         // JSON/JSONP should not use text/plain - see http://jibbering.com/blog/?p=514
@@ -711,26 +711,26 @@ class FileHelperTest extends TestCase
     public function testNormalizePath()
     {
         $ds = DIRECTORY_SEPARATOR;
-        $this->assertEquals("{$ds}a{$ds}b", FileHelper::normalizePath('//a\b/'));
-        $this->assertEquals("{$ds}b{$ds}c", FileHelper::normalizePath('/a/../b/c'));
-        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a\\b/../..///c'));
-        $this->assertEquals("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
-        $this->assertEquals('c', FileHelper::normalizePath('/a/.\\b/../..//../c'));
-        $this->assertEquals("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
+        $this->assertSame("{$ds}a{$ds}b", FileHelper::normalizePath('//a\b/'));
+        $this->assertSame("{$ds}b{$ds}c", FileHelper::normalizePath('/a/../b/c'));
+        $this->assertSame("{$ds}c", FileHelper::normalizePath('/a\\b/../..///c'));
+        $this->assertSame("{$ds}c", FileHelper::normalizePath('/a/.\\b//../../c'));
+        $this->assertSame('c', FileHelper::normalizePath('/a/.\\b/../..//../c'));
+        $this->assertSame("..{$ds}c", FileHelper::normalizePath('//a/.\\b//..//..//../../c'));
 
         // relative paths
-        $this->assertEquals('.', FileHelper::normalizePath('.'));
-        $this->assertEquals('.', FileHelper::normalizePath('./'));
-        $this->assertEquals('a', FileHelper::normalizePath('.\\a'));
-        $this->assertEquals("a{$ds}b", FileHelper::normalizePath('./a\\b'));
-        $this->assertEquals('.', FileHelper::normalizePath('./a\\../'));
-        $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a'));
-        $this->assertEquals("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a/../a'));
-        $this->assertEquals("..{$ds}..{$ds}b", FileHelper::normalizePath('../..\\a/../b'));
-        $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a'));
-        $this->assertEquals("..{$ds}a", FileHelper::normalizePath('././..\\a'));
-        $this->assertEquals("..{$ds}a", FileHelper::normalizePath('./..\\a/../a'));
-        $this->assertEquals("..{$ds}b", FileHelper::normalizePath('./..\\a/../b'));
+        $this->assertSame('.', FileHelper::normalizePath('.'));
+        $this->assertSame('.', FileHelper::normalizePath('./'));
+        $this->assertSame('a', FileHelper::normalizePath('.\\a'));
+        $this->assertSame("a{$ds}b", FileHelper::normalizePath('./a\\b'));
+        $this->assertSame('.', FileHelper::normalizePath('./a\\../'));
+        $this->assertSame("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a'));
+        $this->assertSame("..{$ds}..{$ds}a", FileHelper::normalizePath('../..\\a/../a'));
+        $this->assertSame("..{$ds}..{$ds}b", FileHelper::normalizePath('../..\\a/../b'));
+        $this->assertSame("..{$ds}a", FileHelper::normalizePath('./..\\a'));
+        $this->assertSame("..{$ds}a", FileHelper::normalizePath('././..\\a'));
+        $this->assertSame("..{$ds}a", FileHelper::normalizePath('./..\\a/../a'));
+        $this->assertSame("..{$ds}b", FileHelper::normalizePath('./..\\a/../b'));
     }
 
     public function testLocalizedDirectory()

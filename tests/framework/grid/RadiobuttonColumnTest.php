@@ -39,7 +39,7 @@ class RadiobuttonColumnTest extends TestCase
                 'value' => 42,
             ],
         ]);
-        $this->assertEquals('<td><input type="radio" name="radioButtonSelection" value="42"></td>', $column->renderDataCell([], 1, 0));
+        $this->assertSame('<td><input type="radio" name="radioButtonSelection" value="42"></td>', $column->renderDataCell([], 1, 0));
     }
 
     public function testOptionsByCallback()
@@ -56,7 +56,7 @@ class RadiobuttonColumnTest extends TestCase
             },
         ]);
         $actual = $column->renderDataCell($model, 1, 0);
-        $this->assertEquals('<td><input type="radio" name="radioButtonSelection" value="' . $model['value'] . '"></td>', $actual);
+        $this->assertSame('<td><input type="radio" name="radioButtonSelection" value="' . $model['value'] . '"></td>', $actual);
     }
 
     public function testMultipleInGrid()

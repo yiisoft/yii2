@@ -108,7 +108,7 @@ class AttributesBehaviorTest extends TestCase
         $model->alias = $alias;
         $model->validate();
 
-        $this->assertEquals($aliasExpected, $model->alias);
+        $this->assertSame($aliasExpected, $model->alias);
     }
 
     /**
@@ -149,7 +149,7 @@ class AttributesBehaviorTest extends TestCase
         $model->alias = $alias;
         $model->validate();
 
-        $this->assertEquals($aliasExpected, $model->alias);
+        $this->assertSame($aliasExpected, $model->alias);
     }
 }
 

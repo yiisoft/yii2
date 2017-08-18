@@ -53,11 +53,11 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
     {
         $model = new Type();
         $model->loadDefaultValues();
-        $this->assertEquals(1, $model->int_col2);
-        $this->assertEquals('something', $model->char_col2);
-        $this->assertEquals(1.23, $model->float_col2);
-        $this->assertEquals(33.22, $model->numeric_col);
-        $this->assertEquals(true, $model->bool_col2);
+        $this->assertSame(1, $model->int_col2);
+        $this->assertSame('something', $model->char_col2);
+        $this->assertSame(1.23, $model->float_col2);
+        $this->assertSame(33.22, $model->numeric_col);
+        $this->assertSame(true, $model->bool_col2);
 
         // not testing $model->time, because oci\Schema can't read default value
 
@@ -65,13 +65,13 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $model->char_col2 = 'not something';
 
         $model->loadDefaultValues();
-        $this->assertEquals('not something', $model->char_col2);
+        $this->assertSame('not something', $model->char_col2);
 
         $model = new Type();
         $model->char_col2 = 'not something';
 
         $model->loadDefaultValues(false);
-        $this->assertEquals('something', $model->char_col2);
+        $this->assertSame('something', $model->char_col2);
     }
 
     public function testFindAsArray()
@@ -81,7 +81,7 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
 
         // asArray
         $customer = $customerClass::find()->where(['id' => 2])->asArray()->one();
-        $this->assertEquals([
+        $this->assertSame([
             'id' => 2,
             'email' => 'user2@example.com',
             'name' => 'user2',
@@ -119,6 +119,6 @@ class ActiveRecordTest extends \yiiunit\framework\db\ActiveRecordTest
         $record = new DefaultPk();
         $record->type = 'type';
         $record->save(false);
-        $this->assertEquals(5, $record->primaryKey);
+        $this->assertSame(5, $record->primaryKey);
     }
 }

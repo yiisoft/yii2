@@ -749,9 +749,9 @@ class FormatterDateTest extends TestCase
         $this->formatter->defaultTimeZone = $dtz;
 
         $this->formatter->timeZone = 'UTC';
-        $this->assertEquals('24.11.2014 11:48:53', $this->formatter->format(1416829733, ['date', 'php:d.m.Y H:i:s']));
+        $this->assertSame('24.11.2014 11:48:53', $this->formatter->format(1416829733, ['date', 'php:d.m.Y H:i:s']));
         $this->formatter->timeZone = 'Europe/Berlin';
-        $this->assertEquals('24.11.2014 12:48:53', $this->formatter->format(1416829733, ['date', 'php:d.m.Y H:i:s']));
+        $this->assertSame('24.11.2014 12:48:53', $this->formatter->format(1416829733, ['date', 'php:d.m.Y H:i:s']));
 
         $this->assertFalse(DateTime::createFromFormat('Y-m-d', 1416829733));
         $this->assertFalse(DateTime::createFromFormat('Y-m-d', '2014-05-08 12:48:53'));
@@ -770,15 +770,15 @@ class FormatterDateTest extends TestCase
 
         $timeStamp = '2015-04-28 10:06:15.000000';
         $this->formatter->timeZone = 'UTC';
-        $this->assertEquals('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
         $this->formatter->timeZone = 'Europe/Berlin';
-        $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
 
         $timeStamp = '2015-04-28 10:06:15';
         $this->formatter->timeZone = 'UTC';
-        $this->assertEquals('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-04-28 10:06:15+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
         $this->formatter->timeZone = 'Europe/Berlin';
-        $this->assertEquals('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-04-28 12:06:15+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
     }
 
     public function testIntlInputUnixTimestamp()
@@ -791,29 +791,29 @@ class FormatterDateTest extends TestCase
         $this->formatter->defaultTimeZone = 'UTC';
         $timeStamp = 1431907200;
         $this->formatter->timeZone = 'UTC';
-        $this->assertEquals('2015-05-18 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-05-18 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
         $this->formatter->timeZone = 'Europe/Berlin';
-        $this->assertEquals('2015-05-18 02:00:00+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-05-18 02:00:00+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
 
         $this->formatter->defaultTimeZone = 'Europe/Berlin';
         $timeStamp = 1431907200;
         $this->formatter->timeZone = 'UTC';
-        $this->assertEquals('2015-05-18 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-05-18 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
         $this->formatter->timeZone = 'Europe/Berlin';
-        $this->assertEquals('2015-05-18 02:00:00+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('2015-05-18 02:00:00+0200', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
 
         $this->formatter->defaultTimeZone = 'UTC';
         $timeStamp = -1431907200;
         $this->formatter->timeZone = 'UTC';
-        $this->assertEquals('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
         $this->formatter->timeZone = 'Europe/Berlin';
-        $this->assertEquals('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
 
         $this->formatter->defaultTimeZone = 'Europe/Berlin';
         $timeStamp = -1431907200;
         $this->formatter->timeZone = 'UTC';
-        $this->assertEquals('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('1924-08-17 00:00:00+0000', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
         $this->formatter->timeZone = 'Europe/Berlin';
-        $this->assertEquals('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
+        $this->assertSame('1924-08-17 01:00:00+0100', $this->formatter->asDateTime($timeStamp, 'yyyy-MM-dd HH:mm:ssZ'));
     }
 }

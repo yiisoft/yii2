@@ -52,7 +52,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
     {
         $this->response->data = $data;
         $this->formatter->format($this->response);
-        $this->assertEquals($json, $this->response->content);
+        $this->assertSame($json, $this->response->content);
     }
 
     /**
@@ -64,7 +64,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
     {
         $this->response->data = $data;
         $this->formatter->format($this->response);
-        $this->assertEquals($json, $this->response->content);
+        $this->assertSame($json, $this->response->content);
     }
 
     /**
@@ -76,7 +76,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
     {
         $this->response->data = $data;
         $this->formatter->format($this->response);
-        $this->assertEquals($json, $this->response->content);
+        $this->assertSame($json, $this->response->content);
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class FormatterTest extends \yiiunit\TestCase
     {
         $this->response->data = $data;
         $this->formatter->format($this->response);
-        $this->assertEquals($json, $this->response->content);
+        $this->assertSame($json, $this->response->content);
     }
 
     /**
@@ -100,6 +100,6 @@ abstract class FormatterTest extends \yiiunit\TestCase
     {
         $this->response->data = $data;
         $this->formatter->format($this->response);
-        $this->assertEquals($expectedResult, $this->response->content);
+        $this->assertSame($expectedResult, $this->response->content);
     }
 }

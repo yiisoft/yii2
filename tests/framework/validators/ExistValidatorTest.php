@@ -35,7 +35,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
             $this->fail('Exception should have been thrown at this time');
         } catch (Exception $e) {
             $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
-            $this->assertEquals('The "targetClass" property must be set.', $e->getMessage());
+            $this->assertSame('The "targetClass" property must be set.', $e->getMessage());
         }
         // combine to save the time creating a new db-fixture set (likely ~5 sec)
         try {
@@ -44,7 +44,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
             $this->fail('Exception should have been thrown at this time');
         } catch (Exception $e) {
             $this->assertInstanceOf('yii\base\InvalidConfigException', $e);
-            $this->assertEquals('The "targetAttribute" property must be configured as a string.', $e->getMessage());
+            $this->assertSame('The "targetAttribute" property must be configured as a string.', $e->getMessage());
         }
     }
 

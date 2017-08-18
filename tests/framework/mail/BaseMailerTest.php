@@ -75,7 +75,7 @@ class BaseMailerTest extends TestCase
 
         $view = new View();
         $mailer->setView($view);
-        $this->assertEquals($view, $mailer->getView(), 'Unable to setup view!');
+        $this->assertSame($view, $mailer->getView(), 'Unable to setup view!');
 
         $viewConfig = [
             'params' => [
@@ -86,7 +86,7 @@ class BaseMailerTest extends TestCase
         $mailer->setView($viewConfig);
         $view = $mailer->getView();
         $this->assertInternalType('object', $view, 'Unable to setup view via config!');
-        $this->assertEquals($viewConfig['params'], $view->params, 'Unable to configure view via config array!');
+        $this->assertSame($viewConfig['params'], $view->params, 'Unable to configure view via config array!');
     }
 
     /**
@@ -104,7 +104,7 @@ class BaseMailerTest extends TestCase
         $mailer = new Mailer();
         $message = $mailer->compose();
         $this->assertInternalType('object', $message, 'Unable to create message instance!');
-        $this->assertEquals($mailer->messageClass, get_class($message), 'Invalid message class!');
+        $this->assertSame($mailer->messageClass, get_class($message), 'Invalid message class!');
     }
 
     /**
@@ -134,10 +134,10 @@ class BaseMailerTest extends TestCase
         $message = $mailer->compose();
 
         foreach ($notPropertyConfig as $name => $value) {
-            $this->assertEquals($value, $message->{'_' . $name});
+            $this->assertSame($value, $message->{'_' . $name});
         }
         foreach ($propertyConfig as $name => $value) {
-            $this->assertEquals($value, $message->$name);
+            $this->assertSame($value, $message->$name);
         }
     }
 
@@ -157,7 +157,7 @@ class BaseMailerTest extends TestCase
             'testParam' => 'test output',
         ];
         $renderResult = $mailer->render($viewName, $params);
-        $this->assertEquals($params['testParam'], $renderResult);
+        $this->assertSame($params['testParam'], $renderResult);
     }
 
     /**
@@ -180,7 +180,7 @@ class BaseMailerTest extends TestCase
         file_put_contents($layoutFileName, $layoutFileContent);
 
         $renderResult = $mailer->render($viewName, [], $layoutName);
-        $this->assertEquals('Begin Layout ' . $viewFileContent . ' End Layout', $renderResult);
+        $this->assertSame('Begin Layout ' . $viewFileContent . ' End Layout', $renderResult);
     }
 
     /**
@@ -207,12 +207,12 @@ class BaseMailerTest extends TestCase
             'html' => $htmlViewName,
             'text' => $textViewName,
         ]);
-        $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
-        $this->assertEquals($textViewFileContent, $message->_textBody, 'Unable to render text!');
+        $this->assertSame($htmlViewFileContent, $message->_htmlBody, 'Unable to render html!');
+        $this->assertSame($textViewFileContent, $message->_textBody, 'Unable to render text!');
 
         $message = $mailer->compose($htmlViewName);
-        $this->assertEquals($htmlViewFileContent, $message->_htmlBody, 'Unable to render html by direct view!');
-        $this->assertEquals(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
+        $this->assertSame($htmlViewFileContent, $message->_htmlBody, 'Unable to render html by direct view!');
+        $this->assertSame(strip_tags($htmlViewFileContent), $message->_textBody, 'Unable to render text by direct view!');
     }
 
     public function htmlAndPlainProvider()
@@ -275,7 +275,7 @@ TEXT
     {
         $mailer = new Mailer();
         $this->assertFalse($mailer->useFileTransport);
-        $this->assertEquals('@runtime/mail', $mailer->fileTransportPath);
+        $this->assertSame('@runtime/mail', $mailer->fileTransportPath);
 
         $mailer->fileTransportPath = '@yiiunit/runtime/mail';
         $mailer->useFileTransport = true;

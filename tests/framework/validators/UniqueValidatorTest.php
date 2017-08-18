@@ -48,7 +48,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model->id = 1;
         $validator->validateAttribute($model, 'id');
         $this->assertTrue($model->hasErrors('id'));
-        $this->assertEquals($customError, $model->getFirstError('id'));
+        $this->assertSame($customError, $model->getFirstError('id'));
 
         // multiple attributes
         $customError = 'Custom message for Order Id and Item Id with values "1"-"1"';
@@ -60,7 +60,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model->item_id = 1;
         $validator->validateAttribute($model, 'order_id');
         $this->assertTrue($model->hasErrors('order_id'));
-        $this->assertEquals($customError, $model->getFirstError('order_id'));
+        $this->assertSame($customError, $model->getFirstError('order_id'));
 
         // fallback for deprecated `comboNotUnique` - should be removed on 2.1.0
         $validator = new UniqueValidator([
@@ -70,7 +70,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model->clearErrors();
         $validator->validateAttribute($model, 'order_id');
         $this->assertTrue($model->hasErrors('order_id'));
-        $this->assertEquals($customError, $model->getFirstError('order_id'));
+        $this->assertSame($customError, $model->getFirstError('order_id'));
     }
 
     public function testValidateInvalidAttribute()
@@ -82,7 +82,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $customerModel = Customer::findOne(1);
         $customerModel->name = ['test array data'];
         $validator->validateAttribute($customerModel, 'name');
-        $this->assertEquals($messageError, $customerModel->getFirstError('name'));
+        $this->assertSame($messageError, $customerModel->getFirstError('name'));
 
         $customerModel->clearErrors();
 
@@ -90,7 +90,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $customerModel->email = ['email@mail.com', 'email2@mail.com'];
         $validator->targetAttribute = ['email', 'name'];
         $validator->validateAttribute($customerModel, 'name');
-        $this->assertEquals($messageError, $customerModel->getFirstError('name'));
+        $this->assertSame($messageError, $customerModel->getFirstError('name'));
     }
 
     public function testValidateAttributeDefault()
@@ -217,7 +217,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
 
         /** @var Profile $m */
         $m = Profile::findOne(1);
-        $this->assertEquals('profile customer 1', $m->description);
+        $this->assertSame('profile customer 1', $m->description);
         $val->validateAttribute($m, 'description');
         $this->assertFalse($m->hasErrors('description'));
 
@@ -323,22 +323,22 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $targetAttribute = 'val_attr_b';
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value a'];
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
 
         $targetAttribute = ['val_attr_b', 'val_attr_c'];
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value c'];
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
 
         $targetAttribute = ['val_attr_a' => 'val_attr_b'];
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value a'];
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
 
         $targetAttribute = ['val_attr_b', 'val_attr_a' => 'val_attr_c'];
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
 
         // Add table prefix for column name
         $model = Profile::findOne(1);
@@ -346,7 +346,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $targetAttribute = 'id';
         $result = $this->invokeMethod(new UniqueValidator(), 'prepareConditions', [$targetAttribute, $model, $attribute]);
         $expected = ['{{' . Profile::tableName() . '}}.[[' . $attribute . ']]' => $model->id];
-        $this->assertEquals($expected, $result);
+        $this->assertSame($expected, $result);
     }
 
     public function testGetTargetClassWithFilledTargetClassProperty()
@@ -355,7 +355,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = new FakedValidationModel();
         $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
 
-        $this->assertEquals(Profile::className(), $actualTargetClass);
+        $this->assertSame(Profile::className(), $actualTargetClass);
     }
 
     public function testGetTargetClassWithNotFilledTargetClassProperty()
@@ -364,7 +364,7 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = new FakedValidationModel();
         $actualTargetClass = $this->invokeMethod($validator, 'getTargetClass', [$model]);
 
-        $this->assertEquals(FakedValidationModel::className(), $actualTargetClass);
+        $this->assertSame(FakedValidationModel::className(), $actualTargetClass);
     }
 
     public function testPrepareQuery()
@@ -374,24 +374,24 @@ abstract class UniqueValidatorTest extends DatabaseTestCase
         $model = new ValidatorTestMainModel();
         $query = $this->invokeMethod(new UniqueValidator(), 'prepareQuery', [$model, ['val_attr_b' => 'test value a']]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE {$schema->quoteColumnName('val_attr_b')}=:qp0";
-        $this->assertEquals($expected, $query->createCommand()->getSql());
+        $this->assertSame($expected, $query->createCommand()->getSql());
 
         $params = ['val_attr_b' => 'test value b', 'val_attr_c' => 'test value a'];
         $query = $this->invokeMethod(new UniqueValidator(), 'prepareQuery', [$model, $params]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE ({$schema->quoteColumnName('val_attr_b')}=:qp0) AND ({$schema->quoteColumnName('val_attr_c')}=:qp1)";
-        $this->assertEquals($expected, $query->createCommand()->getSql());
+        $this->assertSame($expected, $query->createCommand()->getSql());
 
         $params = ['val_attr_b' => 'test value b'];
         $query = $this->invokeMethod(new UniqueValidator(['filter' => 'val_attr_a > 0']), 'prepareQuery', [$model, $params]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE ({$schema->quoteColumnName('val_attr_b')}=:qp0) AND (val_attr_a > 0)";
-        $this->assertEquals($expected, $query->createCommand()->getSql());
+        $this->assertSame($expected, $query->createCommand()->getSql());
 
         $params = ['val_attr_b' => 'test value b'];
         $query = $this->invokeMethod(new UniqueValidator(['filter' => function ($query) {
             $query->orWhere('val_attr_a > 0');
         }]), 'prepareQuery', [$model, $params]);
         $expected = "SELECT * FROM {$schema->quoteTableName('validator_main')} WHERE ({$schema->quoteColumnName('val_attr_b')}=:qp0) OR (val_attr_a > 0)";
-        $this->assertEquals($expected, $query->createCommand()->getSql());
+        $this->assertSame($expected, $query->createCommand()->getSql());
     }
 
     /**

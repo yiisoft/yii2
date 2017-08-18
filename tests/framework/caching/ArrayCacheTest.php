@@ -35,7 +35,7 @@ class ArrayCacheTest extends CacheTestCase
         static::$microtime = \microtime(true);
         $this->assertTrue($cache->set('expire_test', 'expire_test', 2));
         static::$microtime++;
-        $this->assertEquals('expire_test', $cache->get('expire_test'));
+        $this->assertSame('expire_test', $cache->get('expire_test'));
         static::$microtime++;
         $this->assertFalse($cache->get('expire_test'));
     }
@@ -47,7 +47,7 @@ class ArrayCacheTest extends CacheTestCase
         static::$microtime = \microtime(true);
         $this->assertTrue($cache->add('expire_testa', 'expire_testa', 2));
         static::$microtime++;
-        $this->assertEquals('expire_testa', $cache->get('expire_testa'));
+        $this->assertSame('expire_testa', $cache->get('expire_testa'));
         static::$microtime++;
         $this->assertFalse($cache->get('expire_testa'));
     }

@@ -28,7 +28,7 @@ class ArrayDataProviderTest extends TestCase
             ['name' => 'one'],
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $simpleArray]);
-        $this->assertEquals($simpleArray, $dataProvider->getModels());
+        $this->assertSame($simpleArray, $dataProvider->getModels());
     }
 
     public function testGetSortedData()
@@ -53,7 +53,7 @@ class ArrayDataProviderTest extends TestCase
             ]
         );
         $sortedArray = [['sortField' => 0], ['sortField' => 1]];
-        $this->assertEquals($sortedArray, $dataProvider->getModels());
+        $this->assertSame($sortedArray, $dataProvider->getModels());
     }
 
     public function testGetSortedDataByInnerArrayField()
@@ -84,7 +84,7 @@ class ArrayDataProviderTest extends TestCase
             ['innerArray' => ['sortField' => 0]],
             ['innerArray' => ['sortField' => 1]],
         ];
-        $this->assertEquals($sortedArray, $dataProvider->getModels());
+        $this->assertSame($sortedArray, $dataProvider->getModels());
     }
 
     public function testCaseSensitiveSort()
@@ -153,7 +153,7 @@ class ArrayDataProviderTest extends TestCase
             ]
         );
 
-        $this->assertEquals($sortedProjects, $dataProvider->getModels());
+        $this->assertSame($sortedProjects, $dataProvider->getModels());
     }
 
     public function testGetKeys()
@@ -166,7 +166,7 @@ class ArrayDataProviderTest extends TestCase
             ['name' => 'tow'],
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $simpleArray, 'pagination' => $pagination]);
-        $this->assertEquals([0, 1], $dataProvider->getKeys());
+        $this->assertSame([0, 1], $dataProvider->getKeys());
 
         $namedArray = [
             'key1' => ['name' => 'zero'],
@@ -174,7 +174,7 @@ class ArrayDataProviderTest extends TestCase
             'key3' => ['name' => 'two'],
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $namedArray, 'pagination' => $pagination]);
-        $this->assertEquals(['key1', 'key2'], $dataProvider->getKeys());
+        $this->assertSame(['key1', 'key2'], $dataProvider->getKeys());
 
         $mixedArray = [
             'key1' => ['name' => 'zero'],
@@ -182,6 +182,6 @@ class ArrayDataProviderTest extends TestCase
             'key3' => ['name' => 'two'],
         ];
         $dataProvider = new ArrayDataProvider(['allModels' => $mixedArray, 'pagination' => $pagination]);
-        $this->assertEquals(['key1', 9], $dataProvider->getKeys());
+        $this->assertSame(['key1', 9], $dataProvider->getKeys());
     }
 }

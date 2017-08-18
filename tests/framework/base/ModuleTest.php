@@ -25,8 +25,8 @@ class ModuleTest extends TestCase
     public function testControllerPath()
     {
         $module = new TestModule('test');
-        $this->assertEquals('yiiunit\framework\base\controllers', $module->controllerNamespace);
-        $this->assertEquals(__DIR__ . DIRECTORY_SEPARATOR . 'controllers', str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $module->controllerPath));
+        $this->assertSame('yiiunit\framework\base\controllers', $module->controllerNamespace);
+        $this->assertSame(__DIR__ . DIRECTORY_SEPARATOR . 'controllers', str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $module->controllerPath));
     }
 
     public function testSetupVersion()
@@ -35,13 +35,13 @@ class ModuleTest extends TestCase
 
         $version = '1.0.1';
         $module->setVersion($version);
-        $this->assertEquals($version, $module->getVersion());
+        $this->assertSame($version, $module->getVersion());
 
         $module->setVersion(function ($module) {
             /* @var $module TestModule */
             return 'version.' . $module->getUniqueId();
         });
-        $this->assertEquals('version.test', $module->getVersion());
+        $this->assertSame('version.test', $module->getVersion());
     }
 
     /**
@@ -52,7 +52,7 @@ class ModuleTest extends TestCase
         $module = new TestModule('test');
 
         $version = $module->getVersion();
-        $this->assertEquals('1.0', $version);
+        $this->assertSame('1.0', $version);
     }
 
     public static $actionRuns = [];
@@ -64,25 +64,25 @@ class ModuleTest extends TestCase
         static::$actionRuns = [];
 
         $module->runAction('test-controller1/test1');
-        $this->assertEquals([
+        $this->assertSame([
             'test/test-controller1/test1',
         ], static::$actionRuns);
         $this->assertNotNull(Yii::$app->controller);
-        $this->assertEquals('test-controller1', Yii::$app->controller->id);
-        $this->assertEquals('test/test-controller1', Yii::$app->controller->uniqueId);
+        $this->assertSame('test-controller1', Yii::$app->controller->id);
+        $this->assertSame('test/test-controller1', Yii::$app->controller->uniqueId);
         $this->assertNotNull(Yii::$app->controller->action);
-        $this->assertEquals('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
+        $this->assertSame('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
 
         $module->runAction('test-controller2/test2');
-        $this->assertEquals([
+        $this->assertSame([
             'test/test-controller1/test1',
             'test/test-controller2/test2',
         ], static::$actionRuns);
         $this->assertNotNull(Yii::$app->controller);
-        $this->assertEquals('test-controller1', Yii::$app->controller->id);
-        $this->assertEquals('test/test-controller1', Yii::$app->controller->uniqueId);
+        $this->assertSame('test-controller1', Yii::$app->controller->id);
+        $this->assertSame('test/test-controller1', Yii::$app->controller->uniqueId);
         $this->assertNotNull(Yii::$app->controller->action);
-        $this->assertEquals('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
+        $this->assertSame('test/test-controller1/test1', Yii::$app->controller->action->uniqueId);
     }
 }
 

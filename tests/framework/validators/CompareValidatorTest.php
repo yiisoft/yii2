@@ -44,7 +44,7 @@ class CompareValidatorTest extends TestCase
             $val = new CompareValidator(['compareValue' => $value]);
             $val->operator = $op;
             foreach ($tests as $test) {
-                $this->assertEquals($test[1], $val->validate($test[0]), "Testing $op");
+                $this->assertSame($test[1], $val->validate($test[0]), "Testing $op");
             }
         }
     }
@@ -166,7 +166,7 @@ class CompareValidatorTest extends TestCase
             $validator->{$data[4]} = $data[2];
             $validator->validateAttribute($model, $data[0]);
             $error = $model->getErrors($data[0])[0];
-            $this->assertEquals($data[3], $error);
+            $this->assertSame($data[3], $error);
         }
     }
 
@@ -202,7 +202,7 @@ class CompareValidatorTest extends TestCase
                 $model = new FakedValidationModel();
                 $model->attr_test = $test[0];
                 $val->validateAttribute($model, 'attr_test');
-                $this->assertEquals($test[1], !$model->hasErrors('attr_test'));
+                $this->assertSame($test[1], !$model->hasErrors('attr_test'));
             }
         }
     }

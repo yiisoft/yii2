@@ -388,8 +388,8 @@ EOL;
         $this->assertArrayHasKey($externalAssetBundleClassName, $compressedBundleConfig, 'External bundle is lost!');
 
         $compressedExternalAssetConfig = $compressedBundleConfig[$externalAssetBundleClassName];
-        $this->assertEquals($externalAssetConfig['js'], $compressedExternalAssetConfig['js'], 'External bundle js is lost!');
-        $this->assertEquals($externalAssetConfig['css'], $compressedExternalAssetConfig['css'], 'External bundle css is lost!');
+        $this->assertSame($externalAssetConfig['js'], $compressedExternalAssetConfig['js'], 'External bundle js is lost!');
+        $this->assertSame($externalAssetConfig['css'], $compressedExternalAssetConfig['css'], 'External bundle css is lost!');
 
         $compressedRegularAssetConfig = $compressedBundleConfig[$regularAssetBundleClassName];
         $this->assertContains($externalAssetBundleClassName, $compressedRegularAssetConfig['depends'], 'Dependency on external bundle is lost!');
@@ -567,7 +567,7 @@ EOL;
     {
         $adjustedCssContent = $this->invokeAssetControllerMethod('adjustCssUrl', [$cssContent, $inputFilePath, $outputFilePath]);
 
-        $this->assertEquals($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
+        $this->assertSame($expectedCssContent, $adjustedCssContent, 'Unable to adjust CSS correctly!');
     }
 
     /**
@@ -614,7 +614,7 @@ EOL;
     {
         $expectedRealPath = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $expectedRealPath);
         $realPath = $this->invokeAssetControllerMethod('findRealPath', [$sourcePath]);
-        $this->assertEquals($expectedRealPath, $realPath);
+        $this->assertSame($expectedRealPath, $realPath);
     }
 
     /**
@@ -746,8 +746,8 @@ EOL;
 
         $bundlesConfig = require $bundleFile;
 
-        $this->assertEquals($assetBundleOverrideConfig['css'], $bundlesConfig[$assetBundleClassName]['css']);
-        $this->assertEquals($assetBundleOverrideConfig['js'], $bundlesConfig[$assetBundleClassName]['js']);
+        $this->assertSame($assetBundleOverrideConfig['css'], $bundlesConfig[$assetBundleClassName]['css']);
+        $this->assertSame($assetBundleOverrideConfig['js'], $bundlesConfig[$assetBundleClassName]['js']);
     }
 }
 

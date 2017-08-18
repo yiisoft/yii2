@@ -19,4 +19,4 @@ $command->batchInsert(
     ['email', 'name', 'address'],
     $rows
 );
-$this->assertEquals(0, $command->execute());
+$this->assertSame(0, $command->execute());
