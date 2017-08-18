@@ -32,7 +32,7 @@ class Post2 extends BaseObject
 class Post3 extends BaseObject
 {
     public $id = 33;
-    /** @var Object */
+    /** @var BaseObject */
     public $subObject;
 
     public function init()
