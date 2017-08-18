@@ -24,7 +24,7 @@
  */
 return [
     ' and ' => ' y ',
-    'The combination {values} of {attributes} has already been taken.' => 'La combinación de {values} de atributos ya ha sido utilizada.',
+    'The combination {values} of {attributes} has already been taken.' => 'La combinación de {values} de {attributes} ya ha sido utilizada.',
     '(not set)' => '(no definido)',
     'An internal server error occurred.' => 'Hubo un error interno del servidor.',
     'Are you sure you want to delete this item?' => '¿Está seguro de eliminar este elemento?',
