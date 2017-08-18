@@ -458,7 +458,7 @@ abstract class ManagerTestCase extends TestCase
     {
         return [
             [Item::TYPE_ROLE],
-            [Item::TYPE_PERMISSION]
+            [Item::TYPE_PERMISSION],
         ];
     }
 

@@ -767,24 +767,24 @@ class UrlManagerCreateUrlTest extends TestCase
     {
         $this->mockWebApplication([
             'components' => [
-                'cache' => ArrayCache::className()
-            ]
+                'cache' => ArrayCache::className(),
+            ],
         ]);
         $urlManager = $this->getUrlManager([
             'cache' => 'cache',
             'rules' => [
-                '/' => 'site/index'
-            ]
+                '/' => 'site/index',
+            ],
         ]);
 
         $cachedUrlManager = $this->getUrlManager([
             'cache' => 'cache',
             'ruleConfig' => [
-                'class' => CachedUrlRule::className()
+                'class' => CachedUrlRule::className(),
             ],
             'rules' => [
-                '/' => 'site/index'
-            ]
+                '/' => 'site/index',
+            ],
         ]);
 
         $this->assertNotEquals($urlManager->rules, $cachedUrlManager->rules);

@@ -307,7 +307,8 @@ class RequestTest extends TestCase
         $this->assertEquals(null, $request->getServerPort());
     }
 
-    public function isSecureServerDataProvider() {
+    public function isSecureServerDataProvider()
+    {
         return [
             [['HTTPS' => 1], true],
             [['HTTPS' => 'on'], true],
@@ -318,38 +319,38 @@ class RequestTest extends TestCase
             [['HTTP_X_FORWARDED_PROTO' => 'http'], false],
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
-                'REMOTE_HOST' => 'test.com'
+                'REMOTE_HOST' => 'test.com',
             ], true],
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
-                'REMOTE_HOST' => 'othertest.com'
+                'REMOTE_HOST' => 'othertest.com',
             ], false],
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
-                'REMOTE_ADDR' => '192.168.0.1'
+                'REMOTE_ADDR' => '192.168.0.1',
             ], true],
             [[
                 'HTTP_X_FORWARDED_PROTO' => 'https',
-                'REMOTE_ADDR' => '192.169.0.1'
+                'REMOTE_ADDR' => '192.169.0.1',
             ], false],
             [['HTTP_FRONT_END_HTTPS' => 'on'], false],
             [['HTTP_FRONT_END_HTTPS' => 'off'], false],
             [[
                 'HTTP_FRONT_END_HTTPS' => 'on',
-                'REMOTE_HOST' => 'test.com'
+                'REMOTE_HOST' => 'test.com',
             ], true],
             [[
                 'HTTP_FRONT_END_HTTPS' => 'on',
-                'REMOTE_HOST' => 'othertest.com'
+                'REMOTE_HOST' => 'othertest.com',
             ], false],
             [[
                 'HTTP_FRONT_END_HTTPS' => 'on',
-                'REMOTE_ADDR' => '192.168.0.1'
+                'REMOTE_ADDR' => '192.168.0.1',
             ], true],
             [[
                 'HTTP_FRONT_END_HTTPS' => 'on',
-                'REMOTE_ADDR' => '192.169.0.1'
-            ], false]
+                'REMOTE_ADDR' => '192.169.0.1',
+            ], false],
         ];
     }
 
@@ -362,8 +363,8 @@ class RequestTest extends TestCase
         $request = new Request([
             'trustedHosts' => [
                 '/^test.com$/',
-                '/^192\.168/'
-            ]
+                '/^192\.168/',
+            ],
         ]);
         $_SERVER = $server;
 
@@ -371,41 +372,43 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getUserIPDataProvider() {
+    public function getUserIPDataProvider()
+    {
         return [
             [
                 [
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
-                    'REMOTE_ADDR' => '192.168.0.1'
+                    'REMOTE_ADDR' => '192.168.0.1',
                 ],
-                '123.123.123.123'
-            ], [
+                '123.123.123.123',
+            ],
+            [
                 [
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
-                    'REMOTE_ADDR' => '192.169.1.1'
+                    'REMOTE_ADDR' => '192.169.1.1',
                 ],
-                '192.169.1.1'
-            ], [
+                '192.169.1.1',
+            ],
+            [
                 [
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '123.123.123.123',
                     'REMOTE_HOST' => 'trusted.com',
-                    'REMOTE_ADDR' => '192.169.1.1'
-
+                    'REMOTE_ADDR' => '192.169.1.1',
                 ],
-                '123.123.123.123'
-            ], [
+                '123.123.123.123',
+            ],
+            [
                 [
                     'HTTP_X_FORWARDED_PROTO' => 'https',
                     'HTTP_X_FORWARDED_FOR' => '192.169.1.1',
                     'REMOTE_HOST' => 'untrusted.com',
-                    'REMOTE_ADDR' => '192.169.1.1'
-
+                    'REMOTE_ADDR' => '192.169.1.1',
                 ],
-                '192.169.1.1'
-            ]
+                '192.169.1.1',
+            ],
         ];
     }
 
@@ -419,30 +422,30 @@ class RequestTest extends TestCase
         $request = new Request([
             'trustedHosts' => [
                 '/^192\.168/',
-                '/^trusted.com$/'
+                '/^trusted.com$/',
             ],
-
         ]);
 
         $this->assertEquals($expected, $request->getUserIP());
         $_SERVER = $original;
-
     }
 
-    public function getMethodDataProvider() {
+    public function getMethodDataProvider()
+    {
         return [
             [
                 [
                     'REQUEST_METHOD' => 'DEFAULT',
-                    'HTTP_X-HTTP-METHOD-OVERRIDE' => 'OVERRIDE'
+                    'HTTP_X-HTTP-METHOD-OVERRIDE' => 'OVERRIDE',
                 ],
-                'OVERRIDE'
-            ], [
+                'OVERRIDE',
+            ],
+            [
                 [
                     'REQUEST_METHOD' => 'DEFAULT',
                 ],
-                'DEFAULT'
-            ]
+                'DEFAULT',
+            ],
         ];
     }
 
@@ -459,19 +462,20 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getIsAjaxDataProvider() {
+    public function getIsAjaxDataProvider()
+    {
         return [
             [
                 [
-
                 ],
-                false
-            ], [
+                false,
+            ],
+            [
                 [
                     'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
                 ],
-                true
-            ]
+                true,
+            ],
         ];
     }
 
@@ -488,20 +492,21 @@ class RequestTest extends TestCase
         $_SERVER = $original;
     }
 
-    public function getIsPjaxDataProvider() {
+    public function getIsPjaxDataProvider()
+    {
         return [
             [
                 [
-
                 ],
-                false
-            ], [
+                false,
+            ],
+            [
                 [
                     'HTTP_X_REQUESTED_WITH' => 'XMLHttpRequest',
                     'HTTP_X_PJAX' => 'any value',
                 ],
-                true
-            ]
+                true,
+            ],
         ];
     }
 
