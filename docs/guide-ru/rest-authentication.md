@@ -26,13 +26,13 @@ Yii поддерживает все выше перечисленные мето
 Чтобы включить аутентификацию для ваших API, выполните следующие шаги:
 
 1. У [компонента приложения](structure-application-components.md) `user` установите свойство
-   [[yii\web\User::enableSession|enableSession]] равным false.
+   [[yii\web\User::enableSession|enableSession]] равным `false`.
 2. Укажите, какие методы аутентификации вы планируете использовать, настроив поведение `authenticator`
    в ваших классах REST-контроллеров.
 3. Реализуйте метод [[yii\web\IdentityInterface::findIdentityByAccessToken()]] в вашем [[yii\web\User::identityClass|классе UserIdentity]].
 
 Шаг 1 не обязателен, но рекомендуется его всё-таки выполнить, так как RESTful API не должен сохранять информацию о
-состоянии клиента. Когда свойство [[yii\web\User::enableSession|enableSession]] установлено в false, состояние
+состоянии клиента. Когда свойство [[yii\web\User::enableSession|enableSession]] установлено в `false`, состояние
 аутентификации пользователя НЕ БУДЕТ сохраняться между запросами с использованием сессий. Вместо этого аутентификация
 будет выполняться для каждого запроса, что достигается шагами 2 и 3.
 
@@ -56,7 +56,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -74,11 +74,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;

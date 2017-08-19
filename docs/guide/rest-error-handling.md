@@ -12,7 +12,7 @@ exception in the response body. For example:
 ```
 HTTP/1.1 404 Not Found
 Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/7.1.0 mod_ssl/2.2.26 OpenSSL/0.9.8y
 Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 
@@ -52,7 +52,7 @@ and enclose the actual HTTP status code as part of the JSON structure in the res
 ```
 HTTP/1.1 200 OK
 Date: Sun, 02 Mar 2014 05:31:43 GMT
-Server: Apache/2.2.26 (Unix) DAV/2 PHP/5.4.20 mod_ssl/2.2.26 OpenSSL/0.9.8y
+Server: Apache/2.2.26 (Unix) DAV/2 PHP/7.1.0 mod_ssl/2.2.26 OpenSSL/0.9.8y
 Transfer-Encoding: chunked
 Content-Type: application/json; charset=UTF-8
 

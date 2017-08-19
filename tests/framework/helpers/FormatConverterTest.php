@@ -1,8 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\helpers;
 
+use DateTime;
+use IntlDateFormatter;
 use Yii;
+use yii\base\Exception;
 use yii\helpers\FormatConverter;
 use yii\i18n\Formatter;
 use yiiunit\framework\i18n\IntlTestHelper;
@@ -30,6 +38,85 @@ class FormatConverterTest extends TestCase
     {
         parent::tearDown();
         IntlTestHelper::resetIntlStatus();
+    }
+
+    /**
+     * ensure PHP fallback matches the ICU format for en_US
+     */
+    public function testPHPDefaultFormat()
+    {
+        foreach (FormatConverter::$phpFallbackDatePatterns as $format => $formats) {
+            foreach ($formats as $name => $expected) {
+                $expected = FormatConverter::convertDatePhpToIcu($expected);
+                $expected = str_replace('e', 'E', $expected); // seems to be equal
+                $expected = str_replace('yyyy', 'y', $expected); // this is equal
+                if ($format === 'full') {
+                    $expected = str_replace('zzz', 'zzzz', $expected); // there is no php representation for zzzz so we use zzz instead
+                } else {
+                    $expected = str_replace('zzz', 'z', $expected); // this is equal
+                }
+
+                switch ($name) {
+                    case 'date':
+                        $fmt = new IntlDateFormatter(
+                            'en_US',
+                            $this->convertFormat($format),
+                            IntlDateFormatter::NONE,
+                            'UTC'
+                        );
+                        break;
+                    case 'time':
+                        $fmt = new IntlDateFormatter(
+                            'en_US',
+                            IntlDateFormatter::NONE,
+                            $this->convertFormat($format),
+                            'UTC'
+                        );
+                        break;
+                    case 'datetime':
+                        $fmt = new IntlDateFormatter(
+                            'en_US',
+                            $this->convertFormat($format),
+                            $this->convertFormat($format),
+                            'UTC'
+                        );
+                        switch ($format) {
+                            case 'short' :
+                                $expected = str_replace('yy', 'yy,', $expected);
+                                break;
+                            case 'medium' :
+                                $expected = str_replace(' y', ' y,', $expected);
+                                break;
+                            case 'long' :
+                            case 'full' :
+                                $expected = str_replace(' y', " y 'at'", $expected);
+                                break;
+                        }
+                        break;
+                    default:
+                        throw new Exception("Format \"$name\" is not supported");
+                        break;
+                }
+
+                $this->assertEquals($expected, $fmt->getPattern(), "Format for $format $name does not match.");
+            }
+        }
+    }
+
+    private function convertFormat($format)
+    {
+        switch ($format) {
+            case 'short':
+                return IntlDateFormatter::SHORT;
+            case 'medium':
+                return IntlDateFormatter::MEDIUM;
+            case 'long':
+                return IntlDateFormatter::LONG;
+            case 'full':
+                return IntlDateFormatter::FULL;
+        }
+
+        return null;
     }
 
     public function testIntlIcuToPhpShortForm()

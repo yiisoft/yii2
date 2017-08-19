@@ -98,7 +98,7 @@ public function behaviors()
     
     // add CORS filter
     $behaviors['corsFilter'] = [
-        'class' => \yii\filters\Cors::className(),
+        'class' => \yii\filters\Cors::class,
     ];
     
     // re-add authentication filter
@@ -170,7 +170,7 @@ by overriding the [[yii\rest\ActiveController::checkAccess()|checkAccess()]] met
  * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
  *
  * @param string $action the ID of the action to be executed
- * @param \yii\base\Model $model the model to be accessed. If null, it means no specific model is being accessed.
+ * @param \yii\base\Model $model the model to be accessed. If `null`, it means no specific model is being accessed.
  * @param array $params additional parameters
  * @throws ForbiddenHttpException if the user does not have access
  */
@@ -178,6 +178,10 @@ public function checkAccess($action, $model = null, $params = [])
 {
     // check if the user can access $action and $model
     // throw ForbiddenHttpException if access should be denied
+    if ($action === 'update' || $action === 'delete') {
+        if ($model->author_id !== \Yii::$app->user->id)
+            throw new \yii\web\ForbiddenHttpException(sprintf('You can only %s articles that you\'ve created.', $action));
+    }
 }
 ```
 

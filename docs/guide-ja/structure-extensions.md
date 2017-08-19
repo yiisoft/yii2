@@ -37,7 +37,7 @@ Composer は依存関係を管理するものですから、あるパッケー�
     "require": {
         // ... 他の依存パッケージ
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -140,7 +140,7 @@ Image::thumbnail('@webroot/img/test-image.jpg', 120, 120)
 
     // 依存パッケージ
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -362,7 +362,7 @@ Yii はテストのサポートを提供しており、それよって、単体�
   このファイルは Markdown 形式で書いて `upgrade.md` と名付けることが出来ます。
 * チュートリアル、デモ、スクリーンショットなど: あなたのエクステンションが readme ファイルでは十分にカバーできないほど多くの機能を提供するものである場合は、これらが必要になります。
 * API ドキュメント: あなたのコードは、他の人々が読んで理解することがより一層容易に出来るように、十分な解説を含むべきです。
-  [Object のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
+  [BaseObject のクラスファイル](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) を参照すると、コードに解説を加える方法を学ぶことが出来ます。
 
 > Info: コードのコメントを Markdown 形式で書くことが出来ます。
   `yiisoft/yii2-apidoc` エクステンションが、コードのコメントに基づいて綺麗な API ドキュメントを生成するツールを提供しています。
@@ -395,6 +395,8 @@ Yii は下記のコアエクステンションを提供しています。これ�
   ダミーデータを作る [Faker](https://github.com/fzaninotto/Faker) を使うためのサポートを提供します。
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   拡張性が非常に高いウェブベースのコードジェネレータを提供します。これを使って、モデル、フォーム、モジュール、CRUD などを迅速に生成することが出来ます。
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   [Imagine](http://imagine.readthedocs.org/) に基づいて、使われることの多い画像操作機能を提供します。
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui):

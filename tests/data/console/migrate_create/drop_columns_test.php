@@ -1,4 +1,9 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 return <<<CODE
 <?php
@@ -6,7 +11,7 @@ return <<<CODE
 use yii\db\Migration;
 
 /**
- * Handles dropping columns from table `test`.
+ * Handles dropping columns from table `{table}`.
  */
 class {$class} extends Migration
 {
@@ -15,10 +20,10 @@ class {$class} extends Migration
      */
     public function up()
     {
-        \$this->dropColumn('test', 'title');
-        \$this->dropColumn('test', 'body');
-        \$this->dropColumn('test', 'price');
-        \$this->dropColumn('test', 'created_at');
+        \$this->dropColumn('{table}', 'title');
+        \$this->dropColumn('{table}', 'body');
+        \$this->dropColumn('{table}', 'price');
+        \$this->dropColumn('{table}', 'created_at');
     }
 
     /**
@@ -26,10 +31,10 @@ class {$class} extends Migration
      */
     public function down()
     {
-        \$this->addColumn('test', 'title', \$this->string(10)->notNull());
-        \$this->addColumn('test', 'body', \$this->text()->notNull());
-        \$this->addColumn('test', 'price', \$this->money(11,2)->notNull());
-        \$this->addColumn('test', 'created_at', \$this->dateTime());
+        \$this->addColumn('{table}', 'title', \$this->string(10)->notNull());
+        \$this->addColumn('{table}', 'body', \$this->text()->notNull());
+        \$this->addColumn('{table}', 'price', \$this->money(11,2)->notNull());
+        \$this->addColumn('{table}', 'created_at', \$this->dateTime());
     }
 }
 

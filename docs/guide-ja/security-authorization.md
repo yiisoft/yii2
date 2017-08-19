@@ -24,7 +24,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['login', 'logout', 'signup'],
                 'rules' => [
                     [
@@ -69,7 +69,7 @@ ACF が権限のチェックを実行するときには、規則を一つずつ�
 
 ```php
 [
-    'class' => AccessControl::className(),
+    'class' => AccessControl::class,
     ...
     'denyCallback' => function ($rule, $action) {
         throw new \Exception('このページにアクセスする権限がありません。');
@@ -128,7 +128,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['special-callback'],
                 'rules' => [
                     [
@@ -245,6 +245,10 @@ return [
 
 `yii migrate --migrationPath=@yii/rbac/migrations`
 
+異なる名前空間のマイグレーションを扱う方法の詳細については
+[分離されたマイグレーション](db-migrations.md#separated-migrations) の節を参照して下さい。
+
+
 これで `authManager` は `\Yii::$app->authManager` によってアクセスすることが出来るようになります。
 
 
@@ -306,7 +310,7 @@ class RbacController extends Controller
 ```
 
 > Note: アドバンストテンプレートを使おうとするときは、`RbacController` を `console/controllers`
-ディレクトリの中に置いて、名前空間を `console/controllers` に変更する必要があります。
+ディレクトリの中に置いて、名前空間を `console\controllers` に変更する必要があります。
 
 `yii rbac/init` によってコマンドを実行した後には、次の権限階層が得られます。
 
@@ -363,10 +367,10 @@ class AuthorRule extends Rule
     public $name = 'isAuthor';
 
     /**
-     * @param string|integer $user ユーザ ID
+     * @param string|int $user ユーザ ID
      * @param Item $item この規則が関連付けられているロールまたは許可
      * @param array $params ManagerInterface::checkAccess() に渡されたパラメータ
-     * @return boolean 関連付けられたロールまたは許可を認めるか否かを示す値
+     * @return bool 関連付けられたロールまたは許可を認めるか否かを示す値
      */
     public function execute($user, $item, $params)
     {
@@ -448,7 +452,7 @@ public function behaviors()
 {
     return [
         'access' => [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

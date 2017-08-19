@@ -49,7 +49,7 @@ Por exemplo, para instalar a extensão `yiisoft/yii2-imagine`, modifique seu
     "require": {
         // ... other dependencies
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -167,7 +167,7 @@ O exemplo a seguir mostra o arquivo `composer.json` para a extensão `yiisoft/yi
 
     // dependências do pacote
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -456,7 +456,7 @@ a sua extensão:
   fornece muitos recursos que podem não ser totalmente cobertos no arquivo readme.
 * Documentação da API: seu código deve ser bem documentado para permitir que 
   outros usuários possam ler e entender mais facilmente.
-  Você pode consultar o [arquivo da classe Object](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) 
+  Você pode consultar o [arquivo da classe BaseObject](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) 
   para aprender como documentar o seu código.
 
 > Informação: Os seus comentários no código podem ser escritos no formato Markdown. 
@@ -501,6 +501,8 @@ e podem ser facilmente instalados como descrito na subseção [Usando Extensões
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii):
   fornece um gerador de código baseado na Web que é altamente extensível e pode 
   ser usado para gerar rapidamente models (modelos), formulários, módulos, CRUD, etc.
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient):
+  provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine):
   fornece funções de manipulação de imagens comumente utilizados com base no 
   [Imagine](http://imagine.readthedocs.org/).

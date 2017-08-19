@@ -305,7 +305,7 @@ if (!empty($search)) {
 }
 ```
 
-`$search` が空でない場合は次の WHERE 条件 が生成されます。
+`$search` が空でない場合は次の `WHERE` 条件 が生成されます。
 
 ```sql
 WHERE (`status` = 10) AND (`title` LIKE '%yii%')
@@ -328,7 +328,7 @@ $query->filterWhere([
 [[yii\db\Query::filterWhere()|filterWhere()]] と [[yii\db\Query::where()|where()]] の唯一の違いは、前者は [ハッシュ形式](#hash-format) の条件において提供された空の値を無視する、という点です。
 従って、`$email` が空で `$sername` がそうではない場合は、上記のコードは、結果として `WHERE username=:username` という SQL 条件になります。
 
-> Info: 値が空であると見なされるのは、null、空の配列、空の文字列、または空白のみを含む文字列である場合です。
+> Info: 値が空であると見なされるのは、`null`、空の配列、空の文字列、または空白のみを含む文字列である場合です。
 
 [[yii\db\Query::andWhere()|andWhere()]] または [[yii\db\Query::orWhere()|orWhere()]] と同じように、[[yii\db\Query::andFilterWhere()|andFilterWhere()]] または [[yii\db\Query::orFilterWhere()|orFilterWhere()]] を使って、既存の条件に別のフィルタ条件を追加することも出来ます。
 
@@ -345,6 +345,12 @@ $query->andFilterCompare('value', '<=100');
 ```php
 $query->andFilterCompare('name', 'Doe', 'like');
 ```
+
+Yii 2.0.11 以降には、`HAVING` の条件のためにも、同様のメソッドがあります。
+
+- [[yii\db\Query::filterHaving()|filterHaving()]]
+- [[yii\db\Query::andFilterHaving()|andFilterHaving()]]
+- [[yii\db\Query::orFilterHaving()|orFilterHaving()]]
 
 ### [[yii\db\Query::orderBy()|orderBy()]] <span id="order-by"></span>
 

@@ -18,11 +18,11 @@
 и применит её к приложению, например:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // загрузка конфигурации приложения
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // создание объекта приложения и его конфигурирование
 (new yii\web\Application($config))->run();
@@ -66,7 +66,7 @@ $config = require(__DIR__ . '/../config/web.php');
 Свойство [[yii\base\Application::basePath|basePath]] часто используется для указания других важных путей (например, путь к 
 директории runtime, используемой приложением). По этой причине, псевдоним пути `@app` предустановлен и содержит данный путь.
 Производные пути могут быть получены с использованием этого псевдонима пути (например, `@app/runtime` указывает на
-времененную директорию runtime).
+временную директорию runtime).
 
 
 ### Важные свойства <span id="important-properties"></span>
@@ -190,7 +190,7 @@ if (YII_ENV_DEV) {
 #### [[yii\base\Application::components|components]] <span id="components"></span>
 
 Данное свойство является наиболее важным. Оно позволяет вам зарегистрировать список именованных компонентов, называемых
-[компоненты приложения](#structure-application-components.md), которые Вы можете использовать в других местах.
+[компоненты приложения](structure-application-components.md), которые Вы можете использовать в других местах.
 Например,
 
 ```php

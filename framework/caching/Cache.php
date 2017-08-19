@@ -7,6 +7,7 @@
 
 namespace yii\caching;
 
+use Yii;
 use yii\base\Component;
 use yii\helpers\StringHelper;
 
@@ -45,10 +46,12 @@ use yii\helpers\StringHelper;
  * - [[deleteValue()]]: delete the value with the specified key from cache
  * - [[flushValues()]]: delete all values from cache
  *
+ * For more details and usage information on Cache, see the [guide article on caching](guide:caching-overview).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-abstract class Cache extends Component implements \ArrayAccess
+abstract class Cache extends Component implements CacheInterface
 {
     /**
      * @var string a string prefixed to every cache key so that it is unique globally in the whole cache storage.
@@ -69,6 +72,12 @@ abstract class Cache extends Component implements \ArrayAccess
      * implementations of the cache can not correctly save and retrieve data different from a string type.
      */
     public $serializer;
+    /**
+     * @var int default duration in seconds before a cache entry will expire. Default value is 0, meaning infinity.
+     * This value is used by [[set()]] if the duration is not explicitly given.
+     * @since 2.0.11
+     */
+    public $defaultDuration = 0;
 
 
     /**
@@ -110,11 +119,11 @@ abstract class Cache extends Component implements \ArrayAccess
         } else {
             $value = call_user_func($this->serializer[1], $value);
         }
-        if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged($this))) {
+        if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -127,7 +136,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * may return false while exists returns true.
      * @param mixed $key a key identifying the cached value. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
-     * @return boolean true if a value exists in cache, false if the value is not in the cache or expired.
+     * @return bool true if a value exists in cache, false if the value is not in the cache or expired.
      */
     public function exists($key)
     {
@@ -165,7 +174,7 @@ abstract class Cache extends Component implements \ArrayAccess
                     $value = $this->serializer === null ? unserialize($values[$newKey])
                         : call_user_func($this->serializer[1], $values[$newKey]);
 
-                    if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->getHasChanged($this))) {
+                    if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
                         $results[$key] = $value[0];
                     }
                 }
@@ -183,14 +192,19 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * default [[defaultDuration]] value is used.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return boolean whether the value is successfully stored into cache
+     * @return bool whether the value is successfully stored into cache
      */
-    public function set($key, $value, $duration = 0, $dependency = null)
+    public function set($key, $value, $duration = null, $dependency = null)
     {
+        if ($duration === null) {
+            $duration = $this->defaultDuration;
+        }
+
         if ($dependency !== null && $this->serializer !== false) {
             $dependency->evaluateDependency($this);
         }
@@ -210,11 +224,11 @@ abstract class Cache extends Component implements \ArrayAccess
      * expiration time will be replaced with the new ones, respectively.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param integer $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return boolean whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @since 2.0.7
      */
     public function multiSet($items, $duration = 0, $dependency = null)
@@ -243,11 +257,11 @@ abstract class Cache extends Component implements \ArrayAccess
      * If the cache already contains such a key, the existing value and expiration time will be preserved.
      *
      * @param array $items the items to be cached, as key-value pairs.
-     * @param integer $duration default number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration default number of seconds in which the cached values will expire. 0 means never expire.
      * @param Dependency $dependency dependency of the cached items. If the dependency changes,
      * the corresponding values in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return boolean whether the items are successfully stored into cache
+     * @return array array of failed keys
      * @since 2.0.7
      */
     public function multiAdd($items, $duration = 0, $dependency = null)
@@ -277,11 +291,11 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param mixed $key a key identifying the value to be cached. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @param mixed $value the value to be cached
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
      * @param Dependency $dependency dependency of the cached item. If the dependency changes,
      * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
      * This parameter is ignored if [[serializer]] is false.
-     * @return boolean whether the value is successfully stored into cache
+     * @return bool whether the value is successfully stored into cache
      */
     public function add($key, $value, $duration = 0, $dependency = null)
     {
@@ -302,7 +316,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * Deletes a value with the specified key from cache
      * @param mixed $key a key identifying the value to be deleted from cache. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
-     * @return boolean if no error happens during deletion
+     * @return bool if no error happens during deletion
      */
     public function delete($key)
     {
@@ -314,7 +328,7 @@ abstract class Cache extends Component implements \ArrayAccess
     /**
      * Deletes all values from cache.
      * Be careful of performing this operation if the cache is shared among multiple applications.
-     * @return boolean whether the flush operation was successful.
+     * @return bool whether the flush operation was successful.
      */
     public function flush()
     {
@@ -338,8 +352,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
      * it could be something else.
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     abstract protected function setValue($key, $value, $duration);
 
@@ -350,8 +364,8 @@ abstract class Cache extends Component implements \ArrayAccess
      * @param string $key the key identifying the value to be cached
      * @param mixed $value the value to be cached. Most often it's a string. If you have disabled [[serializer]],
      * it could be something else.
-     * @param integer $duration the number of seconds in which the cached value will expire. 0 means never expire.
-     * @return boolean true if the value is successfully stored into cache, false otherwise
+     * @param int $duration the number of seconds in which the cached value will expire. 0 means never expire.
+     * @return bool true if the value is successfully stored into cache, false otherwise
      */
     abstract protected function addValue($key, $value, $duration);
 
@@ -359,14 +373,14 @@ abstract class Cache extends Component implements \ArrayAccess
      * Deletes a value with the specified key from cache
      * This method should be implemented by child classes to delete the data from actual cache storage.
      * @param string $key the key of the value to be deleted
-     * @return boolean if no error happens during deletion
+     * @return bool if no error happens during deletion
      */
     abstract protected function deleteValue($key);
 
     /**
      * Deletes all values from cache.
      * Child classes may implement this method to realize the flush operation.
-     * @return boolean whether the flush operation was successful.
+     * @return bool whether the flush operation was successful.
      */
     abstract protected function flushValues();
 
@@ -393,7 +407,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * The default implementation calls [[setValue()]] multiple times store values one by one. If the underlying cache
      * storage supports multi-set, this method should be overridden to exploit that feature.
      * @param array $data array where key corresponds to cache key while value is the value stored
-     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys
      */
     protected function setValues($data, $duration)
@@ -413,7 +427,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * The default implementation calls [[addValue()]] multiple times add values one by one. If the underlying cache
      * storage supports multi-add, this method should be overridden to exploit that feature.
      * @param array $data array where key corresponds to cache key while value is the value stored.
-     * @param integer $duration the number of seconds in which the cached values will expire. 0 means never expire.
+     * @param int $duration the number of seconds in which the cached values will expire. 0 means never expire.
      * @return array array of failed keys
      */
     protected function addValues($data, $duration)
@@ -432,7 +446,7 @@ abstract class Cache extends Component implements \ArrayAccess
      * Returns whether there is a cache entry with a specified key.
      * This method is required by the interface [[\ArrayAccess]].
      * @param string $key a key identifying the cached value
-     * @return boolean
+     * @return bool
      */
     public function offsetExists($key)
     {
@@ -471,5 +485,46 @@ abstract class Cache extends Component implements \ArrayAccess
     public function offsetUnset($key)
     {
         $this->delete($key);
+    }
+
+    /**
+     * Method combines both [[set()]] and [[get()]] methods to retrieve value identified by a $key,
+     * or to store the result of $callable execution if there is no cache available for the $key.
+     *
+     * Usage example:
+     *
+     * ```php
+     * public function getTopProducts($count = 10) {
+     *     $cache = $this->cache; // Could be Yii::$app->cache
+     *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {
+     *         return Products::find()->mostPopular()->limit(10)->all();
+     *     }, 1000);
+     * }
+     * ```
+     *
+     * @param mixed $key a key identifying the value to be cached. This can be a simple string or
+     * a complex data structure consisting of factors representing the key.
+     * @param callable|\Closure $callable the callable or closure that will be used to generate a value to be cached.
+     * In case $callable returns `false`, the value will not be cached.
+     * @param int $duration default duration in seconds before the cache will expire. If not set,
+     * [[defaultDuration]] value will be used.
+     * @param Dependency $dependency dependency of the cached item. If the dependency changes,
+     * the corresponding value in the cache will be invalidated when it is fetched via [[get()]].
+     * This parameter is ignored if [[serializer]] is `false`.
+     * @return mixed result of $callable execution
+     * @since 2.0.11
+     */
+    public function getOrSet($key, $callable, $duration = null, $dependency = null)
+    {
+        if (($value = $this->get($key)) !== false) {
+            return $value;
+        }
+
+        $value = call_user_func($callable, $this);
+        if (!$this->set($key, $value, $duration, $dependency)) {
+            Yii::warning('Failed to set cache value for key ' . json_encode($key), __METHOD__);
+        }
+
+        return $value;
     }
 }

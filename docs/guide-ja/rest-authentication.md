@@ -26,7 +26,7 @@ Yii は上記の全ての認証方法をサポートしています。新しい�
 3. [[yii\web\User::identityClass|ユーザアイデンティティクラス]] において [[yii\web\IdentityInterface::findIdentityByAccessToken()]] を実装します。
 
 ステップ 1 は必須ではありませんが、ステートレスであるべき RESTful API のために推奨されます。
-[[yii\web\User::enableSession|enableSession]] が false である場合、ユーザの認証ステータスがセッションを使ってリクエストをまたいで存続することはありません。
+[[yii\web\User::enableSession|enableSession]] が `false` である場合、ユーザの認証ステータスがセッションを使ってリクエストをまたいで存続することはありません。
 その代りに、すべてのリクエストに対して認証が実行されます。このことは、ステップ 2 と 3 によって達成されます。
 
 > Tip: RESTful API をアプリケーションの形式で開発する場合は、アプリケーションの構成情報で `user` アプリケーションコンポーネント(structure-application-components.md) の [[yii\web\User::enableSession|enableSession]] プロパティを構成することが出来ます。
@@ -48,7 +48,7 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => HttpBasicAuth::className(),
+        'class' => HttpBasicAuth::class,
     ];
     return $behaviors;
 }
@@ -66,11 +66,11 @@ public function behaviors()
 {
     $behaviors = parent::behaviors();
     $behaviors['authenticator'] = [
-        'class' => CompositeAuth::className(),
+        'class' => CompositeAuth::class,
         'authMethods' => [
-            HttpBasicAuth::className(),
-            HttpBearerAuth::className(),
-            QueryParamAuth::className(),
+            HttpBasicAuth::class,
+            HttpBearerAuth::class,
+            QueryParamAuth::class,
         ],
     ];
     return $behaviors;

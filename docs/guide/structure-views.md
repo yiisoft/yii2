@@ -636,7 +636,7 @@ Similar as [[yii\web\View::registerMetaTag()|registerMetaTag()]], you can specif
 to these events to inject content into views or process the rendering results before they are sent to end users.
 
 - [[yii\base\View::EVENT_BEFORE_RENDER|EVENT_BEFORE_RENDER]]: triggered at the beginning of rendering a file
-  in a controller. Handlers of this event may set [[yii\base\ViewEvent::isValid]] to be false to cancel the rendering process.
+  in a controller. Handlers of this event may set [[yii\base\ViewEvent::isValid]] to be `false` to cancel the rendering process.
 - [[yii\base\View::EVENT_AFTER_RENDER|EVENT_AFTER_RENDER]]: triggered after rendering a file by the call of [[yii\base\View::afterRender()]].
   Handlers of this event may obtain the rendering result through [[yii\base\ViewEvent::output]] and may modify
   this property to change the rendering result.

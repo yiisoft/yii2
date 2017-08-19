@@ -11,9 +11,8 @@ factors and explain how you can improve your application performance by adjustin
 A well configured PHP environment is very important. In order to get maximum performance,
 
 - Use the latest stable PHP version. Major releases of PHP may bring significant performance improvements.
-- Enable bytecode caching with [Opcache](http://php.net/opcache) (PHP 5.5 or later) or [APC](http://ru2.php.net/apc) 
-  (PHP 5.4 or earlier). Bytecode caching avoids the time spent in parsing and including PHP scripts for every
-  incoming request.
+- Enable bytecode caching with [Opcache](http://php.net/opcache). Bytecode caching avoids the time spent
+  in parsing and including PHP scripts for every incoming request.
 - [Tune `realpath()` cache](https://github.com/samdark/realpath_cache_tuner).
 
 
@@ -30,7 +29,7 @@ disable debug mode:
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 ```
 
-> Info: The default value of `YII_DEBUG` is false. So if you are certain that you do not change its default
+> Info: The default value of `YII_DEBUG` is `false`. So if you are certain that you do not change its default
   value somewhere else in your application code, you may simply remove the above line to disable debug mode. 
   
 
@@ -187,6 +186,11 @@ by executing the following command:
 composer dumpautoload -o
 ```
 
+Additionally you may consider using
+[authoritative class maps](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-a-authoritative-class-maps)
+and [APCu cache](https://getcomposer.org/doc/articles/autoloader-optimization.md#optimization-level-2-b-apcu-cache).
+Note that both opmizations may or may not be suitable for your particular case.
+
 
 ## Processing Data Offline <span id="processing-data-offline"></span>
 
@@ -217,4 +221,4 @@ The following profiling tools may be useful:
 
 ## Prepare application for scaling
 
-When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).
+When nothing helps you may try making your application scalabe. A good introduction is provided in [Configuring a Yii 2 Application for an Autoscaling Stack](https://github.com/samdark/yii2-cookbook/blob/master/book/scaling.md). For further reading you may refer to [Web apps performance and scaling](http://thehighload.com/).

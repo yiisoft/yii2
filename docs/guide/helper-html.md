@@ -40,7 +40,7 @@ In case you need just an opening or closing tag, you can use the `Html::beginTag
 Options are used in many methods of the Html helper and various widgets. In all these cases there is some extra handling to
 know about:
 
-- If a value is null, the corresponding attribute will not be rendered.
+- If a value is `null`, the corresponding attribute will not be rendered.
 - Attributes whose values are of boolean type will be treated as
   [boolean attributes](http://www.w3.org/TR/html5/infrastructure.html#boolean-attributes).
 - The values of attributes will be HTML-encoded using [[yii\helpers\Html::encode()|Html::encode()]].
@@ -233,11 +233,11 @@ If you know the input type in advance, it's more convenient to use the shortcut 
 Radios and checkboxes are a bit different in terms of method signature:
 
 ```php
-<?= Html::radio('agree', true, ['label' => 'I agree']);
-<?= Html::activeRadio($model, 'agree', ['class' => 'agreement'])
+<?= Html::radio('agree', true, ['label' => 'I agree']) ?>
+<?= Html::activeRadio($model, 'agree', ['class' => 'agreement']) ?>
 
-<?= Html::checkbox('agree', true, ['label' => 'I agree']);
-<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement'])
+<?= Html::checkbox('agree', true, ['label' => 'I agree']) ?>
+<?= Html::activeCheckbox($model, 'agree', ['class' => 'agreement']) ?>
 ```
 
 Dropdown lists and list boxes can be rendered like the following:
@@ -334,7 +334,7 @@ Gives you
 <style>.danger { color: #f00; }</style>
 
 
-<?= Html::script('alert("Hello!");', ['defer' => true]);
+<?= Html::script('alert("Hello!");', ['defer' => true]) ?>
 
 Gives you
 

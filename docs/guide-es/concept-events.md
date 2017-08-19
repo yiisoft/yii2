@@ -96,7 +96,7 @@ $foo->on(Foo::EVENT_HELLO, function ($event) {
 De forma predeterminada, cada nuevo gestor añadido se pone a la cola de la lista de gestores del evento. Por lo tanto,
 el gestor se ejecutará en el último lugar cuando se lance el evento. Para insertar un nuevo gestor al principio de la
 cola de gestores para que sea ejecutado primero, se debe llamar a [[yii\base\Component::on()]], pasando al cuarto
-parámetro `$append` el valor false:
+parámetro `$append` el valor `false`:
 
 ```php
 $foo->on(Foo::EVENT_HELLO, function ($event) {
@@ -217,7 +217,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
     Yii::trace(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -236,11 +236,11 @@ invocación de los gestores de eventos a nivel de clase.
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // displays "app\models\Foo"
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
+    var_dump($event->sender);  // displays "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Tenga en cuenta que en este caso, el `$event->sender` hace referencia al nombre de la clase que lanza el evento en
@@ -248,16 +248,16 @@ lugar de a la instancia del objeto.
 
 > Note: Debido a que los gestores a nivel de clase responderán a los eventos lanzados por cualquier instancia de la
 clase, o cualquier clase hija, se debe usar con cuidado, especialmente en las clases de bajo nivel (low-level), tales
-como [[yii\base\Object]].
+como [[yii\base\BaseObject]].
 
 Para desadjuntar un gestor de eventos a nivel de clase, se tiene que llamar a [[yii\base\Event::off()]]. Por ejemplo:
 
 ```php
 // desadjunta $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // desadjunta todos los gestores de Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Eventos Globales <span id="global-events"></span>

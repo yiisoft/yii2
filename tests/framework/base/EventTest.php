@@ -12,20 +12,22 @@ use yii\base\Event;
 use yiiunit\TestCase;
 
 /**
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @group base
  */
 class EventTest extends TestCase
 {
     public $counter;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->counter = 0;
-        Event::off(ActiveRecord::class, 'save');
-        Event::off(Post::class, 'save');
-        Event::off(User::class, 'save');
-        Event::off('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT);
+        Event::offAll();
+    }
+
+    protected function tearDown()
+    {
+        parent::tearDown();
+        Event::offAll();
     }
 
     public function testOn()
@@ -40,10 +42,10 @@ class EventTest extends TestCase
             $this->counter += 5;
         });
         $this->assertEquals(0, $this->counter);
-        $post = new Post;
+        $post = new Post();
         $post->save();
         $this->assertEquals(4, $this->counter);
-        $user = new User;
+        $user = new User();
         $user->save();
         $this->assertEquals(7, $this->counter);
         $someClass = new SomeClass();
@@ -57,7 +59,7 @@ class EventTest extends TestCase
     public function testOff()
     {
         $handler = function ($event) {
-            $this->counter ++;
+            $this->counter++;
         };
         $this->assertFalse(Event::hasHandlers(Post::class, 'save'));
         Event::on(Post::class, 'save', $handler);
@@ -75,7 +77,7 @@ class EventTest extends TestCase
             $this->counter += 1;
         });
         Event::on('yiiunit\framework\base\SomeInterface', SomeInterface::EVENT_SUPER_EVENT, function ($event) {
-            $this->counter ++;
+            $this->counter++;
         });
         $this->assertTrue(Event::hasHandlers(Post::class, 'save'));
         $this->assertFalse(Event::hasHandlers(ActiveRecord::class, 'save'));

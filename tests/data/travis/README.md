@@ -4,7 +4,7 @@ These scripts might be used to configure your own system for test runs. But sinc
 
 The scripts are:
 
- - [`apc-setup.sh`](apc-setup.sh)
+ - [`apc-setup.sh`](apcu-setup.sh)
    Installs and configures the [apc pecl extension](http://pecl.php.net/package/apc)
  - [`cubrid-setup.sh`](cubrid-setup.sh)
    Prepares the [CUBRID](http://www.cubrid.org/) server instance by installing the server and PHP PDO driver

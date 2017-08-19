@@ -11,9 +11,7 @@ use yii\base\DynamicModel;
 use yiiunit\TestCase;
 
 /**
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
+ * @group base
  */
 class DynamicModelTest extends TestCase
 {
@@ -74,7 +72,31 @@ class DynamicModelTest extends TestCase
         $model = new DynamicModel(compact('name', 'email'));
         $this->assertEquals($email, $model->email);
         $this->assertEquals($name, $model->name);
-        $this->setExpectedException('yii\base\UnknownPropertyException');
+        $this->expectException('yii\base\UnknownPropertyException');
         $age = $model->age;
+    }
+
+    public function testLoad()
+    {
+        $dynamic = new DynamicModel();
+        //define two attributes
+        $dynamic->defineAttribute('name');
+        $dynamic->defineAttribute('mobile');
+        // define rule
+        $dynamic->addRule(['name', 'mobile'], 'required');
+        // define your sample data
+        $data = [
+            'DynamicModel' => [
+                'name' => $name = 'your name 2',
+                'mobile' => $mobile = 'my number mobile',
+            ],
+        ];
+        // load data
+        $this->assertFalse($dynamic->load([]));
+        $this->assertTrue($dynamic->load($data));
+
+        $this->assertTrue($dynamic->validate());
+        $this->assertEquals($name, $dynamic->name);
+        $this->assertEquals($mobile, $dynamic->mobile);
     }
 }

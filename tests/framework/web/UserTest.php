@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yii\web;
 
@@ -14,18 +18,14 @@ function time()
 
 namespace yiiunit\framework\web;
 
-use yii\base\NotSupportedException;
+use Yii;
 use yii\base\Component;
+use yii\base\NotSupportedException;
 use yii\rbac\PhpManager;
-use yii\web\ForbiddenHttpException;
 use yii\web\Cookie;
 use yii\web\CookieCollection;
+use yii\web\ForbiddenHttpException;
 use yii\web\IdentityInterface;
-use yii\web\UrlManager;
-use yii\web\UrlRule;
-use yii\web\Request;
-use yii\web\Response;
-use Yii;
 use yiiunit\TestCase;
 
 /**
@@ -34,7 +34,7 @@ use yiiunit\TestCase;
 class UserTest extends TestCase
 {
     /**
-     * @var integer virtual time to be returned by mocked time() function.
+     * @var int virtual time to be returned by mocked time() function.
      * Null means normal time() behavior.
      */
     public static $time;
@@ -63,7 +63,7 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                      'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                      'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
         $this->mockWebApplication($appConfig);
@@ -95,9 +95,8 @@ class UserTest extends TestCase
         $this->mockWebApplication($appConfig);
         $this->assertTrue(Yii::$app->user->isGuest);
         $this->assertFalse(Yii::$app->user->can('doSomething'));
-
     }
-    
+
     public function testCookieCleanup()
     {
         global $cookiesMock;
@@ -126,17 +125,17 @@ class UserTest extends TestCase
         $cookie->value = 'junk';
         $cookiesMock->add($cookie);
         Yii::$app->user->getIdentity();
-        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
-        Yii::$app->user->login(UserIdentity::findIdentity('user1'),3600);
+        Yii::$app->user->login(UserIdentity::findIdentity('user1'), 3600);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user1');
-        $this->assertFalse(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+        $this->assertNotEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
 
-        Yii::$app->user->login(UserIdentity::findIdentity('user2'),0);
+        Yii::$app->user->login(UserIdentity::findIdentity('user2'), 0);
         $this->assertFalse(Yii::$app->user->isGuest);
         $this->assertSame(Yii::$app->user->id, 'user2');
-        $this->assertTrue(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])) == 0);
+        $this->assertEquals(strlen($cookiesMock->getValue(Yii::$app->user->identityCookie['name'])), 0);
     }
 
     /**
@@ -151,12 +150,12 @@ class UserTest extends TestCase
         }
 
         $_SERVER = $server;
-        Yii::$app->set('response',['class' => 'yii\web\Response']);
-        Yii::$app->set('request',[
+        Yii::$app->set('response', ['class' => 'yii\web\Response']);
+        Yii::$app->set('request', [
             'class' => 'yii\web\Request',
-            'scriptFile' => __DIR__ .'/index.php',
+            'scriptFile' => __DIR__ . '/index.php',
             'scriptUrl' => '/index.php',
-            'url' => ''
+            'url' => '',
         ]);
         Yii::$app->user->setReturnUrl(null);
     }
@@ -172,12 +171,12 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
         $this->mockWebApplication($appConfig);
 
-        
+
         $user = Yii::$app->user;
 
         $this->reset();
@@ -226,7 +225,8 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json, */*; q=0.1';
         try {
             $user->loginRequired();
-        } catch (ForbiddenHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {
+        }
         $this->assertFalse(Yii::$app->response->getIsRedirection());
 
         $this->reset();
@@ -263,12 +263,13 @@ class UserTest extends TestCase
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
         try {
             $user->loginRequired();
-        } catch (ForbiddenHttpException $e) {}
+        } catch (ForbiddenHttpException $e) {
+        }
         $this->assertNotEquals('json-only', $user->getReturnUrl());
 
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json;q=0.1';
-        $this->setExpectedException('yii\\web\\ForbiddenHttpException');
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         $user->loginRequired();
     }
 
@@ -284,17 +285,16 @@ class UserTest extends TestCase
                     'itemFile' => '@runtime/user_test_rbac_items.php',
                     'assignmentFile' => '@runtime/user_test_rbac_assignments.php',
                     'ruleFile' => '@runtime/user_test_rbac_rules.php',
-                ]
+                ],
             ],
         ];
 
         $this->mockWebApplication($appConfig);
         $this->reset();
         $_SERVER['HTTP_ACCEPT'] = 'text/json,q=0.1';
-        $this->setExpectedException('yii\\web\\ForbiddenHttpException');
+        $this->expectException('yii\\web\\ForbiddenHttpException');
         Yii::$app->user->loginRequired();
     }
-
 }
 
 class UserIdentity extends Component implements IdentityInterface
@@ -346,7 +346,7 @@ class MockRequest extends \yii\web\Request
         global $cookiesMock;
 
         return $cookiesMock;
-   }
+    }
 }
 
 class MockResponse extends \yii\web\Response
@@ -354,7 +354,7 @@ class MockResponse extends \yii\web\Response
     public function getCookies()
     {
         global $cookiesMock;
-      
+
         return $cookiesMock;
     }
 }

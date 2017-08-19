@@ -1,4 +1,4 @@
-Yii2 コアフレームワークコードスタイル
+Yii 2 コアフレームワークコードスタイル
 =====================================
 
 下記のコードスタイルが Yii 2.x コアと公式エクステンションの開発に用いられています。
@@ -12,8 +12,7 @@ Yii2 コアフレームワークコードスタイル
   しかし、コアコードや公式エクステンションに対して実際に寄稿する場合には、それらを英語で書く必要があります。
 
 
-1. 概要
--------
+## 1. 概要
 
 全体として、私たちは [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) 互換のスタイルを使っていますので、
 [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md) に適用されることは、すべて私たちのコードスタイルにも適用されます。
@@ -29,8 +28,7 @@ Yii2 コアフレームワークコードスタイル
 - プロパティ名は private である場合はアンダースコアで始まらなければならない。
 - `else if` ではなく常に `elseif` を使用すること。
 
-2. ファイル
------------
+## 2. ファイル
 
 ### 2.1. PHP タグ
 
@@ -43,13 +41,11 @@ Yii2 コアフレームワークコードスタイル
 
 PHP コードは BOM 無しの UTF-8 のみを使わなければなりません。
 
-3. クラス名
------------
+## 3. クラス名
 
 クラス名は `StudlyCaps` で宣言されなければなりません。例えば、`Controller`、`Model`。
 
-4. クラス
----------
+## 4. クラス
 
 ここで "クラス" という用語はあらゆるクラスとインタフェイスを指すものとします。
 
@@ -65,7 +61,7 @@ PHP コードは BOM 無しの UTF-8 のみを使わなければなりません�
 /**
  * ドキュメント
  */
-class MyClass extends \yii\Object implements MyInterface
+class MyClass extends \yii\base\BaseObject implements MyInterface
 {
     // コード
 }
@@ -143,11 +139,31 @@ class Foo
 }
 ```
 
-### 4.4 Doc ブロック
+### 4.4 PHPDoc ブロック
 
-`@param`、`@var`、`@property` および `@return` は `boolean`、`integer`、`string`、`array` または `null` として型を宣言しなければなりません。
-`Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
-型付きの配列に対しては `ClassName[]` を使います。
+ - `@param`、`@var`、`@property` および `@return` は `bool`、`int`、`string`、`array` または `null` として型を宣言しなければなりません。
+   `Model` または `ActiveRecord` のようなクラス名を使うことも出来ます。
+ - 型付きの配列に対しては `ClassName[]` を使います。
+ - PHPDoc の最初の行には、メソッドの目的を記述しなければなりません。
+ - メソッドが何かをチェックする (たとえば、`isActive`, `hasClass` など) ものである場合は、
+   最初の行は `Checks whether` で始まらなければなりません。
+ - `@return` は、厳密に何が返されるのかを明示的に記述しなければなりません。
+
+```php
+/**
+ * Checks whether the IP is in subnet range
+ *
+ * @param string $ip an IPv4 or IPv6 address
+ * @param int $cidr the CIDR lendth
+ * @param string $range subnet in CIDR format e.g. `10.0.0.0/8` or `2001:af::/64`
+ * @return bool whether the IP is in subnet range
+ */
+ private function inRange($ip, $cidr, $range)
+ {
+   // ...
+ }
+```
+
 
 ### 4.5 コンストラクタ
 
@@ -297,14 +313,14 @@ switch には下記の書式を使用します。
 ```php
 switch ($this->phpType) {
     case 'string':
-        $a = (string)$value;
+        $a = (string) $value;
         break;
     case 'integer':
     case 'int':
-        $a = (integer)$value;
+        $a = (int) $value;
         break;
     case 'boolean':
-        $a = (boolean)$value;
+        $a = (bool) $value;
         break;
     default:
         $a = null;
@@ -353,7 +369,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
 - ドキュメントの無いコードは許容されません。
 - 全てのクラスファイルは、ファイルレベルの doc ブロックを各ファイルの先頭に持ち、クラスレベルの doc ブロックを各クラスの直前に持たなければなりません。
 - メソッドが実際に何も返さないときは `@return` を使う必要はありません。
-- `yii\base\Object` から派生するクラスのすべての仮想プロパティは、クラスの doc ブロックで `@property` タグでドキュメントされます。
+- `yii\base\BaseObject` から派生するクラスのすべての仮想プロパティは、クラスの doc ブロックで `@property` タグでドキュメントされます。
   これらの注釈は、`build` ディレクトリで `./build php-doc` コマンドを走らせることにより、対応する getter や setter の `@return` や `@param` タグから自動的に生成されます。
   getter や setter に `@property` タグを追加することによって、これらのメソッドによって導入されるプロパティに対してドキュメントのメッセージを明示的に与えることが出来ます。
   これは `@return` で記述されているのとは違う説明を与えたい場合に有用です。
@@ -395,7 +411,7 @@ $mul = array_reduce($numbers, function($r, $x) use($n) {
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Component extends \yii\base\Object
+class Component extends \yii\base\BaseObject
 ```
 
 
@@ -431,10 +447,10 @@ public function getEventHandlers($name)
 
 ドキュメントの中でクラス、メソッド、プロパティをクロスリンクするために使える追加の文法があります。
 
-- `'[[canSetProperty]] ` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
-- `'[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
-- `'[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
+- `[[canSetProperty]]` は、同じクラス内の `canSetProperty` メソッドまたはプロパティへのクロスリンクを生成します。
+- `[[Component::canSetProperty]]` は、同じ名前空間内の `Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[yii\base\Component::canSetProperty]]` は、`yii\base` 名前空間の`Component` クラスの `canSetProperty` メソッドへのクロスリンクを生成します。
+- `[[Component]]` は、同じ名前空間内の `Component` クラスへのクロスリンクを生成します。ここでも、クラス名に名前空間を追加することが可能です。
 
 上記のリンクにクラス名やメソッド名以外のラベルを付けるためには、次の例で示されている文法を使うことが出来ます。
 

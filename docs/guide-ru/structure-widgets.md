@@ -15,7 +15,7 @@ use yii\bootstrap\DatePicker;
 ```
 
 В комплект Yii входит большое количество виджетов, например: [[yii\widgets\ActiveForm|active form]],
-[[yii\widgets\Menu|menu]], [виджеты jQuery UI](widget-jui.md), [виджеты Twitter Bootstrap](widget-bootstrap.md).
+[[yii\widgets\Menu|menu]], [виджеты jQuery UI](https://github.com/yiisoft/yii2-jui/blob/master/docs/guide/README.md), [виджеты Twitter Bootstrap](https://github.com/yiisoft/yii2-bootstrap/blob/master/docs/guide/usage-widgets.md).
 Далее будут представлены базовые сведения о виджетах. Для получения сведений относительно использования
 конкретного виджета, следует обратиться к документации соответствующего класса.
 
@@ -201,7 +201,7 @@ public function run()
 Разрабатываемые виджеты должны быть самодостаточными. Это означает, что для их использования должно быть
 достаточно всего лишь добавить виджет в представление. Добиться этого бывает затруднительно в том случае,
 когда для его функционирования требуются внешние ресурсы, такие как CSS, JavaScript, изображения и т.д.
-К счастью, Yii предоставляет поддержку механизма для работы с ресурсами [asset bundles](structure-asset-bundles.md),
+К счастью, Yii предоставляет поддержку механизма для работы с ресурсами [asset bundles](structure-assets.md),
 который может быть успешно использован для решения данной проблемы.
 
 В случае, когда виджет не содержит логики, а содержит только код, отвечающий за вывод разметки, он мало

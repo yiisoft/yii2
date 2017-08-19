@@ -56,7 +56,7 @@ Jeśli jesteś już posiadaczem Composera, upewnij się, że jest on zaktualizow
 Teraz możesz przejść już do instalacji samego Yii, wywołując poniższe komendy w katalogu dostępnym z poziomu sieci web:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
+composer global require "fxp/composer-asset-plugin:^1.3.1"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
@@ -90,10 +90,10 @@ Instalacja Yii z pliku archiwum składa się z trzech kroków:
 3. Zmodyfikowanie pliku `config/web.php` przez dodanie sekretnego klucza do elementu konfiguracji `cookieValidationKey`
    (jest to wykonywane automatycznie, jeśli instalujesz Yii używając Composera):
 
-```php
-// !!! wprowadź sekretny klucz tutaj - jest to wymagane do walidacji ciasteczek
-'cookieValidationKey' => 'enter your secret key here',
-```
+   ```php
+   // !!! wprowadź sekretny klucz tutaj - jest to wymagane do walidacji ciasteczek
+   'cookieValidationKey' => 'enter your secret key here',
+   ```
 
 Inne opcje instalacji <span id="other-installation-options"></span>
 ---------------------

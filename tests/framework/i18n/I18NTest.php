@@ -39,8 +39,8 @@ class I18NTest extends TestCase
                 'test' => [
                     'class' => $this->getMessageSourceClass(),
                     'basePath' => '@yiiunit/data/i18n/messages',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -77,8 +77,8 @@ class I18NTest extends TestCase
                         'test' => 'test.php',
                         'foo' => 'test.php',
                     ],
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -113,8 +113,8 @@ class I18NTest extends TestCase
                             'foo' => 'test.php',
                         ],
                     ]
-                )
-            ]
+                ),
+            ],
         ]);
 
         $msg = 'The dog runs fast.';
@@ -141,8 +141,8 @@ class I18NTest extends TestCase
 
     public function testTranslateParams2()
     {
-        if (!extension_loaded("intl")) {
-            $this->markTestSkipped("intl not installed. Skipping.");
+        if (!extension_loaded('intl')) {
+            $this->markTestSkipped('intl not installed. Skipping.');
         }
         $msg = 'His name is {name} and his speed is about {n, number} km/h.';
         $params = [
@@ -225,7 +225,7 @@ class I18NTest extends TestCase
     {
         return [
             ['en-GB'],
-            ['en']
+            ['en'],
         ];
     }
 

@@ -2,6 +2,7 @@
 namespace yiiunit\framework\console\controllers;
 
 use Yii;
+use yii\base\Module;
 use yii\helpers\FileHelper;
 use yii\helpers\VarDumper;
 use yiiunit\TestCase;
@@ -25,7 +26,7 @@ abstract class BaseMessageControllerTest extends TestCase
         if (!file_exists($this->sourcePath)) {
             $this->markTestIncomplete('Unit tests runtime directory should have writable permissions!');
         }
-        $this->configFileName = Yii::getAlias('@yiiunit/runtime') . DIRECTORY_SEPARATOR . 'message_controller_test_config.php';
+        $this->configFileName = Yii::getAlias('@yiiunit/runtime/message_controller_test_config.php');
     }
 
     public function tearDown()
@@ -42,7 +43,10 @@ abstract class BaseMessageControllerTest extends TestCase
      */
     protected function createMessageController()
     {
-        $module = $this->getMock('yii\\base\\Module', ['fake'], ['console']);
+        $module = $this->getMockBuilder(Module::class)
+            ->setMethods(['fake'])
+            ->setConstructorArgs(['console'])
+            ->getMock();
         $messageController = new MessageControllerMock('message', $module);
         $messageController->interactive = false;
 
@@ -125,12 +129,13 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $configFileName = $this->configFileName;
         $out = $this->runMessageControllerAction('config', [$configFileName]);
-        $this->assertTrue(file_exists($configFileName), "Unable to create config file from template. Command output:\n\n" . $out);
+        $this->assertFileExists($configFileName,
+            "Unable to create config file from template. Command output:\n\n" . $out);
     }
 
     public function testConfigFileNotExist()
     {
-        $this->setExpectedException('yii\\console\\Exception');
+        $this->expectException(\yii\console\Exception::class);
         $this->runMessageControllerAction('extract', ['not_existing_file.php']);
     }
 
@@ -162,7 +167,8 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
         $out .= $this->runMessageControllerAction('extract', [$this->configFileName]);
 
-        $this->assertTrue(strpos($out, 'Nothing to save') !== false, "Controller should respond with \"Nothing to save\" if there's nothing to update. Command output:\n\n" . $out);
+        $this->assertNotFalse(strpos($out, 'Nothing to save'),
+            "Controller should respond with \"Nothing to save\" if there's nothing to update. Command output:\n\n" . $out);
     }
 
     /**
@@ -265,8 +271,12 @@ abstract class BaseMessageControllerTest extends TestCase
         $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
 
         $messages = $this->loadMessages($category);
-        $this->assertTrue($zeroMessageContent === $messages[$zeroMessage], "Message content \"0\" is lost. Command output:\n\n" . $out);
-        $this->assertTrue($falseMessageContent === $messages[$falseMessage], "Message content \"false\" is lost. Command output:\n\n" . $out);
+        $this->assertSame($zeroMessageContent,
+            $messages[$zeroMessage],
+            "Message content \"0\" is lost. Command output:\n\n" . $out);
+        $this->assertSame($falseMessageContent,
+            $messages[$falseMessage],
+            "Message content \"false\" is lost. Command output:\n\n" . $out);
     }
 
     /**
@@ -401,6 +411,32 @@ abstract class BaseMessageControllerTest extends TestCase
         $messages = $this->loadMessages($category);
         $this->assertArrayHasKey($mainMessage, $messages, "\"$mainMessage\" is missing in translation file. Command output:\n\n" . $out);
         $this->assertArrayHasKey($nestedMessage, $messages, "\"$nestedMessage\" is missing in translation file. Command output:\n\n" . $out);
+    }
+
+    /**
+     * @depends testCreateTranslation
+     *
+     * @see https://github.com/yiisoft/yii2/issues/11502
+     */
+    public function testMissingLanguage()
+    {
+        $category = 'multiLangCategory';
+        $mainMessage = 'multiLangMessage';
+        $sourceFileContent = "Yii::t('{$category}', '{$mainMessage}');";
+        $this->createSourceFile($sourceFileContent);
+
+        $this->saveConfigFile($this->getConfig());
+        $out = $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $secondLanguage = 'pl';
+        $this->saveConfigFile($this->getConfig(['languages' => [$this->language, $secondLanguage]]));
+        $out .= $this->runMessageControllerAction('extract', [$this->configFileName]);
+
+        $firstLanguage = $this->language;
+        $this->language = $secondLanguage;
+        $messages = $this->loadMessages($category);
+        $this->language = $firstLanguage;
+        $this->assertArrayHasKey($mainMessage, $messages, "\"$mainMessage\" for language \"$secondLanguage\" is missing in translation file. Command output:\n\n" . $out);
     }
 }
 

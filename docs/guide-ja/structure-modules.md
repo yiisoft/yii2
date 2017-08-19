@@ -57,7 +57,7 @@ public function init()
 {
     parent::init();
     // config.php からロードした構成情報でモジュールを初期化する
-    \Yii::configure($this, require(__DIR__ . '/config.php'));
+    \Yii::configure($this, require __DIR__ . '/config.php');
 }
 ```
 
@@ -95,7 +95,7 @@ class PostController extends Controller
 
 コントローラクラスの名前空間は、[[yii\base\Module::controllerNamespace]] プロパティを構成してカスタマイズすることが出来ます。
 いくつかのコントローラがこの名前空間の外にある場合でも、[[yii\base\Module::controllerMap]] プロパティを構成することによって、それらをアクセス可能にすることが出来ます。
-これは、[アプリケーションでのコントローラマップ](structure-applications.md#controllerMap) の場合と同様です。
+これは、[アプリケーションでのコントローラマップ](structure-applications.md#controller-map) の場合と同様です。
 
 
 ### モジュール内のビュー <span id="views-in-modules"></span>
@@ -117,7 +117,7 @@ class PostController extends Controller
 あなたのコマンドがコマンドラインユーティリティから見えるようにするためには、Yii がコンソールモードで実行されたときに
 [[yii\base\Module::controllerNamespace]] を変更して、コマンドの名前空間を指し示すようにする必要があります。
 
-それを達成する一つの方法は、モジュールの `init` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
+それを達成する一つの方法は、モジュールの `init()` メソッドの中で Yii アプリケーションのインスタンスの型を調べるという方法です。
 
 ```php
 public function init()
@@ -177,7 +177,7 @@ $module = MyModuleClass::getInstance();
 
 ここで `MyModuleClass` は、当該モジュールクラスの名前を指すものです。
 `getInstance()` メソッドは、現在リクエストされているモジュールクラスのインスタンスを返します。
-モジュールがリクエストされていない場合は、このメソッドは null を返します。
+モジュールがリクエストされていない場合は、このメソッドは `null` を返します。
 モジュールクラスの新しいインスタンスを手動で作成しようとしてはいけないことに注意してください。
 手動で作成したインスタンスは、リクエストに対するレスポンスとして Yii によって作成されたインスタンスとは別のものになります。
 

@@ -17,7 +17,7 @@ if ($this->beginCache($id)) {
 ```
 
 Jak widać, chodzi tu o zamknięcie bloku generatora zawartości pomiędzy wywołaniem metod [[yii\base\View::beginCache()|beginCache()]] i [[yii\base\View::endCache()|endCache()]]. 
-Jeśli wskazana zawartość zostanie odnaleziona w pamięci podręcznej, [[yii\base\View::beginCache()|beginCache()]] wyrenderuje zapisaną zawartość i zwróci false, przez co pominie 
+Jeśli wskazana zawartość zostanie odnaleziona w pamięci podręcznej, [[yii\base\View::beginCache()|beginCache()]] wyrenderuje zapisaną zawartość i zwróci `false`, przez co pominie 
 blok jej generowania. W przeciwnym wypadku generowanie zostanie uruchomione, a w momencie wywołania [[yii\base\View::endCache()|endCache()]] wygenerowana zawartość zostanie zapisana 
 w pamięci podręcznej.
 

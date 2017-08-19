@@ -10,7 +10,7 @@ Dans cette section, nous décrivons comment composer et enovoyer des réponses �
 
 ## Code d'état <span id="status-code"></span>
 
-Une de première chose que vous devez faire lorsque vous construisez une réponse est de déclarer si la requête a été correctement prise en charge ou pas. Cela se fait en définissant la propriété  [[yii\web\Response::statusCode (code d'état)]] qui peut prendre un des [code d'état HTTP](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) valides. Par exemple, pour indiquer que la requête a été prise en charge avec succès, vous pouvez définir le code à 200, comme ceci :
+Une de première chose que vous devez faire lorsque vous construisez une réponse est de déclarer si la requête a été correctement prise en charge ou pas. Cela se fait en définissant la propriété  [[yii\web\Response::statusCode (code d'état)]] qui peut prendre un des [code d'état HTTP](https://tools.ietf.org/html/rfc2616#section-10) valides. Par exemple, pour indiquer que la requête a été prise en charge avec succès, vous pouvez définir le code à 200, comme ceci :
 
 ```php
 Yii::$app->response->statusCode = 200;
@@ -198,7 +198,7 @@ Le contenu d'une réponse n'est pas envoyé à l'utilisateur tant que la méthod
 La méthode [[yii\web\Response::send()]] entreprend les étapes suivantes pour envoyer la réponse :
 
 1. Elle déclenche l'événement  [[yii\web\Response::EVENT_BEFORE_SEND]].
-2. Elle appelle [[yii\web\Response::prepare()]] pour formater [[yii\web\Response::data|les données de la réponse] du [[yii\web\Response::content|contenu de la réponse].
+2. Elle appelle [[yii\web\Response::prepare()]] pour formater [[yii\web\Response::data|les données de la réponse]] du [[yii\web\Response::content|contenu de la réponse]].
 3. Elle déclenche l'événement  [[yii\web\Response::EVENT_AFTER_PREPARE]].
 4. Elle appelle la méthode [[yii\web\Response::sendHeaders()]] pour envoyer les entêtes HTTP enregistrés. 
 5. Elle appelle la méthode [[yii\web\Response::sendContent()]] pour envoyer le corps de la réponse.

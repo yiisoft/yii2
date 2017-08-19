@@ -180,7 +180,7 @@ $cache->set($key, $data, 30, $dependency);
 
 // La caché comprobará si los datos han expirado.
 // También comprobará si la dependencia ha cambiado.
-// Devolverá false si se encuentran algunas de esas condiciones.
+// Devolverá `false` si se encuentran algunas de esas condiciones.
 $data = $cache->get($key);
 ```
 
@@ -227,7 +227,7 @@ $result = Customer::getDb()->cache(function ($db) {
 Las consultas en caché tienen tres opciones configurables globales a través de [[yii\db\Connection]]:
 
 * [[yii\db\Connection::enableQueryCache|enableQueryCache]]: activa o desactiva el cacheo de consultas.
-  Por defecto es true. Tenga en cuenta que para activar el cacheo de consultas, también necesitas tener una caché válida, especificada por [[yii\db\Connection::queryCache|queryCache]].
+  Por defecto es `true`. Tenga en cuenta que para activar el cacheo de consultas, también necesitas tener una caché válida, especificada por [[yii\db\Connection::queryCache|queryCache]].
 * [[yii\db\Connection::queryCacheDuration|queryCacheDuration]]: representa el número de segundos que un resultado de la consulta permanecerá válida en la memoria caché. Puedes usar 0 para indicar que el resultado de la consulta debe permanecer en la caché para siempre. Esta propiedad es el valor usado por defecto cuando [[yii\db\Connection::cache()]] es llamada sin especificar una duración.
 * [[yii\db\Connection::queryCache|queryCache]]: representa el ID del componente de aplicación de caché.
   Por defecto es `'cache'`. El almacenamiento en caché de consultas se habilita sólo si hay un componente de la aplicación de caché válida.

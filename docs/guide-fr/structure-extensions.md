@@ -28,7 +28,7 @@ Par exemple, pour installer l'extension `yiisoft/yii2-imagine`, modifier votre f
     "require": {
         // ... autres dépendances
 
-        "yiisoft/yii2-imagine": "*"
+        "yiisoft/yii2-imagine": "~2.0.0"
     }
 }
 ```
@@ -115,7 +115,7 @@ L'exemple suivant montre le fichier `composer.json` de l'extension `yiisoft/yii2
 
     // dépendances du paquet
     "require": {
-        "yiisoft/yii2": "*",
+        "yiisoft/yii2": "~2.0.0",
         "imagine/imagine": "v0.5.0"
     },
 
@@ -290,7 +290,7 @@ Dans les versions de votre extension, en plus des fichiers de code, vous devez e
 * Un fichier *changelog* (journal des modifications) dans le dossier racine du paquet : il liste les changements apportés dans chacune des versions. Ce fichier peut être écrit dans le format Markdown et nommé `changelog.md`.
 * Un fichier *upgrade* (mise à jour) dans le dossier racine du paquet : il donne les instructions sur la manière de mettre l'extension à jour en partant d'une version précédente.   Ce fichier peut être écrit dans le format Markdown et nommé `upgrade.md`.
 * Tutorials, demos, screenshots, etc.: ces derniers sont nécessaires si votre extension fournit de nombreuses fonctionnalités qui ne peuvent être couvertes dans le fichier readme. 
-* Une documentation de l'API : votre code doit être bien documenté pour permettre aux autres personnes de le lire plus facilement et de le comprendre. Vous pouvez faire référence au [fichier de la classe Object](https://github.com/yiisoft/yii2/blob/master/framework/base/Object.php) pour savoir comment documenter votre code. 
+* Une documentation de l'API : votre code doit être bien documenté pour permettre aux autres personnes de le lire plus facilement et de le comprendre. Vous pouvez faire référence au [fichier de la classe BaseObject](https://github.com/yiisoft/yii2/blob/master/framework/base/BaseObject.php) pour savoir comment documenter votre code. 
  
 > Info: les commentaires de votre code peuvent être écrits dans le format Markdown. L'extension `yiisoft/yii2-apidoc` vous fournit un outil pour générer une documentation d'API agréable et basée sur les commentaires de votre code. 
 
@@ -309,6 +309,7 @@ Yii fournit les extensions du noyau suivantes qui sont développées et maintenu
 - [yiisoft/yii2-elasticsearch](https://github.com/yiisoft/yii2-elasticsearch) : fournit la prise en charge d'[Elasticsearch](http://www.elasticsearch.org/). Elle inclut un moteur de requêtes/recherches de base et met en œuvre le motif [Active Record](db-active-record.md) qui permet de stocker des enregistrement actifs dans Elasticsearch.
 - [yiisoft/yii2-faker](https://github.com/yiisoft/yii2-faker) : fournit la prise en charge de [Faker](https://github.com/fzaninotto/Faker) pour générer des données factices pour vous.
 - [yiisoft/yii2-gii](https://github.com/yiisoft/yii2-gii) : fournit un générateur de code basé sur le Web qui est hautement extensible et peut être utilisé pour générer rapidement des modèles, des formulaires, des modules, des requêtes CRUD, etc. 
+- [yiisoft/yii2-httpclient](https://github.com/yiisoft/yii2-httpclient): provides an HTTP client.
 - [yiisoft/yii2-imagine](https://github.com/yiisoft/yii2-imagine) : fournit des fonctionnalités couramment utilisées de manipulation d'images basées sur [Imagine](http://imagine.readthedocs.org/).
 - [yiisoft/yii2-jui](https://github.com/yiisoft/yii2-jui) : fournit un jeu d'objets graphiques qui encapsulent les interactions et les objets graphiques de [JQuery UI](http://jqueryui.com/).
 - [yiisoft/yii2-mongodb](https://github.com/yiisoft/yii2-mongodb) : fournit la prise en charge de [MongoDB](http://www.mongodb.org/). Elle inclut des fonctionnalités telles que les requêtes de base, les enregistrements actifs, les migrations, la mise en cache, la génération de code, etc.

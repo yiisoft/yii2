@@ -46,30 +46,27 @@ If you had Composer already installed before, make sure you use an up to date ve
 by running `composer self-update`.
 
 > Note: During the installation of Yii, Composer will need to request a lot of information from the Github API.
-> The amount of requests depends on the number of dependencies your application has and may be bigger than the
+> The number of requests depends on the number of dependencies your application has and may be bigger than the
 > **Github API rate limit**. If you hit this limit, Composer may ask for your Github login credentials to obtain
 > a Github API access token. On fast connections you may hit this limit earlier than Composer can handle so we
 > recommend to configure the access token before installing Yii.
 > Please refer to the [Composer documentation about Github API tokens](https://getcomposer.org/doc/articles/troubleshooting.md#api-rate-limit-and-oauth-tokens)
 > for instructions on how to do this.
 
-### Installing Yii
+### Installing Yii <span id="installing-from-composer"></span>
 
-With Composer installed, you can install Yii by running the following commands under a Web-accessible folder:
+With Composer installed, you can install Yii application template by running the following command
+under a Web-accessible folder:
 
 ```bash
-composer global require "fxp/composer-asset-plugin:^1.2.0"
 composer create-project --prefer-dist yiisoft/yii2-app-basic basic
 ```
 
-The first command installs the [composer asset plugin](https://github.com/francoispluchino/composer-asset-plugin/)
-which allows managing bower and npm package dependencies through Composer. You only need to run this command
-once for all. The second command installs the latest stable version of Yii in a directory named `basic`.
+This will install the latest stable version of Yii application template in a directory named `basic`.
 You can choose a different directory name if you want.
 
-> Info: If the `composer create-project` command fails make sure you have the composer asset plugin installed correctly.
-> You can do that by running `composer global show`, which should contain an entry `fxp/composer-asset-plugin`.
-> You may also refer to the [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
+> Info: If the `composer create-project` command fails you may also refer to the 
+> [Troubleshooting section of the Composer Documentation](https://getcomposer.org/doc/articles/troubleshooting.md)
 > for common errors. When you have fixed the error, you can resume the aborted installation
 > by running `composer update` inside of the `basic` directory.
 
@@ -152,7 +149,7 @@ Yii's requirements. You can check if the minimum requirements are met using one 
   ```
 
 You should configure your PHP installation so that it meets the minimum requirements of Yii. Most importantly, you
-should have PHP 5.4 or above. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
+should have PHP 7.1 or above. You should also install the [PDO PHP Extension](http://www.php.net/manual/en/pdo.installation.php)
 and a corresponding database driver (such as `pdo_mysql` for MySQL databases), if your application needs a database.
 
 
@@ -164,9 +161,8 @@ Configuring Web Servers <span id="configuring-web-servers"></span>
 
 The application installed according to the above instructions should work out of box with either
 an [Apache HTTP server](http://httpd.apache.org/) or an [Nginx HTTP server](http://nginx.org/), on
-Windows, Mac OS X, or Linux running PHP 5.4 or higher. Yii 2.0 is also compatible with facebook's
-[HHVM](http://hhvm.com/). However, there are some edge cases where HHVM behaves different than native
-PHP, so you have to take some extra care when using HHVM.
+
+Windows, Mac OS X, or Linux running PHP 7.1 or higher.
 
 On a production server, you may want to configure your Web server so that the application can be accessed
 via the URL `http://www.example.com/index.php` instead of `http://www.example.com/basic/web/index.php`. Such configuration

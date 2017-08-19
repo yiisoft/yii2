@@ -1,10 +1,14 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\mail;
 
 use Yii;
-use yii\mail\BaseMailer;
-use yii\mail\BaseMessage;
+use yiiunit\data\mail\TestMailer;
 use yiiunit\TestCase;
 
 /**
@@ -22,7 +26,7 @@ class BaseMessageTest extends TestCase
     }
 
     /**
-     * @return Mailer test email component instance.
+     * @return TestMailer test email component instance.
      */
     protected function createTestEmailComponent()
     {
@@ -54,100 +58,5 @@ class BaseMessageTest extends TestCase
         $mailer = $this->getMailer();
         $message = $mailer->compose();
         $this->assertEquals($message->toString(), '' . $message);
-    }
-}
-
-/**
- * Test Mailer class
- */
-class TestMailer extends BaseMailer
-{
-    public $messageClass = 'yiiunit\framework\mail\TestMessage';
-    public $sentMessages = [];
-
-    protected function sendMessage($message)
-    {
-        $this->sentMessages[] = $message;
-    }
-}
-
-/**
- * Test Message class
- */
-class TestMessage extends BaseMessage
-{
-    public $text;
-    public $html;
-
-    public function getCharset()
-    {
-        return '';
-    }
-
-    public function setCharset($charset) {}
-
-    public function getFrom()
-    {
-        return '';
-    }
-
-    public function setFrom($from) {}
-
-    public function getReplyTo()
-    {
-        return '';
-    }
-
-    public function setReplyTo($replyTo) {}
-
-    public function getTo()
-    {
-        return '';
-    }
-
-    public function setTo($to) {}
-
-    public function getCc()
-    {
-        return '';
-    }
-
-    public function setCc($cc) {}
-
-    public function getBcc()
-    {
-        return '';
-    }
-
-    public function setBcc($bcc) {}
-
-    public function getSubject()
-    {
-        return '';
-    }
-
-    public function setSubject($subject) {}
-
-    public function setTextBody($text)
-    {
-        $this->text = $text;
-    }
-
-    public function setHtmlBody($html)
-    {
-        $this->html = $html;
-    }
-
-    public function attachContent($content, array $options = []) {}
-
-    public function attach($fileName, array $options = []) {}
-
-    public function embed($fileName, array $options = []) {}
-
-    public function embedContent($content, array $options = []) {}
-
-    public function toString()
-    {
-        return get_class($this);
     }
 }

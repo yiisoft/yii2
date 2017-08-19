@@ -37,7 +37,7 @@ echo $model->name;
 ```
 
 また、配列の要素にアクセスするようして、属性にアクセスすることも出来ます。
-これは、[[yii\base\Model]] が [ArrayAccess インターフェイス](http://php.net/manual/ja/class.arrayaccess.php) と [ArrayIterator クラス](http://jp2.php.net/manual/ja/class.arrayiterator.php) をサポートしている恩恵です。
+これは、[[yii\base\Model]] が [ArrayAccess インターフェイス](http://php.net/manual/ja/class.arrayaccess.php) と [Traversable インターフェイス](http://jp2.php.net/manual/ja/class.traversable.php) をサポートしている恩恵です。
 
 ```php
 $model = new \app\models\ContactForm;
@@ -46,7 +46,7 @@ $model = new \app\models\ContactForm;
 $model['name'] = 'example';
 echo $model['name'];
 
-// 属性に反復アクセスする
+// モデルは foreach で中身をたどることが出来る
 foreach ($model as $name => $value) {
     echo "$name: $value\n";
 }
@@ -229,8 +229,8 @@ class User extends ActiveRecord
 
 受信したデータを検証するために、[[yii\base\Model::validate()]] を呼ぶことが出来ます。
 このメソッドは、[[yii\base\Model::rules()]] で宣言された検証規則を使って、該当するすべての属性を検証します。
-エラーが見つからなければ、メソッドは true を返します。
-そうでなければ、[[yii\base\Model::errors]] にエラーを保存して、false を返します。
+エラーが見つからなければ、メソッドは `true` を返します。
+そうでなければ、[[yii\base\Model::errors]] にエラーを保存して、`false` を返します。
 例えば、
 
 ```php
@@ -389,9 +389,11 @@ public function rules()
 
 モデルを他の形式にエクスポートする必要が生じることはよくあります。
 例えば、モデルのコレクションを JSON や Excel 形式に変換したい場合があるでしょう。
-エクスポートのプロセスは二つの独立したステップに分割することが出来ます。
-最初のステップで、モデルは配列に変換されます。
-そして第二のステップで、配列が目的の形式に変換されます。
+このエクスポートのプロセスは二つの独立したステップに分割することが出来ます。
+
+- モデルが配列に変換され、
+- 配列が目的の形式に変換される。
+
 あなたは最初のステップだけに注力することが出来ます。
 と言うのは、第二のステップは汎用的なデータフォーマッタ、例えば [[yii\web\JsonResponseFormatter]] によって達成できるからです。
 

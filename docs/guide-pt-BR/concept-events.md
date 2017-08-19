@@ -191,7 +191,7 @@ use Yii;
 use yii\base\Event;
 use yii\db\ActiveRecord;
 
-Event::on(ActiveRecord::className(), ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
+Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, function ($event) {
    Yii::trace(get_class($event->sender) . ' is inserted');
 });
 ```
@@ -205,25 +205,25 @@ Você pode disparar um evento de *nível de classe* chamando o método estático
 ```php
 use yii\base\Event;
 
-Event::on(Foo::className(), Foo::EVENT_HELLO, function ($event) {
-   echo $event->sender;  // displays "app\models\Foo"
+Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
+   var_dump($event->sender);  // displays "null"
 });
 
-Event::trigger(Foo::className(), Foo::EVENT_HELLO);
+Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
 Note que, neste caso, `$event->sender` refere-se ao nome da classe acionando o evento em vez de uma instância do objeto.
 
-> Observação: Já que um manipulador de nível de classe vai responder a um evento acionado por qualquer instância dessa classe, ou qualquer classe filha, você deve usá-lo com cuidado, especialmente se a classe é uma classe base de baixo nível, tal como [[yii\base\Object]].
+> Observação: Já que um manipulador de nível de classe vai responder a um evento acionado por qualquer instância dessa classe, ou qualquer classe filha, você deve usá-lo com cuidado, especialmente se a classe é uma classe base de baixo nível, tal como [[yii\base\BaseObject]].
 
 Para desvincular um manipulador de evento de nível de classe, chame [[yii\base\Event::off()]]. Por exemplo:
 
 ```php
 // desvincula $handler
-Event::off(Foo::className(), Foo::EVENT_HELLO, $handler);
+Event::off(Foo::class, Foo::EVENT_HELLO, $handler);
 
 // Desvincula todos os manipuladores de Foo::EVENT_HELLO
-Event::off(Foo::className(), Foo::EVENT_HELLO);
+Event::off(Foo::class, Foo::EVENT_HELLO);
 ```
 
 

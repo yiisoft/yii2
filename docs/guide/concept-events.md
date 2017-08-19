@@ -230,16 +230,16 @@ handlers only. For example:
 use yii\base\Event;
 
 Event::on(Foo::class, Foo::EVENT_HELLO, function ($event) {
-    echo $event->sender;  // displays "app\models\Foo"
+    var_dump($event->sender);  // displays "null"
 });
 
 Event::trigger(Foo::class, Foo::EVENT_HELLO);
 ```
 
-Note that, in this case, `$event->sender` refers to the name of the class triggering the event instead of an object instance.
+Note that, in this case, `$event->sender` is `null` instead of an object instance.
 
 > Note: Because a class-level handler will respond to an event triggered by any instance of that class, or any child
-  classes, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\Object]].
+  classes, you should use it carefully, especially if the class is a low-level base class, such as [[yii\base\BaseObject]].
 
 To detach a class-level event handler, call [[yii\base\Event::off()]]. For example:
 
@@ -261,6 +261,8 @@ implement it in classes, where you need it.
 For example, we can create the following interface:
 
 ```php
+namespace app\interfaces;
+
 interface DanceEventInterface
 {
     const EVENT_DANCE = 'dance';
@@ -290,25 +292,29 @@ class Developer extends Component implements DanceEventInterface
 ```
 
 To handle the `EVENT_DANCE`, triggered by any of these classes, call [[yii\base\Event::on()|Event::on()]] and
-pass the interface name as the first argument:
+pass the interface class name as the first argument:
 
 ```php
-Event::on('DanceEventInterface', DanceEventInterface::EVENT_DANCE, function ($event) {
-    Yii::trace($event->sender->className . ' just danced'); // Will log that Dog or Developer danced
-})
+Event::on(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE, function ($event) {
+    Yii::trace(get_class($event->sender) . ' just danced'); // Will log that Dog or Developer danced
+});
 ```
 
 You can trigger the event of those classes:
 
 ```php
-Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
+// trigger event for Dog class
+Event::trigger(Dog::class, DanceEventInterface::EVENT_DANCE);
+
+// trigger event for Developer class
+Event::trigger(Developer::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 But please notice, that you can not trigger all the classes, that implement the interface:
 
 ```php
-// DOES NOT WORK
-Event::trigger('DanceEventInterface', DanceEventInterface::EVENT_DANCE); // error
+// DOES NOT WORK. Classes that implement this interface will NOT be triggered.
+Event::trigger(DanceEventInterface::class, DanceEventInterface::EVENT_DANCE);
 ```
 
 To detach event handler, call [[yii\base\Event::off()|Event::off()]]. For example:

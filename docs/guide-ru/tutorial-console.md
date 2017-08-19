@@ -17,7 +17,7 @@
 Как вы можете видеть на скриншоте, в Yii уже определён набор доступных по умолчанию команд:
 
 - [[yii\console\controllers\AssetController|AssetController]] - Позволяет вам объединять и сжимать ваши JavaScript и CSS файлы.
-  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#using-the-asset-command).
+  Больше об этой команде вы можете узнать в [Assets Section](structure-assets.md#using-asset-bundles).
 - [[yii\console\controllers\CacheController|CacheController]] - Позволяет вам сбрасывать кеш приложения.
 - [[yii\console\controllers\FixtureController|FixtureController]] - Управляет загрузкой и выгрузкой данных фикстур для тестирования.
   Данная команда более подробно описана в [Testing Section about Fixtures](test-fixtures.md#managing-fixtures).
@@ -69,11 +69,12 @@ yii migrate/up 5 --migrationTable=migrations
  */
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
-require(__DIR__ . '/vendor/autoload.php');
-require(__DIR__ . '/vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/vendor/yiisoft/yii2/Yii.php';
 
-$config = require(__DIR__ . '/config/console.php');
+$config = require __DIR__ . '/config/console.php';
 
 $application = new yii\console\Application($config);
 $exitCode = $application->run();
@@ -106,6 +107,55 @@ exit($exitCode);
 > yii <route> --appconfig=path/to/config.php ...
 > ```
 
+Автодополнение консольных команд <span id="console-command-completion"></span>
+---------------
+
+Автодополнение аргументов команд является полезной возможностью при работе в командной строке.
+Начиная с версии 2.0.11, команда `./yii` поддерживает автодополнение для Bash и ZSH. 
+
+### Автодополнение для Bash
+
+Убедитесь, что средства автодополнения для Bash установлены. В большинстве дистрибутивов они поставляются по умолчанию.
+
+Сохраните скрипт для автодополнения в директорию `/etc/bash_completion.d/`:
+
+     curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/bash/yii -o /etc/bash_completion.d/yii
+
+Для временного использования, вы можете сохранить файл в произвольную директорию и подключить его на время работы сессии,
+вызвав команду `source yii`.
+
+Если скрипт был установлен глобально, вам потребуется перезапустить терминал или выполнить команду `source ~/.bashrc` 
+для активации автодополнения.
+
+Обратитесь к [инструкции по автодополнению в Bash](https://www.gnu.org/software/bash/manual/html_node/Programmable-Completion.html)
+чтобы узнать о других способах подключения скриптов автодополнения в ваше окружение.
+
+### Автодополнение для ZSH
+
+Сохраните скрипт автодополнения в директорию для скриптов автодополнения. Например, `~/.zsh/completion/`
+
+```
+mkdir -p ~/.zsh/completion
+curl -L https://raw.githubusercontent.com/yiisoft/yii2/master/contrib/completion/zsh/_yii -o ~/.zsh/completion/_yii
+```
+
+Добавьте эту директорию в переменную среды `$fpath`, например добавив в конец `~/.zshrc` следующую строку:
+
+```
+fpath=(~/.zsh/completion $fpath)
+```
+
+Убедитесь, что программа `compinit` запущена. Если это не так - добавьте в `~/.zshrc` следующие строки:
+
+```
+autoload -Uz compinit && compinit -i
+```
+
+Затем перезапустите ваш терминал, либо выполните команду
+
+```
+exec $SHELL -l
+```
 
 Создание ваших собственных команд <span id="create-command"></span>
 ----------------------------------
@@ -141,6 +191,46 @@ exit($exitCode);
 
 Вы можете использовать указание типа `array`, чтобы указать, что аргумент должен рассматриваться как массив. Массив
 будет сгенерирован путём разделения входной строки по запятым.
+
+### Псевдонимы опций
+
+Начиная с версии 2.0.8 в классе консольной команды  доступен метод [[yii\console\Controller::optionAliases()]],
+позволяющий добавлять псевдонимы для опций.
+
+Для того, чтобы задать псевдоним, перекройте метод [[yii\console\Controller::optionAliases()]] в вашем контроллере:
+
+```php
+namespace app\commands;
+
+use yii\console\Controller;
+
+class HelloController extends Controller
+{
+    public $message;
+    
+    public function options($actionID)
+    {
+        return ['message'];
+    }
+    
+    public function optionAliases()
+    {
+        return ['m' => 'message'];
+    }
+    
+    public function actionIndex()
+    {
+        echo $this->message . "\n";
+    }
+}
+```
+
+Теперь для запуска команды можно использовать следующий синтаксис:
+
+```
+yii hello -m=hello
+```
+
 
 Следующий пример показывает как описывать аргументы:
 

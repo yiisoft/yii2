@@ -38,8 +38,8 @@ In the code above, both Smarty and Twig are configured to be useable by the view
 your `composer.json` file to include them, too:
 
 ```
-"yiisoft/yii2-smarty": "*",
-"yiisoft/yii2-twig": "*",
+"yiisoft/yii2-smarty": "~2.0.0",
+"yiisoft/yii2-twig": "~2.0.0",
 ```
 That code would be added to the `require` section of `composer.json`. After making that change and saving the file, you can install the extensions by running `composer update --prefer-dist` in the command-line.
 

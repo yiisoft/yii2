@@ -15,11 +15,14 @@ Yii DAO из коробки поддерживает следующие базы
 - [MySQL](http://www.mysql.com/)
 - [MariaDB](https://mariadb.com/)
 - [SQLite](http://sqlite.org/)
-- [PostgreSQL](http://www.postgresql.org/)
+- [PostgreSQL](http://www.postgresql.org/): версии 8.4 или выше.
 - [CUBRID](http://www.cubrid.org/): версии 9.3 или выше.
 - [Oracle](http://www.oracle.com/us/products/database/overview/index.html)
 - [MSSQL](https://www.microsoft.com/en-us/sqlserver/default.aspx): версии 2008 или выше.
 
+
+> Note: Новая версия pdo_oci для PHP 7 на данный момент существует только в форме исходного кода. Используйте
+  [инструкции сообщества по компиляции](https://github.com/yiisoft/yii2/issues/10975#issuecomment-248479268).
 
 ## Создание подключения к базе данных <span id="creating-db-connections"></span>
 
@@ -326,14 +329,17 @@ try {
     // ... executing other SQL statements ...
     
     $transaction->commit();
-    
 } catch(\Exception $e) {
-
     $transaction->rollBack();
-    
     throw $e;
+} catch(\Throwable $e) {
+    $transaction->rollBack();
 }
 ```
+
+> Note: в коде выше ради совместимости с PHP 5.x и PHP 7.x использованы два блока catch. 
+> `\Exception` реализует интерфейс [`\Throwable` interface](http://php.net/manual/ru/class.throwable.php)
+> начиная с PHP 7.0. Если вы используете только PHP 7 и новее, можете пропустить блок с `\Exception`.
 
 При вызове метода [[yii\db\Connection::beginTransaction()|beginTransaction()]], будет запущена новая транзакция.
 Транзакция представлена объектом [[yii\db\Transaction]] сохранённым в переменной `$transaction`. Потом, запросы будут
@@ -354,7 +360,7 @@ Yii::$app->db->transaction(function ($db) {
     ....
 }, $isolationLevel);
  
-// or alternatively
+// или
 
 $transaction = Yii::$app->db->beginTransaction($isolationLevel);
 ```
@@ -390,10 +396,10 @@ Yii предоставляет четыре константы для наибо
 
 ```php
 Yii::$app->db->transaction(function ($db) {
-    // outer transaction
+    // внешняя транзакция
     
     $db->transaction(function ($db) {
-        // inner transaction
+        // внутренняя транзакция
     });
 });
 ```
@@ -412,11 +418,17 @@ try {
         $innerTransaction->commit();
     } catch (\Exception $e) {
         $innerTransaction->rollBack();
+    } catch (\Throwable $e) {
+        $innerTransaction->rollBack();
+        throw $e;
     }
 
     $outerTransaction->commit();
 } catch (\Exception $e) {
     $outerTransaction->rollBack();
+} catch (\Throwable $e) {
+    $innerTransaction->rollBack();
+    throw $e;
 }
 ```
 
@@ -556,6 +568,9 @@ try {
     $transaction->commit();
 } catch(\Exception $e) {
     $transaction->rollBack();
+    throw $e;
+} catch (\Throwable $e) {
+    $innerTransaction->rollBack();
     throw $e;
 }
 ```

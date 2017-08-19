@@ -7,6 +7,7 @@
 
 namespace yii\grid;
 
+use Closure;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
@@ -30,6 +31,8 @@ use yii\helpers\Inflector;
  * may be used for calculation, while the actual cell content is a [[format|formatted]] version of that
  * value which may contain HTML markup.
  *
+ * For more details and usage information on DataColumn, see the [guide article on data widgets](guide:output-data-widgets).
+ *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
@@ -51,13 +54,13 @@ class DataColumn extends Column
      */
     public $label;
     /**
-     * @var boolean whether the header label should be HTML-encoded.
+     * @var bool whether the header label should be HTML-encoded.
      * @see label
      * @since 2.0.1
      */
     public $encodeLabel = true;
     /**
-     * @var string|\Closure an anonymous function or a string that is used to determine the value to display in the current column.
+     * @var string|Closure an anonymous function or a string that is used to determine the value to display in the current column.
      *
      * If this is an anonymous function, it will be called for each row and the return value will be used as the value to
      * display for every data model. The signature of this function should be: `function ($model, $key, $index, $column)`.
@@ -72,14 +75,15 @@ class DataColumn extends Column
      */
     public $value;
     /**
-     * @var string|array in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
+     * @var string|array|Closure in which format should the value of each data model be displayed as (e.g. `"raw"`, `"text"`, `"html"`,
      * `['date', 'php:Y-m-d']`). Supported formats are determined by the [[GridView::formatter|formatter]] used by
      * the [[GridView]]. Default format is "text" which will format the value as an HTML-encoded plain text when
      * [[\yii\i18n\Formatter]] is used as the [[GridView::$formatter|formatter]] of the GridView.
+     * @see \yii\i18n\Formatter::format()
      */
     public $format = 'text';
     /**
-     * @var boolean whether to allow sorting by this column. If true and [[attribute]] is found in
+     * @var bool whether to allow sorting by this column. If true and [[attribute]] is found in
      * the sort definition of [[GridView::dataProvider]], then the header cell of this column
      * will contain a link that may trigger the sorting when being clicked.
      */
@@ -104,9 +108,11 @@ class DataColumn extends Column
      * @var array the HTML attributes for the filter input fields. This property is used in combination with
      * the [[filter]] property. When [[filter]] is not set or is an array, this property will be used to
      * render the HTML attributes for the generated filter input fields.
+     * By default a `'class' => 'form-control'` element will be added if no class has been specified.
+     * If you do not want to create a class attribute, you can specify `['class' => null]`.
      * @see \yii\helpers\Html::renderTagAttributes() for details on how attributes are being rendered.
      */
-    public $filterInputOptions = ['class' => 'form-control', 'id' => null];
+    public $filterInputOptions = [];
 
 
     /**
@@ -126,9 +132,9 @@ class DataColumn extends Column
         if ($this->attribute !== null && $this->enableSorting &&
             ($sort = $this->grid->dataProvider->getSort()) !== false && $sort->hasAttribute($this->attribute)) {
             return $sort->link($this->attribute, array_merge($this->sortLinkOptions, ['label' => $label]));
-        } else {
-            return $label;
         }
+
+        return $label;
     }
 
     /**
@@ -142,11 +148,11 @@ class DataColumn extends Column
         if ($this->label === null) {
             if ($provider instanceof ActiveDataProvider && $provider->query instanceof ActiveQueryInterface) {
                 /* @var $model Model */
-                $model = new $provider->query->modelClass;
+                $model = new $provider->query->modelClass();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($provider instanceof ArrayDataProvider && $provider->modelClass !== null) {
                 /* @var $model Model */
-                $model = new $provider->modelClass;
+                $model = new $provider->modelClass();
                 $label = $model->getAttributeLabel($this->attribute);
             } elseif ($this->grid->filterModel !== null && $this->grid->filterModel instanceof Model) {
                 $label = $this->grid->filterModel->getAttributeLabel($this->attribute);
@@ -184,22 +190,31 @@ class DataColumn extends Column
             } else {
                 $error = '';
             }
+
+            $filterOptions = array_merge(['class' => 'form-control', 'id' => null], $this->filterInputOptions);
             if (is_array($this->filter)) {
-                $options = array_merge(['prompt' => ''], $this->filterInputOptions);
+                $options = array_merge(['prompt' => ''], $filterOptions);
                 return Html::activeDropDownList($model, $this->attribute, $this->filter, $options) . $error;
-            } else {
-                return Html::activeTextInput($model, $this->attribute, $this->filterInputOptions) . $error;
             }
-        } else {
-            return parent::renderFilterCellContent();
+            if ($this->format === 'boolean') {
+                $options = array_merge(['prompt' => ''], $filterOptions);
+                return Html::activeDropDownList($model, $this->attribute, [
+                    $this->grid->formatter->booleanFormat[0],
+                    $this->grid->formatter->booleanFormat[1],
+                ], $options) . $error;
+            }
+
+            return Html::activeTextInput($model, $this->attribute, $filterOptions) . $error;
         }
+
+        return parent::renderFilterCellContent();
     }
 
     /**
      * Returns the data cell value.
      * @param mixed $model the data model
      * @param mixed $key the key associated with the data model
-     * @param integer $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
+     * @param int $index the zero-based index of the data model among the models array returned by [[GridView::dataProvider]].
      * @return string the data cell value
      */
     public function getDataCellValue($model, $key, $index)
@@ -207,10 +222,11 @@ class DataColumn extends Column
         if ($this->value !== null) {
             if (is_string($this->value)) {
                 return ArrayHelper::getValue($model, $this->value);
-            } else {
-                return call_user_func($this->value, $model, $key, $index, $this);
             }
-        } elseif ($this->attribute !== null) {
+
+            return call_user_func($this->value, $model, $key, $index, $this);
+        }
+        if ($this->attribute !== null) {
             return ArrayHelper::getValue($model, $this->attribute);
         }
         return null;
@@ -223,8 +239,8 @@ class DataColumn extends Column
     {
         if ($this->content === null) {
             return $this->grid->formatter->format($this->getDataCellValue($model, $key, $index), $this->format);
-        } else {
-            return parent::renderDataCellContent($model, $key, $index);
         }
+
+        return parent::renderDataCellContent($model, $key, $index);
     }
 }

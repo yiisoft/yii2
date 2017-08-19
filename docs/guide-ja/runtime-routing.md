@@ -34,14 +34,17 @@ $url = Url::to(['post/view', 'id' => 100]);
 
 ## URL 形式 <span id="url-formats"></span>
 
-[[yii\web\UrlManager|URL マネージャ]] は二つの URL 形式、すなわち、デフォルトの URL 形式と、綺麗な URL 形式をサポートします。
+[[yii\web\UrlManager|URL マネージャ]] は二つの URL 形式をサポートします。すなわち、
 
-デフォルトの URL 形式は、`r` というクエリパラメータを使用してルートを表し、通常のクエリパラメータを使用してルートに結び付けられたクエリパラメータを表します。
+- デフォルトの URL 形式と、
+- 綺麗な URL (プリティ URL) の 形式。
+
+デフォルトの URL 形式は、`r` という [[yii\web\UrlManager::$routeParam|クエリパラメータ]] を使用してルートを表し、通常のクエリパラメータを使用してルートに結び付けられたクエリパラメータを表します。
 例えば、`/index.php?r=post/view&id=100` という URL は、`post/view` というルートと、`id` というクエリパラメータが 100 であることを表します。
 デフォルトの URL 形式は、[[yii\web\UrlManager|URL マネージャ]] についての構成を何も必要とせず、ウェブサーバの設定がどのようなものでも動作します。
 
 綺麗な URL 形式は、エントリスクリプトの名前に続く追加のパスを使用して、ルートとそれに結び付けられたクエリパラメータを表します。
-例えば、`/index.php/post/100` という URL の追加のパスは `/post/100` ですが、適切な [[yii\web\UrlManager::rules|URL 規則]] があれば、この URL が `post/view` というルートと `id` というクエリパラメータが 100 であることを表すことが出来ます。
+例えば、`/index.php/post/100` という URL の追加のパスは `/post/100` ですが、適切な [[yii\web\UrlManager::rules|URL 規則]] があれば、この追加のパスが `post/view` というルートと `id` のクエリパラメータ `100` を表すものとすることが出来ます。
 綺麗な URL 形式を使用するためには、URL をどのように表現すべきかという実際の要求に従って、一連の [[yii\web\UrlManager::rules|URL 規則]] を設計する必要があります。
 
 この二つの URL 形式は、[[yii\web\UrlManager|URL マネージャ]] の [[yii\web\UrlManager::enablePrettyUrl|enablePrettyUrl]] プロパティを ON/OFF することによって、他のアプリケーションコードを少しも変えることなく、切り替えることが出来ます。
@@ -49,8 +52,10 @@ $url = Url::to(['post/view', 'id' => 100]);
 
 ## ルーティング <span id="routing"></span>
 
-ルーティングは二つのステップを含みます。最初のステップでは、入ってくるリクエストが解析されて、ルートとそれに結び付けられたクエリパラメータに分解されます。
-そして、第二のステップでは、解析されたルートに対応する [コントローラアクション](structure-controllers.md#actions) がリクエストを処理するために生成されます。
+ルーティングは二つのステップを含みます。
+
+- まず、入ってくるリクエストが解析されて、ルートとそれに結び付けられたクエリパラメータに分解されます。
+- そして、解析されたルートに対応する [コントローラアクション](structure-controllers.md#actions) がリクエストを処理するために生成されます。
 
 デフォルトの URL 形式を使っている場合は、リクエストからルートを解析することは、`r` という名前の `GET` クエリパラメータを取得するだけの簡単なことです。
 
@@ -92,6 +97,14 @@ $url = Url::to(['post/view', 'id' => 100]);
 ];
 ```
 
+アプリケーションのデフォルトルートと同じく、モジュールにもデフォルトルートがあります。
+従って、例えば、`user` というモジュールがあって、リクエストの解析結果が `user` というルートになった場合、
+このモジュールの [[yii\base\Module::defaultRoute|defaultRoute]] がコントローラを決定するのに使用されます。
+デフォルトでは、このコントローラの名前は `default` となります。
+[[yii\base\Module::defaultRoute|defaultRoute]] でアクションが指定されていない場合は、
+コントローラの [[yii\base\Controller::defaultAction|defaultAction]] プロパティがアクションを決定するのに使用されます。
+この例の場合だと、完全なルートは `user/default/index` となります。
+
 
 ### `catchAll` ルート <span id="catchall-route"></span>
 
@@ -109,7 +122,7 @@ $url = Url::to(['post/view', 'id' => 100]);
 
 `catchAll` プロパティは配列を取り、最初の要素はルートを指定し、残りの要素 (「名前-値」のペア) は [アクションのパラメータ](structure-controllers.md#action-parameters) を指定するものでなければなりません。
 
-> Info: このプロパティを有効にすると、開発環境でデバッグパネルが動作しなくなります。
+> Info: このプロパティを有効にすると、開発環境で [デバッグツールバー](https://github.com/yiisoft/yii2-debug/blob/master/docs/guide-ja/README.md)が 動作しなくなります。
 
 
 ## URL を生成する <span id="creating-urls"></span>
@@ -165,14 +178,14 @@ echo Url::to(['post/index']);
 // 絶対ルート: /index.php?r=post%2Findex
 echo Url::to(['/post/index']);
 
-// /index.php?r=post%2Findex     エイリアス "@posts" が "/post/index" と定義されていると仮定
+// "/post/index" と定義されているエイリアス "@posts"を使用: /index.php?r=post%2Findex
 echo Url::to(['@posts']);
 ```
 
 [[yii\helpers\Url::to()]] メソッドは、[[yii\web\UrlManager|URL マネージャ]] の [[yii\web\UrlManager::createUrl()|createUrl()]] メソッド、および、[[yii\web\UrlManager::createAbsoluteUrl()|createAbsoluteUrl()]] を呼び出すことによって実装されています。
 次に続くいくつかの項では、[[yii\web\UrlManager|URL マネージャ]] を構成して、生成される URL の形式をカスタマイズする方法を説明します。
 
-[[yii\helpers\Url::to()]] メソッドは、特定のルートとの関係を持たない URL の生成もサポートしています。
+[[yii\helpers\Url::to()]] メソッドは、特定のルートとの関係を持た**ない** URL の生成もサポートしています。
 その場合、最初のパラメータには、配列を渡す代りに文字列を渡さなければなりません。例えば、
  
 ```php
@@ -234,7 +247,7 @@ echo Url::previous();
 その他のプロパティはオプションですが、上記で示されている構成が最もよく用いられているものです。
 
 * [[yii\web\UrlManager::showScriptName|showScriptName]]: このプロパティは、生成される URL にエントリスクリプトを含めるべきかどうかを決定します。
-  例えば、このプロパティを false にすると、`/index.php/post/100` という URL を生成する代りに、`/post/100` という URL を生成することが出来ます。
+  例えば、このプロパティを `false` にすると、`/index.php/post/100` という URL を生成する代りに、`/post/100` という URL を生成することが出来ます。
 * [[yii\web\UrlManager::enableStrictParsing|enableStrictParsing]]: このプロパティは、厳密なリクエスト解析を有効にするかどうかを決定します。
   厳密な解析が有効にされた場合、リクエストされた URL が有効なリクエストとして扱われるためには、それが [[yii\web\UrlManager::rules|rules]] の少なくとも一つに合致しなければなりません。
   そうでなければ、[[yii\web\NotFoundHttpException]] が投げられます。
@@ -242,13 +255,13 @@ echo Url::previous();
 * [[yii\web\UrlManager::rules|rules]]: このプロパティが URL を解析および生成するための一連の規則を含みます。
   このプロパティが、アプリケーションの固有の要求を満たす形式を持つ URL を生成するために、あなたが主として使うプロパティです。
 
-> Note: 生成された URL からエントリスクリプト名を隠すためには、[[yii\web\UrlManager::showScriptName|showScriptName]] を false に設定するだけでなく、ウェブサーバを構成して、リクエストされた URL が PHP スクリプトを明示的に指定していない場合でも、正しい PHP スクリプトを特定出来るようにする必要があります。
-もしあなたが Apache ウェブサーバを使うつもりなら、[インストール](start-installation.md#recommended-apache-configuration) の節で説明されている推奨設定を参照することが出来ます。
+> Note: 生成された URL からエントリスクリプト名を隠すためには、[[yii\web\UrlManager::showScriptName|showScriptName]] を `false` に設定するだけでなく、ウェブサーバを構成して、リクエストされた URL が PHP スクリプトを明示的に指定していない場合でも、正しい PHP スクリプトを特定出来るようにする必要があります。
+もしあなたが Apache または nginx ウェブサーバを使うつもりなら、[インストール](start-installation.md#recommended-apache-configuration) の節で説明されている推奨設定を参照することが出来ます。
 
 
 ### URL 規則 <span id="url-rules"></span>
 
-URL 規則は [[yii\web\UrlRule]] またはその子クラスのインスタンスです。
+URL 規則は [[yii\web\UrlRuleInterface]] を実装するクラス、通常は、[[yii\web\UrlRule]] クラスです。
 すべての URL 規則は、URL のパス情報の部分との照合に使われるパターン、ルート、そして、いくつかのクエリパラメータから構成されます。
 URL 規則は、パターンがリクエストされた URL と合致する場合に、リクエストの解析に使用することが出来ます。
 また、URL 規則は、ルートとクエリパラメータ名が与えられたものと合致する場合に、URL の生成に使用することが出来ます。
@@ -258,15 +271,15 @@ URL 規則は、パターンがリクエストされた URL と合致する場�
 そして、その合致する規則を使って URL を解析して、ルートとそれに結び付けられたパラメータを得ます。
 同じように、URL を生成するためには、[[yii\web\UrlManager|URL マネージャ]] は、与えられたルートとパラメータに合致する最初の規則を探して、それを使って URL を生成します。
 
-[[yii\web\UrlManager::rules]] は、パターンをキーとし、それに対応するルートを値とする配列として構成することが出来ます。
+[[yii\web\UrlManager::rules]] は、 [[yii\web\UrlRule::$pattern|パターン]] をキーとし、それに対応する [[yii\web\UrlRule::$route|ルート]] を値とする配列として構成することが出来ます。
 「パターン - ルート」のペアが、それぞれ、URL 規則を構成します。
 例えば、次の [[yii\web\UrlManager::rules|rules]] の構成は、二つの URL 規則を宣言するものです。
 最初の規則は `posts` という URL に合致し、それを `post/index` というルートにマップします。
 第二の規則は `post/(\d+)` という正規表現にマッチする URL に合致し、それを `post/view` というルートと `id` という名前のパラメータにマップします。
 
 ```php
-[
-    'posts' => 'post/index', 
+'rules' => [
+    'posts' => 'post/index',
     'post/<id:\d+>' => 'post/view',
 ]
 ```
@@ -280,9 +293,8 @@ URL 規則は、「パターン - ルート」のペアとして宣言する以�
 例えば、
 
 ```php
-[
+'rules' => [
     // ... 他の URL 規則 ...
-    
     [
         'pattern' => 'posts',
         'route' => 'post/index',
@@ -292,15 +304,16 @@ URL 規則は、「パターン - ルート」のペアとして宣言する以�
 ```
 
 URL 規則の構成情報で `class` を指定しない場合は、デフォルトとして、[[yii\web\UrlRule]] が使われます。
+このクラスが、[[yii\web\UrlManager::$ruleConfig]] でデフォルト値として定義されています。
 
 
 ### 名前付きパラメータ <span id="named-parameters"></span>
 
-URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定される、いくつかの名前付きクエリパラメータと結び付けることが出来ます。
+URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定される、名前付きクエリパラメータと結び付けることが出来ます。
 ここで、`ParamName` はパラメータ名を指定し、`RegExp` はパラメータの値との照合に使われるオプションの正規表現を指定するものです。
 `RegExp` が指定されていない場合は、パラメータの値がスラッシュを含まない文字列であるべきことを意味します。
 
-> Note: 正規表現はパラメータに対してのみ指定できます。パターンの残りの部分はプレーンテキストとして解釈されます。
+> Note: 正規表現はパラメータの中でのみ使用できます。パターンの残りの部分はプレーンテキストとして解釈されます。
 
 規則が URL の解析に使われるときには、URL の対応する部分に合致した値が、結び付けられたパラメータに入れられます。
 そして、そのパラメータは、後に `request` アプリケーションコンポーネントによって、`$_GET` に入れられて利用できるようになります。
@@ -309,7 +322,7 @@ URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定さ�
 名前付きパラメータの動作を説明するためにいくつかの例を挙げましょう。次の三つの URL 規則を宣言したと仮定してください。
 
 ```php
-[
+'rules' => [
     'posts/<year:\d{4}>/<category>' => 'post/index',
     'posts' => 'post/index',
     'post/<id:\d+>' => 'post/view',
@@ -321,9 +334,10 @@ URL 規則は、パターンの中で `<ParamName:RgExp>` の形式で指定さ�
 - `/index.php/posts` は、二番目の規則を使って解析され、ルート `post/index` になります。
 - `/index.php/posts/2014/php` は、最初の規則を使って解析され、ルートは `post/index`、`year` パラメータの値は 2014、そして、`category` パラメータの値は `php` となります。
 - `/index.php/post/100` は、三番目の規則を使って解析され、ルートが `post/view`、`id` パラメータの値が 100 となります。
-- `/index.php/posts/php` は、どのパターンにも合致しないため、[[yii\web\UrlManager::enableStrictParsing]] が true の場合は、[[yii\web\NotFoundHttpException]] を引き起こします。
-  [[yii\web\UrlManager::enableStrictParsing]] が false (これがデフォルト値です) の場合は、パス情報の部分である `posts/php` がルートとして返されることになります。
- 
+- `/index.php/posts/php` は、どのパターンにも合致しないため、[[yii\web\UrlManager::enableStrictParsing]] が `true` の場合は、[[yii\web\NotFoundHttpException]] を引き起こします。
+  [[yii\web\UrlManager::enableStrictParsing]] が `false` (これがデフォルト値です) の場合は、パス情報の部分である `posts/php` がルートとして返されることになります。
+  こうして解析されたルートに対応するアクションがあればそれが実行され、そうでなければ [[yii\web\NotFoundHttpException]] が投げられます。
+
 規則が URL 生成に使われる場合は、
 
 - `Url::to(['post/index'])` は、二番目の規則を使って、`/index.php/posts` を生成します。
@@ -341,20 +355,23 @@ URL 規則のルートにはパラメータ名を埋め込むことが出来ま�
 例えば、以下の規則は `controller` と `action` というパラメータをルートに埋め込んでいます。
 
 ```php
-[
-    '<controller:(post|comment)>/<id:\d+>/<action:(create|update|delete)>' => '<controller>/<action>',
+'rules' => [
+    '<controller:(post|comment)>/create' => '<controller>/create',
+    '<controller:(post|comment)>/<id:\d+>/<action:(update|delete)>' => '<controller>/<action>',
     '<controller:(post|comment)>/<id:\d+>' => '<controller>/view',
     '<controller:(post|comment)>s' => '<controller>/index',
 ]
 ```
 
-`/index.php/comment/100/create` という URL の解析には、最初の規則が適用され、`controller` パラメータには `comment`、`action` パラメータには `create` がセットされます。
-こうして、`<controller>/<action>` というルートは、`comment/create` として解決されます。
+`/index.php/comment/100/update` という URL の解析には、二番目の規則が適用され、`controller` パラメータには `comment`、`action` パラメータには `update` がセットされます。
+こうして、`<controller>/<action>` というルートは、`comment/update` として解決されます。
 
-同じように、`comment/index` というルートの URL を生成するためには、三番目の規則が適用されて、`index.php/comments` という URL が生成されます。
+同じように、`comment/index` というルートの URL を生成するためには、最後の規則が適用されて、`index.php/comments` という URL が生成されます。
 
 > Info: ルートをパラメータ化することによって、URL 規則の数を大幅に減らすことが可能になり、[[yii\web\UrlManager|URL マネージャ]] のパフォーマンスを目に見えて改善することが出来ます。
-  
+
+### デフォルトのパラメータ値 <span id="default-parameter-values"></span>
+
 デフォルトでは、規則の中で宣言されたパラメータは必須となります。
 リクエストされた URL が特定のパラメータを含まない場合や、特定のパラメータなしで URL を生成する場合には、規則は適用されません。
 パラメータのどれかをオプション扱いにしたい場合は、規則の [[yii\web\UrlRule::defaults|defaults]] プロパティを構成することが出来ます。
@@ -363,7 +380,7 @@ URL 規則のルートにはパラメータ名を埋め込むことが出来ま�
 次の規則の宣言においては、`page` と `tag` のパラメータは両方ともオプション扱いで、提供されなかった場合は、それぞれ、1 と空文字列を取ります。
 
 ```php
-[
+'rules' => [
     // ... 他の規則 ...
     [
         'pattern' => 'posts/<page:\d+>/<tag>',
@@ -390,7 +407,7 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 例えば、次の規則は、`http://admin.example.com/login` という URL を `admin/user/login` のルートとして解析し、`http://www.example.com/login` を `site/login` として解析するものです。
 
 ```php
-[
+'rules' => [
     'http://admin.example.com/login' => 'admin/user/login',
     'http://www.example.com/login' => 'site/login',
 ]
@@ -400,14 +417,20 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 例えば、次の規則は `http://en.example.com/posts` という URL を解析して、`post/index` というルートと `language=en` というパラメータを取得するものです。
 
 ```php
-[
+'rules' => [
     'http://<language:\w+>.example.com/posts' => 'post/index',
 ]
 ```
 
-> Note: サーバ名を持つ規則は、エントリスクリプトのサブフォルダをパターンに含むべきではありません。
-例えば、アプリケーションが `http://www.example.com/sandbox/blog` の下にある場合は、`http://www.example.com/sandbox/blog/posts` ではなく、`http://www.example.com/posts` というパターンを使うべきです。
-こうすれば、アプリケーションをどのようなディレクトリに配置しても、アプリケーションのコードを変更する必要がなくなります。
+バージョン 2.0.11 以降は、`http` と `https` の両方に通用する、プロトコル相対パターンを使うことも出来ます。
+記法は上記と同じです、ただ、`http:` の部分を省略します。
+例えば、`'//www.example.com/login' => 'site/login'`。
+
+> Note: サーバ名を持つ規則は、そのパターンに、エントリスクリプトのサブフォルダを**含まない**ようにすべきです。
+例えば、アプリケーションのエントリスクリプトが `http://www.example.com/sandbox/blog/index.php` である場合は、
+`http://www.example.com/sandbox/blog/posts` ではなく、`http://www.example.com/posts` というパターンを使うべきです。
+こうすれば、アプリケーションをどのようなディレクトリに配置しても、URL 規則を変更する必要がなくなります。
+Yii はアプリケーションのベース URL を自動的に検出します。
 
 
 ### URL 接尾辞 <span id="url-suffixes"></span>
@@ -422,8 +445,7 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' => true,
+            // ...
             'suffix' => '.html',
             'rules' => [
                 // ...
@@ -438,7 +460,7 @@ URL 規則のパターンには、ウェブサーバ名を含むことが出来�
 > Tip: URL が全てスラッシュで終るようにするためには、URL 接尾辞として `/` を設定することが出来ます。
 
 > Note: URL 接尾辞を構成すると、リクエストされた URL が接尾辞を持たない場合は、認識できない URL であると見なされるようになります。
-  SEO の目的からも、これが推奨されるプラクティスです。
+  これは、異なる URL 上の重複コンテンツを防止するためのものであり、SEO (検索エンジン最適化) の見地からも推奨されるプラクティスです。
 
 場合によっては、URL によって異なる接尾辞を使いたいことがあるでしょう。
 その目的は、個々の URL 規則の [[yii\web\UrlRule::suffix|suffix]] プロパティを構成することによって達成できます。
@@ -450,8 +472,7 @@ URL 規則にこのプロパティが設定されている場合は、それが 
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'showScriptName' => false,
-            'enableStrictParsing' => true,
+            // ...
             'suffix' => '.html',
             'rules' => [
                 // ...
@@ -473,17 +494,17 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
 これは、規則のパターンにサポートされている HTTP メソッドを前置することによって、簡単に達成することが出来ます。
 一つの規則が複数の HTTP メソッドをサポートする場合は、メソッド名をカンマで区切ります。
 例えば、次の三つの規則は、`post/<id:\d+>` という同一のパターンを持って、異なる HTTP メソッドをサポートするものです。
-`PUT post/100` に対するリクエストは `post/create` と解析され、`GET post/100` に対するリクエストは `post/view` と解析されることになります。
+`PUT post/100` に対するリクエストは `post/update` と解析され、`GET post/100` に対するリクエストは `post/view` と解析されることになります。
 
 ```php
-[
-    'PUT,POST post/<id:\d+>' => 'post/create',
+'rules' => [
+    'PUT,POST post/<id:\d+>' => 'post/update',
     'DELETE post/<id:\d+>' => 'post/delete',
     'post/<id:\d+>' => 'post/view',
 ]
 ```
 
-> Note: URL 規則が HTTP メソッドをパターンに含む場合、その規則は解析目的にだけ使用されます。
+> Note: URL 規則が HTTP メソッドをパターンに含む場合、指定されたメソッドに `GET` が入っていない限り、その規則は解析目的にだけ使用されます。
   [[yii\web\UrlManager|URL マネージャ]] が URL 生成のために呼ばれたときは、その規則はスキップされます。
 
 > Tip: RESTful API のルーティングを簡単にするために、Yii は特別な URL 規則クラス [[yii\rest\UrlRule]] を提供しています。
@@ -491,33 +512,11 @@ RESTful API を実装するときは、使用されている HTTP メソッド�
   詳細については、RESTful API 開発についての [ルーティング](rest-routing.md) の節を参照してください。
 
 
-### 規則をカスタマイズする <span id="customizing-rules"></span>
-
-これまでの例では、URL 規則は主として「パターン - ルート」のペアの形で宣言されています。これが通常使用される短縮形式です。
-特定のシナリオの下では、[[yii\web\UrlRule::suffix]] などのような、他のプロパティを構成して URL 規則をカスタマイズしたいこともあるでしょう。
-完全な構成情報配列を使って規則を指定すれば、そうすることが出来ます。
-次の例は、[URL 接尾辞](#url-suffixes) の項から抜き出したものです。
-
-```php
-[
-    // ... 他の URL 規則 ...
-    
-    [
-        'pattern' => 'posts',
-        'route' => 'post/index',
-        'suffix' => '.json',
-    ],
-]
-```
-
-> Info: 規則の構成情報で `class` を指定しない場合は、デフォルトとして、[[yii\web\UrlRule]] クラスが使われます。
-  
-
 ### 規則を動的に追加する <span id="adding-rules"></span>
 
 URL 規則は [[yii\web\UrlManager|URL マネージャ]] に動的に追加することが出来ます。
 このことは、再配布可能な [モジュール](structure-modules.md) が自分自身の URL 規則を管理する必要がある場合に、しばしば必要になります。
-動的に追加された規則がルーティングのプロセスで効果を発揮するためには、その規則を [ブートストラップ](runtime-bootstrapping.md) の段階で追加しなければなりません。
+動的に追加された規則がルーティングのプロセスで効果を発揮するためには、その規則をアプリケーションの [ブートストラップ](runtime-bootstrapping.md) の段階で追加しなければなりません。
 これは、モジュールにとっては、次のように、[[yii\base\BootstrapInterface]] を実装して、[[yii\base\BootstrapInterface::bootstrap()|bootstrap()]] メソッドの中で規則を追加しなければならないことを意味します。
 
 ```php
@@ -541,12 +540,14 @@ public function bootstrap($app)
 この問題を解決するために、次のような URL 規則クラスを作成することが出来ます。
 
 ```php
+<?php
+
 namespace app\components;
 
 use yii\web\UrlRuleInterface;
-use yii\base\Object;
+use yii\base\BaseObject;
 
-class CarUrlRule extends Object implements UrlRuleInterface
+class CarUrlRule extends BaseObject implements UrlRuleInterface
 {
 
     public function createUrl($manager, $route, $params)
@@ -558,7 +559,7 @@ class CarUrlRule extends Object implements UrlRuleInterface
                 return $params['manufacturer'];
             }
         }
-        return false;  // この規則は適用されない
+        return false; // この規則は適用されない
     }
 
     public function parseRequest($manager, $request)
@@ -567,10 +568,10 @@ class CarUrlRule extends Object implements UrlRuleInterface
         if (preg_match('%^(\w+)(/(\w+))?$%', $pathInfo, $matches)) {
             // $matches[1] と $matches[3] をチェックして、
             // データベースの中の製造者とモデルに合致するかどうか調べる
-            // 合致すれば、$params['manufacturer'] および/または $params['model'] をセットし、
-            // ['car/index', $params] を返す
+            // 合致すれば、$params['manufacturer'] および/または $params['model']
+            // をセットし、['car/index', $params] を返す
         }
-        return false;  // この規則は適用されない
+        return false; // この規則は適用されない
     }
 }
 ```
@@ -578,15 +579,63 @@ class CarUrlRule extends Object implements UrlRuleInterface
 そして、[[yii\web\UrlManager::rules]] の構成情報で、新しい規則クラスを使います。
 
 ```php
-[
+'rules' => [
     // ... 他の規則 ...
-    
     [
         'class' => 'app\components\CarUrlRule', 
         // ... 他のプロパティを構成する ...
     ],
 ]
 ```
+
+
+## URL の正規化 <span id="url-normalization"></span>
+
+バージョン 2.0.10 以降、[[yii\web\UrlManager|UrlManager]] で [[yii\web\UrlNormalizer|UrlNormalizer]] を使って、
+同一 URL のバリエーション (例えば、末尾のスラッシュの有無) の問題を処理する出来るようになりました。
+技術的には `http://example.com/path` と `http://example.com/path/` は別の URL ですから、
+これらの両方に同一のコンテントを提供することは SEO ランキングを低下させる可能性があります。
+デフォルトでは、URL ノーマライザは、連続したスラッシュを畳み、サフィックスが末尾のスラッシュを持っているかどうかに従って末尾のスラッシュを追加または削除し、
+正規化された URL に [恒久的な移動](https://en.wikipedia.org/wiki/HTTP_301) を使ってリダイレクトします。
+ノーマライザは、URL マネージャのためにグローバルに構成することも、各規則のために個別に構成することも出来ます。
+各規則は、デフォルトでは、URL マネージャのノーマライザを使用します。
+[[yii\web\UrlRule::$normalizer|UrlRule::$normalizer]] を `false` にすれば、特定の URL 規則について正規化を無効にすることが出来ます。
+
+次に、[[yii\web\UrlNormalizer|UrlNormalizer]] の構成例を示します。
+
+```php
+'urlManager' => [
+    'enablePrettyUrl' => true,
+    'showScriptName' => false,
+    'enableStrictParsing' => true,
+    'suffix' => '.html',
+    'normalizer' => [
+        'class' => 'yii\web\UrlNormalizer',
+        // デバッグのために、恒久的移動のかわりに一時的リダイレクションを使う
+        'action' => UrlNormalizer::ACTION_REDIRECT_TEMPORARY,
+    ],
+    'rules' => [
+        // ... 他の規則 ...
+        [
+            'pattern' => 'posts',
+            'route' => 'post/index',
+            'suffix' => '/',
+            'normalizer' => false, // この規則では正規化を無効にする
+        ],
+        [
+            'pattern' => 'tags',
+            'route' => 'tag/index',
+            'normalizer' => [
+                // この規則では連続するスラッシュを畳まない
+                'collapseSlashes' => false,
+            ],
+        ],
+    ],
+]
+```
+
+> Note: デフォルトでは [[yii\web\UrlManager::$normalizer|UrlManager::$normalizer]] は無効になっています。
+  URL の正規化を有効にするためには、明示的に構成する必要があります。
 
 
 ## パフォーマンスに対する考慮 <span id="performance-consideration"></span>

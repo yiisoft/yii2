@@ -32,7 +32,7 @@ class ServeController extends Controller
      */
     public $port = 8080;
     /**
-     * @var string path or path alias to directory to serve
+     * @var string path or [path alias](guide:concept-aliases) to directory to serve
      */
     public $docroot = '@app/web';
     /**
@@ -47,7 +47,7 @@ class ServeController extends Controller
      *
      * @param string $address address to serve on. Either "host" or "host:port".
      *
-     * @return integer
+     * @return int
      */
     public function actionIndex($address = 'localhost')
     {
@@ -109,11 +109,11 @@ class ServeController extends Controller
 
     /**
      * @param string $address server address
-     * @return boolean if address is already in use
+     * @return bool if address is already in use
      */
     protected function isAddressTaken($address)
     {
-        list($hostname, $port) = explode(':', $address);
+        [$hostname, $port] = explode(':', $address);
         $fp = @fsockopen($hostname, $port, $errno, $errstr, 3);
         if ($fp === false) {
             return false;

@@ -96,9 +96,8 @@ class BlameableBehavior extends AttributeBehavior
      */
     protected function getValue($event)
     {
-        if ($this->value === null) {
-            $user = Yii::$app->get('user', false);
-            return $user && !$user->isGuest ? $user->id : null;
+        if ($this->value === null && Yii::$app->has('user')) {
+            return Yii::$app->get('user')->id;
         }
 
         return parent::getValue($event);

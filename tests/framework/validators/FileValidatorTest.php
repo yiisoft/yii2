@@ -1,11 +1,16 @@
 <?php
+/**
+ * @link http://www.yiiframework.com/
+ * @copyright Copyright (c) 2008 Yii Software LLC
+ * @license http://www.yiiframework.com/license/
+ */
 
 namespace yiiunit\framework\validators;
 
+use Yii;
 use yii\helpers\FileHelper;
 use yii\validators\FileValidator;
 use yii\web\UploadedFile;
-use Yii;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 
@@ -14,8 +19,9 @@ use yiiunit\TestCase;
  */
 class FileValidatorTest extends TestCase
 {
-    public function setUp()
+    protected function setUp()
     {
+        parent::setUp();
         $this->mockApplication();
     }
 
@@ -23,7 +29,7 @@ class FileValidatorTest extends TestCase
     {
         $val = new FileValidator();
         foreach (['message', 'uploadRequired', 'tooMany', 'wrongExtension', 'tooBig', 'tooSmall', 'wrongMimeType'] as $attr) {
-            $this->assertTrue(is_string($val->$attr));
+            $this->assertInternalType('string', $val->$attr);
         }
     }
 
@@ -71,7 +77,7 @@ class FileValidatorTest extends TestCase
 
     public function testGetSizeLimit()
     {
-        $size = min($this->sizeToBytes(ini_get('upload_max_filesize')),$this->sizeToBytes(ini_get('post_max_size')));
+        $size = min($this->sizeToBytes(ini_get('upload_max_filesize')), $this->sizeToBytes(ini_get('post_max_size')));
         $val = new FileValidator();
         $this->assertEquals($size, $val->getSizeLimit());
         $val->maxSize = $size + 1; // set and test if value is overridden
@@ -125,19 +131,19 @@ class FileValidatorTest extends TestCase
                             'error' => UPLOAD_ERR_NO_FILE,
                         ],
                     ]
-                )
+                ),
             ]
         );
         $val->validateAttribute($m, 'attr_files');
         $this->assertFalse($m->hasErrors('attr_files'));
         $m = FakedValidationModel::createWithAttributes([
             'attr_files' => $this->createTestFiles([
-                [''], [''], ['']
-            ])
+                [''], [''], [''],
+            ]),
         ]);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors());
-        $this->assertTrue(stripos(current($m->getErrors('attr_files')), 'you can upload at most') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'you can upload at most'));
 
         $val->maxFiles = 0;
         $m->clearErrors();
@@ -151,25 +157,25 @@ class FileValidatorTest extends TestCase
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                         [
                             'name' => 'text.txt',
-                            'size' => 1024
+                            'size' => 1024,
                         ],
                     ]
-                )
+                ),
             ]
         );
         $m->setScenario('validateMultipleFiles');
         $this->assertFalse($m->validate());
-        $this->assertTrue(stripos(current($m->getErrors('attr_images')),
-            'Only files with these extensions are allowed') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_images')),
+            'Only files with these extensions are allowed'));
 
         $m = FakedValidationModel::createWithAttributes(
             [
@@ -178,15 +184,15 @@ class FileValidatorTest extends TestCase
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                         [
                             'name' => 'image.png',
                             'size' => 1024,
-                            'type' => 'image/png'
+                            'type' => 'image/png',
                         ],
                     ]
-                )
+                ),
             ]
         );
         $m->setScenario('validateMultipleFiles');
@@ -201,7 +207,7 @@ class FileValidatorTest extends TestCase
                             'size' => 1024,
                         ],
                     ]
-                )
+                ),
             ]
         );
         $m->setScenario('validateFile');
@@ -249,7 +255,7 @@ class FileValidatorTest extends TestCase
                     'tempName' => $tempName,
                     'type' => $type,
                     'size' => $size,
-                    'error' => $error
+                    'error' => $error,
                 ]);
             }
             $files[] = new UploadedFile([
@@ -257,7 +263,7 @@ class FileValidatorTest extends TestCase
                 'tempName' => $tempName,
                 'type' => $type,
                 'size' => $size,
-                'error' => $error
+                'error' => $error,
             ]);
         }
 
@@ -277,7 +283,7 @@ class FileValidatorTest extends TestCase
             'tempName' => $filePath,
             'type' => FileHelper::getMimeType($filePath),
             'size' => filesize($filePath),
-            'error' => UPLOAD_ERR_OK
+            'error' => UPLOAD_ERR_OK,
         ]);
     }
 
@@ -306,19 +312,19 @@ class FileValidatorTest extends TestCase
         $val = new FileValidator(['maxSize' => 128]);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors('attr_files'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_files')), 'too big') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'too big'));
         // to Small
         $m = $this->createModelForAttributeTest();
         $val = new FileValidator(['minSize' => 2048]);
         $val->validateAttribute($m, 'attr_files');
         $this->assertTrue($m->hasErrors('attr_files'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_files')), 'too small') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_files')), 'too small'));
         // UPLOAD_ERR_INI_SIZE/UPLOAD_ERR_FORM_SIZE
         $m = $this->createModelForAttributeTest();
         $val = new FileValidator();
         $val->validateAttribute($m, 'attr_err_ini');
         $this->assertTrue($m->hasErrors('attr_err_ini'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_err_ini')), 'too big') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_err_ini')), 'too big'));
         // UPLOAD_ERR_PARTIAL
         $m = $this->createModelForAttributeTest();
         $val = new FileValidator();
@@ -343,7 +349,7 @@ class FileValidatorTest extends TestCase
         $this->assertFalse($m->hasErrors('attr_jpg'));
         $val->validateAttribute($m, 'attr_exe');
         $this->assertTrue($m->hasErrors('attr_exe'));
-        $this->assertTrue(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions ') !== false);
+        $this->assertNotFalse(stripos(current($m->getErrors('attr_exe')), 'Only files with these extensions '));
     }
 
     public function testIssue11012()
@@ -389,7 +395,7 @@ class FileValidatorTest extends TestCase
             ['test.png', 'IMAGE/*'],
             ['test.txt', 'text/*'],
             ['test.xml', '*/xml'],
-            ['test.odt', 'application/vnd*']
+            ['test.odt', 'application/vnd*'],
         ];
     }
 
