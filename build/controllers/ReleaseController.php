@@ -846,7 +846,7 @@ class ReleaseController extends Controller
     }
 
     /**
-     * Extract changelog content for a specific version
+     * Extract changelog content for a specific version.
      */
     protected function splitChangelog($file, $version)
     {
@@ -879,7 +879,7 @@ class ReleaseController extends Controller
     }
 
     /**
-     * Ensure sorting of the changelog lines
+     * Ensure sorting of the changelog lines.
      */
     protected function resortChangelog($changelog)
     {

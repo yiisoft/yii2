@@ -11,7 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * The web Request class represents an HTTP request
+ * The web Request class represents an HTTP request.
  *
  * It encapsulates the $_SERVER variable and resolves its inconsistency among different Web servers.
  * Also it provides an interface to retrieve request parameters from $_POST, $_GET, $_COOKIES and REST
@@ -436,7 +436,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Returns whether this is a PJAX request
+     * Returns whether this is a PJAX request.
      * @return bool whether this is a PJAX request
      */
     public function getIsPjax()
@@ -1197,6 +1197,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the content types acceptable by the end user.
+     *
      * This is determined by the `Accept` HTTP header. For example,
      *
      * ```php
@@ -1430,6 +1431,7 @@ class Request extends \yii\base\Request
 
     /**
      * Returns the cookie collection.
+     *
      * Through the returned cookie collection, you may access a cookie using the following syntax:
      *
      * ```php
@@ -1605,7 +1607,7 @@ class Request extends \yii\base\Request
     }
 
     /**
-     * Validates CSRF token
+     * Validates CSRF token.
      *
      * @param string $clientSuppliedToken The masked client-supplied token.
      * @param string $trueToken The masked true token.

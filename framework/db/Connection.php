@@ -427,6 +427,7 @@ class Connection extends Component
 
     /**
      * Uses query cache for the queries performed with the callable.
+     *
      * When query caching is enabled ([[enableQueryCache]] is true and [[queryCache]] refers to a valid cache),
      * queries performed within the callable will be cached and their results will be fetched from cache if available.
      * For example,
@@ -472,6 +473,7 @@ class Connection extends Component
 
     /**
      * Disables query cache temporarily.
+     *
      * Queries performed within the callable will not use query cache at all. For example,
      *
      * ```php

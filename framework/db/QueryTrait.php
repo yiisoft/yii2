@@ -349,7 +349,7 @@ trait QueryTrait
     }
 
     /**
-     * Normalizes format of ORDER BY data
+     * Normalizes format of ORDER BY data.
      *
      * @param array|string|Expression $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
      * @return array

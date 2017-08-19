@@ -10,7 +10,7 @@ namespace yiiunit\framework\caching;
 use yii\caching\ZendDataCache;
 
 /**
- * Class for testing Zend cache backend
+ * Class for testing Zend cache backend.
  * @group zenddata
  * @group caching
  */

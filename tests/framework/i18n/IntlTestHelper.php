@@ -15,9 +15,9 @@ namespace yiiunit\framework\i18n {
         public static $enableIntl;
 
         /**
-         * emulate disabled intl extension
+         * Emulate disabled intl extension.
          *
-         * enable it only for tests prefixed with testIntl
+         * Enable it only for tests prefixed with testIntl.
          * @param Testcase $test
          */
         public static function setIntlStatus($test)

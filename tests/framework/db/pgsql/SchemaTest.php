@@ -172,7 +172,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12483
+     * @see https://github.com/yiisoft/yii2/issues/12483
      */
     public function testParenthesisDefaultValue()
     {
@@ -197,7 +197,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/14192
+     * @see https://github.com/yiisoft/yii2/issues/14192
      */
     public function testTimestampNullDefaultValue()
     {

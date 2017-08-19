@@ -122,10 +122,11 @@ class UrlManagerCreateUrlTest extends TestCase
     }
 
     /**
-     * Test createUrl() and createAbsoluteUrl()
-     * with varying $showScriptName
-     * without rules.
-     * With UrlManager::$suffix
+     * Test createUrl() and createAbsoluteUrl().
+     *
+     * - with varying $showScriptName,
+     * - without rules,
+     * - with UrlManager::$suffix.
      *
      * @dataProvider variationsProvider
      */
@@ -225,10 +226,11 @@ class UrlManagerCreateUrlTest extends TestCase
     }
 
     /**
-     * Test createUrl() and createAbsoluteUrl()
-     * with varying $showScriptName
-     * with simple rules.
-     * With UrlManager::$suffix
+     * Test createUrl() and createAbsoluteUrl().
+     *
+     * - with varying $showScriptName,
+     * - with simple rules,
+     * - with UrlManager::$suffix.
      *
      * @dataProvider variationsProvider
      */
@@ -650,7 +652,7 @@ class UrlManagerCreateUrlTest extends TestCase
     }
 
     /**
-     * Test matching of Url rules dependent on the current host info
+     * Test matching of Url rules dependent on the current host info.
      *
      * @dataProvider multipleHostsRulesDataProvider
      * @see https://github.com/yiisoft/yii2/issues/7948

@@ -8,7 +8,7 @@
 namespace yii\caching;
 
 /**
- * Mock for the time() function for caching classes
+ * Mock for the time() function for caching classes.
  * @return int
  */
 function time()
@@ -17,7 +17,7 @@ function time()
 }
 
 /**
- * Mock for the microtime() function for caching classes
+ * Mock for the microtime() function for caching classes.
  * @param bool $float
  * @return float
  */
@@ -33,7 +33,7 @@ use yii\caching\TagDependency;
 use yiiunit\TestCase;
 
 /**
- * Base class for testing cache backends
+ * Base class for testing cache backends.
  */
 abstract class CacheTestCase extends TestCase
 {

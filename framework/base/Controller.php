@@ -88,6 +88,7 @@ class Controller extends Component implements ViewContextInterface
 
     /**
      * Declares external actions for the controller.
+     *
      * This method is meant to be overwritten to declare external actions for the controller.
      * It should return an array, with array keys being action IDs, and array values the corresponding
      * action class names or action configuration arrays. For example,

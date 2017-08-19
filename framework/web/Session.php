@@ -402,6 +402,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
 
     /**
      * Sets the value indicating whether cookies should be used to store session IDs.
+     *
      * Three states are possible:
      *
      * - true: cookies and only cookies will be used to store session IDs.
@@ -628,7 +629,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     }
 
     /**
-     * Removes all session variables
+     * Removes all session variables.
      */
     public function removeAll()
     {

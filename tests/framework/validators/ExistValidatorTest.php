@@ -191,7 +191,7 @@ abstract class ExistValidatorTest extends DatabaseTestCase
     }
 
    /**
-    * Test expresssion in targetAttribute
+    * Test expresssion in targetAttribute.
     * @see https://github.com/yiisoft/yii2/issues/14304
     */
    public function testExpresionInAttributeColumnName()

@@ -55,6 +55,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -429,7 +430,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds SQL for IN condition
+     * Builds SQL for IN condition.
      *
      * @param string $operator
      * @param array $columns

@@ -239,8 +239,8 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test for dates before 1970
-     * https://github.com/yiisoft/yii2/issues/3126
+     * Test for dates before 1970.
+     * @see https://github.com/yiisoft/yii2/issues/3126
      */
     public function testDateRangeLow()
     {
@@ -259,8 +259,8 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test for dates after 2038
-     * https://github.com/yiisoft/yii2/issues/3126
+     * Test for dates after 2038.
+     * @see https://github.com/yiisoft/yii2/issues/3126
      */
     public function testDateRangeHigh()
     {
@@ -553,7 +553,7 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * provide default timezones times input date value
+     * Provide default timezones times input date value.
      */
     public function provideTimesAndTz()
     {
@@ -582,7 +582,7 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test timezones with input date and time in other timezones
+     * Test timezones with input date and time in other timezones.
      * @dataProvider provideTimesAndTz
      */
     public function testIntlTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
@@ -591,7 +591,7 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test timezones with input date and time in other timezones
+     * Test timezones with input date and time in other timezones.
      * @dataProvider provideTimesAndTz
      */
     public function testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
@@ -640,7 +640,7 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * Test timezones with input date and time in other timezones
+     * Test timezones with input date and time in other timezones.
      */
     public function testTimezoneInputNonDefault()
     {
@@ -714,9 +714,9 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/13343
-     *
      * Prevent timezone conversion for time-only values.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13343
      */
     public function testTimeOnlyValues()
     {
@@ -736,7 +736,7 @@ class FormatterDateTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/6263
+     * @see https://github.com/yiisoft/yii2/issues/6263.
      *
      * it is a PHP bug: https://bugs.php.net/bug.php?id=45543
      * Fixed in this commit: https://github.com/php/php-src/commit/22dba2f5f3211efe6c3b9bb24734c811ca64c68c#diff-7b738accc3d60f74c259da18588ddc5dL2996

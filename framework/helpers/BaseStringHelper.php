@@ -246,7 +246,7 @@ class BaseStringHelper
     }
 
     /**
-     * Explodes string into array, optionally trims values and skips empty ones
+     * Explodes string into array, optionally trims values and skips empty ones.
      *
      * @param string $string String to be exploded.
      * @param string $delimiter Delimiter. Default is ','.
@@ -281,7 +281,7 @@ class BaseStringHelper
     }
 
     /**
-     * Counts words in a string
+     * Counts words in a string.
      * @since 2.0.8
      *
      * @param string $string
@@ -293,8 +293,8 @@ class BaseStringHelper
     }
 
     /**
-     * Returns string represenation of number value with replaced commas to dots, if decimal point
-     * of current locale is comma
+     * Returns string representation of number value with replaced commas to dots, if decimal point
+     * of current locale is comma.
      * @param int|float|string $value
      * @return string
      * @since 2.0.11
@@ -314,7 +314,7 @@ class BaseStringHelper
     }
 
     /**
-     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * Encodes string into "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
      *
      * > Note: Base 64 padding `=` may be at the end of the returned string.
      * > `=` is not transparent to URL encoding.
@@ -330,7 +330,7 @@ class BaseStringHelper
     }
 
     /**
-     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648)
+     * Decodes "Base 64 Encoding with URL and Filename Safe Alphabet" (RFC 4648).
      *
      * @see https://tools.ietf.org/html/rfc4648#page-7
      * @param string $input encoded string.

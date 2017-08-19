@@ -175,6 +175,7 @@ class Query extends Component implements QueryInterface
 
     /**
      * Starts a batch query and retrieves data row by row.
+     *
      * This method is similar to [[batch()]] except that in each iteration of the result,
      * only one row of data is returned. For example,
      *

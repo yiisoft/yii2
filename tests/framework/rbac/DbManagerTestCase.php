@@ -19,7 +19,7 @@ use yiiunit\data\rbac\UserID;
 use yiiunit\framework\console\controllers\EchoMigrateController;
 
 /**
- * DbManagerTestCase
+ * DbManagerTestCase.
  * @group db
  * @group rbac
  * @group mysql

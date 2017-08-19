@@ -28,7 +28,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Returns a test configuration param from /data/config.php
+     * Returns a test configuration param from /data/config.php.
      * @param  string $name params name
      * @param  mixed $default default value to use when param is not set.
      * @return mixed  the value of the configuration param
@@ -108,7 +108,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Asserting two strings equality ignoring line endings
+     * Asserting two strings equality ignoring line endings.
      * @param string $expected
      * @param string $actual
      */
@@ -121,7 +121,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Invokes a inaccessible method
+     * Invokes a inaccessible method.
      * @param $object
      * @param $method
      * @param array $args
@@ -142,7 +142,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Sets an inaccessible object property to a designated value
+     * Sets an inaccessible object property to a designated value.
      * @param $object
      * @param $propertyName
      * @param $value
@@ -164,7 +164,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Gets an inaccessible object property
+     * Gets an inaccessible object property.
      * @param $object
      * @param $propertyName
      * @param bool $revoke whether to make property inaccessible after getting
@@ -187,7 +187,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
 
     /**
-     * Asserts that value is one of expected values
+     * Asserts that value is one of expected values.
      *
      * @param mixed $actual
      * @param array $expected
