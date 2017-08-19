@@ -273,6 +273,35 @@ class MigrateController extends BaseMigrateController
 
     /**
      * @inheritdoc
+     * @since 2.0.13
+     */
+    protected function refreshDatabase()
+    {
+        $db = $this->db;
+        $schemas = $db->schema->getTableSchemas();
+
+        // First drop all foreign keys,
+        foreach ($schemas as $schema) {
+            if ($schema->foreignKeys) {
+                foreach ($schema->foreignKeys as $name => $foreignKey) {
+                    $db->createCommand()->dropForeignKey($name, $schema->name)->execute();
+                    $this->stdout("Foreign key $name dropped.\n");
+                }
+            }
+        }
+
+        // Then drop the tables:
+        foreach ($schemas as $schema) {
+            $db->createCommand()->dropTable($schema->name)->execute();
+            $this->stdout("Table {$schema->name} dropped.\n");
+        }
+
+        // The database should be cleaned up. Start the migrations!
+        $this->actionUp();
+    }
+
+    /**
+     * @inheritdoc
      */
     protected function removeMigrationHistory($version)
     {
