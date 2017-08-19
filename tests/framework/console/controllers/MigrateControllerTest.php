@@ -234,6 +234,28 @@ class MigrateControllerTest extends TestCase
     }
 
     /**
+     * Test the migrate:fresh command.
+     */
+    public function testRefreshMigration()
+    {
+      Yii::$app->db->createCommand(
+        "create table hall_of_fame(id int, string varchar(255))")->execute();
+
+      Yii::$app->db->createCommand(
+        "insert into hall_of_fame values(1, 'Qiang Xue');")->execute();
+      Yii::$app->db->createCommand(
+        "insert into hall_of_fame values(2, 'Alexander Makarov');")->execute();
+
+        $result = $this->runMigrateControllerAction('fresh');
+
+        // Drop worked
+        $this->assertContains('Table hall_of_fame dropped.', $result);
+
+        // Migration was restarted
+        $this->assertContains('No new migrations found. Your system is up-to-date.', $result);
+    }
+
+    /**
      * @see https://github.com/yiisoft/yii2/issues/12980
      */
     public function testGetMigrationHistory()
