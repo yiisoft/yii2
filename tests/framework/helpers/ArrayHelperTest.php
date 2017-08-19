@@ -32,7 +32,7 @@ class Post2 extends BaseObject
 class Post3 extends BaseObject
 {
     public $id = 33;
-    /** @var Object */
+    /** @var BaseObject */
     public $subObject;
 
     public function init()
@@ -493,7 +493,7 @@ class ArrayHelperTest extends TestCase
         ];
         $b = [
             'secondValue',
-            'thirdValue'
+            'thirdValue',
         ];
 
         $result = ArrayHelper::merge($a, $b);
@@ -870,7 +870,7 @@ class ArrayHelperTest extends TestCase
                 [
                     'key' => [
                         'val1',
-                        'in' => 'val'
+                        'in' => 'val',
                     ],
                 ],
             ],
@@ -892,7 +892,7 @@ class ArrayHelperTest extends TestCase
                 [
                     'key1' => 'val1',
                     'key' => [
-                        'in' => ['val']
+                        'in' => ['val'],
                     ],
                 ],
             ],
@@ -906,8 +906,8 @@ class ArrayHelperTest extends TestCase
                     'key1' => 'val1',
                     'key' => [
                         'in' => [
-                            'arr' => 'val'
-                        ]
+                            'arr' => 'val',
+                        ],
                     ],
                 ],
             ],
@@ -920,15 +920,15 @@ class ArrayHelperTest extends TestCase
                     'key1' => 'val1',
                     'key' => [
                         'in' => [
-                            'arr' => ['val']
-                        ]
+                            'arr' => ['val'],
+                        ],
                     ],
                 ],
             ],
             [
                 [
                     'key' => [
-                        'in' => ['val1']
+                        'in' => ['val1'],
                     ],
                 ],
                 'key.in.arr', 'val',
@@ -936,8 +936,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'arr' => 'val'
-                        ]
+                            'arr' => 'val',
+                        ],
                     ],
                 ],
             ],
@@ -951,8 +951,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'arr' => ['val']
-                        ]
+                            'arr' => ['val'],
+                        ],
                     ],
                 ],
             ],
@@ -961,8 +961,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'key' => 'val'
-                        ]
+                            'key' => 'val',
+                        ],
                     ],
                 ],
                 'key.in.0', ['arr' => 'val'],
@@ -970,8 +970,8 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             ['arr' => 'val'],
-                            'key' => 'val'
-                        ]
+                            'key' => 'val',
+                        ],
                     ],
                 ],
             ],
@@ -980,14 +980,14 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in' => [
                             'val1',
-                            'key' => 'val'
-                        ]
+                            'key' => 'val',
+                        ],
                     ],
                 ],
                 'key.in', ['arr' => 'val'],
                 [
                     'key' => [
-                        'in' => ['arr' => 'val']
+                        'in' => ['arr' => 'val'],
                     ],
                 ],
             ],
@@ -1000,8 +1000,8 @@ class ArrayHelperTest extends TestCase
                                 'attr1',
                                 'attr2',
                                 'attr3',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
                 'key.in.schema', 'array',
@@ -1014,8 +1014,8 @@ class ArrayHelperTest extends TestCase
                                 'attr1',
                                 'attr2',
                                 'attr3',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -1024,7 +1024,7 @@ class ArrayHelperTest extends TestCase
                     'key' => [
                         'in.array' => [
                             'key' => 'val',
-                        ]
+                        ],
                     ],
                 ],
                 ['key', 'in.array', 'ok.schema'], 'array',
@@ -1033,7 +1033,7 @@ class ArrayHelperTest extends TestCase
                         'in.array' => [
                             'key' => 'val',
                             'ok.schema' => 'array',
-                        ]
+                        ],
                     ],
                 ],
             ],

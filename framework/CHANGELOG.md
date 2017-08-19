@@ -5,6 +5,10 @@ Yii Framework 2 Change Log
 ------------------------
 
 - Enh #14273: `yii\log\Target::$enabled` now supports callable value (dmirogin)
+- Bug #14596: Fix event call on init in `yii\widgets\BaseListView` (panchenkodv)
+- New #14151: Added `AttributesBehavior` that assigns values specified to one or multiple attributes of an AR object when certain events happen (bscheshirwork)
+- Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
+- Bug #14542: Ensured only ASCII characters are in CSRF cookie value since binary data causes issues with ModSecurity and some browsers (samdark)
 - Enh #14022: `yii\web\UrlManager::setBaseUrl()` now supports aliases (dmirogin)
 - Bug #14471: `ContentNegotiator` will always set one of the configured server response formats even if the client does not accept any of them (PowerGamer1)
 - Bug #14525: Fixed 2.0.12 regression of loading of global fixtures trough `yii fixture/load` (michaelarnauts)
@@ -27,6 +31,7 @@ Yii Framework 2 Change Log
 - Enh #13824: Support extracting concatenated strings in `yii message` (developeruz)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
+- Enh #13780: Added support for trusted proxies in `yii\web\Request` (sammousa, cebe)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
 - Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990, rob006, samdark, tonykor)
@@ -49,10 +54,13 @@ Yii Framework 2 Change Log
 - Bug #14318: Trigger `yiiActiveForm.events.afterValidateAttribute` after updating attribute  (dmirogin)
 - Bug #14493: Fixed getting permissions in `yii\rbac\Dbmanger::getPermissionsByUser` by user with id equals 0 (dmirogin)
 - Bug #14370: Fixed creating built-in validator in model with same function name (dmirogin)
-- Bug #14492: Fixed error handler not escaping error info debug mode (samdark)
+- Bug #14492: Fixed error handler not escaping error info debug mode, see CVE-2017-11516 (samdark)
 - Chg #14487: Changed i18n message error to warning (dmirogin)
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #14363: Added `yii\widgets\LinkPager::$linkContainerOptions` and possibility to override tag in `yii\widgets\LinkPager::$options` (dmirogin)
+- Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
+- Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
+
 
 2.0.12 June 05, 2017
 --------------------
@@ -681,6 +689,7 @@ Yii Framework 2 Change Log
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `yii\helpers\FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
+- Enh #9707: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
 - Enh: `yii\behaviors\AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
 - Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)

@@ -95,7 +95,7 @@ class YiiConfig extends Config
             'no_useless_return' => true,
             'no_whitespace_before_comma_in_array' => true,
             'no_whitespace_in_blank_line' => true,
-//            'non_printable_character' => true, // breaks Formatter::asCurrency() tests
+            'non_printable_character' => true,
             'normalize_index_brace' => true,
             'object_operator_without_whitespace' => true,
 //            'ordered_class_elements' => [ // needs more discussion
@@ -140,7 +140,7 @@ class YiiConfig extends Config
 //            'phpdoc_summary' => true, // needs more attention (summary should be separated by blank line from description)
 //            'phpdoc_to_comment' => true, // breaks phpdoc for define('CONSTANT', $value);
             'phpdoc_trim' => true,
-//            'phpdoc_types' => true, // conflicts with yii\base\Object typehits https://github.com/yiisoft/yii2/pull/12699
+            'phpdoc_types' => true,
             'phpdoc_var_without_name' => true,
             'protected_to_private' => true,
             'psr4' => true,

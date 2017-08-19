@@ -1526,8 +1526,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      */
     public function testAmbiguousColumnIndexBy()
     {
-        switch ($this->driverName)
-        {
+        switch ($this->driverName) {
             case 'pgsql':
             case 'sqlite':
                 $selectExpression = "(customer.name || ' in ' || p.description) AS name";
