@@ -70,7 +70,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Fix some issues with PHPdoc in files.
+     * Fix some issues with PHPDoc in files.
      *
      * @param string $root the directory to parse files from. Defaults to YII2_PATH.
      */
@@ -243,7 +243,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Fix file PHPdoc.
+     * Fix file PHPDoc.
      */
     protected function fixFileDoc(&$lines)
     {
