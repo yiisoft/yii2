@@ -209,6 +209,7 @@ class BaseFileHelper
         if (!isset(self::$_mimeTypes[$magicFile])) {
             self::$_mimeTypes[$magicFile] = require $magicFile;
         }
+
         return self::$_mimeTypes[$magicFile];
     }
 
@@ -728,6 +729,7 @@ class BaseFileHelper
                 }
             }
         }
+
         return $options;
     }
 }

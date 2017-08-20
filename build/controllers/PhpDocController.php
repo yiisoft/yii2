@@ -350,6 +350,7 @@ class PhpDocController extends Controller
                     case 'boolean': $types[$i] = 'bool'; break;
                 }
             }
+
             return '@' . $matches[1] . ' ' . implode('|', $types);
         }, $line);
     }
@@ -759,6 +760,7 @@ class PhpDocController extends Controller
                 $sets[] = $set;
             }
         }
+
         return $sets;
     }
 
@@ -768,6 +770,7 @@ class PhpDocController extends Controller
         if ($str == '') {
             return '';
         }
+
         return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
     }
 

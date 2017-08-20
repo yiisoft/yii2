@@ -24,6 +24,7 @@ class SqliteManagerTest extends DbManagerTestCase
         if (static::$sqliteDb === null) {
             static::$sqliteDb = parent::createConnection();
         }
+
         return static::$sqliteDb;
     }
 }

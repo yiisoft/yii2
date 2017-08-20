@@ -348,6 +348,7 @@ class Component extends BaseObject
                 }
             }
         }
+
         return false;
     }
 
@@ -378,6 +379,7 @@ class Component extends BaseObject
                 }
             }
         }
+
         return false;
     }
 
@@ -404,6 +406,7 @@ class Component extends BaseObject
                 }
             }
         }
+
         return false;
     }
 
@@ -518,6 +521,7 @@ class Component extends BaseObject
         if ($removed) {
             $this->_events[$name] = array_values($this->_events[$name]);
         }
+
         return $removed;
     }
 

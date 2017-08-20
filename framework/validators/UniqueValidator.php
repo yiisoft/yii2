@@ -302,6 +302,7 @@ class UniqueValidator extends Validator
 
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
+
         return $prefixedConditions;
     }
 }

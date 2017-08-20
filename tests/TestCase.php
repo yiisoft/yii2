@@ -93,6 +93,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if (!is_dir($vendor)) {
             $vendor = dirname(dirname(dirname(dirname(__DIR__))));
         }
+
         return $vendor;
     }
 
@@ -138,6 +139,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if ($revoke) {
             $method->setAccessible(false);
         }
+
         return $result;
     }
 
@@ -182,6 +184,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if ($revoke) {
             $property->setAccessible(false);
         }
+
         return $result;
     }
 

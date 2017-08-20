@@ -237,6 +237,7 @@ class DevController extends Controller
         if (in_array($actionID, ['ext', 'app', 'all'], true)) {
             $options[] = 'useHttp';
         }
+
         return $options;
     }
 

@@ -239,6 +239,7 @@ class BaseStringHelper
             if (static::byteLength($string) < $bytes) {
                 return false;
             }
+
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
         }
 
@@ -277,6 +278,7 @@ class BaseStringHelper
                 return $value !== '';
             }));
         }
+
         return $result;
     }
 

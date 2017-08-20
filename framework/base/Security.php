@@ -278,6 +278,7 @@ class Security extends Component
             if ($outputKey === false) {
                 throw new InvalidParamException('Invalid parameters to hash_hkdf()');
             }
+
             return $outputKey;
         }
 
@@ -309,6 +310,7 @@ class Security extends Component
         if ($length !== 0) {
             $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
         }
+
         return $outputKey;
     }
 
@@ -333,6 +335,7 @@ class Security extends Component
             if ($outputKey === false) {
                 throw new InvalidParamException('Invalid parameters to hash_pbkdf2()');
             }
+
             return $outputKey;
         }
 
@@ -370,6 +373,7 @@ class Security extends Component
         if ($length !== 0) {
             $outputKey = StringHelper::byteSubstr($outputKey, 0, $length);
         }
+
         return $outputKey;
     }
 
@@ -395,6 +399,7 @@ class Security extends Component
         if (!$hash) {
             throw new InvalidConfigException('Failed to generate HMAC with hash algorithm: ' . $this->macHash);
         }
+
         return $hash . $data;
     }
 
@@ -430,6 +435,7 @@ class Security extends Component
                 return $pureData;
             }
         }
+
         return false;
     }
 
@@ -704,6 +710,7 @@ class Security extends Component
         for ($i = 0; $i < $actualLength; $i++) {
             $diff |= (ord($actual[$i]) ^ ord($expected[$i % $expectedLength]));
         }
+
         return $diff === 0;
     }
 
@@ -736,6 +743,7 @@ class Security extends Component
         if (!is_int($length)) {
             return '';
         }
+
         return StringHelper::byteSubstr($decoded, $length, $length) ^ StringHelper::byteSubstr($decoded, 0, $length);
     }
 }

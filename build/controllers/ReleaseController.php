@@ -71,6 +71,7 @@ class ReleaseController extends Controller
         } elseif ($actionID === 'info') {
             $options[] = 'update';
         }
+
         return array_merge(parent::options($actionID), $options);
     }
 
@@ -140,6 +141,7 @@ class ReleaseController extends Controller
                 $w = $l;
             }
         }
+
         return $w;
     }
 
@@ -875,6 +877,7 @@ class ReleaseController extends Controller
                 ${$state}[] = $line;
             }
         }
+
         return [$start, $changelog, $end];
     }
 
@@ -895,6 +898,7 @@ class ReleaseController extends Controller
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
+
             return 'B' . $i++;
         }, SORT_ASC, SORT_NATURAL);
 
@@ -929,6 +933,7 @@ class ReleaseController extends Controller
                     return true;
                 }
             }
+
             return false;
         });
     }
@@ -1001,6 +1006,7 @@ class ReleaseController extends Controller
             rsort($tags, SORT_NATURAL); // TODO this can not deal with alpha/beta/rc...
             $versions[$ext] = reset($tags);
         }
+
         return $versions;
     }
 
@@ -1034,6 +1040,7 @@ class ReleaseController extends Controller
             }
             $versions[$k] = implode('.', $parts);
         }
+
         return $versions;
     }
 }

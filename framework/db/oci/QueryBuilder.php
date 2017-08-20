@@ -333,6 +333,7 @@ EOD;
              */
             $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
         }
+
         return parent::buildLikeCondition($operator, $operands, $params);
     }
 

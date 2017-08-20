@@ -289,6 +289,7 @@ class Response extends \yii\base\Response
         } else {
             $this->statusText = $text;
         }
+
         return $this;
     }
 
@@ -306,6 +307,7 @@ class Response extends \yii\base\Response
         } else {
             $this->setStatusCode(500);
         }
+
         return $this;
     }
 
@@ -319,6 +321,7 @@ class Response extends \yii\base\Response
         if ($this->_headers === null) {
             $this->_headers = new HeaderCollection();
         }
+
         return $this->_headers;
     }
 
@@ -771,6 +774,7 @@ class Response extends \yii\base\Response
         if ($utfName !== $fallbackName) {
             $dispositionHeader .= "; filename*=utf-8''{$utfName}";
         }
+
         return $dispositionHeader;
     }
 
@@ -910,6 +914,7 @@ class Response extends \yii\base\Response
         if ($this->_cookies === null) {
             $this->_cookies = new CookieCollection();
         }
+
         return $this->_cookies;
     }
 
