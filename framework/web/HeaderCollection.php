@@ -150,6 +150,7 @@ class HeaderCollection extends BaseObject implements \IteratorAggregate, \ArrayA
         if (isset($this->_headers[$name])) {
             $value = $this->_headers[$name];
             unset($this->_headers[$name]);
+
             return $value;
         }
 

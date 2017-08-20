@@ -196,6 +196,7 @@ class BaseStringHelper
         }
         $context = new \HTMLPurifier_Context();
         $generator = new \HTMLPurifier_Generator($config, $context);
+
         return $generator->generateFromTokens($truncated) . ($totalCount >= $count ? $suffix : '');
     }
 
@@ -239,6 +240,7 @@ class BaseStringHelper
             if (static::byteLength($string) < $bytes) {
                 return false;
             }
+
             return substr_compare($string, $with, -$bytes, $bytes) === 0;
         }
 
@@ -277,6 +279,7 @@ class BaseStringHelper
                 return $value !== '';
             }));
         }
+
         return $result;
     }
 

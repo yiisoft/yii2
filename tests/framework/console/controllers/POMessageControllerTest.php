@@ -83,6 +83,7 @@ class POMessageControllerTest extends BaseMessageControllerTest
         }
 
         $gettext = new GettextPoFile();
+
         return $gettext->load($messageFilePath, $category);
     }
 }

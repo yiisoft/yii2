@@ -252,6 +252,7 @@ class UrlManager extends Component
             }
             $compiledRules[] = $rule;
         }
+
         return $compiledRules;
     }
 
@@ -405,6 +406,7 @@ class UrlManager extends Component
                 }
 
                 $url = ltrim($url, '/');
+
                 return "$baseUrl/{$url}{$anchor}";
             }
 
@@ -416,6 +418,7 @@ class UrlManager extends Component
             }
 
             $route = ltrim($route, '/');
+
             return "$baseUrl/{$route}{$anchor}";
         }
 
@@ -468,6 +471,7 @@ class UrlManager extends Component
         } else {
             $this->_ruleCache[$cacheKey] = [];
         }
+
         return false;
     }
 

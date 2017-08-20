@@ -33,6 +33,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['bool_col2']['type'] = 'boolean';
         $columns['bool_col2']['phpType'] = 'boolean';
         $columns['bool_col2']['defaultValue'] = true;
+
         return $columns;
     }
 
@@ -67,6 +68,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
         $result['4: primary key'][2]->name = null;
         $result['4: unique'][2][0]->name = AnyValue::getInstance();
+
         return $result;
     }
 }

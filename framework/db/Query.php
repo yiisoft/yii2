@@ -212,6 +212,7 @@ class Query extends Component implements QueryInterface
             return [];
         }
         $rows = $this->createCommand($db)->queryAll();
+
         return $this->populate($rows);
     }
 
@@ -236,6 +237,7 @@ class Query extends Component implements QueryInterface
             }
             $result[$key] = $row;
         }
+
         return $result;
     }
 
@@ -251,6 +253,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return false;
         }
+
         return $this->createCommand($db)->queryOne();
     }
 
@@ -267,6 +270,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return null;
         }
+
         return $this->createCommand($db)->queryScalar();
     }
 
@@ -304,6 +308,7 @@ class Query extends Component implements QueryInterface
                 $results[$row[$this->indexBy]] = $value;
             }
         }
+
         return $results;
     }
 
@@ -321,6 +326,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("COUNT($q)", $db);
     }
 
@@ -337,6 +343,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("SUM($q)", $db);
     }
 
@@ -353,6 +360,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("AVG($q)", $db);
     }
 
@@ -397,6 +405,7 @@ class Query extends Component implements QueryInterface
         $params = $command->params;
         $command->setSql($command->db->getQueryBuilder()->selectExists($command->getSql()));
         $command->bindValues($params);
+
         return (bool) $command->queryScalar();
     }
 
@@ -554,6 +563,7 @@ PATTERN;
         }
         $this->select = $columns;
         $this->selectOption = $option;
+
         return $this;
     }
 
@@ -584,6 +594,7 @@ PATTERN;
         } else {
             $this->select = array_merge($this->select, $columns);
         }
+
         return $this;
     }
 
@@ -595,6 +606,7 @@ PATTERN;
     public function distinct($value = true)
     {
         $this->distinct = $value;
+
         return $this;
     }
 
@@ -638,6 +650,7 @@ PATTERN;
             $tables = preg_split('/\s*,\s*/', trim($tables), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->from = $tables;
+
         return $this;
     }
 
@@ -662,6 +675,7 @@ PATTERN;
     {
         $this->where = $condition;
         $this->addParams($params);
+
         return $this;
     }
 
@@ -685,6 +699,7 @@ PATTERN;
             $this->where = ['and', $this->where, $condition];
         }
         $this->addParams($params);
+
         return $this;
     }
 
@@ -706,6 +721,7 @@ PATTERN;
             $this->where = ['or', $this->where, $condition];
         }
         $this->addParams($params);
+
         return $this;
     }
 
@@ -743,6 +759,7 @@ PATTERN;
         } else {
             $operator = $defaultOperator;
         }
+
         return $this->andFilterWhere([$operator, $name, $value]);
     }
 
@@ -779,6 +796,7 @@ PATTERN;
     public function join($type, $table, $on = '', $params = [])
     {
         $this->join[] = [$type, $table, $on];
+
         return $this->addParams($params);
     }
 
@@ -803,6 +821,7 @@ PATTERN;
     public function innerJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['INNER JOIN', $table, $on];
+
         return $this->addParams($params);
     }
 
@@ -827,6 +846,7 @@ PATTERN;
     public function leftJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['LEFT JOIN', $table, $on];
+
         return $this->addParams($params);
     }
 
@@ -851,6 +871,7 @@ PATTERN;
     public function rightJoin($table, $on = '', $params = [])
     {
         $this->join[] = ['RIGHT JOIN', $table, $on];
+
         return $this->addParams($params);
     }
 
@@ -877,6 +898,7 @@ PATTERN;
             $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
         }
         $this->groupBy = $columns;
+
         return $this;
     }
 
@@ -907,6 +929,7 @@ PATTERN;
         } else {
             $this->groupBy = array_merge($this->groupBy, $columns);
         }
+
         return $this;
     }
 
@@ -923,6 +946,7 @@ PATTERN;
     {
         $this->having = $condition;
         $this->addParams($params);
+
         return $this;
     }
 
@@ -944,6 +968,7 @@ PATTERN;
             $this->having = ['and', $this->having, $condition];
         }
         $this->addParams($params);
+
         return $this;
     }
 
@@ -965,6 +990,7 @@ PATTERN;
             $this->having = ['or', $this->having, $condition];
         }
         $this->addParams($params);
+
         return $this;
     }
 
@@ -1002,6 +1028,7 @@ PATTERN;
         if ($condition !== []) {
             $this->having($condition);
         }
+
         return $this;
     }
 
@@ -1026,6 +1053,7 @@ PATTERN;
         if ($condition !== []) {
             $this->andHaving($condition);
         }
+
         return $this;
     }
 
@@ -1050,6 +1078,7 @@ PATTERN;
         if ($condition !== []) {
             $this->orHaving($condition);
         }
+
         return $this;
     }
 
@@ -1062,6 +1091,7 @@ PATTERN;
     public function union($sql, $all = false)
     {
         $this->union[] = ['query' => $sql, 'all' => $all];
+
         return $this;
     }
 
@@ -1075,6 +1105,7 @@ PATTERN;
     public function params($params)
     {
         $this->params = $params;
+
         return $this;
     }
 
@@ -1100,6 +1131,7 @@ PATTERN;
                 }
             }
         }
+
         return $this;
     }
 

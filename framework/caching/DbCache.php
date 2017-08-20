@@ -137,6 +137,7 @@ class DbCache extends Cache
 
             return $result;
         }
+
         return $query->createCommand($this->db)->queryScalar();
     }
 
@@ -192,6 +193,7 @@ class DbCache extends Cache
                     'expire' => $duration > 0 ? $duration + time() : 0,
                     'data' => [$value, \PDO::PARAM_LOB],
                 ], ['id' => $key]);
+
             return $command->execute();
         });
 
@@ -200,6 +202,7 @@ class DbCache extends Cache
 
             return true;
         }
+
         return $this->addValue($key, $value, $duration);
     }
 

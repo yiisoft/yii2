@@ -329,8 +329,10 @@ class ArrayHelperTest extends TestCase
         ArrayHelper::multisort($changelog, function ($line) use (&$i) {
             if (preg_match('/^- (Enh|Bug)( #\d+)?: .+$/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D'];
+
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
+
             return 'B' . $i++;
         }, SORT_ASC, SORT_NATURAL);
         $this->assertEquals([

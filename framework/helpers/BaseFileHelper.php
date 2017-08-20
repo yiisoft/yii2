@@ -66,6 +66,7 @@ class BaseFileHelper
             }
         }
         $path = implode($ds, $parts);
+
         return $path === '' ? '.' : $path;
     }
 
@@ -189,6 +190,7 @@ class BaseFileHelper
     public static function getExtensionsByMimeType($mimeType, $magicFile = null)
     {
         $mimeTypes = static::loadMimeTypes($magicFile);
+
         return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
     }
 
@@ -209,6 +211,7 @@ class BaseFileHelper
         if (!isset(self::$_mimeTypes[$magicFile])) {
             self::$_mimeTypes[$magicFile] = require $magicFile;
         }
+
         return self::$_mimeTypes[$magicFile];
     }
 
@@ -728,6 +731,7 @@ class BaseFileHelper
                 }
             }
         }
+
         return $options;
     }
 }

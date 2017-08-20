@@ -279,6 +279,7 @@ class FormatterDateTest extends TestCase
         foreach ($intervals as $interval) {
             $date->sub($interval);
         }
+
         return $date;
     }
 
@@ -584,6 +585,7 @@ class FormatterDateTest extends TestCase
                 $result[] = [$tz[0], new \DateTimeImmutable('2014-08-10 14:41:00', $berlin), new \DateTimeImmutable('2014-01-01 13:41:00', $berlin)];
             }
         }
+
         return $result;
     }
 

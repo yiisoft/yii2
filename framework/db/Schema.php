@@ -421,6 +421,7 @@ abstract class Schema extends BaseObject
 
             $result[$name] = isset($columns[$name]) ? $columns[$name] : $tableSchema->columns[$name]->defaultValue;
         }
+
         return $result;
     }
 
@@ -493,6 +494,7 @@ abstract class Schema extends BaseObject
         if (strpos($name, '{{') !== false) {
             return $name;
         }
+
         return $prefix . $this->quoteSimpleColumnName($name);
     }
 
@@ -589,6 +591,7 @@ abstract class Schema extends BaseObject
         }
         $message = $e->getMessage() . "\nThe SQL being executed was: $rawSql";
         $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
+
         return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
     }
 
@@ -600,6 +603,7 @@ abstract class Schema extends BaseObject
     public function isReadQuery($sql)
     {
         $pattern = '/^\s*(SELECT|SHOW|DESCRIBE)\b/i';
+
         return preg_match($pattern, $sql) > 0;
     }
 
@@ -658,6 +662,7 @@ abstract class Schema extends BaseObject
             $this->_tableMetadata[$name][$type] = $this->{'loadTable' . ucfirst($type)}($this->getRawTableName($name));
             $this->saveTableMetadataToCache($cache, $name);
         }
+
         return $this->_tableMetadata[$name][$type];
     }
 
@@ -685,6 +690,7 @@ abstract class Schema extends BaseObject
                 $metadata[] = $tableMetadata;
             }
         }
+
         return $metadata;
     }
 
@@ -731,12 +737,14 @@ abstract class Schema extends BaseObject
     {
         if ($cache === null) {
             $this->_tableMetadata[$name] = [];
+
             return;
         }
 
         $metadata = $cache->get($this->getCacheKey($name));
         if (!is_array($metadata) || !isset($metadata['cacheVersion']) || $metadata['cacheVersion'] !== static::SCHEMA_CACHE_VERSION) {
             $this->_tableMetadata[$name] = [];
+
             return;
         }
 

@@ -134,6 +134,7 @@ class Schema extends \yii\db\Schema
             $resolvedName->name = $name;
         }
         $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
+
         return $resolvedName;
     }
 
@@ -148,6 +149,7 @@ FROM pg_namespace ns
 WHERE ns.nspname != 'information_schema' AND ns.nspname NOT LIKE 'pg_%'
 ORDER BY ns.nspname
 SQL;
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 
@@ -166,6 +168,7 @@ INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
 WHERE ns.nspname = :schemaName AND c.relkind IN ('r','v','m','f')
 ORDER BY c.relname
 SQL;
+
         return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
     }
 
@@ -178,6 +181,7 @@ SQL;
         $this->resolveTableNames($table, $name);
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
+
             return $table;
         }
 
@@ -240,6 +244,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -323,6 +328,7 @@ INNER JOIN pg_namespace ns ON ns.oid = c.relnamespace
 WHERE ns.nspname = :schemaName AND (c.relkind = 'v' OR c.relkind = 'm')
 ORDER BY c.relname
 SQL;
+
         return $this->db->createCommand($sql, [':schemaName' => $schema])->queryColumn();
     }
 
@@ -707,6 +713,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

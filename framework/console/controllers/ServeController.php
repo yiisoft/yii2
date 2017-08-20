@@ -59,16 +59,19 @@ class ServeController extends Controller
 
         if (!is_dir($documentRoot)) {
             $this->stdout("Document root \"$documentRoot\" does not exist.\n", Console::FG_RED);
+
             return self::EXIT_CODE_NO_DOCUMENT_ROOT;
         }
 
         if ($this->isAddressTaken($address)) {
             $this->stdout("http://$address is taken by another process.\n", Console::FG_RED);
+
             return self::EXIT_CODE_ADDRESS_TAKEN_BY_ANOTHER_PROCESS;
         }
 
         if ($this->router !== null && !file_exists($this->router)) {
             $this->stdout("Routing file \"$this->router\" does not exist.\n", Console::FG_RED);
+
             return self::EXIT_CODE_NO_ROUTING_FILE;
         }
 
@@ -119,6 +122,7 @@ class ServeController extends Controller
             return false;
         }
         fclose($fp);
+
         return true;
     }
 }

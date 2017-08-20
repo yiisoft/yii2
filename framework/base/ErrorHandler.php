@@ -185,6 +185,7 @@ abstract class ErrorHandler extends Component
             $ref->setValue($exception, $backtrace);
             $this->_hhvmException = $exception;
         }
+
         return false;
     }
 
@@ -226,6 +227,7 @@ abstract class ErrorHandler extends Component
 
             throw $exception;
         }
+
         return false;
     }
 
@@ -338,6 +340,7 @@ abstract class ErrorHandler extends Component
         } else {
             $message = 'Error: ' . $exception->getMessage();
         }
+
         return $message;
     }
 }

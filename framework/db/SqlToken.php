@@ -99,6 +99,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
     public function offsetGet($offset)
     {
         $offset = $this->calculateOffset($offset);
+
         return isset($this->_children[$offset]) ? $this->_children[$offset] : null;
     }
 
@@ -190,6 +191,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
         while ($code->parent !== null) {
             $code = $code->parent;
         }
+
         return mb_substr($code->content, $this->startOffset, $this->endOffset - $this->startOffset, 'UTF-8');
     }
 
@@ -219,6 +221,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
         }
 
         $patternToken = $patternToken[0];
+
         return $this->tokensMatch($patternToken, $this, $offset, $firstMatchIndex, $lastMatchIndex);
     }
 
@@ -242,6 +245,7 @@ class SqlToken extends BaseObject implements \ArrayAccess
 
         if ($patternToken->children === $token->children) {
             $firstMatchIndex = $lastMatchIndex = $offset;
+
             return true;
         }
 
@@ -274,8 +278,10 @@ class SqlToken extends BaseObject implements \ArrayAccess
                 $offset++;
                 continue 2;
             }
+
             return false;
         }
+
         return true;
     }
 

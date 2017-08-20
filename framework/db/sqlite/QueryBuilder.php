@@ -425,6 +425,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (is_array($columns)) {
             throw new NotSupportedException(__METHOD__ . ' is not supported by SQLite.');
         }
+
         return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
     }
 

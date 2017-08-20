@@ -81,6 +81,7 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $controller = $this->createMessageController();
         $controller->run($actionID, $args);
+
         return $controller->flushStdOutBuffer();
     }
 
@@ -108,6 +109,7 @@ abstract class BaseMessageControllerTest extends TestCase
     {
         $fileName = $this->sourcePath . DIRECTORY_SEPARATOR . md5(uniqid()) . '.php';
         file_put_contents($fileName, "<?php\n" . $content);
+
         return $fileName;
     }
 

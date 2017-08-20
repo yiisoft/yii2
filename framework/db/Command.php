@@ -114,6 +114,7 @@ class Command extends Component
     {
         $this->queryCacheDuration = $duration === null ? $this->db->queryCacheDuration : $duration;
         $this->queryCacheDependency = $dependency;
+
         return $this;
     }
 
@@ -124,6 +125,7 @@ class Command extends Component
     public function noCache()
     {
         $this->queryCacheDuration = -1;
+
         return $this;
     }
 
@@ -206,6 +208,7 @@ class Command extends Component
     {
         if ($this->pdoStatement) {
             $this->bindPendingParams();
+
             return;
         }
 
@@ -1019,6 +1022,7 @@ class Command extends Component
                 $result = $cache->get($cacheKey);
                 if (is_array($result) && isset($result[0])) {
                     Yii::trace('Query result served from cache', 'yii\db\Command::query');
+
                     return $result[0];
                 }
             }
@@ -1064,6 +1068,7 @@ class Command extends Component
     protected function requireTableSchemaRefresh($name)
     {
         $this->_refreshTableName = $name;
+
         return $this;
     }
 

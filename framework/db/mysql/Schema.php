@@ -84,6 +84,7 @@ class Schema extends \yii\db\Schema
             $resolvedName->name = $name;
         }
         $resolvedName->fullName = ($resolvedName->schemaName !== $this->defaultSchema ? $resolvedName->schemaName . '.' : '') . $resolvedName->name;
+
         return $resolvedName;
     }
 
@@ -110,6 +111,7 @@ class Schema extends \yii\db\Schema
 
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
+
             return $table;
         }
 
@@ -164,6 +166,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -477,6 +480,7 @@ SQL;
             $version = $this->db->getSlavePdo()->getAttribute(\PDO::ATTR_SERVER_VERSION);
             $this->_oldMysql = version_compare($version, '5.1', '<=');
         }
+
         return $this->_oldMysql;
     }
 
@@ -557,6 +561,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

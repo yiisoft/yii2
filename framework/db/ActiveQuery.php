@@ -294,6 +294,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $row = parent::one($db);
         if ($row !== false) {
             $models = $this->populate([$row]);
+
             return reset($models) ?: null;
         }
 
@@ -427,6 +428,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
         $this->joinWith[] = [$relations, $eagerLoading, $joinType];
+
         return $this;
     }
 
@@ -593,11 +595,13 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             // via table
             $this->joinWithRelation($parent, $via, $joinType);
             $this->joinWithRelation($via, $child, $joinType);
+
             return;
         } elseif (is_array($via)) {
             // via relation
             $this->joinWithRelation($parent, $via[1], $joinType);
             $this->joinWithRelation($via[1], $child, $joinType);
+
             return;
         }
 
@@ -679,6 +683,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         $this->on = $condition;
         $this->addParams($params);
+
         return $this;
     }
 
@@ -700,6 +705,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->on = ['and', $this->on, $condition];
         }
         $this->addParams($params);
+
         return $this;
     }
 
@@ -721,6 +727,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             $this->on = ['or', $this->on, $condition];
         }
         $this->addParams($params);
+
         return $this;
     }
 
@@ -787,6 +794,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
             }
         }
+
         return $this;
     }
 
@@ -799,6 +807,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if (empty($this->from)) {
             $this->from = [$this->getPrimaryTableName()];
         }
+
         return parent::getTablesUsedInFrom();
     }
 
@@ -810,6 +819,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
     {
         /* @var $modelClass ActiveRecord */
         $modelClass = $this->modelClass;
+
         return $modelClass::tableName();
     }
 }

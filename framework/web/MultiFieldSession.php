@@ -113,6 +113,7 @@ abstract class MultiFieldSession extends Session
             'id' => $id,
             'expire' => time() + $this->getTimeout(),
         ]);
+
         return $fields;
     }
 
@@ -131,8 +132,10 @@ abstract class MultiFieldSession extends Session
             if (!empty($extraData)) {
                 session_decode($fields['data']);
                 $_SESSION = array_merge((array) $_SESSION, (array) $extraData);
+
                 return session_encode();
             }
+
             return $fields['data'];
         }
 

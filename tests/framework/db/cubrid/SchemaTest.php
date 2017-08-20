@@ -73,6 +73,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['bool_col2']['precision'] = null;
         $columns['time']['defaultValue'] = '12:00:00 AM 01/01/2002';
         $columns['ts_default']['defaultValue'] = new Expression('SYS_TIMESTAMP');
+
         return $columns;
     }
 
@@ -94,6 +95,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $result['3: check'][2] = false;
 
         $result['4: check'][2] = false;
+
         return $result;
     }
 
@@ -119,6 +121,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             foreach ($object as $name => $value) {
                 $result[] = $this->convertPropertiesToAnycase($value);
             }
+
             return $result;
         }
 
@@ -129,6 +132,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         } elseif (is_array($object) || is_string($object)) {
             $object = new AnyCaseValue($object);
         }
+
         return $object;
     }
 }

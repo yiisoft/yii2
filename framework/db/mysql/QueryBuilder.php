@@ -225,6 +225,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     {
         // In MySQL offset argument must be nonnegative integer constant
         $offset = (string) $offset;
+
         return ctype_digit($offset) && $offset !== '0';
     }
 
@@ -347,6 +348,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return null;
     }
 }

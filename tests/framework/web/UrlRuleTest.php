@@ -210,6 +210,7 @@ class UrlRuleTest extends TestCase
         $normalizerAction = function ($route) {
             $route[1]['oldRoute'] = $route[0];
             $route[0] = 'site/myCustomRoute';
+
             return $route;
         };
         $manager = new UrlManager([

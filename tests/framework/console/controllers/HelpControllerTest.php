@@ -36,6 +36,7 @@ class HelpControllerTest extends TestCase
             ->setMethods(['fake'])
             ->setConstructorArgs(['console'])
             ->getMock();
+
         return new BufferedHelpController('help', $module);
     }
 
@@ -50,6 +51,7 @@ class HelpControllerTest extends TestCase
         $controller = $this->createController();
         $action = $controller->createAction($actionID);
         $action->runWithParams($actionParams);
+
         return $controller->flushStdOutBuffer();
     }
 

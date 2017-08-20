@@ -149,6 +149,7 @@ class HttpCache extends ActionFilter
         }
         if ($cacheValid) {
             $response->setStatusCode(304);
+
             return false;
         }
 
@@ -207,6 +208,7 @@ class HttpCache extends ActionFilter
     protected function generateEtag($seed)
     {
         $etag = '"' . rtrim(base64_encode(sha1($seed, true)), '=') . '"';
+
         return $this->weakEtag ? 'W/' . $etag : $etag;
     }
 }

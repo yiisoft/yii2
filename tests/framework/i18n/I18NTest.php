@@ -244,6 +244,7 @@ class I18NTest extends TestCase
         $filter = function ($array) {
             // Ensures that error message is related to PhpMessageSource
             $className = $this->getMessageSourceClass();
+
             return substr_compare($array[2], $className, 0, strlen($className)) === 0;
         };
 

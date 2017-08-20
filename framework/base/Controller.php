@@ -189,6 +189,7 @@ class Controller extends Component implements ViewContextInterface
         } elseif ($pos > 0) {
             return $this->module->runAction($route, $params);
         }
+
         return Yii::$app->runAction(ltrim($route, '/'), $params);
     }
 
@@ -270,6 +271,7 @@ class Controller extends Component implements ViewContextInterface
     {
         $event = new ActionEvent($action);
         $this->trigger(self::EVENT_BEFORE_ACTION, $event);
+
         return $event->isValid;
     }
 
@@ -299,6 +301,7 @@ class Controller extends Component implements ViewContextInterface
         $event = new ActionEvent($action);
         $event->result = $result;
         $this->trigger(self::EVENT_AFTER_ACTION, $event);
+
         return $event->result;
     }
 
@@ -316,6 +319,7 @@ class Controller extends Component implements ViewContextInterface
             array_unshift($modules, $module->module);
             $module = $module->module;
         }
+
         return $modules;
     }
 
@@ -379,6 +383,7 @@ class Controller extends Component implements ViewContextInterface
     public function render($view, $params = [])
     {
         $content = $this->getView()->render($view, $params, $this);
+
         return $this->renderContent($content);
     }
 
@@ -395,6 +400,7 @@ class Controller extends Component implements ViewContextInterface
         if ($layoutFile !== false) {
             return $this->getView()->renderFile($layoutFile, ['content' => $content], $this);
         }
+
         return $content;
     }
 
@@ -435,6 +441,7 @@ class Controller extends Component implements ViewContextInterface
         if ($this->_view === null) {
             $this->_view = Yii::$app->getView();
         }
+
         return $this->_view;
     }
 
@@ -458,6 +465,7 @@ class Controller extends Component implements ViewContextInterface
         if ($this->_viewPath === null) {
             $this->_viewPath = $this->module->getViewPath() . DIRECTORY_SEPARATOR . $this->id;
         }
+
         return $this->_viewPath;
     }
 

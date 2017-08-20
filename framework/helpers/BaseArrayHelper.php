@@ -271,6 +271,7 @@ class BaseArrayHelper
     {
         if ($path === null) {
             $array = $value;
+
             return;
         }
 
@@ -350,6 +351,7 @@ class BaseArrayHelper
                 }
             }
         }
+
         return $result;
     }
 
@@ -754,6 +756,7 @@ class BaseArrayHelper
                     return false;
                 }
             }
+
             return true;
         }
 

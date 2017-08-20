@@ -195,6 +195,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         }
 
         $this->assertTrue(unlink($bundle->basePath));
+
         return $bundle;
     }
 

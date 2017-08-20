@@ -141,6 +141,7 @@ class Cors extends ActionFilter
                 $headers[$headerField] = $headerData;
             }
         }
+
         return $headers;
     }
 
@@ -232,6 +233,7 @@ class Cors extends ActionFilter
         $headers = array_map(function ($element) {
             return str_replace(' ', '-', ucwords(strtolower(str_replace(['_', '-'], [' ', ' '], $element))));
         }, $headers);
+
         return implode(', ', $headers);
     }
 

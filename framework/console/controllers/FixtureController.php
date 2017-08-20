@@ -143,6 +143,7 @@ class FixtureController extends Controller
 
         if (!$fixturesToLoad) {
             $this->notifyNothingToLoad($foundFixtures, $except);
+
             return ExitCode::OK;
         }
 
@@ -213,6 +214,7 @@ class FixtureController extends Controller
 
         if (!$fixturesToUnload) {
             $this->notifyNothingToUnload($foundFixtures, $except);
+
             return ExitCode::OK;
         }
 

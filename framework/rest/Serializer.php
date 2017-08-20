@@ -257,6 +257,7 @@ class Serializer extends Component
         }
 
         list($fields, $expand) = $this->getRequestedFields();
+
         return $model->toArray($fields, $expand);
     }
 

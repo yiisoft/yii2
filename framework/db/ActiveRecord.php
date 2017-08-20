@@ -119,6 +119,7 @@ class ActiveRecord extends BaseActiveRecord
                 $this->{$column->name} = $column->defaultValue;
             }
         }
+
         return $this;
     }
 
@@ -200,6 +201,7 @@ class ActiveRecord extends BaseActiveRecord
         }
         /* @var $record BaseActiveRecord */
         $record = static::findOne($pk);
+
         return $this->refreshInternal($record);
     }
 
@@ -469,6 +471,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         if ($runValidation && !$this->validate($attributes)) {
             Yii::info('Model not inserted due to validation error.', __METHOD__);
+
             return false;
         }
 
@@ -484,6 +487,7 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -578,6 +582,7 @@ class ActiveRecord extends BaseActiveRecord
     {
         if ($runValidation && !$this->validate($attributeNames)) {
             Yii::info('Model not updated due to validation error.', __METHOD__);
+
             return false;
         }
 
@@ -593,6 +598,7 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -636,6 +642,7 @@ class ActiveRecord extends BaseActiveRecord
             } else {
                 $transaction->commit();
             }
+
             return $result;
         } catch (\Exception $e) {
             $transaction->rollBack();

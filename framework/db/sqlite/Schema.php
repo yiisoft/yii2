@@ -73,6 +73,7 @@ class Schema extends \yii\db\Schema
     protected function findTableNames($schema = '')
     {
         $sql = "SELECT DISTINCT tbl_name FROM sqlite_master WHERE tbl_name<>'sqlite_sequence' ORDER BY tbl_name";
+
         return $this->db->createCommand($sql)->queryColumn();
     }
 
@@ -87,6 +88,7 @@ class Schema extends \yii\db\Schema
 
         if ($this->findColumns($table)) {
             $this->findConstraints($table);
+
             return $table;
         }
 
@@ -120,6 +122,7 @@ class Schema extends \yii\db\Schema
                 'onUpdate' => isset($foreignKey[0]['on_update']) ? $foreignKey[0]['on_update'] : null,
             ]);
         }
+
         return $result;
     }
 
@@ -174,6 +177,7 @@ class Schema extends \yii\db\Schema
                 'expression' => $checkSql,
             ]);
         }
+
         return $result;
     }
 
@@ -447,6 +451,7 @@ class Schema extends \yii\db\Schema
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 

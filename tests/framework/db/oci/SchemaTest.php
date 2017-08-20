@@ -86,6 +86,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
         $columns['bit_col']['size'] = 3;
         $columns['bit_col']['precision'] = null;
         $columns['bit_col']['defaultValue'] = '130';
+
         return $columns;
     }
 
@@ -164,6 +165,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
             'columnNames' => ['C_col_2'],
             'expression' => '"C_col_2" IS NOT NULL',
         ]);
+
         return $result;
     }
 }

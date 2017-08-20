@@ -190,6 +190,7 @@ class ServiceLocator extends Component
 
         if ($definition === null) {
             unset($this->_definitions[$id]);
+
             return;
         }
 

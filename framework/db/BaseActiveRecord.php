@@ -426,6 +426,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $query->primaryModel = $this;
         $query->link = $link;
         $query->multiple = $multiple;
+
         return $query;
     }
 
@@ -612,6 +613,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         }
+
         return $attributes;
     }
 
@@ -703,6 +705,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($runValidation && !$this->validate($attributeNames)) {
             return false;
         }
+
         return $this->updateInternal($attributeNames);
     }
 
@@ -761,6 +764,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         $values = $this->getDirtyAttributes($attributes);
         if (empty($values)) {
             $this->afterSave(false, $values);
+
             return 0;
         }
         $condition = $this->getOldPrimaryKey(true);
@@ -1017,6 +1021,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
     {
         /* @var $record BaseActiveRecord */
         $record = static::findOne($this->getPrimaryKey(true));
+
         return $this->refreshInternal($record);
     }
 
@@ -1632,6 +1637,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 return $hints[$neededAttribute];
             }
         }
+
         return '';
     }
 

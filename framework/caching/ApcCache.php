@@ -84,6 +84,7 @@ class ApcCache extends Cache
     protected function getValues($keys)
     {
         $values = $this->useApcu ? apcu_fetch($keys) : apc_fetch($keys);
+
         return is_array($values) ? $values : [];
     }
 
@@ -111,6 +112,7 @@ class ApcCache extends Cache
     protected function setValues($data, $duration)
     {
         $result = $this->useApcu ? apcu_store($data, null, $duration) : apc_store($data, null, $duration);
+
         return is_array($result) ? array_keys($result) : [];
     }
 
@@ -137,6 +139,7 @@ class ApcCache extends Cache
     protected function addValues($data, $duration)
     {
         $result = $this->useApcu ? apcu_add($data, null, $duration) : apc_add($data, null, $duration);
+
         return is_array($result) ? array_keys($result) : [];
     }
 

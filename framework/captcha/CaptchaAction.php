@@ -127,6 +127,7 @@ class CaptchaAction extends Action
             // AJAX request for regenerating code
             $code = $this->getVerifyCode(true);
             Yii::$app->response->format = Response::FORMAT_JSON;
+
             return [
                 'hash1' => $this->generateValidationHash($code),
                 'hash2' => $this->generateValidationHash(strtolower($code)),
@@ -349,6 +350,7 @@ class CaptchaAction extends Action
         }
 
         $image->setImageFormat('png');
+
         return $image->getImageBlob();
     }
 

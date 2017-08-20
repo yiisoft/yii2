@@ -106,17 +106,20 @@ class MessageFormatter extends Component
                 // formatter may be null in PHP 5.x
                 $this->_errorCode = intl_get_error_code();
                 $this->_errorMessage = 'Message pattern is invalid: ' . intl_get_error_message();
+
                 return false;
             }
         } catch (\IntlException $e) {
             // IntlException is thrown since PHP 7
             $this->_errorCode = $e->getCode();
             $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
+
             return false;
         } catch (\Exception $e) {
             // Exception is thrown by HHVM
             $this->_errorCode = $e->getCode();
             $this->_errorMessage = 'Message pattern is invalid: ' . $e->getMessage();
+
             return false;
         }
 
@@ -125,6 +128,7 @@ class MessageFormatter extends Component
         if ($result === false) {
             $this->_errorCode = $formatter->getErrorCode();
             $this->_errorMessage = $formatter->getErrorMessage();
+
             return false;
         }
 
@@ -363,6 +367,7 @@ class MessageFormatter extends Component
                         // add decimals with unknown length
                         $number .= '.' . substr($arg, $pos + 1);
                     }
+
                     return $number;
                 }
                 throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");

@@ -149,6 +149,7 @@ class View extends Component
     public function render($view, $params = [], $context = null)
     {
         $viewFile = $this->findViewFile($view, $context);
+
         return $this->renderFile($viewFile, $params, $context);
     }
 
@@ -328,6 +329,7 @@ class View extends Component
         extract($_params_, EXTR_OVERWRITE);
         try {
             require $_file_;
+
             return ob_get_clean();
         } catch (\Exception $e) {
             while (ob_get_level() > $_obInitialLevel_) {
@@ -364,6 +366,7 @@ class View extends Component
 
             return $placeholder;
         }
+
         return $this->evaluateDynamicContent($statements);
     }
 
@@ -481,6 +484,7 @@ class View extends Component
 
             return false;
         }
+
         return true;
     }
 

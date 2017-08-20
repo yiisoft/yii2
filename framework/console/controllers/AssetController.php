@@ -737,6 +737,7 @@ EOD;
         }
 
         $this->stdout("Configuration file template created at '{$configFile}'.\n\n", Console::FG_GREEN);
+
         return ExitCode::OK;
     }
 
@@ -759,6 +760,7 @@ EOD;
                 $realPathParts[] = $pathPart;
             }
         }
+
         return implode(DIRECTORY_SEPARATOR, $realPathParts);
     }
 
@@ -779,6 +781,7 @@ EOD;
     {
         $config = Yii::getObjectVars($bundle);
         $config['class'] = get_class($bundle);
+
         return $config;
     }
 
@@ -801,6 +804,7 @@ EOD;
             }
         }
         $dependencyTrace[] = $circularDependencyName;
+
         return implode(' -> ', $dependencyTrace);
     }
 
@@ -815,6 +819,7 @@ EOD;
 
         if ($this->getAssetManager()->linkAssets) {
             $this->stdout("`AssetManager::linkAssets` option is enabled. Deleting of source files canceled.\n", Console::FG_YELLOW);
+
             return;
         }
 

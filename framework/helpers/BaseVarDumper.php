@@ -156,6 +156,7 @@ class BaseVarDumper
     {
         self::$_output = '';
         self::exportInternal($var, 0);
+
         return self::$_output;
     }
 
@@ -200,6 +201,7 @@ class BaseVarDumper
                         // so we use a fallback
                         if ($var instanceof Arrayable) {
                             self::exportInternal($var->toArray(), $level);
+
                             return;
                         } elseif ($var instanceof \IteratorAggregate) {
                             $varAsArray = [];
@@ -207,6 +209,7 @@ class BaseVarDumper
                                 $varAsArray[$key] = $value;
                             }
                             self::exportInternal($varAsArray, $level);
+
                             return;
                         } elseif ('__PHP_Incomplete_Class' !== get_class($var) && method_exists($var, '__toString')) {
                             $output = var_export($var->__toString(), true);

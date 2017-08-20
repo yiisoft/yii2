@@ -442,6 +442,7 @@ class BaseConsole
                     $styleString .= "$name: $value;";
                 }
                 $tags++;
+
                 return "$return<span style=\"$styleString\">";
             },
             $string
@@ -450,6 +451,7 @@ class BaseConsole
             $result .= '</span>';
             $tags--;
         }
+
         return $result;
     }
 
@@ -461,6 +463,7 @@ class BaseConsole
     public static function markdownToAnsi($markdown)
     {
         $parser = new ConsoleMarkdown();
+
         return $parser->parse($markdown);
     }
 
@@ -683,6 +686,7 @@ class BaseConsole
             }
             $lines[$i] = $pad . $line;
         }
+
         return implode("\n", $lines);
     }
 

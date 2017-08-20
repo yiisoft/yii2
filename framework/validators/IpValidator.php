@@ -296,6 +296,7 @@ class IpValidator extends Validator
         $result = $this->validateSubnet($value);
         if (is_array($result)) {
             $result[1] = array_merge(['ip' => is_array($value) ? 'array()' : $value], $result[1]);
+
             return $result;
         }
 
@@ -413,6 +414,7 @@ class IpValidator extends Validator
     private function expandIPv6($ip)
     {
         $hex = unpack('H*hex', inet_pton($ip));
+
         return substr(preg_replace('/([a-f0-9]{4})/i', '$1:', $hex['hex']), 0, -1);
     }
 
@@ -451,6 +453,7 @@ class IpValidator extends Validator
     private function parseNegatedRange($string)
     {
         $isNegated = strpos($string, static::NEGATION_CHAR) === 0;
+
         return [$isNegated, $isNegated ? substr($string, strlen(static::NEGATION_CHAR)) : $string];
     }
 
@@ -479,6 +482,7 @@ class IpValidator extends Validator
                 $result[] = $string;
             }
         }
+
         return array_unique($result);
     }
 
@@ -551,6 +555,7 @@ class IpValidator extends Validator
         }
 
         $binNet = $this->ip2bin($net);
+
         return substr($binIp, 0, $range_cidr) === substr($binNet, 0, $range_cidr) && $cidr >= $range_cidr;
     }
 

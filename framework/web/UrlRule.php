@@ -179,6 +179,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if ($str === '') {
             return '/';
         }
+
         return $str;
     }
 
@@ -328,6 +329,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         // we have only optional params in route - ensure slash position on param patterns
         if ($allowAppendSlash && trim($requiredPatternPart, '/') === '') {
             $this->translatePattern(false);
+
             return;
         }
 
@@ -455,6 +457,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
     {
         if ($this->mode === self::PARSING_ONLY) {
             $this->createStatus = self::CREATE_STATUS_PARSING_ONLY;
+
             return false;
         }
 
@@ -473,6 +476,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 }
             } else {
                 $this->createStatus = self::CREATE_STATUS_ROUTE_MISMATCH;
+
                 return false;
             }
         }
@@ -490,6 +494,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                     $params[$name] = '';
                 } else {
                     $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
+
                     return false;
                 }
             }
@@ -500,6 +505,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 }
             } elseif (!isset($this->_paramRules[$name])) {
                 $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
+
                 return false;
             }
         }
@@ -511,6 +517,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 unset($params[$name]);
             } elseif (!isset($this->defaults[$name]) || isset($params[$name])) {
                 $this->createStatus = self::CREATE_STATUS_PARAMS_MISMATCH;
+
                 return false;
             }
         }
@@ -534,6 +541,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         }
 
         $this->createStatus = self::CREATE_STATUS_SUCCESS;
+
         return $url;
     }
 
@@ -579,6 +587,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 unset($matches[$placeholder]);
             }
         }
+
         return $matches;
     }
 
@@ -594,6 +603,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if (strpos($string, '//') === 0) {
             return '//' . trim($string, '/');
         }
+
         return trim($string, '/');
     }
 }

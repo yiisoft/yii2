@@ -63,6 +63,7 @@ class TagDependency extends Dependency
     public function isChanged($cache)
     {
         $timestamps = $this->getTimestamps($cache, (array) $this->tags);
+
         return $timestamps !== $this->data;
     }
 
@@ -94,6 +95,7 @@ class TagDependency extends Dependency
             $items[$key] = $time;
         }
         $cache->multiSet($items);
+
         return $items;
     }
 

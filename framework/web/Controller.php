@@ -73,6 +73,7 @@ class Controller extends \yii\base\Controller
         $response = Yii::$app->getResponse();
         $response->format = Response::FORMAT_JSON;
         $response->data = $data;
+
         return $response;
     }
 
@@ -100,6 +101,7 @@ class Controller extends \yii\base\Controller
         $response = Yii::$app->getResponse();
         $response->format = Response::FORMAT_XML;
         $response->data = $data;
+
         return $response;
     }
 
@@ -165,6 +167,7 @@ class Controller extends \yii\base\Controller
             if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !Yii::$app->getRequest()->validateCsrfToken()) {
                 throw new BadRequestHttpException(Yii::t('yii', 'Unable to verify your data submission.'));
             }
+
             return true;
         }
 

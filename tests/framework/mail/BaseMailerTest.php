@@ -462,6 +462,7 @@ class Message extends BaseMessage
         $this->mailer = null;
         $s = var_export($this, true);
         $this->mailer = $mailer;
+
         return $s;
     }
 }

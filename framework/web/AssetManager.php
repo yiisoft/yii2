@@ -267,6 +267,7 @@ class AssetManager extends Component
         if ($publish) {
             $bundle->publish($this);
         }
+
         return $bundle;
     }
 
@@ -286,6 +287,7 @@ class AssetManager extends Component
                 'depends' => [],
             ]);
         }
+
         return $this->_dummyBundles[$name];
     }
 
@@ -602,6 +604,7 @@ class AssetManager extends Component
             return call_user_func($this->hashCallback, $path);
         }
         $path = (is_file($path) ? dirname($path) : $path) . filemtime($path);
+
         return sprintf('%x', crc32($path . Yii::getVersion()));
     }
 }

@@ -185,6 +185,7 @@ class Filter1 extends ActionFilter
     public function beforeAction($action)
     {
         $action->controller->result[] = 1;
+
         return true;
     }
 
@@ -205,6 +206,7 @@ class Filter2 extends ActionFilter
     public function beforeAction($action)
     {
         $action->controller->result[] = 2;
+
         return false;
     }
 
@@ -225,6 +227,7 @@ class Filter3 extends ActionFilter
     public function beforeAction($action)
     {
         $action->controller->result[] = 3;
+
         return true;
     }
 

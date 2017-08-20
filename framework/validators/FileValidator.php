@@ -253,6 +253,7 @@ class FileValidator extends Validator
                 } elseif (!empty($this->mimeTypes) && !$this->validateMimeType($value)) {
                     return [$this->wrongMimeType, ['file' => $value->name, 'mimeTypes' => implode(', ', $this->mimeTypes)]];
                 }
+
                 return null;
             case UPLOAD_ERR_INI_SIZE:
             case UPLOAD_ERR_FORM_SIZE:
@@ -317,6 +318,7 @@ class FileValidator extends Validator
     public function isEmpty($value, $trim = false)
     {
         $value = is_array($value) ? reset($value) : $value;
+
         return !($value instanceof UploadedFile) || $value->error == UPLOAD_ERR_NO_FILE;
     }
 
@@ -379,6 +381,7 @@ class FileValidator extends Validator
     {
         ValidationAsset::register($view);
         $options = $this->getClientOptions($model, $attribute);
+
         return 'yii.validation.file(attribute, messages, ' . Json::encode($options) . ');';
     }
 

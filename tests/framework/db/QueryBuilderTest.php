@@ -1156,6 +1156,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
+
         return $conditions;
     }
 
@@ -1204,6 +1205,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
+
         return $conditions;
     }
 
@@ -1239,6 +1241,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         $tableName = 'T_constraints_1';
         $name = 'CN_pk';
+
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
@@ -1275,6 +1278,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $tableName = 'T_constraints_3';
         $name = 'CN_constraints_3';
         $pkTableName = 'T_constraints_2';
+
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
@@ -1311,6 +1315,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $tableName = 'T_constraints_2';
         $name1 = 'CN_constraints_2_single';
         $name2 = 'CN_constraints_2_multi';
+
         return [
             'drop' => [
                 "DROP INDEX [[$name1]] ON {{{$tableName}}}",
@@ -1360,6 +1365,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         $name1 = 'CN_unique';
         $tableName2 = 'T_constraints_2';
         $name2 = 'CN_constraints_2_multi';
+
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName1}}} DROP CONSTRAINT [[$name1]]",
@@ -1395,6 +1401,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         $tableName = 'T_constraints_1';
         $name = 'CN_check';
+
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
@@ -1424,6 +1431,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     {
         $tableName = 'T_constraints_1';
         $name = 'CN_default';
+
         return [
             'drop' => [
                 "ALTER TABLE {{{$tableName}}} DROP CONSTRAINT [[$name]]",
@@ -1912,6 +1920,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $conditions[$i][2][$name] = strtr($conditions[$i][2][$name], $this->likeParameterReplacements);
             }
         }
+
         return $conditions;
     }
 

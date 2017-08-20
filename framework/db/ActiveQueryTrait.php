@@ -39,6 +39,7 @@ trait ActiveQueryTrait
     public function asArray($value = true)
     {
         $this->asArray = $value;
+
         return $this;
     }
 

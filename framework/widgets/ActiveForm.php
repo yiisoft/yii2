@@ -281,6 +281,7 @@ class ActiveForm extends Widget
     {
         Html::addCssClass($options, $this->errorSummaryCssClass);
         $options['encode'] = $this->encodeErrorSummary;
+
         return Html::errorSummary($models, $options);
     }
 
@@ -305,6 +306,7 @@ class ActiveForm extends Widget
         if (!isset($config['class'])) {
             $config['class'] = $this->fieldClass;
         }
+
         return Yii::createObject(ArrayHelper::merge($config, $options, [
             'model' => $model,
             'attribute' => $attribute,
@@ -328,6 +330,7 @@ class ActiveForm extends Widget
     {
         $field = $this->field($model, $attribute, $options);
         $this->_fields[] = $field;
+
         return $field->begin();
     }
 

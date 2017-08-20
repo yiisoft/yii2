@@ -94,6 +94,7 @@ class UnknownCommandException extends Exception
                 }
             }
         }
+
         return $this->filterBySimilarity($availableActions, $this->command);
     }
 
@@ -127,6 +128,7 @@ class UnknownCommandException extends Exception
         $distances = array_map(function ($action) use ($command) {
             $action = strlen($action) > 255 ? substr($action, 0, 255) : $action;
             $command = strlen($command) > 255 ? substr($command, 0, 255) : $command;
+
             return levenshtein($action, $command);
         }, array_combine($actions, $actions));
 

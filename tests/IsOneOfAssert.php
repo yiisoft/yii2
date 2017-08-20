@@ -33,6 +33,7 @@ class IsOneOfAssert extends \PHPUnit\Framework\Constraint\Constraint
     public function toString()
     {
         $expectedAsString = "'" . implode("', '", $this->allowedValues) . "'";
+
         return "is one of $expectedAsString";
     }
 

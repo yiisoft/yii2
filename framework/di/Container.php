@@ -254,6 +254,7 @@ class Container extends Component
         $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
         $this->_params[$class] = $params;
         unset($this->_singletons[$class]);
+
         return $this;
     }
 
@@ -275,6 +276,7 @@ class Container extends Component
         $this->_definitions[$class] = $this->normalizeDefinition($class, $definition);
         $this->_params[$class] = $params;
         $this->_singletons[$class] = null;
+
         return $this;
     }
 
@@ -333,6 +335,7 @@ class Container extends Component
                     throw new InvalidConfigException('A class definition requires a "class" member.');
                 }
             }
+
             return $definition;
         }
 
@@ -378,6 +381,7 @@ class Container extends Component
         if (!empty($dependencies) && $reflection->implementsInterface('yii\base\Configurable')) {
             // set $config as the last parameter (existing one will be overwritten)
             $dependencies[count($dependencies) - 1] = $config;
+
             return $reflection->newInstanceArgs($dependencies);
         }
 
@@ -463,6 +467,7 @@ class Container extends Component
                 }
             }
         }
+
         return $dependencies;
     }
 
@@ -565,6 +570,7 @@ class Container extends Component
         foreach ($params as $value) {
             $args[] = $value;
         }
+
         return $args;
     }
 

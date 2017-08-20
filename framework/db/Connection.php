@@ -460,6 +460,7 @@ class Connection extends Component
         try {
             $result = call_user_func($callable, $this);
             array_pop($this->_queryCacheInfo);
+
             return $result;
         } catch (\Exception $e) {
             array_pop($this->_queryCacheInfo);
@@ -500,6 +501,7 @@ class Connection extends Component
         try {
             $result = call_user_func($callable, $this);
             array_pop($this->_queryCacheInfo);
+
             return $result;
         } catch (\Exception $e) {
             array_pop($this->_queryCacheInfo);
@@ -563,6 +565,7 @@ class Connection extends Component
             $db = $this->getMaster();
             if ($db !== null) {
                 $this->pdo = $db->pdo;
+
                 return;
             }
 
@@ -643,6 +646,7 @@ class Connection extends Component
         if (strncmp('sqlite:@', $dsn, 8) === 0) {
             $dsn = 'sqlite:' . Yii::getAlias(substr($dsn, 7));
         }
+
         return new $pdoClass($dsn, $this->username, $this->password, $this->attributes);
     }
 
@@ -888,6 +892,7 @@ class Connection extends Component
                 $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
             }
         }
+
         return $this->_driverName;
     }
 
@@ -926,6 +931,7 @@ class Connection extends Component
     public function getMasterPdo()
     {
         $this->open();
+
         return $this->pdo;
     }
 
@@ -1017,6 +1023,7 @@ class Connection extends Component
     protected function openFromPool(array $pool, array $sharedConfig)
     {
         shuffle($pool);
+
         return $this->openFromPoolSequentially($pool, $sharedConfig);
     }
 
@@ -1059,6 +1066,7 @@ class Connection extends Component
 
             try {
                 $db->open();
+
                 return $db;
             } catch (\Exception $e) {
                 Yii::warning("Connection ({$config['dsn']}) failed: " . $e->getMessage(), __METHOD__);
@@ -1079,6 +1087,7 @@ class Connection extends Component
     public function __sleep()
     {
         $this->close();
+
         return array_keys((array) $this);
     }
 

@@ -126,6 +126,7 @@ class UniqueValidator extends Validator
         foreach ($rawConditions as $key => $value) {
             if (is_array($value)) {
                 $this->addError($model, $attribute, Yii::t('yii', '{attribute} is invalid.'));
+
                 return;
             }
             $conditions[] = [$key => $value];
@@ -302,6 +303,7 @@ class UniqueValidator extends Validator
 
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
+
         return $prefixedConditions;
     }
 }

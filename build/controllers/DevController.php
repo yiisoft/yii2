@@ -149,6 +149,7 @@ class DevController extends Controller
                     }
                 } else {
                     $this->stderr("Repo argument is required for app '$app'.\n", Console::FG_RED);
+
                     return 1;
                 }
             }
@@ -200,6 +201,7 @@ class DevController extends Controller
                     }
                 } else {
                     $this->stderr("Repo argument is required for extension '$extension'.\n", Console::FG_RED);
+
                     return 1;
                 }
             }
@@ -237,6 +239,7 @@ class DevController extends Controller
         if (in_array($actionID, ['ext', 'app', 'all'], true)) {
             $options[] = 'useHttp';
         }
+
         return $options;
     }
 
@@ -332,6 +335,7 @@ class DevController extends Controller
             }
         }
         closedir($handle);
+
         return $list;
     }
 

@@ -27,6 +27,7 @@ trait StdOutBufferControllerTrait
     {
         $result = $this->stdOutBuffer;
         $this->stdOutBuffer = '';
+
         return $result;
     }
 }

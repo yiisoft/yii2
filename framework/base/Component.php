@@ -190,6 +190,7 @@ class Component extends BaseObject
         foreach ($this->_behaviors as $behavior) {
             if ($behavior->canSetProperty($name)) {
                 $behavior->$name = $value;
+
                 return;
             }
         }
@@ -251,6 +252,7 @@ class Component extends BaseObject
         $setter = 'set' . $name;
         if (method_exists($this, $setter)) {
             $this->$setter(null);
+
             return;
         }
 
@@ -259,6 +261,7 @@ class Component extends BaseObject
         foreach ($this->_behaviors as $behavior) {
             if ($behavior->canSetProperty($name)) {
                 $behavior->$name = null;
+
                 return;
             }
         }
@@ -348,6 +351,7 @@ class Component extends BaseObject
                 }
             }
         }
+
         return false;
     }
 
@@ -378,6 +382,7 @@ class Component extends BaseObject
                 }
             }
         }
+
         return false;
     }
 
@@ -404,6 +409,7 @@ class Component extends BaseObject
                 }
             }
         }
+
         return false;
     }
 
@@ -445,6 +451,7 @@ class Component extends BaseObject
     public function hasEventHandlers($name)
     {
         $this->ensureBehaviors();
+
         return !empty($this->_events[$name]) || Event::hasHandlers($this, $name);
     }
 
@@ -505,6 +512,7 @@ class Component extends BaseObject
         }
         if ($handler === null) {
             unset($this->_events[$name]);
+
             return true;
         }
 
@@ -518,6 +526,7 @@ class Component extends BaseObject
         if ($removed) {
             $this->_events[$name] = array_values($this->_events[$name]);
         }
+
         return $removed;
     }
 
@@ -561,6 +570,7 @@ class Component extends BaseObject
     public function getBehavior($name)
     {
         $this->ensureBehaviors();
+
         return isset($this->_behaviors[$name]) ? $this->_behaviors[$name] : null;
     }
 
@@ -571,6 +581,7 @@ class Component extends BaseObject
     public function getBehaviors()
     {
         $this->ensureBehaviors();
+
         return $this->_behaviors;
     }
 
@@ -592,6 +603,7 @@ class Component extends BaseObject
     public function attachBehavior($name, $behavior)
     {
         $this->ensureBehaviors();
+
         return $this->attachBehaviorInternal($name, $behavior);
     }
 
@@ -623,6 +635,7 @@ class Component extends BaseObject
             $behavior = $this->_behaviors[$name];
             unset($this->_behaviors[$name]);
             $behavior->detach();
+
             return $behavior;
         }
 

@@ -52,6 +52,7 @@ class AuthMethodTest extends TestCase
     protected function createAction(array $config = [])
     {
         $controller = new Controller('test', Yii::$app);
+
         return new Action('index', $controller, $config);
     }
 

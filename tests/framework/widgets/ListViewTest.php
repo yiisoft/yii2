@@ -216,6 +216,7 @@ HTML
     {
         $before = function ($model, $key, $index, $widget) {
             $widget = get_class($widget);
+
             return "<!-- before: {$model['id']}, key: $key, index: $index, widget: $widget -->";
         };
         $after = function ($model, $key, $index, $widget) {
@@ -223,6 +224,7 @@ HTML
                 return null;
             }
             $widget = get_class($widget);
+
             return "<!-- after: {$model['id']}, key: $key, index: $index, widget: $widget -->";
         };
 

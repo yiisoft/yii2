@@ -116,6 +116,7 @@ class TimestampBehavior extends AttributeBehavior
         if ($this->value === null) {
             return time();
         }
+
         return parent::getValue($event);
     }
 

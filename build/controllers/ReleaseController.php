@@ -71,6 +71,7 @@ class ReleaseController extends Controller
         } elseif ($actionID === 'info') {
             $options[] = 'update';
         }
+
         return array_merge(parent::options($actionID), $options);
     }
 
@@ -84,6 +85,7 @@ class ReleaseController extends Controller
             $this->basePath = dirname(dirname(__DIR__));
         }
         $this->basePath = rtrim($this->basePath, '\\/');
+
         return parent::beforeAction($action);
     }
 
@@ -140,6 +142,7 @@ class ReleaseController extends Controller
                 $w = $l;
             }
         }
+
         return $w;
     }
 
@@ -183,6 +186,7 @@ class ReleaseController extends Controller
     {
         if (count($what) > 1) {
             $this->stdout("Currently only one simultaneous release is supported.\n");
+
             return 1;
         }
 
@@ -226,6 +230,7 @@ class ReleaseController extends Controller
 
         if (!$this->confirm('When you continue, this tool will run cleanup jobs and update the changelog as well as other files (locally). Continue?', false)) {
             $this->stdout("Canceled.\n");
+
             return 1;
         }
 
@@ -285,6 +290,7 @@ class ReleaseController extends Controller
 
         if (!$this->confirm('Continue?', false)) {
             $this->stdout("Canceled.\n");
+
             return 1;
         }
 
@@ -315,6 +321,7 @@ class ReleaseController extends Controller
     {
         if (count($what) > 1) {
             $this->stdout("Currently only one simultaneous release is supported.\n");
+
             return 1;
         }
         $this->validateWhat($what, ['framework', 'ext'], false);
@@ -751,6 +758,7 @@ class ReleaseController extends Controller
         $this->stdout("running  $cmd  ...", Console::BOLD);
         if ($this->dryRun) {
             $this->stdout("dry run, command `$cmd` not executed.\n");
+
             return;
         }
         chdir($path);
@@ -767,6 +775,7 @@ class ReleaseController extends Controller
         if ($this->confirm("Run `$cmd`?", true)) {
             if ($this->dryRun) {
                 $this->stdout("dry run, command `$cmd` not executed.\n");
+
                 return;
             }
             chdir($path);
@@ -879,6 +888,7 @@ class ReleaseController extends Controller
                 ${$state}[] = $line;
             }
         }
+
         return [$start, $changelog, $end];
     }
 
@@ -899,8 +909,10 @@ class ReleaseController extends Controller
         ArrayHelper::multisort($changelog, function ($line) use (&$i) {
             if (preg_match('/^- (Chg|Enh|Bug|New)( #\d+(, #\d+)*)?: .+/', $line, $m)) {
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
+
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
+
             return 'B' . $i++;
         }, SORT_ASC, SORT_NATURAL);
 
@@ -935,6 +947,7 @@ class ReleaseController extends Controller
                     return true;
                 }
             }
+
             return false;
         });
     }
@@ -1007,6 +1020,7 @@ class ReleaseController extends Controller
             rsort($tags, SORT_NATURAL); // TODO this can not deal with alpha/beta/rc...
             $versions[$ext] = reset($tags);
         }
+
         return $versions;
     }
 
@@ -1040,6 +1054,7 @@ class ReleaseController extends Controller
             }
             $versions[$k] = implode('.', $parts);
         }
+
         return $versions;
     }
 }

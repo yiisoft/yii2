@@ -233,6 +233,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (!preg_match('/^(DROP|SET|RESET)\s+/i', $type)) {
             $type = 'TYPE ' . $this->getColumnType($type);
         }
+
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ALTER COLUMN '
             . $this->db->quoteColumnName($column) . ' ' . $type;
     }

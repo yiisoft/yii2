@@ -75,6 +75,7 @@ trait MigrateControllerTestTrait
         $migrateController = new $class('migrate', $module);
         $migrateController->interactive = false;
         $migrateController->migrationPath = $this->migrationPath;
+
         return Yii::configure($migrateController, $config);
     }
 
@@ -124,6 +125,7 @@ class {$class} extends {$baseClass}
 }
 CODE;
         file_put_contents(($path ? Yii::getAlias($path) : $this->migrationPath) . DIRECTORY_SEPARATOR . $class . '.php', $code);
+
         return $class;
     }
 
@@ -158,6 +160,7 @@ class {$class} extends \\{$baseClass}
 }
 CODE;
         file_put_contents($this->migrationPath . DIRECTORY_SEPARATOR . $class . '.php', $code);
+
         return $class;
     }
 
@@ -175,6 +178,7 @@ CODE;
             $file = str_replace($match[1], $class, $file);
         }
         $this->tearDownMigrationPath();
+
         return $file;
     }
 

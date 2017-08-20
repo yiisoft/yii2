@@ -180,6 +180,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $result = $connection->transaction(function () use ($connection) {
             $connection->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+
             return true;
         });
 
@@ -195,6 +196,7 @@ abstract class ConnectionTest extends DatabaseTestCase
 
         $result = $connection->transaction(function (Connection $db) {
             $db->createCommand()->insert('profile', ['description' => 'test transaction shortcut'])->execute();
+
             return true;
         }, Transaction::READ_UNCOMMITTED);
 

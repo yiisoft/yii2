@@ -573,6 +573,7 @@ class User extends Component
             }
         }
         $this->removeIdentityCookie();
+
         return null;
     }
 

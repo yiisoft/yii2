@@ -143,6 +143,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     public function beforeAction($action)
     {
         $this->negotiate();
+
         return true;
     }
 
@@ -175,6 +176,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                 $response->format = $format;
                 $response->acceptMimeType = null;
                 $response->acceptParams = [];
+
                 return;
             }
 
@@ -191,6 +193,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                 $response->format = $this->formats[$type];
                 $response->acceptMimeType = $type;
                 $response->acceptParams = $params;
+
                 return;
             }
         }
@@ -225,6 +228,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
                     return $supported;
                 }
             }
+
             return reset($this->languages);
         }
 
@@ -252,6 +256,7 @@ class ContentNegotiator extends ActionFilter implements BootstrapInterface
     {
         $supported = str_replace('_', '-', strtolower($supported));
         $requested = str_replace('_', '-', strtolower($requested));
+
         return strpos($requested . '-', $supported . '-') === 0;
     }
 }
