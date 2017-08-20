@@ -64,7 +64,7 @@ class FragmentCache extends Widget
      * ]
      * ```
      */
-    public $variations;
+    public $variations = [];
     /**
      * @var bool whether to enable the fragment cache. You may use this property to turn on and off
      * the fragment cache according to specific setting (e.g. enable fragment cache only for GET requests).
@@ -189,13 +189,6 @@ class FragmentCache extends Widget
      */
     protected function calculateKey()
     {
-        $factors = [__CLASS__, $this->getId()];
-        if (is_array($this->variations)) {
-            foreach ($this->variations as $factor) {
-                $factors[] = $factor;
-            }
-        }
-
-        return $factors;
+        return array_merge([__CLASS__, $this->getId()], $this->variations);
     }
 }
