@@ -279,6 +279,7 @@ class Request extends \yii\base\Request
             } else {
                 $this->_queryParams = $params + $this->_queryParams;
             }
+
             return [$route, $this->getQueryParams()];
         }
 
@@ -996,6 +997,7 @@ class Request extends \yii\base\Request
                 }
             }
         }
+
         return false;
     }
 
@@ -1067,6 +1069,7 @@ class Request extends \yii\base\Request
                 return trim(explode(',', $this->headers->get($ipHeader))[0]);
             }
         }
+
         return $this->getRemoteIP();
     }
 
@@ -1082,6 +1085,7 @@ class Request extends \yii\base\Request
                 return gethostbyaddr(trim(explode(',', $this->headers->get($ipHeader))[0]));
             }
         }
+
         return $this->getRemoteHost();
     }
 
@@ -1516,6 +1520,7 @@ class Request extends \yii\base\Request
         if ($this->enableCsrfCookie) {
             return $this->getCookies()->getValue($this->csrfParam);
         }
+
         return Yii::$app->getSession()->get($this->csrfParam);
     }
 
@@ -1532,6 +1537,7 @@ class Request extends \yii\base\Request
         } else {
             Yii::$app->getSession()->set($this->csrfParam, $token);
         }
+
         return $token;
     }
 

@@ -318,6 +318,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
             $version = explode('.', $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION));
             $this->_oldMssql = $version[0] < 11;
         }
+
         return $this->_oldMssql;
     }
 
@@ -330,6 +331,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
         if (is_array($columns)) {
             throw new NotSupportedException(__METHOD__ . ' is not supported by MSSQL.');
         }
+
         return parent::buildSubqueryInCondition($operator, $columns, $values, $params);
     }
 
@@ -393,6 +395,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
                 }
             }
         }
+
         return $columns;
     }
 

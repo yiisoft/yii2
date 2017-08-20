@@ -113,6 +113,7 @@ class Widget extends Component implements ViewContextInterface
                     $result = $widget->afterRun($result);
                     echo $result;
                 }
+
                 return $widget;
             }
 

@@ -179,6 +179,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if ($str === '') {
             return '/';
         }
+
         return $str;
     }
 
@@ -579,6 +580,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
                 unset($matches[$placeholder]);
             }
         }
+
         return $matches;
     }
 
@@ -594,6 +596,7 @@ class UrlRule extends BaseObject implements UrlRuleInterface
         if (strpos($string, '//') === 0) {
             return '//' . trim($string, '/');
         }
+
         return trim($string, '/');
     }
 }

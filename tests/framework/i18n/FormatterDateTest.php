@@ -279,6 +279,7 @@ class FormatterDateTest extends TestCase
         foreach ($intervals as $interval) {
             $date->sub($interval);
         }
+
         return $date;
     }
 
@@ -520,6 +521,9 @@ class FormatterDateTest extends TestCase
 
     /**
      * @dataProvider dateInputs
+     * @param mixed $expected
+     * @param mixed $value
+     * @param mixed|null $expectedException
      */
     public function testIntlDateInput($expected, $value, $expectedException = null)
     {
@@ -528,6 +532,9 @@ class FormatterDateTest extends TestCase
 
     /**
      * @dataProvider dateInputs
+     * @param mixed $expected
+     * @param mixed $value
+     * @param mixed|null $expectedException
      */
     public function testDateInput($expected, $value, $expectedException = null)
     {
@@ -578,12 +585,16 @@ class FormatterDateTest extends TestCase
                 $result[] = [$tz[0], new \DateTimeImmutable('2014-08-10 14:41:00', $berlin), new \DateTimeImmutable('2014-01-01 13:41:00', $berlin)];
             }
         }
+
         return $result;
     }
 
     /**
      * Test timezones with input date and time in other timezones
      * @dataProvider provideTimesAndTz
+     * @param string $defaultTz
+     * @param mixed $inputTimeDst
+     * @param mixed $inputTimeNonDst
      */
     public function testIntlTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
     {
@@ -593,6 +604,9 @@ class FormatterDateTest extends TestCase
     /**
      * Test timezones with input date and time in other timezones
      * @dataProvider provideTimesAndTz
+     * @param string $defaultTz
+     * @param mixed $inputTimeDst
+     * @param mixed $inputTimeNonDst
      */
     public function testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
     {
@@ -743,6 +757,7 @@ class FormatterDateTest extends TestCase
      * Fixed in PHP >5.4.26 and >5.5.10. http://3v4l.org/mlZX7
      *
      * @dataProvider provideTimezones
+     * @param string $dtz
      */
     public function testIssue6263($dtz)
     {

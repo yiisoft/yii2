@@ -137,6 +137,7 @@ class DbCache extends Cache
 
             return $result;
         }
+
         return $query->createCommand($this->db)->queryScalar();
     }
 
@@ -200,6 +201,7 @@ class DbCache extends Cache
 
             return true;
         }
+
         return $this->addValue($key, $value, $duration);
     }
 

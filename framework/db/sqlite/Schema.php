@@ -120,6 +120,7 @@ class Schema extends \yii\db\Schema
                 'onUpdate' => isset($foreignKey[0]['on_update']) ? $foreignKey[0]['on_update'] : null,
             ]);
         }
+
         return $result;
     }
 
@@ -174,6 +175,7 @@ class Schema extends \yii\db\Schema
                 'expression' => $checkSql,
             ]);
         }
+
         return $result;
     }
 
@@ -447,6 +449,7 @@ class Schema extends \yii\db\Schema
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 

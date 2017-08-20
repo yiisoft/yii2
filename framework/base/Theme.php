@@ -152,6 +152,7 @@ class Theme extends Component
                 }
             }
         }
+
         return $path;
     }
 

@@ -272,6 +272,7 @@ class AssetManager extends Component
         if ($publish) {
             $bundle->publish($this);
         }
+
         return $bundle;
     }
 
@@ -291,6 +292,7 @@ class AssetManager extends Component
                 'depends' => [],
             ]);
         }
+
         return $this->_dummyBundles[$name];
     }
 

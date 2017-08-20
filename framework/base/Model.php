@@ -410,6 +410,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($this->_validators === null) {
             $this->_validators = $this->createValidators();
         }
+
         return $this->_validators;
     }
 
@@ -428,6 +429,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $validators[] = $validator;
             }
         }
+
         return $validators;
     }
 
@@ -450,6 +452,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 throw new InvalidConfigException('Invalid validation rule: a rule must specify both attribute names and validator type.');
             }
         }
+
         return $validators;
     }
 
@@ -474,6 +477,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 return true;
             }
         }
+
         return false;
     }
 
@@ -563,6 +567,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
         if ($attribute === null) {
             return $this->_errors === null ? [] : $this->_errors;
         }
+
         return isset($this->_errors[$attribute]) ? $this->_errors[$attribute] : [];
     }
 
@@ -585,6 +590,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
                 $errors[$name] = reset($es);
             }
         }
+
         return $errors;
     }
 
@@ -828,6 +834,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
             return true;
         }
+
         return false;
     }
 

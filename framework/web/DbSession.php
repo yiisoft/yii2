@@ -189,6 +189,7 @@ class DbSession extends MultiFieldSession
             if (YII_DEBUG) {
                 echo $exception;
             }
+
             return false;
         }
 

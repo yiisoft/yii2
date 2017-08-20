@@ -168,6 +168,7 @@ class EmailValidatorTest extends TestCase
      * https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
      * @dataProvider malformedAddressesProvider
+     * @param string $value
      */
     public function testMalformedAddresses($value)
     {

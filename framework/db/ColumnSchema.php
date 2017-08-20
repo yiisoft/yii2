@@ -129,6 +129,7 @@ class ColumnSchema extends BaseObject
                     // ensure type cast always has . as decimal separator in all locales
                     return str_replace(',', '.', (string) $value);
                 }
+
                 return (string) $value;
             case 'integer':
                 return (int) $value;

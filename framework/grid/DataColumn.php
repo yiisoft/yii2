@@ -223,6 +223,7 @@ class DataColumn extends Column
         } elseif ($this->attribute !== null) {
             return ArrayHelper::getValue($model, $this->attribute);
         }
+
         return null;
     }
 

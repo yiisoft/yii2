@@ -931,6 +931,8 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      * Test whether conditions are quoted correctly in conditions where joinWith is used.
      * @see https://github.com/yiisoft/yii2/issues/11088
      * @dataProvider tableNameProvider
+     * @param string $orderTableName
+     * @param string $orderItemTableName
      */
     public function testRelationWhereParams($orderTableName, $orderItemTableName)
     {

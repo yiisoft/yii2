@@ -105,6 +105,7 @@ class GroupUrlRule extends CompositeUrlRule
             }
             $rules[] = $rule;
         }
+
         return $rules;
     }
 
