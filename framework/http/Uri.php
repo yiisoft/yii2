@@ -8,360 +8,493 @@
 namespace yii\http;
 
 use Psr\Http\Message\UriInterface;
+use yii\base\InvalidArgumentException;
 use yii\base\Object;
 
 /**
  * Uri
+ *
+ * Create from components example:
+ *
+ * ```php
+ * $uri = new Uri([
+ *     'scheme' => 'http',
+ *     'user' => 'username',
+ *     'password' => 'password',
+ *     'host' => 'example.com',
+ *     'port' => 9090,
+ *     'path' => '/content/path',
+ *     'query' => 'foo=some',
+ *     'fragment' => 'anchor',
+ * ]);
+ * ```
+ *
+ * Create from string example:
+ *
+ * ```php
+ * $uri = new Uri(['string' => 'http://example.com?foo=some']);
+ * ```
+ *
+ * Create using PSR-7 syntax:
+ *
+ * ```php
+ * $uri = (new Uri())
+ *     ->withScheme('http')
+ *     ->withUserInfo('username', 'password')
+ *     ->withHost('example.com')
+ *     ->withPort(9090)
+ *     ->withPath('/content/path')
+ *     ->withQuery('foo=some')
+ *     ->withFragment('anchor');
+ * ```
+ *
+ * @property string $scheme the scheme component of the URI.
+ * @property string $user
+ * @property string $password
+ * @property string $host the hostname to be used.
+ * @property int|null $port port number.
+ * @property string $path the path component of the URI
+ * @property string|array $query the query string or array of query parameters.
+ * @property string $fragment URI fragment.
+ * @property string $authority the authority component of the URI. This property is read-only.
+ * @property string $userInfo the user information component of the URI. This property is read-only.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
  */
 class Uri extends Object implements UriInterface
 {
+    /**
+     * @var string URI complete string.
+     */
+    private $_string;
+    /**
+     * @var array URI components.
+     */
+    private $_components;
+    /**
+     * @var array scheme default ports in format: `[scheme => port]`
+     */
+    private static $defaultPorts = [
+        'http'  => 80,
+        'https' => 443,
+        'ftp' => 21,
+        'gopher' => 70,
+        'nntp' => 119,
+        'news' => 119,
+        'telnet' => 23,
+        'tn3270' => 23,
+        'imap' => 143,
+        'pop' => 110,
+        'ldap' => 389,
+    ];
+
 
     /**
-     * Retrieve the scheme component of the URI.
-     *
-     * If no scheme is present, this method MUST return an empty string.
-     *
-     * The value returned MUST be normalized to lowercase, per RFC 3986
-     * Section 3.1.
-     *
-     * The trailing ":" character is not part of the scheme and MUST NOT be
-     * added.
-     *
-     * @see https://tools.ietf.org/html/rfc3986#section-3.1
-     * @return string The URI scheme.
+     * @return string URI string representation.
+     */
+    public function getString()
+    {
+        if ($this->_string !== null) {
+            return $this->_string;
+        }
+        if ($this->_components === null) {
+            return '';
+        }
+        return $this->composeUri($this->_components);
+    }
+
+    /**
+     * @param string $string URI full string.
+     */
+    public function setString($string)
+    {
+        $this->_string = $string;
+        $this->_components = null;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function getScheme()
     {
-        // TODO: Implement getScheme() method.
+        return $this->getComponent('scheme');
     }
 
     /**
-     * Retrieve the authority component of the URI.
-     *
-     * If no authority information is present, this method MUST return an empty
-     * string.
-     *
-     * The authority syntax of the URI is:
-     *
-     * <pre>
-     * [user-info@]host[:port]
-     * </pre>
-     *
-     * If the port component is not set or is the standard port for the current
-     * scheme, it SHOULD NOT be included.
-     *
-     * @see https://tools.ietf.org/html/rfc3986#section-3.2
-     * @return string The URI authority, in "[user-info@]host[:port]" format.
+     * Sets up the scheme component of the URI.
+     * @param string $scheme the scheme.
      */
-    public function getAuthority()
+    public function setScheme($scheme)
     {
-        // TODO: Implement getAuthority() method.
+        $this->setComponent('scheme', $scheme);
     }
 
     /**
-     * Retrieve the user information component of the URI.
-     *
-     * If no user information is present, this method MUST return an empty
-     * string.
-     *
-     * If a user is present in the URI, this will return that value;
-     * additionally, if the password is also present, it will be appended to the
-     * user value, with a colon (":") separating the values.
-     *
-     * The trailing "@" character is not part of the user information and MUST
-     * NOT be added.
-     *
-     * @return string The URI user information, in "username[:password]" format.
-     */
-    public function getUserInfo()
-    {
-        // TODO: Implement getUserInfo() method.
-    }
-
-    /**
-     * Retrieve the host component of the URI.
-     *
-     * If no host is present, this method MUST return an empty string.
-     *
-     * The value returned MUST be normalized to lowercase, per RFC 3986
-     * Section 3.2.2.
-     *
-     * @see http://tools.ietf.org/html/rfc3986#section-3.2.2
-     * @return string The URI host.
-     */
-    public function getHost()
-    {
-        // TODO: Implement getHost() method.
-    }
-
-    /**
-     * Retrieve the port component of the URI.
-     *
-     * If a port is present, and it is non-standard for the current scheme,
-     * this method MUST return it as an integer. If the port is the standard port
-     * used with the current scheme, this method SHOULD return null.
-     *
-     * If no port is present, and no scheme is present, this method MUST return
-     * a null value.
-     *
-     * If no port is present, but a scheme is present, this method MAY return
-     * the standard port for that scheme, but SHOULD return null.
-     *
-     * @return null|int The URI port.
-     */
-    public function getPort()
-    {
-        // TODO: Implement getPort() method.
-    }
-
-    /**
-     * Retrieve the path component of the URI.
-     *
-     * The path can either be empty or absolute (starting with a slash) or
-     * rootless (not starting with a slash). Implementations MUST support all
-     * three syntaxes.
-     *
-     * Normally, the empty path "" and absolute path "/" are considered equal as
-     * defined in RFC 7230 Section 2.7.3. But this method MUST NOT automatically
-     * do this normalization because in contexts with a trimmed base path, e.g.
-     * the front controller, this difference becomes significant. It's the task
-     * of the user to handle both "" and "/".
-     *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.3.
-     *
-     * As an example, if the value should include a slash ("/") not intended as
-     * delimiter between path segments, that value MUST be passed in encoded
-     * form (e.g., "%2F") to the instance.
-     *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.3
-     * @return string The URI path.
-     */
-    public function getPath()
-    {
-        // TODO: Implement getPath() method.
-    }
-
-    /**
-     * Retrieve the query string of the URI.
-     *
-     * If no query string is present, this method MUST return an empty string.
-     *
-     * The leading "?" character is not part of the query and MUST NOT be
-     * added.
-     *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.4.
-     *
-     * As an example, if a value in a key/value pair of the query string should
-     * include an ampersand ("&") not intended as a delimiter between values,
-     * that value MUST be passed in encoded form (e.g., "%26") to the instance.
-     *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.4
-     * @return string The URI query string.
-     */
-    public function getQuery()
-    {
-        // TODO: Implement getQuery() method.
-    }
-
-    /**
-     * Retrieve the fragment component of the URI.
-     *
-     * If no fragment is present, this method MUST return an empty string.
-     *
-     * The leading "#" character is not part of the fragment and MUST NOT be
-     * added.
-     *
-     * The value returned MUST be percent-encoded, but MUST NOT double-encode
-     * any characters. To determine what characters to encode, please refer to
-     * RFC 3986, Sections 2 and 3.5.
-     *
-     * @see https://tools.ietf.org/html/rfc3986#section-2
-     * @see https://tools.ietf.org/html/rfc3986#section-3.5
-     * @return string The URI fragment.
-     */
-    public function getFragment()
-    {
-        // TODO: Implement getFragment() method.
-    }
-
-    /**
-     * Return an instance with the specified scheme.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified scheme.
-     *
-     * Implementations MUST support the schemes "http" and "https" case
-     * insensitively, and MAY accommodate other schemes if required.
-     *
-     * An empty scheme is equivalent to removing the scheme.
-     *
-     * @param string $scheme The scheme to use with the new instance.
-     * @return static A new instance with the specified scheme.
-     * @throws \InvalidArgumentException for invalid or unsupported schemes.
+     * {@inheritdoc}
      */
     public function withScheme($scheme)
     {
-        // TODO: Implement withScheme() method.
+        $this->setScheme($scheme);
+        return $this;
     }
 
     /**
-     * Return an instance with the specified user information.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified user information.
-     *
-     * Password is optional, but the user information MUST include the
-     * user; an empty string for the user is equivalent to removing user
-     * information.
-     *
-     * @param string $user The user name to use for authority.
-     * @param null|string $password The password associated with $user.
-     * @return static A new instance with the specified user information.
+     * {@inheritdoc}
      */
-    public function withUserInfo($user, $password = null)
+    public function getAuthority()
     {
-        // TODO: Implement withUserInfo() method.
+        return $this->composeAuthority($this->getComponents());
     }
 
     /**
-     * Return an instance with the specified host.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified host.
-     *
-     * An empty host value is equivalent to removing the host.
-     *
-     * @param string $host The hostname to use with the new instance.
-     * @return static A new instance with the specified host.
-     * @throws \InvalidArgumentException for invalid hostnames.
+     * {@inheritdoc}
+     */
+    public function getUserInfo()
+    {
+        return $this->composeUserInfo($this->getComponents());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getHost()
+    {
+        return $this->getComponent('host', '');
+    }
+
+    /**
+     * Specifies hostname.
+     * @param string $host the hostname to be used.
+     */
+    public function setHost($host)
+    {
+        $this->setComponent('host', $host);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function withHost($host)
     {
-        // TODO: Implement withHost() method.
+        $this->setHost($host);
+        return $this;
     }
 
     /**
-     * Return an instance with the specified port.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified port.
-     *
-     * Implementations MUST raise an exception for ports outside the
-     * established TCP and UDP port ranges.
-     *
-     * A null value provided for the port is equivalent to removing the port
-     * information.
-     *
-     * @param null|int $port The port to use with the new instance; a null value
-     *     removes the port information.
-     * @return static A new instance with the specified port.
-     * @throws \InvalidArgumentException for invalid ports.
+     * {@inheritdoc}
+     */
+    public function getPort()
+    {
+        return $this->getComponent('port');
+    }
+
+    /**
+     * Specifies port.
+     * @param int|null $port The port to be used; a `null` value removes the port information.
+     */
+    public function setPort($port)
+    {
+        if ($port !== null) {
+            if (!is_int($port)) {
+                throw new InvalidArgumentException('URI port must be an integer.');
+            }
+        }
+        $this->setComponent('port', $port);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function withPort($port)
     {
-        // TODO: Implement withPort() method.
+        $this->setPort($port);
+        return $this;
     }
 
     /**
-     * Return an instance with the specified path.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified path.
-     *
-     * The path can either be empty or absolute (starting with a slash) or
-     * rootless (not starting with a slash). Implementations MUST support all
-     * three syntaxes.
-     *
-     * If the path is intended to be domain-relative rather than path relative then
-     * it must begin with a slash ("/"). Paths not starting with a slash ("/")
-     * are assumed to be relative to some base path known to the application or
-     * consumer.
-     *
-     * Users can provide both encoded and decoded path characters.
-     * Implementations ensure the correct encoding as outlined in getPath().
-     *
-     * @param string $path The path to use with the new instance.
-     * @return static A new instance with the specified path.
-     * @throws \InvalidArgumentException for invalid paths.
+     * {@inheritdoc}
+     */
+    public function getPath()
+    {
+        return $this->getComponent('path', '');
+    }
+
+    /**
+     * Specifies path component of the URI
+     * @param string $path the path to be used.
+     */
+    public function setPath($path)
+    {
+        $this->setComponent('path', $path);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function withPath($path)
     {
-        // TODO: Implement withPath() method.
+        $this->setPath($path);
+        return $this;
     }
 
     /**
-     * Return an instance with the specified query string.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified query string.
-     *
-     * Users can provide both encoded and decoded query characters.
-     * Implementations ensure the correct encoding as outlined in getQuery().
-     *
-     * An empty query string value is equivalent to removing the query string.
-     *
-     * @param string $query The query string to use with the new instance.
-     * @return static A new instance with the specified query string.
-     * @throws \InvalidArgumentException for invalid query strings.
+     * {@inheritdoc}
+     */
+    public function getQuery()
+    {
+        return $this->getComponent('query', '');
+    }
+
+    /**
+     * Specifies query string.
+     * @param string|array|object $query the query string or array of query parameters.
+     */
+    public function setQuery($query)
+    {
+        if (is_array($query) || is_object($query)) {
+            $query = http_build_query($query);
+        }
+        $this->setComponent('query', $query);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function withQuery($query)
     {
-        // TODO: Implement withQuery() method.
+        $this->setQuery($query);
+        return $this;
     }
 
     /**
-     * Return an instance with the specified URI fragment.
-     *
-     * This method MUST retain the state of the current instance, and return
-     * an instance that contains the specified URI fragment.
-     *
-     * Users can provide both encoded and decoded fragment characters.
-     * Implementations ensure the correct encoding as outlined in getFragment().
-     *
-     * An empty fragment value is equivalent to removing the fragment.
-     *
-     * @param string $fragment The fragment to use with the new instance.
-     * @return static A new instance with the specified fragment.
+     * {@inheritdoc}
+     */
+    public function getFragment()
+    {
+        return $this->getComponent('fragment', '');
+    }
+
+    /**
+     * Specifies URI fragment.
+     * @param string $fragment the fragment to be used.
+     */
+    public function setFragment($fragment)
+    {
+        $this->setComponent('fragment', $fragment);
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function withFragment($fragment)
     {
-        // TODO: Implement withFragment() method.
+        $this->setFragment($fragment);
+        return $this;
     }
 
     /**
-     * Return the string representation as a URI reference.
-     *
-     * Depending on which components of the URI are present, the resulting
-     * string is either a full URI or relative reference according to RFC 3986,
-     * Section 4.1. The method concatenates the various components of the URI,
-     * using the appropriate delimiters:
-     *
-     * - If a scheme is present, it MUST be suffixed by ":".
-     * - If an authority is present, it MUST be prefixed by "//".
-     * - The path can be concatenated without delimiters. But there are two
-     *   cases where the path has to be adjusted to make the URI reference
-     *   valid as PHP does not allow to throw an exception in __toString():
-     *     - If the path is rootless and an authority is present, the path MUST
-     *       be prefixed by "/".
-     *     - If the path is starting with more than one "/" and no authority is
-     *       present, the starting slashes MUST be reduced to one.
-     * - If a query is present, it MUST be prefixed by "?".
-     * - If a fragment is present, it MUST be prefixed by "#".
-     *
-     * @see http://tools.ietf.org/html/rfc3986#section-4.1
-     * @return string
+     * @return string the user name to use for authority.
+     */
+    public function getUser()
+    {
+        return $this->getComponent('user', '');
+    }
+
+    /**
+     * @param string $user the user name to use for authority.
+     */
+    public function setUser($user)
+    {
+        $this->setComponent('user', $user);
+    }
+
+    /**
+     * @return string password associated with [[user]].
+     */
+    public function getPassword()
+    {
+        return $this->getComponent('pass', '');
+    }
+
+    /**
+     * @param string $password password associated with [[user]].
+     */
+    public function setPassword($password)
+    {
+        $this->setComponent('pass', $password);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withUserInfo($user, $password = null)
+    {
+        $this->setUser($user);
+        $this->setPassword($password);
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function __toString()
     {
-        // TODO: Implement __toString() method.
+        return $this->getString();
+    }
+
+    /**
+     * Sets up particular URI component.
+     * @param string $name URI component name.
+     * @param mixed $value URI component value.
+     */
+    protected function setComponent($name, $value)
+    {
+        if ($this->_string !== null) {
+            $this->_components = $this->parseUri($this->_string);
+        }
+        $this->_components[$name] = $value;
+        $this->_string = null;
+    }
+
+    /**
+     * @param string $name URI component name.
+     * @param mixed $default default value, which should be returned in case component is not exist.
+     * @return mixed URI component value.
+     */
+    protected function getComponent($name, $default = null)
+    {
+        $components = $this->getComponents();
+        if (isset($components[$name])) {
+            return $components[$name];
+        }
+        return $default;
+    }
+
+    /**
+     * Returns URI components for this instance as an associative array.
+     * @return array URI components in format: `[name => value]`
+     */
+    protected function getComponents()
+    {
+        if ($this->_components === null) {
+            if ($this->_string === null) {
+                return [];
+            }
+            $this->_components = $this->parseUri($this->_string);
+        }
+        return $this->_components;
+    }
+
+    /**
+     * Parses a URI and returns an associative array containing any of the various components of the URI
+     * that are present.
+     * @param string $uri the URI string to parse.
+     * @return array URI components.
+     */
+    protected function parseUri($uri)
+    {
+        $components = parse_url($uri);
+        if ($components === false) {
+            throw new InvalidArgumentException("URI string '{$uri}' is not a valid URI.");
+        }
+        return $components;
+    }
+
+    /**
+     * Composes URI string from given components.
+     * @param array $components URI components.
+     * @return string URI full string.
+     */
+    protected function composeUri(array $components)
+    {
+        $uri = '';
+
+        $scheme = empty($components['scheme']) ? '' : $components['scheme'];
+        if ($scheme !== '') {
+            $uri .= $components['scheme'] . ':';
+        }
+
+        $authority = $this->composeAuthority($components);
+
+        if ($authority !== '' || $scheme === 'file') {
+            // authority separator is added even when the authority is missing/empty for the "file" scheme
+            // while `file:///myfile` and `file:/myfile` are equivalent according to RFC 3986, `file:///` is more common
+            // PHP functions and Chrome, for example, use this format
+            $uri .= '//' . $authority;
+        }
+
+        if (!empty($components['path'])) {
+            $uri .= $components['path'];
+        }
+
+        if (!empty($components['query'])) {
+            $uri .= '?' . $components['query'];
+        }
+
+        if (!empty($components['fragment'])) {
+            $uri .= '#' . $components['fragment'];
+        }
+
+        return $uri;
+    }
+
+    /**
+     * @param array $components URI components.
+     * @return string user info string.
+     */
+    protected function composeUserInfo(array $components)
+    {
+        $userInfo = '';
+        if (!empty($components['user'])) {
+            $userInfo .= $components['user'];
+        }
+        if (!empty($components['pass'])) {
+            $userInfo .= ':' . $components['pass'];
+        }
+        return $userInfo;
+    }
+
+    /**
+     * @param array $components URI components.
+     * @return string authority string.
+     */
+    protected function composeAuthority(array $components)
+    {
+        $authority = '';
+
+        $scheme = empty($components['scheme']) ? '' : $components['scheme'];
+
+        if (empty($components['host'])) {
+            if (in_array($scheme, ['http', 'https'], true)) {
+                $authority = 'localhost';
+            }
+        } else {
+            $authority = $components['host'];
+        }
+        if (!empty($components['port']) && !$this->isDefaultPort($scheme, $components['port'])) {
+            $authority .= ':' . $components['port'];
+        }
+
+        $userInfo = $this->composeUserInfo($components);
+        if ($userInfo !== '') {
+            $authority = $userInfo . '@' . $authority;
+        }
+
+        return $authority;
+    }
+
+    /**
+     * Checks whether specified port is default one for the specified scheme.
+     * @param string $scheme scheme.
+     * @param int $port port number.
+     * @return bool whether specified port is default for specified scheme
+     */
+    protected function isDefaultPort($scheme, $port)
+    {
+        if (!isset(self::$defaultPorts[$scheme])) {
+            return false;
+        }
+        return self::$defaultPorts[$scheme] == $port;
     }
 }
