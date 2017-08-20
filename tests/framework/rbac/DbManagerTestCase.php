@@ -167,6 +167,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetPermissionsByUserWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -184,6 +187,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetRolesByUserWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -201,6 +207,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetAssignmentWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -218,6 +227,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testGetAssignmentsWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -236,6 +248,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testRevokeWithEmptyValue($userId, $searchUserId, $isValid)
     {
@@ -253,6 +268,9 @@ abstract class DbManagerTestCase extends ManagerTestCase
 
     /**
      * @dataProvider emptyValuesProvider
+     * @param mixed $userId
+     * @param mixed $searchUserId
+     * @param mixed $isValid
      */
     public function testRevokeAllWithEmptyValue($userId, $searchUserId, $isValid)
     {

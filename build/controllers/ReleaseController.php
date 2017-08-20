@@ -367,6 +367,7 @@ class ReleaseController extends Controller
     /**
      * @param array $what list of items
      * @param array $limit list of things to allow, or empty to allow any, can be `app`, `framework`, `extension`
+     * @param bool $ensureGitClean
      * @throws \yii\base\Exception
      */
     protected function validateWhat(array $what, $limit = [], $ensureGitClean = true)
@@ -847,6 +848,9 @@ class ReleaseController extends Controller
 
     /**
      * Extract changelog content for a specific version
+     * @param string $file
+     * @param string $version
+     * @return array
      */
     protected function splitChangelog($file, $version)
     {
@@ -880,6 +884,8 @@ class ReleaseController extends Controller
 
     /**
      * Ensure sorting of the changelog lines
+     * @param string[] $changelog
+     * @return string[]
      */
     protected function resortChangelog($changelog)
     {

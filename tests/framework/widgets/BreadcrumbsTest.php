@@ -189,6 +189,8 @@ class BreadcrumbsTest extends \yiiunit\TestCase
 
     /**
      * Helper methods
+     * @param string $class
+     * @param string $method
      */
     protected function reflectMethod($class = '\yii\widgets\Breadcrumbs', $method = 'renderItem')
     {

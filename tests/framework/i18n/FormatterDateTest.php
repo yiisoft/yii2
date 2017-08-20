@@ -520,6 +520,9 @@ class FormatterDateTest extends TestCase
 
     /**
      * @dataProvider dateInputs
+     * @param mixed $expected
+     * @param mixed $value
+     * @param mixed|null $expectedException
      */
     public function testIntlDateInput($expected, $value, $expectedException = null)
     {
@@ -528,6 +531,9 @@ class FormatterDateTest extends TestCase
 
     /**
      * @dataProvider dateInputs
+     * @param mixed $expected
+     * @param mixed $value
+     * @param mixed|null $expectedException
      */
     public function testDateInput($expected, $value, $expectedException = null)
     {
@@ -584,6 +590,9 @@ class FormatterDateTest extends TestCase
     /**
      * Test timezones with input date and time in other timezones
      * @dataProvider provideTimesAndTz
+     * @param string $defaultTz
+     * @param mixed $inputTimeDst
+     * @param mixed $inputTimeNonDst
      */
     public function testIntlTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
     {
@@ -593,6 +602,9 @@ class FormatterDateTest extends TestCase
     /**
      * Test timezones with input date and time in other timezones
      * @dataProvider provideTimesAndTz
+     * @param string $defaultTz
+     * @param mixed $inputTimeDst
+     * @param mixed $inputTimeNonDst
      */
     public function testTimezoneInput($defaultTz, $inputTimeDst, $inputTimeNonDst)
     {
@@ -743,6 +755,7 @@ class FormatterDateTest extends TestCase
      * Fixed in PHP >5.4.26 and >5.5.10. http://3v4l.org/mlZX7
      *
      * @dataProvider provideTimezones
+     * @param string $dtz
      */
     public function testIssue6263($dtz)
     {

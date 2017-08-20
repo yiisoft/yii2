@@ -238,13 +238,13 @@ class MigrateControllerTest extends TestCase
      */
     public function testRefreshMigration()
     {
-      Yii::$app->db->createCommand(
-        "create table hall_of_fame(id int, string varchar(255))")->execute();
+        Yii::$app->db->createCommand('create table hall_of_fame(id int, string varchar(255))')
+            ->execute();
 
-      Yii::$app->db->createCommand(
-        "insert into hall_of_fame values(1, 'Qiang Xue');")->execute();
-      Yii::$app->db->createCommand(
-        "insert into hall_of_fame values(2, 'Alexander Makarov');")->execute();
+        Yii::$app->db->createCommand("insert into hall_of_fame values(1, 'Qiang Xue');")
+            ->execute();
+        Yii::$app->db->createCommand("insert into hall_of_fame values(2, 'Alexander Makarov');")
+            ->execute();
 
         $result = $this->runMigrateControllerAction('fresh');
 

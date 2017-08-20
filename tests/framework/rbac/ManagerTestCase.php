@@ -464,6 +464,7 @@ abstract class ManagerTestCase extends TestCase
 
     /**
      * @dataProvider RBACItemsProvider
+     * @param mixed $RBACItemType
      */
     public function testAssignRule($RBACItemType)
     {
@@ -531,6 +532,7 @@ abstract class ManagerTestCase extends TestCase
 
     /**
      * @dataProvider RBACItemsProvider
+     * @param mixed $RBACItemType
      */
     public function testRevokeRule($RBACItemType)
     {

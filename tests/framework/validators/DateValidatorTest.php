@@ -44,6 +44,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateValue($timezone)
     {
@@ -83,6 +84,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateValue($timezone)
     {
@@ -125,6 +127,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateAttributePHPFormat($timezone)
     {
@@ -133,6 +136,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateAttributePHPFormat($timezone)
     {
@@ -169,6 +173,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidateAttributeICUFormat($timezone)
     {
@@ -177,6 +182,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidateAttributeICUFormat($timezone)
     {
@@ -257,6 +263,11 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider timestampFormatProvider
+     * @param string|null $format
+     * @param string $date
+     * @param string|int $expectedDate
+     * @param string $timezone
+     * @param string $appTimezone
      */
     public function testIntlTimestampAttributeFormat($format, $date, $expectedDate, $timezone, $appTimezone)
     {
@@ -265,6 +276,11 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider timestampFormatProvider
+     * @param string|null $format
+     * @param string $date
+     * @param string|int $expectedDate
+     * @param string $timezone
+     * @param string $appTimezone
      */
     public function testTimestampAttributeFormat($format, $date, $expectedDate, $timezone, $appTimezone)
     {
@@ -282,6 +298,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidationWithTime($timezone)
     {
@@ -321,6 +338,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidationWithTime($timezone)
     {
@@ -383,6 +401,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testIntlValidationWithTimeAndOutputTimeZone($timezone)
     {
@@ -391,6 +410,7 @@ class DateValidatorTest extends TestCase
 
     /**
      * @dataProvider provideTimezones
+     * @param string $timezone
      */
     public function testValidationWithTimeAndOutputTimeZone($timezone)
     {
