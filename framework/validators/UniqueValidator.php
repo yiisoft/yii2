@@ -173,7 +173,7 @@ class UniqueValidator extends Validator
             if ($query instanceof \yii\db\ActiveQuery) {
                 // only select primary key to optimize query
                 $columnsCondition = array_flip($targetClass::primaryKey());
-                $query->select(array_flip($this->applyTableAlias($query, $columnsCondition)));
+                $query->select(array_flip($query->applyTableAlias($columnsCondition)));
             }
             $models = $query->limit(2)->asArray()->all();
             $n = count($models);
@@ -248,8 +248,8 @@ class UniqueValidator extends Validator
             return $conditions;
         }
 
-        /** @var ActiveRecord $targetModelClass */
-        return $this->applyTableAlias($targetModelClass::find(), $conditions);
+        /** @var ActiveRecord $model */
+        return $this->prefixConditions($model, $conditions);
     }
 
     /**
@@ -277,31 +277,17 @@ class UniqueValidator extends Validator
     }
 
     /**
-     * Returns conditions with alias
-     * @param ActiveQuery $query
-     * @param array $conditions array of condition, keys to be modified
-     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * Prefix conditions with aliases
+     *
+     * @param ActiveRecord $model
+     * @param array $conditions
      * @return array
      */
-    private function applyTableAlias($query, $conditions, $alias = null)
+    private function prefixConditions($model, $conditions)
     {
-        if ($alias === null) {
-            $alias = array_keys($query->getTablesUsedInFrom())[0];
-        }
-        $prefixedConditions = [];
-        foreach ($conditions as $columnName => $columnValue) {
-            if (strpos($columnName, '(') === false) {
-                $prefixedColumn = "{$alias}.[[" . preg_replace(
-                    '/^' . preg_quote($alias) . '\.(.*)$/',
-                    '$1',
-                    $columnName) . ']]';
-            } else {
-                // there is an expression, can't prefix it reliably
-                $prefixedColumn = $columnName;
-            }
+        $targetModelClass = $this->getTargetClass($model);
 
-            $prefixedConditions[$prefixedColumn] = $columnValue;
-        }
-        return $prefixedConditions;
+        /** @var ActiveRecord $targetModelClass */
+        return $targetModelClass::find()->applyTableAlias($conditions);
     }
 }

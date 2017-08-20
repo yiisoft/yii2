@@ -626,7 +626,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         $this->join($joinType, empty($child->from) ? $childTable : $child->from, $on);
 
         if (!empty($child->where)) {
-            $this->andWhere($child->where);
+            $this->andWhere($child->applyTableAlias($child->where, $childAlias ?: $childTable));
         }
         if (!empty($child->having)) {
             $this->andHaving($child->having);
@@ -788,6 +788,40 @@ class ActiveQuery extends Query implements ActiveQueryInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * Returns where condition with alias
+     * @param array|string|Expression $condition to be modified. Processed only hash format.
+     * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias
+     * @return array|string|Expression
+     * @since 2.0.13
+     */
+    public function applyTableAlias($condition, $alias = null)
+    {
+        if ($alias === null) {
+            $alias = array_keys($this->getTablesUsedInFrom())[0];
+        }
+        //like QueryBuilder::buildCondition
+        if (!is_array($condition) || empty($condition)) {
+            return $condition;
+        }
+
+        $prefixedConditions = [];
+        if (isset($condition[0])) { // operator format: operator, operand 1, operand 2, ...
+            foreach ($condition as $key => $value){
+                $prefixedConditions[$key] = $this->applyTableAlias($value, $alias);
+            }
+        } else { // hash format: 'column1' => 'value1', 'column2' => 'value2', ...
+            foreach ($condition as $columnName => $columnValue) {
+                $prefixedColumn = "{$alias}.[[" . preg_replace(
+                        '/^' . preg_quote($alias) . '\.(.*)$/',
+                        "$1",
+                        $columnName) . "]]";
+                $prefixedConditions[$prefixedColumn] = $columnValue;
+            }
+        }
+        return $prefixedConditions;
     }
 
     /**
