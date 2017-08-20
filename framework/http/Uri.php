@@ -8,6 +8,7 @@
 namespace yii\http;
 
 use Psr\Http\Message\UriInterface;
+use yii\base\ErrorHandler;
 use yii\base\InvalidArgumentException;
 use yii\base\Object;
 
@@ -340,7 +341,14 @@ class Uri extends Object implements UriInterface
      */
     public function __toString()
     {
-        return $this->getString();
+        // __toString cannot throw exception
+        // use trigger_error to bypass this limitation
+        try {
+            return $this->getString();
+        } catch (\Exception $e) {
+            ErrorHandler::convertExceptionToError($e);
+            return '';
+        }
     }
 
     /**
