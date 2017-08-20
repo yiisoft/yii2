@@ -361,10 +361,14 @@ class ComponentTest extends TestCase
 
 class NewComponent extends Component
 {
+    public $content;
+    public $eventHandled = false;
+    public $event;
+    public $behaviorCalled = false;
+
     private $_object = null;
     private $_text = 'default';
     private $_items = [];
-    public $content;
 
     public function getText()
     {
@@ -397,10 +401,6 @@ class NewComponent extends Component
     {
         return $this->_items;
     }
-
-    public $eventHandled = false;
-    public $event;
-    public $behaviorCalled = false;
 
     public function myEventHandler($event)
     {

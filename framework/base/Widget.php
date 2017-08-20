@@ -60,6 +60,9 @@ class Widget extends Component implements ViewContextInterface
      */
     public static $stack = [];
 
+    private $_id;
+    private $_view;
+
 
     /**
      * Initializes the object.
@@ -150,8 +153,6 @@ class Widget extends Component implements ViewContextInterface
         return ob_get_clean() . $out;
     }
 
-    private $_id;
-
     /**
      * Returns the ID of the widget.
      * @param bool $autoGenerate whether to generate an ID if it is not set previously
@@ -174,8 +175,6 @@ class Widget extends Component implements ViewContextInterface
     {
         $this->_id = $value;
     }
-
-    private $_view;
 
     /**
      * Returns the view object that can be used to render views or view files.

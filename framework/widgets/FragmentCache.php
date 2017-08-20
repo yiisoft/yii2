@@ -76,6 +76,11 @@ class FragmentCache extends Widget
      */
     public $dynamicPlaceholders;
 
+    /**
+     * @var string|bool the cached content. False if the content is not cached.
+     */
+    private $_content;
+
 
     /**
      * Initializes the FragmentCache object.
@@ -122,11 +127,6 @@ class FragmentCache extends Widget
             echo $content;
         }
     }
-
-    /**
-     * @var string|bool the cached content. False if the content is not cached.
-     */
-    private $_content;
 
     /**
      * Returns the cached content if available.

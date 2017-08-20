@@ -67,6 +67,7 @@ class Controller extends \yii\base\Controller
      * @var array the options passed during execution.
      */
     private $_passedOptions = [];
+    private $_reflections = [];
 
 
     /**
@@ -562,8 +563,6 @@ class Controller extends \yii\base\Controller
         }
         return $options;
     }
-
-    private $_reflections = [];
 
     /**
      * @param Action $action

@@ -77,15 +77,6 @@ use Yii;
 class BaseObject implements Configurable
 {
     /**
-     * Returns the fully qualified name of this class.
-     * @return string the fully qualified name of this class.
-     */
-    public static function className()
-    {
-        return get_called_class();
-    }
-
-    /**
      * Constructor.
      * The default implementation does two things:
      *
@@ -105,15 +96,6 @@ class BaseObject implements Configurable
             Yii::configure($this, $config);
         }
         $this->init();
-    }
-
-    /**
-     * Initializes the object.
-     * This method is invoked at the end of the constructor after the object is initialized with the
-     * given configuration.
-     */
-    public function init()
-    {
     }
 
     /**
@@ -218,6 +200,24 @@ class BaseObject implements Configurable
     public function __call($name, $params)
     {
         throw new UnknownMethodException('Calling unknown method: ' . get_class($this) . "::$name()");
+    }
+
+    /**
+     * Returns the fully qualified name of this class.
+     * @return string the fully qualified name of this class.
+     */
+    public static function className()
+    {
+        return get_called_class();
+    }
+
+    /**
+     * Initializes the object.
+     * This method is invoked at the end of the constructor after the object is initialized with the
+     * given configuration.
+     */
+    public function init()
+    {
     }
 
     /**

@@ -143,6 +143,7 @@ class Pagination extends BaseObject implements Linkable
      * If it is less than 1, it means the page size is infinite, and thus a single page contains all items.
      */
     private $_pageSize;
+    private $_page;
 
 
     /**
@@ -159,8 +160,6 @@ class Pagination extends BaseObject implements Linkable
 
         return (int) (($totalCount + $pageSize - 1) / $pageSize);
     }
-
-    private $_page;
 
     /**
      * Returns the zero-based current page number.

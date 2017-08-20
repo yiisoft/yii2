@@ -247,6 +247,21 @@ class Request extends \yii\base\Request
      * @var HeaderCollection Collection of request headers.
      */
     private $_headers;
+    private $_rawBody;
+    private $_bodyParams;
+    private $_queryParams;
+    private $_hostInfo;
+    private $_hostName;
+    private $_baseUrl;
+    private $_scriptUrl;
+    private $_scriptFile;
+    private $_pathInfo;
+    private $_url;
+    private $_port;
+    private $_securePort;
+    private $_contentTypes;
+    private $_languages;
+    private $_csrfToken;
 
 
     /**
@@ -455,8 +470,6 @@ class Request extends \yii\base\Request
             || stripos($userAgent, 'Flash') !== false;
     }
 
-    private $_rawBody;
-
     /**
      * Returns the raw HTTP request body.
      * @return string the request body
@@ -478,8 +491,6 @@ class Request extends \yii\base\Request
     {
         $this->_rawBody = $rawBody;
     }
-
-    private $_bodyParams;
 
     /**
      * Returns the request parameters given in the request body.
@@ -577,8 +588,6 @@ class Request extends \yii\base\Request
         return $this->getBodyParam($name, $defaultValue);
     }
 
-    private $_queryParams;
-
     /**
      * Returns the request parameters given in the [[queryString]].
      *
@@ -636,9 +645,6 @@ class Request extends \yii\base\Request
 
         return isset($params[$name]) ? $params[$name] : $defaultValue;
     }
-
-    private $_hostInfo;
-    private $_hostName;
 
     /**
      * Returns the schema and host part of the current request URL.
@@ -719,8 +725,6 @@ class Request extends \yii\base\Request
         return $this->_hostName;
     }
 
-    private $_baseUrl;
-
     /**
      * Returns the relative URL for the application.
      * This is similar to [[scriptUrl]] except that it does not include the script file name,
@@ -747,8 +751,6 @@ class Request extends \yii\base\Request
     {
         $this->_baseUrl = $value;
     }
-
-    private $_scriptUrl;
 
     /**
      * Returns the relative URL of the entry script.
@@ -790,8 +792,6 @@ class Request extends \yii\base\Request
         $this->_scriptUrl = $value === null ? null : '/' . trim($value, '/');
     }
 
-    private $_scriptFile;
-
     /**
      * Returns the entry script file path.
      * The default implementation will simply return `$_SERVER['SCRIPT_FILENAME']`.
@@ -822,8 +822,6 @@ class Request extends \yii\base\Request
     {
         $this->_scriptFile = $value;
     }
-
-    private $_pathInfo;
 
     /**
      * Returns the path info of the currently requested URL.
@@ -914,8 +912,6 @@ class Request extends \yii\base\Request
     {
         return $this->getHostInfo() . $this->getUrl();
     }
-
-    private $_url;
 
     /**
      * Returns the currently requested relative URL.
@@ -1129,8 +1125,6 @@ class Request extends \yii\base\Request
         return isset($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
     }
 
-    private $_port;
-
     /**
      * Returns the port to use for insecure requests.
      * Defaults to 80, or the port specified by the server if the current
@@ -1161,8 +1155,6 @@ class Request extends \yii\base\Request
         }
     }
 
-    private $_securePort;
-
     /**
      * Returns the port to use for secure requests.
      * Defaults to 443, or the port specified by the server if the current
@@ -1192,8 +1184,6 @@ class Request extends \yii\base\Request
             $this->_hostInfo = null;
         }
     }
-
-    private $_contentTypes;
 
     /**
      * Returns the content types acceptable by the end user.
@@ -1260,8 +1250,6 @@ class Request extends \yii\base\Request
         //fix bug https://bugs.php.net/bug.php?id=66606
         return $this->headers->get('Content-Type');
     }
-
-    private $_languages;
 
     /**
      * Returns the languages acceptable by the end user.
@@ -1496,8 +1484,6 @@ class Request extends \yii\base\Request
 
         return $cookies;
     }
-
-    private $_csrfToken;
 
     /**
      * Returns the token used to perform CSRF validation.

@@ -415,6 +415,32 @@ class Connection extends Component
      */
     private $_queryCacheInfo = [];
 
+    /**
+     * Close the connection before serializing.
+     * @return array
+     */
+    public function __sleep()
+    {
+        $this->close();
+        return array_keys((array) $this);
+    }
+
+    /**
+     * Reset the connection after cloning.
+     */
+    public function __clone()
+    {
+        parent::__clone();
+
+        $this->_master = false;
+        $this->_slave = false;
+        $this->_schema = null;
+        $this->_transaction = null;
+        if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
+            // reset PDO connection, unless its sqlite in-memory, which can only have one connection
+            $this->pdo = null;
+        }
+    }
 
     /**
      * Returns a value indicating whether the DB connection is established.
@@ -1070,32 +1096,5 @@ class Connection extends Component
         }
 
         return null;
-    }
-
-    /**
-     * Close the connection before serializing.
-     * @return array
-     */
-    public function __sleep()
-    {
-        $this->close();
-        return array_keys((array) $this);
-    }
-
-    /**
-     * Reset the connection after cloning.
-     */
-    public function __clone()
-    {
-        parent::__clone();
-
-        $this->_master = false;
-        $this->_slave = false;
-        $this->_schema = null;
-        $this->_transaction = null;
-        if (strncmp($this->dsn, 'sqlite::memory:', 15) !== 0) {
-            // reset PDO connection, unless its sqlite in-memory, which can only have one connection
-            $this->pdo = null;
-        }
     }
 }

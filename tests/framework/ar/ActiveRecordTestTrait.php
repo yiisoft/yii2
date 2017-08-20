@@ -23,6 +23,10 @@ use yiiunit\TestCase;
  */
 trait ActiveRecordTestTrait
 {
+    public static $afterSaveNewRecord;
+    public static $afterSaveInsert;
+
+
     /* @var $this TestCase */
     /**
      * This method should return the classname of Customer class
@@ -878,9 +882,6 @@ trait ActiveRecordTestTrait
         $this->assertCount(2, $customer->orders);
         $this->assertCount(0, $customer->expensiveOrders);
     }
-
-    public static $afterSaveNewRecord;
-    public static $afterSaveInsert;
 
     public function testInsert()
     {

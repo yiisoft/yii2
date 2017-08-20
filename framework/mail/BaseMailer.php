@@ -107,6 +107,7 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
      * @var string the directory containing view files for composing mail messages.
      */
     private $_viewPath;
+    private $_message;
 
 
     /**
@@ -147,8 +148,6 @@ abstract class BaseMailer extends Component implements MailerInterface, ViewCont
 
         return Yii::createObject($config);
     }
-
-    private $_message;
 
     /**
      * Creates a new message instance and optionally composes its body content via view rendering.

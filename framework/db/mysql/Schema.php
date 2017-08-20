@@ -29,11 +29,6 @@ class Schema extends \yii\db\Schema
 {
     use ConstraintFinderTrait;
 
-    /**
-     * @var bool whether MySQL used is older than 5.1.
-     */
-    private $_oldMysql;
-
 
     /**
      * @var array mapping from physical column types (keys) to abstract column types (values)
@@ -68,6 +63,11 @@ class Schema extends \yii\db\Schema
         'enum' => self::TYPE_STRING,
         'varbinary' => self::TYPE_BINARY,
     ];
+
+    /**
+     * @var bool whether MySQL used is older than 5.1.
+     */
+    private $_oldMysql;
 
     /**
      * @inheritDoc

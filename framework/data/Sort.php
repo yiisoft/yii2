@@ -186,6 +186,11 @@ class Sort extends BaseObject
      */
     public $urlManager;
 
+    /**
+     * @var array the currently requested sort order as computed by [[getAttributeOrders]].
+     */
+    private $_attributeOrders;
+
 
     /**
      * Normalizes the [[attributes]] property.
@@ -235,11 +240,6 @@ class Sort extends BaseObject
 
         return $orders;
     }
-
-    /**
-     * @var array the currently requested sort order as computed by [[getAttributeOrders]].
-     */
-    private $_attributeOrders;
 
     /**
      * Returns the currently requested sort information.

@@ -50,6 +50,20 @@ namespace yiiunit\framework\log {
         protected $syslogTarget;
 
         /**
+         * @param $name
+         * @param $arguments
+         * @return mixed
+         */
+        public static function __callStatic($name, $arguments)
+        {
+            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
+                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
+                return forward_static_call(static::$functions[$name], $arguments);
+            }
+            static::fail("Function '$name' has not implemented yet!");
+        }
+
+        /**
          * Set up syslogTarget as the mock object
          */
         protected function setUp()
@@ -145,20 +159,6 @@ namespace yiiunit\framework\log {
             };
 
             $syslogTarget->export();
-        }
-
-        /**
-         * @param $name
-         * @param $arguments
-         * @return mixed
-         */
-        public static function __callStatic($name, $arguments)
-        {
-            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
-                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
-                return forward_static_call(static::$functions[$name], $arguments);
-            }
-            static::fail("Function '$name' has not implemented yet!");
         }
 
         /**

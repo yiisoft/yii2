@@ -362,6 +362,15 @@ class Formatter extends Component
      * @var array cached unit translation patterns
      */
     private $_unitMessages = [];
+    /**
+     * @var array map of short format names to IntlDateFormatter constant values.
+     */
+    private $_dateFormats = [
+        'short' => 3, // IntlDateFormatter::SHORT,
+        'medium' => 2, // IntlDateFormatter::MEDIUM,
+        'long' => 1, // IntlDateFormatter::LONG,
+        'full' => 0, // IntlDateFormatter::FULL,
+    ];
 
 
     /**
@@ -686,16 +695,6 @@ class Formatter extends Component
         }
         return $this->formatDateTimeValue($value, $format, 'datetime');
     }
-
-    /**
-     * @var array map of short format names to IntlDateFormatter constant values.
-     */
-    private $_dateFormats = [
-        'short' => 3, // IntlDateFormatter::SHORT,
-        'medium' => 2, // IntlDateFormatter::MEDIUM,
-        'long' => 1, // IntlDateFormatter::LONG,
-        'full' => 0, // IntlDateFormatter::FULL,
-    ];
 
     /**
      * @param int|string|DateTime $value the value to be formatted. The following

@@ -34,6 +34,8 @@ class BaseFileHelper
      */
     public static $mimeMagicFile = '@yii/helpers/mimeTypes.php';
 
+    private static $_mimeTypes = [];
+
 
     /**
      * Normalizes a file/directory path.
@@ -191,8 +193,6 @@ class BaseFileHelper
         $mimeTypes = static::loadMimeTypes($magicFile);
         return array_keys($mimeTypes, mb_strtolower($mimeType, 'UTF-8'), true);
     }
-
-    private static $_mimeTypes = [];
 
     /**
      * Loads MIME types from the specified file.

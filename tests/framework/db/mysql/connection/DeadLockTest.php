@@ -17,10 +17,10 @@ use yii\db\Transaction;
  */
 class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
 {
+    const CHILD_EXIT_CODE_DEADLOCK = 15;
+
     /** @var string Shared log filename for children */
     private $logFile;
-
-    const CHILD_EXIT_CODE_DEADLOCK = 15;
 
     /**
      * Test deadlock exception

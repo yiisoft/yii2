@@ -56,6 +56,8 @@ class Application extends \yii\base\Application
      */
     public $controller;
 
+    private $_homeUrl;
+
 
     /**
      * @inheritdoc
@@ -114,8 +116,6 @@ class Application extends \yii\base\Application
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $e->getCode(), $e);
         }
     }
-
-    private $_homeUrl;
 
     /**
      * @return string the homepage URL

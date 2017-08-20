@@ -56,6 +56,11 @@ class QueryBuilder extends \yii\db\QueryBuilder
         '\\' => '[\\]',
     ];
 
+    /**
+     * @var bool whether MSSQL used is old.
+     */
+    private $_oldMssql;
+
 
     /**
      * @inheritdoc
@@ -300,11 +305,6 @@ class QueryBuilder extends \yii\db\QueryBuilder
         $schema = $modelClass::getTableSchema();
         return array_keys($schema->columns);
     }
-
-    /**
-     * @var bool whether MSSQL used is old.
-     */
-    private $_oldMssql;
 
     /**
      * @return bool whether the version of the MSSQL being used is older than 2012.

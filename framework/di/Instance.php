@@ -71,6 +71,24 @@ class Instance
     }
 
     /**
+     * Restores class state after using `var_export()`
+     *
+     * @param array $state
+     * @return Instance
+     * @throws InvalidConfigException when $state property does not contain `id` parameter
+     * @see var_export()
+     * @since 2.0.12
+     */
+    public static function __set_state($state)
+    {
+        if (!isset($state['id'])) {
+            throw new InvalidConfigException('Failed to instantiate class "Instance". Required parameter "id" is missing');
+        }
+
+        return new self($state['id']);
+    }
+
+    /**
      * Creates a new Instance object.
      * @param string $id the component ID
      * @return Instance the new Instance object.
@@ -165,23 +183,5 @@ class Instance
         }
 
         return Yii::$container->get($this->id);
-    }
-
-    /**
-     * Restores class state after using `var_export()`
-     *
-     * @param array $state
-     * @return Instance
-     * @throws InvalidConfigException when $state property does not contain `id` parameter
-     * @see var_export()
-     * @since 2.0.12
-     */
-    public static function __set_state($state)
-    {
-        if (!isset($state['id'])) {
-            throw new InvalidConfigException('Failed to instantiate class "Instance". Required parameter "id" is missing');
-        }
-
-        return new self($state['id']);
     }
 }

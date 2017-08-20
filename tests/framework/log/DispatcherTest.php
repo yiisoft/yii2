@@ -30,16 +30,6 @@ namespace yiiunit\framework\log {
     class DispatcherTest extends TestCase
     {
         /**
-         * @var Logger
-         */
-        protected $logger;
-
-        /**
-         * @var Dispatcher
-         */
-        protected $dispatcher;
-
-        /**
          * @var bool
          */
         public static $microtimeIsMocked = false;
@@ -50,6 +40,30 @@ namespace yiiunit\framework\log {
          * @var array
          */
         public static $functions = [];
+
+        /**
+         * @var Logger
+         */
+        protected $logger;
+        /**
+         * @var Dispatcher
+         */
+        protected $dispatcher;
+
+
+        /**
+         * @param $name
+         * @param $arguments
+         * @return mixed
+         */
+        public static function __callStatic($name, $arguments)
+        {
+            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
+                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
+                return forward_static_call(static::$functions[$name], $arguments);
+            }
+            static::fail("Function '$name' has not implemented yet!");
+        }
 
         protected function setUp()
         {
@@ -247,20 +261,6 @@ namespace yiiunit\framework\log {
             );
 
             $this->assertEquals($dispatcher->targets['syslog'], Yii::createObject('yii\log\SyslogTarget'));
-        }
-
-        /**
-         * @param $name
-         * @param $arguments
-         * @return mixed
-         */
-        public static function __callStatic($name, $arguments)
-        {
-            if (isset(static::$functions[$name]) && is_callable(static::$functions[$name])) {
-                $arguments = isset($arguments[0]) ? $arguments[0] : $arguments;
-                return forward_static_call(static::$functions[$name], $arguments);
-            }
-            static::fail("Function '$name' has not implemented yet!");
         }
     }
 }

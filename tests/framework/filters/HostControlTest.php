@@ -19,6 +19,9 @@ use yiiunit\TestCase;
  */
 class HostControlTest extends TestCase
 {
+    public $denyCallBackCalled = false;
+
+
     protected function setUp()
     {
         parent::setUp();
@@ -119,8 +122,6 @@ class HostControlTest extends TestCase
             $this->assertEquals(404, Yii::$app->response->getStatusCode());
         }
     }
-
-    public $denyCallBackCalled = false;
 
     public function testDenyCallback()
     {

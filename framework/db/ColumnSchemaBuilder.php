@@ -29,6 +29,45 @@ class ColumnSchemaBuilder extends BaseObject
     const CATEGORY_TIME = 'time';
     const CATEGORY_OTHER = 'other';
 
+
+    /**
+     * @var array mapping of abstract column types (keys) to type categories (values).
+     * @since 2.0.8
+     */
+    public $categoryMap = [
+        Schema::TYPE_PK => self::CATEGORY_PK,
+        Schema::TYPE_UPK => self::CATEGORY_PK,
+        Schema::TYPE_BIGPK => self::CATEGORY_PK,
+        Schema::TYPE_UBIGPK => self::CATEGORY_PK,
+        Schema::TYPE_CHAR => self::CATEGORY_STRING,
+        Schema::TYPE_STRING => self::CATEGORY_STRING,
+        Schema::TYPE_TEXT => self::CATEGORY_STRING,
+        Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
+        Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_FLOAT => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DOUBLE => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DECIMAL => self::CATEGORY_NUMERIC,
+        Schema::TYPE_DATETIME => self::CATEGORY_TIME,
+        Schema::TYPE_TIMESTAMP => self::CATEGORY_TIME,
+        Schema::TYPE_TIME => self::CATEGORY_TIME,
+        Schema::TYPE_DATE => self::CATEGORY_TIME,
+        Schema::TYPE_BINARY => self::CATEGORY_OTHER,
+        Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
+        Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
+    ];
+    /**
+     * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
+     * safely when building the final column schema string.
+     * @since 2.0.8
+     */
+    public $db;
+    /**
+     * @var string comment value of the column.
+     * @since 2.0.8
+     */
+    public $comment;
+
     /**
      * @var string the column type definition such as INTEGER, VARCHAR, DATETIME, etc.
      */
@@ -77,45 +116,6 @@ class ColumnSchemaBuilder extends BaseObject
      */
     protected $isFirst;
 
-
-    /**
-     * @var array mapping of abstract column types (keys) to type categories (values).
-     * @since 2.0.8
-     */
-    public $categoryMap = [
-        Schema::TYPE_PK => self::CATEGORY_PK,
-        Schema::TYPE_UPK => self::CATEGORY_PK,
-        Schema::TYPE_BIGPK => self::CATEGORY_PK,
-        Schema::TYPE_UBIGPK => self::CATEGORY_PK,
-        Schema::TYPE_CHAR => self::CATEGORY_STRING,
-        Schema::TYPE_STRING => self::CATEGORY_STRING,
-        Schema::TYPE_TEXT => self::CATEGORY_STRING,
-        Schema::TYPE_SMALLINT => self::CATEGORY_NUMERIC,
-        Schema::TYPE_INTEGER => self::CATEGORY_NUMERIC,
-        Schema::TYPE_BIGINT => self::CATEGORY_NUMERIC,
-        Schema::TYPE_FLOAT => self::CATEGORY_NUMERIC,
-        Schema::TYPE_DOUBLE => self::CATEGORY_NUMERIC,
-        Schema::TYPE_DECIMAL => self::CATEGORY_NUMERIC,
-        Schema::TYPE_DATETIME => self::CATEGORY_TIME,
-        Schema::TYPE_TIMESTAMP => self::CATEGORY_TIME,
-        Schema::TYPE_TIME => self::CATEGORY_TIME,
-        Schema::TYPE_DATE => self::CATEGORY_TIME,
-        Schema::TYPE_BINARY => self::CATEGORY_OTHER,
-        Schema::TYPE_BOOLEAN => self::CATEGORY_NUMERIC,
-        Schema::TYPE_MONEY => self::CATEGORY_NUMERIC,
-    ];
-    /**
-     * @var \yii\db\Connection the current database connection. It is used mainly to escape strings
-     * safely when building the final column schema string.
-     * @since 2.0.8
-     */
-    public $db;
-    /**
-     * @var string comment value of the column.
-     * @since 2.0.8
-     */
-    public $comment;
-
     /**
      * Create a column schema builder instance giving the type and value precision.
      *
@@ -130,6 +130,22 @@ class ColumnSchemaBuilder extends BaseObject
         $this->length = $length;
         $this->db = $db;
         parent::__construct($config);
+    }
+
+    /**
+     * Builds the full string for the column's schema
+     * @return string
+     */
+    public function __toString()
+    {
+        switch ($this->getTypeCategory()) {
+            case self::CATEGORY_PK:
+                $format = '{type}{check}{comment}{append}';
+                break;
+            default:
+                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
+        }
+        return $this->buildCompleteString($format);
     }
 
     /**
@@ -268,22 +284,6 @@ class ColumnSchemaBuilder extends BaseObject
     {
         $this->append = $sql;
         return $this;
-    }
-
-    /**
-     * Builds the full string for the column's schema
-     * @return string
-     */
-    public function __toString()
-    {
-        switch ($this->getTypeCategory()) {
-            case self::CATEGORY_PK:
-                $format = '{type}{check}{comment}{append}';
-                break;
-            default:
-                $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
-        }
-        return $this->buildCompleteString($format);
     }
 
     /**

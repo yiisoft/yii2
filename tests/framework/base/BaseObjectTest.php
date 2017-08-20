@@ -177,10 +177,11 @@ class BaseObjectTest extends TestCase
 
 class NewObject extends BaseObject
 {
+    public $content;
+
     private $_object = null;
     private $_text = 'default';
     private $_items = [];
-    public $content;
 
     public function getText()
     {

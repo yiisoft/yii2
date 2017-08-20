@@ -51,6 +51,13 @@ class BaseConsole
     const ENCIRCLED = 52;
     const OVERLINED = 53;
 
+    private static $_progressStart;
+    private static $_progressWidth;
+    private static $_progressPrefix;
+    private static $_progressEta;
+    private static $_progressEtaLastDone = 0;
+    private static $_progressEtaLastUpdate;
+
 
     /**
      * Moves the terminal cursor up by sending ANSI control code CUU to the terminal.
@@ -874,13 +881,6 @@ class BaseConsole
 
         return $input;
     }
-
-    private static $_progressStart;
-    private static $_progressWidth;
-    private static $_progressPrefix;
-    private static $_progressEta;
-    private static $_progressEtaLastDone = 0;
-    private static $_progressEtaLastUpdate;
 
     /**
      * Starts display of a progress bar on screen.

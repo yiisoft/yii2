@@ -91,6 +91,9 @@ class Security extends Component
      */
     public $passwordHashCost = 13;
 
+    private $_useLibreSSL;
+    private $_randomFile;
+
 
     /**
      * Encrypts data using a password.
@@ -432,9 +435,6 @@ class Security extends Component
         }
         return false;
     }
-
-    private $_useLibreSSL;
-    private $_randomFile;
 
     /**
      * Generates specified number of random bytes.

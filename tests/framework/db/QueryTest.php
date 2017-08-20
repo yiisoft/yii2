@@ -14,6 +14,8 @@ use yii\db\Schema;
 
 abstract class QueryTest extends DatabaseTestCase
 {
+    use GetTablesAliasTestTrait;
+
     public function testSelect()
     {
         // default
@@ -45,8 +47,6 @@ abstract class QueryTest extends DatabaseTestCase
         $query->from('user');
         $this->assertEquals(['user'], $query->from);
     }
-
-    use GetTablesAliasTestTrait;
     protected function createQuery()
     {
         return new Query();

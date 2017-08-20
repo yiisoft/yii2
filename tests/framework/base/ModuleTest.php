@@ -16,6 +16,8 @@ use yiiunit\TestCase;
  */
 class ModuleTest extends TestCase
 {
+    public static $actionRuns = [];
+
     protected function setUp()
     {
         parent::setUp();
@@ -54,8 +56,6 @@ class ModuleTest extends TestCase
         $version = $module->getVersion();
         $this->assertEquals('1.0', $version);
     }
-
-    public static $actionRuns = [];
 
     public function testRunControllerAction()
     {

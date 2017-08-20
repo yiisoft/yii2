@@ -48,6 +48,11 @@ class I18N extends Component
      */
     public $translations;
 
+    /**
+     * @var string|array|MessageFormatter
+     */
+    private $_messageFormatter;
+
 
     /**
      * Initializes the component by configuring the default message categories.
@@ -129,11 +134,6 @@ class I18N extends Component
 
         return strtr($message, $p);
     }
-
-    /**
-     * @var string|array|MessageFormatter
-     */
-    private $_messageFormatter;
 
     /**
      * Returns the message formatter instance.

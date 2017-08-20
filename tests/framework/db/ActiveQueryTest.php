@@ -20,6 +20,8 @@ use yiiunit\data\ar\Profile;
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
+    use GetTablesAliasTestTrait;
+
     public function setUp()
     {
         parent::setUp();
@@ -236,8 +238,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertInstanceOf('yii\db\ActiveQuery', $result);
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
-
-    use GetTablesAliasTestTrait;
     protected function createQuery()
     {
         return new ActiveQuery(null);

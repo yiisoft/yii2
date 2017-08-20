@@ -150,6 +150,7 @@ class User extends Component
     public $acceptableRedirectTypes = ['text/html', 'application/xhtml+xml'];
 
     private $_access = [];
+    private $_identity = false;
 
 
     /**
@@ -166,8 +167,6 @@ class User extends Component
             throw new InvalidConfigException('User::identityCookie must contain the "name" element.');
         }
     }
-
-    private $_identity = false;
 
     /**
      * Returns the identity object associated with the currently logged-in user.

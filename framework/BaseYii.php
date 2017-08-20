@@ -86,6 +86,8 @@ class BaseYii
      */
     public static $container;
 
+    private static $_logger;
+
 
     /**
      * Returns a string representing the current version of the Yii framework.
@@ -354,8 +356,6 @@ class BaseYii
 
         throw new InvalidConfigException('Unsupported configuration type: ' . gettype($type));
     }
-
-    private static $_logger;
 
     /**
      * @return Logger message logger

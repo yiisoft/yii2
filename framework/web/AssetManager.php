@@ -199,6 +199,11 @@ class AssetManager extends Component
     public $hashCallback;
 
     private $_dummyBundles = [];
+    private $_converter;
+    /**
+     * @var array published assets
+     */
+    private $_published = [];
 
 
     /**
@@ -364,8 +369,6 @@ class AssetManager extends Component
         return false;
     }
 
-    private $_converter;
-
     /**
      * Returns the asset converter.
      * @return AssetConverterInterface the asset converter.
@@ -394,11 +397,6 @@ class AssetManager extends Component
     {
         $this->_converter = $value;
     }
-
-    /**
-     * @var array published assets
-     */
-    private $_published = [];
 
     /**
      * Publishes a file or a directory.

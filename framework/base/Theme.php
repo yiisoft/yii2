@@ -82,6 +82,7 @@ class Theme extends Component
     public $pathMap;
 
     private $_baseUrl;
+    private $_basePath;
 
 
     /**
@@ -101,8 +102,6 @@ class Theme extends Component
     {
         $this->_baseUrl = $url === null ? null : rtrim(Yii::getAlias($url), '/');
     }
-
-    private $_basePath;
 
     /**
      * @return string the root path of this theme. All resources of this theme are located under this directory.

@@ -88,6 +88,7 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
      * @see http://www.php.net/manual/en/function.session-set-cookie-params.php
      */
     private $_cookieParams = ['httponly' => true];
+    private $_hasSessionId;
 
 
     /**
@@ -216,8 +217,6 @@ class Session extends Component implements \IteratorAggregate, \ArrayAccess, \Co
     {
         return session_status() === PHP_SESSION_ACTIVE;
     }
-
-    private $_hasSessionId;
 
     /**
      * Returns a value indicating whether the current request has sent the session ID.

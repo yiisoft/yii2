@@ -42,6 +42,9 @@ use yii\helpers\FileHelper;
  */
 class ReleaseController extends Controller
 {
+    const MINOR = 'minor';
+    const PATCH = 'patch';
+
     public $defaultAction = 'release';
 
     /**
@@ -60,6 +63,8 @@ class ReleaseController extends Controller
      * @var string override the default version. e.g. for major or patch releases.
      */
     public $version;
+
+    private $_oldAlias;
 
 
     public function options($actionID)
@@ -626,8 +631,6 @@ class ReleaseController extends Controller
         $this->stdout("\n");
     }
 
-    private $_oldAlias;
-
     protected function setAppAliases($app, $path)
     {
         $this->_oldAlias = Yii::getAlias('@app');
@@ -1003,9 +1006,6 @@ class ReleaseController extends Controller
         }
         return $versions;
     }
-
-    const MINOR = 'minor';
-    const PATCH = 'patch';
 
     protected function getNextVersions(array $versions, $type)
     {

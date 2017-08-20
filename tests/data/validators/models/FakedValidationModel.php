@@ -19,6 +19,24 @@ class FakedValidationModel extends Model
     private $attr = [];
     private $inlineValArgs;
 
+    public function __get($name)
+    {
+        if (stripos($name, 'attr') === 0) {
+            return isset($this->attr[$name]) ? $this->attr[$name] : null;
+        }
+
+        return parent::__get($name);
+    }
+
+    public function __set($name, $value)
+    {
+        if (stripos($name, 'attr') === 0) {
+            $this->attr[$name] = $value;
+        } else {
+            parent::__set($name, $value);
+        }
+    }
+
     /**
      * @param  array $attributes
      * @return self
@@ -54,24 +72,6 @@ class FakedValidationModel extends Model
     public function clientInlineVal($attribute, $params = [], $validator)
     {
         return func_get_args();
-    }
-
-    public function __get($name)
-    {
-        if (stripos($name, 'attr') === 0) {
-            return isset($this->attr[$name]) ? $this->attr[$name] : null;
-        }
-
-        return parent::__get($name);
-    }
-
-    public function __set($name, $value)
-    {
-        if (stripos($name, 'attr') === 0) {
-            $this->attr[$name] = $value;
-        } else {
-            parent::__set($name, $value);
-        }
     }
 
     public function getAttributeLabel($attr)

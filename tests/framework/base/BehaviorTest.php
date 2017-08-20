@@ -32,11 +32,6 @@ class BarBehavior extends Behavior
 
     public $behaviorProperty = 'behavior property';
 
-    public function behaviorMethod()
-    {
-        return 'behavior method';
-    }
-
     public function __call($name, $params)
     {
         if ($name == 'magicBehaviorMethod') {
@@ -44,6 +39,11 @@ class BarBehavior extends Behavior
         }
 
         return parent::__call($name, $params);
+    }
+
+    public function behaviorMethod()
+    {
+        return 'behavior method';
     }
 
     public function hasMethod($name)

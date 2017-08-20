@@ -98,20 +98,20 @@ class YiiConfig extends Config
             'non_printable_character' => true,
             'normalize_index_brace' => true,
             'object_operator_without_whitespace' => true,
-//            'ordered_class_elements' => [ // needs more discussion
-//                'order' => [
-//                    'use_trait',
-//                    'constant_public',
-//                    'constant_protected',
-//                    'constant_private',
-//                    'property_public',
-//                    'property_protected',
-//                    'property_private',
-//                    'construct',
-//                    'destruct',
-//                    'magic',
-//                ],
-//            ],
+            'ordered_class_elements' => [
+                'order' => [
+                    'use_trait',
+                    'constant_public',
+                    'constant_protected',
+                    'constant_private',
+                    'property_public',
+                    'property_protected',
+                    'property_private',
+                    'construct',
+                    'destruct',
+                    'magic',
+                ],
+            ],
             'ordered_imports' => [
                 'sortAlgorithm' => 'alpha',
                 'importsOrder' => [
