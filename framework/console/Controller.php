@@ -131,6 +131,7 @@ class Controller extends \yii\base\Controller
             $route = $this->getUniqueId() . '/' . $id;
             return Yii::$app->runAction('help', [$route]);
         }
+
         return parent::runAction($id, $params);
     }
 
@@ -196,6 +197,7 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
+
         return $string;
     }
 
@@ -221,6 +223,7 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
+
         return Console::stdout($string);
     }
 
@@ -246,6 +249,7 @@ class Controller extends \yii\base\Controller
             array_shift($args);
             $string = Console::ansiFormat($string, $args);
         }
+
         return fwrite(\STDERR, $string);
     }
 
@@ -375,6 +379,7 @@ class Controller extends \yii\base\Controller
         foreach ($this->options($this->action->id) as $property) {
             $properties[$property] = $this->$property;
         }
+
         return $properties;
     }
 
@@ -399,6 +404,7 @@ class Controller extends \yii\base\Controller
         foreach ($this->_passedOptions as $property) {
             $properties[$property] = $this->$property;
         }
+
         return $properties;
     }
 
@@ -502,6 +508,7 @@ class Controller extends \yii\base\Controller
                 ];
             }
         }
+
         return $args;
     }
 
@@ -562,6 +569,7 @@ class Controller extends \yii\base\Controller
                 ];
             }
         }
+
         return $options;
     }
 
@@ -580,6 +588,7 @@ class Controller extends \yii\base\Controller
                 $this->_reflections[$action->id] = new \ReflectionMethod($action, 'run');
             }
         }
+
         return $this->_reflections[$action->id];
     }
 
@@ -606,6 +615,7 @@ class Controller extends \yii\base\Controller
                 }
             }
         }
+
         return $tags;
     }
 
@@ -621,6 +631,7 @@ class Controller extends \yii\base\Controller
         if (isset($docLines[1])) {
             return trim($docLines[1], "\t *");
         }
+
         return '';
     }
 
@@ -639,6 +650,7 @@ class Controller extends \yii\base\Controller
         if ($comment !== '') {
             return rtrim(Console::renderColoredString(Console::markdownToAnsi($comment)));
         }
+
         return '';
     }
 }

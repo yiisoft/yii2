@@ -253,6 +253,9 @@ TEXT
 
     /**
      * @dataProvider htmlAndPlainProvider
+     * @param int $i
+     * @param string $htmlViewFileContent
+     * @param string $expectedTextRendering
      */
     public function testComposePlainTextFallback($i, $htmlViewFileContent, $expectedTextRendering)
     {

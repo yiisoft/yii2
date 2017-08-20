@@ -249,6 +249,8 @@ EOF;
 
     /**
      * @dataProvider positionProvider
+     * @param int $pos
+     * @param bool $jqAlreadyRegistered
      */
     public function testPositionDependency($pos, $jqAlreadyRegistered)
     {
@@ -318,6 +320,8 @@ EOF;
 
     /**
      * @dataProvider positionProvider
+     * @param int $pos
+     * @param bool $jqAlreadyRegistered
      */
     public function testPositionDependencyConflict($pos, $jqAlreadyRegistered)
     {
@@ -489,8 +493,9 @@ EOF;
      * @dataProvider registerFileDataProvider
      * @param string $type either `js` or `css`
      * @param string $path
-     * @param string bool $appendTimestamp
+     * @param string|bool $appendTimestamp
      * @param string $expected
+     * @param string|null $webAlias
      */
     public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected, $webAlias = null)
     {

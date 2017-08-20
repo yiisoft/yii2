@@ -128,6 +128,7 @@ class BaseFormatConverter
                 $escaped[$match[0]] = '\\' . implode('\\', preg_split('//u', $match[1], -1, PREG_SPLIT_NO_EMPTY));
             }
         }
+
         return strtr($pattern, array_merge($escaped, [
             '\'\'' => '\\\'', // two single quotes produce one
             'G' => '',      // era designator like (Anno Domini)
@@ -339,6 +340,7 @@ class BaseFormatConverter
                 $escaped[$match] = $match;
             }
         }
+
         return strtr($pattern, array_merge($escaped, [
             'G' => '',      // era designator like (Anno Domini)
             'Y' => '',      // 4digit year of "Week of Year"

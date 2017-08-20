@@ -299,6 +299,9 @@ class HtmlTest extends TestCase
 
     /**
      * @dataProvider imgDataProvider
+     * @param string $expected
+     * @param string $src
+     * @param array $options
      */
     public function testImg($expected, $src, $options)
     {
@@ -414,6 +417,10 @@ class HtmlTest extends TestCase
 
     /**
      * @dataProvider textareaDataProvider
+     * @param string $expected
+     * @param string $name
+     * @param string $value
+     * @param array $options
      */
     public function testTextarea($expected, $name, $value, $options)
     {

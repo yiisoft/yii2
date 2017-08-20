@@ -313,6 +313,7 @@ class DeadLockTest extends \yiiunit\framework\db\mysql\ConnectionTest
             unlink($this->logFile);
             return $content;
         }
+
         return null;
     }
 

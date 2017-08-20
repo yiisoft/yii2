@@ -141,6 +141,7 @@ class Cors extends ActionFilter
                 $headers[$headerField] = $headerData;
             }
         }
+
         return $headers;
     }
 

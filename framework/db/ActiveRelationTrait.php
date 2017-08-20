@@ -108,6 +108,7 @@ trait ActiveRelationTrait
         if ($callable !== null) {
             call_user_func($callable, $relation);
         }
+
         return $this;
     }
 
@@ -411,6 +412,7 @@ trait ActiveRelationTrait
                 $result[$key][$index] = $model;
             }
         }
+
         return $result;
     }
 
@@ -439,6 +441,7 @@ trait ActiveRelationTrait
                 }
             }
         }
+
         return $attributes;
     }
 
@@ -517,6 +520,7 @@ trait ActiveRelationTrait
             // ensure matching to special objects, which are convertable to string, for cross-DBMS relations, for example: `|MongoId`
             $value = $value->__toString();
         }
+
         return $value;
     }
 

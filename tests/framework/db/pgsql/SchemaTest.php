@@ -151,6 +151,7 @@ class SchemaTest extends \yiiunit\framework\db\SchemaTest
 
     /**
      * @dataProvider bigintValueProvider
+     * @param int $bigint
      */
     public function testBigintValue($bigint)
     {

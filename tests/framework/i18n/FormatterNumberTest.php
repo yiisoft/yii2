@@ -80,6 +80,7 @@ class FormatterNumberTest extends TestCase
 
     /**
      * @dataProvider differentConfigProvider
+     * @param array $config
      */
     public function testIntlAsInteger($config)
     {

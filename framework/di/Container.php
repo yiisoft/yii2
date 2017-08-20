@@ -333,6 +333,7 @@ class Container extends Component
                     throw new InvalidConfigException('A class definition requires a "class" member.');
                 }
             }
+
             return $definition;
         }
 
@@ -463,6 +464,7 @@ class Container extends Component
                 }
             }
         }
+
         return $dependencies;
     }
 
@@ -565,6 +567,7 @@ class Container extends Component
         foreach ($params as $value) {
             $args[] = $value;
         }
+
         return $args;
     }
 

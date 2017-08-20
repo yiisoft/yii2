@@ -258,6 +258,8 @@ EOT;
 
     /**
      * @dataProvider hintDataProvider
+     * @param mixed $hint
+     * @param string $expectedHtml
      */
     public function testHint($hint, $expectedHtml)
     {

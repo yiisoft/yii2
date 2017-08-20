@@ -111,6 +111,7 @@ abstract class DbTargetTest extends TestCase
             }
             static::$db = $db;
         }
+
         return static::$db;
     }
 

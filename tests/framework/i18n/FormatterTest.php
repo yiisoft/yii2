@@ -243,8 +243,8 @@ class FormatterTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $expected
+     * @param mixed $value
+     * @param string $expected
      *
      * @dataProvider lengthDataProvider
      */
@@ -255,8 +255,9 @@ class FormatterTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $expected
+     * @param mixed $value
+     * @param string $expected
+     * @param string $_
      *
      * @dataProvider lengthDataProvider
      */
@@ -283,8 +284,8 @@ class FormatterTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $expected
+     * @param mixed $value
+     * @param string $expected
      *
      * @dataProvider weightDataProvider
      */
@@ -295,8 +296,9 @@ class FormatterTest extends TestCase
     }
 
     /**
-     * @param $value
-     * @param $expected
+     * @param mixed $value
+     * @param string $_
+     * @param string $expected
      *
      * @dataProvider weightDataProvider
      */

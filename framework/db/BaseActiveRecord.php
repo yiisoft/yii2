@@ -614,6 +614,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 }
             }
         }
+
         return $attributes;
     }
 
@@ -705,6 +706,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
         if ($runValidation && !$this->validate($attributeNames)) {
             return false;
         }
+
         return $this->updateInternal($attributeNames);
     }
 
@@ -1636,6 +1638,7 @@ abstract class BaseActiveRecord extends Model implements ActiveRecordInterface
                 return $hints[$neededAttribute];
             }
         }
+
         return '';
     }
 

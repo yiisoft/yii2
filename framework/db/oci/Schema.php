@@ -129,6 +129,7 @@ SQL;
             }
             $names[] = $row['TABLE_NAME'];
         }
+
         return $names;
     }
 
@@ -200,6 +201,7 @@ SQL;
                 'columnNames' => ArrayHelper::getColumn($index, 'column_name'),
             ]);
         }
+
         return $result;
     }
 
@@ -327,6 +329,7 @@ SQL;
             $c = $this->createColumn($column);
             $table->columns[$c->name] = $c;
         }
+
         return true;
     }
 
@@ -523,6 +526,7 @@ SQL;
         foreach ($command->queryAll() as $row) {
             $result[$row['INDEX_NAME']][] = $row['COLUMN_NAME'];
         }
+
         return $result;
     }
 
@@ -715,6 +719,7 @@ SQL;
         foreach ($result as $type => $data) {
             $this->setTableMetadata($tableName, $type, $data);
         }
+
         return $result[$returnType];
     }
 }

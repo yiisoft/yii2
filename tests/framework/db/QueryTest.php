@@ -526,6 +526,7 @@ abstract class QueryTest extends DatabaseTestCase
         if (is_numeric($result)) {
             $result = (int) $result;
         }
+
         return $result;
     }
 

@@ -475,6 +475,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException || $exception instanceof \yii\base\InvalidParamException || $exception instanceof \yii\base\UnknownMethodException) {
             return $exception->getName();
         }
+
         return null;
     }
 

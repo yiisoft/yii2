@@ -73,6 +73,7 @@ abstract class DatabaseTestCase extends TestCase
         } catch (\Exception $e) {
             $this->markTestSkipped('Something wrong when preparing database: ' . $e->getMessage());
         }
+
         return $this->_db;
     }
 
@@ -101,6 +102,7 @@ abstract class DatabaseTestCase extends TestCase
                 }
             }
         }
+
         return $db;
     }
 

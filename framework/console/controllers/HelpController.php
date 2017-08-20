@@ -529,6 +529,7 @@ class HelpController extends Controller
                 return ', -' . $name;
             }
         }
+
         return '';
     }
 

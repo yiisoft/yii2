@@ -184,6 +184,7 @@ class ExistValidator extends Validator
             if (!$this->allowArray) {
                 return [$this->message, []];
             }
+
             return $query->count("DISTINCT [[$this->targetAttribute]]") == count($value) ? null : [$this->message, []];
         }
 
@@ -235,6 +236,7 @@ class ExistValidator extends Validator
 
             $prefixedConditions[$prefixedColumn] = $columnValue;
         }
+
         return $prefixedConditions;
     }
 }

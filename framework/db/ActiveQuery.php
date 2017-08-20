@@ -787,6 +787,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
                 }
             }
         }
+
         return $this;
     }
 
@@ -799,6 +800,7 @@ class ActiveQuery extends Query implements ActiveQueryInterface
         if (empty($this->from)) {
             $this->from = [$this->getPrimaryTableName()];
         }
+
         return parent::getTablesUsedInFrom();
     }
 

@@ -25,6 +25,7 @@ class ArrayCacheTest extends CacheTestCase
         if ($this->_cacheInstance === null) {
             $this->_cacheInstance = new ArrayCache();
         }
+
         return $this->_cacheInstance;
     }
 

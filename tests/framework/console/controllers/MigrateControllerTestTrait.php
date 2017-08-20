@@ -98,6 +98,7 @@ trait MigrateControllerTestTrait
     /**
      * @param string $name
      * @param string|null $date
+     * @param string|null $path
      * @return string generated class name
      */
     protected function createMigration($name, $date = null, $path = null)

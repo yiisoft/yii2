@@ -61,6 +61,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         if ($userid !== null) {
             $user->setIdentity(UserIdentity::findIdentity($userid));
         }
+
         return $user;
     }
 

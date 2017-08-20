@@ -356,6 +356,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider isSecureServerDataProvider
+     * @param array $server
+     * @param bool $expected
      */
     public function testGetIsSecureConnection($server, $expected)
     {
@@ -414,6 +416,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getUserIPDataProvider
+     * @param array $server
+     * @param string $expected
      */
     public function testGetUserIP($server, $expected)
     {
@@ -451,6 +455,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getMethodDataProvider
+     * @param array $server
+     * @param string $expected
      */
     public function testGetMethod($server, $expected)
     {
@@ -481,6 +487,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getIsAjaxDataProvider
+     * @param array $server
+     * @param bool $expected
      */
     public function testGetIsAjax($server, $expected)
     {
@@ -512,6 +520,8 @@ class RequestTest extends TestCase
 
     /**
      * @dataProvider getIsPjaxDataProvider
+     * @param array $server
+     * @param bool $expected
      */
     public function testGetIsPjax($server, $expected)
     {

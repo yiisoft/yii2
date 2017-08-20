@@ -260,6 +260,7 @@
                 attributes.splice(index, 1);
                 unwatchAttribute($form, attribute);
             }
+
             return attribute;
         },
 
@@ -574,6 +575,7 @@
         for (var i = 0; i < buttonOptions.length; i++) {
             attributes[buttonOptions[i]] = $form.attr(buttonOptions[i]);
         }
+
         return attributes;
     };
 
@@ -764,6 +766,7 @@
             if (!$realInput.length) {
                 $realInput = $form.find('input[type=hidden][name="' + $input.attr('name') + '"]');
             }
+
             return $realInput.val();
         } else {
             return $input.val();

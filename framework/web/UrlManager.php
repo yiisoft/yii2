@@ -252,6 +252,7 @@ class UrlManager extends Component
             }
             $compiledRules[] = $rule;
         }
+
         return $compiledRules;
     }
 
@@ -468,6 +469,7 @@ class UrlManager extends Component
         } else {
             $this->_ruleCache[$cacheKey] = [];
         }
+
         return false;
     }
 

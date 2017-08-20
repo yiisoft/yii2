@@ -112,6 +112,7 @@ trait QueryTrait
         } else {
             $this->where = ['and', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -131,6 +132,7 @@ trait QueryTrait
         } else {
             $this->where = ['or', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -167,6 +169,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->where($condition);
         }
+
         return $this;
     }
 
@@ -190,6 +193,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->andWhere($condition);
         }
+
         return $this;
     }
 
@@ -213,6 +217,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->orWhere($condition);
         }
+
         return $this;
     }
 
@@ -236,6 +241,7 @@ trait QueryTrait
                     unset($condition[$name]);
                 }
             }
+
             return $condition;
         }
 
@@ -345,6 +351,7 @@ trait QueryTrait
         } else {
             $this->orderBy = array_merge($this->orderBy, $columns);
         }
+
         return $this;
     }
 

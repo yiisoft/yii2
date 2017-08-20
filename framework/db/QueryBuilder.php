@@ -636,6 +636,7 @@ class QueryBuilder extends \yii\base\BaseObject
         foreach ($columns as $i => $col) {
             $columns[$i] = $this->db->quoteColumnName($col);
         }
+
         return 'ALTER TABLE ' . $this->db->quoteTableName($table) . ' ADD CONSTRAINT '
             . $this->db->quoteColumnName($name) . ' UNIQUE ('
             . implode(', ', $columns) . ')';
@@ -981,6 +982,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 }
             }
         }
+
         return $tables;
     }
 
@@ -1012,6 +1014,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 $columns[$i] = $this->db->quoteColumnName($column);
             }
         }
+
         return 'GROUP BY ' . implode(', ', $columns);
     }
 
@@ -1045,6 +1048,7 @@ class QueryBuilder extends \yii\base\BaseObject
         if ($limit !== '') {
             $sql .= $this->separator . $limit;
         }
+
         return $sql;
     }
 
@@ -1171,6 +1175,7 @@ class QueryBuilder extends \yii\base\BaseObject
             foreach ($condition->params as $n => $v) {
                 $params[$n] = $v;
             }
+
             return $condition->expression;
         } elseif (!is_array($condition)) {
             return (string) $condition;
@@ -1224,6 +1229,7 @@ class QueryBuilder extends \yii\base\BaseObject
                 }
             }
         }
+
         return count($parts) === 1 ? $parts[0] : '(' . implode(') AND (', $parts) . ')';
     }
 
@@ -1417,6 +1423,7 @@ class QueryBuilder extends \yii\base\BaseObject
                     $columns[$i] = $this->db->quoteColumnName($col);
                 }
             }
+
             return '(' . implode(', ', $columns) . ") $operator ($sql)";
         }
 
@@ -1580,6 +1587,7 @@ class QueryBuilder extends \yii\base\BaseObject
             foreach ($value->params as $n => $v) {
                 $params[$n] = $v;
             }
+
             return "$column $operator {$value->expression}";
         } elseif ($value instanceof Query) {
             list($sql, $params) = $this->build($value, $params);

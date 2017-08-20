@@ -54,6 +54,7 @@ class JsonParser implements RequestParserInterface
             if ($this->throwException) {
                 throw new BadRequestHttpException('Invalid JSON data in request body: ' . $e->getMessage());
             }
+
             return [];
         }
     }
