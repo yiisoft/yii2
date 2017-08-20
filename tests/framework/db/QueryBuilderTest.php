@@ -1156,6 +1156,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
+
         return $conditions;
     }
 
@@ -1204,6 +1205,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
         foreach ($conditions as $i => $condition) {
             $conditions[$i][1] = $this->replaceQuotes($condition[1]);
         }
+
         return $conditions;
     }
 
@@ -1912,6 +1914,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
                 $conditions[$i][2][$name] = strtr($conditions[$i][2][$name], $this->likeParameterReplacements);
             }
         }
+
         return $conditions;
     }
 

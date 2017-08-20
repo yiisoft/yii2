@@ -236,6 +236,7 @@ class Query extends Component implements QueryInterface
             }
             $result[$key] = $row;
         }
+
         return $result;
     }
 
@@ -251,6 +252,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return false;
         }
+
         return $this->createCommand($db)->queryOne();
     }
 
@@ -267,6 +269,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return null;
         }
+
         return $this->createCommand($db)->queryScalar();
     }
 
@@ -304,6 +307,7 @@ class Query extends Component implements QueryInterface
                 $results[$row[$this->indexBy]] = $value;
             }
         }
+
         return $results;
     }
 
@@ -321,6 +325,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("COUNT($q)", $db);
     }
 
@@ -337,6 +342,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("SUM($q)", $db);
     }
 
@@ -353,6 +359,7 @@ class Query extends Component implements QueryInterface
         if ($this->emulateExecution) {
             return 0;
         }
+
         return $this->queryScalar("AVG($q)", $db);
     }
 
@@ -584,6 +591,7 @@ PATTERN;
         } else {
             $this->select = array_merge($this->select, $columns);
         }
+
         return $this;
     }
 
@@ -743,6 +751,7 @@ PATTERN;
         } else {
             $operator = $defaultOperator;
         }
+
         return $this->andFilterWhere([$operator, $name, $value]);
     }
 
@@ -907,6 +916,7 @@ PATTERN;
         } else {
             $this->groupBy = array_merge($this->groupBy, $columns);
         }
+
         return $this;
     }
 
@@ -1002,6 +1012,7 @@ PATTERN;
         if ($condition !== []) {
             $this->having($condition);
         }
+
         return $this;
     }
 
@@ -1026,6 +1037,7 @@ PATTERN;
         if ($condition !== []) {
             $this->andHaving($condition);
         }
+
         return $this;
     }
 
@@ -1050,6 +1062,7 @@ PATTERN;
         if ($condition !== []) {
             $this->orHaving($condition);
         }
+
         return $this;
     }
 
@@ -1100,6 +1113,7 @@ PATTERN;
                 }
             }
         }
+
         return $this;
     }
 

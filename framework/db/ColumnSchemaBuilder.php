@@ -283,6 +283,7 @@ class ColumnSchemaBuilder extends BaseObject
             default:
                 $format = '{type}{length}{notnull}{unique}{default}{check}{comment}{append}';
         }
+
         return $this->buildCompleteString($format);
     }
 
@@ -298,6 +299,7 @@ class ColumnSchemaBuilder extends BaseObject
         if (is_array($this->length)) {
             $this->length = implode(',', $this->length);
         }
+
         return "({$this->length})";
     }
 

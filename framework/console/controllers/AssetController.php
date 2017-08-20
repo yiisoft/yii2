@@ -759,6 +759,7 @@ EOD;
                 $realPathParts[] = $pathPart;
             }
         }
+
         return implode(DIRECTORY_SEPARATOR, $realPathParts);
     }
 

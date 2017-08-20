@@ -643,6 +643,7 @@ class Connection extends Component
         if (strncmp('sqlite:@', $dsn, 8) === 0) {
             $dsn = 'sqlite:' . Yii::getAlias(substr($dsn, 7));
         }
+
         return new $pdoClass($dsn, $this->username, $this->password, $this->attributes);
     }
 
@@ -888,6 +889,7 @@ class Connection extends Component
                 $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
             }
         }
+
         return $this->_driverName;
     }
 

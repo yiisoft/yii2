@@ -19,6 +19,7 @@ namespace yii\base {
         if (isset(\yiiunit\framework\base\SecurityTest::$functions[$name])) {
             return \yiiunit\framework\base\SecurityTest::$functions[$name];
         }
+
         return \function_exists($name);
     }
     /**
@@ -34,6 +35,7 @@ namespace yii\base {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return \yiiunit\framework\base\SecurityTest::$fopen;
         }
+
         return \fopen($filename, $mode);
     }
     function fread($handle, $length)
@@ -44,6 +46,7 @@ namespace yii\base {
         if (\yiiunit\framework\base\SecurityTest::$fopen !== null) {
             return $length < 8 ? \str_repeat('s', $length) : 'test1234';
         }
+
         return \fread($handle, $length);
     }
 } // closing namespace yii\base;

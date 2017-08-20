@@ -27,6 +27,7 @@ class m150909_153426_cache_init extends Migration
         if (!$cache instanceof DbCache) {
             throw new InvalidConfigException('You should configure "cache" component to use database before executing this migration.');
         }
+
         return $cache;
     }
 

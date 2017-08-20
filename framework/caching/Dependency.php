@@ -85,6 +85,7 @@ abstract class Dependency extends \yii\base\BaseObject
         } else {
             $data = $this->generateDependencyData($cache);
         }
+
         return $data !== $this->data;
     }
 
