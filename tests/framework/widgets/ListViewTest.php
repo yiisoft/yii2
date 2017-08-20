@@ -154,6 +154,8 @@ HTML
 
     /**
      * @dataProvider itemViewOptions
+     * @param mixed $itemView
+     * @param string $expected
      */
     public function testItemViewOptions($itemView, $expected)
     {
@@ -198,6 +200,8 @@ HTML
 
     /**
      * @dataProvider itemOptions
+     * @param mixed $itemOptions
+     * @param string $expected
      */
     public function testItemOptions($itemOptions, $expected)
     {

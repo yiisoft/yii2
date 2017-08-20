@@ -241,6 +241,7 @@ SQL;
     /**
      * Test whether param binding works in other places than WHERE
      * @dataProvider paramsNonWhereProvider
+     * @param string $sql
      */
     public function testBindParamsNonWhere($sql)
     {
@@ -550,6 +551,7 @@ SQL;
      * @dataProvider invalidSelectColumns
      * @expectedException \yii\base\InvalidParamException
      * @expectedExceptionMessage Expected select query object with enumerated (named) parameters
+     * @param mixed $invalidSelectColumns
      */
     public function testInsertSelectFailed($invalidSelectColumns)
     {

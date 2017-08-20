@@ -356,6 +356,8 @@ class PhpDocController extends Controller
 
     /**
      * Fixes line spacing code style for properties and constants
+     * @param string[] $lines
+     * @return string[]
      */
     protected function fixLineSpacing($lines)
     {

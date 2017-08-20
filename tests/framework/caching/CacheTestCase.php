@@ -114,6 +114,7 @@ abstract class CacheTestCase extends TestCase
 
     /**
      * @dataProvider multiSetExpiry
+     * @param int $expiry
      */
     public function testMultiset($expiry)
     {
