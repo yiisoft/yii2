@@ -9,6 +9,7 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\http\Cookie;
 use yii\http\CookieCollection;
 use yii\http\HeaderCollection;
 

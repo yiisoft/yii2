@@ -130,30 +130,30 @@ class ImageValidator extends FileValidator
      */
     protected function validateImage($image)
     {
-        if (false === ($imageInfo = getimagesize($image->tempName))) {
+        if (false === ($imageInfo = getimagesize($image->tempFilename))) {
             return [$this->notImage, ['file' => $image->name]];
         }
 
         [$width, $height] = $imageInfo;
 
         if ($width == 0 || $height == 0) {
-            return [$this->notImage, ['file' => $image->name]];
+            return [$this->notImage, ['file' => $image->getClientFilename()]];
         }
 
         if ($this->minWidth !== null && $width < $this->minWidth) {
-            return [$this->underWidth, ['file' => $image->name, 'limit' => $this->minWidth]];
+            return [$this->underWidth, ['file' => $image->getClientFilename(), 'limit' => $this->minWidth]];
         }
 
         if ($this->minHeight !== null && $height < $this->minHeight) {
-            return [$this->underHeight, ['file' => $image->name, 'limit' => $this->minHeight]];
+            return [$this->underHeight, ['file' => $image->getClientFilename(), 'limit' => $this->minHeight]];
         }
 
         if ($this->maxWidth !== null && $width > $this->maxWidth) {
-            return [$this->overWidth, ['file' => $image->name, 'limit' => $this->maxWidth]];
+            return [$this->overWidth, ['file' => $image->getClientFilename(), 'limit' => $this->maxWidth]];
         }
 
         if ($this->maxHeight !== null && $height > $this->maxHeight) {
-            return [$this->overHeight, ['file' => $image->name, 'limit' => $this->maxHeight]];
+            return [$this->overHeight, ['file' => $image->getClientFilename(), 'limit' => $this->maxHeight]];
         }
 
         return null;
