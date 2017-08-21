@@ -8,6 +8,7 @@
 namespace yiiunit\framework\i18n;
 
 use Yii;
+use yii\base\InvalidConfigException;
 use yii\i18n\Formatter;
 use yiiunit\TestCase;
 
@@ -230,82 +231,161 @@ class FormatterTest extends TestCase
     public function lengthDataProvider()
     {
         return [
-            [-3, '-3 meters', '-3 m'],
-            ['NaN', '0 millimeters', '0 mm'],
-            [0, '0 millimeters', '0 mm'],
-            [0.005, '5 millimeters', '5 mm'],
-            [0.053, '5.3 centimeters', '5.3 cm'],
-            [0.1, '10 centimeters', '10 cm'],
-            [1.123, '1.123 meters', '1.123 m'],
-            [1893.12, '1.893 kilometers', '1.893 km'],
-            [4561549, '4561.549 kilometers', '4561.549 km'],
+            [
+                'Empty value gets proper output',
+                [null], '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>'
+            ],
+            [
+                'Wrong value is casted properly',
+                ['NaN'], '0 millimeters', '0 mm'
+            ],
+            [
+                'Negative value works',
+                [-3], '-3 meters', '-3 m'
+            ],
+            [
+                'Zero value works',
+                [0], '0 millimeters', '0 mm'
+            ],
+            [
+                'Decimal value is resolved in base units',
+                [0.001], '1 millimeter', '1 mm'
+            ],
+            [
+                'Decimal value smaller than minimum base unit gets rounded (#1)',
+                [0.0004], '0 millimeters', '0 mm'
+            ],
+            [
+                'Decimal value smaller than minimum base unit gets rounded (#2)',
+                [0.00169], '2 millimeters', '2 mm'
+            ],
+            [
+                'Integer value #1 works',
+                [1], '1 meter', '1 m'
+            ],
+            [
+                'Integer value #2 works',
+                [453], '453 meters', '453 m'
+            ],
+            [
+                'Double value works',
+                [19913.13], '19.913 kilometers', '19.913 km'
+            ],
+            [
+                'It is possible to change number of decimals',
+                [19913.13, 1], '19.9 kilometers', '19.9 km'
+            ],
+            [
+                'It is possible to change number formatting options',
+                [100, null, [
+                    \NumberFormatter::MIN_FRACTION_DIGITS => 4,
+                ]], '100.0000 meters', '100.0000 m'
+            ],
+            [
+                'It is possible to change text options',
+                [-19913.13, null, null, [
+                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS'
+                ]], 'MINUS19.913 kilometers', 'MINUS19.913 km'
+            ],
         ];
     }
 
     /**
-     * @param mixed $value
-     * @param string $expected
-     *
      * @dataProvider lengthDataProvider
      */
-    public function testIntlAsLength($value, $expected)
+    public function testIntlAsLength($message, $arguments, $expected)
     {
-        $this->ensureIntlUnitDataAvailable();
-        $this->assertSame($expected, $this->formatter->asLength($value));
+        $this->ensureIntlUnitDataIsAvailable();
+        $this->assertSame($expected, call_user_func_array([$this->formatter, 'asLength'], $arguments), 'Failed asserting that ' . $message);
     }
 
     /**
-     * @param mixed $value
-     * @param string $expected
-     * @param string $_
-     *
      * @dataProvider lengthDataProvider
      */
-    public function testIntlAsShortLength($value, $_, $expected)
+    public function testIntlAsShortLength($message, $arguments, $_, $expected)
     {
-        $this->ensureIntlUnitDataAvailable();
-        $this->assertSame($expected, $this->formatter->asShortLength($value));
+        $this->ensureIntlUnitDataIsAvailable();
+        $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortLength'], $arguments), 'Failed asserting that ' . $message);
     }
 
     public function weightDataProvider()
     {
         return [
-            [null, '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>'],
-            ['NaN', '0 grams', '0 g'],
-            [-3, '-3 kilograms', '-3 kg'],
-            [0, '0 grams', '0 g'],
-            [0.001, '1 gram', '1 g'],
-            [0.091, '91 grams', '91 g'],
-            [0.1, '100 grams', '100 g'],
-            [1, '1 kilogram', '1 kg'],
-            [453, '453 kilograms', '453 kg'],
-            [19913.13, '19.913 tons', '19.913 tn'],
+            [
+                'Empty value gets proper output',
+                [null], '<span class="not-set">(not set)</span>', '<span class="not-set">(not set)</span>'
+            ],
+            [
+                'Wrong value is casted properly',
+                ['NaN'], '0 grams', '0 g'
+            ],
+            [
+                'Negative value works',
+                [-3], '-3 kilograms', '-3 kg'
+            ],
+            [
+                'Zero value works',
+                [0], '0 grams', '0 g'
+            ],
+            [
+                'Decimal value is resolved in base units',
+                [0.001], '1 gram', '1 g'
+            ],
+            [
+                'Decimal value smaller than minimum base unit gets rounded (#1)',
+                [0.0004], '0 grams', '0 g'
+            ],
+            [
+                'Decimal value smaller than minimum base unit gets rounded (#2)',
+                [0.00169], '2 grams', '2 g'
+            ],
+            [
+                'Integer value #1 works',
+                [1], '1 kilogram', '1 kg'
+            ],
+            [
+                'Integer value #2 works',
+                [453], '453 kilograms', '453 kg'
+            ],
+            [
+                'Double value works',
+                [19913.13], '19.913 tons', '19.913 tn'
+            ],
+            [
+                'It is possible to change number of decimals',
+                [19913.13, 1], '19.9 tons', '19.9 tn'
+            ],
+            [
+                'It is possible to change number formatting options',
+                [100, null, [
+                    \NumberFormatter::MIN_FRACTION_DIGITS => 4,
+                ]], '100.0000 kilograms', '100.0000 kg'
+            ],
+            [
+                'It is possible to change text options',
+                [-19913.13, null, null, [
+                    \NumberFormatter::NEGATIVE_PREFIX => 'MINUS'
+                ]], 'MINUS19.913 tons', 'MINUS19.913 tn'
+            ],
         ];
     }
 
     /**
-     * @param mixed $value
-     * @param string $expected
-     *
      * @dataProvider weightDataProvider
      */
-    public function testIntlAsWeight($value, $expected)
+    public function testIntlAsWeight($message, $arguments, $expected)
     {
-        $this->ensureIntlUnitDataAvailable();
-        $this->assertSame($expected, $this->formatter->asWeight($value));
+        $this->ensureIntlUnitDataIsAvailable();
+        $this->assertSame($expected, call_user_func_array([$this->formatter, 'asWeight'], $arguments), 'Failed asserting that ' . $message);
     }
 
     /**
-     * @param mixed $value
-     * @param string $_
-     * @param string $expected
-     *
      * @dataProvider weightDataProvider
      */
-    public function testIntlAsShortWeight($value, $_, $expected)
+    public function testIntlAsShortWeight($message, $arguments, $_, $expected)
     {
-        $this->ensureIntlUnitDataAvailable();
-        $this->assertSame($expected, $this->formatter->asShortWeight($value));
+        $this->ensureIntlUnitDataIsAvailable();
+        $this->assertSame($expected, call_user_func_array([$this->formatter, 'asShortWeight'], $arguments), 'Failed asserting that ' . $message);
     }
 
     /**
@@ -326,7 +406,7 @@ class FormatterTest extends TestCase
         $this->formatter->asShortLength(10);
     }
 
-    protected function ensureIntlUnitDataAvailable()
+    protected function ensureIntlUnitDataIsAvailable()
     {
         $skip = function () {
             $this->markTestSkipped('ICU data does not contain measure units information.');
