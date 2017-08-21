@@ -10,7 +10,7 @@ namespace yiiunit\framework\rbac;
 use yii\rbac\Rule;
 
 /**
- * Description of ActionRule
+ * Description of ActionRule.
  */
 class ActionRule extends Rule
 {

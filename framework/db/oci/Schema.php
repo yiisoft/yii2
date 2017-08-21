@@ -21,7 +21,7 @@ use yii\db\TableSchema;
 use yii\helpers\ArrayHelper;
 
 /**
- * Schema is the class for retrieving metadata from an Oracle database
+ * Schema is the class for retrieving metadata from an Oracle database.
  *
  * @property string $lastInsertID The row ID of the last row inserted, or the last value retrieved from the
  * sequence object. This property is read-only.
@@ -334,7 +334,7 @@ SQL;
     }
 
     /**
-     * Sequence name of table
+     * Sequence name of table.
      *
      * @param string $tableName
      * @internal param \yii\db\TableSchema $table->name the table schema
@@ -379,7 +379,7 @@ SQL;
     }
 
     /**
-     * Creates ColumnSchema instance
+     * Creates ColumnSchema instance.
      *
      * @param array $column
      * @return ColumnSchema
@@ -422,7 +422,7 @@ SQL;
     }
 
     /**
-     * Finds constraints and fills them into TableSchema object passed
+     * Finds constraints and fills them into TableSchema object passed.
      * @param TableSchema $table
      */
     protected function findConstraints($table)
@@ -491,7 +491,7 @@ SQL;
 
     /**
      * Returns all unique indexes for the given table.
-     * Each array element is of the following structure:
+     * Each array element is of the following structure:.
      *
      * ```php
      * [
@@ -531,7 +531,7 @@ SQL;
     }
 
     /**
-     * Extracts the data types for the given column
+     * Extracts the data types for the given column.
      * @param ColumnSchema $column
      * @param string $dbType DB type
      * @param string $precision total number of digits.

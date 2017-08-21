@@ -10,7 +10,7 @@ namespace yiiunit\data\base;
 use yii\base\Model;
 
 /**
- * Speaker
+ * Speaker.
  */
 class Speaker extends Model
 {

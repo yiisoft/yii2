@@ -571,7 +571,7 @@ abstract class Application extends Module
     }
 
     /**
-     * Returns the internationalization (i18n) component
+     * Returns the internationalization (i18n) component.
      * @return \yii\i18n\I18N the internationalization application component.
      */
     public function getI18n()
@@ -663,7 +663,7 @@ abstract class Application extends Module
     }
 
     /**
-     * Configures [[Yii::$container]] with the $config
+     * Configures [[Yii::$container]] with the $config.
      *
      * @param array $config values given in terms of name-value pairs
      * @since 2.0.11

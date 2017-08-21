@@ -103,7 +103,7 @@ class Table extends Widget
     private $_listPrefix = '• ';
 
     /**
-     * Set table headers
+     * Set table headers.
      *
      * @param array $headers table headers
      * @return $this
@@ -115,7 +115,7 @@ class Table extends Widget
     }
 
     /**
-     * Set table rows
+     * Set table rows.
      *
      * @param array $rows table rows
      * @return $this
@@ -127,7 +127,7 @@ class Table extends Widget
     }
 
     /**
-     * Set table chars
+     * Set table chars.
      *
      * @param array $chars table chars
      * @return $this
@@ -139,7 +139,7 @@ class Table extends Widget
     }
 
     /**
-     * Set screen width
+     * Set screen width.
      *
      * @param int $width screen width
      * @return $this
@@ -151,7 +151,7 @@ class Table extends Widget
     }
 
     /**
-     * Set list prefix
+     * Set list prefix.
      *
      * @param string $listPrefix list prefix
      * @return $this
@@ -206,7 +206,7 @@ class Table extends Widget
     }
 
     /**
-     * Renders a row of data into a string
+     * Renders a row of data into a string.
      *
      * @param array $row row of data
      * @param string $spanLeft character for left border
@@ -262,7 +262,7 @@ class Table extends Widget
     }
 
     /**
-     * Renders separator
+     * Renders separator.
      *
      * @param string $spanLeft character for left border
      * @param string $spanMid character for middle border
@@ -285,7 +285,7 @@ class Table extends Widget
     }
 
     /**
-     * Calculate the size of rows to draw anchor of columns in console
+     * Calculate the size of rows to draw anchor of columns in console.
      *
      * @see \yii\console\widgets\Table::render()
      */
@@ -327,7 +327,7 @@ class Table extends Widget
     }
 
     /**
-     * Calculate the height of a row
+     * Calculate the height of a row.
      *
      * @param array $row
      * @return int maximum row per cell
@@ -360,7 +360,7 @@ class Table extends Widget
     }
 
     /**
-     * Getting screen width
+     * Getting screen width.
      *
      * @return int screen width
      */

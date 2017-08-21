@@ -23,8 +23,8 @@ namespace yii\base {
         return \function_exists($name);
     }
     /**
-     * emulate chunked reading of fread(), to test different branches of Security class
-     * where different execution paths are chosen based on the return value of fopen/fread
+     * Emulate chunked reading of fread(), to test different branches of Security class
+     * where different execution paths are chosen based on the return value of fopen/fread.
      *
      * This function overrides fopen and fread from the root namespace in yii\base.
      * @param string $filename
@@ -159,10 +159,10 @@ class SecurityTest extends TestCase
     }
 
     /**
-     * Generates test vectors like this:
-     *   [key/password, plaintext, ciphertext]
+     * Generates test vectors like this: `[key/password, plaintext, ciphertext]`.
+     *
      * The output can then be used for testing compatibility of data encrypted in one
-     * version of Yii and decrypted in another
+     * version of Yii and decrypted in another.
      */
     public function notestGenerateVectors()
     {
@@ -889,7 +889,7 @@ TEXT;
     }
 
     /**
-     * Test the case where opening /dev/urandom fails
+     * Test the case where opening /dev/urandom fails.
      */
     public function testRandomKeyNoOptions()
     {
@@ -902,7 +902,7 @@ TEXT;
     }
 
     /**
-     * Test the case where reading from /dev/urandom fails
+     * Test the case where reading from /dev/urandom fails.
      */
     public function testRandomKeyFreadFailure()
     {

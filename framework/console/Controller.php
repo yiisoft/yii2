@@ -178,7 +178,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Formats a string with ANSI codes
+     * Formats a string with ANSI codes.
      *
      * You may pass additional parameters using the constants defined in [[\yii\helpers\Console]].
      *
@@ -203,7 +203,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Prints a string to STDOUT
+     * Prints a string to STDOUT.
      *
      * You may optionally format the string with ANSI codes by
      * passing additional parameters using the constants defined in [[\yii\helpers\Console]].
@@ -229,7 +229,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Prints a string to STDERR
+     * Prints a string to STDERR.
      *
      * You may optionally format the string with ANSI codes by
      * passing additional parameters using the constants defined in [[\yii\helpers\Console]].
@@ -255,7 +255,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Prompts the user for input and validates it
+     * Prompts the user for input and validates it.
      *
      * @param string $text prompt string
      * @param array $options the options to validate the input:
@@ -395,7 +395,7 @@ class Controller extends \yii\base\Controller
     }
 
     /**
-     * Returns the properties corresponding to the passed options
+     * Returns the properties corresponding to the passed options.
      *
      * @return array the properties corresponding to the passed options
      */
@@ -456,6 +456,7 @@ class Controller extends \yii\base\Controller
 
     /**
      * Returns the help information for the anonymous arguments for the action.
+     *
      * The returned value should be an array. The keys are the argument names, and the values are
      * the corresponding help information. Each value must be an array of the following structure:
      *
@@ -514,6 +515,7 @@ class Controller extends \yii\base\Controller
 
     /**
      * Returns the help information for the options for the action.
+     *
      * The returned value should be an array. The keys are the option names, and the values are
      * the corresponding help information. Each value must be an array of the following structure:
      *

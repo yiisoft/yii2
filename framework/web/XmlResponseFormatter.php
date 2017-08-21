@@ -126,7 +126,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     }
 
     /**
-     * Formats scalar value to use in XML text node
+     * Formats scalar value to use in XML text node.
      *
      * @param int|string|bool $value
      * @return string
@@ -165,7 +165,7 @@ class XmlResponseFormatter extends Component implements ResponseFormatterInterfa
     }
 
     /**
-     * Checks if name is valid to be used in XML
+     * Checks if name is valid to be used in XML.
      *
      * @param mixed $name
      * @return bool

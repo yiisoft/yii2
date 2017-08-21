@@ -33,7 +33,7 @@ abstract class Request extends Component
     abstract public function resolve();
 
     /**
-     * Returns a value indicating whether the current request is made via command line
+     * Returns a value indicating whether the current request is made via command line.
      * @return bool the value indicating whether the current request is made via console
      */
     public function getIsConsoleRequest()
@@ -42,7 +42,7 @@ abstract class Request extends Component
     }
 
     /**
-     * Sets the value indicating whether the current request is made via command line
+     * Sets the value indicating whether the current request is made via command line.
      * @param bool $value the value indicating whether the current request is made via command line
      */
     public function setIsConsoleRequest($value)

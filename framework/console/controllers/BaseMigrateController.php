@@ -138,6 +138,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Upgrades the application by applying new migrations.
+     *
      * For example,
      *
      * ```
@@ -196,6 +197,7 @@ abstract class BaseMigrateController extends Controller
 
     /**
      * Downgrades the application by reverting old migrations.
+     *
      * For example,
      *
      * ```

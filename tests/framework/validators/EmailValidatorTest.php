@@ -164,8 +164,8 @@ class EmailValidatorTest extends TestCase
     }
 
     /**
-     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074
-     * https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
+     * Test malicious email addresses that can be used to exploit SwiftMailer vulnerability CVE-2016-10074.
+     * @see https://legalhackers.com/advisories/SwiftMailer-Exploit-Remote-Code-Exec-CVE-2016-10074-Vuln.html
      *
      * @dataProvider malformedAddressesProvider
      * @param string $value

@@ -188,7 +188,7 @@ class BreadcrumbsTest extends \yiiunit\TestCase
     }
 
     /**
-     * Helper methods
+     * Helper methods.
      * @param string $class
      * @param string $method
      */

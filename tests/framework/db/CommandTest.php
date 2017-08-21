@@ -239,7 +239,7 @@ SQL;
     }
 
     /**
-     * Test whether param binding works in other places than WHERE
+     * Test whether param binding works in other places than WHERE.
      * @dataProvider paramsNonWhereProvider
      * @param string $sql
      */
@@ -392,7 +392,7 @@ SQL;
     }
 
     /**
-     * verify that {{}} are not going to be replaced in parameters
+     * verify that {{}} are not going to be replaced in parameters.
      */
     public function testNoTablenameReplacement()
     {
@@ -425,7 +425,7 @@ SQL;
     }
 
     /**
-     * Test INSERT INTO ... SELECT SQL statement
+     * Test INSERT INTO ... SELECT SQL statement.
      */
     public function testInsertSelect()
     {
@@ -479,7 +479,7 @@ SQL;
     }
 
     /**
-     * Test INSERT INTO ... SELECT SQL statement with alias syntax
+     * Test INSERT INTO ... SELECT SQL statement with alias syntax.
      */
     public function testInsertSelectAlias()
     {
@@ -533,7 +533,7 @@ SQL;
     }
 
     /**
-     * Data provider for testInsertSelectFailed
+     * Data provider for testInsertSelectFailed.
      * @return array
      */
     public function invalidSelectColumns()
@@ -546,7 +546,7 @@ SQL;
     }
 
     /**
-     * Test INSERT INTO ... SELECT SQL statement with wrong query object
+     * Test INSERT INTO ... SELECT SQL statement with wrong query object.
      *
      * @dataProvider invalidSelectColumns
      * @expectedException \yii\base\InvalidParamException
@@ -990,7 +990,7 @@ SQL;
     }
 
     /**
-     * Data provider for [[testGetRawSql()]]
+     * Data provider for [[testGetRawSql()]].
      * @return array test data
      */
     public function dataProviderGetRawSql()

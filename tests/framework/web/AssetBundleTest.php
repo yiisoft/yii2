@@ -49,7 +49,7 @@ class AssetBundleTest extends \yiiunit\TestCase
     }
 
     /**
-     * Returns View with configured AssetManager
+     * Returns View with configured AssetManager.
      *
      * @param array $config may be used to override default AssetManager config
      * @return View

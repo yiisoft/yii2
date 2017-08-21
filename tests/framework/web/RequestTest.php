@@ -138,7 +138,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * test CSRF token validation by POST param
+     * Test CSRF token validation by POST param.
      */
     public function testCsrfTokenPost()
     {
@@ -166,7 +166,7 @@ class RequestTest extends TestCase
     }
 
     /**
-     * test CSRF token validation by POST param
+     * Test CSRF token validation by POST param.
      */
     public function testCsrfTokenHeader()
     {

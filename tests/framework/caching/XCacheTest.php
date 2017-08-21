@@ -10,7 +10,7 @@ namespace yiiunit\framework\caching;
 use yii\caching\XCache;
 
 /**
- * Class for testing xcache backend
+ * Class for testing xcache backend.
  * @group xcache
  * @group caching
  */

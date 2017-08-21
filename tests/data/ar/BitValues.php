@@ -9,7 +9,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * https://github.com/yiisoft/yii2/issues/9006
+ * @see https://github.com/yiisoft/yii2/issues/9006
  *
  * @property int $id
  * @property int $val

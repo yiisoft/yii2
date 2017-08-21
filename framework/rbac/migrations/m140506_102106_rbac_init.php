@@ -9,7 +9,7 @@ use yii\base\InvalidConfigException;
 use yii\rbac\DbManager;
 
 /**
- * Initializes RBAC tables
+ * Initializes RBAC tables.
  *
  * @author Alexander Kochetov <creocoder@gmail.com>
  * @since 2.0

@@ -8,7 +8,7 @@
 namespace yiiunit\framework\rbac;
 
 /**
- * SqliteManagerTest
+ * SqliteManagerTest.
  * @group db
  * @group rbac
  */

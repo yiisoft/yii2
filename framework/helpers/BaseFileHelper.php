@@ -39,6 +39,7 @@ class BaseFileHelper
 
     /**
      * Normalizes a file/directory path.
+     *
      * The normalization does the following work:
      *
      * - Convert all directory separators into `DIRECTORY_SEPARATOR` (e.g. "\a/b\c" becomes "/a/b/c")

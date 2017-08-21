@@ -13,7 +13,7 @@ use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
 /**
- * This trait provides unit tests shared by the different migration controllers implementations
+ * This trait provides unit tests shared by the different migration controllers implementations.
  * @see BaseMigrateController
  */
 trait MigrateControllerTestTrait
@@ -162,7 +162,7 @@ CODE;
     }
 
     /**
-     * Change class name migration to $class
+     * Change class name migration to $class.
      * @param string $class name class
      * @return string content generated class migration
      * @see https://github.com/yiisoft/yii2/pull/10213
@@ -491,7 +491,7 @@ CODE;
     }
 
     /**
-     * Test migration with using multiple migration paths and namespaces
+     * Test migration with using multiple migration paths and namespaces.
      */
     public function testCombinedMigrationProcess()
     {

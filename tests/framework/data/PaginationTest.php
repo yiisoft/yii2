@@ -28,7 +28,7 @@ class PaginationTest extends TestCase
     }
 
     /**
-     * Data provider for [[testCreateUrl()]]
+     * Data provider for [[testCreateUrl()]].
      * @return array test data
      */
     public function dataProviderCreateUrl()

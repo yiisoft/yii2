@@ -35,7 +35,7 @@ namespace yiiunit\framework\log {
         public static $microtimeIsMocked = false;
 
         /**
-         * Array of static functions
+         * Array of static functions.
          *
          * @var array
          */

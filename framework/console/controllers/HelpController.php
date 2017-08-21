@@ -131,7 +131,7 @@ class HelpController extends Controller
     }
 
     /**
-     * Displays usage information for $action
+     * Displays usage information for $action.
      *
      * @param string $action route to action
      * @since 2.0.11

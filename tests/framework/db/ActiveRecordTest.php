@@ -241,7 +241,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/5341
+     * @see https://github.com/yiisoft/yii2/issues/5341
      *
      * Issue:     Plan     1 -- * Account * -- * User
      * Our Tests: Category 1 -- * Item    * -- * Order
@@ -584,8 +584,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * This query will do the same join twice, ensure duplicated JOIN gets removed
-     * https://github.com/yiisoft/yii2/pull/2650
+     * This query will do the same join twice, ensure duplicated JOIN gets removed.
+     *
+     * @see https://github.com/yiisoft/yii2/pull/2650
      */
     public function testJoinWithVia()
     {
@@ -609,7 +610,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * Tests the alias syntax for joinWith: 'alias' => 'relation'
+     * Tests the alias syntax for joinWith: 'alias' => 'relation'.
      * @dataProvider aliasMethodProvider
      * @param string $aliasMethod whether alias is specified explicitly or using the query syntax {{@tablename}}
      */
@@ -885,8 +886,8 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/10201
-     * https://github.com/yiisoft/yii2/issues/9047
+     * @see https://github.com/yiisoft/yii2/issues/10201
+     * @see https://github.com/yiisoft/yii2/issues/9047
      */
     public function testFindCompositeRelationWithJoin()
     {
@@ -1306,7 +1307,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/9006
+     * @see https://github.com/yiisoft/yii2/issues/9006
      */
     public function testBit()
     {
@@ -1425,7 +1426,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12213
+     * @see https://github.com/yiisoft/yii2/issues/12213
      */
     public function testUnlinkAllOnCondition()
     {
@@ -1456,7 +1457,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12213
+     * @see https://github.com/yiisoft/yii2/issues/12213
      */
     public function testUnlinkAllOnConditionViaTable()
     {
@@ -1486,7 +1487,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * verify that {{}} are not going to be replaced in parameters
+     * Verify that {{}} are not going to be replaced in parameters.
      */
     public function testNoTablenameReplacement()
     {
@@ -1511,8 +1512,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * Ensure no ambiguous column error occurs if ActiveQuery adds a JOIN
-     * https://github.com/yiisoft/yii2/issues/13757
+     * Ensure no ambiguous column error occurs if ActiveQuery adds a JOIN.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13757
      */
     public function testAmbiguousColumnFindOne()
     {
@@ -1523,8 +1525,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * Ensure no ambiguous column error occurs on indexBy with JOIN
-     * https://github.com/yiisoft/yii2/issues/13859
+     * Ensure no ambiguous column error occurs on indexBy with JOIN.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13859
      */
     public function testAmbiguousColumnIndexBy()
     {

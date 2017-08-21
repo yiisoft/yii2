@@ -8,7 +8,7 @@
 namespace yiiunit\framework\rbac;
 
 /**
- * MySQLManagerTest
+ * MySQLManagerTest.
  * @group db
  * @group rbac
  * @group mysql

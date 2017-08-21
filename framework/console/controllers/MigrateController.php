@@ -433,7 +433,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * Parse the command line migration fields
+     * Parse the command line migration fields.
      * @return array parse result with following fields:
      *
      * - fields: array, parsed fields
@@ -483,7 +483,7 @@ class MigrateController extends BaseMigrateController
     }
 
     /**
-     * Adds default primary key to fields list if there's no primary key specified
+     * Adds default primary key to fields list if there's no primary key specified.
      * @param array $fields parsed fields
      * @since 2.0.7
      */

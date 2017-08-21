@@ -107,7 +107,7 @@ abstract class DatabaseTestCase extends TestCase
     }
 
     /**
-     * adjust dbms specific escaping
+     * Adjust dbms specific escaping.
      * @param $sql
      * @return mixed
      */
