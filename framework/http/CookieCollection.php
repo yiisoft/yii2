@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\web;
+namespace yii\http;
 
 use ArrayIterator;
 use Yii;

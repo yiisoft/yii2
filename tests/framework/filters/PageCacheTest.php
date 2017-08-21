@@ -15,7 +15,7 @@ use yii\filters\PageCache;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 use yii\web\Controller;
-use yii\web\Cookie;
+use yii\http\Cookie;
 use yii\web\View;
 use yiiunit\framework\caching\CacheTestCase;
 use yiiunit\TestCase;
