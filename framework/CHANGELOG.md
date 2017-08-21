@@ -25,6 +25,7 @@ Yii Framework 2 Change Log
 - Chg #12089: Behavior of `yii\grid\DataColumn::$filterInputOptions` changed when default value is overwritten (bvanleeuwen, cebe)
 - Chg #13885: Removed APC support in ApcCache. APCu works as before (samdark) 
 - Chg #14178: Removed HHVM-specific code (samdark)
+- Enh #14671: use `random_int()` instead of `mt_rand()` to generate cryptographically secure pseudo-random integers (yyxx9988)
 
 2.0.13 under development
 ------------------------

@@ -64,8 +64,8 @@ class GdDriver extends Driver
         $x = 10;
         $y = round($this->height * 27 / 40);
         for ($i = 0; $i < $length; ++$i) {
-            $fontSize = (int) (mt_rand(26, 32) * $scale * 0.8);
-            $angle = mt_rand(-10, 10);
+            $fontSize = (int) (random_int(26, 32) * $scale * 0.8);
+            $angle = random_int(-10, 10);
             $letter = $code[$i];
             $box = imagettftext($image, $fontSize, $angle, $x, $y, $foreColor, $this->fontFile, $letter);
             $x = $box[2] + $this->offset;
