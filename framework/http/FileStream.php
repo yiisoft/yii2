@@ -9,9 +9,9 @@ namespace yii\http;
 
 use Psr\Http\Message\StreamInterface;
 use Yii;
+use yii\base\BaseObject;
 use yii\base\ErrorHandler;
 use yii\base\InvalidConfigException;
-use yii\base\Object;
 
 /**
  * FileStream represents file stream.
@@ -31,7 +31,7 @@ use yii\base\Object;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
  */
-class FileStream extends Object implements StreamInterface
+class FileStream extends BaseObject implements StreamInterface
 {
     /**
      * @var string file or stream name.

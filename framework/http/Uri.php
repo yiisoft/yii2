@@ -8,9 +8,9 @@
 namespace yii\http;
 
 use Psr\Http\Message\UriInterface;
+use yii\base\BaseObject;
 use yii\base\ErrorHandler;
 use yii\base\InvalidArgumentException;
-use yii\base\Object;
 
 /**
  * Uri
@@ -63,7 +63,7 @@ use yii\base\Object;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
  */
-class Uri extends Object implements UriInterface
+class Uri extends BaseObject implements UriInterface
 {
     /**
      * @var string URI complete string.

@@ -8,8 +8,8 @@
 namespace yii\http;
 
 use Psr\Http\Message\StreamInterface;
+use yii\base\BaseObject;
 use yii\base\ErrorHandler;
-use yii\base\Object;
 
 /**
  * ResourceStream wraps existing PHP stream resource, e.g. one opened by `fopen()`.
@@ -32,7 +32,7 @@ use yii\base\Object;
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
  */
-class ResourceStream extends Object implements StreamInterface
+class ResourceStream extends BaseObject implements StreamInterface
 {
     /**
      * @var resource stream resource.
