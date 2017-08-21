@@ -69,6 +69,10 @@ Upgrade from Yii 2.0.x
   Mail view rendering is now encapsulated into `yii\mail\Template` class.
 * Properties `view`, `viewPath`, `htmlLayout` and `textLayout` have been moved from `yii\mail\BaseMailer` to `yii\mail\Composer` class,
   which now encapsulates message composition.
+* `yii\captcha\CaptchaAction` has been refactored. Rendering logic was extracted into `yii\captcha\DriverInterface`, which
+  instance is available via `yii\captcha\CaptchaAction::$driver` field. All image settings now should be passed to
+  the driver fields instead of action. Automatic detection of the rendering driver is no longer supported.
+* `yii\captcha\Captcha::checkRequirements()` method has been removed.
 
 Upgrade from Yii 2.0.12
 -----------------------
