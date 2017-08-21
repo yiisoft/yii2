@@ -12,7 +12,7 @@ use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\web\JsExpression;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 /**
  * FileValidator verifies if an attribute is receiving a valid uploaded file.

@@ -315,7 +315,7 @@ return [
   'yii\web\UnauthorizedHttpException' => YII2_PATH . '/web/UnauthorizedHttpException.php',
   'yii\web\UnprocessableEntityHttpException' => YII2_PATH . '/web/UnprocessableEntityHttpException.php',
   'yii\web\UnsupportedMediaTypeHttpException' => YII2_PATH . '/web/UnsupportedMediaTypeHttpException.php',
-  'yii\web\UploadedFile' => YII2_PATH . '/web/UploadedFile.php',
+  'yii\http\UploadedFile' => YII2_PATH . '/http/UploadedFile.php',
   'yii\web\UrlManager' => YII2_PATH . '/web/UrlManager.php',
   'yii\web\UrlNormalizer' => YII2_PATH . '/web/UrlNormalizer.php',
   'yii\web\UrlNormalizerRedirectException' => YII2_PATH . '/web/UrlNormalizerRedirectException.php',

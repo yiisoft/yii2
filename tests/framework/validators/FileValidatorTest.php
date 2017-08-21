@@ -10,7 +10,7 @@ namespace yiiunit\framework\validators;
 use Yii;
 use yii\helpers\FileHelper;
 use yii\validators\FileValidator;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 use yiiunit\data\validators\models\FakedValidationModel;
 use yiiunit\TestCase;
 

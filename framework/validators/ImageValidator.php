@@ -8,7 +8,7 @@
 namespace yii\validators;
 
 use Yii;
-use yii\web\UploadedFile;
+use yii\http\UploadedFile;
 
 /**
  * ImageValidator verifies if an attribute is receiving a valid image.
