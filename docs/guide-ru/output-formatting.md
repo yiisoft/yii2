@@ -149,7 +149,8 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 > Вы можете обратиться к [ICU руководству](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
 > для получения подробностей об обновлении базы данных часовых поясов.
 > См. также: [Настройка вашего PHP окружения для интернационализации](tutorial-i18n.md#setup-environment).
-
+> По умолчанию [[yii\i18n\Formatter::defaultTimeZone]] равна временной зоне из php, задать которую в процессе
+> работы приложения можно используя [[yii\base\Application::timeZone|timeZone]] 
 
 Форматирование чисел <span id="numbers"></span>
 ------------------
