@@ -27,10 +27,10 @@ class UploadedFileTest extends TestCase
     private function generateFakeFileData()
     {
         return [
-            'name' => md5(mt_rand()),
-            'tmp_name' => md5(mt_rand()),
+            'name' => md5(random_int()),
+            'tmp_name' => md5(random_int()),
             'type' => 'image/jpeg',
-            'size' => mt_rand(1000, 10000),
+            'size' => random_int(1000, 10000),
             'error' => 0,
         ];
     }
