@@ -148,7 +148,7 @@ echo Yii::$app->formatter->asTime('2014-10-06 14:41:00 CEST'); // 14:41:00
 > likely that you do not have the latest information in the time zone database installed on your system.
 > You may refer to the [ICU manual](http://userguide.icu-project.org/datetime/timezone#TOC-Updating-the-Time-Zone-Data)
 > for details on updating the time zone database. Please also read
-> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).
+> [Setting up your PHP environment for internationalization](tutorial-i18n.md#setup-environment).  
 > The default representation of [[yii\i18n\Formatter::defaultTimeZone]] is a time zone of the PHP runtime. 
 > Can be set it throw [[yii\base\Application::timeZone|timeZone]]
 
