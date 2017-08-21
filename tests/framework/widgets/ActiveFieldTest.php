@@ -528,7 +528,7 @@ EOD;
     }
 
     /**
-     * Helper methods
+     * Helper methods.
      */
     protected function getView()
     {
@@ -553,7 +553,7 @@ class ActiveFieldTestModel extends DynamicModel
 }
 
 /**
- * Helper Classes
+ * Helper Classes.
  */
 class ActiveFieldExtend extends ActiveField
 {

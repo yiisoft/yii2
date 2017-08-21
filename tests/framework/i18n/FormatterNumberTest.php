@@ -43,7 +43,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * Provides some configuration that should not affect Integer formatter
+     * Provides some configuration that should not affect Integer formatter.
      */
     public function differentConfigProvider()
     {
@@ -325,7 +325,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12345
+     * @see https://github.com/yiisoft/yii2/issues/12345
      */
     public function testIntlCurrencyFraction()
     {
@@ -361,7 +361,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/pull/5261
+     * @see https://github.com/yiisoft/yii2/pull/5261
      */
     public function testIntlIssue5261()
     {
@@ -464,7 +464,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/14278
+     * @see https://github.com/yiisoft/yii2/issues/14278
      */
     public function testIntlAsOrdinalDate()
     {
@@ -680,7 +680,7 @@ class FormatterNumberTest extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/4960
+     * @see https://github.com/yiisoft/yii2/issues/4960
      */
     public function testAsSizeConfiguration()
     {

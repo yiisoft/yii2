@@ -68,8 +68,8 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * this is not used as a dataprovider for testGetColumnType to speed up the test
-     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here
+     * This is not used as a dataprovider for testGetColumnType to speed up the test
+     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here.
      */
     public function columnTypes()
     {
@@ -1625,7 +1625,7 @@ abstract class QueryBuilderTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/10869
+     * @see https://github.com/yiisoft/yii2/issues/10869
      */
     public function testFromIndexHint()
     {

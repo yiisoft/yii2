@@ -580,9 +580,9 @@ class DateValidatorTest extends TestCase
     }
 
     /**
-     * returns true if the version of ICU is old and has a bug that makes it
+     * Returns true if the version of ICU is old and has a bug that makes it
      * impossible to parse two digit years properly.
-     * see http://bugs.icu-project.org/trac/ticket/9836
+     * @see http://bugs.icu-project.org/trac/ticket/9836
      * @return bool
      */
     private function checkOldIcuBug()

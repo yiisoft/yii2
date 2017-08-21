@@ -16,7 +16,7 @@ use yii\helpers\StringHelper;
 use yii\helpers\Url;
 
 /**
- * The web Response class represents an HTTP response
+ * The web Response class represents an HTTP response.
  *
  * It holds the [[headers]], [[cookies]] and [[content]] that is to be sent to the client.
  * It also controls the HTTP [[statusCode|status code]].
@@ -358,7 +358,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response headers to the client
+     * Sends the response headers to the client.
      */
     protected function sendHeaders()
     {
@@ -407,7 +407,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Sends the response content to the client
+     * Sends the response content to the client.
      */
     protected function sendContent()
     {
@@ -742,7 +742,7 @@ class Response extends \yii\base\Response
     }
 
     /**
-     * Returns Content-Disposition header value that is safe to use with both old and new browsers
+     * Returns Content-Disposition header value that is safe to use with both old and new browsers.
      *
      * Fallback name:
      *
@@ -892,6 +892,7 @@ class Response extends \yii\base\Response
 
     /**
      * Returns the cookie collection.
+     *
      * Through the returned cookie collection, you add or remove cookies as follows,
      *
      * ```php

@@ -249,7 +249,7 @@ class AssetManager extends Component
     }
 
     /**
-     * Loads asset bundle class by name
+     * Loads asset bundle class by name.
      *
      * @param string $name bundle name
      * @param array $config bundle object configuration
@@ -272,7 +272,7 @@ class AssetManager extends Component
     }
 
     /**
-     * Loads dummy bundle by name
+     * Loads dummy bundle by name.
      *
      * @param string $name
      * @return AssetBundle

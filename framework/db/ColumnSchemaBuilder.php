@@ -143,7 +143,7 @@ class ColumnSchemaBuilder extends BaseObject
     }
 
     /**
-     * Adds a `NULL` constraint to the column
+     * Adds a `NULL` constraint to the column.
      * @return $this
      * @since 2.0.9
      */
@@ -271,7 +271,7 @@ class ColumnSchemaBuilder extends BaseObject
     }
 
     /**
-     * Builds the full string for the column's schema
+     * Builds the full string for the column's schema.
      * @return string
      */
     public function __toString()
@@ -430,7 +430,7 @@ class ColumnSchemaBuilder extends BaseObject
     }
 
     /**
-     * Returns the complete column definition from input format
+     * Returns the complete column definition from input format.
      * @param string $format the format of the definition.
      * @return string a string containing the complete column definition.
      * @since 2.0.8

@@ -12,7 +12,7 @@ use yii\i18n\Formatter;
 use yiiunit\TestCase;
 
 /**
- * Test for basic formatter functions
+ * Test for basic formatter functions.
  *
  * See FormatterDateTest and FormatterNumberTest for date/number formatting.
  *

@@ -1880,6 +1880,7 @@ class BaseHtml
 
     /**
      * Adds a CSS class (or several classes) to the specified options.
+     *
      * If the CSS class is already in the options, it will not be added again.
      * If class specification at given options is an array, and some class placed there with the named (string) key,
      * overriding of such key will have no effect. For example:
@@ -2195,7 +2196,7 @@ class BaseHtml
     }
 
     /**
-     * Escapes regular expression to use in JavaScript
+     * Escapes regular expression to use in JavaScript.
      * @param string $regexp the regular expression to be escaped.
      * @return string the escaped result.
      * @since 2.0.6

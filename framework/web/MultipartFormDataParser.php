@@ -334,7 +334,8 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
 
     /**
      * Gets the size in bytes from verbose size representation.
-     * For example: '5K' => 5*1024
+     *
+     * For example: '5K' => 5*1024.
      * @param string $verboseSize verbose size representation.
      * @return int actual size in bytes.
      */

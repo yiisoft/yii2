@@ -213,6 +213,7 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Renders a view.
+     *
      * The view to be rendered can be specified in one of the following formats:
      *
      * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");

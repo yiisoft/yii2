@@ -395,7 +395,8 @@ class View extends Component
 
     /**
      * Begins recording a block.
-     * This method is a shortcut to beginning [[Block]]
+     *
+     * This method is a shortcut to beginning [[Block]].
      * @param string $id the block ID.
      * @param bool $renderInPlace whether to render the block content in place.
      * Defaults to false, meaning the captured block will not be displayed.
@@ -420,6 +421,7 @@ class View extends Component
 
     /**
      * Begins the rendering of content that is to be decorated by the specified view.
+     *
      * This method can be used to implement nested layout. For example, a layout can be embedded
      * in another layout file specified as '@app/views/layouts/base.php' like the following:
      *
@@ -454,6 +456,7 @@ class View extends Component
 
     /**
      * Begins fragment caching.
+     *
      * This method will display cached content if it is available.
      * If not, it will start caching and would expect an [[endCache()]]
      * call to end the cache and save the content into cache.

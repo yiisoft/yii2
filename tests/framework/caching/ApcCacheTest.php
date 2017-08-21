@@ -10,7 +10,7 @@ namespace yiiunit\framework\caching;
 use yii\caching\ApcCache;
 
 /**
- * Class for testing APC cache backend
+ * Class for testing APC cache backend.
  * @group apc
  * @group caching
  */

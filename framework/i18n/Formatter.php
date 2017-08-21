@@ -1645,7 +1645,7 @@ class Formatter extends Component
     }
 
     /**
-     * Normalizes a numeric input value
+     * Normalizes a numeric input value.
      *
      * - everything [empty](http://php.net/manual/en/function.empty.php) will result in `0`
      * - a [numeric](http://php.net/manual/en/function.is-numeric.php) string will be casted to float

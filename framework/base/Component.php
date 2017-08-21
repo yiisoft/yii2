@@ -111,6 +111,7 @@ class Component extends BaseObject
 
     /**
      * Returns the value of a component property.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a getter: return the getter result
@@ -149,6 +150,7 @@ class Component extends BaseObject
 
     /**
      * Sets the value of a component property.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: set the property value
@@ -203,6 +205,7 @@ class Component extends BaseObject
 
     /**
      * Checks if a property is set, i.e. defined and not null.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: return whether the property is set
@@ -235,6 +238,7 @@ class Component extends BaseObject
 
     /**
      * Sets a component property to be null.
+     *
      * This method will check in the following order and act accordingly:
      *
      *  - a property defined by a setter: set the property value to be null
@@ -302,6 +306,7 @@ class Component extends BaseObject
 
     /**
      * Returns a value indicating whether a property is defined for this component.
+     *
      * A property is defined if:
      *
      * - the class has a getter or setter method associated with the specified name
@@ -323,6 +328,7 @@ class Component extends BaseObject
 
     /**
      * Returns a value indicating whether a property can be read.
+     *
      * A property can be read if:
      *
      * - the class has a getter method associated with the specified name
@@ -354,6 +360,7 @@ class Component extends BaseObject
 
     /**
      * Returns a value indicating whether a property can be set.
+     *
      * A property can be written if:
      *
      * - the class has a setter method associated with the specified name
@@ -385,6 +392,7 @@ class Component extends BaseObject
 
     /**
      * Returns a value indicating whether a method is defined.
+     *
      * A method is defined if:
      *
      * - the class has a method with the specified name

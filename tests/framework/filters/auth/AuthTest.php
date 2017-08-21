@@ -218,7 +218,7 @@ class AuthTest extends \yiiunit\TestCase
 }
 
 /**
- * Class TestAuthController
+ * Class TestAuthController.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7

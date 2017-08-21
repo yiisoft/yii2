@@ -97,7 +97,7 @@ class ResponseTest extends \yiiunit\TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/7529
+     * @see https://github.com/yiisoft/yii2/issues/7529
      */
     public function testSendContentAsFile()
     {
