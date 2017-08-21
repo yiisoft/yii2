@@ -8,10 +8,26 @@
 namespace yii\http;
 
 use Psr\Http\Message\StreamInterface;
+use yii\base\ErrorHandler;
 use yii\base\Object;
 
 /**
- * ResourceStream
+ * ResourceStream wraps existing PHP stream resource, e.g. one opened by `fopen()`.
+ *
+ * Example:
+ *
+ * ```php
+ * $stream = new FileSteam([
+ *     'resource' => fopen('/path/to/file.txt', 'w+'),
+ * ]);
+ *
+ * $stream->write('some content...');
+ * $stream->close();
+ * ```
+ *
+ * Usage of this class make sense in case you already have an opened PHP stream from elsewhere and wish to wrap into `StreamInterface`.
+ *
+ * > Note: closing this stream will close the resource associated with it, wo it becomes invalid for usage elsewhere.
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
@@ -19,7 +35,203 @@ use yii\base\Object;
 class ResourceStream extends Object implements StreamInterface
 {
     /**
-     * @var resource
+     * @var resource stream resource.
      */
     public $resource;
+
+    /**
+     * @var array a resource metadata.
+     */
+    private $_metadata;
+
+
+    /**
+     * Destructor.
+     * Closes the stream resource when the destructed.
+     */
+    public function __destruct()
+    {
+        $this->close();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        // __toString cannot throw exception
+        // use trigger_error to bypass this limitation
+        try {
+            $this->seek(0);
+            return $this->getContents();
+        } catch (\Exception $e) {
+            ErrorHandler::convertExceptionToError($e);
+            return '';
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function close()
+    {
+        if ($this->resource !== null && is_resource($this->resource)) {
+            fclose($this->resource);
+            $this->_metadata = null;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function detach()
+    {
+        if ($this->resource === null) {
+            return null;
+        }
+        $result = $this->resource;
+        $this->resource = null;
+        $this->_metadata = null;
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSize()
+    {
+        $uri = $this->getMetadata('uri');
+        if (!empty($uri)) {
+            // clear the stat cache in case stream has a URI
+            clearstatcache(true, $uri);
+        }
+
+        $stats = fstat($this->resource);
+        if (isset($stats['size'])) {
+            return $stats['size'];
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function tell()
+    {
+        $result = ftell($this->resource);
+        if ($result === false) {
+            throw new \RuntimeException('Unable to determine stream position');
+        }
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function eof()
+    {
+        return feof($this->resource);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isSeekable()
+    {
+        return (bool)$this->getMetadata('seekable');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function seek($offset, $whence = SEEK_SET)
+    {
+        if (fseek($this->resource, $offset, $whence) === -1) {
+            throw new \RuntimeException("Unable to seek to stream position '{$offset}' with whence '{$whence}'");
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rewind()
+    {
+        $this->seek(0);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isWritable()
+    {
+        return in_array(
+            $this->getMetadata('mode'),
+            ['w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+'],
+            true
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function write($string)
+    {
+        $result = fwrite($this->resource, $string);
+        if ($result === false) {
+            throw new \RuntimeException('Unable to write to stream');
+        }
+        return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isReadable()
+    {
+        return in_array(
+            $this->getMetadata('mode'),
+            ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],
+            true
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function read($length)
+    {
+        $string = fread($this->resource, $length);
+        if ($string === false) {
+            throw new \RuntimeException('Unable to read from stream');
+        }
+        return $string;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getContents()
+    {
+        $contents = stream_get_contents($this->resource);
+        if ($contents === false) {
+            throw new \RuntimeException('Unable to read stream contents');
+        }
+        return $contents;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMetadata($key = null)
+    {
+        if ($this->_metadata === null) {
+            $this->_metadata = stream_get_meta_data($this->resource);
+        }
+
+        if ($key === null) {
+            return $this->_metadata;
+        }
+
+        return isset($this->_metadata[$key]) ? $this->_metadata[$key] : null;
+    }
 }

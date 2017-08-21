@@ -49,7 +49,7 @@ class FileStream extends Object implements StreamInterface
      */
     private $_resource;
     /**
-     * @var array a file pointer resource.
+     * @var array a resource metadata.
      */
     private $_metadata;
 
