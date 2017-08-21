@@ -54,9 +54,9 @@ class ImagickDriver extends Driver
         for ($i = 0; $i < $length; ++$i) {
             $draw = new \ImagickDraw();
             $draw->setFont($this->fontFile);
-            $draw->setFontSize((int) (mt_rand(26, 32) * $scale * 0.8));
+            $draw->setFontSize((int) (random_int(26, 32) * $scale * 0.8));
             $draw->setFillColor($foreColor);
-            $image->annotateImage($draw, $x, $y, mt_rand(-10, 10), $code[$i]);
+            $image->annotateImage($draw, $x, $y, random_int(-10, 10), $code[$i]);
             $fontMetrics = $image->queryFontMetrics($draw, $code[$i]);
             $x += (int) $fontMetrics['textWidth'] + $this->offset;
         }
