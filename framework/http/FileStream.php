@@ -14,7 +14,19 @@ use yii\base\InvalidConfigException;
 use yii\base\Object;
 
 /**
- * FileStream
+ * FileStream represents file stream.
+ *
+ * Example:
+ *
+ * ```php
+ * $stream = new FileSteam([
+ *     'filename' => '@app/files/items.txt',
+ *     'mode' => 'w+',
+ * ]);
+ *
+ * $stream->write('some content...');
+ * $stream->close();
+ * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
@@ -22,9 +34,9 @@ use yii\base\Object;
 class FileStream extends Object implements StreamInterface
 {
     /**
-     * @var string file name.
+     * @var string file or stream name.
      * Path alias can be used here, for example: '@app/runtime/items.csv'.
-     * This field can also be PHP stream name, for example: 'php://input'.
+     * This field can also be PHP stream name, e.g. anything which can be passed to `fopen()`, for example: 'php://input'.
      */
     public $filename;
     /**
@@ -33,14 +45,18 @@ class FileStream extends Object implements StreamInterface
     public $mode = 'r';
 
     /**
-     * @var resource|null
+     * @var resource|null stream resource
      */
     private $_resource;
+    /**
+     * @var array a file pointer resource.
+     */
+    private $_metadata;
 
 
     /**
      * Destructor.
-     * Closes the stream when the destructed.
+     * Closes the stream resource when the destructed.
      */
     public function __destruct()
     {
@@ -58,6 +74,7 @@ class FileStream extends Object implements StreamInterface
             if ($resource === false) {
                 throw new InvalidConfigException("Unable to open file '{$this->filename}' with mode '{$this->mode}'");
             }
+            $this->_resource = $resource;
         }
         return $this->_resource;
     }
@@ -71,7 +88,7 @@ class FileStream extends Object implements StreamInterface
         // use trigger_error to bypass this limitation
         try {
             $this->seek(0);
-            return (string) stream_get_contents($this->getResource());
+            return $this->getContents();
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
             return '';
@@ -86,6 +103,7 @@ class FileStream extends Object implements StreamInterface
         if ($this->_resource !== null) {
             fclose($this->_resource);
             $this->_resource = null;
+            $this->_metadata = null;
         }
     }
 
@@ -99,16 +117,21 @@ class FileStream extends Object implements StreamInterface
         }
         $result = $this->_resource;
         $this->_resource = null;
+        $this->_metadata = null;
         return $result;
     }
 
     /**
-     * Get the size of the stream if known.
-     *
-     * @return int|null Returns the size in bytes if known, or null if unknown.
+     * {@inheritdoc}
      */
     public function getSize()
     {
+        $uri = $this->getMetadata('uri');
+        if (!empty($uri)) {
+            // clear the stat cache in case stream has a URI
+            clearstatcache(true, $uri);
+        }
+
         $stats = fstat($this->getResource());
         if (isset($stats['size'])) {
             return $stats['size'];
@@ -137,13 +160,11 @@ class FileStream extends Object implements StreamInterface
     }
 
     /**
-     * Returns whether or not the stream is seekable.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isSeekable()
     {
-        // TODO: Implement isSeekable() method.
+        return (bool)$this->getMetadata('seekable');
     }
 
     /**
@@ -165,13 +186,15 @@ class FileStream extends Object implements StreamInterface
     }
 
     /**
-     * Returns whether or not the stream is writable.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isWritable()
     {
-        // TODO: Implement isWritable() method.
+        return in_array(
+            $this->getMetadata('mode'),
+            ['w', 'w+', 'rw', 'r+', 'x+', 'c+', 'wb', 'w+b', 'r+b', 'x+b', 'c+b', 'w+t', 'r+t', 'x+t', 'c+t', 'a', 'a+'],
+            true
+        );
     }
 
     /**
@@ -187,13 +210,15 @@ class FileStream extends Object implements StreamInterface
     }
 
     /**
-     * Returns whether or not the stream is readable.
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isReadable()
     {
-        // TODO: Implement isReadable() method.
+        return in_array(
+            $this->getMetadata('mode'),
+            ['r', 'w+', 'r+', 'x+', 'c+', 'rb', 'w+b', 'r+b', 'x+b', 'c+b', 'rt', 'w+t', 'r+t', 'x+t', 'c+t', 'a+'],
+            true
+        );
     }
 
     /**
@@ -225,11 +250,14 @@ class FileStream extends Object implements StreamInterface
      */
     public function getMetadata($key = null)
     {
-        $metaData = stream_get_meta_data($this->getResource());
-        if ($key === null) {
-            return $metaData;
+        if ($this->_metadata === null) {
+            $this->_metadata = stream_get_meta_data($this->getResource());
         }
 
-        return isset($metaData[$key]) ?: null;
+        if ($key === null) {
+            return $this->_metadata;
+        }
+
+        return isset($this->_metadata[$key]) ? $this->_metadata[$key] : null;
     }
 }

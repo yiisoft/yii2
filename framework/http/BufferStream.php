@@ -187,6 +187,6 @@ class BufferStream extends Object implements StreamInterface
             return $metadata;
         }
 
-        return (isset($metadata[$key])) ?: null;
+        return (isset($metadata[$key])) ? $metadata[$key] : null;
     }
 }
