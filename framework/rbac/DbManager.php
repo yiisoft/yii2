@@ -471,6 +471,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
+
         return $roles;
     }
 
@@ -516,6 +517,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -552,6 +554,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -585,6 +588,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -600,6 +604,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent']][] = $row['child'];
         }
+
         return $parents;
     }
 
@@ -639,6 +644,7 @@ class DbManager extends BaseManager
         if (is_resource($data)) {
             $data = stream_get_contents($data);
         }
+
         return unserialize($data);
     }
 
@@ -822,6 +828,7 @@ class DbManager extends BaseManager
                 return true;
             }
         }
+
         return false;
     }
 

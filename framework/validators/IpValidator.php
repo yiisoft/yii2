@@ -479,6 +479,7 @@ class IpValidator extends Validator
                 $result[] = $string;
             }
         }
+
         return array_unique($result);
     }
 

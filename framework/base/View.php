@@ -364,6 +364,7 @@ class View extends Component
 
             return $placeholder;
         }
+
         return $this->evaluateDynamicContent($statements);
     }
 
@@ -481,6 +482,7 @@ class View extends Component
 
             return false;
         }
+
         return true;
     }
 

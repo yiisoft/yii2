@@ -111,14 +111,14 @@ class LinkPagerTest extends \yiiunit\TestCase
 
         static::assertContains('<li class="active disabled"><span>6</span></li>', $output);
     }
-    
+
     public function testOptionsWithTagOption()
     {
         $output = LinkPager::widget([
             'pagination' => $this->getPagination(5),
             'options' => [
                 'tag' => 'div',
-            ]
+            ],
         ]);
 
         $this->assertTrue(StringHelper::startsWith($output, '<div>'));
@@ -131,8 +131,8 @@ class LinkPagerTest extends \yiiunit\TestCase
             'pagination' => $this->getPagination(1),
             'linkContainerOptions' => [
                 'tag' => 'div',
-                'class' => 'my-class'
-            ]
+                'class' => 'my-class',
+            ],
         ]);
 
         $this->assertContains(

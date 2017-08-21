@@ -49,6 +49,7 @@ namespace yii\i18n {
             if ($name === 'intl' && IntlTestHelper::$enableIntl !== null) {
                 return IntlTestHelper::$enableIntl;
             }
+
             return \extension_loaded($name);
         }
     }
@@ -63,6 +64,7 @@ namespace yii\helpers {
             if ($name === 'intl' && IntlTestHelper::$enableIntl !== null) {
                 return IntlTestHelper::$enableIntl;
             }
+
             return \extension_loaded($name);
         }
     }
@@ -77,6 +79,7 @@ namespace yii\validators {
             if ($name === 'intl' && IntlTestHelper::$enableIntl !== null) {
                 return IntlTestHelper::$enableIntl;
             }
+
             return \extension_loaded($name);
         }
     }

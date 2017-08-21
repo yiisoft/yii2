@@ -306,6 +306,7 @@ class Table extends Widget
                     $encodings = array_fill(0, count($val), Yii::$app->charset);
                     return max(array_map('mb_strwidth', $val, $encodings)) + mb_strwidth($this->_listPrefix, Yii::$app->charset);
                 }
+
                 return mb_strwidth($val, Yii::$app->charset);
             }, $column)) + 2;
             $this->_columnWidths[] = $columnWidth;
@@ -340,14 +341,17 @@ class Table extends Widget
                 foreach ($columnWidth as $width) {
                     $rows += ceil($width / ($size - 2));
                 }
+
                 return $rows;
             }
+
             return ceil($columnWidth / ($size - 2));
         }, $this->_columnWidths, array_map(function ($val) {
             if (is_array($val)) {
                 $encodings = array_fill(0, count($val), Yii::$app->charset);
                 return array_map('mb_strwidth', $val, $encodings);
             }
+
             return mb_strwidth($val, Yii::$app->charset);
         }, $row)
         );
@@ -368,6 +372,7 @@ class Table extends Widget
                 $this->_screenWidth = $size[0];
             }
         }
+
         return $this->_screenWidth;
     }
 }

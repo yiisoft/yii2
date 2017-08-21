@@ -412,6 +412,6 @@ abstract class ConnectionTest extends DatabaseTestCase
         $slavePdo = $connection->getSlavePdo(false);
         $this->assertNotFalse($slavePdo);
         $this->assertNotNull($slavePdo);
-        $this->assertNotSame($masterPdo,$slavePdo);
+        $this->assertNotSame($masterPdo, $slavePdo);
     }
 }

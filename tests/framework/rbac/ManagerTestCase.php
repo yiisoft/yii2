@@ -458,12 +458,13 @@ abstract class ManagerTestCase extends TestCase
     {
         return [
             [Item::TYPE_ROLE],
-            [Item::TYPE_PERMISSION]
+            [Item::TYPE_PERMISSION],
         ];
     }
 
     /**
      * @dataProvider RBACItemsProvider
+     * @param mixed $RBACItemType
      */
     public function testAssignRule($RBACItemType)
     {
@@ -531,6 +532,7 @@ abstract class ManagerTestCase extends TestCase
 
     /**
      * @dataProvider RBACItemsProvider
+     * @param mixed $RBACItemType
      */
     public function testRevokeRule($RBACItemType)
     {

@@ -8,18 +8,18 @@
 namespace yiiunit\framework\behaviors;
 
 use Yii;
-use yii\behaviors\AttributeBehavior;
+use yii\behaviors\AttributesBehavior;
 use yii\db\ActiveRecord;
 use yii\db\Connection;
 use yiiunit\TestCase;
 
 /**
- * Unit test for [[\yii\behaviors\AttributeBehavior]].
- * @see AttributeBehavior
+ * Unit test for [[\yii\behaviors\AttributesBehavior]].
+ * @see AttributesBehavior
  *
  * @group behaviors
  */
-class AttributeBehaviorTest extends TestCase
+class AttributesBehaviorTest extends TestCase
 {
     /**
      * @var Connection test db connection
@@ -106,8 +106,53 @@ class AttributeBehaviorTest extends TestCase
         $name,
         $alias
     ) {
-        $model = new ActiveRecordWithAttributeBehavior();
-        $model->attributeBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
+        $model = new ActiveRecordWithAttributesBehavior();
+        $model->attributesBehavior->preserveNonEmptyValues = $preserveNonEmptyValues;
+        $model->name = $name;
+        $model->alias = $alias;
+        $model->validate();
+
+        $this->assertEquals($aliasExpected, $model->alias);
+    }
+
+    /**
+     * @return array
+     */
+    public function orderProvider()
+    {
+        return [
+            [
+                'name: Johnny',
+                [ActiveRecordWithAttributesBehavior::EVENT_BEFORE_VALIDATE => ['name', 'alias']],
+                // 1: name = alias; 2: alias = name; check alias
+                'John Doe', // name
+                'Johnny', // alias
+            ],
+            [
+                'John Doe',
+                [ActiveRecordWithAttributesBehavior::EVENT_BEFORE_VALIDATE => ['alias', 'name']],
+                // 2: alias = name; 1: name = alias; check alias
+                'John Doe', // name
+                'Johnny', // alias
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider orderProvider
+     * @param string $aliasExpected
+     * @param array $order
+     * @param string $name
+     * @param string $alias
+     */
+    public function testOrder(
+        $aliasExpected,
+        $order,
+        $name,
+        $alias
+    ) {
+        $model = new ActiveRecordWithAttributesBehavior();
+        $model->attributesBehavior->order = $order;
         $model->name = $name;
         $model->alias = $alias;
         $model->validate();
@@ -117,15 +162,15 @@ class AttributeBehaviorTest extends TestCase
 }
 
 /**
- * Test Active Record class with [[AttributeBehavior]] behavior attached.
+ * Test Active Record class with [[AttributesBehavior]] behavior attached.
  *
  * @property int $id
  * @property string $name
  * @property string $alias
  *
- * @property AttributeBehavior $attributeBehavior
+ * @property AttributesBehavior $attributesBehavior
  */
-class ActiveRecordWithAttributeBehavior extends ActiveRecord
+class ActiveRecordWithAttributesBehavior extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -133,14 +178,20 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     public function behaviors()
     {
         return [
-            'attribute' => [
-                'class' => AttributeBehavior::className(),
+            'attributes' => [
+                'class' => AttributesBehavior::className(),
                 'attributes' => [
-                    self::EVENT_BEFORE_VALIDATE => 'alias',
+                    'alias' => [
+                        self::EVENT_BEFORE_VALIDATE => function ($event) {
+                            return $event->sender->name;
+                        },
+                    ],
+                    'name' => [
+                        self::EVENT_BEFORE_VALIDATE => function ($event, $attribute) {
+                            return $attribute . ': ' . $event->sender->alias;
+                        },
+                    ],
                 ],
-                'value' => function ($event) {
-                    return $event->sender->name;
-                },
             ],
         ];
     }
@@ -154,10 +205,10 @@ class ActiveRecordWithAttributeBehavior extends ActiveRecord
     }
 
     /**
-     * @return AttributeBehavior
+     * @return AttributesBehavior
      */
-    public function getAttributeBehavior()
+    public function getAttributesBehavior()
     {
-        return $this->getBehavior('attribute');
+        return $this->getBehavior('attributes');
     }
 }

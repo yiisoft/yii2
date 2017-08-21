@@ -169,6 +169,7 @@ class MigrateController extends BaseMigrateController
             if ($action->id !== 'create') {
                 $this->db = Instance::ensure($this->db, Connection::className());
             }
+
             return true;
         }
 
@@ -229,8 +230,10 @@ class MigrateController extends BaseMigrateController
                 if (($compareResult = strcasecmp($b['canonicalVersion'], $a['canonicalVersion'])) !== 0) {
                     return $compareResult;
                 }
+
                 return strcasecmp($b['version'], $a['version']);
             }
+
             return ($a['apply_time'] > $b['apply_time']) ? -1 : +1;
         });
 
@@ -269,6 +272,35 @@ class MigrateController extends BaseMigrateController
             'version' => $version,
             'apply_time' => time(),
         ])->execute();
+    }
+
+    /**
+     * @inheritdoc
+     * @since 2.0.13
+     */
+    protected function refreshDatabase()
+    {
+        $db = $this->db;
+        $schemas = $db->schema->getTableSchemas();
+
+        // First drop all foreign keys,
+        foreach ($schemas as $schema) {
+            if ($schema->foreignKeys) {
+                foreach ($schema->foreignKeys as $name => $foreignKey) {
+                    $db->createCommand()->dropForeignKey($name, $schema->name)->execute();
+                    $this->stdout("Foreign key $name dropped.\n");
+                }
+            }
+        }
+
+        // Then drop the tables:
+        foreach ($schemas as $schema) {
+            $db->createCommand()->dropTable($schema->name)->execute();
+            $this->stdout("Table {$schema->name} dropped.\n");
+        }
+
+        // The database should be cleaned up. Start the migrations!
+        $this->actionUp();
     }
 
     /**
@@ -396,6 +428,7 @@ class MigrateController extends BaseMigrateController
         if (!$this->useTablePrefix) {
             return $tableName;
         }
+
         return '{{%' . $tableName . '}}';
     }
 

@@ -92,6 +92,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         if ($this->_uploadFileMaxSize === null) {
             $this->_uploadFileMaxSize = $this->getByteSize(ini_get('upload_max_filesize'));
         }
+
         return $this->_uploadFileMaxSize;
     }
 
@@ -111,6 +112,7 @@ class MultipartFormDataParser extends BaseObject implements RequestParserInterfa
         if ($this->_uploadFileMaxCount === null) {
             $this->_uploadFileMaxCount = ini_get('max_file_uploads');
         }
+
         return $this->_uploadFileMaxCount;
     }
 

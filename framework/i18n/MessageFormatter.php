@@ -363,6 +363,7 @@ class MessageFormatter extends Component
                         // add decimals with unknown length
                         $number .= '.' . substr($arg, $pos + 1);
                     }
+
                     return $number;
                 }
                 throw new NotSupportedException("Message format 'number' is only supported for integer values. You have to install PHP intl extension to use this feature.");

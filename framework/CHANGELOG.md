@@ -4,6 +4,10 @@ Yii Framework 2 Change Log
 2.0.13 under development
 ------------------------
 
+- Bug #14596: Fix event call on init in `yii\widgets\BaseListView` (panchenkodv)
+- New #14151: Added `AttributesBehavior` that assigns values specified to one or multiple attributes of an AR object when certain events happen (bscheshirwork)
+- Bug #6526: Fixed `yii\db\Command::batchInsert()` casting of double values correctly independent of the locale (cebe, leammas)
+- Bug #14542: Ensured only ASCII characters are in CSRF cookie value since binary data causes issues with ModSecurity and some browsers (samdark)
 - Enh #14022: `yii\web\UrlManager::setBaseUrl()` now supports aliases (dmirogin)
 - Bug #14471: `ContentNegotiator` will always set one of the configured server response formats even if the client does not accept any of them (PowerGamer1)
 - Bug #14525: Fixed 2.0.12 regression of loading of global fixtures trough `yii fixture/load` (michaelarnauts)
@@ -11,6 +15,7 @@ Yii Framework 2 Change Log
 - Bug #14533: Fixed `yii\validators\ExistValidator` and `yii\validators\UniqueValidator` throw exception in case they are set for `yii\db\ActiveRecord` with `$targetClass` pointing to NOSQL ActiveRecord (klimov-paul)
 - Bug #14449: Fix PHP 7.2 compatibility bugs and add explicit closure support in `yii\base\Application` (dynasource)
 - Bug #7890: Allow `migrate/mark` to mark history at the point of the base migration (cebe)
+- Enh #14664: Add migrate/fresh command to truncate database and apply migrations again (thyseus)
 - Bug #14206: `MySqlMutex`, `PgsqlMutex` and `OracleMutex` now use `useMaster()` to ensure lock is aquired on the same DB server (cebe, ryusoft)
 - Chg #14321: `yii\widgets\MaskedInput` is now registering its JavaScript `clientOptions` initialization code in head section (DaveFerger)
 - Bug #13757: Fixed ambiguous column error in `BaseActiveRecord::refresh()` when the query adds a JOIN by default (cebe, ivankff)
@@ -26,6 +31,7 @@ Yii Framework 2 Change Log
 - Enh #13824: Support extracting concatenated strings in `yii message` (developeruz)
 - Enh #14089: Added tests for `yii\base\Theme` (vladis84)
 - Enh #13586: Added `$preserveNonEmptyValues` property to the `yii\behaviors\AttributeBehavior` (Kolyunya)
+- Enh #13780: Added support for trusted proxies in `yii\web\Request` (sammousa, cebe)
 - Bug #14192: Fixed wrong default null value for TIMESTAMP when using PostgreSQL (Tigrov)
 - Enh #14081: Added `yii\caching\CacheInterface` to make custom cache extensions adoption easier (silverfire)
 - Enh #11415: Added `yii\console\widgets\Table` to draw tables in console apps (pana1990, rob006, samdark, tonykor)
@@ -53,6 +59,7 @@ Yii Framework 2 Change Log
 - Enh #7823: Added `yii\filters\AjaxFilter` filter (dmirogin)
 - Enh #14363: Added `yii\widgets\LinkPager::$linkContainerOptions` and possibility to override tag in `yii\widgets\LinkPager::$options` (dmirogin)
 - Bug #14202: Fixed current time in (UTC) `\Yii::$app->formatter` if time not set (bscheshirwork)
+- Bug #11825: User can login by cookie only once when `autoRenewCookie` is set to false (shirase, silverfire)
 
 
 2.0.12 June 05, 2017
@@ -682,6 +689,7 @@ Yii Framework 2 Change Log
 - Enh #10783: Added migration and unit-tests for `yii\i18n\DbMessageSource` (silverfire)
 - Enh #10797: Cleaned up requirements checker CSS (muhammadcahya)
 - Enh: Added last resort measure for `yii\helpers\FileHelper::removeDirectory()` fail to unlink symlinks under Windows (samdark)
+- Enh #9707: Added `yii\i18n\Formatter::asWeight()` and `::asLength()` formatters (nineinchnick, silverfire)
 - Enh: `yii\behaviors\AttributeBehavior::getValue()` now respects the callable in array format (silverfire)
 - Chg #6419: Added `yii\web\ErrorHandler::displayVars` make list of displayed vars customizable. `$_ENV` and `$_SERVER` are not displayed by default anymore (silverfire)
 - Chg #9369: `Yii::$app->user->can()` now returns `false` instead of erroring in case `authManager` component is not configured (creocoder)

@@ -167,6 +167,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "<$name" . static::renderTagAttributes($options) . '>';
     }
 
@@ -182,6 +183,7 @@ class BaseHtml
         if ($name === null || $name === false) {
             return '';
         }
+
         return "</$name>";
     }
 
@@ -286,6 +288,7 @@ class BaseHtml
         if (strpos($condition, '!IE') !== false) {
             return "<!--[if $condition]><!-->\n" . $content . "\n<!--<![endif]-->";
         }
+
         return "<!--[if $condition]>\n" . $content . "\n<![endif]-->";
     }
 
@@ -408,6 +411,7 @@ class BaseHtml
         if ($url !== null) {
             $options['href'] = Url::to($url);
         }
+
         return static::tag('a', $text, $options);
     }
 
@@ -457,6 +461,7 @@ class BaseHtml
         if (!isset($options['alt'])) {
             $options['alt'] = '';
         }
+
         return static::tag('img', '', $options);
     }
 
@@ -495,6 +500,7 @@ class BaseHtml
         if (!isset($options['type'])) {
             $options['type'] = 'button';
         }
+
         return static::tag('button', $content, $options);
     }
 
@@ -1237,6 +1243,7 @@ class BaseHtml
         } else {
             $content = '<ul><li>' . implode("</li>\n<li>", $lines) . '</li></ul>';
         }
+
         return Html::tag('div', $header . $content . $footer, $options);
     }
 
@@ -1288,6 +1295,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::input($type, $name, $value, $options);
     }
 
@@ -1397,6 +1405,7 @@ class BaseHtml
         if (isset($options['name'])) {
             $hiddenOptions['name'] = $options['name'];
         }
+
         return static::activeHiddenInput($model, $attribute, $hiddenOptions)
             . static::activeInput('file', $model, $attribute, $options);
     }
@@ -1724,6 +1733,7 @@ class BaseHtml
         if (!array_key_exists('id', $options)) {
             $options['id'] = static::getInputId($model, $attribute);
         }
+
         return static::$type($name, $selection, $items, $options);
     }
 
@@ -1913,6 +1923,7 @@ class BaseHtml
                 $existingClasses[$key] = $class;
             }
         }
+
         return array_unique($existingClasses);
     }
 
@@ -2056,6 +2067,7 @@ class BaseHtml
                 $result[trim($property[0])] = trim($property[1]);
             }
         }
+
         return $result;
     }
 

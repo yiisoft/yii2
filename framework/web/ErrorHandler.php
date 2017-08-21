@@ -475,6 +475,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
         if ($exception instanceof \yii\base\Exception || $exception instanceof \yii\base\InvalidCallException || $exception instanceof \yii\base\InvalidParamException || $exception instanceof \yii\base\UnknownMethodException) {
             return $exception->getName();
         }
+
         return null;
     }
 
@@ -484,6 +485,6 @@ class ErrorHandler extends \yii\base\ErrorHandler
      */
     protected function shouldRenderSimpleHtml()
     {
-        return YII_ENV_TEST || isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
+        return YII_ENV_TEST || Yii::$app->request->getIsAjax();
     }
 }

@@ -93,6 +93,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if (!is_dir($vendor)) {
             $vendor = dirname(dirname(dirname(dirname(__DIR__))));
         }
+
         return $vendor;
     }
 
@@ -131,13 +132,14 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function invokeMethod($object, $method, $args = [], $revoke = true)
     {
-        $reflection = new \ReflectionClass($object->className());
+        $reflection = new \ReflectionObject($object);
         $method = $reflection->getMethod($method);
         $method->setAccessible(true);
         $result = $method->invokeArgs($object, $args);
         if ($revoke) {
             $method->setAccessible(false);
         }
+
         return $result;
     }
 
@@ -182,6 +184,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if ($revoke) {
             $property->setAccessible(false);
         }
+
         return $result;
     }
 

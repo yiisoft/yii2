@@ -125,6 +125,7 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->addItem($object);
         } elseif ($object instanceof Rule) {
             return $this->addRule($object);
@@ -158,6 +159,7 @@ abstract class BaseManager extends Component implements ManagerInterface
                 $rule->name = $object->ruleName;
                 $this->addRule($rule);
             }
+
             return $this->updateItem($name, $object);
         } elseif ($object instanceof Rule) {
             return $this->updateRule($name, $object);
@@ -203,6 +205,7 @@ abstract class BaseManager extends Component implements ManagerInterface
         foreach ($this->defaultRoles as $roleName) {
             $result[$roleName] = $this->createRole($roleName);
         }
+
         return $result;
     }
 
