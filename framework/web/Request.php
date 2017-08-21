@@ -292,7 +292,7 @@ class Request extends \yii\base\Request
                 }
                 if (preg_match($hostRegex, $host) || preg_match($hostRegex, $ip)) {
                     $trustedHeaders = $headers;
-                    continue;
+                    break;
                 }
             }
         }
