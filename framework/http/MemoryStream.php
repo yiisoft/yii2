@@ -12,12 +12,24 @@ use yii\base\InvalidArgumentException;
 use yii\base\Object;
 
 /**
- * BufferStream
+ * MemoryStream uses internal field as a stream source. Thus data associated with this stream exists only in
+ * memory and will be lost once stream is closed.
+ *
+ * Example:
+ *
+ * ```php
+ * $stream = new MemoryStream();
+ *
+ * $stream->write('some content...');
+ * // ...
+ * $stream->rewind();
+ * echo $stream->getContents();
+ * ```
  *
  * @author Paul Klimov <klimov.paul@gmail.com>
  * @since 2.1.0
  */
-class BufferStream extends Object implements StreamInterface
+class MemoryStream extends Object implements StreamInterface
 {
     /**
      * @var string internal content.
@@ -76,7 +88,7 @@ class BufferStream extends Object implements StreamInterface
      */
     public function eof()
     {
-        return $this->pointer >= ($this->getSize() - 1);
+        return $this->pointer >= $this->getSize();
     }
 
     /**
@@ -131,14 +143,15 @@ class BufferStream extends Object implements StreamInterface
         $size = $this->getSize();
         $writeSize = strlen($string);
 
-        if ($this->pointer > $size) {
+        if ($this->pointer >= $size) {
             $this->buffer .= $string;
             $this->pointer = $size + $writeSize;
             return $writeSize;
         }
 
-        $begin = substr($this->buffer, 0, $this->pointer + 1);
-        $end = substr($this->buffer, $this->pointer + $writeSize + 1);
+        $begin = substr($this->buffer, 0, $this->pointer);
+        $end = substr($this->buffer, $this->pointer + $writeSize);
+
         $this->buffer = $begin . $string . $end;
         $this->pointer += $writeSize;
         return $writeSize;
