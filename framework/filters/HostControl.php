@@ -132,7 +132,7 @@ class HostControl extends ActionFilter
             $allowedHosts = (array) $allowedHosts;
         }
 
-        $currentHost = Yii::$app->getRequest()->getHostName();
+        $currentHost = $action->controller->getRequest()->getHostName();
 
         foreach ($allowedHosts as $allowedHost) {
             if (fnmatch($allowedHost, $currentHost)) {
@@ -142,7 +142,7 @@ class HostControl extends ActionFilter
 
         // replace invalid host info to prevent using it in further processing
         if ($this->fallbackHostInfo !== null) {
-            Yii::$app->getRequest()->setHostInfo($this->fallbackHostInfo);
+            $action->controller->getRequest()->setHostInfo($this->fallbackHostInfo);
         }
 
         if ($this->denyCallback !== null) {
@@ -167,11 +167,11 @@ class HostControl extends ActionFilter
         $exception = new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
 
         // use regular error handling if $this->fallbackHostInfo was set
-        if (!empty(Yii::$app->getRequest()->hostName)) {
+        if (!empty($action->controller->getRequest()->hostName)) {
             throw $exception;
         }
 
-        $response = Yii::$app->getResponse();
+        $response = $action->controller->getResponse();
         $errorHandler = Yii::$app->getErrorHandler();
 
         $response->setStatusCode($exception->statusCode, $exception->getMessage());

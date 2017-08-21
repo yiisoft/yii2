@@ -9,8 +9,10 @@ namespace yiiunit\framework\filters;
 
 use Prophecy\Argument;
 use Yii;
+use yii\base\Action;
 use yii\filters\RateLimiter;
 use yii\log\Logger;
+use yii\web\Controller;
 use yii\web\Request;
 use yii\web\Response;
 use yii\web\User;
@@ -22,6 +24,9 @@ use yiiunit\TestCase;
  */
 class RateLimiterTest extends TestCase
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function setUp()
     {
         parent::setUp();
@@ -38,10 +43,22 @@ class RateLimiterTest extends TestCase
 
         $this->mockWebApplication();
     }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function tearDown()
     {
         parent::tearDown();
         Yii::setLogger(null);
+    }
+
+    /**
+     * @return Action test action instance.
+     */
+    protected function createAction()
+    {
+        return new Action('test', new Controller('test', Yii::$app));
     }
 
     public function testInitFilledRequest()
@@ -51,25 +68,11 @@ class RateLimiterTest extends TestCase
         $this->assertEquals('Request', $rateLimiter->request);
     }
 
-    public function testInitNotFilledRequest()
-    {
-        $rateLimiter = new RateLimiter();
-
-        $this->assertInstanceOf(Request::className(), $rateLimiter->request);
-    }
-
     public function testInitFilledResponse()
     {
         $rateLimiter = new RateLimiter(['response' => 'Response']);
 
         $this->assertEquals('Response', $rateLimiter->response);
-    }
-
-    public function testInitNotFilledResponse()
-    {
-        $rateLimiter = new RateLimiter();
-
-        $this->assertInstanceOf(Response::className(), $rateLimiter->response);
     }
 
     public function testBeforeActionUserInstanceOfRateLimitInterface()
@@ -80,7 +83,7 @@ class RateLimiterTest extends TestCase
             ->setRateLimit([1, 1]);
         $rateLimiter->user = $rateLimit;
 
-        $result = $rateLimiter->beforeAction('test');
+        $result = $rateLimiter->beforeAction($this->createAction());
 
         $this->assertContains('Check rate limit', Yii::getLogger()->messages);
         $this->assertTrue($result);
@@ -90,7 +93,7 @@ class RateLimiterTest extends TestCase
     {
         $rateLimiter = new RateLimiter(['user' => 'User']);
 
-        $result = $rateLimiter->beforeAction('test');
+        $result = $rateLimiter->beforeAction($this->createAction());
 
         $this->assertContains('Rate limit skipped: "user" does not implement RateLimitInterface.', Yii::getLogger()->messages);
         $this->assertTrue($result);
@@ -102,7 +105,7 @@ class RateLimiterTest extends TestCase
         Yii::$app->set('user', $user);
         $rateLimiter = new RateLimiter();
 
-        $result = $rateLimiter->beforeAction('test');
+        $result = $rateLimiter->beforeAction($this->createAction());
 
         $this->assertContains('Rate limit skipped: user not logged in.', Yii::getLogger()->messages);
         $this->assertTrue($result);
@@ -117,7 +120,7 @@ class RateLimiterTest extends TestCase
             ->setAllowance([1, time() + 2]);
         $rateLimiter = new RateLimiter();
 
-        $this->setExpectedException('yii\web\TooManyRequestsHttpException');
+        $this->expectException('yii\web\TooManyRequestsHttpException');
         $rateLimiter->checkRateLimit($rateLimit, Yii::$app->request, Yii::$app->response, 'testAction');
     }
 

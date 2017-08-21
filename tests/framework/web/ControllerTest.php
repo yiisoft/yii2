@@ -9,6 +9,7 @@ namespace yiiunit\framework\web;
 
 use Yii;
 use yii\base\InlineAction;
+use yii\web\Request;
 use yii\web\Response;
 use yiiunit\TestCase;
 
@@ -17,6 +18,32 @@ use yiiunit\TestCase;
  */
 class ControllerTest extends TestCase
 {
+    /**
+     * @var FakeController
+     */
+    protected $controller;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->controller = new FakeController('fake', new \yii\web\Application([
+            'id' => 'app',
+            'basePath' => __DIR__,
+
+            'components' => [
+                'request' => [
+                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
+                    'scriptFile' => __DIR__ . '/index.php',
+                    'scriptUrl' => '/index.php',
+                ],
+            ],
+        ]));
+        $this->mockWebApplication(['controller' => $this->controller]);
+    }
+
     public function testBindActionParams()
     {
         $aksi1 = new InlineAction('aksi1', $this->controller, 'actionAksi1');
@@ -75,21 +102,39 @@ class ControllerTest extends TestCase
         $this->assertEquals($this->controller->redirect(['//controller/index', 'slug' => 'äöüß!"§$%&/()'])->headers->get('location'), '/index.php?r=controller%2Findex&slug=%C3%A4%C3%B6%C3%BC%C3%9F%21%22%C2%A7%24%25%26%2F%28%29');
     }
 
-    protected function setUp()
+    public function testSetupRequest()
     {
-        parent::setUp();
-        $this->controller = new FakeController('fake', new \yii\web\Application([
-            'id' => 'app',
-            'basePath' => __DIR__,
+        $controller = $this->controller;
 
-            'components' => [
-                'request' => [
-                    'cookieValidationKey' => 'wefJDF8sfdsfSDefwqdxj9oq',
-                    'scriptFile' => __DIR__ . '/index.php',
-                    'scriptUrl' => '/index.php',
-                ],
-            ],
-        ]));
-        $this->mockWebApplication(['controller' => $this->controller]);
+        $request = new Request();
+        $controller->setRequest($request);
+        $this->assertSame($request, $controller->getRequest());
+
+        $controller->setRequest([
+            'class' => Request::className(),
+            'methodParam' => '_test',
+        ]);
+        $this->assertNotSame($request, $controller->getRequest());
+        $this->assertEquals('_test', $controller->getRequest()->methodParam);
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $controller->setRequest(new \stdClass());
+    }
+
+    public function testSetupResponse()
+    {
+        $controller = $this->controller;
+
+        $response = new Response();
+        $controller->setResponse($response);
+        $this->assertSame($response, $controller->getResponse());
+
+        $controller->setResponse([
+            'class' => Response::className(),
+        ]);
+        $this->assertNotSame($response, $controller->getResponse());
+
+        $this->expectException('yii\base\InvalidConfigException');
+        $controller->setResponse(new \stdClass());
     }
 }

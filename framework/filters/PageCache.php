@@ -131,6 +131,16 @@ class PageCache extends ActionFilter
      * @since 2.0.11
      */
     public $dynamicPlaceholders;
+    /**
+     * @var Request the current request. If not set, the `request` application component will be used.
+     * @since 2.0.13
+     */
+    public $request;
+    /**
+     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @since 2.0.13
+     */
+    public $response;
 
 
     /**
@@ -156,13 +166,16 @@ class PageCache extends ActionFilter
             return true;
         }
 
+        $this->request = $this->request ?: $action->controller->getRequest();
+        $this->response = $this->response ?: $action->controller->getResponse();
+
         $this->cache = Instance::ensure($this->cache, 'yii\caching\CacheInterface');
 
         if (is_array($this->dependency)) {
             $this->dependency = Yii::createObject($this->dependency);
         }
 
-        $response = Yii::$app->getResponse();
+        $response = $action->controller->getResponse();
         $data = $this->cache->get($this->calculateCacheKey());
         if (!is_array($data) || !isset($data['cacheVersion']) || $data['cacheVersion'] !== 1) {
             $this->view->cacheStack[] = $this;
@@ -245,7 +258,7 @@ class PageCache extends ActionFilter
             return;
         }
 
-        $response = Yii::$app->getResponse();
+        $response = $this->response;
         $data = [
             'cacheVersion' => 1,
             'cacheData' => is_array($beforeCacheResponseResult) ? $beforeCacheResponseResult : null,

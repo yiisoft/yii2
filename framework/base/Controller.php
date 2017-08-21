@@ -8,6 +8,7 @@
 namespace yii\base;
 
 use Yii;
+use yii\di\Instance;
 
 /**
  * Controller is the base class for classes containing controller logic.
@@ -22,6 +23,8 @@ use Yii;
  * read-only.
  * @property View|\yii\web\View $view The view object that can be used to render views or view files.
  * @property string $viewPath The directory containing the view files for this controller.
+ * @property Request $request The request instance for this controller.
+ * @property Response $response The response instance for this controller.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -72,6 +75,16 @@ class Controller extends Component implements ViewContextInterface
      * @var string the root directory that contains view files for this controller.
      */
     private $_viewPath;
+    /**
+     * @var Request request instance.
+     * @since 2.0.13
+     */
+    private $_request;
+    /**
+     * @var Response response instance.
+     * @since 2.0.13
+     */
+    private $_response;
 
 
     /**
@@ -520,5 +533,41 @@ class Controller extends Component implements ViewContextInterface
         }
 
         return $path;
+    }
+
+    /**
+     * @return Request request instance.
+     * @since 2.0.13
+     */
+    public function getRequest()
+    {
+        return $this->_request;
+    }
+
+    /**
+     * @param Request|array $request request instance or its DI compatible configuration.
+     * @since 2.0.13
+     */
+    public function setRequest($request)
+    {
+        $this->_request = Instance::ensure($request);
+    }
+
+    /**
+     * @return Response response instance.
+     * @since 2.0.13
+     */
+    public function getResponse()
+    {
+        return $this->_response;
+    }
+
+    /**
+     * @param Response|array $response response instance or its DI compatible configuration.
+     * @since 2.0.13
+     */
+    public function setResponse($response)
+    {
+        $this->_response = Instance::ensure($response);
     }
 }

@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Action;
 use yii\base\InlineAction;
 use yii\base\InvalidRouteException;
+use yii\di\Instance;
 use yii\helpers\Console;
 
 /**
@@ -33,6 +34,8 @@ use yii\helpers\Console;
  * read-only.
  * @property array $passedOptions The names of the options passed during execution. This property is
  * read-only.
+ * @property Request $request The console request instance for this controller.
+ * @property Response $response The console response instance for this controller.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
@@ -652,5 +655,51 @@ class Controller extends \yii\base\Controller
         }
 
         return '';
+    }
+
+    /**
+     * @return Request console request instance.
+     * @since 2.0.13
+     */
+    public function getRequest()
+    {
+        $request = parent::getRequest();
+        if ($request !== null) {
+            return $request;
+        }
+        $this->setRequest(Yii::$app->getRequest());
+        return parent::getRequest();
+    }
+
+    /**
+     * @param Request|array $request console request instance or its DI compatible configuration.
+     * @since 2.0.13
+     */
+    public function setRequest($request)
+    {
+        parent::setRequest(Instance::ensure($request, 'yii\console\Request'));
+    }
+
+    /**
+     * @return Response console response instance.
+     * @since 2.0.13
+     */
+    public function getResponse()
+    {
+        $response = parent::getResponse();
+        if ($response !== null) {
+            return $response;
+        }
+        $this->setResponse(Yii::$app->getResponse());
+        return parent::getResponse();
+    }
+
+    /**
+     * @param Response|array $response console response instance or its DI compatible configuration.
+     * @since 2.0.13
+     */
+    public function setResponse($response)
+    {
+        parent::setResponse(Instance::ensure($response, 'yii\console\Response'));
     }
 }

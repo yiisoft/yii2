@@ -10,6 +10,8 @@ namespace yii\filters;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\web\Request;
+use yii\web\Response;
 
 /**
  * HttpCache implements client-side caching by utilizing the `Last-Modified` and `ETag` HTTP headers.
@@ -105,6 +107,16 @@ class HttpCache extends ActionFilter
      * @var bool a value indicating whether this filter should be enabled.
      */
     public $enabled = true;
+    /**
+     * @var Request the current request. If not set, the `request` application component will be used.
+     * @since 2.0.13
+     */
+    public $request;
+    /**
+     * @var Response the response to be sent. If not set, the `response` application component will be used.
+     * @since 2.0.13
+     */
+    public $response;
 
 
     /**
@@ -119,7 +131,10 @@ class HttpCache extends ActionFilter
             return true;
         }
 
-        $verb = Yii::$app->getRequest()->getMethod();
+        $this->request = $this->request ?: $action->controller->getRequest();
+        $this->response = $this->response ?: $action->controller->getResponse();
+
+        $verb = $action->controller->getRequest()->getMethod();
         if ($verb !== 'GET' && $verb !== 'HEAD' || $this->lastModified === null && $this->etagSeed === null) {
             return true;
         }
@@ -137,7 +152,7 @@ class HttpCache extends ActionFilter
 
         $this->sendCacheControlHeader();
 
-        $response = Yii::$app->getResponse();
+        $response = $action->controller->getResponse();
         if ($etag !== null) {
             $response->getHeaders()->set('Etag', $etag);
         }
@@ -168,9 +183,9 @@ class HttpCache extends ActionFilter
         if (Yii::$app->request->headers->has('If-None-Match')) {
             // HTTP_IF_NONE_MATCH takes precedence over HTTP_IF_MODIFIED_SINCE
             // http://tools.ietf.org/html/rfc7232#section-3.3
-            return $etag !== null && in_array($etag, Yii::$app->request->getETags(), true);
-        } elseif (Yii::$app->request->headers->has('If-Modified-Since')) {
-            return $lastModified !== null && @strtotime(Yii::$app->request->headers->get('If-Modified-Since')) >= $lastModified;
+            return $etag !== null && in_array($etag, $this->request->getETags(), true);
+        } elseif ($this->request->headers->has('If-Modified-Since')) {
+            return $lastModified !== null && @strtotime($this->request->headers->get('If-Modified-Since')) >= $lastModified;
         }
 
         return false;
@@ -192,7 +207,7 @@ class HttpCache extends ActionFilter
             session_cache_limiter($this->sessionCacheLimiter);
         }
 
-        $headers = Yii::$app->getResponse()->getHeaders();
+        $headers = $this->response->getHeaders();
 
         if ($this->cacheControlHeader !== null) {
             $headers->set('Cache-Control', $this->cacheControlHeader);
