@@ -9,6 +9,8 @@ namespace yii\web;
 
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\http\CookieCollection;
+use yii\http\HeaderCollection;
 
 /**
  * The web Request class represents an HTTP request

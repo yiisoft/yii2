@@ -10,11 +10,12 @@ namespace yii\web;
 use Yii;
 use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
 use yii\helpers\Inflector;
 use yii\helpers\StringHelper;
 use yii\helpers\Url;
+use yii\http\CookieCollection;
+use yii\http\HeaderCollection;
 
 /**
  * The web Response class represents an HTTP response
