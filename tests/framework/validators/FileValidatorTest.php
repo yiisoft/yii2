@@ -235,7 +235,7 @@ class FileValidatorTest extends TestCase
                 $files[] = ['no instance of UploadedFile'];
                 continue;
             }
-            $name = isset($param['name']) ? $param['name'] : $rndString();
+            $name = isset($param['clientFilename']) ? $param['clientFilename'] : $rndString();
             $tempName = \Yii::getAlias('@yiiunit/runtime/validators/file/tmp/') . $name;
             if (is_readable($tempName)) {
                 $size = filesize($tempName);
@@ -341,8 +341,8 @@ class FileValidatorTest extends TestCase
         ]);
         $m = FakedValidationModel::createWithAttributes(
             [
-                'attr_jpg' => $this->createTestFiles([['name' => 'one.jpeg']]),
-                'attr_exe' => $this->createTestFiles([['name' => 'bad.exe']]),
+                'attr_jpg' => $this->createTestFiles([['clientFilename' => 'one.jpeg']]),
+                'attr_exe' => $this->createTestFiles([['clientFilename' => 'bad.exe']]),
             ]
         );
         $val->validateAttribute($m, 'attr_jpg');

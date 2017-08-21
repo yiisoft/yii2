@@ -356,7 +356,7 @@ class UploadedFile extends BaseObject implements UploadedFileInterface
      */
     public function getClientFilename()
     {
-        $this->_clientFilename;
+        return $this->_clientFilename;
     }
 
     /**
