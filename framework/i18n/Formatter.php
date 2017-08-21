@@ -1417,6 +1417,7 @@ class Formatter extends Component
 
     /**
      * Formats the value as a length in human readable form for example `12 meters`.
+     *
      * Check properties [[baseUnits]] if you need to change unit of value as the multiplier
      * of the smallest unit and [[systemOfUnits]] to switch between [[UNIT_SYSTEM_METRIC]] or [[UNIT_SYSTEM_IMPERIAL]].
      *
