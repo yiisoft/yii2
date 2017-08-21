@@ -70,7 +70,7 @@ in the application configuration, like the following:
 return [
     // the "log" component must be loaded during bootstrapping time
     'bootstrap' => ['log'],
-    // the "log" component process messages with timestamp. Set php timezone to create correct timestamp
+    // the "log" component process messages with timestamp. Set PHP timezone to create correct timestamp
     'timeZone' => 'America/Los_Angeles',
     'components' => [
         'log' => [
