@@ -38,6 +38,11 @@ use yii\helpers\Json;
 class JsonResponseFormatter extends Component implements ResponseFormatterInterface
 {
     /**
+     * @var string|null custom value of the `Content-Type` header of the response.
+     * When equals `null` default content type will be used based on the `useJsonp` property.
+     */
+    public $contentType;
+    /**
      * @var bool whether to use JSONP response format. When this is true, the [[Response::data|response data]]
      * must be an array consisting of `data` and `callback` members. The latter should be a JavaScript
      * function name while the former will be passed to this function as a parameter.
@@ -80,7 +85,7 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJson($response)
     {
-        $response->getHeaders()->set('Content-Type', 'application/json; charset=UTF-8');
+        $this->setContentType($response, 'application/json; charset=UTF-8');
         if ($response->data !== null) {
             $options = $this->encodeOptions;
             if ($this->prettyPrint) {
@@ -96,12 +101,24 @@ class JsonResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatJsonp($response)
     {
-        $response->getHeaders()->set('Content-Type', 'application/javascript; charset=UTF-8');
+        $this->setContentType($response, 'application/javascript; charset=UTF-8');
         if (is_array($response->data) && isset($response->data['data'], $response->data['callback'])) {
             $response->content = sprintf('%s(%s);', $response->data['callback'], Json::htmlEncode($response->data['data']));
         } elseif ($response->data !== null) {
             $response->content = '';
             Yii::warning("The 'jsonp' response requires that the data be an array consisting of both 'data' and 'callback' elements.", __METHOD__);
         }
+    }
+
+    /**
+     * Sets a `Content-Type` header value of a `response`.
+     * @param Response &$response response to set a `Content-Type` header of.
+     * @param string $defaultContentType default content type used when no custom content type is specified.
+     */
+    private function setContentType(&$response, $defaultContentType)
+    {
+        $contentType = $this->contentType ?: $defaultContentType;
+        $headers = $response->getHeaders();
+        $headers->set('Content-Type', $contentType);
     }
 }
