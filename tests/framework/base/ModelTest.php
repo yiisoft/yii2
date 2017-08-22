@@ -104,7 +104,7 @@ class ModelTest extends TestCase
         $model = new Speaker();
         $model->setScenario('test');
         $this->assertFalse($model->load(['Example' => []]));
-        $this->assertSame('', $model->firstName);
+        $this->assertNull($model->firstName);
     }
 
     public function testLoadMultiple()
@@ -138,8 +138,8 @@ class ModelTest extends TestCase
         $smith = new Speaker();
         $smith->setScenario('test');
         $this->assertFalse(Speaker::loadMultiple([$neo, $smith], ['Speaker' => $data], 'Morpheus'));
-        $this->assertSame('', $neo->firstName);
-        $this->assertSame('', $smith->lastName);
+        $this->assertNull($neo->firstName);
+        $this->assertNull($smith->lastName);
     }
 
     public function testActiveAttributes()
