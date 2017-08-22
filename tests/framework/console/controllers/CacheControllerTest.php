@@ -101,7 +101,7 @@ class CacheControllerTest extends TestCase
 
         $this->_cacheController->actionFlushSchema('db');
         $cacheSchema = $schema->getTableSchemas('', false);
-        $this->assertSame($noCacheSchemas, $cacheSchema, 'Schema cache should be flushed.');
+        $this->assertEquals($noCacheSchemas, $cacheSchema, 'Schema cache should be flushed.');
     }
 
     public function testFlushBoth()
