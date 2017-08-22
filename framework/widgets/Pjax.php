@@ -182,7 +182,7 @@ class Pjax extends Widget
      */
     protected function requiresPjax()
     {
-        $headers = Yii::$app->getRequest()->getHeaders();
+        $headers = Yii::$app->getRequest()->getHeaderCollection();
 
         return $headers->get('X-Pjax') && explode(' ', $headers->get('X-Pjax-Container'))[0] === '#' . $this->options['id'];
     }
