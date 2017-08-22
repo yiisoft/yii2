@@ -33,11 +33,11 @@ use yii\base\InvalidConfigException;
 class UrlRule extends BaseObject implements UrlRuleInterface
 {
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL parsing only
+     * Set [[mode]] with this value to mark that this rule is for URL parsing only.
      */
     const PARSING_ONLY = 1;
     /**
-     * Set [[mode]] with this value to mark that this rule is for URL creation only
+     * Set [[mode]] with this value to mark that this rule is for URL creation only.
      */
     const CREATION_ONLY = 2;
     /**

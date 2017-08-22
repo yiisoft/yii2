@@ -10,7 +10,7 @@ use yii\caching\DbCache;
 use yii\db\Migration;
 
 /**
- * Initializes Cache tables
+ * Initializes Cache tables.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @since 2.0.7

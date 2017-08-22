@@ -159,6 +159,7 @@ class Model extends Component implements IteratorAggregate, ArrayAccess, Arrayab
 
     /**
      * Returns a list of scenarios and the corresponding active attributes.
+     *
      * An active attribute is one that is subject to validation in the current scenario.
      * The returned array should be in the following format:
      *

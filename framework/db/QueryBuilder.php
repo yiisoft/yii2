@@ -146,6 +146,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -237,6 +238,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -304,6 +306,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates an UPDATE SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -351,6 +354,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Creates a DELETE SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -746,7 +750,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -760,7 +764,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $comment the text of the comment to be added. The comment will be properly quoted by the method.
@@ -773,7 +777,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds a SQL command for adding comment to column
+     * Builds a SQL command for adding comment to column.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @param string $column the name of the column to be commented. The column name will be properly quoted by the method.
@@ -786,7 +790,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds a SQL command for adding comment to table
+     * Builds a SQL command for adding comment to table.
      *
      * @param string $table the table whose column is to be commented. The table name will be properly quoted by the method.
      * @return string the SQL statement for adding comment on column
@@ -799,6 +803,7 @@ class QueryBuilder extends \yii\base\BaseObject
 
     /**
      * Converts an abstract column type into a physical column type.
+     *
      * The conversion is done using the type map specified in [[typeMap]].
      * The following abstract column types are supported (using MySQL as an example to explain the corresponding
      * physical types):
@@ -952,7 +957,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Quotes table names passed
+     * Quotes table names passed.
      *
      * @param array $tables
      * @param array $params
@@ -1401,7 +1406,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds SQL for IN condition
+     * Builds SQL for IN condition.
      *
      * @param string $operator
      * @param array $columns
@@ -1430,7 +1435,7 @@ class QueryBuilder extends \yii\base\BaseObject
     }
 
     /**
-     * Builds SQL for IN condition
+     * Builds SQL for IN condition.
      *
      * @param string $operator
      * @param array|\Traversable $columns

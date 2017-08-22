@@ -205,7 +205,7 @@ class MessageController extends \yii\console\Controller
     }
 
     /**
-     * Creates a configuration file for the "extract" command using command line options specified
+     * Creates a configuration file for the "extract" command using command line options specified.
      *
      * The generated configuration file contains parameters required
      * for source code messages extraction.
@@ -336,7 +336,7 @@ EOD;
     }
 
     /**
-     * Saves messages to database
+     * Saves messages to database.
      *
      * @param array $messages
      * @param Connection $db
@@ -458,7 +458,7 @@ EOD;
     }
 
     /**
-     * Extracts messages from a file
+     * Extracts messages from a file.
      *
      * @param string $fileName name of the file to extract messages from
      * @param string $translator name of the function used to translate messages
@@ -572,6 +572,7 @@ EOD;
 
     /**
      * The method checks, whether the $category is ignored according to $ignoreCategories array.
+     *
      * Examples:
      *
      * - `myapp` - will be ignored only `myapp` category;
@@ -599,7 +600,7 @@ EOD;
     }
 
     /**
-     * Finds out if two PHP tokens are equal
+     * Finds out if two PHP tokens are equal.
      *
      * @param array|string $a
      * @param array|string $b
@@ -619,7 +620,7 @@ EOD;
     }
 
     /**
-     * Finds out a line of the first non-char PHP token found
+     * Finds out a line of the first non-char PHP token found.
      *
      * @param array $tokens
      * @return int|string
@@ -637,7 +638,7 @@ EOD;
     }
 
     /**
-     * Writes messages into PHP files
+     * Writes messages into PHP files.
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to
@@ -660,7 +661,7 @@ EOD;
     }
 
     /**
-     * Writes category messages into PHP file
+     * Writes category messages into PHP file.
      *
      * @param array $messages
      * @param string $fileName name of the file to write to
@@ -742,7 +743,7 @@ EOD;
     }
 
     /**
-     * Writes messages into PO file
+     * Writes messages into PO file.
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to
@@ -838,7 +839,7 @@ EOD;
     }
 
     /**
-     * Writes messages into POT file
+     * Writes messages into POT file.
      *
      * @param array $messages
      * @param string $dirName name of the directory to write to

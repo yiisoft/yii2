@@ -630,7 +630,7 @@ class Container extends Component
     }
 
     /**
-     * Registers class definitions as singletons within this container by calling [[setSingleton()]]
+     * Registers class definitions as singletons within this container by calling [[setSingleton()]].
      *
      * @param array $singletons array of singleton definitions. See [[setDefinitions()]]
      * for allowed formats of array.

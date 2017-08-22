@@ -310,7 +310,7 @@ TEXT
 }
 
 /**
- * Test Mailer class
+ * Test Mailer class.
  */
 class Mailer extends BaseMailer
 {
@@ -326,7 +326,7 @@ class Mailer extends BaseMailer
 }
 
 /**
- * Test Message class
+ * Test Message class.
  */
 class Message extends BaseMessage
 {

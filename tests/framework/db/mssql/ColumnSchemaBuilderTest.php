@@ -10,7 +10,7 @@ namespace yiiunit\framework\db\mssql;
 use yii\db\ColumnSchemaBuilder;
 
 /**
- * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MSSQL
+ * ColumnSchemaBuilderTest tests ColumnSchemaBuilder for MSSQL.
  * @group db
  * @group mssql
  */

@@ -286,7 +286,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Returns an array of column names given model name
+     * Returns an array of column names given model name.
      *
      * @param string $modelClass name of the model class
      * @return array|null array of column names
@@ -336,7 +336,7 @@ class QueryBuilder extends \yii\db\QueryBuilder
     }
 
     /**
-     * Builds SQL for IN condition
+     * Builds SQL for IN condition.
      *
      * @param string $operator
      * @param array $columns

@@ -13,7 +13,7 @@ use yii\rbac\Role;
 use yiiunit\TestCase;
 
 /**
- * ManagerTestCase
+ * ManagerTestCase.
  */
 abstract class ManagerTestCase extends TestCase
 {
@@ -561,7 +561,7 @@ abstract class ManagerTestCase extends TestCase
     }
 
     /**
-     * Create Role or Permission RBAC item
+     * Create Role or Permission RBAC item.
      * @param int $RBACItemType
      * @param string $name
      * @return Permission|Role
@@ -579,7 +579,7 @@ abstract class ManagerTestCase extends TestCase
     }
 
     /**
-     * Get Role or Permission RBAC item
+     * Get Role or Permission RBAC item.
      * @param int $RBACItemType
      * @param string $name
      * @return Permission|Role
@@ -597,8 +597,8 @@ abstract class ManagerTestCase extends TestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/10176
-     * https://github.com/yiisoft/yii2/issues/12681
+     * @see https://github.com/yiisoft/yii2/issues/10176
+     * @see https://github.com/yiisoft/yii2/issues/12681
      */
     public function testRuleWithPrivateFields()
     {

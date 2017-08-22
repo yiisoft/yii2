@@ -803,7 +803,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * This is expected to result in a PHP error
+     * This is expected to result in a PHP error.
      * @expectedException \PHPUnit_Framework_Error
      */
     public function testGetValueNonexistingProperties1()
@@ -813,7 +813,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * This is expected to result in a PHP error
+     * This is expected to result in a PHP error.
      * @expectedException \PHPUnit_Framework_Error
      */
     public function testGetValueNonexistingProperties2()
@@ -823,7 +823,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * Data provider for [[testSetValue()]]
+     * Data provider for [[testSetValue()]].
      * @return array test data
      */
     public function dataProviderSetValue()

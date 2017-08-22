@@ -229,6 +229,7 @@ EOD;
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php

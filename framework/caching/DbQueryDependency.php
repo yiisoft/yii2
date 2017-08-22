@@ -61,7 +61,8 @@ class DbQueryDependency extends Dependency
 
     /**
      * Generates the data needed to determine if dependency is changed.
-     * This method returns the query result
+     *
+     * This method returns the query result.
      * @param CacheInterface $cache the cache component that is currently evaluating this dependency
      * @return mixed the data needed to determine if dependency has been changed.
      * @throws InvalidConfigException on invalid configuration.

@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * DefaultPk
+ * DefaultPk.
  *
  * @author Jan Waś <janek.jan@gmail.com>
  * @property int $id

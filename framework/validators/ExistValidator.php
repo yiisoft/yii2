@@ -211,7 +211,7 @@ class ExistValidator extends Validator
     }
 
     /**
-     * Returns conditions with alias
+     * Returns conditions with alias.
      * @param ActiveQuery $query
      * @param array $conditions array of condition, keys to be modified
      * @param null|string $alias set empty string for no apply alias. Set null for apply primary table alias

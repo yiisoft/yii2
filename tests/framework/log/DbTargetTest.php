@@ -116,7 +116,7 @@ abstract class DbTargetTest extends TestCase
     }
 
     /**
-     * Tests that precision isn't lost for log timestamps
+     * Tests that precision isn't lost for log timestamps.
      * @see https://github.com/yiisoft/yii2/issues/7384
      */
     public function testTimestamp()
