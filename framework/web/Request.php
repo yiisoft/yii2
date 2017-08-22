@@ -989,7 +989,7 @@ class Request extends \yii\base\Request
      */
     public function getIsSecureConnection()
     {
-        if (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) {
+        if ((isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0)) {
             return true;
         }
         foreach ($this->secureProtocolHeaders as $header => $values) {
