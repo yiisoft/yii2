@@ -9,7 +9,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Dog
+ * Class Dog.
  *
  * @author Jose Lorente <jose.lorente.martin@gmail.com>
  * @since 2.0

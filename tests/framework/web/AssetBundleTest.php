@@ -49,7 +49,7 @@ class AssetBundleTest extends \yiiunit\TestCase
     }
 
     /**
-     * Returns View with configured AssetManager
+     * Returns View with configured AssetManager.
      *
      * @param array $config may be used to override default AssetManager config
      * @return View
@@ -208,7 +208,7 @@ class AssetBundleTest extends \yiiunit\TestCase
         $this->assertArrayHasKey('yiiunit\\framework\\web\\TestSimpleAsset', $view->assetBundles);
         $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestSimpleAsset']);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
@@ -228,7 +228,7 @@ EOF;
         $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestJqueryAsset']);
         $this->assertInstanceOf(AssetBundle::className(), $view->assetBundles['yiiunit\\framework\\web\\TestAssetLevel3']);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>4
 EOF;
@@ -249,6 +249,8 @@ EOF;
 
     /**
      * @dataProvider positionProvider
+     * @param int $pos
+     * @param bool $jqAlreadyRegistered
      */
     public function testPositionDependency($pos, $jqAlreadyRegistered)
     {
@@ -283,21 +285,21 @@ EOF;
 
         switch ($pos) {
             case View::POS_HEAD:
-                $expected = <<<EOF
+                $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">
 <script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>234
 EOF;
             break;
             case View::POS_BEGIN:
-                $expected = <<<EOF
+                $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">2<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>34
 EOF;
             break;
             default:
             case View::POS_END:
-                $expected = <<<EOF
+                $expected = <<<'EOF'
 1<link href="/files/cssFile.css" rel="stylesheet">23<script src="/js/jquery.js"></script>
 <script src="/files/jsFile.js"></script>4
 EOF;
@@ -318,6 +320,8 @@ EOF;
 
     /**
      * @dataProvider positionProvider
+     * @param int $pos
+     * @param bool $jqAlreadyRegistered
      */
     public function testPositionDependencyConflict($pos, $jqAlreadyRegistered)
     {
@@ -360,7 +364,7 @@ EOF;
         // register TestJqueryAsset which also has the jquery.js
         TestJqueryAsset::register($view);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 123<script src="/js/jquery.js"></script>4
 EOF;
         $this->assertEquals($expected, $view->renderFile('@yiiunit/data/views/rawlayout.php'));
@@ -373,7 +377,7 @@ EOF;
         $this->assertEmpty($view->assetBundles);
         TestAssetPerFileOptions::register($view);
 
-        $expected = <<<EOF
+        $expected = <<<'EOF'
 1<link href="/default_options.css" rel="stylesheet" media="screen" hreflang="en">
 <link href="/tv.css" rel="stylesheet" media="tv" hreflang="en">
 <link href="/screen_and_print.css" rel="stylesheet" media="screen, print" hreflang="en">23<script src="/normal.js" charset="utf-8"></script>
@@ -489,8 +493,9 @@ EOF;
      * @dataProvider registerFileDataProvider
      * @param string $type either `js` or `css`
      * @param string $path
-     * @param string bool $appendTimestamp
+     * @param string|bool $appendTimestamp
      * @param string $expected
+     * @param string|null $webAlias
      */
     public function testRegisterFileAppendTimestamp($type, $path, $appendTimestamp, $expected, $webAlias = null)
     {

@@ -257,7 +257,7 @@ EOL;
         $configFileName = $this->testFilePath . DIRECTORY_SEPARATOR . 'config.php';
         $this->runAssetControllerAction('template', [$configFileName]);
         $this->assertFileExists($configFileName, 'Unable to create config file template!');
-        $config = require($configFileName);
+        $config = require $configFileName;
         $this->assertInternalType('array', $config, 'Invalid config created!');
     }
 
@@ -303,7 +303,7 @@ EOL;
 
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
-        $compressedBundleConfig = require($bundleFile);
+        $compressedBundleConfig = require $bundleFile;
         $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertCount(2, $compressedBundleConfig, 'Output bundle config contains wrong bundle count!');
 
@@ -383,7 +383,7 @@ EOL;
 
         // Then :
         $this->assertFileExists($bundleFile, 'Unable to create output bundle file!');
-        $compressedBundleConfig = require($bundleFile);
+        $compressedBundleConfig = require $bundleFile;
         $this->assertInternalType('array', $compressedBundleConfig, 'Output bundle file has incorrect format!');
         $this->assertArrayHasKey($externalAssetBundleClassName, $compressedBundleConfig, 'External bundle is lost!');
 
@@ -571,7 +571,7 @@ EOL;
     }
 
     /**
-     * Data provider for [[testFindRealPath()]]
+     * Data provider for [[testFindRealPath()]].
      * @return array test data
      */
     public function findRealPathDataProvider()
@@ -752,7 +752,7 @@ EOL;
 }
 
 /**
- * Mock class for [[\yii\console\controllers\AssetController]]
+ * Mock class for [[\yii\console\controllers\AssetController]].
  */
 class AssetControllerMock extends AssetController
 {

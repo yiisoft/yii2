@@ -148,7 +148,7 @@ interface CacheInterface extends \ArrayAccess
     public function multiAdd($items, $duration = 0, $dependency = null);
 
     /**
-     * Deletes a value with the specified key from cache
+     * Deletes a value with the specified key from cache.
      * @param mixed $key a key identifying the value to be deleted from cache. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @return bool if no error happens during deletion
@@ -172,7 +172,7 @@ interface CacheInterface extends \ArrayAccess
      * public function getTopProducts($count = 10) {
      *     $cache = $this->cache; // Could be Yii::$app->cache
      *     return $cache->getOrSet(['top-n-products', 'n' => $count], function ($cache) use ($count) {
-     *         return Products::find()->mostPopular()->limit(10)->all();
+     *         return Products::find()->mostPopular()->limit($count)->all();
      *     }, 1000);
      * }
      * ```

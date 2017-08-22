@@ -788,6 +788,13 @@ yii migrate/redo 3      # redo the last 3 applied migrations
 
 > Note: If a migration is not reversible, you will not be able to redo it.
 
+## Refreshing Migrations <span id="refreshing-migrations"></span>
+
+Since Yii 2.0.13 you can reset the whole database and apply all migrations from the beginning.
+
+```
+yii migrate/fresh       # Truncate the database and apply all migrations from the beginning.
+```
 
 ## Listing Migrations <span id="listing-migrations"></span>
 
@@ -909,6 +916,7 @@ return [
     'controllerMap' => [
         'migrate' => [
             'class' => 'yii\console\controllers\MigrateController',
+            'migrationPath' => null, // disable non-namespaced migrations if app\migrations is listed below
             'migrationNamespaces' => [
                 'app\migrations', // Common migrations for the whole application
                 'module\migrations', // Migrations for the specific project's module

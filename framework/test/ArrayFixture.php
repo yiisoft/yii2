@@ -61,10 +61,10 @@ class ArrayFixture extends Fixture implements \IteratorAggregate, \ArrayAccess, 
         }
         $dataFile = Yii::getAlias($this->dataFile);
         if (is_file($dataFile)) {
-            return require($dataFile);
-        } else {
-            throw new InvalidConfigException("Fixture data file does not exist: {$this->dataFile}");
+            return require $dataFile;
         }
+
+        throw new InvalidConfigException("Fixture data file does not exist: {$this->dataFile}");
     }
 
     /**

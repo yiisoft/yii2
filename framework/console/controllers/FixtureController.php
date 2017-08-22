@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\console\Controller;
 use yii\console\Exception;
+use yii\console\ExitCode;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
 use yii\test\FixtureTrait;
@@ -86,6 +87,7 @@ class FixtureController extends Controller
 
     /**
      * Loads the specified fixture data.
+     *
      * For example,
      *
      * ```
@@ -112,7 +114,7 @@ class FixtureController extends Controller
             $helpCommand = Console::ansiFormat('yii help fixture', [Console::FG_CYAN]);
             $this->stdout("Use $helpCommand to get usage info.\n");
 
-            return self::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $filtered = $this->filterFixtures($fixturesInput);
@@ -142,11 +144,11 @@ class FixtureController extends Controller
 
         if (!$fixturesToLoad) {
             $this->notifyNothingToLoad($foundFixtures, $except);
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         if (!$this->confirmLoad($fixturesToLoad, $except)) {
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToLoad));
@@ -161,11 +163,12 @@ class FixtureController extends Controller
         $this->loadFixtures($fixturesObjects);
         $this->notifyLoaded($fixtures);
 
-        return static::EXIT_CODE_NORMAL;
+        return ExitCode::OK;
     }
 
     /**
      * Unloads the specified fixtures.
+     *
      * For example,
      *
      * ```
@@ -212,11 +215,11 @@ class FixtureController extends Controller
 
         if (!$fixturesToUnload) {
             $this->notifyNothingToUnload($foundFixtures, $except);
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         if (!$this->confirmUnload($fixturesToUnload, $except)) {
-            return static::EXIT_CODE_NORMAL;
+            return ExitCode::OK;
         }
 
         $fixtures = $this->getFixturesConfig(array_merge($this->globalFixtures, $fixturesToUnload));
@@ -241,7 +244,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that there are no fixtures to load according input conditions
+     * Notifies user that there are no fixtures to load according input conditions.
      * @param array $foundFixtures array of found fixtures
      * @param array $except array of names of fixtures that should not be loaded
      */
@@ -263,7 +266,7 @@ class FixtureController extends Controller
     }
 
     /**
-     * Notifies user that there are no fixtures to unload according input conditions
+     * Notifies user that there are no fixtures to unload according input conditions.
      * @param array $foundFixtures array of found fixtures
      * @param array $except array of names of fixtures that should not be loaded
      */
@@ -423,7 +426,7 @@ class FixtureController extends Controller
 
     /**
      * Calculates fixture's name
-     * Basically, strips [[getFixturePath()]] and `Fixture.php' suffix from fixture's full path
+     * Basically, strips [[getFixturePath()]] and `Fixture.php' suffix from fixture's full path.
      * @see getFixturePath()
      * @param string $fullFixturePath Full fixture path
      * @return string Relative fixture name
@@ -452,10 +455,12 @@ class FixtureController extends Controller
             $isNamespaced = (strpos($fixture, '\\') !== false);
             // replace linux' path slashes to namespace backslashes, in case if $fixture is non-namespaced relative path
             $fixture = str_replace('/', '\\', $fixture);
-            $fullClassName = $isNamespaced ? $fixture . 'Fixture' : $this->namespace . '\\' . $fixture . 'Fixture';
+            $fullClassName = $isNamespaced ? $fixture : $this->namespace . '\\' . $fixture;
 
             if (class_exists($fullClassName)) {
                 $config[] = $fullClassName;
+            } elseif (class_exists($fullClassName . 'Fixture')) {
+                $config[] = $fullClassName . 'Fixture';
             }
         }
 
@@ -464,6 +469,7 @@ class FixtureController extends Controller
 
     /**
      * Filters fixtures by splitting them in two categories: one that should be applied and not.
+     *
      * If fixture is prefixed with "-", for example "-User", that means that fixture should not be loaded,
      * if it is not prefixed it is considered as one to be loaded. Returns array:
      *

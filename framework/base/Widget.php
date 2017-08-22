@@ -110,13 +110,14 @@ class Widget extends Component implements ViewContextInterface
                     $result = $widget->afterRun($result);
                     echo $result;
                 }
+
                 return $widget;
-            } else {
-                throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
             }
-        } else {
-            throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
+
+            throw new InvalidCallException('Expecting end() of ' . get_class($widget) . ', found ' . get_called_class());
         }
+
+        throw new InvalidCallException('Unexpected ' . get_called_class() . '::end() call. A matching begin() is not found.');
     }
 
     /**
@@ -212,6 +213,7 @@ class Widget extends Component implements ViewContextInterface
 
     /**
      * Renders a view.
+     *
      * The view to be rendered can be specified in one of the following formats:
      *
      * - [path alias](guide:concept-aliases) (e.g. "@app/views/site/index");

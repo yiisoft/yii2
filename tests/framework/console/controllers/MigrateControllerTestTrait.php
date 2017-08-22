@@ -13,7 +13,7 @@ use yii\helpers\FileHelper;
 use yiiunit\TestCase;
 
 /**
- * This trait provides unit tests shared by the different migration controllers implementations
+ * This trait provides unit tests shared by the different migration controllers implementations.
  * @see BaseMigrateController
  */
 trait MigrateControllerTestTrait
@@ -98,6 +98,7 @@ trait MigrateControllerTestTrait
     /**
      * @param string $name
      * @param string|null $date
+     * @param string|null $path
      * @return string generated class name
      */
     protected function createMigration($name, $date = null, $path = null)
@@ -161,7 +162,7 @@ CODE;
     }
 
     /**
-     * Change class name migration to $class
+     * Change class name migration to $class.
      * @param string $class name class
      * @return string content generated class migration
      * @see https://github.com/yiisoft/yii2/pull/10213
@@ -310,6 +311,18 @@ CODE;
         $this->runMigrateControllerAction('mark', [$version]);
 
         $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
+    }
+
+    public function testMarkBase()
+    {
+        $version = '010101_000001';
+        $this->createMigration('test_mark1', $version);
+
+        $this->runMigrateControllerAction('up');
+        $this->assertMigrationHistory(['m*_base', 'm*_test_mark1']);
+
+        $this->runMigrateControllerAction('mark', [BaseMigrateController::BASE_MIGRATION]);
+        $this->assertMigrationHistory(['m*_base']);
     }
 
     public function testTo()
@@ -478,7 +491,7 @@ CODE;
     }
 
     /**
-     * Test migration with using multiple migration paths and namespaces
+     * Test migration with using multiple migration paths and namespaces.
      */
     public function testCombinedMigrationProcess()
     {

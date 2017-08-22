@@ -226,9 +226,9 @@ class PhpManager extends BaseManager
             unset($this->children[$parent->name][$child->name]);
             $this->saveItems();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -240,9 +240,9 @@ class PhpManager extends BaseManager
             unset($this->children[$parent->name]);
             $this->saveItems();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -262,15 +262,16 @@ class PhpManager extends BaseManager
             throw new InvalidParamException("Unknown role '{$role->name}'.");
         } elseif (isset($this->assignments[$userId][$role->name])) {
             throw new InvalidParamException("Authorization item '{$role->name}' has already been assigned to user '$userId'.");
-        } else {
-            $this->assignments[$userId][$role->name] = new Assignment([
-                'userId' => $userId,
-                'roleName' => $role->name,
-                'createdAt' => time(),
-            ]);
-            $this->saveAssignments();
-            return $this->assignments[$userId][$role->name];
         }
+
+        $this->assignments[$userId][$role->name] = new Assignment([
+            'userId' => $userId,
+            'roleName' => $role->name,
+            'createdAt' => time(),
+        ]);
+        $this->saveAssignments();
+
+        return $this->assignments[$userId][$role->name];
     }
 
     /**
@@ -282,9 +283,9 @@ class PhpManager extends BaseManager
             unset($this->assignments[$userId][$role->name]);
             $this->saveAssignments();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -298,9 +299,9 @@ class PhpManager extends BaseManager
             }
             $this->saveAssignments();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -345,9 +346,9 @@ class PhpManager extends BaseManager
             $this->saveItems();
             $this->saveAssignments();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -389,6 +390,7 @@ class PhpManager extends BaseManager
 
     /**
      * @inheritdoc
+     * The roles returned by this method include the roles assigned via [[$defaultRoles]].
      */
     public function getRolesByUser($userId)
     {
@@ -442,6 +444,7 @@ class PhpManager extends BaseManager
                 $permissions[$itemName] = $this->items[$itemName];
             }
         }
+
         return $permissions;
     }
 
@@ -515,6 +518,7 @@ class PhpManager extends BaseManager
                 $permissions[$itemName] = $this->items[$itemName];
             }
         }
+
         return $permissions;
     }
 
@@ -629,9 +633,9 @@ class PhpManager extends BaseManager
             }
             $this->saveRules();
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -652,29 +656,29 @@ class PhpManager extends BaseManager
         if ($name !== $item->name) {
             if (isset($this->items[$item->name])) {
                 throw new InvalidParamException("Unable to change the item name. The name '{$item->name}' is already used by another item.");
-            } else {
-                // Remove old item in case of renaming
-                unset($this->items[$name]);
-
-                if (isset($this->children[$name])) {
-                    $this->children[$item->name] = $this->children[$name];
-                    unset($this->children[$name]);
-                }
-                foreach ($this->children as &$children) {
-                    if (isset($children[$name])) {
-                        $children[$item->name] = $children[$name];
-                        unset($children[$name]);
-                    }
-                }
-                foreach ($this->assignments as &$assignments) {
-                    if (isset($assignments[$name])) {
-                        $assignments[$item->name] = $assignments[$name];
-                        $assignments[$item->name]->roleName = $item->name;
-                        unset($assignments[$name]);
-                    }
-                }
-                $this->saveAssignments();
             }
+
+            // Remove old item in case of renaming
+            unset($this->items[$name]);
+
+            if (isset($this->children[$name])) {
+                $this->children[$item->name] = $this->children[$name];
+                unset($this->children[$name]);
+            }
+            foreach ($this->children as &$children) {
+                if (isset($children[$name])) {
+                    $children[$item->name] = $children[$name];
+                    unset($children[$name]);
+                }
+            }
+            foreach ($this->assignments as &$assignments) {
+                if (isset($assignments[$name])) {
+                    $assignments[$item->name] = $assignments[$name];
+                    $assignments[$item->name]->roleName = $item->name;
+                    unset($assignments[$name]);
+                }
+            }
+            $this->saveAssignments();
         }
 
         $this->items[$item->name] = $item;
@@ -777,10 +781,10 @@ class PhpManager extends BaseManager
     protected function loadFromFile($file)
     {
         if (is_file($file)) {
-            return require($file);
-        } else {
-            return [];
+            return require $file;
         }
+
+        return [];
     }
 
     /**
@@ -878,6 +882,7 @@ class PhpManager extends BaseManager
                 }
             }
         }
+
         return $result;
     }
 }

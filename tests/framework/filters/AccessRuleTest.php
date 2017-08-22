@@ -44,6 +44,7 @@ class AccessRuleTest extends \yiiunit\TestCase
             ->setMethods(['getMethod'])
             ->getMock();
         $request->method('getMethod')->willReturn($method);
+
         return $request;
     }
 
@@ -60,6 +61,7 @@ class AccessRuleTest extends \yiiunit\TestCase
         if ($userid !== null) {
             $user->setIdentity(UserIdentity::findIdentity($userid));
         }
+
         return $user;
     }
 
@@ -207,7 +209,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
-     * Data provider for testMatchRole
+     * Data provider for testMatchRole.
      *
      * @return array or arrays
      *           the id of the action
@@ -250,7 +252,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
-     * Test that a user matches certain roles
+     * Test that a user matches certain roles.
      *
      * @dataProvider matchRoleProvider
      * @param string $actionid the action id
@@ -280,7 +282,7 @@ class AccessRuleTest extends \yiiunit\TestCase
     }
 
     /**
-     * Test that matching role is not possible without User component
+     * Test that matching role is not possible without User component.
      *
      * @see https://github.com/yiisoft/yii2/issues/4793
      */

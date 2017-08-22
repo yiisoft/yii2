@@ -10,9 +10,9 @@ namespace yii\log {
     {
         if (\yiiunit\framework\log\DispatcherTest::$microtimeIsMocked) {
             return \yiiunit\framework\log\DispatcherTest::microtime(func_get_args());
-        } else {
-            return \microtime($get_as_float);
         }
+
+        return \microtime($get_as_float);
     }
 }
 
@@ -45,7 +45,7 @@ namespace yiiunit\framework\log {
         public static $microtimeIsMocked = false;
 
         /**
-         * Array of static functions
+         * Array of static functions.
          *
          * @var array
          */

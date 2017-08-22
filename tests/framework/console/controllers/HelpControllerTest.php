@@ -41,8 +41,8 @@ class HelpControllerTest extends TestCase
 
     /**
      * Emulates running controller action.
-     * @param  string $actionID id of action to be run.
-     * @param  array $args action arguments.
+     * @param string $actionID id of action to be run.
+     * @param array $actionParams action arguments.
      * @return string command output.
      */
     protected function runControllerAction($actionID, $actionParams = [])
@@ -63,7 +63,7 @@ class HelpControllerTest extends TestCase
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list'));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 cache
 cache/flush
 cache/flush-all
@@ -77,6 +77,7 @@ help/usage
 migrate
 migrate/create
 migrate/down
+migrate/fresh
 migrate/history
 migrate/mark
 migrate/new
@@ -98,7 +99,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('list-action-options', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 action:route to action
 
 --interactive: whether to run the command interactively.
@@ -119,7 +120,7 @@ STRING
             ],
         ]);
         $result = Console::stripAnsiFormat($this->runControllerAction('usage', ['action' => 'help/list-action-options']));
-        $this->assertEquals(<<<STRING
+        $this->assertEquals(<<<'STRING'
 bootstrap.php help/list-action-options <action>
 
 STRING

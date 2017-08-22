@@ -95,9 +95,9 @@ class Action extends Component
             $this->afterRun();
 
             return $result;
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     /**

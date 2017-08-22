@@ -11,7 +11,7 @@ use yii\mutex\FileMutex;
 use yiiunit\TestCase;
 
 /**
- * Class FileMutexTest
+ * Class FileMutexTest.
  *
  * @group mutex
  */

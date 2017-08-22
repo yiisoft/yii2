@@ -112,6 +112,7 @@ trait QueryTrait
         } else {
             $this->where = ['and', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -131,6 +132,7 @@ trait QueryTrait
         } else {
             $this->where = ['or', $this->where, $condition];
         }
+
         return $this;
     }
 
@@ -167,6 +169,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->where($condition);
         }
+
         return $this;
     }
 
@@ -190,6 +193,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->andWhere($condition);
         }
+
         return $this;
     }
 
@@ -213,6 +217,7 @@ trait QueryTrait
         if ($condition !== []) {
             $this->orWhere($condition);
         }
+
         return $this;
     }
 
@@ -236,6 +241,7 @@ trait QueryTrait
                     unset($condition[$name]);
                 }
             }
+
             return $condition;
         }
 
@@ -345,11 +351,12 @@ trait QueryTrait
         } else {
             $this->orderBy = array_merge($this->orderBy, $columns);
         }
+
         return $this;
     }
 
     /**
-     * Normalizes format of ORDER BY data
+     * Normalizes format of ORDER BY data.
      *
      * @param array|string|Expression $columns the columns value to normalize. See [[orderBy]] and [[addOrderBy]].
      * @return array
@@ -360,18 +367,19 @@ trait QueryTrait
             return [$columns];
         } elseif (is_array($columns)) {
             return $columns;
-        } else {
-            $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
-            $result = [];
-            foreach ($columns as $column) {
-                if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
-                    $result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
-                } else {
-                    $result[$column] = SORT_ASC;
-                }
-            }
-            return $result;
         }
+
+        $columns = preg_split('/\s*,\s*/', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
+        $result = [];
+        foreach ($columns as $column) {
+            if (preg_match('/^(.*?)\s+(asc|desc)$/i', $column, $matches)) {
+                $result[$matches[1]] = strcasecmp($matches[2], 'desc') ? SORT_ASC : SORT_DESC;
+            } else {
+                $result[$column] = SORT_ASC;
+            }
+        }
+
+        return $result;
     }
 
     /**

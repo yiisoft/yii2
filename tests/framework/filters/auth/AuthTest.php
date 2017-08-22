@@ -92,6 +92,8 @@ class AuthTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider tokenProvider
+     * @param string|null $token
+     * @param string|null $login
      */
     public function testQueryParamAuth($token, $login)
     {
@@ -104,6 +106,8 @@ class AuthTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider tokenProvider
+     * @param string|null $token
+     * @param string|null $login
      */
     public function testHttpBasicAuth($token, $login)
     {
@@ -117,6 +121,8 @@ class AuthTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider tokenProvider
+     * @param string|null $token
+     * @param string|null $login
      */
     public function testHttpBasicAuthCustom($token, $login)
     {
@@ -139,6 +145,8 @@ class AuthTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider tokenProvider
+     * @param string|null $token
+     * @param string|null $login
      */
     public function testHttpBearerAuth($token, $login)
     {
@@ -161,6 +169,7 @@ class AuthTest extends \yiiunit\TestCase
 
     /**
      * @dataProvider authMethodProvider
+     * @param string $authClass
      */
     public function testActive($authClass)
     {
@@ -209,7 +218,7 @@ class AuthTest extends \yiiunit\TestCase
 }
 
 /**
- * Class TestAuthController
+ * Class TestAuthController.
  *
  * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
  * @since 2.0.7

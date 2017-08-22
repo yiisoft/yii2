@@ -82,6 +82,7 @@ class ErrorHandler extends \yii\base\ErrorHandler
             || Yii::$app instanceof \yii\console\Application && Console::streamSupportsAnsiColors($stream)) {
             $message = Console::ansiFormat($message, $format);
         }
+
         return $message;
     }
 }

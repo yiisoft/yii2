@@ -129,9 +129,9 @@ class DbManager extends BaseManager
         $this->loadFromCache();
         if ($this->items !== null) {
             return $this->checkAccessFromCache($userId, $permissionName, $params, $assignments);
-        } else {
-            return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
         }
+
+        return $this->checkAccessRecursive($userId, $permissionName, $params, $assignments);
     }
 
     /**
@@ -428,7 +428,7 @@ class DbManager extends BaseManager
     }
 
     /**
-     * Populates an auth item with the data fetched from database
+     * Populates an auth item with the data fetched from database.
      * @param array $row the data from the auth item table
      * @return Item the populated auth item instance (either Role or Permission)
      */
@@ -453,10 +453,11 @@ class DbManager extends BaseManager
 
     /**
      * @inheritdoc
+     * The roles returned by this method include the roles assigned via [[$defaultRoles]].
      */
     public function getRolesByUser($userId)
     {
-        if (!isset($userId) || $userId === '') {
+        if ($this->isEmptyUserId($userId)) {
             return [];
         }
 
@@ -470,6 +471,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $roles[$row['name']] = $this->populateItem($row);
         }
+
         return $roles;
     }
 
@@ -515,6 +517,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -523,7 +526,7 @@ class DbManager extends BaseManager
      */
     public function getPermissionsByUser($userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return [];
         }
 
@@ -551,6 +554,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -584,6 +588,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $permissions[$row['name']] = $this->populateItem($row);
         }
+
         return $permissions;
     }
 
@@ -599,6 +604,7 @@ class DbManager extends BaseManager
         foreach ($query->all($this->db) as $row) {
             $parents[$row['parent']][] = $row['child'];
         }
+
         return $parents;
     }
 
@@ -638,6 +644,7 @@ class DbManager extends BaseManager
         if (is_resource($data)) {
             $data = stream_get_contents($data);
         }
+
         return unserialize($data);
     }
 
@@ -669,7 +676,7 @@ class DbManager extends BaseManager
      */
     public function getAssignment($roleName, $userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return null;
         }
 
@@ -693,7 +700,7 @@ class DbManager extends BaseManager
      */
     public function getAssignments($userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return [];
         }
 
@@ -821,6 +828,7 @@ class DbManager extends BaseManager
                 return true;
             }
         }
+
         return false;
     }
 
@@ -850,7 +858,7 @@ class DbManager extends BaseManager
      */
     public function revoke($role, $userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return false;
         }
 
@@ -864,7 +872,7 @@ class DbManager extends BaseManager
      */
     public function revokeAll($userId)
     {
-        if (empty($userId)) {
+        if ($this->isEmptyUserId($userId)) {
             return false;
         }
 
@@ -1020,5 +1028,15 @@ class DbManager extends BaseManager
         return (new Query())->select('[[user_id]]')
             ->from($this->assignmentTable)
             ->where(['item_name' => $roleName])->column($this->db);
+    }
+
+    /**
+     * Check whether $userId is empty.
+     * @param mixed $userId
+     * @return bool
+     */
+    private function isEmptyUserId($userId)
+    {
+        return !isset($userId) || $userId === '';
     }
 }

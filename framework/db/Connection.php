@@ -403,11 +403,11 @@ class Connection extends Component
      */
     private $_driverName;
     /**
-     * @var Connection the currently active master connection
+     * @var Connection|false the currently active master connection
      */
     private $_master = false;
     /**
-     * @var Connection the currently active slave connection
+     * @var Connection|false the currently active slave connection
      */
     private $_slave = false;
     /**
@@ -427,6 +427,7 @@ class Connection extends Component
 
     /**
      * Uses query cache for the queries performed with the callable.
+     *
      * When query caching is enabled ([[enableQueryCache]] is true and [[queryCache]] refers to a valid cache),
      * queries performed within the callable will be cached and their results will be fetched from cache if available.
      * For example,
@@ -472,6 +473,7 @@ class Connection extends Component
 
     /**
      * Disables query cache temporarily.
+     *
      * Queries performed within the callable will not use query cache at all. For example,
      *
      * ```php
@@ -564,9 +566,9 @@ class Connection extends Component
             if ($db !== null) {
                 $this->pdo = $db->pdo;
                 return;
-            } else {
-                throw new InvalidConfigException('None of the master DB servers is available.');
             }
+
+            throw new InvalidConfigException('None of the master DB servers is available.');
         }
 
         if (empty($this->dsn)) {
@@ -597,7 +599,7 @@ class Connection extends Component
             }
 
             $this->_master->close();
-            $this->_master = null;
+            $this->_master = false;
         }
 
         if ($this->pdo !== null) {
@@ -609,7 +611,7 @@ class Connection extends Component
 
         if ($this->_slave) {
             $this->_slave->close();
-            $this->_slave = null;
+            $this->_slave = false;
         }
     }
 
@@ -643,6 +645,7 @@ class Connection extends Component
         if (strncmp('sqlite:@', $dsn, 8) === 0) {
             $dsn = 'sqlite:' . Yii::getAlias(substr($dsn, 7));
         }
+
         return new $pdoClass($dsn, $this->username, $this->password, $this->attributes);
     }
 
@@ -768,17 +771,17 @@ class Connection extends Component
     {
         if ($this->_schema !== null) {
             return $this->_schema;
-        } else {
-            $driver = $this->getDriverName();
-            if (isset($this->schemaMap[$driver])) {
-                $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
-                $config['db'] = $this;
-
-                return $this->_schema = Yii::createObject($config);
-            } else {
-                throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
-            }
         }
+
+        $driver = $this->getDriverName();
+        if (isset($this->schemaMap[$driver])) {
+            $config = !is_array($this->schemaMap[$driver]) ? ['class' => $this->schemaMap[$driver]] : $this->schemaMap[$driver];
+            $config['db'] = $this;
+
+            return $this->_schema = Yii::createObject($config);
+        }
+
+        throw new NotSupportedException("Connection does not support reading schema information for '$driver' DBMS.");
     }
 
     /**
@@ -866,9 +869,9 @@ class Connection extends Component
             function ($matches) {
                 if (isset($matches[3])) {
                     return $this->quoteColumnName($matches[3]);
-                } else {
-                    return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
                 }
+
+                return str_replace('%', $this->tablePrefix, $this->quoteTableName($matches[2]));
             },
             $sql
         );
@@ -888,6 +891,7 @@ class Connection extends Component
                 $this->_driverName = strtolower($this->getSlavePdo()->getAttribute(PDO::ATTR_DRIVER_NAME));
             }
         }
+
         return $this->_driverName;
     }
 
@@ -913,9 +917,9 @@ class Connection extends Component
         $db = $this->getSlave(false);
         if ($db === null) {
             return $fallbackToMaster ? $this->getMasterPdo() : null;
-        } else {
-            return $db->pdo;
         }
+
+        return $db->pdo;
     }
 
     /**

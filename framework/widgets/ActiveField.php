@@ -819,7 +819,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Checks if client validation enabled for the field
+     * Checks if client validation enabled for the field.
      * @return bool
      * @since 2.0.11
      */
@@ -829,7 +829,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Checks if ajax validation enabled for the field
+     * Checks if ajax validation enabled for the field.
      * @return bool
      * @since 2.0.11
      */
@@ -849,7 +849,7 @@ class ActiveField extends Component
     }
 
     /**
-     * Adds aria attributes to the input options
+     * Adds aria attributes to the input options.
      * @param $options array input options
      * @since 2.0.11
      */

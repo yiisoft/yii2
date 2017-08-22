@@ -229,6 +229,7 @@ EOD;
 
     /**
      * Generates a batch INSERT SQL statement.
+     *
      * For example,
      *
      * ```php
@@ -243,7 +244,7 @@ EOD;
      *
      * @param string $table the table that new rows will be inserted into.
      * @param array $columns the column names
-     * @param array $rows the rows to be batch inserted into the table
+     * @param array|\Generator $rows the rows to be batch inserted into the table
      * @return string the batch INSERT SQL statement
      */
     public function batchInsert($table, $columns, $rows)
@@ -268,6 +269,9 @@ EOD;
                 }
                 if (is_string($value)) {
                     $value = $schema->quoteValue($value);
+                } elseif (is_float($value)) {
+                    // ensure type cast always has . as decimal separator in all locales
+                    $value = str_replace(',', '.', (string) $value);
                 } elseif ($value === false) {
                     $value = 0;
                 } elseif ($value === null) {
@@ -330,6 +334,7 @@ EOD;
              */
             $this->likeEscapingReplacements['\\'] = substr($this->db->quoteValue('\\'), 1, -1);
         }
+
         return parent::buildLikeCondition($operator, $operands, $params);
     }
 

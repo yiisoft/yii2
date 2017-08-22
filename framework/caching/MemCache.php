@@ -117,7 +117,7 @@ class MemCache extends Cache
     }
 
     /**
-     * Add servers to the server pool of the cache specified
+     * Add servers to the server pool of the cache specified.
      *
      * @param \Memcache|\Memcached $cache
      * @param MemCacheServer[] $servers
@@ -317,9 +317,9 @@ class MemCache extends Cache
             // Memcached::setMulti() returns boolean
             // @see http://php.net/manual/en/memcached.setmulti.php
             return $this->_cache->setMulti($data, $expire) ? [] : array_keys($data);
-        } else {
-            return parent::setValues($data, $duration);
         }
+
+        return parent::setValues($data, $duration);
     }
 
     /**

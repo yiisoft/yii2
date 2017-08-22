@@ -16,7 +16,7 @@ use yiiunit\data\ar\Customer;
 use yiiunit\data\ar\Profile;
 
 /**
- * Class ActiveQueryTest the base class for testing ActiveQuery
+ * Class ActiveQueryTest the base class for testing ActiveQuery.
  */
 abstract class ActiveQueryTest extends DatabaseTestCase
 {
@@ -237,6 +237,12 @@ abstract class ActiveQueryTest extends DatabaseTestCase
         $this->assertEquals(['alias' => 'old'], $result->from);
     }
 
+    use GetTablesAliasTestTrait;
+    protected function createQuery()
+    {
+        return new ActiveQuery(null);
+    }
+
     public function testGetTableNames_notFilledFrom()
     {
         $query = new ActiveQuery(Profile::className());
@@ -245,136 +251,6 @@ abstract class ActiveQueryTest extends DatabaseTestCase
 
         $this->assertEquals([
             '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
-        ], $tables);
-    }
-
-    public function testGetTableNames_isFromArray()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = [
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ];
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ], $tables);
-    }
-
-    public function testGetTableNames_isFromString()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = 'profile AS \'prf\', user "usr", `order`, "customer", "a b" as "c d"';
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{order}}' => '{{order}}',
-            '{{customer}}' => '{{customer}}',
-            '{{c d}}' => '{{a b}}',
-        ], $tables);
-    }
-
-    public function testGetTableNames_isFromObject_generateException()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = new \stdClass();
-
-        $this->setExpectedException('\yii\base\InvalidConfigException');
-
-        $query->getTablesUsedInFrom();
-    }
-
-    public function testGetTablesAlias_notFilledFrom()
-    {
-        $query = new ActiveQuery(Profile::className());
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{' . Profile::tableName() . '}}' => '{{' . Profile::tableName() . '}}',
-        ], $tables);
-    }
-
-    public function testGetTablesAlias_isFromArray()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = [
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ];
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{a b}}' => '{{c d}}',
-        ], $tables);
-    }
-
-    public function testGetTablesAlias_isFromString()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = 'profile AS \'prf\', user "usr", service srv, order, [a b] [c d], {{something}} AS myalias';
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{prf}}' => '{{profile}}',
-            '{{usr}}' => '{{user}}',
-            '{{srv}}' => '{{service}}',
-            '{{order}}' => '{{order}}',
-            '{{c d}}' => '{{a b}}',
-            '{{myalias}}' => '{{something}}',
-        ], $tables);
-    }
-
-    public function testGetTablesAlias_isFromObject_generateException()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = new \stdClass();
-
-        $this->setExpectedException('\yii\base\InvalidConfigException');
-
-        $query->getTablesUsedInFrom();
-    }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/14150
-     */
-    public function testGetTableAliasFromPrefixedTableName()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = '{{%order_item}}';
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{%order_item}}' => '{{%order_item}}',
-        ], $tables);
-    }
-
-    /**
-     * @see https://github.com/yiisoft/yii2/issues/14211
-     */
-    public function testGetTableAliasFromTableNameWithDatabase()
-    {
-        $query = new ActiveQuery(null);
-        $query->from = 'tickets.workflows';
-
-        $tables = $query->getTablesUsedInFrom();
-
-        $this->assertEquals([
-            '{{tickets.workflows}}' => '{{tickets.workflows}}',
         ], $tables);
     }
 }

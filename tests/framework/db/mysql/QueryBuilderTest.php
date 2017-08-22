@@ -18,8 +18,8 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
     protected $driverName = 'mysql';
 
     /**
-     * this is not used as a dataprovider for testGetColumnType to speed up the test
-     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here
+     * This is not used as a dataprovider for testGetColumnType to speed up the test
+     * when used as dataprovider every single line will cause a reconnect with the database which is not needed here.
      */
     public function columnTypes()
     {
@@ -60,6 +60,49 @@ class QueryBuilderTest extends \yiiunit\framework\db\QueryBuilderTest
                 "int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT 'test' AFTER `col_before`",
             ],
         ]);
+    }
+
+    public function primaryKeysProvider()
+    {
+        $result = parent::primaryKeysProvider();
+        $result['drop'][0] = 'ALTER TABLE {{T_constraints_1}} DROP PRIMARY KEY';
+        $result['add'][0] = 'ALTER TABLE {{T_constraints_1}} ADD CONSTRAINT [[CN_pk]] PRIMARY KEY ([[C_id_1]])';
+        $result['add (2 columns)'][0] = 'ALTER TABLE {{T_constraints_1}} ADD CONSTRAINT [[CN_pk]] PRIMARY KEY ([[C_id_1]], [[C_id_2]])';
+        return $result;
+    }
+
+    public function foreignKeysProvider()
+    {
+        $result = parent::foreignKeysProvider();
+        $result['drop'][0] = 'ALTER TABLE {{T_constraints_3}} DROP FOREIGN KEY [[CN_constraints_3]]';
+        return $result;
+    }
+
+    public function indexesProvider()
+    {
+        $result = parent::indexesProvider();
+        $result['create'][0] = 'ALTER TABLE {{T_constraints_2}} ADD INDEX [[CN_constraints_2_single]] ([[C_index_1]])';
+        $result['create (2 columns)'][0] = 'ALTER TABLE {{T_constraints_2}} ADD INDEX [[CN_constraints_2_multi]] ([[C_index_2_1]], [[C_index_2_2]])';
+        $result['create unique'][0] = 'ALTER TABLE {{T_constraints_2}} ADD UNIQUE INDEX [[CN_constraints_2_single]] ([[C_index_1]])';
+        $result['create unique (2 columns)'][0] = 'ALTER TABLE {{T_constraints_2}} ADD UNIQUE INDEX [[CN_constraints_2_multi]] ([[C_index_2_1]], [[C_index_2_2]])';
+        return $result;
+    }
+
+    public function uniquesProvider()
+    {
+        $result = parent::uniquesProvider();
+        $result['drop'][0] = 'DROP INDEX [[CN_unique]] ON {{T_constraints_1}}';
+        return $result;
+    }
+
+    public function checksProvider()
+    {
+        $this->markTestSkipped('Adding/dropping check constraints is not supported in MySQL.');
+    }
+
+    public function defaultValuesProvider()
+    {
+        $this->markTestSkipped('Adding/dropping default constraints is not supported in MySQL.');
     }
 
     public function testResetSequence()

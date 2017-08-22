@@ -8,7 +8,7 @@
 namespace yiiunit\data\ar;
 
 /**
- * Class Order
+ * Class Order.
  *
  * @property int $id
  * @property int $customer_id
@@ -196,9 +196,9 @@ class Order extends ActiveRecord
             $this->created_at = time();
 
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     public function attributeLabels()

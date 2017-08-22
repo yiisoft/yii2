@@ -95,6 +95,10 @@ class AttributeBehaviorTest extends TestCase
 
     /**
      * @dataProvider preserveNonEmptyValuesDataProvider
+     * @param string $aliasExpected
+     * @param bool $preserveNonEmptyValues
+     * @param string $name
+     * @param string|null $alias
      */
     public function testPreserveNonEmptyValues(
         $aliasExpected,

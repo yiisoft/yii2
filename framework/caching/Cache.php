@@ -121,9 +121,9 @@ abstract class Cache extends Component implements CacheInterface
         }
         if (is_array($value) && !($value[1] instanceof Dependency && $value[1]->isChanged($this))) {
             return $value[0];
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -365,7 +365,7 @@ abstract class Cache extends Component implements CacheInterface
     }
 
     /**
-     * Deletes a value with the specified key from cache
+     * Deletes a value with the specified key from cache.
      * @param mixed $key a key identifying the value to be deleted from cache. This can be a simple string or
      * a complex data structure consisting of factors representing the key.
      * @return bool if no error happens during deletion

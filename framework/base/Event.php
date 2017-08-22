@@ -24,7 +24,7 @@ namespace yii\base;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class Event extends Object
+class Event extends BaseObject
 {
     /**
      * @var string the event name. This property is set by [[Component::trigger()]] and [[trigger()]].
@@ -128,6 +128,7 @@ class Event extends Object
         if ($removed) {
             self::$_events[$name][$class] = array_values(self::$_events[$name][$class]);
         }
+
         return $removed;
     }
 

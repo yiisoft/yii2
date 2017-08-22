@@ -11,7 +11,7 @@ use yii\helpers\Markdown;
 use yiiunit\TestCase;
 
 /**
- * Description of MarkdownTest
+ * Description of MarkdownTest.
  *
  * @author Misbahul D Munir <misbahuldmunir@gmail.com>
  * @group helpers
@@ -28,7 +28,7 @@ class MarkdownTest extends TestCase
 
     public function testOriginalFlavor()
     {
-        $text = <<<TEXT
+        $text = <<<'TEXT'
 html
 new line 1
 

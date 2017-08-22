@@ -19,11 +19,11 @@ Ketika [skrip masuk](structure-entry-scripts.md) membuat objek aplikasi, objek i
 sebuah [array konfigurasi](concept-configurations.md) dan menerapkannya pada objek aplikasi seperti berikut ini:
 
 ```php
-require(__DIR__ . '/../vendor/autoload.php');
-require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 
 // memuat konfigurasi aplikasi
-$config = require(__DIR__ . '/../config/web.php');
+$config = require __DIR__ . '/../config/web.php';
 
 // membuat objek aplikasi & menerapkan konfigurasi
 (new yii\web\Application($config))->run();

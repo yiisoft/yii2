@@ -15,9 +15,9 @@ namespace yiiunit\framework\i18n {
         public static $enableIntl;
 
         /**
-         * emulate disabled intl extension
+         * Emulate disabled intl extension.
          *
-         * enable it only for tests prefixed with testIntl
+         * Enable it only for tests prefixed with testIntl.
          * @param Testcase $test
          */
         public static function setIntlStatus($test)
@@ -49,6 +49,7 @@ namespace yii\i18n {
             if ($name === 'intl' && IntlTestHelper::$enableIntl !== null) {
                 return IntlTestHelper::$enableIntl;
             }
+
             return \extension_loaded($name);
         }
     }
@@ -63,6 +64,7 @@ namespace yii\helpers {
             if ($name === 'intl' && IntlTestHelper::$enableIntl !== null) {
                 return IntlTestHelper::$enableIntl;
             }
+
             return \extension_loaded($name);
         }
     }
@@ -77,6 +79,7 @@ namespace yii\validators {
             if ($name === 'intl' && IntlTestHelper::$enableIntl !== null) {
                 return IntlTestHelper::$enableIntl;
             }
+
             return \extension_loaded($name);
         }
     }

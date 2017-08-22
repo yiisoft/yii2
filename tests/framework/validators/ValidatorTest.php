@@ -7,10 +7,13 @@
 
 namespace yiiunit\framework\validators;
 
+use yii\base\DynamicModel;
 use yii\validators\BooleanValidator;
 use yii\validators\InlineValidator;
 use yii\validators\NumberValidator;
+use yii\validators\RequiredValidator;
 use yiiunit\data\validators\models\FakedValidationModel;
+use yiiunit\data\validators\models\ValidatorTestFunctionModel;
 use yiiunit\data\validators\TestValidator;
 use yiiunit\TestCase;
 
@@ -68,6 +71,18 @@ class ValidatorTest extends TestCase
         $this->assertInstanceOf(InlineValidator::className(), $val);
         $this->assertSame('inlineVal', $val->method);
         $this->assertSame(['foo' => 'bar'], $val->params);
+    }
+
+    /**
+     * @see https://github.com/yiisoft/yii2/issues/14370
+     */
+    public function testCreateBuiltInValidatorWithSameNameFunction()
+    {
+        $model = new ValidatorTestFunctionModel();
+
+        $validator = TestValidator::createValidator('required', $model, ['firstAttribute']);
+
+        $this->assertInstanceOf(RequiredValidator::className(), $validator);
     }
 
     public function testValidate()
@@ -269,5 +284,25 @@ class ValidatorTest extends TestCase
             }
         }
         $this->assertTrue($isFound);
+    }
+
+    /**
+     * Make sure attribute names are calculated dynamically.
+     * @see https://github.com/yiisoft/yii2/issues/13979
+     * @see https://github.com/yiisoft/yii2/pull/14413
+     */
+    public function testAttributeNamesDynamic()
+    {
+        $model = new DynamicModel(['email1' => 'invalid', 'email2' => 'invalid']);
+        $validator = new TestValidator();
+        $validator->enableErrorOnValidateAttribute();
+
+        $validator->attributes = ['email1'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
+
+        $validator->attributes = ['email2'];
+        $model->getValidators()->append($validator);
+        $this->assertFalse($model->validate());
     }
 }

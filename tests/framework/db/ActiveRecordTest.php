@@ -14,6 +14,7 @@ use yiiunit\data\ar\BitValues;
 use yiiunit\data\ar\Cat;
 use yiiunit\data\ar\Category;
 use yiiunit\data\ar\Customer;
+use yiiunit\data\ar\CustomerQuery;
 use yiiunit\data\ar\Document;
 use yiiunit\data\ar\Dog;
 use yiiunit\data\ar\Item;
@@ -36,6 +37,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     {
         parent::setUp();
         ActiveRecord::$db = $this->getConnection();
+        CustomerQuery::$joinWithProfile = false;
     }
 
     /**
@@ -239,7 +241,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/5341
+     * @see https://github.com/yiisoft/yii2/issues/5341
      *
      * Issue:     Plan     1 -- * Account * -- * User
      * Our Tests: Category 1 -- * Item    * -- * Order
@@ -582,8 +584,9 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * This query will do the same join twice, ensure duplicated JOIN gets removed
-     * https://github.com/yiisoft/yii2/pull/2650
+     * This query will do the same join twice, ensure duplicated JOIN gets removed.
+     *
+     * @see https://github.com/yiisoft/yii2/pull/2650
      */
     public function testJoinWithVia()
     {
@@ -607,7 +610,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * Tests the alias syntax for joinWith: 'alias' => 'relation'
+     * Tests the alias syntax for joinWith: 'alias' => 'relation'.
      * @dataProvider aliasMethodProvider
      * @param string $aliasMethod whether alias is specified explicitly or using the query syntax {{@tablename}}
      */
@@ -883,8 +886,8 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/10201
-     * https://github.com/yiisoft/yii2/issues/9047
+     * @see https://github.com/yiisoft/yii2/issues/10201
+     * @see https://github.com/yiisoft/yii2/issues/9047
      */
     public function testFindCompositeRelationWithJoin()
     {
@@ -929,6 +932,8 @@ abstract class ActiveRecordTest extends DatabaseTestCase
      * Test whether conditions are quoted correctly in conditions where joinWith is used.
      * @see https://github.com/yiisoft/yii2/issues/11088
      * @dataProvider tableNameProvider
+     * @param string $orderTableName
+     * @param string $orderItemTableName
      */
     public function testRelationWhereParams($orderTableName, $orderItemTableName)
     {
@@ -1302,7 +1307,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/9006
+     * @see https://github.com/yiisoft/yii2/issues/9006
      */
     public function testBit()
     {
@@ -1421,7 +1426,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12213
+     * @see https://github.com/yiisoft/yii2/issues/12213
      */
     public function testUnlinkAllOnCondition()
     {
@@ -1452,7 +1457,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * https://github.com/yiisoft/yii2/issues/12213
+     * @see https://github.com/yiisoft/yii2/issues/12213
      */
     public function testUnlinkAllOnConditionViaTable()
     {
@@ -1482,7 +1487,7 @@ abstract class ActiveRecordTest extends DatabaseTestCase
     }
 
     /**
-     * verify that {{}} are not going to be replaced in parameters
+     * Verify that {{}} are not going to be replaced in parameters.
      */
     public function testNoTablenameReplacement()
     {
@@ -1506,4 +1511,45 @@ abstract class ActiveRecordTest extends DatabaseTestCase
         $this->assertEquals('Some {{%updated}} address', $customer->address);
     }
 
+    /**
+     * Ensure no ambiguous column error occurs if ActiveQuery adds a JOIN.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13757
+     */
+    public function testAmbiguousColumnFindOne()
+    {
+        CustomerQuery::$joinWithProfile = true;
+        $model = Customer::findOne(1);
+        $this->assertTrue($model->refresh());
+        CustomerQuery::$joinWithProfile = false;
+    }
+
+    /**
+     * Ensure no ambiguous column error occurs on indexBy with JOIN.
+     *
+     * @see https://github.com/yiisoft/yii2/issues/13859
+     */
+    public function testAmbiguousColumnIndexBy()
+    {
+        switch ($this->driverName) {
+            case 'pgsql':
+            case 'sqlite':
+                $selectExpression = "(customer.name || ' in ' || p.description) AS name";
+                break;
+            case 'cubird':
+            case 'mysql':
+                $selectExpression = "concat(customer.name,' in ', p.description) name";
+                break;
+            default:
+                $this->markTestIncomplete('CONCAT syntax for this DBMS is not added to the test yet.');
+        }
+
+        $result = Customer::find()->select([$selectExpression])
+            ->innerJoinWith('profile p')
+            ->indexBy('id')->column();
+        $this->assertEquals([
+            1 => 'user1 in profile customer 1',
+            3 => 'user3 in profile customer 3',
+        ], $result);
+    }
 }

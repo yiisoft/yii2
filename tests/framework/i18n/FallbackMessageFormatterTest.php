@@ -92,7 +92,7 @@ class FallbackMessageFormatterTest extends TestCase
             ],
 
             // This one was provided by Aura.Intl. Thanks!
-            [<<<_MSG_
+            [<<<'_MSG_'
 {gender_of_host, select,
   female {{num_guests, plural, offset:1
       =0 {{host} does not give a party.}
@@ -178,6 +178,9 @@ _MSG_
 
     /**
      * @dataProvider patterns
+     * @param string $pattern
+     * @param string $expected
+     * @param array $args
      */
     public function testNamedArguments($pattern, $expected, $args)
     {

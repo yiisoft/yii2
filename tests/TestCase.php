@@ -28,7 +28,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Returns a test configuration param from /data/config.php
+     * Returns a test configuration param from /data/config.php.
      * @param  string $name params name
      * @param  mixed $default default value to use when param is not set.
      * @return mixed  the value of the configuration param
@@ -36,7 +36,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     public static function getParam($name, $default = null)
     {
         if (static::$params === null) {
-            static::$params = require(__DIR__ . '/data/config.php');
+            static::$params = require __DIR__ . '/data/config.php';
         }
 
         return isset(static::$params[$name]) ? static::$params[$name] : $default;
@@ -93,6 +93,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if (!is_dir($vendor)) {
             $vendor = dirname(dirname(dirname(dirname(__DIR__))));
         }
+
         return $vendor;
     }
 
@@ -108,7 +109,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Asserting two strings equality ignoring line endings
+     * Asserting two strings equality ignoring line endings.
      * @param string $expected
      * @param string $actual
      */
@@ -121,7 +122,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Invokes a inaccessible method
+     * Invokes a inaccessible method.
      * @param $object
      * @param $method
      * @param array $args
@@ -131,18 +132,19 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected function invokeMethod($object, $method, $args = [], $revoke = true)
     {
-        $reflection = new \ReflectionClass($object->className());
+        $reflection = new \ReflectionObject($object);
         $method = $reflection->getMethod($method);
         $method->setAccessible(true);
         $result = $method->invokeArgs($object, $args);
         if ($revoke) {
             $method->setAccessible(false);
         }
+
         return $result;
     }
 
     /**
-     * Sets an inaccessible object property to a designated value
+     * Sets an inaccessible object property to a designated value.
      * @param $object
      * @param $propertyName
      * @param $value
@@ -164,7 +166,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * Gets an inaccessible object property
+     * Gets an inaccessible object property.
      * @param $object
      * @param $propertyName
      * @param bool $revoke whether to make property inaccessible after getting
@@ -182,12 +184,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         if ($revoke) {
             $property->setAccessible(false);
         }
+
         return $result;
     }
 
 
     /**
-     * Asserts that value is one of expected values
+     * Asserts that value is one of expected values.
      *
      * @param mixed $actual
      * @param array $expected

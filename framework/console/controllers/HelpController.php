@@ -131,7 +131,7 @@ class HelpController extends Controller
     }
 
     /**
-     * Displays usage information for $action
+     * Displays usage information for $action.
      *
      * @param string $action route to action
      * @since 2.0.11
@@ -273,9 +273,9 @@ class HelpController extends Controller
         if (class_exists($controllerClass)) {
             $class = new \ReflectionClass($controllerClass);
             return !$class->isAbstract() && $class->isSubclassOf('yii\console\Controller');
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -529,6 +529,7 @@ class HelpController extends Controller
                 return ', -' . $name;
             }
         }
+
         return '';
     }
 

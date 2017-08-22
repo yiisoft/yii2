@@ -45,8 +45,8 @@ class YiiConfig extends Config
             'ereg_to_preg' => true,
             'function_typehint_space' => true,
             'hash_to_slash_comment' => true,
-//            'heredoc_to_nowdoc' => true, // needs more discussion
-//            'include' => true, // needs more discussion
+            'include' => true,
+            'heredoc_to_nowdoc' => true,
             'is_null' => [
                 'use_yoda_style' => false,
             ],
@@ -91,11 +91,11 @@ class YiiConfig extends Config
             'no_trailing_comma_in_singleline_array' => true,
             'no_unneeded_control_parentheses' => true,
             'no_unused_imports' => true,
-//            'no_useless_else' => true, // needs more discussion
+            'no_useless_else' => true,
             'no_useless_return' => true,
             'no_whitespace_before_comma_in_array' => true,
             'no_whitespace_in_blank_line' => true,
-//            'non_printable_character' => true, // breaks Formatter::asCurrency() tests
+            'non_printable_character' => true,
             'normalize_index_brace' => true,
             'object_operator_without_whitespace' => true,
 //            'ordered_class_elements' => [ // needs more discussion
@@ -124,9 +124,7 @@ class YiiConfig extends Config
             'php_unit_dedicate_assert' => true,
             'php_unit_fqcn_annotation' => true,
 //            'php_unit_strict' => true, // needs more attention
-//            'phpdoc_add_missing_param_annotation' => [ // needs more attention
-//                'only_untyped' => false,
-//            ],
+            'phpdoc_add_missing_param_annotation' => true,
             'phpdoc_indent' => true,
 //            'phpdoc_inline_tag' => true, // see https://github.com/yiisoft/yii2/issues/11635
             'phpdoc_no_access' => true,
@@ -137,10 +135,10 @@ class YiiConfig extends Config
             'phpdoc_return_self_reference' => true,
             'phpdoc_scalar' => true,
             'phpdoc_single_line_var_spacing' => true,
-//            'phpdoc_summary' => true, // needs more attention (summary should be separated by blank line from description)
+            'phpdoc_summary' => true,
 //            'phpdoc_to_comment' => true, // breaks phpdoc for define('CONSTANT', $value);
             'phpdoc_trim' => true,
-//            'phpdoc_types' => true, // conflicts with yii\base\Object typehits https://github.com/yiisoft/yii2/pull/12699
+            'phpdoc_types' => true,
             'phpdoc_var_without_name' => true,
             'protected_to_private' => true,
             'psr4' => true,

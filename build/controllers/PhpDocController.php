@@ -13,7 +13,7 @@ use yii\helpers\Console;
 use yii\helpers\FileHelper;
 
 /**
- * PhpDocController is there to help maintaining PHPDoc annotation in class files
+ * PhpDocController is there to help maintaining PHPDoc annotation in class files.
  *
  * @author Carsten Brandt <mail@cebe.cc>
  * @author Alexander Makarov <sam@rmcreative.ru>
@@ -34,7 +34,7 @@ class PhpDocController extends Controller
 
 
     /**
-     * Generates `@property` annotations in class files from getters and setters
+     * Generates `@property` annotations in class files from getters and setters.
      *
      * Property description will be taken from getter or setter or from an `@property` annotation
      * in the getters docblock if there is one defined.
@@ -70,7 +70,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Fix some issues with PHPdoc in files
+     * Fix some issues with PHPDoc in files.
      *
      * @param string $root the directory to parse files from. Defaults to YII2_PATH.
      */
@@ -178,7 +178,7 @@ class PhpDocController extends Controller
             list(, $extension) = $matches;
             Yii::setAlias("@yii/$extension", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@yii/$extension/vendor/autoload.php"))) {
-                include($autoloadFile);
+                include $autoloadFile;
             }
 
             if (isset($extensionExcept[$extension])) {
@@ -201,7 +201,7 @@ class PhpDocController extends Controller
             list(, $appName) = $matches;
             Yii::setAlias("@app-$appName", "$root");
             if (is_file($autoloadFile = Yii::getAlias("@app-$appName/vendor/autoload.php"))) {
-                include($autoloadFile);
+                include $autoloadFile;
             }
 
             $except[] = '/runtime/';
@@ -243,7 +243,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Fix file PHPdoc
+     * Fix file PHPDoc.
      */
     protected function fixFileDoc(&$lines)
     {
@@ -284,7 +284,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Markdown aware fix of whitespace issues in doc comments
+     * Markdown aware fix of whitespace issues in doc comments.
      */
     protected function fixDocBlockIndentation(&$lines)
     {
@@ -350,12 +350,15 @@ class PhpDocController extends Controller
                     case 'boolean': $types[$i] = 'bool'; break;
                 }
             }
+
             return '@' . $matches[1] . ' ' . implode('|', $types);
         }, $line);
     }
 
     /**
-     * Fixes line spacing code style for properties and constants
+     * Fixes line spacing code style for properties and constants.
+     * @param string[] $lines
+     * @return string[]
      */
     protected function fixLineSpacing($lines)
     {
@@ -486,8 +489,8 @@ class PhpDocController extends Controller
             return false;
         }
 
-        if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object') {
-            $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\Object.\n", Console::FG_BLUE, Console::BOLD);
+        if (!$ref->isSubclassOf('yii\base\Object') && $className != 'yii\base\Object' && !$ref->isSubclassOf('yii\base\BaseObject') && $className != 'yii\base\BaseObject') {
+            $this->stderr("[INFO] Skipping class $className as it is not a subclass of yii\\base\\BaseObject.\n", Console::FG_BLUE, Console::BOLD);
             return false;
         }
 
@@ -551,7 +554,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * remove multi empty lines and trim trailing whitespace
+     * remove multi empty lines and trim trailing whitespace.
      *
      * @param $doc
      * @return string
@@ -571,7 +574,7 @@ class PhpDocController extends Controller
     }
 
     /**
-     * Replace property annotations in doc comment
+     * Replace property annotations in doc comment.
      * @param $doc
      * @param $properties
      * @return string
@@ -759,6 +762,7 @@ class PhpDocController extends Controller
                 $sets[] = $set;
             }
         }
+
         return $sets;
     }
 
@@ -768,6 +772,7 @@ class PhpDocController extends Controller
         if ($str == '') {
             return '';
         }
+
         return strtoupper(substr($str, 0, 1)) . substr($str, 1) . ($str[strlen($str) - 1] != '.' ? '.' : '');
     }
 

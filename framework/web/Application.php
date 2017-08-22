@@ -89,6 +89,7 @@ class Application extends \yii\base\Application
                     }
                     $url += $request->getQueryParams();
                 }
+
                 return $this->getResponse()->redirect(Url::to($url, $e->scheme), $e->statusCode);
             }
         } else {
@@ -102,14 +103,14 @@ class Application extends \yii\base\Application
             $result = $this->runAction($route, $params);
             if ($result instanceof Response) {
                 return $result;
-            } else {
-                $response = $this->getResponse();
-                if ($result !== null) {
-                    $response->data = $result;
-                }
-
-                return $response;
             }
+
+            $response = $this->getResponse();
+            if ($result !== null) {
+                $response->data = $result;
+            }
+
+            return $response;
         } catch (InvalidRouteException $e) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'), $e->getCode(), $e);
         }
@@ -125,12 +126,12 @@ class Application extends \yii\base\Application
         if ($this->_homeUrl === null) {
             if ($this->getUrlManager()->showScriptName) {
                 return $this->getRequest()->getScriptUrl();
-            } else {
-                return $this->getRequest()->getBaseUrl() . '/';
             }
-        } else {
-            return $this->_homeUrl;
+
+            return $this->getRequest()->getBaseUrl() . '/';
         }
+
+        return $this->_homeUrl;
     }
 
     /**

@@ -224,7 +224,7 @@ class BaseMailerTest extends TestCase
                 'HTML view file content http://yiifresh.com/index.php?r=site%2Freset-password&token=abcdef',
             ],
             [
-                2, <<<HTML
+                2, <<<'HTML'
 <html><head><style type="text/css">.content{color: #112345;}</style><title>TEST</title></head>
 <body>
     <style type="text/css">.content{color: #112345;}</style>
@@ -239,7 +239,7 @@ class BaseMailerTest extends TestCase
 </body>
 </html>
 HTML
-,                <<<TEXT
+,                <<<'TEXT'
 First paragraph
 second line
 
@@ -253,6 +253,9 @@ TEXT
 
     /**
      * @dataProvider htmlAndPlainProvider
+     * @param int $i
+     * @param string $htmlViewFileContent
+     * @param string $expectedTextRendering
      */
     public function testComposePlainTextFallback($i, $htmlViewFileContent, $expectedTextRendering)
     {
@@ -307,7 +310,7 @@ TEXT
 }
 
 /**
- * Test Mailer class
+ * Test Mailer class.
  */
 class Mailer extends BaseMailer
 {
@@ -323,7 +326,7 @@ class Mailer extends BaseMailer
 }
 
 /**
- * Test Message class
+ * Test Message class.
  */
 class Message extends BaseMessage
 {

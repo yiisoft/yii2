@@ -7,7 +7,7 @@
 
 namespace yiiunit\framework\helpers;
 
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\data\Sort;
 use yii\helpers\ArrayHelper;
 use yiiunit\TestCase;
@@ -18,7 +18,7 @@ class Post1
     public $title = 'tt';
 }
 
-class Post2 extends Object
+class Post2 extends BaseObject
 {
     public $id = 123;
     public $content = 'test';
@@ -29,10 +29,10 @@ class Post2 extends Object
     }
 }
 
-class Post3 extends Object
+class Post3 extends BaseObject
 {
     public $id = 33;
-    /** @var Object */
+    /** @var BaseObject */
     public $subObject;
 
     public function init()
@@ -331,6 +331,7 @@ class ArrayHelperTest extends TestCase
                 $o = ['Bug' => 'C', 'Enh' => 'D'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
+
             return 'B' . $i++;
         }, SORT_ASC, SORT_NATURAL);
         $this->assertEquals([
@@ -480,6 +481,28 @@ class ArrayHelperTest extends TestCase
             'features' => [
                 'gii',
             ],
+        ];
+
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testMergeWithNullValues()
+    {
+        $a = [
+            'firstValue',
+            null,
+        ];
+        $b = [
+            'secondValue',
+            'thirdValue',
+        ];
+
+        $result = ArrayHelper::merge($a, $b);
+        $expected = [
+            'firstValue',
+            null,
+            'secondValue',
+            'thirdValue',
         ];
 
         $this->assertEquals($expected, $result);
@@ -780,7 +803,7 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * This is expected to result in a PHP error
+     * This is expected to result in a PHP error.
      * @expectedException \PHPUnit_Framework_Error
      */
     public function testGetValueNonexistingProperties1()
@@ -790,13 +813,253 @@ class ArrayHelperTest extends TestCase
     }
 
     /**
-     * This is expected to result in a PHP error
+     * This is expected to result in a PHP error.
      * @expectedException \PHPUnit_Framework_Error
      */
     public function testGetValueNonexistingProperties2()
     {
         $arrayObject = new \ArrayObject(['id' => 23], \ArrayObject::ARRAY_AS_PROPS);
         $this->assertEquals(23, ArrayHelper::getValue($arrayObject, 'nonExisting'));
+    }
+
+    /**
+     * Data provider for [[testSetValue()]].
+     * @return array test data
+     */
+    public function dataProviderSetValue()
+    {
+        return [
+            [
+                [
+                    'key1' => 'val1',
+                    'key2' => 'val2',
+                ],
+                'key', 'val',
+                [
+                    'key1' => 'val1',
+                    'key2' => 'val2',
+                    'key' => 'val',
+                ],
+            ],
+            [
+                [
+                    'key1' => 'val1',
+                    'key2' => 'val2',
+                ],
+                'key2', 'val',
+                [
+                    'key1' => 'val1',
+                    'key2' => 'val',
+                ],
+            ],
+
+            [
+                [
+                    'key1' => 'val1',
+                ],
+                'key.in', 'val',
+                [
+                    'key1' => 'val1',
+                    'key' => ['in' => 'val'],
+                ],
+            ],
+            [
+                [
+                    'key' => 'val1',
+                ],
+                'key.in', 'val',
+                [
+                    'key' => [
+                        'val1',
+                        'in' => 'val',
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key' => 'val1',
+                ],
+                'key', ['in' => 'val'],
+                [
+                    'key' => ['in' => 'val'],
+                ],
+            ],
+
+            [
+                [
+                    'key1' => 'val1',
+                ],
+                'key.in.0', 'val',
+                [
+                    'key1' => 'val1',
+                    'key' => [
+                        'in' => ['val'],
+                    ],
+                ],
+            ],
+
+            [
+                [
+                    'key1' => 'val1',
+                ],
+                'key.in.arr', 'val',
+                [
+                    'key1' => 'val1',
+                    'key' => [
+                        'in' => [
+                            'arr' => 'val',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key1' => 'val1',
+                ],
+                'key.in.arr', ['val'],
+                [
+                    'key1' => 'val1',
+                    'key' => [
+                        'in' => [
+                            'arr' => ['val'],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key' => [
+                        'in' => ['val1'],
+                    ],
+                ],
+                'key.in.arr', 'val',
+                [
+                    'key' => [
+                        'in' => [
+                            'val1',
+                            'arr' => 'val',
+                        ],
+                    ],
+                ],
+            ],
+
+            [
+                [
+                    'key' => ['in' => 'val1'],
+                ],
+                'key.in.arr', ['val'],
+                [
+                    'key' => [
+                        'in' => [
+                            'val1',
+                            'arr' => ['val'],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key' => [
+                        'in' => [
+                            'val1',
+                            'key' => 'val',
+                        ],
+                    ],
+                ],
+                'key.in.0', ['arr' => 'val'],
+                [
+                    'key' => [
+                        'in' => [
+                            ['arr' => 'val'],
+                            'key' => 'val',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key' => [
+                        'in' => [
+                            'val1',
+                            'key' => 'val',
+                        ],
+                    ],
+                ],
+                'key.in', ['arr' => 'val'],
+                [
+                    'key' => [
+                        'in' => ['arr' => 'val'],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key' => [
+                        'in' => [
+                            'key' => 'val',
+                            'data' => [
+                                'attr1',
+                                'attr2',
+                                'attr3',
+                            ],
+                        ],
+                    ],
+                ],
+                'key.in.schema', 'array',
+                [
+                    'key' => [
+                        'in' => [
+                            'key' => 'val',
+                            'schema' => 'array',
+                            'data' => [
+                                'attr1',
+                                'attr2',
+                                'attr3',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key' => [
+                        'in.array' => [
+                            'key' => 'val',
+                        ],
+                    ],
+                ],
+                ['key', 'in.array', 'ok.schema'], 'array',
+                [
+                    'key' => [
+                        'in.array' => [
+                            'key' => 'val',
+                            'ok.schema' => 'array',
+                        ],
+                    ],
+                ],
+            ],
+            [
+                [
+                    'key' => ['val'],
+                ],
+                null, 'data',
+                'data',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dataProviderSetValue
+     *
+     * @param array $array_input
+     * @param string|array|null $key
+     * @param mixed $value
+     * @param mixed $expected
+     */
+    public function testSetValue($array_input, $key, $value, $expected)
+    {
+        ArrayHelper::setValue($array_input, $key, $value);
+        $this->assertEquals($expected, $array_input);
     }
 
     public function testIsAssociative()

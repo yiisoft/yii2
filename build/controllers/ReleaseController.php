@@ -71,6 +71,7 @@ class ReleaseController extends Controller
         } elseif ($actionID === 'info') {
             $options[] = 'update';
         }
+
         return array_merge(parent::options($actionID), $options);
     }
 
@@ -140,6 +141,7 @@ class ReleaseController extends Controller
                 $w = $l;
             }
         }
+
         return $w;
     }
 
@@ -367,6 +369,7 @@ class ReleaseController extends Controller
     /**
      * @param array $what list of items
      * @param array $limit list of things to allow, or empty to allow any, can be `app`, `framework`, `extension`
+     * @param bool $ensureGitClean
      * @throws \yii\base\Exception
      */
     protected function validateWhat(array $what, $limit = [], $ensureGitClean = true)
@@ -434,11 +437,11 @@ class ReleaseController extends Controller
         $this->dryRun || Yii::$app->runAction('mime-type', ["$frameworkPath/helpers/mimeTypes.php"]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout("fixing various PHPdoc style issues...\n", Console::BOLD);
+        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
         $this->dryRun || Yii::$app->runAction('php-doc/fix', [$frameworkPath]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout("updating PHPdoc @property annotations...\n", Console::BOLD);
+        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
         $this->dryRun || Yii::$app->runAction('php-doc/property', [$frameworkPath]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
@@ -558,13 +561,13 @@ class ReleaseController extends Controller
 
         // adjustments
 
-        $this->stdout("fixing various PHPdoc style issues...\n", Console::BOLD);
+        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
         $this->setAppAliases($name, $path);
         $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path, 'skipFrameworkRequirements' => true]);
         $this->resetAppAliases();
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout("updating PHPdoc @property annotations...\n", Console::BOLD);
+        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
         $this->setAppAliases($name, $path);
         $this->dryRun || Yii::$app->runAction('php-doc/property', [$path, 'skipFrameworkRequirements' => true]);
         $this->resetAppAliases();
@@ -637,7 +640,7 @@ class ReleaseController extends Controller
                 break;
             case 'advanced':
                 // setup @frontend, @backend etc...
-                require("$path/common/config/bootstrap.php");
+                require "$path/common/config/bootstrap.php";
                 break;
         }
     }
@@ -676,11 +679,11 @@ class ReleaseController extends Controller
 
         // adjustments
 
-        $this->stdout("fixing various PHPdoc style issues...\n", Console::BOLD);
+        $this->stdout("fixing various PHPDoc style issues...\n", Console::BOLD);
         $this->dryRun || Yii::$app->runAction('php-doc/fix', [$path]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
-        $this->stdout("updating PHPdoc @property annotations...\n", Console::BOLD);
+        $this->stdout("updating PHPDoc @property annotations...\n", Console::BOLD);
         $this->dryRun || Yii::$app->runAction('php-doc/property', [$path]);
         $this->stdout("done.\n", Console::FG_GREEN, Console::BOLD);
 
@@ -846,7 +849,10 @@ class ReleaseController extends Controller
     }
 
     /**
-     * Extract changelog content for a specific version
+     * Extract changelog content for a specific version.
+     * @param string $file
+     * @param string $version
+     * @return array
      */
     protected function splitChangelog($file, $version)
     {
@@ -875,11 +881,14 @@ class ReleaseController extends Controller
                 ${$state}[] = $line;
             }
         }
+
         return [$start, $changelog, $end];
     }
 
     /**
-     * Ensure sorting of the changelog lines
+     * Ensure sorting of the changelog lines.
+     * @param string[] $changelog
+     * @return string[]
      */
     protected function resortChangelog($changelog)
     {
@@ -895,6 +904,7 @@ class ReleaseController extends Controller
                 $o = ['Bug' => 'C', 'Enh' => 'D', 'Chg' => 'E', 'New' => 'F'];
                 return $o[$m[1]] . ' ' . (!empty($m[2]) ? $m[2] : 'AAAA' . $i++);
             }
+
             return 'B' . $i++;
         }, SORT_ASC, SORT_NATURAL);
 
@@ -929,6 +939,7 @@ class ReleaseController extends Controller
                     return true;
                 }
             }
+
             return false;
         });
     }
@@ -1001,6 +1012,7 @@ class ReleaseController extends Controller
             rsort($tags, SORT_NATURAL); // TODO this can not deal with alpha/beta/rc...
             $versions[$ext] = reset($tags);
         }
+
         return $versions;
     }
 
@@ -1034,6 +1046,7 @@ class ReleaseController extends Controller
             }
             $versions[$k] = implode('.', $parts);
         }
+
         return $versions;
     }
 }

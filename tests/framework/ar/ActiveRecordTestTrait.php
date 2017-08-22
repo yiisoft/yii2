@@ -25,25 +25,25 @@ trait ActiveRecordTestTrait
 {
     /* @var $this TestCase */
     /**
-     * This method should return the classname of Customer class
+     * This method should return the classname of Customer class.
      * @return string
      */
     abstract public function getCustomerClass();
 
     /**
-     * This method should return the classname of Order class
+     * This method should return the classname of Order class.
      * @return string
      */
     abstract public function getOrderClass();
 
     /**
-     * This method should return the classname of OrderItem class
+     * This method should return the classname of OrderItem class.
      * @return string
      */
     abstract public function getOrderItemClass();
 
     /**
-     * This method should return the classname of Item class
+     * This method should return the classname of Item class.
      * @return string
      */
     abstract public function getItemClass();
@@ -53,7 +53,7 @@ trait ActiveRecordTestTrait
     abstract public function getOrderItemWithNullFKmClass();
 
     /**
-     * can be overridden to do things after save()
+     * Can be overridden to do things after save().
      */
     public function afterSave()
     {
@@ -559,8 +559,9 @@ trait ActiveRecordTestTrait
     }
 
     /**
-     * Ensure ActiveRelationTrait does preserve order of items on find via()
-     * https://github.com/yiisoft/yii2/issues/1310
+     * Ensure ActiveRelationTrait does preserve order of items on find via().
+     *
+     * @see https://github.com/yiisoft/yii2/issues/1310.
      */
     public function testFindEagerViaRelationPreserveOrder()
     {

@@ -8,6 +8,7 @@
 namespace yiiunit\framework\widgets;
 
 use yii\data\Pagination;
+use yii\helpers\StringHelper;
 use yii\widgets\LinkPager;
 
 /**
@@ -27,13 +28,24 @@ class LinkPagerTest extends \yiiunit\TestCase
         ]);
     }
 
-    public function testFirstLastPageLabels()
+    /**
+     * Get pagination.
+     * @param int $page
+     * @return Pagination
+     */
+    private function getPagination($page)
     {
         $pagination = new Pagination();
-        $pagination->setPage(5);
+        $pagination->setPage($page);
         $pagination->totalCount = 500;
         $pagination->route = 'test';
 
+        return $pagination;
+    }
+
+    public function testFirstLastPageLabels()
+    {
+        $pagination = $this->getPagination(5);
         $output = LinkPager::widget([
             'pagination' => $pagination,
             'firstPageLabel' => true,
@@ -64,13 +76,8 @@ class LinkPagerTest extends \yiiunit\TestCase
 
     public function testDisabledPageElementOptions()
     {
-        $pagination = new Pagination();
-        $pagination->setPage(0);
-        $pagination->totalCount = 50;
-        $pagination->route = 'test';
-
         $output = LinkPager::widget([
-            'pagination' => $pagination,
+            'pagination' => $this->getPagination(0),
             'disabledListItemSubTagOptions' => ['class' => 'foo-bar'],
         ]);
 
@@ -79,13 +86,8 @@ class LinkPagerTest extends \yiiunit\TestCase
 
     public function testDisabledPageElementOptionsWithTagOption()
     {
-        $pagination = new Pagination();
-        $pagination->setPage(0);
-        $pagination->totalCount = 50;
-        $pagination->route = 'test';
-
         $output = LinkPager::widget([
-            'pagination' => $pagination,
+            'pagination' => $this->getPagination(0),
             'disabledListItemSubTagOptions' => ['class' => 'foo-bar', 'tag' => 'div'],
         ]);
 
@@ -94,11 +96,7 @@ class LinkPagerTest extends \yiiunit\TestCase
 
     public function testDisableCurrentPageButton()
     {
-        $pagination = new Pagination();
-        $pagination->setPage(5);
-        $pagination->totalCount = 500;
-        $pagination->route = 'test';
-
+        $pagination = $this->getPagination(5);
         $output = LinkPager::widget([
             'pagination' => $pagination,
             'disableCurrentPageButton' => false,
@@ -112,5 +110,38 @@ class LinkPagerTest extends \yiiunit\TestCase
         ]);
 
         static::assertContains('<li class="active disabled"><span>6</span></li>', $output);
+    }
+
+    public function testOptionsWithTagOption()
+    {
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(5),
+            'options' => [
+                'tag' => 'div',
+            ],
+        ]);
+
+        $this->assertTrue(StringHelper::startsWith($output, '<div>'));
+        $this->assertTrue(StringHelper::endsWith($output, '</div>'));
+    }
+
+    public function testLinkWrapOptions()
+    {
+        $output = LinkPager::widget([
+            'pagination' => $this->getPagination(1),
+            'linkContainerOptions' => [
+                'tag' => 'div',
+                'class' => 'my-class',
+            ],
+        ]);
+
+        $this->assertContains(
+            '<div class="my-class"><a href="/?r=test&amp;page=3" data-page="2">3</a></div>',
+            $output
+        );
+        $this->assertContains(
+            '<div class="my-class active"><a href="/?r=test&amp;page=2" data-page="1">2</a></div>',
+            $output
+        );
     }
 }
