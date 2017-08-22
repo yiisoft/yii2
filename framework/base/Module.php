@@ -707,8 +707,9 @@ class Module extends ServiceLocator
     }
 
     /**
-     * @since 2.0.13 If component isn't defined in the module, it will be looked up in its parent.
      * @inheritdoc
+     * Since version 2.0.13, if a component isn't defined in the module, it will be looked up in the parent module.
+     * The parent module may be the application.
      */
     public function get($id, $throwException = true)
     {
