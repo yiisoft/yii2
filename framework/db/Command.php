@@ -1081,4 +1081,27 @@ class Command extends Component
             $this->db->getSchema()->refreshTableSchema($this->_refreshTableName);
         }
     }
+
+    /**
+     * Creates an SQL View
+     * @param string $viewName the name of the view to be created
+     * @param string $subquery the select statement which defines the view
+     */
+    public function createView($viewName, $subquery)
+    {
+        $sql = $this->db->getQueryBuilder()->createView($viewName, $subquery);
+
+        return $this->setSql($sql);
+    }
+
+    /**
+     * Removes an SQL View
+     * @param string $viewName
+     */
+    public function dropView($viewName)
+    {
+        $sql = $this->db->getQueryBuilder()->dropView($viewName);
+
+        return $this->setSql($sql)->requireTableSchemaRefresh($viewName);
+    }
 }

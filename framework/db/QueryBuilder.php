@@ -1609,4 +1609,26 @@ class QueryBuilder extends \yii\base\BaseObject
     {
         return 'SELECT EXISTS(' . $rawSql . ')';
     }
+
+    /**
+     * Creates a view
+     * @param string $viewName the name of the view to be created
+     * @param \yii\db\Query $subquery the select statement which defines the view
+     * @return string the CREATE VIEW SQL statement
+     */
+    public function createView($viewName, $subquery)
+    {
+        return 'CREATE VIEW ' . $this->db->quoteTableName($viewName) . ' AS ' . $subquery->createCommand($this->db)->getSql();
+    }
+
+    /**
+     * Creates a view
+     * @param string $viewName the name of the view to be created
+     * @param \yii\db\Query $subquery the select statement which defines the view
+     * @return string the CREATE VIEW SQL statement
+     */
+    public function dropView($viewName)
+    {
+        return 'DROP VIEW ' . $this->db->quoteTableName($viewName);
+    }
 }
