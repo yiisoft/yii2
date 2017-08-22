@@ -184,7 +184,7 @@ class TimestampBehaviorTest extends TestCase
         $model = new ActiveRecordTimestamp();
         $model->save(false);
 
-        $enforcedTime = date('Y') - 1;
+        $enforcedTime = date('Y', strtotime('-1 year'));
 
         $model->created_at = $enforcedTime;
         $model->updated_at = $enforcedTime;
@@ -220,7 +220,7 @@ class TimestampBehaviorTest extends TestCase
             ],
         ];
         $model = new ActiveRecordTimestamp();
-        $enforcedTime = date('Y') - 1;
+        $enforcedTime = date('Y', strtotime('-1 year'));
         $model->created_at = $enforcedTime;
         $model->updated_at = $enforcedTime;
         $model->save(false);
@@ -228,7 +228,7 @@ class TimestampBehaviorTest extends TestCase
 
         $model->touch('created_at');
 
-        $this->assertSame($expectedCreatedAt, $model->created_at);
+        $this->assertEquals($expectedCreatedAt, $model->created_at);
     }
 }
 
